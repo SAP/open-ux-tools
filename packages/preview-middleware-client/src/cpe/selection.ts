@@ -20,7 +20,7 @@ import { getDocumentation } from './documentation';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import { getComponent } from './ui5-utils';
-import { getError } from './error-utils';
+import { getError } from '../utils/error';
 
 export interface PropertyChangeParams {
     name: string;

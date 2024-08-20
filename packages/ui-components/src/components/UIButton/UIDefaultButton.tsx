@@ -2,7 +2,9 @@ import React from 'react';
 import type { IButtonProps, IButtonStyles, IStyle } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
 import { UIContextualMenu } from '../UIContextualMenu';
+import type { UIIContextualMenuProps } from '../UIContextualMenu';
 import { COMMON_INPUT_STYLES } from '../UIInput';
+import { UiIcons } from '../Icons';
 
 const VSCODE_BORDER_COLOR = 'var(--vscode-button-border, transparent)';
 export const BASE_STYLES = {
@@ -45,6 +47,7 @@ export interface UIDefaultButtonProps extends IButtonProps {
      * @default false
      */
     transparent?: boolean;
+    menuProps?: UIIContextualMenuProps;
 }
 
 /**
@@ -368,6 +371,19 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        return <DefaultButton {...this.props} styles={this.setStyle(this.props)} menuAs={UIContextualMenu} />;
+        const defaultMenuIconProps = this.props.menuProps?.items
+            ? {
+                  // Overwrite build-in fluentui icon
+                  iconName: UiIcons.ArrowDown
+              }
+            : undefined;
+        return (
+            <DefaultButton
+                menuIconProps={defaultMenuIconProps}
+                {...this.props}
+                styles={this.setStyle(this.props)}
+                menuAs={UIContextualMenu}
+            />
+        );
     }
 }

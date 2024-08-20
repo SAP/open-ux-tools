@@ -1,5 +1,20 @@
 @import './_variables.scss';
 
+$layout-dropdown-menu-border-color: $menu-border-color;
+$layout-dropdown-menu-border-radius: $menu-border-radius;
+$layout-dropdown-menu-item-hover-background: $menu-item-hover-background;
+$layout-dropdown-menu-item-hover-color: $menu-item-hover-color;
+$layout-dropdown-menu-item-focus-background: $menu-item-selection-background;
+$layout-dropdown-menu-item-focus-color: $menu-item-selection-color;
+
+$layout-contextual-menu-border-color: var(--vscode-editorWidget-border);
+$layout-contextual-menu-border-radius: 4px;
+$layout-contextual-menu-item-hover-background: var(--vscode-menu-selectionBackground);
+$layout-contextual-menu-item-hover-color: var(--vscode-menu-selectionForeground, var(--vscode-menu-foreground));
+$layout-contextual-menu-item-focus-background: $layout-contextual-menu-item-hover-background;
+$layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-color;
+
+
 @mixin menu-item-contrast-border($outline: null) {
     &:after {
         @if $outline {
@@ -29,20 +44,53 @@
         svg > path {
             fill: $color;
         }
+        .ms-ContextualMenu-checkmarkIcon {
+            color: $color;
+        }
     }
 }
 
 .ts-ContextualMenu-callout {
     background: $menu-background;
-    border: 1px solid $menu-border-color;
-    border-radius: $menu-border-radius;
-    overflow: hidden;
+    border: 1px solid $layout-dropdown-menu-border-color;
+    border-radius: $layout-dropdown-menu-border-radius;
+    overflow: visible;
     // Apply workaround. resolves callout bottom border flickering during animation of opacity
     box-shadow: transparent 0px 0px 1px;
 
     .ms-Callout-main {
-        border-radius: $menu-border-radius;
+        border-radius: $layout-dropdown-menu-border-radius;
         background: $menu-background;
+    }
+    .ms-Callout-beak {
+        background: $menu-background;
+    }
+    .ms-Callout-beakCurtain {
+        background: transparent;
+    }
+    &--contextual {
+        border-radius: $layout-contextual-menu-border-radius;
+        box-shadow: var(--ui-box-shadow-small);
+        border: 1px solid $layout-contextual-menu-border-color;
+        .ms-Callout-beak {
+            box-shadow: var(--ui-box-shadow-small);
+        }
+        .ms-Callout-main {
+            border-radius: $layout-contextual-menu-border-radius;
+        }
+        // Contextual menu submenus
+        &.ts-ContextualMenu-callout--submenu-beneath {
+            margin: -2.5px -2px 2.5px -2px;
+            .ts-ContextualMenu {
+                padding: 2px 0;
+                .ms-ContextualMenu-link {
+                    &.is-checked  .ms-ContextualMenu-checkmarkIcon {
+                        margin-right: 2px;
+                        margin-left: -2px;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -62,7 +110,6 @@
             font-size: 13px;
             color: $menu-color;
             padding: $menu-item-padding;
-            padding-right: 3px;
 
             svg > path {
                 fill: $menu-color;
@@ -75,15 +122,22 @@
             &:hover,
             &:active,
             &.is-expanded {
-                @include menu-item-color($menu-item-hover-background, $menu-item-hover-color, $menu-item-hover-color);
+                @include menu-item-color($layout-dropdown-menu-item-hover-background, $layout-dropdown-menu-item-hover-color, $layout-dropdown-menu-item-hover-color);
 
                 & ~ .ms-ContextualMenu-splitMenu {
                     @include menu-item-color(
-                        $menu-item-hover-background,
-                        $menu-item-hover-color,
-                        $menu-item-hover-color
+                        $layout-dropdown-menu-item-hover-background,
+                        $layout-dropdown-menu-item-hover-color,
+                        $layout-dropdown-menu-item-hover-color
                     );
                 }
+            }
+        }
+
+        > .ms-ContextualMenu-link {
+            &.is-checked  .ms-ContextualMenu-checkmarkIcon {
+                margin-right: $menu-item-horizontal-padding/2;
+                margin-left: -$menu-item-horizontal-padding/2;
             }
         }
 
@@ -118,18 +172,18 @@
         > .ms-ContextualMenu-link {
             &:focus {
                 @include menu-item-color(
-                    $menu-item-selection-background,
-                    $menu-item-selection-color,
-                    $menu-item-selection-color,
+                    $layout-dropdown-menu-item-focus-background,
+                    $layout-dropdown-menu-item-focus-color,
+                    $layout-dropdown-menu-item-focus-color,
                     $menu-item-focus-border
                 );
 
                 // Context menu focus follows hover - use hover as more important
                 &:hover {
                     @include menu-item-color(
-                        $menu-item-hover-background,
-                        $menu-item-hover-color,
-                        $menu-item-hover-color,
+                        $layout-dropdown-menu-item-hover-background,
+                        $layout-dropdown-menu-item-hover-color,
+                        $layout-dropdown-menu-item-hover-color,
                         $menu-item-hover-contrast-border
                     );
                 }
@@ -146,16 +200,16 @@
             &:focus {
                 > button:first-child {
                     @include menu-item-color(
-                        $menu-item-selection-background,
-                        $menu-item-selection-color,
-                        $menu-item-selection-color
+                        $layout-dropdown-menu-item-focus-background,
+                        $layout-dropdown-menu-item-focus-color,
+                        $layout-dropdown-menu-item-focus-color
                     );
 
                     & ~ .ms-ContextualMenu-splitMenu {
                         @include menu-item-color(
-                            $menu-item-selection-background,
-                            $menu-item-selection-color,
-                            $menu-item-selection-color
+                            $layout-dropdown-menu-item-focus-background,
+                            $layout-dropdown-menu-item-focus-color,
+                            $layout-dropdown-menu-item-focus-color
                         );
                     }
                 }
@@ -163,16 +217,16 @@
                 // Context menu focus follows hover - use hover as more important
                 &:hover > button:first-child {
                     @include menu-item-color(
-                        $menu-item-hover-background,
-                        $menu-item-hover-color,
-                        $menu-item-hover-color
+                        $layout-dropdown-menu-item-hover-background,
+                        $layout-dropdown-menu-item-hover-color,
+                        $layout-dropdown-menu-item-hover-color
                     );
 
                     & ~ .ms-ContextualMenu-splitMenu {
                         @include menu-item-color(
-                            $menu-item-hover-background,
-                            $menu-item-hover-color,
-                            $menu-item-hover-color
+                            $layout-dropdown-menu-item-hover-background,
+                            $layout-dropdown-menu-item-hover-color,
+                            $layout-dropdown-menu-item-hover-color
                         );
                     }
                 }
@@ -189,16 +243,16 @@
             // Right split button as separate
             .ms-ContextualMenu-splitMenu.is-expanded {
                 @include menu-item-color(
-                    $menu-item-selection-background,
-                    $menu-item-selection-color,
-                    $menu-item-selection-color
+                    $layout-dropdown-menu-item-focus-background,
+                    $layout-dropdown-menu-item-focus-color,
+                    $layout-dropdown-menu-item-focus-color
                 );
 
                 &:hover {
                     @include menu-item-color(
-                        $menu-item-hover-background,
-                        $menu-item-hover-color,
-                        $menu-item-hover-color
+                        $layout-dropdown-menu-item-hover-background,
+                        $layout-dropdown-menu-item-hover-color,
+                        $layout-dropdown-menu-item-hover-color
                     );
                 }
             }
@@ -223,6 +277,7 @@
 
     .ms-ContextualMenu-itemText {
         margin: 0;
+        overflow: hidden;
     }
 
     // Icons inside menu item
@@ -240,5 +295,136 @@
     // Divider item
     .ms-ContextualMenu-divider {
         background-color: $menu-item-divider-color;
+    }
+
+    // Layout type - contextual
+    &.ts-ContextualMenu--contextual {
+        .ms-ContextualMenu-item {
+            > .ms-ContextualMenu-link,
+            > div > button {
+                &:hover,
+                &:active,
+                &.is-expanded {
+                    @include menu-item-color($layout-contextual-menu-item-hover-background, $layout-contextual-menu-item-hover-color, $layout-contextual-menu-item-hover-color);
+    
+                    & ~ .ms-ContextualMenu-splitMenu {
+                        @include menu-item-color(
+                            $layout-contextual-menu-item-hover-background,
+                            $layout-contextual-menu-item-hover-color,
+                            $layout-contextual-menu-item-hover-color
+                        );
+                    }
+                }
+            }
+    
+            // High contrast
+            // Single item - high contrast
+            > .ms-ContextualMenu-link,
+            > div {
+                &:hover {
+                    @include menu-item-contrast-border($menu-item-hover-contrast-border);
+                }
+            }
+    
+            // Keyboard navigation and focus
+            // Single menu item
+            > .ms-ContextualMenu-link {
+                &:focus {
+                    @include menu-item-color(
+                        $layout-contextual-menu-item-focus-background,
+                        $layout-contextual-menu-item-focus-color,
+                        $layout-contextual-menu-item-focus-color,
+                        $menu-item-focus-border
+                    );
+    
+                    // Context menu focus follows hover - use hover as more important
+                    &:hover {
+                        @include menu-item-color(
+                            $layout-contextual-menu-item-hover-background,
+                            $layout-contextual-menu-item-hover-color,
+                            $layout-contextual-menu-item-hover-color,
+                            $menu-item-hover-contrast-border
+                        );
+                    }
+                }
+            }
+            // Split menu item
+            > div {
+                &:hover,
+                &:focus {
+                    // Overwrite fluent style
+                    background: transparent;
+                }
+                // Menu item
+                &:focus {
+                    > button:first-child {
+                        @include menu-item-color(
+                            $layout-contextual-menu-item-focus-background,
+                            $layout-contextual-menu-item-focus-color,
+                            $layout-contextual-menu-item-focus-color
+                        );
+    
+                        & ~ .ms-ContextualMenu-splitMenu {
+                            @include menu-item-color(
+                                $layout-contextual-menu-item-focus-background,
+                                $layout-contextual-menu-item-focus-color,
+                                $layout-contextual-menu-item-focus-color
+                            );
+                        }
+                    }
+    
+                    // Context menu focus follows hover - use hover as more important
+                    &:hover > button:first-child {
+                        @include menu-item-color(
+                            $layout-contextual-menu-item-hover-background,
+                            $layout-contextual-menu-item-hover-color,
+                            $layout-contextual-menu-item-hover-color
+                        );
+    
+                        & ~ .ms-ContextualMenu-splitMenu {
+                            @include menu-item-color(
+                                $layout-contextual-menu-item-hover-background,
+                                $layout-contextual-menu-item-hover-color,
+                                $layout-contextual-menu-item-hover-color
+                            );
+                        }
+                    }
+    
+                    // High contrast
+                    @include menu-item-contrast-border($menu-item-focus-border);
+                }
+    
+                // High contrast
+                &:hover {
+                    @include menu-item-contrast-border($menu-item-hover-contrast-border);
+                }
+    
+                // Right split button as separate
+                .ms-ContextualMenu-splitMenu.is-expanded {
+                    @include menu-item-color(
+                        $layout-contextual-menu-item-focus-background,
+                        $layout-contextual-menu-item-focus-color,
+                        $layout-contextual-menu-item-focus-color
+                    );
+    
+                    &:hover {
+                        @include menu-item-color(
+                            $layout-contextual-menu-item-hover-background,
+                            $layout-contextual-menu-item-hover-color,
+                            $layout-contextual-menu-item-hover-color
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    &.ts-ContextualMenu--reverse .ms-ContextualMenu-item {
+        > .ms-ContextualMenu-link,
+        > div > button {
+            & i + .ms-ContextualMenu-itemText {
+                padding-left: 3px;
+            }
+        }
     }
 }
