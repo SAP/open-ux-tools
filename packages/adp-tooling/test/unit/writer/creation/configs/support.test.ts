@@ -1,12 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { getSupportForUI5Yaml } from '../../../../src';
+import { getSupportForUI5Yaml } from '../../../../../src';
 
 jest.mock('uuid', () => ({
     v4: jest.fn(() => 'mocked-uuid')
 }));
 
-jest.mock('../../../../src/writer/project-utils.ts', () => ({
+jest.mock('../../../../../src/writer/project-utils.ts', () => ({
     getPackageJSONInfo: jest.fn(() => ({
         name: '@sap-ux/adp-tooling',
         version: '1.0.0'

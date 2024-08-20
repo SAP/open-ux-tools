@@ -8,7 +8,7 @@ import {
     getI18nDescription,
     FlexLayer,
     getI18nModels
-} from '../../../../src';
+} from '../../../../../src';
 
 jest.mock('uuid', () => ({
     v4: () => '1234-uuid'

@@ -1,35 +1,14 @@
 import type { Manifest } from '@sap-ux/project-access';
 
-import { ApplicationType, getApplicationType, isFioriElementsApp, isOVPApp, isSupportedType } from '../../../src';
+import { ApplicationType } from '../../../../../src';
+import {
+    isFioriElementsApp,
+    isOVPApp,
+    isSupportedType,
+    isV4Application
+} from '../../../../../src/prompts/creation/identifier/utils';
 
-describe('app-utils', () => {
-    describe('getApplicationType', () => {
-        it('should return FIORI_ELEMENTS_OVP when manifest contains sap.ovp', () => {
-            const manifest = { 'sap.ovp': {} };
-            expect(getApplicationType(manifest as Manifest)).toBe(ApplicationType.FIORI_ELEMENTS_OVP);
-        });
-
-        it('should return FIORI_ELEMENTS when manifest contains sap.ui.generic.app', () => {
-            const manifest = { 'sap.ui.generic.app': {} };
-            expect(getApplicationType(manifest as Manifest)).toBe(ApplicationType.FIORI_ELEMENTS);
-        });
-
-        it('should return FIORI_ELEMENTS when sap.app has a sourceTemplate id of ui5template.smarttemplate', () => {
-            const manifest = { 'sap.app': { sourceTemplate: { id: 'UI5Template.SmartTemplate' } } };
-            expect(getApplicationType(manifest as Manifest)).toBe(ApplicationType.FIORI_ELEMENTS);
-        });
-
-        it('should return FREE_STYLE when manifest does not match any specific type', () => {
-            const manifest = { 'sap.app': {} };
-            expect(getApplicationType(manifest as Manifest)).toBe(ApplicationType.FREE_STYLE);
-        });
-
-        it('should return NONE for an empty manifest', () => {
-            const manifest = {};
-            expect(getApplicationType(manifest as Manifest)).toBe(ApplicationType.NONE);
-        });
-    });
-
+describe('AppIdentifier Utils', () => {
     describe('isFioriElementsApp', () => {
         it('returns true for FIORI_ELEMENTS', () => {
             expect(isFioriElementsApp(ApplicationType.FIORI_ELEMENTS)).toBe(true);
@@ -51,6 +30,32 @@ describe('app-utils', () => {
 
         it('returns false for FIORI_ELEMENTS', () => {
             expect(isOVPApp(ApplicationType.FIORI_ELEMENTS)).toBe(false);
+        });
+    });
+
+    describe('isV4Application', () => {
+        it('returns true when manifest has "sap.fe.templates"', () => {
+            const manifest = {
+                'sap.ui5': {
+                    dependencies: {
+                        libs: {
+                            'sap.fe.templates': {}
+                        }
+                    }
+                }
+            } as unknown as Manifest;
+            expect(isV4Application(manifest)).toBe(true);
+        });
+
+        it('returns false when there is no manifest or no dependencies', () => {
+            expect(isV4Application({} as Manifest)).toBe(false);
+            expect(
+                isV4Application({
+                    'sap.ui5': {
+                        resourceRoots: {}
+                    }
+                } as Manifest)
+            ).toBe(false);
         });
     });
 

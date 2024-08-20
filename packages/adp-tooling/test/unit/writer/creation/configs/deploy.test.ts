@@ -1,7 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 
-import type { DeployConfigAnswers } from '../../../../src';
-import { getUI5DeployConfig, InputChoice } from '../../../../src';
+import type { DeployConfigAnswers } from '../../../../../src';
+import { getUI5DeployConfig, InputChoice } from '../../../../../src';
 
 const isAppStudioMock = isAppStudio as jest.Mock;
 

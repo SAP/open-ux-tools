@@ -13,18 +13,18 @@ import type {
     FlpConfigAnswers,
     DeployConfigAnswers,
     SystemDetails
-} from '../../../../src';
-import { TemplateModel, FlexLayer } from '../../../../src';
+} from '../../../../../src';
+import { TemplateModel, FlexLayer } from '../../../../../src';
 
-jest.mock('../../../../src/base/app-utils.ts', () => ({
+jest.mock('../../../../../src/common/app-type.ts', () => ({
     getApplicationType: jest.fn().mockReturnValue('FreeStyle')
 }));
 
-jest.mock('../../../../src/writer/creation/i18n-model.ts', () => ({ getI18nModels: jest.fn().mockReturnValue([]) }));
+jest.mock('../../../../../src/writer/creation/i18n/model.ts', () => ({ getI18nModels: jest.fn().mockReturnValue([]) }));
 
-jest.mock('../../../../src/writer/creation/support-config.ts', () => ({ getSupportForUI5Yaml: jest.fn() }));
+jest.mock('../../../../../src/writer/creation/configs/support.ts', () => ({ getSupportForUI5Yaml: jest.fn() }));
 
-jest.mock('../../../../src/writer/creation/deploy-config.ts', () => ({
+jest.mock('../../../../../src/writer/creation/configs/deploy.ts', () => ({
     getUI5DeployConfig: jest.fn().mockReturnValue(undefined)
 }));
 
@@ -36,7 +36,7 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 
 const appManifest = jest
     .requireActual('fs')
-    .readFileSync(path.join(__dirname, '../../../fixtures/base-app', 'manifest.json'), 'utf-8');
+    .readFileSync(path.join(__dirname, '../../../../fixtures/base-app', 'manifest.json'), 'utf-8');
 
 const manifestManagerMock = {
     getManifest: jest.fn().mockReturnValue(appManifest)
