@@ -16,7 +16,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
 }));
 
 describe('Configuration Visibility Tests', () => {
-    let prompter = {} as ConfigInfoPrompter;
+    const prompter = {} as ConfigInfoPrompter;
     let answers: ConfigurationInfoAnswers;
 
     beforeEach(() => {
