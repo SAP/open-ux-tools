@@ -26,7 +26,7 @@ interface InboundChange extends ManifestChangeProperties {
  *
  * @param {string} projectPath - The root path of the project.
  * @param {number} timestamp - The timestamp of the change.
- * @param {AnnotationsData} data - The data object containing information about the annotation change.
+ * @param {AnnotationsData} annotation - The annotation data.
  * @param {ManifestChangeProperties} change - The annotation data change that will be written.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
@@ -34,7 +34,7 @@ interface InboundChange extends ManifestChangeProperties {
 export function writeAnnotationChange(
     projectPath: string,
     timestamp: number,
-    { annotation }: AnnotationsData,
+    annotation: AnnotationsData['annotation'],
     change: ManifestChangeProperties,
     fs: Editor
 ): void {

@@ -334,7 +334,7 @@ describe('Change Utils', () => {
             writeAnnotationChange(
                 mockProjectPath,
                 123456789,
-                mockData as unknown as AnnotationsData,
+                mockData.annotation as AnnotationsData['annotation'],
                 mockChange as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
             );
@@ -356,7 +356,7 @@ describe('Change Utils', () => {
             writeAnnotationChange(
                 mockProjectPath,
                 123456789,
-                mockData as unknown as AnnotationsData,
+                mockData.annotation as AnnotationsData['annotation'],
                 mockChange as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
             );
@@ -381,7 +381,7 @@ describe('Change Utils', () => {
             writeAnnotationChange(
                 mockProjectPath,
                 123456789,
-                mockData as unknown as AnnotationsData,
+                mockData.annotation as AnnotationsData['annotation'],
                 mockChange as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
             );
@@ -400,7 +400,7 @@ describe('Change Utils', () => {
                 writeAnnotationChange(
                     mockProjectPath,
                     123456789,
-                    mockData as unknown as AnnotationsData,
+                    mockData.annotation as AnnotationsData['annotation'],
                     mockChange as unknown as ManifestChangeProperties,
                     mockFs as unknown as Editor
                 );

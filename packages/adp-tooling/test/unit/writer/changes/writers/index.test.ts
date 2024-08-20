@@ -69,7 +69,7 @@ describe('AnnotationsWriter', () => {
         expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Number),
-            mockData,
+            mockData.annotation,
             expect.any(Object),
             {}
         );
@@ -97,7 +97,7 @@ describe('AnnotationsWriter', () => {
         expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Number),
-            mockData,
+            mockData.annotation,
             expect.any(Object),
             {}
         );
@@ -125,7 +125,7 @@ describe('AnnotationsWriter', () => {
         expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Number),
-            mockData,
+            mockData.annotation,
             expect.any(Object),
             {}
         );
