@@ -7,7 +7,8 @@ import Log from 'sap/base/Log';
 import { QuickActionActivationContext, QuickActionDefinitionGroup } from './quick-action-definition';
 
 import type { ControlTreeIndex } from '../types';
-import { getControlById, getRootControlFromComponentContainer } from '../utils';
+import { getControlById } from '../../utils/core';
+import { getRootControlFromComponentContainer } from '../utils';
 
 const NAV_CONTAINER_CONTROL_TYPE = 'sap.m.NavContainer';
 const FLEXIBLE_COLUMN_LAYOUT_CONTROL_TYPE = 'sap.f.FlexibleColumnLayout';

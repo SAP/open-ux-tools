@@ -6,7 +6,7 @@ import { SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/con
 
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
-import { getControlById } from '../../../cpe/utils';
+import { getControlById } from '../../../utils/core';
 import { getAppComponent, getPageName, getReference } from './utils';
 
 export const ENABLE_CLEAR_FILTER_BAR_TYPE = 'enable-clear-filter-bar';

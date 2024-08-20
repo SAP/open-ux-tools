@@ -4,7 +4,7 @@ import Component from 'sap/ui/core/Component';
 import type TemplateComponent from 'sap/fe/core/TemplateComponent';
 import type AppComponent from 'sap/fe/core/AppComponent';
 
-import {  isA } from '../../../cpe/utils';
+import {  isA } from '../../../utils/core';
 
 export function getAppComponent(control: ManagedObject): AppComponent | undefined {
     const ownerComponent = Component.getOwnerComponentFor(control);

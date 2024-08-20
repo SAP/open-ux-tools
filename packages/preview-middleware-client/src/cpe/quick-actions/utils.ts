@@ -3,8 +3,9 @@ import Control from 'sap/ui/core/Control';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import { FEAppPage, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
+import { getControlById } from '../../utils/core';
+
 import type { ControlTreeIndex } from '../types';
-import { getControlById } from '../utils';
 
 export interface FEAppPageInfo {
     page: FEAppPage;

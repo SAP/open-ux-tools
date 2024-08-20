@@ -9,7 +9,7 @@ import { DialogNames, handler } from '../../../adp/init-dialogs';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
-import { isA } from '../../../cpe/utils';
+import { isA } from '../../../utils/core';
 import FlexBox from 'sap/m/FlexBox';
 export const OP_ADD_HEADER_FIELD_TYPE = 'op-add-header-field';
 const CONTROL_TYPES = ['sap.uxap.ObjectPageLayout'];

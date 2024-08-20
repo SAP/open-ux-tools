@@ -11,7 +11,7 @@ import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-edito
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import { getControlById, isA, isManagedObject } from '../../../cpe/utils';
+import { getControlById, isA, isManagedObject } from '../../../utils/core';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';

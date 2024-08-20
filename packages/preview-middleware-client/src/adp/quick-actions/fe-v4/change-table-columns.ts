@@ -8,7 +8,7 @@ import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-edito
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import { getControlById } from '../../../cpe/utils';
+import { getControlById } from '../../../utils/core';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const ACTION_ID = 'CTX_SETTINGS0';

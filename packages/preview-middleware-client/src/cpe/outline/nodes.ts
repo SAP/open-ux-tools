@@ -3,9 +3,10 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import { getUi5Version, Ui5VersionInfo } from '../../utils/version';
+import { getControlById } from '../../utils/core';
 
 import type { ControlTreeIndex } from '../types';
-import { getControlById, isReuseComponent } from '../utils';
+import { isReuseComponent } from '../utils';
 
 import { isEditable } from './editable';
 

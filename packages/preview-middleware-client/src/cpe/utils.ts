@@ -1,6 +1,5 @@
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type Control from 'sap/ui/core/Control';
-import Element from 'sap/ui/core/Element';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import DataType from 'sap/ui/base/DataType';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
@@ -94,45 +93,6 @@ export function isReuseComponent(controlId: string, ui5VersionInfo: Ui5VersionIn
     }
 
     return manifest['sap.app']?.type === 'component';
-}
-
-/**
- * Returns control by its global ID.
- *
- * @param id Id of the control.
- * @returns Control instance if it exists.
- */
-export function getControlById<T extends Element = Element>(id: string): T | undefined {
-    if (typeof Element.getElementById === 'function') {
-        return Element.getElementById(id) as T;
-    } else {
-        return sap.ui.getCore().byId(id) as T;
-    }
-}
-
-/**
- * Checks wether this object is an instance of a ManagedObject.
- *
- * @param element An object.
- * @returns True if element is an instance of a ManagedObject.
- */
-export function isManagedObject(element: object | undefined): element is ManagedObject {
-    if (typeof (element as unknown as { isA?: (_type: string) => boolean })?.isA === 'function') {
-        return (element as unknown as { isA: (_type: string) => boolean }).isA('sap.ui.base.ManagedObject');
-    }
-
-    return false;
-}
-
-/**
- * Checks whether this object is an instance of the named type.
- *
- * @param type - Type to check for.
- * @param element - Object to check
- * @returns Whether this object is an instance of the given type.
- */
-export function isA<T extends ManagedObject>(type: string, element: ManagedObject | undefined): element is T {
-    return !!element?.isA(type);
 }
 
 /**

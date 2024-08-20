@@ -1,6 +1,5 @@
 import { sapMock } from 'mock/window';
-import ManagedObjectMock from 'mock/sap/ui/base/ManagedObject';
-import { getLibrary, getRuntimeControl, isA, isManagedObject } from '../../../src/cpe/utils';
+import { getLibrary, getRuntimeControl } from '../../../src/cpe/utils';
 
 describe('getRuntimeControl', () => {
     let overlayControl: any;
@@ -72,30 +71,5 @@ describe('getLibrary', () => {
         }
         const result = await promise;
         expect(result).toBe('');
-    });
-});
-
-describe('isManagedObject', () => {
-    test('empty object', () => {
-        expect(isManagedObject({})).toBe(false);
-    });
-
-    test('does not implement isA', () => {
-        expect(isManagedObject({ isA: 5 })).toBe(false);
-    });
-
-    test('isA checks for "sap.ui.base.ManagedObject" ', () => {
-        expect(isManagedObject({ isA: (type: string) => type === 'sap.ui.base.ManagedObject' })).toBe(true);
-    });
-});
-
-describe('isA', () => {
-    test('calls "isA" on ManagedObject', () => {
-        const managedObject = new ManagedObjectMock();
-        const spy = jest.spyOn(managedObject, 'isA').mockImplementation((type: string | string[]) => {
-            return type === 'sap.ui.base.ManagedObject';
-        });
-        expect(isA('sap.ui.base.ManagedObject', managedObject)).toBe(true);
-        expect(spy).toHaveBeenCalledWith('sap.ui.base.ManagedObject');
     });
 });
