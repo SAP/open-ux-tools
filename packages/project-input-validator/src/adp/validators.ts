@@ -133,11 +133,7 @@ export function validateDuplicateProjectName(value: string, destinationPath: str
  * @param {boolean} isCustomerBase - Whether the layer is customer base.
  * @returns {string | boolean} If project namespace is valid returns true otherwise error message.
  */
-export function validateNamespaceAdp(
-    namespace: string,
-    projectName: string,
-    isCustomerBase: boolean
-): string | boolean {
+export function validateNamespace(namespace: string, projectName: string, isCustomerBase: boolean): string | boolean {
     if (isEmptyString(namespace)) {
         return t('general.inputCannotBeEmpty');
     }

@@ -1,6 +1,9 @@
 import * as i18n from '../../../../../src/i18n';
 import type { ManifestManager } from '../../../../../src/client';
 import { getPrompts } from '../../../../../src/prompts/creation/questions/flp';
+import * as validators from '@sap-ux/project-input-validator';
+
+jest.mock('@sap-ux/project-input-validator');
 
 const manifestManagerInboundId = {
     getManifest: (_appId: string) => {
@@ -257,6 +260,7 @@ describe('getPrompts', () => {
     });
 
     it('should pass with valid inboundId', async () => {
+        jest.spyOn(validators, 'validateEmptyString').mockReturnValue(true);
         const prompts = await getPrompts(
             manifestManagerInboundId as unknown as ManifestManager,
             true,
@@ -267,16 +271,18 @@ describe('getPrompts', () => {
     });
 
     it('should fail with empty inboundId', async () => {
+        jest.spyOn(validators, 'validateEmptyString').mockReturnValue('Input cannot be empty');
         const prompts = await getPrompts(
             manifestManagerInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
         const inboundIdPrompt = prompts.find((prompt) => prompt.name === 'inboundId') as any;
-        expect(inboundIdPrompt.validate('')).toBe('Inbound ID cannot be empty');
+        expect(inboundIdPrompt.validate('')).toBe('Input cannot be empty');
     });
 
     it('should pass with valid semantic object', async () => {
+        jest.spyOn(validators, 'validateSemanticObject').mockReturnValue(true);
         const prompts = await getPrompts(
             manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
@@ -287,16 +293,18 @@ describe('getPrompts', () => {
     });
 
     it('should fail with invalid semantic object', async () => {
+        jest.spyOn(validators, 'validateSemanticObject').mockReturnValue('Input cannot be empty');
         const prompts = await getPrompts(
             manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
         const semanticObjectPrompt = prompts.find((prompt) => prompt.name === 'semanticObject') as any;
-        expect(semanticObjectPrompt.validate('')).toBe('Inbound ID cannot be empty');
+        expect(semanticObjectPrompt.validate('')).toBe('Input cannot be empty');
     });
 
     it('should pass with valid action', async () => {
+        jest.spyOn(validators, 'validateAction').mockReturnValue(true);
         const prompts = await getPrompts(
             manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
@@ -307,16 +315,18 @@ describe('getPrompts', () => {
     });
 
     it('should fail with invalid action', async () => {
+        jest.spyOn(validators, 'validateAction').mockReturnValue('Input cannot be empty');
         const prompts = await getPrompts(
             manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
         const semanticObjectPrompt = prompts.find((prompt) => prompt.name === 'action') as any;
-        expect(semanticObjectPrompt.validate('')).toBe('Inbound ID cannot be empty');
+        expect(semanticObjectPrompt.validate('')).toBe('Input cannot be empty');
     });
 
     it('should pass with valid title', async () => {
+        jest.spyOn(validators, 'validateEmptyString').mockReturnValue(true);
         const prompts = await getPrompts(
             manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
@@ -327,13 +337,14 @@ describe('getPrompts', () => {
     });
 
     it('should fail with invalid title', async () => {
+        jest.spyOn(validators, 'validateEmptyString').mockReturnValue('Input cannot be empty');
         const prompts = await getPrompts(
             manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
         const semanticObjectPrompt = prompts.find((prompt) => prompt.name === 'title') as any;
-        expect(semanticObjectPrompt.validate('')).toBe('Inbound ID cannot be empty');
+        expect(semanticObjectPrompt.validate('')).toBe('Input cannot be empty');
     });
 
     it('should pass with valid parameters', async () => {

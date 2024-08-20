@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-
+import * as validators from '@sap-ux/project-input-validator';
 import * as i18n from '../../../../../src/i18n';
 import { FlexLayer } from '../../../../../src/types';
 import type { BasicInfoAnswers } from '../../../../../src/types';
@@ -9,7 +8,7 @@ import {
     getProjectNameTooltip,
     getProjectNames
 } from '../../../../../src/prompts/creation';
-
+jest.mock('@sap-ux/project-input-validator');
 jest.mock('fs');
 
 jest.mock('../../../../../src/prompts/creation/questions/helper/tooltips.ts', () => ({
@@ -138,31 +137,31 @@ describe('getPrompts', () => {
     });
 
     it('should pass with valid project name', () => {
-        jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false);
+        jest.spyOn(validators, 'validateProjectName').mockReturnValue(true);
         const prompts = getBasicInfoPrompts('/path', FlexLayer.CUSTOMER_BASE);
         const projectNamePrompt = prompts.find((prompt) => prompt.name === 'projectName') as any;
         expect(projectNamePrompt.validate('app.variant1')).toBeTruthy();
     });
 
     it('should fail with invalid project name', () => {
-        jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validateProjectName').mockReturnValue('Input cannot be empty');
         const prompts = getBasicInfoPrompts('/path', FlexLayer.CUSTOMER_BASE);
         const projectNamePrompt = prompts.find((prompt) => prompt.name === 'projectName') as any;
-        expect(projectNamePrompt.validate('app.variant1')).toBe(
-            'Project with this name already exists in your workspace'
-        );
+        expect(projectNamePrompt.validate('')).toBe('Input cannot be empty');
     });
 
     it('should pass with valid application title', () => {
+        jest.spyOn(validators, 'validateEmptyString').mockReturnValue(true);
         const prompts = getBasicInfoPrompts('/path', FlexLayer.CUSTOMER_BASE);
         const appTitlePrompt = prompts.find((prompt) => prompt.name === 'applicationTitle') as any;
         expect(appTitlePrompt.validate('Application Title')).toBeTruthy();
     });
 
     it('should fail with empty application title', () => {
+        jest.spyOn(validators, 'validateEmptyString').mockReturnValue('Input cannot be empty');
         const prompts = getBasicInfoPrompts('/path', FlexLayer.CUSTOMER_BASE);
         const appTitlePrompt = prompts.find((prompt) => prompt.name === 'applicationTitle') as any;
-        expect(appTitlePrompt.validate('')).toBe(i18n.t('validators.cannotBeEmpty'));
+        expect(appTitlePrompt.validate('')).toBe('Input cannot be empty');
     });
 
     it('should be visible namespace prompt when project name is typed', () => {
@@ -178,14 +177,16 @@ describe('getPrompts', () => {
     });
 
     it('should pass with valid namespace', () => {
+        jest.spyOn(validators, 'validateNamespace').mockReturnValue(true);
         const prompts = getBasicInfoPrompts('/path', FlexLayer.CUSTOMER_BASE);
         const namespacePrompt = prompts.find((prompt) => prompt.name === 'namespace') as any;
         expect(namespacePrompt.validate('customer.app.variant1', { projectName: 'app.variant1' })).toBeTruthy();
     });
 
-    it('should faile with invalid namespace', () => {
+    it('should fail with invalid namespace', () => {
+        jest.spyOn(validators, 'validateNamespace').mockReturnValue('Input cannot be empty');
         const prompts = getBasicInfoPrompts('/path', FlexLayer.CUSTOMER_BASE);
         const namespacePrompt = prompts.find((prompt) => prompt.name === 'namespace') as any;
-        expect(namespacePrompt.validate('customer.app@variant1', { projectName: 'app.variant1' })).toBeTruthy();
+        expect(namespacePrompt.validate('', { projectName: 'app.variant1' })).toBe('Input cannot be empty');
     });
 });
