@@ -540,7 +540,7 @@ describe('<UIDefaultButton />', () => {
                     iconName: UiIcons.ArrowUp
                 }
             });
-            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(1);
+            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(0);
             expect(wrapper.find('[data-icon-name="ArrowUp"]').length).toEqual(1);
         });
     });
