@@ -1,9 +1,10 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["src"],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist"
-    },
-    "references": [{ "path": "../logger" }]
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  }
 }
