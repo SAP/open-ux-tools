@@ -10,6 +10,7 @@ import type { SystemDetails } from '../types';
  * Determines if authentication is not required for accessing a specified system.
  *
  * @param {string} system - The name of the system to check.
+ * @param {Endpoint[]} endpoints Array of system endpoints.
  * @returns {boolean} True if no authentication is required, false otherwise.
  */
 function getDestinationRequiresAuth(system: string, endpoints: Endpoint[]): boolean {
@@ -22,6 +23,7 @@ function getDestinationRequiresAuth(system: string, endpoints: Endpoint[]): bool
  * Checks if a specified system requires authentication based on the endpoint information and installation status.
  *
  * @param {string} system - The name of the system to check.
+ * @param {Endpoint[]} endpoints Array of system endpoints.
  * @returns {boolean} True if the system requires authentication, false otherwise.
  */
 function getSystemRequiresAuthentication(system: string, endpoints: Endpoint[]): boolean {
@@ -39,6 +41,7 @@ function getSystemRequiresAuthentication(system: string, endpoints: Endpoint[]):
 /**
  * Retrieves the names of all stored endpoints and sorted alphabetically.
  *
+ * @param {Endpoint[]} endpoints Array of system endpoints.
  * @returns {string[]} An array of endpoint names and sorted order.
  */
 export function getEndpointNames(endpoints: Endpoint[]): string[] {

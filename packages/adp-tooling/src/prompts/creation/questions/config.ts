@@ -38,7 +38,8 @@ import {
     showCredentialQuestion
 } from './helper/conditions';
 import type { ManifestManager, AbapProvider } from '../../../client';
-import { EndpointsManager, UI5VersionManager, getEndpointNames, isFeatureSupportedVersion } from '../../../common';
+import type { EndpointsManager, UI5VersionManager } from '../../../common';
+import { getEndpointNames, isFeatureSupportedVersion } from '../../../common';
 import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../../base';
 import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../../types';
 

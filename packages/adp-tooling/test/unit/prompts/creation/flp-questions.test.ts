@@ -1,6 +1,6 @@
 import * as i18n from '../../../../src/i18n';
-import { getPrompts } from '../../../../src/prompts/creation/flp-questions';
-import type { ManifestManager } from '../../../../src/base';
+import type { ManifestManager } from '../../../../src/client';
+import { getPrompts } from '../../../../src/prompts/creation/questions/flp';
 
 const manifestManagerInboundId = {
     getManifest: (_appId: string) => {

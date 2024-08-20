@@ -1,7 +1,8 @@
 import { t } from 'i18next';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
-import { Application, ApplicationType, FlexLayer } from '../../../types';
+import type { Application } from '../../../types';
+import { ApplicationType, FlexLayer } from '../../../types';
 import { getApplicationType } from '../../../common/app-type';
 
 /**

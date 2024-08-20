@@ -1,7 +1,7 @@
 import { readdirSync } from 'fs';
 import type { UI5VersionManager } from '../../../../common';
 import type { ManifestManager } from '../../../../client';
-import { ConfigurationInfoAnswers } from '../../../../types';
+import type { ConfigurationInfoAnswers } from '../../../../types';
 import type ConfigInfoPrompter from '../config';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
@@ -58,6 +58,8 @@ export function getDefaultProjectName(path: string): string {
  * Gets the default UI5 version from the system versions list by validating the first available version.
  * If the first version is valid according to the UI5 service, it returns that version; otherwise, returns an empty string.
  *
+ * @param {string[]} versionsOnSystem Array of available versions.
+ * @param {UI5VersionManager} ui5Manager An instance of UI5VersionManager.
  * @returns {Promise<string>} The valid UI5 version or an empty string if the first version is not valid or if there are no versions.
  */
 export async function getVersionDefaultValue(

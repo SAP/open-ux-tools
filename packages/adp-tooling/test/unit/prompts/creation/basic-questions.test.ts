@@ -1,10 +1,10 @@
+import * as fs from 'fs';
 import * as i18n from '../../../../src/i18n';
 import { getBasicInfoPrompts } from '../../../../src/prompts/creation';
 import type { BasicInfoAnswers } from '../../../../src/types';
 import { FlexLayer } from '../../../../src/types';
-import * as promptHelper from '../../../../src/prompts/creation/prompt-helpers';
-import * as fileSystem from '../../../../src/base/file-system';
-import * as fs from 'fs';
+// import * as promptHelper from '../../../../src/prompts/creation/questions/basic';
+// import * as fileSystem from '../../../../src/base/file-system';
 
 jest.mock('fs');
 
@@ -15,7 +15,7 @@ describe('getPrompts', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        jest.spyOn(promptHelper, 'getProjectNameTooltip').mockReturnValueOnce('some hint');
+        // jest.spyOn(promptHelper, 'getProjectNameTooltip').mockReturnValueOnce('some hint');
     });
 
     it('should return prompts - CUSTOMER_BASE layer', () => {
@@ -108,7 +108,7 @@ describe('getPrompts', () => {
     });
 
     it('should get default values', () => {
-        jest.spyOn(fileSystem, 'getProjectNames').mockReturnValue([]);
+        // jest.spyOn(fileSystem, 'getProjectNames').mockReturnValue([]);
         const prompts = getBasicInfoPrompts('/path', FlexLayer.CUSTOMER_BASE);
         const projectNamePrompt = prompts.find((prompt) => prompt.name === 'projectName');
         const namespacePrompt = prompts.find((prompt) => prompt.name === 'namespace');

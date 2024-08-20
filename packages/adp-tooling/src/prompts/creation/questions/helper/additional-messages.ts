@@ -1,9 +1,10 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
-import { SystemInfo, AdaptationProjectType } from '@sap-ux/axios-extension';
+import type { SystemInfo } from '@sap-ux/axios-extension';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import { t } from '../../../../i18n';
 import type ConfigInfoPrompter from '../config';
-import { Application, ConfigurationInfoAnswers, FlexUISupportedSystem } from '../../../../types';
+import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem } from '../../../../types';
 
 /**
  * Evaluates a system's deployment and flexibility capabilities to generate relevant messages based on the system's characteristics.

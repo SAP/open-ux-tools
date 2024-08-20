@@ -16,10 +16,11 @@ import type {
 } from '../../../types';
 import { FlexLayer } from '../../../types';
 import type { ManifestManager } from '../../../client';
-import { UI5VersionManager, getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../../../common';
+import type { UI5VersionManager } from '../../../common';
+import type { AbapProvider } from '../../../client';
+import { getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../../../common';
 import { getI18nModels } from '../i18n/model';
 import { getSupportForUI5Yaml } from '../configs/support';
-import { AbapProvider } from '../../../client';
 import { getUI5DeployConfig } from '../configs/deploy';
 import { parseParameters } from '../../../common/flp-parameters';
 import { getApplicationType } from '../../../common/app-type';

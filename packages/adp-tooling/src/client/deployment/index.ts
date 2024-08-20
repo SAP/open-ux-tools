@@ -1,5 +1,7 @@
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+
 import { ListPackageService } from '@sap-ux/axios-extension';
-import { AbapServiceProvider, TransportChecksService } from '@sap-ux/axios-extension';
+import { TransportChecksService } from '@sap-ux/axios-extension';
 
 export const ABAP_PACKAGE_SEARCH_MAX_RESULTS = 50;
 
