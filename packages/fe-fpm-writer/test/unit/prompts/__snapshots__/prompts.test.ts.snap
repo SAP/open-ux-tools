@@ -265,6 +265,29 @@ Object {
       "validate": [Function],
     },
     Object {
+      "choices": Array [
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+      ],
+      "default": "absolute",
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.metaPath.qualifier",
+        ],
+        "mandatory": true,
+        "selectType": "static",
+      },
+      "message": "prompts.filterBar.bindingContextType",
+      "name": "buildingBlockData.metaPath.bindingContextType",
+      "type": "list",
+    },
+    Object {
       "choices": Array [],
       "guiOptions": Object {
         "mandatory": true,
@@ -744,6 +767,10 @@ Object {
   },
   "buildingBlockData.id": Object {
     "errorMessage": "Please enter a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.bindingContextType": Object {
+    "errorMessage": "Please select a value",
     "isValid": false,
   },
   "buildingBlockData.metaPath.entitySet": Object {
@@ -1283,6 +1310,29 @@ Object {
       "validate": [Function],
     },
     Object {
+      "choices": Array [
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+      ],
+      "default": "absolute",
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.metaPath.qualifier",
+        ],
+        "mandatory": true,
+        "selectType": "static",
+      },
+      "message": "prompts.filterBar.bindingContextType",
+      "name": "buildingBlockData.metaPath.bindingContextType",
+      "type": "list",
+    },
+    Object {
       "choices": [Function],
       "guiOptions": Object {
         "mandatory": true,
@@ -1802,6 +1852,10 @@ Object {
   },
   "buildingBlockData.id": Object {
     "errorMessage": "Please enter a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.bindingContextType": Object {
+    "errorMessage": "Please select a value",
     "isValid": false,
   },
   "buildingBlockData.metaPath.entitySet": Object {
