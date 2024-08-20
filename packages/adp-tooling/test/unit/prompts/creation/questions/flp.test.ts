@@ -273,9 +273,7 @@ describe('getPrompts', () => {
             'fin.cash.factsheet.bank'
         );
         const inboundIdPrompt = prompts.find((prompt) => prompt.name === 'inboundId') as any;
-        expect(inboundIdPrompt.validate('')).toBe(
-            i18n.t('validators.inputCannotBeEmptyGeneric', { input: i18n.t('prompts.inboundId') })
-        );
+        expect(inboundIdPrompt.validate('')).toBe('Inbound ID cannot be empty');
     });
 
     it('should pass with valid semantic object', async () => {
@@ -295,9 +293,7 @@ describe('getPrompts', () => {
             'fin.cash.factsheet.bank'
         );
         const semanticObjectPrompt = prompts.find((prompt) => prompt.name === 'semanticObject') as any;
-        expect(semanticObjectPrompt.validate('')).toBe(
-            i18n.t('validators.inputCannotBeEmptyGeneric', { input: i18n.t('prompts.semanticObject') })
-        );
+        expect(semanticObjectPrompt.validate('')).toBe('Inbound ID cannot be empty');
     });
 
     it('should pass with valid action', async () => {
@@ -317,9 +313,7 @@ describe('getPrompts', () => {
             'fin.cash.factsheet.bank'
         );
         const semanticObjectPrompt = prompts.find((prompt) => prompt.name === 'action') as any;
-        expect(semanticObjectPrompt.validate('')).toBe(
-            i18n.t('validators.inputCannotBeEmptyGeneric', { input: i18n.t('prompts.action') })
-        );
+        expect(semanticObjectPrompt.validate('')).toBe('Inbound ID cannot be empty');
     });
 
     it('should pass with valid title', async () => {
@@ -339,9 +333,7 @@ describe('getPrompts', () => {
             'fin.cash.factsheet.bank'
         );
         const semanticObjectPrompt = prompts.find((prompt) => prompt.name === 'title') as any;
-        expect(semanticObjectPrompt.validate('')).toBe(
-            i18n.t('validators.inputCannotBeEmptyGeneric', { input: i18n.t('prompts.title') })
-        );
+        expect(semanticObjectPrompt.validate('')).toBe('Inbound ID cannot be empty');
     });
 
     it('should pass with valid parameters', async () => {
