@@ -4,17 +4,78 @@ import type { AbapServiceProvider, AxiosError, SystemInfo } from '@sap-ux/axios-
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import type { AbapProvider } from '../../../client';
-import {
-    validateAbapRepository,
-    validateEmptyInput,
-    validatePackage,
-    validatePackageChoiceInput,
-    validateTransportChoiceInput
-} from '../../../base';
 import { t } from '../../../i18n';
 import type { ChoiceOption, DeployConfigAnswers } from '../../../types';
 import { InputChoice } from '../../../types';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages, listTransports } from '../../../client';
+import { validateAbapRepository, validateEmptyString, validatePackageAdp } from '@sap-ux/project-input-validator';
+
+/**
+ * Validates the user's choice for selecting an ABAP package.
+ * This function checks if the user wants to enter the package name manually or selects it from a list.
+ * If not entering manually, it verifies that there are available packages by listing them from the ABAP system.
+ *
+ * @param {InputChoice} value - The user's choice on how to input the package name.
+ * @param {AbapServiceProvider} provider - The ABAP service provider.
+ * @returns {Promise<string | boolean>} A promise that resolves to true if the input choice is valid or a validation error message otherwise.
+ */
+export async function validatePackageChoiceInput(
+    value: InputChoice,
+    provider: AbapServiceProvider
+): Promise<string | boolean> {
+    if (value === InputChoice.ENTER_MANUALLY) {
+        return true;
+    }
+    try {
+        const packages = await listPackages('', provider);
+        if (!packages || (packages && packages.length === 0)) {
+            return t('validators.abapPackagesNotFound');
+        }
+    } catch (error) {
+        return t('validators.abapPackagesNotFound');
+    }
+
+    return true;
+}
+
+/**
+ * Validates the user's choice of transport request input method for an ABAP package.
+ * If choosing from existing transport requests, it checks that the package and repository are specified,
+ * and that there are available transport requests.
+ *
+ * @param {InputChoice} value - The user's transport choice input method.
+ * @param {string} packageName - The package name involved in the transport operation.
+ * @param {string} repository - The repository associated with the package.
+ * @param {AbapServiceProvider} provider - The ABAP service provider.
+ * @returns {Promise<string | boolean>} A promise that resolves to true if the input method is valid,
+ *                                      or an error message string if there are issues with the prerequisites or fetching transports.
+ */
+export async function validateTransportChoiceInput(
+    value: InputChoice,
+    packageName: string,
+    repository: string,
+    provider: AbapServiceProvider
+): Promise<string | boolean> {
+    try {
+        if (!value) {
+            return t('validators.chooseTransportInput');
+        }
+        if (value === InputChoice.CHOOSE_FROM_EXISTING) {
+            if (!packageName || !repository) {
+                return t('validators.invalidTranposportPrereq');
+            }
+
+            const transportList = await listTransports(packageName, repository, provider);
+            if (!transportList || (transportList && transportList.length === 0)) {
+                return t('validators.errorFetchingTransports');
+            }
+        }
+
+        return true;
+    } catch (error) {
+        return t('validators.errorFetchingTransports');
+    }
+}
 
 /**
  * Returns the available options for input choices regarding packages.
@@ -94,7 +155,7 @@ export async function validatePackageName(
     transportList: string[],
     logger?: ToolsLogger
 ): Promise<string | boolean> {
-    const errorMessage = validatePackage(value, answers.abapRepository);
+    const errorMessage = validatePackageAdp(value, answers.abapRepository);
     if (errorMessage) {
         return errorMessage;
     }
@@ -274,7 +335,7 @@ export async function getPrompts(
             name: 'transportFromList',
             message: t('prompts.transport'),
             choices: () => transportList ?? [],
-            validate: (value: string) => validateEmptyInput(value, 'transport'),
+            validate: (value: string) => validateEmptyString(value),
             when: (answers: DeployConfigAnswers) =>
                 shouldShowTransportRelatedPrompt(answers) &&
                 answers?.transportInputChoice === InputChoice.CHOOSE_FROM_EXISTING,
@@ -288,7 +349,7 @@ export async function getPrompts(
             type: 'input',
             name: 'transportManual',
             message: t('prompts.transport'),
-            validate: (value: string) => validateEmptyInput(value, 'transport'),
+            validate: (value: string) => validateEmptyString(value),
             when: (answers: DeployConfigAnswers) =>
                 shouldShowTransportRelatedPrompt(answers) &&
                 answers?.transportInputChoice === InputChoice.ENTER_MANUALLY,

@@ -16,12 +16,14 @@ import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 import type { ManifestManager, AbapProvider } from '../../../client';
 import { ApplicationManager } from '../../../client';
 import { t } from '../../../i18n';
-import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../../base';
+import { resolveNodeModuleGenerator } from '../../../base';
 import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../../types';
 import { FlexLayer } from '../../../types';
 import { AppIdentifier } from '../identifier';
-import { EndpointsManager, UI5VersionManager, isFeatureSupportedVersion } from '../../../common';
+import type { EndpointsManager, UI5VersionManager } from '../../../common';
+import { isFeatureSupportedVersion } from '../../../common';
 import { getApplicationChoices, systemAdditionalMessages } from './helper';
+import { isEmptyString, validateAch, validateClient, validateEmptyString } from '@sap-ux/project-input-validator';
 
 /**
  * ConfigInfoPrompter handles the setup and interaction logic for configuration prompts related to project setup.
@@ -527,12 +529,7 @@ export default class ConfigInfoPrompter {
             type: 'input',
             name: 'username',
             message: t('prompts.usernameLabel'),
-            validate: (value: string) => {
-                if (!isNotEmptyString(value)) {
-                    return t('validators.inputCannotBeEmpty');
-                }
-                return true;
-            },
+            validate: (value: string) => validateEmptyString(value),
             when: (answers: ConfigurationInfoAnswers) => {
                 if (answers.system) {
                     return this.hasSystemAuthentication;
@@ -563,7 +560,7 @@ export default class ConfigInfoPrompter {
             message: t('prompts.passwordLabel'),
             mask: '*',
             validate: async (value: string, answers: ConfigurationInfoAnswers) => {
-                if (!isNotEmptyString(value)) {
+                if (isEmptyString(value)) {
                     return t('validators.inputCannotBeEmpty');
                 }
 
@@ -628,7 +625,7 @@ export default class ConfigInfoPrompter {
                     return e.message;
                 }
 
-                if (!isNotEmptyString(value)) {
+                if (isEmptyString(value)) {
                     return t('validators.inputCannotBeEmpty');
                 }
 
