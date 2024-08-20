@@ -1,4 +1,9 @@
 import { readdirSync } from 'fs';
+import type { UI5VersionManager } from '../../../../common';
+import type { ManifestManager } from '../../../../client';
+import type { ConfigurationInfoAnswers } from '../../../../types';
+import type ConfigInfoPrompter from '../config';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 const APP_VARIANT_REGEX = /^app[.]variant\d{1,3}$/;
 
@@ -47,4 +52,60 @@ export function getDefaultProjectName(path: string): string {
     const newProjectIndex = parseInt(lastProjectIdx, 10) + 1;
 
     return `${defaultPrefix}${newProjectIndex}`;
+}
+
+/**
+ * Gets the default UI5 version from the system versions list by validating the first available version.
+ * If the first version is valid according to the UI5 service, it returns that version; otherwise, returns an empty string.
+ *
+ * @param {string[]} versionsOnSystem Array of available versions.
+ * @param {UI5VersionManager} ui5Manager An instance of UI5VersionManager.
+ * @returns {Promise<string>} The valid UI5 version or an empty string if the first version is not valid or if there are no versions.
+ */
+export async function getVersionDefaultValue(
+    versionsOnSystem: string[],
+    ui5Manager: UI5VersionManager
+): Promise<string> {
+    if (!versionsOnSystem || versionsOnSystem.length === 0) {
+        return '';
+    }
+
+    const isValid = (await ui5Manager.validateUI5Version(versionsOnSystem[0])) === true;
+    return isValid ? versionsOnSystem[0] : '';
+}
+
+/**
+ * Retrieves the default Fiori ID from the application's manifest.
+ *
+ * @param {ConfigurationInfoAnswers} answers - The configuration answers containing details about the application.
+ * @param {ManifestManager} manifestManager - The manager responsible for fetching and handling the application manifest.
+ * @returns {string} The Fiori registration IDs as a string if available, otherwise an empty string.
+ */
+export function getDefaultFioriId(answers: ConfigurationInfoAnswers, manifestManager: ManifestManager): string {
+    const manifest = manifestManager.getManifest(answers?.application?.id);
+    return manifest?.['sap.fiori']?.registrationIds?.toString() ?? '';
+}
+
+/**
+ * Retrieves the default Application Component Hierarchy (ACH) from the application's manifest.
+ *
+ * @param {ConfigurationInfoAnswers} answers - The configuration answers that include application details.
+ * @param {ManifestManager} manifestManager - The manager responsible for accessing the application manifest.
+ * @returns {string} The ACH code as a string if available, otherwise an empty string.
+ */
+export function getDefaultAch(answers: ConfigurationInfoAnswers, manifestManager: ManifestManager): string {
+    const manifest = manifestManager.getManifest(answers?.application?.id);
+    return manifest?.['sap.app']?.ach?.toString() ?? '';
+}
+
+/**
+ * Determines the default project type based on available adaptation project types from system information.
+ *
+ * @param {ConfigInfoPrompter} prompter - The prompter instance containing system and project information.
+ * @returns {string} The default project type, favoring 'onPremise' if available, otherwise the first listed type.
+ */
+export function getDefaultProjectType(prompter: ConfigInfoPrompter): string {
+    return prompter.systemInfo.adaptationProjectTypes.includes(AdaptationProjectType.ON_PREMISE)
+        ? AdaptationProjectType.ON_PREMISE
+        : prompter.systemInfo.adaptationProjectTypes[0];
 }

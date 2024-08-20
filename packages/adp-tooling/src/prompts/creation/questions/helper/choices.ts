@@ -1,4 +1,4 @@
-import { Application, Choice } from '../../../../types';
+import type { Application, Choice } from '../../../../types';
 
 /**
  * Creates a list of choices from a list of applications, formatted for display or selection in a UI.

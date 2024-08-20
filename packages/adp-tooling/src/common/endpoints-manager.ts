@@ -10,6 +10,7 @@ import type { SystemDetails } from '../types';
  * Determines if authentication is not required for accessing a specified system.
  *
  * @param {string} system - The name of the system to check.
+ * @param {Endpoint[]} endpoints Array of system endpoints.
  * @returns {boolean} True if no authentication is required, false otherwise.
  */
 function getDestinationRequiresAuth(system: string, endpoints: Endpoint[]): boolean {
@@ -22,6 +23,7 @@ function getDestinationRequiresAuth(system: string, endpoints: Endpoint[]): bool
  * Checks if a specified system requires authentication based on the endpoint information and installation status.
  *
  * @param {string} system - The name of the system to check.
+ * @param {Endpoint[]} endpoints Array of system endpoints.
  * @returns {boolean} True if the system requires authentication, false otherwise.
  */
 function getSystemRequiresAuthentication(system: string, endpoints: Endpoint[]): boolean {
@@ -34,6 +36,18 @@ function getSystemRequiresAuthentication(system: string, endpoints: Endpoint[]):
         endpoints.filter((endpoint) => endpoint.Url === system).length > 0 ||
         endpoints.filter((endpoint) => endpoint.Name === system).length > 0
     );
+}
+
+/**
+ * Retrieves the names of all stored endpoints and sorted alphabetically.
+ *
+ * @param {Endpoint[]} endpoints Array of system endpoints.
+ * @returns {string[]} An array of endpoint names and sorted order.
+ */
+export function getEndpointNames(endpoints: Endpoint[]): string[] {
+    return endpoints
+        .map((endpoint) => endpoint.Name)
+        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en', { sensitivity: 'base' }));
 }
 
 /**
@@ -64,7 +78,7 @@ export class EndpointsManager {
     static async getInstance(logger: ToolsLogger): Promise<EndpointsManager> {
         if (!this.instance) {
             this.instance = new EndpointsManager(logger);
-            await this.instance.loadEnpoints();
+            await this.instance.loadEndpoints();
         }
 
         return this.instance;
@@ -73,21 +87,25 @@ export class EndpointsManager {
     /**
      * Fetches endpoints from a predefined source and stores them in the service.
      *
-     * @returns {Promise<void>} A promise that resolves when endpoints have been fetched and stored.
+     * @returns {Endpoint[]} Array of system endpoints.
      */
-    public async getEndpoints(): Promise<Endpoint[] | undefined> {
+    public getEndpoints(): Endpoint[] {
         return this.endpoints;
     }
 
     /**
-     * Retrieves the names of all stored endpoints and sorted alphabetically.
+     * Fetches endpoints from a predefined source and stores them in the service.
      *
-     * @returns {string[]} An array of endpoint names and sorted order.
+     * @returns {Promise<void>} A promise that resolves when endpoints are fetched and stored.
      */
-    public getEndpointNames(): string[] {
-        return this.endpoints
-            .map((endpoint) => endpoint.Name)
-            .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en', { sensitivity: 'base' }));
+    private async loadEndpoints(): Promise<void> {
+        try {
+            const { endpoints } = await checkEndpoints();
+            this.endpoints = endpoints;
+        } catch (e) {
+            this.logger?.error(`Failed to fetch endpoints list. Reason: ${e.message}`);
+            throw new Error(e.message);
+        }
     }
 
     /**
@@ -159,18 +177,5 @@ export class EndpointsManager {
         }
 
         return details;
-    }
-
-    /**
-     * Fetches endpoints from a predefined source and stores them in the service.
-     */
-    private async loadEnpoints(): Promise<void> {
-        try {
-            const { endpoints } = await checkEndpoints();
-            this.endpoints = endpoints;
-        } catch (e) {
-            this.logger?.error(`Failed to fetch endpoints list. Reason: ${e.message}`);
-            throw new Error(e.message);
-        }
     }
 }
