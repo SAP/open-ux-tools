@@ -111,7 +111,7 @@ describe('adp', () => {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
-                    'The current SAPUI5 version set for this Adaptation project is 1.70.0. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71',
+                    'The current SAPUI5 version set for this Adaptation project is 1.70. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71',
                 shouldHideIframe: true
             }
         });

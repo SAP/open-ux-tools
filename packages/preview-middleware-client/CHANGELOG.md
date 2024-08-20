@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.10.8
+
+### Patch Changes
+
+-   bad92cf: refactor ui5 version handling
+
 ## 0.10.7
 
 ### Patch Changes

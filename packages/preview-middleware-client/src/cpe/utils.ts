@@ -13,6 +13,7 @@ import FlexUtils from 'sap/ui/fl/Utils';
 
 import { getError } from './error-utils';
 import { getComponent } from './ui5-utils';
+import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 
 export interface PropertiesInfo {
     defaultValue: string;
@@ -80,24 +81,24 @@ export async function getLibrary(controlName: string): Promise<string> {
 /**
  * Check if element is sync view
  *
- * @param element UI5Element
+ * @param element Design time Element
  * @returns boolean if element is sync view or not
  */
-const isSyncView = (element: DTElement): boolean => {
+function isSyncView(element: DTElement): boolean {
     return element?.getMetadata()?.getName()?.includes('XMLView') && element?.oAsyncState === undefined;
-};
+}
 
 /**
  * Get Ids for all sync views
  *
- * @param minor UI5 Version
+ * @param ui5VersionInfo UI5 Version Information
  *
  * @returns array of Ids for application sync views
  */
-export async function getAllSyncViewsIds(minor: number): Promise<string[]> {
+export async function getAllSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promise<string[]> {
     const syncViewIds: string[] = [];
     try {
-        if (minor < 120) {
+        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 120 })) {
             const elements = Element.registry.filter(() => true) as DTElement[];
             elements.forEach((ui5Element) => {
                 if (isSyncView(ui5Element)) {
@@ -147,14 +148,14 @@ export function getControllerInfo(overlayControl: ElementOverlay): ControllerInf
 }
 
 /**
- * Function that checks if control is reuse component.
+ * Function that checks if control is reuse component
  *
- * @param controlId - Id of the control.
- * @param minorUI5Version - minor UI5 version.
- * @returns true if control is from reused component view.
+ * @param controlId id control
+ * @param ui5VersionInfo UI5 version information
+ * @returns boolean if control is from reused component view
  */
-export const isReuseComponent = (controlId: string, minorUI5Version: number): boolean => {
-    if (minorUI5Version <= 114) {
+export function isReuseComponent(controlId: string, ui5VersionInfo: Ui5VersionInfo): boolean {
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 115 })) {
         return false;
     }
 
@@ -169,24 +170,24 @@ export const isReuseComponent = (controlId: string, minorUI5Version: number): bo
     }
 
     return manifest['sap.app']?.type === 'component';
-};
+}
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
  *
  * @param control UI5 control.
  * @param syncViewsIds Runtime Authoring
- * @param minorUI5Version minor UI5 version
+ * @param ui5VersionInfo UI5 version information
  *
  * @returns boolean whether menu item is enabled or not
  */
 export function isControllerExtensionEnabledForControl(
     control: ManagedObject,
     syncViewsIds: string[],
-    minorUI5Version: number
+    ui5VersionInfo: Ui5VersionInfo
 ): boolean {
     const clickedControlId = FlexUtils.getViewForControl(control).getId();
-    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, minorUI5Version);
+    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
 
     return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
 }
