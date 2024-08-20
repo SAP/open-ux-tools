@@ -5,7 +5,7 @@ import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import { outlineChanged, SCENARIO, showMessage } from '@sap-ux-private/control-property-editor-common';
 
-import { getError } from '../error-utils';
+import { getError } from '../../utils/error';
 import { getResourceBundle } from '../../i18n';
 import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';

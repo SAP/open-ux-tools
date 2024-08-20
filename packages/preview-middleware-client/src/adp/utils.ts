@@ -7,7 +7,7 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import Log from 'sap/base/Log';
 import FlexUtils from 'sap/ui/fl/Utils';
 
-import { getError } from '../cpe/error-utils';
+import { getError } from '../utils/error';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 
 export interface Deferred<T> {

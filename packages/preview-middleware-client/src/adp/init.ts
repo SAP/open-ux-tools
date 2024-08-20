@@ -9,7 +9,7 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionHandler } from '../cpe/types';
-import { getError } from '../cpe/error-utils';
+import { getError } from '../utils/error';
 import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version } from '../utils/version';
 
 import init from '../cpe/init';

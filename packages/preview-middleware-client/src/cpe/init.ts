@@ -18,7 +18,7 @@ import { logger } from './logger';
 import { getIcons } from './ui5-utils';
 import { WorkspaceConnectorService } from './connector-service';
 import { RtaService } from './rta-service';
-import { getError } from './error-utils';
+import { getError } from '../utils/error';
 import { QuickActionService } from './quick-actions/quick-action-service';
 import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
 
