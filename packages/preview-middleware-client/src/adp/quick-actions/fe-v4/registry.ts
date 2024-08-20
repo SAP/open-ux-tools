@@ -7,7 +7,7 @@ import { QuickActionDefinitionRegistry } from '../../../cpe/quick-actions/regist
 import { AddControllerToPageQuickAction } from '../common/add-controller-to-page';
 import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
 import { ChangeTableColumnsQuickAction } from './change-table-columns';
-import { AddHeaderFieldQuickAction } from './op-add-header-field';
+import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
 
 type PageName = 'listReport' | 'objectPage';
 
