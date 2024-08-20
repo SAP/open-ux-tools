@@ -27,9 +27,8 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
     constructor(private context: QuickActionContext) {}
 
     initialize() {
-        const controls = this.context.controlIndex[CONTROL_TYPE];
+        const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
-            // console.log(this.context.view)
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);
             const modifiedControl = getControlById<FilterBar>(control.controlId);
             if (isActionApplicable && modifiedControl) {

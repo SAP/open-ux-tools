@@ -3,8 +3,15 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
 import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 
+jest.mock('../../../../src/adp/init-dialogs', () => {
+    return {
+        ...jest.requireActual('../../../../src/adp/init-dialogs'),
+        handler: jest.fn()
+    };
+});
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
+import * as initDialogs from '../../../../src/adp/init-dialogs';
 
 import FEV2QuickActionRegistry from '../../../../src/adp/quick-actions/fe-v2/registry';
 import { sapCoreMock } from 'mock/window';
@@ -14,6 +21,10 @@ import ComponentContainer from 'mock/sap/ui/core/ComponentContainer';
 import UIComponent from 'mock/sap/ui/core/UIComponent';
 import Component from 'mock/sap/ui/core/Component';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
+import FlexUtils from 'mock/sap/ui/fl/Utils';
+
+import { fetchMock } from 'mock/window';
+import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
 
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -23,6 +34,10 @@ describe('FE V2 quick actions', () => {
         sendActionMock = jest.fn();
         subscribeMock = jest.fn();
         jest.clearAllMocks();
+    });
+
+    afterEach(() => {
+        fetchMock.mockRestore();
     });
 
     describe('ListReport', () => {
@@ -121,6 +136,122 @@ describe('FE V2 quick actions', () => {
                         'propertyName': 'showClearOnFB'
                     }
                 });
+            });
+        });
+        describe('add controller to the pae', () => {
+            test('initialize and execute action', async () => {
+                const pageView = new XMLView();
+                FlexUtils.getViewForControl.mockImplementation(() => {
+                    return {
+                        getId: () => 'MyView',
+                        getController: () => {
+                            return {
+                                getMetadata: () => {
+                                    return {
+                                        getName: () => 'MyController'
+                                    };
+                                }
+                            };
+                        }
+                    };
+                });
+                fetchMock.mockResolvedValue({
+                    json: jest
+                        .fn()
+                        .mockReturnValueOnce({
+                            controllerExists: false,
+                            controllerPath: '',
+                            controllerPathFromRoot: '',
+                            isRunningInBAS: false
+                        })
+                        .mockReturnValueOnce({ controllers: [] }),
+                    text: jest.fn(),
+                    ok: true
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'DynamicPage') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponent();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.f.DynamicPage': [
+                        {
+                            controlId: 'DynamicPage'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'kind': 'simple',
+                                    id: 'listReport0-add-controller-to-page',
+                                    title: 'Add controller to page',
+                                    enabled: true
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
+                );
+                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
+                    '../../../../src/adp/init-dialogs'
+                );
+
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
             });
         });
     });
