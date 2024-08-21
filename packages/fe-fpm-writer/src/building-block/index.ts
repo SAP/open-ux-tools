@@ -136,7 +136,10 @@ function getMetaPath(
     const { entitySet, bindingContextType = 'absolute' } = metaPath;
     let { qualifier } = metaPath;
     let entityPath = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
-    const lastIndex = entityPath.lastIndexOf('/');
+    let lastIndex = entityPath.lastIndexOf('/');
+    if (lastIndex === -1) {
+        lastIndex = entityPath.lastIndexOf('.');
+    }
     entityPath = lastIndex >= 0 ? entityPath.substring?.(lastIndex + 1) : entityPath;
     const qualifierOrPlaceholder = qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '');
     if (type === BuildingBlockType.Chart) {
