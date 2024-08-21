@@ -141,11 +141,11 @@ describe('Test abap deploy config inquirer conditions', () => {
     test('should show package input choice question', () => {
         // cli
         PromptState.isYUI = false;
-        expect(showPackageInputChoiceQuestion()).toBe(true);
+        expect(showPackageInputChoiceQuestion(true)).toBe(true);
 
         // feature enabled
         mockIsFeatureEnabled.mockReturnValueOnce(true);
-        expect(showPackageInputChoiceQuestion()).toBe(true);
+        expect(showPackageInputChoiceQuestion(true)).toBe(true);
     });
 
     test('should not show package input choice question', () => {

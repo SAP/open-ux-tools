@@ -1,9 +1,10 @@
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
 import { getOrCreateServiceProvider } from './abap-service-provider';
-import type { BackendTarget, SystemConfig, TransportListItem } from '../types';
 import LoggerHelper from '../logger-helper';
 import { PromptState } from '../prompts/prompt-state';
+import type { BackendTarget, SystemConfig, TransportListItem } from '../types';
+import type { ListChoiceOptions } from 'inquirer';
 
 /**
  * Get the transport list from the service.
@@ -46,7 +47,7 @@ export async function getTransportListFromService(
     return transportListItems;
 }
 
-export const transportName = (transport: TransportListItem) => {
+export const transportName = (transport: TransportListItem): ListChoiceOptions => {
     const name = transport.transportReqDescription
         ? `${transport.transportReqNumber} (${transport.transportReqDescription})`
         : `${transport.transportReqNumber}`;

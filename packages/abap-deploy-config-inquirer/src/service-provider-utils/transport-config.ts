@@ -134,7 +134,7 @@ class DefaultTransportConfig implements TransportConfig {
                 result.error = this.handleAtoResponse(atoSettings);
             }
         } catch (err) {
-            await deleteCachedServiceProvider();
+            deleteCachedServiceProvider();
 
             if (err.response?.status === 401) {
                 const auth: string = err.response.headers['www-authenticate'];

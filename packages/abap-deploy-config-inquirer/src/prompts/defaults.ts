@@ -82,6 +82,6 @@ export function defaultTransportRequestChoice(
  * @param numTransportListChoice - number of transport requests
  * @returns default client choice
  */
-export function defaultTransportListChoice(numTransportListChoice?: number) {
+export function defaultTransportListChoice(numTransportListChoice?: number): number | undefined {
     return numTransportListChoice && numTransportListChoice > 1 ? undefined : 0;
 }

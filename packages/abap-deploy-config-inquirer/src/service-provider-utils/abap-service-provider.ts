@@ -98,6 +98,6 @@ async function createNewServiceProvider(credentials?: Credentials): Promise<Abap
  * we need to clear the cached service provider, and allow createNewServiceProvider to be called again
  * after user provided user credentials.
  */
-export async function deleteCachedServiceProvider() {
+export function deleteCachedServiceProvider(): void {
     abapServiceProvider = undefined;
 }
