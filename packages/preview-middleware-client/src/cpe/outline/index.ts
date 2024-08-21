@@ -1,5 +1,6 @@
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import { outlineChanged, showMessage } from '@sap-ux-private/control-property-editor-common';
+import type { ChangeService } from '../changes/service';
 
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type OutlineService from 'sap/ui/rta/command/OutlineService';
@@ -12,8 +13,13 @@ import { getError } from '../error-utils';
  *
  * @param rta runtimeAuthoring object.
  * @param sendAction send action method.
+ * @param changesService changes service.
  */
-export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: ExternalAction) => void): Promise<void> {
+export async function initOutline(
+    rta: RuntimeAuthoring,
+    sendAction: (action: ExternalAction) => void,
+    changesService: ChangeService
+): Promise<void> {
     const outline = await rta.getService<OutlineService>('outline');
     const scenario = rta.getFlexSettings().scenario;
     let hasSentWarning = false;
@@ -22,12 +28,18 @@ export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: Ex
         try {
             const viewNodes = await outline.get();
             const outlineNodes = await transformNodes(viewNodes, scenario, reuseComponentsIds);
+            await changesService.syncOutlineChanges();
             sendAction(outlineChanged(outlineNodes));
-            if(reuseComponentsIds.size > 0 && scenario === 'ADAPTATION_PROJECT' && !hasSentWarning) {
-                sendAction(showMessage({ message: 'Have in mind that reuse components are detected for some views in this application and controller extensions and adding fragments are not supported for such views. Controller extension and adding fragment functionality on these views will be disabled.', shouldHideIframe: false}));
+            if (reuseComponentsIds.size > 0 && scenario === 'ADAPTATION_PROJECT' && !hasSentWarning) {
+                sendAction(
+                    showMessage({
+                        message:
+                            'Have in mind that reuse components are detected for some views in this application and controller extensions and adding fragments are not supported for such views. Controller extension and adding fragment functionality on these views will be disabled.',
+                        shouldHideIframe: false
+                    })
+                );
                 hasSentWarning = true;
-            } 
-           
+            }
         } catch (error) {
             Log.error('Outline sync failed!', getError(error));
         }

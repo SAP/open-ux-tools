@@ -91,3 +91,24 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
 
     export default ObjectStorageConnector;
 }
+
+declare module 'sap/ui/fl/write/api/ChangesWriteAPI' {
+    interface ChangeHander {
+        getChangeVisualizationInfo(oChange, oAppComponent): Promise<object>;
+    }
+    interface ChangesWriteAPI {
+        getChangeHandler(mPropertyBag: object): Promise<ChangeHander>;
+    }
+
+    const ChangesWriteAPI: ChangesWriteAPI;
+    export default ChangesWriteAPI;
+}
+
+declare module 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory' {
+    interface FlexObjectFactory {
+        createFromFileContent(oFileContent: object, ObjectClass?: class, bPersisted?: boolean): object;
+    }
+
+    const FlexObjectFactory: FlexObjectFactory;
+    export default FlexObjectFactory;
+}

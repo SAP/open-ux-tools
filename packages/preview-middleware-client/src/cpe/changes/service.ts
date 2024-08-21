@@ -21,6 +21,12 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
 import { getError } from '../error-utils';
+import ChangesWriteAPI from 'sap/ui/fl/write/api/ChangesWriteAPI';
+import Utils from 'sap/ui/fl/Utils';
+import ElementUtil from 'sap/ui/dt/ElementUtil';
+import Control from 'sap/ui/core/Control';
+import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
+import FlexObjectFactory from 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory';
 
 interface ChangeContent {
     property: string;
@@ -92,6 +98,7 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
 export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
     private sendAction: (action: ExternalAction) => void;
+    private pendingChanges: PendingChange[];
     /**
      *
      * @param options ui5 adaptation options.
@@ -146,7 +153,7 @@ export class ChangeService {
             // eslint-disable-next-line fiori-custom/sap-no-location-reload
             location.reload();
         });
-        this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
+        this.options.rta.attachUndoRedoStackModified(await this.createOnStackChangeHandler());
     }
 
     /**
@@ -154,11 +161,11 @@ export class ChangeService {
      *
      * @param pendingChanges Changes that are waiting to be saved
      */
-    private updateStack(pendingChanges: PendingChange[] = []) {
+    private updateStack() {
         this.sendAction(
             changeStackModified({
                 saved: this.savedChanges,
-                pending: pendingChanges
+                pending: this.pendingChanges
             })
         );
     }
@@ -170,50 +177,66 @@ export class ChangeService {
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
         const savedChanges = (await savedChangesResponse.json()) as SavedChangesResponse;
         const changes = (
-            Object.keys(savedChanges ?? {})
-                .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {
-                    const change: Change = savedChanges[key];
-                    try {
-                        assertChange(change);
-                        if (
-                            [change.content.newValue, change.content.newBinding].every(
-                                (item) => item === undefined || item === null
-                            )
-                        ) {
-                            throw new Error('Invalid change, missing new value in the change file');
-                        }
-                        if (change.changeType !== 'propertyChange' && change.changeType !== 'propertyBindingChange') {
-                            throw new Error('Unknown Change Type');
-                        }
-                        return {
-                            type: 'saved',
-                            kind: 'valid',
-                            fileName: change.fileName,
-                            controlId: change.selector.id,
-                            propertyName: change.content.property,
-                            value: change.content.newValue ?? change.content.newBinding,
-                            timestamp: new Date(change.creation).getTime(),
-                            controlName: change.selector.type ? (change.selector.type.split('.').pop() as string) : '',
-                            changeType: change.changeType
-                        };
-                    } catch (error) {
-                        // Gracefully handle change files with invalid content
-                        if (change.fileName) {
-                            const unknownChange: UnknownSavedChange = {
-                                type: 'saved',
-                                kind: 'unknown',
-                                fileName: change.fileName,
-                                controlId: change.selector?.id // some changes may not have selector
-                            };
-                            if (change.creation) {
-                                unknownChange.timestamp = new Date(change.creation).getTime();
+            (
+                await Promise.all(
+                    Object.keys(savedChanges ?? {}).map(
+                        async (key): Promise<SavedPropertyChange | UnknownSavedChange | undefined> => {
+                            const change: Change = savedChanges[key];
+                            let selectorId;
+                            try {
+                                const flexObject = FlexObjectFactory.createFromFileContent(change);
+                                selectorId = await this.getSelectorIdByChange(flexObject);
+                                assertChange(change);
+                                if (
+                                    [change.content.newValue, change.content.newBinding].every(
+                                        (item) => item === undefined || item === null
+                                    )
+                                ) {
+                                    throw new Error('Invalid change, missing new value in the change file');
+                                }
+                                if (
+                                    change.changeType !== 'propertyChange' &&
+                                    change.changeType !== 'propertyBindingChange'
+                                ) {
+                                    throw new Error('Unknown Change Type');
+                                }
+                                return {
+                                    type: 'saved',
+                                    kind: 'valid',
+                                    fileName: change.fileName,
+                                    controlId: selectorId,
+                                    propertyName: change.content.property,
+                                    value: change.content.newValue ?? change.content.newBinding,
+                                    timestamp: new Date(change.creation).getTime(),
+                                    controlName: change.selector.type
+                                        ? (change.selector.type.split('.').pop() as string)
+                                        : '',
+                                    changeType: change.changeType,
+                                    // @ts-ignore
+                                    rawChange: change
+                                };
+                            } catch (error) {
+                                // Gracefully handle change files with invalid content
+                                if (change.fileName) {
+                                    const unknownChange: UnknownSavedChange = {
+                                        type: 'saved',
+                                        kind: 'unknown',
+                                        fileName: change.fileName,
+                                        controlId: selectorId, // some changes may not have selector
+                                        // @ts-ignore
+                                        rawChange: change
+                                    };
+                                    if (change.creation) {
+                                        unknownChange.timestamp = new Date(change.creation).getTime();
+                                    }
+                                    return unknownChange;
+                                }
+                                return undefined;
                             }
-                            return unknownChange;
                         }
-                        return undefined;
-                    }
-                })
-                .filter((change) => !!change) as SavedPropertyChange[]
+                    )
+                )
+            ).filter((change) => !!change) as SavedPropertyChange[]
         ).sort((a, b) => b.timestamp - a.timestamp);
         this.savedChanges = changes;
     }
@@ -253,7 +276,7 @@ export class ChangeService {
      * @param sendAction send action method
      * @returns (event: sap.ui.base.Event) => Promise<void>
      */
-    private createOnStackChangeHandler(): (event: Event) => Promise<void> {
+    private async createOnStackChangeHandler(): Promise<(event: Event) => Promise<void>> {
         const handleStackChange = modeAndStackChangeHandler(this.sendAction, this.options.rta);
         return async (): Promise<void> => {
             const stack = this.options.rta.getCommandStack();
@@ -261,18 +284,19 @@ export class ChangeService {
             const executedCommands = stack.getAllExecutedCommands();
             const inactiveCommandCount = allCommands.length - executedCommands.length;
             let activeChanges: PendingChange[] = [];
-            allCommands.forEach((command: FlexCommand, i): void => {
+            let i: number, command: FlexCommand;
+            for ([i, command] of allCommands.entries()) {
                 try {
                     if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();
-                        subCommands.forEach((command) => {
-                            const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
+                        for (const subCommand of subCommands) {
+                            const pendingChange = await this.prepareChangeType(subCommand, inactiveCommandCount, i);
                             if (pendingChange) {
                                 activeChanges.push(pendingChange);
                             }
-                        });
+                        }
                     } else {
-                        const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
+                        const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, i);
                         if (pendingChange) {
                             activeChanges.push(pendingChange);
                         }
@@ -280,27 +304,29 @@ export class ChangeService {
                 } catch (error) {
                     Log.error('CPE: Change creation Failed', getError(error));
                 }
-            });
-
+            }
             activeChanges = activeChanges.filter((change): boolean => !!change);
 
             if (Array.isArray(allCommands) && allCommands.length === 0) {
                 await this.fetchSavedChanges();
             }
-
-            this.updateStack(activeChanges);
+            this.pendingChanges = activeChanges;
+            this.updateStack();
             handleStackChange();
         };
     }
 
-    private prepareChangeType(
+    private async prepareChangeType(
         command: FlexCommand,
         inactiveCommandCount: number,
         index: number
-    ): PendingChange | undefined {
+    ): Promise<PendingChange | undefined> {
         let result: PendingChange;
         let value = '';
-        const selectorId = this.getCommandSelectorId(command);
+
+        const change = command.getPreparedChange();
+
+        const selectorId = await this.getSelectorIdByChange(change);
         const changeType = this.getCommandChangeType(command);
 
         if (!selectorId || !changeType) {
@@ -315,7 +341,8 @@ export class ChangeService {
                 value = command.getProperty('newBinding') as string;
                 break;
         }
-        const { fileName } = command.getPreparedChange().getDefinition();
+
+        const { fileName } = change.getDefinition();
         if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
             result = {
                 type: 'pending',
@@ -379,19 +406,43 @@ export class ChangeService {
         ]);
     }
 
-    /**
-     * Get command selector id.
-     *
-     * @param command to be executed for creating change
-     * @returns command selector id or undefined
-     */
-    private getCommandSelectorId(command: FlexCommand): string | undefined {
-        return this.retryOperations([
-            () => command.getSelector().id,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-            () => command.getElement().getProperty('persistencyKey'),
-            () => command.getElement().getId(),
-            () => command.getParent()?.getElement().getId()
-        ]) as string | undefined;
+    private async getSelectorIdByChange(change: any): Promise<string> {
+        const changeDefinition = change.getDefinition();
+
+        const oAppComponent = Utils.getAppComponentForControl(
+            ElementUtil.getElementInstance(changeDefinition.selector.id) as Control
+        );
+
+        let control = sap.ui.getCore().byId(changeDefinition.selector.id);
+        if (!control) {
+            return changeDefinition.selector.id;
+        }
+
+        const changeHandler = await ChangesWriteAPI.getChangeHandler({
+            changeType: changeDefinition.changeType,
+            element: control,
+            modifier: JsControlTreeModifier,
+            layer: changeDefinition.layer
+        });
+
+        if (changeHandler && typeof changeHandler.getChangeVisualizationInfo === 'function') {
+            const result: { affectedControls?: [string] } = await changeHandler.getChangeVisualizationInfo(
+                change,
+                oAppComponent
+            );
+
+            return result?.affectedControls?.[0] ?? changeDefinition.selector.id;
+        }
+
+        return changeDefinition.selector.id;
+    }
+
+    public async syncOutlineChanges(): Promise<void> {
+        for (const change of this.savedChanges) {
+            // @ts-ignore
+            const flexObject = FlexObjectFactory.createFromFileContent(change.rawChange);
+            change.controlId = await this.getSelectorIdByChange(flexObject);
+        }
+        this.updateStack();
     }
 }

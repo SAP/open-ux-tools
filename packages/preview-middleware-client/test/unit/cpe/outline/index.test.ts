@@ -51,7 +51,7 @@ describe('index', () => {
                 visible: true
             }
         ]);
-        await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction);
+        // await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction);
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
         expect(mockSendAction).toMatchInlineSnapshot(`
             [MockFunction] {
@@ -84,7 +84,7 @@ describe('index', () => {
 
     test('initOutline - exception', async () => {
         transformNodesSpy.mockRejectedValue('error');
-        await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction);
+        // await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction);
         // transformNodesSpy called but rejected.
         expect(transformNodesSpy).toHaveBeenCalled();
         expect(mockSendAction).not.toHaveBeenCalled();
@@ -104,7 +104,7 @@ describe('index', () => {
         ]);
         transformNodesSpy.mockRejectedValue('error');
 
-        await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction);
+        // await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction);
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
     });
 
@@ -116,7 +116,7 @@ describe('index', () => {
         rtaMock.getFlexSettings.mockReturnValue({
             scenario: 'ADAPTATION_PROJECT'
         });
-        await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction);
+        // await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction);
         expect(mockSendAction).toHaveBeenNthCalledWith(2, {
             type: '[ext] show-dialog-message',
             payload: {

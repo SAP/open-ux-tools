@@ -64,7 +64,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         }
         // For initOutline to complete the RTA needs to already running (to access RTA provided services).
         // That can only happen if the plugin initialization has completed.
-        initOutline(rta, sendAction).catch((error) =>
+        initOutline(rta, sendAction, changesService).catch((error) =>
             Log.error('Error during initialization of Control Property Editor', getError(error))
         );
         const icons = getIcons();
