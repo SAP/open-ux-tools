@@ -1,5 +1,14 @@
 # @sap-ux/create
 
+## 0.7.57
+
+### Patch Changes
+
+-   6419b2c: Clean separation between prompting and writing in adp-tooling
+-   Updated dependencies [6419b2c]
+    -   @sap-ux/adp-tooling@0.12.40
+    -   @sap-ux/preview-middleware@0.16.52
+
 ## 0.7.56
 
 ### Patch Changes
