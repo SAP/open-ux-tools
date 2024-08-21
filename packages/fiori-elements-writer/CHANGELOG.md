@@ -1,5 +1,59 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.1.4
+
+### Patch Changes
+
+-   Updated dependencies [73aa3cd]
+    -   @sap-ux/fe-fpm-writer@0.27.5
+
+## 1.1.3
+
+### Patch Changes
+
+-   Updated dependencies [12504d5]
+    -   @sap-ux/fiori-generator-shared@0.3.14
+
+## 1.1.2
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.27.4
+-   @sap-ux/fiori-generator-shared@0.3.13
+-   @sap-ux/odata-service-writer@0.22.3
+-   @sap-ux/ui5-application-writer@1.1.4
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.1.1
+
+### Patch Changes
+
+-   Updated dependencies [6916f9e]
+    -   @sap-ux/fe-fpm-writer@0.27.3
+
+## 1.1.0
+
+### Minor Changes
+
+-   61721f2: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    removed dependency on sap.ushell for v4 manifest.json
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/ui5-application-writer@1.1.4
+    -   @sap-ux/odata-service-writer@0.22.3
+    -   @sap-ux/fe-fpm-writer@0.27.2
+    -   @sap-ux/fiori-generator-shared@0.3.12
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.0.18
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.27.1
+
 ## 1.0.17
 
 ### Patch Changes

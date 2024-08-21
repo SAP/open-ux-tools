@@ -1,5 +1,5 @@
 import prompts from 'prompts';
-import type { PromptType, PromptObject } from 'prompts';
+import type { PromptType, PromptObject, InitialReturnValue } from 'prompts';
 import type { ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Answers } from 'inquirer';
 import { getLogger } from '../tracing';
@@ -32,7 +32,7 @@ async function enhanceListQuestion(
     listQuestion: ListQuestion,
     prompt: PromptObject,
     answers: { [key: string]: unknown }
-) {
+): Promise<void> {
     const choices: Array<{ name: string; value: unknown } | string | number> = (
         isFunction(listQuestion.choices) ? await listQuestion.choices(answers) : listQuestion.choices
     ) as Array<{ name: string; value: unknown } | string | number>;
@@ -42,7 +42,7 @@ async function enhanceListQuestion(
     }));
     const initialValue = (prompt.initial as Function)();
     prompt.choices = mapppedChoices;
-    prompt.initial = () =>
+    prompt.initial = (): InitialReturnValue =>
         mapppedChoices[initialValue]
             ? initialValue
             : mapppedChoices.findIndex((choice) => choice.value === initialValue);
@@ -55,7 +55,7 @@ async function enhanceListQuestion(
  * @param answers rpeviously given answers
  * @returns message of the question
  */
-async function extractMessage<T extends Answers>(question: YUIQuestion<T>, answers: T) {
+async function extractMessage<T extends Answers>(question: YUIQuestion<T>, answers: T): Promise<string | undefined> {
     const message = isFunction(question.message) ? await question.message(answers) : question.message;
     if (question.guiOptions && !question.guiOptions.mandatory) {
         return `${message} (optional)`;
@@ -119,7 +119,7 @@ export async function promptYUIQuestions<T extends Answers>(
  * @param question question to be prompted
  * @returns a promise with the answer of the question
  */
-async function promptSingleQuestion<T extends Answers>(answers: T, question: YUIQuestion<T>) {
+async function promptSingleQuestion<T extends Answers>(answers: T, question: YUIQuestion<T>): Promise<T[keyof T]> {
     const q = await convertQuestion(question, answers);
     const answer = await prompts(q, {
         onCancel: () => {

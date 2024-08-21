@@ -46,7 +46,7 @@ export class InboundWriter implements IWriter<InboundData> {
      * @returns {void}
      */
     private getEnhancedContent(data: InboundData, content: InboundContent): void {
-        const { icon, title, subTitle } = data.answers;
+        const { icon, title, subtitle } = data.flp;
         if (title) {
             content.entityPropertyChange.push({
                 propertyPath: 'title',
@@ -55,11 +55,11 @@ export class InboundWriter implements IWriter<InboundData> {
             });
         }
 
-        if (subTitle) {
+        if (subtitle) {
             content.entityPropertyChange.push({
                 propertyPath: 'subTitle',
                 operation: 'UPSERT',
-                propertyValue: getParsedPropertyValue(subTitle)
+                propertyValue: getParsedPropertyValue(subtitle)
             });
         }
 

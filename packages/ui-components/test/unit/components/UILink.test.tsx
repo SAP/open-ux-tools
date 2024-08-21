@@ -80,4 +80,34 @@ describe('<UILink />', () => {
             }
         `);
     });
+
+    it('Styles - primary with no underline', () => {
+        wrapper.setProps({
+            underline: false
+        });
+        const styles = getStyles();
+        expect(styles.root).toMatchInlineSnapshot(`
+            Object {
+              "color": "var(--vscode-textLink-foreground)",
+              "fontFamily": "var(--vscode-font-family)",
+              "selectors": Object {
+                "&:active, &:focus": Object {
+                  "color": "var(--vscode-textLink-activeForeground)",
+                  "outline": "none",
+                  "textDecoration": "underline",
+                },
+                "&:hover, &:hover:focus, &:hover:active": Object {
+                  "color": "var(--vscode-textLink-activeForeground)",
+                  "textDecoration": "underline",
+                },
+                ".ms-Fabric--isFocusVisible &:focus": Object {
+                  "boxShadow": "none",
+                  "outline": "1px solid var(--vscode-focusBorder)",
+                  "outlineOffset": "-1px",
+                },
+              },
+              "textDecoration": undefined,
+            }
+        `);
+    });
 });
