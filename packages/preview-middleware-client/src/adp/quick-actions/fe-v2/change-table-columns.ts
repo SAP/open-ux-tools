@@ -50,7 +50,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
         // No action found in control designtim for version < 1.96
         // When using openPersonalisationDialog("Column") the variant is stored on browser local storage.
         const version = await getUi5Version();
-        if (!isLowerThanMinimalUi5Version(version, { major: 1, minor: 96 })) {
+        if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 96 })) {
             this.isActive = false;
             return;
         }
