@@ -93,13 +93,15 @@ export async function convertQuestion<T extends Answers>(
  *
  * @param questions list of questions
  * @param useDefaults - if true, the default values are used for all prompts
+ * @param answers - previously given answers
  * @returns the answers to the questions
  */
 export async function promptYUIQuestions<T extends Answers>(
     questions: YUIQuestion<T>[],
-    useDefaults: boolean
+    useDefaults: boolean,
+    answers?: T
 ): Promise<T> {
-    const answers = {} as T;
+    answers ??= {} as T;
     for (const question of questions) {
         if (isFunction(question.when) ? question.when(answers) : question.when !== false) {
             if (useDefaults) {
