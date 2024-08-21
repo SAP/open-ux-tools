@@ -15,7 +15,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn().mockReturnValue(true)
 }));
 
-describe('Configuration Visibility Tests', () => {
+describe('Visibility Tests', () => {
     const prompter = {} as ConfigInfoPrompter;
     let answers: ConfigurationInfoAnswers;
 

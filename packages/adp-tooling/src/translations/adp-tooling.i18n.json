@@ -146,7 +146,11 @@
         "errorDuplicateNamesOData": "OData Service Name must be different from OData Annotation Data Source Name",
         "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
         "errorCustomerEmptyValue": "{{value}} should contain at least one character in addition to '{{prefix}}'",
-        "errorInvalidDataSourceURI": "Invalid URI. Should start and end with '/' and contain no spaces"
+        "errorInvalidDataSourceURI": "Invalid URI. Should start and end with '/' and contain no spaces",
+        "projectNameLengthErrorExt": "The name cannot contain more than 61 characters or end with 'component'.",
+        "projectNameValidationErrorExt": "The name must contain only Latin alphanumeric characters. Different parts can be separated by period and every part must start with a letter.",
+        "projectNameLengthErrorInt": "The name cannot start with 'customer' or contain more than 61 characters or end with 'component'.",
+        "projectNameValidationErrorInt": "The name must contain only Latin alphanumeric characters and it must have at least two parts. The different parts must be separated by period and every part must start with a letter."
     },
     "tooltips": {
         "inboundId": "Choose the inboundID that will be used to set the FLP tile configuration",
