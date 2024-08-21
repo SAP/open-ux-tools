@@ -29,14 +29,14 @@ describe('AppIdentifier', () => {
     describe('validateSelectedApplication', () => {
         it('throws an error if application is null', async () => {
             await expect(
-                appIdentifier.validateSelectedApplication(null as unknown as Application, null, true, true)
+                appIdentifier.validateSelectedApplication(null as unknown as Application, undefined, true, true)
             ).rejects.toThrow('Application has to be selected');
         });
 
         it('throws an error if manifest is null', async () => {
             const application = { id: 'app1', fileType: 'appdescr_variant' };
             await expect(
-                appIdentifier.validateSelectedApplication(application as Application, null, true, true)
+                appIdentifier.validateSelectedApplication(application as Application, undefined, true, true)
             ).rejects.toThrow('Manifest of the selected application could not be validated');
         });
 

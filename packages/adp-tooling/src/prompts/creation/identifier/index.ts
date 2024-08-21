@@ -57,7 +57,7 @@ export class AppIdentifier {
      */
     public async validateSelectedApplication(
         application: Application,
-        manifest: Manifest | null,
+        manifest: Manifest | undefined,
         checkFullSupport: boolean,
         checkPartialSupport: boolean
     ): Promise<void> {
