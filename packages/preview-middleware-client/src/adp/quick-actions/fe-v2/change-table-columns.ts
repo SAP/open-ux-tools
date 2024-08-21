@@ -12,6 +12,7 @@ import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-edito
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { getControlById, isA, isManagedObject } from '../../../utils/core';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
@@ -46,6 +47,13 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     constructor(private context: QuickActionContext) {}
 
     async initialize() {
+        // No action found in control designtim for version < 1.96
+        // When using openPersonalisationDialog("Column") the variant is stored on browser local storage.
+        const version = await getUi5Version();
+        if (!isLowerThanMinimalUi5Version(version, { major: 1, minor: 96 })) {
+            this.isActive = false;
+            return;
+        }
         // Assumption Only one tab bar control per page.
         const tabBar = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
             ICON_TAB_BAR_TYPE
