@@ -51,7 +51,10 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             {
                 variant,
-                answers
+                annotation: {
+                    dataSource: answers.id,
+                    filePath: answers.filePath
+                }
             }
         );
 
