@@ -1,4 +1,4 @@
-import type { Application, Choice } from '../../../../types';
+import { InputChoice, type Application, type Choice, type ChoiceOption } from '../../../../types';
 
 /**
  * Creates a list of choices from a list of applications, formatted for display or selection in a UI.
@@ -19,4 +19,16 @@ export const getApplicationChoices = (apps: Application[]): Choice[] => {
               };
           })
         : apps;
+};
+
+/**
+ * Returns the available options for input choices regarding packages.
+ *
+ * @returns {ChoiceOption[]} An array of options for user input regarding package choice.
+ */
+export const getInputChoiceOptions = (): ChoiceOption[] => {
+    return [
+        { name: InputChoice.ENTER_MANUALLY, value: InputChoice.ENTER_MANUALLY },
+        { value: InputChoice.CHOOSE_FROM_EXISTING, name: InputChoice.CHOOSE_FROM_EXISTING }
+    ];
 };
