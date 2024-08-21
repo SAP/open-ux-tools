@@ -40,18 +40,18 @@ export function getRelevantControlFromActivePage(
     for (const type of controlTypes) {
         const controls = controlIndex[type] ?? [];
         for (const control of controls) {
-            const ctrl = getControlById(control.controlId)?.getParent();
-            const isActionApplicable = isDescendantOfPage(ctrl, activePage);
+            const ui5Control = getControlById(control.controlId);
+            const parent = ui5Control?.getParent();
+            const isActionApplicable = isDescendantOfPage(parent, activePage);
 
-            const UI5ControlData = getControlById(control.controlId);
-            if (isActionApplicable && UI5ControlData) {
+            if (isActionApplicable && ui5Control) {
                 // if parent control added, discard adding child control.
                 // Relevant for cases where wrapper exists eg: sap.m.Table exist in sap.ui.comp.smarttable.SmartTable
                 const parentFound = relevantControls.findIndex(
-                    (rControl) => rControl.getId() === UI5ControlData.getParent()?.getId()
+                    (relevantControl) => relevantControl.getId() === ui5Control.getParent()?.getId()
                 );
                 if (parentFound === -1) {
-                    relevantControls.push(UI5ControlData);
+                    relevantControls.push(ui5Control);
                 }
             }
         }

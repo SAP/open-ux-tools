@@ -1,6 +1,8 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import UI5Element from 'sap/ui/core/Element';
+import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import FlexBox from 'sap/m/FlexBox';
 
 import { SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 
@@ -8,9 +10,7 @@ import { DialogNames, handler } from '../../../adp/init-dialogs';
 
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import { isA } from '../../../utils/core';
-import FlexBox from 'sap/m/FlexBox';
 export const OP_ADD_HEADER_FIELD_TYPE = 'op-add-header-field';
 const CONTROL_TYPES = ['sap.uxap.ObjectPageLayout'];
 
@@ -25,7 +25,7 @@ export class AddHeaderFieldQuickAction implements SimpleQuickActionDefinition {
     private control: UI5Element | undefined;
     constructor(private context: QuickActionContext) {}
 
-    initialize() {
+    initialize(): void {
         for (const control of getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,

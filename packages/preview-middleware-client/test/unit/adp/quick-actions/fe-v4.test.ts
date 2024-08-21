@@ -1,4 +1,5 @@
 import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
 import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
@@ -151,7 +152,7 @@ describe('FE V2 quick actions', () => {
             });
         });
 
-        describe('add controller to the pae', () => {
+        describe('add controller to the page', () => {
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -379,6 +380,135 @@ describe('FE V2 quick actions', () => {
                 );
 
                 expect(execute).toHaveBeenCalledWith('Table', 'CTX_SETTINGS0');
+            });
+        });
+
+        describe('ObjectPage', () => {
+            describe('add header field', () => {
+                test('initialize and execute action', async () => {
+                    const pageView = new XMLView();
+                    FlexUtils.getViewForControl.mockImplementation(() => {
+                        return {
+                            getId: () => 'MyView',
+                            getController: () => {
+                                return {
+                                    getMetadata: () => {
+                                        return {
+                                            getName: () => 'MyController'
+                                        };
+                                    }
+                                };
+                            }
+                        };
+                    });
+                    fetchMock.mockResolvedValue({
+                        json: jest
+                            .fn()
+                            .mockReturnValueOnce({
+                                controllerExists: false,
+                                controllerPath: '',
+                                controllerPathFromRoot: '',
+                                isRunningInBAS: false
+                            })
+                            .mockReturnValueOnce({ controllers: [] }),
+                        text: jest.fn(),
+                        ok: true
+                    });
+                    const appComponent = new AppComponentMock();
+                    const component = new TemplateComponentMock();
+                    jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                    jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                        return component as unknown as UIComponent;
+                    });
+                    sapCoreMock.byId.mockImplementation((id) => {
+                        if (id == 'ObjectPageLayout') {
+                            return {
+                                getId: () => 'ObjectPageLayout',
+                                getDomRef: () => ({}),
+                                getParent: () => pageView,
+                                getHeaderContent: () => {
+                                    return [new FlexBox()]
+                                }
+                            };
+                        }
+                        if (id == 'NavContainer') {
+                            const container = new NavContainer();
+                            const component = new TemplateComponentMock();
+                            pageView.getDomRef.mockImplementation(() => {
+                                return {
+                                    contains: () => true
+                                };
+                            });
+                            pageView.getId.mockReturnValue('test.app::ProductDetails');
+                            pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ObjectPage.ObjectPage');
+                            const componentContainer = new ComponentContainer();
+                            jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
+                                return 'component-id';
+                            });
+                            jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                                if (id === 'component-id') {
+                                    return component;
+                                }
+                            });
+                            container.getCurrentPage.mockImplementation(() => {
+                                return componentContainer;
+                            });
+                            component.getRootControl.mockImplementation(() => {
+                                return pageView;
+                            });
+                            return container;
+                        }
+                    });
+    
+                    const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                    const registry = new FEV4QuickActionRegistry();
+                    const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                    await service.init(sendActionMock, subscribeMock);
+    
+                    await service.reloadQuickActions({
+                        'sap.uxap.ObjectPageLayout': [
+                            {
+                                controlId: 'ObjectPageLayout'
+                            } as any
+                        ],
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+    
+                    expect(sendActionMock).toHaveBeenCalledWith(
+                        quickActionListChanged([
+                            {
+                                title: 'OBJECT PAGE',
+                                actions: [
+                                    {
+                                        kind: 'simple',
+                                        id: 'objectPage0-add-controller-to-page',
+                                        enabled: true,
+                                        title: 'Add controller to page'
+                                    },
+                                    {
+                                        kind: 'simple',
+                                        id: 'objectPage0-op-add-header-field',
+                                        title: 'Add Header Field',
+                                        enabled: true
+                                    }
+                                ]
+                            }
+                        ])
+                    );
+    
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({ id: 'objectPage0-op-add-header-field', kind: 'simple' })
+                    );
+                    const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
+                        '../../../../src/adp/init-dialogs'
+                    );
+    
+                    expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'items');
+                });
             });
         });
     });

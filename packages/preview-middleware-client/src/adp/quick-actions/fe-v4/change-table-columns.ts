@@ -26,7 +26,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     tableMap: Record<string, number> = {};
     constructor(private context: QuickActionContext) {}
 
-    async initialize() {
+    async initialize(): Promise<void> {
         let index = 0;
         for (const smartTable of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
             CONTROL_TYPE

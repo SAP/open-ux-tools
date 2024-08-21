@@ -46,7 +46,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     private iconTabBar: IconTabBar | undefined;
     constructor(private context: QuickActionContext) {}
 
-    async initialize() {
+    async initialize(): Promise<void>  {
         // No action found in control designtim for version < 1.96
         // When using openPersonalisationDialog("Column") the variant is stored on browser local storage.
         const version = await getUi5Version();

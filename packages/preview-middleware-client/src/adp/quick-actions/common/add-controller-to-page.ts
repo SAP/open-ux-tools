@@ -30,7 +30,7 @@ export class AddControllerToPageQuickAction implements SimpleQuickActionDefiniti
     private control: UI5Element | undefined;
     constructor(private context: QuickActionContext) {}
 
-    async initialize() {
+    async initialize(): Promise<void> {
         for (const control of getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
