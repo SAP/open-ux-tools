@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.53
+
+### Patch Changes
+
+-   ceed987: Fixed copy to clipboard chaching old control id values
+
 ## 0.16.52
 
 ### Patch Changes
