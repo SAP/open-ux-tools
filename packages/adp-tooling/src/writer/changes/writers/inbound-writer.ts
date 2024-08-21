@@ -46,7 +46,7 @@ export class InboundWriter implements IWriter<InboundData> {
      * @returns {void}
      */
     private getEnhancedContent(data: InboundData, content: InboundContent): void {
-        const { icon, title, subtitle } = data.answers;
+        const { icon, title, subtitle } = data.flp;
         if (title) {
             content.entityPropertyChange.push({
                 propertyPath: 'title',
