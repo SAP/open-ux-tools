@@ -235,6 +235,7 @@ export function getSelectedServiceLabel(username: string | undefined): string {
  * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  *     This is used to avoid conflicts with other prompts of the same types.
  * @param promptOptions Options for the service selection prompt see {@link OdataServicePromptOptions}
+ * @returns the service selection prompt
  */
 export function getSystemServiceQuestion<T extends Answers>(
     connectValidator: ConnectionValidator,
@@ -316,11 +317,14 @@ export function getSystemServiceQuestion<T extends Answers>(
 }
 
 /**
+ * Get the service selection prompt additional message. This prompt will make an additional call to the system backend
+ * to retrieve the service type and display a warning message if the service type is not UI.
  *
- * @param serviceChoices
- * @param selectedService
- * @param connectValidator
- * @param requiredOdataVersion
+ * @param serviceChoices a list of service choices
+ * @param selectedService the selected service
+ * @param connectValidator the connection validator
+ * @param requiredOdataVersion the required OData version for the service
+ * @returns the service selection prompt additional message
  */
 async function getSelectedServiceMessage(
     serviceChoices: ListChoiceOptions<ServiceAnswer>[],

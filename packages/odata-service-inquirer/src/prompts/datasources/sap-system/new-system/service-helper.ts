@@ -145,8 +145,7 @@ export async function getServiceType(
  * If an error occurs, the error message is returned for use in validators.
  *
  * @param service the specific service to get details for
- * @param systemUrl the system origin where the service is hosted
- * @param connectionValidator a reference to the connection validator
+ * @param connectionValidator a reference to the connection validator which has an active connection to the backend
  * @returns true if successful, setting the PromptState.odataService properties, or an error message indicating why the service details could not be retrieved.
  */
 export async function getServiceDetails(

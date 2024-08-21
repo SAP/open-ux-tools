@@ -37,6 +37,7 @@ export async function validateSystemName(systemName: string): Promise<boolean | 
  * Validates the existence and content of the file at the given path.
  *
  * @param path path to a service key file
+ * @returns the service key info if the file is valid, otherwise an error message
  */
 export function validateServiceKey(path: string): string | ServiceInfo | boolean {
     if (!path) {

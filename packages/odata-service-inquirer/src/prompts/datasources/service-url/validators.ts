@@ -16,8 +16,7 @@ import { errorHandler } from '../../prompt-helpers';
  * @param url the full odata service url including query parameters
  * @param connectionConfig the connection configuration to use for the validation, a subset of the ConnectionValidator properties
  * @param connectionConfig.odataService the odata service instance used to retrieve the metadata (as used by ConnectionValidator)
- * @param connectionConfig.axiosConfig the axios config to use for the annotations request (as used by ConnectionValidator)
- * @param connectionConfig.abapServiceProvider
+ * @param connectionConfig.abapServiceProvider the abap service provider instance used to retrieve annotations (as used by ConnectionValidator)
  * @param requiredVersion if specified and the service odata version does not match this version, an error is returned
  * @param ignoreCertError if true some certificate errors are ignored
  * @returns true if a valid odata service was returned, false or an error message string otherwise

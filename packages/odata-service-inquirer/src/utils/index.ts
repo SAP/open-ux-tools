@@ -135,7 +135,8 @@ export function convertODataVersionType(odataVersion?: OdataVersion): ODataVersi
  * Gets the default index for a list of items, used to default list prompts to the first item if only one item is available.
  * If list is undefined or has more than one, returns undefined which will default to the 'please select' message.
  *
- * @param list
+ * @param list the list of choices
+ * @returns the default index if only one item is available, otherwise undefined
  */
 export function getDefaultChoiceIndex(list: ListChoiceOptions[]): number | undefined {
     if (list?.length === 1) {
