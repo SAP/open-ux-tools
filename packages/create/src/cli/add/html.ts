@@ -11,7 +11,7 @@ import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 /**
  * Adds a command to add the virtual html files hosted by the preview middleware to the file system.
  *
- * @param cmd - commander command for adding navigation inbounds config command
+ * @param cmd - commander command for adding virtual html files
  */
 export function addAddHtmlFilesCmd(cmd: Command): void {
     cmd.command('html [path]')

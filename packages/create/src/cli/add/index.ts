@@ -8,6 +8,7 @@ import { addNewModelCommand } from './new-model';
 import { addAnnotationsToOdataCommand } from './annotations-to-odata';
 import { addAddHtmlFilesCmd } from './html';
 import { addComponentUsagesCommand } from './component-usages';
+import { addAddServiceCmd } from './service';
 
 /**
  * Return 'create-fiori add *' commands. Commands include also the handler action.
@@ -34,5 +35,7 @@ export function getAddCommands(): Command {
     addAddHtmlFilesCmd(addCommands);
     // create-fiori add component-usages
     addComponentUsagesCommand(addCommands);
+    // create-fiori add service
+    addAddServiceCmd(addCommands);
     return addCommands;
 }
