@@ -24,7 +24,7 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
     constructor(private context: QuickActionContext) {}
 
     initialize(): void {
-        const controls = this.context.controlIndex[CONTROL_TYPE];
+        const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);
             const filterBar = getControlById<FilterBar>(control.controlId);
@@ -48,7 +48,7 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
     }
 
     async execute(): Promise<FlexCommand[]> {
-        const controls = this.context.controlIndex[CONTROL_TYPE];
+        const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         const control = controls[0];
         if (control) {
             const modifiedControl = getControlById(control.controlId);

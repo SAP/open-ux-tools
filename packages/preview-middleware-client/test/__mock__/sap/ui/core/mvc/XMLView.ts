@@ -4,4 +4,5 @@ export default class {
     getContent = jest.fn();
     getViewName = jest.fn();
     getDomRef = jest.fn();
+    getId = jest.fn();
 }

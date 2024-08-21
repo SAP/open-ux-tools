@@ -12,18 +12,22 @@ jest.mock('../../../../src/adp/init-dialogs', () => {
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
 
-import FEV2QuickActionRegistry from '../../../../src/adp/quick-actions/fe-v2/registry';
+import FEV4QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe-v4/registry';
 import { sapCoreMock } from 'mock/window';
 import NavContainer from 'mock/sap/m/NavContainer';
 import XMLView from 'mock/sap/ui/core/mvc/XMLView';
 import ComponentContainer from 'mock/sap/ui/core/ComponentContainer';
-import UIComponentMock from 'mock/sap/ui/core/UIComponent';
+import TemplateComponentMock from 'mock/sap/fe/core/TemplateComponent';
 import Component from 'mock/sap/ui/core/Component';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import FlexUtils from 'mock/sap/ui/fl/Utils';
 
 import { fetchMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
+import ComponentMock from 'mock/sap/ui/core/Component';
+import UIComponent from 'sap/ui/core/UIComponent';
+import AppComponentMock from 'mock/sap/fe/core/AppComponent';
+import FlexRuntimeInfoAPI from 'mock/sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
 
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -42,29 +46,32 @@ describe('FE V2 quick actions', () => {
     describe('ListReport', () => {
         describe('clear filter bar button', () => {
             test('initialize and execute action', async () => {
+                const appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
                 sapCoreMock.byId.mockImplementation((id) => {
-                    if (id == 'SmartFilterBar') {
+                    if (id == 'FilterBar') {
                         return {
-                            getShowClearOnFB: jest.fn().mockImplementation(() => false),
-                            getDomRef: () => ({})
+                            getShowClearButton: jest.fn().mockImplementation(() => false),
+                            getDomRef: () => ({}),
+                            getParent: () => ({})
                         };
                     }
                     if (id == 'NavContainer') {
                         const container = new NavContainer();
-                        const component = new UIComponentMock();
-                        const view = new XMLView();
                         const pageView = new XMLView();
                         pageView.getDomRef.mockImplementation(() => {
                             return {
                                 contains: () => true
                             };
                         });
-                        pageView.getViewName.mockImplementation(
-                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-                        );
+                        pageView.getId.mockReturnValue('test.app::ProductsList');
+                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
                         const componentContainer = new ComponentContainer();
-                        const spy = jest.spyOn(componentContainer, 'getComponent');
-                        spy.mockImplementation(() => {
+                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
@@ -72,11 +79,8 @@ describe('FE V2 quick actions', () => {
                                 return component;
                             }
                         });
-                        view.getContent.mockImplementation(() => {
-                            return [componentContainer];
-                        });
                         container.getCurrentPage.mockImplementation(() => {
-                            return view;
+                            return componentContainer;
                         });
                         component.getRootControl.mockImplementation(() => {
                             return pageView;
@@ -90,14 +94,14 @@ describe('FE V2 quick actions', () => {
                 });
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                const registry = new FEV2QuickActionRegistry();
+                const registry = new FEV4QuickActionRegistry();
                 const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
-                    'sap.ui.comp.smartfilterbar.SmartFilterBar': [
+                    'sap.fe.macros.controls.FilterBar': [
                         {
-                            controlId: 'SmartFilterBar'
+                            controlId: 'FilterBar'
                         } as any
                     ],
                     'sap.m.NavContainer': [
@@ -127,12 +131,21 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-enable-clear-filter-bar', kind: 'simple' })
                 );
                 expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
-                    'settings': {},
-                    'type': 'Property',
-                    'value': {
-                        'generator': undefined,
-                        'newValue': true,
-                        'propertyName': 'showClearOnFB'
+                    settings: {},
+                    type: 'appDescriptor',
+                    value: {
+                        appComponent,
+                        reference: 'test.id',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        parameters: {
+                            page: 'ProductsList',
+                            entityPropertyChange: {
+                                propertyPath:
+                                    'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/showClearButton',
+                                propertyValue: true,
+                                operation: 'UPSERT'
+                            }
+                        }
                     }
                 });
             });
@@ -168,6 +181,12 @@ describe('FE V2 quick actions', () => {
                     text: jest.fn(),
                     ok: true
                 });
+                const appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'DynamicPage') {
                         return {
@@ -177,19 +196,16 @@ describe('FE V2 quick actions', () => {
                     }
                     if (id == 'NavContainer') {
                         const container = new NavContainer();
-                        const component = new UIComponentMock();
-                        const view = new XMLView();
+                        const component = new TemplateComponentMock();
                         pageView.getDomRef.mockImplementation(() => {
                             return {
                                 contains: () => true
                             };
                         });
-                        pageView.getViewName.mockImplementation(
-                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-                        );
+                        pageView.getId.mockReturnValue('test.app::ProductsList');
+                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
                         const componentContainer = new ComponentContainer();
-                        const spy = jest.spyOn(componentContainer, 'getComponent');
-                        spy.mockImplementation(() => {
+                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
@@ -197,11 +213,8 @@ describe('FE V2 quick actions', () => {
                                 return component;
                             }
                         });
-                        view.getContent.mockImplementation(() => {
-                            return [componentContainer];
-                        });
                         container.getCurrentPage.mockImplementation(() => {
-                            return view;
+                            return componentContainer;
                         });
                         component.getRootControl.mockImplementation(() => {
                             return pageView;
@@ -211,7 +224,7 @@ describe('FE V2 quick actions', () => {
                 });
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                const registry = new FEV2QuickActionRegistry();
+                const registry = new FEV4QuickActionRegistry();
                 const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
@@ -258,12 +271,18 @@ describe('FE V2 quick actions', () => {
         describe('change table columns', () => {
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
-
+                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
                 const scrollIntoView = jest.fn();
+                const appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
                 sapCoreMock.byId.mockImplementation((id) => {
-                    if (id == 'SmartTable') {
+                    if (id == 'Table') {
                         return {
-                            isA: (type: string) => type === 'sap.ui.comp.smarttable.SmartTable',
+                            isA: (type: string) => type === 'sap.ui.mdc.Table',
                             getHeader: () => 'MyTable',
                             getId: () => id,
                             getDomRef: () => ({
@@ -275,19 +294,16 @@ describe('FE V2 quick actions', () => {
                     }
                     if (id == 'NavContainer') {
                         const container = new NavContainer();
-                        const component = new UIComponentMock();
-                        const view = new XMLView();
+                        const component = new TemplateComponentMock();
                         pageView.getDomRef.mockImplementation(() => {
                             return {
                                 contains: () => true
                             };
                         });
-                        pageView.getViewName.mockImplementation(
-                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-                        );
+                        pageView.getId.mockReturnValue('test.app::ProductsList');
+                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
                         const componentContainer = new ComponentContainer();
-                        const spy = jest.spyOn(componentContainer, 'getComponent');
-                        spy.mockImplementation(() => {
+                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
                             return 'component-id';
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
@@ -295,11 +311,8 @@ describe('FE V2 quick actions', () => {
                                 return component;
                             }
                         });
-                        view.getContent.mockImplementation(() => {
-                            return [componentContainer];
-                        });
                         container.getCurrentPage.mockImplementation(() => {
-                            return view;
+                            return componentContainer;
                         });
                         component.getRootControl.mockImplementation(() => {
                             return pageView;
@@ -314,22 +327,22 @@ describe('FE V2 quick actions', () => {
                     if (serviceName === 'action') {
                         return {
                             get: (controlId: string) => {
-                                if (controlId === 'SmartTable') {
-                                    return [{ id: 'CTX_COMP_VARIANT_CONTENT' }];
+                                if (controlId === 'Table') {
+                                    return [{ id: 'CTX_SETTINGS0' }];
                                 }
                             },
                             execute
                         };
                     }
                 });
-                const registry = new FEV2QuickActionRegistry();
+                const registry = new FEV4QuickActionRegistry();
                 const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
-                    'sap.ui.comp.smarttable.SmartTable': [
+                    'sap.ui.mdc.Table': [
                         {
-                            controlId: 'SmartTable'
+                            controlId: 'Table'
                         } as any
                     ],
                     'sap.m.NavContainer': [
@@ -365,8 +378,7 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-change-table-columns', kind: 'nested', path: '0' })
                 );
 
-                expect(scrollIntoView).toHaveBeenCalled();
-                expect(execute).toHaveBeenCalledWith('SmartTable', 'CTX_COMP_VARIANT_CONTENT');
+                expect(execute).toHaveBeenCalledWith('Table', 'CTX_SETTINGS0');
             });
         });
     });

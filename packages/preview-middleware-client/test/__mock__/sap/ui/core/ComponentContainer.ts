@@ -1,7 +1,7 @@
-import UIComponent from './UIComponent';
+import UIComponentMOck from './UIComponent';
 
 export default class {
     getComponent() {
-        new UIComponent();
+        new UIComponentMOck();
     }
 }

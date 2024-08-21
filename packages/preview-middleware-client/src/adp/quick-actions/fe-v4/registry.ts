@@ -19,7 +19,6 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
         [LIST_REPORT_TYPE]: 'listReport',
         [OBJECT_PAGE_TYPE]: 'objectPage'
     };
-    
     getDefinitions(context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         const activePages = this.getActivePageContent(context.controlIndex);
 
@@ -53,5 +52,4 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
         }
         return definitionGroups;
     }
- 
 }

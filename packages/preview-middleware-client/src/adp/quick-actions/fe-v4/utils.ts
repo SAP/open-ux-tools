@@ -13,9 +13,9 @@ export function getAppComponent(control: ManagedObject): AppComponent | undefine
     }
     return undefined;
 }
-export function getPageName(modifiedControl: ManagedObject): string | undefined {
-    const component = getAppComponent(modifiedControl);
-    if (!component) {
+export function getPageName(control: ManagedObject): string | undefined {
+    const component = Component.getOwnerComponentFor(control);
+    if (!isA<TemplateComponent>('sap.fe.core.TemplateComponent', component)) {
         return undefined;
     }
     const view = component.getRootControl();

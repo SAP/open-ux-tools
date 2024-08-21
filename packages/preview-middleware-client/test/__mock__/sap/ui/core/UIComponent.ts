@@ -1,3 +1,3 @@
-export default class UIComponent {
+export default class UIComponentMock {
     getRootControl = jest.fn();
 }
