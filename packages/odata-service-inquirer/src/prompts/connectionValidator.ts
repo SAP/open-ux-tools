@@ -23,7 +23,6 @@ import { t } from '../i18n';
 import { SAP_CLIENT_KEY } from '../types';
 import LoggerHelper from './logger-helper';
 import { errorHandler } from './prompt-helpers';
-import type { AbapOnBTPType } from './datasources/sap-system/abap-on-btp/questions';
 
 /**
  * Structure to store validity information about url to be validated.
@@ -54,10 +53,11 @@ interface AxiosExtensionRequestConfig extends AxiosRequestConfig {
 // System specific authentication mechanism, used to determine the connection auth type
 export type SystemAuthType = 'serviceKey' | 'reentranceTicket' | 'basic' | 'unknown';
 /**
- * Class that validates the connection to a service url or catalog url.
- * This will determine if authentication is required and if the service/catalog is reachable, generating messages to guide the user.
- * It is optimized for re-validation of the same url, so that the validation is not repeated if not required.
- *
+ * Class that can be used to determine the connectivity using a service url, system url, or service info (UAA Key details) or reentrance ticket.
+ * This will determine if if the service/catalog is reachable, authentication is required and generates ting messages to guide the user.
+ * Certain types of certificate errors can be ignored if required. However, the end-user should be warned about the risks using a prompt message.
+ * Catalog requests may be made multiple times for the same url, but the underlying connectivity module (@sap-ux/axios-extension) will cache the results to avoid repeated network requests.
+ * The class also stores the current connection state, including the service provider, odata service, and catalog services.
  */
 export class ConnectionValidator {
     public readonly validity: Validity = {};
@@ -68,7 +68,7 @@ export class ConnectionValidator {
 
     private _odataService: ODataService | undefined;
     private _serviceProvider: ServiceProvider | undefined;
-    private _axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration | undefined;
+    private _axiosConfig: (AxiosExtensionRequestConfig & ProviderConfiguration) | undefined;
     private _catalogV2: CatalogService | undefined;
     private _catalogV4: CatalogService | undefined;
     private _systemAuthType: SystemAuthType | undefined;
@@ -91,7 +91,7 @@ export class ConnectionValidator {
      *
      * @returns the odata service instance
      */
-    public get odataService(): ODataService | undefined{
+    public get odataService(): ODataService | undefined {
         return this._odataService;
     }
 
@@ -116,36 +116,63 @@ export class ConnectionValidator {
     }
 
     /**
-     * The auth type used to create a connection to the system
+     * The auth type used to create an authenticated connection to the system.
+     *
+     * @returns the system auth type
      */
     public get systemAuthType(): SystemAuthType | undefined {
         return this._systemAuthType;
     }
     /**
+     * The auth type used to create an authenticated connection to the system.
      *
+     * @param value the system auth type
      */
     public set systemAuthType(value: SystemAuthType) {
         this._systemAuthType = value;
     }
 
     /**
+     * Get the validated url. This is the url that has been successfully validated (not necessarily connected). Use validity to check if the url is reachable.
      *
+     * @returns the validated url
      */
     public get validatedUrl(): string | undefined {
         return this._validatedUrl;
     }
 
-    public get serviceInfo(): ServiceInfo | undefined{
+    /**
+     * Get the service info used to connect to the system.
+     *
+     * @returns the service info
+     */
+    public get serviceInfo(): ServiceInfo | undefined {
         return this._serviceInfo;
     }
 
+    /**
+     * Set the service info used to connect to the system.
+     *
+     * @param serviceInfo the service info
+     */
     public set serviceInfo(serviceInfo: ServiceInfo) {
         this._serviceInfo = serviceInfo;
     }
 
+    /**
+     * Get the connected user name.
+     *
+     * @returns the connected user name
+     */
     public get connectedUserName(): string | undefined {
         return this._connectedUserName;
     }
+
+    /**
+     * Get the refresh token.
+     *
+     * @returns the refresh token
+     */
     public get refreshToken(): string | undefined {
         return this._refreshToken;
     }
@@ -153,10 +180,10 @@ export class ConnectionValidator {
     /**
      * Get the connected system name. If previously set this will be used, otherwise the name is determined
      * by the system auth type, or the validated url.
-     * 
+     *
+     * @returns the connected system name
      */
     public get connectedSystemName(): string | undefined {
-
         if (this._connectedSystemName) {
             return this._connectedSystemName;
         }
@@ -166,6 +193,9 @@ export class ConnectionValidator {
         }
         return this.validatedUrl;
     }
+    /**
+     *
+     */
     public set connectedSystemName(value: string | undefined) {
         this._connectedSystemName = value;
     }
@@ -305,22 +335,23 @@ export class ConnectionValidator {
     /**
      * Create the connection for a system url, the specified axios config or the specified service info.
      *
-     * @param axiosConfig the axios request configuration
-     * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
+     * @param connectConfig the connection configuration
+     * @param connectConfig.axiosConfig the axios request configuration
+     * @param connectConfig.url the system url
+     * @param connectConfig.serviceInfo the service info
+     * @param connectConfig.odataVersion the odata version to restrict the catalog requests if only a specific version is required
      */
     private async createSystemConnection({
-            axiosConfig,
-            url,
-            serviceInfo,
-            odataVersion
-        } : {
-            axiosConfig?: AxiosExtensionRequestConfig & ProviderConfiguration;
-            url?: URL,
-            serviceInfo?: ServiceInfo;
-            odataVersion?: ODataVersion
-        }
-    ): Promise<void> {
-
+        axiosConfig,
+        url,
+        serviceInfo,
+        odataVersion
+    }: {
+        axiosConfig?: AxiosExtensionRequestConfig & ProviderConfiguration;
+        url?: URL;
+        serviceInfo?: ServiceInfo;
+        odataVersion?: ODataVersion;
+    }): Promise<void> {
         this.resetConnectionState();
 
         if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
@@ -352,17 +383,24 @@ export class ConnectionValidator {
         }
     }
 
+    /**
+     * Callback for when the refresh token changes.
+     *
+     * @param refreshToken the new refresh token
+     */
     private async refreshTokenChangedCb(refreshToken?: string): Promise<void> {
         LoggerHelper.logger.debug(`ConnectionValidator.refreshTokenChangedCb()`);
         this._refreshToken = refreshToken;
     }
 
     /**
+     * Get the service provider for the Abap on Cloud environment.
      *
-     * @param axiosConfig
+     * @param url the system url
+     * @param serviceInfo the service info
+     * @returns the service provider
      */
     private getAbapOnCloudServiceProvider(url?: URL, serviceInfo?: ServiceInfo): ServiceProvider {
-
         if (this.systemAuthType === 'reentranceTicket' && url) {
             return createForAbapOnCloud({
                 environment: AbapCloudEnvironment.EmbeddedSteampunk,
@@ -383,13 +421,12 @@ export class ConnectionValidator {
 
     /**
      * Validate the system connectivity with the specified service info (containing UAA details).
-     * 
-     * @param serviceInfo 
-     * @param odataVersion 
-     * @returns 
+     *
+     * @param serviceInfo the service info containing the UAA details
+     * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
+     * @returns true if the system is reachable, false if not, or an error message string
      */
     public async validateServiceInfo(serviceInfo: ServiceInfo, odataVersion?: ODataVersion): Promise<ValidationResult> {
-
         if (!serviceInfo) {
             return false;
         }
@@ -405,7 +442,7 @@ export class ConnectionValidator {
             LoggerHelper.logger.debug(`ConnectionValidator.validateServiceInfo() - error: ${error.message}`);
             if (error?.isAxiosError) {
                 this.getValidationResultFromStatusCode(error?.response?.status || error?.code);
-            } 
+            }
             return errorHandler.getErrorMsg(error) ?? false;
         }
     }
@@ -420,8 +457,6 @@ export class ConnectionValidator {
      * @param options.forceReValidation force re-validation of the url
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url, this value is retained for subsequent calls
      * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
-     * @param options.systemAuthType the authentication type used to connect to the system, set to 'unknown' to indicate this is a system connection, the auth type will be determined by the system connection.
-     *     Not to be specified for service connections.
      * @returns true if the url is reachable, false if not, or an error message string
      */
     public async validateUrl(
@@ -535,9 +570,9 @@ export class ConnectionValidator {
      * Check whether basic auth is required for the given url, or for the previously validated url if none specified.
      * This will also set the validity state for the url. This will not validate the URL.
      *
-     * @param urlString - the url to validate, if not provided the previously validated url will be used
-     * @param client - optional, sap client code, if not provided the previously validated client will be used
-     * @param ignoreCertError
+     * @param urlString the url to validate, if not provided the previously validated url will be used
+     * @param client optional, sap client code, if not provided the previously validated client will be used
+     * @param ignoreCertError ignore some certificate errors
      * @returns true if basic auth is required, false if not
      */
     public async isAuthRequired(

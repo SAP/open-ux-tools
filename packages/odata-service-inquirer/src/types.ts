@@ -201,6 +201,12 @@ export type DatasourceTypePromptOptions = {
      * Include the `projectSpecificDestination` option in the datasource type prompt
      */
     includeProjectSpecificDest?: boolean;
+    /**
+     * Limit the offered datasource types to the specified types. Note that if `default` is also provided and not included in the choices, the default will be ignored.
+     * If `includeNone` is set to true, the `none` option will always be included.
+     *
+     */
+    choices?: DatasourceType[];
 };
 
 export type MetadataPromptOptions = {

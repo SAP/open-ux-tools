@@ -11,8 +11,8 @@ import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import type { Answers, InputQuestion, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions, SapSystemType, ValidationLink } from '../../../../types';
-import { promptNames } from '../../../../types';
-import { PromptState, convertODataVersionType, getDefaultChoiceIndex } from '../../../../utils';
+import { SAP_CLIENT_KEY, hostEnvironment, promptNames } from '../../../../types';
+import { PromptState, convertODataVersionType, getDefaultChoiceIndex, getHostEnvironment } from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
 import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
@@ -20,13 +20,12 @@ import { getServiceChoices, getServiceDetails, getServiceType } from './service-
 import { type ServiceAnswer, newSystemPromptNames } from './types';
 import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
 import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions';
+import LoggerHelper from '../../../logger-helper';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
 export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^';
-
-
-
+const cliServicePromptName = 'cliServicePromptName';
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
  */
@@ -34,8 +33,6 @@ export interface NewSystemAnswers {
     [newSystemPromptNames.newSystemType]?: SapSystemType;
     [promptNames.userSystemName]?: string;
 }
-
-
 
 const systemSelectionPromptNames = {
     system: 'system'
@@ -47,11 +44,14 @@ export interface SystemSelectionAnswer extends OdataServiceAnswers {
 
 /**
  * Convert the system connection scheme (Service Key, Rentrance Ticket, etc) to the store specific authentication type.
- * Note the absence of CF Discovery as this is not the system to which we are connecting. In this case the service key file (UAA) is also used for the Abap connectivity.
+ * Note the absence of CF Discovery, in this case the service key file (UAA) is also used for the Abap connectivity.
  *
- * @param systemAuthType
+ * @param systemAuthType The system authentication type
+ * @returns The store specific authentication type
  */
-function systemAuthTypeToAuthenticationType(systemAuthType: SystemAuthType | undefined): AuthenticationType | undefined {
+function systemAuthTypeToAuthenticationType(
+    systemAuthType: SystemAuthType | undefined
+): AuthenticationType | undefined {
     switch (systemAuthType) {
         case 'serviceKey':
             return AuthenticationType.OAuth2RefreshToken;
@@ -100,10 +100,10 @@ export function getNewSystemQuestions(promptOptions?: OdataServicePromptOptions)
 /**
  * Get the system url prompt. The system url prompt is used to connect to a new system using the user input system url.
  *
- * @param nameModifier To support parallel re-use each instance of the propmt must have a unique name, and refer to uniquely named answers
- * @param connectValidator
- * @param promptNamespace
- * @param requiredOdataVersion
+ * @param connectValidator a connection validator instance used to validate the system url
+ * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
+ * @param requiredOdataVersion The required OData version for the system connection, only catalogs supporting the specifc odata version will be used.
+ * @returns the system url prompt
  */
 export function getSystemUrlQuestion<T extends Answers>(
     connectValidator: ConnectionValidator,
@@ -143,7 +143,8 @@ export function getSystemUrlQuestion<T extends Answers>(
  *
  * @param connectValidator A reference to the active connection validator,
  *     at prompt execution time the connection properties will be used to create a new BackendSystem, set into the PromptState.odataService.connectedSystem
- * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers. This is used to avoid conflicts with other prompts of the same types.
+ * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
+ *     This prevents conflicts with other prompts of the same types where the same prompt is used by multiple other prompts but cannot share the name.
  * @returns the new system name prompt
  */
 export function getUserSystemNameQuestion(
@@ -164,10 +165,13 @@ export function getUserSystemNameQuestion(
         },
         name: promptName,
         message: t('prompts.systemName.message'),
-        default: async (answers: Partial<NewSystemAnswers>) => {
+        default: async () => {
             const systemName = connectValidator.connectedSystemName;
             if (systemName && !userModifiedSystemName) {
-                defaultSystemName = await suggestSystemName(systemName, connectValidator.axiosConfig?.params?.sapClient);
+                defaultSystemName = await suggestSystemName(
+                    systemName,
+                    connectValidator.axiosConfig?.params?.sapClient
+                );
                 return defaultSystemName;
             }
             return defaultSystemName;
@@ -193,7 +197,7 @@ export function getUserSystemNameQuestion(
                         authenticationType: systemAuthTypeToAuthenticationType(connectValidator.systemAuthType),
                         name: systemName,
                         url: connectValidator.validatedUrl,
-                        client: connectValidator.axiosConfig?.params?.sapClient,
+                        client: connectValidator.axiosConfig?.params?.[SAP_CLIENT_KEY],
                         username: connectValidator.axiosConfig?.auth?.username,
                         password: connectValidator.axiosConfig?.auth?.password,
                         serviceKeys: connectValidator.serviceInfo,
@@ -210,6 +214,12 @@ export function getUserSystemNameQuestion(
     return newSystemNamePrompt;
 }
 
+/**
+ * Create a value for the service selection prompt message, which may include thge active connected user name.
+ *
+ * @param username The connected user name
+ * @returns The service selection prompt message
+ */
 export function getSelectedServiceLabel(username: string | undefined): string {
     let message = t('prompts.systemService.message');
     if (username) {
@@ -230,7 +240,7 @@ export function getSystemServiceQuestion<T extends Answers>(
     connectValidator: ConnectionValidator,
     promptNamespace: string,
     promptOptions?: OdataServicePromptOptions
-): Question<T> {
+): Question<T>[] {
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
     // Prevent re-requesting services repeatedly by only requesting them once and when the system is changed
     let previousSystemUrl: string | undefined;
@@ -255,16 +265,19 @@ export function getSystemServiceQuestion<T extends Answers>(
                 if (requiredOdataVersion && connectValidator.catalogs[requiredOdataVersion]) {
                     catalogs.push(connectValidator.catalogs[requiredOdataVersion]!);
                 } else {
-                    catalogs = Object.values(connectValidator.catalogs).filter((cat) => cat !== undefined) as CatalogService[];
+                    catalogs = Object.values(connectValidator.catalogs).filter(
+                        (cat) => cat !== undefined
+                    ) as CatalogService[];
                 }
                 previousSystemUrl = connectValidator.validatedUrl;
+
                 serviceChoices = await getServiceChoices(catalogs);
             }
             return serviceChoices;
         },
         additionalMessages: (selectedService: ServiceAnswer) =>
             getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, requiredOdataVersion),
-        default: getDefaultChoiceIndex,
+        default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
         // Warning: only executes in YUI not cli
         validate: async (service: ServiceAnswer): Promise<string | boolean | ValidationLink> => {
             if (!connectValidator.validatedUrl) {
@@ -279,7 +292,27 @@ export function getSystemServiceQuestion<T extends Answers>(
         }
     } as ListQuestion<T>;
 
-    return newSystemServiceQuestion;
+    const questions: Question<T>[] = [newSystemServiceQuestion];
+
+    // Only for CLI use as `list` prompt validation does not run on CLI
+
+    if (getHostEnvironment() === hostEnvironment.cli) {
+        questions.push({
+            when: async (answers: Answers): Promise<boolean> => {
+                const selectedService = answers?.[`${promptNamespace}:${promptNames.serviceSelection}`];
+                if (selectedService && connectValidator.validatedUrl) {
+                    const result = await getServiceDetails(selectedService, connectValidator);
+                    if (typeof result === 'string') {
+                        LoggerHelper.logger.error(result);
+                        throw new Error(result);
+                    }
+                }
+                return false;
+            },
+            name: `${promptNamespace}:${cliServicePromptName}`
+        } as Question);
+    }
+    return questions;
 }
 
 /**

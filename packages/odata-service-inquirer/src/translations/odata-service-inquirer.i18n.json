@@ -58,18 +58,18 @@
             "metadataFilePathNotValid": "Metadata file does not exist or is not accessible. Please specify a valid file path.",
             "capProjectNotFound": "The folder you have selected does not seem to contain a valid CAP project. Please check and try again.",
             "warningCertificateValidationDisabled": "User has disabled certificate validation",
-            "annotationsNotFound": "Annotations not found for specified service",
+            "annotationsNotFound": "Annotations not found for specified service"
         },
         "warnings": {
             "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services are not intended to be used for the generation of SAP Fiori UI applications",
             "noServicesAvailable": "No services available for the selected system, see logs for further details.",
             "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only"
         },
-        "systemUrl" : {
+        "systemUrl": {
             "message": "System URL",
             "description": "Enter the URL of the SAP System",
             "placeholder": "https://<host>:<port>"
-        }, 
+        },
         "sapClient": {
             "message": "SAP client (leave empty for default)",
             "breadcrumb": "SAP Client"

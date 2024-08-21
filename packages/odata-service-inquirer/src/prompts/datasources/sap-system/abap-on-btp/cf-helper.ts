@@ -1,5 +1,6 @@
-import { ServiceInstanceInfo, apiGetServicesInstancesFilteredByType as getServicesInstances, apiGetInstanceMetadata } from '@sap/cf-tools';
-import { ListChoiceOptions } from 'inquirer';
+import type { ServiceInstanceInfo } from '@sap/cf-tools';
+import { apiGetServicesInstancesFilteredByType as getServicesInstances } from '@sap/cf-tools';
+import type { ListChoiceOptions } from 'inquirer';
 import { ERROR_TYPE } from '../../../../error-handler/error-handler';
 import { t } from '../../../../i18n';
 import { errorHandler } from '../../../prompt-helpers';
@@ -16,8 +17,12 @@ const AbapEnvType = {
     DESTINATION: 'destination'
 } as const;
 
+/**
+ * Get the name sorted list of ABAP instance choices from an active CF login. If not logged in, an error message is logged.
+ *
+ * @returns The list of ABAP instance choices
+ */
 export async function getABAPInstanceChoices(): Promise<ListChoiceOptions<ServiceInstanceInfo>[]> {
-    let outputError: any;
     const choices: ListChoiceOptions[] = [];
     try {
         const filteredInstances = [

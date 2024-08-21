@@ -341,7 +341,7 @@ export class ErrorHandler {
      */
     public getErrorMsg(error?: any, reset?: boolean, fallback?: ERROR_TYPE): string | undefined {
         let errorMsg;
-        if (typeof error !== 'boolean') {
+        if (error && typeof error !== 'boolean') {
             errorMsg = ErrorHandler.mapErrorToMsg(error).errorMsg;
         }
         // Get previous error message

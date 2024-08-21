@@ -12,18 +12,17 @@ describe('questions', () => {
         expect(newSystemQuestions).toMatchInlineSnapshot(`
             [
               {
-                "additionalMessages": [Function],
                 "choices": [
                   {
-                    "name": "prompts.newSystemType.choiceAbapOnBtp",
+                    "name": "ABAP Environment on SAP Business Technology Platform",
                     "value": "abapOnBtp",
                   },
                   {
-                    "name": "prompts.newSystemType.choiceAbapOnPrem",
+                    "name": "ABAP On Premise",
                     "value": "abapOnPrem",
                   },
                 ],
-                "message": "prompts.newSystemType.message",
+                "message": "System type",
                 "name": "newSystemType",
                 "type": "list",
               },
@@ -34,7 +33,7 @@ describe('questions', () => {
                   "mandatory": true,
                 },
                 "message": "System URL",
-                "name": "systemUrl",
+                "name": "abapOnPrem:newSystemUrl",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
@@ -50,6 +49,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "default": "",
                 "guiOptions": {
                   "mandatory": true,
                 },
@@ -60,6 +60,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "default": "",
                 "guiOptions": {
                   "mandatory": true,
                 },
@@ -79,7 +80,7 @@ describe('questions', () => {
                   "hint": "Entering a system name will save the connection for re-use.",
                 },
                 "message": "System name",
-                "name": "userSystemName",
+                "name": "abapOnPrem:userSystemName",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
@@ -93,46 +94,107 @@ describe('questions', () => {
                   "breadcrumb": "Service",
                   "mandatory": true,
                 },
-                "message": "Service name",
-                "name": "serviceSelection",
+                "message": [Function],
+                "name": "abapOnPrem:serviceSelection",
                 "source": [Function],
                 "type": "list",
                 "validate": [Function],
                 "when": [Function],
               },
               {
-                "name": "cliServicePromptName",
+                "name": "abapOnPrem:cliServicePromptName",
                 "when": [Function],
               },
               {
                 "choices": [
                   {
-                    "name": "prompts.abapOnBtpType.cloudFoundry",
+                    "name": "Discover a Cloud Foundry Service",
                     "value": "cloudFoundry",
                   },
                   {
-                    "name": "prompts.abapOnBtpType.serviceKey",
+                    "name": "Upload a Service Key File",
                     "value": "serviceKey",
                   },
                   {
-                    "name": "prompts.abapOnBtpType.reentranceTicket",
+                    "name": "Use Reentrance Ticket",
                     "value": "reentranceTicket",
                   },
                 ],
-                "message": "SCP_ABAP_SOURCE_MESSAGE",
+                "message": "ABAP environment definition source",
                 "name": "abapOnBtpAuthType",
                 "type": "list",
+                "validate": [Function],
                 "when": [Function],
               },
               {
                 "guiOptions": {
                   "breadcrumb": true,
+                  "hint": "Enter the URL of the SAP System",
                   "mandatory": true,
                 },
-                "message": "key 'prompts.systemUrl (en)' returned an object instead of string.",
-                "name": "abapOnBtpSystemUrl",
+                "message": "System URL",
+                "name": "abapOnBtp:newSystemUrl",
                 "type": "input",
                 "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
+                  "mandatory": true,
+                },
+                "guiType": "file-browser",
+                "message": "Service key file path",
+                "name": "serviceKey",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "additionalMessages": [Function],
+                "choices": [Function],
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": true,
+                },
+                "message": "ABAP environment",
+                "name": "cloudFoundryAbapSystem",
+                "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": true,
+                  "hint": "Entering a system name will save the connection for re-use.",
+                },
+                "message": "System name",
+                "name": "abapOnBtp:userSystemName",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "additionalMessages": [Function],
+                "choices": [Function],
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": "Service",
+                  "mandatory": true,
+                },
+                "message": [Function],
+                "name": "abapOnBtp:serviceSelection",
+                "source": [Function],
+                "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "name": "abapOnBtp:cliServicePromptName",
                 "when": [Function],
               },
             ]

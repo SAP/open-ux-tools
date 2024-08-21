@@ -5,21 +5,14 @@ import type { Answers, InputQuestion, PasswordQuestion, Question } from 'inquire
 import { t } from '../../../../i18n';
 import type { promptNames } from '../../../../types';
 import {
-    hostEnvironment,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     type ServiceSelectionPromptOptions,
     type SystemNamePromptOptions
 } from '../../../../types';
-import { PromptState, getHostEnvironment } from '../../../../utils';
+import { PromptState } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
-import LoggerHelper from '../../../logger-helper';
-import {
-    getSystemServiceQuestion,
-    getSystemUrlQuestion,
-    getUserSystemNameQuestion,
-} from '../new-system/questions';
-import { getServiceDetails } from '../new-system/service-helper';
+import { getSystemServiceQuestion, getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
 import { newSystemPromptNames, type ServiceAnswer } from '../new-system/types';
 
 const abapOnPremPromptNamespace = 'abapOnPrem';
@@ -37,8 +30,6 @@ interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
     [abapOnPremInternalPromptNames.systemPassword]?: string;
     [promptNames.serviceSelection]?: ServiceAnswer;
 }
-
-const cliServicePromptName = 'cliServicePromptName';
 
 /**
  * Get the Abap on-premise datasource questions.
@@ -58,27 +49,7 @@ export function getAbapOnPremQuestions(promptOptions?: OdataServicePromptOptions
         requiredOdataVersion
     );
 
-    questions.push(getSystemServiceQuestion(connectValidator, abapOnPremPromptNamespace, promptOptions));
-
-    // Only for CLI use as `list` prompt validation does not run on CLI
-    if (getHostEnvironment() === hostEnvironment.cli) {
-        questions.push({
-            when: async (answers: Answers): Promise<boolean> => {
-                const newSystemUrl = answers?.[`${abapOnPremPromptNamespace}:${newSystemPromptNames.newSystemUrl}`];
-                if (answers.serviceSelection && answers.systemUrl) {
-                    const result = await getServiceDetails(
-                        answers.serviceSelection,
-                        connectValidator
-                    );
-                    if (typeof result === 'string') {
-                        LoggerHelper.logger.error(result);
-                    }
-                }
-                return false;
-            },
-            name: cliServicePromptName
-        } as Question);
-    }
+    questions.push(...getSystemServiceQuestion(connectValidator, abapOnPremPromptNamespace, promptOptions));
 
     return questions;
 }
@@ -100,7 +71,7 @@ export function getAbapOnPremSystemQuestions(
     let validClient = true;
 
     const questions: Question<AbapOnPremAnswers>[] = [
-        getSystemUrlQuestion<AbapOnPremAnswers>(connectValidator, 'abapOnPrem', requiredOdataVersion),
+        getSystemUrlQuestion<AbapOnPremAnswers>(connectValidator, abapOnPremPromptNamespace, requiredOdataVersion),
         {
             type: 'input',
             name: abapOnPremInternalPromptNames.sapClient,

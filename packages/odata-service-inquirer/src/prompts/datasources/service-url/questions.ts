@@ -10,7 +10,7 @@ import LoggerHelper from '../../logger-helper';
 import { ConnectionValidator } from '../../connectionValidator';
 import { serviceUrlInternalPromptNames } from './types';
 import { validateService } from './validators';
-import { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.

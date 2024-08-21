@@ -1,7 +1,7 @@
 import { t } from '../../../i18n';
 import { SystemService } from '@sap-ux/store';
 import LoggerHelper from '../../logger-helper';
-import { ServiceInfo } from '@sap-ux/btp-utils';
+import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'fs';
 
 /**
@@ -35,7 +35,7 @@ export async function validateSystemName(systemName: string): Promise<boolean | 
 
 /**
  * Validates the existence and content of the file at the given path.
- * 
+ *
  * @param path path to a service key file
  */
 export function validateServiceKey(path: string): string | ServiceInfo | boolean {

@@ -12,8 +12,7 @@ import {
 } from '../types';
 import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
 import { getMetadataFileQuestion } from './datasources/metadata-file';
-import { getAbapOnPremQuestions } from './datasources/sap-system/abap-on-prem/questions';
-import type { NewSystemAnswers, SystemSelectionAnswer } from './datasources/sap-system/new-system/questions';
+import type { SystemSelectionAnswer } from './datasources/sap-system/new-system/questions';
 import { getNewSystemQuestions, newSystemChoiceValue } from './datasources/sap-system/new-system/questions';
 import { getServiceUrlQuestions } from './datasources/service-url/questions';
 import LoggerHelper from './logger-helper';
@@ -112,16 +111,6 @@ async function getDatasourceTypeConditionalQuestions(
         ) as OdataServiceQuestion[])
     );
 
-    // Temp integration into Service Inquirer new system questions
-    /* conditionalQuestions.push(
-        ...(withCondition(
-            getAbapOnPremQuestions(promptOptions) as Question[],
-            (answers: Answers) =>
-                (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem &&
-                (answers as SystemSelectionAnswer).system === newSystemChoiceValue &&
-                (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
-        ) as OdataServiceQuestion[])
-    ); */
     conditionalQuestions.push(
         ...(withCondition(
             getNewSystemQuestions(promptOptions) as Question[],
@@ -129,7 +118,7 @@ async function getDatasourceTypeConditionalQuestions(
                 (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem &&
                 (answers as SystemSelectionAnswer).system === newSystemChoiceValue
         ) as OdataServiceQuestion[])
-    ); 
+    );
 
     //...further data sources to be added here
 

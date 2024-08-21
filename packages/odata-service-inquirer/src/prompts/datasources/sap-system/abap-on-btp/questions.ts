@@ -1,21 +1,20 @@
-import { FileBrowserQuestion, withCondition, ListQuestion, PromptSeverityMessage } from '@sap-ux/inquirer-common';
-import type { Question, ListChoiceOptions } from 'inquirer';
+import type { IMessageSeverity, IValidationLink } from '@sap-devx/yeoman-ui-types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+import type { FileBrowserQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import { withCondition } from '@sap-ux/inquirer-common';
+import type { ServiceInstanceInfo } from '@sap/cf-tools';
+import { apiGetInstanceCredentials, cfGetTarget } from '@sap/cf-tools';
+import type { Answers, ListChoiceOptions, Question } from 'inquirer';
+import { ERROR_TYPE } from '../../../../error-handler/error-handler';
 import { t } from '../../../../i18n';
 import { hostEnvironment, type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
 import { PromptState, getDefaultChoiceIndex, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
-import {
-    getSystemServiceQuestion,
-    getSystemUrlQuestion,
-    getUserSystemNameQuestion,
-} from '../new-system/questions';
+import { errorHandler } from '../../../prompt-helpers';
+import { getSystemServiceQuestion, getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
+import { newSystemPromptNames } from '../new-system/types';
 import { validateServiceKey } from '../validators';
 import { getABAPInstanceChoices } from './cf-helper';
-import { ServiceInstanceInfo, apiGetInstanceCredentials, cfGetTarget } from '@sap/cf-tools';
-import { IMessageSeverity, IValidationLink, Severity } from '@sap-devx/yeoman-ui-types';
-import { errorHandler } from '../../../prompt-helpers';
-import { ERROR_TYPE } from '../../../../error-handler/error-handler';
-import { newSystemPromptNames } from '../new-system/types';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
@@ -38,8 +37,10 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
 }
 
 /**
+ * Get the questions for the ABAP on BTP system. The questions will prompt the user for the system type (Cloud Foundry, Service Key, Re-entrance Ticket).
  *
- * @param promptOptions
+ * @param promptOptions The prompt options which control the service selection and system name]
+ * @returns The list of questions for the ABAP on BTP system
  */
 export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOptions): Question<AbapOnBtpAnswers>[] {
     PromptState.reset();
@@ -83,13 +84,10 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
 
     // Service Key file prompt
     questions.push(
-        withCondition([getServiceKeyPrompt(connectValidator)], (answers: AbapOnBtpAnswers) => {
-            if (answers?.abapOnBtpAuthType === 'serviceKey') {
-                connectValidator.systemAuthType = answers.abapOnBtpAuthType; // Is this needed?
-                return true;
-            }
-            return false;
-        })[0]
+        withCondition(
+            [getServiceKeyPrompt(connectValidator)],
+            (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'serviceKey'
+        )[0]
     );
 
     questions.push(
@@ -110,13 +108,13 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
                         !!answers?.[abapOnBtpPromptNames.serviceKey] ||
                         !!answers?.[abapOnBtpPromptNames.cloudFoundryAbapSystem]) &&
                     connectValidator.validity.reachable === true &&
-                    (connectValidator.validity.authenticated || connectValidator.validity.authRequired !== true)
+                    (connectValidator.validity.authenticated ?? connectValidator.validity.authRequired !== true)
             )[0]
         );
     }
 
     // Service selection prompt
-    questions.push(getSystemServiceQuestion(connectValidator, abapOnBtpPromptNamespace, promptOptions));
+    questions.push(...getSystemServiceQuestion(connectValidator, abapOnBtpPromptNamespace, promptOptions));
     return questions;
 }
 
@@ -124,8 +122,8 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
  * Get the Cloud Foundry Abap system discovery prompt. This prompt will list all available ABAP environments in the connected Cloud Foundry space.
  * If the Cloud Foundry connection fails, a warning message will be displayed.
  *
- * @param connectionValidator
- * @returns
+ * @param connectionValidator The connection validator
+ * @returns The Cloud Foundry ABAP system discovery prompt
  */
 export function getCFDiscoverPrompt(connectionValidator: ConnectionValidator): ListQuestion {
     let choices: ListChoiceOptions<ServiceInstanceInfo>[] = [];
@@ -134,7 +132,7 @@ export function getCFDiscoverPrompt(connectionValidator: ConnectionValidator): L
         name: abapOnBtpPromptNames.cloudFoundryAbapSystem,
         guiOptions: {
             breadcrumb: true,
-            applyDefaultWhenDirty: true,
+            applyDefaultWhenDirty: true
         },
         choices: async () => {
             choices = await getABAPInstanceChoices();
@@ -146,10 +144,9 @@ export function getCFDiscoverPrompt(connectionValidator: ConnectionValidator): L
             }
             return choices;
         },
-        default: getDefaultChoiceIndex,
+        default: () => getDefaultChoiceIndex(choices as Answers[]),
         message: t('prompts.cloudFoundryAbapSystem.message'),
         validate: async (abapService: ServiceInstanceInfo): Promise<string | boolean | IValidationLink> => {
-            // todo: CLI equivalent...
             if (abapService) {
                 const uaaCreds = await apiGetInstanceCredentials(abapService.label);
                 const valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
@@ -185,6 +182,12 @@ export function getCFDiscoverPrompt(connectionValidator: ConnectionValidator): L
     } as ListQuestion;
 }
 
+/**
+ * Get the service key prompt for the ABAP on BTP system. This prompt will allow the user to select a service key file from the file system.
+ *
+ * @param connectionValidator a connection validator instance
+ * @returns The service key prompt
+ */
 function getServiceKeyPrompt(connectionValidator: ConnectionValidator): FileBrowserQuestion {
     const question = {
         type: 'input',
