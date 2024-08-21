@@ -23,14 +23,13 @@ const getEmptyModel = (): ChangesSlice => {
     return model;
 };
 
-const _filterInitOptions: FilterOptions[] = [{ name: FilterName.changeSummaryFilterQuery, value: '' }];
 describe('QuickActionList', () => {
     beforeAll(() => {
         initI18n();
         initIcons();
         registerAppIcons();
     });
-    test.skip('ChangePanel - check if search filter rendered', () => {
+    test('ChangePanel - check if quick action list rendered', () => {
         const model = getEmptyModel();
         const children = [
             {
@@ -148,7 +147,7 @@ describe('QuickActionList', () => {
             executeQuickAction({
                 kind: 'nested',
                 id: 'quick-action-3',
-                path: '2'
+                path: '0'
             })
         );
     });

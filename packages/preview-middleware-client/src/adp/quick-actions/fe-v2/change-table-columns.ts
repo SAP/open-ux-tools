@@ -20,8 +20,9 @@ const SETTINGS_ID = 'CTX_SETTINGS';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
 const M_TABLE_TYPE = 'sap.m.Table';
+// maintain order if action id
 const ACTION_ID = [SMART_TABLE_ACTION_ID, M_TABLE_ACTION_ID, SETTINGS_ID];
-const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE];
+const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, 'sap.ui.table.TreeTable', 'sap.ui.table.Table'];
 
 export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinition {
     readonly kind = NESTED_QUICK_ACTION_KIND;
@@ -45,6 +46,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     constructor(private context: QuickActionContext) {}
 
     async initialize() {
+        // Assumption Only one tab bar control per page.
         const tabBar = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
             ICON_TAB_BAR_TYPE
         ])[0];
@@ -67,21 +69,23 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
             CONTROL_TYPES
         )) {
             const actions = await this.context.actionService.get(table.getId());
-            const changeColumnAction = actions.find((action) => ACTION_ID.includes(action.id));
+            const changeColumnAction = ACTION_ID.find(
+                (actionId) => actions.findIndex((action) => action.id === actionId) > -1
+            );
+            const tabKey = Object.keys(filters).find((key) => table.getId().endsWith(key));
             if (changeColumnAction) {
-                const tabKey = Object.keys(filters).find((key) => table.getId().endsWith(key));
                 if (this.iconTabBar && tabKey) {
                     this.children.push({
                         label: `'${filters[tabKey]}' table`,
                         children: []
                     });
                     this.tableMap[`${this.children.length - 1}`] = {
-                        table,
+                        table: table,
                         iconTabBarFilterKey: tabKey,
-                        changeColumnActionId: changeColumnAction.id
+                        changeColumnActionId: changeColumnAction
                     };
                 } else {
-                    this.processTable(table, changeColumnAction.id);
+                    this.processTable(table, changeColumnAction);
                 }
             }
         }

@@ -31,7 +31,6 @@ function isDescendantOfPage(control: ManagedObject | null | undefined, oRootCont
     return false;
 }
 
-
 export function getRelevantControlFromActivePage(
     controlIndex: ControlTreeIndex,
     activePage: Control,
@@ -46,7 +45,14 @@ export function getRelevantControlFromActivePage(
 
             const UI5ControlData = getControlById(control.controlId);
             if (isActionApplicable && UI5ControlData) {
-                relevantControls.push(UI5ControlData);
+                // if parent control added, discard adding child control.
+                // Relevant for cases where wrapper exists eg: sap.m.Table exist in sap.ui.comp.smarttable.SmartTable
+                const parentFound = relevantControls.findIndex(
+                    (rControl) => rControl.getId() === UI5ControlData.getParent()?.getId()
+                );
+                if (parentFound === -1) {
+                    relevantControls.push(UI5ControlData);
+                }
             }
         }
     }
@@ -78,4 +84,3 @@ export function getFeVersion(manifest: Manifest): 'v2' | 'v4' | undefined {
         return undefined;
     }
 }
-
