@@ -26,7 +26,7 @@ import { reconcileAnswers } from './utils';
  * @returns the prompts used to provide input for abap deploy config generation and a reference to the answers object which will be populated with the user's responses once `inquirer.prompt` returns
  */
 async function getPrompts(
-    promptOptions: AbapDeployConfigPromptOptions,
+    promptOptions?: AbapDeployConfigPromptOptions,
     logger?: Logger,
     isYUI = false
 ): Promise<{
@@ -54,7 +54,7 @@ async function getPrompts(
  * @returns the prompt answers
  */
 async function prompt(
-    promptOptions: AbapDeployConfigPromptOptions,
+    promptOptions?: AbapDeployConfigPromptOptions,
     adapter?: InquirerAdapter,
     logger?: Logger,
     isYUI = false

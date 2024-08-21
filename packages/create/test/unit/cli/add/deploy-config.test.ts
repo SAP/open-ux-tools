@@ -6,6 +6,14 @@ import { join } from 'path';
 import * as logger from '../../../../src/tracing/logger';
 import * as deployConfigInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import * as deployConfigWriter from '@sap-ux/abap-deploy-config-writer';
+import { prompt } from 'prompts';
+
+jest.mock('prompts', () => ({
+    ...jest.requireActual('prompts'),
+    prompt: jest.fn()
+}));
+
+const mockPrompt = prompt as jest.Mock;
 
 describe('add/deploy-config', () => {
     const appRoot = join(__dirname, '../../../fixtures/bare-minimum');
@@ -34,6 +42,34 @@ describe('add/deploy-config', () => {
         } as Partial<Editor> as Editor;
     });
 
+    test('should prompt for target when not provided', async () => {
+        const deployConfigInquirerSpy = jest.spyOn(deployConfigInquirer, 'prompt');
+        deployConfigInquirerSpy.mockResolvedValueOnce({});
+        const deployConfigWriterSpy = jest.spyOn(deployConfigWriter, 'generate');
+        deployConfigWriterSpy.mockResolvedValueOnce(fsMock);
+        mockPrompt.mockResolvedValueOnce({ target: 'abap' });
+
+        // Test execution
+        const command = new Command('add');
+        addDeployConfigCommand(command);
+        await command.parseAsync(getArgv(['deploy-config', appRoot]));
+
+        // Result check
+        expect(mockPrompt).toBeCalledTimes(1);
+        expect(deployConfigInquirerSpy).toBeCalledTimes(1);
+        expect(deployConfigWriterSpy).toBeCalledTimes(1);
+    });
+
+    test('should log when cf deploy config is requested', async () => {
+        // Test execution
+        const command = new Command('add');
+        addDeployConfigCommand(command);
+        await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'cf']));
+
+        // Result check
+        expect(loggerMock.info).toBeCalledWith('Cloud Foundry deployment is not yet implemented.');
+    });
+
     test('should add deploy config', async () => {
         jest.spyOn(deployConfigInquirer, 'prompt').mockResolvedValueOnce({});
         jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
@@ -41,7 +77,7 @@ describe('add/deploy-config', () => {
         // Test execution
         const command = new Command('add');
         addDeployConfigCommand(command);
-        await command.parseAsync(getArgv(['deploy-config', appRoot]));
+        await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap']));
 
         // Result check
         expect(logLevelSpy).not.toBeCalled();
@@ -59,7 +95,7 @@ describe('add/deploy-config', () => {
         // Test execution
         const command = new Command('add');
         addDeployConfigCommand(command);
-        await command.parseAsync(getArgv(['deploy-config', appRoot, '--simulate']));
+        await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap', '--simulate']));
 
         // Result check
         expect(logLevelSpy).toBeCalled();
@@ -77,7 +113,7 @@ describe('add/deploy-config', () => {
         // Test execution
         const command = new Command('add');
         addDeployConfigCommand(command);
-        await command.parseAsync(getArgv(['deploy-config', appRoot, '--verbose']));
+        await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap', '--verbose']));
 
         // Result check
         expect(logLevelSpy).toBeCalled();
@@ -99,7 +135,7 @@ describe('add/deploy-config', () => {
         // Test execution
         const command = new Command('add');
         addDeployConfigCommand(command);
-        await command.parseAsync(getArgv(['deploy-config', appRoot, '--verbose']));
+        await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap', '--verbose']));
 
         // Result check
         expect(logLevelSpy).toBeCalled();
@@ -127,7 +163,7 @@ describe('add/deploy-config', () => {
         // Test execution
         const command = new Command('add');
         addDeployConfigCommand(command);
-        await command.parseAsync(getArgv(['deploy-config', appRoot, '--verbose']));
+        await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap', '--verbose']));
 
         // Result check
         expect(loggerMock.debug).toBeCalledWith(

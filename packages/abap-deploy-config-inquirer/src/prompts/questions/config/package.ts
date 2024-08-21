@@ -91,7 +91,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 packageInputChoiceValid === true &&
-                defaultOrShowSearchPackageQuestion(isCli, previousAnswers.packageInputChoice),
+                defaultOrShowSearchPackageQuestion(isCli, previousAnswers.packageInputChoice, options.useAutocomplete),
             type: 'autocomplete',
             name: abapDeployConfigInternalPromptNames.packageAutocomplete,
             message: `${t('prompts.config.package.packageAutocomplete.message')}${

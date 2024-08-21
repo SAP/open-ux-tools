@@ -16,9 +16,6 @@
       "path": "../btp-utils"
     },
     {
-      "path": "../feature-toggle"
-    },
-    {
       "path": "../fiori-generator-shared"
     },
     {
