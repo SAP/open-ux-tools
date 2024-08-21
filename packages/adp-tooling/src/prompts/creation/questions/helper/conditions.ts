@@ -1,7 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 import type ConfigInfoPrompter from '../config';
-import type { ConfigurationInfoAnswers } from '../../../../types';
+import { InputChoice, type ConfigurationInfoAnswers, type DeployConfigAnswers } from '../../../../types';
 
 /**
  * Determines if an internal question for ACH and FioriId will be shown based on the answers and specific conditions.
@@ -140,5 +140,37 @@ export function allowExtensionProject(prompter: ConfigInfoPrompter): boolean | u
         isOnPremiseAppStudio &&
         (!prompter.isApplicationSupported ||
             (prompter.isApplicationSupported && (nonFlexOrNonOnPremise || prompter.appIdentifier.appSync)))
+    );
+}
+
+/**
+ * Determines if package manual question will be shown based on the answers and validation on package input choice validation.
+ *
+ * @param {DeployConfigAnswers} answers - The user-provided answers containing application details.
+ * @param {packageInputChoiceValid} packageInputChoiceValid - The validation result of package input choice.
+ * @returns {boolean} True if question will be shown, otherwise false based on the conditions evaluated.
+ */
+export function showPackageManualQuestion(
+    answers: DeployConfigAnswers,
+    packageInputChoiceValid: string | boolean
+): boolean {
+    return (
+        answers?.packageInputChoice === InputChoice.ENTER_MANUALLY ||
+        (answers.packageInputChoice === InputChoice.CHOOSE_FROM_EXISTING && typeof packageInputChoiceValid === 'string')
+    );
+}
+
+/**
+ * Determines if transport-related prompts should be shown based on the package choice and its name.
+ * Transport prompts should not be shown if the chosen package is '$TMP'.
+ *
+ * @param {DeployConfigAnswers} answers - The current answers containing the package choice and names.
+ * @returns {boolean} True if transport-related prompts should be shown, otherwise false.
+ */
+export function shouldShowTransportRelatedPrompt(answers: DeployConfigAnswers): boolean {
+    return (
+        (answers?.packageAutocomplete?.toUpperCase() !== '$TMP' &&
+            answers?.packageInputChoice === InputChoice.CHOOSE_FROM_EXISTING) ||
+        (answers?.packageManual?.toUpperCase() !== '$TMP' && answers?.packageInputChoice === InputChoice.ENTER_MANUALLY)
     );
 }

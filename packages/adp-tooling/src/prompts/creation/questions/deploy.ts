@@ -5,10 +5,12 @@ import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import type { AbapProvider } from '../../../client';
 import { t } from '../../../i18n';
-import type { ChoiceOption, DeployConfigAnswers } from '../../../types';
+import type { DeployConfigAnswers } from '../../../types';
 import { InputChoice } from '../../../types';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages, listTransports } from '../../../client';
 import { validateAbapRepository, validateEmptyString, validatePackageAdp } from '@sap-ux/project-input-validator';
+import { getInputChoiceOptions } from './helper';
+import { shouldShowTransportRelatedPrompt, showPackageManualQuestion } from './helper/conditions';
 
 /**
  * Validates the user's choice for selecting an ABAP package.
@@ -75,33 +77,6 @@ export async function validateTransportChoiceInput(
     } catch (error) {
         return t('validators.errorFetchingTransports');
     }
-}
-
-/**
- * Returns the available options for input choices regarding packages.
- *
- * @returns {ChoiceOption[]} An array of options for user input regarding package choice.
- */
-const getInputChoiceOptions = (): ChoiceOption[] => {
-    return [
-        { name: InputChoice.ENTER_MANUALLY, value: InputChoice.ENTER_MANUALLY },
-        { value: InputChoice.CHOOSE_FROM_EXISTING, name: InputChoice.CHOOSE_FROM_EXISTING }
-    ];
-};
-
-/**
- * Determines if transport-related prompts should be shown based on the package choice and its name.
- * Transport prompts should not be shown if the chosen package is '$TMP'.
- *
- * @param {DeployConfigAnswers} answers - The current answers containing the package choice and names.
- * @returns {boolean} True if transport-related prompts should be shown, otherwise false.
- */
-export function shouldShowTransportRelatedPrompt(answers: DeployConfigAnswers): boolean {
-    return (
-        (answers?.packageAutocomplete?.toUpperCase() !== '$TMP' &&
-            answers?.packageInputChoice === InputChoice.CHOOSE_FROM_EXISTING) ||
-        (answers?.packageManual?.toUpperCase() !== '$TMP' && answers?.packageInputChoice === InputChoice.ENTER_MANUALLY)
-    );
 }
 
 /**
@@ -269,13 +244,7 @@ export async function getPrompts(
                 breadcrumb: true,
                 mandatory: true
             },
-            when: (answers: DeployConfigAnswers) => {
-                return (
-                    answers?.packageInputChoice === InputChoice.ENTER_MANUALLY ||
-                    (answers.packageInputChoice === InputChoice.CHOOSE_FROM_EXISTING &&
-                        typeof packageInputChoiceValid === 'string')
-                );
-            },
+            when: (answers: DeployConfigAnswers) => showPackageManualQuestion(answers, packageInputChoiceValid),
             validate: async (value: string, answers: DeployConfigAnswers) =>
                 await validatePackageName(value, answers, provider, transportList)
         } as InputQuestion<DeployConfigAnswers>,
@@ -304,11 +273,8 @@ export async function getPrompts(
                 return packages;
             },
             additionalInfo: () => morePackageResultsMsg,
-            when: (answers: DeployConfigAnswers) => {
-                return (
-                    packageInputChoiceValid === true && answers?.packageInputChoice === InputChoice.CHOOSE_FROM_EXISTING
-                );
-            },
+            when: (answers: DeployConfigAnswers) =>
+                packageInputChoiceValid === true && answers?.packageInputChoice === InputChoice.CHOOSE_FROM_EXISTING,
             validate: async (value: string, answers: DeployConfigAnswers) =>
                 await validatePackageName(value, answers, provider, transportList)
         } as AutocompleteQuestion<DeployConfigAnswers>,
