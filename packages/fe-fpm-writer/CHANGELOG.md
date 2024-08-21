@@ -1,5 +1,32 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.27.5
+
+### Patch Changes
+
+-   73aa3cd: FilterBar prompt. Show binding context path type for filter bar
+
+## 0.27.4
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/fiori-annotation-api@0.1.37
+
+## 0.27.3
+
+### Patch Changes
+
+-   6916f9e: Chart building block creation. Create 'contextPath' attribute when 'metaPath' property is received as 'BuildingBlockMetaPath' object
+
+## 0.27.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.7
+-   @sap-ux/fiori-annotation-api@0.1.36
+
 ## 0.27.1
 
 ### Patch Changes

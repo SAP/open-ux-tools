@@ -40,9 +40,9 @@ async function changeInbound(basePath: string, simulate: boolean): Promise<void>
         const inboundId = change?.content?.inboundId as string;
         const answers = await promptYUIQuestions(getPromptsForChangeInbound(), false);
         const fs = await generateChange<ChangeType.CHANGE_INBOUND>(basePath, ChangeType.CHANGE_INBOUND, {
-            answers,
             inboundId,
-            variant
+            variant,
+            flp: answers
         });
 
         if (!simulate) {

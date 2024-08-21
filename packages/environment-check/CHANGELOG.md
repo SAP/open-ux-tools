@@ -1,5 +1,28 @@
 # @sap-ux/environment-check
 
+## 0.17.29
+
+### Patch Changes
+
+-   1cab2f9: chore(env-check) upgrade archiver 7.0.1
+
+## 0.17.28
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/axios-extension@1.16.4
+
+## 0.17.27
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/project-access@1.26.7
+    -   @sap-ux/axios-extension@1.16.4
+
 ## 0.17.26
 
 ### Patch Changes

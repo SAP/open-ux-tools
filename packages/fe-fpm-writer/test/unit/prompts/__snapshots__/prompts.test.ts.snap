@@ -203,7 +203,8 @@ Array [
 exports[`Prompts - no project getCodeSnippet Type "chart", get code snippet 1`] = `
 "<macros:Chart
     id=\\"id\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
 />"
 `;
 
@@ -262,6 +263,29 @@ Object {
       "name": "buildingBlockData.id",
       "type": "input",
       "validate": [Function],
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+      ],
+      "default": "absolute",
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.metaPath.qualifier",
+        ],
+        "mandatory": true,
+        "selectType": "static",
+      },
+      "message": "Binding Context Path Type",
+      "name": "buildingBlockData.metaPath.bindingContextType",
+      "type": "list",
     },
     Object {
       "choices": Array [],
@@ -745,6 +769,10 @@ Object {
     "errorMessage": "Please enter a value",
     "isValid": false,
   },
+  "buildingBlockData.metaPath.bindingContextType": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
   "buildingBlockData.metaPath.entitySet": Object {
     "errorMessage": "Please select a value",
     "isValid": false,
@@ -1211,7 +1239,8 @@ Array [
 exports[`Prompts getCodeSnippet Type "chart", get code snippet 1`] = `
 "<macros:Chart
     id=\\"id\\"
-    metaPath=\\"/entity/qualifier\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
     filterBar=\\"filterBar\\"
     selectionMode=\\"testSelectionMode\\"
     selectionChange=\\"function1\\"
@@ -1279,6 +1308,29 @@ Object {
       "name": "buildingBlockData.id",
       "type": "input",
       "validate": [Function],
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+      ],
+      "default": "absolute",
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.metaPath.qualifier",
+        ],
+        "mandatory": true,
+        "selectType": "static",
+      },
+      "message": "Binding Context Path Type",
+      "name": "buildingBlockData.metaPath.bindingContextType",
+      "type": "list",
     },
     Object {
       "choices": [Function],
@@ -1712,7 +1764,7 @@ exports[`Prompts submitAnswers Type "chart" 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Chart id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" selectionMode=\\"testSelectionMode\\" selectionChange=\\"function1\\"/>
+            <macros:Chart id=\\"id\\" metaPath=\\"qualifier\\" contextPath=\\"/entity\\" filterBar=\\"filterBar\\" selectionMode=\\"testSelectionMode\\" selectionChange=\\"function1\\"/>
         </content>
     </Page>
 </mvc:View>"
@@ -1800,6 +1852,10 @@ Object {
   },
   "buildingBlockData.id": Object {
     "errorMessage": "Please enter a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.bindingContextType": Object {
+    "errorMessage": "Please select a value",
     "isValid": false,
   },
   "buildingBlockData.metaPath.entitySet": Object {

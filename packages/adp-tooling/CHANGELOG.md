@@ -1,5 +1,30 @@
 # @sap-ux/adp-tooling
 
+## 0.12.40
+
+### Patch Changes
+
+-   6419b2c: Clean separation between prompting and writing in adp-tooling
+
+## 0.12.39
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/system-access@0.5.9
+
+## 0.12.38
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/project-access@1.26.7
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/system-access@0.5.9
+
 ## 0.12.37
 
 ### Patch Changes
