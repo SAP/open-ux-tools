@@ -165,6 +165,6 @@ export async function writeChange<T>(data: T): Promise<T> {
  * @param data Data to be send to the server
  * @returns Generic Promise<T>
  */
-export async function writeManifestDescritor<T>(data: T): Promise<T> {
+export async function writeManifestDescriptor<T>(data: T): Promise<T> {
     return request<T>(ApiEndpoints.MANIFEST_APP_DESCRIPTOR, RequestMethod.POST, data);
 }
