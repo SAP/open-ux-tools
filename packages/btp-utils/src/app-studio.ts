@@ -28,6 +28,15 @@ export function getAppStudioProxyURL(): string | undefined {
 }
 
 /**
+ * Read and return the BAS base url.
+ *
+ * @returns the base url or undefined if called outside of BAS.
+ */
+export function getAppStudioBaseURL(): string | undefined {
+    return process.env[ENV.H2O_URL];
+}
+
+/**
  * Asynchronously creates a base64 encoded credentials for the given destination service instance based on the client information fetched from BTP.
  *
  * @param instance name/id of the destination service instance

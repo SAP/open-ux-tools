@@ -26,10 +26,16 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
+        "@sap-ux/btp-utils": "workspace:*",
+        "fast-glob": "3.3.1",
+        "read-pkg-up": "7.0.1",
+        "semver": "7.5.4"
     },
     "devDependencies": {
-        "typescript": "5.3.3",
-        "unionfs": "4.4.0"
+        "@types/semver": "7.5.2",
+        "@types/vscode": "1.73.1",
+        "mock-spawn": "0.2.6",
+        "typescript": "5.3.3"
     },
     "files": [
         "dist",

@@ -1,10 +1,11 @@
 import nock from 'nock';
 import { join } from 'path';
+import type { Destination } from '../src';
 import {
     getAppStudioProxyURL,
+    getAppStudioBaseURL,
     isAppStudio,
     getDestinationUrlForAppStudio,
-    Destination,
     listDestinations,
     getCredentialsForDestinationService,
     exposePort
@@ -70,6 +71,19 @@ describe('App Studio', () => {
         it('returns undefined when env var is not set', () => {
             delete process.env[ENV.PROXY_URL];
             expect(getAppStudioProxyURL()).toBeUndefined();
+        });
+    });
+
+    describe('getAppStudioBaseURL', () => {
+        it('returns the url from the correct env var when set', () => {
+            const H2O_URL = 'http://someurl';
+            process.env[ENV.H2O_URL] = H2O_URL;
+            expect(getAppStudioBaseURL()).toBe(H2O_URL);
+        });
+
+        it('returns undefined when env var is not set', () => {
+            delete process.env[ENV.H2O_URL];
+            expect(getAppStudioBaseURL()).toBeUndefined();
         });
     });
 
