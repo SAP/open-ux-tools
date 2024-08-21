@@ -31,6 +31,11 @@ Calling `sap-ux add annotations` allows adding an annotation to the OData Source
 ```sh
 sap-ux add annotations /path/to/adaptation-project
 ```
+### deploy-config
+Calling `sap-ux add deploy-config` will prompt for ABAP deployment configuration details and add/update the project files accordingly
+```sh
+sap-ux add deploy-config /path/to/project
+```
 
 ### model
 Calling `sap-ux add model` allows to add new OData Service and SAPUI5 Model to an existing adaptation project.  
