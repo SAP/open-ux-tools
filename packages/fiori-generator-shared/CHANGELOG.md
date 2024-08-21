@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.3.14
+
+### Patch Changes
+
+-   12504d5: adds new module @sap-ux/abap-deploy-config-inquirer
+
 ## 0.3.13
 
 ### Patch Changes
