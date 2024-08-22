@@ -20,10 +20,13 @@ import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
+import { join } from 'path';
 
 describe('utils', () => {
     const existsMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
     const readFileMock = jest.spyOn(fs, 'readFileSync').mockReturnValue('');
+    const realpathSyncMock = jest.spyOn(fs, 'realpathSync');
+
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
     });
@@ -465,7 +468,9 @@ describe('utils', () => {
         });
 
         test('HTML is modified and response is sent', async () => {
+            const projectRoot = process.cwd();
             readFileMock.mockReturnValue('<html></html>');
+            realpathSyncMock.mockReturnValue(join(projectRoot, 'webapp', 'index.html'));
             await baseUtils.injectScripts({ url: 'index.html' } as any, respMock, nextMock, []);
             expect(respMock.writeHead).toBeCalledTimes(1);
             expect(respMock.writeHead).toBeCalledWith(200, {

@@ -4,8 +4,8 @@ import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { NextFunction, Request, Response } from 'express';
 import type { ProxyConfig } from './types';
-import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { existsSync, readFileSync, realpathSync } from 'fs';
+import { join, resolve } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
 import type { Url } from 'url';
 import { t } from '../i18n';
@@ -276,9 +276,9 @@ export const injectScripts = async (
         const yamlFileName = getYamlFile(args);
         const ui5YamlPath = join(projectRoot, yamlFileName);
         const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
-        const htmlFilePath = join(projectRoot, webAppFolder, htmlFileName);
-        const html = injectUI5Url(htmlFilePath, ui5Configs);
-
+        let htmlFilePath = join(projectRoot, webAppFolder, htmlFileName);
+        htmlFilePath = realpathSync(resolve(projectRoot, htmlFilePath));
+        const html = htmlFilePath.startsWith(projectRoot) ? injectUI5Url(htmlFilePath, ui5Configs) : undefined;
         if (html) {
             setHtmlResponse(res, html);
         } else {
