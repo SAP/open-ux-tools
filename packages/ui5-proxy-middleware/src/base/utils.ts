@@ -276,11 +276,11 @@ export const injectScripts = async (
         const yamlFileName = getYamlFile(args);
         const ui5YamlPath = join(projectRoot, yamlFileName);
         const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
-        let htmlFilePath = join(projectRoot, webAppFolder, htmlFileName);
-        htmlFilePath = realpathSync(resolve(projectRoot, htmlFilePath));
-        const html = htmlFilePath.startsWith(projectRoot) ? injectUI5Url(htmlFilePath, ui5Configs) : undefined;
-        if (html) {
-            setHtmlResponse(res, html);
+        const htmlFilePath = join(projectRoot, webAppFolder, htmlFileName);
+        const realhtmlFilePath = realpathSync(resolve(projectRoot, htmlFilePath));
+        const htmlFile = realhtmlFilePath.startsWith(projectRoot) ? injectUI5Url(htmlFilePath, ui5Configs) : undefined;
+        if (htmlFile) {
+            setHtmlResponse(res, htmlFile);
         } else {
             next();
         }
