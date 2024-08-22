@@ -1,1 +1,2 @@
-export const variable = 1;
+export * from './commandRunner';
+export * from './installedCheck';
