@@ -4,28 +4,8 @@ import type { EditorQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@
 import { t } from '../../../i18n';
 import type { FlpConfigAnswers } from '../../../types';
 import type { ManifestManager } from '../../../client';
-import { parseParameters } from '../../../common';
 import { validateAction, validateEmptyString, validateSemanticObject } from '@sap-ux/project-input-validator';
-
-/**
- * Validates that FLP Parameters are in correct format.
- *
- * @param {string} paramString - The FLP Parameters string
- * @returns {string | boolean} If parameters are in correct format returns true otherwise error message.
- */
-export function validateParameters(paramString: string): string | boolean {
-    if (!paramString) {
-        return true;
-    }
-
-    try {
-        parseParameters(paramString);
-    } catch (error) {
-        return error.message;
-    }
-
-    return true;
-}
+import { validateParameters } from './helper';
 
 /**
  * Extracts inbound IDs from the manifest's cross-navigation section.

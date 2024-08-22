@@ -22,7 +22,7 @@ export class AbapClient {
     constructor(private abapProvider: AbapProvider, private isCustomerBase: boolean) {}
 
     /**
-     * Function that connects provider to Abap system
+     * Function that connects provider to Abap system.
      *
      * @param {string} system - Abap system.
      * @param {string} client - Abap system client.

@@ -296,12 +296,7 @@ export default class ConfigInfoPrompter {
     }
 
     /**
-     * Sets up the provider and fetches system data for the specified system.
-     *
-     * @param {string} system - The system identifier.
-     * @param {string} [client] - Optional client identifier.
-     * @param {string} [username] - Optional username for authentication.
-     * @param {string} [password] - Optional password for authentication.
+     * Fetches system data for the specified system.
      */
     private async getSystemData(): Promise<void> {
         try {
