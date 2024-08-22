@@ -104,30 +104,6 @@ describe('message helpers', () => {
         prettyPrintError({ error, log, host });
         expect(errorMock).toBeCalledTimes(1);
         expect(infoMock).toBeCalledTimes(0);
-
-        const success: ErrorMessage = {
-            code: '500',
-            message: {
-                value: '~message'
-            },
-            innererror: {
-                transactionid: '~id',
-                timestamp: '~time',
-                'Error_Resolution': {
-                    abc: '~message',
-                    def: '~message'
-                },
-                errordetails: [
-                    {
-                        code: '1',
-                        message: '~message',
-                        severity: 'success',
-                        longtext_url: '~longtext_url'
-                    },
-                    { code: '2', message: '~message', severity: 'error' }
-                ]
-            }
-        };
     });
 
     test('prettyPrintTimeInMs', () => {
