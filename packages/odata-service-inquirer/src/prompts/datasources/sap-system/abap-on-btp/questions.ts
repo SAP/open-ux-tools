@@ -10,6 +10,7 @@ import { t } from '../../../../i18n';
 import { hostEnvironment, type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
 import { PromptState, getDefaultChoiceIndex, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
+import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
 import { getSystemServiceQuestion, getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
 import { newSystemPromptNames } from '../new-system/types';
@@ -18,13 +19,12 @@ import { getABAPInstanceChoices } from './cf-helper';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
+const cliAbapEnvAuthPromptName = 'cliAbapEnvAuth';
 
 const abapOnBtpPromptNames = {
     'abapOnBtpAuthType': 'abapOnBtpAuthType',
-    'abapOnBtpServiceUrl': 'abapOnBtpServiceUrl',
     'serviceKey': 'serviceKey',
-    'cloudFoundryAbapSystem': 'cloudFoundryAbapSystem',
-    'abapOnBtpServiceSelection': 'abapOnBtpServiceSelection'
+    'cloudFoundryAbapSystem': 'cloudFoundryAbapSystem'
 } as const;
 
 export type AbapOnBTPType = 'cloudFoundry' | 'serviceKey' | 'reentranceTicket';
@@ -33,7 +33,7 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
     [abapOnBtpPromptNames.abapOnBtpAuthType]?: AbapOnBTPType;
     [systemUrlPromptName]?: string;
     [abapOnBtpPromptNames.serviceKey]?: string;
-    [abapOnBtpPromptNames.cloudFoundryAbapSystem]?: string;
+    [abapOnBtpPromptNames.cloudFoundryAbapSystem]?: ServiceInstanceInfo;
 }
 
 /**
@@ -92,21 +92,19 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
 
     questions.push(
         withCondition(
-            [getCFDiscoverPrompt(connectValidator)],
+            [...getCFDiscoverPrompts(connectValidator)],
             (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'cloudFoundry'
         )[0]
     );
 
     // New system store name propmt
-    if (promptOptions?.userSystemName?.exclude !== true) {
+    if (promptOptions?.userSystemName?.hide !== true) {
         // New system question will allow user to give the system a user friendly name
         questions.push(
             withCondition(
                 [getUserSystemNameQuestion(connectValidator, abapOnBtpPromptNamespace)],
-                (answers: AbapOnBtpAnswers) =>
-                    (!!answers?.[systemUrlPromptName] ||
-                        !!answers?.[abapOnBtpPromptNames.serviceKey] ||
-                        !!answers?.[abapOnBtpPromptNames.cloudFoundryAbapSystem]) &&
+                () =>
+                    !!connectValidator.validatedUrl &&
                     connectValidator.validity.reachable === true &&
                     (connectValidator.validity.authenticated ?? connectValidator.validity.authRequired !== true)
             )[0]
@@ -125,61 +123,104 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
  * @param connectionValidator The connection validator
  * @returns The Cloud Foundry ABAP system discovery prompt
  */
-export function getCFDiscoverPrompt(connectionValidator: ConnectionValidator): ListQuestion {
+export function getCFDiscoverPrompts(connectionValidator: ConnectionValidator): Question[] {
     let choices: ListChoiceOptions<ServiceInstanceInfo>[] = [];
-    return {
-        type: 'list',
-        name: abapOnBtpPromptNames.cloudFoundryAbapSystem,
-        guiOptions: {
-            breadcrumb: true,
-            applyDefaultWhenDirty: true
-        },
-        choices: async () => {
-            choices = await getABAPInstanceChoices();
-            // Cannot continue if no ABAP environments are found on Yo CLI
-            if (choices.length === 0) {
-                if (getHostEnvironment() === hostEnvironment.cli) {
-                    throw new Error(t('errors.abapEnvsUnavailable'));
+    const questions: Question[] = [
+        {
+            type: 'list',
+            name: abapOnBtpPromptNames.cloudFoundryAbapSystem,
+            guiOptions: {
+                breadcrumb: true,
+                applyDefaultWhenDirty: true
+            },
+            choices: async () => {
+                choices = await getABAPInstanceChoices();
+                // Cannot continue if no ABAP environments are found on Yo CLI
+                if (choices.length === 0) {
+                    if (getHostEnvironment() === hostEnvironment.cli) {
+                        throw new Error(t('errors.abapEnvsUnavailable'));
+                    }
                 }
-            }
-            return choices;
-        },
-        default: () => getDefaultChoiceIndex(choices as Answers[]),
-        message: t('prompts.cloudFoundryAbapSystem.message'),
-        validate: async (abapService: ServiceInstanceInfo): Promise<string | boolean | IValidationLink> => {
-            if (abapService) {
-                const uaaCreds = await apiGetInstanceCredentials(abapService.label);
-                const valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
-                if (valResult !== true) {
-                    return valResult;
-                }
+                return choices;
+            },
+            default: () => getDefaultChoiceIndex(choices as Answers[]),
+            message: t('prompts.cloudFoundryAbapSystem.message'),
+            validate: async (abapService: ServiceInstanceInfo): Promise<string | boolean | IValidationLink> => {
+                if (abapService) {
+                    const uaaCreds = await apiGetInstanceCredentials(abapService.label);
+                    const valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
+                    if (valResult !== true) {
+                        return valResult;
+                    }
 
-                if (connectionValidator.serviceProvider) {
-                    // Create a unique connected system name based on the selected ABAP service
-                    const cfTarget = await cfGetTarget(true);
-                    connectionValidator.connectedSystemName =
-                        `abap-cloud-${abapService.label}-${cfTarget.org}-${cfTarget.space}`
-                            .replace(/[^\w]/gi, '-')
-                            .toLowerCase();
-                    PromptState.odataService.connectedSystem = {
-                        serviceProvider: connectionValidator.serviceProvider
+                    if (connectionValidator.serviceProvider) {
+                        // Create a unique connected system name based on the selected ABAP service
+                        const cfTarget = await cfGetTarget(true);
+                        connectionValidator.connectedSystemName =
+                            `abap-cloud-${abapService.label}-${cfTarget.org}-${cfTarget.space}`
+                                .replace(/[^\w]/gi, '-')
+                                .toLowerCase();
+                        PromptState.odataService.connectedSystem = {
+                            serviceProvider: connectionValidator.serviceProvider
+                        };
+                    }
+                }
+                return true;
+            },
+            additionalMessages: (): IMessageSeverity | undefined => {
+                const errorType = errorHandler.getCurrentErrorType();
+                if (errorType === ERROR_TYPE.NO_ABAP_ENVS) {
+                    const errorMsg = errorHandler.getErrorMsg(true);
+                    const seeLogMsg = t('texts.seeLogForDetails');
+                    return {
+                        message: `${errorMsg} ${seeLogMsg}`,
+                        severity: Severity.warning
                     };
                 }
             }
-            return true;
-        },
-        additionalMessages: (): IMessageSeverity | undefined => {
-            const errorType = errorHandler.getCurrentErrorType();
-            if (errorType === ERROR_TYPE.NO_ABAP_ENVS) {
-                const errorMsg = errorHandler.getErrorMsg(true);
-                const seeLogMsg = t('texts.seeLogForDetails');
-                return {
-                    message: `${errorMsg} ${seeLogMsg}`,
-                    severity: Severity.warning
-                };
-            }
-        }
-    } as ListQuestion;
+        } as ListQuestion
+    ];
+
+    // Only for CLI use as `list` prompt validation does not run on CLI
+    if (getHostEnvironment() === hostEnvironment.cli) {
+        questions.push({
+            when: async (answers: AbapOnBtpAnswers): Promise<boolean> => {
+                const abapService = answers?.[abapOnBtpPromptNames.cloudFoundryAbapSystem];
+                if (abapService) {
+                    const uaaCreds = await apiGetInstanceCredentials(abapService.label);
+                    const valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
+                    // Cannot authenticate, nothing can be done
+                    if (typeof valResult === 'string') {
+                        LoggerHelper.logger.error(valResult);
+                        throw new Error(valResult);
+                    }
+                    // Cannot authenticate, nothing can be done
+                    if (valResult === false) {
+                        LoggerHelper.logger.error(
+                            errorHandler.getErrorMsg() ?? t('errors.abapServiceAuthenticationFailed')
+                        );
+                        throw new Error(t('errors.abapServiceAuthenticationFailed'));
+                    }
+
+                    if (connectionValidator.serviceProvider) {
+                        // Create a unique connected system name based on the selected ABAP service
+                        const cfTarget = await cfGetTarget(true);
+                        connectionValidator.connectedSystemName =
+                            `abap-cloud-${abapService.label}-${cfTarget.org}-${cfTarget.space}`
+                                .replace(/[^\w]/gi, '-')
+                                .toLowerCase();
+                        PromptState.odataService.connectedSystem = {
+                            serviceProvider: connectionValidator.serviceProvider
+                        };
+                    }
+                }
+                return false;
+            },
+            name: cliAbapEnvAuthPromptName
+        } as Question);
+    }
+
+    return questions;
 }
 
 /**

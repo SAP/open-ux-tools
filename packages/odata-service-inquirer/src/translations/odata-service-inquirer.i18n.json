@@ -154,7 +154,8 @@
         "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}",
         "serviceTypeRequestError": "Error retrieving service type: {{- error}}",
         "noAbapEnvsInCFSpace": "No ABAP environments in CF space found.",
-        "abapEnvsCFDiscoveryFailed": "Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry (see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login)."
+        "abapEnvsCFDiscoveryFailed": "Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry (see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login).",
+        "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed."
     },
     "texts": {
         "anExpiredCert": "an expired",

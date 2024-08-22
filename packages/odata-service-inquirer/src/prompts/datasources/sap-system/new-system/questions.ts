@@ -25,7 +25,7 @@ import LoggerHelper from '../../../logger-helper';
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
 export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^';
-const cliServicePromptName = 'cliServicePromptName';
+const cliServicePromptName = 'cliServiceSelection';
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
  */
@@ -296,7 +296,6 @@ export function getSystemServiceQuestion<T extends Answers>(
     const questions: Question<T>[] = [newSystemServiceQuestion];
 
     // Only for CLI use as `list` prompt validation does not run on CLI
-
     if (getHostEnvironment() === hostEnvironment.cli) {
         questions.push({
             when: async (answers: Answers): Promise<boolean> => {

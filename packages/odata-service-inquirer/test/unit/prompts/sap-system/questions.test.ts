@@ -102,7 +102,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
-                "name": "abapOnPrem:cliServicePromptName",
+                "name": "abapOnPrem:cliServiceSelection",
                 "when": [Function],
               },
               {
@@ -194,7 +194,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
-                "name": "abapOnBtp:cliServicePromptName",
+                "name": "abapOnBtp:cliServiceSelection",
                 "when": [Function],
               },
             ]

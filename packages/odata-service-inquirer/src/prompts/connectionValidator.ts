@@ -579,7 +579,7 @@ export class ConnectionValidator {
         urlString = this._validatedUrl,
         client = this._validatedClient,
         ignoreCertError = false
-    ): Promise<boolean> {
+    ): Promise<boolean | undefined> {
         if (!urlString) {
             return false;
         }
@@ -598,11 +598,17 @@ export class ConnectionValidator {
             if (client) {
                 url.searchParams.append(SAP_CLIENT_KEY, client);
             }
-            this.validity.authRequired = this.validity.reachable =
+            const authError =
                 ErrorHandler.getErrorType(
                     await this.checkSapServiceUrl(url, undefined, undefined, { ignoreCertError })
                 ) === ERROR_TYPE.AUTH;
 
+            // Only if we get the specific auth error so we know that auth is required, otherwise we cannot determine so leave as undefined
+            if (authError) {
+                this.validity.authRequired = true;
+                this.validity.reachable = true;
+            }
+            // Returning undefined if we cannot determine if auth is required
             return this.validity.authRequired;
         } catch (error) {
             errorHandler.logErrorMsgs(error);

@@ -42,7 +42,7 @@ export async function getABAPInstanceChoices(): Promise<ListChoiceOptions<Servic
             });
         } else {
             // No envs found
-            errorHandler.logErrorMsgs(ERROR_TYPE.NO_ABAP_ENVS, t('noAbapEnvsInCFSpace'));
+            errorHandler.logErrorMsgs(ERROR_TYPE.NO_ABAP_ENVS, t('errors.noAbapEnvsInCFSpace'));
         }
     } catch (error) {
         // Cannot connect to CF

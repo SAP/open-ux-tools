@@ -134,7 +134,7 @@ export function getAbapOnPremSystemQuestions(
         } as PasswordQuestion<AbapOnPremAnswers>
     ];
 
-    if (systemNamePromptOptions?.exclude !== true) {
+    if (systemNamePromptOptions?.hide !== true) {
         // New system question will allow user to give the system a user friendly name
         questions.push(
             withCondition(

@@ -164,7 +164,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
-                "name": "abapOnPrem:cliServicePromptName",
+                "name": "abapOnPrem:cliServiceSelection",
                 "when": [Function],
               },
             ]
@@ -173,7 +173,7 @@ describe('questions', () => {
 
     test('Should exclude specific system prompts based on prompt options', () => {
         const newSystemQuestions = getAbapOnPremQuestions({
-            userSystemName: { exclude: true }
+            userSystemName: { hide: true }
         });
         expect(newSystemQuestions.find((question) => question.name === 'userSystemName')).toBeFalsy();
     });
@@ -598,7 +598,7 @@ describe('questions', () => {
         });
     });
 
-    test('Should get the service detailed on CLI using `when` condition(list validators dont run on CLI)', async () => {
+    test('Should get the service details on CLI using `when` condition(list validators dont run on CLI)', async () => {
         const getHostEnvSpy = jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         const annotations = [
             {
@@ -627,7 +627,7 @@ describe('questions', () => {
         const newSystemQuestions = getAbapOnPremQuestions();
         expect(getHostEnvSpy).toHaveBeenCalled();
         const cliServicePromptName = newSystemQuestions.find(
-            (question) => question.name === `abapOnPrem:cliServicePromptName`
+            (question) => question.name === `abapOnPrem:cliServiceSelection`
         );
         expect(
             await (cliServicePromptName?.when as Function)({

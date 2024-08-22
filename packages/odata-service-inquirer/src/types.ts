@@ -233,7 +233,7 @@ export type SystemNamePromptOptions = {
      * This option allows the prompt to be excluded where later storage of the system with the provided name is not required.
      * If this propmt is not included then a BackendSystem will not be returned for the connected system.
      */
-    exclude?: boolean;
+    hide?: boolean;
 };
 
 export type OdataServiceUrlPromptOptions = {
