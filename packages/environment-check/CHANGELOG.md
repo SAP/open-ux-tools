@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.17.30
+
+### Patch Changes
+
+-   9a85a83: Security fix
+
 ## 0.17.29
 
 ### Patch Changes
