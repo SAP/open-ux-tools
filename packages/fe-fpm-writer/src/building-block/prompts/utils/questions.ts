@@ -187,14 +187,8 @@ export function getEntityPrompt(
         name: 'buildingBlockData.metaPath.entitySet',
         choices: project
             ? async () => {
-                  const entitySets = await getEntitySets(project, appId);
-                  const entitySetMap: { [key: string]: string } = {};
-                  for (const entitySet of entitySets) {
-                      const value = entitySet.fullyQualifiedName;
-                      const name = entitySet.name;
-                      entitySetMap[name] = value;
-                  }
-                  return transformChoices(entitySetMap);
+                  const entitySets = (await getEntitySets(project, appId)).map((entitySet) => entitySet.name);
+                  return transformChoices(entitySets);
               }
             : [],
         guiOptions: {

@@ -508,7 +508,7 @@ describe('Building Blocks', () => {
             {
                 name: 'Complex absolute path',
                 metaPath: {
-                    entitySet: 'GT7Service.SessionMetrics',
+                    entitySet: 'SessionMetrics',
                     qualifier: '@com.sap.vocabularies.UI.v1.Chart#chartMacro5',
                     bindingContextType: 'absolute'
                 }
@@ -538,7 +538,7 @@ describe('Building Blocks', () => {
             {
                 name: 'Complex relative path',
                 metaPath: {
-                    entitySet: 'GT7Service.Sessions',
+                    entitySet: 'Sessions',
                     qualifier: 'Speed/@com.sap.vocabularies.UI.v1.Chart#chartMacro4',
                     bindingContextType: 'relative'
                 }

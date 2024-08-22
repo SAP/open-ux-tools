@@ -159,11 +159,7 @@ export async function getAnnotationPathQualifiers(
     try {
         const annotationService = await getAnnotationService(project, getMainService(project, appId), appId);
         const mergedMetadata = getMergedMetadata(annotationService);
-        let entitySet = mergedMetadata.entitySets.by_fullyQualifiedName(entity);
-        if (!entitySet) {
-            // Fallback - search by name
-            entitySet = mergedMetadata.entitySets.by_name(entity);
-        }
+        const entitySet = mergedMetadata.entitySets.by_name(entity);
         const entityType = entitySet?.entityType;
         if (entityType) {
             getAnnotationPathQualifiersForEntityType(entityType, annotationTerm, result, useNamespace, bindingContext);

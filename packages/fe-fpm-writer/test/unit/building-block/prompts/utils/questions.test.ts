@@ -25,7 +25,7 @@ const projectFolder = join(__dirname, '../../../sample/building-block/webapp-pro
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
 const capAppFolder = join('app/incidents');
 
-const ENTITY_SET = 'C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/C_CustomerOP';
+const ENTITY_SET = 'C_CustomerOP';
 type Choices = (answers?: Answers) => Promise<readonly DistinctChoice<Answers, ListChoiceMap<Answers>>[]>;
 
 jest.mock('@sap-ux/project-access', () => ({

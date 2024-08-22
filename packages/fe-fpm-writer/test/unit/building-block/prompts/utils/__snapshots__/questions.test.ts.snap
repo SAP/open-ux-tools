@@ -15,126 +15,36 @@ Object {
 
 exports[`utils - questions entityPrompt 2`] = `
 Array [
-  Object {
-    "name": "C_CustomerBankDetailsOP",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/C_CustomerBankDetailsOP",
-  },
-  Object {
-    "name": "C_CustomerCompanyCodeOP",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/C_CustomerCompanyCodeOP",
-  },
-  Object {
-    "name": "C_CustomerOP",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/C_CustomerOP",
-  },
-  Object {
-    "name": "C_CustomerSalesAreaOP",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/C_CustomerSalesAreaOP",
-  },
-  Object {
-    "name": "C_Custrecnclnacctvhtemp",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/C_Custrecnclnacctvhtemp",
-  },
-  Object {
-    "name": "C_OrderIsBlockedTextVHTemp",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/C_OrderIsBlockedTextVHTemp",
-  },
-  Object {
-    "name": "I_AccountingClerk",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_AccountingClerk",
-  },
-  Object {
-    "name": "I_AccountingClerkStdVH",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_AccountingClerkStdVH",
-  },
-  Object {
-    "name": "I_BillingBlockReason",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_BillingBlockReason",
-  },
-  Object {
-    "name": "I_BusinessPartnerVH",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_BusinessPartnerVH",
-  },
-  Object {
-    "name": "I_ChartOfAccountsStdVH",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_ChartOfAccountsStdVH",
-  },
-  Object {
-    "name": "I_CompanyCode",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_CompanyCode",
-  },
-  Object {
-    "name": "I_CompanyCodeStdVH",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_CompanyCodeStdVH",
-  },
-  Object {
-    "name": "I_ContactPersonDepartmentT",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_ContactPersonDepartmentT",
-  },
-  Object {
-    "name": "I_ContactPersonFunctionT",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_ContactPersonFunctionT",
-  },
-  Object {
-    "name": "I_ControllingAreaStdVH",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_ControllingAreaStdVH",
-  },
-  Object {
-    "name": "I_Country",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_Country",
-  },
-  Object {
-    "name": "I_CreditControlAreaStdVH",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_CreditControlAreaStdVH",
-  },
-  Object {
-    "name": "I_Customer_to_BusinessPartner",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_Customer_to_BusinessPartner",
-  },
-  Object {
-    "name": "I_Customer_VH",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_Customer_VH",
-  },
-  Object {
-    "name": "I_CustomerContactOP",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_CustomerContactOP",
-  },
-  Object {
-    "name": "I_CustomerDunning",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_CustomerDunning",
-  },
-  Object {
-    "name": "I_CustomerGroup",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_CustomerGroup",
-  },
-  Object {
-    "name": "I_DeliveryBlockReason",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_DeliveryBlockReason",
-  },
-  Object {
-    "name": "I_DistributionChannel",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_DistributionChannel",
-  },
-  Object {
-    "name": "I_Division",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_Division",
-  },
-  Object {
-    "name": "I_PaymentBlockingReason",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_PaymentBlockingReason",
-  },
-  Object {
-    "name": "I_SalesGroup",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_SalesGroup",
-  },
-  Object {
-    "name": "I_SalesOffice",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_SalesOffice",
-  },
-  Object {
-    "name": "I_SalesOrganization",
-    "value": "C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities/I_SalesOrganization",
-  },
+  "C_CustomerBankDetailsOP",
+  "C_CustomerCompanyCodeOP",
+  "C_CustomerOP",
+  "C_CustomerSalesAreaOP",
+  "C_Custrecnclnacctvhtemp",
+  "C_OrderIsBlockedTextVHTemp",
+  "I_AccountingClerk",
+  "I_AccountingClerkStdVH",
+  "I_BillingBlockReason",
+  "I_BusinessPartnerVH",
+  "I_ChartOfAccountsStdVH",
+  "I_CompanyCode",
+  "I_CompanyCodeStdVH",
+  "I_ContactPersonDepartmentT",
+  "I_ContactPersonFunctionT",
+  "I_ControllingAreaStdVH",
+  "I_Country",
+  "I_CreditControlAreaStdVH",
+  "I_Customer_to_BusinessPartner",
+  "I_Customer_VH",
+  "I_CustomerContactOP",
+  "I_CustomerDunning",
+  "I_CustomerGroup",
+  "I_DeliveryBlockReason",
+  "I_DistributionChannel",
+  "I_Division",
+  "I_PaymentBlockingReason",
+  "I_SalesGroup",
+  "I_SalesOffice",
+  "I_SalesOrganization",
 ]
 `;
 
