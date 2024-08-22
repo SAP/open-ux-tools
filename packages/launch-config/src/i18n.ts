@@ -1,6 +1,6 @@
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from '/translations/launch-config.i18n.json';
+import translations from './translations/launch-config.i18n.json';
 
 const NS = 'launch-config';
 
