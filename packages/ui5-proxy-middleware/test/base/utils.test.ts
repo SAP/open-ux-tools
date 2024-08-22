@@ -487,9 +487,9 @@ describe('utils', () => {
             expect(nextMock).not.toHaveBeenCalled();
         });
 
-        test('calls next() if html file path is not real', async () => {
-            await baseUtils.injectScripts({ url: 'dummy.html' } as any, respMock, nextMock, []);
-            expect(nextMock.mock.calls[0][0].code).toEqual('ENOENT');
+        test('calls next() if file path is outside of project root', async () => {
+            await baseUtils.injectScripts({ url: '../../app/package.json' } as any, respMock, nextMock, []);
+            expect(nextMock).toHaveBeenCalled();
         });
 
         test('calls next() if no html file to modify', async () => {
