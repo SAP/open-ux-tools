@@ -3,7 +3,13 @@ import { create } from 'mem-fs-editor';
 import { join, basename } from 'path';
 import { DirName } from '@sap-ux/project-access';
 import { LAUNCH_JSON_FILE } from '../types';
-import type { FioriOptions, LaunchJSON, UpdateWorkspaceFolderOptions, WorkspaceHandlerInfo, DebugOptions } from '../types';
+import type {
+    FioriOptions,
+    LaunchJSON,
+    UpdateWorkspaceFolderOptions,
+    WorkspaceHandlerInfo,
+    DebugOptions
+} from '../types';
 import type { Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig } from './utils';
 import { updateLaunchJSON } from './writer';
@@ -50,7 +56,6 @@ export async function createLaunchConfig(rootFolder: string, fioriOptions: Fiori
     }
     return fs;
 }
-
 
 /**
  * Writes the application info settings to the appInfo.json file.
@@ -180,4 +185,3 @@ export function configureLaunchConfig(options: DebugOptions, fs?: Editor, log?: 
         })
     );
 }
-
