@@ -65,7 +65,14 @@ export interface OdataService {
     type?: ServiceType;
     path?: string;
     version: OdataVersion;
+    /**
+     * Optional name of the service, if not provided then it is defaulted to `mainService`
+     */
     name?: string;
+
+    /**
+     * Optional model name, if it is not provided then an empty string `` is used.
+     */
     model?: string;
     metadata?: string;
     /**

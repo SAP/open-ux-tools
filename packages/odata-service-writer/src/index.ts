@@ -19,7 +19,7 @@ import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
  * @param files - list of files that need to exist
  * @param fs - the memfs editor instance
  */
-function ensureExists(basePath: string, files: string[], fs: Editor) {
+function ensureExists(basePath: string, files: string[], fs: Editor): void {
     files.forEach((path) => {
         if (!fs.exists(join(basePath, path))) {
             throw new Error(t('error.requiredProjectFileNotFound', { path }));
@@ -71,91 +71,88 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     const paths = await findProjectFiles(basePath, fs);
     ensureExists(basePath, ['webapp/manifest.json'], fs);
     enhanceData(service);
-    // set isServiceTypeEdmx true if service is EDMX
-    const isServiceTypeEdmx = service.type === ServiceType.EDMX;
     // merge content into existing files
     const templateRoot = join(__dirname, '../templates');
 
     // update cds files with annotations only if service type is CDS and annotations are provided
-    if (!isServiceTypeEdmx && service.annotations) {
+    if (service.type === ServiceType.CDS && service.annotations) {
         await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
     }
     // manifest.json
     updateManifest(basePath, service, fs, templateRoot);
 
-    // update ui5.yaml if it exists
-    let ui5Config: UI5Config | undefined;
-    let ui5LocalConfig: UI5Config | undefined;
-    let ui5LocalConfigPath: string | undefined;
-    if (isServiceTypeEdmx && paths.ui5Yaml) {
-        // Dont extend backend middlewares if service type is CDS.
-        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
-        try {
-            ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
-        } catch (error: any) {
-            if (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) {
-                ui5Config.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
-            } else {
-                throw error;
+    // update ui5.yaml and package.json etc is not required for CAP applications
+    if (service.type !== ServiceType.CDS) {
+        // update ui5.yaml if it exists
+        let ui5Config: UI5Config | undefined;
+        let ui5LocalConfig: UI5Config | undefined;
+        let ui5LocalConfigPath: string | undefined;
+        if (paths.ui5Yaml) {
+            ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+            try {
+                ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+            } catch (error: any) {
+                if (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) {
+                    ui5Config.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
+                } else {
+                    throw error;
+                }
+            }
+
+            fs.write(paths.ui5Yaml, ui5Config.toString());
+
+            // ui5-local.yaml
+            ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
+            if (fs.exists(ui5LocalConfigPath)) {
+                ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+                ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
             }
         }
 
-        fs.write(paths.ui5Yaml, ui5Config.toString());
-
-        // ui5-local.yaml
-        ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
-        if (fs.exists(ui5LocalConfigPath)) {
-            ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-            ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
-        }
-    }
-
-    // Add mockserver entries
-    if (isServiceTypeEdmx && service.metadata) {
-        // mockserver entries are not required if service type is CDS
-        // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
-        if (paths.ui5Yaml && ui5Config) {
-            const webappPath = await getWebappPath(basePath, fs);
-            const config = {
-                webappPath: webappPath,
-                ui5MockYamlConfig: { path: service.path }
-            };
-            await generateMockserverConfig(basePath, config, fs);
-            // add mockserver middleware to ui5-local.yaml
-            if (ui5LocalConfig) {
-                ui5LocalConfig.addMockServerMiddleware(service.path);
+        // Add mockserver entries
+        if (service.metadata) {
+            // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
+            if (paths.ui5Yaml) {
+                const webappPath = await getWebappPath(basePath, fs);
+                const config = {
+                    webappPath,
+                    ui5MockYamlConfig: { path: service.path }
+                };
+                await generateMockserverConfig(basePath, config, fs);
+                // add mockserver middleware to ui5-local.yaml
+                if (ui5LocalConfig) {
+                    ui5LocalConfig.addMockServerMiddleware(service.path);
+                }
             }
-        }
 
-        // create local copy of metadata and annotations
-        fs.write(
-            join(basePath, 'webapp', 'localService', 'metadata.xml'),
-            prettifyXml(service.metadata, { indent: 4 })
-        );
-
-        // Adds local annotations to datasources section of manifest.json and writes the annotations file
-        if (service.localAnnotationsName) {
-            const namespaces = getAnnotationNamespaces(service);
-            fs.copyTpl(
-                join(templateRoot, 'add', 'annotation.xml'),
-                join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
-                { ...service, namespaces }
+            // create local copy of metadata and annotations
+            fs.write(
+                join(basePath, 'webapp', 'localService', 'metadata.xml'),
+                prettifyXml(service.metadata, { indent: 4 })
             );
+
+            // Adds local annotations to datasources section of manifest.json and writes the annotations file
+            if (service.localAnnotationsName) {
+                const namespaces = getAnnotationNamespaces(service);
+                fs.copyTpl(
+                    join(templateRoot, 'add', 'annotation.xml'),
+                    join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
+                    { ...service, namespaces }
+                );
+            }
         }
-    }
 
-    // update package.json for non-cap applications
-    if (isServiceTypeEdmx && paths.packageJson && paths.ui5Yaml) {
-        updatePackageJson(paths.packageJson, fs, !!service.metadata);
-    }
+        // update package.json for non-cap applications
+        if (paths.packageJson && paths.ui5Yaml) {
+            updatePackageJson(paths.packageJson, fs, !!service.metadata);
+        }
 
-    if (isServiceTypeEdmx && ui5LocalConfigPath && ui5LocalConfig) {
-        // write ui5 local yaml if service type is not CDS
-        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-    }
+        if (ui5LocalConfigPath && ui5LocalConfig) {
+            // write ui5 local yaml
+            fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+        }
 
-    // Write annotation xml if annotations are provided and service type is EDMX
-    if (isServiceTypeEdmx) {
+        // Write annotation xml if annotations are provided
         writeAnnotationXmlFiles(fs, basePath, service);
     }
 
