@@ -1,4 +1,9 @@
-import { getLaunchJsonPath, formatCwd, isFolderInWorkspace } from '../../src/debug-config/helpers';
+import {
+    getLaunchJsonPath,
+    formatCwd,
+    isFolderInWorkspace,
+    handleAppsNotInWorkspace
+} from '../../src/debug-config/helpers';
 import path from 'path';
 
 // Mock the vscode object
@@ -84,6 +89,42 @@ describe('launchConfig Unit Tests', () => {
             };
             const result = isFolderInWorkspace('/mock/workspace/folder1', mockWorkspace);
             expect(result).toBe(false);
+        });
+    });
+
+    // Test for create launch config outside workspace
+    describe('handleAppsNotInWorkspace', () => {
+        it('should create a launch config for non-workspace apps', () => {
+            const mockProjectPath = '/mock/project/path';
+            const result = handleAppsNotInWorkspace(mockProjectPath, isAppStudio, mockVscode);
+            expect(result.cwd).toBe('${workspaceFolder}');
+            expect(result.launchJsonPath).toBe(
+                path.join(path.dirname(mockProjectPath), path.basename(mockProjectPath))
+            );
+            expect(result.workspaceFolderUri).toEqual({
+                path: path.join(path.dirname(mockProjectPath), path.basename(mockProjectPath))
+            });
+        });
+
+        it('should handle cases where vscode.Uri is not available', () => {
+            const mockProjectPath = '/mock/project/path';
+            const result = handleAppsNotInWorkspace(mockProjectPath, isAppStudio, {});
+            expect(result.cwd).toBe('${workspaceFolder}');
+            expect(result.launchJsonPath).toBe(
+                path.join(path.dirname(mockProjectPath), path.basename(mockProjectPath))
+            );
+            expect(result.workspaceFolderUri).toBeUndefined();
+        });
+
+        it('should handle cases where isAppStudio is true', () => {
+            const mockProjectPath = '/mock/project/path',
+                isAppStudio = true;
+            const result = handleAppsNotInWorkspace(mockProjectPath, isAppStudio, mockVscode);
+            expect(result.cwd).toBe('${workspaceFolder}');
+            expect(result.launchJsonPath).toBe(
+                path.join(path.dirname(mockProjectPath), path.basename(mockProjectPath))
+            );
+            expect(result.workspaceFolderUri).toBeUndefined();
         });
     });
 });

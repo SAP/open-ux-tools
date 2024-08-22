@@ -1,26 +1,6 @@
 import { dirname, join, relative, basename } from 'path';
 import type { DebugOptions, WorkspaceHandlerInfo } from '../types';
-import { formatCwd, getLaunchJsonPath, isFolderInWorkspace } from './helpers';
-
-/**
- * Creates a launch configuration for applications not included in the current workspace.
- * This function generates the current working directory (cwd), the path to the launch.json file,
- * and optionally provides a URI for updating workspace folders if the environment is not BAS.
- *
- * @param {string} projectPath - The full path of the project for which the launch configuration is being created.
- * @param isAppStudio - A boolean indicating whether the current environment is BAS.
- * @param {any} vscode - An instance of the VSCode API.
- * @returns {WorkspaceHandlerInfo} - An object containing the cwd, launch.json path, and optionally, the URI for updating workspace folders.
- */
-export function handleAppsNotInWorkspace(projectPath: string, isAppStudio: boolean, vscode: any): WorkspaceHandlerInfo {
-    const projectName = basename(projectPath);
-    const launchJsonPath = join(dirname(projectPath), projectName);
-    return {
-        cwd: formatCwd(),
-        launchJsonPath,
-        workspaceFolderUri: !isAppStudio ? vscode.Uri?.file(launchJsonPath) : undefined
-    };
-}
+import { formatCwd, getLaunchJsonPath, isFolderInWorkspace, handleAppsNotInWorkspace } from './helpers';
 
 /**
  * Handles the case where an unsaved workspace is open and the user creates an app in a folder outside of the workspace.

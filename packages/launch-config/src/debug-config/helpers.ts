@@ -1,4 +1,5 @@
-import { posix } from 'path';
+import { posix, basename, dirname, join } from 'path';
+import type { WorkspaceHandlerInfo } from '../types';
 
 /**
  * Retrieves the file system path to the `launch.json` file within the first opened folder.
@@ -59,4 +60,24 @@ export function isFolderInWorkspace(selectedFolder: string, workspace: any): boo
     }
     // If workspaceFolders is undefined but workspaceFile is present, no folders are part of the workspace (return false).
     return false;
+}
+
+/**
+ * Creates a launch configuration for applications not included in the current workspace.
+ * This function generates the current working directory (cwd), the path to the launch.json file,
+ * and optionally provides a URI for updating workspace folders if the environment is not BAS.
+ *
+ * @param {string} projectPath - The full path of the project for which the launch configuration is being created.
+ * @param isAppStudio - A boolean indicating whether the current environment is BAS.
+ * @param {any} vscode - An instance of the VSCode API.
+ * @returns {WorkspaceHandlerInfo} - An object containing the cwd, launch.json path, and optionally, the URI for updating workspace folders.
+ */
+export function handleAppsNotInWorkspace(projectPath: string, isAppStudio: boolean, vscode: any): WorkspaceHandlerInfo {
+    const projectName = basename(projectPath);
+    const launchJsonPath = join(dirname(projectPath), projectName);
+    return {
+        cwd: formatCwd(),
+        launchJsonPath,
+        workspaceFolderUri: !isAppStudio ? vscode.Uri?.file(launchJsonPath) : undefined
+    };
 }
