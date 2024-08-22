@@ -97,7 +97,15 @@ async function promptServiceQuestions(logger: Logger, { url }: CliArgs): Promise
  * @returns the service configuration
  */
 function createServiceConfiguration(answers: OdataServiceAnswers): OdataService {
+    const pathElements = answers.servicePath!.split('/');
+    let serviceName = pathElements.pop();
+    // in case the path ends with a slash, the last element is empty
+    if (!serviceName) {
+        serviceName = pathElements.pop();
+    }
     return {
+        name: serviceName,
+        model: serviceName,
         url: answers.origin,
         client: answers.sapClient,
         path: answers.servicePath,
