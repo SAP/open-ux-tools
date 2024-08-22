@@ -9,7 +9,7 @@ import { validateEmptyString, isDataSourceURI } from '@sap-ux/project-input-vali
  * Validates the OData Source URI prompt.
  *
  * @param value The value to validate.
- * @returns {boolean | string} True if the URI is valid, or an error message if validation fails.
+ * @returns {boolean | string} True if the value is a valid URI, or an error message if not a valid URI or empty.
  */
 function validatePromptOdataURI(value: string): boolean | string {
     const validationResult = validateEmptyString(value);
@@ -28,7 +28,7 @@ function validatePromptOdataURI(value: string): boolean | string {
  * Validates the Annotation URI prompt.
  *
  * @param value The value to validate.
- * @returns {boolean | string} True if the URI is valid, or an error message if validation fails.
+ * @returns {boolean | string} True if the value is a valid URI or empty, or an error message if not a valid URI.
  */
 function validatePromptAnnotationURI(value: string): boolean | string {
     const validationResult = validateEmptyString(value);
