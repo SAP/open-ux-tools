@@ -103,6 +103,11 @@ function createServiceConfiguration(answers: OdataServiceAnswers): OdataService 
     if (!serviceName) {
         serviceName = pathElements.pop();
     }
+    // if the last element is the version use the previous one
+    if (serviceName && parseInt(serviceName, 2)) {
+        serviceName = `${pathElements.pop()}_${serviceName}`;
+    }
+
     return {
         name: serviceName,
         model: serviceName,
