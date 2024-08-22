@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.28
+
+### Patch Changes
+
+-   ceed987: Fixed copy to clipboard chaching old control id values
+
 ## 0.4.27
 
 ### Patch Changes
