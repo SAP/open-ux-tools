@@ -2,9 +2,19 @@
 
 Nodejs utility wrappers
 
-# Usage
-Add `@sap-ux/nodejs-utils` to your projects `package.json` to include it in your module.
+## Installation
+Npm
+`npm install --save @sap-ux/nodejs-utils`
 
-# API
+Yarn
+`yarn add @sap-ux/nodejs-utils`
 
-see tests
+Pnpm
+`pnpm add @sap-ux/nodejs-utils`
+
+## Usage
+
+see ./tests/unit/
+
+## Keywords
+SAP Fiori tools library
