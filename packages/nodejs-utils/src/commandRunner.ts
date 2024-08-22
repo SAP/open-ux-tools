@@ -1,5 +1,8 @@
 import { spawn } from 'child_process';
 
+/**
+ *
+ */
 export class CommandRunner {
     /**
      * Run a command with arguments.

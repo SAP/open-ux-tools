@@ -3,7 +3,8 @@ import { CommandRunner } from './commandRunner';
 import fastGlob from 'fast-glob';
 import { join } from 'path';
 import readPkgUp from 'read-pkg-up';
-import { coerce, lt, SemVer } from 'semver';
+import type { SemVer } from 'semver';
+import { coerce, lt } from 'semver';
 import type { WorkspaceConfiguration } from 'vscode';
 
 export type PackageInfo = {
@@ -38,13 +39,14 @@ const getPackageInfo = async (searchPath: string, minVersion?: string): Promise<
 };
 
 /**
- * Find installed packages that contain the specified package name substring and keyword
+ * Find installed packages that contain the specified package name substring and keyword.
  *
- * @param subName - the substring to be matched against package names e.g. 'fiori-gen-ext' will be matched using glob pattern '*fiori-gen-ext*'
+ * @param {string} subName - the substring to be matched against package names e.g. 'fiori-gen-ext' will be matched using glob pattern '*fiori-gen-ext*'
  * @param options -
  *  @param options.keyword - keyword that will be matched against found package.json keywords property
  *  @param options.vscWorkspaceConfig - if provided alternative vscode configured install paths will be checked
  *  @param options.minVersion - the minimum version of the specified extension, lower versions will not be returned. Must be a valid SemVer string
+ * @returns {*}  {Promise<PackageInfo[]>}
  */
 export async function findInstalledPackages(
     subName: string,
