@@ -12,7 +12,7 @@ export class CommandRunner {
      * @returns {*}  {(Promise<any | void>)}
      * @memberof CommandRunner
      */
-    run(cmd: string, args: string[] = []): Promise<any | void> {
+    run(cmd: string, args: string[] = []): Promise<string | void> {
         return new Promise((resolve, reject) => {
             const stack: any = [];
             const spawnedCmd = spawn(cmd, args, {});
@@ -25,11 +25,11 @@ export class CommandRunner {
                 stack.push(data.toString());
             });
             spawnedCmd.on('error', (error) => {
-                reject(`Command failed with error: ${error.message}`);
+                reject(new Error(`Command failed with error: ${error.message}`));
             });
             spawnedCmd.on('close', (errorCode) => {
                 if (errorCode !== 0) {
-                    reject(`Command failed, \`${cmd} ${args.join(' ')}\`, ${stack.join(', ')}`);
+                    reject(new Error(`Command failed, \`${cmd} ${args.join(' ')}\`, ${stack.join(', ')}`));
                 }
                 resolve(response);
             });

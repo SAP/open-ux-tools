@@ -32,7 +32,7 @@ const getPackageInfo = async (searchPath: string, minVersion?: string): Promise<
             return {
                 packageJsonPath: pkgInfo.path,
                 packageInfo: pkgInfo.packageJson,
-                path: join(searchPath, pkgInfo.packageJson.main || '/generators/app')
+                path: join(searchPath, pkgInfo.packageJson.main ?? '/generators/app')
             };
         }
     }
