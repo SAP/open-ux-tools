@@ -97,7 +97,7 @@ export function getReentranceTicketAuthInterceptor({
         if (apiUrl && apiUrl != provider.defaults.baseURL) {
             // Reentrance tickets work with API hostnames. If the original URL was not one, this will replace it
             // with the API hostname returned
-            provider.log.warn(
+            provider.log.debug(
                 `Replacing provider's default base URL (${provider.defaults.baseURL}) with API URL: ${apiUrl}`
             );
             provider.defaults.baseURL = apiUrl;

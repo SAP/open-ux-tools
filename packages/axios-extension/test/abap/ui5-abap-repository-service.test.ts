@@ -126,7 +126,7 @@ describe('Ui5AbapRepositoryService', () => {
                 bsp: { name: notExistingApp }
             });
             expect(response.data).toBeDefined();
-            expect(loggerMock.info).toHaveBeenCalledTimes(7); // Ensures the logFullURL method is called to support destinations
+            expect(loggerMock.debug).toHaveBeenCalledTimes(7); // Ensures the logFullURL method is called to support destinations
             expect(loggerMock.warn).toHaveBeenCalledTimes(0);
             expect(loggerMock.error).toHaveBeenCalledTimes(0);
         });
@@ -163,7 +163,7 @@ describe('Ui5AbapRepositoryService', () => {
                 )
                 .reply(400, JSON.stringify({ error }));
             await expect(destinationService.deploy({ archive, bsp: { name: notExistingApp } })).rejects.toThrowError();
-            expect(loggerMock.info).toHaveBeenCalledTimes(4); // Ensures the logError flow is handled
+            expect(loggerMock.debug).toHaveBeenCalledTimes(5); // Ensures the logError flow is handled
         });
 
         test('deploy new app', async () => {
@@ -326,7 +326,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
             expect(response?.status).toBe(200);
-            expect(loggerMock.info).toHaveBeenCalledTimes(4);
+            expect(loggerMock.debug).toHaveBeenCalledTimes(3);
             expect(loggerMock.warn).toHaveBeenCalledTimes(0);
             expect(loggerMock.error).toHaveBeenCalledTimes(0);
         });
@@ -342,8 +342,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .reply(202);
             const response = await destinationService.undeploy({ bsp: { name: notExistingApp } });
             expect(response?.status).toBe(202);
-            expect(loggerMock.debug).toHaveBeenCalledTimes(0);
-            expect(loggerMock.info).toHaveBeenCalledTimes(5);
+            expect(loggerMock.debug).toHaveBeenCalledTimes(4);
             expect(loggerMock.error).toHaveBeenCalledTimes(0);
         });
 

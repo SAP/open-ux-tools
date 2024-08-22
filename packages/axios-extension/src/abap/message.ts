@@ -51,7 +51,7 @@ function logLevel(severity: string, msg: string, log: Logger, error = false): vo
     if (severity) {
         severity = severity.toLowerCase();
         if (severity === 'success') {
-            log.info(msg);
+            log.debug(msg);
         } else {
             if (severity === 'warning') {
                 severity = 'warn';
@@ -59,7 +59,7 @@ function logLevel(severity: string, msg: string, log: Logger, error = false): vo
             log[severity](msg);
         }
     } else {
-        error ? log.error(msg) : log.info(msg);
+        error ? log.error(msg) : log.debug(msg);
     }
 }
 
@@ -85,7 +85,7 @@ export function prettyPrintMessage({
 }): void {
     try {
         const jsonMsg = JSON.parse(msg) as SuccessMessage;
-        log.info(jsonMsg.message);
+        log.debug(jsonMsg.message);
         logFullURL({ host, path: jsonMsg['longtext_url'], log, isDest });
         if (jsonMsg.details) {
             jsonMsg.details.forEach((entry) => {
@@ -120,13 +120,13 @@ function logFullURL({
         const base = new URL(host).origin; // We only care for the origin value
         // Add this instruction to the user because of this bug in VS Code: https://github.com/microsoft/vscode/issues/144898
         // It undoes the encoding of special characters in the URL sent to the browser
-        log.info('Please copy/paste this URL in a browser for more details:');
+        log.debug('Please copy/paste this URL in a browser for more details:');
         if (isDest) {
-            log.info(
+            log.debug(
                 '(Note: You will need to replace the host in the URL with the internal host, if your destination is configured using an On-Premise SAP Cloud Connector)'
             );
         }
-        log.info(new URL(path, base).href);
+        log.debug(new URL(path, base).href);
     }
 }
 

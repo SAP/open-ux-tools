@@ -5,8 +5,8 @@ import { ToolsLogger } from '@sap-ux/logger';
 describe('message helpers', () => {
     const log = new ToolsLogger();
     const host = 'http://host.example';
-    const infoMock = (log.info = jest.fn());
-    const warningMock = (log.warn = jest.fn());
+    const logDebugMock = (log.debug = jest.fn());
+    const logWarningMock = (log.warn = jest.fn());
 
     describe('prettyPrintMessage', () => {
         test('convert JSON into messages', () => {
@@ -21,9 +21,9 @@ describe('message helpers', () => {
                 ]
             };
             prettyPrintMessage({ msg: JSON.stringify(msg), log, host, isDest });
-            // Check if log.info is called at least once (no matter how often)
-            expect(infoMock).toHaveBeenCalled();
-            expect(warningMock).toHaveBeenCalledTimes(1);
+            // Check if log.debug is called at least once (no matter how often)
+            expect(logDebugMock).toHaveBeenCalled();
+            expect(logWarningMock).toHaveBeenCalledTimes(1);
         });
         test('log note when URL contains .dest', () => {
             // Simulate a specific baseURL that contains ".dest"
@@ -40,9 +40,9 @@ describe('message helpers', () => {
                 ]
             };
             prettyPrintMessage({ msg: JSON.stringify(msg), log, host, isDest: /\.dest\//.test(config.baseURL) });
-            expect(infoMock).toHaveBeenCalled();
-            // Check if log.info is called with the note about .dest
-            expect(infoMock).toHaveBeenCalledWith(
+            expect(logDebugMock).toHaveBeenCalled();
+            // Check if log.debug is called with the note about .dest
+            expect(logDebugMock).toHaveBeenCalledWith(
                 '(Note: You will need to replace the host in the URL with the internal host, if your destination is configured using an On-Premise SAP Cloud Connector)'
             );
         });
@@ -80,7 +80,7 @@ describe('message helpers', () => {
             }
         };
         const errorMock = (log.error = jest.fn());
-        const infoMock = (log.info = jest.fn());
+        const infoMock = (log.debug = jest.fn());
         prettyPrintError({ error, log, host, isDest: true });
         // log message, each resolution and each error detail
         expect(errorMock).toBeCalledTimes(

@@ -324,7 +324,7 @@ export class LayeredRepositoryService extends Axios implements Service {
             });
         } catch (error) {
             if (alternativeMessage) {
-                this.log.info(alternativeMessage);
+                this.log.debug(alternativeMessage);
             }
             this.log.warn('Could not parse returned messages.');
         }

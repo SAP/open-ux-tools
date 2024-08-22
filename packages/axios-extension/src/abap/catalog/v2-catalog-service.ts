@@ -144,7 +144,7 @@ export class V2CatalogService extends CatalogService {
             if (servicesWithSameNameSpace.length > 1) {
                 this.log.warn('Service filter was not sufficient to identify one service.');
             } else if (servicesWithSameNameSpace.length > 0) {
-                this.log.info(`Service filter chose service: ${servicesWithSameNameSpace[0].TechnicalServiceName}`);
+                this.log.debug(`Service filter chose service: ${servicesWithSameNameSpace[0].TechnicalServiceName}`);
                 return servicesWithSameNameSpace[0];
             }
         }

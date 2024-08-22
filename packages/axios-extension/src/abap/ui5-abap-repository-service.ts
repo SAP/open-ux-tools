@@ -207,7 +207,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 const query = this.defaults.params?.['sap-client']
                     ? '?sap-client=' + this.defaults.params['sap-client']
                     : '';
-                this.log.info(`App available at ${frontendUrl}${path}${query}`);
+                this.log.debug(`App available at ${frontendUrl}${path}${query}`);
             } else {
                 // Test mode returns a HTTP response code of 403 so we dont want to show all error messages
                 prettyPrintError(
@@ -381,7 +381,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 // We've nothing to return as we dont want to show the exception to the user!
                 return Promise.resolve(undefined);
             } else {
-                this.log.info(`${appName} found on target system: ${isExisting}`);
+                this.log.debug(`${appName} found on target system: ${isExisting}`);
                 const response = isExisting
                     ? await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
                     : await this.post('/Repositories', payload, config);

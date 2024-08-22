@@ -233,7 +233,7 @@ export class Uaa {
                 if (reqUrl.pathname === Redirect.path) {
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(Buffer.from(redirectSuccessHtml(this.logoutUrl, this.systemId)));
-                    this.log.info('Got authCode');
+                    this.log.debug('Got authCode');
                     resolve({ authCode: reqUrl.searchParams.get('code') + '', redirect });
                     if (timer) {
                         clearTimeout(timer);
@@ -261,7 +261,7 @@ export class Uaa {
         let newRefreshToken: string;
 
         if (refreshToken) {
-            this.log.info('Refresh token passed in');
+            this.log.debug('Refresh token passed in');
             const tokenRequest = this.getTokenRequestForRefreshToken(refreshToken);
             try {
                 response = await axios.request(tokenRequest);
@@ -271,7 +271,7 @@ export class Uaa {
                     startFreshLogin = true;
                     this.log.warn('Cannot use stored refresh token. Starting fresh request');
                 } else if (refreshToken !== response.data.refresh_token) {
-                    this.log.info('New refresh token issued');
+                    this.log.debug('New refresh token issued');
                     newRefreshToken = response.data.refresh_token;
                 }
             } catch (e) {
@@ -286,16 +286,16 @@ export class Uaa {
                 authCode
             });
             response = await axios.request(tokenRequest);
-            this.log.info('Refresh token issued');
+            this.log.debug('Refresh token issued');
             newRefreshToken = response.data.refresh_token;
         }
 
         if (refreshTokenChangedCb) {
-            this.log.info('Sending notification that refresh token changed');
+            this.log.debug('Sending notification that refresh token changed');
             await refreshTokenChangedCb(newRefreshToken, response?.data?.access_token);
         }
 
-        this.log.info('Got access token successfully');
+        this.log.debug('Got access token successfully');
         return response?.data?.access_token;
     }
 
@@ -307,7 +307,7 @@ export class Uaa {
     public async getAccessTokenWithClientCredentials(): Promise<string> {
         const tokenRequest = this.getTokenRequestForClientCredential();
         const response: AxiosResponse = await axios.request(tokenRequest);
-        this.log.info('Got access token successfully using client credentials');
+        this.log.debug('Got access token successfully using client credentials');
         return response?.data?.access_token;
     }
 }
