@@ -1629,6 +1629,9 @@ importers:
 
   packages/launch-config:
     dependencies:
+      '@sap-ux/odata-service-inquirer':
+        specifier: workspace:*
+        version: link:../odata-service-inquirer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -1638,6 +1641,9 @@ importers:
       '@sap-ux/ui5-info':
         specifier: workspace:*
         version: link:../ui5-info
+      i18next:
+        specifier: 20.6.1
+        version: 20.6.1
       jsonc-parser:
         specifier: 3.2.0
         version: 3.2.0
@@ -1660,6 +1666,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+      '@types/vscode':
+        specifier: 1.73.1
+        version: 1.73.1
       '@types/yargs-parser':
         specifier: 21.0.3
         version: 21.0.3

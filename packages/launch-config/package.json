@@ -34,6 +34,8 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
+        "@sap-ux/odata-service-inquirer": "workspace:*",
+        "i18next": "20.6.1",
         "jsonc-parser": "3.2.0",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
