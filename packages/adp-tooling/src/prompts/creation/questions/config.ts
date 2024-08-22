@@ -10,7 +10,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { SystemInfo } from '@sap-ux/axios-extension';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
-import { AdaptationProjectType, AdtCatalogService, UI5RtVersionService, isAxiosError } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, isAxiosError } from '@sap-ux/axios-extension';
 
 import {
     appAdditionalMessages,
@@ -43,6 +43,7 @@ import { getEndpointNames, isFeatureSupportedVersion } from '../../../common';
 import { resolveNodeModuleGenerator } from '../../../base';
 import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../../types';
 import { isEmptyString, validateAch, validateClient, validateEmptyString } from '@sap-ux/project-input-validator';
+import { ConfigClient } from './backend/config-client';
 
 /**
  * ConfigInfoPrompter handles the setup and interaction logic for configuration prompts related to project setup.
@@ -68,6 +69,7 @@ export default class ConfigInfoPrompter {
     private appsManager: ApplicationManager;
     private logger: ToolsLogger;
     private prompts?: Prompts;
+    private configClient: ConfigClient;
 
     /**
      * Constructs an instance of ConfigInfoPrompter.
@@ -95,7 +97,6 @@ export default class ConfigInfoPrompter {
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
 
         this.appIdentifier = new AppIdentifier(layer);
-        this.appsManager = new ApplicationManager(this.provider, this.isCustomerBase, this.logger);
     }
 
     /**
@@ -192,10 +193,7 @@ export default class ConfigInfoPrompter {
     private async validateSystemVersion(value: string): Promise<void> {
         try {
             if (value) {
-                const provider = this.provider.getProvider();
-                const service = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
-                const version = await service?.getUI5Version();
-
+                const version = await this.configClient.getSystemUI5Version();
                 this.versionsOnSystem = await this.ui5Manager.getSystemRelevantVersions(version);
             } else {
                 this.versionsOnSystem = await this.ui5Manager.getRelevantVersions();
@@ -259,8 +257,9 @@ export default class ConfigInfoPrompter {
      */
     private async validateSystem(value: string): Promise<boolean | string> {
         this.manifestManager.resetCache();
-        this.appsManager.resetApps();
+        this.appsManager?.resetApps();
         this.ui5VersionDetected = true;
+        ConfigClient.resetInstance();
 
         if (!value) {
             return isAppStudio()
@@ -303,10 +302,20 @@ export default class ConfigInfoPrompter {
      * @param {string} [password] - Optional password for authentication.
      */
     private async getSystemData(system: string, client?: string, username?: string, password?: string): Promise<void> {
-        await this.provider.setProvider(system, client, username, password);
+        this.configClient = await ConfigClient.getInstance(
+            this.provider,
+            this.isCustomerBase,
+            system,
+            client,
+            username,
+            password,
+            this.logger
+        );
+
+        this.appsManager = this.configClient.getApplicationManager();
 
         try {
-            this.flexUISystem = await this.isFlexUISupportedSystem();
+            this.flexUISystem = await this.configClient.getFlexUISupportedSystem();
 
             await this.fetchSystemInfo();
         } catch (e) {
@@ -318,9 +327,7 @@ export default class ConfigInfoPrompter {
      * Fetches system information from the provider's layered repository.
      */
     private async fetchSystemInfo(): Promise<void> {
-        const provider = this.provider.getProvider();
-        const lrep = provider.getLayeredRepository();
-        this.systemInfo = await lrep.getSystemInfo();
+        this.systemInfo = await this.configClient.getSystemInfo();
     }
 
     /**
@@ -343,52 +350,12 @@ export default class ConfigInfoPrompter {
     }
 
     /**
-     * Checks if the system supports Flex UI features.
-     * Returns settings indicating support for onPremise and UI Flex capabilities.
-     *
-     * @returns {Promise<FlexUISupportedSystem | undefined>} An object with system support details or undefined if it cannot be determined.
-     */
-    private async isFlexUISupportedSystem(): Promise<FlexUISupportedSystem | undefined> {
-        if (!this.isCustomerBase) {
-            return {
-                isOnPremise: true,
-                isUIFlex: true
-            };
-        }
-        const FILTER = {
-            'scheme': 'http://www.sap.com/adt/categories/ui_flex',
-            'term': 'dta_folder'
-        };
-        const acceptHeaders = {
-            headers: {
-                Accept: 'application/*'
-            }
-        };
-        const provider = this.provider.getProvider();
-        const response = await provider.get(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, acceptHeaders);
-
-        return { isOnPremise: response.data.includes(FILTER.term), isUIFlex: response.data.includes(FILTER.scheme) };
-    }
-
-    /**
      * Retrieves applications from the specified system.
      * Throws an error if no applications are available after loading.
-     *
-     * @param {string} system - The identifier of the system.
-     * @param {string} [username] - Optional username for provider authentication.
-     * @param {string} [password] - Optional password for provider authentication.
-     * @param {string} [client] - Optional client identifier for the provider.
      */
-    private async getApplications(
-        system: string,
-        username?: string,
-        password?: string,
-        client?: string
-    ): Promise<void> {
-        await this.provider.setProvider(system, client, username, password);
-
+    private async getApplications(): Promise<void> {
         if (!this.flexUISystem) {
-            this.flexUISystem = await this.isFlexUISupportedSystem();
+            this.flexUISystem = await this.configClient.getFlexUISupportedSystem();
         }
 
         await this.appsManager.loadApps(this.isCloudProject);
@@ -542,7 +509,7 @@ export default class ConfigInfoPrompter {
                 try {
                     await this.getSystemData(answers.system, answers.client, answers.username, value);
                     await this.validateSystemVersion(answers.system);
-                    await this.getApplications(answers.system, answers.username, value, answers.client);
+                    await this.getApplications();
                     this.isLoginSuccessfull = true;
                     if (isAppStudio()) {
                         return this.validateAdpTypes();
@@ -576,12 +543,12 @@ export default class ConfigInfoPrompter {
             when: (answers: ConfigurationInfoAnswers) => showProjectTypeQuestion(answers, this),
             choices: () => this.systemInfo.adaptationProjectTypes,
             default: () => getDefaultProjectType(this),
-            validate: async (value: AdaptationProjectType, answers: ConfigurationInfoAnswers) => {
+            validate: async (value: AdaptationProjectType) => {
                 this.isCloudProject = value === AdaptationProjectType.CLOUD_READY;
                 this.setAdditionalPagesForCloudProjects();
 
                 try {
-                    await this.getApplications(answers.system, answers.username, answers.password, answers.client);
+                    await this.getApplications();
                 } catch (e) {
                     this.logger.debug(`Failed to fetch applications for project type '${value}'. Reason: ${e.message}`);
                     return e.message;

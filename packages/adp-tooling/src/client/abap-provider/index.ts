@@ -12,6 +12,7 @@ export type RequestOptions = AxiosRequestConfig & Partial<ProviderConfiguration>
  */
 export class AbapProvider {
     private provider: AbapServiceProvider;
+    private isConnected: boolean;
 
     /**
      * Constructs an instance of AbapProvider.
@@ -19,7 +20,9 @@ export class AbapProvider {
      * @param {EndpointsManager} endpointsManager - The endpoints service for retrieving system details.
      * @param {ToolsLogger} [logger] - The logger.
      */
-    constructor(private endpointsManager: EndpointsManager, private logger?: ToolsLogger) {}
+    constructor(private endpointsManager: EndpointsManager, private logger?: ToolsLogger) {
+        this.isConnected = false;
+    }
 
     /**
      * Retrieves the configured ABAP service provider if set, otherwise throws an error.
@@ -34,6 +37,15 @@ export class AbapProvider {
     }
 
     /**
+     * Retrieves wheter the configured ABAP service provider is connected to ABAP system.
+     *
+     * @returns {boolean} - if provider is connected to ABAP system.
+     */
+    public getIsConnected(): boolean {
+        return this.isConnected;
+    }
+
+    /**
      * Configures the ABAP service provider using the specified system details and credentials.
      *
      * @param {string} system - The system identifier.
@@ -41,7 +53,7 @@ export class AbapProvider {
      * @param {string} [username] - The username for authentication.
      * @param {string} [password] - The password for authentication.
      */
-    public async setProvider(system: string, client?: string, username?: string, password?: string) {
+    public async setProvider(system: string, client?: string, username?: string, password?: string): Promise<void> {
         try {
             const requestOptions: RequestOptions = {
                 ignoreCertErrors: false
@@ -54,6 +66,7 @@ export class AbapProvider {
             }
 
             this.provider = await createAbapServiceProvider(target, requestOptions, false, {} as Logger);
+            this.isConnected = true;
         } catch (e) {
             this.logger?.error(`Failed to instantiate provider for system: ${system}. Reason: ${e.message}`);
             throw new Error(e.message);
