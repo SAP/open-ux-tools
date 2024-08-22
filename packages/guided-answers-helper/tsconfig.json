@@ -1,18 +1,13 @@
 {
   "extends": "../../tsconfig.json",
   "include": [
-    "src",
-    "src/**/*.json"  ],
+    "src/"
+  ],
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist"
   },
   "references": [
-    {
-      "path": "../btp-utils"
-    },
-    {
-      "path": "../project-access"
-    }
+    
   ]
 }
