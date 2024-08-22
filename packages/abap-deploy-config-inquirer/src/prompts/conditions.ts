@@ -4,7 +4,7 @@ import { clientDoesNotExistOrInvalid } from '../validator-utils';
 import { findBackendSystemByUrl, initTransportConfig } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
 import { t } from '../i18n';
-import { getHelpUrl, HELP_TREE } from '@sap-ux/fiori-generator-shared';
+import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 import LoggerHelper from '../logger-helper';
 import {

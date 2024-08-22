@@ -323,6 +323,9 @@ importers:
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
+      '@sap-ux/guided-answers-helper':
+        specifier: workspace:*
+        version: link:../guided-answers-helper
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
@@ -1510,6 +1513,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
 
+  packages/guided-answers-helper: {}
+
   packages/i18n:
     dependencies:
       '@sap-ux/text-document-utils':
@@ -1781,9 +1786,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
-      '@sap-ux/fiori-generator-shared':
+      '@sap-ux/guided-answers-helper':
         specifier: workspace:*
-        version: link:../fiori-generator-shared
+        version: link:../guided-answers-helper
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common

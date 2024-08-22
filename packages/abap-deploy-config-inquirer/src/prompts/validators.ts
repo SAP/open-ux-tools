@@ -13,7 +13,7 @@ import { t } from '../i18n';
 import { findBackendSystemByUrl, initTransportConfig, getPackageAnswer, queryPackages } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
 import { AuthenticationType } from '@sap-ux/store';
-import { getHelpUrl, HELP_TREE } from '@sap-ux/fiori-generator-shared';
+import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
 import {
     ClientChoiceValue,
