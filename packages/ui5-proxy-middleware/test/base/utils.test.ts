@@ -25,7 +25,6 @@ import { join } from 'path';
 describe('utils', () => {
     const existsMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
     const readFileMock = jest.spyOn(fs, 'readFileSync').mockReturnValue('');
-    const realpathSyncMock = jest.spyOn(fs, 'realpathSync');
 
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
@@ -457,21 +456,29 @@ describe('utils', () => {
     });
 
     describe('injectScripts', () => {
+        const cwd = process.cwd();
+        const projectPath = join(__dirname, '..', 'test-input', 'simple-app');
         const nextMock = jest.fn();
         const respMock: Response = {} as Partial<Response> as Response;
         respMock.writeHead = jest.fn();
         respMock.write = jest.fn();
         respMock.end = jest.fn();
 
+        beforeAll(() => {
+            process.chdir(projectPath);
+        });
+
         beforeEach(() => {
             nextMock.mockReset();
         });
 
+        afterAll(() => {
+            process.chdir(cwd);
+        });
+
         test('HTML is modified and response is sent', async () => {
-            const projectRoot = process.cwd();
             readFileMock.mockReturnValue('<html></html>');
-            realpathSyncMock.mockReturnValue(join(projectRoot, 'webapp', 'index.html'));
-            await baseUtils.injectScripts({ url: 'index.html' } as any, respMock, nextMock, []);
+            await baseUtils.injectScripts({ url: 'test/existingFlp.html' } as any, respMock, nextMock, []);
             expect(respMock.writeHead).toBeCalledTimes(1);
             expect(respMock.writeHead).toBeCalledWith(200, {
                 'Content-Type': 'text/html'
@@ -480,9 +487,14 @@ describe('utils', () => {
             expect(nextMock).not.toHaveBeenCalled();
         });
 
+        test('calls next() if html file path is not real', async () => {
+            await baseUtils.injectScripts({ url: 'dummy.html' } as any, respMock, nextMock, []);
+            expect(nextMock.mock.calls[0][0].code).toEqual('ENOENT');
+        });
+
         test('calls next() if no html file to modify', async () => {
             readFileMock.mockReturnValue('');
-            await baseUtils.injectScripts({ baseUrl: 'index.html' } as any, respMock, nextMock, []);
+            await baseUtils.injectScripts({ url: 'index.html' } as any, respMock, nextMock, []);
             expect(nextMock).toHaveBeenCalled();
         });
 
