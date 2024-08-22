@@ -157,7 +157,7 @@ export function configureLaunchConfig(options: DebugOptions, fs?: Editor, log?: 
     if (!vscode) {
         return;
     }
-    const { launchJsonPath, workspaceFolderUri, cwd } = handleWorkspaceConfig(options) as WorkspaceHandlerInfo;
+    const { launchJsonPath, workspaceFolderUri, cwd } = handleWorkspaceConfig(options);
     // construct launch.json file
     const launchJsonFile = configureLaunchJsonFile(cwd, options);
     // update workspace folders if workspaceFolderUri is available
