@@ -7,7 +7,7 @@ import { t } from '../i18n';
  * @returns true if the input is a empty string
  */
 export function isEmptyString(input: string): boolean {
-    return input?.trim().length === 0;
+    return input?.trim().length === 0 || !input;
 }
 
 /**

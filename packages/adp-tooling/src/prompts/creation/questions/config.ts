@@ -43,7 +43,7 @@ import { getEndpointNames, isFeatureSupportedVersion } from '../../../common';
 import { resolveNodeModuleGenerator } from '../../../base';
 import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../../types';
 import { isEmptyString, validateAch, validateClient, validateEmptyString } from '@sap-ux/project-input-validator';
-import { ConfigClient } from './backend/config-client';
+import { AbapClient } from '././backend/abap-client';
 
 /**
  * ConfigInfoPrompter handles the setup and interaction logic for configuration prompts related to project setup.
@@ -69,7 +69,7 @@ export default class ConfigInfoPrompter {
     private appsManager: ApplicationManager;
     private logger: ToolsLogger;
     private prompts?: Prompts;
-    private configClient: ConfigClient;
+    private abapClient: AbapClient;
 
     /**
      * Constructs an instance of ConfigInfoPrompter.
@@ -95,7 +95,8 @@ export default class ConfigInfoPrompter {
         this.prompts = prompts;
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
-
+        this.abapClient = new AbapClient(this.provider, this.isCustomerBase);
+        this.appsManager = new ApplicationManager(this.provider, this.isCustomerBase, this.logger);
         this.appIdentifier = new AppIdentifier(layer);
     }
 
@@ -193,7 +194,7 @@ export default class ConfigInfoPrompter {
     private async validateSystemVersion(value: string): Promise<void> {
         try {
             if (value) {
-                const version = await this.configClient.getSystemUI5Version();
+                const version = await this.abapClient.getSystemUI5Version();
                 this.versionsOnSystem = await this.ui5Manager.getSystemRelevantVersions(version);
             } else {
                 this.versionsOnSystem = await this.ui5Manager.getRelevantVersions();
@@ -253,19 +254,20 @@ export default class ConfigInfoPrompter {
      * Validates the selected system for further operations, fetching necessary data and checking for errors.
      *
      * @param {string} value - The system provided by the user.
+     * @param {ConfigurationInfoAnswers} answers - ConfigurationInfo answers
      * @returns {Promise<boolean | string>} True if validation succeeds without issues, or an error message otherwise.
      */
-    private async validateSystem(value: string): Promise<boolean | string> {
-        this.manifestManager.resetCache();
-        this.appsManager?.resetApps();
-        this.ui5VersionDetected = true;
-        ConfigClient.resetInstance();
-
+    private async validateSystem(value: string, answers: ConfigurationInfoAnswers): Promise<boolean | string> {
         if (!value) {
             return isAppStudio()
                 ? t('validators.selectCannotBeEmptyError', { value: 'System' })
                 : t('validators.inputCannotBeEmpty');
         }
+
+        await this.abapClient.connectToSystem(value, answers.client, answers.username, answers.password);
+        this.manifestManager.resetCache();
+        this.appsManager?.resetApps();
+        this.ui5VersionDetected = true;
 
         this.hasSystemAuthentication = this.endpointsManager.getSystemRequiresAuth(value);
 
@@ -284,7 +286,7 @@ export default class ConfigInfoPrompter {
      */
     private async handleSystemDataValidation(value: string): Promise<boolean | string> {
         try {
-            await this.getSystemData(value);
+            await this.getSystemData();
             await this.validateSystemVersion(value);
             return this.validateAdpTypes();
         } catch (e) {
@@ -301,21 +303,9 @@ export default class ConfigInfoPrompter {
      * @param {string} [username] - Optional username for authentication.
      * @param {string} [password] - Optional password for authentication.
      */
-    private async getSystemData(system: string, client?: string, username?: string, password?: string): Promise<void> {
-        this.configClient = await ConfigClient.getInstance(
-            this.provider,
-            this.isCustomerBase,
-            system,
-            client,
-            username,
-            password,
-            this.logger
-        );
-
-        this.appsManager = this.configClient.getApplicationManager();
-
+    private async getSystemData(): Promise<void> {
         try {
-            this.flexUISystem = await this.configClient.getFlexUISupportedSystem();
+            this.flexUISystem = await this.abapClient.getFlexUISupportedSystem();
 
             await this.fetchSystemInfo();
         } catch (e) {
@@ -327,7 +317,7 @@ export default class ConfigInfoPrompter {
      * Fetches system information from the provider's layered repository.
      */
     private async fetchSystemInfo(): Promise<void> {
-        this.systemInfo = await this.configClient.getSystemInfo();
+        this.systemInfo = await this.abapClient.getSystemInfo();
     }
 
     /**
@@ -355,7 +345,7 @@ export default class ConfigInfoPrompter {
      */
     private async getApplications(): Promise<void> {
         if (!this.flexUISystem) {
-            this.flexUISystem = await this.configClient.getFlexUISupportedSystem();
+            this.flexUISystem = await this.abapClient.getFlexUISupportedSystem();
         }
 
         await this.appsManager.loadApps(this.isCloudProject);
@@ -405,7 +395,8 @@ export default class ConfigInfoPrompter {
                 mandatory: true
             },
             when: isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true,
-            validate: async (value: string) => await this.validateSystem(value),
+            validate: async (value: string, answers: ConfigurationInfoAnswers) =>
+                await this.validateSystem(value, answers),
             additionalMessages: () => systemAdditionalMessages(this.flexUISystem, this.systemInfo)
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
@@ -430,7 +421,8 @@ export default class ConfigInfoPrompter {
             type: 'input',
             name: 'system',
             message: t('prompts.systemUrlLabel'),
-            validate: async (value: string) => await this.validateSystem(value),
+            validate: async (value: string, answers: ConfigurationInfoAnswers) =>
+                await this.validateSystem(value, answers),
             guiOptions: {
                 mandatory: true,
                 breadcrumb: t('prompts.systemUrlLabel')
@@ -507,7 +499,8 @@ export default class ConfigInfoPrompter {
                 }
 
                 try {
-                    await this.getSystemData(answers.system, answers.client, answers.username, value);
+                    await this.abapClient.connectToSystem(answers.system, answers.client, answers.username, value);
+                    await this.getSystemData();
                     await this.validateSystemVersion(answers.system);
                     await this.getApplications();
                     this.isLoginSuccessfull = true;

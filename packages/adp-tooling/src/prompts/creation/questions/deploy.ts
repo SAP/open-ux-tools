@@ -1,16 +1,15 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AutocompleteQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { AbapServiceProvider, AxiosError, SystemInfo } from '@sap-ux/axios-extension';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, AxiosError, SystemInfo } from '@sap-ux/axios-extension';
 
 import type { AbapProvider } from '../../../client';
 import { t } from '../../../i18n';
 import type { DeployConfigAnswers } from '../../../types';
 import { InputChoice } from '../../../types';
-import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages, listTransports } from '../../../client';
 import { validateAbapRepository, validateEmptyString, validatePackageAdp } from '@sap-ux/project-input-validator';
 import { getInputChoiceOptions } from './helper';
 import { shouldShowTransportRelatedPrompt, showPackageManualQuestion } from './helper/conditions';
+import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, AbapClient } from './backend/abap-client';
 
 /**
  * Validates the user's choice for selecting an ABAP package.
@@ -18,18 +17,18 @@ import { shouldShowTransportRelatedPrompt, showPackageManualQuestion } from './h
  * If not entering manually, it verifies that there are available packages by listing them from the ABAP system.
  *
  * @param {InputChoice} value - The user's choice on how to input the package name.
- * @param {AbapServiceProvider} provider - The ABAP service provider.
+ * @param {AbapClient} abapClient - The ABAP client.
  * @returns {Promise<string | boolean>} A promise that resolves to true if the input choice is valid or a validation error message otherwise.
  */
 export async function validatePackageChoiceInput(
     value: InputChoice,
-    provider: AbapServiceProvider
+    abapClient: AbapClient
 ): Promise<string | boolean> {
     if (value === InputChoice.ENTER_MANUALLY) {
         return true;
     }
     try {
-        const packages = await listPackages('', provider);
+        const packages = await abapClient.listPackages('');
         if (!packages || (packages && packages.length === 0)) {
             return t('validators.abapPackagesNotFound');
         }
@@ -48,7 +47,7 @@ export async function validatePackageChoiceInput(
  * @param {InputChoice} value - The user's transport choice input method.
  * @param {string} packageName - The package name involved in the transport operation.
  * @param {string} repository - The repository associated with the package.
- * @param {AbapServiceProvider} provider - The ABAP service provider.
+ * @param {AbapClient} abapClient - The ABAP client.
  * @returns {Promise<string | boolean>} A promise that resolves to true if the input method is valid,
  *                                      or an error message string if there are issues with the prerequisites or fetching transports.
  */
@@ -56,7 +55,7 @@ export async function validateTransportChoiceInput(
     value: InputChoice,
     packageName: string,
     repository: string,
-    provider: AbapServiceProvider
+    abapClient: AbapClient
 ): Promise<string | boolean> {
     try {
         if (!value) {
@@ -67,7 +66,7 @@ export async function validateTransportChoiceInput(
                 return t('validators.invalidTranposportPrereq');
             }
 
-            const transportList = await listTransports(packageName, repository, provider);
+            const transportList = await abapClient.listTransports(packageName, repository);
             if (!transportList || (transportList && transportList.length === 0)) {
                 return t('validators.errorFetchingTransports');
             }
@@ -84,7 +83,7 @@ export async function validateTransportChoiceInput(
  *
  * @param {string} packageName - The name of the package.
  * @param {string} repository - The repository identifier.
- * @param {AbapServiceProvider} provider - The ABAP service provider.
+ * @param {AbapClient} abapClient - The ABAP client.
  * @param {string[] | undefined} transportList - An array to store the list of transports.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>}
@@ -92,12 +91,12 @@ export async function validateTransportChoiceInput(
 export async function setTransportList(
     packageName: string,
     repository: string,
-    provider: AbapServiceProvider,
+    abapClient: AbapClient,
     transportList: string[] | undefined,
     logger?: ToolsLogger
 ): Promise<void> {
     try {
-        const fetchedTransports = await listTransports(packageName, repository, provider);
+        const fetchedTransports = await abapClient.listTransports(packageName, repository);
 
         if (!transportList) {
             transportList = [];
@@ -118,7 +117,7 @@ export async function setTransportList(
  *
  * @param {string} value - The package name to validate.
  * @param {DeployConfigAnswers} answers - Answers object containing deployment configuration answers.
- * @param {AbapServiceProvider} provider - ABAP service provider to fetch system information.
+ * @param {AbapClient} abapClient - The ABAP client.
  * @param {string[]} transportList - An array to store the list of transports if applicable.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<string | boolean>} A promise that resolves with true if validation is successful, or an error message otherwise.
@@ -126,7 +125,7 @@ export async function setTransportList(
 export async function validatePackageName(
     value: string,
     answers: DeployConfigAnswers,
-    provider: AbapServiceProvider,
+    abapClient: AbapClient,
     transportList: string[],
     logger?: ToolsLogger
 ): Promise<string | boolean> {
@@ -136,14 +135,14 @@ export async function validatePackageName(
     }
 
     try {
-        const systemInfo = await fetchPackageSystemInfo(value, provider);
+        const systemInfo = await fetchPackageSystemInfo(value, abapClient);
 
         if (systemInfo.adaptationProjectTypes[0] !== AdaptationProjectType.CLOUD_READY) {
             return t('validators.package.notCloudPackage');
         }
 
-        if (answers.abapRepository && answers.transportInputChoice === InputChoice.CHOOSE_FROM_EXISTING) {
-            await setTransportList(value, answers.abapRepository, provider, transportList, logger);
+        if (answers.abapRepository) {
+            await setTransportList(value, answers.abapRepository, abapClient, transportList, logger);
         }
 
         return true;
@@ -156,12 +155,11 @@ export async function validatePackageName(
  * Fetches system information for a specific package.
  *
  * @param {string} packageName - The name of the package.
- * @param {AbapServiceProvider} provider - The provider from which to fetch the system info.
+ * @param {AbapClient} abapClient - The ABAP client.
  * @returns {Promise<any>} A promise that resolves with the system information.
  */
-async function fetchPackageSystemInfo(packageName: string, provider: AbapServiceProvider): Promise<SystemInfo> {
-    const lrep = provider.getLayeredRepository();
-    return lrep.getSystemInfo(undefined, packageName);
+async function fetchPackageSystemInfo(packageName: string, abapClient: AbapClient): Promise<SystemInfo> {
+    return await abapClient.getSystemInfo(undefined, packageName);
 }
 
 /**
@@ -192,9 +190,8 @@ export async function getPrompts(
     abapProvider: AbapProvider,
     logger?: ToolsLogger
 ): Promise<YUIQuestion<DeployConfigAnswers>[]> {
-    const provider = abapProvider.getProvider();
     const transportList: string[] = [];
-
+    const abapClient = new AbapClient(abapProvider, false);
     let packageInputChoiceValid: string | boolean;
     let morePackageResultsMsg: string;
 
@@ -230,7 +227,7 @@ export async function getPrompts(
                 breadcrumb: t('prompts.packageInputChoice')
             },
             validate: async (value: InputChoice) => {
-                packageInputChoiceValid = await validatePackageChoiceInput(value, provider);
+                packageInputChoiceValid = await validatePackageChoiceInput(value, abapClient);
 
                 return packageInputChoiceValid;
             }
@@ -246,7 +243,7 @@ export async function getPrompts(
             },
             when: (answers: DeployConfigAnswers) => showPackageManualQuestion(answers, packageInputChoiceValid),
             validate: async (value: string, answers: DeployConfigAnswers) =>
-                await validatePackageName(value, answers, provider, transportList)
+                await validatePackageName(value, answers, abapClient, transportList)
         } as InputQuestion<DeployConfigAnswers>,
         {
             type: 'autocomplete',
@@ -260,7 +257,7 @@ export async function getPrompts(
             source: async (_, input: string) => {
                 let packages: string[] = [];
                 try {
-                    packages = await listPackages(input, provider);
+                    packages = await abapClient.listPackages(input);
                     morePackageResultsMsg =
                         packages && packages.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS
                             ? t('info.moreSearchResults', { count: packages.length })
@@ -276,7 +273,7 @@ export async function getPrompts(
             when: (answers: DeployConfigAnswers) =>
                 packageInputChoiceValid === true && answers?.packageInputChoice === InputChoice.CHOOSE_FROM_EXISTING,
             validate: async (value: string, answers: DeployConfigAnswers) =>
-                await validatePackageName(value, answers, provider, transportList)
+                await validatePackageName(value, answers, abapClient, transportList)
         } as AutocompleteQuestion<DeployConfigAnswers>,
         {
             type: 'list',
@@ -292,7 +289,7 @@ export async function getPrompts(
                     answers.packageInputChoice === InputChoice.ENTER_MANUALLY
                         ? answers.packageManual!
                         : answers.packageAutocomplete!;
-                return await validateTransportChoiceInput(value, name, answers.abapRepository, provider);
+                return await validateTransportChoiceInput(value, name, answers.abapRepository, abapClient);
             },
             when: (answers: DeployConfigAnswers) => shouldShowTransportRelatedPrompt(answers)
         } as ListQuestion<DeployConfigAnswers>,

@@ -224,7 +224,7 @@ export function validatePackageAdp(value: string, repository: string): string | 
     if (value.startsWith('/')) {
         const valueParts = value.split('/').filter((el) => el !== '');
         const packageNamespace = valueParts[0];
-        if (!repository.startsWith(`/${packageNamespace}/`)) {
+        if (!repository?.startsWith(`/${packageNamespace}/`)) {
             return t('adp.package.invalidRepositoryNamespace');
         }
 
