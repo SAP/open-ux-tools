@@ -4,6 +4,7 @@
 .tmp
 .project
 .DS_Store
+.pnpm-store
 
 ## Original Source: https://github.com/github/gitignore/blob/master/Node.gitignore
 

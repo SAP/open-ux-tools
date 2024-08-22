@@ -22,7 +22,7 @@ describe('getPrompts', () => {
     const expectedPrompts = [
         {
             type: 'input',
-            name: `id`,
+            name: `usageId`,
             message: i18n.t('prompts.component.usageIdLabel'),
             validate: expect.any(Function),
             default: 'customer.',
@@ -130,32 +130,32 @@ describe('getPrompts', () => {
     });
 
     describe('Validators', () => {
-        test('should fail validation of id for special characters', () => {
+        test('should fail validation of usageId for special characters', () => {
             jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('error');
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
-            const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
+            const validator = prompts.find((prompt) => prompt.name === 'usageId')?.validate;
 
             expect(typeof validator).toBe('function');
             expect(validator?.('customer.@id')).toBe('error');
         });
 
-        test('should fail validation of id for missing customer prefix', () => {
+        test('should fail validation of usageId for missing customer prefix', () => {
             jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
-            const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
+            const validator = prompts.find((prompt) => prompt.name === 'usageId')?.validate;
 
             expect(typeof validator).toBe('function');
             expect(validator?.('@id')).toBe("Component Usage ID should start with 'customer.'");
         });
 
-        test('should fail validation of id for empty value except customer prefix', () => {
+        test('should fail validation of usageId for empty value except customer prefix', () => {
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
-            const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
+            const validator = prompts.find((prompt) => prompt.name === 'usageId')?.validate;
 
             expect(typeof validator).toBe('function');
             expect(validator?.('customer.')).toBe(
@@ -163,12 +163,12 @@ describe('getPrompts', () => {
             );
         });
 
-        test('should fail validation of id for content duplication', () => {
+        test('should fail validation of usageId for content duplication', () => {
             jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
-            const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
+            const validator = prompts.find((prompt) => prompt.name === 'usageId')?.validate;
 
             expect(typeof validator).toBe('function');
             expect(validator?.('customer.id')).toBe(
@@ -181,7 +181,7 @@ describe('getPrompts', () => {
 
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
-            const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
+            const validator = prompts.find((prompt) => prompt.name === 'usageId')?.validate;
 
             expect(typeof validator).toBe('function');
             expect(validator?.('customer.id')).toBe(true);
