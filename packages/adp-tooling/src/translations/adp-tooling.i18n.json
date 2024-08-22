@@ -12,7 +12,7 @@
         "fileSelectOptionTooltip": "Select the annotation file source",
         "filePathLabel": "Annotation File path",
         "filePathTooltip": "Select the annotation file from your workspace",
-        "addAnnotationOdataSourceTooltip": "Select the annotation file from your workspace",
+        "addAnnotationOdataSourceTooltip": "Select the OData service you want to add annotation file to",
         "oDataServiceNameLabel": "OData Service Name",
         "oDataServiceNameTooltip": "Enter a name for the OData service you want to add",
         "oDataServiceUriLabel": "OData Service URI",
