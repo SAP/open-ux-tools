@@ -7,7 +7,7 @@ import {
     updateWorkspaceFoldersIfNeeded,
     createOrUpdateLaunchConfigJSON,
     configureLaunchConfig
-} from '../../src/debug-config/update';
+} from '../../src/launch-config-crud/create';
 import { t } from '../../src/i18n';
 import { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import type { Editor } from 'mem-fs-editor';
