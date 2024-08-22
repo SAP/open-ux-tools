@@ -6,7 +6,7 @@ import type { AbapProvider } from '../abap-provider';
 
 export interface ManifestCache {
     url: string;
-    manifest: Manifest | null;
+    manifest: Manifest | undefined;
 }
 
 /**
@@ -34,23 +34,20 @@ export class ManifestManager {
      * Retrieves the cached manifest for a specified application.
      *
      * @param {string} id - The ID of the application whose manifest is needed.
-     * @returns {Manifest | null} The cached manifest or null if not available.
+     * @returns {Manifest | undefined} The cached manifest or null if not available.
      */
-    public getManifest(id: string): Manifest | null {
-        // TODO: Try to load the manifest if it is null
-        const cached = this.manifestCache.get(id);
-        return cached ? cached.manifest : null;
+    public getManifest(id: string): Manifest | undefined {
+        return this.manifestCache.get(id)?.manifest;
     }
 
     /**
      * Retrieves the cached manifest URL for a specified application.
      *
      * @param {string} id - The ID of the application whose manifest URL is needed.
-     * @returns {string} The cached URL or an empty string if not available.
+     * @returns {string | undefined} The cached URL or an empty string if not available.
      */
-    public getUrl(id: string): string {
-        const cached = this.manifestCache.get(id);
-        return cached?.url ? cached.url : '';
+    public getUrl(id: string): string | undefined {
+        return this.manifestCache.get(id)?.url;
     }
 
     /**
@@ -73,7 +70,7 @@ export class ManifestManager {
         if (data) {
             const appInfo = Object.values(data)[0];
             const url = appInfo?.manifestUrl ?? appInfo?.manifest ?? '';
-            this.manifestCache.set(id, { url, manifest: null });
+            this.manifestCache.set(id, { url, manifest: undefined });
         }
     }
 
@@ -103,7 +100,7 @@ export class ManifestManager {
         try {
             const response = await provider.request({ url: cached.url });
 
-            const manifest = JSON.parse(response.data);
+            const manifest = JSON.parse(response.data) as Manifest;
 
             if (typeof manifest !== 'object' || manifest === null) {
                 throw new Error('Manifest parsing error. Manifest is not in expected format.');

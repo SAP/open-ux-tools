@@ -33,7 +33,7 @@ export function validateParameters(paramString: string): string | boolean {
  * @param {Manifest} manifest - The manifest object containing cross-navigation data.
  * @returns {string[]} An array of inbound IDs, or an empty array if none are found.
  */
-export function getInboundIds(manifest: Manifest | null): string[] {
+export function getInboundIds(manifest: Manifest | undefined): string[] {
     const inbounds = manifest?.['sap.app']?.crossNavigation?.inbounds;
     return inbounds ? Object.keys(inbounds) : [];
 }

@@ -240,7 +240,7 @@ export default class ConfigInfoPrompter {
      * @param {Manifest} manifest - The application manifest.
      * @param {Application} application - The application data.
      */
-    private async evaluateApplicationSupport(manifest: Manifest | null, application: Application): Promise<void> {
+    private async evaluateApplicationSupport(manifest: Manifest | undefined, application: Application): Promise<void> {
         const systemVersion = this.ui5Manager.systemVersion;
         const checkForSupport = this.ui5VersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
         const isPartialSupport =

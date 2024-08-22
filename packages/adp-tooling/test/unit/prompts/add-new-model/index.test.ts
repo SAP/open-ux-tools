@@ -125,9 +125,12 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'name')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('customer.testName', { dataSourceName: 'customer.testName' } as NewModelAnswers)).toBe(
-            'OData Service Name must be different from OData Annotation Data Source Name'
-        );
+        expect(
+            validation?.('customer.testName', {
+                addAnnotationMode: true,
+                dataSourceName: 'customer.testName'
+            } as NewModelAnswers)
+        ).toBe('OData Service Name must be different from OData Annotation Data Source Name');
     });
 
     it('should return true when validating service uri prompt', () => {
