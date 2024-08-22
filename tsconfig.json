@@ -24,6 +24,9 @@
   },
   "references": [
     {
+      "path": "packages/abap-deploy-config-inquirer"
+    },
+    {
       "path": "packages/abap-deploy-config-writer"
     },
     {

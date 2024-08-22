@@ -24,8 +24,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     private constructContent(data: AnnotationsData): object {
         const {
             variant: { layer },
-            fileName,
-            answers: { id }
+            annotation: { dataSource, fileName }
         } = data;
         const annotationFileNameWithoutExtension = fileName?.toLocaleLowerCase().replace('.xml', '');
         const annotationNameSpace =
@@ -33,7 +32,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
                 ? `customer.annotation.${annotationFileNameWithoutExtension}`
                 : `annotation.${annotationFileNameWithoutExtension}`;
         return {
-            dataSourceId: `${id}`,
+            dataSourceId: `${dataSource}`,
             annotations: [annotationNameSpace],
             annotationsInsertPosition: 'END',
             dataSource: {
@@ -51,8 +50,8 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @param {AnnotationsData} data - The answers object containing user choices.
      * @returns {string | undefined} The determined filename for the annotation file.
      */
-    private getAnnotationFileName({ answers }: AnnotationsData): string | undefined {
-        return answers.filePath ? path.basename(answers.filePath) : `annotation_${Date.now()}.xml`;
+    private getAnnotationFileName({ annotation }: AnnotationsData): string | undefined {
+        return annotation.filePath ? path.basename(annotation.filePath) : `annotation_${Date.now()}.xml`;
     }
 
     /**
@@ -62,16 +61,16 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: AnnotationsData): Promise<void> {
-        const { variant } = data;
-        data.fileName = this.getAnnotationFileName(data);
-        if (data.answers.filePath) {
-            data.answers.filePath = isAbsolute(data.answers.filePath)
-                ? data.answers.filePath
-                : path.join(this.projectPath, data.answers.filePath);
+        const { variant, annotation } = data;
+        annotation.fileName = annotation.fileName ?? this.getAnnotationFileName(data);
+        if (annotation.filePath) {
+            annotation.filePath = isAbsolute(annotation.filePath)
+                ? annotation.filePath
+                : path.join(this.projectPath, annotation.filePath);
         }
         const content = this.constructContent(data);
         const timestamp = Date.now();
         const change = getChange(variant, timestamp, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
-        writeAnnotationChange(this.projectPath, timestamp, data, change, this.fs);
+        writeAnnotationChange(this.projectPath, timestamp, data.annotation, change, this.fs);
     }
 }
