@@ -1666,9 +1666,6 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
-      '@types/vscode':
-        specifier: 1.73.1
-        version: 1.73.1
       '@types/yargs-parser':
         specifier: 21.0.3
         version: 21.0.3
