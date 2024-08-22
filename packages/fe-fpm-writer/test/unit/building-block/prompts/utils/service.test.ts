@@ -68,9 +68,9 @@ describe('utils - service', () => {
                     }
                 })
             } as unknown as FioriAnnotationService);
-            const entityTypes = await getEntitySets(capProject, capAppFolder);
-            expect(entityTypes.length).toEqual(3);
-            expect(entityTypes.map((entityType) => entityType.fullyQualifiedName)).toEqual([
+            const entitySets = await getEntitySets(capProject, capAppFolder);
+            expect(entitySets.length).toEqual(3);
+            expect(entitySets.map((entitySet) => entitySet.fullyQualifiedName)).toEqual([
                 'IncidentService.EntityContainer/Incidents',
                 'IncidentService.EntityContainer/IncidentFlow',
                 'IncidentService.EntityContainer/IncidentProcessTimeline'
