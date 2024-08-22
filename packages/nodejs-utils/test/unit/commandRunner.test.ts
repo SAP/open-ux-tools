@@ -38,7 +38,7 @@ describe('CommandRunner', () => {
         const expectedError = 'Command failed, `npm install';
         spawnMock.setDefault(spawnMock.simple(1, 'npm install'));
 
-        await expect(commandRunner.run(cmd, args)).rejects.toThrow(expectedError);
+        await expect(commandRunner.run(cmd, args)).rejects.toContain(expectedError);
         expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
     });
 
@@ -48,7 +48,7 @@ describe('CommandRunner', () => {
         const expectedError = 'Command failed, `npm install`, npm ERR! missing script: install';
         spawnMock.setDefault(spawnMock.simple(1, 'npm install', 'npm ERR! missing script: install'));
 
-        await expect(commandRunner.run(cmd, args)).rejects.toThrow(expectedError);
+        await expect(commandRunner.run(cmd, args)).rejects.toContain(expectedError);
         expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
     });
 });
