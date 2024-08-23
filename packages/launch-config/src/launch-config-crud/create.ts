@@ -128,7 +128,7 @@ export function createOrUpdateLaunchConfigJSON(
             read: (path: string) => readFileSync(path, 'utf8'),
             write: (path: string, content: string) => {
                 const dir = dirname(path);
-                let launchJSONPath = path
+                let launchJSONPath = path;
                 if (!existsSync(dir)) {
                     const dotVscodePath = join(rootFolderPath, DirName.VSCode);
                     mkdirSync(dotVscodePath, { recursive: true });
