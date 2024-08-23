@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.3
+
+### Patch Changes
+
+-   b158244: remove feature toggle usage
+
 ## 0.0.2
 
 ### Patch Changes

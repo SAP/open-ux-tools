@@ -34,6 +34,7 @@ async function getPrompts(
     await initI18n();
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
     PromptState.isYUI = isYUI;
+    PromptState.resetAbapDeployConfig();
 
     return {
         prompts: await getAbapDeployConfigQuestions(promptOptions),
