@@ -8,7 +8,6 @@ import type { ConnectionValidator } from '../../../../../src/prompts/connectionV
 import { getAbapOnBTPSystemQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
 import { PromptState } from '../../../../../src/utils';
 
-
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue(true);
 const isAuthRequiredMock = jest.fn().mockResolvedValue(false);

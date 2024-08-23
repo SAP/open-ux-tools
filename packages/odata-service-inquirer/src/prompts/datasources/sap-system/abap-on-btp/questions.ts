@@ -116,6 +116,14 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
     return questions;
 }
 
+/**
+ * Validate the service info for the ABAP on BTP system. This function will validate the service key file and the connection to the ABAP system.
+ *
+ * @param abapService the abap service as provided by CF tools
+ * @param connectionValidator connection validator instance
+ * @param isCli validation on CLI ill throw rather than returning a validation message as users cannot change previous answers on CLI
+ * @returns true if the service info is valid, a validation message if the service info is invalid, or a validation link if the service info is not validated but some help is available
+ */
 async function validateServiceInfo(
     abapService: ServiceInstanceInfo,
     connectionValidator: ConnectionValidator,
