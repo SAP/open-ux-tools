@@ -1,0 +1,62 @@
+{
+    "name": "@sap-ux/odata-service-inquirer",
+    "description": "Prompts module that can prompt users for inputs required for odata service writing",
+    "version": "0.5.27",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/odata-sevice-inquirer"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-service-inquirer"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "watch": "tsc --watch",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/guided-answers-helper": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
+        "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/project-input-validator": "workspace:*",
+        "@sap-ux/store": "workspace:*",
+        "axios": "1.7.4",
+        "axios-logger": "2.8.0",
+        "fast-xml-parser": "4.4.1",
+        "i18next": "23.5.1",
+        "inquirer-autocomplete-prompt": "2.0.1",
+        "os-name": "4.0.1"
+    },
+    "devDependencies": {
+        "@sap-ux/odata-service-writer": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*",
+        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@types/inquirer-autocomplete-prompt": "2.0.1",
+        "@types/inquirer": "8.2.6",
+        "@types/lodash": "4.14.202",
+        "jest-extended": "3.2.4",
+        "lodash": "4.17.21"
+    },
+    "engines": {
+        "node": ">=18.x"
+    }
+}

@@ -1,6 +1,7 @@
 import type { EnvironmentCheckResult } from '../../src';
-import { Check, convertResultsToMarkdown, UrlServiceType } from '../../src';
+import { Check, convertResultsToMarkdown, Severity, UrlServiceType } from '../../src';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { t } from '../../src/i18n';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
@@ -212,6 +213,24 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result).toMatch('## Destination Details (0)');
         expect(result).toMatch('## All Destinations (0)');
         expect(result).toMatch('## Messages (0)');
+    });
+    test('Transport Request 403 warning and Guided Answers link', () => {
+        const envCheckResults = {
+            markdownTitle: `SAP Fiori tools - Environment Check`,
+            requestedChecks: requestedChecksSet,
+            messages: [
+                {
+                    severity: Severity.Error,
+                    text: 'Error checking ability to retrieve available Transport Requests \n'
+                },
+                {
+                    severity: Severity.Debug,
+                    text: t('warning.guidedAnswersLink')
+                }
+            ]
+        };
+        const result = convertResultsToMarkdown(envCheckResults);
+        expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
     test('Check destination details with no v2 or v4 service', () => {
         const result = convertResultsToMarkdown({

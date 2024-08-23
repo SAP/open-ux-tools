@@ -143,6 +143,9 @@ exports[`UI5Config addAbapDeployTask use open source task 1`] = `
           description: ~description
           package: ~package
           transport: ~transport
+        exclude:
+          - /test/
+        index: true
 "
 `;
 
@@ -161,6 +164,50 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out 
         backend:
           - url: http://localhost:8080
             path: /~testpath~
+"
+`;
+
+exports[`UI5Config addBackendToFioriToolsProxydMiddleware should add comments with backend authentication type as reentrance ticket 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+            authenticationType: reentranceTicket # SAML support for vscode
+"
+`;
+
+exports[`UI5Config addFioriToolsProxydMiddleware add / get commonly configured backend (and UI5 defaults) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+            destination: ~destination~
+            destinationInstance: ~destinationInstance~
+          - url: http://localhost:8080
+            path: /~testpath~
+            destination: ~destination~
+            destinationInstance: ~destinationInstance~
+            authenticationType: reentranceTicket # SAML support for vscode
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
 "
 `;
 
@@ -213,26 +260,6 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without path or des
         backend:
           - url: http://localhost:8080
             path: /
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-"
-`;
-
-exports[`UI5Config addFioriToolsProxydMiddleware add commonly configured backend (and UI5 defaults) 1`] = `
-"server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - url: http://localhost:8080
-            path: /~testpath~
-            destination: ~destination~
-            destinationInstance: ~destinationInstance~
         ui5:
           path:
             - /resources
@@ -299,6 +326,24 @@ exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
 "
 `;
 
+exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/annotations/annotations.xml
+            urlPath: annotations.xml
+"
+`;
+
 exports[`UI5Config addMockServerMiddleware add without path 1`] = `
 "server:
   customMiddleware:
@@ -312,6 +357,89 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
             mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
+"
+`;
+
+exports[`UI5Config addServeStaticConfig add with multiple paths (existing config) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      afterMiddleware: compression
+      configuration:
+        paths:
+          - path: /resources/targetapp
+            src: /targetapp/abeppw
+          - path: /appconfig
+            src: /srcapp/appconfig
+          - path: /~path
+            src: /~src
+            fallthrough: false
+          - path: /~otherPath
+            src: /~otherSrc
+            fallthrough: false
+"
+`;
+
+exports[`UI5Config addServeStaticConfig add with multiple paths (existing config) 2`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      afterMiddleware: compression
+      configuration:
+        paths:
+          - path: /resources/targetapp
+            src: /targetapp/abeppw
+          - path: /appconfig
+            src: /srcapp/appconfig
+          - path: /~path
+            src: /~src
+            fallthrough: false
+          - path: /~otherPath
+            src: /~otherSrc
+            fallthrough: false
+          - path: /~newPath
+            src: /~newSrc
+            fallthrough: false
+"
+`;
+
+exports[`UI5Config addServeStaticConfig add with single path (no existing serve static config) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      afterMiddleware: compression
+      configuration:
+        paths:
+          - path: /~testpath~
+            src: /~src
+            fallthrough: false
+"
+`;
+
+exports[`UI5Config addServeStaticConfig update serve static config 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        paths:
+          - path: /resources/targetapp
+            src: /targetapp/abeppw
+          - path: /appconfig
+            src: /srcapp/appconfig
+          - path: /~testpath~
+            src: /~src
+            fallthrough: false
+          - path: /~other
+            src: /~otherSrc
+            fallthrough: false
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false
+        backend:
+          - path: /sap
+            url: http://test.url.com:50017
 "
 `;
 
@@ -374,6 +502,17 @@ exports[`UI5Config addUI5Framework Use horizon high dark theme 1`] = `
 "
 `;
 
+exports[`UI5Config addUI5Libs addUI5Libs in framework libraries 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.64.0
+  libraries:
+    - name: sap.m
+    - name: themelib_sap_fiori_3
+    - name: sap.ushell
+"
+`;
+
 exports[`UI5Config addUi5ToFioriToolsProxydMiddleware add ui5 config to empty tools middleware config 1`] = `
 "server:
   customMiddleware:
@@ -401,6 +540,16 @@ exports[`UI5Config getAppReloadMiddlewareConfig 1`] = `
 "
 `;
 
+exports[`UI5Config getType / setType replace type 1`] = `
+"type: library
+"
+`;
+
+exports[`UI5Config getType / setType set type 1`] = `
+"type: application
+"
+`;
+
 exports[`UI5Config setMetadata replace metadata 1`] = `
 "metadata:
   name: the.replaced.name
@@ -411,15 +560,5 @@ exports[`UI5Config setMetadata set name and copyright 1`] = `
 "metadata:
   name: test.name
   copyright: ©
-"
-`;
-
-exports[`UI5Config setType replace type 1`] = `
-"type: library
-"
-`;
-
-exports[`UI5Config setType set type 1`] = `
-"type: application
 "
 `;

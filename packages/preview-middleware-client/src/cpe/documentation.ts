@@ -1,5 +1,5 @@
 import { getLibrary } from './utils';
-import type { SchemaForApiJsonFiles, Ui5Property } from './api-json';
+import type { SchemaForApiJsonFiles, Ui5Metadata, Ui5Property } from './api-json';
 import type { Properties } from './utils';
 import Log from 'sap/base/Log';
 import { PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
@@ -18,7 +18,7 @@ export interface ControlMetadata {
  */
 export async function getUi5ApiDtMetadata(libName: string): Promise<SchemaForApiJsonFiles> {
     const libUrl = '/test-resources/' + libName.split('.').join('/') + '/designtime/api.json';
-    return fetch(libUrl).then((res) => res.json());
+    return fetch(libUrl).then((res) => res.json() as unknown as SchemaForApiJsonFiles);
 }
 
 /**
@@ -83,9 +83,11 @@ function parseControlMetaModel(controlLibMetadata: SchemaForApiJsonFiles, contro
     const selectedControlMetadata = (controlLibMetadata.symbols ?? []).find((control) => control.name === controlName);
     if (selectedControlMetadata) {
         // base type info of control is available on property 'extends'
-        controlInfo.baseType = selectedControlMetadata.extends;
+        controlInfo.baseType = selectedControlMetadata.extends as string | undefined;
         controlInfo.doc = selectedControlMetadata.description ?? '';
-        const properties = selectedControlMetadata['ui5-metadata'].properties;
+        const properties: (Ui5Property & PropertiesInfo)[] | undefined = (
+            selectedControlMetadata['ui5-metadata'] as Ui5Metadata
+        ).properties as (Ui5Property & PropertiesInfo)[] | undefined;
         if (properties) {
             properties.forEach((prop: Ui5Property & PropertiesInfo) => {
                 prop.description = formatHtmlText(prop.description || '');

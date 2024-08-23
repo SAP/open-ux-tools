@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected prompts 1`] = `
+[
+  {
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": "CAP Project",
+      "mandatory": true,
+    },
+    "message": "Choose your CAP project",
+    "name": "capProject",
+    "type": "list",
+    "when": [Function],
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": "CAP Project",
+      "mandatory": true,
+    },
+    "guiType": "folder-browser",
+    "message": "CAP project folder path",
+    "name": "capProjectPath",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": true,
+      "mandatory": true,
+    },
+    "message": "OData service",
+    "name": "capService",
+    "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "name": "capCliStateSetter",
+    "when": [Function],
+  },
+]
+`;

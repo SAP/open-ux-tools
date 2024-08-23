@@ -7,6 +7,7 @@ import { readFileSync } from 'fs';
 import { isAxiosError } from '../base/odata-request-error';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { TransportConfig } from './ui5-abap-repository-service';
+import { logError } from './message';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 /**
@@ -60,6 +61,7 @@ export interface MergedAppDescriptor {
                 final: boolean;
             };
         }[];
+        requests?: unknown[];
     };
 }
 
@@ -74,6 +76,30 @@ export interface Message {
     variables?: string[];
 }
 
+/**
+ * All available adaptation project types from system.
+ */
+export enum AdaptationProjectType {
+    ON_PREMISE = 'onPremise',
+    CLOUD_READY = 'cloudReady'
+}
+
+/**
+ * Structure of the system info reponse data.
+ */
+export interface SystemInfo {
+    /**
+     * Supported adaptation project types from system.
+     */
+    adaptationProjectTypes: AdaptationProjectType[];
+    activeLanguages: Language[];
+}
+
+interface Language {
+    sap: string;
+    description: string;
+    i18n: string;
+}
 /**
  * Technically supported layers, however, in practice only `CUSTOMER_BASE` is used
  */
@@ -202,18 +228,22 @@ export class LayeredRepositoryService extends Axios implements Service {
             params['changelist'] = config.transport;
         }
 
-        const response = await this.request({
-            method: checkResponse.status === 200 ? 'PUT' : 'POST',
-            url: DTA_PATH_SUFFIX,
-            data,
-            params,
-            headers: {
-                'Content-Type': 'application/octet-stream'
-            }
-        });
-        this.tryLogResponse(response, 'Deployment successful.');
-
-        return response;
+        try {
+            const response = await this.request({
+                method: checkResponse.status === 200 ? 'PUT' : 'POST',
+                url: DTA_PATH_SUFFIX,
+                data,
+                params,
+                headers: {
+                    'Content-Type': 'application/octet-stream'
+                }
+            });
+            this.tryLogResponse(response, 'Deployment successful.');
+            return response;
+        } catch (error) {
+            logError({ error, log: this.log });
+            throw error;
+        }
     }
 
     /**
@@ -246,6 +276,33 @@ export class LayeredRepositoryService extends Axios implements Service {
                     'Newer version of SAP_UI required, please check https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/delete-adaptation-project'
                 );
             }
+            throw error;
+        }
+    }
+
+    /**
+     * Get system info.
+     *
+     * @param language
+     * @param cloudPackage name
+     * @returns the system info object
+     */
+    public async getSystemInfo(language: string = 'EN', cloudPackage?: string): Promise<SystemInfo> {
+        try {
+            const params = {
+                'sap-language': language
+            };
+            if (cloudPackage) {
+                params['package'] = cloudPackage;
+            }
+
+            const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, { params });
+            this.tryLogResponse(response, 'Successful getting system info.');
+            return JSON.parse(response.data) as SystemInfo;
+        } catch (error) {
+            this.log.error('Getting system data failed.');
+            this.log.debug(error);
+
             throw error;
         }
     }

@@ -4,6 +4,7 @@
 .tmp
 .project
 .DS_Store
+.pnpm-store
 
 ## Original Source: https://github.com/github/gitignore/blob/master/Node.gitignore
 
@@ -174,5 +175,5 @@ dist
 **/test-results
 **/fixtures-copy
 
-
+# nx 
 .nx

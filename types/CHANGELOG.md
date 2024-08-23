@@ -1,5 +1,23 @@
 # @sap-ux/types
 
+## 1.2.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 1.1.3
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 1.1.2
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
 ## 1.1.1
 
 ### Patch Changes

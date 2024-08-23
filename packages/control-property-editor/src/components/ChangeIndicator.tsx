@@ -6,6 +6,7 @@ interface ChangeIndicatorProps {
     saved: number;
     pending: number;
     id?: string;
+    type: string;
 }
 
 /**
@@ -67,14 +68,14 @@ export function ChangeIndicator(props: ChangeIndicatorProps): ReactElement {
  * @returns ReactElement
  */
 function ChangeIndicatorTooltip(changeIndicatorProps: ChangeIndicatorProps): ReactElement {
-    const { saved, pending } = changeIndicatorProps;
+    const { saved, pending, type } = changeIndicatorProps;
     const { t } = useTranslation();
     if (saved > 0 && pending === 0) {
-        return <title>{t('SAVED_CHANGES')}</title>;
+        return <title>{t('SAVED_CHANGES', { type: type })}</title>;
     }
 
     if (pending > 0 && saved === 0) {
-        return <title>{t('UNSAVED_CHANGES')}</title>;
+        return <title>{t('UNSAVED_CHANGES', { type: type })}</title>;
     }
-    return <title>{t('SAVED_AND_UNSAVED_CHANGES')}</title>;
+    return <title>{t('SAVED_AND_UNSAVED_CHANGES', { type: type })}</title>;
 }

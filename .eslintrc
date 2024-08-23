@@ -13,6 +13,7 @@
             "extends": ["plugin:@typescript-eslint/recommended"],
             "rules": {
                 "@typescript-eslint/ban-types": "off",
+                "@typescript-eslint/explicit-function-return-type": "warn",
                 "@typescript-eslint/no-explicit-any": "off",
                 "@typescript-eslint/no-inferrable-types": "off",
                 "@typescript-eslint/no-unused-vars": [
@@ -58,8 +59,9 @@
         },
         {
             "parser": "@typescript-eslint/parser",
-            "files": ["packages/*/test/**/*.js", "packages/*/test/**/*.ts", "packages/*/test/**/*.tsx"],
+            "files": ["**/test/**/*.js", "**/test/**/*.ts", "**/test/**/*.tsx"],
             "rules": {
+                "@typescript-eslint/explicit-function-return-type": "off",
                 "jsdoc/require-param": "off",
                 "jsdoc/require-param-description": "off",
                 "jsdoc/require-param-name": "off",
@@ -124,7 +126,8 @@
                     "ClassDeclaration": true,
                     "MethodDefinition": true
                 },
-                "exemptEmptyFunctions": true
+                "exemptEmptyFunctions": true,
+                "contexts": ["TSMethodSignature"]
             }
         ],
         "jsdoc/valid-types": "error",
@@ -261,14 +264,6 @@
         ],
         "sonarjs/cognitive-complexity": "warn",
         "sonarjs/no-nested-template-literals": "warn",
-        "space-before-function-paren": [
-            "error",
-            {
-                "anonymous": "never",
-                "named": "never",
-                "asyncArrow": "always"
-            }
-        ],
         "space-infix-ops": "error",
         "space-unary-ops": [
             "error",

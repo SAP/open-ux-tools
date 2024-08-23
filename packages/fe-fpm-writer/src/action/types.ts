@@ -2,6 +2,7 @@ import type { CustomElement, InternalCustomElement, Position, EventHandler } fro
 
 export enum TargetControl {
     header = 'header',
+    body = 'body',
     footer = 'footer',
     section = '@com.sap.vocabularies.UI.v1.FieldGroup',
     table = '@com.sap.vocabularies.UI.v1.LineItem'
@@ -10,6 +11,7 @@ export enum TargetControl {
 export interface CustomActionTarget {
     page: string;
     control: TargetControl;
+    customSectionKey?: string;
     navProperty?: string;
     qualifier?: string;
 }

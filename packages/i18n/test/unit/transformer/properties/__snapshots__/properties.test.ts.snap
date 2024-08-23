@@ -1,0 +1,164 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`properties propertiesToI18nEntry 1`] = `
+Array [
+  Object {
+    "annotation": Object {
+      "maxLength": undefined,
+      "note": Object {
+        "range": Object {
+          "end": Object {
+            "character": 35,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 18,
+            "line": 3,
+          },
+        },
+        "value": " Application name",
+      },
+      "textType": Object {
+        "range": Object {
+          "end": Object {
+            "character": 17,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 13,
+            "line": 3,
+          },
+        },
+        "value": "XTIT",
+      },
+    },
+    "filePath": "",
+    "key": Object {
+      "range": Object {
+        "end": Object {
+          "character": 20,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 4,
+        },
+      },
+      "value": "appTitle",
+    },
+    "value": Object {
+      "range": Object {
+        "end": Object {
+          "character": 30,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 21,
+          "line": 4,
+        },
+      },
+      "value": "App Title",
+    },
+  },
+  Object {
+    "annotation": Object {
+      "maxLength": Object {
+        "range": Object {
+          "end": Object {
+            "character": 20,
+            "line": 6,
+          },
+          "start": Object {
+            "character": 18,
+            "line": 6,
+          },
+        },
+        "value": 30,
+      },
+      "note": Object {
+        "range": Object {
+          "end": Object {
+            "character": 45,
+            "line": 6,
+          },
+          "start": Object {
+            "character": 21,
+            "line": 6,
+          },
+        },
+        "value": " Application description",
+      },
+      "textType": Object {
+        "range": Object {
+          "end": Object {
+            "character": 17,
+            "line": 6,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 6,
+          },
+        },
+        "value": "YDES",
+      },
+    },
+    "filePath": "",
+    "key": Object {
+      "range": Object {
+        "end": Object {
+          "character": 26,
+          "line": 7,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 7,
+        },
+      },
+      "value": "appDescription",
+    },
+    "value": Object {
+      "range": Object {
+        "end": Object {
+          "character": 46,
+          "line": 7,
+        },
+        "start": Object {
+          "character": 27,
+          "line": 7,
+        },
+      },
+      "value": "A Fiori application",
+    },
+  },
+  Object {
+    "annotation": undefined,
+    "filePath": "",
+    "key": Object {
+      "range": Object {
+        "end": Object {
+          "character": 27,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 9,
+        },
+      },
+      "value": "productCategory",
+    },
+    "value": Object {
+      "range": Object {
+        "end": Object {
+          "character": 44,
+          "line": 9,
+        },
+        "start": Object {
+          "character": 28,
+          "line": 9,
+        },
+      },
+      "value": "product category",
+    },
+  },
+]
+`;

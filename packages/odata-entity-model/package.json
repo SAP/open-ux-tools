@@ -1,31 +1,31 @@
 {
-  "name": "@sap-ux/odata-entity-model",
-  "version": "0.2.0",
-  "description": "OData model representation without annotations",
-  "main": "dist/index.js",
-  "author": "SAP SE",
-  "license": "Apache-2.0",
-  "private": false,
-  "scripts": {
-    "compile": "tsc --build",
-    "build": "npm-run-all clean compile",
-    "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo",
-    "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
-    "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
-    "lint": "eslint . --ext .ts,.tsx",
-    "lint:summary": "eslint . --ext .ts,.tsx -f summary",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
-    "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
-    "test": "jest  --maxWorkers=1 --ci --forceExit --detectOpenHandles",
-    "watch": "tsc  --build ./ -watch"
-  },
-  "files": [
-    "dist/**"
-  ],
-  "devDependencies": {
-    "@sap-ux/odata-annotation-core-types": "workspace:*",
-    "npm-run-all": "4.1.5",
-    "typescript": "4.9.5"
-  }
+    "name": "@sap-ux/odata-entity-model",
+    "version": "0.3.0",
+    "description": "OData model representation without annotations",
+    "main": "dist/index.js",
+    "author": "SAP SE",
+    "license": "Apache-2.0",
+    "private": false,
+    "scripts": {
+        "compile": "tsc --build",
+        "build": "npm-run-all clean compile",
+        "clean": "rimraf --glob coverage dist *.tsbuildinfo",
+        "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
+        "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
+        "lint": "eslint . --ext .ts,.tsx",
+        "lint:summary": "eslint . --ext .ts,.tsx -f summary",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
+        "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
+        "test": "jest  --maxWorkers=1 --ci --forceExit --detectOpenHandles",
+        "watch": "tsc  --build ./ -watch"
+    },
+    "files": [
+        "dist/**"
+    ],
+    "devDependencies": {
+        "@sap-ux/odata-annotation-core-types": "workspace:*",
+        "npm-run-all2": "6.2.0",
+        "typescript": "5.3.3"
+    }
 }

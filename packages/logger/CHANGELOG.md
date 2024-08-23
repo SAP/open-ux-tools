@@ -1,5 +1,23 @@
 # @sap-ux/logger
 
+## 0.6.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.5.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.5.0
+
+### Minor Changes
+
+-   2e0b1a6d: Adding ExtensionLogger for convenient VSCode extension logging
+
 ## 0.4.0
 
 ### Minor Changes

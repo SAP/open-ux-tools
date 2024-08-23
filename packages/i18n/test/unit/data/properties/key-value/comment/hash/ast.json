@@ -1,0 +1,21 @@
+[
+  {
+    "type": "comment-line",
+    "value": "# You are reading a comment in \".properties\" file. Each line must have # to be considered as comment line and comment line can not be extended to next line.",
+    "range": "[(0,0)..(0,156)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "website",
+      "range": "[(1,0)..(1,7)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "https://en.wikipedia.org/",
+      "range": "[(1,10)..(1,35)]"
+    },
+    "range": "[(1,0)..(1,35)]"
+  }
+]

@@ -77,6 +77,20 @@ describe('ObjectPage', () => {
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
+        test('minimal input, plus optional page id', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...minimalInput,
+                id: 'DummyPage'
+            };
+            const testApiData = JSON.parse(JSON.stringify(minInput));
+            //act
+            generate(target, testApiData, fs);
+            //check
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
+
         test('all optional settings', () => {
             const target = join(testDir, 'all-settings');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
@@ -113,6 +127,22 @@ describe('ObjectPage', () => {
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
+        test('simple inbound navigation, plus optional page id', () => {
+            const target = join(testDir, 'with-nav');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...minimalInput,
+                id: 'DummyPage',
+                navigation: {
+                    sourcePage: 'RootEntityListReport',
+                    navEntity: minimalInput.entity,
+                    navKey: true
+                }
+            };
+            generate(target, minInput, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+
         test('simple nested navigation', () => {
             const target = join(testDir, 'with-nested-nav');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
@@ -146,6 +176,19 @@ describe('ObjectPage', () => {
                 result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
             });
+        });
+
+        test('Add library dependency `sap.fe.templates` ', () => {
+            const testManifest = JSON.parse(testAppManifest);
+            delete testManifest['sap.ui5'].dependencies;
+            const target = join(testDir, 'libraryDependency');
+            fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(testManifest));
+            //act
+            generate(target, minimalInput, fs);
+            //check
+            expect(
+                (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].dependencies
+            ).toMatchSnapshot();
         });
     });
 });

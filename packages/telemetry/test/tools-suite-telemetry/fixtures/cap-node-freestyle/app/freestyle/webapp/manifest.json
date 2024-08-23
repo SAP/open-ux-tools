@@ -1,0 +1,12 @@
+{
+    "sap.app": {
+        "id": "CAPnode_freestyle-freestyle",
+        "type": "application",
+        "sourceTemplate":
+        {
+          "id": "@sap/generator-fiori:basic",
+          "version": "1.7.1",
+          "toolsId": "5437d5df-446c-4d9e-82ec-addd717c6043"
+        }
+    }
+}

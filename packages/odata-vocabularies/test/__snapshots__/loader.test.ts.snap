@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`lib vocabulary loader JSON vocabulary namespace listed with correct alias 1`] = `
+Object {
+  "defaultAlias": "JSON",
+  "defaultUri": "https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.JSON.V1.xml",
+  "namespace": "Org.OData.JSON.V1",
+}
+`;

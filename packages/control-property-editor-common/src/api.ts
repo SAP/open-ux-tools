@@ -43,7 +43,7 @@ export const INPUT_EDITOR_TYPE = 'input';
 export const DROPDOWN_EDITOR_TYPE = 'dropdown';
 export const CHECKBOX_EDITOR_TYPE = 'checkbox';
 
-export const scenario = {
+export const SCENARIO = {
     AppVariant: 'APP_VARIANT',
     VersionedAppVariant: 'VERSIONED_APP_VARIANT',
     AdaptationProject: 'ADAPTATION_PROJECT',
@@ -51,7 +51,7 @@ export const scenario = {
     UiAdaptation: 'UI_ADAPTATION'
 } as const;
 
-export type Scenario = (typeof scenario)[keyof typeof scenario];
+export type Scenario = (typeof SCENARIO)[keyof typeof SCENARIO];
 
 interface ControlPropertyBase<T, V, E> {
     type: T;
@@ -105,7 +105,7 @@ export interface OutlineNode {
     editable: boolean;
     children: OutlineNode[];
     icon?: string;
-    extensionPointInfo?: string;
+    hasDefaultContent?: boolean;
 }
 
 export interface IconDetails {
@@ -120,6 +120,7 @@ export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> 
      * Indicates if change is before or after current position in undo redo stack
      */
     isActive: boolean;
+    fileName: string;
 }
 
 export interface PendingOtherChange {
@@ -128,6 +129,7 @@ export interface PendingOtherChange {
     changeType: string;
     controlId: string;
     controlName: string;
+    fileName: string;
 }
 
 export type PendingChange = PendingPropertyChange | PendingOtherChange;
@@ -158,6 +160,11 @@ export interface PropertyChangeDeletionDetails {
     controlId: string;
     propertyName: string;
     fileName?: string;
+}
+
+export interface ShowMessage {
+    message: string;
+    shouldHideIframe: boolean;
 }
 
 /**
@@ -215,7 +222,6 @@ export const EXTERNAL_ACTION_PREFIX = '[ext]';
 const createExternalAction = createActionFactory(EXTERNAL_ACTION_PREFIX);
 
 export const iconsLoaded = createExternalAction<IconDetails[]>('icons-loaded');
-export const scenarioLoaded = createExternalAction<Scenario>('scenario-loaded');
 export const controlSelected = createExternalAction<Control>('control-selected');
 export const selectControl = createExternalAction<string>('select-control');
 export const addExtensionPoint = createExternalAction<OutlineNode>('add-extension-point');
@@ -225,7 +231,18 @@ export const changeProperty = createExternalAction<PropertyChange>('change-prope
 export const propertyChanged = createExternalAction<PropertyChanged>('property-changed');
 export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('change-property-failed');
 export const changeStackModified = createExternalAction<ChangeStackModified>('change-stack-modified');
-export const showMessage = createExternalAction<string>('show-dialog-message');
+export const showMessage = createExternalAction<ShowMessage>('show-dialog-message');
+export const reloadApplication = createExternalAction<void>('reload-application');
+export const storageFileChanged = createExternalAction<string>('storage-file-changed');
+export const setAppMode = createExternalAction<'navigation' | 'adaptation'>('set-app-mode');
+export const setUndoRedoEnablement = createExternalAction<{ canRedo: boolean; canUndo: boolean }>(
+    'set-undo-redo-enablement'
+);
+export const setSaveEnablement = createExternalAction<boolean>('set-save-enablement');
+export const appLoaded = createExternalAction<void>('app-loaded');
+export const undo = createExternalAction<void>('undo');
+export const redo = createExternalAction<void>('redo');
+export const save = createExternalAction<void>('save');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -238,4 +255,13 @@ export type ExternalAction =
     | ReturnType<typeof addExtensionPoint>
     | ReturnType<typeof propertyChangeFailed>
     | ReturnType<typeof changeStackModified>
-    | ReturnType<typeof showMessage>;
+    | ReturnType<typeof showMessage>
+    | ReturnType<typeof reloadApplication>
+    | ReturnType<typeof storageFileChanged>
+    | ReturnType<typeof setAppMode>
+    | ReturnType<typeof setUndoRedoEnablement>
+    | ReturnType<typeof setSaveEnablement>
+    | ReturnType<typeof undo>
+    | ReturnType<typeof redo>
+    | ReturnType<typeof save>
+    | ReturnType<typeof appLoaded>;

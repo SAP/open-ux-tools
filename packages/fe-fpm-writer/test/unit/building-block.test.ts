@@ -1,9 +1,8 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
-import { create } from 'mem-fs-editor';
+import { create, type Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import type { Chart, Field, FilterBar, Table } from '../../src';
-import { BuildingBlockType, generateBuildingBlock } from '../../src';
+import type { BuildingBlockConfig, Chart, Field, FilterBar, Table } from '../../src';
+import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'fs';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
@@ -21,6 +20,7 @@ describe('Building Blocks', () => {
     });
 
     beforeEach(async () => {
+        jest.requireActual('mem-fs-editor');
         fs = create(createStorage());
         testAppPath = join(testOutputRoot, `${Date.now()}`);
         fs.delete(testAppPath);
@@ -72,11 +72,11 @@ describe('Building Blocks', () => {
         ).toThrowError(/Invalid view path/);
     });
 
-    test('validate sap.fe.templates manifest dependency', async () => {
+    test('validate sap.fe.core manifest dependency', async () => {
         const basePath = join(testAppPath, 'validate-manifest-dep');
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
 
-        // Test generator without sap.fe.templates as dependency in manifest.json
+        // Test generator without sap.fe.core as dependency in manifest.json
         fs.write(join(basePath, manifestFilePath), JSON.stringify({ ...testManifestContent, 'sap.ui5': {} }));
         expect(() =>
             generateBuildingBlock<FilterBar>(
@@ -166,6 +166,52 @@ describe('Building Blocks', () => {
                 fs
             )
         ).toThrowError(/Unable to parse xml view file/);
+    });
+
+    test('fails to read view content', async () => {
+        const basePath = join(testAppPath, 'validate-aggregation-path');
+        // Test code snippet with unexisting xml file
+        expect(() =>
+            getSerializedFileContent<FilterBar>(basePath, {
+                viewOrFragmentPath: 'invalidXmlViewFilePath',
+                aggregationPath: 'testAggregationPath',
+                buildingBlockData: {
+                    id: 'testFilterBar',
+                    buildingBlockType: BuildingBlockType.FilterBar
+                }
+            })
+        ).toThrowError(/Unable to read xml view file/);
+    });
+
+    const testInput = [
+        {
+            name: 'Empty config',
+            config: {} as BuildingBlockConfig<FilterBar>
+        },
+        {
+            name: 'Unknown buildingBlockType',
+            config: { buildingBlockData: {} } as BuildingBlockConfig<FilterBar>
+        }
+    ];
+    test.each(testInput)('Unsuficient data for snippet. $name', async ({ config }) => {
+        const basePath = join(testAppPath, 'test');
+        // Test code snippet with unexisting xml file
+        const codeSnippet = getSerializedFileContent<FilterBar>(basePath, config);
+        expect(codeSnippet).toEqual({});
+    });
+
+    test('generate building block, no fs', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+        const basePath = join(__dirname, 'sample/building-block/webapp-prompts');
+        const testFS = generateBuildingBlock<FilterBar>(basePath, {
+            viewOrFragmentPath: xmlViewFilePath,
+            aggregationPath: aggregationPath,
+            buildingBlockData: {
+                id: 'testFilterBar',
+                buildingBlockType: BuildingBlockType.FilterBar
+            }
+        });
+        expect(testFS.read(join(basePath, xmlViewFilePath))).toMatchSnapshot();
     });
 
     describe('Generate with just ID and xml view without macros namespace', () => {
@@ -360,6 +406,178 @@ describe('Building Blocks', () => {
                 `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
             );
             await writeFilesForDebugging(fs);
+        });
+
+        test.each(testInput)(
+            'generate $buildingBlockData.buildingBlockType building block with metaPath as object',
+            async (testData) => {
+                const basePath = join(
+                    testAppPath,
+                    `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
+                );
+                const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+                fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+                fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+                generateBuildingBlock(
+                    basePath,
+                    {
+                        viewOrFragmentPath: xmlViewFilePath,
+                        aggregationPath,
+                        buildingBlockData: {
+                            ...testData.buildingBlockData,
+                            metaPath: {
+                                entitySet: 'testEntitySet',
+                                qualifier: 'testQualifier',
+                                bindingContextType: 'relative'
+                            }
+                        }
+                    },
+                    fs
+                );
+                expect(fs.dump(testAppPath)).toMatchSnapshot(
+                    `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
+                );
+                await writeFilesForDebugging(fs);
+            }
+        );
+
+        test.each(testInput)(
+            'getSerializedFileContent for $buildingBlockData.buildingBlockType building block',
+            async (testData) => {
+                const basePath = join(
+                    testAppPath,
+                    `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
+                );
+                const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+                fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+                const codeSnippet = getSerializedFileContent(
+                    basePath,
+                    {
+                        viewOrFragmentPath: xmlViewFilePath,
+                        aggregationPath,
+                        buildingBlockData: testData.buildingBlockData
+                    },
+                    fs
+                );
+
+                expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
+                expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+            }
+        );
+
+        test.each(testInput)(
+            'getSerializedFileContent for $buildingBlockData.buildingBlockType building block',
+            async (testData) => {
+                const basePath = join(
+                    testAppPath,
+                    `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
+                );
+                const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+                fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+                const codeSnippet = getSerializedFileContent(
+                    basePath,
+                    {
+                        viewOrFragmentPath: '',
+                        aggregationPath,
+                        buildingBlockData: {
+                            buildingBlockType: testData.buildingBlockData.buildingBlockType,
+                            id: testData.buildingBlockData.id
+                        }
+                    },
+                    fs
+                );
+
+                expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
+                expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
+            }
+        );
+
+        // While runtime does not support approach without contextPath - special test for Chart
+        const chartInput = [
+            {
+                name: 'Simple absolute path',
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'absolute'
+                }
+            },
+            {
+                name: 'Complex absolute path',
+                metaPath: {
+                    entitySet: 'GT7Service.SessionMetrics',
+                    qualifier: '@com.sap.vocabularies.UI.v1.Chart#chartMacro5',
+                    bindingContextType: 'absolute'
+                }
+            },
+            {
+                name: 'Absolute path without qualifier',
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    bindingContextType: 'absolute'
+                }
+            },
+            {
+                name: 'Absolute path without entity',
+                metaPath: {
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'absolute'
+                }
+            },
+            {
+                name: 'Simple relative path',
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'relative'
+                }
+            },
+            {
+                name: 'Complex relative path',
+                metaPath: {
+                    entitySet: 'GT7Service.Sessions',
+                    qualifier: 'Speed/@com.sap.vocabularies.UI.v1.Chart#chartMacro4',
+                    bindingContextType: 'relative'
+                }
+            },
+            {
+                name: 'Relative path without qualifier',
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    bindingContextType: 'absolute'
+                }
+            },
+            {
+                name: 'Relative path without entity',
+                metaPath: {
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'absolute'
+                }
+            }
+        ];
+        test.each(chartInput)('Generate Chart from object metaPath. $name', async ({ metaPath }) => {
+            const basePath = join(testAppPath, `generate-${BuildingBlockType.Chart}-with-optional-params`);
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const codeSnippet = getSerializedFileContent(
+                basePath,
+                {
+                    viewOrFragmentPath: '',
+                    aggregationPath,
+                    buildingBlockData: {
+                        buildingBlockType: BuildingBlockType.Chart,
+                        metaPath
+                    } as Chart
+                },
+                fs
+            );
+
+            expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
+            expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
         });
     });
 });

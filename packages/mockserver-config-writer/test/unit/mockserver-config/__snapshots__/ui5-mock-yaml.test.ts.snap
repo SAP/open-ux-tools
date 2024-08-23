@@ -30,6 +30,81 @@ server:
 "
 `;
 
+exports[`Test enhanceYaml() Create new ui5-mock.yaml based on ui5.yaml, updated with annotations 1`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: dummy.application
+type: application
+server:
+  customMiddleware:
+    - name: first-middleware
+      firstProp: firstValue
+      nested:
+        nestedPropA: nestedValueA # comment for nested value A
+        list:
+          - listValueA
+          - listValueB
+    - name: second-middleware
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: new/path/to/service
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+          - localPath: ./webapp/annotations/annotation.xml
+            urlPath: annotations/annotation.xml
+"
+`;
+
+exports[`Test enhanceYaml() Create new ui5-mock.yaml with annotations from mock manifest.json 1`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: mockserverv2
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /path/for/new/config
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+          - localPath: ./webapp/annotations/annotation.xml
+            urlPath: annotations/annotation.xml
+"
+`;
+
 exports[`Test enhanceYaml() Create new ui5-mock.yaml without app name in manifest.json 1`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
@@ -107,6 +182,32 @@ server:
             mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
+    - name: middleware-after
+"
+`;
+
+exports[`Test enhanceYaml() Update ui5-mock.yaml, path from manifest with annotations 1`] = `
+"specVersion: '2.0'
+metadata:
+  name: 'app'
+type: application
+server:
+  customMiddleware:
+    - name: middleware-before
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: ''
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+          - localPath: ./webapp/annotations/annotation.xml
+            urlPath: annotations/annotation.xml
     - name: middleware-after
 "
 `;

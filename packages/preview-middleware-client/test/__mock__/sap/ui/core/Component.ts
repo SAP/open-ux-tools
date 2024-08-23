@@ -3,4 +3,7 @@ export default class ComponentMock {
     static create() {
         return new ComponentMock();
     }
+    static getComponentById(_id: string) {
+        return undefined;
+    }
 }

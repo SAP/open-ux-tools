@@ -114,4 +114,42 @@ describe('Tests for getODataSources()', () => {
             }
         });
     });
+    test('OData Annotations', () => {
+        const manifestJson = {
+            'sap.app': {
+                'dataSources': {
+                    'SEPMRA_PROD_MAN': {
+                        'type': 'ODataAnnotation',
+                        'uri': "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/",
+                        'settings': {
+                            'localUri': 'localService/SEPMRA_PROD_MAN.xml'
+                        }
+                    },
+                    'annotation': {
+                        'type': 'ODataAnnotation',
+                        'uri': 'annotations/annotation.xml',
+                        'settings': {
+                            'localUri': 'annotations/annotation.xml'
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        expect(getODataSources(manifestJson, 'ODataAnnotation')).toEqual({
+            'SEPMRA_PROD_MAN': {
+                'uri': "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/",
+                'type': 'ODataAnnotation',
+                'settings': {
+                    'localUri': 'localService/SEPMRA_PROD_MAN.xml'
+                }
+            },
+            'annotation': {
+                'type': 'ODataAnnotation',
+                'uri': 'annotations/annotation.xml',
+                'settings': {
+                    'localUri': 'annotations/annotation.xml'
+                }
+            }
+        });
+    });
 });

@@ -1,0 +1,34 @@
+{
+  "header": {
+    "fields": [
+      {
+        "quoted": false,
+        "value": "one",
+        "range": "[(0,0)..(0,3)]"
+      }
+    ],
+    "range": "[(0,0)..(0,3)]"
+  },
+  "rows": [
+    {
+      "fields": [
+        {
+          "quoted": false,
+          "value": "two",
+          "range": "[(1,0)..(1,3)]"
+        }
+      ],
+      "range": "[(1,0)..(1,3)]"
+    },
+    {
+      "fields": [
+        {
+          "quoted": false,
+          "value": "three",
+          "range": "[(2,0)..(2,5)]"
+        }
+      ],
+      "range": "[(2,0)..(2,5)]"
+    }
+  ]
+}

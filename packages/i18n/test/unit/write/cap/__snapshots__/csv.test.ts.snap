@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`csv add new i18n entries to csv file empty bundle 1`] = `
+"key;fallback
+key;value
+"
+`;
+
+exports[`csv add new i18n entries to csv file empty fallback bundle 1`] = `
+"key;fallback
+key;value
+"
+`;
+
+exports[`csv add new i18n entries to csv file empty file 1`] = `
+"key;fallback
+key;value
+"
+`;
+
+exports[`csv add new i18n entries to csv file fallback bundle with multiple values 1`] = `
+"key;fallback
+key;value
+key2;value2
+"
+`;
+
+exports[`csv add new i18n entries to csv file multiple bundles with values 1`] = `
+"key;en;de;fallback
+key;e;d;
+key;;;value
+key2;;;value2
+"
+`;
+
+exports[`csv add new i18n entries to csv file multiple bundles with values, but no fallback bundle 1`] = `
+"key;en;de;fallback
+key;e;d;
+key;;;value
+key2;;;value2
+
+"
+`;

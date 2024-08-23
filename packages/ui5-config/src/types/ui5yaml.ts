@@ -9,7 +9,7 @@ export interface CustomMiddleware<C = unknown> extends CustomItem<C> {
     mountPath?: string;
 }
 
-export interface CustomTask<C = unknown> extends CustomItem<C> {
+export interface CustomTask<C = unknown> extends Partial<CustomItem<C>> {
     beforeTask?: string;
     afterTask?: string;
 }

@@ -1,0 +1,79 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(1,23)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.SelectionFields",
+                "valueRange": "[(1,4)..(1,19)]"
+            }
+        },
+        "contentRange": "[(1,20)..(1,23)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(1,21)..(1,23)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(1,22)..(1,22)]",
+                "content": []
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(2,4)..(2,10)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Fields",
+                "valueRange": "[(2,4)..(2,10)]"
+            }
+        },
+        "content": []
+    },
+    {
+        "type": "element",
+        "range": "[(3,4)..(3,23)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.LineItem",
+                "valueRange": "[(3,4)..(3,12)]"
+            }
+        },
+        "contentRange": "[(3,19)..(3,23)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(3,20)..(3,23)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(3,21)..(3,23)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(3,22)..(3,23)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(3,23)..(3,23)]",
+                        "content": []
+                    }
+                ]
+            }
+        ]
+    }
+]

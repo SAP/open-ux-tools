@@ -1,10 +1,13 @@
 {
     "sap.ui5": {
+        "dependencies": {
+            "libs": <%- JSON.stringify(libraries) %>
+        },
         "routing": {
             "targets": {
-                "<%- entity %><%- name %>": {
+                "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>": {
                     "type": "Component",
-                    "id": "<%- entity %><%- name %>",
+                    "id": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>",
                     "name": "sap.fe.core.fpm",<%if (locals.controlAggregation) {%>
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {
@@ -17,7 +20,7 @@
                             "navigation": {
                                 "<%- navigation.navEntity %>": {
                                     "detail": {
-                                        "route": "<%- entity %><%- name %>"
+                                        "route": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>"
                                     }
                                 }
                             }

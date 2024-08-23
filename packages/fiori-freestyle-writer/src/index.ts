@@ -10,6 +10,8 @@ import type { BasicAppSettings } from './types';
 import { FreestyleApp, TemplateType } from './types';
 import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
+import { initI18n } from './i18n';
+import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -20,6 +22,9 @@ import { UI5Config } from '@sap-ux/ui5-config';
  * @returns Reference to a mem-fs-editor
  */
 async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor> {
+    // Load i18n translations asynchronously to ensure proper initialization.
+    // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
+    await initI18n();
     // Clone rather than modifying callers refs
     const ffApp = cloneDeep(data);
     // set defaults
@@ -29,11 +34,33 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
-    // Common files
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
-    fs.copyTpl(join(tmplPath, 'common', 'add'), basePath, { ...ffApp, escapeFLPText }, undefined, {
-        globOptions: { ignore, dot: true }
-    });
+
+    // Determine if the project type is 'EDMXBackend'.
+    const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
+    // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
+    const { uShellBootstrapResourceUrl, uiBootstrapResourceUrl } = getBootstrapResourceUrls(
+        isEdmxProjectType,
+        ffApp.ui5?.frameworkUrl,
+        ffApp.ui5?.version
+    );
+    const appConfig = {
+        ...ffApp,
+        uShellBootstrapResourceUrl,
+        uiBootstrapResourceUrl
+    };
+    fs.copyTpl(
+        join(tmplPath, 'common', 'add'),
+        basePath,
+        {
+            ...appConfig,
+            escapeFLPText
+        },
+        undefined,
+        {
+            globOptions: { ignore, dot: true }
+        }
+    );
     fs.copyTpl(join(tmplPath, ffApp.template.type, 'add'), basePath, ffApp, undefined, {
         globOptions: { ignore, dot: true }
     });
@@ -60,25 +87,33 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // package.json
     const packagePath = join(basePath, 'package.json');
+    // extend package.json with scripts for non-CAP projects
     fs.extendJSON(
         packagePath,
         JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {}))
     );
+
     const packageJson: Package = JSON.parse(fs.read(packagePath));
-
-    packageJson.scripts = {
-        ...packageJson.scripts,
-        ...getPackageJsonTasks({
-            localOnly: !!ffApp.service && !ffApp.service?.url,
-            addMock: !!ffApp.service?.metadata,
-            sapClient: ffApp.service?.client,
-            flpAppId: ffApp.app.flpAppId,
-            startFile: data?.app?.startFile,
-            localStartFile: data?.app?.localStartFile,
-            generateIndex: ffApp.appOptions?.generateIndex
-        })
-    };
-
+    if (isEdmxProjectType) {
+        // Add scripts for non-CAP applications
+        packageJson.scripts = {
+            ...packageJson.scripts,
+            ...getPackageJsonTasks({
+                localOnly: !!ffApp.service && !ffApp.service?.url,
+                addMock: !!ffApp.service?.metadata,
+                sapClient: ffApp.service?.client,
+                flpAppId: ffApp.app.flpAppId,
+                startFile: data?.app?.startFile,
+                localStartFile: data?.app?.localStartFile,
+                generateIndex: ffApp.appOptions?.generateIndex
+            })
+        };
+    } else {
+        // Add deploy-config for CAP applications
+        packageJson.scripts = {
+            'deploy-config': 'npx -p @sap/ux-ui5-tooling fiori add deploy-config cf'
+        };
+    }
     fs.writeJSON(packagePath, packageJson);
 
     // Add service to the project if provided

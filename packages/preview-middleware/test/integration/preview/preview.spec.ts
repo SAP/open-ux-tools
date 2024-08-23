@@ -10,6 +10,7 @@ import {
 import type { Page } from '@sap-ux-private/playwright';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
+import type { UI5Version } from '@sap-ux/ui5-info';
 
 const buildUrl =
     (port = 3000) =>
@@ -112,43 +113,16 @@ const check = async (param: { page: Page }) => {
     await expect(page.getByText('ProductForEdit_0', { exact: true })).toBeVisible();
 };
 
-test.afterEach(async () => {
-    await teardownServer();
-});
+const UI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
 
-test.describe('UI5 version: 1.84.35', () => {
-    test('Click on Go button and check an element ', async ({ page }) => {
-        await prepare('1.84.35');
-        await check({ page });
+for (const { version } of UI5Versions) {
+    test.describe(`UI5 version: ${version}`, () => {
+        test.afterEach(async () => {
+            await teardownServer();
+        });
+        test('Click on Go button and check an element ', async ({ page }) => {
+            await prepare(version);
+            await check({ page });
+        });
     });
-});
-test.describe('UI5 version: 1.96.22', () => {
-    test('Click on Go button and check an element', async ({ page }) => {
-        await prepare('1.96.22');
-        await check({ page });
-    });
-});
-test.describe('UI5 version: 1.108.19', () => {
-    test('Click on Go button and check an element', async ({ page }) => {
-        await prepare('1.108.19');
-        await check({ page });
-    });
-});
-test.describe('UI5 version: 1.111.8', () => {
-    test('Click on Go button and check an element', async ({ page }) => {
-        await prepare('1.111.8');
-        await check({ page });
-    });
-});
-test.describe('UI5 version: 1.114.0', () => {
-    test('Click on Go button and check an element', async ({ page }) => {
-        await prepare('1.114.0');
-        await check({ page });
-    });
-});
-test.describe('UI5 version: 1.115.0', () => {
-    test('Click on Go button and check an element', async ({ page }) => {
-        await prepare('1.115.0');
-        await check({ page });
-    });
-});
+}

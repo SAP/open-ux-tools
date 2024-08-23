@@ -26,27 +26,52 @@ export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadC
 }
 
 /**
+ * Returns default comments for the given backend configuration values.
+ *
+ * @param backend backend config
+ * @param index - optional index of backend entry
+ * @returns the node comments for the backend config
+ */
+export function getBackendComments(
+    backend: FioriToolsProxyConfigBackend,
+    index?: number
+): NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] {
+    const comment = [];
+
+    if (backend.authenticationType === 'reentranceTicket') {
+        comment.push({
+            path: `configuration.backend.${index}.authenticationType`,
+            comment: ' SAML support for vscode',
+            key: 'authenticationType'
+        });
+    }
+    return comment;
+}
+
+/**
  * Get the configuration for the Fiori tools middleware.
  *
  * @param backends configuration of backends
  * @param ui5 UI5 configuration
+ * @param afterMiddleware middleware after which fiori-tools-proxy middleware will be started
  * @returns {{config, comments}} configuration and comments
  */
 export function getFioriToolsProxyMiddlewareConfig(
     backends?: FioriToolsProxyConfigBackend[],
-    ui5?: Partial<FioriToolsProxyConfigUI5>
+    ui5?: Partial<FioriToolsProxyConfigUI5>,
+    afterMiddleware = 'compression'
 ): {
     config: CustomMiddleware<FioriToolsProxyConfig>;
     comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[];
 } {
     const fioriToolsProxy: CustomMiddleware<FioriToolsProxyConfig> = {
         name: 'fiori-tools-proxy',
-        afterMiddleware: 'compression',
+        afterMiddleware,
         configuration: {
             ignoreCertError: false
         }
     };
-    const comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] = [
+    let comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] = [
         {
             path: 'configuration.ignoreCertError',
             comment:
@@ -55,8 +80,12 @@ export function getFioriToolsProxyMiddlewareConfig(
     ];
 
     if (backends && backends.length > 0) {
-        backends.forEach((element) => {
+        backends.forEach((element, index) => {
             element.path = element.path ?? '/';
+            const backendComments = getBackendComments(element, index);
+            if (backendComments) {
+                comments = [...comments, ...backendComments];
+            }
         });
         fioriToolsProxy.configuration.backend = backends;
     }
@@ -66,7 +95,7 @@ export function getFioriToolsProxyMiddlewareConfig(
             path: ui5.path ?? ['/resources', '/test-resources'],
             url: ui5.url ?? 'https://ui5.sap.com'
         };
-        if (ui5.version) {
+        if (ui5.version !== undefined) {
             fioriToolsProxy.configuration['ui5'].version = ui5.version;
         }
         if (ui5.directLoad) {
@@ -77,7 +106,10 @@ export function getFioriToolsProxyMiddlewareConfig(
     return { config: fioriToolsProxy, comments };
 }
 
-export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<MockserverConfig> => {
+export const getMockServerMiddlewareConfig = (
+    path?: string,
+    annotationsConfig: MockserverConfig['annotations'] = []
+): CustomMiddleware<MockserverConfig> => {
     path = path?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
     return {
         name: 'sap-fe-mockserver',
@@ -92,7 +124,7 @@ export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<M
                     generateMockData: true
                 }
             ],
-            annotations: []
+            annotations: annotationsConfig
         }
     };
 };

@@ -69,11 +69,14 @@ declare module 'sap/ui/dt/OverlayUtil' {
 }
 
 declare module 'sap/ui/dt/plugin/ContextMenu' {
+    import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+
     export interface ContextMenuItem {
         id: string;
-        text: string;
+        text: string | ((overlay: ElementOverlay) => string);
         handler: Function;
         icon?: string;
+        enabled?: Function;
     }
 
     interface ContextMenu {
@@ -81,4 +84,14 @@ declare module 'sap/ui/dt/plugin/ContextMenu' {
     }
 
     export default ContextMenu;
+}
+
+declare module 'sap/ui/dt/Element' {
+    import type Element from 'sap/ui/core/Element';
+
+    interface ElementExtended extends Element {
+        oAsyncState: any;
+    }
+
+    export default ElementExtended;
 }

@@ -687,7 +687,7 @@ exports[`ControllerExtension generateControllerExtension Typescript controller N
 import ExtensionAPI from 'sap/fe/templates/ListReport/ExtensionAPI';
 
 /**
- * @namespace my.test.App.ext.controller.NewExtension
+ * @namespace my.test.App.ext.controller
  * @controller
  */
 export default class NewExtension extends ControllerExtension<ExtensionAPI> {
@@ -744,7 +744,7 @@ exports[`ControllerExtension generateControllerExtension Typescript controller N
 import ExtensionAPI from 'sap/fe/templates/ObjectPage/ExtensionAPI';
 
 /**
- * @namespace my.test.App.ext.controller.NewExtension
+ * @namespace my.test.App.ext.controller
  * @controller
  */
 export default class NewExtension extends ControllerExtension<ExtensionAPI> {
@@ -801,7 +801,7 @@ exports[`ControllerExtension generateControllerExtension Typescript controller N
 import ExtensionAPI from 'sap/fe/templates/ListReport/ExtensionAPI';
 
 /**
- * @namespace my.test.App.ext.controller.NewExtension
+ * @namespace my.test.App.ext.controller
  * @controller
  */
 export default class NewExtension extends ControllerExtension<ExtensionAPI> {
@@ -858,7 +858,7 @@ exports[`ControllerExtension generateControllerExtension Typescript controller N
 import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
 
 /**
- * @namespace my.test.App.ext.controller.NewExtension
+ * @namespace my.test.App.ext.controller
  * @controller
  */
 export default class NewExtension extends ControllerExtension<ExtensionAPI> {
@@ -915,7 +915,7 @@ exports[`ControllerExtension generateControllerExtension Typescript controller N
 import ExtensionAPI from 'sap/fe/templates/ListReport/ExtensionAPI';
 
 /**
- * @namespace my.test.App.ext.controller.NewExtension
+ * @namespace my.test.App.ext.controller
  * @controller
  */
 export default class NewExtension extends ControllerExtension<ExtensionAPI> {
@@ -972,7 +972,7 @@ exports[`ControllerExtension generateControllerExtension Typescript controller N
 import ExtensionAPI from 'sap/fe/templates/ListReport/ExtensionAPI';
 
 /**
- * @namespace my.test.App.ext.controller.NewExtension
+ * @namespace my.test.App.ext.controller
  * @controller
  */
 export default class NewExtension extends ControllerExtension<ExtensionAPI> {
@@ -1029,7 +1029,7 @@ exports[`ControllerExtension generateControllerExtension Typescript controller N
 import ExtensionAPI from 'sap/fe/templates/ObjectPage/ExtensionAPI';
 
 /**
- * @namespace my.test.App.ext.controller.NewExtension
+ * @namespace my.test.App.ext.controller
  * @controller
  */
 export default class NewExtension extends ControllerExtension<ExtensionAPI> {

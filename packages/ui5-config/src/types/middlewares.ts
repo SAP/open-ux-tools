@@ -1,3 +1,4 @@
+import type { AuthenticationType } from '@sap-ux/store';
 export interface UI5ProxyConfigTarget {
     path: string | string[];
     url: string;
@@ -16,6 +17,7 @@ export interface FioriToolsProxyConfigBackend {
     path?: string;
     url: string;
     client?: string;
+    authenticationType?: AuthenticationType;
     destination?: string;
     destinationInstance?: string;
     pathPrefix?: string;

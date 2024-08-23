@@ -20,9 +20,7 @@ describe('CustomPage', () => {
             },
             'sap.ui5': {
                 dependencies: {
-                    libs: {
-                        'sap.fe.templates': {}
-                    }
+                    libs: {}
                 },
                 routing: {
                     routes: [
@@ -47,18 +45,24 @@ describe('CustomPage', () => {
         fs.delete(testDir);
     });
 
+    test('validateBasePath - standard required lib `sap.fe.templates`', () => {
+        const target = join(testDir, 'validateBasePathRequired');
+        fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+        expect(() => validateBasePath(target, fs)).toThrowError('Dependency sap.fe.templates is missing');
+    });
+
     test('validateBasePath', () => {
         const target = join(testDir, 'validateBasePath');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-        expect(validateBasePath(target, fs)).toBeTruthy();
+        expect(validateBasePath(target, fs, [])).toBeTruthy();
 
-        expect(() => validateBasePath(join(testDir, '' + Date.now()))).toThrowError();
+        expect(() => validateBasePath(join(testDir, '' + Date.now()), fs, [])).toThrowError();
         expect(() => generateCustomPage(join(testDir, '' + Date.now()), {} as CustomPage)).toThrowError();
 
         const invalidManifest = JSON.parse(testAppManifest);
         delete invalidManifest['sap.ui5'].dependencies?.libs['sap.fe.templates'];
         fs.writeJSON(join(target, 'webapp/manifest.json'), invalidManifest);
-        expect(() => validateBasePath(target, fs)).toThrowError();
+        expect(() => validateBasePath(target, fs, [])).not.toThrowError();
     });
 
     describe('generateCustomPage: different versions or target folder', () => {
@@ -76,6 +80,20 @@ describe('CustomPage', () => {
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+        });
+
+        test('latest version with minimal input, plus optional page id', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...minimalInput,
+                id: 'DummyPage'
+            };
+            const testApiData = JSON.parse(JSON.stringify(minInput));
+            //act
+            generateCustomPage(target, testApiData, fs);
+            //check
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
         test('latest version with entitySet and lower UI5 version', () => {
@@ -114,6 +132,19 @@ describe('CustomPage', () => {
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+        });
+
+        test('with older but supported UI5 version, plus optional page id', () => {
+            const target = join(testDir, 'version-1.84');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...minimalInput,
+                id: 'DummyPage',
+                minUI5Version: '1.84'
+            };
+            const testApiData = JSON.parse(JSON.stringify(minInput));
+            generateCustomPage(target, testApiData, fs);
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
         test('with not supported version', () => {
@@ -168,6 +199,17 @@ describe('CustomPage', () => {
             const target = join(testDir, 'with-nav');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             generateCustomPage(target, inputWithNavigation, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+
+        test('simple inbound navigation, plus optional page id', () => {
+            const target = join(testDir, 'with-nav');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...inputWithNavigation,
+                id: 'DummyPage'
+            };
+            generateCustomPage(target, minInput, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
@@ -271,5 +313,47 @@ describe('CustomPage', () => {
             result = detectTabSpacing(updatedManifest);
             expect(result).toEqual(expectedAfterSave);
         });
+    });
+
+    describe('Typescript controller', () => {
+        const minimalInput: CustomPage = {
+            name: 'CustomPage',
+            entity: 'RootEntity',
+            typescript: true
+        };
+        test('latest version with minimal input', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            //act
+            generateCustomPage(target, minimalInput, fs);
+            //check
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.ts'))).toMatchSnapshot();
+        });
+
+        test('lower UI5 version(1.84)', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const testInput = { ...minimalInput, minUI5Version: '1.84.62' };
+            //act
+            generateCustomPage(target, testInput, fs);
+            //check
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.ts'))).toMatchSnapshot();
+        });
+    });
+
+    test('Add library dependency `sap.fe.core`', () => {
+        const expandedManifest = JSON.parse(testAppManifest);
+        expandedManifest['sap.ui5'].dependencies.libs = { 'existing.library': {} };
+
+        const minimalInput: CustomPage = {
+            name: 'CustomPage',
+            entity: 'RootEntity'
+        };
+        const target = join(testDir, 'libraryDependency');
+        fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(expandedManifest));
+        //act
+        generateCustomPage(target, minimalInput, fs);
+        //check
+        expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].dependencies).toMatchSnapshot();
     });
 });

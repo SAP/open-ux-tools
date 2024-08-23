@@ -1,31 +1,49 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": [
-        "../../types/mem-fs-editor.d.ts",
-        "src"
-    ],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/mem-fs-editor.d.ts",
+    "src"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../adp-tooling"
     },
-    "references": [
-        {
-            "path": "../adp-tooling"
-        },
-        {
-            "path": "../app-config-writer"
-        },
-        {
-            "path": "../cap-config-writer"
-        },
-        {
-            "path": "../logger"
-        },
-        {
-            "path": "../mockserver-config-writer"
-        },
-        {
-            "path": "../project-access"
-        }
-    ]
+    {
+      "path": "../app-config-writer"
+    },
+    {
+      "path": "../cap-config-writer"
+    },
+    {
+      "path": "../cards-editor-config-writer"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../mockserver-config-writer"
+    },
+    {
+      "path": "../preview-middleware"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../system-access"
+    },
+    {
+      "path": "../ui5-config"
+    }
+  ]
 }

@@ -44,6 +44,10 @@ export const defaultUsage = (): JSX.Element => {
         {
             key: 'low',
             text: 'L'
+        },
+        {
+            key: 'long_text',
+            text: 'Long Text'
         }
     ];
     const options_with_icons = [

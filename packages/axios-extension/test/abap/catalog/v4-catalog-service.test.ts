@@ -28,7 +28,6 @@ describe('V4CatalogService', () => {
 
         test('service groups', async () => {
             const provider = createForAbap(config);
-            provider.s4Cloud = false;
             const catalog = provider.catalog(ODataVersion.v4);
 
             nock(server).get(`${V4CatalogService.PATH}/$metadata`).reply(200, join(__dirname, '<METADTA />'));
@@ -47,7 +46,6 @@ describe('V4CatalogService', () => {
 
         test('service groups with paging', async () => {
             const provider = createForAbap(config);
-            provider.s4Cloud = false;
             const catalog = provider.catalog(ODataVersion.v4);
 
             // mock response for paging
@@ -68,7 +66,6 @@ describe('V4CatalogService', () => {
 
         test('recommended service groups with paging', async () => {
             const provider = createForAbap(config);
-            provider.s4Cloud = false;
             const catalog = provider.catalog(ODataVersion.v4);
 
             nock(server)
@@ -100,7 +97,6 @@ describe('V4CatalogService', () => {
                 });
 
             const provider = createForAbap(config);
-            provider.s4Cloud = false;
             const catalog = provider.catalog(ODataVersion.v4);
             try {
                 await catalog.listServices();
@@ -108,6 +104,17 @@ describe('V4CatalogService', () => {
             } catch (error) {
                 expect(error['message']).toBeDefined();
             }
+        });
+    });
+
+    describe('getServiceType', () => {
+        // create a catalog for testing
+        const provider = createForAbap(config);
+        const catalog = provider.catalog(ODataVersion.v4);
+
+        it('get the service type', async () => {
+            const serviceType = catalog.getServiceType('mock/v4/service');
+            await expect(serviceType).resolves.toBe(undefined);
         });
     });
 });

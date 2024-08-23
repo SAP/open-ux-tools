@@ -32,7 +32,7 @@ declare class ResizeObserver {
  * @param {UIFlexibleTableProps<T>} props
  * @returns {React.ReactElement}
  */
-export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactElement {
+export function UIFlexibleTable<T>(props: Readonly<UIFlexibleTableProps<T>>): React.ReactElement {
     const [currentFocusedRowIndex, setCurrentFocusedRowIndex] = useState<number | undefined>();
     const [currentFocusedRowAction, setCurrentFocusedRowAction] = useState<string>('');
     const [isInRowLayout, setIsInRowLayout] = useState(props.layout === UIFlexibleTableLayout.InlineFlex);
@@ -133,10 +133,10 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
 
     const renderRowData = (params: NodeDragAndDropSortingParams): React.ReactElement => (
         <RowDataCells
-            key={params.index || 0}
+            key={params.index ?? 0}
             isInRowLayout={isInRowLayout}
             row={params.value as UIFlexibleTableRowType<T>}
-            rowIndex={params.index || 0}
+            rowIndex={params.index ?? 0}
             tableProps={props}
         />
     );
@@ -163,7 +163,7 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
             <UIFlexibleTableRow
                 key={`row-${rowIndex}`}
                 dragAndDropParams={params}
-                rowActions={renderRowActions(rowIndex || 0)}
+                rowActions={renderRowActions(rowIndex ?? 0)}
                 rowData={renderRowData(params)}
                 tableProps={props}
                 rowRef={typeof rowToNavigate === 'number' && rowIndex === rowToNavigate ? scrollTargetRef : undefined}

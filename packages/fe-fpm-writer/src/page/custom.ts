@@ -4,7 +4,14 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { CustomPage, InternalCustomPage } from './types';
-import { initializeTargetSettings, getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
+import { PageType } from './types';
+import {
+    initializeTargetSettings,
+    getFclConfig,
+    getManifestJsonExtensionHelper,
+    validatePageConfig,
+    getLibraryDependencies
+} from './common';
 import { setCommonDefaults } from '../common/defaults';
 import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
@@ -27,6 +34,9 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
     // set common defaults
     const config = setCommonDefaults(data, manifestPath, manifest) as InternalCustomPage;
     config.settings = initializeTargetSettings(data);
+
+    // set library dependencies
+    config.libraries = getLibraryDependencies(PageType.CustomPage);
 
     // set FCL configuration
     const fclConfig = getFclConfig(manifest, config.navigation);
@@ -69,7 +79,7 @@ export function generate(basePath: string, data: CustomPage, fs?: Editor): Edito
         fs = create(createStorage());
     }
     validateVersion(data.minUI5Version);
-    validatePageConfig(basePath, data, fs);
+    validatePageConfig(basePath, data, fs, []);
 
     const manifestPath = join(basePath, 'webapp/manifest.json');
 

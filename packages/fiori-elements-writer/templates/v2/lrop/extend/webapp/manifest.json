@@ -21,7 +21,10 @@
                             "dateSettings": {
                                 "useDateRange": true
                             }
-                        }
+                        }<% if (locals.tableType) { %>,
+                        "tableSettings": {
+                            "type": "<%- locals.tableType %>"
+                          }<% } %> 
                     }
                 },
                 "pages": {

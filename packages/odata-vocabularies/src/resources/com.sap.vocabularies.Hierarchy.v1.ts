@@ -1,4 +1,4 @@
-// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -82,7 +82,7 @@ export default {
                 '$Nullable': true,
                 '@Org.OData.Core.V1.Description': 'Type of a node',
                 '@Org.OData.Core.V1.LongDescription':
-                    'In a recursive hierarchy with mixed types, nodes can\n            <br>- have a type-specific (navigation) property whose name is the node type or\n            <br>- be represented by entities of different subtypes of a common entity type that is\n            annotated with the `RecursiveHierarchy` annotation. The qualified name of the subtype is the node type.'
+                    'In a recursive hierarchy with mixed types, nodes can\n- have a type-specific (navigation) property whose name is the node type or\n- be represented by entities of different subtypes of a common entity type that is\n\nannotated with the `RecursiveHierarchy` annotation. The qualified name of the subtype is the node type.'
             },
             'ChildCount': {
                 '$Type': 'Edm.Int64',
@@ -153,12 +153,17 @@ export default {
         'RecursiveHierarchyActionsType': {
             '$Kind': 'ComplexType',
             '@Org.OData.Core.V1.LongDescription':
-                'The qualified action names identify actions for maintaining nodes in the recursive hierarchy,\nwhich are specific for the given annotation qualifier.\nThese actions MUST have the same signature as the template actions linked below, with\n`Edm.EntityType` replaced with the entity type on which the recursive hierarchy is defined.\nThe resource path of the binding parameter MUST traverse the hierarchy collection,\nincluding any hierarchy directory.\n\nThe template actions themselves cannot be invoked.',
+                'The qualified action names identify actions for maintaining nodes in the recursive hierarchy,\nwhich are specific for the given annotation qualifier.\nThese actions MUST have the same signature as the template actions linked below, with\n`Edm.EntityType` replaced with the entity type on which the recursive hierarchy is defined.\nThe resource path of the binding parameter MUST traverse the hierarchy collection,\nincluding any hierarchy directory. If the resource path contains a Content ID reference to an earlier request,\nthe hierarchy directory MUST be determined from the resource path of that request.\n```json\n{"requests": [{\n  "id": "1",\n  "method": "post",\n  "url": "HierarchyDirectory(1)/Nodes",\n  "body": {\n    "Name": "child of A",\n    "Superordinate@odata.bind": "Nodes(\'A\')"\n  }\n}, {\n  "id": "2",\n  "dependsOn": ["1"],\n  "method": "post",\n  "url": "$1/Hierarchy.ChangeNextSiblingAction",\n  "body": {\n    "NextSibling": null\n  }\n}]}\n```\nThe template actions themselves cannot be invoked.',
             'ChangeNextSiblingAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
                 '$Nullable': true,
                 '@Org.OData.Core.V1.Description':
                     'Action that moves a node among its siblings, following [this template](#Template_ChangeNextSiblingAction)'
+            },
+            'ChangeSiblingForRootsSupported': {
+                '$Type': 'Edm.Boolean',
+                '$DefaultValue': true,
+                '@Org.OData.Core.V1.Description': 'Whether the sibling of a root can be changed'
             },
             'CopyAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
@@ -176,7 +181,7 @@ export default {
             '@Org.OData.Core.V1.Description':
                 'Instance annotation on the result of an `$apply` query option containing the number of matching nodes after hierarchical transformations',
             '@Org.OData.Core.V1.LongDescription':
-                'The service MAY designate a subset of the `$apply` result as "matching nodes".\n          For requests following the pattern described [here](#RecursiveHierarchyType), this subset is the output set of the\n          `filter` or `search` transformation that occurs as the fourth parameter\n          of the last `ancestors` transformation or occurs nested into it.<br>\n          For requests not following this pattern, the subset NEED NOT be defined.<br>\n          This instance annotation is available if [`RecursiveHierarchy/Matched`](#RecursiveHierarchyType)\n          and [`RecursiveHierarchy/MatchedDescendantCount`](#RecursiveHierarchyType) are also available.'
+                'The service MAY designate a subset of the `$apply` result as "matching nodes".\nFor requests following the pattern described [here](#RecursiveHierarchyType), this subset is the output set of the\n`filter` or `search` transformation that occurs as the fourth parameter\nof the last `ancestors` transformation or occurs nested into it.\n\nFor requests not following this pattern, the subset NEED NOT be defined.\n\nThis instance annotation is available if [`RecursiveHierarchy/Matched`](#RecursiveHierarchyType)\nand [`RecursiveHierarchy/MatchedDescendantCount`](#RecursiveHierarchyType) are also available.'
         },
         'TopLevels': [
             {
@@ -297,7 +302,7 @@ export default {
                 '@Org.OData.Core.V1.Description':
                     'Template for actions that copy a node and its descendants and are named in [`RecursiveHierarchyActions/CopyAction`](#RecursiveHierarchyActionsType)',
                 '@Org.OData.Core.V1.LongDescription':
-                    'To give the copied sub-hierarchy a parent, the action invocation can be followed\nby a PATCH that binds the parent navigation property (for example, `Superordinate` in the following JSON batch request).\n```json\n{"requests": [{\n  "id": "1",\n  "method": "post",\n  "url": "HierarchyDirectory(1)/Nodes(\'A\')/CopyAction"\n}, {\n  "id": "2",\n  "dependsOn": ["1"],\n  "method": "patch",\n  "url": "$1",\n  "body": {\n    "Superordinate": {"@id": "Nodes(\'B\')"}\n  }\n}]}\n```',
+                    'To give the copied sub-hierarchy a parent, the action invocation can be followed\nby a PATCH that binds the parent navigation property (for example, `Superordinate` in the following JSON batch request).\n```json\n{"requests": [{\n  "id": "1",\n  "method": "post",\n  "url": "HierarchyDirectory(1)/Nodes(\'A\')/CopyAction"\n}, {\n  "id": "2",\n  "dependsOn": ["1"],\n  "method": "patch",\n  "url": "$1",\n  "body": {\n    "Superordinate@odata.bind": "Nodes(\'B\')"\n  }\n}]}\n```',
                 '$Parameter': [
                     {
                         '$Name': 'Node',

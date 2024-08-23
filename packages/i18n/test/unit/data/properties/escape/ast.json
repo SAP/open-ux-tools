@@ -1,0 +1,26 @@
+[
+  {
+    "type": "comment-line",
+    "value": "# If you need to add newlines and carriage returns, they need to be escaped using \\n and \\r respectively.",
+    "range": "[(0,0)..(0,105)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "# You can also optionally escape tabs with \\t for readability purposes.",
+    "range": "[(1,0)..(1,71)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "valueWithEscapes",
+      "range": "[(2,0)..(2,16)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "This is a newline\\n and a carriage return\\r and a tab\\t.",
+      "range": "[(2,19)..(2,75)]"
+    },
+    "range": "[(2,0)..(2,75)]"
+  }
+]

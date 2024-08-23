@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@sap/cds": "6.8.2"
+  },
+  "cds": {
+    "folders": {
+      "db": "databases/"
+    }
+  }
+}

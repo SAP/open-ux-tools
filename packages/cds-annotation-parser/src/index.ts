@@ -1,4 +1,4 @@
-import type { Position } from 'vscode-languageserver-types';
+import type { Position } from '@sap-ux/text-document-utils';
 import { parse as cdsAnnotationParser } from './parser';
 import { buildAst } from './transformer';
 
@@ -68,5 +68,5 @@ export {
 } from './transformer';
 
 export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './transformer';
-export { ReservedProperties } from './constants';
+export { ReservedProperties, isReservedProperty } from './constants';
 export { findAnnotationNode, getNode, getAstNodes } from './find-annotation-node';

@@ -1,0 +1,49 @@
+{
+    "name": "@sap-ux/abap-deploy-config-inquirer",
+    "description": "Prompts module that can provide prompts for the abap deployment config writer",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/abap-deploy-config-inquirer"
+    },
+    "version": "0.0.2",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "dist"
+    ],
+    "engines": {
+        "node": ">=18.x"
+    },
+    "dependencies": {
+        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*",
+        "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-ux/guided-answers-helper": "workspace:*",
+        "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/store": "workspace:*",
+        "@sap-ux/system-access": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
+        "i18next": "23.5.1"
+    },
+    "devDependencies": {
+        "@types/inquirer": "8.2.6",
+        "@types/inquirer-autocomplete-prompt": "2.0.1",
+        "@sap-devx/yeoman-ui-types": "1.14.4"
+    }
+}

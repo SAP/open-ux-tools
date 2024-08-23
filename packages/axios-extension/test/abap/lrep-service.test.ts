@@ -3,6 +3,18 @@ import fs from 'fs';
 import type { Message } from '../../src/abap/lrep-service';
 import type { AdaptationConfig } from '../../src';
 import { LayeredRepositoryService, createForAbap } from '../../src';
+import type { AxiosError } from '../../src';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
+import { describe } from 'node:test';
+
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+} as Partial<ToolsLogger> as ToolsLogger;
+jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('LayeredRepositoryService', () => {
     const server = 'http://sap.example';
@@ -121,6 +133,44 @@ describe('LayeredRepositoryService', () => {
             const response = await service.deploy(archivePath, config);
             expect(response.status).toBe(200);
         });
+        test('logError is called when request fails', async () => {
+            const mockAxiosError = {
+                response: {
+                    status: 404,
+                    data: 'Not found'
+                },
+                message: 'Request failed with status code 404'
+            } as AxiosError;
+
+            nock(server)
+                .get((url) => {
+                    return url.startsWith(
+                        `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                            config.namespace as string
+                        )}&layer=CUSTOMER_BASE`
+                    );
+                })
+                .reply(404);
+
+            // Force a request failure inside deploy
+            nock(server)
+                .post(
+                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                        config.namespace as string
+                    )}&layer=CUSTOMER_BASE&package=${config.package}&changelist=${config.transport}`
+                )
+                .replyWithError(mockAxiosError);
+
+            try {
+                await service.deploy(archivePath, config);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(loggerMock.error).toHaveBeenCalledWith(
+                    expect.stringContaining(mockAxiosError.response?.data as string)
+                );
+            }
+        });
     });
 
     describe('undeploy', () => {
@@ -226,6 +276,35 @@ describe('LayeredRepositoryService', () => {
             nock(server).put(`${LayeredRepositoryService.PATH}/appdescr_variant_preview/`).reply(500);
             try {
                 await service.mergeAppDescriptorVariant(Buffer.from('~test'));
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
+    });
+
+    describe('getSystemInfo', () => {
+        const mockResult = {
+            adaptationProjectTypes: ['onPremise', 'cloudReady'],
+            activeLanguages: [{ sap: 'EN', description: 'EN Language', i18n: 'EN-en' }]
+        };
+
+        test('successful call with provided package and without provided language', async () => {
+            nock(server)
+                .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
+                .reply(200, (_path) => {
+                    return mockResult;
+                });
+            const systemInfo = await service.getSystemInfo('Z_TEST_PACKAGE');
+            expect(systemInfo).toEqual(mockResult);
+        });
+
+        test('throws error when request fails', async () => {
+            nock(server)
+                .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
+                .reply(500);
+            try {
+                await service.getSystemInfo('Z_TEST_PACKAGE');
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();

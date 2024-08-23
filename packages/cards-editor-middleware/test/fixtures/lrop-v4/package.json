@@ -1,0 +1,19 @@
+{
+  "name": "apps.v4.example",
+  "version": "0.0.1",
+  "private": true,
+  "sapux": true,
+  "description": "My LROP V4 Application",
+  "scripts": {
+    "build": "ui5 build",
+    "start": "ui5 serve --open \"/test/flpSandbox.html#app-preview\"",
+    "start-cards-generator": "ui5 serve --open \"test/flpGeneratorSandbox.html#Cards-generator\""
+  },
+  "devDependencies": {
+    "@ui5/cli": "3.9.0",
+    "@sap/ux-ui5-tooling": "1",
+    "@sap-ux/ui5-middleware-fe-mockserver": "2.2.19",
+    "@sap-ux/preview-middleware": "../../../../preview-middleware",
+    "@sap-ux/cards-editor-middleware": "../../.."
+  }
+}

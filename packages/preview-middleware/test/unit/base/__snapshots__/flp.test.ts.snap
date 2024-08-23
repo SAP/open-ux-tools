@@ -25,6 +25,16 @@ Object {
       "title": "My Other App",
       "url": "/yet/another/app",
     },
+    "myRemoteObject-action": Object {
+      "additionalInformation": "SAPUI5.Component=myRemoteComponent",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
+      "applicationType": "URL",
+      "description": "",
+      "title": "myRemoteObject-action",
+      "url": "/a/remote/app",
+    },
     "testfev2app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
       "applicationDependencies": Object {
@@ -37,14 +47,20 @@ Object {
     },
   },
   "basePath": "..",
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
         "custom": true,
-        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "writeConnector": "custom.connectors.WorkspaceConnector",
       },
       Object {
         "connector": "LocalStorageConnector",
@@ -57,9 +73,154 @@ Object {
     "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
       "my.id": "..",
-      "open.ux.preview.client": "/preview/client",
+      "myRemoteComponent": "/a/remote/app",
+      "open.ux.preview.client": "../preview/client",
       "test.fe.v2.app": "/simple/app",
       "test.fe.v2.other": "/yet/another/app",
+    },
+    "theme": "sap_horizon",
+  },
+}
+`;
+
+exports[`FlpSandbox init i18n manifest 1`] = `
+Object {
+  "apps": Object {
+    "app-preview": Object {
+      "additionalInformation": "SAPUI5.Component=my.id",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
+      "applicationType": "URL",
+      "description": "My App Description",
+      "title": "My App",
+      "url": "..",
+    },
+  },
+  "basePath": "..",
+  "init": undefined,
+  "locateReuseLibsScript": false,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "custom.connectors.WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "resources": Object {
+      "my.id": "..",
+      "open.ux.preview.client": "../preview/client",
+    },
+    "theme": "sap_horizon",
+  },
+}
+`;
+
+exports[`FlpSandbox init i18n manifest w/o bundle 1`] = `
+Object {
+  "apps": Object {
+    "app-preview": Object {
+      "additionalInformation": "SAPUI5.Component=my.id",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
+      "applicationType": "URL",
+      "description": "myDifferentDescription",
+      "title": "myDifferentTitle",
+      "url": "..",
+    },
+  },
+  "basePath": "..",
+  "init": undefined,
+  "locateReuseLibsScript": false,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "custom.connectors.WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "resources": Object {
+      "my.id": "..",
+      "open.ux.preview.client": "../preview/client",
+    },
+    "theme": "sap_horizon",
+  },
+}
+`;
+
+exports[`FlpSandbox init i18n manifest with unknown propertyI18nKey 1`] = `
+Object {
+  "apps": Object {
+    "app-preview": Object {
+      "additionalInformation": "SAPUI5.Component=my.id",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
+      "applicationType": "URL",
+      "description": "myOtherDescription",
+      "title": "myOtherTitle",
+      "url": "..",
+    },
+  },
+  "basePath": "..",
+  "init": undefined,
+  "locateReuseLibsScript": false,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "custom.connectors.WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "resources": Object {
+      "my.id": "..",
+      "open.ux.preview.client": "../preview/client",
     },
     "theme": "sap_horizon",
   },
@@ -81,14 +242,20 @@ Object {
     },
   },
   "basePath": "..",
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
         "custom": true,
-        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "writeConnector": "custom.connectors.WorkspaceConnector",
       },
       Object {
         "connector": "LocalStorageConnector",
@@ -101,7 +268,7 @@ Object {
     "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
       "my.id": "..",
-      "open.ux.preview.client": "/preview/client",
+      "open.ux.preview.client": "../preview/client",
     },
     "theme": "sap_horizon",
   },
@@ -123,14 +290,20 @@ Object {
     },
   },
   "basePath": "..",
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
         "custom": true,
-        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "writeConnector": "custom.connectors.WorkspaceConnector",
       },
       Object {
         "connector": "LocalStorageConnector",
@@ -142,7 +315,7 @@ Object {
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
     "resources": Object {
-      "open.ux.preview.client": "/preview/client",
+      "open.ux.preview.client": "../preview/client",
       "test.fe.v2.app": "..",
     },
     "theme": "sap_horizon_dark",
@@ -150,7 +323,7 @@ Object {
 }
 `;
 
-exports[`FlpSandbox init reuse libs not part of data-sap-ui-libs 1`] = `"sap.ui.core,sap.m"`;
+exports[`FlpSandbox init reuse libs not part of data-sap-ui-libs 1`] = `"sap.ui.core,sap.m,sap.ushell"`;
 
 exports[`FlpSandbox init ui5Theme 1`] = `
 Object {
@@ -167,14 +340,20 @@ Object {
     },
   },
   "basePath": "..",
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
         "custom": true,
-        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "writeConnector": "custom.connectors.WorkspaceConnector",
       },
       Object {
         "connector": "LocalStorageConnector",
@@ -186,7 +365,7 @@ Object {
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
     "resources": Object {
-      "open.ux.preview.client": "/preview/client",
+      "open.ux.preview.client": "../preview/client",
       "test.fe.v2.app": "..",
     },
     "theme": "sap_fiori_3",
@@ -195,6 +374,96 @@ Object {
 `;
 
 exports[`FlpSandbox router GET /preview/api/changes 1`] = `"{\\"sap.ui.fl.myid\\":{\\"id\\":\\"myId\\"}}"`;
+
+exports[`FlpSandbox router custom opa5 path test/integration/opaTests.qunit.html 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+	<title>OPA5 tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script
+		src=\\"../../resources/sap-ui-core.js\\"
+		data-sap-ui-theme='sap_horizon_dark'
+		data-sap-ui-resourceroots='{
+			\\"test.fe.v2.app\\": \\"../..\\"
+		}'
+		data-sap-ui-animation=\\"false\\"
+		data-sap-ui-compatVersion=\\"edge\\"
+		data-sap-ui-async=\\"true\\">
+	</script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>"
+`;
+
+exports[`FlpSandbox router default Qunit init test/unitTests.qunit.js 1`] = `
+"sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require([
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\"
+], function (QUnit) {
+    'use strict';
+    sap.ui.require([], function() {
+        QUnit.start();
+    });
+});"
+`;
+
+exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+	<title>QUnit tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script
+		src=\\"../resources/sap-ui-core.js\\"
+		data-sap-ui-theme='sap_horizon_dark'
+		data-sap-ui-resourceroots='{
+			\\"test.fe.v2.app\\": \\"..\\"
+		}'
+		data-sap-ui-animation=\\"false\\"
+		data-sap-ui-compatVersion=\\"edge\\"
+		data-sap-ui-async=\\"true\\">
+	</script>
+
+	<script src=\\"unitTests.qunit.js\\"></script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../resources/sap/ui/thirdparty/qunit-2.css\\">
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>"
+`;
 
 exports[`FlpSandbox router editor with config 1`] = `
 "<!DOCTYPE HTML>
@@ -239,7 +508,12 @@ exports[`FlpSandbox router editor with config 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -250,8 +524,8 @@ exports[`FlpSandbox router editor with config 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
-        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-xx-designMode=\\"true\\"
@@ -259,6 +533,8 @@ exports[`FlpSandbox router editor with config 1`] = `
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
+
+
 </head>
 
 <!-- UI Content -->
@@ -311,7 +587,12 @@ exports[`FlpSandbox router rta 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -322,18 +603,21 @@ exports[`FlpSandbox router rta 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
-        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
     </script>
+
+
 </head>
 
 <!-- UI Content -->
 <body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
+<!-- livereload disabled for editor </body>-->
 
 </html>"
 `;
@@ -346,9 +630,8 @@ exports[`FlpSandbox router rta with developerMode=true 1`] = `
         <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />
         <meta name=\\"theme-color\\" content=\\"#000000\\" />
         <meta name=\\"description\\" content=\\"Web page for rendering SAP Fiori Tools Control Property Editor\\" />
-        <link rel=\\"shortcut icon\\" type=\\"image/x-icon\\" href=\\"./editor/favicon.ico\\" />
         <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"./editor/app.css\\" />
-        <title>Control Property Editor</title>
+        <title>Editing test.fe.v2.app</title>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -358,10 +641,14 @@ exports[`FlpSandbox router rta with developerMode=true 1`] = `
             start({
                 previewUrl: '/my/editor.html.inner.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#app-preview',
                 telemetry: false,
-                rootElementId: 'root'
+                rootElementId: 'root',
+                scenario: '',
+                livereloadPort: 35729,
+                livereloadUrl: '',
             });
         </script>
     </body>
+    <!-- livereload disabled for editor </body>-->
 </html>
 "
 `;
@@ -409,7 +696,12 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -420,21 +712,37 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
-        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-xx-designMode=\\"true\\"
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
     </script>
+
+
+        <!-- Hides Rta native toolbar  -->
+    <style>
+        #shell-header, .sapUiRtaToolbar {
+            visibility: hidden;
+            height: 1px;
+        }
+        .sapUshellShellCanvas {
+            top: 0 !important;
+        }
+        .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
+            background-color: transparent !important;
+        }
+    </style>
 </head>
 
 <!-- UI Content -->
 <body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
+<!-- livereload disabled for editor </body>-->
 
 </html>"
 `;
@@ -482,7 +790,12 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -493,21 +806,37 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
-        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-xx-designMode=\\"true\\"
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
     </script>
+
+
+        <!-- Hides Rta native toolbar  -->
+    <style>
+        #shell-header, .sapUiRtaToolbar {
+            visibility: hidden;
+            height: 1px;
+        }
+        .sapUshellShellCanvas {
+            top: 0 !important;
+        }
+        .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
+            background-color: transparent !important;
+        }
+    </style>
 </head>
 
 <!-- UI Content -->
 <body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
+<!-- livereload disabled for editor </body>-->
 
 </html>"
 `;
@@ -555,7 +884,12 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -566,12 +900,14 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
-        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
+
+
 </head>
 
 <!-- UI Content -->
@@ -579,4 +915,30 @@ exports[`FlpSandbox router test/flp.html 1`] = `
 </body>
 
 </html>"
+`;
+
+exports[`FlpSandbox router with test suite default with testsuite 1`] = `
+"<!DOCTYPE html>
+<html lang=\\"en\\">
+<head>
+    <title>QUnit TestSuite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"/test/testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+</head>
+<body>
+</body>
+</html>"
+`;
+
+exports[`FlpSandbox router with test suite default with testsuite and init testsuite.qunit.js 1`] = `
+"window.suite = function () {
+    const oSuite = new parent.jsUnitTestSuite();
+    var sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf(\\"/\\") + 1);
+
+    oSuite.addTestPage(sContextPath + \\"unitTests.qunit.html\\");
+
+    oSuite.addTestPage(sContextPath + \\"opaTests.qunit.html\\");
+
+    return oSuite;
+}"
 `;

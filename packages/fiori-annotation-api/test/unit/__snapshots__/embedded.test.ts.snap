@@ -1,0 +1,354 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`check reading of embedded annotations (CDS) getAnnotationFiles returns local and external annotation files 1`] = `
+"srv/common.cds:
+    IncidentService.Incidents/ID [(17,8)..(17,23)]:
+        com.sap.vocabularies.UI.v1.Hidden (17,8)..(17,23): (Bool) true
+    IncidentService.Incidents/assignedIndividual [(18,24)..(18,40)]:
+        com.sap.vocabularies.UI.v1.Hidden (18,24)..(18,40): (Bool) true
+    IncidentService.Incidents/incidentStatus [(23,8)..(23,45),(24,8)..(24,35),(25,8)..(25,32)]:
+        com.sap.vocabularies.Common.v1.Text (23,8)..(23,45): (Path) incidentStatus/code
+        com.sap.vocabularies.Common.v1.TextArrangement (24,8)..(24,35): (EnumMember) 'com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly'
+        com.sap.vocabularies.Common.v1.ValueListWithFixedValues (25,8)..(25,32): (default value)
+    IncidentService.Incidents/category [(28,8)..(28,39),(29,8)..(29,35),(30,8)..(30,32)]:
+        com.sap.vocabularies.Common.v1.Text (28,8)..(28,39): (Path) category/code
+        com.sap.vocabularies.Common.v1.TextArrangement (29,8)..(29,35): (EnumMember) 'com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly'
+        com.sap.vocabularies.Common.v1.ValueListWithFixedValues (30,8)..(30,32): (default value)
+    IncidentService.Incidents/priority [(33,8)..(33,39),(34,8)..(34,35),(35,8)..(35,32)]:
+        com.sap.vocabularies.Common.v1.Text (33,8)..(33,39): (Path) priority/code
+        com.sap.vocabularies.Common.v1.TextArrangement (34,8)..(34,35): (EnumMember) 'com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly'
+        com.sap.vocabularies.Common.v1.ValueListWithFixedValues (35,8)..(35,32): (default value)
+    IncidentService.Category/code [(41,8)..(41,30),(42,8)..(42,35),(43,10)..(43,36)]:
+        com.sap.vocabularies.Common.v1.Text (41,8)..(41,30): (Path) name
+        com.sap.vocabularies.Common.v1.TextArrangement (42,8)..(42,35): (EnumMember) 'com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly'
+        title (43,10)..(43,36): (String) '{i18n>Category}'
+    IncidentService.Priority/code [(48,8)..(48,30),(49,8)..(49,35),(50,10)..(50,36)]:
+        com.sap.vocabularies.Common.v1.Text (48,8)..(48,30): (Path) name
+        com.sap.vocabularies.Common.v1.TextArrangement (49,8)..(49,35): (EnumMember) 'com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly'
+        title (50,10)..(50,36): (String) '{i18n>Priority}'
+    IncidentService.IncidentStatus/code [(55,8)..(55,30),(56,8)..(56,35),(57,10)..(57,42)]:
+        com.sap.vocabularies.Common.v1.Text (55,8)..(55,30): (Path) name
+        com.sap.vocabularies.Common.v1.TextArrangement (56,8)..(56,35): (EnumMember) 'com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly'
+        title (57,10)..(57,42): (String) '{i18n>IncidentStatus}'
+    IncidentService.Incidents [(61,4)..(86,5),(87,4)..(92,6)]:
+        Org.OData.Aggregation.V1.ApplySupported (61,4)..(86,5): (Record) {
+            type: Org.OData.Aggregation.V1.ApplySupportedType,
+            Transformations (63,8)..(76,9): (Collection) [
+                0, (64,12)..(64,23): (String) 'aggregate',
+                1, (65,12)..(65,22): (String) 'topcount',
+                2, (66,12)..(66,25): (String) 'bottomcount',
+                3, (67,12)..(67,22): (String) 'identity',
+                4, (68,12)..(68,20): (String) 'concat',
+                5, (69,12)..(69,21): (String) 'groupby',
+                6, (70,12)..(70,20): (String) 'filter',
+                7, (71,12)..(71,20): (String) 'expand',
+                8, (72,12)..(72,17): (String) 'top',
+                9, (73,12)..(73,18): (String) 'skip',
+                10, (74,12)..(74,21): (String) 'orderby',
+                11, (75,12)..(75,20): (String) 'search'
+            ],
+            GroupableProperties (77,8)..(79,9): (Collection) [
+                0, (78,8)..(78,21): (PropertyPath) category_code
+            ],
+            AggregatableProperties (80,8)..(85,9): (Collection) [
+                0, (81,12)..(84,13): (Record) {
+                    type: Org.OData.Aggregation.V1.AggregatablePropertyType,
+                    Property (83,16)..(83,29): (PropertyPath) ID
+                }
+            ]
+        }
+        com.sap.vocabularies.Analytics.v1.AggregatedProperties (87,4)..(92,6): (Collection) [
+            0, (87,38)..(92,5): (Record) {
+                Name (88,8)..(88,53): (String) 'IncidentsPerCategory',
+                AggregationMethod (89,8)..(89,46): (String) 'countdistinct',
+                AggregatableProperty (90,8)..(90,33): (PropertyPath) ID
+                [Embedded]: [
+                    com.sap.vocabularies.Common.v1.Label (91,8)..(91,60): (String) '{i18n>IncidentsPerCategory}'
+                ]
+            }
+        ]
+!srv/common.cds:
+    IncidentService.Incidents/ID [(9,8)..(9,27),(10,8)..(10,23),(11,8)..(11,21)]:
+        title (9,8)..(9,27): (String) '{i18n>ID}'
+        com.sap.vocabularies.UI.v1.HiddenFilter (10,8)..(10,23): (default value)
+        Org.OData.Core.V1.Computed (11,8)..(11,21): (default value)
+app/services.cds:
+app/incidents/annotations.cds:
+srv/incidentservice.cds:
+    IncidentService.EntityContainer [(2,27)..(2,57)]:
+        _requires (2,27)..(2,57): (String) 'authenticated-user'
+    IncidentService.Incidents [(3,5)..(3,56),(4,23)..(4,70)]:
+        com.sap.vocabularies.UI.v1.TextArrangement#Test_EmbBeforeEntity (3,5)..(3,56): (EnumMember) 'com.sap.vocabularies.UI.v1.TextArrangementType/TextLast'
+        com.sap.vocabularies.UI.v1.TextArrangement#Test_EmbInEntity (4,23)..(4,70): (EnumMember) 'com.sap.vocabularies.UI.v1.TextArrangementType/TextLast'
+    IncidentService.create(IncidentService.Incidents) [(6,13)..(6,68),(7,28)..(7,79)]:
+        com.sap.vocabularies.Common.v1.IsActionCritical#Test_EmbBeforeEmbAction (6,13)..(6,68): (Bool) true
+        com.sap.vocabularies.Common.v1.IsActionCritical#Test_EmbInEmbAction (7,28)..(7,79): (Bool) true
+    IncidentService.create(IncidentService.Incidents)/par1 [(8,17)..(8,72)]:
+        com.sap.vocabularies.UI.v1.ParameterDefaultValue#Test_EmbBeforeEmbParam (8,17)..(8,72): (Bool) true
+    IncidentService.create(IncidentService.Incidents)/par2 [(10,23)..(10,74)]:
+        com.sap.vocabularies.UI.v1.ParameterDefaultValue#Test_EmbInEmbParam (10,23)..(10,74): (Bool) true
+    IncidentService.create(IncidentService.Incidents)/par3 [(11,32)..(11,86)]:
+        com.sap.vocabularies.UI.v1.ParameterDefaultValue#Test_EmbAfterEmbParam (11,32)..(11,86): (Bool) true
+    IncidentService.IncidentFlow/processStep [(17,10)..(17,62)]:
+        com.sap.vocabularies.Common.v1.FieldControl#Test_EmbBeforeElement (17,10)..(17,62): (EnumMember) 'com.sap.vocabularies.Common.v1.FieldControlType/Hidden'
+    IncidentService.IncidentFlow/stepStatus [(18,21)..(18,72)]:
+        com.sap.vocabularies.Common.v1.FieldControl#Test_EmbAfterElement (18,21)..(18,72): (EnumMember) 'com.sap.vocabularies.Common.v1.FieldControlType/Hidden'
+    IncidentService.IncidentProcessTimeline [(22,5)..(22,56),(23,37)..(23,84)]:
+        com.sap.vocabularies.UI.v1.TextArrangement#Test_EmbBeforeEntity (22,5)..(22,56): (EnumMember) 'com.sap.vocabularies.UI.v1.TextArrangementType/TextLast'
+        com.sap.vocabularies.UI.v1.TextArrangement#Test_EmbInEntity (23,37)..(23,84): (EnumMember) 'com.sap.vocabularies.UI.v1.TextArrangementType/TextLast'
+    IncidentService.removeIncident() [(26,5)..(26,57),(27,28)..(27,76)]:
+        com.sap.vocabularies.Common.v1.IsActionCritical#Test_EmbBeforeAction (26,5)..(26,57): (Bool) true
+        com.sap.vocabularies.Common.v1.IsActionCritical#Test_EmbInAction (27,28)..(27,76): (Bool) true
+    IncidentService.removeIncident()/par1 [(28,9)..(28,61)]:
+        com.sap.vocabularies.UI.v1.ParameterDefaultValue#Test_EmbBeforeParam (28,9)..(28,61): (Bool) true
+    IncidentService.removeIncident()/par2 [(30,23)..(30,71)]:
+        com.sap.vocabularies.UI.v1.ParameterDefaultValue#Test_EmbInParam (30,23)..(30,71): (Bool) true
+    IncidentService.removeIncident()/par3 [(31,32)..(31,83)]:
+        com.sap.vocabularies.UI.v1.ParameterDefaultValue#Test_EmbAfterParam (31,32)..(31,83): (Bool) true
+db/schema.cds:
+!db/schema.cds:
+    IncidentService.Priority/criticality [(15,4)..(15,13),(16,4)..(16,17)]:
+        com.sap.vocabularies.UI.v1.Hidden (15,4)..(15,13): (default value)
+        Org.OData.Core.V1.Computed (16,4)..(16,17): (default value)
+    IncidentService.Incidents/identifier [(19,31)..(19,51)]:
+        title (19,31)..(19,51): (String) 'Identifier'
+    IncidentService.Incidents [(20,1)..(20,15)]:
+        cds.autoexpose (20,1)..(20,15): (default value)
+    IncidentService.Incidents/title [(40,63)..(40,85)]:
+        title (40,63)..(40,85): (String) '{i18n>Title}'
+    IncidentService.Incidents/category [(41,63)..(41,88)]:
+        title (41,63)..(41,88): (String) '{i18n>Category}'
+    IncidentService.Incidents/priority [(42,63)..(42,88)]:
+        title (42,63)..(42,88): (String) '{i18n>Priority}'
+    IncidentService.Incidents/incidentStatus [(43,63)..(43,94)]:
+        title (43,63)..(43,94): (String) '{i18n>IncidentStatus}'
+    IncidentService.Incidents/description [(44,63)..(44,99)]:
+        title (44,63)..(44,99): (String) '{i18n>IncidentDescription}'
+    IncidentService.IncidentFlow/processStep [(62,34)..(62,62)]:
+        title (62,34)..(62,62): (String) '{i18n>ProcessStep}'
+    IncidentService.IncidentFlow/stepStatus [(63,34)..(63,68)]:
+        title (63,34)..(63,68): (String) '{i18n>ProcessStepStatus}'
+    IncidentService.Incidents [(29,4)..(29,37),(30,4)..(30,47)]:
+        com.sap.vocabularies.Common.v1.SemanticKey (29,4)..(29,37): (Collection) [
+            0, (29,26)..(29,36): (PropertyPath) identifier
+        ]
+        com.sap.vocabularies.UI.v1.Identification (30,4)..(30,47): (Collection) [
+            0, (30,26)..(30,46): (Record) {
+                type: com.sap.vocabularies.UI.v1.DataField,
+                Value (30,27)..(30,45): (Path) identifier
+            }
+        ]
+    IncidentService.Incidents/ID [(34,8)..(34,36),(35,8)..(35,35)]:
+        com.sap.vocabularies.Common.v1.Text (34,8)..(34,36): (Path) identifier
+        com.sap.vocabularies.Common.v1.TextArrangement (35,8)..(35,35): (EnumMember) 'com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly'
+node_modules/@sap/cds/common.cds:
+!node_modules/@sap/cds/common.cds:
+    IncidentService.Incidents/createdAt [(99,26)..(99,46)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (99,26)..(99,46): (Path) $now
+    IncidentService.Individual/createdAt [(99,26)..(99,46)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (99,26)..(99,46): (Path) $now
+    IncidentService.IncidentProcessTimeline/createdAt [(99,26)..(99,46)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (99,26)..(99,46): (Path) $now
+    IncidentService.Incidents/createdBy [(100,26)..(100,47)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (100,26)..(100,47): (Path) $user
+    IncidentService.Individual/createdBy [(100,26)..(100,47)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (100,26)..(100,47): (Path) $user
+    IncidentService.IncidentProcessTimeline/createdBy [(100,26)..(100,47)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (100,26)..(100,47): (Path) $user
+    IncidentService.Incidents/modifiedAt [(101,26)..(101,46),(101,49)..(101,69)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (101,26)..(101,46): (Path) $now
+        com.sap.vocabularies.CDS.v1.CdsOnUpdate (101,49)..(101,69): (Path) $now
+    IncidentService.Individual/modifiedAt [(101,26)..(101,46),(101,49)..(101,69)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (101,26)..(101,46): (Path) $now
+        com.sap.vocabularies.CDS.v1.CdsOnUpdate (101,49)..(101,69): (Path) $now
+    IncidentService.IncidentProcessTimeline/modifiedAt [(101,26)..(101,46),(101,49)..(101,69)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (101,26)..(101,46): (Path) $now
+        com.sap.vocabularies.CDS.v1.CdsOnUpdate (101,49)..(101,69): (Path) $now
+    IncidentService.Incidents/modifiedBy [(102,26)..(102,47),(102,49)..(102,70)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (102,26)..(102,47): (Path) $user
+        com.sap.vocabularies.CDS.v1.CdsOnUpdate (102,49)..(102,70): (Path) $user
+    IncidentService.Individual/modifiedBy [(102,26)..(102,47),(102,49)..(102,70)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (102,26)..(102,47): (Path) $user
+        com.sap.vocabularies.CDS.v1.CdsOnUpdate (102,49)..(102,70): (Path) $user
+    IncidentService.IncidentProcessTimeline/modifiedBy [(102,26)..(102,47),(102,49)..(102,70)]:
+        com.sap.vocabularies.CDS.v1.CdsOnInsert (102,26)..(102,47): (Path) $user
+        com.sap.vocabularies.CDS.v1.CdsOnUpdate (102,49)..(102,70): (Path) $user
+    IncidentService.Category_texts/locale [(29,29)..(29,58)]:
+        title (29,29)..(29,58): (String) '{i18n>LanguageCode}'
+    IncidentService.Priority_texts/locale [(29,29)..(29,58)]:
+        title (29,29)..(29,58): (String) '{i18n>LanguageCode}'
+    IncidentService.IncidentStatus_texts/locale [(29,29)..(29,58)]:
+        title (29,29)..(29,58): (String) '{i18n>LanguageCode}'
+    IncidentService.Category [(68,4)..(68,18),(69,4)..(69,38)]:
+        cds.autoexpose (68,4)..(68,18): (default value)
+        com.sap.vocabularies.CDS.v1.CdsPersistenceSkip (69,4)..(69,38): (String) 'if-unused'
+    IncidentService.Priority [(68,4)..(68,18),(69,4)..(69,38)]:
+        cds.autoexpose (68,4)..(68,18): (default value)
+        com.sap.vocabularies.CDS.v1.CdsPersistenceSkip (69,4)..(69,38): (String) 'if-unused'
+    IncidentService.IncidentStatus [(68,4)..(68,18),(69,4)..(69,38)]:
+        cds.autoexpose (68,4)..(68,18): (default value)
+        com.sap.vocabularies.CDS.v1.CdsPersistenceSkip (69,4)..(69,38): (String) 'if-unused'
+    IncidentService.Category/name [(71,36)..(71,57)]:
+        title (71,36)..(71,57): (String) '{i18n>Name}'
+    IncidentService.Category_texts/name [(71,36)..(71,57)]:
+        title (71,36)..(71,57): (String) '{i18n>Name}'
+    IncidentService.Priority/name [(71,36)..(71,57)]:
+        title (71,36)..(71,57): (String) '{i18n>Name}'
+    IncidentService.Priority_texts/name [(71,36)..(71,57)]:
+        title (71,36)..(71,57): (String) '{i18n>Name}'
+    IncidentService.IncidentStatus/name [(71,36)..(71,57)]:
+        title (71,36)..(71,57): (String) '{i18n>Name}'
+    IncidentService.IncidentStatus_texts/name [(71,36)..(71,57)]:
+        title (71,36)..(71,57): (String) '{i18n>Name}'
+    IncidentService.Category/descr [(72,36)..(72,64)]:
+        title (72,36)..(72,64): (String) '{i18n>Description}'
+    IncidentService.Category_texts/descr [(72,36)..(72,64)]:
+        title (72,36)..(72,64): (String) '{i18n>Description}'
+    IncidentService.Priority/descr [(72,36)..(72,64)]:
+        title (72,36)..(72,64): (String) '{i18n>Description}'
+    IncidentService.Priority_texts/descr [(72,36)..(72,64)]:
+        title (72,36)..(72,64): (String) '{i18n>Description}'
+    IncidentService.IncidentStatus/descr [(72,36)..(72,64)]:
+        title (72,36)..(72,64): (String) '{i18n>Description}'
+    IncidentService.IncidentStatus_texts/descr [(72,36)..(72,64)]:
+        title (72,36)..(72,64): (String) '{i18n>Description}'
+    IncidentService.Category [(132,35)..(132,69)]:
+        com.sap.vocabularies.UI.v1.Identification (132,35)..(132,69): (Collection) [
+            0, (132,56)..(132,68): (Record) {
+                type: com.sap.vocabularies.UI.v1.DataField,
+                Value (132,57)..(132,67): (Path) name
+            }
+        ]
+    IncidentService.Priority [(132,35)..(132,69)]:
+        com.sap.vocabularies.UI.v1.Identification (132,35)..(132,69): (Collection) [
+            0, (132,56)..(132,68): (Record) {
+                type: com.sap.vocabularies.UI.v1.DataField,
+                Value (132,57)..(132,67): (Path) name
+            }
+        ]
+    IncidentService.IncidentStatus [(132,35)..(132,69)]:
+        com.sap.vocabularies.UI.v1.Identification (132,35)..(132,69): (Collection) [
+            0, (132,56)..(132,68): (Record) {
+                type: com.sap.vocabularies.UI.v1.DataField,
+                Value (132,57)..(132,67): (Path) name
+            }
+        ]
+    IncidentService.Category [(133,35)..(133,54)]:
+        cds.odata.valuelist (133,35)..(133,54): (default value)
+    IncidentService.Priority [(133,35)..(133,54)]:
+        cds.odata.valuelist (133,35)..(133,54): (default value)
+    IncidentService.IncidentStatus [(133,35)..(133,54)]:
+        cds.odata.valuelist (133,35)..(133,54): (default value)
+    IncidentService.Incidents/createdAt [(136,14)..(136,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (136,14)..(136,29): (default value)
+    IncidentService.Individual/createdAt [(136,14)..(136,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (136,14)..(136,29): (default value)
+    IncidentService.IncidentProcessTimeline/createdAt [(136,14)..(136,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (136,14)..(136,29): (default value)
+    IncidentService.Incidents/createdBy [(137,14)..(137,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (137,14)..(137,29): (default value)
+    IncidentService.Individual/createdBy [(137,14)..(137,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (137,14)..(137,29): (default value)
+    IncidentService.IncidentProcessTimeline/createdBy [(137,14)..(137,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (137,14)..(137,29): (default value)
+    IncidentService.Incidents/modifiedAt [(138,14)..(138,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (138,14)..(138,29): (default value)
+    IncidentService.Individual/modifiedAt [(138,14)..(138,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (138,14)..(138,29): (default value)
+    IncidentService.IncidentProcessTimeline/modifiedAt [(138,14)..(138,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (138,14)..(138,29): (default value)
+    IncidentService.Incidents/modifiedBy [(139,14)..(139,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (139,14)..(139,29): (default value)
+    IncidentService.Individual/modifiedBy [(139,14)..(139,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (139,14)..(139,29): (default value)
+    IncidentService.IncidentProcessTimeline/modifiedBy [(139,14)..(139,29)]:
+        com.sap.vocabularies.UI.v1.HiddenFilter (139,14)..(139,29): (default value)
+    IncidentService.Incidents/createdAt [(143,14)..(143,28)]:
+        Org.OData.Core.V1.Immutable (143,14)..(143,28): (default value)
+    IncidentService.Individual/createdAt [(143,14)..(143,28)]:
+        Org.OData.Core.V1.Immutable (143,14)..(143,28): (default value)
+    IncidentService.IncidentProcessTimeline/createdAt [(143,14)..(143,28)]:
+        Org.OData.Core.V1.Immutable (143,14)..(143,28): (default value)
+    IncidentService.Incidents/createdBy [(144,14)..(144,28)]:
+        Org.OData.Core.V1.Immutable (144,14)..(144,28): (default value)
+    IncidentService.Individual/createdBy [(144,14)..(144,28)]:
+        Org.OData.Core.V1.Immutable (144,14)..(144,28): (default value)
+    IncidentService.IncidentProcessTimeline/createdBy [(144,14)..(144,28)]:
+        Org.OData.Core.V1.Immutable (144,14)..(144,28): (default value)
+    IncidentService.Incidents/createdBy [(171,2)..(171,31),(172,2)..(172,43)]:
+        title (171,2)..(171,31): (String) '{i18n>UserID}'
+        description (172,2)..(172,43): (String) '{i18n>UserID.Description}'
+    IncidentService.Incidents/modifiedBy [(171,2)..(171,31),(172,2)..(172,43)]:
+        title (171,2)..(171,31): (String) '{i18n>UserID}'
+        description (172,2)..(172,43): (String) '{i18n>UserID.Description}'
+    IncidentService.Individual/createdBy [(171,2)..(171,31),(172,2)..(172,43)]:
+        title (171,2)..(171,31): (String) '{i18n>UserID}'
+        description (172,2)..(172,43): (String) '{i18n>UserID.Description}'
+    IncidentService.Individual/modifiedBy [(171,2)..(171,31),(172,2)..(172,43)]:
+        title (171,2)..(171,31): (String) '{i18n>UserID}'
+        description (172,2)..(172,43): (String) '{i18n>UserID.Description}'
+    IncidentService.IncidentProcessTimeline/createdBy [(171,2)..(171,31),(172,2)..(172,43)]:
+        title (171,2)..(171,31): (String) '{i18n>UserID}'
+        description (172,2)..(172,43): (String) '{i18n>UserID.Description}'
+    IncidentService.IncidentProcessTimeline/modifiedBy [(171,2)..(171,31),(172,2)..(172,43)]:
+        title (171,2)..(171,31): (String) '{i18n>UserID}'
+        description (172,2)..(172,43): (String) '{i18n>UserID.Description}'
+    IncidentService.Incidents/createdAt [(176,14)..(176,40)]:
+        title (176,14)..(176,40): (String) '{i18n>CreatedAt}'
+    IncidentService.Individual/createdAt [(176,14)..(176,40)]:
+        title (176,14)..(176,40): (String) '{i18n>CreatedAt}'
+    IncidentService.IncidentProcessTimeline/createdAt [(176,14)..(176,40)]:
+        title (176,14)..(176,40): (String) '{i18n>CreatedAt}'
+    IncidentService.Incidents/createdBy [(177,14)..(177,40)]:
+        title (177,14)..(177,40): (String) '{i18n>CreatedBy}'
+    IncidentService.Individual/createdBy [(177,14)..(177,40)]:
+        title (177,14)..(177,40): (String) '{i18n>CreatedBy}'
+    IncidentService.IncidentProcessTimeline/createdBy [(177,14)..(177,40)]:
+        title (177,14)..(177,40): (String) '{i18n>CreatedBy}'
+    IncidentService.Incidents/modifiedAt [(178,14)..(178,40)]:
+        title (178,14)..(178,40): (String) '{i18n>ChangedAt}'
+    IncidentService.Individual/modifiedAt [(178,14)..(178,40)]:
+        title (178,14)..(178,40): (String) '{i18n>ChangedAt}'
+    IncidentService.IncidentProcessTimeline/modifiedAt [(178,14)..(178,40)]:
+        title (178,14)..(178,40): (String) '{i18n>ChangedAt}'
+    IncidentService.Incidents/modifiedBy [(179,14)..(179,40)]:
+        title (179,14)..(179,40): (String) '{i18n>ChangedBy}'
+    IncidentService.Individual/modifiedBy [(179,14)..(179,40)]:
+        title (179,14)..(179,40): (String) '{i18n>ChangedBy}'
+    IncidentService.IncidentProcessTimeline/modifiedBy [(179,14)..(179,40)]:
+        title (179,14)..(179,40): (String) '{i18n>ChangedBy}'
+    IncidentService.Incidents/modifiedAt [(188,14)..(188,22)]:
+        readonly (188,14)..(188,22): (default value)
+    IncidentService.Individual/modifiedAt [(188,14)..(188,22)]:
+        readonly (188,14)..(188,22): (default value)
+    IncidentService.IncidentProcessTimeline/modifiedAt [(188,14)..(188,22)]:
+        readonly (188,14)..(188,22): (default value)
+    IncidentService.Incidents/createdAt [(189,14)..(189,22)]:
+        readonly (189,14)..(189,22): (default value)
+    IncidentService.Individual/createdAt [(189,14)..(189,22)]:
+        readonly (189,14)..(189,22): (default value)
+    IncidentService.IncidentProcessTimeline/createdAt [(189,14)..(189,22)]:
+        readonly (189,14)..(189,22): (default value)
+    IncidentService.Incidents/createdBy [(190,14)..(190,22)]:
+        readonly (190,14)..(190,22): (default value)
+    IncidentService.Individual/createdBy [(190,14)..(190,22)]:
+        readonly (190,14)..(190,22): (default value)
+    IncidentService.IncidentProcessTimeline/createdBy [(190,14)..(190,22)]:
+        readonly (190,14)..(190,22): (default value)
+    IncidentService.Incidents/modifiedBy [(191,14)..(191,22)]:
+        readonly (191,14)..(191,22): (default value)
+    IncidentService.Individual/modifiedBy [(191,14)..(191,22)]:
+        readonly (191,14)..(191,22): (default value)
+    IncidentService.IncidentProcessTimeline/modifiedBy [(191,14)..(191,22)]:
+        readonly (191,14)..(191,22): (default value)
+
+Actions: [
+    (action) IncidentService.create(IncidentService.Incidents)
+        0: in: IncidentService.Incidents
+    (action) IncidentService.removeIncident()
+        0: par1: Edm.Int32,
+        1: par2: Edm.Int32,
+        2: par3: Edm.Int32
+]
+ActionImports: []"
+`;

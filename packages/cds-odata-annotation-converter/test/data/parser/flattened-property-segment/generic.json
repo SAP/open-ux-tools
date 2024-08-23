@@ -1,0 +1,66 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(2,1)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Chart",
+                "valueRange": "[(0,0)..(0,8)]"
+            }
+        },
+        "contentRange": "[(0,10)..(2,1)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(0,11)..(2,1)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(0,12)..(2,0)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(1,4)..(1,16)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "AxisScaling",
+                                "valueRange": "[(1,4)..(1,15)]"
+                            }
+                        },
+                        "contentRange": "[(1,16)..(1,16)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(1,16)..(1,16)]",
+                                "name": "Record",
+                                "attributes": {},
+                                "contentRange": "[(1,16)..(1,16)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(1,16)..(1,16)]",
+                                        "name": "PropertyValue",
+                                        "attributes": {
+                                            "Property": {
+                                                "type": "attribute",
+                                                "name": "Property",
+                                                "value": "",
+                                                "valueRange": "[(1,16)..(1,16)]"
+                                            }
+                                        },
+                                        "content": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

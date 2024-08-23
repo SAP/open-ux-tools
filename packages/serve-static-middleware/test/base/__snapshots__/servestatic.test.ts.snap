@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`serve-static-middleware serveStaticMiddleware: call with additional options 1`] = `
+Array [
+  Array [
+    "/path/to/resources",
+    Object {
+      "fallthrough": false,
+      "maxAge": 123,
+    },
+  ],
+  Array [
+    "/path/to/test-resources",
+    Object {
+      "fallthrough": true,
+      "maxAge": 456,
+    },
+  ],
+]
+`;
+
+exports[`serve-static-middleware serveStaticMiddleware: call with global options 1`] = `
+Array [
+  Array [
+    "/path/to/resources",
+    Object {
+      "dotfiles": "ignore",
+      "etag": false,
+      "fallthrough": false,
+    },
+  ],
+  Array [
+    "/path/to/test-resources",
+    Object {
+      "dotfiles": "ignore",
+      "etag": false,
+      "fallthrough": false,
+    },
+  ],
+]
+`;
+
+exports[`serve-static-middleware serveStaticMiddleware: call with minimal config 1`] = `
+Array [
+  Array [
+    "/path/to/resources",
+    Object {},
+  ],
+  Array [
+    "/path/to/test-resources",
+    Object {},
+  ],
+]
+`;

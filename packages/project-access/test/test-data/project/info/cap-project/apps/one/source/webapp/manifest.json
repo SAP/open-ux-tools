@@ -1,0 +1,74 @@
+{
+    "sap.app": {
+        "id": "one",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "dataSources": {
+            "mainService": {
+                "uri": "/sap/opu/odata/sap/ODATA_SERVICE/",
+                "type": "OData",
+                "settings": {
+                    "annotations": ["ANNOTATION_ONE", "ANNOTATION_TWO"],
+                    "localUri": "localService/mainService/metadata.xml",
+                    "odataVersion": "2.0"
+                }
+            },
+            "ANNOTATION_ONE": {
+                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ODATA_SERVICE',Version='0001')/$value/",
+                "type": "ODataAnnotation",
+                "settings": {
+                    "localUri": "localService/mainService/ANNOTATION_ONE.xml"
+                }
+            },
+            "ANNOTATION_TWO": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/ANNOTATION_TWO.xml",
+                "settings": {
+                    "localUri": "annotations/ANNOTATION_TWO.xml"
+                }
+            },
+            "ODATA_SERVICE_2_Annotation": {
+                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ODATA_SERVICE_2',Version='0001')/$value/",
+                "type": "ODataAnnotation",
+                "settings": {
+                    "localUri": "localService/ODATA_SERVICE_2/ODATA_SERVICE_2_Annotation.xml"
+                }
+            },
+            "ODATA_SERVICE_2": {
+                "uri": "/sap/opu/odata/sap/ODATA_SERVICE_2",
+                "type": "OData",
+                "settings": {
+                    "annotations": ["ODATA_SERVICE_2_Annotation"],
+                    "localUri": "localService/ODATA_SERVICE_2/metadata.xml"
+                }
+            }
+        }
+    },
+    "sap.ui5": {
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "ovp.i18n.i18n"
+                }
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            },
+            "mainModel": {
+                "dataSource": "mainService"
+            },
+            "ODATA_MODEL_2": {
+                "dataSource": "ODATA_SERVICE_2",
+                "preload": true,
+                "settings": {
+                    "defaultCountMode": "Inline"
+                }
+            }
+        }
+    },
+    "sap.ovp": {
+        "globalFilterModel": "mainModel"
+    }
+}

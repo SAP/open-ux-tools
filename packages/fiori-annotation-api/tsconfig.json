@@ -1,0 +1,36 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": ["../../types/mem-fs-editor.d.ts", "src", "index.d.ts"],
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
+        "noErrorTruncation": true,
+        "lib": ["ES2021"]
+    },
+    "references": [
+        {
+            "path": "../cds-annotation-parser"
+        },
+        {
+            "path": "../cds-odata-annotation-converter"
+        },
+        {
+            "path": "../odata-annotation-core"
+        },
+        {
+            "path": "../odata-annotation-core-types"
+        },
+        {
+            "path": "../odata-entity-model"
+        },
+        {
+            "path": "../odata-vocabularies"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../xml-odata-annotation-converter"
+        }
+    ]
+}

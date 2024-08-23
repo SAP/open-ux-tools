@@ -1,4 +1,4 @@
-// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -14,7 +14,7 @@ export default {
         }
     },
     'Org.OData.Authorization.V1': {
-        '$Alias': 'Auth',
+        '$Alias': 'Authorization',
         '@Org.OData.Core.V1.Description':
             'The Authorization Vocabulary provides terms for describing authorization requirements of the service',
         '@Org.OData.Core.V1.Links': [
@@ -116,6 +116,8 @@ export default {
         'OAuth2Implicit': {
             '$Kind': 'ComplexType',
             '$BaseType': 'Org.OData.Authorization.V1.OAuthAuthorization',
+            '@Org.OData.Core.V1.Description':
+                'Security note: OAuth2 implicit grant is considered to be not secure and should not be used by clients, see [OAuth 2.0 Security Best Current Practice](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics.html#name-implicit-grant).',
             'AuthorizationUrl': {
                 '@Org.OData.Core.V1.Description': 'Authorization URL',
                 '@Org.OData.Core.V1.IsURL': true

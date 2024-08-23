@@ -52,6 +52,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
+        jest.restoreAllMocks();
         isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
         getSystemCredentialsSpy = jest.spyOn(utils, 'getLocalStoredCredentials');
         listDestinationsMock = jest.spyOn(btp, 'listDestinations');

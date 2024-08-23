@@ -1,46 +1,29 @@
-import { coerce, gte } from 'semver';
-import type { UI5VersionOverview } from './types';
-import { supportState, ui5VersionFallbacks } from './ui5VersionFallback';
+import type { UI5Version } from './types';
 
 export const enum ui5VersionsType {
     official = 'officialVersions',
     snapshot = 'snapshotsVersions',
-    overview = 'overview'
+    support = 'support'
 }
 
 export const ui5VersionsCache: {
-    [key in ui5VersionsType.official | ui5VersionsType.snapshot | ui5VersionsType.overview]:
-        | string[]
-        | UI5VersionOverview[];
+    [key in ui5VersionsType.official | ui5VersionsType.snapshot | ui5VersionsType.support]: string[] | UI5Version[];
 } = {
     officialVersions: [],
     snapshotsVersions: [],
-    overview: []
+    support: []
 };
 
 export const ui5VersionRequestInfo = {
     OfficialUrl: 'https://ui5.sap.com',
     NeoAppFile: 'neo-app.json',
     VersionsFile: 'version.json?sap-ui-config-patches=true&sap-ui-config-showall=true',
-    VersionsOverview: 'versionoverview.json',
     VersionExternalFile: 'version.json'
 };
 
 export const defaultMinUi5Version = '1.65.0';
 export const latestVersionString = 'Latest';
 export const defaultVersion = latestVersionString;
-
-// Determine defaults from support fallback versions
-const defaultUi5Version = ui5VersionFallbacks
-    .filter((supportVersion) => {
-        if (
-            supportVersion.support === supportState.maintenance &&
-            gte(coerce(supportVersion.version) ?? '0.0.0', defaultMinUi5Version)
-        ) {
-            return true;
-        }
-        return false;
-    })
-    .map((maintainedVersion) => coerce(maintainedVersion.version)?.version ?? '0.0.0');
-defaultUi5Version.unshift(defaultVersion);
-export { defaultUi5Version as defaultUi5Versions };
+export const minUi5VersionSupportingCodeAssist = '1.76.0';
+export const minUi5VersionV4Template = '1.84.0';
+export const minUI5VersionForLocalDev = '1.79.0';

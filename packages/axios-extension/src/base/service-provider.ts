@@ -20,6 +20,12 @@ export interface ProviderConfiguration {
 }
 
 export interface ServiceProviderExtension {
+    /**
+     * Retrieves the service based on the provided path.
+     *
+     * @param path - The path of the service.
+     * @returns service.
+     */
     service(path: string): Service;
 }
 

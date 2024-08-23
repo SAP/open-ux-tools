@@ -1,4 +1,4 @@
-// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -64,7 +64,7 @@ export default {
                 '@Org.OData.Core.V1.Description':
                     'Bound action that initiates a sticky session for creating new entities in the targeted entity set or collection',
                 '@Org.OData.Core.V1.LongDescription':
-                    'Signature:\n\n- Binding parameter is collection of type of annotated entity set\n\n- No non-binding parameters\n\n- No return type \n\nIf called within a sticky session the sticky session continues. \n\nOtherwise:\n\n- On success this action initiates a sticky session.\n\n- On failure no sticky session is initiated.'
+                    'Signature:\n- Binding parameter is collection of type of annotated entity set\n- No non-binding parameters\n- No return type \n\nIf called within a sticky session the sticky session continues. \n\nOtherwise:\n- On success this action initiates a sticky session.\n- On failure no sticky session is initiated.'
             },
             'AdditionalNewActions': {
                 '$Collection': true,
@@ -79,20 +79,20 @@ export default {
                 '@Org.OData.Core.V1.Description':
                     'Bound action that initiates a sticky session for editing the targeted entity',
                 '@Org.OData.Core.V1.LongDescription':
-                    'Signature:\n\n- Binding parameter is type of annotated entity set\n\n- No non-binding parameters\n\n- Return type is same as binding parameter type \n\nIf called within a sticky session the sticky session continues. \n\nOtherwise:\n\n- On success this action returns the targeted entity and initiates a sticky session.\n\n- On failure no sticky session is initiated.'
+                    'Signature:\n- Binding parameter is type of annotated entity set\n- No non-binding parameters\n- Return type is same as binding parameter type \n\nIf called within a sticky session the sticky session continues. \n\nOtherwise:\n- On success this action returns the targeted entity and initiates a sticky session.\n- On failure no sticky session is initiated.'
             },
             'SaveAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
                 '@Org.OData.Core.V1.Description': 'Bound action that saves a new or edited entity',
                 '@Org.OData.Core.V1.LongDescription':
-                    'Signature:\n\n- Binding parameter is type of annotated entity set\n\n- No non-binding parameters\n\n- Return type is same as binding parameter type \n\nOn success this action returns the newly created or edited entity. The sticky session is terminated after all entities that were newly created or edited in it have been saved. \n\nOn failure the sticky session is kept alive.'
+                    'Signature:\n- Binding parameter is type of annotated entity set\n- No non-binding parameters\n- Return type is same as binding parameter type \n\nOn success this action returns the newly created or edited entity. The sticky session is terminated after all entities that were newly created or edited in it have been saved. \n\nOn failure the sticky session is kept alive.'
             },
             'DiscardAction': {
                 '$Type': 'Org.OData.Core.V1.SimpleIdentifier',
                 '@Org.OData.Core.V1.Description':
                     'Action import for an unbound action that discards all changes and terminates the sticky session',
                 '@Org.OData.Core.V1.LongDescription':
-                    'Signature:\n\n- No parameters\n\n- No return type \n\nIf called within a sticky session the sticky session is terminated, irrespective of whether the action succeeds or fails. \n\nIf called outside of a sticky session the action fails and does not initiate a session.'
+                    'Signature:\n- No parameters\n- No return type \n\nIf called within a sticky session the sticky session is terminated, irrespective of whether the action succeeds or fails. \n\nIf called outside of a sticky session the action fails and does not initiate a session.'
             }
         }
     }

@@ -1,0 +1,230 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generate Generate deployment configs: test.ui5.lib 1`] = `
+Object {
+  "base-config.yaml": Object {
+    "contents": "specVersion: '2.2'
+metadata:
+  name: 'test.ui5.lib'
+type: library
+framework:
+  name: SAPUI5
+  version: 1.102.19
+  libraries:
+    - name: sap.ui.core
+    - name: themelib_sap_belize
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        path: test
+        port: 35729
+        delay: 300
+builder:
+  customTasks:
+    - name: ui5-task-flatten-library
+      afterTask: generateResourcesJson
+",
+    "state": "modified",
+  },
+  "deploy-config.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.2'
+metadata:
+  name: 'test.ui5.lib'
+type: library
+framework:
+  name: SAPUI5
+  version: 1.102.19
+  libraries:
+    - name: sap.ui.core
+    - name: themelib_sap_belize
+    - name: themelib_sap_fiori_3
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: https://example.com
+          client: '000'
+        app:
+          name: test.ui5.lib
+          package: TESTPKG12
+          description: Mock deployment description
+          transport: TR123
+        exclude:
+          - /test/
+",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"test.ui5.lib\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"private\\": true,
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"2.9.9\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"ui5-task-flatten-library\\": \\"3.0.2\\"
+  },
+  \\"scripts\\": {
+    \\"deploy\\": \\"npm run build && fiori deploy --config deploy-config.yaml && rimraf archive.zip\\",
+    \\"undeploy\\": \\"npm run build && fiori undeploy --config deploy-config.yaml\\",
+    \\"deploy-test\\": \\"npm run build && fiori deploy --config deploy-config.yaml --testMode true\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"ui5-task-flatten-library\\"
+    ]
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`generate Generate deployment configs: test-js-app 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+    \\"name\\": \\"test-js-app\\",
+    \\"version\\": \\"0.0.1\\",
+    \\"sapux\\": true,
+    \\"description\\": \\"An SAP Fiori application.\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"openui5\\",
+        \\"sapui5\\"
+    ],
+    \\"main\\": \\"webapp/index.html\\",
+    \\"scripts\\": {
+        \\"start\\": \\"start script\\",
+        \\"build\\": \\"build script\\",
+        \\"test\\": \\"test script\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
+        \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
+    },
+    \\"devDependencies\\": {
+        \\"rimraf\\": \\"^5.0.5\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'test-js-app'
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: https://example.com
+          client: '000'
+          authenticationType: reentranceTicket
+        app:
+          name: test-js-app
+          package: TESTPKG12
+          description: Mock deployment description
+          transport: TR123
+        exclude:
+          - /test/
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`generate Generate deployment configs: test-ts-app 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+    \\"name\\": \\"test-ts-app\\",
+    \\"version\\": \\"0.0.1\\",
+    \\"private\\": true,
+    \\"description\\": \\"An SAP Fiori application.\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"openui5\\",
+        \\"sapui5\\"
+    ],
+    \\"main\\": \\"webapp/index.html\\",
+    \\"dependencies\\": {},
+    \\"devDependencies\\": {
+        \\"rimraf\\": \\"^5.0.5\\"
+    },
+    \\"scripts\\": {
+        \\"start\\": \\"start script\\",
+        \\"build\\": \\"build script\\",
+        \\"test\\": \\"test script\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
+        \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
+    },
+    \\"sapuxLayer\\": \\"VENDOR\\"
+}
+",
+    "state": "modified",
+  },
+  "ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '3.1'
+metadata:
+  name: test-ts-app
+type: application
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: MOCK_DESTINATION
+          url: https://example.com
+          client: '000'
+          scp: true
+        app:
+          name: test-ts-app
+          package: TESTPKG12
+          description: Mock deployment description
+          transport: TR123
+        exclude:
+          - /test/
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+",
+    "state": "modified",
+  },
+  "webapp/.Ui5RepositoryTextFiles": Object {
+    "contents": "^.*.ts$",
+    "state": "modified",
+  },
+}
+`;

@@ -1,0 +1,7 @@
+[
+    {
+        "range": "[(37,24)..(37,28)]",
+        "severity": 1,
+        "message": "The attribute value must be a string literal"
+    }
+]

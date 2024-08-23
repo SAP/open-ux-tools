@@ -1,4 +1,34 @@
 /**
+ * Support destination authentication types
+ */
+export enum Authentication {
+    BASIC_AUTHENTICATION = 'BasicAuthentication',
+    CLIENT_CERT_AUTHENTICATION = 'ClientCertificateAuthentication',
+    NO_AUTHENTICATION = 'NoAuthentication',
+    OAUTH2_CLIENT_CREDENTIALS = 'OAuth2ClientCredentials',
+    OAUTH2_JWT_BEARER = 'OAuth2JWTBearer',
+    OAUTH2_PASSWORD = 'OAuth2Password',
+    OAUTH2_REFRESH_TOKEN = 'OAuth2RefreshToken',
+    OAUTH2_SAML_BEARER_ASSERTION = 'OAuth2SAMLBearerAssertion',
+    OAUTH2_USER_TOKEN_EXCHANGE = 'OAuth2UserTokenExchange',
+    SAML_ASSERTION = 'SAMLAssertion'
+}
+
+/**
+ * Relevant values for display extended destination properties to the UI
+ */
+export enum Suffix {
+    S4HC = 'S4HC',
+    BTP = 'BTP'
+}
+
+export enum ProxyType {
+    ON_PREMISE = 'OnPremise',
+    INTERNET = 'Internet',
+    PRIVATE_LINK = 'PrivateLink'
+}
+
+/**
  * Relevant values for the WebIDEUsage property used to identify different types of destinations.
  */
 export enum WebIDEUsage {
@@ -16,8 +46,17 @@ export enum WebIDEAdditionalData {
     API_MGMT = 'api_mgmt'
 }
 
+/**
+ * Relevant values for DestinationProxyType property
+ */
+export enum DestinationProxyType {
+    ON_PREMISE = 'OnPremise',
+    INTERNET = 'Internet',
+    PRIVATE_LINK = 'PrivateLink'
+}
+
 // Additional destination properties relevant for development
-type DestinationProperty =
+export type DestinationProperty =
     | 'WebIDEEnabled'
     | 'WebIDESystem'
     | 'WebIDEUsage'
@@ -26,7 +65,7 @@ type DestinationProperty =
     | 'sap-platform'
     | 'TrustAll'
     | 'HTML5.DynamicDestination';
-type AdditionalDestinationProperties = { [property in DestinationProperty]: string };
+export type AdditionalDestinationProperties = { [property in DestinationProperty]: string };
 
 /**
  * Mandatory destination properties combined with the known/relevant optional properties.
@@ -105,5 +144,83 @@ export function isFullUrlDestination(destination: Destination): boolean {
     return Boolean(
         destination.WebIDEAdditionalData?.includes(WebIDEAdditionalData.FULL_URL) &&
             isGenericODataDestination(destination)
+    );
+}
+
+/**
+ * Checks whether the provided destination is configured as an on-premise system.
+ *
+ * @param destination destination info
+ * @returns true if the destination is configured as an on-premise system
+ */
+export function isOnPremiseDestination(destination: Destination): boolean {
+    return Boolean(destination.ProxyType.includes(DestinationProxyType.ON_PREMISE));
+}
+
+/**
+ * Validate if a destination has the property `HTML5.DynamicDestination` configured.
+ *
+ * @param destination destination info
+ * @returns true, if this destination has HTML5.DynamicDestination configured
+ */
+export function isHTML5DynamicConfigured(destination: Destination): boolean {
+    return Boolean(destination['HTML5.DynamicDestination']);
+}
+
+/**
+ * Escape any special RegExp character that we want to use literally.
+ *
+ * @param str string input
+ * @returns string a cleansed version of the input
+ */
+function escapeRegExp(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
+/**
+ * Trim, cleanse and return a system name appended with the appropriate suffix i.e. BTP | S4HC.
+ *
+ * @param destinationName name of the destination
+ * @param suffix the appropriate suffix appended, BTP | S4HC
+ * @returns string return an escaped string, appended with the appropriate suffix
+ */
+function addSuffix(destinationName: string, suffix: Suffix): string {
+    const suffixStr = ` (${suffix})`;
+    return RegExp(`${escapeRegExp(suffixStr)}$`).exec(destinationName.trim())
+        ? destinationName
+        : `${destinationName} (${suffix})`;
+}
+
+/**
+ * Generate a display name using the destination name, username if supplied and the appropriate suffix i.e. BTP | S4HC.
+ *
+ * @param destination destination info
+ * @param displayUsername name to display with destination
+ * @returns string a newly generated string value with the name of the destination, username if present and the system type
+ */
+export function getDisplayName(destination: Destination, displayUsername?: string): string {
+    const userDisplayName = displayUsername ? ` [${displayUsername}]` : '';
+    let systemDisplayName: string;
+    if (isAbapEnvironmentOnBtp(destination)) {
+        systemDisplayName = addSuffix(destination.Name, Suffix.BTP);
+    } else if (isS4HC(destination)) {
+        systemDisplayName = addSuffix(destination.Name, Suffix.S4HC);
+    } else {
+        systemDisplayName = destination.Name;
+    }
+    return `${systemDisplayName}${userDisplayName}`;
+}
+
+/**
+ * Checks whether the provided destination is configured to point to an S/4 HANA system.
+ *
+ * @param destination destination info
+ * @returns boolean if the destination is configured for an SAP S/4HANA system
+ */
+export function isS4HC(destination: Destination): boolean {
+    return Boolean(
+        destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) &&
+            destination.Authentication === Authentication.SAML_ASSERTION &&
+            destination.ProxyType === ProxyType.INTERNET
     );
 }

@@ -1,5 +1,191 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.10.9
+
+### Patch Changes
+
+-   904b048: Move error utils to dedicated utils folder
+
+## 0.10.8
+
+### Patch Changes
+
+-   bad92cf: refactor ui5 version handling
+
+## 0.10.7
+
+### Patch Changes
+
+-   cea1f9f: Fixed Add XML Fragment dialog not working if there is an unsaved "hideControl" change
+
+## 0.10.6
+
+### Patch Changes
+
+-   089b984: Fix handling of undefined response from sap/ui/VersionInfo.load
+
+## 0.10.5
+
+### Patch Changes
+
+-   ab2e5a0: Preview support for UI5 2.x
+
+## 0.10.4
+
+### Patch Changes
+
+-   42486a5: fix(locate-reuse-lib): corrected extraction of component name
+
+## 0.10.3
+
+### Patch Changes
+
+-   90a8291: Extension points break the outline tree sync for apps with UI5 version =< 1.96.33
+
+## 0.10.2
+
+### Patch Changes
+
+-   671242b: Disable add fragment and controller extension rt-a menu items if clicked element is from reuse component view
+
+## 0.10.1
+
+### Patch Changes
+
+-   b2d5843: fix: Missing Scenario API in lower SAPUI5 versions
+
+## 0.10.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.9.18
+
+### Patch Changes
+
+-   8f57ac28: i18n bindings validation fails for nested \*.properties files
+
+## 0.9.17
+
+### Patch Changes
+
+-   0e0c2864: Fix Error message regression
+
+## 0.9.16
+
+### Patch Changes
+
+-   fb2ff8d6: Reduce eslint warnings
+
+## 0.9.15
+
+### Patch Changes
+
+-   81026f96: Add explanation at the end of disabled context menu item due to non stable ID
+
+## 0.9.14
+
+### Patch Changes
+
+-   78de7813: RTA standard toolbar replaced with custom CPE toolbar
+
+## 0.9.13
+
+### Patch Changes
+
+-   56d8b0b9: Add default content for extension points to the outline in CPE
+
+## 0.9.12
+
+### Patch Changes
+
+-   52faf16f: Fix RTA initialization issue for UI5 versions less than 1.72.
+
+## 0.9.11
+
+### Patch Changes
+
+-   39665ea9: Fix for CPE does not start UI Adaptation for ADP Projects with lower UI5 Version than 1.120
+
+## 0.9.10
+
+### Patch Changes
+
+-   9e8af342: Disable fragment context menu item in CPE for controls with no stable id
+
+## 0.9.9
+
+### Patch Changes
+
+-   cad21d4d: Enable Adding Controller Extension only on async views for Adp Projects
+
+## 0.9.8
+
+### Patch Changes
+
+-   7697dea4: Outsourcing of initialization routine to manage app state from fiori-tools-proxy to preview-middleware-client and updating to UI5 2.0
+
+## 0.9.7
+
+### Patch Changes
+
+-   2e296173: Enable telemetry for adaptation project
+
+## 0.9.6
+
+### Patch Changes
+
+-   00cf3025: Alternative approach to have a consistent save for XML Fragments
+
+## 0.9.5
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+
+## 0.9.4
+
+### Patch Changes
+
+-   4cbb1639: "Open in VS Code" button for Controller Extension dialog does not work in BAS
+
+## 0.9.3
+
+### Patch Changes
+
+-   6a477fba: feat: Replace auto-refresh with message in case of manual flex file changes
+
+## 0.9.2
+
+### Patch Changes
+
+-   6d76e076: Enhance `preview-middleware` to allow running QUnit and OPA5 tests.
+
+## 0.9.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.9.0
+
+### Minor Changes
+
+-   efd2f6d4: Support ui5 version 1.71.\* in CPE.
+
+## 0.8.14
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 0.8.13
+
+### Patch Changes
+
+-   70296b55: Remove label and icon in control property editor
+
 ## 0.8.12
 
 ### Patch Changes

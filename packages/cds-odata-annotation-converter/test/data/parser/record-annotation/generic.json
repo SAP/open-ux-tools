@@ -1,0 +1,152 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(7,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.DataPoint",
+                "valueRange": "[(1,4)..(1,13)]"
+            }
+        },
+        "contentRange": "[(1,15)..(7,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(1,16)..(7,5)]",
+                "name": "Record",
+                "attributes": {
+                    "Type": {
+                        "type": "attribute",
+                        "name": "Type",
+                        "nameRange": "[(2,8)..(2,13)]",
+                        "value": "UI.DataPointType",
+                        "valueRange": "[(2,15)..(2,31)]"
+                    }
+                },
+                "contentRange": "[(1,17)..(7,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(3,8)..(3,20)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "Value",
+                                "valueRange": "[(3,8)..(3,13)]"
+                            }
+                        },
+                        "contentRange": "[(3,15)..(3,20)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(3,16)..(3,20)]",
+                                "name": "Bool",
+                                "attributes": {},
+                                "contentRange": "[(3,16)..(3,20)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(3,16)..(3,20)]",
+                                        "text": "true"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(4,8)..(4,28)]",
+                        "name": "Annotation",
+                        "attributes": {
+                            "Term": {
+                                "type": "attribute",
+                                "name": "Term",
+                                "value": "UI.Hidden",
+                                "valueRange": "[(4,8)..(4,21)]"
+                            }
+                        },
+                        "contentRange": "[(4,23)..(4,28)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(4,24)..(4,28)]",
+                                "name": "Bool",
+                                "attributes": {},
+                                "contentRange": "[(4,24)..(4,28)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(4,24)..(4,28)]",
+                                        "text": "true"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(5,8)..(5,31)]",
+                        "name": "Annotation",
+                        "attributes": {
+                            "Term": {
+                                "type": "attribute",
+                                "name": "Term",
+                                "value": "UI.Hidden",
+                                "valueRange": "[(5,8)..(5,21)]"
+                            },
+                            "Qualifier": {
+                                "type": "attribute",
+                                "name": "Qualifier",
+                                "value": "second",
+                                "valueRange": "[(5,23)..(5,29)]"
+                            }
+                        },
+                        "contentRange": "[(5,30)..(5,31)]",
+                        "content": []
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(6,8)..(6,33)]",
+                        "name": "Annotation",
+                        "attributes": {
+                            "Term": {
+                                "type": "attribute",
+                                "name": "Term",
+                                "value": "UI.Hidden",
+                                "valueRange": "[(6,8)..(6,27)]"
+                            },
+                            "Qualifier": {
+                                "type": "attribute",
+                                "name": "Qualifier",
+                                "value": "third",
+                                "valueRange": "[(6,21)..(6,26)]"
+                            }
+                        },
+                        "contentRange": "[(6,28)..(6,33)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(6,29)..(6,33)]",
+                                "name": "Bool",
+                                "attributes": {},
+                                "contentRange": "[(6,29)..(6,33)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(6,29)..(6,33)]",
+                                        "text": "true"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

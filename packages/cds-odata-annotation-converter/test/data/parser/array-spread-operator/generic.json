@@ -1,0 +1,216 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(1,23)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.LineItem",
+                "valueRange": "[(1,4)..(1,12)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "a",
+                "valueRange": "[(1,14)..(1,15)]"
+            }
+        },
+        "contentRange": "[(1,17)..(1,23)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(1,18)..(1,23)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(1,19)..(1,22)]",
+                "content": []
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(2,4)..(2,42)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.LineItem",
+                "valueRange": "[(2,4)..(2,12)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "b",
+                "valueRange": "[(2,14)..(2,15)]"
+            }
+        },
+        "contentRange": "[(2,17)..(2,42)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(2,18)..(2,42)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(2,19)..(2,41)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(2,24)..(2,41)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(2,25)..(2,40)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(2,26)..(2,39)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(2,26)..(2,31)]"
+                                    }
+                                },
+                                "contentRange": "[(2,32)..(2,39)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(2,33)..(2,39)]",
+                                        "name": "Path",
+                                        "attributes": {},
+                                        "contentRange": "[(2,33)..(2,39)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(2,33)..(2,39)]",
+                                                "text": "valueB",
+                                                "fragmentRanges": ["[(2,33)..(2,39)]"]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(3,4)..(3,61)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.LineItem",
+                "valueRange": "[(3,4)..(3,12)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "c",
+                "valueRange": "[(3,14)..(3,15)]"
+            }
+        },
+        "contentRange": "[(3,17)..(3,61)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(3,18)..(3,61)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(3,19)..(3,60)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(3,43)..(3,60)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(3,44)..(3,59)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(3,45)..(3,58)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(3,45)..(3,50)]"
+                                    }
+                                },
+                                "contentRange": "[(3,51)..(3,58)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(3,52)..(3,58)]",
+                                        "name": "Path",
+                                        "attributes": {},
+                                        "contentRange": "[(3,52)..(3,58)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(3,52)..(3,58)]",
+                                                "text": "valueB",
+                                                "fragmentRanges": ["[(3,52)..(3,58)]"]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(4,4)..(4,39)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.SelectionFields",
+                "valueRange": "[(4,4)..(4,19)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "a",
+                "valueRange": "[(4,21)..(4,22)]"
+            }
+        },
+        "contentRange": "[(4,24)..(4,39)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(4,26)..(4,39)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(4,27)..(4,38)]",
+                "content": []
+            }
+        ]
+    }
+]

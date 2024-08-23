@@ -28,9 +28,8 @@ module.exports = function (config) {
     "contents": "{
   \\"name\\": \\"myui5lib\\",
   \\"version\\": \\"1.0.0\\",
-  \\"private\\": true,
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^3.9.1\\",
     \\"karma\\": \\"6.3.17\\",
     \\"karma-chrome-launcher\\": \\"^3.1.1\\",
     \\"karma-cli\\": \\"^2.0.0\\",
@@ -583,28 +582,22 @@ module.exports = function (config) {
     "contents": "{
   \\"name\\": \\"myui5tslib113\\",
   \\"version\\": \\"1.0.0\\",
-  \\"private\\": true,
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^3.9.1\\",
     \\"karma\\": \\"^6.3.17\\",
     \\"karma-chrome-launcher\\": \\"^3.1.1\\",
     \\"karma-cli\\": \\"^2.0.0\\",
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@babel/cli\\": \\"^7.17.6\\",
-    \\"@babel/core\\": \\"^7.17.8\\",
-    \\"@babel/preset-env\\": \\"^7.16.11\\",
-    \\"@babel/preset-typescript\\": \\"^7.16.7\\",
     \\"@sapui5/types\\": \\"1.113.0\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
-    \\"babel-preset-transform-ui5\\": \\"^7.0.5\\",
-    \\"eslint\\": \\"^7.32.0\\",
+    \\"eslint\\": \\"^8.57.0\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\"
+    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
   },
   \\"scripts\\": {
     \\"build\\": \\"run-p -l build-app build-interface\\",
@@ -618,31 +611,6 @@ module.exports = function (config) {
   }
 }
 ",
-    "state": "modified",
-  },
-  "com.sap.myui5tslib113/src/.babelrc.json": Object {
-    "contents": "{
-    \\"presets\\": [
-        \\"@babel/preset-env\\",
-        [
-            \\"transform-ui5\\",
-            {
-                \\"overridesToOverride\\": true
-            }
-        ],
-        \\"@babel/preset-typescript\\"
-    ],
-    \\"plugins\\": [
-        \\"transform-remove-console\\",
-        [
-            \\"transform-async-to-promises\\",
-            {
-                \\"inlineHelpers\\": true
-            }
-        ]
-    ],
-    \\"sourceMaps\\": true
-}",
     "state": "modified",
   },
   "com.sap.myui5tslib113/src/com/sap/myui5tslib113/.library": Object {
@@ -763,7 +731,7 @@ export default class Example extends Control {
 
 	onclick = () => {
 		this.firePress();
-	}
+	};
 }",
     "state": "modified",
   },
@@ -1182,6 +1150,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -1190,6 +1160,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },
@@ -1231,28 +1203,22 @@ module.exports = function (config) {
     "contents": "{
   \\"name\\": \\"myui5tslib\\",
   \\"version\\": \\"1.0.0\\",
-  \\"private\\": true,
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^3.9.1\\",
     \\"karma\\": \\"^6.3.17\\",
     \\"karma-chrome-launcher\\": \\"^3.1.1\\",
     \\"karma-cli\\": \\"^2.0.0\\",
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@babel/cli\\": \\"^7.17.6\\",
-    \\"@babel/core\\": \\"^7.17.8\\",
-    \\"@babel/preset-env\\": \\"^7.16.11\\",
-    \\"@babel/preset-typescript\\": \\"^7.16.7\\",
     \\"@sapui5/ts-types-esm\\": \\"1.102.19\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
-    \\"babel-preset-transform-ui5\\": \\"^7.0.5\\",
-    \\"eslint\\": \\"^7.32.0\\",
+    \\"eslint\\": \\"^8.57.0\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\"
+    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
   },
   \\"scripts\\": {
     \\"build\\": \\"run-p -l build-app build-interface\\",
@@ -1266,31 +1232,6 @@ module.exports = function (config) {
   }
 }
 ",
-    "state": "modified",
-  },
-  "com.sap.myui5tslib/src/.babelrc.json": Object {
-    "contents": "{
-    \\"presets\\": [
-        \\"@babel/preset-env\\",
-        [
-            \\"transform-ui5\\",
-            {
-                \\"overridesToOverride\\": true
-            }
-        ],
-        \\"@babel/preset-typescript\\"
-    ],
-    \\"plugins\\": [
-        \\"transform-remove-console\\",
-        [
-            \\"transform-async-to-promises\\",
-            {
-                \\"inlineHelpers\\": true
-            }
-        ]
-    ],
-    \\"sourceMaps\\": true
-}",
     "state": "modified",
   },
   "com.sap.myui5tslib/src/com/sap/myui5tslib/.library": Object {
@@ -1411,7 +1352,7 @@ export default class Example extends Control {
 
 	onclick = () => {
 		this.firePress();
-	}
+	};
 }",
     "state": "modified",
   },
@@ -1830,6 +1771,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -1838,6 +1781,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },

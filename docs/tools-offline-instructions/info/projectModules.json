@@ -1,0 +1,105 @@
+{
+    "@babel/eslint-parser": [
+        "7.14.7"
+    ],
+    "@sap-ux/eslint-plugin-fiori-tools": [
+        "^0.4.0"
+    ],
+    "@sap-ux/ui5-middleware-fe-mockserver": [
+        "2"
+    ],
+    "@sap/eslint-plugin-ui5-jsdocs": [
+        "2.0.5"
+    ],
+    "@sap/ui5-builder-webide-extension": [
+        "^1.1.8"
+    ],
+    "@sap/ux-specification": [
+        "1.120.8",
+        "1.71.106",
+        "1.84.86",
+        "1.96.60",
+        "1.102.39",
+        "1.108.27"
+    ],
+    "@sap/ux-ui5-tooling": [
+        "1"
+    ],
+    "@sapui5/ts-types": [
+        "~1.108.0"
+    ],
+    "@sapui5/ts-types-esm": [
+        "~1.108.0"
+    ],
+    "@sapui5/types": [
+        "1.119.0"
+    ],
+    "@typescript-eslint/eslint-plugin": [
+        "^7.1.1"
+    ],
+    "@typescript-eslint/parser": [
+        "^7.1.1"
+    ],
+    "@ui5/cli": [
+        "^3.0.0",
+        "^3.9.1",
+        "^2.11.1"
+    ],
+    "@ui5/fs": [
+        "^2.0.6"
+    ],
+    "@ui5/logger": [
+        "^2.0.1"
+    ],
+    "@ui5/ts-interface-generator": [
+        "^0.8.1"
+    ],
+    "eslint": [
+        "8.57.0",
+        "^8.57.0"
+    ],
+    "eslint-plugin-fiori-custom": [
+        "2.6.7"
+    ],
+    "karma": [
+        "6.3.17",
+        "^6.3.17"
+    ],
+    "karma-chrome-launcher": [
+        "^3.1.1"
+    ],
+    "karma-cli": [
+        "^2.0.0"
+    ],
+    "karma-ui5": [
+        "^3.0.3"
+    ],
+    "mbt": [
+        "^1.2.18"
+    ],
+    "npm-run-all": [
+        "^4.1.5"
+    ],
+    "pm2": [
+        "^5.3.0"
+    ],
+    "rimraf": [
+        "^3.0.2",
+        "3.0.2"
+    ],
+    "sqlite3": [
+        "^5"
+    ],
+    "typescript": [
+        "^5.1.6"
+    ],
+    "ui5-task-flatten-library": [
+        "0.2.5"
+    ],
+    "ui5-task-zipper": [
+        "^0.5.0"
+    ],
+    "ui5-tooling-transpile": [
+        "^3.3.7"
+    ]
+}

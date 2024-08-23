@@ -67,6 +67,24 @@ const urlServiceTypeToText = (urlServiceType: UrlServiceType): string => {
     }
     return text;
 };
+/**
+ * Writing table in markdown format.
+ *
+ * @param {Array<Array<string>>} table - Array representing table.
+ * @param {string} result - Result that will hold the generated markdown content.
+ * @returns {string} The markdown formatted string representing the table.
+ */
+const writeTableMarkdown = (table: Array<Array<string>>, result: string): string => {
+    if (table.length > 0) {
+        const header = table.shift();
+        result += `|${header.join('|')}|\n`;
+        result += `|${'--|'.repeat(header.length)}\n`;
+        for (const row of table) {
+            result += `|${row.join('|')}|\n`;
+        }
+    }
+    return result;
+};
 
 /**
  * Return a markdown writer objbect that allows to add captions, text, tables, etc.
@@ -95,14 +113,12 @@ function getMarkdownWriter(): MarkdownWriter {
             result += `\n<sub>${text}</sub>\n`;
         },
         addTable: (table: Array<Array<string>>): void => {
-            if (table.length > 0) {
-                const header = table.shift();
-                result += `|${header.join('|')}|\n`;
-                result += `|${'--|'.repeat(header.length)}\n`;
-                for (const row of table) {
-                    result += `|${row.join('|')}|\n`;
-                }
-            }
+            result = writeTableMarkdown(table, result);
+        },
+        addTableInDropdown: (description: string, table: Array<Array<string>>): void => {
+            result += `<details>\n<summary>${description}</summary>\n\n`;
+            result = writeTableMarkdown(table, result);
+            result += `\n</details>\n`;
         },
         toString: (): string => result
     };
@@ -303,7 +319,7 @@ function writeDestinations(writer: MarkdownWriter, destinations: Endpoint[] = []
             .sort((a, b) => a.Name.localeCompare(b.Name, undefined, { numeric: true, caseFirst: 'lower' }))
             .map((d) => Array.from(destinationTableFields.keys()).map((f) => d[f]));
         table.unshift(Array.from(destinationTableFields.values()));
-        writer.addTable(table);
+        writer.addTableInDropdown(t('markdownText.showDestinations'), table);
     } else {
         writer.addLine(t('markdownText.noDestinations'));
     }
@@ -349,6 +365,8 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
         writeDestinationResults(writer, results.endpointResults, results.endpoints);
     }
 
+    writeMessages(writer, results.messages);
+
     if (results.requestedChecks?.includes(Check.Destinations)) {
         writeDestinations(writer, results.endpoints);
     }
@@ -363,8 +381,6 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
     if (results.requestedChecks?.includes(Check.Environment)) {
         writeEnvironment(writer, results.environment);
     }
-
-    writeMessages(writer, results.messages);
 
     writer.addSub(
         `${t('markdownText.createdAt')} ${new Date().toISOString().replace('T', ' ').substring(0, 19)} (UTC)`

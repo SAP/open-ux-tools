@@ -109,6 +109,7 @@ describe('Defaults', () => {
               "entityConfig": Object {
                 "mainEntityName": "",
               },
+              "tableType": "ResponsiveTable",
             }
         `);
     });

@@ -35,7 +35,7 @@ export class UIHighlightMenuOption extends React.Component<UIHighlightMenuOption
                 fnAddPart(<span key={'text-' + startIndex}>{text.substring(startIndex, index)}</span>);
                 fnAddPart(
                     <span className="ts-Menu-option--highlighted" key={'highlight-' + index}>
-                        {text.substr(index, chars)}
+                        {text.substring(index, index + chars)}
                     </span>
                 );
                 startIndex = index + chars;

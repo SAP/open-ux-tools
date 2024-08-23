@@ -1,0 +1,4 @@
+{
+    "cds": {},
+    "sapux": ["apps/one", "apps\\two"]
+}

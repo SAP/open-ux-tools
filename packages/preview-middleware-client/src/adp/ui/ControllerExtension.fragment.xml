@@ -1,0 +1,51 @@
+<Dialog id="controllerExtensionDialog"  
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form" 
+    title="Extend With Controller" 
+    contentWidth="450px" 
+    class="sapUiRTABorder">
+    <content>
+        <f:SimpleForm
+            editable="true"
+            layout="ResponsiveGridLayout"
+            labelSpanS="4"
+            singleContainerFullSize="false">
+            <f:content>
+                <Label text="Controller Name" />
+                <Input 
+                    description=".js" 
+                    value="{/newControllerName}" 
+                    liveChange="onControllerNameInputChange">
+                </Input>
+            </f:content>
+        </f:SimpleForm>
+        <f:SimpleForm
+            editable="true"
+            layout="ResponsiveGridLayout"
+            labelSpanS="12"
+            visible="false"
+            singleContainerFullSize="false">
+            <f:content>
+                <Label text="An existing controller extension has been found. Please use the previously created extension controller" />
+                <Text text="{/controllerPathFromRoot}" />
+            </f:content>
+        </f:SimpleForm>
+    </content>
+    <beginButton>
+        <Button 
+            id="createDialogBtn" 
+            text="Create"
+            press="onCreateBtnPress"
+            enabled="false"
+            type="Emphasized" />
+    </beginButton>
+    <endButton>
+        <Button 
+            id="closeDialogBtn" 
+            text="Cancel"
+            press="handleDialogClose"
+            type="Reject" />
+    </endButton>
+</Dialog>

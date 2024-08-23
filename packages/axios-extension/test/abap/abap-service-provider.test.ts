@@ -73,12 +73,30 @@ describe('AbapServiceProvider', () => {
 
     describe('isS4Cloud', () => {
         test('S/4Cloud system', async () => {
+            const ato = {
+                tenantType: TenantType.Customer,
+                'developmentPackage': 'TEST_XYZ_DEFAULT',
+                'developmentPrefix': 'XYZ_',
+                'isConfigured': true,
+                'isExtensibilityDevelopmentSystem': true,
+                'isManagedExtensibilityActive': false,
+                'isNotificationAllowed': true,
+                'isPrefixNamespace': false,
+                'isTransportRequestRequired': false,
+                'operationsType': 'C',
+                'sandboxPackage': 'TEST_XYZ_DEFAULT',
+                'sandboxPrefix': 'XYZ_',
+                'tenantRole': 7,
+                'transportationMode': 'COL'
+            };
             nock(server)
                 .get(AdtServices.DISCOVERY)
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .get(AdtServices.ATO_SETTINGS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
-            expect(await createForAbap(config).isS4Cloud()).toBe(true);
+            const abapSrvProvider = await createForAbap(config);
+            expect(await abapSrvProvider.isS4Cloud()).toBe(true);
+            expect(await abapSrvProvider.getAtoInfo()).toStrictEqual(ato);
         });
 
         test('On premise system', async () => {
@@ -92,8 +110,13 @@ describe('AbapServiceProvider', () => {
 
         test('No request if known', async () => {
             const provider = createForAbap(config);
-            provider.s4Cloud = false;
-            expect(await provider.isS4Cloud()).toBe(provider.s4Cloud);
+            nock(server)
+                .get(AdtServices.DISCOVERY)
+                .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+                .get(AdtServices.ATO_SETTINGS)
+                .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
+            await provider.isS4Cloud();
+            expect(await provider.isS4Cloud()).toBe(true);
         });
 
         test('Request failed', async () => {
@@ -107,29 +130,34 @@ describe('AbapServiceProvider', () => {
     });
 
     describe('catalog', () => {
+        beforeEach(() => {
+            nock(server)
+                .get(AdtServices.DISCOVERY)
+                .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+                .get(AdtServices.ATO_SETTINGS)
+                .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsNotS4C.xml'));
+        });
+
         test('V2', () => {
             const provider = createForAbap(config);
-            provider.s4Cloud = false;
 
             const catalog = provider.catalog(ODataVersion.v2);
             expect(catalog).toBeDefined();
             expect(catalog.defaults.baseURL).toBe(`${server}${V2CatalogService.PATH}`);
-            expect(provider.catalog(ODataVersion.v2)).toEqual(catalog);
+            expect(provider.catalog(ODataVersion.v2).services).toEqual(catalog.services);
         });
 
         test('V4', () => {
             const provider = createForAbap(config);
-            provider.s4Cloud = false;
 
             const catalog = provider.catalog(ODataVersion.v4);
             expect(catalog).toBeDefined();
             expect(catalog.defaults.baseURL).toBe(`${server}${V4CatalogService.PATH}`);
-            expect(provider.catalog(ODataVersion.v4)).toEqual(catalog);
+            expect(provider.catalog(ODataVersion.v4).services).toEqual(catalog.services);
         });
 
         test('Invalid version', async () => {
             const provider = createForAbap(config);
-            provider.s4Cloud = false;
             try {
                 provider.catalog('v9' as ODataVersion);
                 fail('Error should have been thrown');

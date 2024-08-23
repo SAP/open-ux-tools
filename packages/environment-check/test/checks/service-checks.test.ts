@@ -2,11 +2,13 @@ import {
     checkAtoCatalog,
     checkUi5AbapRepository,
     checkTransportRequests,
-    checkCatalogServices
+    checkCatalogServices,
+    getServiceProvider
 } from '../../src/checks/service-checks';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { Severity } from '../../src/types';
 import type { AxiosError } from 'axios';
+import { t } from '../../src/i18n';
 
 describe('Catalog service tests, function checkCatalogServices()', () => {
     test('Returns v2 and v4 services succesfully', async () => {
@@ -420,5 +422,54 @@ describe('Test service check functions', () => {
         expect(transportRequestResult.messages.length).toBe(2);
         expect(transportRequestResult.messages[0].severity).toBe(Severity.Error);
         expect(transportRequestResult.messages[1].severity).toBe(Severity.Debug);
+    });
+
+    test('checkTransportRequests 403', async () => {
+        const getAdtService = jest.fn();
+        const axiosError = (status: 403) => {
+            return {
+                isAxiosError: true,
+                response: { status }
+            };
+        };
+
+        getAdtService.mockRejectedValueOnce(axiosError(403));
+
+        const abapServiceProvider = {
+            getAdtService: getAdtService
+        } as unknown as AbapServiceProvider;
+
+        // Test execution
+        const transportRequestResult = await checkTransportRequests(abapServiceProvider);
+
+        // Result check
+        expect(transportRequestResult.isTransportRequests).toBe(false);
+        expect(transportRequestResult.messages.length).toBe(3);
+        expect(transportRequestResult.messages[1].severity).toBe(Severity.Warning);
+        expect(transportRequestResult.messages[1].text).toBe(t('warning.guidedAnswersLink'));
+    });
+
+    test('getServiceProvider (abap on premise)', () => {
+        const endpoint = {
+            Name: 'ABAP_ON_PREM_SYSTEM',
+            Url: 'https://mockurl:8000',
+            Client: '001',
+            Scp: false,
+            Credentials: {
+                username: 'mockUser',
+                password: 'mockPassword'
+            }
+        };
+        const provider = getServiceProvider(endpoint);
+        expect(provider.defaults.auth).toEqual({ username: 'mockUser', password: 'mockPassword' });
+        expect(provider).toEqual(
+            expect.objectContaining({
+                defaults: expect.objectContaining({
+                    params: {
+                        'sap-client': '001'
+                    }
+                })
+            })
+        );
     });
 });

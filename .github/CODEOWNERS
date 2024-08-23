@@ -3,6 +3,12 @@
 # Module: cds-odata-annotation-parser
 /packages/cds-annotation-parser/ @SAP/ux-tools-annotations
 
+# Module: cds-odata-annotation-converter
+/packages/cds-odata-annotation-converter/ @SAP/ux-tools-annotations
+
+# Module: i18n
+/packages/i18n/ @SAP/ux-tools-i18n
+
 # Module: create
 /packages/create/ @SAP/ux-tools-create
 
@@ -42,6 +48,9 @@
 # Module: ui-components
 /packages/ui-components/ @SAP/ux-tools-ui-components
 
+# Module: ui-prompting
+/packages/ui-prompting/ @SAP/ux-tools-ui-components
+
 # Module: ui5-application-writer
 /packages/ui5-application-writer/ @SAP/ux-tools-ui5-application-writer
 
@@ -63,6 +72,12 @@
 # Module: preview-middleware-client
 /packages/preview-middleware-client/ @SAP/ux-tools-middlewares-and-tasks
 
+# Module: serve-static-middleware
+/packages/serve-static-middleware/ @SAP/ux-tools-middlewares-and-tasks
+
+# Module: reload-middleware
+/packages/reload-middleware/ @SAP/ux-tools-middlewares-and-tasks
+
 # Module: adp-tooling
 /packages/adp-tooling/ @SAP/ux-tools-adp
 
@@ -83,6 +98,15 @@
 
 # Module: odata-entity-model
 /packages/odata-entity-model/ @SAP/ux-tools-annotations
+
+# Module: fiori-annotation-api
+/packages/fiori-annotation-api/ @SAP/ux-tools-annotations
+
+# Module: fiori-annotation-api
+/packages/annotation-generator/ @SAP/ux-tools-annotations
+
+# Module: text-document-utils
+/packages/text-document-utils/ @SAP/ux-tools-annotations
 
 # Admin
 /.github/ @SAP/ux-tools-admin

@@ -1,0 +1,56 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(4,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Badge",
+                "valueRange": "[(1,4)..(1,9)]"
+            }
+        },
+        "contentRange": "[(1,10)..(4,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(1,11)..(4,5)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(1,12)..(4,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(2,8)..(2,11)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "AAA",
+                                "valueRange": "[(2,8)..(2,11)]"
+                            }
+                        },
+                        "content": []
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(3,8)..(4,4)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "BB",
+                                "valueRange": "[(3,8)..(3,10)]"
+                            }
+                        },
+                        "contentRange": "[(3,11)..(4,4)]",
+                        "content": []
+                    }
+                ]
+            }
+        ]
+    }
+]

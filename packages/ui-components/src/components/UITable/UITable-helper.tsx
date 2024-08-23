@@ -90,7 +90,7 @@ export function getCellFromCoords(rowIdx: number, columnKey: string, columns: UI
         `.ms-DetailsList .ms-DetailsList-contentWrapper .ms-List-page .ms-DetailsRow[data-item-index="${rowIdx || 0}"]`
     );
     const cols = row?.querySelectorAll('.ms-DetailsRow-cell');
-    return cols && cols.length && cols[selectedIdx];
+    return cols?.length && cols[selectedIdx];
 }
 
 // manual workaround due to the lack of API for selecting columns
@@ -109,7 +109,7 @@ export function scrollToColumn(
     addOneToColIndex = false
 ): void {
     const sidebar = document.querySelector('.data-editor__sidebar');
-    const sidebarWidth = (sidebar?.getBoundingClientRect().width || 0) + (addOneToColIndex ? 20 : 0);
+    const sidebarWidth = (sidebar?.getBoundingClientRect().width ?? 0) + (addOneToColIndex ? 20 : 0);
     const scrollContainer = document.querySelector('.ms-ScrollablePane--contentContainer');
     const cell = getCellFromCoords(selectedRow, columnKey, columns, addOneToColIndex);
     const box = cell && cell.getBoundingClientRect();
@@ -126,7 +126,7 @@ export function scrollToColumn(
  * @param {number} idx
  * @param {IDetailsList | null} table
  */
-export function scrollToRow(idx = 0, table: IDetailsList | null) {
+export function scrollToRow(idx = 0, table: IDetailsList | null = null) {
     if (!table) {
         return;
     }

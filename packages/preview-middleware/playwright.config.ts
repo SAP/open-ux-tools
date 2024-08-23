@@ -36,6 +36,7 @@ const config: PlaywrightTestConfig = {
         }
     ],
     /* 5 min for npm i + 30000 ms default timeout */
-    timeout
+    timeout,
+    globalSetup: require.resolve('./test/integration/utils/global-setup')
 };
 export default defineConfig(config);

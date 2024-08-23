@@ -309,171 +309,173 @@ describe('getDerivedTypeNames', () => {
 it('getComplexType(UI.DataFieldAbstract)', () => {
     // Expect
     expect(vocabularyService.getComplexType(namespace + '.DataFieldAbstract')).toMatchInlineSnapshot(`
-        Object {
-          "baseTypes": Array [],
-          "constraints": Object {
-            "applicableTerms": Array [
-              "com.sap.vocabularies.UI.v1.Hidden",
-              "com.sap.vocabularies.UI.v1.Importance",
-              "com.sap.vocabularies.UI.v1.PartOfPreview",
-              "com.sap.vocabularies.HTML5.v1.CssDefaults",
-            ],
-          },
-          "description": "Elementary building block that represents a piece of data and/or allows triggering an action",
-          "isAbstract": true,
-          "kind": "ComplexType",
-          "longDescription": "By using the applicable terms UI.Hidden, UI.Importance or HTML5.CssDefaults, the visibility, the importance and
-                  and the default css settings (as the width) of the data field can be influenced. ",
-          "name": "com.sap.vocabularies.UI.v1.DataFieldAbstract",
-          "properties": Map {
-            "Label" => Object {
-              "constraints": Object {
-                "isLanguageDependent": true,
-              },
-              "description": "A short, human-readable text suitable for labels and captions in UIs",
-              "facets": Object {
-                "isNullable": true,
-              },
-              "isCollection": false,
-              "kind": "Property",
-              "name": "Label",
-              "type": "Edm.String",
-            },
-            "Criticality" => Object {
-              "description": "Criticality of the data field value",
-              "facets": Object {
-                "isNullable": true,
-              },
-              "isCollection": false,
-              "kind": "Property",
-              "name": "Criticality",
-              "type": "com.sap.vocabularies.UI.v1.CriticalityType",
-            },
-            "CriticalityRepresentation" => Object {
-              "description": "Decides if criticality is visualized in addition by means of an icon",
-              "facets": Object {
-                "isNullable": true,
-              },
-              "isCollection": false,
-              "kind": "Property",
-              "name": "CriticalityRepresentation",
-              "type": "com.sap.vocabularies.UI.v1.CriticalityRepresentationType",
-            },
-            "IconUrl" => Object {
-              "description": "Optional icon",
-              "facets": Object {
-                "isNullable": true,
-              },
-              "isCollection": false,
-              "kind": "Property",
-              "name": "IconUrl",
-              "type": "Edm.String",
-            },
-          },
-        }
-    `);
+Object {
+  "baseTypes": Array [],
+  "constraints": Object {
+    "applicableTerms": Array [
+      "com.sap.vocabularies.UI.v1.Hidden",
+      "com.sap.vocabularies.UI.v1.Importance",
+      "com.sap.vocabularies.UI.v1.PartOfPreview",
+      "com.sap.vocabularies.HTML5.v1.CssDefaults",
+      "com.sap.vocabularies.Common.v1.FieldControl",
+    ],
+  },
+  "description": "Elementary building block that represents a piece of data and/or allows triggering an action",
+  "isAbstract": true,
+  "kind": "ComplexType",
+  "longDescription": "By using the applicable terms UI.Hidden, UI.Importance or HTML5.CssDefaults, the visibility, the importance and
+          and the default css settings (as the width) of the data field can be influenced. ",
+  "name": "com.sap.vocabularies.UI.v1.DataFieldAbstract",
+  "properties": Map {
+    "Label" => Object {
+      "constraints": Object {
+        "isLanguageDependent": true,
+      },
+      "description": "A short, human-readable text suitable for labels and captions in UIs",
+      "facets": Object {
+        "isNullable": true,
+      },
+      "isCollection": false,
+      "kind": "Property",
+      "name": "Label",
+      "type": "Edm.String",
+    },
+    "Criticality" => Object {
+      "description": "Criticality of the data field value",
+      "facets": Object {
+        "isNullable": true,
+      },
+      "isCollection": false,
+      "kind": "Property",
+      "name": "Criticality",
+      "type": "com.sap.vocabularies.UI.v1.CriticalityType",
+    },
+    "CriticalityRepresentation" => Object {
+      "description": "Decides if criticality is visualized in addition by means of an icon",
+      "facets": Object {
+        "isNullable": true,
+      },
+      "isCollection": false,
+      "kind": "Property",
+      "name": "CriticalityRepresentation",
+      "type": "com.sap.vocabularies.UI.v1.CriticalityRepresentationType",
+    },
+    "IconUrl" => Object {
+      "description": "Optional icon",
+      "facets": Object {
+        "isNullable": true,
+      },
+      "isCollection": false,
+      "kind": "Property",
+      "name": "IconUrl",
+      "type": "Edm.String",
+    },
+  },
+}
+`);
 });
 
 it('getComplexType(UI.DataFieldForAction) derived type', () => {
     // Expect
     expect(vocabularyService.getComplexType(namespace + '.DataFieldForAction')).toMatchInlineSnapshot(`
-        Object {
-          "baseTypes": Array [
-            "com.sap.vocabularies.UI.v1.DataFieldForActionAbstract",
-            "com.sap.vocabularies.UI.v1.DataFieldAbstract",
-          ],
-          "constraints": Object {
-            "applicableTerms": Array [
-              "com.sap.vocabularies.UI.v1.Hidden",
-              "com.sap.vocabularies.UI.v1.Importance",
-              "com.sap.vocabularies.UI.v1.PartOfPreview",
-              "com.sap.vocabularies.HTML5.v1.CssDefaults",
-            ],
-          },
-          "description": "Triggers an OData action",
-          "kind": "ComplexType",
-          "longDescription": "The action is NOT tied to a data value (in contrast to [DataFieldWithAction](#DataFieldWithAction)).",
-          "name": "com.sap.vocabularies.UI.v1.DataFieldForAction",
-          "properties": Map {
-            "Action" => Object {
-              "description": "Name of an Action, Function, ActionImport, or FunctionImport in scope",
-              "isCollection": false,
-              "kind": "Property",
-              "name": "Action",
-              "type": "com.sap.vocabularies.UI.v1.ActionName",
-            },
-            "InvocationGrouping" => Object {
-              "description": "Expresses how invocations of this action on multiple instances should be grouped",
-              "facets": Object {
-                "isNullable": true,
-              },
-              "isCollection": false,
-              "kind": "Property",
-              "name": "InvocationGrouping",
-              "type": "com.sap.vocabularies.UI.v1.OperationGroupingType",
-            },
-            "Inline" => Object {
-              "defaultValue": false,
-              "description": "Action should be placed close to (or even inside) the visualized term",
-              "isCollection": false,
-              "kind": "Property",
-              "name": "Inline",
-              "type": "Edm.Boolean",
-            },
-            "Determining" => Object {
-              "defaultValue": false,
-              "description": "Determines whether the action completes a process step (e.g. approve, reject).",
-              "isCollection": false,
-              "kind": "Property",
-              "name": "Determining",
-              "type": "Edm.Boolean",
-            },
-            "Label" => Object {
-              "constraints": Object {
-                "isLanguageDependent": true,
-              },
-              "description": "A short, human-readable text suitable for labels and captions in UIs",
-              "facets": Object {
-                "isNullable": true,
-              },
-              "isCollection": false,
-              "kind": "Property",
-              "name": "Label",
-              "type": "Edm.String",
-            },
-            "Criticality" => Object {
-              "description": "Criticality of the data field value",
-              "facets": Object {
-                "isNullable": true,
-              },
-              "isCollection": false,
-              "kind": "Property",
-              "name": "Criticality",
-              "type": "com.sap.vocabularies.UI.v1.CriticalityType",
-            },
-            "CriticalityRepresentation" => Object {
-              "description": "Decides if criticality is visualized in addition by means of an icon",
-              "facets": Object {
-                "isNullable": true,
-              },
-              "isCollection": false,
-              "kind": "Property",
-              "name": "CriticalityRepresentation",
-              "type": "com.sap.vocabularies.UI.v1.CriticalityRepresentationType",
-            },
-            "IconUrl" => Object {
-              "description": "Optional icon",
-              "facets": Object {
-                "isNullable": true,
-              },
-              "isCollection": false,
-              "kind": "Property",
-              "name": "IconUrl",
-              "type": "Edm.String",
-            },
-          },
-        }
-    `);
+Object {
+  "baseTypes": Array [
+    "com.sap.vocabularies.UI.v1.DataFieldForActionAbstract",
+    "com.sap.vocabularies.UI.v1.DataFieldAbstract",
+  ],
+  "constraints": Object {
+    "applicableTerms": Array [
+      "com.sap.vocabularies.UI.v1.Hidden",
+      "com.sap.vocabularies.UI.v1.Importance",
+      "com.sap.vocabularies.UI.v1.PartOfPreview",
+      "com.sap.vocabularies.HTML5.v1.CssDefaults",
+      "com.sap.vocabularies.Common.v1.FieldControl",
+    ],
+  },
+  "description": "Triggers an OData action",
+  "kind": "ComplexType",
+  "longDescription": "The action is NOT tied to a data value (in contrast to [DataFieldWithAction](#DataFieldWithAction)).",
+  "name": "com.sap.vocabularies.UI.v1.DataFieldForAction",
+  "properties": Map {
+    "Action" => Object {
+      "description": "Name of an Action, Function, ActionImport, or FunctionImport in scope",
+      "isCollection": false,
+      "kind": "Property",
+      "name": "Action",
+      "type": "com.sap.vocabularies.UI.v1.ActionName",
+    },
+    "InvocationGrouping" => Object {
+      "description": "Expresses how invocations of this action on multiple instances should be grouped",
+      "facets": Object {
+        "isNullable": true,
+      },
+      "isCollection": false,
+      "kind": "Property",
+      "name": "InvocationGrouping",
+      "type": "com.sap.vocabularies.UI.v1.OperationGroupingType",
+    },
+    "Inline" => Object {
+      "defaultValue": false,
+      "description": "Action should be placed close to (or even inside) the visualized term",
+      "isCollection": false,
+      "kind": "Property",
+      "name": "Inline",
+      "type": "Edm.Boolean",
+    },
+    "Determining" => Object {
+      "defaultValue": false,
+      "description": "Determines whether the action completes a process step (e.g. approve, reject).",
+      "isCollection": false,
+      "kind": "Property",
+      "name": "Determining",
+      "type": "Edm.Boolean",
+    },
+    "Label" => Object {
+      "constraints": Object {
+        "isLanguageDependent": true,
+      },
+      "description": "A short, human-readable text suitable for labels and captions in UIs",
+      "facets": Object {
+        "isNullable": true,
+      },
+      "isCollection": false,
+      "kind": "Property",
+      "name": "Label",
+      "type": "Edm.String",
+    },
+    "Criticality" => Object {
+      "description": "Criticality of the data field value",
+      "facets": Object {
+        "isNullable": true,
+      },
+      "isCollection": false,
+      "kind": "Property",
+      "name": "Criticality",
+      "type": "com.sap.vocabularies.UI.v1.CriticalityType",
+    },
+    "CriticalityRepresentation" => Object {
+      "description": "Decides if criticality is visualized in addition by means of an icon",
+      "facets": Object {
+        "isNullable": true,
+      },
+      "isCollection": false,
+      "kind": "Property",
+      "name": "CriticalityRepresentation",
+      "type": "com.sap.vocabularies.UI.v1.CriticalityRepresentationType",
+    },
+    "IconUrl" => Object {
+      "description": "Optional icon",
+      "facets": Object {
+        "isNullable": true,
+      },
+      "isCollection": false,
+      "kind": "Property",
+      "name": "IconUrl",
+      "type": "Edm.String",
+    },
+  },
+}
+`);
 });
 
 describe('getComplexTypeProperty()', () => {
@@ -589,26 +591,27 @@ describe('getDocumentation()', () => {
         expect(
             vocabularyService.getDocumentation('com.sap.vocabularies.UI.v1.DataFieldForAction', undefined, aliasInfo)
         ).toMatchInlineSnapshot(`
-            Array [
-              "**Kind:** ComplexType 
-            ",
-              "**Description:** Triggers an OData action 
-            ",
-              "**Long Description:** The action is NOT tied to a data value (in contrast to [DataFieldWithAction](#DataFieldWithAction)). 
-            ",
-              "",
-              "**BaseType:** SAPUI.DataFieldForActionAbstract 
-            ",
-              "**Nullable:** false 
-            ",
-              "**Applicable Terms:**  
-            SAPUI.Hidden  
-            SAPUI.Importance  
-            SAPUI.PartOfPreview  
-            HTML5.CssDefaults 
-            ",
-            ]
-        `);
+Array [
+  "**Kind:** ComplexType 
+",
+  "**Description:** Triggers an OData action 
+",
+  "**Long Description:** The action is NOT tied to a data value (in contrast to [DataFieldWithAction](#DataFieldWithAction)). 
+",
+  "",
+  "**BaseType:** SAPUI.DataFieldForActionAbstract 
+",
+  "**Nullable:** false 
+",
+  "**Applicable Terms:**  
+SAPUI.Hidden  
+SAPUI.Importance  
+SAPUI.PartOfPreview  
+HTML5.CssDefaults  
+Common.FieldControl 
+",
+]
+`);
     });
 
     it('Deprecated', () => {

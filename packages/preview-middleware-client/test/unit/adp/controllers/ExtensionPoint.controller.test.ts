@@ -1,3 +1,4 @@
+import type Dialog from 'sap/m/Dialog';
 import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
 import type JSONModel from 'sap/ui/model/json/JSONModel';
@@ -45,12 +46,12 @@ describe('ExtensionPoint', () => {
             );
 
             const openSpy = jest.fn();
-            extPoint.byId = jest.fn().mockReturnValue({
-                open: openSpy,
-                setEscapeHandler: jest.fn()
-            });
 
-            await extPoint.onInit();
+            await extPoint.setup({
+                open: openSpy,
+                setEscapeHandler: jest.fn(),
+                setModel: jest.fn()
+            } as unknown as Dialog);
 
             expect(openSpy).toHaveBeenCalledTimes(1);
         });
@@ -77,12 +78,12 @@ describe('ExtensionPoint', () => {
             );
 
             const openSpy = jest.fn();
-            extPoint.byId = jest.fn().mockReturnValue({
-                open: openSpy,
-                setEscapeHandler: jest.fn()
-            });
 
-            await extPoint.onInit();
+            await extPoint.setup({
+                open: openSpy,
+                setEscapeHandler: jest.fn(),
+                setModel: jest.fn()
+            } as unknown as Dialog);
 
             expect(openSpy).toHaveBeenCalledTimes(1);
         });
@@ -90,7 +91,7 @@ describe('ExtensionPoint', () => {
         test('throws error message when retrieving fragments fails', async () => {
             const errorMsg = 'Could not get fragments!';
             fetchMock.mockResolvedValue({
-                json: jest.fn().mockRejectedValue({ message: errorMsg }),
+                json: jest.fn().mockRejectedValue(new Error(errorMsg)),
                 text: jest.fn(),
                 ok: true
             });
@@ -103,17 +104,20 @@ describe('ExtensionPoint', () => {
                 'adp.extension.controllers.ExtensionPoint',
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
-                { name: 'ExtensionPoint1' } as ExtensionPointData
+                {
+                    name: 'ExtensionPoint1',
+                    info: [{ name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product', defaultContent: [{}] }]
+                } as ExtensionPointData
             );
 
             const openSpy = jest.fn();
-            extPoint.byId = jest.fn().mockReturnValue({
-                open: openSpy,
-                setEscapeHandler: jest.fn()
-            });
 
             try {
-                await extPoint.onInit();
+                await extPoint.setup({
+                    open: openSpy,
+                    setEscapeHandler: jest.fn(),
+                    setModel: jest.fn()
+                } as unknown as Dialog);
             } catch (e) {
                 expect(e.message).toBe(errorMsg);
             }
@@ -155,7 +159,6 @@ describe('ExtensionPoint', () => {
 
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue([]),
-                text: jest.fn().mockReturnValue('XML Fragment was created!'),
                 ok: true
             });
 
@@ -167,6 +170,7 @@ describe('ExtensionPoint', () => {
 
             expect(resolveSpy).toHaveBeenCalledWith({
                 extensionPointName,
+                fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
                 fragmentPath: 'fragments/Share.fragment.xml'
             });
         });
@@ -225,7 +229,7 @@ describe('ExtensionPoint', () => {
                 'adp.extension.controllers.ExtensionPoint',
                 {} as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
-                {} as unknown as ExtensionPointData
+                { info: [] } as unknown as ExtensionPointData
             );
 
             const setPropertySpy = jest.fn();

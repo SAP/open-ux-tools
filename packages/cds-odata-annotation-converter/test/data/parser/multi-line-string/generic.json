@@ -1,0 +1,217 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(15,1)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.HeaderInfo",
+                "valueRange": "[(0,0)..(0,13)]"
+            }
+        },
+        "contentRange": "[(0,15)..(15,1)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(0,16)..(15,1)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(0,17)..(15,0)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(1,4)..(4,5)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "Title",
+                                "valueRange": "[(1,4)..(1,9)]"
+                            }
+                        },
+                        "contentRange": "[(1,20)..(4,5)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(1,21)..(4,5)]",
+                                "name": "Record",
+                                "attributes": {
+                                    "Type": {
+                                        "type": "attribute",
+                                        "name": "Type",
+                                        "nameRange": "[(2,8)..(2,13)]",
+                                        "value": "UI.DataField",
+                                        "valueRange": "[(2,17)..(2,29)]"
+                                    }
+                                },
+                                "contentRange": "[(1,22)..(4,4)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(3,8)..(3,21)]",
+                                        "name": "PropertyValue",
+                                        "attributes": {
+                                            "Property": {
+                                                "type": "attribute",
+                                                "name": "Property",
+                                                "value": "Value",
+                                                "valueRange": "[(3,8)..(3,13)]"
+                                            }
+                                        },
+                                        "contentRange": "[(3,15)..(3,21)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(3,16)..(3,21)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(3,16)..(3,21)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(3,16)..(3,21)]",
+                                                        "text": "title",
+                                                        "fragmentRanges": ["[(3,16)..(3,21)]"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(5,4)..(12,5)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "Description",
+                                "valueRange": "[(5,4)..(5,15)]"
+                            }
+                        },
+                        "contentRange": "[(5,20)..(12,5)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(5,21)..(12,5)]",
+                                "name": "Record",
+                                "attributes": {
+                                    "Type": {
+                                        "type": "attribute",
+                                        "name": "Type",
+                                        "nameRange": "[(6,8)..(6,13)]",
+                                        "value": "UI.DataField",
+                                        "valueRange": "[(6,17)..(6,29)]"
+                                    }
+                                },
+                                "contentRange": "[(5,22)..(12,4)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(7,8)..(11,12)]",
+                                        "name": "PropertyValue",
+                                        "attributes": {
+                                            "Property": {
+                                                "type": "attribute",
+                                                "name": "Property",
+                                                "value": "Value",
+                                                "valueRange": "[(7,8)..(7,13)]"
+                                            }
+                                        },
+                                        "contentRange": "[(7,15)..(11,12)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(7,16)..(11,12)]",
+                                                "name": "String",
+                                                "attributes": {},
+                                                "contentRange": "[(7,16)..(11,12)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(7,16)..(11,12)]",
+                                                        "multilineType": "StripIndentation",
+                                                        "text": "\n            test \\u{0055}nicode escape sequences are possible,     \n              just like common escapes from JavaScript such as    \n                 \\r \\t \\n and more!\n         "
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(13,4)..(13,34)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "TypeNamePlural",
+                                "valueRange": "[(13,4)..(13,18)]"
+                            }
+                        },
+                        "contentRange": "[(13,20)..(13,34)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(13,21)..(13,34)]",
+                                "name": "String",
+                                "attributes": {},
+                                "contentRange": "[(13,21)..(13,34)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(13,21)..(13,34)]",
+                                        "multilineType": "KeepIndentation",
+                                        "text": "{i18n>test}"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(14,4)..(14,57)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "TypeName",
+                                "valueRange": "[(14,4)..(14,12)]"
+                            }
+                        },
+                        "contentRange": "[(14,20)..(14,57)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(14,21)..(14,57)]",
+                                "name": "String",
+                                "attributes": {},
+                                "contentRange": "[(14,21)..(14,57)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(14,21)..(14,57)]",
+                                        "multilineType": "KeepIndentation",
+                                        "text": "\\u{0055}nicode OK Emoji: \\u{1f197}"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

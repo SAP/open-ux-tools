@@ -21,7 +21,7 @@ export interface UIFlexibleTableActionProps {
  * @param {UIFlexibleTableActionProps} props
  * @returns { React.ReactElement}
  */
-export function UIFlexibleTableActionButton(props: UIFlexibleTableActionProps): React.ReactElement {
+export function UIFlexibleTableActionButton(props: Readonly<UIFlexibleTableActionProps>): React.ReactElement {
     return (
         <UIIconButton
             id={getTableActionButtonId(props.tableId, props.actionName)}

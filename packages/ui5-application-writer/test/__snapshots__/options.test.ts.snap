@@ -30,7 +30,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"testpackagename\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -43,10 +42,10 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
-    \\"eslint\\": \\"7.32.0\\",
+    \\"eslint\\": \\"8.57.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
     \\"@sapui5/ts-types\\": \\"~1.76.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.6.7\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\"
   },
@@ -72,7 +71,8 @@ archive.zip
             \\"@sapui5/ts-types\\"
         ]
     }
-}",
+}
+",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
@@ -88,6 +88,7 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.ushell
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
@@ -295,7 +296,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"testpackagename\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -332,6 +332,7 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.ushell
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
@@ -539,7 +540,6 @@ archive.zip
     "contents": "{
     \\"name\\": \\"testpackagename\\",
     \\"version\\": \\"0.0.1\\",
-    \\"private\\": true,
     \\"description\\": \\"Test App Description\\",
     \\"keywords\\": [
         \\"ui5\\",
@@ -573,6 +573,7 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.ushell
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
@@ -802,6 +803,23 @@ appDescription=Test App Description",
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -821,7 +839,7 @@ appDescription=Test App Description",
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -972,7 +990,9 @@ sap.registerComponentDependencyPaths(manifestUri)
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
                 // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                sap.ushell.Container.createRenderer(true).then(function (component) {
+                    component.placeAt(\\"content\\");
+                });
             });
         }
     });",
@@ -985,7 +1005,6 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
 "{
   \\"name\\": \\"testpackagename\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -999,11 +1018,11 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\"
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
@@ -1057,31 +1076,6 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
 
 exports[`UI5 templates option: \`typescript, npm modules and Fiori tools\` 1`] = `
 Object {
-  ".babelrc.json": Object {
-    "contents": "{
-    \\"presets\\": [
-        \\"@babel/preset-env\\",
-        [
-            \\"transform-ui5\\",
-            {
-                \\"overridesToOverride\\": true
-            }
-        ],
-        \\"@babel/preset-typescript\\"
-    ],
-    \\"plugins\\": [
-        \\"transform-remove-console\\",
-        [
-            \\"transform-async-to-promises\\",
-            {
-                \\"inlineHelpers\\": true
-            }
-        ]
-    ],
-    \\"sourceMaps\\": true
-}",
-    "state": "modified",
-  },
   ".eslintrc": Object {
     "contents": "{
     \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
@@ -1107,7 +1101,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"testpackagename\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -1121,11 +1114,11 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"ui5-tooling-modules\\": \\"^0.6.0\\"
   },
   \\"scripts\\": {
@@ -1184,6 +1177,7 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.ushell
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
@@ -1197,6 +1191,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
     - name: ui5-tooling-modules-middleware
@@ -1208,6 +1204,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
     - name: ui5-tooling-modules-task
       afterTask: replaceVersion
       configuration: {}
@@ -1242,6 +1240,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
     - name: ui5-tooling-modules-middleware
@@ -1253,6 +1253,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
     - name: ui5-tooling-modules-task
       afterTask: replaceVersion
       configuration: {}

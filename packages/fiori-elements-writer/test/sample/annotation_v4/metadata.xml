@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0"
+    xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+        <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="NotesComponent"
+            xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="RootEntity" EntityType="NotesComponent.RootEntity">
+                    <NavigationPropertyBinding Path="notes" Target="C_NoteBasicTPType"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="RootEntity"/>
+                </EntitySet>
+                <EntitySet Name="C_NoteBasicTPType" EntityType="NotesComponent.C_NoteBasicTPType">
+                    <NavigationPropertyBinding Path="Parent" Target="RootEntity"/>
+                </EntitySet>
+            </EntityContainer>
+            <EntityType Name="RootEntity">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="Title" Type="Edm.String"/>
+                <Property Name="Description" Type="Edm.String"/>
+                <Property Name="Requester" Type="Edm.String"/>
+                <Property Name="ProductGroup" Type="Edm.String"/>
+                <Property Name="Progress" Type="Edm.Int32"/>
+                <Property Name="Rating" Type="Edm.Int32"/>
+                <Property Name="Classification" Type="Edm.String"/>
+                <Property Name="NotesObjectID" Type="Edm.String"/>
+                <NavigationProperty Name="notes" Type="Collection(NotesComponent.C_NoteBasicTPType)" Partner="Parent"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="NotesComponent.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="NotesComponent.RootEntity"/>
+            </EntityType>
+            <EntityType Name="C_NoteBasicTPType">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="NoteBasicTitle" Type="Edm.String"/>
+                <Property Name="NoteBasicObjectNodeType" Type="Edm.String"/>
+                <Property Name="NoteBasicLanguage" Type="Edm.String"/>
+                <Property Name="NoteBasicType" Type="Edm.String"/>
+                <Property Name="NoteBasicContent" Type="Edm.String"/>
+                <Property Name="NoteBasicTypeMaximumLength" Type="Edm.Int32"/>
+                <Property Name="NoteBasicTypeMultipleNotes" Type="Edm.Boolean"/>
+                <Property Name="CreatedBy" Type="Edm.String"/>
+                <Property Name="CreatedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="ChangedBy" Type="Edm.String"/>
+                <Property Name="ChangedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <NavigationProperty Name="Parent" Type="NotesComponent.RootEntity" Partner="notes">
+                    <ReferentialConstraint Property="Parent_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="Parent_ID" Type="Edm.Int32"/>
+            </EntityType>
+            <EntityType Name="DraftAdministrativeData">
+                <Key>
+                    <PropertyRef Name="DraftUUID"/>
+                </Key>
+                <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+                <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+            </EntityType>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="NotesComponent.RootEntity"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="NotesComponent.RootEntity"/>
+            </Action>
+            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="NotesComponent.RootEntity"/>
+                <ReturnType Type="NotesComponent.RootEntity"/>
+            </Action>
+            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="NotesComponent.RootEntity"/>
+                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+                <ReturnType Type="NotesComponent.RootEntity"/>
+            </Action>
+            <Annotations Target="NotesComponent.RootEntity">
+                <Annotation Term="Common.SAPObjectNodeType">
+                    <Record Type="Common.SAPObjectNodeTypeType">
+                        <PropertyValue Property="Name" String="Demo Note"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.PresentationVariant">
+                    <Record Type="UI.PresentationVariantType">
+                        <PropertyValue Property="Visualizations">
+                            <Collection>
+                                <AnnotationPath>@UI.LineItem</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.SelectionFields">
+                    <Collection>
+                        <PropertyPath>ID</PropertyPath>
+                        <PropertyPath>Title</PropertyPath>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.HeaderInfo">
+                    <Record Type="UI.HeaderInfoType">
+                        <PropertyValue Property="TypeName" String="{i18n>RootEntity.TypeName}"/>
+                        <PropertyValue Property="TypeNamePlural" String="{i18n>RootEntity.TypeNamePlural}"/>
+                        <PropertyValue Property="TypeImageUrl" String="sap-icon://product"/>
+                        <PropertyValue Property="Title">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="Title"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="{i18n>InformationGeneral}"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#GeneralInformation"/>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="{i18n>InformationAdditional}"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#AdditionalInformation"/>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Notes"/>
+                            <PropertyValue Property="Target" AnnotationPath="notes/@UI.Note"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.DataPoint" Qualifier="Rating">
+                    <Record Type="UI.DataPointType">
+                        <PropertyValue Property="Value" Path="Rating"/>
+                        <PropertyValue Property="TargetValue" Int="5"/>
+                        <PropertyValue Property="Title" String="Rating"/>
+                        <PropertyValue Property="Visualization" EnumMember="UI.VisualizationType/Rating"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.DataPoint" Qualifier="Progress">
+                    <Record Type="UI.DataPointType">
+                        <PropertyValue Property="Value" Path="Progress"/>
+                        <PropertyValue Property="TargetValue" Int="100"/>
+                        <PropertyValue Property="Title" String="Progress"/>
+                        <PropertyValue Property="Visualization" EnumMember="UI.VisualizationType/Progress"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Chart" Qualifier="Progress">
+                    <Record Type="UI.ChartDefinitionType">
+                        <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut"/>
+                        <PropertyValue Property="Measures">
+                            <Collection>
+                                <PropertyPath>Progress</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Title" String="Progress"/>
+                        <PropertyValue Property="MeasureAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartMeasureAttributeType">
+                                    <PropertyValue Property="Measure" PropertyPath="Progress"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                                    <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#Progress"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="GeneralInformation">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Label" String="General Information"/>
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="Title"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="Requester"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="Description"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="AdditionalInformation">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Label" String="Product Information"/>
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="ProductGroup"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="Classification"/>
+                                </Record>
+                                <Record Type="UI.DataFieldForAnnotation">
+                                    <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#Progress"/>
+                                    <PropertyValue Property="Label" String="Progress"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Title"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="UI.DataFieldForAnnotation">
+                            <PropertyValue Property="Target" AnnotationPath="@UI.Chart#Progress"/>
+                            <PropertyValue Property="Label" String="Progress"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Description"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Classification"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Low"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Requester"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ProductGroup"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/>
+                        </Record>
+                        <Record Type="UI.DataFieldForAnnotation">
+                            <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#Rating"/>
+                            <PropertyValue Property="Label" String="Rating"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="NotesComponent.EntityContainer/RootEntity">
+                <Annotation Term="Common.DraftRoot">
+                    <Record Type="Common.DraftRootType">
+                        <PropertyValue Property="ActivationAction" String="NotesComponent.draftActivate"/>
+                        <PropertyValue Property="EditAction" String="NotesComponent.draftEdit"/>
+                        <PropertyValue Property="PreparationAction" String="NotesComponent.draftPrepare"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.PresentationVariant">
+                    <Record Type="UI.PresentationVariantType">
+                        <PropertyValue Property="Visualizations">
+                            <Collection>
+                                <AnnotationPath>@UI.LineItem</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.DeleteRestrictions">
+                    <Record Type="Capabilities.DeleteRestrictionsType">
+                        <PropertyValue Property="Deletable" Bool="true"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/ID">
+                <Annotation Term="Common.Label" String="Identifier"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/Title">
+                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                <Annotation Term="Common.Label" String="Product Title"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/Description">
+                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                <Annotation Term="Common.Label" String="Product Description"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/Requester">
+                <Annotation Term="Common.Label" String="Requester"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/ProductGroup">
+                <Annotation Term="Common.Label" String="Product Group"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/Progress">
+                <Annotation Term="Common.Label" String="Progress"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/Rating">
+                <Annotation Term="Common.Label" String="Rating"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/Classification">
+                <Annotation Term="Common.Label" String="Product Classification"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/NotesObjectID">
+                <Annotation Term="Common.SAPObjectNodeTypeReference" String="NoteBasic"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/IsActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/HasActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/HasDraftEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.RootEntity/DraftAdministrativeData">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.C_NoteBasicTPType">
+                <Annotation Term="UI.Note">
+                    <Record Type="UI.NoteType">
+                        <PropertyValue Property="Title" Path="NoteBasicTitle">
+                            <Annotation Term="UI.Hidden" Path="NoteBasicTypeHideTitle"/>
+                        </PropertyValue>
+                        <PropertyValue Property="Content" Path="NoteBasicContent"/>
+                        <PropertyValue Property="Type" Path="NoteBasicType"/>
+                        <PropertyValue Property="MaxLength" Path="NoteBasicTypeMaximumLength"/>
+                        <PropertyValue Property="MultipleNotes" Path="NoteBasicTypeMultipleNotes"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.Label" String="Notes"/>
+                <Annotation Term="Common.SAPObjectNodeType">
+                    <Record Type="Common.SAPObjectNodeTypeType">
+                        <PropertyValue Property="Name" String="NoteBasic"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="NotesComponent.C_NoteBasicTPType/ID">
+                <Annotation Term="Common.Label" String="Note Guid"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.C_NoteBasicTPType/NoteBasicContent">
+                <Annotation Term="Common.SAPObjectNodeTypeReference" Path="NoteBasicObjectNodeType"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.DraftAdministrativeData">
+                <Annotation Term="Common.Label" String="{i18n>Draft_DraftAdministrativeData}"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.DraftAdministrativeData/DraftUUID">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="{i18n>Draft_DraftUUID}"/>
+                <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.DraftAdministrativeData/CreationDateTime">
+                <Annotation Term="Common.Label" String="{i18n>Draft_CreationDateTime}"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.DraftAdministrativeData/CreatedByUser">
+                <Annotation Term="Common.Label" String="{i18n>Draft_CreatedByUser}"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.DraftAdministrativeData/DraftIsCreatedByMe">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsCreatedByMe}"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.DraftAdministrativeData/LastChangeDateTime">
+                <Annotation Term="Common.Label" String="{i18n>Draft_LastChangeDateTime}"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.DraftAdministrativeData/LastChangedByUser">
+                <Annotation Term="Common.Label" String="{i18n>Draft_LastChangedByUser}"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.DraftAdministrativeData/InProcessByUser">
+                <Annotation Term="Common.Label" String="{i18n>Draft_InProcessByUser}"/>
+            </Annotations>
+            <Annotations Target="NotesComponent.DraftAdministrativeData/DraftIsProcessedByMe">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsProcessedByMe}"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

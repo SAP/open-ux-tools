@@ -1,0 +1,5 @@
+{
+    "dependencies": {
+        "@sap/ux-ui5-tooling": "1"
+    }
+}

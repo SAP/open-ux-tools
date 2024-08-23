@@ -1,58 +1,60 @@
 {
-  "name": "@sap-ux/xml-odata-annotation-converter",
-  "description": "Converter for OData annotations in XML format.",
-  "version": "0.2.0",
-  "publisher": "SAPSE",
-  "author": "SAP SE",
-  "license": "Apache-2.0",
-  "main": "dist/index.js",
-  "scripts": {
-    "compile": "tsc --build",
-    "build": "npm-run-all clean compile",
-    "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo",
-    "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
-    "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
-    "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
-    "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
-    "lint:summary": "eslint . --ext .ts,.tsx -f summary",
-    "pre-commit": "lint-staged --quiet",
-    "test": "jest --maxWorkers=2",
-    "test:update": "node scripts/update-parser-fixtures.mjs",
-    "watch": "tsc  --build ./ -watch"
-  },
-  "files": [
-    "dist"
-  ],
-  "dependencies": {
-    "@sap-ux/odata-annotation-core": "workspace:*"
-  },
-  "devDependencies": {
-    "@sap-ux/odata-vocabularies": "workspace:*",
-    "@sap-ux/odata-annotation-core-types": "workspace:*",
-    "@xml-tools/ast": "5.0.5",
-    "@xml-tools/parser": "1.0.11",
-    "chevrotain": "7.1.1",
-    "npm-run-all": "4.1.5",
-    "typescript": "4.9.5"
-  },
-  "eslint-formatter-multiple": {
-    "formatters": [
-      {
-        "name": "stylish",
-        "output": "console"
-      },
-      {
-        "name": "json",
-        "output": "file",
-        "path": "reports/lint/eslint.json"
-      },
-      {
-        "name": "checkstyle",
-        "output": "file",
-        "path": "reports/lint/eslint.checkstyle.xml"
-      }
-    ]
-  }
+    "name": "@sap-ux/xml-odata-annotation-converter",
+    "description": "Converter for OData annotations in XML format.",
+    "version": "0.3.1",
+    "publisher": "SAPSE",
+    "author": "SAP SE",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "compile": "tsc --build",
+        "build": "npm-run-all clean compile",
+        "clean": "rimraf --glob coverage dist *.tsbuildinfo",
+        "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
+        "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
+        "lint": "eslint . --ext .ts,.tsx",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
+        "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
+        "lint:summary": "eslint . --ext .ts,.tsx -f summary",
+        "pre-commit": "lint-staged --quiet",
+        "test": "jest --maxWorkers=2",
+        "test:update": "node scripts/update-parser-fixtures.mjs",
+        "watch": "tsc  --build ./ -watch"
+    },
+    "files": [
+        "dist"
+    ],
+    "dependencies": {
+        "@sap-ux/odata-annotation-core": "workspace:*"
+    },
+    "devDependencies": {
+        "@sap-ux/odata-vocabularies": "workspace:*",
+        "@sap-ux/odata-annotation-core-types": "workspace:*",
+        "@xml-tools/ast": "5.0.5",
+        "@xml-tools/parser": "1.0.11",
+        "@types/prettier": "2.7.3",
+        "prettier": "2.5.1",
+        "chevrotain": "7.1.1",
+        "npm-run-all2": "6.2.0",
+        "typescript": "5.3.3"
+    },
+    "eslint-formatter-multiple": {
+        "formatters": [
+            {
+                "name": "stylish",
+                "output": "console"
+            },
+            {
+                "name": "json",
+                "output": "file",
+                "path": "reports/lint/eslint.json"
+            },
+            {
+                "name": "checkstyle",
+                "output": "file",
+                "path": "reports/lint/eslint.checkstyle.xml"
+            }
+        ]
+    }
 }

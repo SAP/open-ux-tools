@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.json",
   "include": [
     "../../types/ui5.d.ts",
+    "../../types/mem-fs-editor.d.ts",
     "src",
     "src/**/*.json"
   ],
@@ -14,6 +15,15 @@
       "path": "../adp-tooling"
     },
     {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../i18n"
+    },
+    {
       "path": "../logger"
     },
     {
@@ -24,6 +34,9 @@
     },
     {
       "path": "../store"
+    },
+    {
+      "path": "../ui5-info"
     }
   ]
 }

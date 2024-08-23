@@ -7,7 +7,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "lib": [
-      "es6",
+      "ES2022",
       "dom",
       "dom.iterable"
     ],
@@ -17,14 +17,23 @@
     "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "target": "ES6",
+    "target": "ES2022",
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "useUnknownInCatchVariables": false
   },
   "references": [
     {
+      "path": "packages/abap-deploy-config-inquirer"
+    },
+    {
+      "path": "packages/abap-deploy-config-writer"
+    },
+    {
       "path": "packages/adp-tooling"
+    },
+    {
+      "path": "packages/annotation-generator"
     },
     {
       "path": "packages/app-config-writer"
@@ -42,7 +51,16 @@
       "path": "packages/cap-config-writer"
     },
     {
+      "path": "packages/cards-editor-config-writer"
+    },
+    {
+      "path": "packages/cards-editor-middleware"
+    },
+    {
       "path": "packages/cds-annotation-parser"
+    },
+    {
+      "path": "packages/cds-odata-annotation-converter"
     },
     {
       "path": "packages/control-property-editor-common"
@@ -66,10 +84,37 @@
       "path": "packages/fe-fpm-writer"
     },
     {
+      "path": "packages/feature-toggle"
+    },
+    {
+      "path": "packages/fiori-annotation-api"
+    },
+    {
       "path": "packages/fiori-elements-writer"
     },
     {
       "path": "packages/fiori-freestyle-writer"
+    },
+    {
+      "path": "packages/fiori-generator-shared"
+    },
+    {
+      "path": "packages/guided-answers-helper"
+    },
+    {
+      "path": "packages/i18n"
+    },
+    {
+      "path": "packages/inquirer-common"
+    },
+    {
+      "path": "packages/jest-file-matchers"
+    },
+    {
+      "path": "packages/jest-runner-puppeteer"
+    },
+    {
+      "path": "packages/launch-config"
     },
     {
       "path": "packages/logger"
@@ -85,6 +130,9 @@
     },
     {
       "path": "packages/odata-entity-model"
+    },
+    {
+      "path": "packages/odata-service-inquirer"
     },
     {
       "path": "packages/odata-service-writer"
@@ -108,13 +156,31 @@
       "path": "packages/project-input-validator"
     },
     {
+      "path": "packages/reload-middleware"
+    },
+    {
+      "path": "packages/serve-static-middleware"
+    },
+    {
       "path": "packages/store"
     },
     {
       "path": "packages/system-access"
     },
     {
+      "path": "packages/telemetry"
+    },
+    {
+      "path": "packages/text-document-utils"
+    },
+    {
       "path": "packages/ui-components"
+    },
+    {
+      "path": "packages/ui-prompting"
+    },
+    {
+      "path": "packages/ui5-application-inquirer"
     },
     {
       "path": "packages/ui5-application-writer"
@@ -127,6 +193,12 @@
     },
     {
       "path": "packages/ui5-library-inquirer"
+    },
+    {
+      "path": "packages/ui5-library-reference-inquirer"
+    },
+    {
+      "path": "packages/ui5-library-reference-writer"
     },
     {
       "path": "packages/ui5-library-writer"
@@ -144,7 +216,13 @@
       "path": "packages/yaml"
     },
     {
+      "path": "examples/fe-fpm-cli"
+    },
+    {
       "path": "examples/odata-cli"
+    },
+    {
+      "path": "examples/prompting-ui"
     },
     {
       "path": "examples/simple-generator"

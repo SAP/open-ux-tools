@@ -127,7 +127,7 @@ export class ArrayTransport extends WinstonTransport {
     public readonly logs: ArrayTransportLogEntry[];
     constructor(opts?: ArrayTransportOptions) {
         super({ level: typeof opts?.logLevel === 'number' ? LogLevel[opts.logLevel].toLowerCase() : 'debug' });
-        this.logs = opts?.logs || [];
+        this.logs = opts?.logs ?? [];
     }
     log(info: ArrayTransportLogEntry, next: () => void) {
         this.logs.push(info);

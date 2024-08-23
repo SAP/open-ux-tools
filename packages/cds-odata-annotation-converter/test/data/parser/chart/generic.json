@@ -1,0 +1,175 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(7,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Chart",
+                "valueRange": "[(1,4)..(1,9)]"
+            }
+        },
+        "contentRange": "[(1,11)..(7,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(1,12)..(7,5)]",
+                "name": "Record",
+                "attributes": {
+                    "Type": {
+                        "type": "attribute",
+                        "name": "Type",
+                        "nameRange": "[(2,8)..(2,13)]",
+                        "value": "UI.ChartDefinitionType",
+                        "valueRange": "[(2,15)..(2,37)]"
+                    }
+                },
+                "contentRange": "[(1,13)..(7,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(3,8)..(3,20)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "ChartType",
+                                "valueRange": "[(3,8)..(3,17)]"
+                            }
+                        },
+                        "contentRange": "[(3,19)..(3,20)]",
+                        "content": []
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(4,8)..(6,9)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "Actions",
+                                "valueRange": "[(4,8)..(4,15)]"
+                            }
+                        },
+                        "contentRange": "[(4,17)..(6,9)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(4,18)..(6,9)]",
+                                "name": "Collection",
+                                "attributes": {},
+                                "contentRange": "[(4,19)..(6,8)]",
+                                "content": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(8,4)..(8,16)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Hidden",
+                "valueRange": "[(8,4)..(8,10)]"
+            }
+        },
+        "contentRange": "[(8,11)..(8,16)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(8,12)..(8,16)]",
+                "name": "Bool",
+                "attributes": {},
+                "contentRange": "[(8,12)..(8,16)]",
+                "content": [
+                    {
+                        "type": "text",
+                        "range": "[(8,12)..(8,16)]",
+                        "text": "true"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(9,4)..(9,25)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Hidden",
+                "valueRange": "[(9,4)..(9,10)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "second",
+                "valueRange": "[(9,12)..(9,18)]"
+            }
+        },
+        "contentRange": "[(9,19)..(9,25)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(9,20)..(9,25)]",
+                "name": "Bool",
+                "attributes": {},
+                "contentRange": "[(9,20)..(9,25)]",
+                "content": [
+                    {
+                        "type": "text",
+                        "range": "[(9,20)..(9,25)]",
+                        "text": "false"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(10,4)..(10,18)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Badge",
+                "valueRange": "[(10,4)..(10,9)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "first",
+                "valueRange": "[(10,11)..(10,16)]"
+            }
+        },
+        "contentRange": "[(10,17)..(10,18)]",
+        "content": []
+    },
+    {
+        "type": "element",
+        "range": "[(11,4)..(11,9)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Badge",
+                "valueRange": "[(11,4)..(11,9)]"
+            }
+        },
+        "content": []
+    }
+]

@@ -1,0 +1,13 @@
+<?xml version="1.0\" encoding="utf-8\"?>
+<atom:feed xmlns:atom="http://www.w3.org/2005/Atom\">
+    <atom:link href="/sap/bc/adt/repository/generators/filtersupport?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp\" rel="http://www.sap.com/adt/repository/generator/filter\" type="application/vnd.sap.adt.repository.generator.filter.v1+json\" title="filter\"/>
+    <atom:entry>
+        <atom:category term="ABAP RESTful Application Programming Model\" label="Services of ABAP RESTful Application Programming Model (RAP).\"/>
+        <atom:content type="application/vnd.sap.adt.repository.generator.v1+json\" src="ui-service\"/>
+        <atom:id>ui-service</atom:id>
+        <atom:published>2024-04-02T00:00:00Z</atom:published>
+        <atom:summary> An OData UI service makes it possible to consume a RAP service with a Fiori Elements UI or other UI clients. It creates all UI-specific information that is annotated in the RAP artifacts in the OData service metadata. A UI service can be previewed with the Fiori Elements App Preview in the service binding artifact. &lt;p&gt;This generator creates all the development objects that are relevant for a business object and for a RAP service  on the basis of one database table. The end result is a full-blown RAP UI service.&lt;/p&gt; &lt;p&gt; Specifically, the following objects are created: &lt;/p&gt; &lt;li&gt;CDS view entity&lt;/li&gt;  &lt;li&gt;CDS behavior definition&lt;/li&gt;  &lt;li&gt;ABAP implementation class&lt;/li&gt;  &lt;li&gt;CDS projection view entity&lt;/li&gt;  &lt;li&gt;CDS projection behavior definition&lt;/li&gt;  &lt;li&gt;Draft database table&lt;/li&gt;  &lt;li&gt;Metadata extension&lt;/li&gt;  &lt;li&gt;CDS service definition&lt;/li&gt;  &lt;li&gt;Service binding&lt;/li&gt; </atom:summary>
+        <atom:title>OData UI Service</atom:title>
+        <atom:updated>2024-04-02T00:00:00Z</atom:updated>
+    </atom:entry>
+</atom:feed>

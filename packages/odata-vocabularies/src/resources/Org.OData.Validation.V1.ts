@@ -1,4 +1,4 @@
-// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -85,7 +85,7 @@ export default {
         'Constraint': {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Validation.V1.ConstraintType',
-            '$AppliesTo': ['Property', 'EntityType', 'ComplexType'],
+            '$AppliesTo': ['Property', 'NavigationProperty', 'Parameter', 'EntityType', 'ComplexType'],
             '@Org.OData.Core.V1.Description': 'Condition that the annotation target has to fulfill'
         },
         'ConstraintType': {

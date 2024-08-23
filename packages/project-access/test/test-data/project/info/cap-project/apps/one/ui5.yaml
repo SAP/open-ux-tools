@@ -1,0 +1,4 @@
+resources:
+    configuration:
+        paths:
+            webapp: source/webapp

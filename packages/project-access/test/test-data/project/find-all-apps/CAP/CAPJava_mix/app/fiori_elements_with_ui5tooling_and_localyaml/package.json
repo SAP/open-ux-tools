@@ -1,0 +1,5 @@
+{
+    "devDependencies": {
+        "@sap/ux-ui5-tooling": "latest"
+    }
+}

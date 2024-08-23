@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Stack } from '@fluentui/react';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 
-import { UIComboBox, UISelectableOptionMenuItemType } from '../src/components/UIComboBox';
+import { UIComboBox, UIComboBoxLoaderType, UISelectableOptionMenuItemType } from '../src/components/UIComboBox';
 import { UICheckbox } from '../src/components/UICheckbox';
 import { data, groupsData } from '../test/__mock__/select-data';
 
@@ -61,7 +61,30 @@ export const WithRefresh = (): JSX.Element => (
 
 export const WithLoading = (): JSX.Element => (
     <div style={{ width: '300px' }}>
-        <UIComboBox options={data} isLoading={true} styles={{ optionsContainerWrapper: { width: '262px' } }} />
+        <UIComboBox
+            options={data}
+            isLoading={true}
+            styles={{ optionsContainerWrapper: { width: '262px' } }}
+            label="Default"
+        />
+        <UIComboBox
+            options={data}
+            isLoading={[UIComboBoxLoaderType.List]}
+            styles={{ optionsContainerWrapper: { width: '262px' } }}
+            label="List"
+        />
+        <UIComboBox
+            options={data}
+            isLoading={[UIComboBoxLoaderType.Input]}
+            styles={{ optionsContainerWrapper: { width: '262px' } }}
+            label="Input"
+        />
+        <UIComboBox
+            options={data}
+            isLoading={[UIComboBoxLoaderType.List, UIComboBoxLoaderType.Input]}
+            styles={{ optionsContainerWrapper: { width: '262px' } }}
+            label="List and Input"
+        />
     </div>
 );
 

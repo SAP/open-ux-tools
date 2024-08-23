@@ -59,7 +59,9 @@ describe('<Section />', () => {
     it('Test "onScroll" event', () => {
         const onScroll = jest.fn();
         wrapper.setProps({
-            onScroll
+            onScroll,
+            className: 'aaaa',
+            collapsible: true
         });
         expect(wrapper.find('.section__body').length).toEqual(1);
         wrapper.find('.section__body').simulate('scroll', {});
@@ -73,5 +75,17 @@ describe('<Section />', () => {
             hidden: true
         });
         expect(wrapper.find('.section--hidden').length).toEqual(1);
+    });
+
+    it('Test data property', () => {
+        const testValue = 'test value';
+        wrapper = Enzyme.mount(
+            <UISection data-test={testValue}>
+                <div>Dummy Content</div>
+            </UISection>
+        );
+        expect(wrapper.find('.section[data-test="test value"]').getDOMNode().getAttribute('data-test')).toEqual(
+            testValue
+        );
     });
 });

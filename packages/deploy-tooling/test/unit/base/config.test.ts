@@ -1,5 +1,5 @@
 import { type UrlAbapTarget, isUrlTarget } from '@sap-ux/system-access';
-import { getConfigForLogging, replaceEnvVariables, validateConfig } from '../../../src/base/config';
+import { getConfigForLogging, validateConfig } from '../../../src/base/config';
 import type { AbapDeployConfig } from '../../../src/types';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -11,29 +11,6 @@ describe('base/config', () => {
     test('isUrlTarget', () => {
         expect(isUrlTarget({ url: '~url' })).toBe(true);
         expect(isUrlTarget({ destination: '~destination' })).toBe(false);
-    });
-
-    describe('replaceEnvVariables', () => {
-        const envVal = '~testvalue';
-        const envRef = 'env:TEST_VAR';
-
-        process.env.TEST_VAR = envVal;
-        test('top level', () => {
-            const config = { hello: envRef };
-            replaceEnvVariables(config);
-            expect(config.hello).toBe(envVal);
-        });
-        test('in array', () => {
-            const config = ['hello', envRef];
-            replaceEnvVariables(config);
-            expect(config[1]).toBe(envVal);
-        });
-        test('nested', () => {
-            const config = { hello: { world: envRef }, world: envRef };
-            replaceEnvVariables(config);
-            expect(config.hello.world).toBe(envVal);
-            expect(config.world).toBe(envVal);
-        });
     });
 
     describe('getConfigForLogging', () => {

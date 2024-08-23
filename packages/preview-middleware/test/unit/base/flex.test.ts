@@ -1,9 +1,11 @@
 import type { ReaderCollection } from '@ui5/fs';
-import { readChanges, writeChange } from '../../../src/base/flex';
 import { ToolsLogger } from '@sap-ux/logger';
 import { tmpdir } from 'os';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
+
+import { readChanges, writeChange } from '../../../src/base/flex';
 import { deleteChange } from '../../../dist/base/flex';
 
 describe('flex', () => {
@@ -63,7 +65,7 @@ describe('flex', () => {
             };
             byGlobMock.mockResolvedValueOnce([mockChange('id1', 'change', change)]);
             const changes = await readChanges(project, logger);
-            expect(changes['sap.ui.fl.id1'].moduleName).toBe('my/app/changes/controller/MyExtension');
+            expect(changes['sap.ui.fl.id1'].changeType).toBe('codeExt');
         });
 
         test('xml fragment change with missing module name', async () => {
@@ -76,23 +78,26 @@ describe('flex', () => {
             };
             byGlobMock.mockResolvedValueOnce([mockChange('id1', 'change', change)]);
             const changes = await readChanges(project, logger);
-            expect(changes['sap.ui.fl.id1'].moduleName).toBe('my/app/changes/fragment/MyFragment.xml');
+            expect(changes['sap.ui.fl.id1'].changeType).toBe('addXML');
         });
     });
 
     describe('writeChange', () => {
         test('valid change', () => {
             const change = { fileName: 'id', fileType: 'ctrl_variant' };
-            const result = writeChange(change, path, logger);
+            const writeSpy = jest.fn();
+            const fsMock = { writeJSON: writeSpy };
+            const result = writeChange(change, path, fsMock as unknown as Editor, logger);
             expect(result.success).toBe(true);
             expect(result.message).toBeDefined();
-            expect(
-                JSON.parse(readFileSync(join(path, 'changes', `${change.fileName}.${change.fileType}`), 'utf-8'))
-            ).toEqual(change);
+            expect(writeSpy).toHaveBeenCalledWith(
+                join(path, 'changes', `${change.fileName}.${change.fileType}`),
+                change
+            );
         });
 
         test('invalid change', () => {
-            const result = writeChange({}, path, logger);
+            const result = writeChange({}, path, {} as Editor, logger);
             expect(result.success).toBe(false);
         });
     });

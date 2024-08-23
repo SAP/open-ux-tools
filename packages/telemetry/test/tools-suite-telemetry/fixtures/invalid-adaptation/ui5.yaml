@@ -1,0 +1,10 @@
+specVersion: '3.0'
+metadata:
+    name: adaptation.project
+type: application
+resources:
+    configuration:
+        propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+    adp:
+        safeMode: false

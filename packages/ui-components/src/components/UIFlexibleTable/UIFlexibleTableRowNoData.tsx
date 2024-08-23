@@ -15,7 +15,7 @@ export interface UIFlexibleTableRowNoDataProps {
  * @param props {UIFlexibleTableRowNoDataProps}
  * @returns {React.Component}
  */
-export function UIFlexibleTableRowNoData(props: UIFlexibleTableRowNoDataProps) {
+export function UIFlexibleTableRowNoData(props: Readonly<UIFlexibleTableRowNoDataProps>) {
     const { align = UIFlexibleTableNoDataAlignment.Center, noRowBackground, reverseBackground } = props;
     const rowClassName = composeClassNames('flexible-table-content-table-row-no-data', [
         noRowBackground ? 'no-background' : '',

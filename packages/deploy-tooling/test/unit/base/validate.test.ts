@@ -1,16 +1,24 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { formatSummary, summaryMessage, validateBeforeDeploy } from '../../../src/base/validate';
+import {
+    formatSummary,
+    showAdditionalInfoForOnPrem,
+    summaryMessage,
+    validateBeforeDeploy,
+    checkForCredentials
+} from '../../../src/base/validate';
 import { mockedProvider, mockedAdtService } from '../../__mocks__';
 import { green, red, yellow } from 'chalk';
 import { TransportChecksService } from '@sap-ux/axios-extension';
+import type { AxiosError } from '@sap-ux/axios-extension';
 import { t } from '@sap-ux/project-input-validator/src/i18n';
+import { isAppStudio, isOnPremiseDestination, listDestinations, Authentication } from '@sap-ux/btp-utils';
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
 
-import { isAppStudio } from '@sap-ux/btp-utils';
-
 jest.mock('@sap-ux/btp-utils');
 const mockIsAppStudio = isAppStudio as jest.Mock;
+const mockListDestinations = listDestinations as jest.Mock;
+const mockisOnPremiseDestination = isOnPremiseDestination as jest.Mock;
 
 describe('deploy-test validation', () => {
     // default app for testing
@@ -445,6 +453,122 @@ describe('deploy-test validation', () => {
             expect(summaryStr).toContain(
                 `${yellow('?')} ${summaryMessage.adtServiceUndefined} for TransportChecksService`
             );
+        });
+    });
+
+    describe('Validate show additional info', () => {
+        const destinationsMock = { 'ABC123': {} };
+        test.each([
+            ['Show additional info', true, destinationsMock, true, 'ABC123', true],
+            ['If not in App Studio', false, destinationsMock, true, 'ABC123', false],
+            ['If destination not provided', true, destinationsMock, true, '', false],
+            ['If non-onPremise destination', true, destinationsMock, false, 'ABC123', false]
+        ])(
+            '%s',
+            async (
+                desc,
+                isAppStudio,
+                listDestinationsMock,
+                isOnPremiseDestinationMock,
+                destinationMock,
+                expectedResult
+            ) => {
+                mockIsAppStudio.mockReturnValue(isAppStudio);
+                mockListDestinations.mockResolvedValue(listDestinationsMock);
+                mockisOnPremiseDestination.mockResolvedValue(isOnPremiseDestinationMock);
+                const result = await showAdditionalInfoForOnPrem(destinationMock);
+                expect(result).toBe(expectedResult);
+            }
+        );
+    });
+
+    describe('Check for credentials', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+        const mockLogger = {
+            warn: jest.fn()
+        };
+        const noAuthMock = { Name: 'noAuth', Authentication: Authentication.NO_AUTHENTICATION };
+        const basicAuthMock = { Name: 'basicAuth', Authentication: Authentication.BASIC_AUTHENTICATION };
+        const samlAuthMock = { Name: 'samlAuth', Authentication: Authentication.SAML_ASSERTION };
+        const destinationsMock = {
+            'noAuth': noAuthMock,
+            'basicAuth': basicAuthMock,
+            'samlAuth': samlAuthMock
+        };
+        test.each([
+            ['SAMLAssertion - False', true, destinationsMock, samlAuthMock.Name, false],
+            ['NoAuthentication - True', true, destinationsMock, noAuthMock.Name, true],
+            ['BasicAuthentication - True', true, destinationsMock, basicAuthMock.Name, true],
+            ['If destination not provided', true, destinationsMock, '', true]
+        ])('%s', async (desc, isAppStudio, listDestinationsMock, destinationMock, expectedResult) => {
+            mockIsAppStudio.mockReturnValue(isAppStudio);
+            mockListDestinations.mockResolvedValue(listDestinationsMock);
+            const result = await checkForCredentials(destinationMock, mockLogger as any);
+            expect(result).toBe(expectedResult);
+            if (destinationMock === samlAuthMock.Name) {
+                expect(mockLogger.warn).toHaveBeenCalled();
+            } else {
+                expect(mockLogger.warn).not.toHaveBeenCalled();
+            }
+        });
+    });
+
+    describe('Validate error does not show full stack trace', () => {
+        jest.resetAllMocks();
+        const mockLogger = {
+            error: jest.fn(),
+            debug: jest.fn()
+        };
+        jest.mock('@sap-ux/logger', () => {
+            const sapUxLogger = jest.requireActual('@sap-ux/logger');
+            return {
+                ...sapUxLogger,
+                ToolsLogger: jest.fn(() => mockLogger)
+            };
+        });
+        const mockAxiosError403 = {
+            response: {
+                status: 403,
+                statusText: 'Forbidden'
+            },
+            message: 'Request failed with status code 403'
+        } as AxiosError;
+        test('Only error message shown when error is thrown', async () => {
+            const logMock = jest.spyOn(mockLogger, 'error');
+            const mockAxiosError401 = {
+                response: {
+                    status: 401,
+                    statusText: 'Unauthorized'
+                },
+                message: 'Request failed with status code 401'
+            } as AxiosError;
+            mockedProvider.getAdtService.mockRejectedValueOnce(mockAxiosError401);
+
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, mockLogger as any);
+
+            expect(output.result).toBe(false);
+            expect(logMock).toHaveBeenCalledWith(mockAxiosError401.message);
+        });
+        test('Only error message shown when error is thrown - validateTransport', async () => {
+            const logMock = jest.spyOn(mockLogger, 'error');
+
+            mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
+            mockedAdtService.getTransportRequests.mockRejectedValueOnce(mockAxiosError403);
+
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, mockLogger as any);
+
+            expect(output.result).toBe(false);
+            expect(logMock).toHaveBeenLastCalledWith(mockAxiosError403.message);
+        });
+        test('Only error message shown when error is thrown - validatePackage', async () => {
+            const logMock = jest.spyOn(mockLogger, 'error');
+            mockedAdtService.listPackages.mockRejectedValueOnce(mockAxiosError403);
+
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, mockLogger as any);
+            expect(output.result).toBe(false);
+            expect(logMock).toHaveBeenLastCalledWith(mockAxiosError403.message);
         });
     });
 });

@@ -3,6 +3,7 @@ import type { IButtonProps as IBaseButtonProps, IButtonStyles } from '@fluentui/
 import { IconButton } from '@fluentui/react';
 
 import { UIContextualMenu } from '../UIContextualMenu';
+import type { UIIContextualMenuProps } from '../UIContextualMenu';
 
 export enum UIIconButtonSizes {
     Default = 'Default',
@@ -11,6 +12,7 @@ export enum UIIconButtonSizes {
 
 export interface ButtonProps extends IBaseButtonProps {
     sizeType?: UIIconButtonSizes;
+    menuProps?: UIIContextualMenuProps;
 }
 
 /**
@@ -42,7 +44,7 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
     }
 
     protected setStyle = (props: ButtonProps): IButtonStyles => {
-        const sizeType = props.sizeType || UIIconButtonSizes.Default;
+        const sizeType = props.sizeType ?? UIIconButtonSizes.Default;
         const width = sizeType === UIIconButtonSizes.Default ? 16 : 26;
         return {
             root: {
@@ -86,7 +88,10 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
             icon: {
                 height: 16,
                 width: width,
-                lineHeight: 16
+                lineHeight: 16,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
             },
             iconHovered: {
                 backgroundColor: 'transparent'
@@ -96,6 +101,30 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
             },
             menuIcon: {
                 display: 'none'
+            },
+            rootChecked: {
+                backgroundColor: 'var(--vscode-button-background)',
+                color: 'var(--vscode-button-foreground)',
+                outline: '1px solid var(--vscode-contrastActiveBorder)',
+                selectors: {
+                    // Move focus border otside of root box, because selection background covers inner border
+                    '.ms-Fabric--isFocusVisible &:focus:after': {
+                        inset: '-1px'
+                    }
+                }
+            },
+            rootCheckedHovered: {
+                backgroundColor: 'var(--vscode-button-background)',
+                outline: '1px dashed var(--vscode-contrastActiveBorder)'
+            },
+            iconChecked: {
+                color: 'var(--vscode-button-foreground)',
+                selectors: {
+                    // Inherit color from icon
+                    '> svg *': {
+                        fill: 'currentColor'
+                    }
+                }
             }
         };
     };

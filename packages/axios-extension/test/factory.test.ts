@@ -60,6 +60,13 @@ test('createForServiceUrl', async () => {
     const metadata = await service.metadata();
     expect(metadata).toBeDefined();
     expect(metadata).toBe(expectedMetadata);
+
+    // Ensure axios config params are not overwritten
+    const serviceWithParams = createServiceForUrl(`${server}${servicePath}?sap-client=999`, {
+        params: { 'abc': '123' }
+    });
+    expect((serviceWithParams.defaults.params as URLSearchParams).get('abc')).toEqual('123');
+    expect((serviceWithParams.defaults.params as URLSearchParams).get('sap-client')).toEqual('999');
 });
 
 describe('createForDestination', () => {

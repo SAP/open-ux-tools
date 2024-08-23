@@ -23,12 +23,52 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "examples/fe-fpm-cli: Run Example",
+            "runtimeExecutable": "pnpm",
+            "runtimeArgs": ["start"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/examples/fe-fpm-cli"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "examples/prompting-ui: Run Example",
+            "runtimeExecutable": "pnpm",
+            "runtimeArgs": ["storybook"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/examples/prompting-ui"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "ui5-application-writer: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "cwd": "${workspaceFolder}/packages/ui5-application-writer"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Store: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/store"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "i18n: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/i18n"
         },
         {
             "type": "node",
@@ -85,6 +125,36 @@
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "cwd": "${workspaceFolder}/packages/eslint-plugin-fiori-tools"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "preview middleware: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/preview-middleware"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "preview middleware client: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/preview-middleware-client"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "reload middleware: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/reload-middleware"
         },
         {
             "type": "node",
@@ -148,6 +218,32 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "ui5-library-reference-inquirer: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/ui5-library-reference-inquirer",
+            "env": {
+                "UX_DEBUG": "false"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "ui5-library-reference-writer: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/ui5-library-reference-writer",
+            "env": {
+                "UX_DEBUG": "false"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "ui5-library-writer: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
@@ -157,6 +253,19 @@
             "env": {
                 "UX_DEBUG": "false"
             }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "ui5-proxy-middleware: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/ui5-proxy-middleware"
         },
         {
             "type": "node",
@@ -194,6 +303,19 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "ui-prompting: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/ui-prompting",
+            "env": {
+                "UX_DEBUG": "false"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "cds-annotation-parser: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
@@ -216,6 +338,49 @@
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
             "cwd": "${workspaceFolder}/packages/xml-odata-annotation-converter"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "fiori-annotation-api: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false", "--runInBand"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/fiori-annotation-api",
+            "env": {
+                "UX_DEBUG": "false"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "project-access: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/project-access"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "system-access: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/system-access"
         }
     ]
 }

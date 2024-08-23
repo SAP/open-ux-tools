@@ -75,7 +75,7 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
             borderRadius: CALLOUT_STYLES.borderRadius,
             minWidth: props.calloutMinWidth ?? 300,
             boxSizing: 'border-box',
-            padding: CALLOUT_CONTENT_PADDING.get(props.contentPadding || UICalloutContentPadding.None),
+            padding: CALLOUT_CONTENT_PADDING.get(props.contentPadding ?? UICalloutContentPadding.None),
             ...extractRawStyles(props.styles, 'calloutMain')
         },
         container: extractRawStyles(props.styles, 'container')

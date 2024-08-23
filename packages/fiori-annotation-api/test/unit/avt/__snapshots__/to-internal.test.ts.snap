@@ -1,0 +1,138 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`avt to internal convertExpressionToInternal Collection 1`] = `
+Object {
+  "attributes": Object {},
+  "content": Array [],
+  "name": "Collection",
+  "type": "element",
+}
+`;
+
+exports[`avt to internal convertExpressionToInternal Collection 2`] = `
+Object {
+  "attributes": Object {},
+  "content": Array [
+    Object {
+      "attributes": Object {},
+      "content": Array [],
+      "name": "Collection",
+      "type": "element",
+    },
+  ],
+  "name": "Annotation",
+  "type": "element",
+}
+`;
+
+exports[`avt to internal convertExpressionToInternal If 1`] = `undefined`;
+
+exports[`avt to internal convertExpressionToInternal If 2`] = `
+Object {
+  "attributes": Object {
+    "If": Object {
+      "name": "If",
+      "type": "attribute",
+      "value": "[object Object]",
+    },
+  },
+  "content": Array [],
+  "name": "Annotation",
+  "type": "element",
+}
+`;
+
+exports[`avt to internal convertExpressionToInternal Null 1`] = `
+Object {
+  "attributes": Object {},
+  "content": Array [],
+  "name": "Null",
+  "type": "element",
+}
+`;
+
+exports[`avt to internal convertExpressionToInternal Null 2`] = `
+Object {
+  "attributes": Object {},
+  "content": Array [
+    Object {
+      "attributes": Object {},
+      "content": Array [],
+      "name": "Null",
+      "type": "element",
+    },
+  ],
+  "name": "Annotation",
+  "type": "element",
+}
+`;
+
+exports[`avt to internal convertExpressionToInternal Path 1`] = `
+Object {
+  "attributes": Object {},
+  "content": Array [
+    Object {
+      "text": "test_path",
+      "type": "text",
+    },
+  ],
+  "name": "Path",
+  "type": "element",
+}
+`;
+
+exports[`avt to internal convertExpressionToInternal Path 2`] = `
+Object {
+  "attributes": Object {
+    "Path": Object {
+      "name": "Path",
+      "type": "attribute",
+      "value": "test_path",
+    },
+  },
+  "content": Array [],
+  "name": "Annotation",
+  "type": "element",
+}
+`;
+
+exports[`avt to internal convertExpressionToInternal Record 1`] = `
+Object {
+  "attributes": Object {
+    "Type": Object {
+      "name": "Type",
+      "type": "attribute",
+      "value": "UI.DataField",
+    },
+  },
+  "content": Array [],
+  "name": "Record",
+  "type": "element",
+}
+`;
+
+exports[`avt to internal convertExpressionToInternal Record 2`] = `
+Object {
+  "attributes": Object {},
+  "content": Array [
+    Object {
+      "attributes": Object {
+        "Type": Object {
+          "name": "Type",
+          "type": "attribute",
+          "value": "UI.DataField",
+        },
+      },
+      "content": Array [],
+      "name": "Record",
+      "type": "element",
+    },
+  ],
+  "name": "Annotation",
+  "type": "element",
+}
+`;
+
+exports[`avt to internal convertExpressionToInternal Unknown 1`] = `undefined`;
+
+exports[`avt to internal convertExpressionToInternal Unknown 2`] = `undefined`;

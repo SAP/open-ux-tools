@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ListReport generate Add library dependency \`sap.fe.templates\`  1`] = `
+Object {
+  "libs": Object {
+    "sap.fe.templates": Object {},
+  },
+}
+`;
+
 exports[`ListReport generate all optional settings used 1`] = `
 Object {
   "sap.app": Object {
@@ -111,6 +119,43 @@ Object {
           "options": Object {
             "settings": Object {
               "contextPath": "/my/navigation",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ListReport generate minimal input, plus optional page id 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "DummyPage",
+          "pattern": ":?query:",
+          "target": "DummyPage",
+        },
+      ],
+      "targets": Object {
+        "DummyPage": Object {
+          "id": "DummyPage",
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/RootEntity",
               "navigation": Object {},
             },
           },

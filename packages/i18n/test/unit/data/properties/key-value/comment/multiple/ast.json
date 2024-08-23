@@ -1,0 +1,17 @@
+[
+  {
+    "type": "comment-line",
+    "value": "# First comment with hash symbol",
+    "range": "[(0,0)..(0,32)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "! Second comment with exclamation symbol",
+    "range": "[(1,0)..(1,40)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "# Third comment with hash symbol",
+    "range": "[(2,0)..(2,32)]"
+  }
+]

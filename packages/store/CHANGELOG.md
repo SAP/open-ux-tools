@@ -1,5 +1,67 @@
 # @sap-ux/store
 
+## 0.9.1
+
+### Patch Changes
+
+-   08b788c: export getFioriToolsDirectory, FioriToolsSettings
+
+## 0.9.0
+
+### Minor Changes
+
+-   e7a6c68: Load keytar from application modeler extension
+
+## 0.8.0
+
+### Minor Changes
+
+-   dced368: Load keytar from application modeler extension
+
+## 0.7.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+
+## 0.6.0
+
+### Minor Changes
+
+-   d02be637: Replaces AuthenticationType with const and string literal type
+
+## 0.5.0
+
+### Minor Changes
+
+-   e443e534: Allow to disable access to secure storage via environment variable FIORI_TOOLS_DISABLE_SECURE_STORE
+
+## 0.4.3
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/logger@0.5.1
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+
+## 0.4.1
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
 ## 0.4.0
 
 ### Minor Changes

@@ -3,7 +3,7 @@ import {
     startPostMessageCommunication,
     iconsLoaded,
     enableTelemetry,
-    scenarioLoaded
+    appLoaded
 } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
@@ -15,6 +15,9 @@ import { loadDefaultLibraries } from './documentation';
 import Log from 'sap/base/Log';
 import { logger } from './logger';
 import { getIcons } from './ui5-utils';
+import { WorkspaceConnectorService } from './connector-service';
+import { RtaService } from './rta-service';
+import { getError } from '../utils/error';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
@@ -37,7 +40,9 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
     const selectionService = new SelectionService(rta);
 
     const changesService = new ChangeService({ rta }, selectionService);
-    const services: Service[] = [selectionService, changesService];
+    const connectorService = new WorkspaceConnectorService();
+    const rtaService = new RtaService(rta);
+    const services: Service[] = [selectionService, changesService, connectorService, rtaService];
     try {
         loadDefaultLibraries();
         const { sendAction } = startPostMessageCommunication<ExternalAction>(
@@ -47,14 +52,12 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
                     try {
                         await handler(action);
                     } catch (error) {
-                        Log.error('Handler Failed: ', error);
+                        Log.error('Handler Failed: ', getError(error));
                     }
                 }
             },
             logger
         );
-
-        sendAction(scenarioLoaded(flexSettings.scenario));
 
         for (const service of services) {
             service.init(sendAction, subscribe);
@@ -62,12 +65,14 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         // For initOutline to complete the RTA needs to already running (to access RTA provided services).
         // That can only happen if the plugin initialization has completed.
         initOutline(rta, sendAction).catch((error) =>
-            Log.error('Error during initialization of Control Property Editor', error)
+            Log.error('Error during initialization of Control Property Editor', getError(error))
         );
         const icons = getIcons();
+
         sendAction(iconsLoaded(icons));
+        sendAction(appLoaded());
     } catch (error) {
-        Log.error('Error during initialization of Control Property Editor', error);
+        Log.error('Error during initialization of Control Property Editor', getError(error));
     }
     return Promise.resolve();
 }

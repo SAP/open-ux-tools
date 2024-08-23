@@ -72,7 +72,7 @@ export class UISplitButton extends React.Component<UISplitButtonProps, UISplitBu
         ev?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>,
         item?: UIContextualMenuItem
     ): void => {
-        if (item && item.key) {
+        if (item?.key) {
             this.props.callback(item.key);
         }
     };

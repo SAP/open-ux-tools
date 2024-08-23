@@ -1,9 +1,12 @@
 .filter-outline {
     display: flex;
-    margin: 20px 14px 30px 14px;
+    padding: 15px 14px 15px 14px;
     flex-direction: row;
     align-items: center;
-    overflow-y: auto;
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+    background-color: var(--vscode-sideBar-background);
 }
 
 .funnel-icon {
@@ -70,7 +73,7 @@
 }
 
 .extension-icon {
-    margin-top: 2px;
+    margin: 2px 4px 0px;
 }
 
 .tooltip-container {

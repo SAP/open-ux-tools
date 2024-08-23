@@ -30,7 +30,7 @@ async function addSmartLinksConfig(basePath: string, simulate: boolean): Promise
     const logger = getLogger();
     try {
         logger.debug(`Called add smartlinks-config for path '${basePath}', simulate is '${simulate}'`);
-        validateBasePath(basePath);
+        await validateBasePath(basePath);
         const config = await getSmartLinksTargetFromPrompt(basePath, logger);
         const fs = await generateSmartLinksConfig(basePath, config, logger);
         await traceChanges(fs);

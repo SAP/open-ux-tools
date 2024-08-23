@@ -1,4 +1,4 @@
-// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -410,7 +410,7 @@ export default {
             'Mandatory': 7,
             'Mandatory@Org.OData.Core.V1.Description': 'Property is mandatory from a business perspective',
             'Mandatory@Org.OData.Core.V1.LongDescription':
-                'A request that sets the property to its initial value or null fails entirely if this annotation is `Mandatory` in the after-image of the request.\n\n            This annotation value does not imply any restrictions on the value range of the property. For restricting the value range use e.g. the standard type facet `Nullable` with a value of `false` to exclude the `null` value, or terms from the [Validation vocabulary](https://github.com/oasis-tcs/odata-vocabularies/blob/main/vocabularies/Org.OData.Validation.V1.md).',
+                'A request that\n- sets the property to null or an empty value or\n- creates a non-[draft](#DraftRoot) entity and omits the property or\n- activates a draft entity while the property is null or empty\n\nfails entirely if this annotation is `Mandatory` in the after-image of the request.\nThe empty string is an empty value. Service-specific rules may consider other values, also\nof non-string type, empty.\nValues in draft entities are never considered empty.\nMandatory properties SHOULD be decorated in the UI with an asterisk.\nNull or empty values can also be disallowed by restricting the property value range with the standard type facet `Nullable` or terms from the [Validation vocabulary](https://github.com/oasis-tcs/odata-vocabularies/blob/main/vocabularies/Org.OData.Validation.V1.md).',
             'Optional': 3,
             'Optional@Org.OData.Core.V1.Description': 'Property may have a value',
             'Optional@Org.OData.Core.V1.LongDescription':
@@ -504,7 +504,7 @@ export default {
             '$Type': 'Edm.ComplexType',
             '@Org.OData.Core.V1.Description': 'Collection of end-user messages',
             '@Org.OData.Core.V1.LongDescription':
-                'The name of the message type is service-specific, its structure components are identified by naming convention, following the names of the OData error response structure.\n\nThe minimum structure is\n\n- `code: Edm.String`\n\n- `message: Edm.String`\n\n- `target: Edm.String nullable`\n\n- `additionalTargets: Collection(Edm.String)`\n\n- `transition: Edm.Boolean`\n\n- `numericSeverity: Edm.Byte`\n\n- `longtextUrl: Edm.String nullable`\n          '
+                'The name of the message type is service-specific, its structure components are identified by naming convention, following the names of the OData error response structure.\n\nThe minimum structure is\n- `code: Edm.String`\n- `message: Edm.String`\n- `target: Edm.String nullable`\n- `additionalTargets: Collection(Edm.String)`\n- `transition: Edm.Boolean`\n- `numericSeverity: Edm.Byte`\n- `longtextUrl: Edm.String nullable`\n          '
         },
         'additionalTargets': {
             '$Kind': 'Term',
@@ -599,6 +599,13 @@ export default {
         },
         'IntervalType': {
             '$Kind': 'ComplexType',
+            'Label': {
+                '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description':
+                    'A short, human-readable text suitable for labels and captions in UIs',
+                '@Org.OData.Core.V1.IsLanguageDependent': true
+            },
             'LowerBoundary': {
                 '$Type': 'Edm.PropertyPath',
                 '@Org.OData.Core.V1.Description': 'Property holding the lower interval boundary'
@@ -767,7 +774,19 @@ export default {
             '$DefaultValue': true,
             '$AppliesTo': ['Property', 'Parameter'],
             '@Org.OData.Core.V1.Description':
-                "If specified as true, there's only one value list mapping and its value list consists of a small number of fixed values"
+                "If specified as true, there's only one value list mapping and its value list consists of a small number of fixed values",
+            '@Org.OData.Validation.V1.ApplicableTerms': [
+                'com.sap.vocabularies.Common.v1.ValueListShowValuesImmediately'
+            ]
+        },
+        'ValueListShowValuesImmediately': {
+            '$Kind': 'Term',
+            '$Type': 'Org.OData.Core.V1.Tag',
+            '$DefaultValue': true,
+            '$AppliesTo': ['Annotation'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'A value list with a very small number of fixed values, can decide to show all values immediately'
         },
         'ValueListForValidation': {
             '$Kind': 'Term',
@@ -854,7 +873,9 @@ export default {
             'LocalDataProperty': {
                 '$Type': 'Edm.PropertyPath',
                 '@Org.OData.Core.V1.Description':
-                    'Path to property that is used to filter the value list with `eq` comparison'
+                    'Path to property that is used to filter the value list with `eq` comparison',
+                '@Org.OData.Core.V1.LongDescription':
+                    'In case the property path contains a collection-based navigation or structural property, the filter is a set of `eq` comparisons connected by `or` operators'
             },
             'InitialValueIsSignificant': {
                 '$Type': 'Edm.Boolean',
@@ -875,6 +896,18 @@ export default {
                 '$DefaultValue': false,
                 '@com.sap.vocabularies.Common.v1.Experimental': true,
                 '@Org.OData.Core.V1.Description': 'Initial value, e.g. empty string, is a valid and significant value'
+            }
+        },
+        'ValueListParameterConstants': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'com.sap.vocabularies.Common.v1.ValueListParameter',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            'Constants': {
+                '$Collection': true,
+                '$Type': 'Edm.PrimitiveType',
+                '@Org.OData.Core.V1.Description':
+                    'List of constant values that are used to filter the value list with `eq` comparisons connected by `or` operators, using the same representation as property default values, see [CSDL XML, 7.2.7 Default Value](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_DefaultValue). Initial values are significant.',
+                '@Org.OData.Core.V1.LongDescription': 'An empty list means a vacuous filter condition'
             }
         },
         'ValueListParameterInOut': {
@@ -1025,7 +1058,7 @@ export default {
             '$DefaultValue': true,
             '$AppliesTo': ['Property'],
             '@Org.OData.Core.V1.Description':
-                'Property encodes a calendar year and week as string following the logical pattern (-?)YYYY(Y*)WW consisting \n          of an optional minus sign for years B.C. followed by at least six digits, where the last two digits represent week number in the year.\n          The string matches the regex pattern -?([1-9][0-9]{3,}|0[0-9]{3})(0[1-9]|[1-4][0-9]|5[0-3]) \n          ',
+                'Property encodes a calendar year and week as string following the logical pattern (-?)YYYY(Y*)WW consisting\n          of an optional minus sign for years B.C. followed by at least six digits, where the last two digits represent week number in the year.\n          The string matches the regex pattern -?([1-9][0-9]{3,}|0[0-9]{3})(0[1-9]|[1-4][0-9]|5[0-3])\n          ',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String',
             '@com.sap.vocabularies.Common.v1.MutuallyExclusiveTerm#DatePart': true
         },
@@ -1035,7 +1068,7 @@ export default {
             '$DefaultValue': true,
             '$AppliesTo': ['Property'],
             '@Org.OData.Core.V1.Description':
-                'Property encodes a calendar date: year, month and day as string following the logical pattern (-?)YYYY(Y*)MMDD consisting \n          of an optional minus sign for years B.C. followed by at least eight digits, where the last four digits represent \n          the months January to December (MM) and the day of the month (DD).\n          The string matches the regex pattern -?([1-9][0-9]{3,}|0[0-9]{3})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])\n          The regex pattern does not reflect the additional constraint for "Day-of-month Values":\n          The day value must be no more than 30 if month is one of 04, 06, 09, or 11, no more than 28 if month is 02 and year is not divisible by 4, \n          or is divisible by 100 but not by 400, and no more than 29 if month is 02 and year is divisible by 400, or by 4 but not by 100.          \n          ',
+                'Property encodes a calendar date: year, month and day as string following the logical pattern (-?)YYYY(Y*)MMDD consisting\n          of an optional minus sign for years B.C. followed by at least eight digits, where the last four digits represent\n          the months January to December (MM) and the day of the month (DD).\n          The string matches the regex pattern -?([1-9][0-9]{3,}|0[0-9]{3})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])\n          The regex pattern does not reflect the additional constraint for "Day-of-month Values":\n          The day value must be no more than 30 if month is one of 04, 06, 09, or 11, no more than 28 if month is 02 and year is not divisible by 4,\n          or is divisible by 100 but not by 400, and no more than 29 if month is 02 and year is divisible by 400, or by 4 but not by 100.\n          ',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String',
             '@com.sap.vocabularies.Common.v1.MutuallyExclusiveTerm#DatePart': true
         },
@@ -1045,7 +1078,7 @@ export default {
             '$DefaultValue': true,
             '$AppliesTo': ['Property'],
             '@Org.OData.Core.V1.Description':
-                'Property encodes a fiscal year number as string following the logical pattern YYYY consisting of four digits. \n          The string matches the regex pattern [1-9][0-9]{3}\n          ',
+                'Property encodes a fiscal year number as string following the logical pattern YYYY consisting of four digits.\n          The string matches the regex pattern [1-9][0-9]{3}\n          ',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String',
             '@com.sap.vocabularies.Common.v1.MutuallyExclusiveTerm#DatePart': true
         },
@@ -1055,7 +1088,7 @@ export default {
             '$DefaultValue': true,
             '$AppliesTo': ['Property'],
             '@Org.OData.Core.V1.Description':
-                'Property encodes a fiscal period as string following the logical pattern PPP consisting of three digits. \n          The string matches the regex pattern [0-9]{3}\n          ',
+                'Property encodes a fiscal period as string following the logical pattern PPP consisting of three digits.\n          The string matches the regex pattern [0-9]{3}\n          ',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String',
             '@com.sap.vocabularies.Common.v1.MutuallyExclusiveTerm#DatePart': true
         },
@@ -1065,7 +1098,7 @@ export default {
             '$DefaultValue': true,
             '$AppliesTo': ['Property'],
             '@Org.OData.Core.V1.Description':
-                'Property encodes a fiscal year and period as string following the logical pattern YYYYPPP consisting \n          of seven digits, where the last three digits represent the fiscal period in the year.\n          The string matches the regex pattern ([1-9][0-9]{3})([0-9]{3})\n          ',
+                'Property encodes a fiscal year and period as string following the logical pattern YYYYPPP consisting\n          of seven digits, where the last three digits represent the fiscal period in the year.\n          The string matches the regex pattern ([1-9][0-9]{3})([0-9]{3})\n          ',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String',
             '@com.sap.vocabularies.Common.v1.MutuallyExclusiveTerm#DatePart': true
         },
@@ -1075,7 +1108,7 @@ export default {
             '$DefaultValue': true,
             '$AppliesTo': ['Property'],
             '@Org.OData.Core.V1.Description':
-                'Property encodes a fiscal quarter number as string following the logical pattern Q consisting of a single digit. \n          The string matches the regex pattern [1-4]',
+                'Property encodes a fiscal quarter number as string following the logical pattern Q consisting of a single digit.\n          The string matches the regex pattern [1-4]',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String',
             '@com.sap.vocabularies.Common.v1.MutuallyExclusiveTerm#DatePart': true
         },
@@ -1085,7 +1118,7 @@ export default {
             '$DefaultValue': true,
             '$AppliesTo': ['Property'],
             '@Org.OData.Core.V1.Description':
-                'Property encodes a fiscal year and quarter as string following the logical pattern YYYYQ consisting of\n          five digits, where the last digit represents the quarter. \n          The string matches the regex pattern [1-9][0-9]{3}[1-4]',
+                'Property encodes a fiscal year and quarter as string following the logical pattern YYYYQ consisting of\n          five digits, where the last digit represents the quarter.\n          The string matches the regex pattern [1-9][0-9]{3}[1-4]',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String',
             '@com.sap.vocabularies.Common.v1.MutuallyExclusiveTerm#DatePart': true
         },
@@ -1095,7 +1128,7 @@ export default {
             '$DefaultValue': true,
             '$AppliesTo': ['Property'],
             '@Org.OData.Core.V1.Description':
-                'Property encodes a fiscal week number as string following the logical pattern WW consisting of two digits. \n          The string matches the regex pattern 0[1-9]|[1-4][0-9]|5[0-3]',
+                'Property encodes a fiscal week number as string following the logical pattern WW consisting of two digits.\n          The string matches the regex pattern 0[1-9]|[1-4][0-9]|5[0-3]',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String',
             '@com.sap.vocabularies.Common.v1.MutuallyExclusiveTerm#DatePart': true
         },
@@ -1105,7 +1138,7 @@ export default {
             '$DefaultValue': true,
             '$AppliesTo': ['Property'],
             '@Org.OData.Core.V1.Description':
-                'Property encodes a fiscal year and week as string following the logical pattern YYYYWW consisting of \n          six digits, where the last two digits represent the week number in the year. \n          The string matches the regex pattern [1-9][0-9]{3}(0[1-9]|[1-4][0-9]|5[0-3])',
+                'Property encodes a fiscal year and week as string following the logical pattern YYYYWW consisting of\n          six digits, where the last two digits represent the week number in the year.\n          The string matches the regex pattern [1-9][0-9]{3}(0[1-9]|[1-4][0-9]|5[0-3])',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String',
             '@com.sap.vocabularies.Common.v1.MutuallyExclusiveTerm#DatePart': true
         },
@@ -1249,7 +1282,7 @@ export default {
             '$UnderlyingType': 'Edm.String',
             '@Org.OData.Core.V1.Description': 'The namespace-qualified name of an action with an optional overload',
             '@Org.OData.Core.V1.LongDescription':
-                'The namespace-qualified name of an action, optionally followed by parentheses \n            containing the binding parameter type of a bound action overload to identify that bound overload, \n            or by empty parentheses to identify the unbound overload, like in the `Target` attribute of an `Annotation`.'
+                'The namespace-qualified name of an action, optionally followed by parentheses\n            containing the binding parameter type of a bound action overload to identify that bound overload,\n            or by empty parentheses to identify the unbound overload, like in the `Target` attribute of an `Annotation`.'
         },
         'SemanticKey': {
             '$Kind': 'Term',
@@ -1270,7 +1303,7 @@ export default {
             '@Org.OData.Core.V1.Description':
                 'Changes to the source properties or source entities may have side-effects on the target properties or entities.',
             '@Org.OData.Core.V1.LongDescription':
-                'If neither TargetProperties nor TargetEntities are specified, a change to the source property values may have unforeseeable side-effects.\nAn empty NavigationPropertyPath may be used in TargetEntities to specify that any property of the annotated entity type may be affected.\n\nSide effects without a `TriggerAction` happen immediately when modifying one of the source properties or source entities. Side effects with a `TriggerAction` are deferred until explicitly triggered via the `TriggerAction`.\n\nSpecial case where the side effect is annotated on an action: here the change trigger is the action invocation, so `SourceProperties` and `SourceEntities` have no meaning, \nonly `TargetProperties` and `TargetEntities` are relevant. They are addressed via the binding parameter of the action, e.g. if the binding parameter is named `_it`, all paths have to start with `_it/`.\nThis can also be used with OData V2 services: the annotation target is a function import that is marked with [`sap:action-for`](https://wiki.scn.sap.com/wiki/display/EmTech/SAP+Annotations+for+OData+Version+2.0#SAPAnnotationsforODataVersion2.0-Elementedm:FunctionImport), and all paths have to start with `_it/`.',
+                'If neither TargetProperties nor TargetEntities are specified, a change to the source property values may have unforeseeable side-effects.\nAn empty NavigationPropertyPath may be used in TargetEntities to specify that any property of the annotated entity type may be affected.\n\nSide effects without a `TriggerAction` happen immediately when modifying one of the source properties or source entities. Side effects with a `TriggerAction` are deferred until explicitly triggered via the `TriggerAction`.\n\nSpecial case where the side effect is annotated on an action: here the change trigger is the action invocation, so `SourceProperties` and `SourceEntities` have no meaning,\nonly `TargetProperties` and `TargetEntities` are relevant. They are addressed via the binding parameter of the action, e.g. if the binding parameter is named `_it`, all paths have to start with `_it/`.\nThis can also be used with OData V2 services: the annotation target is a function import that is marked with [`sap:action-for`](https://wiki.scn.sap.com/wiki/display/EmTech/SAP+Annotations+for+OData+Version+2.0#SAPAnnotationsforODataVersion2.0-Elementedm:FunctionImport), and all paths have to start with `_it/`.',
             'SourceProperties': {
                 '$Collection': true,
                 '$Type': 'Edm.PropertyPath',
@@ -1315,14 +1348,6 @@ export default {
                 '@Org.OData.Core.V1.LongDescription':
                     'Binding parameter type of the trigger action is the entity type annotated with `SideEffects`. The action does not have any additional parameters and does not return anything. It either succeeds with `204 No Content` or it fails with `4xx` or `5xx`.'
             },
-            'TriggeredIndicator': {
-                '$Type': 'Edm.Boolean',
-                '$Nullable': true,
-                '@com.sap.vocabularies.Common.v1.Experimental': true,
-                '@Org.OData.Core.V1.Description': 'Indicates whether the side-effect has already happened',
-                '@Org.OData.Core.V1.LongDescription':
-                    'The value of this property typically is a Path expression pointing to a boolean property. It can be used by clients to defer expensive refresh calls until they are actually needed and instead just request the referenced indicator property. Servers can choose to return indicator properties even if not explicitly requested.'
-            },
             'Discretionary': {
                 '$Type': 'Edm.Boolean',
                 '$DefaultValue': false,
@@ -1345,16 +1370,16 @@ export default {
             'ValidationMessage': 1,
             'ValidationMessage@Org.OData.Core.V1.Description': 'Validation messages are assigned to a target',
             'ValidationMessage@Org.OData.Core.V1.LongDescription':
-                'This side effect type indicates that validation messages may result from changes of source properties or entities.  \nThus, a validation request can be sent either in conjunction with or separately after a modifying request. \nValidation messages shall be persisted with the draft and immediately available in a subsequent request without repeating the validation logic.',
+                'This side effect type indicates that validation messages may result from changes of source properties or entities.\nThus, a validation request can be sent either in conjunction with or separately after a modifying request.\nValidation messages shall be persisted with the draft and immediately available in a subsequent request without repeating the validation logic.',
             'ValueChange': 2,
             'ValueChange@Org.OData.Core.V1.Description': 'The value of a target changes',
             'ValueChange@Org.OData.Core.V1.LongDescription':
-                'This side effect type declares that changes to source properties or entities may impact the values of any, one or multiple target properties or entities.  \nUpon modification preparation logic is performed that determines additional values to be stored in the draft document.',
+                'This side effect type declares that changes to source properties or entities may impact the values of any, one or multiple target properties or entities.\nUpon modification preparation logic is performed that determines additional values to be stored in the draft document.',
             'FieldControlChange': 4,
             'FieldControlChange@Org.OData.Core.V1.Description':
                 'The value of the Common.FieldControl annotation of a target changes',
             'FieldControlChange@Org.OData.Core.V1.LongDescription':
-                'This side effect type specifies that source properties or entities may impact the dynamic field control state of any, one or multiple target properties or entities.  \nUpon modification field control logic is invoked so that meta-information like hidden or read-only is determined.'
+                'This side effect type specifies that source properties or entities may impact the dynamic field control state of any, one or multiple target properties or entities.\nUpon modification field control logic is invoked so that meta-information like hidden or read-only is determined.'
         },
         'DefaultValuesFunction': {
             '$Kind': 'Term',
@@ -1373,7 +1398,7 @@ export default {
             '@Org.OData.Core.V1.Description':
                 'Function import to derive a default value for the property from a given context.',
             '@Org.OData.Core.V1.LongDescription':
-                '\n            Function import has two parameters of complex types:\n\n            - `parameters`, a structure resembling the entity type the parameter entity set related to the entity set of the annotated property\n\n            - `properties`, a structure resembling the type of the entity set of the annotated property\n\n            The return type must be of the same type as the annotated property.\n\n            Arguments passed to the function import are used as context for deriving the default value. \n            The function import returns this default value, or null in case such a value could not be determined.\n          '
+                '\n            Function import has two parameters of complex types:\n\n            - `parameters`, a structure resembling the entity type the parameter entity set related to the entity set of the annotated property\n\n            - `properties`, a structure resembling the type of the entity set of the annotated property\n\n            The return type must be of the same type as the annotated property.\n\n            Arguments passed to the function import are used as context for deriving the default value.\n            The function import returns this default value, or null in case such a value could not be determined.\n          '
         },
         'FilterDefaultValue': {
             '$Kind': 'Term',
@@ -1409,7 +1434,7 @@ export default {
             '$AppliesTo': ['EntitySet', 'EntityType'],
             '@Org.OData.Core.V1.Description': 'List of sort criteria',
             '@Org.OData.Core.V1.LongDescription':
-                'The items of the annotated entity set or the items of the \n          collection of the annotated entity type are sorted by the first entry of the SortOrder collection. \n          Items with same value for this first sort criteria are sorted by the second entry of the SortOrder collection, and so on. '
+                'The items of the annotated entity set or the items of the\n          collection of the annotated entity type are sorted by the first entry of the SortOrder collection.\n          Items with same value for this first sort criteria are sorted by the second entry of the SortOrder collection, and so on. '
         },
         'SortOrderType': {
             '$Kind': 'ComplexType',
@@ -1476,13 +1501,13 @@ export default {
                 '$Type': 'Edm.PropertyPath',
                 '$Nullable': true,
                 '@Org.OData.Core.V1.Description':
-                    'Property holding the descendant count for a hierarchy node. \n            The descendant count of a node is the number of its descendants in the hierarchy structure of the result considering \n            only those nodes matching any specified $filter and $search. A property holding descendant counts has an integer \n            data type.'
+                    'Property holding the descendant count for a hierarchy node.\n            The descendant count of a node is the number of its descendants in the hierarchy structure of the result considering\n            only those nodes matching any specified $filter and $search. A property holding descendant counts has an integer\n            data type.'
             },
             'NodeDrillStateProperty': {
                 '$Type': 'Edm.PropertyPath',
                 '$Nullable': true,
                 '@Org.OData.Core.V1.Description':
-                    'Property holding the drill state of a hierarchy node. The drill state is indicated \n            by one of the following string values: collapsed, expanded, or leaf. For an expanded node, its \n            children are included in the result collection. For a collapsed node, the children are included in the entity set, but \n            they are not part of the result collection. Retrieving them requires a relaxed filter expression or a separate request \n            filtering on the parent node ID with the ID of the collapsed node. A leaf does not have any child in the entity set.\n            '
+                    'Property holding the drill state of a hierarchy node. The drill state is indicated\n            by one of the following string values: collapsed, expanded, or leaf. For an expanded node, its\n            children are included in the result collection. For a collapsed node, the children are included in the entity set, but\n            they are not part of the result collection. Retrieving them requires a relaxed filter expression or a separate request\n            filtering on the parent node ID with the ID of the collapsed node. A leaf does not have any child in the entity set.\n            '
             }
         },
         'CreatedAt': {

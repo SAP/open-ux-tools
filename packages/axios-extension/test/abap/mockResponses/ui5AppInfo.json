@@ -1,0 +1,26 @@
+{
+    "ExampleApp": {
+        "name": "ExampleApp",
+        "url": "/sap/bc/ui5_ui5/sap/example_app",
+        "manifestUrl": "/sap/bc/lrep/content/apps/ExampleApp/app/sap/example_app/manifest.appdescr",
+        "self": {
+            "name": "ExampleApp",
+            "url": "/sap/bc/ui5_ui5/sap/example_app"
+        },
+        "asyncHints": {
+            "libs": [
+                {
+                    "name": "sap.ui.core"
+                }
+            ],
+            "requests": [
+                {
+                    "name": "sap.ui.fl.changes",
+                    "url": "/sap/bc/lrep/flex/data/cachbuster1/ExampleApp.Component",
+                    "reference": "ExampleApp.Component",
+                    "cachebusterToken": "cachbuster1"
+                }
+            ]
+        }
+    }
+}

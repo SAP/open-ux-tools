@@ -5,10 +5,17 @@ import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join, dirname } from 'path';
-import type { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';
+import {
+    TableType,
+    type FEOPSettings,
+    type FioriElementsApp,
+    type LROPSettings,
+    type WorklistSettings
+} from '../src/types';
 import { promisify } from 'util';
 import { exec as execCP } from 'child_process';
 const exec = promisify(execCP);
+import { ServiceType } from '@sap-ux/odata-service-writer';
 
 export const testOutputDir = join(__dirname, 'test-output');
 
@@ -65,7 +72,8 @@ export const feBaseConfig = (
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: 'test-fe-template'
-            }
+            },
+            projectType: 'EDMXBackend'
         },
         appOptions: {
             loadReuseLibs: true
@@ -120,6 +128,17 @@ export const v4TemplateSettings: LROPSettings | FEOPSettings | WorklistSettings 
     }
 };
 
+export const v4TemplateSettingsTreeTable: LROPSettings | FEOPSettings | WorklistSettings = {
+    entityConfig: {
+        mainEntityName: 'Travel',
+        navigationEntity: {
+            EntitySet: 'Booking',
+            Name: '_Booking'
+        }
+    },
+    tableType: TableType.TREE,
+    hierarchyQualifier: 'HierarchyNode'
+};
 export const v2TemplateSettings: LROPSettings | WorklistSettings = {
     entityConfig: {
         mainEntityName: 'SEPMRA_C_PD_Product',
@@ -146,7 +165,7 @@ export const projectChecks = async (
     config: FioriElementsApp<unknown>,
     debugFull = false
 ): Promise<void> => {
-    if (debugFull && (config.appOptions?.typescript || config.appOptions?.eslint)) {
+    if (debugFull && (config.appOptions?.typescript ?? config.appOptions?.eslint)) {
         // Do additonal checks on generated projects
         const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
         let npmResult;
@@ -157,7 +176,7 @@ export const projectChecks = async (
             console.log('stderr:', npmResult.stderr);
 
             // run checks on the project
-            if (config.appOptions?.typescript) {
+            if (config.appOptions?.typescript && config.service?.type === ServiceType.EDMX) {
                 // Check TS Types
                 npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
                 console.log('stdout:', npmResult.stdout);

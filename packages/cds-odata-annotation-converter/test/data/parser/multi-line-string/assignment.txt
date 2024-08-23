@@ -1,0 +1,16 @@
+UI.HeaderInfo : {
+    Title          : {
+        $Type : 'UI.DataField',
+        Value : title,
+    },
+    Description    : {
+        $Type : 'UI.DataField',
+        Value : ```
+            test \u{0055}nicode escape sequences are possible,     
+              just like common escapes from JavaScript such as    
+                 \r \t \n and more!
+         ```,
+    },
+    TypeNamePlural : `{i18n>test}`,
+    TypeName       : `\u{0055}nicode OK Emoji: \u{1f197}`,
+}

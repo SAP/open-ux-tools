@@ -66,7 +66,8 @@ export function getServiceProvider(
             auth: {
                 username: endpoint.Credentials?.username,
                 password: endpoint.Credentials?.password
-            }
+            },
+            params: endpoint.Client ? { 'sap-client': endpoint.Client } : undefined
         });
     }
     return abapServiceProvider;
@@ -246,6 +247,9 @@ export async function checkTransportRequests(
         }
     } catch (e) {
         logger.error(t('error.getTransportRequestsError'));
+        if (e.response?.status === 403) {
+            logger.warn(t('warning.guidedAnswersLink'));
+        }
         logger.debug(e.message);
     }
     return {

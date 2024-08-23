@@ -39,6 +39,7 @@ describe('Test findAllApps()', () => {
             'single_apps-custom_webapp_fiori_elements',
             'single_apps-custom_webapp_freestyle',
             'CAPJava_fiori_elements-fiori_elements_no_package_json',
+            'CAPJava_mix-fiori_elements_with_ui5tooling_and_localyaml',
             'CAPJava_fiori_elements-fiori_elements',
             'CAPJava_freestyle-freestyle',
             'CAPJava_mix-fiori_elements',
@@ -209,6 +210,10 @@ describe('Test findFioriArtifacts()', () => {
         ]);
         expect(result.libraries).toEqual([
             {
+                libraryPath: join(testDataRoot, 'project/find-all-apps/libraries/dot-library/src/com/sap/library'),
+                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/dot-library')
+            },
+            {
                 manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
                 manifest: {
                     'sap.app': {
@@ -229,6 +234,10 @@ describe('Test findFioriArtifacts()', () => {
         expect(result.adaptations).toBeUndefined();
         expect(result.extensions).toBeUndefined();
         expect(result.libraries).toEqual([
+            {
+                libraryPath: join(testDataRoot, 'project/find-all-apps/libraries/dot-library/src/com/sap/library'),
+                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/dot-library')
+            },
             {
                 manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
                 manifest: {
@@ -292,7 +301,14 @@ describe('Test findFioriArtifacts()', () => {
 
 describe('Test findCapProjects()', () => {
     test('Find CAP projects', async () => {
-        const capProjects = (await findCapProjects({ wsFolders: [join(__dirname, '../test-data/project')] })).sort();
+        const capProjects = (
+            await findCapProjects({
+                wsFolders: [
+                    join(__dirname, '../test-data/project/cap-root/'),
+                    join(__dirname, '../test-data/project/find-all-apps/')
+                ]
+            })
+        ).sort();
         const expectedProjects = [
             join(__dirname, '../test-data/project/cap-root/valid-cap-root'),
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_fiori_elements'),

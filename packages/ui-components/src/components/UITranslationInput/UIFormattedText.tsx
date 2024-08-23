@@ -124,7 +124,7 @@ export function formatText(text: string, values: MessageTextValues): string {
  * @param props Component properties.
  * @returns Component to render formatted text.
  */
-export function UIFormattedText(props: UIFormattedTextProps): ReactElement {
+export function UIFormattedText(props: Readonly<UIFormattedTextProps>): ReactElement {
     const { children, values = {} } = props;
     const result = formatTextGeneric<JSX.Element>(
         children,

@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-config"
     },
-    "version": "0.21.0",
+    "version": "0.24.0",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -37,11 +37,11 @@
         "semver": "7.5.4"
     },
     "devDependencies": {
-        "@types/lodash": "4.14.198",
+        "@sap-ux/store": "workspace:*",
+        "@types/lodash": "4.14.202",
         "@types/semver": "7.5.2"
     },
     "engines": {
-        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
         "node": ">=18.x"
     }
 }

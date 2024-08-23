@@ -1,5 +1,35 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.3.1
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core@0.2.1
+
+## 0.3.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/odata-annotation-core@0.2.0
+
+## 0.2.2
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [eb0b7b37]
+    -   @sap-ux/odata-annotation-core@0.1.8
+
 ## 0.2.0
 
 ### Minor Changes

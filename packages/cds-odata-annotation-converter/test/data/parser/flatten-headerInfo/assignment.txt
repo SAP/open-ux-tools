@@ -1,0 +1,17 @@
+UI : {
+    HeaderInfo.TypeName: 'Bob''s car',
+    HeaderInfo.TypeNamePlural: ,
+    HeaderInfo.Title:{
+        $Type : 'UI.DataField',
+        Value : 'audi',
+    },
+    HeaderInfo.ImageUrl: 'sampleurl',
+    Chart.AxisScaling.AutoScaleBehavior.ZeroAlwaysVisible: true,
+    Chart.ChartType: #Area,
+    Chart #second: {
+        $Type     : 'UI.ChartDefinitionType',
+        ChartType : #Bar,
+        AxisScaling.AutoScaleBehavior.ZeroAlwaysVisible: false
+      },
+    HeaderInfo.TypeImageUrl: 
+}

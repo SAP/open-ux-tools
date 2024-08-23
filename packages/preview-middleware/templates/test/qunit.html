@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%- framework %> tests</title>
+	<meta charset="utf-8">
+
+	<script
+		src="<%- basePath %>/resources/sap-ui-core.js"
+		data-sap-ui-theme='<%- theme %>'
+		data-sap-ui-resourceroots='{
+			"<%- id %>": "<%- basePath %>"
+		}'
+		data-sap-ui-animation="false"
+		data-sap-ui-compatVersion="edge"
+		data-sap-ui-async="true">
+	</script>
+
+	<script src="<%- initPath %>"></script>
+
+	<link rel="stylesheet" type="text/css" href="<%- basePath %>/resources/sap/ui/thirdparty/qunit-2.css">
+</head>
+<body>
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+</body>
+</html>

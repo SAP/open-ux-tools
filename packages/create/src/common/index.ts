@@ -1,4 +1,5 @@
 import { spawnSync } from 'child_process';
+export { promptYUIQuestions } from './prompts';
 
 /**
  * Run npm install command.

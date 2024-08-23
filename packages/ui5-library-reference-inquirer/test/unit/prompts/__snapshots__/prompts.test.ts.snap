@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getQuestions getQuestions, no project, libs or options 1`] = `
+Array [
+  Object {
+    "choices": undefined,
+    "default": [Function],
+    "guiOptions": Object {
+      "breadcrumb": true,
+    },
+    "message": "Project folder path",
+    "name": "targetProjectFolder",
+    "type": "list",
+    "validate": [Function],
+  },
+  Object {
+    "choices": Array [
+      Object {
+        "name": "Workspace",
+        "value": "Workspace",
+      },
+    ],
+    "default": 0,
+    "guiOptions": Object {
+      "breadcrumb": true,
+    },
+    "message": "Reusable Library Source",
+    "name": "source",
+    "type": "list",
+  },
+  Object {
+    "additionalMessages": [Function],
+    "choices": undefined,
+    "guiOptions": Object {
+      "breadcrumb": true,
+    },
+    "message": "Select Reusable Libraries",
+    "name": "referenceLibraries",
+    "type": "checkbox",
+    "validate": [Function],
+  },
+]
+`;

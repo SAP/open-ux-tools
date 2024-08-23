@@ -1,0 +1,31 @@
+{
+  "type": "annotation-group",
+  "range": "[(0,0)..(0,17)]",
+  "name": {
+    "type": "identifier",
+    "range": "[(0,0)..(0,11)]",
+    "value": "ObjectModel",
+    "quoted": false
+  },
+  "colon": {
+    "type": "token",
+    "range": "[(0,11)..(0,12)]",
+    "value": ":"
+  },
+  "items": {
+    "type": "annotation-group-items",
+    "range": "[(0,13)..(0,17)]",
+    "openToken": {
+      "type": "token",
+      "range": "[(0,13)..(0,14)]",
+      "value": "{"
+    },
+    "closeToken": {
+      "type": "token",
+      "range": "[(0,16)..(0,17)]",
+      "value": "}"
+    },
+    "items": [],
+    "commas": []
+  }
+}

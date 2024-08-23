@@ -17,15 +17,7 @@ esbuildOptions.entryPoints = {
     app: './src/index.tsx'
 };
 esbuildOptions.format = 'esm';
-esbuildOptions.plugins = esbuildOptions.plugins.concat(
-    [NodeModulesPolyfills.NodeModulesPolyfillPlugin()],
-    copy({
-        assets: {
-            from: ['./src/favicon.ico'],
-            to: ['./']
-        }
-    })
-);
+esbuildOptions.plugins = esbuildOptions.plugins.concat([NodeModulesPolyfills.NodeModulesPolyfillPlugin()]);
 
 module.exports = {
     esbuildOptions

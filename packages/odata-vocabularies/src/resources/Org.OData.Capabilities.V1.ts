@@ -1,4 +1,4 @@
-// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -8,7 +8,7 @@ export default {
             '$Include': [
                 {
                     '$Namespace': 'Org.OData.Authorization.V1',
-                    '$Alias': 'Auth'
+                    '$Alias': 'Authorization'
                 }
             ]
         },
@@ -159,13 +159,17 @@ export default {
             '$AppliesTo': ['EntitySet', 'Singleton', 'Function', 'FunctionImport', 'NavigationProperty'],
             '@Org.OData.Core.V1.Description': 'Change tracking capabilities of this service or entity set'
         },
-        'ChangeTrackingType': {
+        'ChangeTrackingBase': {
             '$Kind': 'ComplexType',
             'Supported': {
                 '$Type': 'Edm.Boolean',
                 '$DefaultValue': true,
-                '@Org.OData.Core.V1.Description': 'This entity set supports the odata.track-changes preference'
-            },
+                '@Org.OData.Core.V1.Description': 'odata.track-changes preference is supported'
+            }
+        },
+        'ChangeTrackingType': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'Org.OData.Capabilities.V1.ChangeTrackingBase',
             'FilterableProperties': {
                 '$Collection': true,
                 '$Type': 'Edm.PropertyPath',
@@ -184,17 +188,21 @@ export default {
         'CountRestrictions': {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Capabilities.V1.CountRestrictionsType',
-            '$AppliesTo': ['EntitySet', 'Singleton', 'Collection'],
+            '$AppliesTo': ['EntitySet', 'Collection'],
             '@Org.OData.Core.V1.AppliesViaContainer': true,
             '@Org.OData.Core.V1.Description': 'Restrictions on /$count path suffix and $count=true system query option'
         },
-        'CountRestrictionsType': {
+        'CountRestrictionsBase': {
             '$Kind': 'ComplexType',
             'Countable': {
                 '$Type': 'Edm.Boolean',
                 '$DefaultValue': true,
-                '@Org.OData.Core.V1.Description': 'Entities can be counted (only valid if targeting an entity set)'
-            },
+                '@Org.OData.Core.V1.Description': 'Instances can be counted in requests targeting a collection'
+            }
+        },
+        'CountRestrictionsType': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'Org.OData.Capabilities.V1.CountRestrictionsBase',
             'NonCountableProperties': {
                 '$Collection': true,
                 '$Type': 'Edm.PropertyPath',
@@ -484,12 +492,12 @@ export default {
                     {
                         'Value': 'multipart/mixed',
                         '@Org.OData.Core.V1.Description':
-                            'Multipart Batch Format, see http://docs.oasis-open.org/odata/odata/v4.01/cs01/part1-protocol/odata-v4.01-cs01-part1-protocol.html#sec_MultipartBatchFormat'
+                            '[Multipart Batch Format](http://docs.oasis-open.org/odata/odata/v4.01/cs01/part1-protocol/odata-v4.01-cs01-part1-protocol.html#sec_MultipartBatchFormat)'
                     },
                     {
                         'Value': 'application/json',
                         '@Org.OData.Core.V1.Description':
-                            'JSON Batch Format, see http://docs.oasis-open.org/odata/odata-json-format/v4.01/cs01/odata-json-format-v4.01-cs01.html#sec_BatchRequestsandResponses'
+                            '[JSON Batch Format](http://docs.oasis-open.org/odata/odata-json-format/v4.01/cs01/odata-json-format-v4.01-cs01.html#sec_BatchRequestsandResponses)'
                     }
                 ]
             }
@@ -510,7 +518,7 @@ export default {
             '@Org.OData.Core.V1.AppliesViaContainer': true,
             '@Org.OData.Core.V1.Description': 'Restrictions on filter expressions'
         },
-        'FilterRestrictionsType': {
+        'FilterRestrictionsBase': {
             '$Kind': 'ComplexType',
             '@Org.OData.Validation.V1.ApplicableTerms': ['Org.OData.Core.V1.Description'],
             'Filterable': {
@@ -523,6 +531,16 @@ export default {
                 '$DefaultValue': false,
                 '@Org.OData.Core.V1.Description': '$filter is required'
             },
+            'MaxLevels': {
+                '$Type': 'Edm.Int32',
+                '$DefaultValue': -1,
+                '@Org.OData.Core.V1.Description':
+                    'The maximum number of levels (including recursion) that can be traversed in a filter expression. A value of -1 indicates there is no restriction.'
+            }
+        },
+        'FilterRestrictionsType': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'Org.OData.Capabilities.V1.FilterRestrictionsBase',
             'RequiredProperties': {
                 '$Collection': true,
                 '$Type': 'Edm.PropertyPath',
@@ -539,12 +557,6 @@ export default {
                 '$Type': 'Org.OData.Capabilities.V1.FilterExpressionRestrictionType',
                 '@Org.OData.Core.V1.Description':
                     'These properties only allow a subset of filter expressions. A valid filter expression for a single property can be enclosed in parentheses and combined by `and` with valid expressions for other properties.'
-            },
-            'MaxLevels': {
-                '$Type': 'Edm.Int32',
-                '$DefaultValue': -1,
-                '@Org.OData.Core.V1.Description':
-                    'The maximum number of levels (including recursion) that can be traversed in a filter expression. A value of -1 indicates there is no restriction.'
             }
         },
         'FilterExpressionRestrictionType': {
@@ -606,14 +618,18 @@ export default {
             '@Org.OData.Core.V1.AppliesViaContainer': true,
             '@Org.OData.Core.V1.Description': 'Restrictions on orderby expressions'
         },
-        'SortRestrictionsType': {
+        'SortRestrictionsBase': {
             '$Kind': 'ComplexType',
             '@Org.OData.Validation.V1.ApplicableTerms': ['Org.OData.Core.V1.Description'],
             'Sortable': {
                 '$Type': 'Edm.Boolean',
                 '$DefaultValue': true,
                 '@Org.OData.Core.V1.Description': '$orderby is supported'
-            },
+            }
+        },
+        'SortRestrictionsType': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'Org.OData.Capabilities.V1.SortRestrictionsBase',
             'AscendingOnlyProperties': {
                 '$Collection': true,
                 '$Type': 'Edm.PropertyPath',
@@ -637,7 +653,7 @@ export default {
             '@Org.OData.Core.V1.AppliesViaContainer': true,
             '@Org.OData.Core.V1.Description': 'Restrictions on expand expressions'
         },
-        'ExpandRestrictionsType': {
+        'ExpandRestrictionsBase': {
             '$Kind': 'ComplexType',
             '@Org.OData.Validation.V1.ApplicableTerms': ['Org.OData.Core.V1.Description'],
             'Expandable': {
@@ -650,6 +666,16 @@ export default {
                 '$DefaultValue': false,
                 '@Org.OData.Core.V1.Description': '$expand is supported for stream properties and media streams'
             },
+            'MaxLevels': {
+                '$Type': 'Edm.Int32',
+                '$DefaultValue': -1,
+                '@Org.OData.Core.V1.Description':
+                    'The maximum number of levels that can be expanded in a expand expression. A value of -1 indicates there is no restriction.'
+            }
+        },
+        'ExpandRestrictionsType': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'Org.OData.Capabilities.V1.ExpandRestrictionsBase',
             'NonExpandableProperties': {
                 '$Collection': true,
                 '$Type': 'Edm.NavigationPropertyPath',
@@ -660,12 +686,6 @@ export default {
                 '$Type': 'Edm.PropertyPath',
                 '@Org.OData.Core.V1.Description': 'These stream properties cannot be used in expand expressions',
                 '@Org.OData.Core.V1.RequiresType': 'Edm.Stream'
-            },
-            'MaxLevels': {
-                '$Type': 'Edm.Int32',
-                '$DefaultValue': -1,
-                '@Org.OData.Core.V1.Description':
-                    'The maximum number of levels that can be expanded in a expand expression. A value of -1 indicates there is no restriction.'
             }
         },
         'SearchRestrictions': {
@@ -695,7 +715,7 @@ export default {
             'none': 0,
             'none@Org.OData.Core.V1.Description': 'Single search term',
             'AND': 1,
-            'AND@Org.OData.Core.V1.Description': 'Multiple search terms separated by `AND`',
+            'AND@Org.OData.Core.V1.Description': 'Multiple search terms, optionally separated by `AND`',
             'OR': 2,
             'OR@Org.OData.Core.V1.Description': 'Multiple search terms separated by `OR`',
             'NOT': 4,
@@ -728,27 +748,12 @@ export default {
             '@Org.OData.Core.V1.AppliesViaContainer': true,
             '@Org.OData.Core.V1.Description': 'Restrictions on insert operations'
         },
-        'InsertRestrictionsType': {
+        'InsertRestrictionsBase': {
             '$Kind': 'ComplexType',
             'Insertable': {
                 '$Type': 'Edm.Boolean',
                 '$DefaultValue': true,
                 '@Org.OData.Core.V1.Description': 'Entities can be inserted'
-            },
-            'NonInsertableProperties': {
-                '$Collection': true,
-                '$Type': 'Edm.PropertyPath',
-                '@Org.OData.Core.V1.Description': 'These structural properties cannot be specified on insert'
-            },
-            'NonInsertableNavigationProperties': {
-                '$Collection': true,
-                '$Type': 'Edm.NavigationPropertyPath',
-                '@Org.OData.Core.V1.Description': 'These navigation properties do not allow deep inserts'
-            },
-            'RequiredProperties': {
-                '$Collection': true,
-                '$Type': 'Edm.PropertyPath',
-                '@Org.OData.Core.V1.Description': 'These structural properties must be specified on insert'
             },
             'MaxLevels': {
                 '$Type': 'Edm.Int32',
@@ -761,13 +766,6 @@ export default {
                 '$DefaultValue': true,
                 '@Org.OData.Core.V1.Description':
                     'Entities of a specific derived type can be created by specifying a type-cast segment'
-            },
-            'Permissions': {
-                '$Collection': true,
-                '$Type': 'Org.OData.Capabilities.V1.PermissionType',
-                '$Nullable': true,
-                '@Org.OData.Core.V1.Description':
-                    'Required permissions. One of the specified sets of scopes is required to perform the insert.'
             },
             'QueryOptions': {
                 '$Type': 'Org.OData.Capabilities.V1.ModificationQueryOptionsType',
@@ -798,6 +796,32 @@ export default {
                 '$Collection': true,
                 '$Type': 'Org.OData.Capabilities.V1.HttpResponse',
                 '@Org.OData.Core.V1.Description': 'Possible error responses returned by the request.'
+            }
+        },
+        'InsertRestrictionsType': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'Org.OData.Capabilities.V1.InsertRestrictionsBase',
+            'NonInsertableProperties': {
+                '$Collection': true,
+                '$Type': 'Edm.PropertyPath',
+                '@Org.OData.Core.V1.Description': 'These structural properties cannot be specified on insert'
+            },
+            'NonInsertableNavigationProperties': {
+                '$Collection': true,
+                '$Type': 'Edm.NavigationPropertyPath',
+                '@Org.OData.Core.V1.Description': 'These navigation properties do not allow deep inserts'
+            },
+            'RequiredProperties': {
+                '$Collection': true,
+                '$Type': 'Edm.PropertyPath',
+                '@Org.OData.Core.V1.Description': 'These structural properties must be specified on insert'
+            },
+            'Permissions': {
+                '$Collection': true,
+                '$Type': 'Org.OData.Capabilities.V1.PermissionType',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description':
+                    'Required permissions. One of the specified sets of scopes is required to perform the insert.'
             }
         },
         'PermissionType': {
@@ -855,7 +879,7 @@ export default {
             '@Org.OData.Core.V1.AppliesViaContainer': true,
             '@Org.OData.Core.V1.Description': 'Restrictions on update operations'
         },
-        'UpdateRestrictionsType': {
+        'UpdateRestrictionsBase': {
             '$Kind': 'ComplexType',
             'Updatable': {
                 '$Type': 'Edm.Boolean',
@@ -890,21 +914,6 @@ export default {
                 '$DefaultValue': true,
                 '@Org.OData.Core.V1.Description':
                     'Members of collections can be updated via a PATCH request with a type-cast segment and a `/$each` segment'
-            },
-            'NonUpdatableProperties': {
-                '$Collection': true,
-                '$Type': 'Edm.PropertyPath',
-                '@Org.OData.Core.V1.Description': 'These structural properties cannot be updated'
-            },
-            'NonUpdatableNavigationProperties': {
-                '$Collection': true,
-                '$Type': 'Edm.NavigationPropertyPath',
-                '@Org.OData.Core.V1.Description': 'These navigation properties do not allow rebinding'
-            },
-            'RequiredProperties': {
-                '$Collection': true,
-                '$Type': 'Edm.PropertyPath',
-                '@Org.OData.Core.V1.Description': 'These structural properties must be specified on update'
             },
             'MaxLevels': {
                 '$Type': 'Edm.Int32',
@@ -948,6 +957,25 @@ export default {
                 '$Collection': true,
                 '$Type': 'Org.OData.Capabilities.V1.HttpResponse',
                 '@Org.OData.Core.V1.Description': 'Possible error responses returned by the request.'
+            }
+        },
+        'UpdateRestrictionsType': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'Org.OData.Capabilities.V1.UpdateRestrictionsBase',
+            'NonUpdatableProperties': {
+                '$Collection': true,
+                '$Type': 'Edm.PropertyPath',
+                '@Org.OData.Core.V1.Description': 'These structural properties cannot be specified on update'
+            },
+            'NonUpdatableNavigationProperties': {
+                '$Collection': true,
+                '$Type': 'Edm.NavigationPropertyPath',
+                '@Org.OData.Core.V1.Description': 'These navigation properties do not allow rebinding'
+            },
+            'RequiredProperties': {
+                '$Collection': true,
+                '$Type': 'Edm.PropertyPath',
+                '@Org.OData.Core.V1.Description': 'These structural properties must be specified on update'
             }
         },
         'HttpMethod': {
@@ -997,17 +1025,12 @@ export default {
             '@Org.OData.Core.V1.AppliesViaContainer': true,
             '@Org.OData.Core.V1.Description': 'Restrictions on delete operations'
         },
-        'DeleteRestrictionsType': {
+        'DeleteRestrictionsBase': {
             '$Kind': 'ComplexType',
             'Deletable': {
                 '$Type': 'Edm.Boolean',
                 '$DefaultValue': true,
                 '@Org.OData.Core.V1.Description': 'Entities can be deleted'
-            },
-            'NonDeletableNavigationProperties': {
-                '$Collection': true,
-                '$Type': 'Edm.NavigationPropertyPath',
-                '@Org.OData.Core.V1.Description': 'These navigation properties do not allow DeleteLink requests'
             },
             'MaxLevels': {
                 '$Type': 'Edm.Int32',
@@ -1058,6 +1081,15 @@ export default {
                 '$Collection': true,
                 '$Type': 'Org.OData.Capabilities.V1.HttpResponse',
                 '@Org.OData.Core.V1.Description': 'Possible error responses returned by the request.'
+            }
+        },
+        'DeleteRestrictionsType': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'Org.OData.Capabilities.V1.DeleteRestrictionsBase',
+            'NonDeletableNavigationProperties': {
+                '$Collection': true,
+                '$Type': 'Edm.NavigationPropertyPath',
+                '@Org.OData.Core.V1.Description': 'These navigation properties do not allow DeleteLink requests'
             }
         },
         'CollectionPropertyRestrictions': {
@@ -1378,6 +1410,100 @@ export default {
             '@Org.OData.Core.V1.RequiresType': 'Edm.Stream',
             '@Org.OData.Core.V1.Description':
                 'Stream property or media stream supports update of its media edit URL and/or media read URL'
+        },
+        'DefaultCapabilities': {
+            '$Kind': 'Term',
+            '$Type': 'Org.OData.Capabilities.V1.DefaultCapabilitiesType',
+            '$AppliesTo': ['EntityContainer'],
+            '@Org.OData.Core.V1.Description':
+                'Default capability settings for all collection-valued resources in the container',
+            '@Org.OData.Core.V1.LongDescription':
+                'Annotating a specific capability term, which is included as property in `DefaultCapabilitiesType`, for a specific collection-valued resource overrides the default capability with the specified properties using PATCH semantics:\n- Primitive or collection-valued properties specified in the specific capability term replace the corresponding properties specified in `DefaultCapabilities`\n- Complex-valued properties specified in the specific capability term override the corresponding properties specified in `DefaultCapabilities` using PATCH semantics recursively\n- Properties specified neither in the specific term nor in `DefaultCapabilities` have their default value'
+        },
+        'DefaultCapabilitiesType': {
+            '$Kind': 'ComplexType',
+            'ChangeTracking': {
+                '$Type': 'Org.OData.Capabilities.V1.ChangeTrackingBase',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Change tracking capabilities'
+            },
+            'CountRestrictions': {
+                '$Type': 'Org.OData.Capabilities.V1.CountRestrictionsBase',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description':
+                    'Restrictions on /$count path suffix and $count=true system query option'
+            },
+            'IndexableByKey': {
+                '$Type': 'Org.OData.Core.V1.Tag',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Supports key values according to OData URL conventions'
+            },
+            'TopSupported': {
+                '$Type': 'Org.OData.Core.V1.Tag',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Supports $top'
+            },
+            'SkipSupported': {
+                '$Type': 'Org.OData.Core.V1.Tag',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Supports $skip'
+            },
+            'ComputeSupported': {
+                '$Type': 'Org.OData.Core.V1.Tag',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Supports $compute'
+            },
+            'SelectSupport': {
+                '$Type': 'Org.OData.Capabilities.V1.SelectSupportType',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Support for $select and nested query options within $select'
+            },
+            'FilterRestrictions': {
+                '$Type': 'Org.OData.Capabilities.V1.FilterRestrictionsBase',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Restrictions on filter expressions'
+            },
+            'SortRestrictions': {
+                '$Type': 'Org.OData.Capabilities.V1.SortRestrictionsBase',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Restrictions on orderby expressions'
+            },
+            'ExpandRestrictions': {
+                '$Type': 'Org.OData.Capabilities.V1.ExpandRestrictionsBase',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Restrictions on expand expressions'
+            },
+            'SearchRestrictions': {
+                '$Type': 'Org.OData.Capabilities.V1.SearchRestrictionsType',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Restrictions on search expressions'
+            },
+            'InsertRestrictions': {
+                '$Type': 'Org.OData.Capabilities.V1.InsertRestrictionsBase',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Restrictions on insert operations'
+            },
+            'UpdateRestrictions': {
+                '$Type': 'Org.OData.Capabilities.V1.UpdateRestrictionsBase',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Restrictions on update operations'
+            },
+            'DeleteRestrictions': {
+                '$Type': 'Org.OData.Capabilities.V1.DeleteRestrictionsBase',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Restrictions on delete operations'
+            },
+            'OperationRestrictions': {
+                '$Type': 'Org.OData.Capabilities.V1.OperationRestrictionsType',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Restrictions for function or action operations'
+            },
+            'ReadRestrictions': {
+                '$Type': 'Org.OData.Capabilities.V1.ReadRestrictionsType',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description':
+                    'Restrictions for retrieving a collection of entities, retrieving a singleton instance'
+            }
         },
         'HttpResponse': {
             '$Kind': 'ComplexType',

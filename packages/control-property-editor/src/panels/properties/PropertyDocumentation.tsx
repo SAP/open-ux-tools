@@ -18,6 +18,12 @@ export interface PropertyDocumentationProps {
     description: string;
     propertyName: string;
     propertyType: string | undefined;
+    /**
+     * Optional callback function for delete event.
+     *
+     * @param controlId - The ID of the control.
+     * @param propertyName - The name of the property.
+     */
     onDelete?(controlId: string, propertyName: string): void;
 }
 /**
@@ -53,11 +59,6 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
                 <Stack.Item>
                     <Text className={styles.title}>{title}</Text>
                 </Stack.Item>
-                {propertyChanges && (
-                    <Stack.Item>
-                        <Modified {...propertyChanges} />
-                    </Stack.Item>
-                )}
             </Stack>
             <Stack
                 className={styles.container}
@@ -119,28 +120,6 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
             </Stack>
         </>
     );
-}
-interface ModifiedProps {
-    saved: number;
-    pending: number;
-}
-/**
- * React element Modified.
- *
- * @param modifiedProps ModifiedProps
- * @returns ReactElement
- */
-function Modified(modifiedProps: ModifiedProps): ReactElement {
-    const { pending, saved } = modifiedProps;
-    const { t } = useTranslation();
-    if (saved > 0 && pending === 0) {
-        return <Text className={styles.savedChanges}>{t('SAVED_CHANGES')}</Text>;
-    }
-
-    if (pending > 0 && saved === 0) {
-        return <Text className={styles.unsavedChanges}>{t('UNSAVED_CHANGES')}</Text>;
-    }
-    return <Text className={styles.unsavedChanges}>{t('SAVED_AND_UNSAVED_CHANGES')}</Text>;
 }
 
 interface DocumentationRowProps {

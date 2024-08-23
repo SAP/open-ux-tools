@@ -1,3 +1,5 @@
+import type { AuthenticationType } from '@sap-ux/store';
+
 export * from './ui5yaml';
 export * from './middlewares';
 
@@ -17,6 +19,7 @@ export interface UrlAbapTarget {
     url: string;
     client?: string;
     scp?: boolean;
+    authenticationType?: AuthenticationType;
 }
 
 export interface DestinationAbapTarget {
@@ -31,10 +34,17 @@ export interface AbapDeployConfig {
     target: AbapTarget;
     app: BspApp | Adp;
     ignoreCertError?: boolean;
+    index?: boolean; // generate standalone index.html during deployment
 }
 
 export interface FioriAppReloadConfig {
     port: number;
     path: string;
     delay: number;
+}
+
+export interface ServeStaticPath {
+    path: string;
+    src: string;
+    fallthrough: boolean;
 }

@@ -3,11 +3,20 @@ import {
     iconsLoaded,
     propertyChanged,
     propertyChangeFailed,
-    scenario,
-    scenarioLoaded
+    reloadApplication,
+    SCENARIO,
+    showMessage,
+    storageFileChanged
 } from '@sap-ux-private/control-property-editor-common';
 
-import reducer, { FilterName, filterNodes, changeProperty, changeDeviceType } from '../../src/slice';
+import reducer, {
+    FilterName,
+    filterNodes,
+    changeProperty,
+    changeDeviceType,
+    setProjectScenario,
+    fileChanged
+} from '../../src/slice';
 import { DeviceType } from '../../src/devices';
 
 describe('main redux slice', () => {
@@ -125,7 +134,8 @@ describe('main redux slice', () => {
                         controlId: 'control1',
                         controlName: 'Button',
                         propertyName: 'text',
-                        value: 'change text'
+                        value: 'change text',
+                        changeType: 'propertyChange'
                     })
                 )
             ).toStrictEqual({
@@ -155,10 +165,10 @@ describe('main redux slice', () => {
             expect(reducer({ icons: [] } as any, iconsLoaded([]))).toStrictEqual({ icons: [] });
         });
 
-        test('scenarioLoaded', () => {
+        test('setProjectScenario', () => {
             expect(
-                reducer({ scenario: scenario.AdaptationProject } as any, scenarioLoaded(scenario.AdaptationProject))
-            ).toStrictEqual({ scenario: scenario.AdaptationProject });
+                reducer({ scenario: SCENARIO.UiAdaptation } as any, setProjectScenario(SCENARIO.AdaptationProject))
+            ).toStrictEqual({ scenario: SCENARIO.AdaptationProject, isAdpProject: true });
         });
 
         test('non existing property', () => {
@@ -212,7 +222,9 @@ describe('main redux slice', () => {
                                 controlId: 'control1',
                                 isActive: true,
                                 propertyName: 'text',
-                                value: '{i18n>DELETE}'
+                                value: '{i18n>DELETE}',
+                                changeType: 'propertyChange',
+                                fileName: 'testFile1'
                             }
                         ],
                         saved: [
@@ -224,7 +236,8 @@ describe('main redux slice', () => {
                                 kind: 'valid',
                                 fileName: 'file',
                                 timestamp: 123,
-                                value: 'abc'
+                                value: 'abc',
+                                changeType: 'propertyChange'
                             }
                         ]
                     })
@@ -239,14 +252,17 @@ describe('main redux slice', () => {
                             properties: {
                                 text: {
                                     lastChange: {
+                                        changeType: 'propertyChange',
                                         controlName: 'Button',
                                         controlId: 'control1',
+                                        fileName: 'testFile1',
                                         isActive: true,
                                         propertyName: 'text',
                                         type: 'pending',
                                         value: '{i18n>DELETE}'
                                     },
                                     lastSavedChange: {
+                                        changeType: 'propertyChange',
                                         controlId: 'control1',
                                         controlName: 'Button',
                                         kind: 'valid',
@@ -264,9 +280,11 @@ describe('main redux slice', () => {
                     },
                     pending: [
                         {
+                            changeType: 'propertyChange',
                             type: 'pending',
                             controlName: 'Button',
                             controlId: 'control1',
+                            fileName: 'testFile1',
                             isActive: true,
                             propertyName: 'text',
                             value: '{i18n>DELETE}'
@@ -274,6 +292,7 @@ describe('main redux slice', () => {
                     ],
                     saved: [
                         {
+                            changeType: 'propertyChange',
                             controlId: 'control1',
                             controlName: 'Button',
                             propertyName: 'text',
@@ -285,6 +304,106 @@ describe('main redux slice', () => {
                         }
                     ]
                 }
+            });
+        });
+
+        test('fileChanged (UI change)', () => {
+            expect(
+                reducer(
+                    {
+                        changes: {
+                            saved: [],
+                            pending: [],
+                            controls: [], // make sure that old value is not reused
+                            pendingChangeIds: ['testFile1']
+                        }
+                    } as any,
+                    fileChanged(['testFile1'])
+                )
+            ).toStrictEqual({
+                'changes': { 'controls': [], 'pending': [], 'pendingChangeIds': [], 'saved': [] },
+                'fileChanges': []
+            });
+        });
+
+        test('fileChanged (external changes (scenario 1))', () => {
+            expect(
+                reducer(
+                    {
+                        changes: {
+                            saved: [],
+                            pending: [],
+                            controls: [], // make sure that old value is not reused
+                            pendingChangeIds: ['testFile1']
+                        }
+                    } as any,
+                    fileChanged(['testFile2'])
+                )
+            ).toStrictEqual({
+                'changes': { 'controls': [], 'pending': [], 'pendingChangeIds': ['testFile1'], 'saved': [] },
+                'fileChanges': ['testFile2']
+            });
+        });
+
+        test('fileChanged (external changes (scenario 2))', () => {
+            expect(
+                reducer(
+                    {
+                        fileChanges: ['testFile3'],
+                        changes: {
+                            saved: [],
+                            pending: [],
+                            controls: [], // make sure that old value is not reused
+                            pendingChangeIds: ['testFile1']
+                        }
+                    } as any,
+                    fileChanged(['testFile2'])
+                )
+            ).toStrictEqual({
+                'changes': { 'controls': [], 'pending': [], 'pendingChangeIds': ['testFile1'], 'saved': [] },
+                'fileChanges': ['testFile3', 'testFile2']
+            });
+        });
+
+        test('storageFileChanged', () => {
+            expect(
+                reducer(
+                    {
+                        changes: {
+                            saved: [],
+                            pending: [],
+                            controls: [], // make sure that old value is not reused
+                            pendingChangeIds: ['testFile1']
+                        }
+                    } as any,
+                    storageFileChanged('testFile2')
+                )
+            ).toStrictEqual({
+                'changes': {
+                    'controls': [],
+                    'pending': [],
+                    'pendingChangeIds': ['testFile1', 'testFile2'],
+                    'saved': []
+                }
+            });
+        });
+
+        test('show message', () => {
+            expect(reducer({} as any, showMessage({ message: 'testMessage', shouldHideIframe: false }))).toStrictEqual({
+                dialogMessage: { message: 'testMessage', shouldHideIframe: false }
+            });
+        });
+        test('reload application', () => {
+            expect(
+                reducer(
+                    {
+                        fileChanges: ['testFile']
+                    } as any,
+                    reloadApplication()
+                )
+            ).toStrictEqual({
+                fileChanges: [],
+                isAppLoading: true
             });
         });
     });

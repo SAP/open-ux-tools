@@ -20,8 +20,23 @@ export { IDropdownOption as UIDropdownOption };
 export { DropdownMenuItemType as UIDropdownMenuItemType };
 
 export interface UIDropdownProps extends IDropdownProps, UIMessagesExtendedProps {
+    /**
+     * An optional callback function to handle change.
+     *
+     * @param option - The selected option.
+     * @param index - The index of the selected option.
+     */
     onHandleChange?(option: IDropdownOption, index: number): void;
+    /**
+     * An optional callback function to handle open event.
+     */
     onHandleOpen?(): void;
+    /**
+     * An optional callback function to render the title of the dropdown.
+     *
+     * @param items - The options of the dropdown.
+     * @returns The JSX element representing the title.
+     */
     onHandleRenderTitle?(items: IDropdownOption[] | undefined): JSX.Element;
     useDropdownAsMenuMinWidth?: boolean;
     readOnly?: boolean;

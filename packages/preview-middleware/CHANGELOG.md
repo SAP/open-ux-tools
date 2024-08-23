@@ -1,5 +1,1169 @@
 # @sap-ux/preview-middleware
 
+## 0.16.53
+
+### Patch Changes
+
+-   ceed987: Fixed copy to clipboard chaching old control id values
+
+## 0.16.52
+
+### Patch Changes
+
+-   Updated dependencies [6419b2c]
+    -   @sap-ux/adp-tooling@0.12.40
+
+## 0.16.51
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/adp-tooling@0.12.39
+
+## 0.16.50
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.38
+-   @sap-ux/project-access@1.26.7
+
+## 0.16.49
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/btp-utils@0.15.1
+    -   @sap-ux/adp-tooling@0.12.37
+
+## 0.16.48
+
+### Patch Changes
+
+-   53a5b13: fix static preview client url
+
+## 0.16.47
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.36
+
+## 0.16.46
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.35
+
+## 0.16.45
+
+### Patch Changes
+
+-   Updated dependencies [b813843]
+    -   @sap-ux/adp-tooling@0.12.34
+
+## 0.16.44
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.33
+
+## 0.16.43
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.32
+
+## 0.16.42
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+    -   @sap-ux/adp-tooling@0.12.31
+
+## 0.16.41
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.30
+
+## 0.16.40
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/adp-tooling@0.12.29
+
+## 0.16.39
+
+### Patch Changes
+
+-   Updated dependencies [593ad0f]
+    -   @sap-ux/adp-tooling@0.12.28
+
+## 0.16.38
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+-   @sap-ux/adp-tooling@0.12.27
+
+## 0.16.37
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.26
+
+## 0.16.36
+
+### Patch Changes
+
+-   cea1f9f: Fixed Add XML Fragment dialog not working if there is an unsaved "hideControl" change
+
+## 0.16.35
+
+### Patch Changes
+
+-   Updated dependencies [c473d24]
+    -   @sap-ux/adp-tooling@0.12.25
+
+## 0.16.34
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/adp-tooling@0.12.24
+
+## 0.16.33
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/adp-tooling@0.12.23
+
+## 0.16.32
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/adp-tooling@0.12.22
+
+## 0.16.31
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/adp-tooling@0.12.21
+
+## 0.16.30
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/adp-tooling@0.12.20
+
+## 0.16.29
+
+### Patch Changes
+
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/adp-tooling@0.12.19
+
+## 0.16.28
+
+### Patch Changes
+
+-   cea098a: FIX: regression in adp preview with reuse libs
+
+## 0.16.27
+
+### Patch Changes
+
+-   ab2e5a0: Preview support for UI5 2.x
+
+## 0.16.26
+
+### Patch Changes
+
+-   Updated dependencies [2a7d3c4]
+    -   @sap-ux/adp-tooling@0.12.18
+
+## 0.16.25
+
+### Patch Changes
+
+-   42486a5: fix(locate-reuse-lib): corrected extraction of component name
+
+## 0.16.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.17
+
+## 0.16.23
+
+### Patch Changes
+
+-   ae6a213: fix: hard coded theme in test template
+
+## 0.16.22
+
+### Patch Changes
+
+-   Updated dependencies [d549173]
+    -   @sap-ux/project-access@1.25.7
+    -   @sap-ux/adp-tooling@0.12.16
+
+## 0.16.21
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.15
+
+## 0.16.20
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/adp-tooling@0.12.14
+
+## 0.16.19
+
+### Patch Changes
+
+-   Updated dependencies [4c06318]
+    -   @sap-ux/adp-tooling@0.12.13
+
+## 0.16.18
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.12
+
+## 0.16.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.11
+
+## 0.16.16
+
+### Patch Changes
+
+-   90a8291: Extension points break the outline tree sync for apps with UI5 version =< 1.96.33
+
+## 0.16.15
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/adp-tooling@0.12.10
+
+## 0.16.14
+
+### Patch Changes
+
+-   e0ddba7: Fix potential racing condition in qunit tests
+
+## 0.16.13
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/adp-tooling@0.12.9
+
+## 0.16.12
+
+### Patch Changes
+
+-   Updated dependencies [9e4ce4d]
+    -   @sap-ux/adp-tooling@0.12.8
+
+## 0.16.11
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/adp-tooling@0.12.7
+
+## 0.16.10
+
+### Patch Changes
+
+-   22e4ad8: Generate correct ui5.yaml
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/adp-tooling@0.12.6
+    -   @sap-ux/project-access@1.25.2
+
+## 0.16.9
+
+### Patch Changes
+
+-   671242b: Disable add fragment and controller extension rt-a menu items if clicked element is from reuse component view
+
+## 0.16.8
+
+### Patch Changes
+
+-   cec4a97: Live and Edit buttons are visible as Navigation and UI Adpatation only when in ADP scenario.
+
+## 0.16.7
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/adp-tooling@0.12.5
+
+## 0.16.6
+
+### Patch Changes
+
+-   dbb490a: Add missing test suite default paths to readme
+
+## 0.16.5
+
+### Patch Changes
+
+-   Updated dependencies [5f074a7]
+    -   @sap-ux/adp-tooling@0.12.4
+
+## 0.16.4
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/adp-tooling@0.12.3
+
+## 0.16.3
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/adp-tooling@0.12.2
+
+## 0.16.2
+
+### Patch Changes
+
+-   b2d5843: fix: Missing Scenario API in lower SAPUI5 versions
+
+## 0.16.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.1
+
+## 0.16.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/adp-tooling@0.12.0
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/project-access@1.23.0
+
+## 0.15.8
+
+### Patch Changes
+
+-   8f57ac28: i18n bindings validation fails for nested \*.properties files
+
+## 0.15.7
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/adp-tooling@0.11.13
+    -   @sap-ux/project-access@1.22.4
+
+## 0.15.6
+
+### Patch Changes
+
+-   Updated dependencies [fa4c088c]
+    -   @sap-ux/adp-tooling@0.11.12
+
+## 0.15.5
+
+### Patch Changes
+
+-   0e0c2864: Fix Error message regression
+
+## 0.15.4
+
+### Patch Changes
+
+-   Updated dependencies [73c741ef]
+    -   @sap-ux/adp-tooling@0.11.11
+
+## 0.15.3
+
+### Patch Changes
+
+-   Updated dependencies [c442d2bc]
+    -   @sap-ux/adp-tooling@0.11.10
+
+## 0.15.2
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.9
+
+## 0.15.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.8
+
+## 0.15.0
+
+### Minor Changes
+
+-   da2704c7: Add support for using the preview in CAP projects
+
+## 0.14.0
+
+### Minor Changes
+
+-   6ad68964: Enhanced API to support getting list of virtual files and their content
+
+## 0.13.74
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/adp-tooling@0.11.7
+
+## 0.13.73
+
+### Patch Changes
+
+-   fb2ff8d6: Reduce eslint warnings
+
+## 0.13.72
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+    -   @sap-ux/adp-tooling@0.11.6
+    -   @sap-ux/project-access@1.22.3
+
+## 0.13.71
+
+### Patch Changes
+
+-   899cdb23: FIX: enabled running the middleware with karma
+
+## 0.13.70
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.5
+
+## 0.13.69
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.4
+
+## 0.13.68
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/adp-tooling@0.11.3
+
+## 0.13.67
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.2
+
+## 0.13.66
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/adp-tooling@0.11.1
+    -   @sap-ux/project-access@1.22.1
+
+## 0.13.65
+
+### Patch Changes
+
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/adp-tooling@0.11.0
+
+## 0.13.64
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.23
+
+## 0.13.63
+
+### Patch Changes
+
+-   Updated dependencies [ad93a484]
+    -   @sap-ux/project-access@1.22.0
+    -   @sap-ux/adp-tooling@0.10.22
+
+## 0.13.62
+
+### Patch Changes
+
+-   9188fe8b: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    sap.ushell removed from ui5-application-writer, now loaded in fiori-elements and fiori-freestyle writers respectively
+    -   @sap-ux/adp-tooling@0.10.21
+    -   @sap-ux/project-access@1.21.2
+
+## 0.13.61
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.20
+
+## 0.13.60
+
+### Patch Changes
+
+-   98b5aaee: Add new model writer has misspelled property that breaks the validation of the change
+-   Updated dependencies [98b5aaee]
+    -   @sap-ux/adp-tooling@0.10.19
+
+## 0.13.59
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.18
+-   @sap-ux/project-access@1.21.1
+
+## 0.13.58
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.17
+
+## 0.13.57
+
+### Patch Changes
+
+-   Updated dependencies [69b8d6de]
+    -   @sap-ux/project-access@1.21.0
+    -   @sap-ux/adp-tooling@0.10.16
+
+## 0.13.56
+
+### Patch Changes
+
+-   Updated dependencies [a7d78229]
+    -   @sap-ux/project-access@1.20.4
+    -   @sap-ux/adp-tooling@0.10.15
+
+## 0.13.55
+
+### Patch Changes
+
+-   81026f96: Add explanation at the end of disabled context menu item due to non stable ID
+
+## 0.13.54
+
+### Patch Changes
+
+-   c1cc4f57: fix missing RTA toolbar in variant management
+
+## 0.13.53
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.3
+-   @sap-ux/adp-tooling@0.10.14
+
+## 0.13.52
+
+### Patch Changes
+
+-   Updated dependencies [54c91c6d]
+    -   @sap-ux/project-access@1.20.2
+    -   @sap-ux/adp-tooling@0.10.13
+
+## 0.13.51
+
+### Patch Changes
+
+-   52623d36: fix missing support for connect api in flex handler creation
+
+## 0.13.50
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.12
+
+## 0.13.49
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.11
+
+## 0.13.48
+
+### Patch Changes
+
+-   78de7813: RTA standard toolbar replaced with custom CPE toolbar
+
+## 0.13.47
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.10
+-   @sap-ux/project-access@1.20.1
+
+## 0.13.46
+
+### Patch Changes
+
+-   b67b29f5: Generate testsuite for all configured test frameworks
+
+## 0.13.45
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.9
+
+## 0.13.44
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.8
+
+## 0.13.43
+
+### Patch Changes
+
+-   56d8b0b9: Add default content for extension points to the outline in CPE
+
+## 0.13.42
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/adp-tooling@0.10.7
+
+## 0.13.41
+
+### Patch Changes
+
+-   1618da09: Use existing html file on file system for preview
+
+## 0.13.40
+
+### Patch Changes
+
+-   da5d9f0b: Fragment files are not created together with an addXML change in onChangeRequest handler
+-   Updated dependencies [da5d9f0b]
+    -   @sap-ux/adp-tooling@0.10.6
+
+## 0.13.39
+
+### Patch Changes
+
+-   52faf16f: Fix RTA initialization issue for UI5 versions less than 1.72.
+
+## 0.13.38
+
+### Patch Changes
+
+-   39665ea9: Fix for CPE does not start UI Adaptation for ADP Projects with lower UI5 Version than 1.120
+
+## 0.13.37
+
+### Patch Changes
+
+-   9e8af342: Disable fragment context menu item in CPE for controls with no stable id
+
+## 0.13.36
+
+### Patch Changes
+
+-   Updated dependencies [c87fcc91]
+    -   @sap-ux/adp-tooling@0.10.5
+
+## 0.13.35
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+    -   @sap-ux/adp-tooling@0.10.4
+
+## 0.13.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.3
+
+## 0.13.33
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.2
+
+## 0.13.32
+
+### Patch Changes
+
+-   Updated dependencies [f361f3b4]
+    -   @sap-ux/adp-tooling@0.10.1
+
+## 0.13.31
+
+### Patch Changes
+
+-   Updated dependencies [9ccbaded]
+    -   @sap-ux/adp-tooling@0.10.0
+
+## 0.13.30
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.28
+
+## 0.13.29
+
+### Patch Changes
+
+-   cad21d4d: Enable Adding Controller Extension only on async views for Adp Projects
+
+## 0.13.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.27
+
+## 0.13.27
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/adp-tooling@0.9.26
+
+## 0.13.26
+
+### Patch Changes
+
+-   9a32e102: fix preview reload on SBAS, by exposing livereload server port over url
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/adp-tooling@0.9.25
+
+## 0.13.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.24
+
+## 0.13.24
+
+### Patch Changes
+
+-   7697dea4: Outsourcing of initialization routine to manage app state from fiori-tools-proxy to preview-middleware-client and updating to UI5 2.0
+
+## 0.13.23
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.23
+-   @sap-ux/project-access@1.19.14
+
+## 0.13.22
+
+### Patch Changes
+
+-   2e296173: Enable telemetry for adaptation project
+
+## 0.13.21
+
+### Patch Changes
+
+-   Updated dependencies [99bca62c]
+    -   @sap-ux/project-access@1.19.13
+    -   @sap-ux/adp-tooling@0.9.22
+
+## 0.13.20
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/project-access@1.19.12
+    -   @sap-ux/adp-tooling@0.9.21
+
+## 0.13.19
+
+### Patch Changes
+
+-   00cf3025: Alternative approach to have a consistent save for XML Fragments
+-   Updated dependencies [00cf3025]
+    -   @sap-ux/adp-tooling@0.9.20
+
+## 0.13.18
+
+### Patch Changes
+
+-   Updated dependencies [4389c528]
+    -   @sap-ux/project-access@1.19.11
+    -   @sap-ux/adp-tooling@0.9.19
+
+## 0.13.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.18
+
+## 0.13.16
+
+### Patch Changes
+
+-   fc55fd6b: Component Usages writer produces incorrect content of a change
+-   Updated dependencies [fc55fd6b]
+    -   @sap-ux/adp-tooling@0.9.17
+
+## 0.13.15
+
+### Patch Changes
+
+-   Updated dependencies [f8e16120]
+    -   @sap-ux/project-access@1.19.10
+    -   @sap-ux/adp-tooling@0.9.16
+
+## 0.13.14
+
+### Patch Changes
+
+-   Updated dependencies [ee76e47f]
+    -   @sap-ux/project-access@1.19.9
+    -   @sap-ux/adp-tooling@0.9.15
+
+## 0.13.13
+
+### Patch Changes
+
+-   6291bc37: chore - update dependencies to fix audit warnings
+-   Updated dependencies [6291bc37]
+    -   @sap-ux/adp-tooling@0.9.14
+
+## 0.13.12
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.8
+-   @sap-ux/adp-tooling@0.9.13
+
+## 0.13.11
+
+### Patch Changes
+
+-   Updated dependencies [98496d57]
+-   Updated dependencies [e3d2e003]
+    -   @sap-ux/project-access@1.19.7
+    -   @sap-ux/adp-tooling@0.9.12
+
+## 0.13.10
+
+### Patch Changes
+
+-   b17858cc: Support usage when running in connect server like karma
+
+## 0.13.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.11
+
+## 0.13.8
+
+### Patch Changes
+
+-   10ce9b44: Fix potential race condition when executing qunit tests
+
+## 0.13.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.10
+
+## 0.13.6
+
+### Patch Changes
+
+-   4cbb1639: "Open in VS Code" button for Controller Extension dialog does not work in BAS
+-   Updated dependencies [4cbb1639]
+    -   @sap-ux/adp-tooling@0.9.9
+
+## 0.13.5
+
+### Patch Changes
+
+-   Updated dependencies [f0e3263a]
+    -   @sap-ux/project-access@1.19.6
+    -   @sap-ux/adp-tooling@0.9.8
+
+## 0.13.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.7
+-   @sap-ux/project-access@1.19.5
+
+## 0.13.3
+
+### Patch Changes
+
+-   31ae689d: websocket over https
+
+## 0.13.2
+
+### Patch Changes
+
+-   Updated dependencies [87c942e5]
+    -   @sap-ux/project-access@1.19.4
+    -   @sap-ux/adp-tooling@0.9.6
+
+## 0.13.1
+
+### Patch Changes
+
+-   25ecdb90: Fix missing title and description on launchpad tile
+
+## 0.13.0
+
+### Minor Changes
+
+-   733fcde8: Allow adding tiles pointing to remote apps
+
+## 0.12.15
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/adp-tooling@0.9.6
+
+## 0.12.14
+
+### Patch Changes
+
+-   6a477fba: feat: Replace auto-refresh with message in case of manual flex file changes
+    -   @sap-ux/adp-tooling@0.9.5
+
+## 0.12.13
+
+### Patch Changes
+
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/adp-tooling@0.9.4
+
+## 0.12.12
+
+### Patch Changes
+
+-   6d76e076: Enhance `preview-middleware` to allow running QUnit and OPA5 tests.
+
+## 0.12.11
+
+### Patch Changes
+
+-   874187b9: Using inbound navigation writer to generate appropriate change files does not produce correct results
+-   Updated dependencies [874187b9]
+    -   @sap-ux/adp-tooling@0.9.3
+
+## 0.12.10
+
+### Patch Changes
+
+-   fc76be56: do not trigger empty change on focus out
+
+## 0.12.9
+
+### Patch Changes
+
+-   212d54ed: Removed unnecessary peer dependency of the adp-tooling and corrected the integration into the preview-middleware
+-   Updated dependencies [212d54ed]
+    -   @sap-ux/adp-tooling@0.9.2
+
+## 0.12.8
+
+### Patch Changes
+
+-   dcd3324e: fix on-blur no change for cpe
+
+## 0.12.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.1
+
+## 0.12.6
+
+### Patch Changes
+
+-   cf842794: Adds writer functionality for Adaptation Project's manifest change editors
+-   Updated dependencies [cf842794]
+    -   @sap-ux/adp-tooling@0.9.0
+
+## 0.12.5
+
+### Patch Changes
+
+-   6c5dba8e: Add reload-middleware
+
+## 0.12.4
+
+### Patch Changes
+
+-   5448433a: FIX: preview path on windows
+
+## 0.12.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.11
+
+## 0.12.2
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/adp-tooling@0.8.10
+    -   @sap-ux/logger@0.5.1
+
+## 0.12.1
+
+### Patch Changes
+
+-   Updated dependencies [05953a48]
+    -   @sap-ux/adp-tooling@0.8.9
+
+## 0.12.0
+
+### Minor Changes
+
+-   efd2f6d4: Support ui5 version 1.71.\* in CPE.
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.8
+
+## 0.11.36
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.7
+
+## 0.11.35
+
+### Patch Changes
+
+-   c05fd77a: Add express in devDependencies
+
+## 0.11.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.6
+
+## 0.11.33
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+    -   @sap-ux/adp-tooling@0.8.5
+
+## 0.11.32
+
+### Patch Changes
+
+-   Updated dependencies [2bedc697]
+    -   @sap-ux/adp-tooling@0.8.4
+
+## 0.11.31
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+    -   @sap-ux/adp-tooling@0.8.3
+
+## 0.11.30
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.2
+
+## 0.11.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.1
+
+## 0.11.28
+
+### Patch Changes
+
+-   b817c8d5: Property change is created (unsaved) on the key press but should be on blur for the adaptation projects
+
+## 0.11.27
+
+### Patch Changes
+
+-   52265581: Fix styling for the funnel icon on Outline Panel
+
+## 0.11.26
+
+### Patch Changes
+
+-   Updated dependencies [349fff1a]
+    -   @sap-ux/adp-tooling@0.8.0
+
+## 0.11.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.7.4
+
+## 0.11.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.7.3
+
+## 0.11.23
+
+### Patch Changes
+
+-   70296b55: Remove label and icon in control property editor
+
 ## 0.11.22
 
 ### Patch Changes

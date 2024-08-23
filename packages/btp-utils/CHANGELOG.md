@@ -1,5 +1,57 @@
 # @sap-ux/btp-utils
 
+## 0.15.1
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+
+## 0.15.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.14.4
+
+### Patch Changes
+
+-   9a32e102: fix preview reload on SBAS, by exposing livereload server port over url
+
+## 0.14.3
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+
+## 0.14.2
+
+### Patch Changes
+
+-   811c4324: Expose types and introduce missing functionality
+
+## 0.14.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.14.0
+
+### Minor Changes
+
+-   0f6e0e1b: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+## 0.13.0
+
+### Minor Changes
+
+-   de8a4878: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
 ## 0.12.1
 
 ### Patch Changes

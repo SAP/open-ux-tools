@@ -4,7 +4,7 @@ import { Logger } from '@sap-ux-private/control-property-editor-common';
 
 function getString(message: string | object): string {
     if (typeof message === 'object') {
-        return message.toString();
+        return JSON.stringify(message).toString();
     }
     return message;
 }

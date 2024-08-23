@@ -1,4 +1,4 @@
-import type { ODataServiceInfo, Annotations, FilterOptions } from './base';
+import type { ODataServiceInfo, Annotations, FilterOptions, ServiceType } from './base';
 import { CatalogService } from './base';
 import { ODataVersion } from '../../base/odata-service';
 import { ODataRequestError } from '../../base/odata-request-error';
@@ -21,6 +21,7 @@ export interface ODataServiceV2Info {
     TechnicalServiceName: string;
     Version: string;
     TechnicalServiceVersion: number;
+    ServiceType: ServiceType;
 }
 
 /**
@@ -37,6 +38,24 @@ export class V2CatalogService extends CatalogService {
     }
 
     /**
+     * Returns the service path for the provided serivce URL.
+     *
+     * @param serviceUrl - service url (may be full service url or service path)
+     * @param baseUrl - base url for the odata service
+     * @returns - service path
+     */
+    private getServicePath(serviceUrl: string, baseUrl: string): string {
+        let parsedUrl: URL;
+        try {
+            parsedUrl = new URL(serviceUrl);
+        } catch {
+            // there are cases where the service url is just the path and not the full service url
+            parsedUrl = new URL(serviceUrl, baseUrl);
+        }
+        return parsedUrl.pathname;
+    }
+
+    /**
      * Map the V2 service information to a version independent structure.
      *
      * @param services v2 services information
@@ -44,12 +63,14 @@ export class V2CatalogService extends CatalogService {
      */
     protected mapServices(services: ODataServiceV2Info[]): ODataServiceInfo[] {
         return services.map((service) => {
+            const path = this.getServicePath(service.ServiceUrl, this.defaults.baseURL);
             return {
                 id: service.ID,
                 name: service.TechnicalServiceName,
-                path: new URL(service.ServiceUrl).pathname,
+                path: path,
                 serviceVersion: service.TechnicalServiceVersion + '',
-                odataVersion: ODataVersion.v2
+                odataVersion: ODataVersion.v2,
+                serviceType: service.ServiceType
             };
         });
     }
@@ -111,7 +132,8 @@ export class V2CatalogService extends CatalogService {
             $format: 'json',
             $filter: `Title eq '${title}' and TechnicalServiceVersion eq ${version}`
         };
-        const response = await this.get<ODataServiceV2Info[]>(`/${this.entitySet}`, { params });
+        const requestPath = this.entitySet ? `/${this.entitySet}` : '/ServiceCollection';
+        const response = await this.get<ODataServiceV2Info[]>(requestPath, { params });
         const services = response.odata();
 
         if (services.length > 1) {
@@ -139,9 +161,6 @@ export class V2CatalogService extends CatalogService {
      * @returns service annotations
      */
     protected async getServiceAnnotations({ id, title, path }: FilterOptions): Promise<ODataServiceV2Info[]> {
-        if (!this.entitySet) {
-            await this.determineEntitySet();
-        }
         if (!id) {
             const ServiceConfig = await this.findService({ title, path });
             if (ServiceConfig) {
@@ -150,7 +169,7 @@ export class V2CatalogService extends CatalogService {
         }
         if (id) {
             const response = await this.get<ODataServiceV2Info[]>(
-                `/${this.entitySet}('${encodeURIComponent(id)}')/Annotations`,
+                `/ServiceCollection('${encodeURIComponent(id)}')/Annotations`,
                 {
                     params: { $format: 'json' }
                 }
@@ -201,5 +220,26 @@ export class V2CatalogService extends CatalogService {
             }
         }
         return annotations;
+    }
+
+    /**
+     * Calls endpoint `ServiceTypeForHUBServices` to determine the service type.
+     *
+     * @param path service path
+     * @returns service type
+     */
+    public async getServiceType(path: string): Promise<ServiceType | undefined> {
+        let serviceType: ServiceType;
+        const { ID: id } = await this.findService({ path });
+
+        if (id) {
+            const result = await this.get<ODataServiceV2Info>(
+                `/ServiceTypeForHUBServices('${encodeURIComponent(id)}')`
+            );
+            if (result) {
+                serviceType = result.odata().ServiceType;
+            }
+        }
+        return serviceType;
     }
 }

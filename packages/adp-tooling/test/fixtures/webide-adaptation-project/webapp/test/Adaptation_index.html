@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+
+<html>
+
+	<!-- IMPORTANT
+			This HTML file is meant for testing the application/component standalone, outside the Unified Shell.
+			Some integration functionality, personalization etc. will not be available when running standalone.
+	-->
+
+<head>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+
+<script id="sap-ui-script-placeholder"></script>
+
+<!-- this is loaded to enable ushell services -->
+<script src="../../test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
+<script id="sap-ui-bootstrap"
+		src="./../resources/sap-ui-core.js"
+		data-sap-ui-libs="sap.m, sap.ushell, sap.me, sap.ui.table, sap.ui.layout, sap.ui.rta, sap.ui.dt, sap.viz, sap.ui.fl, sap.ui.comp, sap.suite.ui.generic.template"
+		data-sap-ui-theme="sap_belize"
+		data-sap-ui-xx-bindingSyntax="complex"
+		data-sap-ui-compatVersion="edge">
+</script>
+<!-- Change loading will be injected -->
+<script>
+    document.title = "migrate test";
+	//Application launch configuration
+	sap.ui.getCore().attachInitEvent(function() {
+			var sVariantID = "migrate.test", sLayer = "VENDOR", oComponent, oComponentConfig, sComponentName = "sap.ui.demoapps.rta.fiorielements", oMergedManifest = window['manifest'];
+		    if(window['manifest']){
+				//if MergedDescriptor is available from app previre service
+				console.log("App variant running on merged manifest from backend.");
+				appVariantPreview.mergedDescriptorAppPreview(oMergedManifest, sVariantID, sLayer).then(function(oShell){
+					oShell.placeAt("content");
+				});
+			}else{
+				//fallback mechanism
+				console.log("Merged descriptor could not be fetched from backend, falling back to non-merged execution");
+				appVariantPreview.fallbackAppVariantPreview(sComponentName, sVariantID, sLayer, window["isInternal"]).then(function(oShell){
+					oShell.placeAt("content");
+				});
+			}
+		});
+</script>
+</head>
+
+<!-- UI Content -->
+<body class="sapUiBody" id="content" role="application">
+</body>
+
+</html>

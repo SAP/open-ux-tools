@@ -1,5 +1,35 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 0.5.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.4.2
+
+### Patch Changes
+
+-   398c4092: Relax some eslint rules for fiori typescript projects
+
+## 0.4.1
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+
+## 0.3.2
+
+### Patch Changes
+
+-   4b29ddcc: Update TypeScript templates, eslint config and ui5 devDependencies
+
+## 0.3.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
 ## 0.3.0
 
 ### Minor Changes

@@ -1,8 +1,12 @@
 .filter {
     display: flex;
-    margin: 17px 15px 10px 15px;
+    padding: 15px 15px 15px 15px;
     flex-direction: row;
     align-items: center;
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+    background-color: var(--vscode-sideBar-background);
 }
 
 .noData {
@@ -14,4 +18,9 @@
     padding-top: 20px;
     margin-left: 35px;
     color: var(--vscode-foreground);
+}
+
+.infoIcon {
+    margin-left: 15px;
+    margin-top: 5px;
 }

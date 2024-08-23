@@ -10,6 +10,7 @@ import type { FreestyleApp } from '../src';
 import { promisify } from 'util';
 import { exec as execCP } from 'child_process';
 const exec = promisify(execCP);
+import { ServiceType } from '@sap-ux/odata-service-writer';
 
 export const testOutputDir = join(__dirname, '/test-output');
 
@@ -38,7 +39,8 @@ export const commonConfig = {
         sourceTemplate: {
             version: '1.2.3-test',
             id: 'test-template'
-        }
+        },
+        projectType: 'EDMXBackend'
     },
     package: {
         name: 'test.me'
@@ -94,7 +96,7 @@ export const projectChecks = async (
 
             // run checks on the project
             // Check TS Types
-            if (config.appOptions?.typescript) {
+            if (config.appOptions?.typescript && config.service?.type === ServiceType.EDMX) {
                 npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
                 console.log('stdout:', npmResult.stdout);
                 console.log('stderr:', npmResult.stderr);

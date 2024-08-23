@@ -1,0 +1,13 @@
+UI : {
+    LineItem : {
+        $value: [{ $value: }]
+    },
+    Badge : {
+        $value: 
+    },
+    Badge #b : {
+        Title: {
+            $value: 
+        }
+    },
+}

@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": [
+        "src",
+        "src/**/*.json",
+        "../../types/ui5.d.ts"
+    ],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
+    },
+    "references": [
+        {
+            "path": "../logger"
+        }
+    ]
+}

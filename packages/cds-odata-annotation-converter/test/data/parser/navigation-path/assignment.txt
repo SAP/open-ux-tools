@@ -1,0 +1,7 @@
+UI.Identification : [
+    {
+        $Type : 'UI.DataFieldWithNavigationPath',
+        Target : author, 
+        Value : author_author_ID 
+    }, 
+]

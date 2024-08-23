@@ -1,0 +1,39 @@
+{
+    "name": "@sap-ux/fe-fpm-cli",
+    "version": "0.0.12",
+    "description": "A simple CLI to prompt required information to create a building block using the fe-fpm-writer module's prompt and generate functions.",
+    "license": "Apache-2.0",
+    "private": true,
+    "main": "dist/index.js",
+    "scripts": {
+        "start": "node dist/index.js",
+        "build": "tsc",
+        "watch": "tsc --watch",
+        "clean": "rimraf dist coverage",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix"
+    },
+    "dependencies": {
+        "@sap-ux/fe-fpm-writer": "workspace:*",
+        "inquirer": "^8.0.0",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0"
+    },
+    "devDependencies": {
+        "@types/inquirer": "^8.0.0",
+        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/vinyl": "2.0.7",
+        "@typescript-eslint/eslint-plugin": "^5.59.0",
+        "@typescript-eslint/parser": "^5.59.0"
+    },
+    "files": [
+        "dist",
+        "LICENSE"
+    ],
+    "engines": {
+        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
+        "node": ">=18.x"
+    }
+}

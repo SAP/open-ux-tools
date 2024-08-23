@@ -1,5 +1,41 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.3.6
+
+### Patch Changes
+
+-   78de7813: RTA standard toolbar replaced with custom CPE toolbar
+
+## 0.3.5
+
+### Patch Changes
+
+-   56d8b0b9: Add default content for extension points to the outline in CPE
+
+## 0.3.4
+
+### Patch Changes
+
+-   cad21d4d: Enable Adding Controller Extension only on async views for Adp Projects
+
+## 0.3.3
+
+### Patch Changes
+
+-   6a477fba: feat: Replace auto-refresh with message in case of manual flex file changes
+
+## 0.3.2
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
 ## 0.3.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IBreadcrumbProps, IBreadcrumbStyles } from '@fluentui/react';
+import type { IBreadcrumbProps } from '@fluentui/react';
 import { Breadcrumb } from '@fluentui/react';
 
 /**
@@ -20,12 +20,6 @@ export class UIBreadcrumb extends React.Component<IBreadcrumbProps, {}> {
     public constructor(props: IBreadcrumbProps) {
         super(props);
     }
-
-    protected setStyle = (): Partial<IBreadcrumbStyles> => ({
-        ...{
-            root: {}
-        }
-    });
 
     /**
      * @returns {JSX.Element}

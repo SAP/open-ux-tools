@@ -1,23 +1,22 @@
 {
-  "name": "@sap-ux/types",
-  "version": "1.1.1",
-  "private": true,
-  "description": "Type augmentations for imported modules",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SAP/open-ux-tools.git",
-    "directory": "types"
-  },
-  "engines": {
-    "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-    "node": ">=18.x"
-  },
-  "scripts": {
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
-  },
-  "devDependencies": {
-    "@types/mem-fs-editor": "7.0.1",
-    "@types/vinyl": "2.0.7"
-  }
+    "name": "@sap-ux/types",
+    "version": "1.2.0",
+    "private": true,
+    "description": "Type augmentations for imported modules",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "types"
+    },
+    "engines": {
+        "node": ">=18.x"
+    },
+    "scripts": {
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix"
+    },
+    "devDependencies": {
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/vinyl": "2.0.7"
+    }
 }

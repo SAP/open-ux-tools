@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Ayaml"
     },
-    "version": "0.14.0",
+    "version": "0.16.0",
     "main": "dist/index.js",
     "license": "Apache-2.0",
     "scripts": {
@@ -36,10 +36,9 @@
     },
     "devDependencies": {
         "@types/i18next-fs-backend": "1.1.2",
-        "@types/lodash": "4.14.198"
+        "@types/lodash": "4.14.202"
     },
     "engines": {
-        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
         "node": ">=18.x"
     }
 }

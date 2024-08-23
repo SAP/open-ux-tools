@@ -42,5 +42,17 @@ describe('getReentranceTicket()', () => {
             logger: new ToolsLogger({ transports: [new NullTransport()] })
         });
         expect(mockOpen).toHaveBeenCalledWith(expect.stringContaining(REDIRECT_URL));
+        // default SCENARIO is FTO1 if none provided via env variable
+        expect(mockOpen).toHaveBeenCalledWith(expect.stringContaining('FTO1'));
+    });
+
+    it('Sets scenario from env variable', async () => {
+        process.env.FIORI_TOOLS_SCENARIO = 'MYSCENARIO';
+        await getReentranceTicket({
+            backendUrl: 'http://some_url.example',
+            logger: new ToolsLogger({ transports: [new NullTransport()] })
+        });
+        expect(mockOpen).toHaveBeenCalledWith(expect.stringContaining('MYSCENARIO'));
+        delete process.env.FIORI_TOOLS_SCENARIO;
     });
 });

@@ -7,7 +7,7 @@ import { initI18n } from '../../../../src/i18n';
 import { mockResizeObserver } from '../../../utils/utils';
 import { OutlinePanel } from '../../../../src/panels/outline';
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-import { controlSelected, outlineChanged, scenario } from '@sap-ux-private/control-property-editor-common';
+import { controlSelected, outlineChanged, SCENARIO } from '@sap-ux-private/control-property-editor-common';
 import type { FilterOptions, default as reducer } from '../../../../src/slice';
 import { FilterName, filterNodes } from '../../../../src/slice';
 import { DeviceType } from '../../../../src/devices';
@@ -91,6 +91,9 @@ describe('OutlinePanel', () => {
         const search = screen.getByRole('searchbox');
         expect(search).toBeInTheDocument();
 
+        const searchbarClassName = container.querySelector('.filter-outline');
+        expect(searchbarClassName).toBeInTheDocument();
+
         // check funnel
         const funnelIcon = container.querySelector('[data-icon-name="funnel"]') as Element;
         expect(funnelIcon).toBeInTheDocument();
@@ -111,14 +114,17 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: scenario.UiAdaptation,
+            scenario: SCENARIO.UiAdaptation,
             selectedControl: undefined,
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         render(<OutlinePanel />, { initialState });
         // check one
@@ -143,14 +149,17 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: scenario.UiAdaptation,
+            scenario: SCENARIO.UiAdaptation,
             selectedControl: undefined,
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         render(<OutlinePanel />, { initialState });
         const search = screen.getByRole('searchbox');
@@ -193,14 +202,17 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: scenario.UiAdaptation,
+            scenario: SCENARIO.UiAdaptation,
             selectedControl: undefined,
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         const { container } = render(<OutlinePanel />, { initialState });
         let focusEditableRow = container.querySelector('.focusEditable');
@@ -253,14 +265,17 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: scenario.UiAdaptation,
+            scenario: SCENARIO.UiAdaptation,
             selectedControl: undefined,
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         const { container } = render(<OutlinePanel />, { initialState });
         const funnelIcon = container.querySelector('[data-icon-name="funnel"]') as Element;
@@ -290,6 +305,7 @@ describe('OutlinePanel', () => {
                 controlId: '04',
                 children: [],
                 controlType: 'sap.ui.extensionpoint',
+                hasDefaultContent: true,
                 editable: true,
                 visible: true
             }
@@ -299,14 +315,17 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: scenario.AdaptationProject,
+            scenario: SCENARIO.AdaptationProject,
             selectedControl: undefined,
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
 
         const tooltipId = 'tooltip--ExtensionPoint';
@@ -343,14 +362,17 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: scenario.AdaptationProject,
+            scenario: SCENARIO.AdaptationProject,
             selectedControl: undefined,
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
 
         const tooltipId = 'tooltip--ExtensionPoint';
@@ -405,14 +427,17 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: scenario.AdaptationProject,
+            scenario: SCENARIO.AdaptationProject,
             selectedControl: undefined,
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
 
         const tooltipId = 'tooltip--ExtensionPoint';
@@ -489,7 +514,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: getModel(true, true, true, true),
             filterQuery: filterInitOptions,
-            scenario: scenario.UiAdaptation,
+            scenario: SCENARIO.UiAdaptation,
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -507,9 +532,16 @@ describe('OutlinePanel', () => {
                         properties: {},
                         controlName: 'test01-01'
                     }
-                }
+                },
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false,
+            appMode: 'adaptation',
+            canSave: false,
+            changeStack: { canRedo: false, canUndo: false },
+            isAppLoading: true
         };
         const { container } = render(<OutlinePanel />, { initialState });
 

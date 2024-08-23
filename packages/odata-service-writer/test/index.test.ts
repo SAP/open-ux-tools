@@ -1,5 +1,5 @@
 import type { OdataService } from '../src/types';
-import { OdataVersion } from '../src/types';
+import { OdataVersion, ServiceType } from '../src/types';
 import { generate } from '../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
@@ -16,6 +16,7 @@ describe('ODataService templates', () => {
     const validServiceConfig: OdataService = {
         url: 'http://localhost',
         path: '/sap/odata/testme',
+        type: ServiceType.EDMX,
         version: OdataVersion.v2,
         metadata: '<HELLO><WORLD><METADATA></METADATA></WORLD></HELLO>',
         annotations: {
@@ -53,7 +54,7 @@ describe('ODataService templates', () => {
         const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
         fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
         fs.write(join(testDir, 'ui5-local.yaml'), '');
-        fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
+        fs.writeJSON(join(testDir, 'package.json'), {});
         fs.write(
             join(testDir, 'webapp/manifest.json'),
             JSON.stringify({
@@ -69,6 +70,17 @@ describe('ODataService templates', () => {
         const testDir = await createTestDir('odata-service-v2');
         await generate(testDir, validServiceConfig as OdataService, fs);
         expect(fs.dump(testDir)).toMatchSnapshot();
+        const packagePath = join(testDir, 'package.json');
+        expect(fs.readJSON(packagePath)).toEqual({
+            ui5: {
+                dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
+            },
+            devDependencies: {
+                '@sap-ux/ui5-middleware-fe-mockserver': '2',
+                '@sap/ux-ui5-tooling': '1'
+            },
+            scripts: { 'start-mock': 'fiori run --config ./ui5-mock.yaml --open "/"' }
+        });
     });
 
     it('generate: project with local annotations', async () => {
@@ -86,5 +98,18 @@ describe('ODataService templates', () => {
         const testDir = await createTestDir('local-annotations');
         await generate(testDir, serviceConfigWithAnnotations, fs);
         expect(fs.dump(testDir)).toMatchSnapshot();
+    });
+
+    it('Verify generated project of type CDS excludes dependencies in package.json', async () => {
+        const config: OdataService = {
+            url: 'http://localhost',
+            path: '/sap/odata/testme',
+            version: OdataVersion.v2,
+            type: ServiceType.CDS
+        };
+        const testDir = await createTestDir('cds-service');
+        await generate(testDir, config, fs);
+        const packagePath = join(testDir, 'package.json');
+        expect(fs.readJSON(packagePath)).toEqual({});
     });
 });

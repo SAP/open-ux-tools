@@ -1,3 +1,4 @@
+import type View from 'sap/ui/core/mvc/View';
 import type UI5Element from 'sap/ui/core/Element';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import AddXMLAtExtensionPoint from 'sap/ui/rta/plugin/AddXMLAtExtensionPoint';
@@ -10,11 +11,33 @@ import { createDeferred } from './utils';
 import { SubscribeFunction } from '../cpe/types';
 import { DialogNames } from './dialogs';
 import { handler } from './init-dialogs';
-import { ExtensionPointData, DeferredExtPointData } from './extension';
 
 type ActionService = {
     execute: (controlId: string, actionId: string) => void;
 };
+
+type DeferredExtPointData = {
+    fragmentPath: string;
+    extensionPointName: string | undefined;
+};
+
+export interface ExtensionPointInfo {
+    name: string;
+    index?: number;
+    view?: View;
+    createdControls: string[];
+    fragmentId?: string;
+    aggregation?: string[];
+    aggregationName?: string;
+    defaultContent: UI5Element[];
+    targetControl?: UI5Element;
+}
+
+export interface ExtensionPointData {
+    name: string;
+    deferred: Deferred<DeferredExtPointData>;
+    info: ExtensionPointInfo[];
+}
 
 export default class ExtensionPointService {
     private readonly actionId = 'CTX_ADDXML_AT_EXTENSIONPOINT';
@@ -59,7 +82,7 @@ export default class ExtensionPointService {
 
         const plugin = new AddXMLAtExtensionPoint({
             commandFactory,
-            fragmentHandler: async (overlay: UI5Element, info: ExtensionPointData[]) =>
+            fragmentHandler: async (overlay: UI5Element, info: ExtensionPointInfo[]) =>
                 await this.fragmentHandler(overlay, info)
         });
 
@@ -75,7 +98,7 @@ export default class ExtensionPointService {
      * @param info Extension point data from the plugin
      * @returns Deferred extension point data that is provided to the plugin
      */
-    public async fragmentHandler(overlay: UI5Element, info: ExtensionPointData[]): Promise<DeferredExtPointData> {
+    public async fragmentHandler(overlay: UI5Element, info: ExtensionPointInfo[]): Promise<DeferredExtPointData> {
         let deferred = createDeferred<DeferredExtPointData>();
         const name = this.selectedExtensionPointName;
 
@@ -83,7 +106,7 @@ export default class ExtensionPointService {
             name,
             info,
             deferred
-        } as ExtensionPointData);
+        });
 
         this.selectedExtensionPointName = '';
         return deferred.promise;

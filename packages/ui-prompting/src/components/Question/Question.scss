@@ -1,0 +1,47 @@
+.prompt-entries-wrapper {
+    &-multi,
+    &-single {
+        .prompt-entry {
+            display: block;
+            margin-right: 14px;
+            margin-bottom: 10px;
+            position: relative;
+
+            label {
+                margin-top: 0 !important;
+            }
+        }
+    }
+    &-multi {
+        input {
+            width: 260px;
+        }
+        label {
+            width: 244px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        select {
+            width: 260px;
+        }
+
+        .ms-ComboBox {
+            width: 262px;
+
+            input {
+                width: 234px;
+            }
+        }
+
+        .ms-TextField {
+            width: 262px;
+        }
+
+        [role='alert'] {
+            display: block;
+            width: auto;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    }
+}

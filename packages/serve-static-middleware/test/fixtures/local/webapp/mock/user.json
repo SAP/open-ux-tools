@@ -1,0 +1,8 @@
+{
+    "firstname": "John",
+    "lastname": "Doe",
+    "email": "john.doe@example.com",
+    "name": "john.doe@example.com",
+    "displayName": "John Doe (john.doe@example.com)",
+    "scopes": "openid,user_attributes,uaa.user"
+ }

@@ -1,0 +1,142 @@
+{
+  // test json with comments - comment 1
+  "version": "0.2.0", // comment 2
+  "configurations": [
+    {
+      "name": "Start fiori-elements-v4",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "cwd": "${workspaceFolder}/fiori-elements-v4",
+      "windows": {
+          "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+          "fiori",
+          "run"
+      ],
+      "args": [
+          "--open",
+          "test/flpSandbox.html#fiorielementsv4-tile"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "port": 9229,
+      "env": {
+          "DEBUG": "--inspect",
+          "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false"
+      }
+    },
+    {
+      "name": "Start fiori-elements-v2", // comment 3
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "cwd": "${workspaceFolder}/fiori-elements-v2",
+      "windows": {
+        "runtimeExecutable": "npm.cmd"
+      },
+      "runtimeArgs": ["run-script", "start"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229,
+      "env": {
+        "DEBUG": "--inspect"
+      }
+    },
+    { // comment 4
+      "name": "Start fiori-elements-v2 with UI5 Version",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "cwd": "${workspaceFolder}/fiori-elements-v2",
+      "windows": {
+        "runtimeExecutable": "npm.cmd"
+      },
+      "runtimeArgs": ["run-script", "start"],
+      "args": ["--", "${input:UI5Version}"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229,
+      "env": {
+        "DEBUG": "--inspect"
+      }
+    },
+    { // comment 5
+      "name": "Start fiori-elements-v2 Mock",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/fiori-elements-v2",
+      "runtimeExecutable": "npm",
+      "windows": {
+        "runtimeExecutable": "npm.cmd"
+      },
+      "runtimeArgs": ["run-script", "start-mock"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229,
+      "env": {}
+    },
+    {
+      "name": "Start fiori-elements-v2 Mock with UI5 Version",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/fiori-elements-v2",
+      "runtimeExecutable": "npm",
+      "windows": {
+        "runtimeExecutable": "npm.cmd"
+      },
+      "runtimeArgs": ["run-script", "start-mock"],
+      "args": ["--", "${input:UI5Version}"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229
+    },
+    { 
+      "name": "Start fiori-elements-v2 Local",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/fiori-elements-v2", // comment 6
+      "runtimeExecutable": "npm",
+      "windows": {
+        "runtimeExecutable": "npm.cmd"
+      },
+      "runtimeArgs": ["run-script", "start-local"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229,
+      "env": {}
+    },
+    {
+      "name": "Existing launch config with json comments", // comment 7
+      "cwd": "${workspaceFolder}/fiori-elements-v2",
+      "runtimeArgs": [
+          "fiori",  // comment 8
+          "run"
+      ],
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "windows": {
+          "runtimeExecutable": "npx.cmd" // comment 9
+      },
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+          "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"TEST_ID\"}",
+          "FIORI_TOOLS_BACKEND_CONFIG": "[{\"path\":\"TEST_PATH\",\"url\":\"TEST_URL\"}]", // comment 10
+          "FIORI_TOOLS_UI5_VERSION": "TEST_UI5_VERSION",
+          "FIORI_TOOLS_UI5_URI": "https://ui5.sap.com"
+      } // comment 11
+  }
+  ],
+  "inputs": [
+    {
+      "id": "UI5Version",
+      "type": "command",
+      "command": "sap.ux.appGenerator.ui5Version"
+    }
+  ]
+}

@@ -1,21 +1,24 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": [
-        "../../types/mem-fs-editor.d.ts",
-        "src",
-        "src/**/*.json"
-    ],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist",
-        "noImplicitAny": false
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/mem-fs-editor.d.ts",
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "noImplicitAny": false
+  },
+  "references": [
+    {
+      "path": "../mockserver-config-writer"
     },
-    "references": [
-        {
-            "path": "../project-access"
-        },
-        {
-            "path": "../ui5-config"
-        }
-    ]
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../ui5-config"
+    }
+  ]
 }

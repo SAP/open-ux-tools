@@ -1,0 +1,16 @@
+{
+  "name": "incidents",
+  "scripts": {
+    "build": "cds build/all --clean",
+    "deploy": "cds deploy",
+    "start": "cds watch"
+  },
+  "cds": {
+    "odata": {
+      "version": "v4"
+    }
+  },
+  "sapux": [
+    "app/incidents"
+  ]
+}

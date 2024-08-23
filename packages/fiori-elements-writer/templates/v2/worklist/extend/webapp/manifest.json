@@ -22,7 +22,8 @@
                             }
                         },
                         "tableSettings": {
-                            "multiSelect": true
+                            "multiSelect": true,
+                            "type": "<%- locals.tableType %>"
                         }
                     }
                 },

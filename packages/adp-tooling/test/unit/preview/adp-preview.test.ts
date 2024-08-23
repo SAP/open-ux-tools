@@ -2,12 +2,15 @@ import nock from 'nock';
 import { join } from 'path';
 import express from 'express';
 import supertest from 'supertest';
-import { ToolsLogger } from '@sap-ux/logger';
+import type { Editor } from 'mem-fs-editor';
+import { type Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import type { SuperTest, Test } from 'supertest';
 import { readFileSync, existsSync, writeFileSync } from 'fs';
 
 import { AdpPreview } from '../../../src/preview/adp-preview';
+import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
+import { addXmlFragment, tryFixChange } from '../../../src/preview/change-handler';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -30,6 +33,12 @@ jest.mock('os', () => ({
     platform: jest.fn().mockImplementation(() => 'win32')
 }));
 
+jest.mock('../../../src/preview/change-handler', () => ({
+    ...jest.requireActual('../../../src/preview/change-handler'),
+    tryFixChange: jest.fn(),
+    addXmlFragment: jest.fn()
+}));
+
 jest.mock('@sap-ux/store', () => {
     return {
         ...jest.requireActual('@sap-ux/store'),
@@ -40,6 +49,9 @@ jest.mock('@sap-ux/store', () => {
         )
     };
 });
+
+const tryFixChangeMock = tryFixChange as jest.Mock;
+const addXmlFragmentMock = addXmlFragment as jest.Mock;
 
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
@@ -196,16 +208,16 @@ describe('AdaptationProject', () => {
             await server.get('/my/adaptation/Component-preload.js').expect(404);
         });
 
-        test('/local.file', async () => {
-            const testFileContent = '~test';
+        test('/local-file.ts', async () => {
+            const localPath = '/local-file';
             mockProject.byGlob.mockResolvedValueOnce([
                 {
-                    getPath: () => '/local.file',
-                    getString: () => testFileContent
+                    getPath: () => `${localPath}.ts`
                 }
             ]);
-            const response = await server.get(`${mockMergedDescriptor.url}/local.file`).expect(200);
-            expect(response.text).toEqual(testFileContent);
+            const response = await server.get(`${mockMergedDescriptor.url}${localPath}.js`).expect(302);
+            expect(response.text).toEqual(`Found. Redirecting to ${localPath}.js`);
+            expect(mockProject.byGlob).toBeCalledWith(`${localPath}.*`);
         });
 
         test('/original.file', async () => {
@@ -213,6 +225,51 @@ describe('AdaptationProject', () => {
             expect(next).toBeCalled();
         });
     });
+
+    describe('onChangeRequest', () => {
+        const mockFs = {} as unknown as Editor;
+        const mockLogger = { info: jest.fn(), warn: jest.fn(), error: jest.fn() } as unknown as Logger;
+
+        const adp = new AdpPreview(
+            {} as AdpPreviewConfig,
+            mockProject as unknown as ReaderCollection,
+            middlewareUtil,
+            logger
+        );
+
+        const addXMLChange = {
+            changeType: 'addXML',
+            content: {
+                fragmentPath: 'fragments/share.fragment.xml'
+            },
+            reference: 'some.reference'
+        } as unknown as CommonChangeProperties;
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should fix the change if type is "read" and conditions meet', async () => {
+            await adp.onChangeRequest('read', addXMLChange, mockFs, mockLogger);
+
+            expect(tryFixChangeMock).toHaveBeenCalledWith(addXMLChange, mockLogger);
+        });
+
+        it('should add an XML fragment if type is "write" and change is AddXMLChange', async () => {
+            await adp.onChangeRequest('write', addXMLChange, mockFs, mockLogger);
+
+            expect(addXmlFragmentMock).toHaveBeenCalledWith('/adp.project/webapp', addXMLChange, mockFs, mockLogger);
+        });
+
+        it('should not perform any action if type is "delete"', async () => {
+            const change = { changeType: 'delete', content: {} } as unknown as CommonChangeProperties;
+            await adp.onChangeRequest('delete', change, mockFs, mockLogger);
+
+            expect(tryFixChange).not.toHaveBeenCalled();
+            expect(addXmlFragment).not.toHaveBeenCalled();
+        });
+    });
+
     describe('addApis', () => {
         let server: SuperTest<Test>;
         beforeAll(async () => {
@@ -228,6 +285,7 @@ describe('AdaptationProject', () => {
             );
 
             const app = express();
+            app.use(express.json());
             adp.addApis(app);
             server = supertest(app);
         });
@@ -271,38 +329,6 @@ describe('AdaptationProject', () => {
             const response = await server.get('/adp/api/fragment').expect(500);
             const data: GetFragmentsResponse = JSON.parse(response.text);
             expect(data.message).toEqual(errorMsg);
-        });
-
-        test('POST /adp/api/fragment - creates fragment', async () => {
-            mockExistsSync.mockReturnValue(false);
-            const fragmentName = 'Share';
-            const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(201);
-
-            const message = response.text;
-            expect(message).toBe('XML Fragment created');
-        });
-
-        test('POST /adp/api/fragment - fragment already exists', async () => {
-            mockExistsSync.mockReturnValueOnce(false).mockReturnValueOnce(true);
-            const fragmentName = 'Share';
-            const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(409);
-
-            const message = response.text;
-            expect(message).toBe(`Fragment with name "${fragmentName}" already exists`);
-        });
-
-        test('POST /adp/api/fragment - fragmentName was not provided', async () => {
-            const response = await server.post('/adp/api/fragment').send({ fragmentName: '' }).expect(400);
-
-            const message = response.text;
-            expect(message).toBe('Fragment name was not provided!');
-        });
-
-        test('POST /adp/api/fragment - throws error when fragment name is undefined', async () => {
-            const response = await server.post('/adp/api/fragment').send({ fragmentName: undefined }).expect(500);
-
-            const message = response.text;
-            expect(message).toBe('Input must be string');
         });
 
         test('GET /adp/api/controller', async () => {

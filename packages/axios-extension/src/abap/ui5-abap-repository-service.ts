@@ -1,9 +1,7 @@
-import type { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { prettyPrintError, prettyPrintMessage } from './message';
-import type { ErrorMessage } from './message';
+import { type AxiosResponse, type AxiosRequestConfig } from 'axios';
+import { logError, getErrorMessageFromString, prettyPrintError, prettyPrintMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
-
 /**
  * Required configuration a transportable object.
  */
@@ -134,7 +132,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
             return response.odata();
         } catch (error) {
-            this.log.debug(`Retrieving application ${app}, ${error}`);
+            this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${error}`);
             if (isAxiosError(error) && error.response?.status === 404) {
                 return undefined;
             }
@@ -185,7 +183,11 @@ export class Ui5AbapRepositoryService extends ODataService {
             bsp.description || 'Deployed with SAP Fiori tools',
             info ? info.Package : bsp.package
         );
-        this.log.debug(`Payload:\n${payload}`);
+        this.log.debug(
+            `Payload:\n ID: ${this.publicUrl}/Repositories('${bsp.name}') \n ABAP Package: ${
+                info ? info.Package : bsp.package
+            }`
+        );
         const config = this.createConfig(bsp.transport, testMode, safeMode);
         const frontendUrl = this.getAbapFrontendUrl();
         try {
@@ -210,7 +212,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 // Test mode returns a HTTP response code of 403 so we dont want to show all error messages
                 prettyPrintError(
                     {
-                        error: this.getErrorMessageFromString(response?.data),
+                        error: getErrorMessageFromString(response?.data),
                         log: this.log,
                         host: frontendUrl,
                         isDest: this.isDest
@@ -220,7 +222,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             }
             return response;
         } catch (error) {
-            this.logError({ error, host: frontendUrl });
+            logError({ error, host: frontendUrl, log: this.log, isDest: this.isDest });
             throw error;
         }
     }
@@ -255,7 +257,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 return undefined;
             }
         } catch (error) {
-            this.logError({ error, host });
+            logError({ error, host, log: this.log });
             throw error;
         }
     }
@@ -431,45 +433,5 @@ export class Ui5AbapRepositoryService extends ODataService {
                 throw error;
             }
         }
-    }
-
-    /**
-     * Log errors more user friendly if it is a standard Gateway error.
-     *
-     * @param e error thrown by Axios after sending a request
-     * @param e.error error from Axios
-     * @param e.host hostname
-     */
-    protected logError({ error, host }: { error: Error; host?: string }): void {
-        this.log.error(error.message);
-        if (isAxiosError(error) && error.response?.data) {
-            const errorMessage = this.getErrorMessageFromString(error.response?.data);
-            if (errorMessage) {
-                prettyPrintError({ error: errorMessage, host, log: this.log, isDest: this.isDest });
-            } else {
-                this.log.error(error.response.data.toString());
-            }
-        }
-    }
-
-    /**
-     * Get ErrorMessage object from response contain an error as a string.
-     *
-     * @param data string value
-     * @returns undefined if an error object is not found or populated ErrorMessage object
-     */
-    protected getErrorMessageFromString(data: unknown): ErrorMessage | undefined {
-        let error;
-        if (typeof data === 'string') {
-            try {
-                const errorMsg = JSON.parse(data);
-                if (errorMsg.error) {
-                    error = errorMsg.error as ErrorMessage;
-                }
-            } catch {
-                // Not much we can do!
-            }
-        }
-        return error;
     }
 }

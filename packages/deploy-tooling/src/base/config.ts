@@ -23,23 +23,6 @@ export function getConfigForLogging(
 }
 
 /**
- * Replace environment variable references of pattern `env:VAR_NAME` with the value of the corresponding environment variable.
- *
- * @param obj - any object structure
- */
-export function replaceEnvVariables(obj: object): void {
-    for (const key in obj) {
-        const value = (obj as Record<string, unknown>)[key];
-        if (typeof value === 'object') {
-            replaceEnvVariables(value as object);
-        } else if (typeof value === 'string' && value.startsWith('env:')) {
-            const varName = value.split('env:')[1];
-            (obj as Record<string, unknown>)[key] = process.env[varName];
-        }
-    }
-}
-
-/**
  * Helper function for throwing a missing property error.
  *
  * @param property Invalid missing property

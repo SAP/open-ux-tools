@@ -9,7 +9,8 @@ import {
     changeStackModified,
     deletePropertyChanges,
     propertyChangeFailed,
-    FlexChangesEndPoints
+    FlexChangesEndPoints,
+    reloadApplication
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
 import type { SelectionService } from '../selection';
@@ -18,6 +19,8 @@ import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } fr
 import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
+import { modeAndStackChangeHandler } from '../rta-service';
+import { getError } from '../../utils/error';
 
 interface ChangeContent {
     property: string;
@@ -41,6 +44,8 @@ interface Change {
     creation: string;
     changeType: string;
 }
+
+type SavedChangesResponse = Record<string, Change>;
 
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
 /**
@@ -119,7 +124,10 @@ export class ChangeService {
                     if (control) {
                         name = control.getMetadata().getName();
                     }
-                    const modifiedMessage = modifyRTAErrorMessage(exception?.toString(), id, name);
+
+                    const error = getError(exception);
+                    // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
+                    const modifiedMessage = modifyRTAErrorMessage(error.toString(), id, name);
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
                     const propertyChangeFailedAction = propertyChangeFailed({ ...action.payload, errorMessage });
@@ -127,12 +135,17 @@ export class ChangeService {
                 }
             } else if (deletePropertyChanges.match(action)) {
                 await this.deleteChange(action.payload.controlId, action.payload.propertyName, action.payload.fileName);
+            } else if (reloadApplication.match(action)) {
+                await this.options.rta.stop(false, true);
             }
         });
 
         await this.fetchSavedChanges();
         this.updateStack();
-
+        this.options.rta.attachStop(() => {
+            // eslint-disable-next-line fiori-custom/sap-no-location-reload
+            location.reload();
+        });
         this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
     }
 
@@ -155,7 +168,7 @@ export class ChangeService {
      */
     private async fetchSavedChanges(): Promise<void> {
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
-        const savedChanges = await savedChangesResponse.json();
+        const savedChanges = (await savedChangesResponse.json()) as SavedChangesResponse;
         const changes = (
             Object.keys(savedChanges ?? {})
                 .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {
@@ -228,7 +241,7 @@ export class ChangeService {
                 })
             );
 
-        await Promise.all(filesToDelete).catch((error) => Log.error(error));
+        await Promise.all(filesToDelete).catch((error) => Log.error(getError(error).message));
 
         await this.fetchSavedChanges();
         this.updateStack();
@@ -241,6 +254,7 @@ export class ChangeService {
      * @returns (event: sap.ui.base.Event) => Promise<void>
      */
     private createOnStackChangeHandler(): (event: Event) => Promise<void> {
+        const handleStackChange = modeAndStackChangeHandler(this.sendAction, this.options.rta);
         return async (): Promise<void> => {
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
@@ -264,7 +278,7 @@ export class ChangeService {
                         }
                     }
                 } catch (error) {
-                    Log.error('CPE: Change creation Failed', error);
+                    Log.error('CPE: Change creation Failed', getError(error));
                 }
             });
 
@@ -275,6 +289,7 @@ export class ChangeService {
             }
 
             this.updateStack(activeChanges);
+            handleStackChange();
         };
     }
 
@@ -294,21 +309,23 @@ export class ChangeService {
 
         switch (changeType) {
             case 'propertyChange':
-                value = command.getProperty('newValue');
+                value = command.getProperty('newValue') as string;
                 break;
             case 'propertyBindingChange':
-                value = command.getProperty('newBinding');
+                value = command.getProperty('newBinding') as string;
                 break;
         }
+        const { fileName } = command.getPreparedChange().getDefinition();
         if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
             result = {
                 type: 'pending',
                 changeType,
                 controlId: selectorId,
-                propertyName: command.getProperty('propertyName'),
+                propertyName: command.getProperty('propertyName') as string,
                 isActive: index >= inactiveCommandCount,
                 value,
-                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
+                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? '',
+                fileName
             };
         } else {
             result = {
@@ -319,7 +336,8 @@ export class ChangeService {
                 controlName:
                     changeType === 'addXMLAtExtensionPoint'
                         ? command.getSelector().name ?? ''
-                        : command.getElement().getMetadata().getName().split('.').pop() ?? ''
+                        : command.getElement().getMetadata().getName().split('.').pop() ?? '',
+                fileName
             };
         }
 
@@ -341,7 +359,7 @@ export class ChangeService {
                 }
                 return result;
             } catch (error) {
-                Log.error(`Retry operation failed: ${error?.message}`);
+                Log.error('Retry operation failed:', getError(error));
                 continue;
             }
         }
@@ -370,9 +388,10 @@ export class ChangeService {
     private getCommandSelectorId(command: FlexCommand): string | undefined {
         return this.retryOperations([
             () => command.getSelector().id,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             () => command.getElement().getProperty('persistencyKey'),
             () => command.getElement().getId(),
             () => command.getParent()?.getElement().getId()
-        ]);
+        ]) as string | undefined;
     }
 }

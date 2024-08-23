@@ -34,7 +34,8 @@ describe('UI5 templates', () => {
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: '@sap/test-ui5-template-id'
-            }
+            },
+            projectType: 'EDMXBackend'
         },
         ui5: {
             framework: 'OpenUI5'
@@ -73,12 +74,12 @@ describe('UI5 templates', () => {
 
         // Ensure double-quote cannot be used
         await expect(
-            generate(projectDir, { ...ui5AppConfig, app: { id: 'test"AppId' } })
+            generate(projectDir, { ...ui5AppConfig, app: { id: 'test"AppId', projectType: 'EDMXBackend' } })
         ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id contains disallowed characters: \\""`);
 
         // Ensure undefined, null or '' cannot be used
         await expect(
-            generate(projectDir, { ...ui5AppConfig, app: { id: '' } })
+            generate(projectDir, { ...ui5AppConfig, app: { id: '', projectType: 'EDMXBackend' } })
         ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id must have a value"`);
     });
 
@@ -101,5 +102,53 @@ describe('UI5 templates', () => {
         fs.write(join(projectDir, 'ui5.yaml'), '');
         fs.delete(join(projectDir, 'webapp/manifest.json'));
         await expect(enableTypescript(projectDir, fs)).rejects.toThrowError();
+    });
+
+    it('Check webapp/index.html templates are generated correctly for CAP application with ui5 version ', async () => {
+        const projectDir = join(outputDir, 'testapp-cap');
+        ui5AppConfig.app.projectType = 'CAPNodejs';
+        const fs = await generate(projectDir, { ...ui5AppConfig, ui5: { version: '1.96.1' } });
+        const indexHtmlPath = join(projectDir, 'webapp/index.html');
+        // Check if webapp/index.html exists
+        expect(fs.exists(indexHtmlPath)).toBe(true);
+        // Check if the index.html contains the correct UI5 framework URL with version included
+        const indexHtml = fs.read(indexHtmlPath);
+        expect(indexHtml).toContain('src="https://ui5.sap.com/1.96.1/resources/sap-ui-core.js"');
+    });
+
+    it('Check webapp/index.html templates are generated correctly for CAP application without ui5 version ', async () => {
+        const projectDir = join(outputDir, 'testapp-cap');
+        ui5AppConfig.app.projectType = 'CAPNodejs';
+        const fs = await generate(projectDir, { ...ui5AppConfig });
+        const indexHtmlPath = join(projectDir, 'webapp/index.html');
+        // Check if webapp/index.html exists
+        expect(fs.exists(indexHtmlPath)).toBe(true);
+        // Check if the index.html contains the correct UI5 framework URL with version included
+        const indexHtml = fs.read(indexHtmlPath);
+        expect(indexHtml).toContain('src="https://sdk.openui5.org/resources/sap-ui-core.js"');
+    });
+
+    it('Check webapp/index.html templates are generated correctly for EDMX application', async () => {
+        const projectDir = join(outputDir, 'testapp-cap');
+        ui5AppConfig.app.projectType = 'EDMXBackend';
+        const fs = await generate(projectDir, { ...ui5AppConfig, ui5: { version: '1.96.1' } });
+        const indexHtmlPath = join(projectDir, 'webapp/index.html');
+        // Check if webapp/index.html exists
+        expect(fs.exists(indexHtmlPath)).toBe(true);
+        // Check if the index.html contains the correct UI5 framework URL without version included
+        const indexHtml = fs.read(indexHtmlPath);
+        expect(indexHtml).toContain('src="resources/sap-ui-core.js"');
+    });
+
+    it('Check that no ui5-local.yaml file is generated for CAP application', async () => {
+        const projectDir = join(outputDir, 'testapp-cap');
+        ui5AppConfig.app.projectType = 'CAPNodejs';
+        const fs = await generate(projectDir, { ...ui5AppConfig, ui5: { minUI5Version: '1.96.1' } });
+        // Check if ui5-local.yaml does not exist
+        expect(fs.exists(join(projectDir, 'ui5-local.yaml'))).toBe(false);
+        // Check if gitignore does not exist
+        expect(fs.exists(join(projectDir, '.gitignore'))).toBe(false);
+        // Check if ui5.yaml exist
+        expect(fs.exists(join(projectDir, 'ui5.yaml'))).toBe(true);
     });
 });

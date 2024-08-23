@@ -1,10 +1,13 @@
 {
     "sap.ui5": {
+        "dependencies": {
+            "libs": <%- JSON.stringify(libraries) %>
+        },
         "routing": {
             "targets": {
-                "<%- entity %>ListReport": {
+                "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ListReport<% } %>": {
                     "type": "Component",
-                    "id": "<%- entity %>ListReport",
+                    "id": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ListReport<% } %>",
                     "name": "sap.fe.templates.ListReport",<%if (locals.controlAggregation) {%>
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {

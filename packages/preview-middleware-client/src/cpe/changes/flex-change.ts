@@ -33,7 +33,7 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
     const changeType = isBindingString ? 'BindProperty' : 'Property';
 
     if (isBindingModel) {
-        validateBindingModel(change.value as string);
+        validateBindingModel(modifiedControl, change.value as string);
     }
 
     const property = isBindingString ? 'newBinding' : 'newValue';

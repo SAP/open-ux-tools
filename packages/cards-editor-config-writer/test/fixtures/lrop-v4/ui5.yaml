@@ -1,0 +1,26 @@
+specVersion: "2.4"
+metadata:
+  name: apps.v4.example
+type: application
+server:
+  customMiddleware:
+  - name: preview-middleware
+    afterMiddleware: compression
+    configuration:
+      flp:
+        path: test/flpSandbox.html
+  - name: sap-fe-mockserver
+    afterMiddleware: compression
+    configuration:
+      services:
+      - urlPath: '/sap/opu/odata4/mock'
+        metadataPath: './webapp/localService/metadata.xml'
+        generateMockData: true
+  - name: fiori-tools-proxy
+    afterMiddleware: sap-fe-mockserver
+    configuration:
+      ui5:
+        path:
+        - /resources
+        - /test-resources
+        url: https://ui5.sap.com

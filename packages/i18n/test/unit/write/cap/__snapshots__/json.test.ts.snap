@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`json add new i18n entries to json file empty bundle 1`] = `
+"{
+    \\"fallback\\": {
+        \\"key\\": \\"value\\"
+    }
+}"
+`;
+
+exports[`json add new i18n entries to json file empty fallback bundle 1`] = `
+"
+            {
+                \\"fallback\\" : {
+                      \\"key\\": \\"value\\"
+            }
+            }"
+`;
+
+exports[`json add new i18n entries to json file empty fallback bundle with multi-line 1`] = `
+"
+            {
+                \\"fallback\\" : {
+                      \\"key\\": \\"value\\"
+            }
+            }"
+`;
+
+exports[`json add new i18n entries to json file empty file 1`] = `
+"{
+    \\"fallback\\": {
+        \\"key\\": \\"value\\"
+    }
+}"
+`;
+
+exports[`json add new i18n entries to json file existing bundle 1`] = `
+"
+            {
+            \\"fallback\\": {
+                      \\"key\\": \\"value\\"
+            },
+                \\"\\" : {}
+            }"
+`;
+
+exports[`json add new i18n entries to json file fallback bundle with values 1`] = `
+"
+            {
+                \\"fallback\\" : {
+                        \\"key\\": \\"value\\",
+                        \\"key2\\": \\"value2\\",
+                    \\"a\\": \\"b\\"
+                }
+            }"
+`;

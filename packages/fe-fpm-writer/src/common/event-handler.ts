@@ -49,6 +49,25 @@ export const contextParameter: EventHandlerTypescriptParameters = {
 };
 
 /**
+ * Method returns file name to use in namespace.
+ *
+ * @param fileName - event handler file name
+ * @param controllerPrefix - controller prefix '.extension'
+ * @returns {string} file name part for namespace
+ */
+function getFileName(fileName: string, controllerPrefix?: string): string {
+    let resolvedName;
+    // For name part in namespace we use passed file name or if it's controller extension, then remove 'controller' part from path
+    // 'Handler.controller' should be resolved as 'Handler' in namespace
+    if (controllerPrefix && fileName.endsWith('.controller')) {
+        resolvedName = fileName.replace('.controller', '');
+    } else {
+        resolvedName = fileName;
+    }
+    return resolvedName;
+}
+
+/**
  * Method creates or updates handler js file and update 'settings.eventHandler' entry with namespace path entry to method.
  *
  * @param fs - the memfs editor instance
@@ -72,9 +91,13 @@ export function applyEventHandlerConfiguration(
         return eventHandler;
     }
     let insertScript: TextFragmentInsertion | undefined;
+    let controllerPrefix: string | undefined = '';
     // By default - use config name for created file name
     let fileName = config.name;
+    // Name part used in namespace
+    let resolvedName = fileName;
     if (typeof eventHandler === 'object') {
+        controllerPrefix = eventHandler.controllerPrefix;
         if (eventHandler.fnName) {
             eventHandlerFnName = eventHandler.fnName;
         }
@@ -82,6 +105,7 @@ export function applyEventHandlerConfiguration(
         if (eventHandler.fileName) {
             // Use passed file name
             fileName = eventHandler.fileName;
+            resolvedName = getFileName(fileName, controllerPrefix);
         }
     }
 
@@ -105,5 +129,6 @@ export function applyEventHandlerConfiguration(
         fs.write(controllerPath, content);
     }
     // Return full namespace path to method
-    return `${config.ns}.${fileName}.${eventHandlerFnName}`;
+    const fullNamespace = `${config.ns}.${resolvedName}.${eventHandlerFnName}`;
+    return controllerPrefix ? `${controllerPrefix}.${fullNamespace}` : `${fullNamespace}`;
 }

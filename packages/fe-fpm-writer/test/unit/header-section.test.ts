@@ -175,6 +175,21 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
                 expect(fs.read(expectedEditFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
             });
         });
+
+        test('custom control for edit mode', () => {
+            const customHeaderSection = createCustomHeaderSectionWithEditFragment('1.98', {
+                name: 'NewCustomHeaderSectionEdit',
+                folder: 'extensions/custom',
+                control: '<CustomXML text="" />'
+            } as HeaderSectionEditProperty);
+            const expectedFragmentPath = join(
+                testDir,
+                `webapp/${customHeaderSection.edit?.folder}/${customHeaderSection.edit?.name}.fragment.xml`
+            );
+            generateCustomHeaderSection(testDir, customHeaderSection, fs);
+
+            expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+        });
     });
 
     describe('View mode and edit mode fragments in different extension folders', () => {

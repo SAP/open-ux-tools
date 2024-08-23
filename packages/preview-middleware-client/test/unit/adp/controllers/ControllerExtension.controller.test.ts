@@ -17,7 +17,12 @@ describe('ControllerExtension', () => {
         fetchMock.mockResolvedValue({
             json: jest
                 .fn()
-                .mockReturnValueOnce({ controllerExists: false, controllerPath: '', controllerPathFromRoot: '' })
+                .mockReturnValueOnce({
+                    controllerExists: false,
+                    controllerPath: '',
+                    controllerPathFromRoot: '',
+                    isRunningInBAS: false
+                })
                 .mockReturnValueOnce({ controllers: [] }),
             text: jest.fn(),
             ok: true
@@ -61,17 +66,17 @@ describe('ControllerExtension', () => {
             );
 
             const openSpy = jest.fn();
-            controllerExt.byId = jest.fn().mockReturnValue({
-                open: openSpy,
-                setEscapeHandler: jest.fn()
-            });
 
-            await controllerExt.onInit();
+            await controllerExt.setup({
+                open: openSpy,
+                setEscapeHandler: jest.fn(),
+                setModel: jest.fn()
+            } as unknown as Dialog);
 
             expect(openSpy).toHaveBeenCalledTimes(1);
         });
 
-        test('fills json model with data (controller exists: true)', async () => {
+        test('fills json model with data (controller exists: true | env: VS Code)', async () => {
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
@@ -93,7 +98,8 @@ describe('ControllerExtension', () => {
                 json: jest.fn().mockReturnValue({
                     controllerExists: true,
                     controllerPath: 'C:/users/projects/adp.app/webapp/changes/coding/share.js',
-                    controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.js'
+                    controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.js',
+                    isRunningInBAS: false
                 }),
                 text: jest.fn(),
                 ok: true
@@ -103,24 +109,74 @@ describe('ControllerExtension', () => {
             const setTextSpy = jest.fn();
             const setEnabledSpy = jest.fn();
 
-            controllerExt.byId = jest
-                .fn()
-                .mockReturnValueOnce({
-                    open: openSpy,
-                    getBeginButton: jest
-                        .fn()
-                        .mockReturnValue({ setText: jest.fn().mockReturnValue({ setEnabled: setEnabledSpy }) }),
-                    getEndButton: jest.fn().mockReturnValue({ setText: setTextSpy }),
-                    setEscapeHandler: jest.fn()
-                })
-                .mockReturnValue({
-                    setVisible: jest.fn()
-                });
+            controllerExt.byId = jest.fn().mockReturnValueOnce({}).mockReturnValue({
+                setVisible: jest.fn()
+            });
 
-            await controllerExt.onInit();
+            await controllerExt.setup({
+                open: openSpy,
+                getBeginButton: jest
+                    .fn()
+                    .mockReturnValue({ setText: jest.fn().mockReturnValue({ setEnabled: setEnabledSpy }) }),
+                getEndButton: jest.fn().mockReturnValue({ setText: setTextSpy }),
+                setEscapeHandler: jest.fn(),
+                setModel: jest.fn(),
+                getContent: jest.fn().mockReturnValue([{ setVisible: jest.fn() }, { setVisible: jest.fn() }])
+            } as unknown as Dialog);
 
             expect(openSpy).toHaveBeenCalledTimes(1);
             expect(setEnabledSpy).toHaveBeenCalledWith(true);
+            expect(setTextSpy).toHaveBeenCalledWith('Close');
+        });
+
+        test('fills json model with data (controller exists: true | env: BAS)', async () => {
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const overlayControl = {
+                getElement: jest.fn().mockReturnValue({
+                    getId: jest.fn().mockReturnValue('::Toolbar')
+                })
+            };
+            sapCoreMock.byId.mockReturnValue(overlayControl);
+
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                overlays as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    controllerExists: true,
+                    controllerPath: 'C:/users/projects/adp.app/webapp/changes/coding/share.js',
+                    controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.js',
+                    isRunningInBAS: true
+                }),
+                text: jest.fn(),
+                ok: true
+            });
+
+            const openSpy = jest.fn();
+            const setTextSpy = jest.fn();
+            const setVisibleSpy = jest.fn();
+
+            controllerExt.byId = jest.fn().mockReturnValueOnce({}).mockReturnValue({
+                setVisible: jest.fn()
+            });
+
+            await controllerExt.setup({
+                open: openSpy,
+                getBeginButton: jest.fn().mockReturnValue({ setVisible: setVisibleSpy }),
+                getEndButton: jest.fn().mockReturnValue({ setText: setTextSpy }),
+                setEscapeHandler: jest.fn(),
+                setModel: jest.fn(),
+                getContent: jest.fn().mockReturnValue([{ setVisible: jest.fn() }, { setVisible: jest.fn() }])
+            } as unknown as Dialog);
+
+            expect(openSpy).toHaveBeenCalledTimes(1);
+            expect(setVisibleSpy).toHaveBeenCalledWith(false);
             expect(setTextSpy).toHaveBeenCalledWith('Close');
         });
 
@@ -144,19 +200,19 @@ describe('ControllerExtension', () => {
             );
 
             const openSpy = jest.fn();
-            controllerExt.byId = jest.fn().mockReturnValue({
-                open: openSpy,
-                setEscapeHandler: jest.fn()
-            });
 
             fetchMock.mockResolvedValue({
-                json: jest.fn().mockRejectedValue({ message: errorMsg }),
+                json: jest.fn().mockRejectedValue(new Error(errorMsg)),
                 text: jest.fn(),
                 ok: true
             });
 
             try {
-                await controllerExt.onInit();
+                await controllerExt.setup({
+                    setModel: jest.fn(),
+                    open: openSpy,
+                    setEscapeHandler: jest.fn()
+                } as unknown as Dialog);
             } catch (e) {
                 expect(e.message).toBe(errorMsg);
             }
@@ -182,22 +238,21 @@ describe('ControllerExtension', () => {
                 {} as unknown as RuntimeAuthoring
             );
 
-            controllerExt.byId = jest.fn().mockReturnValue({
-                open: jest.fn(),
-                setEscapeHandler: jest.fn()
-            });
-
             fetchMock.mockResolvedValue({
                 json: jest
                     .fn()
                     .mockReturnValueOnce({ controllerExists: false, controllerPath: '', controllerPathFromRoot: '' })
-                    .mockRejectedValueOnce({ message: errorMsg }),
+                    .mockRejectedValueOnce(new Error(errorMsg)),
                 text: jest.fn(),
                 ok: true
             });
 
             try {
-                await controllerExt.onInit();
+                await controllerExt.setup({
+                    setModel: jest.fn(),
+                    open: jest.fn(),
+                    setEscapeHandler: jest.fn()
+                } as unknown as Dialog);
             } catch (e) {
                 expect(e.message).toBe(errorMsg);
             }
@@ -215,10 +270,9 @@ describe('ControllerExtension', () => {
             const closeSpy = jest.fn();
 
             controllerExt.dialog = {
-                close: closeSpy
+                close: closeSpy,
+                destroy: jest.fn()
             } as unknown as Dialog;
-
-            controllerExt.getView = jest.fn().mockReturnValue({ destroy: jest.fn() });
 
             controllerExt.handleDialogClose();
 
@@ -316,29 +370,29 @@ describe('ControllerExtension', () => {
 
         test('sets error when the controller name contains a whitespace at the end', () => {
             const controllerExt = new ControllerExtension(
-            'adp.extension.controllers.ControllerExtension',
-            {} as unknown as UI5Element,
-            {} as unknown as RuntimeAuthoring
+                'adp.extension.controllers.ControllerExtension',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
             );
-            
+
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     getValue: jest.fn().mockReturnValue('samplename '),
-                    setValueState: valueStateSpy,
+                    setValueState: valueStateSpy
                 })
             };
 
             controllerExt.model = testModel;
-            
+
             controllerExt.dialog = {
                 getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
             } as unknown as Dialog;
 
-            controllerExt.onControllerNameInputChange(event as unknown as Event)
-            
-            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error)
-        })
+            controllerExt.onControllerNameInputChange(event as unknown as Event);
+
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
+        });
 
         test('sets error when the controller name exceeds 64 characters', () => {
             const controllerExt = new ControllerExtension(
@@ -515,7 +569,7 @@ describe('ControllerExtension', () => {
 
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue([]),
-                text: jest.fn().mockRejectedValueOnce({ message: errorMsg }),
+                text: jest.fn().mockRejectedValueOnce(new Error(errorMsg)),
                 ok: true
             });
 

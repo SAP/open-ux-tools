@@ -1,4 +1,5 @@
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
+import { Router as createRouter } from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { ProxyConfig } from '../base';
@@ -38,15 +39,11 @@ function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Option
  * @returns handler function
  */
 function createRequestHandler(routes: { route: string; handler: RequestHandler }[]): RequestHandler {
-    return (req, res, next): void => {
-        for (const route of routes) {
-            if (req.path.startsWith(route.route)) {
-                route.handler(req, res, next);
-                return;
-            }
-        }
-        next();
-    };
+    const router = createRouter();
+    for (const route of routes) {
+        router.get(`${route.route}*`, route.handler);
+    }
+    return router;
 }
 
 /**

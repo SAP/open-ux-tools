@@ -5,5 +5,6 @@ export * from './base/service-provider';
 export * from './abap';
 export * from './factory';
 export * from './auth';
-
+export * from './abap/message';
+export { ServiceType } from './abap/catalog/base';
 export { AxiosError, AxiosRequestConfig, isAxiosError };

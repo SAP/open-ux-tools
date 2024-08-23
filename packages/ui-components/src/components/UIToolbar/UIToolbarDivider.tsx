@@ -17,15 +17,6 @@ export interface UIToolbarDividerProps {
  */
 export class UIToolbarDivider extends React.Component<UIToolbarDividerProps, {}> {
     /**
-     * Initializes component properties.
-     *
-     * @param props
-     */
-    constructor(props: UIToolbarDividerProps) {
-        super(props);
-    }
-
-    /**
      * @returns {React.ReactNode}
      */
     render(): React.ReactNode {

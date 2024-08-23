@@ -1,5 +1,5 @@
 import type { CstNode, IToken, CstNodeLocation } from 'chevrotain';
-import { Range, Position } from 'vscode-languageserver-types';
+import { Range, Position } from '@sap-ux/text-document-utils';
 
 import type {
     Annotation,
@@ -121,7 +121,7 @@ export const locationToRange = (location?: CstNodeLocation): Range | undefined =
 };
 const existsAndNotRecovered = (nodes: IToken[] | undefined): nodes is IToken[] =>
     hasItems(nodes) && !nodes[0]?.isInsertedInRecovery;
-const vocabularyService = new VocabularyService(true);
+const vocabularyService = new VocabularyService(true, true);
 const vocabularyAliases = [...vocabularyService.getVocabularies().values()].map(
     (vocabulary) => vocabulary.defaultAlias
 );
@@ -458,7 +458,7 @@ class CstToAstVisitor extends Visitor {
     /**
      * Creates declaration node.
      *
-     * @param context CST decrataion children
+     * @param context CST declaration children
      * @param location CST location of the given context
      * @returns Declaration ast node or undefined if no items found in the context
      */

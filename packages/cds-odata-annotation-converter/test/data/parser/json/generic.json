@@ -1,0 +1,383 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(3,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.A",
+                "valueRange": "[(1,4)..(1,5)]"
+            }
+        },
+        "contentRange": "[(1,6)..(3,5)]",
+        "content": []
+    },
+    {
+        "type": "element",
+        "range": "[(4,4)..(6,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.B",
+                "valueRange": "[(4,4)..(4,5)]"
+            }
+        },
+        "contentRange": "[(4,6)..(6,5)]",
+        "content": []
+    },
+    {
+        "type": "element",
+        "range": "[(7,4)..(9,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.C",
+                "valueRange": "[(7,4)..(7,5)]"
+            }
+        },
+        "contentRange": "[(7,6)..(9,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(8,21)..(8,35)]",
+                "name": "Apply",
+                "nameRange": "[(8,23)..(8,29)]",
+                "attributes": {},
+                "contentRange": "[(8,22)..(8,34)]",
+                "content": []
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(10,4)..(12,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.D",
+                "valueRange": "[(10,4)..(10,5)]"
+            }
+        },
+        "contentRange": "[(10,6)..(12,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(11,21)..(11,41)]",
+                "name": "Apply",
+                "nameRange": "[(11,23)..(11,29)]",
+                "attributes": {},
+                "contentRange": "[(11,22)..(11,40)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(11,32)..(11,34)]",
+                        "name": "String",
+                        "attributes": {},
+                        "contentRange": "[(11,33)..(11,33)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(11,33)..(11,33)]",
+                                "text": ""
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(13,4)..(15,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.E",
+                "valueRange": "[(13,4)..(13,5)]"
+            }
+        },
+        "contentRange": "[(13,6)..(15,5)]",
+        "content": []
+    },
+    {
+        "type": "element",
+        "range": "[(16,4)..(18,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.F",
+                "valueRange": "[(16,4)..(16,5)]"
+            }
+        },
+        "contentRange": "[(16,6)..(18,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(16,7)..(18,5)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(16,8)..(18,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(17,8)..(17,42)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "$edmJson1",
+                                "valueRange": "[(17,8)..(17,19)]"
+                            }
+                        },
+                        "contentRange": "[(17,21)..(17,42)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(17,22)..(17,42)]",
+                                "name": "Record",
+                                "attributes": {},
+                                "contentRange": "[(17,23)..(17,41)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(17,24)..(17,40)]",
+                                        "name": "PropertyValue",
+                                        "attributes": {
+                                            "Property": {
+                                                "type": "attribute",
+                                                "name": "Property",
+                                                "value": "$Apply",
+                                                "valueRange": "[(17,24)..(17,30)]"
+                                            }
+                                        },
+                                        "contentRange": "[(17,31)..(17,40)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(17,32)..(17,40)]",
+                                                "name": "Collection",
+                                                "attributes": {},
+                                                "contentRange": "[(17,33)..(17,39)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(17,33)..(17,35)]",
+                                                        "name": "String",
+                                                        "attributes": {},
+                                                        "contentRange": "[(17,34)..(17,34)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(17,34)..(17,34)]",
+                                                                "text": ""
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(19,4)..(21,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.G",
+                "valueRange": "[(19,4)..(19,5)]"
+            }
+        },
+        "contentRange": "[(19,6)..(21,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(20,21)..(20,37)]",
+                "name": "Apply",
+                "nameRange": "[(20,23)..(20,29)]",
+                "attributes": {},
+                "contentRange": "[(20,22)..(20,36)]",
+                "content": []
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(22,4)..(24,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.H",
+                "valueRange": "[(22,4)..(22,5)]"
+            }
+        },
+        "contentRange": "[(22,6)..(24,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(23,21)..(23,57)]",
+                "name": "Apply",
+                "nameRange": "[(23,23)..(23,29)]",
+                "attributes": {
+                    "Path": {
+                        "type": "attribute",
+                        "name": "Path",
+                        "nameRange": "[(23,35)..(23,40)]",
+                        "value": "description",
+                        "valueRange": "[(23,42)..(23,55)]"
+                    }
+                },
+                "contentRange": "[(23,22)..(23,56)]",
+                "content": []
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(25,4)..(27,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.I",
+                "valueRange": "[(25,4)..(25,5)]"
+            }
+        },
+        "contentRange": "[(25,6)..(27,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(26,21)..(26,46)]",
+                "name": "Path",
+                "nameRange": "[(26,23)..(26,28)]",
+                "attributes": {},
+                "contentRange": "[(26,22)..(26,45)]",
+                "content": [
+                    {
+                        "type": "text",
+                        "range": "[(26,31)..(26,43)]",
+                        "text": "description1"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(28,4)..(37,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.J",
+                "valueRange": "[(28,4)..(28,5)]"
+            }
+        },
+        "contentRange": "[(28,6)..(37,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(29,21)..(36,10)]",
+                "name": "If",
+                "nameRange": "[(29,23)..(29,26)]",
+                "attributes": {},
+                "contentRange": "[(29,22)..(36,9)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(30,12)..(33,14)]",
+                        "name": "Eq",
+                        "nameRange": "[(30,14)..(30,17)]",
+                        "attributes": {},
+                        "contentRange": "[(30,13)..(33,13)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(31,16)..(31,46)]",
+                                "name": "Path",
+                                "nameRange": "[(31,20)..(31,25)]",
+                                "attributes": {},
+                                "contentRange": "[(31,17)..(31,45)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(31,29)..(31,43)]",
+                                        "text": "IsActiveEntity"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "element",
+                                "range": "[(32,16)..(32,21)]",
+                                "name": "Bool",
+                                "attributes": {},
+                                "contentRange": "[(32,16)..(32,21)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(32,16)..(32,21)]",
+                                        "text": "false"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(34,12)..(34,13)]",
+                        "name": "Int",
+                        "attributes": {},
+                        "contentRange": "[(34,12)..(34,13)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(34,12)..(34,13)]",
+                                "text": "0"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(35,12)..(35,14)]",
+                        "name": "Int",
+                        "attributes": {},
+                        "contentRange": "[(35,12)..(35,14)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(35,12)..(35,14)]",
+                                "text": "10"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -3,17 +3,15 @@ import * as os from 'os';
 import * as path from 'path';
 import { renderFile } from 'ejs';
 import sanitize from 'sanitize-filename';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
-import { FolderNames, TemplateFileName, HttpStatusCodes } from '../types';
+import { TemplateFileName, HttpStatusCodes } from '../types';
+import { DirName } from '@sap-ux/project-access';
 import type { CodeExtChange } from '../types';
-
-interface WriteFragmentBody {
-    fragmentName: string;
-}
 
 interface WriteControllerBody {
     controllerName: string;
@@ -99,55 +97,6 @@ export default class RoutesHandler {
     };
 
     /**
-     * Handler for writing a fragment file to the workspace.
-     *
-     * @param req Request
-     * @param res Response
-     * @param next Next Function
-     */
-    public handleWriteFragment = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const data = req.body as WriteFragmentBody;
-
-            const fragmentName = sanitize(data.fragmentName);
-
-            const sourcePath = this.util.getProject().getSourcePath();
-
-            if (!fragmentName) {
-                res.status(HttpStatusCodes.BAD_REQUEST).send('Fragment name was not provided!');
-                this.logger.debug('Bad request. Fragment name was not provided!');
-                return;
-            }
-
-            const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Fragments);
-            const filePath = path.join(fullPath, `${fragmentName}.fragment.xml`);
-
-            if (!fs.existsSync(fullPath)) {
-                fs.mkdirSync(fullPath, { recursive: true });
-            }
-
-            if (fs.existsSync(filePath)) {
-                res.status(HttpStatusCodes.CONFLICT).send(`Fragment with name "${fragmentName}" already exists`);
-                this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
-                return;
-            }
-
-            // Copy the template XML Fragment to the project's workspace
-            const fragmentTemplatePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
-            fs.copyFileSync(fragmentTemplatePath, filePath);
-
-            const message = 'XML Fragment created';
-            res.status(HttpStatusCodes.CREATED).send(message);
-            this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
-        } catch (e) {
-            const sanitizedMsg = sanitize(e.message);
-            this.logger.error(sanitizedMsg);
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
-            next(e);
-        }
-    };
-
-    /**
      * Handler for reading all controller extension files from the workspace.
      *
      * @param _ Request
@@ -194,11 +143,8 @@ export default class RoutesHandler {
             const sourcePath = project.getSourcePath();
             const projectName = project.getName();
 
-            const getPath = (
-                projectPath: string,
-                fileName: string,
-                folder: FolderNames.Coding | string = FolderNames.Coding
-            ) => path.join(projectPath, FolderNames.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
+            const getPath = (projectPath: string, fileName: string, folder: string = DirName.Coding) =>
+                path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
 
             for (const file of codeExtFiles) {
                 const fileStr = await file.getString();
@@ -221,10 +167,13 @@ export default class RoutesHandler {
                 return;
             }
 
+            const isRunningInBAS = isAppStudio();
+
             this.sendFilesResponse(res, {
                 controllerExists,
                 controllerPath: os.platform() === 'win32' ? `/${controllerPath}` : controllerPath,
-                controllerPathFromRoot
+                controllerPathFromRoot,
+                isRunningInBAS
             });
             this.logger.debug(
                 controllerExists
@@ -258,7 +207,7 @@ export default class RoutesHandler {
                 return;
             }
 
-            const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Coding);
+            const fullPath = path.join(sourcePath, DirName.Changes, DirName.Coding);
             const filePath = path.join(fullPath, `${controllerExtName}.js`);
 
             if (!fs.existsSync(fullPath)) {

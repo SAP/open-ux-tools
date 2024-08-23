@@ -1,0 +1,908 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`utils/cds delete annotations (Test_ActionBefore) 1`] = `
+Array [
+  "@Common.IsActionCritical #Test_ActionBefore: true 
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ActionBoundAfter) 1`] = `
+Array [
+  "// BOUND 
+// Actions
+annotate AdminService.Books with actions {
+	addRating @Common.IsActionCritical #Test_ActionBoundAfter: true;
+};
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ActionBoundBefore) 1`] = `
+Array [
+  "annotate AdminService.Books with ACTIONS {
+	@Common.IsActionCritical #Test_ActionBoundBefore: true addRating;
+};
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ActionWith1) 1`] = `
+Array [
+  "// actions/functions (also varying case for keywords)
+// UNBOUND
+// Actions
+Annotate AdminService.cancelOrder With @Common.IsActionCritical #Test_ActionWith1: false;      
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ActionWith2) 1`] = `
+Array [
+  "ANNOTATE AdminService.cancelOrder WITH @(Common.IsActionCritical #Test_ActionWith2: false);
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ActionWith3) 1`] = `
+Array [
+  "annoTATE AdminService.cancelOrder WIth @(Common: {IsActionCritical #Test_ActionWith3: false});
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_AfterElement*) 1`] = `
+Array [
+  "@(Common: {FieldControl #Test_AfterElement : #Hidden})",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_AfterServiceNameExt*) 1`] = `
+Array [
+  "@Core.ConventionalIDs #Test_AfterServiceNameExt: true",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeElement*) 1`] = `
+Array [
+  "@(Common.FieldControl #Test_BeforeElement : #Hidden)
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeElementMultiple*) 1`] = `
+Array [
+  "// multiple annotations before - embedded (i.e. createdAt will not be deleted)
+    @Common.Text #Test_BeforeElementMultipleFirst: createdBy
+    @Common.Text.@UI.TextArrangement #Test_BeforeElementMultipleLast : #TextLast
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeElementMultipleLast*) 1`] = `
+Array [
+  "@Common.Text.@UI.TextArrangement #Test_BeforeElementMultipleLast : #TextLast
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeElementStandaloneMultiple*) 1`] = `
+Array [
+  "annotate AdminService.Books with {
+    // multiple annotations before - standalone (i.e. deletion can include annotate statement)
+    @Common.Text #Test_BeforeElementStandaloneMultipleFirst: createdBy
+    @Common.Text.@UI.TextArrangement #Test_BeforeElementStandaloneMultipleLast : #TextLast
+    createdAt
+};
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeElementStandaloneMultipleLast*) 1`] = `
+Array [
+  "@Common.Text.@UI.TextArrangement #Test_BeforeElementStandaloneMultipleLast : #TextLast
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeEntityComb7*) 1`] = `
+Array [
+  "@UI: {TextArrangement #Test_BeforeEntityComb7: #TextLast}
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeEntityFirst*) 1`] = `
+Array [
+  "@UI.TextArrangement #Test_BeforeEntityFirst: #TextLast
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeEntityGroup*) 1`] = `
+Array [
+  "@UI: {TextArrangement #Test_BeforeEntityGroupSinglton: #TextLast}
+@UI: {
+    TextArrangement #Test_BeforeEntityGroupMiddle1: #TextLast,
+    TextArrangement #Test_BeforeEntityGroupMiddle2: #TextLast
+}
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeEntityGroupMiddle*) 1`] = `
+Array [
+  "@UI: {
+    TextArrangement #Test_BeforeEntityGroupMiddle1: #TextLast,
+    TextArrangement #Test_BeforeEntityGroupMiddle2: #TextLast
+}
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeEntityGroupMiddle1*) 1`] = `
+Array [
+  "TextArrangement #Test_BeforeEntityGroupMiddle1: #TextLast,
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeEntityGroupSinglton*) 1`] = `
+Array [
+  "@UI: {TextArrangement #Test_BeforeEntityGroupSinglton: #TextLast}
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeEntityLast*) 1`] = `
+Array [
+  "@UI.TextArrangement #Test_BeforeEntityLast: #TextLast
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_BeforeServiceExt*) 1`] = `
+Array [
+  "@Core.ConventionalIDs #Test_BeforeServiceExt: true
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombActionBound1) 1`] = `
+Array [
+  "with actions {
+	addRating @Common.IsActionCritical #Test_CombActionBound1: true;
+}",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombActionBound2) 1`] = `
+Array [
+  "actions {
+	addRating @Common.IsActionCritical #Test_CombActionBound2: true;
+}",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombActionBound3) 1`] = `
+Array [
+  "actions {
+	addRating @Common.IsActionCritical #Test_CombActionBound3: true;
+}",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombActionBound4) 1`] = `
+Array [
+  "@Common.IsActionCritical #Test_CombActionBound4: true ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombActionBound5) 1`] = `
+Array [
+  "@(Common.IsActionCritical #Test_CombActionBound5: true) ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombParam1) 1`] = `
+Array [
+  "with (
+	orderID @(UI.ParameterDefaultValue #Test_CombParam1: true)
+)",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombParam2) 1`] = `
+Array [
+  "(
+	orderID @(UI.ParameterDefaultValue #Test_CombParam2: true)
+)",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombParamBound1) 1`] = `
+Array [
+  "with actions {
+	addRating ( 
+    	stars @UI.ParameterDefaultValue #Test_CombParamBound1: false
+  )
+}",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombParamBound2) 1`] = `
+Array [
+  "actions {
+	addRating ( 
+    	stars @UI.ParameterDefaultValue #Test_CombParamBound2: false
+  )
+}",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombParamBound3) 1`] = `
+Array [
+  "actions {
+	addRating ( 
+    	stars @UI.ParameterDefaultValue #Test_CombParamBound3: false
+  )
+}",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombParamBound4) 1`] = `
+Array [
+  "( 
+    	stars @UI.ParameterDefaultValue #Test_CombParamBound4: false
+  )
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_CombParamBound5) 1`] = `
+Array [
+  "( 
+    	stars @UI.ParameterDefaultValue #Test_CombParamBound5: false
+  )
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Element2Lonely*) 1`] = `
+Array [
+  "@Common.FieldControl #Test_Element2Lonely : #Hidden",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Element3Comment*) 1`] = `
+Array [
+  "// comments should be deleted when preceding an annotation that is deleted
+annotate AdminService.Books with {
+    // comment
+    /*
+    * author @Common.FieldControl : #Hidden // block comment
+    */
+    descr @Common.FieldControl #Test_Element3Comment : #Hidden 
+};
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Element3Lonely*) 1`] = `
+Array [
+  "annotate AdminService.Books with {
+    descr @Common.FieldControl #Test_Element3Lonely : #Hidden 
+}
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Element3Native*) 1`] = `
+Array [
+  "@Common.FieldControl #Test_Element3Native : #Hidden 
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Element4Comment*) 1`] = `
+Array [
+  "annotate // some comment 
+    AdminService.Books with { descr @Common.FieldControl #Test_Element4Comment : #Hidden
+};
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Element4Native*) 1`] = `
+Array [
+  "// delete CDS native annotation
+annotate AdminService.Books with {
+    descr @title #Test_Element4Native: 'foo'
+};
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Element4WithEntityAnno*) 1`] = `
+Array [
+  "with {
+    descr @Common.FieldControl #Test_Element4WithEntityAnno : #Hidden 
+}",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Element5Comment*) 1`] = `
+Array [
+  "annotate AdminService.Books // some comment
+    with { descr @Common.FieldControl #Test_Element5Comment : #Hidden
+};
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Element6Comment*) 1`] = `
+Array [
+  "annotate AdminService.Books with // some comment
+{ 
+    descr @Common.FieldControl #Test_Element6Comment : #Hidden
+};
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Element7Comment*) 1`] = `
+Array [
+  "annotate AdminService.Books with { // some comment
+    descr @Common.FieldControl #Test_Element7Comment : #Hidden
+};
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Element8Comment*) 1`] = `
+Array [
+  "annotate AdminService.Books with { 
+    descr // some comment
+    @Common.FieldControl #Test_Element8Comment : #Hidden
+};
+
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ElementComb7*) 1`] = `
+Array [
+  "{
+        descr @Common.FieldControl #Test_ElementComb7 : #Hidden
+    }  
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Employee*) 1`] = `
+Array [
+  "@Common.IsNaturalPerson #Test_Employee
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Employee_With_Comments*) 1`] = `
+Array [
+  "// with comments
+@Common.IsNaturalPerson #Test_Employee_With_Comments
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Entity_Annotated*) 1`] = `
+Array [
+  "with {
+    descr @Common.FieldControl #Test_Entity_Annotated : #Hidden 
+}",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Entity2Comment*) 1`] = `
+Array [
+  "// comment
+annotate AdminService.Authors with @UI.TextArrangement #Test_Entity2Comment: #TextLast;
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Entity2Lonely*) 1`] = `
+Array [
+  "annotate AdminService.Authors with @UI.TextArrangement #Test_Entity2Lonely: #TextLast;
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Entity2Native*) 1`] = `
+Array [
+  "@UI.TextArrangement #Test_Entity2Native: #TextLast",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Entity3LonelyWithComment*) 1`] = `
+Array [
+  "/* 
+    block comments
+*/
+// multiline comments
+// lonely annotation on target with comments
+annotate AdminService.Authors with @UI.TextArrangement #Test_Entity3LonelyWithComment: #TextLast;
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_EntityBeforeLonely*) 1`] = `
+Array [
+  "// lonely annotation on target: on deletion of annotation, target is deleted as well
+@UI.TextArrangement #Test_EntityBeforeLonely: #TextLast
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_EntityElementCombinedElem) 1`] = `
+Array [
+  "{
+  author @title #Test_EntityElementCombinedElem: 'foo'
+}",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_FunctionBoundAfter) 1`] = `
+Array [
+  "// functions
+annotate AdminService.Books with actions {
+	getViewsCount @Common.IsActionCritical #Test_FunctionBoundAfter: true;
+};
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_FunctionBoundBefore) 1`] = `
+Array [
+  "annotate AdminService.Books with actions {
+    @Common.IsActionCritical #Test_FunctionBoundBefore: true getViewsCount;
+};
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_InVocGroupBegin*) 1`] = `
+Array [
+  "TextArrangement #Test_InVocGroupBegin: #TextLast,
+        ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_InVocGroupEnd*) 1`] = `
+Array [
+  "TextArrangement #Test_InVocGroupEnd: #TextLast,
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_InVocGroupMiddle*) 1`] = `
+Array [
+  "TextArrangement #Test_InVocGroupMiddle: #TextLast,
+        TextArrangement #Test_InVocGroupMiddle2: #TextLast,
+        ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Label*) 1`] = `
+Array [
+  "@Common : { Label #Test_Label : 'authors list', }
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_Label_With_Comments*) 1`] = `
+Array [
+  "// with comments
+@Common : { Label #Test_Label_With_Comments : 'authors list', }
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_OnEntityBegin*) 1`] = `
+Array [
+  "UI.TextArrangement #Test_OnEntityBegin: #TextLast,
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_OnEntityLast*) 1`] = `
+Array [
+  ",
+    UI.TextArrangement #Test_OnEntityLast2: #TextLast,
+    UI.TextArrangement #Test_OnEntityLast: #TextLast",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_OnEntityMiddle*) 1`] = `
+Array [
+  "UI: {
+        TextArrangement #Test_OnEntityMiddle: #TextLast,
+        TextArrangement #Test_OnEntityMiddle2: #TextLast,
+    },
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_PE_ValueList*) 1`] = `
+Array [
+  "Common.ValueList #Test_PE_ValueList : {
+        $Type : 'Common.ValueListType',
+        CollectionPath : 'SomePath',
+        Parameters : [
+            {
+                $Type : 'Common.ValueListParameterInOut',
+                LocalDataProperty : descr,
+                ValueListProperty : 'SomeProp',
+            },
+        ],
+    },
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ParamAfter1) 1`] = `
+Array [
+  "orderID @UI.ParameterDefaultValue #Test_ParamAfter1: true,   // value help on true does not work if no value and no comma and not on last po
+	",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ParamBefore1) 1`] = `
+Array [
+  "@UI.ParameterDefaultValue #Test_ParamBefore1: true reason,  // value help on true does not work when no value is there
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ParamBefore2) 1`] = `
+Array [
+  "@UI: {ParameterDefaultValue #Test_ParamBefore2: false} reason,
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ParamBoundAfter) 1`] = `
+Array [
+  "// action parameters
+annotate AdminService.Books with Actions {
+	addRating ( 
+    	stars @UI.ParameterDefaultValue #Test_ParamBoundAfter: false
+  )
+};
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ParamBoundBefore) 1`] = `
+Array [
+  "annotate AdminService.Books with actIONS {
+	addRating ( 
+    	@UI.ParameterDefaultValue #Test_ParamBoundBefore: 'myDef' stars  
+    )
+};
+
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_ParamBoundComb7*) 1`] = `
+Array [
+  "actions {
+	    addRating ( 
+    	    stars @UI.ParameterDefaultValue #Test_ParamBoundComb7: false
+        )
+    }
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_SandwichElement*) 1`] = `
+Array [
+  "@Common.FieldControl #Test_SandwichElement1 : #Hidden 
+    ",
+  "@Common.FieldControl #Test_SandwichElement2 : #Hidden 
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_SandwichElementStandalone*) 1`] = `
+Array [
+  "// multiple annotations sandwich - standalone (i.e. deletion can include property name and annotate statement)
+    @Common.Text #Test_SandwichElementStandaloneFirst: createdBy
+    ",
+  "@Common.Text.@UI.TextArrangement #Test_SandwichElementStandaloneLast : #TextLast
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_SandwichElementStandaloneLast*) 1`] = `
+Array [
+  "@Common.Text.@UI.TextArrangement #Test_SandwichElementStandaloneLast : #TextLast
+",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_SandwichEntity*) 1`] = `
+Array [
+  "@UI.TextArrangement #Test_SandwichEntity1: #TextLast
+",
+  "UI.TextArrangement #Test_SandwichEntity2: #TextLast,
+    ",
+]
+`;
+
+exports[`utils/cds delete annotations (Test_comb_without_semicolon*) 1`] = `
+Array [
+  "annotate AdminService.Books with @UI.TextArrangement #Test_comb_without_semicolon: #TextLast;
+
+",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_AfterElement*) 1`] = `
+Array [
+  ",
+      Common: {FieldControl #Test_AfterElement : #Hidden}",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_AfterServiceName*) 1`] = `
+Array [
+  ", Core.ConventionalIDs #Test_AfterServiceName: true",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_BeforeElement*) 1`] = `
+Array [
+  "@(Common.FieldControl #Test_BeforeElement : #Hidden)
+  ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_BeforeEntityFirst*) 1`] = `
+Array [
+  "@UI.TextArrangement #Test_BeforeEntityFirst : #TextLast
+  ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_BeforeEntityGroup*) 1`] = `
+Array [
+  "@UI: {TextArrangement #Test_BeforeEntityGroupSinglton : #TextLast}
+  @UI: {
+    TextArrangement #Test_BeforeEntityGroupMiddle1 : #TextLast,
+    TextArrangement #Test_BeforeEntityGroupMiddle2 : #TextLast
+  }
+  ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_BeforeEntityGroupMiddle*) 1`] = `
+Array [
+  "@UI: {
+    TextArrangement #Test_BeforeEntityGroupMiddle1 : #TextLast,
+    TextArrangement #Test_BeforeEntityGroupMiddle2 : #TextLast
+  }
+  ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_BeforeEntityGroupMiddle1*) 1`] = `
+Array [
+  "TextArrangement #Test_BeforeEntityGroupMiddle1 : #TextLast,
+    ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_BeforeEntityGroupSinglton*) 1`] = `
+Array [
+  "@UI: {TextArrangement #Test_BeforeEntityGroupSinglton : #TextLast}
+  ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_BeforeEntityLast*) 1`] = `
+Array [
+  "@UI.TextArrangement #Test_BeforeEntityLast  : #TextLast
+  ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_BeforeService*) 1`] = `
+Array [
+  "@Core.ConventionalIDs #Test_BeforeService: true
+",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_Element2Lonely*) 1`] = `
+Array [
+  "@(Common.FieldControl #Test_Element2Lonely : #Hidden) 
+",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_Entity2Lonely*) 1`] = `
+Array [
+  "@UI.TextArrangement #Test_Entity2Lonely: #TextLast
+  ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_Entity2Native*) 1`] = `
+Array [
+  "@UI.TextArrangement #Test_Entity2Native: #TextLast
+  ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_InVocGroupBegin*) 1`] = `
+Array [
+  "TextArrangement #Test_InVocGroupBegin: #TextLast,
+        ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_InVocGroupEnd*) 1`] = `
+Array [
+  "TextArrangement #Test_InVocGroupEnd: #TextLast,
+    ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_InVocGroupMiddle*) 1`] = `
+Array [
+  "TextArrangement #Test_InVocGroupMiddle: #TextLast,
+        TextArrangement #Test_InVocGroupMiddle2: #TextLast,
+        ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnActionBoundEmbBefore) 1`] = `
+Array [
+  "// bound actions/functions
+    @Common.IsActionCritical #Test_OnActionBoundEmbBefore : false
+    ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnActionBoundEmbInner) 1`] = `
+Array [
+  "@(Common.IsActionCritical #Test_OnActionBoundEmbInner: false) ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnActionEmbBefore) 1`] = `
+Array [
+  "// unbound actions/functions
+  @Common.IsActionCritical #Test_OnActionEmbBefore : false
+  ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnActionEmbInner) 1`] = `
+Array [
+  "@(Common.IsActionCritical #Test_OnActionEmbInner : false) ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnEntityBegin*) 1`] = `
+Array [
+  "UI.TextArrangement #Test_OnEntityBegin: #TextLast,
+    ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnEntityLast*) 1`] = `
+Array [
+  ",
+    UI.TextArrangement #Test_OnEntityLast2: #TextLast,
+    UI.TextArrangement #Test_OnEntityLast: #TextLast",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnEntityMiddle*) 1`] = `
+Array [
+  "UI: {
+        TextArrangement #Test_OnEntityMiddle: #TextLast,
+        TextArrangement #Test_OnEntityMiddle2: #TextLast,
+    },
+    ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnFunctionBoundEmbBefore) 1`] = `
+Array [
+  "@Common.IsActionCritical #Test_OnFunctionBoundEmbBefore : false
+    ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnFunctionBoundEmbInner) 1`] = `
+Array [
+  "@(Common.IsActionCritical #Test_OnFunctionBoundEmbInner : false) ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnFunctionEmbBefore) 1`] = `
+Array [
+  "@Common.IsActionCritical #Test_OnFunctionEmbBefore : false
+  ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnFunctionEmbInner) 1`] = `
+Array [
+  "@(Common.IsActionCritical #Test_OnFunctionEmbInner : false) ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnParamEmbAfter) 1`] = `
+Array [
+  "@(UI.ParameterDefaultValue #Test_OnParamEmbAfter: true)
+    ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnParamEmbAfter) 2`] = `
+Array [
+  "@(UI.ParameterDefaultValue #Test_OnParamEmbAfter: true)
+    ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnParamEmbBefore) 1`] = `
+Array [
+  "@UI.ParameterDefaultValue #Test_OnParamEmbBefore: false
+    ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_OnParamEmbInner) 1`] = `
+Array [
+  "@(UI.ParameterDefaultValue #Test_OnParamEmbInner: false)",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_SandwichElement*) 1`] = `
+Array [
+  "@Common.FieldControl #Test_SandwichElement1 : #Hidden 
+  ",
+  "Common.FieldControl #Test_SandwichElement2 : #Hidden, 
+      ",
+]
+`;
+
+exports[`utils/cds: (embedded) delete annotations (Test_SandwichEntity*) 1`] = `
+Array [
+  "@UI.TextArrangement #Test_SandwichEntity1   : #TextLast
+  ",
+  "UI.TextArrangement #Test_SandwichEntity2: #TextLast,
+    ",
+]
+`;

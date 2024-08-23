@@ -15,7 +15,17 @@ export interface ServiceDocument {
 }
 
 export interface ODataServiceExtension {
+    /**
+     * Retrieves the service document.
+     *
+     * @returns A Promise that resolves to a ServiceDocument
+     */
     document(): Promise<ServiceDocument>;
+    /**
+     * Retrieves the metadata of the service.
+     *
+     * @returns A Promise that resolves to a string containing the metadata
+     */
     metadata(): Promise<string>;
 }
 
@@ -47,6 +57,9 @@ function parseODataResponse<T>(): T {
 }
 
 export interface ODataResponse<T> extends AxiosResponse {
+    /**
+     *
+     */
     odata(): T;
 }
 

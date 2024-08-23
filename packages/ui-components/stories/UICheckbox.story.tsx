@@ -48,6 +48,20 @@ export const defaultUsage = (): JSX.Element => {
                 </Text>
                 <UICheckbox label="Info" infoMessage={message} />
             </Stack>
+
+            <Stack tokens={{ childrenGap: 16 }}>
+                <Text variant="large" className="textColor">
+                    UICheckbox disabled
+                </Text>
+                <UICheckbox label="Info" disabled={true} />
+            </Stack>
+
+            <Stack tokens={{ childrenGap: 16 }}>
+                <Text variant="large" className="textColor">
+                    UICheckbox checked and disabled
+                </Text>
+                <UICheckbox label="Info" checked={true} disabled={true} />
+            </Stack>
         </Stack>
     );
 };

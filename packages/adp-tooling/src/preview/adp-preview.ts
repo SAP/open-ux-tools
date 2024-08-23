@@ -1,16 +1,17 @@
-import express from 'express';
 import ZipFile from 'adm-zip';
 import type { ReaderCollection } from '@ui5/fs';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 
-import type { ToolsLogger } from '@sap-ux/logger';
+import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
-import type { AdpPreviewConfig, DescriptorVariant } from '../types';
+import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
+import type { Editor } from 'mem-fs-editor';
+import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
 
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
@@ -121,9 +122,11 @@ export class AdpPreview {
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
         } else {
-            const files = await this.project.byGlob(req.path);
+            // check if the requested file exists in the file system (replace .js with .* for typescript)
+            const files = await this.project.byGlob(req.path.replace('.js', '.*'));
             if (files.length === 1) {
-                res.status(200).send(await files[0].getString());
+                // redirect to the exposed path so that other middlewares can handle it
+                res.redirect(302, req.path);
             } else {
                 next();
             }
@@ -133,19 +136,68 @@ export class AdpPreview {
     /**
      * Add additional APIs to the router that are required for adaptation projects only.
      *
-     * @param router router that is to be enhanced with the API
+     * This method sets up various GET and POST routes for handling fragments, controllers,
+     * and code extensions. For POST routes to work correctly, ensure that the router is
+     * using the **express.json()** middleware. This middleware is responsible for parsing
+     * incoming requests with JSON payloads and is based on body-parser.
+     *
+     * Usage:
+     * ```ts
+     * import express from "express";
+     *
+     * const app = express();
+     * const router = express.Router();
+     *
+     * // Ensure express.json() middleware is applied to the router or app
+     * router.use(express.json());
+     *
+     * const adp = new AdpPreview();
+     * adp.addApis(router);
+     *
+     * app.use('/', router);
+     * ```
+     *
+     * @param {Router} router - The router that is to be enhanced with the API.
+     * @returns {void} A promise that resolves when the APIs have been added.
      */
     addApis(router: Router): void {
         router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
-        router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
 
         router.get(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
-        router.post(
-            ApiRoutes.CONTROLLER,
-            express.json(),
-            this.routesHandler.handleWriteControllerExt as RequestHandler
-        );
+        router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleWriteControllerExt as RequestHandler);
 
         router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
+    }
+
+    /**
+     * Handles different types of change requests to project files.
+     *
+     * @param {string} type - The type of change request.
+     * @param {CommonChangeProperties} change - An object containing properties common to all change types.
+     * @param {Editor} fs - An instance of an editor interface for file system operations.
+     * @param {Logger} logger - An instance of a logging interface for message logging.
+     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
+     */
+    async onChangeRequest(
+        type: OperationType,
+        change: CommonChangeProperties,
+        fs: Editor,
+        logger: Logger
+    ): Promise<void> {
+        switch (type) {
+            case 'read':
+                if (moduleNameContentMap[change.changeType] && !change.moduleName) {
+                    tryFixChange(change, logger);
+                }
+                break;
+            case 'write':
+                if (isAddXMLChange(change)) {
+                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger);
+                }
+                break;
+            default:
+                // no need to handle delete changes
+                break;
+        }
     }
 }

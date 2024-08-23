@@ -1,0 +1,46 @@
+{
+    "name": "@sap-ux/cards-editor-middleware",
+    "version": "0.4.19",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/cards-editor-middleware"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Acards-editor-middleware"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "pnpm clean && tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "templates",
+        "ui5.yaml"
+    ],
+    "dependencies": {
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "ejs": "3.1.10"
+    },
+    "devDependencies": {
+        "@types/ejs": "3.1.2",
+        "@types/express": "4.17.21",
+        "@types/supertest": "2.0.12",
+        "supertest": "6.3.3"
+    },
+    "peerDependencies": {
+        "express": "4"
+    },
+    "engines": {
+        "node": ">=18.x"
+    }
+}

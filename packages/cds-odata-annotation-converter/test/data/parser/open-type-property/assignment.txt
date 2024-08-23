@@ -1,0 +1,14 @@
+UI: {
+        ConnectedFields : {
+            $Type    : 'UI.ConnectedFieldsType',
+            Template : title,
+            Data : {
+                $Type : 'Core.Dictionary',
+                aaa : {
+                    $Type : 'UI.DataField',
+                    Value : '',
+                },
+            },
+            
+        }
+    }

@@ -1,0 +1,45 @@
+[
+  {
+    "type": "comment-line",
+    "value": "# You can also use Unicode escape characters (maximum of four hexadecimal digits).",
+    "range": "[(0,0)..(0,82)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "# In the following example, the value for \"encodedHelloInJapanese\" is \"こんにちは\".",
+    "range": "[(1,0)..(1,78)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "encodedHelloInJapanese",
+      "range": "[(2,0)..(2,22)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "\\u3053\\u3093\\u306b\\u3061\\u306f",
+      "range": "[(2,25)..(2,55)]"
+    },
+    "range": "[(2,0)..(2,55)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "# But with more modern file encodings like UTF-8, you can directly use supported characters.",
+    "range": "[(3,0)..(3,92)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "helloInJapanese",
+      "range": "[(4,0)..(4,15)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "こんにちは",
+      "range": "[(4,18)..(4,23)]"
+    },
+    "range": "[(4,0)..(4,23)]"
+  }
+]

@@ -1,4 +1,11 @@
-import type { CustomElement, InternalCustomElement, Position, EventHandler, CustomFragment } from '../common/types';
+import type {
+    CustomElement,
+    InternalCustomElement,
+    Position,
+    EventHandler,
+    CustomFragment,
+    FragmentContentData
+} from '../common/types';
 
 export interface CustomSection extends CustomElement, EventHandler, CustomFragment {
     /**
@@ -26,8 +33,8 @@ export interface InternalCustomSection
     extends CustomHeaderSection,
         CustomSection,
         CustomSubSection,
-        InternalCustomElement {
-    content: string;
+        InternalCustomElement,
+        FragmentContentData {
     dependencies?: string;
 }
 

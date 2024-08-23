@@ -1,0 +1,2295 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`avt annotation conversion Annotation with qualifier 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "qualifier": "Default",
+        "term": "com.sap.vocabularies.Common.v1.Label",
+        "value": Object {
+          "String": "Title",
+          "type": "String",
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents/title",
+  },
+]
+`;
+
+exports[`avt annotation conversion Annotation with qualifier 2`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "origin": Object {
+          "end": Object {
+            "character": 80,
+            "line": 18,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 18,
+          },
+        },
+        "qualifier": "Default",
+        "term": "com.sap.vocabularies.Common.v1.Label",
+        "value": Object {
+          "String": "Title",
+          "type": "String",
+        },
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 80,
+          "line": 18,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 18,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents/title",
+  },
+]
+`;
+
+exports[`avt annotation conversion Apply 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "collection": Array [
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Apply": Object {
+                    "attributes": Object {
+                      "Function": Object {
+                        "name": "Function",
+                        "nameRange": Object {
+                          "end": Object {
+                            "character": 43,
+                            "line": 22,
+                          },
+                          "start": Object {
+                            "character": 35,
+                            "line": 22,
+                          },
+                        },
+                        "type": "attribute",
+                        "value": "odata.concat",
+                        "valueRange": Object {
+                          "end": Object {
+                            "character": 57,
+                            "line": 22,
+                          },
+                          "start": Object {
+                            "character": 45,
+                            "line": 22,
+                          },
+                        },
+                      },
+                    },
+                    "content": Array [
+                      Object {
+                        "attributes": Object {},
+                        "content": Array [
+                          Object {
+                            "range": Object {
+                              "end": Object {
+                                "character": 49,
+                                "line": 23,
+                              },
+                              "start": Object {
+                                "character": 40,
+                                "line": 23,
+                              },
+                            },
+                            "text": "Products(",
+                            "type": "text",
+                          },
+                        ],
+                        "contentRange": Object {
+                          "end": Object {
+                            "character": 49,
+                            "line": 23,
+                          },
+                          "start": Object {
+                            "character": 40,
+                            "line": 23,
+                          },
+                        },
+                        "name": "String",
+                        "nameRange": Object {
+                          "end": Object {
+                            "character": 39,
+                            "line": 23,
+                          },
+                          "start": Object {
+                            "character": 33,
+                            "line": 23,
+                          },
+                        },
+                        "range": Object {
+                          "end": Object {
+                            "character": 58,
+                            "line": 23,
+                          },
+                          "start": Object {
+                            "character": 32,
+                            "line": 23,
+                          },
+                        },
+                        "type": "element",
+                      },
+                      Object {
+                        "attributes": Object {},
+                        "content": Array [
+                          Object {
+                            "range": Object {
+                              "end": Object {
+                                "character": 40,
+                                "line": 24,
+                              },
+                              "start": Object {
+                                "character": 38,
+                                "line": 24,
+                              },
+                            },
+                            "text": "ID",
+                            "type": "text",
+                          },
+                        ],
+                        "contentRange": Object {
+                          "end": Object {
+                            "character": 40,
+                            "line": 24,
+                          },
+                          "start": Object {
+                            "character": 38,
+                            "line": 24,
+                          },
+                        },
+                        "name": "Path",
+                        "nameRange": Object {
+                          "end": Object {
+                            "character": 37,
+                            "line": 24,
+                          },
+                          "start": Object {
+                            "character": 33,
+                            "line": 24,
+                          },
+                        },
+                        "range": Object {
+                          "end": Object {
+                            "character": 47,
+                            "line": 24,
+                          },
+                          "start": Object {
+                            "character": 32,
+                            "line": 24,
+                          },
+                        },
+                        "type": "element",
+                      },
+                      Object {
+                        "attributes": Object {},
+                        "content": Array [
+                          Object {
+                            "range": Object {
+                              "end": Object {
+                                "character": 41,
+                                "line": 25,
+                              },
+                              "start": Object {
+                                "character": 40,
+                                "line": 25,
+                              },
+                            },
+                            "text": ")",
+                            "type": "text",
+                          },
+                        ],
+                        "contentRange": Object {
+                          "end": Object {
+                            "character": 41,
+                            "line": 25,
+                          },
+                          "start": Object {
+                            "character": 40,
+                            "line": 25,
+                          },
+                        },
+                        "name": "String",
+                        "nameRange": Object {
+                          "end": Object {
+                            "character": 39,
+                            "line": 25,
+                          },
+                          "start": Object {
+                            "character": 33,
+                            "line": 25,
+                          },
+                        },
+                        "range": Object {
+                          "end": Object {
+                            "character": 50,
+                            "line": 25,
+                          },
+                          "start": Object {
+                            "character": 32,
+                            "line": 25,
+                          },
+                        },
+                        "type": "element",
+                      },
+                    ],
+                    "contentRange": Object {
+                      "end": Object {
+                        "character": 28,
+                        "line": 26,
+                      },
+                      "start": Object {
+                        "character": 59,
+                        "line": 22,
+                      },
+                    },
+                    "name": "Apply",
+                    "nameRange": Object {
+                      "end": Object {
+                        "character": 34,
+                        "line": 22,
+                      },
+                      "start": Object {
+                        "character": 29,
+                        "line": 22,
+                      },
+                    },
+                    "range": Object {
+                      "end": Object {
+                        "character": 36,
+                        "line": 26,
+                      },
+                      "start": Object {
+                        "character": 28,
+                        "line": 22,
+                      },
+                    },
+                    "type": "element",
+                  },
+                  "type": "Apply",
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+        ],
+        "term": "com.sap.vocabularies.UI.v1.LineItem",
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion Apply 2`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "collection": Array [
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Apply": Object {
+                    "attributes": Object {
+                      "Function": Object {
+                        "name": "Function",
+                        "nameRange": Object {
+                          "end": Object {
+                            "character": 43,
+                            "line": 22,
+                          },
+                          "start": Object {
+                            "character": 35,
+                            "line": 22,
+                          },
+                        },
+                        "type": "attribute",
+                        "value": "odata.concat",
+                        "valueRange": Object {
+                          "end": Object {
+                            "character": 57,
+                            "line": 22,
+                          },
+                          "start": Object {
+                            "character": 45,
+                            "line": 22,
+                          },
+                        },
+                      },
+                    },
+                    "content": Array [
+                      Object {
+                        "attributes": Object {},
+                        "content": Array [
+                          Object {
+                            "range": Object {
+                              "end": Object {
+                                "character": 49,
+                                "line": 23,
+                              },
+                              "start": Object {
+                                "character": 40,
+                                "line": 23,
+                              },
+                            },
+                            "text": "Products(",
+                            "type": "text",
+                          },
+                        ],
+                        "contentRange": Object {
+                          "end": Object {
+                            "character": 49,
+                            "line": 23,
+                          },
+                          "start": Object {
+                            "character": 40,
+                            "line": 23,
+                          },
+                        },
+                        "name": "String",
+                        "nameRange": Object {
+                          "end": Object {
+                            "character": 39,
+                            "line": 23,
+                          },
+                          "start": Object {
+                            "character": 33,
+                            "line": 23,
+                          },
+                        },
+                        "range": Object {
+                          "end": Object {
+                            "character": 58,
+                            "line": 23,
+                          },
+                          "start": Object {
+                            "character": 32,
+                            "line": 23,
+                          },
+                        },
+                        "type": "element",
+                      },
+                      Object {
+                        "attributes": Object {},
+                        "content": Array [
+                          Object {
+                            "range": Object {
+                              "end": Object {
+                                "character": 40,
+                                "line": 24,
+                              },
+                              "start": Object {
+                                "character": 38,
+                                "line": 24,
+                              },
+                            },
+                            "text": "ID",
+                            "type": "text",
+                          },
+                        ],
+                        "contentRange": Object {
+                          "end": Object {
+                            "character": 40,
+                            "line": 24,
+                          },
+                          "start": Object {
+                            "character": 38,
+                            "line": 24,
+                          },
+                        },
+                        "name": "Path",
+                        "nameRange": Object {
+                          "end": Object {
+                            "character": 37,
+                            "line": 24,
+                          },
+                          "start": Object {
+                            "character": 33,
+                            "line": 24,
+                          },
+                        },
+                        "range": Object {
+                          "end": Object {
+                            "character": 47,
+                            "line": 24,
+                          },
+                          "start": Object {
+                            "character": 32,
+                            "line": 24,
+                          },
+                        },
+                        "type": "element",
+                      },
+                      Object {
+                        "attributes": Object {},
+                        "content": Array [
+                          Object {
+                            "range": Object {
+                              "end": Object {
+                                "character": 41,
+                                "line": 25,
+                              },
+                              "start": Object {
+                                "character": 40,
+                                "line": 25,
+                              },
+                            },
+                            "text": ")",
+                            "type": "text",
+                          },
+                        ],
+                        "contentRange": Object {
+                          "end": Object {
+                            "character": 41,
+                            "line": 25,
+                          },
+                          "start": Object {
+                            "character": 40,
+                            "line": 25,
+                          },
+                        },
+                        "name": "String",
+                        "nameRange": Object {
+                          "end": Object {
+                            "character": 39,
+                            "line": 25,
+                          },
+                          "start": Object {
+                            "character": 33,
+                            "line": 25,
+                          },
+                        },
+                        "range": Object {
+                          "end": Object {
+                            "character": 50,
+                            "line": 25,
+                          },
+                          "start": Object {
+                            "character": 32,
+                            "line": 25,
+                          },
+                        },
+                        "type": "element",
+                      },
+                    ],
+                    "contentRange": Object {
+                      "end": Object {
+                        "character": 28,
+                        "line": 26,
+                      },
+                      "start": Object {
+                        "character": 59,
+                        "line": 22,
+                      },
+                    },
+                    "name": "Apply",
+                    "nameRange": Object {
+                      "end": Object {
+                        "character": 34,
+                        "line": 22,
+                      },
+                      "start": Object {
+                        "character": 29,
+                        "line": 22,
+                      },
+                    },
+                    "range": Object {
+                      "end": Object {
+                        "character": 36,
+                        "line": 26,
+                      },
+                      "start": Object {
+                        "character": 28,
+                        "line": 22,
+                      },
+                    },
+                    "type": "element",
+                  },
+                  "type": "Apply",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 40,
+                  "line": 27,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 21,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+        ],
+        "collectionOrigins": Array [
+          Object {
+            "end": Object {
+              "character": 29,
+              "line": 28,
+            },
+            "start": Object {
+              "character": 20,
+              "line": 20,
+            },
+          },
+        ],
+        "origin": Object {
+          "end": Object {
+            "character": 29,
+            "line": 30,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 18,
+          },
+        },
+        "term": "com.sap.vocabularies.UI.v1.LineItem",
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 30,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 18,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion Data types 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "collection": Array [
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Decimal": 1,
+                  "type": "Decimal",
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Date": "2000-01-01",
+                  "type": "Date",
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "type": "Null",
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Int": 5,
+                  "type": "Int",
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+        ],
+        "term": "com.sap.vocabularies.UI.v1.LineItem",
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion Data types 2`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "collection": Array [
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Decimal": 1,
+                  "type": "Decimal",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 71,
+                  "line": 21,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 21,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Date": "2000-01-01",
+                  "type": "Date",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 75,
+                  "line": 24,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 24,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "type": "Null",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 40,
+                  "line": 29,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 27,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Int": 5,
+                  "type": "Int",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 65,
+                  "line": 32,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 32,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+        ],
+        "collectionOrigins": Array [
+          Object {
+            "end": Object {
+              "character": 29,
+              "line": 22,
+            },
+            "start": Object {
+              "character": 20,
+              "line": 20,
+            },
+          },
+          Object {
+            "end": Object {
+              "character": 29,
+              "line": 25,
+            },
+            "start": Object {
+              "character": 20,
+              "line": 23,
+            },
+          },
+          Object {
+            "end": Object {
+              "character": 29,
+              "line": 30,
+            },
+            "start": Object {
+              "character": 20,
+              "line": 26,
+            },
+          },
+          Object {
+            "end": Object {
+              "character": 29,
+              "line": 33,
+            },
+            "start": Object {
+              "character": 20,
+              "line": 31,
+            },
+          },
+        ],
+        "origin": Object {
+          "end": Object {
+            "character": 25,
+            "line": 35,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 18,
+          },
+        },
+        "term": "com.sap.vocabularies.UI.v1.LineItem",
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 25,
+          "line": 35,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 18,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion Default Property value 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "record": Object {
+          "propertyValues": Array [
+            Object {
+              "name": "Updatable",
+              "value": Object {
+                "Bool": true,
+                "type": "Bool",
+              },
+            },
+          ],
+        },
+        "term": "Org.OData.Capabilities.V1.UpdateRestrictions",
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion Default Property value 2`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "origin": Object {
+          "end": Object {
+            "character": 26,
+            "line": 25,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 21,
+          },
+        },
+        "record": Object {
+          "propertyValues": Array [
+            Object {
+              "name": "Updatable",
+              "value": Object {
+                "Bool": true,
+                "type": "Bool",
+              },
+            },
+          ],
+          "propertyValuesOrigins": Array [
+            Object {
+              "end": Object {
+                "character": 58,
+                "line": 23,
+              },
+              "start": Object {
+                "character": 20,
+                "line": 23,
+              },
+            },
+          ],
+        },
+        "term": "Org.OData.Capabilities.V1.UpdateRestrictions",
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 26,
+          "line": 25,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 21,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion Default value 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "term": "com.sap.vocabularies.UI.v1.HiddenFilter",
+        "value": undefined,
+      },
+    ],
+    "target": "IncidentService.Incidents/createdAt",
+  },
+]
+`;
+
+exports[`avt annotation conversion Default value 2`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "origin": Object {
+          "end": Object {
+            "character": 49,
+            "line": 18,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 18,
+          },
+        },
+        "term": "com.sap.vocabularies.UI.v1.HiddenFilter",
+        "value": undefined,
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 49,
+          "line": 18,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 18,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents/createdAt",
+  },
+]
+`;
+
+exports[`avt annotation conversion Nested annotations 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "annotations": Array [
+          Object {
+            "term": "com.sap.vocabularies.UI.v1.TextArrangement",
+            "value": Object {
+              "EnumMember": "com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly",
+              "type": "EnumMember",
+            },
+          },
+        ],
+        "term": "com.sap.vocabularies.Common.v1.Text",
+        "value": Object {
+          "Path": "category/code",
+          "type": "Path",
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents/category_code",
+  },
+]
+`;
+
+exports[`avt annotation conversion Nested annotations 2`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "annotations": Array [
+          Object {
+            "origin": Object {
+              "end": Object {
+                "character": 100,
+                "line": 19,
+              },
+              "start": Object {
+                "character": 16,
+                "line": 19,
+              },
+            },
+            "term": "com.sap.vocabularies.UI.v1.TextArrangement",
+            "value": Object {
+              "EnumMember": "com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly",
+              "type": "EnumMember",
+            },
+          },
+        ],
+        "origin": Object {
+          "end": Object {
+            "character": 25,
+            "line": 20,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 18,
+          },
+        },
+        "term": "com.sap.vocabularies.Common.v1.Text",
+        "value": Object {
+          "Path": "category/code",
+          "type": "Path",
+        },
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 25,
+          "line": 20,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 18,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents/category_code",
+  },
+]
+`;
+
+exports[`avt annotation conversion UI.Facets 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "collection": Array [
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "ID",
+                "value": Object {
+                  "String": "GeneratedFacet1",
+                  "type": "String",
+                },
+              },
+              Object {
+                "name": "Label",
+                "value": Object {
+                  "String": "General Information",
+                  "type": "String",
+                },
+              },
+              Object {
+                "name": "Target",
+                "value": Object {
+                  "AnnotationPath": "@com.sap.vocabularies.UI.v1.FieldGroup#GeneratedGroup1",
+                  "type": "AnnotationPath",
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.ReferenceFacet",
+          },
+        ],
+        "term": "com.sap.vocabularies.UI.v1.Facets",
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion UI.Facets 2`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "collection": Array [
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "ID",
+                "value": Object {
+                  "String": "GeneratedFacet1",
+                  "type": "String",
+                },
+              },
+              Object {
+                "name": "Label",
+                "value": Object {
+                  "String": "General Information",
+                  "type": "String",
+                },
+              },
+              Object {
+                "name": "Target",
+                "value": Object {
+                  "AnnotationPath": "@com.sap.vocabularies.UI.v1.FieldGroup#GeneratedGroup1",
+                  "type": "AnnotationPath",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 79,
+                  "line": 21,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 21,
+                },
+              },
+              Object {
+                "end": Object {
+                  "character": 86,
+                  "line": 22,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 22,
+                },
+              },
+              Object {
+                "end": Object {
+                  "character": 106,
+                  "line": 23,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 23,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.ReferenceFacet",
+          },
+        ],
+        "collectionOrigins": Array [
+          Object {
+            "end": Object {
+              "character": 29,
+              "line": 24,
+            },
+            "start": Object {
+              "character": 20,
+              "line": 20,
+            },
+          },
+        ],
+        "origin": Object {
+          "end": Object {
+            "character": 25,
+            "line": 26,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 18,
+          },
+        },
+        "term": "com.sap.vocabularies.UI.v1.Facets",
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 25,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 18,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion UI.LineItem 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "collection": Array [
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Path": "identifier",
+                  "type": "Path",
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Path": "title",
+                  "type": "Path",
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Path": "category_code",
+                  "type": "Path",
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Path": "priority_code",
+                  "type": "Path",
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Path": "incidentStatus_code",
+                  "type": "Path",
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+        ],
+        "term": "com.sap.vocabularies.UI.v1.LineItem",
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion UI.LineItem 2`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "collection": Array [
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Path": "identifier",
+                  "type": "Path",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 75,
+                  "line": 21,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 21,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Path": "title",
+                  "type": "Path",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 70,
+                  "line": 24,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 24,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Path": "category_code",
+                  "type": "Path",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 78,
+                  "line": 27,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 27,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Path": "priority_code",
+                  "type": "Path",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 78,
+                  "line": 30,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 30,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "Path": "incidentStatus_code",
+                  "type": "Path",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 84,
+                  "line": 33,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 33,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+        ],
+        "collectionOrigins": Array [
+          Object {
+            "end": Object {
+              "character": 29,
+              "line": 22,
+            },
+            "start": Object {
+              "character": 20,
+              "line": 20,
+            },
+          },
+          Object {
+            "end": Object {
+              "character": 29,
+              "line": 25,
+            },
+            "start": Object {
+              "character": 20,
+              "line": 23,
+            },
+          },
+          Object {
+            "end": Object {
+              "character": 29,
+              "line": 28,
+            },
+            "start": Object {
+              "character": 20,
+              "line": 26,
+            },
+          },
+          Object {
+            "end": Object {
+              "character": 29,
+              "line": 31,
+            },
+            "start": Object {
+              "character": 20,
+              "line": 29,
+            },
+          },
+          Object {
+            "end": Object {
+              "character": 29,
+              "line": 34,
+            },
+            "start": Object {
+              "character": 20,
+              "line": 32,
+            },
+          },
+        ],
+        "origin": Object {
+          "end": Object {
+            "character": 25,
+            "line": 36,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 18,
+          },
+        },
+        "term": "com.sap.vocabularies.UI.v1.LineItem",
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 25,
+          "line": 36,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 18,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion Unbound action 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "term": "com.sap.vocabularies.Common.v1.Label",
+        "value": Object {
+          "String": "Available Product",
+          "type": "String",
+        },
+      },
+    ],
+    "target": "IncidentService.FuGetEmployeeByID(Edm.String)",
+  },
+]
+`;
+
+exports[`avt annotation conversion Unbound action 2`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "origin": Object {
+          "end": Object {
+            "character": 72,
+            "line": 18,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 18,
+          },
+        },
+        "term": "com.sap.vocabularies.Common.v1.Label",
+        "value": Object {
+          "String": "Available Product",
+          "type": "String",
+        },
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 72,
+          "line": 18,
+        },
+        "start": Object {
+          "character": 12,
+          "line": 18,
+        },
+      },
+    ],
+    "target": "IncidentService.FuGetEmployeeByID(Edm.String)",
+  },
+]
+`;
+
+exports[`avt annotation conversion merge map embedded annotation overrides 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "annotations": Array [
+          Object {
+            "origin": Object {
+              "end": Object {
+                "character": 79,
+                "line": 19,
+              },
+              "start": Object {
+                "character": 20,
+                "line": 19,
+              },
+            },
+            "term": "com.sap.vocabularies.UI.v1.TextArrangement",
+            "value": Object {
+              "String": "two",
+              "type": "String",
+            },
+          },
+          Object {
+            "origin": Object {
+              "end": Object {
+                "character": 95,
+                "line": 25,
+              },
+              "start": Object {
+                "character": 20,
+                "line": 25,
+              },
+            },
+            "qualifier": "two",
+            "term": "com.sap.vocabularies.UI.v1.TextArrangement",
+            "value": Object {
+              "String": "Something",
+              "type": "String",
+            },
+          },
+        ],
+        "origin": Object {
+          "end": Object {
+            "character": 29,
+            "line": 20,
+          },
+          "start": Object {
+            "character": 16,
+            "line": 18,
+          },
+        },
+        "term": "com.sap.vocabularies.Common.v1.Text",
+        "value": Object {
+          "String": "A",
+          "type": "String",
+        },
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 20,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 18,
+        },
+      },
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 23,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 21,
+        },
+      },
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 24,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents/modifiedAt",
+  },
+]
+`;
+
+exports[`avt annotation conversion merge map embedded annotation overrides 2`] = `
+Object {
+  "IncidentService.Incidents/modifiedAt@com.sap.vocabularies.Common.v1.Text/0/0/annotations/1": "IncidentService.Incidents/modifiedAt@com.sap.vocabularies.Common.v1.Text/0/2/annotations/0",
+}
+`;
+
+exports[`avt annotation conversion merge map embedded annotations 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "annotations": Array [
+          Object {
+            "origin": Object {
+              "end": Object {
+                "character": 80,
+                "line": 21,
+              },
+              "start": Object {
+                "character": 20,
+                "line": 21,
+              },
+            },
+            "term": "com.sap.vocabularies.UI.v1.TextArrangement",
+            "value": Object {
+              "String": "Something",
+              "type": "String",
+            },
+          },
+        ],
+        "origin": Object {
+          "end": Object {
+            "character": 29,
+            "line": 19,
+          },
+          "start": Object {
+            "character": 16,
+            "line": 18,
+          },
+        },
+        "term": "com.sap.vocabularies.Common.v1.Text",
+        "value": Object {
+          "String": "A",
+          "type": "String",
+        },
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 19,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 18,
+        },
+      },
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 22,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 20,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents/modifiedAt",
+  },
+]
+`;
+
+exports[`avt annotation conversion merge map embedded annotations 2`] = `
+Object {
+  "IncidentService.Incidents/modifiedAt@com.sap.vocabularies.Common.v1.Text/0/0/annotations/0": "IncidentService.Incidents/modifiedAt@com.sap.vocabularies.Common.v1.Text/0/1/annotations/0",
+}
+`;
+
+exports[`avt annotation conversion merge map kpi 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "origin": Object {
+          "end": Object {
+            "character": 29,
+            "line": 27,
+          },
+          "start": Object {
+            "character": 16,
+            "line": 18,
+          },
+        },
+        "record": Object {
+          "propertyValues": Array [
+            Object {
+              "name": "DataPoint",
+              "value": Object {
+                "Record": Object {
+                  "annotations": Array [
+                    Object {
+                      "origin": Object {
+                        "end": Object {
+                          "character": 101,
+                          "line": 23,
+                        },
+                        "start": Object {
+                          "character": 32,
+                          "line": 23,
+                        },
+                      },
+                      "qualifier": "A",
+                      "term": "com.sap.vocabularies.UI.v1.Description",
+                      "value": Object {
+                        "String": "Something",
+                        "type": "String",
+                      },
+                    },
+                    Object {
+                      "origin": Object {
+                        "end": Object {
+                          "character": 93,
+                          "line": 42,
+                        },
+                        "start": Object {
+                          "character": 32,
+                          "line": 42,
+                        },
+                      },
+                      "qualifier": "F",
+                      "term": "com.sap.vocabularies.UI.v1.Description",
+                      "value": Object {
+                        "String": "F",
+                        "type": "String",
+                      },
+                    },
+                  ],
+                  "propertyValues": Array [
+                    Object {
+                      "name": "Value",
+                      "value": Object {
+                        "String": "A",
+                        "type": "String",
+                      },
+                    },
+                    Object {
+                      "name": "Responsible",
+                      "value": Object {
+                        "Record": Object {
+                          "propertyValues": Array [
+                            Object {
+                              "name": "nickname",
+                              "value": Object {
+                                "String": "B",
+                                "type": "String",
+                              },
+                            },
+                            Object {
+                              "name": "fn",
+                              "value": Object {
+                                "String": "V",
+                                "type": "String",
+                              },
+                            },
+                          ],
+                          "propertyValuesOrigins": Array [
+                            Object {
+                              "end": Object {
+                                "character": 88,
+                                "line": 34,
+                              },
+                              "start": Object {
+                                "character": 40,
+                                "line": 34,
+                              },
+                            },
+                            Object {
+                              "end": Object {
+                                "character": 82,
+                                "line": 39,
+                              },
+                              "start": Object {
+                                "character": 40,
+                                "line": 39,
+                              },
+                            },
+                          ],
+                        },
+                        "type": "Record",
+                      },
+                    },
+                  ],
+                  "propertyValuesOrigins": Array [
+                    Object {
+                      "end": Object {
+                        "character": 77,
+                        "line": 22,
+                      },
+                      "start": Object {
+                        "character": 32,
+                        "line": 22,
+                      },
+                    },
+                    Object {
+                      "end": Object {
+                        "character": 48,
+                        "line": 36,
+                      },
+                      "start": Object {
+                        "character": 32,
+                        "line": 32,
+                      },
+                    },
+                  ],
+                },
+                "type": "Record",
+              },
+            },
+          ],
+          "propertyValuesOrigins": Array [
+            Object {
+              "end": Object {
+                "character": 40,
+                "line": 25,
+              },
+              "start": Object {
+                "character": 24,
+                "line": 20,
+              },
+            },
+          ],
+        },
+        "term": "com.sap.vocabularies.UI.v1.KPI",
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 27,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 18,
+        },
+      },
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 46,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 28,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion merge map kpi 2`] = `
+Object {
+  "IncidentService.Incidents@com.sap.vocabularies.UI.v1.KPI/0/0/record/propertyValues/0/value/Record/annotations/1": "IncidentService.Incidents@com.sap.vocabularies.UI.v1.KPI/0/1/record/propertyValues/0/value/Record/annotations/0",
+  "IncidentService.Incidents@com.sap.vocabularies.UI.v1.KPI/0/0/record/propertyValues/0/value/Record/propertyValues/1": "IncidentService.Incidents@com.sap.vocabularies.UI.v1.KPI/0/1/record/propertyValues/0/value/Record/propertyValues/0",
+  "IncidentService.Incidents@com.sap.vocabularies.UI.v1.KPI/0/0/record/propertyValues/0/value/Record/propertyValues/1/value/Record/propertyValues/1": "IncidentService.Incidents@com.sap.vocabularies.UI.v1.KPI/0/1/record/propertyValues/0/value/Record/propertyValues/1/value/Record/propertyValues/0",
+}
+`;
+
+exports[`avt annotation conversion merge map nested records 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "origin": Object {
+          "end": Object {
+            "character": 29,
+            "line": 27,
+          },
+          "start": Object {
+            "character": 16,
+            "line": 18,
+          },
+        },
+        "record": Object {
+          "propertyValues": Array [
+            Object {
+              "name": "Title",
+              "value": Object {
+                "Record": Object {
+                  "annotations": Array [
+                    Object {
+                      "origin": Object {
+                        "end": Object {
+                          "character": 101,
+                          "line": 23,
+                        },
+                        "start": Object {
+                          "character": 32,
+                          "line": 23,
+                        },
+                      },
+                      "qualifier": "A",
+                      "term": "com.sap.vocabularies.UI.v1.Description",
+                      "value": Object {
+                        "String": "Something",
+                        "type": "String",
+                      },
+                    },
+                    Object {
+                      "origin": Object {
+                        "end": Object {
+                          "character": 101,
+                          "line": 33,
+                        },
+                        "start": Object {
+                          "character": 32,
+                          "line": 33,
+                        },
+                      },
+                      "qualifier": "B",
+                      "term": "com.sap.vocabularies.UI.v1.Description",
+                      "value": Object {
+                        "String": "Something",
+                        "type": "String",
+                      },
+                    },
+                  ],
+                  "propertyValues": Array [
+                    Object {
+                      "name": "Value",
+                      "value": Object {
+                        "String": "A",
+                        "type": "String",
+                      },
+                    },
+                    Object {
+                      "name": "Label",
+                      "value": Object {
+                        "String": "B",
+                        "type": "String",
+                      },
+                    },
+                  ],
+                  "propertyValuesOrigins": Array [
+                    Object {
+                      "end": Object {
+                        "character": 77,
+                        "line": 22,
+                      },
+                      "start": Object {
+                        "character": 32,
+                        "line": 22,
+                      },
+                    },
+                    Object {
+                      "end": Object {
+                        "character": 77,
+                        "line": 32,
+                      },
+                      "start": Object {
+                        "character": 32,
+                        "line": 32,
+                      },
+                    },
+                  ],
+                },
+                "type": "Record",
+              },
+            },
+          ],
+          "propertyValuesOrigins": Array [
+            Object {
+              "end": Object {
+                "character": 40,
+                "line": 25,
+              },
+              "start": Object {
+                "character": 24,
+                "line": 20,
+              },
+            },
+          ],
+        },
+        "term": "com.sap.vocabularies.UI.v1.HeaderInfo",
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 27,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 18,
+        },
+      },
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 37,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 28,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion merge map nested records 2`] = `
+Object {
+  "IncidentService.Incidents@com.sap.vocabularies.UI.v1.HeaderInfo/0/0/record/propertyValues/0/value/Record/annotations/1": "IncidentService.Incidents@com.sap.vocabularies.UI.v1.HeaderInfo/0/1/record/propertyValues/0/value/Record/annotations/0",
+  "IncidentService.Incidents@com.sap.vocabularies.UI.v1.HeaderInfo/0/0/record/propertyValues/0/value/Record/propertyValues/1": "IncidentService.Incidents@com.sap.vocabularies.UI.v1.HeaderInfo/0/1/record/propertyValues/0/value/Record/propertyValues/0",
+}
+`;
+
+exports[`avt annotation conversion merge map split annotation 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "origin": Object {
+          "end": Object {
+            "character": 29,
+            "line": 26,
+          },
+          "start": Object {
+            "character": 16,
+            "line": 18,
+          },
+        },
+        "record": Object {
+          "propertyValues": Array [
+            Object {
+              "name": "Title",
+              "value": Object {
+                "Record": Object {
+                  "annotations": Array [
+                    Object {
+                      "origin": Object {
+                        "end": Object {
+                          "character": 101,
+                          "line": 31,
+                        },
+                        "start": Object {
+                          "character": 32,
+                          "line": 31,
+                        },
+                      },
+                      "qualifier": "B",
+                      "term": "com.sap.vocabularies.UI.v1.Description",
+                      "value": Object {
+                        "String": "Something",
+                        "type": "String",
+                      },
+                    },
+                  ],
+                  "propertyValues": Array [
+                    Object {
+                      "name": "Value",
+                      "value": Object {
+                        "String": "A",
+                        "type": "String",
+                      },
+                    },
+                  ],
+                  "propertyValuesOrigins": Array [
+                    Object {
+                      "end": Object {
+                        "character": 77,
+                        "line": 22,
+                      },
+                      "start": Object {
+                        "character": 32,
+                        "line": 22,
+                      },
+                    },
+                  ],
+                },
+                "type": "Record",
+              },
+            },
+          ],
+          "propertyValuesOrigins": Array [
+            Object {
+              "end": Object {
+                "character": 40,
+                "line": 24,
+              },
+              "start": Object {
+                "character": 24,
+                "line": 20,
+              },
+            },
+          ],
+        },
+        "term": "com.sap.vocabularies.UI.v1.HeaderInfo",
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 26,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 18,
+        },
+      },
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 35,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 27,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion merge map split annotation 2`] = `
+Object {
+  "IncidentService.Incidents@com.sap.vocabularies.UI.v1.HeaderInfo/0/0/record/propertyValues/0/value/Record/annotations/0": "IncidentService.Incidents@com.sap.vocabularies.UI.v1.HeaderInfo/0/1/record/propertyValues/0/value/Record/annotations/0",
+}
+`;
+
+exports[`avt annotation conversion merge map two properties 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "origin": Object {
+          "end": Object {
+            "character": 29,
+            "line": 23,
+          },
+          "start": Object {
+            "character": 16,
+            "line": 18,
+          },
+        },
+        "record": Object {
+          "annotations": Array [
+            Object {
+              "origin": Object {
+                "end": Object {
+                  "character": 93,
+                  "line": 21,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 21,
+                },
+              },
+              "qualifier": "A",
+              "term": "com.sap.vocabularies.UI.v1.Description",
+              "value": Object {
+                "String": "Something",
+                "type": "String",
+              },
+            },
+            Object {
+              "origin": Object {
+                "end": Object {
+                  "character": 93,
+                  "line": 27,
+                },
+                "start": Object {
+                  "character": 24,
+                  "line": 27,
+                },
+              },
+              "qualifier": "B",
+              "term": "com.sap.vocabularies.UI.v1.Description",
+              "value": Object {
+                "String": "Something",
+                "type": "String",
+              },
+            },
+          ],
+          "propertyValues": Array [
+            Object {
+              "name": "TypeName",
+              "value": Object {
+                "String": "A",
+                "type": "String",
+              },
+            },
+            Object {
+              "name": "TypeNamePlural",
+              "value": Object {
+                "String": "B",
+                "type": "String",
+              },
+            },
+          ],
+          "propertyValuesOrigins": Array [
+            Object {
+              "end": Object {
+                "character": 72,
+                "line": 20,
+              },
+              "start": Object {
+                "character": 24,
+                "line": 20,
+              },
+            },
+            Object {
+              "end": Object {
+                "character": 78,
+                "line": 26,
+              },
+              "start": Object {
+                "character": 24,
+                "line": 26,
+              },
+            },
+          ],
+        },
+        "term": "com.sap.vocabularies.UI.v1.HeaderInfo",
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 23,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 18,
+        },
+      },
+      Object {
+        "end": Object {
+          "character": 29,
+          "line": 29,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 24,
+        },
+      },
+    ],
+    "target": "IncidentService.Incidents",
+  },
+]
+`;
+
+exports[`avt annotation conversion merge map two properties 2`] = `
+Object {
+  "IncidentService.Incidents@com.sap.vocabularies.UI.v1.HeaderInfo/0/0/record/annotations/1": "IncidentService.Incidents@com.sap.vocabularies.UI.v1.HeaderInfo/0/1/record/annotations/0",
+  "IncidentService.Incidents@com.sap.vocabularies.UI.v1.HeaderInfo/0/0/record/propertyValues/1": "IncidentService.Incidents@com.sap.vocabularies.UI.v1.HeaderInfo/0/1/record/propertyValues/0",
+}
+`;

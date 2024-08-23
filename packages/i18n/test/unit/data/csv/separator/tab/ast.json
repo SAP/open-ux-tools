@@ -1,0 +1,23 @@
+{
+  "header": {
+    "fields": [
+      {
+        "quoted": false,
+        "value": "one",
+        "range": "[(0,0)..(0,3)]"
+      },
+      {
+        "quoted": false,
+        "value": "two",
+        "range": "[(0,4)..(0,7)]"
+      },
+      {
+        "quoted": false,
+        "value": "three",
+        "range": "[(0,8)..(0,13)]"
+      }
+    ],
+    "range": "[(0,0)..(0,13)]"
+  },
+  "rows": []
+}

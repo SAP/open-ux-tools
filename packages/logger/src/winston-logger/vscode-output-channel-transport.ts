@@ -15,19 +15,32 @@ interface DataLog {
  */
 export class VSCodeTransport extends Transport {
     private readonly channel: any;
+    private readonly winstonToVSCodeMap: Map<string, string> = new Map([
+        ['error', 'error'],
+        ['warn', 'warn'],
+        ['info', 'info'],
+        ['verbose', 'debug'],
+        ['debug', 'debug'],
+        ['silly', 'trace']
+    ]);
+
     public constructor(
         options: Transport.TransportStreamOptions & {
             channelName: string;
         }
     ) {
         super(options);
-        this.channel = getVSCodeInstance().window.createOutputChannel(options.channelName);
+        this.channel = getVSCodeInstance().window.createOutputChannel(options.channelName, { log: true });
     }
     public log(data: DataLog, callback: () => void): void {
         setImmediate(() => {
-            this.channel.appendLine(`${data.timestamp} [${data.level.toUpperCase()}] - ${data.message}`);
+            const logFunction = this.winstonToVSCodeMap.get(data.level) ?? 'info';
+            this.channel[logFunction](data.message);
         });
         callback();
+    }
+    public show(): void {
+        this.channel.show();
     }
 }
 

@@ -1,0 +1,45 @@
+{
+    "name": "@sap-ux/ui5-library-reference-writer",
+    "description": "Writer module to add library/component references to an existing Fiori application",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/ui5-library-reference-writer"
+    },
+    "version": "0.1.19",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "engines": {
+        "node": ">=18.x"
+    },
+    "dependencies": {
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "9.0.13",
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs": "1.1.2",
+        "fs-extra": "10.0.0"
+    }
+}

@@ -1,4 +1,4 @@
-// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -128,15 +128,24 @@ export default {
             },
             'IANATimezoneFormat': {
                 '$Type': 'Edm.Boolean',
+                '$DefaultValue': false,
                 '@Org.OData.Core.V1.Description':
                     'If this is true, the PDF format supports formatting columns of type `Edm.DateTimeOffset` in a IANA time zone given in the document description'
             },
             'Treeview': {
                 '$Type': 'Edm.Boolean',
+                '$DefaultValue': false,
                 '@com.sap.vocabularies.Common.v1.Experimental': true,
                 '@Org.OData.Core.V1.Description': 'Treeview output supported',
                 '@Org.OData.Core.V1.LongDescription':
                     'If this is true, treeview output is supported for hierarchical data'
+            },
+            'TextDirectionLayout': {
+                '$Type': 'Edm.Boolean',
+                '$DefaultValue': false,
+                '@Org.OData.Core.V1.Description': 'Setting the text direction-layout is supported',
+                '@Org.OData.Core.V1.LongDescription':
+                    'PDF supports setting the text direction-layout (e.g. left-to-right or right-to-left) in the document description'
             }
         }
     }

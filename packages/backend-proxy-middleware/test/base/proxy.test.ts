@@ -136,13 +136,13 @@ describe('proxy', () => {
             onProxyRes(response);
             expect(response).toEqual({ headers: { 'set-cookie': [] } });
 
-            // cookies are modified i.e. SameSite, Domain, Secure are removed
+            // cookies are modified i.e. SameSite, Domain, Secure, Partitioned are removed
             response.headers['set-cookie'] = [
-                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; secure; Domain=example.com',
-                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; Domain=example.com; secure',
-                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; secure; Domain=example.com; SameSite=None',
-                'SameSite=None; MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; secure; Domain=example.com',
-                'Domain=example.com MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; secure'
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; secure; Domain=example.com Partitioned',
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; Domain=example.com; Partitioned; secure',
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; secure; Domain=example.com; Partitioned; SameSite=None',
+                'SameSite=None; MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; Partitioned; secure; Domain=example.com',
+                'Domain=example.com MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; Partitioned; SameSite=None; secure'
             ];
             onProxyRes(response);
             expect(response.headers['set-cookie']).toEqual([
@@ -316,7 +316,6 @@ describe('proxy', () => {
             };
             const callback = jest.fn();
             await enhanceConfigForSystem(proxyOptions, cloudSystem, true, callback);
-            expect(proxyOptions.headers.cookie).toBe('~cookies');
             expect(mockCreateForAbapOnCloud).toBeCalledWith({
                 environment: AbapCloudEnvironment.Standalone,
                 service: cloudSystem.serviceKeys,
@@ -347,7 +346,7 @@ describe('proxy', () => {
             mockCreateForAbapOnCloud.mockImplementationOnce(() => {
                 return {
                     cookies: '~cookies',
-                    getAtoInfo: jest.fn()
+                    getAtoInfo: jest.fn().mockReturnValue({})
                 };
             });
             const proxyOptions: OptionsWithHeaders = { headers: {} };
@@ -363,6 +362,7 @@ describe('proxy', () => {
 
             expect(proxyOptions.headers.cookie).toBe('~cookies');
             expect(mockCreateForAbapOnCloud).toBeCalledWith({
+                ignoreCertErrors: false,
                 environment: AbapCloudEnvironment.EmbeddedSteampunk,
                 url: system.url
             });

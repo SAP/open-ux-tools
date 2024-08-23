@@ -1,7 +1,13 @@
 import * as flexChange from '../../../../src/cpe/changes/flex-change';
 import { ChangeService } from '../../../../src/cpe/changes/service';
-import { changeProperty, deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
-import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import {
+    changeProperty,
+    deletePropertyChanges,
+    reloadApplication
+} from '@sap-ux-private/control-property-editor-common';
+import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+
 import { fetchMock } from 'mock/window';
 describe('SelectionService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
@@ -9,6 +15,7 @@ describe('SelectionService', () => {
     });
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
+    const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
     beforeEach(() => {
         rtaMock.attachUndoRedoStackModified = jest.fn() as jest.Mock;
@@ -198,6 +205,7 @@ describe('SelectionService', () => {
             getElement: () => any;
             getSelector: () => any;
             getChangeType: () => string;
+            getPreparedChange: () => { getDefinition: () => { fileName: string } };
         } {
             const cache = new Map(properties);
             return {
@@ -212,6 +220,9 @@ describe('SelectionService', () => {
                 }),
                 getChangeType: (): any => {
                     return cache.get('changeType');
+                },
+                getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
+                    return { getDefinition: () => ({ fileName: 'testFileName' }) };
                 }
             };
         }
@@ -248,7 +259,7 @@ describe('SelectionService', () => {
         await service.init(sendActionMock, subscribeMock);
 
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-        expect(sendActionMock).toHaveBeenCalledTimes(2);
+        expect(sendActionMock).toHaveBeenCalledTimes(4);
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] change-stack-modified',
             payload: {
@@ -259,6 +270,7 @@ describe('SelectionService', () => {
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         isActive: true,
                         controlName: 'SimpleForm',
+                        fileName: 'testFileName',
                         type: 'pending'
                     },
                     {
@@ -266,6 +278,7 @@ describe('SelectionService', () => {
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         isActive: true,
                         controlName: 'SimpleForm',
+                        fileName: 'testFileName',
                         type: 'pending'
                     }
                 ]
@@ -310,7 +323,7 @@ describe('SelectionService', () => {
         await service.init(sendActionMock, subscribeMock);
 
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-        expect(sendActionMock).toHaveBeenCalledTimes(2);
+        expect(sendActionMock).toHaveBeenCalledTimes(4);
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] change-stack-modified',
             payload: {
@@ -358,7 +371,7 @@ describe('SelectionService', () => {
         await service.init(sendActionMock, subscribeMock);
 
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-        expect(sendActionMock).toHaveBeenCalledTimes(2);
+        expect(sendActionMock).toHaveBeenCalledTimes(4);
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] change-stack-modified',
             payload: {
@@ -379,6 +392,7 @@ describe('SelectionService', () => {
             getSelector: () => any;
             getChangeType: () => string;
             getParent: () => any;
+            getPreparedChange: () => { getDefinition: () => { fileName: string } };
         } {
             const cache = new Map(properties);
             return {
@@ -399,7 +413,10 @@ describe('SelectionService', () => {
                     getElement: jest.fn().mockReturnValue({
                         getId: () => 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
                     })
-                })
+                }),
+                getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
+                    return { getDefinition: () => ({ fileName: 'testFileName' }) };
+                }
             };
         }
         const commands = [
@@ -441,7 +458,7 @@ describe('SelectionService', () => {
         await service.init(sendActionMock, subscribeMock);
 
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-        expect(sendActionMock).toHaveBeenCalledTimes(2);
+        expect(sendActionMock).toHaveBeenCalledTimes(4);
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] change-stack-modified',
             payload: {
@@ -453,6 +470,7 @@ describe('SelectionService', () => {
                         isActive: true,
                         propertyName: 'text',
                         controlName: 'Button',
+                        fileName: 'testFileName',
                         type: 'pending',
                         value: 'abc'
                     },
@@ -462,6 +480,7 @@ describe('SelectionService', () => {
                         isActive: true,
                         propertyName: 'text',
                         controlName: 'Button',
+                        fileName: 'testFileName',
                         type: 'pending',
                         value: '{i18n>DELETE}'
                     },
@@ -469,6 +488,7 @@ describe('SelectionService', () => {
                         changeType: 'addXMLAtExtensionPoint',
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         controlName: 'ExtensionPoint1',
+                        fileName: 'testFileName',
                         isActive: true,
                         type: 'pending'
                     }
@@ -552,6 +572,55 @@ describe('SelectionService', () => {
             body: '{"fileName":"id_1640106755570_203_propertyChange"}',
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'
+        });
+    });
+
+    test('reload application', async () => {
+        jest.spyOn(Date, 'now').mockReturnValueOnce(123);
+        fetchMock.mockResolvedValue({
+            json: () => Promise.resolve(undefined)
+        });
+
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        await service.init(sendActionMock, subscribeMock);
+        await subscribeMock.mock.calls[0][0](reloadApplication());
+        expect(rtaMock.stop).toHaveBeenNthCalledWith(1, false, true);
+    });
+
+    test('attach stop callback check', async () => {
+        jest.spyOn(Date, 'now').mockReturnValueOnce(123);
+        fetchMock.mockResolvedValue({
+            json: () => Promise.resolve(undefined)
+        });
+
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        rtaMock.attachStop.mockClear();
+        const reloadSpy = jest.fn();
+        const location = window.location;
+        Object.defineProperty(window, 'location', {
+            value: {
+                reload: reloadSpy
+            }
+        });
+        await service.init(sendActionMock, subscribeMock);
+        expect(rtaMock.attachStop).toBeCalledTimes(1);
+
+        rtaMock.attachStop.mock.calls[0][0]();
+        expect(reloadSpy).toHaveBeenCalled();
+        Object.defineProperty(window, 'location', {
+            value: location
         });
     });
 });

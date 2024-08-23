@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/logger",
-    "version": "0.4.0",
+    "version": "0.6.0",
     "description": "A simple logging module",
     "repository": {
         "type": "git",
@@ -28,16 +28,16 @@
     "dependencies": {
         "chalk": "4.1.2",
         "lodash": "4.17.21",
-        "winston": "3.7.2",
-        "winston-transport": "4.5.0"
+        "winston": "3.11.0",
+        "winston-transport": "4.7.0"
     },
     "devDependencies": {
-        "@types/debug": "4.1.8",
-        "@types/lodash": "4.14.198",
+        "@types/debug": "4.1.12",
+        "@types/lodash": "4.14.202",
         "@types/vscode": "1.73.1",
-        "jest-extended": "3.2.4",
-        "jest": ">=29.5.0",
-        "logform": "2.3.2"
+        "jest-extended": "4.0.2",
+        "jest": ">=29.7.0",
+        "logform": "2.6.0"
     },
     "files": [
         "dist",
@@ -46,7 +46,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
         "node": ">=18.x"
     }
 }

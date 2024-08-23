@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`lib vocabulary loader (CDS including analytics) correct term definition in dictionary 1`] = `
+Object {
+  "appliesTo": Array [
+    "Property",
+  ],
+  "description": "(CDS annotation) Used to define different (to the default aggregation) aggregation behavior for specified elements. In general there can be multiple elements in which a measure has to be aggregated differently. Therefore a list of ExceptionAggregationSteps can be assigned.",
+  "isCollection": true,
+  "kind": "Term",
+  "name": "com.sap.cds.vocabularies.AnalyticsDetails.exceptionAggregationSteps",
+  "type": "com.sap.cds.vocabularies.AnalyticsDetails.ExceptionAggregationStepType",
+}
+`;
+
+exports[`lib vocabulary loader (CDS including analytics) namespace listed with alias  1`] = `
+Object {
+  "defaultAlias": "AnalyticsDetails",
+  "defaultUri": "",
+  "namespace": "com.sap.cds.vocabularies.AnalyticsDetails",
+}
+`;

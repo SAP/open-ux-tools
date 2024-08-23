@@ -1,0 +1,18 @@
+{
+    "sap.app": {
+        "id": "single_apps-fiori_elements",
+        "type": "application"
+    },
+    "sap.ui5": {
+        "models": {
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            },
+            "modelKey": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            }
+        }
+    }
+}

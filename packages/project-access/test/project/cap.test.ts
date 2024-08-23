@@ -3,6 +3,7 @@ import * as childProcess from 'child_process';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
+import { clearCdsModuleCache, clearGlobalCdsModulePromiseCache, getCapServiceName } from '../../src/project/cap';
 import {
     getCapCustomPaths,
     getCapEnvironment,
@@ -13,35 +14,44 @@ import {
     isCapJavaProject,
     getCapModelAndServices,
     getCapProjectType,
-    readCapServiceMetadataEdmx
+    readCapServiceMetadataEdmx,
+    toReferenceUri,
+    isCapProject
 } from '../../src';
-import { toReferenceUri } from '../../src/project/cap';
 import * as file from '../../src/file';
 import os from 'os';
 import type { Logger } from '@sap-ux/logger';
 
 jest.mock('child_process');
 const childProcessMock = jest.mocked(childProcess, { shallow: true });
+const jestEnvForMock = jest.fn().mockImplementation(() => ({
+    'for': jestEnvForMock,
+    folders: {
+        app: 'MY_APP',
+        db: 'MY_DB',
+        srv: 'MY_SRV'
+    }
+}));
+const jestMockEnv = {
+    'for': jestEnvForMock
+};
 
-describe('Test getCapProjectType()', () => {
+describe('Test getCapProjectType() & isCapProject()', () => {
     test('Test if valid CAP Node.js project is recognized', async () => {
-        expect(
-            await getCapProjectType(
-                join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix')
-            )
-        ).toBe('CAPNodejs');
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix');
+        expect(await getCapProjectType(capPath)).toBe('CAPNodejs');
+        expect(await isCapProject(capPath)).toBe(true);
     });
 
     test('Test if valid CAP Java project is recognized', async () => {
-        expect(
-            await getCapProjectType(
-                join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPJava_mix')
-            )
-        ).toBe('CAPJava');
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPJava_mix');
+        expect(await getCapProjectType(capPath)).toBe('CAPJava');
+        expect(await isCapProject(capPath)).toBe(true);
     });
 
     test('Test if invalid CAP project is recognized', async () => {
         expect(await getCapProjectType('INVALID_PROJECT')).toBeUndefined();
+        expect(await isCapProject('INVALID_PROJECT')).toBe(false);
     });
 });
 
@@ -76,40 +86,51 @@ describe('Test isCapJavaProject()', () => {
 describe('Test getCapModelAndServices()', () => {
     afterEach(() => {
         jest.clearAllMocks();
+        clearGlobalCdsModulePromiseCache();
     });
 
-    test('Get valid model and services, mock cds with local cds from devDependencies', async () => {
+    test('Get valid model and services, mock cds with local cds from devDependencies Updated API available in @sap/cds: 7.8.0', async () => {
         // Mock setup
         const cdsMock = {
-            env: {
-                'for': () => ({
-                    folders: {
-                        app: 'APP',
-                        db: 'DB',
-                        srv: 'SRV'
-                    }
-                })
-            },
+            env: jestMockEnv,
             load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
             compile: {
                 to: {
                     serviceinfo: jest.fn().mockImplementation(() => [
                         {
                             'name': 'Forwardslash',
-                            'urlPath': 'odata/service/with/forwardslash/'
+                            'endpoints': [
+                                {
+                                    'path': 'odata/service/with/forwardslash/',
+                                    'kind': 'odata'
+                                }
+                            ]
                         },
                         {
                             'name': 'Backslash',
-                            'urlPath': '\\odata\\service\\with\\backslash/'
+                            'endpoints': [
+                                {
+                                    'path': '\\odata\\service\\with\\backslash/',
+                                    'kind': 'odata'
+                                }
+                            ]
                         },
                         {
                             'name': 'withRuntime',
-                            'urlPath': 'url',
+                            'endpoints': [
+                                {
+                                    'path': 'url',
+                                    'kind': 'odata'
+                                }
+                            ],
                             'runtime': 'Node.js'
                         }
                     ])
                 }
-            }
+            },
+            home: '/path/to/cds/home',
+            version: '7.0.0',
+            root: '/path/to/cds/root'
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
 
@@ -133,13 +154,163 @@ describe('Test getCapModelAndServices()', () => {
                     'urlPath': 'url',
                     'runtime': 'Node.js'
                 }
-            ]
+            ],
+            cdsVersionInfo: {
+                home: '/path/to/cds/home',
+                version: '7.0.0',
+                root: '/path/to/cds/root'
+            }
         });
-        expect(cdsMock.load).toBeCalledWith([
-            join('PROJECT_ROOT', 'APP'),
-            join('PROJECT_ROOT', 'SRV'),
-            join('PROJECT_ROOT', 'DB')
-        ]);
+        expect(cdsMock.load).toBeCalledWith(
+            [join('PROJECT_ROOT', 'MY_APP'), join('PROJECT_ROOT', 'MY_SRV'), join('PROJECT_ROOT', 'MY_DB')],
+            { root: 'PROJECT_ROOT' }
+        );
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
+    });
+
+    test('Get valid model and services, mock cds with local cds from devDependencies Updated API available in @sap/cds: 7.8.0, no odata kind in endpoints', async () => {
+        // Mock setup
+        const cdsMock = {
+            env: jestMockEnv,
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => [
+                        {
+                            'name': 'Forwardslash',
+                            'urlPath': 'odata/service/with/forwardslash/',
+                            'endpoints': [
+                                {
+                                    'path': 'rest/service/with/forwardslash/',
+                                    'kind': 'rest'
+                                }
+                            ]
+                        },
+                        {
+                            'name': 'Backslash',
+                            'urlPath': '\\odata\\service\\with\\backslash/',
+                            'endpoints': [
+                                {
+                                    'path': '\\rest\\service\\with\\backslash/',
+                                    'kind': 'rest'
+                                }
+                            ]
+                        },
+                        {
+                            'name': 'withRuntime',
+                            'urlPath': 'url',
+                            'endpoints': [
+                                {
+                                    'path': 'url',
+                                    'kind': 'rest'
+                                }
+                            ],
+                            'runtime': 'Node.js'
+                        }
+                    ])
+                }
+            },
+            home: '/path/to/cds/home',
+            version: '7.0.0',
+            root: '/path/to/cds/root'
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        // Test execution
+        const capMS = await getCapModelAndServices('PROJECT_ROOT');
+
+        // Check results
+        expect(capMS).toEqual({
+            model: 'MODEL',
+            services: [
+                {
+                    'name': 'Forwardslash',
+                    'urlPath': 'odata/service/with/forwardslash/'
+                },
+                {
+                    'name': 'Backslash',
+                    'urlPath': 'odata/service/with/backslash/'
+                },
+                {
+                    'name': 'withRuntime',
+                    'urlPath': 'url',
+                    'runtime': 'Node.js'
+                }
+            ],
+            cdsVersionInfo: {
+                home: '/path/to/cds/home',
+                version: '7.0.0',
+                root: '/path/to/cds/root'
+            }
+        });
+        expect(cdsMock.load).toBeCalledWith(
+            [join('PROJECT_ROOT', 'MY_APP'), join('PROJECT_ROOT', 'MY_SRV'), join('PROJECT_ROOT', 'MY_DB')],
+            { root: 'PROJECT_ROOT' }
+        );
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
+    });
+
+    test('Get valid model and services, mock cds with local cds from devDependencies Before @sap/cds: 7.8.0', async () => {
+        // Mock setup
+        const cdsMock = {
+            env: jestMockEnv,
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => [
+                        {
+                            'name': 'Forwardslash',
+                            'urlPath': 'odata/service/with/forwardslash/'
+                        },
+                        {
+                            'name': 'Backslash',
+                            'urlPath': '\\odata\\service\\with\\backslash/'
+                        },
+                        {
+                            'name': 'withRuntime',
+                            'urlPath': 'url',
+                            'runtime': 'Node.js'
+                        }
+                    ])
+                }
+            },
+            home: '/path/to/cds/home',
+            version: '7.0.0',
+            root: '/path/to/cds/root'
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        // Test execution
+        const capMS = await getCapModelAndServices('PROJECT_ROOT');
+
+        // Check results
+        expect(capMS).toEqual({
+            model: 'MODEL',
+            services: [
+                {
+                    'name': 'Forwardslash',
+                    'urlPath': 'odata/service/with/forwardslash/'
+                },
+                {
+                    'name': 'Backslash',
+                    'urlPath': 'odata/service/with/backslash/'
+                },
+                {
+                    'name': 'withRuntime',
+                    'urlPath': 'url',
+                    'runtime': 'Node.js'
+                }
+            ],
+            cdsVersionInfo: {
+                home: '/path/to/cds/home',
+                version: '7.0.0',
+                root: '/path/to/cds/root'
+            }
+        });
+        expect(cdsMock.load).toBeCalledWith(
+            [join('PROJECT_ROOT', 'MY_APP'), join('PROJECT_ROOT', 'MY_SRV'), join('PROJECT_ROOT', 'MY_DB')],
+            { root: 'PROJECT_ROOT' }
+        );
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
     });
 
@@ -169,10 +340,15 @@ describe('Test getCapModelAndServices()', () => {
 
         // Check results
         expect(capMS.services).toEqual([]);
+        expect(capMS.cdsVersionInfo).toEqual({
+            home: undefined,
+            version: undefined,
+            root: undefined
+        });
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
     });
 
-    test('Get model and service, project root sets `cds.root`', async () => {
+    test('Get model and service', async () => {
         // Mock setup
         const cdsMock = {
             env: {
@@ -207,7 +383,63 @@ describe('Test getCapModelAndServices()', () => {
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: projectRoot });
         expect(loggerSpy).toHaveBeenNthCalledWith(1, expect.stringContaining("'cds.home': /cds/home/path"));
         expect(loggerSpy).toHaveBeenNthCalledWith(2, expect.stringContaining("'cds.version': 7.4.2"));
-        expect(loggerSpy).toHaveBeenNthCalledWith(3, expect.stringContaining("'cds.root': /some/test/path"));
+        expect(loggerSpy).toHaveBeenNthCalledWith(3, expect.stringContaining("'cds.root':"));
+    });
+
+    test('Get model and service, fallback to global install, no cds dependency in project', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockResolvedValue('MODEL'),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockResolvedValue([])
+                }
+            },
+            env: jestMockEnv
+        };
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('home: /global/cds'));
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject')
+            .mockRejectedValueOnce('ERROR')
+            .mockResolvedValue(cdsMock);
+
+        // Test execution with object param
+        const projectRoot = '/some/test/path';
+        const capMS = await getCapModelAndServices(projectRoot);
+        expect(capMS.model).toEqual('MODEL');
+    });
+
+    test('Get model and service with mismatching major versions of global cds and project cds', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockResolvedValue('MODEL'),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockResolvedValue([])
+                }
+            },
+            version: '7.0.0'
+        };
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('home: /any/path'));
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject')
+            .mockRejectedValueOnce('ERROR')
+            .mockResolvedValue(cdsMock);
+        jest.spyOn(file, 'fileExists').mockResolvedValueOnce(true);
+        jest.spyOn(file, 'readJSON').mockResolvedValueOnce({ 'dependencies': { '@sap/cds': '6.0.0' } });
+
+        // Test execution with object param
+        const projectRoot = '/some/test/path';
+        try {
+            await getCapModelAndServices(projectRoot);
+            fail(
+                'Call to getCapModelAndServices() should have thrown error due to mismatch of cds versions, but did not.'
+            );
+        } catch (error) {
+            // Result check
+            expect(error.code).toBe('CDS_VERSION_MISMATCH');
+            ['@sap/cds major version', '6.0.0', '7.0.0'].forEach((testString) => {
+                expect(error.toString()).toContain(testString);
+            });
+        }
     });
 });
 
@@ -228,7 +460,8 @@ describe('Test readCapServiceMetadataEdmx()', () => {
                 ]),
                 edmx: jest.fn().mockImplementation(() => 'EDMX')
             }
-        }
+        },
+        env: jestMockEnv
     });
 
     test('Convert service to EDMX', async () => {
@@ -323,11 +556,7 @@ describe('Test getCapCustomPaths()', () => {
     test('Test custom CAP folders', async () => {
         // Mock setup
         const cdsMock = {
-            env: {
-                'for': jest
-                    .fn()
-                    .mockImplementation(() => ({ folders: { app: 'CUSTOM_APP', db: 'CUSTOM_DB', srv: 'CUSTOM_SRV' } }))
-            }
+            env: jestMockEnv
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
 
@@ -336,9 +565,9 @@ describe('Test getCapCustomPaths()', () => {
 
         // Check results
         expect(path).toEqual({
-            app: 'CUSTOM_APP',
-            db: 'CUSTOM_DB',
-            srv: 'CUSTOM_SRV'
+            app: 'MY_APP',
+            db: 'MY_DB',
+            srv: 'MY_SRV'
         });
         expect(cdsMock.env.for).toBeCalledWith('cds', 'PROJECT_ROOT');
     });
@@ -367,10 +596,12 @@ describe('Test getCapCustomPaths()', () => {
 describe('Test getCapEnvironment()', () => {
     afterEach(() => {
         jest.restoreAllMocks();
+        // clearing cache after each test to make tests independent of each other
+        clearGlobalCdsModulePromiseCache();
     });
 
     test('without default property', async () => {
-        const forSpy = jest.fn();
+        const forSpy = jestMockEnv.for;
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => {
             return Promise.resolve({
                 env: {
@@ -382,7 +613,7 @@ describe('Test getCapEnvironment()', () => {
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
     });
     test('default export', async () => {
-        const forSpy = jest.fn();
+        const forSpy = jestMockEnv.for;
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => {
             return Promise.resolve({
                 default: {
@@ -402,15 +633,11 @@ describe('Test getCapEnvironment()', () => {
         delete (global as GlobalCds)?.cds;
         const cdsV1 = {
             version: 1,
-            env: {
-                for: jest.fn()
-            }
+            env: jestMockEnv
         };
         const cdsV2 = {
             version: 2,
-            env: {
-                for: jest.fn()
-            }
+            env: jestMockEnv
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject')
             .mockResolvedValueOnce(cdsV1)
@@ -472,7 +699,7 @@ describe('Test getCapEnvironment()', () => {
         const spawnSpy = jest
             .spyOn(childProcessMock, 'spawn')
             .mockReturnValueOnce(getChildProcessMock('anyKey: anyValue\nhome: GLOBAL_ROOT\n'));
-        const forSpy = jest.fn();
+        const forSpy = jestMockEnv.for;
         const loadSpy = jest
             .spyOn(projectModuleMock, 'loadModuleFromProject')
             .mockRejectedValueOnce('ERROR_LOCAL')
@@ -487,26 +714,6 @@ describe('Test getCapEnvironment()', () => {
         expect(loadSpy).toHaveBeenNthCalledWith(2, 'GLOBAL_ROOT', '@sap/cds');
         expect(forSpy).toBeCalledWith('cds', 'PROJECT_ROOT');
     });
-
-    function getChildProcessMock(data: any, throwError = false): childProcess.ChildProcess {
-        return {
-            stdout: {
-                on: (type: 'data', cb: (chunk: any) => void) => {
-                    if (type === 'data') {
-                        cb(data);
-                    }
-                }
-            },
-            on: (type: 'close' | 'error', cb: (error?: string) => void) => {
-                if (type === 'close') {
-                    cb();
-                }
-                if (type === 'error' && throwError) {
-                    cb('ERROR');
-                }
-            }
-        } as childProcess.ChildProcess;
-    }
 });
 
 describe('toReferenceUri', () => {
@@ -558,7 +765,8 @@ describe('Test getCdsFiles()', () => {
         // Mock setup
         const cdsMock = {
             load: jest.fn().mockResolvedValue({ '$sources': ['file1', 'file2'] }),
-            resolve: jest.fn().mockImplementation((path) => [path])
+            resolve: jest.fn().mockImplementation((path) => [path]),
+            env: jestMockEnv
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
 
@@ -567,14 +775,18 @@ describe('Test getCdsFiles()', () => {
 
         // Check results
         expect(cdsFiles).toEqual(['file1', 'file2']);
-        expect(cdsMock.load).toBeCalledWith([join('db/'), join('srv/'), join('app/'), 'schema', 'services']);
+        expect(cdsMock.load).toBeCalledWith(
+            [join('MY_DB'), join('MY_SRV'), join('MY_APP'), 'schema', 'services'],
+            expect.any(Object)
+        );
     });
 
     test('Get CDS files from project, but no $sources', async () => {
         // Mock setup
         const cdsMock = {
             load: jest.fn().mockResolvedValue({}),
-            resolve: jest.fn()
+            resolve: jest.fn(),
+            env: jestMockEnv
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
 
@@ -590,7 +802,8 @@ describe('Test getCdsFiles()', () => {
         const cdsMock = {
             load: jest.fn().mockImplementation(() => {
                 throw Error('CDS_LOAD_ERROR');
-            })
+            }),
+            env: jestMockEnv
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
 
@@ -630,7 +843,8 @@ describe('Test getCdsFiles()', () => {
                     sources: { 'source1': { filename: 'file1' }, 'source2': {} }
                 };
                 throw error;
-            })
+            }),
+            env: jestMockEnv
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
 
@@ -639,7 +853,7 @@ describe('Test getCdsFiles()', () => {
 
         // Check results
         expect(cdsFiles).toEqual([`${sep}file1`]);
-        expect(cdsMock.load).toBeCalledWith('envroot');
+        expect(cdsMock.load).toBeCalledWith('envroot', expect.any(Object));
     });
 
     test('Get CDS files from project with envRoot and ignoreErrors true and model data in exception', async () => {
@@ -649,7 +863,8 @@ describe('Test getCdsFiles()', () => {
                 const error = new Error() as Error & { model: { sources: { [s: string]: { filename: string } } } };
                 error.model = { sources: { 'source1': { filename: 'file1' }, 'source2': { filename: `${sep}file2` } } };
                 throw error;
-            })
+            }),
+            env: jestMockEnv
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
 
@@ -658,7 +873,7 @@ describe('Test getCdsFiles()', () => {
 
         // Check results
         expect(cdsFiles).toEqual([`${sep}file1`, `${sep}file2`]);
-        expect(cdsMock.load).toBeCalledWith('envroot');
+        expect(cdsMock.load).toBeCalledWith('envroot', expect.any(Object));
     });
 });
 
@@ -670,11 +885,7 @@ describe('Test getCdsRoots()', () => {
     test('Get cds roots', async () => {
         // Mock setup
         const cdsMock = {
-            env: {
-                'for': jest.fn().mockImplementation(() => ({
-                    folders: { app: 'MY_APP', db: 'MY_DB', srv: 'MY_SRV' }
-                }))
-            },
+            env: jestMockEnv,
             resolve: jest.fn().mockImplementation((path) => [path])
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
@@ -697,6 +908,7 @@ describe('Test getCdsRoots()', () => {
     test('Get cds roots with clearing cache', async () => {
         // Mock setup
         const cdsMock = {
+            env: jestMockEnv,
             resolve: Object.assign(
                 jest
                     .fn()
@@ -712,8 +924,8 @@ describe('Test getCdsRoots()', () => {
 
         // Check results
         expect(cdsRoots).toEqual([
-            join('/any/project/srv/'),
-            join('/any/project/app/'),
+            join('/any/project/MY_SRV'),
+            join('/any/project/MY_APP'),
             join('/any/project/schema'),
             join('/any/project/services')
         ]);
@@ -736,7 +948,8 @@ describe('Test getCdsServices()', () => {
                 ]
             }),
             linked: jest.fn().mockImplementation((l) => l),
-            resolve: jest.fn().mockImplementation((path) => [path])
+            resolve: jest.fn().mockImplementation((path) => [path]),
+            env: jestMockEnv
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
 
@@ -766,7 +979,8 @@ describe('Test getCdsServices()', () => {
                 throw error;
             }),
             linked: jest.fn().mockImplementation((l) => l),
-            resolve: jest.fn().mockImplementation((path) => [path])
+            resolve: jest.fn().mockImplementation((path) => [path]),
+            env: jestMockEnv
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
 
@@ -786,7 +1000,8 @@ describe('Test getCdsServices()', () => {
             load: jest.fn().mockImplementation(() => {
                 throw new Error('CDS_LOAD_ERROR');
             }),
-            resolve: jest.fn().mockImplementation((path) => [path])
+            resolve: jest.fn().mockImplementation((path) => [path]),
+            env: jestMockEnv
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
 
@@ -800,6 +1015,103 @@ describe('Test getCdsServices()', () => {
     });
 });
 
+describe('clearCdsModuleCache', () => {
+    const projectRoot = 'PROJECT_ROOT';
+    test('Clear CDS cache', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+            resolve: {
+                cache: {
+                    'dummy': {
+                        'cached': {
+                            'dummyPath': 'dummyValue'
+                        }
+                    }
+                }
+            },
+            env: jestMockEnv
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        // Test execution
+        const result = await clearCdsModuleCache(projectRoot);
+
+        // Check results
+        expect(result).toEqual(true);
+        expect(cdsMock.resolve.cache).toStrictEqual({});
+    });
+
+    test('Unresolvable cds module - error is thrown', async () => {
+        // Mock setup
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(undefined));
+        // Test execution
+        const result = await clearCdsModuleCache(projectRoot);
+        expect(result).toEqual(false);
+    });
+
+    test('Unresolvable cds module - error is not thrown', async () => {
+        // Mock setup
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() =>
+            Promise.resolve({ default: undefined })
+        );
+        // Test execution
+        const result = await clearCdsModuleCache(projectRoot);
+        expect(result).toEqual(false);
+    });
+});
+
+describe('getCapServiceName', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => [{ name: 'ServiceOne', urlPath: 'service/one' }])
+                }
+            },
+            env: jestMockEnv
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+    });
+
+    test('Return service name', async () => {
+        const capServiceName = await getCapServiceName('/some/test/path', 'service/one');
+        expect(capServiceName).toEqual('ServiceOne');
+    });
+
+    test('Service not found error message', async () => {
+        try {
+            await getCapServiceName('/some/test/path', 'service/two');
+        } catch (error) {
+            expect(error.message).toBe(
+                'Service for uri: \'service/two\' not found. Available services: [{"name":"ServiceOne","urlPath":"service/one"}]'
+            );
+        }
+    });
+});
+
 function fail(message: string) {
     expect(message).toBeFalsy();
+}
+
+function getChildProcessMock(data: any, throwError = false): childProcess.ChildProcess {
+    return {
+        stdout: {
+            on: (type: 'data', cb: (chunk: any) => void) => {
+                if (type === 'data') {
+                    cb(data);
+                }
+            }
+        },
+        on: (type: 'close' | 'error', cb: (error?: string) => void) => {
+            if (type === 'close') {
+                cb();
+            }
+            if (type === 'error' && throwError) {
+                cb('ERROR');
+            }
+        }
+    } as childProcess.ChildProcess;
 }

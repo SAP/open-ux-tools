@@ -1,0 +1,58 @@
+{
+    "name": "@sap-ux/telemetry",
+    "version": "0.5.23",
+    "description": "Library for sending usage telemetry data",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/telemetry"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Atelemetry"
+    },
+    "license": "Apache-2.0",
+    "private": false,
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global",
+        "example": "ts-node example/index.ts"
+    },
+    "dependencies": {
+        "@sap-ux/store": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "applicationinsights": "2.9.2",
+        "axios": "1.7.4",
+        "performance-now": "2.1.0",
+        "yaml": "2.3.3"
+    },
+    "devDependencies": {
+        "jest-extended": "4.0.2",
+        "memfs": "3.4.13",
+        "ts-jest": "29.1.2",
+        "ts-node": "10.9.2",
+        "typescript": "5.3.3",
+        "unionfs": "4.4.0",
+        "dotenv": "16.3.1"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "engines": {
+        "node": ">=18.x"
+    }
+}

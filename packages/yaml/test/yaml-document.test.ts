@@ -1,7 +1,8 @@
 import { errorTemplate } from '../src/errors';
 import { YamlDocument } from '../src';
-import type { YAMLMap, YAMLSeq } from '../src';
+import type { NodeComment, YAMLMap, YAMLSeq } from '../src';
 import { interpolate } from '../src/texts';
+import type yaml from 'yaml';
 
 describe('YamlDocument', () => {
     it('throws an error when instantiated with malformed YAML contents', async () => {
@@ -222,6 +223,16 @@ key1: 42
             expect(doc.toString()).toEqual(expectedValue);
         });
 
+        it('adds comment at invalid location - comment is not added', async () => {
+            const serializedYaml = 'key1: 42';
+
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.addDocumentComment({ comment: 'This goes at the end', location: 'test' as any });
+            const expectedValue = `key1: 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
         it('adds comment at the end (changes existing)', async () => {
             const serializedYaml = `# Top comment
 
@@ -239,6 +250,28 @@ key1: 42
 #This goes at the end
 `;
             expect(doc.toString()).toEqual(expectedValue);
+        });
+    });
+
+    describe('addNodeComments', () => {
+        it('creates a node from the value and adds comments', async () => {
+            const value = {
+                b: '2',
+                c: '3'
+            };
+            const comments = [
+                {
+                    path: 'b',
+                    comment: 'Y',
+                    key: 'b'
+                }
+            ] as NodeComment<unknown>[];
+
+            const serializedYaml = 'a: 1';
+
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            const newNode = doc.createNode({ value, comments });
+            expect(((newNode.items[0] as yaml.Pair).value as yaml.Scalar).comment).toBe('Y');
         });
     });
 
@@ -323,6 +356,28 @@ seq1:
         });
     });
 
+    describe('delete', () => {
+        const serializedYaml = `key1: 42
+seq1:
+- name: name1
+  config:
+    prop1: a
+- name: name2
+`;
+        it('delete node', async () => {
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.delete('key1');
+            expect(doc.toString()).toMatchInlineSnapshot(`
+                "seq1:
+                  - name: name1
+                    config:
+                      prop1: a
+                  - name: name2
+                "
+            `);
+        });
+    });
+
     describe('deleteAt', () => {
         const serializedYaml = `key1: 42
 seq1:
@@ -335,11 +390,25 @@ seq1:
             const doc = await YamlDocument.newInstance(serializedYaml);
             doc.deleteAt({ path: 'seq1', matcher: { key: 'name', value: 'name1' } });
             expect(doc.toString()).toMatchInlineSnapshot(`
-            "key1: 42
-            seq1:
-              - name: name2
-            "
-        `);
+                            "key1: 42
+                            seq1:
+                              - name: name2
+                            "
+                    `);
+        });
+
+        it('delete node in existing empty sequence', async () => {
+            const serializedYaml2 = `key1: 42
+seq1:
+
+`;
+            const doc = await YamlDocument.newInstance(serializedYaml2);
+            try {
+                doc.deleteAt({ path: 'seq1', matcher: { key: 'name', value: 'name1' } });
+                throw new Error('This test should fail');
+            } catch (error) {
+                expect(error.toString()).toMatchInlineSnapshot(`"YAMLError: Sequence does not exist at: [seq1]"`);
+            }
         });
 
         it('try deleting a non-existing node', async () => {
@@ -935,8 +1004,9 @@ seq1:
         const doc = await YamlDocument.newInstance(serializedYaml);
         doc.appendTo({
             path: 'seq1.1.a.b.d',
-            value: { w: 1, x: { y: { z: 42 } } },
+            value: { w: 1, v: [{ f: 1 }, { f: 2 }], x: { y: { z: 42 } } },
             comments: [
+                { path: 'v.0.f', comment: ' Y' },
                 { path: 'w', comment: 'W' },
                 { path: 'x.y.z', comment: 'The answer!' }
             ]
@@ -949,6 +1019,9 @@ seq1:
         d:
           - w: 13
           - w: 1 #W
+            v:
+              - f: 1 # Y
+              - f: 2
             x:
               y:
                 z: 42 #The answer!
@@ -988,6 +1061,27 @@ seq1:
         ).toThrow(interpolate(errorTemplate.propertyNotFound, { path }));
 
         expect(doc.toString().trim()).toEqual(serializedYaml);
+    });
+
+    describe('findItem', () => {
+        it('will return all item', async () => {
+            const serializedYaml = `l1:
+  l2:
+    - l3: 13
+    - l3: 14`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            const seq = doc.getSequence({
+                path: 'l1.l2'
+            }) as YAMLSeq;
+
+            const node = doc.findItem(seq, (item) => item['l3'] === 13);
+
+            expect(String(node)).toEqual(JSON.stringify({ l3: 13 }));
+
+            const node2 = doc.findItem(seq, (item) => item['l3'] === 14);
+
+            expect(String(node2)).toEqual(JSON.stringify({ l3: 14 }));
+        });
     });
 
     describe('getNode', () => {

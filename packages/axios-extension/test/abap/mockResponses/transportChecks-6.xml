@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+   <asx:values>
+      <DATA>
+         <PGMID>R3TR</PGMID>
+         <OBJECT>WAPA</OBJECT>
+         <OBJECTNAME>PROJ090123</OBJECTNAME>
+         <OPERATION>I</OPERATION>
+         <DEVCLASS>PACKAGE</DEVCLASS>
+         <KORRFLAG>X</KORRFLAG>
+         <AS4USER />
+         <PDEVCLASS />
+         <DLVUNIT>ZLOCAL</DLVUNIT>
+         <NAMESPACE>/0CUST/</NAMESPACE>
+         <SUPER_PACKAGE />
+         <RESULT>E</RESULT>
+         <RECORDING />
+         <EXISTING_REQ_ONLY />
+         <MESSAGES>
+            <CTS_MESSAGE>
+               <SEVERITY>E</SEVERITY>
+               <SPRSL>E</SPRSL>
+               <ARBGB>TO</ARBGB>
+               <MSGNR>142</MSGNR>
+               <VARIABLES>
+                  <CTS_VARIABLE>
+                     <VARIABLE>WAPA</VARIABLE>
+                  </CTS_VARIABLE>
+                  <CTS_VARIABLE>
+                     <VARIABLE>PROJCM090124</VARIABLE>
+                  </CTS_VARIABLE>
+                  <CTS_VARIABLE>
+                     <VARIABLE>PACKAGE</VARIABLE>
+                  </CTS_VARIABLE>
+                  <CTS_VARIABLE>
+                     <VARIABLE />
+                  </CTS_VARIABLE>
+               </VARIABLES>
+               <TEXT>This is the first error message</TEXT>
+            </CTS_MESSAGE>
+            <CTS_MESSAGE>
+               <SEVERITY>E</SEVERITY>
+               <SPRSL>E</SPRSL>
+               <ARBGB>TO</ARBGB>
+               <MSGNR>142</MSGNR>
+               <VARIABLES>
+                  <CTS_VARIABLE>
+                     <VARIABLE>WAPA</VARIABLE>
+                  </CTS_VARIABLE>
+                  <CTS_VARIABLE>
+                     <VARIABLE>PROJ090123</VARIABLE>
+                  </CTS_VARIABLE>
+                  <CTS_VARIABLE>
+                     <VARIABLE>PACKAGE</VARIABLE>
+                  </CTS_VARIABLE>
+                  <CTS_VARIABLE>
+                     <VARIABLE />
+                  </CTS_VARIABLE>
+               </VARIABLES>
+               <TEXT>This is the second error message</TEXT>
+            </CTS_MESSAGE>
+         </MESSAGES>
+         <REQUESTS />
+         <LOCKS />
+         <TADIRDEVC>PACKAGE</TADIRDEVC>
+         <URI>/sap/bc/adt/filestore/ui5-bsp/objects/PROJ090123/$create</URI>
+         <CTS_PROJECTS />
+      </DATA>
+   </asx:values>
+</asx:abap>

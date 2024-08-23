@@ -1,16 +1,11 @@
-import { t } from '../i18n';
-import type { Answers, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
-import { ui5VersionsGrouped, searchChoices } from './utility';
+import type { ConfirmQuestion, FileBrowserQuestion, InputQuestion } from '@sap-ux/inquirer-common';
+import { searchChoices, ui5VersionsGrouped } from '@sap-ux/inquirer-common';
 import { validateLibModuleName, validateNamespace, validateProjectFolder } from '@sap-ux/project-input-validator';
-import type {
-    FileBrowserQuestion,
-    ConfirmQuestion,
-    InputQuestion,
-    UI5LibraryAnswers,
-    UI5LibraryPromptOptions
-} from '../types';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import type { UI5Version } from '@sap-ux/ui5-info';
+import type { Answers, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
+import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import { t } from '../i18n';
+import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from '../types';
 
 /**
  * Get the prompts for UI5 library generation.

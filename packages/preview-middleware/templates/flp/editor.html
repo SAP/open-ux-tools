@@ -5,9 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta name="description" content="Web page for rendering SAP Fiori Tools Control Property Editor" />
-        <link rel="shortcut icon" type="image/x-icon" href="./editor/favicon.ico" />
         <link rel="stylesheet" type="text/css" href="./editor/app.css" />
-        <title>Control Property Editor</title>
+        <title>Editing <%- appName %></title>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -17,8 +16,12 @@
             start({
                 previewUrl: '<%- previewUrl %>',
                 telemetry: <%- telemetry %>,
-                rootElementId: 'root'
+                rootElementId: 'root',
+                scenario: '<%- scenario %>',
+                livereloadPort: <%- livereloadPort %>,
+                livereloadUrl: '<%- livereloadUrl %>',
             });
         </script>
     </body>
+    <!-- livereload disabled for editor </body>-->
 </html>
