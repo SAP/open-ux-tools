@@ -141,7 +141,7 @@ export function createOrUpdateLaunchConfigJSON(
 }
 
 /**
- * Generates and creates launch configuration for the project based on service and project details.
+ * Generates and creates launch configuration for the project based on debug options.
  *
  * @param {DebugOptions} options - The options for configuring the debug setup.
  * @param {Editor} fs - The file system editor instance.
