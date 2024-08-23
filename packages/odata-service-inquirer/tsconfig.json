@@ -19,7 +19,7 @@
       "path": "../feature-toggle"
     },
     {
-      "path": "../fiori-generator-shared"
+      "path": "../guided-answers-helper"
     },
     {
       "path": "../inquirer-common"

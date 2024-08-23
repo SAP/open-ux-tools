@@ -26,7 +26,7 @@ import {
 } from '../../src/prompts/conditions';
 import * as utils from '../../src/utils';
 import { PromptState } from '../../src/prompts/prompt-state';
-import { getHelpUrl } from '@sap-ux/fiori-generator-shared';
+import { getHelpUrl } from '@sap-ux/guided-answers-helper';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -37,9 +37,8 @@ jest.mock('@sap-ux/feature-toggle', () => ({
     isFeatureEnabled: jest.fn()
 }));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn(),
+jest.mock('@sap-ux/guided-answers-helper', () => ({
+    ...jest.requireActual('@sap-ux/guided-answers-helper'),
     getHelpUrl: jest.fn()
 }));
 
