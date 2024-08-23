@@ -111,7 +111,7 @@
             "message": "Service key file path",
             "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
             "incompleteServiceKeyInfo": "Service keys file does not contain the required information",
-            "unparseableServiceKey": "Service keys file is not in a valid JSON format"
+            "unparseableServiceKey": "Service keys file contents are not a valid JSON format"
         },
         "cloudFoundryAbapSystem": {
             "message": "ABAP environment",

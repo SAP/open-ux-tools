@@ -34,7 +34,7 @@ export async function validateSystemName(systemName: string): Promise<boolean | 
 }
 
 /**
- * Validates the existence and content of the file at the given path.
+ * Validates the existence and content of the file at the given path and returns the service key info if valid.
  *
  * @param path path to a service key file
  * @returns the service key info if the file is valid, otherwise an error message
@@ -52,6 +52,6 @@ export function validateServiceKey(path: string): string | ServiceInfo | boolean
         }
         return serviceInfo;
     } catch (error) {
-        return t('prompts.serviceLey.unparseableServiceKey');
+        return error.name === 'SyntaxError' ? t('prompts.serviceKey.unparseableServiceKey') : error.message;
     }
 }

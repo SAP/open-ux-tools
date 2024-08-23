@@ -4,7 +4,7 @@ import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { ListChoiceOptions } from 'inquirer';
-import type { BackendSystem } from '../../store/src';
+import type { BackendSystem } from '@sap-ux/store';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
