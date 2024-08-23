@@ -315,7 +315,7 @@ export class ConnectionValidator {
     ) {
         this._axiosConfig = axiosConfig;
         this._serviceProvider = create(this._axiosConfig);
-        this._odataService = this._serviceProvider.service(servicePath) as ODataService;
+        this._odataService = this._serviceProvider.service<ODataService>(servicePath);
         LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
         await this._odataService.get('');
     }
@@ -358,7 +358,7 @@ export class ConnectionValidator {
             this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
         } else if (axiosConfig) {
             this._axiosConfig = axiosConfig;
-            this._serviceProvider = createForAbap(axiosConfig) as AbapServiceProvider;
+            this._serviceProvider = createForAbap(axiosConfig);
         }
 
         if (this._serviceProvider) {

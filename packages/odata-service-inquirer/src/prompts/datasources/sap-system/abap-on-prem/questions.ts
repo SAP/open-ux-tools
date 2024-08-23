@@ -3,12 +3,12 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
 import type { Answers, InputQuestion, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { promptNames } from '../../../../types';
-import {
-    type OdataServiceAnswers,
-    type OdataServicePromptOptions,
-    type ServiceSelectionPromptOptions,
-    type SystemNamePromptOptions
+import type {
+    OdataServiceAnswers,
+    OdataServicePromptOptions,
+    ServiceSelectionPromptOptions,
+    SystemNamePromptOptions,
+    promptNames
 } from '../../../../types';
 import { PromptState } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
@@ -82,7 +82,8 @@ export function getAbapOnPremSystemQuestions(
             validate: (client) => {
                 const valRes = validateClient(client);
                 if (valRes === true) {
-                    return (validClient = true);
+                    validClient = true;
+                    return true;
                 }
                 validClient = false;
                 return valRes;

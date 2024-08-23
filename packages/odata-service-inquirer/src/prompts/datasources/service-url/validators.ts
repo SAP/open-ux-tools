@@ -1,5 +1,4 @@
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { type ODataService, type ODataVersion } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, ODataService, ODataVersion } from '@sap-ux/axios-extension';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { ERROR_TYPE, ErrorHandler } from '../../../error-handler/error-handler';
 import { t } from '../../../i18n';
