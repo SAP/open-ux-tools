@@ -1,7 +1,7 @@
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers } from 'inquirer';
 import { join, relative } from 'path';
-import { getAnnotationPathQualifiers, getEntityTypes } from './service';
+import { getAnnotationPathQualifiers, getEntitySets } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { Project } from '@sap-ux/project-access';
@@ -187,14 +187,8 @@ export function getEntityPrompt(
         name: 'buildingBlockData.metaPath.entitySet',
         choices: project
             ? async () => {
-                  const entityTypes = await getEntityTypes(project, appId);
-                  const entityTypeMap: { [key: string]: string } = {};
-                  for (const entityType of entityTypes) {
-                      const value = entityType.fullyQualifiedName;
-                      const qualifierParts = value.split('.');
-                      entityTypeMap[qualifierParts[qualifierParts.length - 1]] = value;
-                  }
-                  return transformChoices(entityTypeMap);
+                  const entitySets = (await getEntitySets(project, appId)).map((entitySet) => entitySet.name);
+                  return transformChoices(entitySets);
               }
             : [],
         guiOptions: {
