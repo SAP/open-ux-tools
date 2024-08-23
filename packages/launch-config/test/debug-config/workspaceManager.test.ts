@@ -176,25 +176,6 @@ describe('launchConfig Unit Tests', () => {
             expect(handleAppsNotInWorkspace).toHaveBeenCalledWith(mockProjectPath, isAppStudio, mockVscode);
         });
 
-        it('should handle no workspace case', () => {
-            const mockProjectPath = '/mock/project/path';
-            const options = {
-                projectPath: mockProjectPath,
-                vscode: { ...mockVscode, workspace: undefined }
-            } as DebugOptions;
-            (handleAppsNotInWorkspace as jest.Mock).mockReturnValue({
-                launchJsonPath: mockProjectPath,
-                cwd: '${workspaceFolder}'
-            });
-
-            const result = handleWorkspaceConfig(options);
-            expect(result).toEqual({
-                launchJsonPath: mockProjectPath,
-                cwd: '${workspaceFolder}'
-            });
-            expect(handleAppsNotInWorkspace).toHaveBeenCalledWith(mockProjectPath, isAppStudio, options.vscode);
-        });
-
         it('should handle open folder but no workspace file case', () => {
             const mockProjectPath = '/mock/project/path';
             const mockTargetFolder = '/target/folder';
@@ -226,6 +207,25 @@ describe('launchConfig Unit Tests', () => {
 
             expect(result.launchJsonPath).toBe(expectedLaunchJsonPath);
             expect(result.cwd).toBe(expectedCwd);
+        });
+
+        it('should handle no workspace case', () => {
+            const mockProjectPath = '/mock/project/path';
+            const options = {
+                projectPath: mockProjectPath,
+                vscode: { ...mockVscode, workspace: undefined }
+            } as DebugOptions;
+            (handleAppsNotInWorkspace as jest.Mock).mockReturnValue({
+                launchJsonPath: mockProjectPath,
+                cwd: '${workspaceFolder}'
+            });
+
+            const result = handleWorkspaceConfig(options);
+            expect(result).toEqual({
+                launchJsonPath: mockProjectPath,
+                cwd: '${workspaceFolder}'
+            });
+            expect(handleAppsNotInWorkspace).toHaveBeenCalledWith(mockProjectPath, isAppStudio, options.vscode);
         });
 
         it('should handle saved workspace case', () => {

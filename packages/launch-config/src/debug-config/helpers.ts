@@ -12,10 +12,8 @@ import type { WorkspaceHandlerInfo } from '../types';
  */
 export function getLaunchJsonPath(workspaceFolders: any): string | undefined {
     if (workspaceFolders && workspaceFolders.length > 0) {
-        // We want the launch.json file from the first opened folder
         return workspaceFolders[0].uri.fsPath;
     }
-    // No workspace open
     return undefined;
 }
 
@@ -49,7 +47,6 @@ export function formatCwd(path?: string): string {
  */
 export function isFolderInWorkspace(selectedFolder: string, workspace: any): boolean | undefined {
     const { workspaceFile, workspaceFolders } = workspace;
-    // If neither workspaceFile nor workspaceFolders are present, return undefined.
     if (!workspaceFile && !workspaceFolders) {
         return undefined;
     }
@@ -58,13 +55,12 @@ export function isFolderInWorkspace(selectedFolder: string, workspace: any): boo
             (folder: any) => folder.uri.fsPath && selectedFolder.toLowerCase().includes(folder.uri.fsPath.toLowerCase())
         );
     }
-    // If workspaceFolders is undefined but workspaceFile is present, no folders are part of the workspace (return false).
     return false;
 }
 
 /**
  * Creates a launch configuration for applications not included in the current workspace.
- * This function generates the current working directory (cwd), the path to the launch.json file,
+ * This function generates the cwd comman, the path to the launch.json file,
  * and optionally provides a URI for updating workspace folders if the environment is not BAS.
  *
  * @param {string} projectPath - The full path of the project for which the launch configuration is being created.

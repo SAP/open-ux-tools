@@ -7,7 +7,6 @@ import type {
     FioriOptions,
     LaunchJSON,
     UpdateWorkspaceFolderOptions,
-    WorkspaceHandlerInfo,
     DebugOptions
 } from '../types';
 import type { Editor } from 'mem-fs-editor';

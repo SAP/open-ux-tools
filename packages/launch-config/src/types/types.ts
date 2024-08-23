@@ -70,7 +70,7 @@ export interface DebugOptions {
     datasourceType: DatasourceType;
     /** SAP client parameter for the connection. */
     sapClientParam: string;
-    /** FLP (Fiori Launchpad) application ID. */
+    /** FLP application ID. */
     flpAppId: string;
     /** Indicates if the FLP sandbox environment is available. */
     flpSandboxAvailable: boolean;

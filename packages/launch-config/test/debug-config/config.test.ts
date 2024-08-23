@@ -46,7 +46,7 @@ const findConfiguration = (launchFile: LaunchJSON, name: string) =>
 
 describe('debug config tests', () => {
     let configOptions: DebugOptions;
-    const vscodeMockClone = {
+    const vscodeMock = {
         workspace: {
             workspaceFolders: [{ uri: { fsPath: '' } }],
             workspaceFile: undefined,
@@ -55,7 +55,7 @@ describe('debug config tests', () => {
     };
     beforeEach(() => {
         configOptions = {
-            vscode: vscodeMockClone,
+            vscode: vscodeMock,
             projectPath: path.join(__dirname, projectName),
             odataVersion: OdataVersion.v2,
             sapClientParam: '',
@@ -110,7 +110,7 @@ describe('debug config tests', () => {
         expect(findConfiguration(launchFile, `Start ${projectName} Mock`)).toEqual(mockConfigWithMigrator);
     });
 
-    it('Should return correct configuration when project is not a fiori element, no flp Sandbox Available & not flp app id', () => {
+    it('Should return correct configuration when project is not a fiori element, no flp Sandbox Available & no flp app id', () => {
         configOptions.isFioriElement = false;
         configOptions.flpSandboxAvailable = false;
         configOptions.flpAppId = '';

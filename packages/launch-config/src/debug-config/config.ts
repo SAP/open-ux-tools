@@ -11,18 +11,15 @@ const testFlpSandboxMockServerHtml = 'test/flpSandboxMockServer.html';
 
 /**
  * Generates a URL query string with an optional SAP client parameter and a disable cache parameter.
- * If the `sapClientParam` is provided,
- * it is included in the query string followed by the disable cache parameter. If `sapClientParam` is an empty string,
- * only disable cache parameter is included in the returned string.
  *
  * @param {string} sapClientParam - The SAP client parameter to be included in the URL query string.
  * @returns {string} A formatted URL query string containing the SAP client parameter and disable cache parameter.
  * @example
+ *  const urlParam = getEnvUrlParams('testsapclinet');
  * // Returns 'testsapclinet&sap-ui-xx-viewCache=false'
- * const urlParam = getEnvUrlParams('testsapclinet');
  * @example
- * // Returns 'sap-ui-xx-viewCache=false'
  * const urlParam = getEnvUrlParams('');
+ * // Returns 'sap-ui-xx-viewCache=false'
  */
 function getEnvUrlParams(sapClientParam: string): string {
     const disableCacheParam = 'sap-ui-xx-viewCache=false';
@@ -50,6 +47,7 @@ function createLaunchConfig(
 ): LaunchConfig {
     const config = getLaunchConfig(name, cwd, runtimeArgs, cmdArgs, envVars);
     if (runConfig) {
+        // runConfig is only used in BAS
         config.env['run.config'] = runConfig;
     }
     return config;
@@ -78,7 +76,7 @@ export function configureLaunchJsonFile(cwd: string, configOpts: DebugOptions): 
 
     const projectName = basename(projectPath);
     const flpAppIdWithHash = flpAppId && !flpAppId.startsWith('#') ? `#${flpAppId}` : flpAppId;
-    const startFile = flpSandboxAvailable ? testFlpSandboxHtml : indexHtml;
+    const startHtmlFile = flpSandboxAvailable ? testFlpSandboxHtml : indexHtml;
     const runConfig = isAppStudio
         ? JSON.stringify({
               handlerId: FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID,
@@ -91,7 +89,7 @@ export function configureLaunchJsonFile(cwd: string, configOpts: DebugOptions): 
 
     // Add live configuration if the datasource is not from a metadata file
     if (datasourceType !== DatasourceType.metadataFile) {
-        const startCommand = `${startFile}${flpAppIdWithHash}`;
+        const startCommand = `${startHtmlFile}${flpAppIdWithHash}`;
         const liveConfig = createLaunchConfig(
             `Start ${projectName}`,
             cwd,
@@ -122,8 +120,8 @@ export function configureLaunchJsonFile(cwd: string, configOpts: DebugOptions): 
 
     // Add local configuration
     const shouldUseMockServer = isFioriElement && odataVersion === OdataVersion.v2 && isMigrator;
-    const localStartFile = shouldUseMockServer ? testFlpSandboxMockServerHtml : startFile;
-    const startLocalCommand = `${localStartFile}${
+    const localHtmlFile = shouldUseMockServer ? testFlpSandboxMockServerHtml : startHtmlFile;
+    const startLocalCommand = `${localHtmlFile}${
         migratorMockIntent ? `#${migratorMockIntent.replace('#', '')}` : flpAppIdWithHash
     }`;
     const localConfig = createLaunchConfig(

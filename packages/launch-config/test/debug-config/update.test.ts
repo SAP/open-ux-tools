@@ -38,9 +38,7 @@ const mockLog = {
 const mockEditor = {
     exists: jest.fn().mockReturnValue(false),
     read: jest.fn(),
-    write: jest.fn().mockImplementation(() => {
-        throw new Error();
-    })
+    write: jest.fn()
 } as unknown as Editor;
 
 describe('Config Functions', () => {
@@ -67,7 +65,14 @@ describe('Config Functions', () => {
         });
 
         it('should handle error while writing to appInfo.json', () => {
-            writeApplicationInfoSettings(mockPath, mockEditor, mockLog);
+            const mockEditorWithError = {
+                exists: jest.fn().mockReturnValue(false),
+                read: jest.fn(),
+                write: jest.fn().mockImplementation(() => {
+                    throw new Error();
+                })
+            } as unknown as Editor;
+            writeApplicationInfoSettings(mockPath, mockEditorWithError, mockLog);
             expect(mockLog.error).toHaveBeenCalledWith(t('errorAppInfoFile'));
         });
     });
@@ -94,8 +99,8 @@ describe('Config Functions', () => {
         it('should not update workspace folders if no options are provided', () => {
             const updateOptions: UpdateWorkspaceFolderOptions | undefined = undefined;
             updateWorkspaceFoldersIfNeeded(updateOptions, '/root/folder/path', mockEditor, mockLog);
-            // No updateWorkspaceFolders call expected
-            expect(mockEditor.exists).not.toHaveBeenCalled();
+            // No updateWorkspaceFolders call expected hence no app info json written
+            expect(mockEditor.write).not.toHaveBeenCalled();
         });
     });
 
@@ -198,7 +203,7 @@ describe('Config Functions', () => {
             );
         });
 
-        it('Should NOT run in Yeoman CLI or if vscode not found', () => {
+        it('Should not run in Yeoman CLI or if vscode not found', () => {
             const options = {
                 datasourceType: DatasourceType.metadataFile,
                 projectPath: 'some/path',

@@ -66,7 +66,6 @@ export function handleOpenFolderButNoWorkspaceFile(
 ): WorkspaceHandlerInfo {
     const workspace = vscode.workspace;
     if (!isFolderInWorkspace(projectPath, workspace)) {
-        // Write Launch config into app folder if it is not part of a workspace.
         return handleAppsNotInWorkspace(projectPath, isAppStudio, vscode);
     }
     // The user has chosen to generate the app in a folder or a nested folder.
