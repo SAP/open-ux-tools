@@ -248,7 +248,7 @@ export class ConnectionValidator {
                 await this.createSystemConnection({ axiosConfig, url, odataVersion });
             } else {
                 // Full service URL
-                await this.createServiceConnection(axiosConfig, url.pathname);
+                await this.createOdataServiceConnection(axiosConfig, url.pathname);
             }
             this._validatedClient = url.searchParams.get(SAP_CLIENT_KEY) ?? undefined;
             return 200;
@@ -309,7 +309,7 @@ export class ConnectionValidator {
      * @param axiosConfig the axios request configuration
      * @param servicePath the service path without the origin
      */
-    private async createServiceConnection(
+    private async createOdataServiceConnection(
         axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration,
         servicePath: string
     ) {
