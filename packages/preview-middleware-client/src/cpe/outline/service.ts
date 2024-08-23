@@ -6,7 +6,7 @@ import type { ExternalAction } from '@sap-ux-private/control-property-editor-com
 import { outlineChanged, SCENARIO, showMessage } from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../../utils/error';
-import { getResourceBundle } from '../../i18n';
+import { getTextBundle } from '../../i18n';
 import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
 
@@ -31,7 +31,7 @@ export class OutlineService extends EventTarget {
     public async init(sendAction: (action: ExternalAction) => void): Promise<void> {
         const outline = await this.rta.getService<RTAOutlineService>('outline');
         const scenario = this.rta.getFlexSettings().scenario;
-        const resourceBundle = await getResourceBundle();
+        const resourceBundle = await getTextBundle();
         const key = 'ADP_REUSE_COMPONENTS_MESSAGE';
         const message = resourceBundle.getText(key) ?? key;
         let hasSentWarning = false;

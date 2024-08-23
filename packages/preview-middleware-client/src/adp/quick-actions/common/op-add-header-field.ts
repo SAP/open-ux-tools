@@ -41,12 +41,11 @@ export class AddHeaderFieldQuickAction implements SimpleQuickActionDefinition {
     }
 
     getActionObject(): SimpleQuickAction {
-        const key = 'Add Header Field';
         return {
             kind: SIMPLE_QUICK_ACTION_KIND,
             id: this.id,
             enabled: this.isActive,
-            title: this.context.resourceBundle.getText(key) ?? key
+            title: this.context.resourceBundle.getText('QUICK_ACTION_OP_ADD_HEADER_FIELD')
         };
     }
 

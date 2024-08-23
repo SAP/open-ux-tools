@@ -18,8 +18,7 @@ import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } fr
 import { QuickActionActivationContext, QuickActionContext, QuickActionDefinition } from './quick-action-definition';
 import { QuickActionDefinitionRegistry } from './registry';
 import { OutlineService } from '../outline/service';
-import ResourceBundle from 'sap/base/i18n/ResourceBundle';
-import { getResourceBundle } from '../../i18n';
+import { getTextBundle, TextBundle } from '../../i18n';
 
 /**
  * Service providing Quick Actions.
@@ -29,7 +28,7 @@ export class QuickActionService implements Service {
     private actions: QuickActionDefinition[] = [];
 
     private actionService: ActionService;
-    private resourceBundle: ResourceBundle;
+    private texts: TextBundle;
 
     /**
      *
@@ -52,7 +51,7 @@ export class QuickActionService implements Service {
     public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
         this.sendAction = sendAction;
         this.actionService = await this.rta.getService('action');
-        this.resourceBundle = await getResourceBundle();
+        this.texts = await getTextBundle();
 
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
@@ -104,7 +103,7 @@ export class QuickActionService implements Service {
                     key,
                     rta: this.rta,
                     flexSettings: this.rta.getFlexSettings(),
-                    resourceBundle: this.resourceBundle
+                    resourceBundle: this.texts
                 };
                 for (const Definition of definitions) {
                     try {

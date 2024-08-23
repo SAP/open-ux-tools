@@ -14,7 +14,7 @@ import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Ver
 
 import init from '../cpe/init';
 import { getApplicationType } from '../utils/application';
-import { getResourceBundle } from '../i18n';
+import { getTextBundle } from '../i18n';
 
 import { loadDefinitions } from './quick-actions/load';
 import { getAllSyncViewsIds } from './utils';
@@ -68,11 +68,10 @@ export default async function (rta: RuntimeAuthoring) {
     }
 
     if (syncViewsIds.length > 0) {
-        const bundle = await getResourceBundle();
-        const key = 'ADP_SYNC_VIEWS_MESSAGE';
+        const bundle = await getTextBundle();
         sendAction(
             showMessage({
-                message: bundle.getText(key) ?? key,
+                message: bundle.getText('ADP_SYNC_VIEWS_MESSAGE'),
                 shouldHideIframe: false
             })
         );

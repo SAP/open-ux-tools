@@ -1,14 +1,14 @@
-import ResourceBundle from 'sap/base/i18n/ResourceBundle';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import { FlexSettings, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import type { FlexSettings, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import type { ActionService } from 'sap/ui/rta/service/Action';
 import type XMLView from 'sap/ui/core/mvc/XMLView';
 
 import type { NestedQuickAction, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
-import { NESTED_QUICK_ACTION_KIND, SIMPLE_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
+import type { NESTED_QUICK_ACTION_KIND, SIMPLE_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
 
-import { ControlTreeIndex } from '../types';
+import type { TextBundle } from '../../i18n';
+import type { ControlTreeIndex } from '../types';
 
 export interface QuickActionActivationContext {
     controlIndex: ControlTreeIndex;
@@ -19,7 +19,7 @@ export interface QuickActionActivationContext {
 export interface QuickActionContext {
     controlIndex: ControlTreeIndex;
     actionService: ActionService;
-    resourceBundle: ResourceBundle;
+    resourceBundle: TextBundle;
     view: XMLView;
     key: string;
 

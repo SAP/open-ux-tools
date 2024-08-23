@@ -28,7 +28,7 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
     public get isActive(): boolean {
         return !!this.filterBar;
     }
-    
+
     private isClearButtonEnabled = false;
     private filterBar: FilterBar | undefined;
     constructor(private context: QuickActionContext) {}
@@ -53,7 +53,7 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
             kind: SIMPLE_QUICK_ACTION_KIND,
             id: this.id,
             enabled: this.isActive,
-            title: this.context.resourceBundle.getText(key) ?? key
+            title: this.context.resourceBundle.getText(key)
         };
     }
 
