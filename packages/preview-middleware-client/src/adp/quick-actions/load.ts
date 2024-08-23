@@ -1,13 +1,20 @@
-import { QuickActionDefinitionRegistry } from '../../cpe/quick-actions/registry';
+import type { QuickActionDefinitionRegistry } from '../../cpe/quick-actions/registry';
+import type { ApplicationType } from '../../utils/application';
 
-export async function loadDefinitions(version: string | undefined): Promise<QuickActionDefinitionRegistry<string>[]> {
-    if (version === 'v2') {
+/**
+ * Loads the appropriate Quick Action registries for the given application type.
+ * 
+ * @param appType - Application type. 
+ * @returns Quick Action registries.
+ */
+export async function loadDefinitions(appType: ApplicationType): Promise<QuickActionDefinitionRegistry<string>[]> {
+    if (appType === 'fe-v2') {
         const FEV2QuickActionRegistry = (await import('open/ux/preview/client/adp/quick-actions/fe-v2/registry'))
             .default;
 
         return [new FEV2QuickActionRegistry()];
     }
-    if (version === 'v4') {
+    if (appType === 'fe-v4') {
         const FEV4QuickActionRegistry = (await import('open/ux/preview/client/adp/quick-actions/fe-v4/registry'))
             .default;
         return [new FEV4QuickActionRegistry()];

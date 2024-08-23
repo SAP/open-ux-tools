@@ -22,7 +22,7 @@ import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import { getResourceBundle } from '../../i18n';
 
 /**
- *
+ * Service providing Quick Actions.
  */
 export class QuickActionService implements Service {
     private sendAction: ActionSenderFunction = () => {};
@@ -33,9 +33,9 @@ export class QuickActionService implements Service {
 
     /**
      *
-     * @param rta - rta object.
-     * @param outlineService - Outline service instance
-     * @param registries - Quick action registries
+     * @param rta - RTA object.
+     * @param outlineService - Outline service instance.
+     * @param registries - Quick action registries.
      */
     constructor(
         private readonly rta: RuntimeAuthoring,
@@ -46,8 +46,8 @@ export class QuickActionService implements Service {
     /**
      * Initialize selection service.
      *
-     * @param sendAction action sender function
-     * @param subscribe subscriber function
+     * @param sendAction - Action sender function.
+     * @param subscribe - Subscriber function.
      */
     public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
         this.sendAction = sendAction;
@@ -79,6 +79,11 @@ export class QuickActionService implements Service {
         });
     }
 
+    /**
+     * Prepares a list of currently applicable Quick Actions and sends them to the UI.
+     * 
+     * @param controlIndex - Control tree index.
+     */
     public async reloadQuickActions(controlIndex: ControlTreeIndex): Promise<void> {
         const context: QuickActionActivationContext = {
             controlIndex,

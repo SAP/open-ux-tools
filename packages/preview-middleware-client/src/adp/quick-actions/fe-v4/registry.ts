@@ -14,6 +14,9 @@ type PageName = 'listReport' | 'objectPage';
 const LIST_REPORT_TYPE = 'sap.fe.templates.ListReport.ListReport';
 const OBJECT_PAGE_TYPE = 'sap.fe.templates.ObjectPage.ObjectPage';
 
+/**
+ * Quick Action provider for SAP Fiori Elements V4 applications.
+ */
 export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegistry<PageName> {
     PAGE_NAME_MAP: Record<string, PageName> = {
         [LIST_REPORT_TYPE]: 'listReport',

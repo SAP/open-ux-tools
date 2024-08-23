@@ -41,26 +41,38 @@ export type QuickActionActivationData = {
     title: string;
 };
 
-export type QuickActionExecuteFunction = () => FlexCommand[] | Promise<FlexCommand[]>;
-
-export interface SimpleQuickActionDefinition {
-    readonly kind: typeof SIMPLE_QUICK_ACTION_KIND;
+interface QuickActionDefinitionBase {
+    /**
+     * Used to identify between different Quick Action definitions.
+     */
     readonly type: string;
+    /**
+     * Used to identify Quick Action instances.
+     * All currently loaded actions must have unique ids.
+     */
     readonly id: string;
+    /**
+     * Most actions have side effects that already triggers Quick Action reload, 
+     * however if that is not the case this property should be set to "true" to force Quick Action reload after the action is executed.
+     */
     readonly forceRefreshAfterExecution?: boolean;
+    /**
+     * Indicates that the Quick Action is applicable to the given context and should be displayed.
+     */
     isActive: boolean;
     initialize: () => void | Promise<void>;
+  
+}
+
+export interface SimpleQuickActionDefinition extends QuickActionDefinitionBase {
+    readonly kind: typeof SIMPLE_QUICK_ACTION_KIND;
     getActionObject: () => SimpleQuickAction;
     execute: () => FlexCommand[] | Promise<FlexCommand[]>;
 }
 
-export interface NestedQuickActionDefinition {
+export interface NestedQuickActionDefinition extends QuickActionDefinitionBase {
     readonly kind: typeof NESTED_QUICK_ACTION_KIND;
-    readonly type: string;
-    readonly id: string;
-    readonly forceRefreshAfterExecution?: boolean;
-    isActive: boolean;
-    initialize: () => void | Promise<void>;
+    
     getActionObject: () => NestedQuickAction;
     execute: (path: string) => FlexCommand[] | Promise<FlexCommand[]>;
 }
@@ -68,11 +80,6 @@ export type QuickActionDefinition = SimpleQuickActionDefinition | NestedQuickAct
 
 export interface QuickActionDefinitionConstructor<T extends QuickActionDefinition> {
     new (context: QuickActionContext): T;
-}
-
-export interface DefinitionRegistry {
-    listPage: QuickActionDefinitionConstructor<QuickActionDefinition>[];
-    objectPage: QuickActionDefinitionConstructor<QuickActionDefinition>[];
 }
 
 export interface QuickActionDefinitionGroup {

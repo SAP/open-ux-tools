@@ -18,6 +18,10 @@ import { getExistingController } from '../../api-handler';
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
 
+
+/**
+ * Quick Action for adding controller to a page.
+ */
 export class AddControllerToPageQuickAction implements SimpleQuickActionDefinition {
     readonly kind = SIMPLE_QUICK_ACTION_KIND;
     readonly type = ADD_CONTROLLER_TO_PAGE_TYPE;

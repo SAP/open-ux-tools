@@ -1,7 +1,7 @@
 import UI5Element from 'sap/ui/core/Element';
 import Control from 'sap/ui/core/Control';
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import { FEAppPage, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import { FEAppPage } from 'sap/ui/rta/RuntimeAuthoring';
 
 import { getControlById } from '../../utils/core';
 
@@ -15,6 +15,13 @@ export interface FEAppPagesMap {
     [key: string]: FEAppPageInfo[];
 }
 
+/**
+ * Checks if control is visible in the page.
+ * 
+ * @param page - Page control.
+ * @param controlId - UI5 control id.
+ * @returns True if control is visible in the page.
+ */
 export function pageHasControlId(page: Control, controlId: string): boolean {
     const controlDomElement = getControlById(controlId)?.getDomRef();
     return !!controlDomElement && !!page?.getDomRef()?.contains(controlDomElement);
@@ -31,6 +38,14 @@ function isDescendantOfPage(control: ManagedObject | null | undefined, oRootCont
     return false;
 }
 
+/**
+ * Find all controls in page that match the provided types.
+ * 
+ * @param controlIndex - Control tree index.
+ * @param activePage - Active page control.
+ * @param controlTypes - Relevant control types.
+ * @returns A list of UI5 controls.
+ */
 export function getRelevantControlFromActivePage(
     controlIndex: ControlTreeIndex,
     activePage: Control,
@@ -57,30 +72,4 @@ export function getRelevantControlFromActivePage(
         }
     }
     return relevantControls;
-}
-
-/**
- * Determines Fiori Elements version based on the manifest.json.
- *
- * @param manifest - Application Manifest.
- * @returns Fiori Elements version.
- */
-export function getFeVersion(manifest: Manifest): 'v2' | 'v4' | undefined {
-    if (manifest['sap.ui.generic.app'] || manifest['sap.ovp']) {
-        return 'v2';
-    } else if (manifest['sap.ui5']?.routing?.targets) {
-        let hasV4pPages = false;
-        Object.keys(manifest?.['sap.ui5']?.routing?.targets ?? []).forEach((target) => {
-            if (manifest?.['sap.ui5']?.routing?.targets?.[target]?.name?.startsWith('sap.fe.templates.')) {
-                hasV4pPages = true;
-            }
-        });
-        if (hasV4pPages) {
-            return 'v4';
-        } else {
-            return undefined;
-        }
-    } else {
-        return undefined;
-    }
 }

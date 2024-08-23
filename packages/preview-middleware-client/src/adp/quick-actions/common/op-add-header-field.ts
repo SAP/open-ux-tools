@@ -14,6 +14,9 @@ import { isA } from '../../../utils/core';
 export const OP_ADD_HEADER_FIELD_TYPE = 'op-add-header-field';
 const CONTROL_TYPES = ['sap.uxap.ObjectPageLayout'];
 
+/**
+ * Quick Action for adding a Header Field to an Object Page.
+ */
 export class AddHeaderFieldQuickAction implements SimpleQuickActionDefinition {
     readonly kind = SIMPLE_QUICK_ACTION_KIND;
     readonly type = OP_ADD_HEADER_FIELD_TYPE;

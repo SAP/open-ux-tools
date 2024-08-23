@@ -11,7 +11,11 @@ import { getAppComponent, getPageName, getReference } from './utils';
 
 export const ENABLE_CLEAR_FILTER_BAR_TYPE = 'enable-clear-filter-bar';
 const PROPERTY_PATH = 'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/showClearButton';
-const CONTROL_TYPE = 'sap.fe.macros.controls.FilterBar'; //'sap.ui.mdc.FilterField';
+const CONTROL_TYPE = 'sap.fe.macros.controls.FilterBar';
+
+/**
+ * Quick Action for toggling the visibility of "clear filter bar" button in List Report page.
+ */
 export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinition {
     readonly kind = SIMPLE_QUICK_ACTION_KIND;
     readonly type = ENABLE_CLEAR_FILTER_BAR_TYPE;

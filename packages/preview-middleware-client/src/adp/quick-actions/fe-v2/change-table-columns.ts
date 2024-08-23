@@ -25,6 +25,9 @@ const M_TABLE_TYPE = 'sap.m.Table';
 const ACTION_ID = [SMART_TABLE_ACTION_ID, M_TABLE_ACTION_ID, SETTINGS_ID];
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, 'sap.ui.table.TreeTable', 'sap.ui.table.Table'];
 
+/**
+ * Quick Action for changing table columns.
+ */
 export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinition {
     readonly kind = NESTED_QUICK_ACTION_KIND;
     readonly type = CHANGE_TABLE_COLUMNS;
@@ -47,8 +50,8 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     constructor(private context: QuickActionContext) {}
 
     async initialize(): Promise<void>  {
-        // No action found in control designtim for version < 1.96
-        // When using openPersonalisationDialog("Column") the variant is stored on browser local storage.
+        // No action found in control design time for version < 1.96
+        // When using openPersonalizationDialog("Column") the variant is stored on browser local storage.
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 96 })) {
             this.isActive = false;

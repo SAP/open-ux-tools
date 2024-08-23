@@ -13,7 +13,7 @@ import { getError } from '../utils/error';
 import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version } from '../utils/version';
 
 import init from '../cpe/init';
-import { getFeVersion } from '../cpe/quick-actions/utils';
+import { getApplicationType } from '../utils/application';
 import { getResourceBundle } from '../i18n';
 
 import { loadDefinitions } from './quick-actions/load';
@@ -57,8 +57,8 @@ export default async function (rta: RuntimeAuthoring) {
         extPointService.init(subscribe);
     }
 
-    const feVersion = getFeVersion(rta.getRootControlInstance().getManifest());
-    const quickActionRegistries = await loadDefinitions(feVersion);
+    const applicationType = getApplicationType(rta.getRootControlInstance().getManifest());
+    const quickActionRegistries = await loadDefinitions(applicationType);
 
     await init(rta, quickActionRegistries);
 

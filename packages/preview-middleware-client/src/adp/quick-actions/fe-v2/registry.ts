@@ -18,6 +18,9 @@ type PageName = 'listReport' | 'objectPage';
 const OBJECT_PAGE_TYPE = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
 const LIST_REPORT_TYPE = 'sap.suite.ui.generic.template.ListReport.view.ListReport';
 
+/**
+ * Quick Action provider for SAP Fiori Elements V2 applications.
+ */
 export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegistry<PageName> {
     PAGE_NAME_MAP: Record<string, PageName> = {
         [LIST_REPORT_TYPE]: 'listReport',
