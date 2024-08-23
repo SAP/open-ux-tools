@@ -3,12 +3,7 @@ import { create } from 'mem-fs-editor';
 import { join, basename } from 'path';
 import { DirName } from '@sap-ux/project-access';
 import { LAUNCH_JSON_FILE } from '../types';
-import type {
-    FioriOptions,
-    LaunchJSON,
-    UpdateWorkspaceFolderOptions,
-    DebugOptions
-} from '../types';
+import type { FioriOptions, LaunchJSON, UpdateWorkspaceFolderOptions, DebugOptions } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig } from './utils';
 import { updateLaunchJSON } from './writer';
