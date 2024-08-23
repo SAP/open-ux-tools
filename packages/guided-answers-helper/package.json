@@ -1,0 +1,35 @@
+{
+    "name": "@sap-ux/guided-answers-helper",
+    "description": "Guided Answers Helper",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/guided-answers-helper"
+    },
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "engines": {
+        "node": ">=18.x"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+}

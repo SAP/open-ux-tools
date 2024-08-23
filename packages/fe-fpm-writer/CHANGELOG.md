@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.27.6
+
+### Patch Changes
+
+-   087752f: Building block Prompts. Use EntitySets instead of EntityTypes for displaying choices and writing metaPath or contextPath
+
 ## 0.27.5
 
 ### Patch Changes

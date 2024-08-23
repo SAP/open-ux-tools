@@ -1,5 +1,22 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.28
+
+### Patch Changes
+
+-   Updated dependencies [d3dafeb]
+    -   @sap-ux/btp-utils@0.15.2
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/telemetry@0.5.24
+
+## 0.5.27
+
+### Patch Changes
+
+-   3e1a83a: FEAT - Move Guided Help code into a new module @sap-ux/guided-answers-helper
+-   Updated dependencies [3e1a83a]
+    -   @sap-ux/guided-answers-helper@0.0.1
+
 ## 0.5.26
 
 ### Patch Changes

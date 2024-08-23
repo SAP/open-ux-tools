@@ -99,6 +99,9 @@
       "path": "packages/fiori-generator-shared"
     },
     {
+      "path": "packages/guided-answers-helper"
+    },
+    {
       "path": "packages/i18n"
     },
     {
@@ -118,6 +121,9 @@
     },
     {
       "path": "packages/mockserver-config-writer"
+    },
+    {
+      "path": "packages/nodejs-utils"
     },
     {
       "path": "packages/odata-annotation-core-types"
