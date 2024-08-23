@@ -1,0 +1,49 @@
+{
+    "name": "@sap-ux/nodejs-utils",
+    "version": "0.0.0",
+    "description": "Nodejs utility wrappers",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/nodejs-utils"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Anodejs-utils"
+    },
+    "license": "Apache-2.0",
+    "private": false,
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --silent",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "dependencies": {
+        "@sap-ux/btp-utils": "workspace:*",
+        "fast-glob": "3.3.1",
+        "read-pkg-up": "7.0.1",
+        "semver": "7.5.4"
+    },
+    "devDependencies": {
+        "@types/semver": "7.5.2",
+        "@types/vscode": "1.73.1",
+        "mock-spawn": "0.2.6",
+        "typescript": "5.3.3"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "engines": {
+        "node": ">=18.x"
+    }
+}
