@@ -76,7 +76,7 @@ describe('Prompts', () => {
             const choices = await promptsAPI.getChoices(type, 'buildingBlockData.metaPath.qualifier', {
                 buildingBlockData: {
                     metaPath: {
-                        entitySet: 'C_CUSTOMER_OP_SRV.C_CustomerOPType'
+                        entitySet: 'C_CustomerOP'
                     }
                 }
             });
@@ -202,7 +202,7 @@ describe('Prompts', () => {
         buildingBlockData: {
             id: 'id',
             metaPath: {
-                entitySet: 'test.entity',
+                entitySet: 'entity',
                 qualifier: 'qualifier'
             }
         }
