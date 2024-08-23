@@ -5,10 +5,10 @@ import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { CatalogService, V2CatalogService } from '@sap-ux/axios-extension';
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
-import { searchChoices, withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
+import { searchChoices, withCondition, type ListQuestion, type InputQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
-import type { Answers, InputQuestion, ListChoiceOptions, Question } from 'inquirer';
+import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions, SapSystemType, ValidationLink } from '../../../../types';
 import { SAP_CLIENT_KEY, hostEnvironment, promptNames } from '../../../../types';
@@ -161,7 +161,8 @@ export function getUserSystemNameQuestion(
         guiOptions: {
             hint: t('prompts.systemName.hint'),
             applyDefaultWhenDirty: true,
-            breadcrumb: true
+            breadcrumb: true,
+            mandatory: true
         },
         name: promptName,
         message: t('prompts.systemName.message'),

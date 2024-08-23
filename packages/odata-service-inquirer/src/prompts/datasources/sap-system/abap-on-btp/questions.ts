@@ -19,7 +19,7 @@ import { getABAPInstanceChoices } from './cf-helper';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
-const cliAbapEnvAuthPromptName = 'cliAbapEnvAuth';
+const cliCfAbapServicePromptName = 'cliCfAbapService';
 
 const abapOnBtpPromptNames = {
     'abapOnBtpAuthType': 'abapOnBtpAuthType',
@@ -91,10 +91,10 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
     );
 
     questions.push(
-        withCondition(
+        ...withCondition(
             [...getCFDiscoverPrompts(connectValidator)],
             (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'cloudFoundry'
-        )[0]
+        )
     );
 
     // New system store name propmt
@@ -114,6 +114,42 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
     // Service selection prompt
     questions.push(...getSystemServiceQuestion(connectValidator, abapOnBtpPromptNamespace, promptOptions));
     return questions;
+}
+
+async function validateServiceInfo(
+    abapService: ServiceInstanceInfo,
+    connectionValidator: ConnectionValidator,
+    isCli = false
+): Promise<boolean | string | IValidationLink> {
+    const uaaCreds = await apiGetInstanceCredentials(abapService.label);
+    const valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
+    if (!isCli && valResult !== true) {
+        return valResult;
+    }
+    // CLI only - we throw to exit as the user cannot change the previous answers
+    // Cannot authenticate, nothing can be done
+    if (isCli && typeof valResult === 'string') {
+        LoggerHelper.logger.error(valResult);
+        throw new Error(valResult);
+    }
+    // Cannot authenticate, nothing can be done
+    if (isCli && valResult === false) {
+        LoggerHelper.logger.error(errorHandler.getErrorMsg() ?? t('errors.abapServiceAuthenticationFailed'));
+        throw new Error(t('errors.abapServiceAuthenticationFailed'));
+    }
+    // CLI only ^^^
+
+    if (connectionValidator.serviceProvider) {
+        // Create a unique connected system name based on the selected ABAP service
+        const cfTarget = await cfGetTarget(true);
+        connectionValidator.connectedSystemName = `abap-cloud-${abapService.label}-${cfTarget.org}-${cfTarget.space}`
+            .replace(/[^\w]/gi, '-')
+            .toLowerCase();
+        PromptState.odataService.connectedSystem = {
+            serviceProvider: connectionValidator.serviceProvider
+        };
+    }
+    return true;
 }
 
 /**
@@ -147,25 +183,9 @@ export function getCFDiscoverPrompts(connectionValidator: ConnectionValidator): 
             message: t('prompts.cloudFoundryAbapSystem.message'),
             validate: async (abapService: ServiceInstanceInfo): Promise<string | boolean | IValidationLink> => {
                 if (abapService) {
-                    const uaaCreds = await apiGetInstanceCredentials(abapService.label);
-                    const valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
-                    if (valResult !== true) {
-                        return valResult;
-                    }
-
-                    if (connectionValidator.serviceProvider) {
-                        // Create a unique connected system name based on the selected ABAP service
-                        const cfTarget = await cfGetTarget(true);
-                        connectionValidator.connectedSystemName =
-                            `abap-cloud-${abapService.label}-${cfTarget.org}-${cfTarget.space}`
-                                .replace(/[^\w]/gi, '-')
-                                .toLowerCase();
-                        PromptState.odataService.connectedSystem = {
-                            serviceProvider: connectionValidator.serviceProvider
-                        };
-                    }
+                    return await validateServiceInfo(abapService, connectionValidator);
                 }
-                return true;
+                return false;
             },
             additionalMessages: (): IMessageSeverity | undefined => {
                 const errorType = errorHandler.getCurrentErrorType();
@@ -187,36 +207,11 @@ export function getCFDiscoverPrompts(connectionValidator: ConnectionValidator): 
             when: async (answers: AbapOnBtpAnswers): Promise<boolean> => {
                 const abapService = answers?.[abapOnBtpPromptNames.cloudFoundryAbapSystem];
                 if (abapService) {
-                    const uaaCreds = await apiGetInstanceCredentials(abapService.label);
-                    const valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
-                    // Cannot authenticate, nothing can be done
-                    if (typeof valResult === 'string') {
-                        LoggerHelper.logger.error(valResult);
-                        throw new Error(valResult);
-                    }
-                    // Cannot authenticate, nothing can be done
-                    if (valResult === false) {
-                        LoggerHelper.logger.error(
-                            errorHandler.getErrorMsg() ?? t('errors.abapServiceAuthenticationFailed')
-                        );
-                        throw new Error(t('errors.abapServiceAuthenticationFailed'));
-                    }
-
-                    if (connectionValidator.serviceProvider) {
-                        // Create a unique connected system name based on the selected ABAP service
-                        const cfTarget = await cfGetTarget(true);
-                        connectionValidator.connectedSystemName =
-                            `abap-cloud-${abapService.label}-${cfTarget.org}-${cfTarget.space}`
-                                .replace(/[^\w]/gi, '-')
-                                .toLowerCase();
-                        PromptState.odataService.connectedSystem = {
-                            serviceProvider: connectionValidator.serviceProvider
-                        };
-                    }
+                    await validateServiceInfo(abapService, connectionValidator, true);
                 }
                 return false;
             },
-            name: cliAbapEnvAuthPromptName
+            name: cliCfAbapServicePromptName
         } as Question);
     }
 

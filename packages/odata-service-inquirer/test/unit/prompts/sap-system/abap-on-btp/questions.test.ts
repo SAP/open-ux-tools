@@ -1,4 +1,5 @@
 import type { ServiceProvider } from '@sap-ux/axios-extension';
+import type { Question } from 'inquirer';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { apiGetServicesInstancesFilteredByType as getServicesFromCF, type ServiceInstanceInfo } from '@sap/cf-tools';
 import { ERROR_TYPE, ErrorHandler } from '../../../../../src/error-handler/error-handler';
@@ -6,6 +7,7 @@ import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getAbapOnBTPSystemQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
 import { PromptState } from '../../../../../src/utils';
+
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue(true);
@@ -58,6 +60,7 @@ describe('questions', () => {
         connectionValidatorMock.validateUrl = validateUrlMock;
         connectionValidatorMock.validateAuth = validateAuthMock;
         connectionValidatorMock.serviceProvider = serviceProviderMock;
+        validateServiceInfoMock = true;
     });
 
     test('should return Abap on BTP questions', () => {
@@ -123,11 +126,16 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "name": "cliCfAbapService",
+                "when": [Function],
+              },
+              {
                 "default": [Function],
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": true,
                   "hint": "Entering a system name will save the connection for re-use.",
+                  "mandatory": true,
                 },
                 "message": "System name",
                 "name": "abapOnBtp:userSystemName",
@@ -247,8 +255,6 @@ describe('questions', () => {
         const newSystemQuestions = getAbapOnBTPSystemQuestions();
         const cfDiscoPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
 
-        // YUI returns empty list and shows additional message
-        const errorHandlerSpy = jest.spyOn(ErrorHandler.prototype, 'logErrorMsgs');
         PromptState.isYUI = true;
         cfDiscoveredAbapEnvsMock = [
             { label: 'test1', serviceName: 'test1Name' },
@@ -281,14 +287,12 @@ describe('questions', () => {
         expect(connectionValidatorMock.connectedSystemName).toBe(undefined);
     });
 
-    // todo
-    test.skip('Cloud Foundry discovery prompt should connect to the choosen Abap environment (CLI)', async () => {
+    test('Cloud Foundry discovery prompt should connect to the choosen Abap environment (cli)', async () => {
+        PromptState.isYUI = false;
         const newSystemQuestions = getAbapOnBTPSystemQuestions();
         const cfDiscoPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
+        const cliCfServicePrompt = newSystemQuestions.find((q) => q.name === 'cliCfAbapService');
 
-        // YUI returns empty list and shows additional message
-        const errorHandlerSpy = jest.spyOn(ErrorHandler.prototype, 'logErrorMsgs');
-        PromptState.isYUI = true;
         cfDiscoveredAbapEnvsMock = [
             { label: 'test1', serviceName: 'test1Name' },
             { label: 'test2', serviceName: 'test2Name' }
@@ -309,14 +313,23 @@ describe('questions', () => {
                 }
             }
         ]);
-        expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)(cfDiscoveredAbapEnvsMock[1])).toBe(true);
+        expect(
+            await ((cliCfServicePrompt as Question).when as Function)({
+                abapOnBtpAuthType: 'cloudFoundry',
+                cloudFoundryAbapSystem: cfDiscoveredAbapEnvsMock[1]
+            })
+        ).toBe(false); // cliCfServicePrompt is never shown so when always should be false
         expect(connectionValidatorMock.connectedSystemName).toBe('abap-cloud-test2-testorg-testspace');
 
         // Validation error message is returned
         validateServiceInfoMock = 'Cannot connect';
-        expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)(cfDiscoveredAbapEnvsMock[0])).toBe(
-            'Cannot connect'
-        );
+        await expect(
+            ((cliCfServicePrompt as Question).when as Function)({
+                abapOnBtpAuthType: 'cloudFoundry',
+                cloudFoundryAbapSystem: cfDiscoveredAbapEnvsMock[1]
+            })
+        ).rejects.toThrowError('Cannot connect');
+
         expect(connectionValidatorMock.connectedSystemName).toBe(undefined);
     });
 });

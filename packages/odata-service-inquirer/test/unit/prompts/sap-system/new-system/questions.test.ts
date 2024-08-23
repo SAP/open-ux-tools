@@ -29,6 +29,7 @@ describe('Test new system prompt', () => {
                 "applyDefaultWhenDirty": true,
                 "breadcrumb": true,
                 "hint": "Entering a system name will save the connection for re-use.",
+                "mandatory": true,
               },
               "message": "System name",
               "name": "userSystemName",
