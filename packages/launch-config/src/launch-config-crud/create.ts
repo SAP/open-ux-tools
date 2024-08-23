@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { join, basename } from 'path';
+import { join, basename, dirname } from 'path';
 import { DirName } from '@sap-ux/project-access';
 import { LAUNCH_JSON_FILE } from '../types';
 import type { FioriOptions, LaunchJSON, UpdateWorkspaceFolderOptions, DebugOptions } from '../types';
@@ -14,6 +14,7 @@ import { homedir } from 'os';
 import type { Logger } from '@sap-ux/logger';
 import { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { t } from '../i18n';
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
 
 /**
  * Enhance or create the launch.json file with new launch config.
@@ -118,7 +119,24 @@ export function createOrUpdateLaunchConfigJSON(
     fs?: Editor,
     log?: Logger
 ): Editor {
-    const editor = fs ?? create(createStorage());
+    // fs is undefined when being called from project migrator module
+    const editor =
+        fs ??
+        ({
+            // Define default editor implementation if needed
+            exists: (path: string) => existsSync(path),
+            read: (path: string) => readFileSync(path, 'utf8'),
+            write: (path: string, content: string) => {
+                const dir = dirname(path);
+                let launchJSONPath = path
+                if (!existsSync(dir)) {
+                    const dotVscodePath = join(rootFolderPath, DirName.VSCode);
+                    mkdirSync(dotVscodePath, { recursive: true });
+                    launchJSONPath = join(dotVscodePath, 'launch.json');
+                }
+                writeFileSync(launchJSONPath, content, 'utf8');
+            }
+        } as Editor);
     const launchJSONPath = join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE);
     try {
         if (editor.exists(launchJSONPath)) {

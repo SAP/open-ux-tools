@@ -104,9 +104,10 @@ export function configureLaunchJsonFile(cwd: string, configOpts: DebugOptions): 
     // Add mock configuration for OData V2 or V4
     if (odataVersion && [OdataVersion.v2, OdataVersion.v4].includes(odataVersion)) {
         const params = `${flpAppIdWithHash ?? ''}`;
-        const mockCmdArgs = isMigrator
-            ? ['--open', `${testFlpSandboxMockServerHtml}${params}`]
-            : ['--config', './ui5-mock.yaml', '--open', `${testFlpSandboxHtml}${params}`];
+        const mockCmdArgs =
+            isMigrator && odataVersion === OdataVersion.v2
+                ? ['--open', `${testFlpSandboxMockServerHtml}${params}`]
+                : ['--config', './ui5-mock.yaml', '--open', `${testFlpSandboxHtml}${params}`];
         const mockConfig = createLaunchConfig(
             `Start ${projectName} Mock`,
             cwd,

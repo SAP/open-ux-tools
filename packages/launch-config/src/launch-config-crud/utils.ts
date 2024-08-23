@@ -88,15 +88,15 @@ export function getLaunchConfig(
 ): LaunchConfig {
     return {
         name,
-        cwd,
-        runtimeArgs,
         type: 'node',
         request: 'launch',
+        cwd,
         runtimeExecutable: 'npx',
-        args, // default arguments
         windows: {
             runtimeExecutable: `npx.cmd`
         },
+        runtimeArgs,
+        args, // default arguments
         console: 'internalConsole',
         internalConsoleOptions: 'openOnSessionStart',
         outputCapture: 'std',
