@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/nodejs-utils",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "Nodejs utility wrappers",
     "repository": {
         "type": "git",

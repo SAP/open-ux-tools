@@ -1,5 +1,13 @@
 # @sap-ux/app-config-writer
 
+## 0.4.28
+
+### Patch Changes
+
+-   Updated dependencies [d3dafeb]
+    -   @sap-ux/btp-utils@0.15.2
+    -   @sap-ux/axios-extension@1.16.5
+
 ## 0.4.27
 
 ### Patch Changes
