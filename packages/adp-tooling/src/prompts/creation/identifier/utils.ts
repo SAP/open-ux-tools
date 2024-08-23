@@ -1,4 +1,5 @@
 import type { Manifest } from '@sap-ux/project-access';
+
 import { ApplicationType } from '../../../types';
 
 /**

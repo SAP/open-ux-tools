@@ -1,7 +1,7 @@
-import type { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { getCredentialsFromStore } from '@sap-ux/system-access';
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { Endpoint } from '@sap-ux/environment-check';
+import { getCredentialsFromStore } from '@sap-ux/system-access';
 import { checkEndpoints, isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 
 import type { SystemDetails } from '../types';

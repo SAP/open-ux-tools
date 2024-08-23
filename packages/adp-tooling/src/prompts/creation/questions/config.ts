@@ -11,6 +11,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { SystemInfo } from '@sap-ux/axios-extension';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 import { AdaptationProjectType, isAxiosError } from '@sap-ux/axios-extension';
+import { isEmptyString, validateAch, validateClient, validateEmptyString } from '@sap-ux/project-input-validator';
 
 import {
     appAdditionalMessages,
@@ -37,13 +38,12 @@ import {
     showProjectTypeQuestion,
     showCredentialQuestion
 } from './helper/conditions';
+import { AbapClient } from './backend/abap-client';
 import type { ManifestManager, AbapProvider } from '../../../client';
 import type { EndpointsManager, UI5VersionManager } from '../../../common';
 import { getEndpointNames, isFeatureSupportedVersion } from '../../../common';
 import { resolveNodeModuleGenerator } from '../../../base';
 import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../../types';
-import { isEmptyString, validateAch, validateClient, validateEmptyString } from '@sap-ux/project-input-validator';
-import { AbapClient } from '././backend/abap-client';
 
 /**
  * ConfigInfoPrompter handles the setup and interaction logic for configuration prompts related to project setup.

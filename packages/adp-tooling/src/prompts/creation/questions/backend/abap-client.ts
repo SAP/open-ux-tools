@@ -1,14 +1,16 @@
-import type { SystemInfo } from '@sap-ux/axios-extension';
 import {
     AdtCatalogService,
     UI5RtVersionService,
     ListPackageService,
     TransportChecksService
 } from '@sap-ux/axios-extension';
+import type { SystemInfo } from '@sap-ux/axios-extension';
+
 import type { AbapProvider } from '../../../../client';
 import type { FlexUISupportedSystem } from '../../../../types';
 
 export const ABAP_PACKAGE_SEARCH_MAX_RESULTS = 50;
+
 /**
  * Client for managing all consumed requests to an ABAP system in config questions.
  */

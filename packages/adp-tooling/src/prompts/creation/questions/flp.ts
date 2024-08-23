@@ -1,11 +1,11 @@
 import type { Manifest } from '@sap-ux/project-access';
 import type { EditorQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import { validateAction, validateEmptyString, validateSemanticObject } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../i18n';
+import { validateParameters } from './helper';
 import type { FlpConfigAnswers } from '../../../types';
 import type { ManifestManager } from '../../../client';
-import { validateAction, validateEmptyString, validateSemanticObject } from '@sap-ux/project-input-validator';
-import { validateParameters } from './helper';
 
 /**
  * Extracts inbound IDs from the manifest's cross-navigation section.

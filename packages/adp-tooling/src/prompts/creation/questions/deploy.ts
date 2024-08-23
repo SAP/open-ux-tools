@@ -1,18 +1,19 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { AutocompleteQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { AbapProvider } from '../../../client';
-import { t } from '../../../i18n';
-import type { DeployConfigAnswers } from '../../../types';
-import { InputChoice } from '../../../types';
 import { validateAbapRepository, validateEmptyString } from '@sap-ux/project-input-validator';
+import type { AutocompleteQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+
 import {
     getInputChoiceOptions,
     validatePackageChoiceInput,
     validatePackageName,
     validateTransportChoiceInput
 } from './helper';
-import { shouldShowTransportRelatedPrompt, showPackageManualQuestion } from './helper/conditions';
+import { t } from '../../../i18n';
+import { InputChoice } from '../../../types';
+import type { AbapProvider } from '../../../client';
+import type { DeployConfigAnswers } from '../../../types';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, AbapClient } from './backend/abap-client';
+import { shouldShowTransportRelatedPrompt, showPackageManualQuestion } from './helper/conditions';
 
 /**
  * Generates prompts for deployment settings based on the current system and project settings.
