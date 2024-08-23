@@ -1,5 +1,5 @@
 import type { YUIQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { convertQuestion, promptYUIQuestions } from '../../../src/common/prompts';
+import { convertQuestion, promptYUIQuestions } from '../../../src/common/prompt-questions';
 import prompts from 'prompts';
 
 const YUI_TEST_QUESTION: Record<string, YUIQuestion | ListQuestion> = {
