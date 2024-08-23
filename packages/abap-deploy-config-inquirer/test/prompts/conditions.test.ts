@@ -21,7 +21,6 @@ import {
 import * as utils from '../../src/utils';
 import { PromptState } from '../../src/prompts/prompt-state';
 import { getHelpUrl } from '@sap-ux/guided-answers-helper';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
