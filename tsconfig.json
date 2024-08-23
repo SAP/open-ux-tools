@@ -123,6 +123,9 @@
       "path": "packages/mockserver-config-writer"
     },
     {
+      "path": "packages/nodejs-utils"
+    },
+    {
       "path": "packages/odata-annotation-core-types"
     },
     {

@@ -133,11 +133,9 @@ function getMetaPath(
     if (!metaPath) {
         return getDefaultMetaPath(type, usePlaceholders);
     }
-    const { entitySet, bindingContextType = 'absolute' } = metaPath;
-    let { qualifier } = metaPath;
-    let entityPath = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
-    const lastIndex = entityPath.lastIndexOf('.');
-    entityPath = lastIndex >= 0 ? entityPath.substring?.(lastIndex + 1) : entityPath;
+    const { bindingContextType = 'absolute' } = metaPath;
+    let { entitySet, qualifier } = metaPath;
+    entitySet = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
     const qualifierOrPlaceholder = qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '');
     if (type === BuildingBlockType.Chart) {
         // Special handling for chart - while runtime does not support approach without contextPath
@@ -145,12 +143,11 @@ function getMetaPath(
         qualifier = qualifierParts.pop() as string;
         return {
             metaPath: qualifier,
-            contextPath: qualifierParts.length ? `/${entityPath}/${qualifierParts.join('/')}` : `/${entityPath}`
+            contextPath: qualifierParts.length ? `/${entitySet}/${qualifierParts.join('/')}` : `/${entitySet}`
         };
     }
     return {
-        metaPath:
-            bindingContextType === 'absolute' ? `/${entityPath}/${qualifierOrPlaceholder}` : qualifierOrPlaceholder
+        metaPath: bindingContextType === 'absolute' ? `/${entitySet}/${qualifierOrPlaceholder}` : qualifierOrPlaceholder
     };
 }
 
