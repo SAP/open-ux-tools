@@ -108,7 +108,7 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
     if (directLoad) {
         const directLoadProxy = (async (req: Request, res: Response, next: NextFunction): Promise<void> => {
             try {
-                await injectScripts(req, res, next, ui5Configs);
+                await injectScripts(req, res, next, ui5Configs, resources.rootProject);
             } catch (error) {
                 logger.error(error);
                 next(error);
