@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.40
+
+### Patch Changes
+
+-   6419b2c: Clean separation between prompting and writing in adp-tooling
+
 ## 0.12.39
 
 ### Patch Changes

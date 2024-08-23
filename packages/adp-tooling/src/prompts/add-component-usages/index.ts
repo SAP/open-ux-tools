@@ -138,7 +138,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
     return [
         {
             type: 'input',
-            name: `id`,
+            name: `usageId`,
             message: t('prompts.component.usageIdLabel'),
             validate: (value: string) => validatePromptId(value, componentUsageChangeFiles, isCustomerBase),
             default: isCustomerBase ? NamespacePrefix.CUSTOMER : NamespacePrefix.EMPTY,

@@ -2,7 +2,7 @@ import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
 import { DirName } from '@sap-ux/project-access';
-import type { IWriter, NewModelData, DataSourceItem, NewModelAnswers } from '../../../types';
+import type { IWriter, NewModelData, DataSourceItem } from '../../../types';
 import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
 
 type NewModelContent = {
@@ -30,50 +30,42 @@ export class NewModelWriter implements IWriter<NewModelData> {
     /**
      * Constructs the content for an new model change based on provided data.
      *
-     * @param {NewModelAnswers} data - The answers object containing information needed to construct the content property.
+     * @param {NewModelData} data - The answers object containing information needed to construct the content property.
      * @returns {object} The constructed content object for the new model change.
      */
-    private constructContent({
-        name,
-        uri,
-        addAnnotationMode,
-        dataSourceName,
-        modelName,
-        modelSettings,
-        version,
-        dataSourceURI,
-        annotationSettings
-    }: NewModelAnswers): object {
+    private constructContent(data: NewModelData): object {
+        const { service } = data;
         const content: NewModelContent = {
             dataSource: {
-                [name]: {
-                    uri,
+                [service.name]: {
+                    uri: service.uri,
                     type: 'OData',
                     settings: {
-                        odataVersion: version
+                        odataVersion: service.version
                     }
                 }
             },
             model: {
-                [modelName]: {
-                    dataSource: name
+                [service.modelName]: {
+                    dataSource: service.name
                 }
             }
         };
 
-        if (modelSettings && modelSettings.length !== 0) {
-            content.model[modelName].settings = parseStringToObject(modelSettings);
+        if (service.modelSettings && service.modelSettings.length !== 0) {
+            content.model[service.modelName].settings = parseStringToObject(service.modelSettings);
         }
 
-        if (addAnnotationMode) {
-            content.dataSource[name].settings.annotations = [`${dataSourceName}`];
-            content.dataSource[dataSourceName] = {
-                uri: dataSourceURI,
+        if ('annotation' in data) {
+            const { annotation } = data;
+            content.dataSource[service.name].settings.annotations = [`${annotation.dataSourceName}`];
+            content.dataSource[annotation.dataSourceName] = {
+                uri: annotation.dataSourceURI,
                 type: 'ODataAnnotation'
             } as DataSourceItem;
 
-            if (annotationSettings && annotationSettings.length !== 0) {
-                content.dataSource[dataSourceName].settings = parseStringToObject(annotationSettings);
+            if (annotation.settings && annotation.settings.length !== 0) {
+                content.dataSource[annotation.dataSourceName].settings = parseStringToObject(annotation.settings);
             }
         }
 
@@ -88,7 +80,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
      */
     async write(data: NewModelData): Promise<void> {
         const timestamp = Date.now();
-        const content = this.constructContent(data.answers);
+        const content = this.constructContent(data);
         const change = getChange(data.variant, timestamp, content, ChangeType.ADD_NEW_MODEL);
 
         writeChangeToFolder(this.projectPath, change, `id_${timestamp}_addNewModel.change`, this.fs, DirName.Manifest);
