@@ -259,6 +259,7 @@ describe('<UIDialog />', () => {
                     "margin": "10px 0 20px",
                   },
                   "actionsRight": Object {
+                    "justifyContent": "center",
                     "margin": "0px",
                     "textAlign": "center",
                     "width": "100%",
