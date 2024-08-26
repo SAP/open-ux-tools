@@ -57,7 +57,6 @@ export function getEndpointNames(endpoints: Endpoint[]): string[] {
 export class EndpointsManager {
     private static instance: EndpointsManager;
     private endpoints: Endpoint[];
-    private isExtensionInstalled: boolean;
 
     /**
      * Creates an instance of EndpointsManager.
@@ -66,7 +65,6 @@ export class EndpointsManager {
      */
     private constructor(private logger: ToolsLogger) {
         this.endpoints = [];
-        this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
     }
 
     /**
@@ -94,6 +92,15 @@ export class EndpointsManager {
     }
 
     /**
+     * Checks if there are set endpoints.
+     *
+     * @returns {boolean} true if there are set endpoints otherwise false.
+     */
+    public hasEndpoints(): boolean {
+        return this.endpoints.length > 0;
+    }
+
+    /**
      * Fetches endpoints from a predefined source and stores them in the service.
      *
      * @returns {Promise<void>} A promise that resolves when endpoints are fetched and stored.
@@ -111,11 +118,11 @@ export class EndpointsManager {
     /**
      * Determines whether local system details should be retrieved based on the environment and installation status.
      *
-     * @returns {boolean} True if the application is running in VS Code native and the extension is installed,
+     * @returns {boolean} True if the application is running in VS Code native and there are set systems,
      *                    indicating that it's appropriate to fetch local system details; otherwise, false.
      */
     public shouldGetLocalSystemDetails(): boolean {
-        return !isAppStudio() && this.isExtensionInstalled;
+        return !isAppStudio() && !this.hasEndpoints();
     }
 
     /**
