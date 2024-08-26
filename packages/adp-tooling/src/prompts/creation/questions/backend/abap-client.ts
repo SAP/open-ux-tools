@@ -1,18 +1,16 @@
+import type { SystemInfo } from '@sap-ux/axios-extension';
 import {
     AdtCatalogService,
     UI5RtVersionService,
     ListPackageService,
     TransportChecksService
 } from '@sap-ux/axios-extension';
-import type { SystemInfo } from '@sap-ux/axios-extension';
-
 import type { AbapProvider } from '../../../../client';
 import type { FlexUISupportedSystem } from '../../../../types';
 
 export const ABAP_PACKAGE_SEARCH_MAX_RESULTS = 50;
-
 /**
- * Client for managing all consumed requests to an ABAP system in config questions.
+ * Client for managing all consumed requests to an ABAP system.
  */
 export class AbapClient {
     /**
@@ -33,7 +31,7 @@ export class AbapClient {
      */
     public async connectToSystem(system: string, client?: string, username?: string, password?: string): Promise<void> {
         if (
-            !this.abapProvider.getIsConnected() ||
+            !this.abapProvider.isConnected() ||
             (this.abapProvider.getSystem() && this.abapProvider.getSystem() !== system)
         ) {
             await this.abapProvider.setProvider(system, client, username, password);

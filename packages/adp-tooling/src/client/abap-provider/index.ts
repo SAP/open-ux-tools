@@ -13,7 +13,7 @@ export type RequestOptions = AxiosRequestConfig & Partial<ProviderConfiguration>
  */
 export class AbapProvider {
     private provider: AbapServiceProvider;
-    private isConnected: boolean;
+    private connected: boolean;
     private system: string | undefined;
 
     /**
@@ -23,7 +23,7 @@ export class AbapProvider {
      * @param {ToolsLogger} [logger] - The logger.
      */
     constructor(private endpointsManager: EndpointsManager, private logger?: ToolsLogger) {
-        this.isConnected = false;
+        this.connected = false;
         this.system = undefined;
     }
 
@@ -44,8 +44,8 @@ export class AbapProvider {
      *
      * @returns {boolean} - if provider is connected to ABAP system.
      */
-    public getIsConnected(): boolean {
-        return this.isConnected;
+    public isConnected(): boolean {
+        return this.connected;
     }
 
     /**
@@ -78,7 +78,7 @@ export class AbapProvider {
             }
 
             this.provider = await createAbapServiceProvider(target, requestOptions, false, {} as Logger);
-            this.isConnected = true;
+            this.connected = true;
             this.system = system;
         } catch (e) {
             this.logger?.error(`Failed to instantiate provider for system: ${system}. Reason: ${e.message}`);
