@@ -1,7 +1,7 @@
 import type { Manifest } from '@sap-ux/project-access';
 
-import { ApplicationType } from '../../../src';
-import { getApplicationType } from '../../../src/common/app-type';
+import { ApplicationType } from '../../../../../src';
+import { getApplicationType } from '../../../../../src/writer/creation/manifest';
 
 describe('app-utils', () => {
     describe('getApplicationType', () => {

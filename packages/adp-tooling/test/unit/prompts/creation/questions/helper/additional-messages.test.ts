@@ -106,8 +106,8 @@ describe('additional messages', () => {
                 isApplicationSupported: true,
                 appIdentifier: {
                     appSync: false,
-                    getIsSupportedAdpOverAdp: jest.fn().mockReturnValue(false),
-                    getIsPartiallySupportedAdpOverAdp: jest.fn().mockReturnValue(false)
+                    getIsSupported: jest.fn().mockReturnValue(false),
+                    getIsPartiallySupported: jest.fn().mockReturnValue(false)
                 } as unknown as AppIdentifier
             } as ConfigInfoPrompter;
 
@@ -125,8 +125,8 @@ describe('additional messages', () => {
                 appIdentifier: {
                     appSync: false,
                     isV4AppInternalMode: false,
-                    getIsSupportedAdpOverAdp: jest.fn().mockReturnValue(true),
-                    getIsPartiallySupportedAdpOverAdp: jest.fn().mockReturnValue(true)
+                    getIsSupported: jest.fn().mockReturnValue(true),
+                    getIsPartiallySupported: jest.fn().mockReturnValue(true)
                 } as unknown as AppIdentifier
             } as ConfigInfoPrompter;
             const result = appAdditionalMessages(app as Application, prompter);
@@ -142,8 +142,8 @@ describe('additional messages', () => {
                 appIdentifier: {
                     appSync: false,
                     isV4AppInternalMode: true,
-                    getIsSupportedAdpOverAdp: jest.fn().mockReturnValue(true),
-                    getIsPartiallySupportedAdpOverAdp: jest.fn().mockReturnValue(false)
+                    getIsSupported: jest.fn().mockReturnValue(true),
+                    getIsPartiallySupported: jest.fn().mockReturnValue(false)
                 } as unknown as AppIdentifier
             } as ConfigInfoPrompter;
             const result = appAdditionalMessages(app as Application, prompter);

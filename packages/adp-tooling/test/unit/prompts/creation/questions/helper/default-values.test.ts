@@ -106,22 +106,22 @@ describe('Default Values Tests', () => {
     describe('getDefaultFioriId', () => {
         const answers = { application: { id: '1' } as Application } as ConfigurationInfoAnswers;
 
-        it('returns the Fiori registration IDs if available', () => {
+        it('returns the Fiori registration IDs if available', async () => {
             const manager = {
-                getManifest: jest.fn().mockReturnValue({ 'sap.fiori': { registrationIds: ['F1049'] } })
+                getManifest: jest.fn().mockResolvedValue({ 'sap.fiori': { registrationIds: ['F1049'] } })
             } as unknown as ManifestManager;
 
-            const result = getDefaultFioriId(answers, manager);
+            const result = await getDefaultFioriId(answers, manager);
 
             expect(result).toBe('F1049');
         });
 
-        it('returns an empty string if the manifest is not found', () => {
+        it('returns an empty string if the manifest is not found', async () => {
             const manager = {
-                getManifest: jest.fn().mockReturnValue(undefined)
+                getManifest: jest.fn().mockResolvedValue(undefined)
             } as unknown as ManifestManager;
 
-            const result = getDefaultFioriId(answers, manager);
+            const result = await getDefaultFioriId(answers, manager);
 
             expect(result).toBe('');
         });
@@ -130,22 +130,22 @@ describe('Default Values Tests', () => {
     describe('getDefaultAch', () => {
         const answers = { application: { id: '1' } as Application } as ConfigurationInfoAnswers;
 
-        it('returns the ACH if available', () => {
+        it('returns the ACH if available', async () => {
             const manager = {
-                getManifest: jest.fn().mockReturnValue({ 'sap.app': { ach: 'ACH' } })
+                getManifest: jest.fn().mockResolvedValue({ 'sap.app': { ach: 'ACH' } })
             } as unknown as ManifestManager;
 
-            const result = getDefaultAch(answers, manager);
+            const result = await getDefaultAch(answers, manager);
 
             expect(result).toBe('ACH');
         });
 
-        it('returns an empty string if the manifest is not found', () => {
+        it('returns an empty string if the manifest is not found', async () => {
             const manager = {
-                getManifest: jest.fn().mockReturnValue(undefined)
+                getManifest: jest.fn().mockResolvedValue(undefined)
             } as unknown as ManifestManager;
 
-            const result = getDefaultAch(answers, manager);
+            const result = await getDefaultAch(answers, manager);
 
             expect(result).toBe('');
         });

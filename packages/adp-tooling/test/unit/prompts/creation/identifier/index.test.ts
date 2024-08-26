@@ -1,22 +1,15 @@
 import type { Manifest } from '@sap-ux/project-access';
 
 import type { Application } from '../../../../../src';
-import { FlexLayer, ApplicationType } from '../../../../../src';
-import { getApplicationType } from '../../../../../src/common/app-type';
+import { FlexLayer } from '../../../../../src';
 import { AppIdentifier } from '../../../../../src/prompts/creation/identifier';
-import { isSupportedType, isV4Application } from '../../../../../src/prompts/creation/identifier/utils';
+import { isV4Application } from '../../../../../src/prompts/creation/identifier/utils';
+import { t } from '../../../../../src/i18n';
 
 const isV4ApplicationMock = isV4Application as jest.Mock;
-const getApplicationTypeMock = getApplicationType as jest.Mock;
-const isSupportedTypeMock = isSupportedType as jest.Mock;
 
 jest.mock('../../../../../src/prompts/creation/identifier/utils', () => ({
-    isV4Application: jest.fn(),
-    isSupportedType: jest.fn()
-}));
-
-jest.mock('../../../../../src/common/app-type.ts', () => ({
-    getApplicationType: jest.fn()
+    isV4Application: jest.fn()
 }));
 
 describe('AppIdentifier', () => {
@@ -27,41 +20,41 @@ describe('AppIdentifier', () => {
     });
 
     describe('validateSelectedApplication', () => {
-        it('throws an error if application is null', async () => {
-            await expect(
+        const application = { id: 'app1', fileType: 'appdescr_variant' };
+
+        it('throws an error if application is null', () => {
+            expect(() =>
                 appIdentifier.validateSelectedApplication(null as unknown as Application, undefined, true, true)
-            ).rejects.toThrow('Application has to be selected');
+            ).toThrow('Application has to be selected');
         });
 
-        it('throws an error if manifest is null', async () => {
-            const application = { id: 'app1', fileType: 'appdescr_variant' };
-            await expect(
+        it('throws an error if manifest is null', () => {
+            expect(() =>
                 appIdentifier.validateSelectedApplication(application as Application, undefined, true, true)
-            ).rejects.toThrow('Manifest of the selected application could not be validated');
+            ).toThrow('Manifest of the selected application could not be validated');
         });
 
-        it('should set internal mode and check for partial and full support based on the application type', async () => {
-            const application = { id: 'app1', fileType: 'appdescr_variant' };
-            const manifest = { 'sap.ui5': {} };
+        it('throws an error if manifest flexEnabled is false', () => {
+            const manifest = { 'sap.ui5': { flexEnabled: false } };
+
+            expect(() =>
+                appIdentifier.validateSelectedApplication(application as Application, manifest as Manifest, true, true)
+            ).toThrow(t('validators.appDoesNotSupportAdaptation'));
+        });
+
+        it('should set internal mode and check for partial and full support', () => {
+            const manifest = { 'sap.ui5': { flexEnabled: true } };
 
             isV4ApplicationMock.mockReturnValue(true);
-            getApplicationTypeMock.mockReturnValue(ApplicationType.FREE_STYLE);
-            isSupportedTypeMock.mockReturnValue(true);
 
-            await appIdentifier.validateSelectedApplication(
-                application as Application,
-                manifest as Manifest,
-                true,
-                true
-            );
+            appIdentifier.validateSelectedApplication(application as Application, manifest as Manifest, true, true);
 
             expect(appIdentifier.isV4AppInternalMode).toBe(false);
-            expect(appIdentifier.isSupportedAdpOverAdp).toBe(false);
-            expect(appIdentifier.isPartiallySupportedAdpOverAdp).toBe(true);
+            expect(appIdentifier.isSupported).toBe(false);
+            expect(appIdentifier.isPartiallySupported).toBe(true);
         });
 
-        it('checks whether adp over adp is fully or partially supported', async () => {
-            const application = { id: 'app1', fileType: 'appdescr_variant' };
+        it('checks whether adp over adp is fully or partially supported', () => {
             const manifest = {
                 'sap.ui5': {
                     flexEnabled: true,
@@ -69,59 +62,12 @@ describe('AppIdentifier', () => {
                 }
             };
 
-            getApplicationTypeMock.mockReturnValue(ApplicationType.FREE_STYLE);
-            isSupportedTypeMock.mockReturnValue(true);
             isV4ApplicationMock.mockReturnValue(true);
 
-            await appIdentifier.validateSelectedApplication(
-                application as Application,
-                manifest as Manifest,
-                true,
-                true
-            );
+            appIdentifier.validateSelectedApplication(application as Application, manifest as Manifest, true, true);
 
-            expect(appIdentifier.getIsSupportedAdpOverAdp()).toBe(false);
-            expect(appIdentifier.getIsPartiallySupportedAdpOverAdp()).toBe(true);
-        });
-    });
-
-    describe('validateFioriApplication', () => {
-        it('throws an error if application does not support adaptation', async () => {
-            const manifest = { 'sap.ui5': { flexEnabled: false } };
-            getApplicationTypeMock.mockReturnValue(ApplicationType.FREE_STYLE);
-            isSupportedTypeMock.mockReturnValue(true);
-            isV4ApplicationMock.mockReturnValue(true);
-
-            await expect(appIdentifier.validateFioriApplication(manifest as Manifest)).rejects.toThrow(
-                'Select a different application. Selected application does not support Flexibility and therefore it does not support Adaptation Project.'
-            );
-        });
-
-        it('throws an error if adaptation project does not support selected application type', async () => {
-            const manifest = { 'sap.ui5': { flexEnabled: false } };
-            getApplicationTypeMock.mockReturnValue(ApplicationType.NONE);
-            isSupportedTypeMock.mockReturnValue(false);
-            isV4ApplicationMock.mockReturnValue(true);
-
-            await expect(appIdentifier.validateFioriApplication(manifest as Manifest)).rejects.toThrow(
-                "Select a different application. Adaptation project doesn't support the selected application."
-            );
-        });
-
-        it('should check for sync loaded views if application supports adaptation', async () => {
-            const manifest = {
-                'sap.ui5': {
-                    flexEnabled: true,
-                    rootView: { async: false }
-                }
-            };
-            getApplicationTypeMock.mockReturnValue(ApplicationType.FREE_STYLE);
-            isSupportedTypeMock.mockReturnValue(true);
-            isV4ApplicationMock.mockReturnValue(true);
-
-            await appIdentifier.validateFioriApplication(manifest as Manifest);
-
-            expect(appIdentifier.appSync).toBe(true);
+            expect(appIdentifier.getIsSupported()).toBe(false);
+            expect(appIdentifier.getIsPartiallySupported()).toBe(true);
         });
     });
 

@@ -42,32 +42,33 @@ describe('ManifestManager', () => {
 
     describe('loadManifestUrl', () => {
         it('should cache manifest URL if not already cached', async () => {
-            await manifestManager.loadManifestUrl(fakeId);
+            await manifestManager.getUrl(fakeId);
             expect(mockProvider.getProvider().getAppIndex().getAppInfo).toHaveBeenCalledWith(fakeId);
-            expect(manifestManager.getUrl(fakeId)).toEqual(fakeManifestUrl);
 
-            await manifestManager.loadManifestUrl(fakeId);
+            const url = await manifestManager.getUrl(fakeId);
+            expect(url).toEqual(fakeManifestUrl);
             expect(mockProvider.getProvider().getAppIndex().getAppInfo).toBeCalledTimes(1);
         });
     });
 
     describe('loadManifest', () => {
         it('should fetch and cache manifest if URL is available and manifest is not cached', async () => {
-            await manifestManager.loadManifest(fakeId);
+            await manifestManager.getManifest(fakeId);
+            const manifest = await manifestManager.getManifest(fakeId);
 
-            expect(manifestManager.getManifest(fakeId)).toEqual(fakeManifest);
+            expect(manifest).toEqual(fakeManifest);
             expect(mockProvider.getProvider().request).toBeCalledTimes(1);
         });
 
         it('should not fetch manifest if already cached', async () => {
-            await manifestManager.loadManifest(fakeId);
-            await manifestManager.loadManifest(fakeId);
+            await manifestManager.getManifest(fakeId);
+            await manifestManager.getManifest(fakeId);
             expect(mockProvider.getProvider().request).toBeCalledTimes(1);
         });
 
         it('should throw an error if manifest URL could not be loaded', async () => {
             requestMock.mockResolvedValue({ data: JSON.stringify(null) });
-            await expect(manifestManager.loadManifest('non-existent-id')).rejects.toThrow(
+            await expect(manifestManager.getManifest('non-existent-id')).rejects.toThrow(
                 'Failed to load manifest from URL: Manifest parsing error. Manifest is not in expected format.'
             );
         });
@@ -89,9 +90,10 @@ describe('ManifestManager', () => {
 
         it('should throw an error if the manifest url is not found after loading', async () => {
             maniFirstMock.mockResolvedValue(true);
-            jest.spyOn(manifestManager, 'getUrl').mockReturnValue(undefined);
+            jest.spyOn(manifestManager, 'getUrl').mockResolvedValue(undefined);
+
             await expect(manifestManager.isAppSupported(fakeId)).rejects.toThrow(
-                t('validators.adpPluginSmartTemplateProjectError')
+                t('validators.adpDoesNotSupportSelectedApp')
             );
         });
     });

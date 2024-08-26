@@ -16,7 +16,7 @@ import type {
 } from '../../../../../src';
 import { TemplateModel, FlexLayer } from '../../../../../src';
 
-jest.mock('../../../../../src/common/app-type.ts', () => ({
+jest.mock('../../../../../src/writer/creation/manifest/app-type.ts', () => ({
     getApplicationType: jest.fn().mockReturnValue('FreeStyle')
 }));
 
