@@ -63,6 +63,7 @@ export interface UI5 {
     typesPackage: string;
     descriptorVersion: string;
     ui5Libs: string | string[];
+    manifestLibs?: string | string[];
     ui5Theme: string;
     customUi5Libs?: string[];
 }
