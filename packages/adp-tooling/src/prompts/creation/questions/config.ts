@@ -9,7 +9,6 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { SystemInfo } from '@sap-ux/axios-extension';
-import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 import { AdaptationProjectType, isAxiosError } from '@sap-ux/axios-extension';
 import { isEmptyString, validateAch, validateClient, validateEmptyString } from '@sap-ux/project-input-validator';
 
@@ -219,7 +218,7 @@ export default class ConfigInfoPrompter {
 
                 if (isSupported) {
                     const manifest = await this.manifestManager.getManifest(value.id);
-                    await this.evaluateApplicationSupport(manifest, value);
+                    this.evaluateApplicationSupport(manifest, value);
                 }
                 this.isApplicationSupported = true;
             } catch (e) {
@@ -238,13 +237,13 @@ export default class ConfigInfoPrompter {
      * @param {Manifest} manifest - The application manifest.
      * @param {Application} application - The application data.
      */
-    private async evaluateApplicationSupport(manifest: Manifest | undefined, application: Application): Promise<void> {
+    private evaluateApplicationSupport(manifest: Manifest | undefined, application: Application): void {
         const systemVersion = this.ui5Manager.systemVersion;
         const checkForSupport = this.ui5VersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
         const isPartialSupport =
             this.ui5VersionDetected && checkForSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
 
-        await this.appIdentifier.validateSelectedApplication(application, manifest, checkForSupport, isPartialSupport);
+        this.appIdentifier.validateSelectedApplication(application, manifest, checkForSupport, isPartialSupport);
     }
 
     /**
