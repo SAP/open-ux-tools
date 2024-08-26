@@ -73,7 +73,7 @@ export class AppIdentifier {
         this.isV4AppInternalMode = isV4Application(manifest) && !this.isCustomerBase;
 
         if (manifest['sap.ui5']) {
-            if (!manifest['sap.ui5'].flexEnabled) {
+            if (manifest['sap.ui5']?.flexEnabled === false) {
                 throw new Error(t('validators.appDoesNotSupportAdaptation'));
             }
 
