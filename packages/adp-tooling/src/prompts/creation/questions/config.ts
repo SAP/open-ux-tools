@@ -94,7 +94,6 @@ export default class ConfigInfoPrompter {
         this.logger = logger;
         this.prompts = prompts;
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
-        this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
         this.abapClient = new AbapClient(this.provider, this.isCustomerBase);
         this.appsManager = new ApplicationManager(this.provider, this.isCustomerBase, this.logger);
         this.appIdentifier = new AppIdentifier(layer);
@@ -403,7 +402,7 @@ export default class ConfigInfoPrompter {
      * @returns {YUIQuestion<ConfigurationInfoAnswers>} Either a list or input prompt configuration for system selection.
      */
     private getSystemNativePrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-        return this.isExtensionInstalled ? this.getSystemListPrompt() : this.getSystemInputPrompt();
+        return this.endpointsManager.hasEndpoints() ? this.getSystemListPrompt() : this.getSystemInputPrompt();
     }
 
     /**
@@ -441,7 +440,7 @@ export default class ConfigInfoPrompter {
             validate: validateClient,
             when: (answers: ConfigurationInfoAnswers) => {
                 if (answers.system) {
-                    return isAppStudio() ? false : !this.isExtensionInstalled;
+                    return isAppStudio() ? false : !this.endpointsManager.hasEndpoints();
                 }
                 return false;
             },
