@@ -5,7 +5,7 @@ import {
     HELP_NODES,
     HELP_TREE,
     GUIDED_ANSWERS_ICON
-} from '@sap-ux/fiori-generator-shared';
+} from '@sap-ux/guided-answers-helper';
 import { ErrorHandler, ERROR_TYPE } from '../../../src/error-handler/error-handler';
 import type { ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { SampleRate } from '@sap-ux/telemetry';
