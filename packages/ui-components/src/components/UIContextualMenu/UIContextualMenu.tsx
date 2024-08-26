@@ -5,7 +5,7 @@ import type {
     ICalloutContentStyles,
     IRawStyle,
     IStyleFunctionOrObject,
-    ICalloutContentStyleProps
+    IContextualMenuStyleProps
 } from '@fluentui/react';
 import { ContextualMenu, ContextualMenuItemType, IContextualMenuProps, IContextualMenuItem } from '@fluentui/react';
 export { IContextualMenuItem } from '@fluentui/react';
@@ -32,11 +32,11 @@ const DEFAULT_ZINDEX = 1000000;
  * @returns {IRawStyle} Raw style object.
  */
 const extractRawStyles = (
-    styles: IStyleFunctionOrObject<ICalloutContentStyleProps, ICalloutContentStyles> | undefined,
-    name: keyof ICalloutContentStyles
+    styles: IStyleFunctionOrObject<IContextualMenuStyleProps, IContextualMenuStyles> | undefined,
+    name: keyof IContextualMenuStyles
 ): IRawStyle => {
     if (typeof styles === 'object' && typeof styles[name] === 'object') {
-        return styles[name] as IRawStyle;
+        return styles[name] as IContextualMenuStyles;
     }
     return {};
 };
