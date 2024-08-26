@@ -7,6 +7,7 @@ import type { OdataService, CdsAnnotationsInfo } from '../../src';
 import { OdataVersion, ServiceType } from '../../src';
 import * as ejs from 'ejs';
 import { expectedEdmxManifest } from '../test-data/manifest-json/edmx-manifest';
+import { expectedEdmxManifestTwoAnno } from '../test-data/manifest-json/edmx-manifest-two-anno';
 import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest';
 import type { Package } from '@sap-ux/project-access';
 
@@ -22,6 +23,7 @@ describe('updates', () => {
     });
 
     describe('updateManifest', () => {
+        const manifestPath = './webapp/manifest.json';
         test('Ensure OdataService properties are not interpretted as ejs render options', () => {
             const testManifest = {
                 'sap.app': {
@@ -37,9 +39,9 @@ describe('updates', () => {
                 path: '/a/path'
             };
 
-            fs.writeJSON('./webapp/manifest.json', testManifest);
+            fs.writeJSON(manifestPath, testManifest);
             const ejsMock = jest.spyOn(ejs, 'render');
-            updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            updateManifest(manifestPath, service, fs, join(__dirname, '../../templates'));
             // Passing empty options prevents ejs interpretting OdataService properties as ejs options
             expect(ejsMock).toHaveBeenCalledWith(expect.anything(), service, {});
         });
@@ -71,11 +73,11 @@ describe('updates', () => {
             };
 
             // Write the test manifest to a file
-            fs.writeJSON('./webapp/manifest.json', testManifest);
+            fs.writeJSON(manifestPath, testManifest);
             const ejsMock = jest.spyOn(ejs, 'render');
 
             // Call updateManifest
-            updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            updateManifest(manifestPath, service, fs, join(__dirname, '../../templates'));
 
             expect(ejsMock).toHaveBeenCalledWith(
                 expect.anything(),
@@ -96,19 +98,56 @@ describe('updates', () => {
                 name: 'aname',
                 path: '/a/path',
                 type: ServiceType.EDMX,
-                annotations: {
-                    technicalName: 'test',
-                    xml: 'test',
-                    name: 'test'
-                },
-                localAnnotationsName: 'test'
+                annotations: [
+                    {
+                        technicalName: 'test',
+                        xml: 'test',
+                        name: 'test'
+                    }
+                ],
+                localAnnotationsName: 'testlocal'
             };
 
-            fs.writeJSON('./webapp/manifest.json', testManifest);
+            fs.writeJSON(manifestPath, testManifest);
             // Call updateManifest
-            updateManifest('./', service, fs, join(__dirname, '../../templates'));
-            const manifestJson = fs.readJSON('./webapp/manifest.json');
+            updateManifest(manifestPath, service, fs, join(__dirname, '../../templates'));
+            const manifestJson = fs.readJSON(manifestPath);
             expect(manifestJson).toEqual(expectedEdmxManifest);
+        });
+
+        test('Ensure manifest updates are updated as expected as in edmx projects with two annotation files', () => {
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest'
+                }
+            };
+            const service: OdataService = {
+                version: OdataVersion.v2,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path',
+                type: ServiceType.EDMX,
+                annotations: [
+                    {
+                        technicalName: 'test',
+                        xml: 'test',
+                        name: 'test'
+                    },
+                    {
+                        technicalName: 'test2',
+                        xml: 'test2',
+                        name: 'test2'
+                    }
+                ],
+                localAnnotationsName: 'testlocal'
+            };
+
+            fs.writeJSON(manifestPath, testManifest);
+            // Call updateManifest
+            updateManifest(manifestPath, service, fs, join(__dirname, '../../templates'));
+            const manifestJson = fs.readJSON(manifestPath);
+            expect(manifestJson).toEqual(expectedEdmxManifestTwoAnno);
         });
 
         test('Ensure manifest updates are updated as expected as in cds projects', () => {
@@ -131,10 +170,10 @@ describe('updates', () => {
                     projectName: 'projectName'
                 }
             };
-            fs.writeJSON('./webapp/manifest.json', testManifest);
+            fs.writeJSON(manifestPath, testManifest);
             // Call updateManifest
-            updateManifest('./', service, fs, join(__dirname, '../../templates'));
-            const manifestJson = fs.readJSON('./webapp/manifest.json');
+            updateManifest(manifestPath, service, fs, join(__dirname, '../../templates'));
+            const manifestJson = fs.readJSON(manifestPath);
             expect(manifestJson).toEqual(expectedCdsManifest);
         });
     });

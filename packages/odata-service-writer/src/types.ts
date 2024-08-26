@@ -78,7 +78,7 @@ export interface OdataService {
     /**
      * Annotations can either be EDMX annotations or CDS annotations.
      */
-    annotations?: EdmxAnnotationsInfo | CdsAnnotationsInfo;
+    annotations?: EdmxAnnotationsInfo | EdmxAnnotationsInfo[] | CdsAnnotationsInfo;
     localAnnotationsName?: string; // The name used in the manifest.json and as the filename for local annotations
     previewSettings?: Partial<ProxyBackend>;
 }

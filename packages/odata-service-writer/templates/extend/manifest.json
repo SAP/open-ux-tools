@@ -5,22 +5,23 @@
                 "uri": "<%=path%>",
                 "type": "OData",
                 "settings": {
-                    "annotations": [<%if (locals.annotations && annotations.technicalName) {%>
-                        "<%- annotations.name %>"<% if (locals.localAnnotationsName) {%>,<%}%><% } %><% if (locals.localAnnotationsName) { %>
+                    "annotations": [<%if (locals.annotations && annotations.length > 0) {%>
+                        <%- annotations.map(anno => '"' + anno.name + '"').join(',') %><% if (locals.localAnnotationsName) {%>,<%}%><% } %><% if (locals.localAnnotationsName) { %>
                         "<%- localAnnotationsName %>"<% } %>
                     ]<% if (locals.metadata) { %>,
                     "localUri": "localService/metadata.xml" <% } %><%if (version === '4') {%>,
                     "odataVersion": "4.0"<% } %><%if (version === '2') {%>,
                     "odataVersion": "2.0"<% } %>
                 }
-            }<%if (locals.annotations && annotations.technicalName) {%>,
-            "<%- annotations.name %>": {
-                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(annotations.technicalName) %>',Version='0001')/$value/",
+            }<%if (locals.annotations && annotations.length > 0) { for(var i=0; i<annotations.length; i++) {%>,
+            "<%- annotations[i].name %>": {
+                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(annotations[i].technicalName) %>',Version='0001')/$value/",
                 "type": "ODataAnnotation",
                 "settings": {
-                    "localUri": "localService/<%- annotations.technicalName %>.xml"
+                    "localUri": "localService/<%- annotations[i].technicalName %>.xml"
                 }
-            }<% } %><% if (locals.localAnnotationsName) { %>,
+            }
+           <%} } %><% if (locals.localAnnotationsName) { %>,
             "<%- localAnnotationsName %>": {
                 "type": "ODataAnnotation",
                 "uri": "annotations/<%- localAnnotationsName %>.xml",

@@ -37,8 +37,8 @@ function ensureExists(basePath: string, files: string[], fs: Editor): void {
 export async function findProjectFiles(
     basePath: string,
     fs: Editor
-): Promise<{ packageJson?: string; ui5Yaml?: string }> {
-    const files: { packageJson?: string; ui5Yaml?: string } = {};
+): Promise<{ packageJson?: string; ui5Yaml?: string; manifest: string }> {
+    const files: { packageJson?: string; ui5Yaml?: string; manifest?: string } = {};
     const parts = basePath.split(sep);
 
     while (parts.length > 0 && (!files.packageJson || !files.ui5Yaml)) {
@@ -48,11 +48,19 @@ export async function findProjectFiles(
         }
         if (!files.ui5Yaml && fs.exists(join(path, 'ui5.yaml'))) {
             files.ui5Yaml = join(path, 'ui5.yaml');
+            // TODO: read ui5.yaml and check if the webapp folder it is differently configured
+        }
+        if (!files.manifest && fs.exists(join(path, 'webapp/manifest.json'))) {
+            files.manifest = join(path, 'webapp/manifest.json');
         }
         parts.pop();
     }
 
-    return files;
+    if (!files.manifest) {
+        throw new Error(t('error.requiredProjectFileNotFound', { path: 'webapp/manifest.json' }));
+    }
+
+    return files as { packageJson?: string; ui5Yaml?: string; manifest: string };
 }
 
 /**
@@ -69,7 +77,6 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         fs = create(createStorage());
     }
     const paths = await findProjectFiles(basePath, fs);
-    ensureExists(basePath, ['webapp/manifest.json'], fs);
     enhanceData(service);
     // merge content into existing files
     const templateRoot = join(__dirname, '../templates');
@@ -79,7 +86,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
     }
     // manifest.json
-    updateManifest(basePath, service, fs, templateRoot);
+    updateManifest(paths.manifest, service, fs, templateRoot);
 
     // update ui5.yaml and package.json etc is not required for CAP applications
     if (service.type !== ServiceType.CDS) {
@@ -135,8 +142,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
             if (service.localAnnotationsName) {
                 const namespaces = getAnnotationNamespaces(service);
                 fs.copyTpl(
-                    join(templateRoot, 'add', 'annotation.xml'),
-                    join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
+                    join(templateRoot, 'add/annotation.xml'),
+                    join(basePath, 'webapp/annotations', `${service.localAnnotationsName}.xml`),
                     { ...service, namespaces }
                 );
             }

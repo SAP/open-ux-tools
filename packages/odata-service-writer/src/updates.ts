@@ -10,13 +10,12 @@ import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 /**
  * Internal function that updates the manifest.json based on the given service configuration.
  *
- * @param basePath - the root path of an existing UI5 application
+ * @param manifestPath - the path to the manifest.json
  * @param service - the OData service instance
  * @param fs - the memfs editor instance
  * @param templateRoot - root folder contain the ejs templates
  */
-export function updateManifest(basePath: string, service: OdataService, fs: Editor, templateRoot: string) {
-    const manifestPath = join(basePath, 'webapp', 'manifest.json');
+export function updateManifest(manifestPath: string, service: OdataService, fs: Editor, templateRoot: string): void {
     // Get component app id
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     const appProp = 'sap.app';
@@ -70,12 +69,14 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
  */
 export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
     // Write annotation xml if annotations are provided and service type is EDMX
-    const annotations = service.annotations as EdmxAnnotationsInfo;
-    if (annotations?.xml) {
-        fs.write(
-            join(basePath, 'webapp', 'localService', `${annotations.technicalName}.xml`),
-            prettifyXml(annotations.xml, { indent: 4 })
-        );
+    const annotations = service.annotations as EdmxAnnotationsInfo[];
+    for (const annotation of annotations) {
+        if (annotation.xml) {
+            fs.write(
+                join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
+                prettifyXml(annotation.xml, { indent: 4 })
+            );
+        }
     }
 }
 
