@@ -125,7 +125,7 @@
         "ui5VersionOutdatedError": "The SAPUI5 version you have selected is not compatible with SAPUI5 Visual Editor. Please select a different version.",
         "ui5VersionCannotBeEmpty": "Version cannot be empty",
         "ui5VersionNotDetectedError": "The UI5 version of the selected system could not be determined. You will be able to create and edit Adaptation project with the newest version, but it will not be usable on this system until system`s UI5 version is not upgraded to at least 1.71.",
-        "adpPluginSmartTemplateProjectError": "Select a different application. Adaptation project doesn't support the selected application.",
+        "adpDoesNotSupportSelectedApp": "Select a different application. Adaptation project doesn't support the selected application.",
         "notDeployableNotFlexEnabledSystemError": "The system that you have selected is not an ABAP On-Premise system. Adaptation Project is supported only on such systems, so please choose ABAP On-Premise system which supports Flexibility and DTA_FOLDER deployment.",
         "notFlexEnabledError": "The system that you have selected is not an ABAP On-Premise system which supports Flexibility. Adaptation Project is supported only on such systems, so please choose ABAP On-Premise system which supports Flexibility. If you continue, you will be able to create only an Extension Project.",
         "notDeployableSystemError": "The system that you have selected is not an ABAP On-Premise system which supports DTA_FOLDER deployment. Adaptation Project is supported only on such systems, so please choose ABAP On-Premise system which supports DTA_FOLDER deployment.",

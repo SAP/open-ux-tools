@@ -1,10 +1,9 @@
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 import { t } from '../../../i18n';
+import { isV4Application } from './utils';
 import { FlexLayer } from '../../../types';
 import type { Application } from '../../../types';
-import { getApplicationType } from '../../../common/app-type';
-import { isSupportedType, isV4Application } from './utils';
 
 /**
  * Manages and validates application identifiers and compatibility for adaptation projects,
@@ -15,8 +14,8 @@ export class AppIdentifier {
 
     public appSync: boolean;
     public isV4AppInternalMode: boolean;
-    public isSupportedAdpOverAdp: boolean;
-    public isPartiallySupportedAdpOverAdp: boolean;
+    public isSupported: boolean;
+    public isPartiallySupported: boolean;
 
     /**
      * Initializes the AppIdentifier with specified base settings.
@@ -32,8 +31,8 @@ export class AppIdentifier {
      *
      * @returns {boolean} True if fully supported and not partially supported, otherwise false.
      */
-    public getIsSupportedAdpOverAdp(): boolean {
-        return this.isSupportedAdpOverAdp && !this.isPartiallySupportedAdpOverAdp;
+    public getIsSupported(): boolean {
+        return this.isSupported && !this.isPartiallySupported;
     }
 
     /**
@@ -41,8 +40,8 @@ export class AppIdentifier {
      *
      * @returns {boolean} True if partially supported, otherwise false.
      */
-    public getIsPartiallySupportedAdpOverAdp(): boolean {
-        return this.isPartiallySupportedAdpOverAdp;
+    public getIsPartiallySupported(): boolean {
+        return this.isPartiallySupported;
     }
 
     /**
@@ -53,14 +52,14 @@ export class AppIdentifier {
      * @param {Manifest | null} manifest - The application manifest to validate; can be null.
      * @param {boolean} checkFullSupport - Flag to check for full AdpOverAdp support.
      * @param {boolean} checkPartialSupport - Flag to check for partial AdpOverAdp support.
-     * @returns {Promise<void>} Resolves when validation is complete.
+     * @returns {void}} Returns when validation is complete.
      */
-    public async validateSelectedApplication(
+    public validateSelectedApplication(
         application: Application,
         manifest: Manifest | undefined,
         checkFullSupport: boolean,
         checkPartialSupport: boolean
-    ): Promise<void> {
+    ): void {
         if (!application) {
             throw new Error(t('validators.selectCannotBeEmptyError', { value: 'Application' }));
         }
@@ -69,36 +68,16 @@ export class AppIdentifier {
             throw new Error(t('validators.manifestCouldNotBeValidated'));
         }
 
-        this.isV4AppInternalMode = false;
-        this.isSupportedAdpOverAdp = !(checkFullSupport && application.fileType === 'appdescr_variant');
-        this.isPartiallySupportedAdpOverAdp = checkPartialSupport && application.fileType === 'appdescr_variant';
+        this.isSupported = !(checkFullSupport && application.fileType === 'appdescr_variant');
+        this.isPartiallySupported = checkPartialSupport && application.fileType === 'appdescr_variant';
+        this.isV4AppInternalMode = isV4Application(manifest) && !this.isCustomerBase;
 
-        await this.validateFioriApplication(manifest);
-    }
-
-    /**
-     * Validates a smart template application manifest, checking for compatibility with adaptation projects.
-     *
-     * @param {Manifest} manifest - The manifest of the application to validate.
-     * @returns {Promise<void>} Resolves when the validation is complete.
-     * @throws {Error} When the application does not support adaptation or is incompatible.
-     */
-    public async validateFioriApplication(manifest: Manifest): Promise<void> {
-        const isV4App = isV4Application(manifest);
-
-        this.isV4AppInternalMode = isV4App && !this.isCustomerBase;
-
-        const appType = getApplicationType(manifest);
-
-        if (isSupportedType(appType)) {
-            if (manifest['sap.ui5']) {
-                if (manifest['sap.ui5'].flexEnabled === false) {
-                    throw new Error(t('validators.appDoesNotSupportAdaptation'));
-                }
-                this.checkForSyncLoadedViews(manifest['sap.ui5']);
+        if (manifest['sap.ui5']) {
+            if (!manifest['sap.ui5'].flexEnabled) {
+                throw new Error(t('validators.appDoesNotSupportAdaptation'));
             }
-        } else {
-            throw new Error(t('validators.adpPluginSmartTemplateProjectError'));
+
+            this.checkForSyncLoadedViews(manifest['sap.ui5']);
         }
     }
 

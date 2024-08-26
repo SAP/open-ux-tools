@@ -34,9 +34,10 @@ export class ManifestManager {
      * Retrieves the cached manifest for a specified application.
      *
      * @param {string} id - The ID of the application whose manifest is needed.
-     * @returns {Manifest | undefined} The cached manifest or null if not available.
+     * @returns {Promise<Manifest | undefined>} The cached manifest or null if not available.
      */
-    public getManifest(id: string): Manifest | undefined {
+    public async getManifest(id: string): Promise<Manifest | undefined> {
+        await this.loadManifest(id);
         return this.manifestCache.get(id)?.manifest;
     }
 
@@ -44,9 +45,10 @@ export class ManifestManager {
      * Retrieves the cached manifest URL for a specified application.
      *
      * @param {string} id - The ID of the application whose manifest URL is needed.
-     * @returns {string | undefined} The cached URL or an empty string if not available.
+     * @returns {Promise<string | undefined>} The cached URL or an empty string if not available.
      */
-    public getUrl(id: string): string | undefined {
+    public async getUrl(id: string): Promise<string | undefined> {
+        await this.loadManifestUrl(id);
         return this.manifestCache.get(id)?.url;
     }
 
@@ -57,7 +59,7 @@ export class ManifestManager {
      * @param {string} id - The ID of the application for which to load the manifest.
      * @returns {Promise<void>} The manifest URL.
      */
-    public async loadManifestUrl(id: string): Promise<void> {
+    private async loadManifestUrl(id: string): Promise<void> {
         const cached = this.manifestCache.get(id);
         if (cached?.url) {
             return;
@@ -80,7 +82,7 @@ export class ManifestManager {
      * @param {string} id - The application ID.
      * @returns {Promise<Manifest>} The fetched manifest.
      */
-    public async loadManifest(id: string): Promise<void> {
+    private async loadManifest(id: string): Promise<void> {
         const provider = this.provider.getProvider();
         let cached = this.manifestCache.get(id);
 
@@ -114,7 +116,7 @@ export class ManifestManager {
     }
 
     /**
-     * Determines if the application supports manifest-first approach.
+     * Determines if the application supports manifest-first approach and manifest url exists.
      *
      * @param {string} id - The application ID.
      * @returns {Promise<boolean>} True if supported, otherwise throws an error.
@@ -129,20 +131,11 @@ export class ManifestManager {
             throw new Error(t('validators.appDoesNotSupportManifest'));
         }
 
-        return this.checkManifestUrlExists(id);
-    }
+        const url = await this.getUrl(id);
 
-    /**
-     * Checks if a manifest URL exists for a given application.
-     *
-     * @param {string} id - The application ID.
-     * @returns {Promise<boolean>} True if the manifest URL exists, otherwise throws an error.
-     */
-    private async checkManifestUrlExists(id: string): Promise<boolean> {
-        await this.loadManifestUrl(id);
-
-        if (!this.getUrl(id)) {
-            throw new Error(t('validators.adpPluginSmartTemplateProjectError'));
+        if (!url) {
+            this.logger?.debug(`Manifest url for app '${id}' was not found!`);
+            throw new Error(t('validators.adpDoesNotSupportSelectedApp'));
         }
 
         return true;

@@ -84,8 +84,8 @@ export const appAdditionalMessages = (app: Application, prompter: ConfigInfoProm
         };
     }
 
-    const isSupported = prompter.appIdentifier.getIsSupportedAdpOverAdp();
-    const isPartiallySupported = prompter.appIdentifier.getIsPartiallySupportedAdpOverAdp();
+    const isSupported = prompter.appIdentifier.getIsSupported();
+    const isPartiallySupported = prompter.appIdentifier.getIsPartiallySupported();
 
     if (!isSupported && !isPartiallySupported && prompter.isApplicationSupported) {
         return {

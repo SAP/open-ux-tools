@@ -219,9 +219,7 @@ export default class ConfigInfoPrompter {
                 const isSupported = await this.manifestManager.isAppSupported(value.id);
 
                 if (isSupported) {
-                    await this.manifestManager.loadManifest(value.id);
-
-                    const manifest = this.manifestManager.getManifest(value.id);
+                    const manifest = await this.manifestManager.getManifest(value.id);
                     await this.evaluateApplicationSupport(manifest, value);
                 }
                 this.isApplicationSupported = true;
@@ -641,7 +639,8 @@ export default class ConfigInfoPrompter {
                 breadcrumb: t('prompts.fioriIdLabel')
             },
             when: (answers) => showInternalQuestions(answers, this),
-            default: (answers: ConfigurationInfoAnswers) => getDefaultFioriId(answers, this.manifestManager),
+            default: async (answers: ConfigurationInfoAnswers) =>
+                await getDefaultFioriId(answers, this.manifestManager),
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
@@ -662,7 +661,7 @@ export default class ConfigInfoPrompter {
                 mandatory: true
             },
             when: (answers) => showInternalQuestions(answers, this),
-            default: (answers: ConfigurationInfoAnswers) => getDefaultAch(answers, this.manifestManager),
+            default: async (answers: ConfigurationInfoAnswers) => await getDefaultAch(answers, this.manifestManager),
             validate: (value: string) => validateAch(value, this.isCustomerBase),
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;

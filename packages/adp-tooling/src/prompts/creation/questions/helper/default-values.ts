@@ -79,10 +79,13 @@ export async function getVersionDefaultValue(
  *
  * @param {ConfigurationInfoAnswers} answers - The configuration answers containing details about the application.
  * @param {ManifestManager} manifestManager - The manager responsible for fetching and handling the application manifest.
- * @returns {string} The Fiori registration IDs as a string if available, otherwise an empty string.
+ * @returns {Promise<string>} The Fiori registration IDs as a string if available, otherwise an empty string.
  */
-export function getDefaultFioriId(answers: ConfigurationInfoAnswers, manifestManager: ManifestManager): string {
-    const manifest = manifestManager.getManifest(answers?.application?.id);
+export async function getDefaultFioriId(
+    answers: ConfigurationInfoAnswers,
+    manifestManager: ManifestManager
+): Promise<string> {
+    const manifest = await manifestManager.getManifest(answers?.application?.id);
     return manifest?.['sap.fiori']?.registrationIds?.toString() ?? '';
 }
 
@@ -91,10 +94,13 @@ export function getDefaultFioriId(answers: ConfigurationInfoAnswers, manifestMan
  *
  * @param {ConfigurationInfoAnswers} answers - The configuration answers that include application details.
  * @param {ManifestManager} manifestManager - The manager responsible for accessing the application manifest.
- * @returns {string} The ACH code as a string if available, otherwise an empty string.
+ * @returns {Promise<string>} The ACH code as a string if available, otherwise an empty string.
  */
-export function getDefaultAch(answers: ConfigurationInfoAnswers, manifestManager: ManifestManager): string {
-    const manifest = manifestManager.getManifest(answers?.application?.id);
+export async function getDefaultAch(
+    answers: ConfigurationInfoAnswers,
+    manifestManager: ManifestManager
+): Promise<string> {
+    const manifest = await manifestManager.getManifest(answers?.application?.id);
     return manifest?.['sap.app']?.ach?.toString() ?? '';
 }
 

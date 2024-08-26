@@ -31,10 +31,7 @@ export async function getPrompts(
     isCloudProject: boolean,
     appId: string
 ): Promise<YUIQuestion<FlpConfigAnswers>[]> {
-    if (!manifestManager.getManifest(appId)) {
-        await manifestManager.loadManifest(appId);
-    }
-    const manifest = manifestManager.getManifest(appId);
+    const manifest = await manifestManager.getManifest(appId);
     const inboundIds = getInboundIds(manifest);
 
     return [

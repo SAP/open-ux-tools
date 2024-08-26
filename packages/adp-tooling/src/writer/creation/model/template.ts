@@ -23,7 +23,7 @@ import { getI18nModels } from '../i18n/model';
 import { getSupportForUI5Yaml } from '../configs/support';
 import { getUI5DeployConfig } from '../configs/deploy';
 import { parseParameters } from '../../../common/flp-parameters';
-import { getApplicationType } from '../../../common/app-type';
+import { getApplicationType } from '../manifest';
 
 /**
  * Constructs the ABAP target configuration based on the operational context and project type.
@@ -102,7 +102,7 @@ export class TemplateModel {
         const deploy = getUI5DeployConfig(isCloudProject, deployConfigAnswers);
 
         const appId = configAnswers.application.id;
-        const manifest = this.manifestManager.getManifest(appId);
+        const manifest = await this.manifestManager.getManifest(appId);
         if (!manifest) {
             throw new Error('Manifest of the application was not found!');
         }

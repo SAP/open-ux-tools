@@ -1,5 +1,6 @@
 import type { Manifest } from '@sap-ux/project-access';
-import { ApplicationType } from '../types';
+
+import { ApplicationType } from '../../../types';
 
 /**
  * Determines the type of UI5 application based on the content of its manifest file.
