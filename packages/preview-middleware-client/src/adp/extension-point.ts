@@ -6,7 +6,7 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
 import { ExternalAction, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
 
-import { createDeferred } from './utils';
+import { createDeferred, Deferred } from './utils';
 
 import { SubscribeFunction } from '../cpe/types';
 import { DialogNames } from './dialogs';

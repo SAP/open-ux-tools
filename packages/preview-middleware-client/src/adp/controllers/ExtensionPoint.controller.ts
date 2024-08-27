@@ -17,7 +17,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
-import { ExtensionPointData, ExtensionPointInfo } from '../extension';
+import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
 import { notifyUser } from '../utils';
 
 type ExtensionPointModel = JSONModel & {
