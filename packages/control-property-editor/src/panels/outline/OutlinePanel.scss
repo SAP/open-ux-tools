@@ -9,6 +9,10 @@
     background-color: var(--vscode-sideBar-background);
 }
 
+.tree-scroller {
+    height: calc(100% - 55px);
+}
+
 .funnel-icon {
     margin-left: 16px;
     i {

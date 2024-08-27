@@ -26,7 +26,7 @@ export function LeftPanel(): ReactElement {
             sizesAsPercents={true}
             animation={true}>
             <UISections.Section
-                scrollable={true}
+                scrollable={false}
                 layout={UISectionLayout.Standard}
                 className="editor__outline"
                 height="100%">

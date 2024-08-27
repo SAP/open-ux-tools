@@ -75,7 +75,7 @@ export const Tree = (): ReactElement => {
                 // make sure that tree is fully rendered
                 const rect = node.getBoundingClientRect();
                 const outlineContainer = document.getElementsByClassName('section--scrollable')[0];
-                if (rect.top <= 20 || rect.bottom >= outlineContainer?.clientHeight) {
+                if (rect.top <= 75 || rect.bottom >= outlineContainer?.clientHeight) {
                     node.scrollIntoView(true);
                 }
             }, 0);
@@ -464,7 +464,7 @@ export const Tree = (): ReactElement => {
     };
 
     return (
-        <div id="list-outline" className="app-panel-scroller">
+        <div id="list-outline" className="app-panel-scroller tree-scroller">
             <UIList
                 {...listProp}
                 items={items as never[]}
