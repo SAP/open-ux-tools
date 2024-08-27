@@ -72,7 +72,7 @@ async function getTarget(target?: string): Promise<'abap' | 'cf'> {
  * @param baseFile - base file name
  * @param deployFile - deploy file name
  */
-export async function addDeployConfig(
+async function addDeployConfig(
     basePath: string,
     target?: 'abap' | 'cf',
     simulate = false,
