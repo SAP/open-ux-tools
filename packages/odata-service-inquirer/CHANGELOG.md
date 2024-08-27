@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.29
+
+### Patch Changes
+
+-   34b2606: Adds new system prompts for Abap on BTP
+
 ## 0.5.28
 
 ### Patch Changes
