@@ -67,10 +67,7 @@ export function getErrorMessage(error: Error | unknown): string {
  * @param {Editor} fs - the memfs editor instance
  * @param {boolean} addMissingLibraries - indicates whether to add missing libraries or throw an error
  */
-export function checkRequiredLibraries(basePath: string, fs?: Editor, addMissingLibraries = false): void {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+export function checkRequiredLibraries(basePath: string, fs: Editor, addMissingLibraries = false): void {
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     const manifest = fs.readJSON(manifestPath) as Manifest;
     const libs = manifest?.['sap.ui5']?.dependencies?.libs;
