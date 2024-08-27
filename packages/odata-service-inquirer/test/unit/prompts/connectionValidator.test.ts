@@ -2,6 +2,7 @@ import {
     AbapServiceProvider,
     Annotations,
     ODataService,
+    ODataVersion,
     ServiceProvider,
     type AxiosRequestConfig
 } from '@sap-ux/axios-extension';
@@ -456,7 +457,7 @@ describe('ConnectionValidator', () => {
             .mockRejectedValue(newAxiosErrorWithStatus(401));
         const listServicesV4Mock = jest
             .spyOn(axiosExtension.V4CatalogService.prototype, 'listServices')
-            .mockResolvedValueOnce([]);
+            .mockResolvedValue([]);
         const connectValidator = new ConnectionValidator();
         await connectValidator.validateUrl('https://example.com:1234', { isSystem: true });
 
@@ -469,6 +470,17 @@ describe('ConnectionValidator', () => {
         );
 
         expect(listServicesV2Mock).toHaveBeenCalled();
+        expect(listServicesV4Mock).toHaveBeenCalled();
+
+        // If the only v4 catalog is required (perhaps due to a template limitation), it should be only used
+        listServicesV2Mock.mockClear();
+        listServicesV4Mock.mockClear();
+        // Uses a different URL to ensure the previous validation does not affect this test as we cache
+        await connectValidator.validateUrl('https://example.com:1235', {
+            isSystem: true,
+            odataVersion: ODataVersion.v4
+        });
+        expect(listServicesV2Mock).not.toHaveBeenCalled();
         expect(listServicesV4Mock).toHaveBeenCalled();
     });
 });
