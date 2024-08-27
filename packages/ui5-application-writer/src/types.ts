@@ -53,18 +53,58 @@ export interface App {
 
 export type UI5Framework = 'SAPUI5' | 'OpenUI5';
 
+/**
+ * Configuration for a UI5 project.
+ */
 export interface UI5 {
+    /**
+     * The UI5 framework being used (e.g. OpenUI5, SAPUI5)
+     */
     framework: UI5Framework;
+    /**
+     * URL for UI5 framework.
+     */
     frameworkUrl: string;
+    /**
+     * The minimum required UI5 version for the project.
+     */
     minUI5Version: string;
+    /**
+     * The specific version of the UI5 framework being used in the project.
+     */
     version: string;
+    /**
+     * Local version of the UI5 application.
+     */
     localVersion: string;
+    /**
+     * Types version for UI5.
+     */
     typesVersion: string;
+    /**
+     * UI5 types package name.
+     */
     typesPackage: string;
+    /**
+     * The manifest descriptor version.
+     */
     descriptorVersion: string;
+    /**
+     * The UI5 libraries that are required by the project. (e.g. manifest, ui5-local.yaml, flpSandbox.html)
+     */
     ui5Libs: string | string[];
+    /**
+     * (Optional) The UI5 libraries required specifically for the manifest file.
+     * If not provided, `ui5Libs` used as a fallback.
+     */
     manifestLibs?: string | string[];
+    /**
+     * The default UI5 theme to be used in the project (e.g. 'sap_fiori_3').
+     */
     ui5Theme: string;
+    /**
+     * (Optional) Custom UI5 libraries that should be included in the project.
+     */
     customUi5Libs?: string[];
 }
 
