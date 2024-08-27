@@ -1,0 +1,175 @@
+{
+    "prompts": {
+        "datasourceType": {
+            "message": "Data source",
+            "projectSpecificDestName": "Project Specific Destination",
+            "businessHubName": "SAP Business Accelerator Hub",
+            "sapSystemName": "SAP System",
+            "odataServiceUrlName": "OData Service Url",
+            "capProjectName": "Local CAP Project",
+            "metadataFileName": "Metadata File",
+            "noneName": "None",
+            "projectSpecificDestChoiceText": "Connect to a $t(prompts.datasourceType.projectSpecificDestName)",
+            "businessHubChoiceText": "Connect to $t(prompts.datasourceType.businessHubName)",
+            "sapSystemChoiceText": "Connect to a $t(prompts.datasourceType.sapSystemName)",
+            "odataServiceUrlChoiceText": "Connect to an $t(prompts.datasourceType.odataServiceUrlName)",
+            "capProjectChoiceText": "Use a $t(prompts.datasourceType.capProjectName)",
+            "metadataFileChoiceText": "Upload a $t(prompts.datasourceType.metadataFileName)",
+            "notYetImplementedWarningMessage": "The selected data source type: {{ datasourceType }} is not yet implemented."
+        },
+        "metadataFile": {
+            "message": "Metadata file path",
+            "description": "Upload a metadata file",
+            "placeholder_odata_service_url": "/here/goes/your/serviceurl/"
+        },
+        "capProject": {
+            "message": "Choose your CAP project",
+            "description": "Select a local CAP project",
+            "breadcrumb": "CAP Project",
+            "enterCapPathChoiceName": "Manually select CAP project folder path"
+        },
+        "capProjectPath": {
+            "message": "CAP project folder path",
+            "description": "Select a local CAP project",
+            "breadcrumb": "CAP Project",
+            "enterCapPathChoiceName": "Manually select CAP project folder path"
+        },
+        "capService": {
+            "message": "OData service",
+            "description": "Select a local CAP service",
+            "breadcrumb": "CAP Service",
+            "enterCapPathChoiceName": "Manually select CAP service folder path"
+        },
+        "odataServiceUrl": {
+            "message": "OData{{odataVersion, odataVersionFormatter}} service URL"
+        },
+        "ignoreCertErrors": {
+            "message": "Do you want to continue generation with the untrusted certificate?"
+        },
+        "serviceUsername": {
+            "message": "Service username"
+        },
+        "servicePassword": {
+            "message": "Service password"
+        },
+        "validationMessages": {
+            "odataVersionMismatch": "The template you have chosen supports V{{requiredOdataVersion}} OData services only. The provided version is V{{providedOdataVersion}}.",
+            "metadataInvalid": "The service metadata is invalid.",
+            "metadataFilePathNotValid": "Metadata file does not exist or is not accessible. Please specify a valid file path.",
+            "capProjectNotFound": "The folder you have selected does not seem to contain a valid CAP project. Please check and try again.",
+            "warningCertificateValidationDisabled": "User has disabled certificate validation",
+            "annotationsNotFound": "Annotations not found for specified service"
+        },
+        "warnings": {
+            "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services are not intended to be used for the generation of SAP Fiori UI applications",
+            "noServicesAvailable": "No services available for the selected system, see logs for further details.",
+            "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only"
+        },
+        "systemUrl": {
+            "message": "System URL",
+            "description": "Enter the URL of the SAP System",
+            "placeholder": "https://<host>:<port>"
+        },
+        "sapClient": {
+            "message": "SAP client (leave empty for default)",
+            "breadcrumb": "SAP Client"
+        },
+        "systemUsername": {
+            "message": "Username"
+        },
+        "systemPassword": {
+            "message": "Password"
+        },
+        "systemService": {
+            "message": "Service name",
+            "breadcrumb": "Service",
+            "noServicesWarning": "No services available for the selected system, see logs for further details."
+        },
+        "newSystemType": {
+            "choiceAbapOnPrem": "ABAP On Premise",
+            "choiceAbapOnBtp": "ABAP Environment on SAP Business Technology Platform",
+            "message": "System type",
+            "notYetImplementedWarningMessage": "The selected system type: {{ systemType }} is not yet implemented."
+        },
+        "systemName": {
+            "message": "System name",
+            "hint": "Entering a system name will save the connection for re-use.",
+            "systemNameExistsWarning": "A system with that name already exists in the secure storage. Please try a different name.",
+            "reservedSystemNameWarning": "'{{ systemName }}' is a reserved system name. Please try a different name.",
+            "emptySystemNameWarning": "System name cannot be empty."
+        },
+        "systemSelection": {
+            "newSystemChoiceLabel": "New system"
+        },
+        "abapOnBTPType": {
+            "message": "ABAP environment definition source",
+            "choiceReentranceTicket": "Use Reentrance Ticket",
+            "choiceServiceKey": "Upload a Service Key File",
+            "choiceCloudFoundry": "Discover a Cloud Foundry Service"
+        },
+        "serviceKey": {
+            "message": "Service key file path",
+            "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
+            "incompleteServiceKeyInfo": "Service keys file does not contain the required information",
+            "unparseableServiceKey": "Service keys file contents are not a valid JSON format"
+        },
+        "cloudFoundryAbapSystem": {
+            "message": "ABAP environment",
+            "hint": "Enter the name of the Cloud Foundry service that contains the ABAP Environment instance"
+        }
+    },
+    "errors": {
+        "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. See log for more details.",
+        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services. {{- error}}",
+        "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. CAP service property `urlPath` is not defined but is required.",
+        "unknownError": "An error occurred: {{- error}}",
+        "servicesUnavailable": "An error occurred retrieving service(s) for SAP System.",
+        "certificateError": "A certificate error has occurred: {{- error}}",
+        "urlCertValidationError": "The system URL is using {{certErrorReason}} security certificate.",
+        "authenticationFailed": "Authentication incorrect {{error}}",
+        "authenticationTimeout": "Authorization was not verified within the allowed time. Please ensure you have authenticated using the associated browser window.",
+        "invalidUrl": "Not a valid URL",
+        "connectionError": "A connection error occurred, please ensure the target host is available on the network: {{- error}}",
+        "serviceUnavailable": "Selected service is returning an error.",
+        "catalogServiceNotActive": "Catalog service is not active",
+        "internalServerError": "The URL you have provided cannot be accessed and is returning: '{{- error}}'. Please ensure that the URL is accessible externally.",
+        "urlNotFound": "URL not found",
+        "odataServiceUrlNotFound": "The service URL you have provided is not a valid OData Service. Fiori applications require an OData service as the data source.",
+        "badGateway": "The server returned an error: bad gateway, please check the URL and try again.",
+        "destinationUnavailable": "The selected destination references an instance that is not available. Please check your destination configuration and try again.",
+        "destinationNotFound": "The destination is mis-configured, HTTP Error 404 returned, the requested resource could not be found.",
+        "destinationMisconfigured": "The destination is mis-configured, HTML5.DynamicDestination property is missing.",
+        "noServicesAvailable": "There are no V{{version}} OData services available from the selected system and the template you have chosen supports V{{version}} OData services only",
+        "redirectError": "A redirect response was received from the server",
+        "abapEnvsUnavailable": "ABAP environments unavailable",
+        "noSuchHostError": "No such host is known",
+        "odataServiceVersionMismatch": "The template you have chosen supports V{{requiredVersion}} OData services only. The provided version is V{{serviceVersion}}.",
+        "destinationAuthError": "The selected system is returning an authentication error. Please verify the destination configuration",
+        "systemOrServiceUrlNotFound": "Please verify the url: {{- url}}, target system configuration and network connectivity",
+        "urlRedirect": "The service URL is redirecting",
+        "certValidationRequired": "Certificate validation is required to continue.",
+        "exitingGeneration": "Exiting generation. {{exitReason}}",
+        "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}",
+        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). $t(texts.seeLogForDetails)",
+        "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}",
+        "serviceTypeRequestError": "Error retrieving service type: {{- error}}",
+        "noAbapEnvsInCFSpace": "No ABAP environments in CF space found.",
+        "abapEnvsCFDiscoveryFailed": "Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry (see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login).",
+        "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed."
+    },
+    "texts": {
+        "anExpiredCert": "an expired",
+        "aSelfSignedCert": "a self-signed",
+        "anUnknownOrInvalidCert": "an unknown or invalid",
+        "anUntrustedRootCert": "an untrusted root",
+        "suggestedSystemNameClient": ", client {{client}}",
+        "seeLogForDetails": "See log for more details.",
+        "forUserName": "(for user [{{username}}])"
+    },
+    "guidedAnswers": {
+        "validationErrorHelpText": "Need help with this error?"
+    },
+    "telemetry": {
+        "unknownOsText": "Unknown"
+    }
+}
