@@ -20,15 +20,14 @@ import {
 } from '../../src/prompts/conditions';
 import * as utils from '../../src/utils';
 import { PromptState } from '../../src/prompts/prompt-state';
-import { getHelpUrl } from '@sap-ux/fiori-generator-shared';
+import { getHelpUrl } from '@sap-ux/guided-answers-helper';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn(),
+jest.mock('@sap-ux/guided-answers-helper', () => ({
+    ...jest.requireActual('@sap-ux/guided-answers-helper'),
     getHelpUrl: jest.fn()
 }));
 
@@ -129,7 +128,7 @@ describe('Test abap deploy config inquirer conditions', () => {
     test('should show package input choice question', () => {
         // cli
         PromptState.isYUI = false;
-        expect(showPackageInputChoiceQuestion(true)).toBe(true);
+        expect(showPackageInputChoiceQuestion()).toBe(true);
     });
 
     test('should not show package input choice question', () => {

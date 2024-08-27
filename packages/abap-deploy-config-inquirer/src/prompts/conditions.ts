@@ -4,7 +4,7 @@ import { clientDoesNotExistOrInvalid } from '../validator-utils';
 import { findBackendSystemByUrl, initTransportConfig } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
 import { t } from '../i18n';
-import { getHelpUrl, HELP_TREE } from '@sap-ux/fiori-generator-shared';
+import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
 import {
     ClientChoiceValue,
@@ -202,6 +202,7 @@ export function defaultOrShowManualPackageQuestion(
     packageInputChoice?: string,
     useAutocomplete = false
 ): boolean {
+    // Until the version of YUI installed supports auto-complete we must continue to show a manual input for packages
     return (
         (!isCli || packageInputChoice === PackageInputChoices.EnterManualChoice || !useAutocomplete) &&
         defaultOrShowPackageQuestion()
