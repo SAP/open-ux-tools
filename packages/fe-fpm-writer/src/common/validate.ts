@@ -3,6 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { coerce, lt } from 'semver';
+import type { Manifest } from './types';
 
 /**
  * Validate that the UI5 version requirement is valid.
@@ -57,4 +58,33 @@ export function validateBasePath(basePath: string, fs?: Editor, dependencies = [
  */
 export function getErrorMessage(error: Error | unknown): string {
     return error instanceof Error ? error.message : String(error);
+}
+
+/**
+ * Validates base path, checks and adds missing libraries.
+ *
+ * @param {string} basePath - the base path
+ * @param {Editor} fs - the memfs editor instance
+ * @param {boolean} addMissingLibraries - indicates whether to add missing libraries or throw an error
+ */
+export function checkRequiredLibraries(basePath: string, fs?: Editor, addMissingLibraries = false): void {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    const manifestPath = join(basePath, 'webapp', 'manifest.json');
+    const manifest = fs.readJSON(manifestPath) as Manifest;
+    const libs = manifest?.['sap.ui5']?.dependencies?.libs;
+    if (!fs.exists(manifestPath)) {
+        throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
+    } else if (libs?.['sap.fe.core'] === undefined && libs?.['sap.fe.templates'] === undefined) {
+        if (addMissingLibraries) {
+            // TODO: add missing library
+        } else {
+            throw new Error(
+                'Both dependencies "sap.fe.core" and "sap.fe.templates" are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
+            );
+        }
+    } else if (addMissingLibraries && libs?.['sap.fe.core'] === undefined) {
+        // TODO: add missing library
+    }
 }

@@ -72,10 +72,8 @@ describe('Building Blocks', () => {
         ).toThrowError(/Invalid view path/);
     });
 
-    test('validate sap.fe.core manifest dependency', async () => {
+    test('validate sap.fe.templates and sap.fe.core manifest dependencies are missing', async () => {
         const basePath = join(testAppPath, 'validate-manifest-dep');
-        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
-
         // Test generator without sap.fe.core as dependency in manifest.json
         fs.write(join(basePath, manifestFilePath), JSON.stringify({ ...testManifestContent, 'sap.ui5': {} }));
         expect(() =>
@@ -91,7 +89,9 @@ describe('Building Blocks', () => {
                 },
                 fs
             )
-        ).toThrowError(/Fiori elements FPM requires the SAP FE libraries/);
+        ).toThrowError(
+            /Both dependencies "sap.fe.core" and "sap.fe.templates" are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries./
+        );
     });
 
     test('validate aggregation path', async () => {
