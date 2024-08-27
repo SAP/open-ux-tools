@@ -29,6 +29,11 @@ import {
 } from '../../src/types';
 import * as utils from '../../src/utils';
 import { mockDestinations } from '../fixtures/destinations';
+import * as serviceProviderUtils from '../../src/service-provider-utils';
+
+jest.mock('../../src/service-provider-utils', () => ({
+    getTransportListFromService: jest.fn()
+}));
 
 describe('Test validators', () => {
     beforeAll(async () => {
@@ -276,8 +281,13 @@ describe('Test validators', () => {
 
     describe('validatePackage', () => {
         it('should return error for invalid package input', async () => {
-            const result = await validatePackage('ZPACKAGE', {});
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+
+            const result = await validatePackage('zpackage', {
+                ui5AbapRepo: 'ZUI5REPO'
+            });
             expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).toBeCalledWith('ZPACKAGE', 'ZUI5REPO', {}, undefined);
         });
         it('should return error for invalid package input', async () => {
             const result = await validatePackage(' ', {});
