@@ -95,7 +95,7 @@ describe('CustomPage', () => {
 
     test('checkRequiredLibraries - both libraries are present', () => {
         const target = join(testDir, 'checkRequiredLibraries');
-        let manifestWithOneLib = {
+        const manifestWithOneLib = {
             ...JSON.parse(testAppManifest),
             ['sap.ui5']: { dependencies: { libs: { ['sap.fe.templates']: {}, ['sap.fe.core']: {} } } }
         };
