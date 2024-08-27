@@ -6,11 +6,10 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
 import { ExternalAction, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
 
-import { createDeferred, Deferred } from './utils';
+import { Deferred, createDeferred } from './utils';
 
 import { SubscribeFunction } from '../cpe/types';
-import { DialogNames } from './dialogs';
-import { handler } from './init-dialogs';
+import { DialogNames, handler } from './init-dialogs';
 
 type ActionService = {
     execute: (controlId: string, actionId: string) => void;

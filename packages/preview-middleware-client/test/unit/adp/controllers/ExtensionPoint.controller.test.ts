@@ -6,7 +6,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { fetchMock } from 'mock/window';
 
-import { type ExtensionPointData } from '../../../../src/adp/extension';
+import { type ExtensionPointData } from '../../../../src/adp/extension-point';
 
 import ExtensionPoint from '../../../../src/adp/controllers/ExtensionPoint.controller';
 

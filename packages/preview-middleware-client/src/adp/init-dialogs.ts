@@ -16,13 +16,17 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import AddFragment from './controllers/AddFragment.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
-import { ExtensionPointData } from './extension';
+import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import { isReuseComponent } from '../cpe/outline/utils';
 import { Ui5VersionInfo } from '../utils/version';
 
-import { DialogNames} from './dialogs';
+export const enum DialogNames {
+    ADD_FRAGMENT = 'AddFragment',
+    CONTROLLER_EXTENSION = 'ControllerExtension',
+    ADD_FRAGMENT_AT_EXTENSION_POINT = 'ExtensionPoint'
+}
 
 type Controller = AddFragment | ControllerExtension | ExtensionPoint;
 

@@ -1,6 +1,7 @@
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import type UI5Element from 'sap/ui/core/Element';
+
 import * as utils from '../../../src/adp/utils';
 import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
 import ExtensionPointService, { type ExtensionPointInfo } from '../../../src/adp/extension-point';
