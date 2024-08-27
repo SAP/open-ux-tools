@@ -8,6 +8,7 @@ import { generateCustomPage, validateBasePath } from '../../../src';
 import { FCL_ROUTER } from '../../../src/common/defaults';
 import { detectTabSpacing } from '../../../src/common/file';
 import { tabSizingTestCases } from '../../common';
+import { checkRequiredLibraries } from '../../../src/common/validate';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -63,6 +64,44 @@ describe('CustomPage', () => {
         delete invalidManifest['sap.ui5'].dependencies?.libs['sap.fe.templates'];
         fs.writeJSON(join(target, 'webapp/manifest.json'), invalidManifest);
         expect(() => validateBasePath(target, fs, [])).not.toThrowError();
+    });
+
+    test('checkRequiredLibraries - required lib `sap.fe.templates` and `sap.fe.core` missing', () => {
+        const target = join(testDir, 'validateBasePathRequired');
+        fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+        expect(() => checkRequiredLibraries(target, fs)).toThrowError(
+            'Both dependencies "sap.fe.core" and "sap.fe.templates" are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
+        );
+    });
+
+    test('checkRequiredLibraries - one library is present', () => {
+        const target = join(testDir, 'checkRequiredLibraries');
+        let manifestWithOneLib = {
+            ...JSON.parse(testAppManifest),
+            ['sap.ui5']: { dependencies: { libs: { ['sap.fe.templates']: {} } } }
+        };
+
+        fs.writeJSON(join(target, 'webapp/manifest.json'), manifestWithOneLib);
+        expect(() => checkRequiredLibraries(target, fs)).not.toThrowError();
+
+        delete manifestWithOneLib['sap.ui5'].dependencies?.libs['sap.fe.templates'];
+        manifestWithOneLib = {
+            ...JSON.parse(testAppManifest),
+            ['sap.ui5']: { dependencies: { libs: { ['sap.fe.core']: {} } } }
+        };
+        fs.writeJSON(join(target, 'webapp/manifest.json'), manifestWithOneLib);
+        expect(() => checkRequiredLibraries(target, fs)).not.toThrowError();
+    });
+
+    test('checkRequiredLibraries - both libraries are present', () => {
+        const target = join(testDir, 'checkRequiredLibraries');
+        let manifestWithOneLib = {
+            ...JSON.parse(testAppManifest),
+            ['sap.ui5']: { dependencies: { libs: { ['sap.fe.templates']: {}, ['sap.fe.core']: {} } } }
+        };
+
+        fs.writeJSON(join(target, 'webapp/manifest.json'), manifestWithOneLib);
+        expect(() => checkRequiredLibraries(target, fs)).not.toThrowError();
     });
 
     describe('generateCustomPage: different versions or target folder', () => {
