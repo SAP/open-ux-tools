@@ -27,6 +27,7 @@ import ElementUtil from 'sap/ui/dt/ElementUtil';
 import Control from 'sap/ui/core/Control';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
 import FlexObjectFactory from 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory';
+import FlexChange from 'sap/ui/fl/Change';
 
 interface ChangeContent {
     property: string;
@@ -49,6 +50,7 @@ interface Change {
     content: ChangeContent;
     creation: string;
     changeType: string;
+    file: object;
 }
 
 type SavedChangesResponse = Record<string, Change>;
@@ -185,7 +187,7 @@ export class ChangeService {
                             let selectorId;
                             try {
                                 const flexObject = FlexObjectFactory.createFromFileContent(change);
-                                selectorId = await this.getSelectorIdByChange(flexObject);
+                                selectorId = await this.getSelectorIdByChange(flexObject as FlexChange);
                                 assertChange(change);
                                 if (
                                     [change.content.newValue, change.content.newBinding].every(
@@ -212,8 +214,7 @@ export class ChangeService {
                                         ? (change.selector.type.split('.').pop() as string)
                                         : '',
                                     changeType: change.changeType,
-                                    // @ts-ignore
-                                    rawChange: change
+                                    file: change
                                 };
                             } catch (error) {
                                 // Gracefully handle change files with invalid content
@@ -223,8 +224,7 @@ export class ChangeService {
                                         kind: 'unknown',
                                         fileName: change.fileName,
                                         controlId: selectorId, // some changes may not have selector
-                                        // @ts-ignore
-                                        rawChange: change
+                                        file: change
                                     };
                                     if (change.creation) {
                                         unknownChange.timestamp = new Date(change.creation).getTime();
@@ -406,7 +406,7 @@ export class ChangeService {
         ]);
     }
 
-    private async getSelectorIdByChange(change: any): Promise<string> {
+    private async getSelectorIdByChange(change: FlexChange): Promise<string> {
         const changeDefinition = change.getDefinition();
 
         const oAppComponent = Utils.getAppComponentForControl(
@@ -439,9 +439,8 @@ export class ChangeService {
 
     public async syncOutlineChanges(): Promise<void> {
         for (const change of this.savedChanges) {
-            // @ts-ignore
-            const flexObject = FlexObjectFactory.createFromFileContent(change.rawChange);
-            change.controlId = await this.getSelectorIdByChange(flexObject);
+            const flexObject = FlexObjectFactory.createFromFileContent(change.file as FlexChange);
+            change.controlId = await this.getSelectorIdByChange(flexObject as FlexChange);
         }
         this.updateStack();
     }
