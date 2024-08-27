@@ -45,6 +45,17 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
     }
     // All fiori-freestyle apps should use load reuse libs, unless explicitly overridden
     ffApp.appOptions = Object.assign({ loadReuseLibs: true }, ffApp.appOptions);
+    if (ffApp.ui5) {
+        const ushell = 'sap.ushell';
+        ffApp.ui5.manifestLibs = ffApp.ui5?.manifestLibs ?? ffApp.ui5?.ui5Libs;
+        if (Array.isArray(ffApp.ui5?.ui5Libs)) {
+            ffApp.ui5.ui5Libs = ffApp.ui5?.ui5Libs?.concat(ushell);
+        } else if (typeof ffApp.ui5?.ui5Libs === 'string') {
+            ffApp.ui5.ui5Libs = ffApp.ui5?.ui5Libs.includes(ushell)
+                ? ffApp.ui5?.ui5Libs
+                : ffApp.ui5?.ui5Libs.concat(ushell);
+        }
+    }
 }
 
 // Specific escaping is required for FLP texts in flpSandbox.html template file
