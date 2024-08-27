@@ -451,7 +451,7 @@ describe('ConnectionValidator', () => {
     });
 
     test('should attempt to validate auth using v4 catalog where v2 is not available or user is not authorized', async () => {
-        let listServicesV2Mock = jest
+        const listServicesV2Mock = jest
             .spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
             .mockRejectedValue(newAxiosErrorWithStatus(401));
         const listServicesV4Mock = jest
