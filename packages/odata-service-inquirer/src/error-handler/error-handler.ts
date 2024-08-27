@@ -339,7 +339,7 @@ export class ErrorHandler {
      * Used by validate functions to report in-line user friendly errors.
      * Checks if there is an existing error.
      *
-     * @param error optional, if provided get the end user message that it maps to, otherwise get the previous error message, if a boolean is passed it will be interpretted as `reset`.
+     * @param error optional, if provided get the end user message that it maps to, otherwise get the previous error message, if a boolean is passed it will be interpreted as `reset`.
      * @param reset optional, resets the previous error state if true, if error is omitted reset may be passed as the first argument
      * @param fallback optional, return the message of the specified ERROR_TYPE if no previous end user message and no error specified
      * @returns The error message
