@@ -1838,6 +1838,9 @@ importers:
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
+      '@sap/cf-tools':
+        specifier: 3.2.0
+        version: 3.2.0
       axios:
         specifier: 1.7.4
         version: 1.7.4
@@ -8081,6 +8084,15 @@ packages:
       url: 0.11.0
     dev: false
 
+  /@sap/cf-tools@3.2.0:
+    resolution: {integrity: sha512-iD/ttsBzKAqLShPuB4FsNcO6d5/Bl0gMSb/MXw2lYOGZE91IJ8PQDk1OF27fJ4e5ycK33ZkuD2xGxJygCBF7wQ==}
+    dependencies:
+      comment-json: 4.2.3
+      lodash: 4.17.21
+      properties-reader: 2.2.0
+      url: 0.11.0
+    dev: false
+
   /@sap/ux-cds-compiler-facade@1.14.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
     resolution: {integrity: sha512-smDdRTV+w1Knh0aLdPf38NuBVTKR2/Un8+6IcsVoXxJkmkr9C0fk8yBFHBDWunHIpOSLv4rQJ4Si78Qi559PEw==}
     engines: {node: '>=18.16.0'}
@@ -12320,7 +12332,6 @@ packages:
       esprima: 4.0.1
       has-own-prop: 2.0.0
       repeat-string: 1.6.1
-    dev: true
 
   /comment-json@4.2.5:
     resolution: {integrity: sha512-bKw/r35jR3HGt5PEPm1ljsQQGyCrR8sFGNiN5L+ykDHdpO8Smxkrkla9Yi6NkQyUrb8V54PGhfMs6NrIwtxtdw==}
