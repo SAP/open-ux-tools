@@ -23,6 +23,7 @@ import { t } from '../i18n';
 import { SAP_CLIENT_KEY } from '../types';
 import LoggerHelper from './logger-helper';
 import { errorHandler } from './prompt-helpers';
+import { AxiosBasicCredentials } from 'axios';
 
 /**
  * Structure to store validity information about url to be validated.
@@ -371,16 +372,41 @@ export class ConnectionValidator {
         if (!odataVersion || odataVersion === ODataVersion.v4) {
             this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
         }
+        let v4Requested = false;
         try {
-            this._catalogV2 ? await this._catalogV2.listServices() : await this._catalogV4?.listServices();
+            if (this._catalogV2) {
+                await this._catalogV2?.listServices()
+            } else if (this._catalogV4) {
+                v4Requested = true;
+                await this._catalogV4?.listServices();
+            }
         } catch (error) {
-            // We will try the v4 catalog if v2 returns a 404
-            if ((error as AxiosError).response?.status === 404 && this._catalogV4) {
+            // We will try the v4 catalog if v2 returns a 404 or an auth code (and credentials are provided)
+            // We try the v4 catalog with the credentials provided also as the user may not be authorized for the v2 catalog specifically
+            if (this._catalogV4 && !v4Requested && this.shouldAttemptV4Catalog((error as AxiosError).response?.status)) {
                 await this._catalogV4.listServices();
             } else {
                 throw error;
             }
         }
+    }
+
+    /**
+     * Check if we should attempt to use the v4 catalog service as a fallback.
+     * 
+     * @param statusCode http status code, if not provided will return false as we cannot determine the reason for v2 catalog request failure
+     * @param creds the basic auth credentials, if the status code is an auth error and credentials are provided, we will attempt the v4 catalog
+     * @returns true if we should attempt the v4 catalog service
+     */
+    private shouldAttemptV4Catalog(statusCode?: number, creds?: AxiosBasicCredentials): boolean {
+        if (!statusCode) {
+            return false;
+        }
+        const errorType = ErrorHandler.getErrorType(statusCode);
+        return (
+            errorType === ERROR_TYPE.NOT_FOUND ||
+            (errorType === ERROR_TYPE.AUTH)
+        );
     }
 
     /**
