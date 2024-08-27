@@ -376,7 +376,7 @@ export async function validatePackage(
     };
 
     // checks if package is a local package and will update prompt state accordingly
-    await getTransportListFromService(input, answers.ui5AbapRepo ?? '', systemConfig, backendTarget);
+    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', systemConfig, backendTarget);
     return true;
 }
 
