@@ -38,8 +38,7 @@
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "i18next": "23.5.1",
-        "inquirer": "8.2.6"
+        "i18next": "23.5.1"
     },
     "devDependencies": {
         "@types/inquirer": "8.2.6",

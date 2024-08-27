@@ -43,8 +43,8 @@ describe('add/deploy-config', () => {
     });
 
     test('should prompt for target when not provided', async () => {
-        const deployConfigInquirerSpy = jest.spyOn(deployConfigInquirer, 'prompt');
-        deployConfigInquirerSpy.mockResolvedValueOnce({});
+        const getPromptsSpy = jest.spyOn(deployConfigInquirer, 'getPrompts');
+        getPromptsSpy.mockResolvedValueOnce({ prompts: [], answers: {} });
         const deployConfigWriterSpy = jest.spyOn(deployConfigWriter, 'generate');
         deployConfigWriterSpy.mockResolvedValueOnce(fsMock);
         mockPrompt.mockResolvedValueOnce({ target: 'abap' });
@@ -56,7 +56,7 @@ describe('add/deploy-config', () => {
 
         // Result check
         expect(mockPrompt).toBeCalledTimes(1);
-        expect(deployConfigInquirerSpy).toBeCalledTimes(1);
+        expect(getPromptsSpy).toBeCalledTimes(1);
         expect(deployConfigWriterSpy).toBeCalledTimes(1);
     });
 
@@ -71,7 +71,7 @@ describe('add/deploy-config', () => {
     });
 
     test('should add deploy config', async () => {
-        jest.spyOn(deployConfigInquirer, 'prompt').mockResolvedValueOnce({});
+        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
         jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
 
         // Test execution
@@ -89,7 +89,7 @@ describe('add/deploy-config', () => {
     });
 
     test('should add deploy config --simulate', async () => {
-        jest.spyOn(deployConfigInquirer, 'prompt').mockResolvedValueOnce({});
+        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
         jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
 
         // Test execution
@@ -107,7 +107,7 @@ describe('add/deploy-config', () => {
     });
 
     test('should add deploy config --verbose', async () => {
-        jest.spyOn(deployConfigInquirer, 'prompt').mockResolvedValueOnce({});
+        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
         jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
 
         // Test execution
@@ -127,7 +127,7 @@ describe('add/deploy-config', () => {
     test('should report error', async () => {
         const errorObj = new Error('Error generating deployment configuration');
 
-        jest.spyOn(deployConfigInquirer, 'prompt').mockResolvedValueOnce({});
+        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
         jest.spyOn(deployConfigWriter, 'generate').mockImplementationOnce(() => {
             throw errorObj;
         });
@@ -157,13 +157,15 @@ describe('add/deploy-config', () => {
             transport: 'TRDUMMY'
         };
 
-        jest.spyOn(deployConfigInquirer, 'prompt').mockResolvedValueOnce(promptAnswers);
+        jest.spyOn(deployConfigInquirer, 'getPrompts').mockResolvedValueOnce({ prompts: [], answers: {} });
         jest.spyOn(deployConfigWriter, 'generate').mockResolvedValueOnce(fsMock);
+        mockPrompt.mockResolvedValueOnce({ target: 'abap' });
+        jest.spyOn(deployConfigInquirer, 'reconcileAnswers').mockReturnValueOnce(promptAnswers);
 
         // Test execution
         const command = new Command('add');
         addDeployConfigCommand(command);
-        await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap', '--verbose']));
+        await command.parseAsync(getArgv(['deploy-config', appRoot, '--verbose']));
 
         // Result check
         expect(loggerMock.debug).toBeCalledWith(

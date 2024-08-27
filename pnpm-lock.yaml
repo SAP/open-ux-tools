@@ -341,9 +341,6 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
-      inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
     devDependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
@@ -1087,6 +1084,9 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
+      '@types/inquirer-autocomplete-prompt':
+        specifier: 2.0.1
+        version: 2.0.1
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2

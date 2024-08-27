@@ -2,10 +2,15 @@ import { FileName } from '@sap-ux/project-access';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
-import { prompt as abapDeployConfigPrompt } from '@sap-ux/abap-deploy-config-inquirer';
+import {
+    type AbapDeployConfigAnswers,
+    getPrompts as getAbapDeployConfigPrompts,
+    reconcileAnswers
+} from '@sap-ux/abap-deploy-config-inquirer';
 import { prompt, type PromptObject } from 'prompts';
 import type { AbapTarget, BspApp } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
+import { promptYUIQuestions } from '../../common';
 
 /**
  * Add the "add deploy config" command to a passed command.
@@ -67,7 +72,7 @@ async function getTarget(target?: string): Promise<'abap' | 'cf'> {
  * @param baseFile - base file name
  * @param deployFile - deploy file name
  */
-async function addDeployConfig(
+export async function addDeployConfig(
     basePath: string,
     target?: 'abap' | 'cf',
     simulate = false,
@@ -83,8 +88,21 @@ async function addDeployConfig(
             return;
         } else if (target === 'abap') {
             logger.debug(`Called add deploy-config for path '${basePath}', simulate is '${simulate}'`);
+
             await validateBasePath(basePath);
-            const answers = await abapDeployConfigPrompt({ useAutocomplete: true });
+
+            const { prompts: abapPrompts, answers: abapAnswers } = await getAbapDeployConfigPrompts(
+                { useAutocomplete: false },
+                logger,
+                false
+            );
+            const answers = reconcileAnswers(
+                await promptYUIQuestions<AbapDeployConfigAnswers>(
+                    abapPrompts,
+                    false,
+                    abapAnswers as AbapDeployConfigAnswers
+                )
+            );
 
             const config = {
                 target: {

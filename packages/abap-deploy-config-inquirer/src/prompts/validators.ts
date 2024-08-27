@@ -47,22 +47,26 @@ export function validateDestinationQuestion(destination: string, destinations?: 
  * @param props.client - client
  * @param props.isS4HC - is S/4HANA Cloud
  * @param props.scp - is SCP
+ * @param props.target - target system
  */
 function updatePromptState({
     url,
     client,
     isS4HC,
-    scp
+    scp,
+    target
 }: {
     url: string;
     client?: string;
     isS4HC?: boolean;
     scp?: boolean;
+    target?: string;
 }): void {
     PromptState.abapDeployConfig.url = url;
     PromptState.abapDeployConfig.client = client;
     PromptState.abapDeployConfig.isS4HC = isS4HC;
     PromptState.abapDeployConfig.scp = scp;
+    PromptState.abapDeployConfig.targetSystem = target;
 }
 
 /**
@@ -104,7 +108,8 @@ export function validateTargetSystem(target?: string, choices?: AbapSystemChoice
                 url: choice.value,
                 client: choice.client ?? '',
                 scp: choice.scp,
-                isS4HC: choice.isS4HC
+                isS4HC: choice.isS4HC,
+                target: target
             });
         }
     }
@@ -500,7 +505,6 @@ export async function validateTransportChoiceInput(
         case TransportChoices.CreateNewChoice: {
             return handleCreateNewTransportChoice(
                 packageAnswer,
-
                 systemConfig,
                 input,
                 previousAnswers,

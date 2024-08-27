@@ -3,8 +3,6 @@ import { initI18n } from './i18n';
 import { PromptState } from './prompts/prompt-state';
 import { getAbapDeployConfigQuestions } from './prompts';
 import LoggerHelper from './logger-helper';
-import inquirer from 'inquirer';
-import autocomplete from 'inquirer-autocomplete-prompt';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import {
     PackageInputChoices,
@@ -48,29 +46,20 @@ async function getPrompts(
 /**
  * Prompt for abap deploy config writer inputs.
  *
- * @param promptOptions - options that can control some of the prompt behavior. See {@link AbapDeployConfigPromptOptions} for details
  * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
+ * @param promptOptions - options that can control some of the prompt behavior. See {@link AbapDeployConfigPromptOptions} for details
  * @param logger - a logger compatible with the {@link Logger} interface
  * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
  * @returns the prompt answers
  */
 async function prompt(
+    adapter: InquirerAdapter,
     promptOptions?: AbapDeployConfigPromptOptions,
-    adapter?: InquirerAdapter,
     logger?: Logger,
     isYUI = false
 ): Promise<AbapDeployConfigAnswers> {
     const abapDeployConfigPrompts = (await getPrompts(promptOptions, logger, isYUI)).prompts;
-
-    const pm = adapter ? adapter.promptModule : inquirer;
-
-    if (pm && promptOptions?.useAutocomplete) {
-        pm.registerPrompt('autocomplete', autocomplete);
-    }
-
-    const answers = adapter
-        ? await adapter.prompt<AbapDeployConfigAnswersInternal>(abapDeployConfigPrompts)
-        : await inquirer.prompt<AbapDeployConfigAnswersInternal>(abapDeployConfigPrompts);
+    const answers = await adapter.prompt<AbapDeployConfigAnswersInternal>(abapDeployConfigPrompts);
 
     // Add dervied service answers to the answers object
     Object.assign(answers, PromptState.abapDeployConfig);
@@ -81,6 +70,7 @@ async function prompt(
 export {
     getPrompts,
     prompt,
+    reconcileAnswers,
     TargetSystemType,
     PackageInputChoices,
     TransportChoices,

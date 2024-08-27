@@ -36,7 +36,7 @@ describe('index', () => {
             prompt: jest.fn().mockResolvedValueOnce(answers)
         };
 
-        expect(await prompt({}, adapter)).toStrictEqual({
+        expect(await prompt(adapter)).toStrictEqual({
             url: 'https://mock.url.target1.com',
             client: '000',
             ui5AbapRepo: 'mockRepo',

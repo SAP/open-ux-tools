@@ -73,7 +73,8 @@ describe('Test validators', () => {
                 client: '001',
                 destination: undefined,
                 isS4HC: false,
-                scp: false
+                scp: false,
+                targetSystem: 'https://mock.url.target1.com'
             });
             expect(result).toBe(true);
         });
