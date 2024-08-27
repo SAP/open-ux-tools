@@ -126,7 +126,7 @@ export function getTemplateUi5Libs(type: TemplateType, version: OdataVersion): s
  *
  * @param type - The template type of the required base component
  * @param version - The odata service version determines the appropriate base component to use
- * @returns The Ui5 libs required by the specified template type and OData version
+ * @returns The manifest libs required by the specified template type and OData version
  */
 export function getTemplateManifestLibs(type: TemplateType, version: OdataVersion): string[] {
     return templateLibs[version][type]?.manifestLibs ?? [];
