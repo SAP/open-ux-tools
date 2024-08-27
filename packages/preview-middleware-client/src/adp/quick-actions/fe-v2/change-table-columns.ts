@@ -10,9 +10,14 @@ import type { NestedQuickAction, NestedQuickActionChild } from '@sap-ux-private/
 import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import { getParentContainer, getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { getControlById, isA, isManagedObject } from '../../../utils/core';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
+import ObjectPageSection from 'sap/uxap/ObjectPageSection';
+import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
+import TreeTable from 'sap/ui/table/TreeTable';
+import UITable from 'sap/ui/table/Table';
+import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
@@ -22,12 +27,8 @@ const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
 const M_TABLE_TYPE = 'sap.m.Table';
 // maintain order if action id
-const ACTION_ID = [SMART_TABLE_ACTION_ID, M_TABLE_ACTION_ID, SETTINGS_ID];
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, 'sap.ui.table.TreeTable', 'sap.ui.table.Table'];
 
-/**
- * Quick Action for changing table columns.
- */
 export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinition {
     readonly kind = NESTED_QUICK_ACTION_KIND;
     readonly type = CHANGE_TABLE_COLUMNS;
@@ -41,23 +42,28 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
         string,
         {
             table: UI5Element;
+            tableUpdateEventAttachedOnce: boolean;
             iconTabBarFilterKey?: string;
             changeColumnActionId: string;
+            sectionInfo?: {
+                section: ObjectPageSection;
+                subSection: ObjectPageSubSection;
+                layout?: ObjectPageLayout;
+            };
         }
     > = {};
-    private eventAttachedOnce: boolean = false;
     private iconTabBar: IconTabBar | undefined;
     constructor(private context: QuickActionContext) {}
 
-    async initialize(): Promise<void>  {
-        // No action found in control design time for version < 1.96
-        // When using openPersonalizationDialog("Column") the variant is stored on browser local storage.
+    async initialize(): Promise<void> {
+        // No action found in control designtime for version < 1.96
+        // TODO check with RTA of using `openPersonalisationDialog("Column")`.
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 96 })) {
             this.isActive = false;
             return;
         }
-        // Assumption Only one tab bar control per page.
+        // Assumption only a tab bar control per page.
         const tabBar = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
             ICON_TAB_BAR_TYPE
         ])[0];
@@ -73,59 +79,115 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
                 }
             }
         }
-
         for (const table of getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
             CONTROL_TYPES
         )) {
             const actions = await this.context.actionService.get(table.getId());
-            const changeColumnAction = ACTION_ID.find(
+            const actionsIds = await getActionId(table.getMetadata().getName());
+            const changeColumnAction = actionsIds.find(
                 (actionId) => actions.findIndex((action) => action.id === actionId) > -1
             );
             const tabKey = Object.keys(filters).find((key) => table.getId().endsWith(key));
             if (changeColumnAction) {
-                if (this.iconTabBar && tabKey) {
+                const section = getParentContainer<ObjectPageSection>(table, 'sap.uxap.ObjectPageSection');
+                if (section) {
+                    this.collectChildrenInSection(section, table, changeColumnAction);
+                } else if (this.iconTabBar && tabKey) {
                     this.children.push({
                         label: `'${filters[tabKey]}' table`,
                         children: []
                     });
                     this.tableMap[`${this.children.length - 1}`] = {
-                        table: table,
+                        table,
                         iconTabBarFilterKey: tabKey,
-                        changeColumnActionId: changeColumnAction
+                        changeColumnActionId: changeColumnAction,
+                        tableUpdateEventAttachedOnce: false
                     };
                 } else {
                     this.processTable(table, changeColumnAction);
                 }
             }
         }
-
         if (this.children.length > 0) {
             this.isActive = true;
         }
     }
 
-    private getTableLabel(tableName: string | undefined): string {
-        return tableName ? `'${tableName}' table` : 'Unnamed table';
+    private getTableLabel(table: UI5Element): string {
+        let label = 'Unnamed table';
+        if (isA<SmartTable>(SMART_TABLE_TYPE, table) && table.getHeader()) {
+            label = `'${table.getHeader()}' table`;
+        }
+        if (isA<Table>(M_TABLE_TYPE, table) && table?.getHeaderToolbar()?.getTitleControl()?.getText()) {
+            label = `'${table?.getHeaderToolbar()?.getTitleControl()?.getText()}' table`;
+        }
+
+        return label;
     }
 
-    private processTable(table: UI5Element, changeColumnActionId: string): void {
-        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+    private collectChildrenInSection(section: ObjectPageSection, table: UI5Element, changeColumnAction: string): void {
+        const layout = getParentContainer<ObjectPageLayout>(table, 'sap.uxap.ObjectPageLayout');
+        const subSections = section.getSubSections();
+        const subSection = getParentContainer<ObjectPageSubSection>(table, 'sap.uxap.ObjectPageSubSection');
+        if (subSection) {
+            if (subSections?.length === 1) {
+                this.processTable(table, changeColumnAction, { section, subSection: subSections[0], layout });
+            } else if (subSections.length > 1) {
+                const sectionChild = this.children.find((val) => val.label === `${section.getTitle()} section`);
+                let tableMapIndex = `${this.children.length - 1}`;
+                if (!sectionChild) {
+                    tableMapIndex = `${tableMapIndex}/0`;
+                    this.children.push({
+                        label: `'${section?.getTitle()}' section`,
+                        children: [
+                            {
+                                label: this.getTableLabel(table),
+                                children: []
+                            }
+                        ]
+                    });
+                } else {
+                    tableMapIndex = `${tableMapIndex}/${sectionChild.children.length - 1}`;
+                    sectionChild.children.push({
+                        label: this.getTableLabel(table),
+                        children: []
+                    });
+                }
+
+                this.tableMap[tableMapIndex] = {
+                    table,
+                    changeColumnActionId: changeColumnAction,
+                    sectionInfo: { section, subSection, layout },
+                    tableUpdateEventAttachedOnce: false
+                };
+            }
+        }
+    }
+
+    private processTable(
+        table: UI5Element,
+        changeColumnActionId: string,
+        sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
+    ): void {
+        if (isA<SmartTable>(SMART_TABLE_TYPE, table) || isA<TreeTable>('sap.ui.table.TreeTable', table)) {
             this.children.push({
-                label: this.getTableLabel(table.getHeader()),
+                label: this.getTableLabel(table),
                 children: []
             });
         }
         if (isA<Table>(M_TABLE_TYPE, table)) {
             this.children.push({
-                label: this.getTableLabel(table?.getHeaderToolbar()?.getTitleControl()?.getText()),
+                label: this.getTableLabel(table),
                 children: []
             });
         }
         this.tableMap[`${this.children.length - 1}`] = {
             table,
-            changeColumnActionId
+            changeColumnActionId,
+            sectionInfo: sectionInfo,
+            tableUpdateEventAttachedOnce: false
         };
     }
 
@@ -134,21 +196,33 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
             kind: NESTED_QUICK_ACTION_KIND,
             id: this.id,
             enabled: this.isActive,
-            title: this.context.resourceBundle.getText('V2_QUICK_ACTION_CHANGE_TABLE_COLUMNS'),
+            title:
+                this.context.resourceBundle.getText('V2_QUICK_ACTION_CHANGE_TABLE_COLUMNS') ?? 'Change table columns',
             children: this.children
         };
     }
 
+    private selectOverlay(table: UI5Element): void {
+        const controlOverlay = OverlayUtil.getClosestOverlayFor(table);
+        if (controlOverlay) {
+            controlOverlay.setSelected(true);
+        }
+    }
+
     async execute(path: string): Promise<FlexCommand[]> {
-        const { table, iconTabBarFilterKey, changeColumnActionId } = this.tableMap[path];
+        const { table, iconTabBarFilterKey, changeColumnActionId, sectionInfo } = this.tableMap[path];
         if (!table) {
             return [];
         }
 
-        getControlById(table.getId())?.getDomRef()?.scrollIntoView();
-        const controlOverlay = OverlayUtil.getClosestOverlayFor(table);
-        if (controlOverlay) {
-            controlOverlay.setSelected(true);
+        if (sectionInfo) {
+            const { layout, section, subSection } = sectionInfo;
+            layout?.setSelectedSection(section);
+            section.setSelectedSubSection(subSection);
+            this.selectOverlay(table);
+        } else {
+            getControlById(table.getId())?.getDomRef()?.scrollIntoView();
+            this.selectOverlay(table);
         }
 
         if (this.iconTabBar && iconTabBarFilterKey) {
@@ -156,19 +230,44 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
         }
 
         const executeAction = async () => await this.context.actionService.execute(table.getId(), changeColumnActionId);
-        if (isA<SmartTable>(SMART_TABLE_TYPE, table) || isA<Table>(M_TABLE_TYPE, table)) {
+        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+            await executeAction();
+        } else if (isA<Table>(M_TABLE_TYPE, table)) {
             // if table is busy, i.e. lazy loading, then we subscribe to 'updateFinished' event and call action service when loading is done
-            if (table.getBusy()) {
-                // to avoid reopening the dialog after close
-                if (!this.eventAttachedOnce) {
-                    table.attachEventOnce('updateFinished', executeAction);
-                    this.eventAttachedOnce = true;
-                }
-            } else {
+            // to avoid reopening the dialog after close
+            table.attachEventOnce(
+                'updateFinished',
+                () => {
+                    if (!this.tableMap[path].tableUpdateEventAttachedOnce) {
+                        this.tableMap[path].tableUpdateEventAttachedOnce = true;
+                        executeAction();
+                    }
+                },
+                this
+            );
+            if (this.tableMap[path].tableUpdateEventAttachedOnce) {
                 await executeAction();
             }
         }
 
         return [];
+    }
+}
+
+async function getActionId(tableType: string): Promise<string[]> {
+    const { major, minor } = await getUi5Version();
+    const isVersion = (version: string) => {
+        const [majorV, minorV] = version.split('.');
+        return major === Number(majorV) && minor === Number(minorV);
+    };
+    switch (tableType) {
+        case 'sap.ui.comp.smarttable.SmartTable':
+            if (isVersion('1.96')) {
+                return [M_TABLE_ACTION_ID];
+            } else {
+                return [SMART_TABLE_ACTION_ID];
+            }
+        default:
+            return [M_TABLE_ACTION_ID, SETTINGS_ID];
     }
 }

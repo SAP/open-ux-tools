@@ -3,9 +3,10 @@ import Control from 'sap/ui/core/Control';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import { FEAppPage } from 'sap/ui/rta/RuntimeAuthoring';
 
-import { getControlById } from '../../utils/core';
+import { getControlById, isA } from '../../utils/core';
 
 import type { ControlTreeIndex } from '../types';
+import Component from 'sap/ui/core/Component';
 
 export interface FEAppPageInfo {
     page: FEAppPage;
@@ -33,7 +34,15 @@ function isDescendantOfPage(control: ManagedObject | null | undefined, oRootCont
         if (currentControl === oRootControl) {
             return true;
         }
-        currentControl = currentControl.getParent();
+        // if parent is a reusable component, use oContainer to find the parent
+        if (
+            isA<Component>('sap.ui.core.Component', currentControl) &&
+            (currentControl as unknown as { oContainer: Control })?.oContainer
+        ) {
+            currentControl = (currentControl as unknown as { oContainer: Control }).oContainer.getParent();
+        } else {
+            currentControl = currentControl.getParent();
+        }
     }
     return false;
 }
@@ -72,4 +81,26 @@ export function getRelevantControlFromActivePage(
         }
     }
     return relevantControls;
+}
+
+export function getParentContainer<T extends ManagedObject>(
+    control: ManagedObject | null | undefined,
+    type: string
+): T | undefined {
+    let currentControl = control;
+    while (currentControl) {
+        if (isA<T>(type, currentControl)) {
+            return currentControl;
+        }
+        // if parent is a reusable component, use oContainer to find the parent
+        if (
+            isA<Component>('sap.ui.core.Component', currentControl) &&
+            (currentControl as unknown as { oContainer: Control })?.oContainer
+        ) {
+            currentControl = (currentControl as unknown as { oContainer: Control }).oContainer.getParent();
+        } else {
+            currentControl = currentControl.getParent();
+        }
+    }
+    return;
 }

@@ -24,7 +24,7 @@ export function RightPanel(): ReactElement {
     }
 
     const rowSize = 100;
-    const header = 150;
+    const header = 50;
     const initialSize = actionsCount * rowSize + header;
     return (
         <UISections
@@ -40,7 +40,7 @@ export function RightPanel(): ReactElement {
             <UISections.Section
                 scrollable={true}
                 layout={UISectionLayout.Standard}
-                className="editor__outline" // TODO: check class name
+                className="editor__quickactions"
                 height="100%">
                 <QuickActionList />
             </UISections.Section>
