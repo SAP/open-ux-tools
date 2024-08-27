@@ -8,6 +8,8 @@ import { XMLParser } from 'fast-xml-parser';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import LoggerHelper from '../prompts/logger-helper';
 import { t } from '../i18n';
+import { ODataVersion } from '@sap-ux/axios-extension';
+import type { ListChoiceOptions } from 'inquirer';
 
 const osVersionName = osName();
 
@@ -114,6 +116,34 @@ export function originToRelative(metadata: string): string {
         // Retain the original path segment after the origin, matched with capture group 5 (index 4)
         (match: string, ...patterns: string[]) => `${patterns[0]}./${patterns[4]}`
     );
+}
+
+/**
+ * Convert the odata version type from the prompt (odata-service-writer) type to the axios-extension type.
+ *
+ * @param odataVersion The odata version to convert
+ * @returns The converted odata version
+ */
+export function convertODataVersionType(odataVersion?: OdataVersion): ODataVersion | undefined {
+    if (!odataVersion) {
+        return undefined;
+    }
+    return odataVersion === OdataVersion.v2 ? ODataVersion.v2 : ODataVersion.v4;
+}
+
+/**
+ * Gets the default index for a list of items, used to default list prompts to the first item if only one item is available.
+ * If list is undefined or has more than one, returns undefined which will default to the 'please select' message.
+ *
+ * @param list the list of choices
+ * @returns the default index if only one item is available, otherwise undefined
+ */
+export function getDefaultChoiceIndex(list: ListChoiceOptions[]): number | undefined {
+    if (list?.length === 1) {
+        return 0;
+    }
+
+    return undefined;
 }
 
 export { PromptState };
