@@ -1,5 +1,18 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.3.16
+
+### Patch Changes
+
+-   Updated dependencies [d3dafeb]
+    -   @sap-ux/btp-utils@0.15.2
+
+## 0.3.15
+
+### Patch Changes
+
+-   3e1a83a: FEAT - Move Guided Help code into a new module @sap-ux/guided-answers-helper
+
 ## 0.3.14
 
 ### Patch Changes

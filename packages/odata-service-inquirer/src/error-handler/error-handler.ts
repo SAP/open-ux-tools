@@ -10,7 +10,7 @@ import {
     HELP_NODES,
     HELP_TREE,
     getHelpUrl
-} from '@sap-ux/fiori-generator-shared';
+} from '@sap-ux/guided-answers-helper';
 
 const teleEventGALinkCreated = 'GA_LINK_CREATED';
 

@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.17.6
+
+### Patch Changes
+
+-   7710aa5: chore upgrade @fluentui/react@8.120.5
+
 ## 1.17.5
 
 ### Patch Changes
