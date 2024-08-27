@@ -1,11 +1,9 @@
 .editor__outline {
     .section__body {
-        margin-bottom: 0px;
-        margin-top: 0px;
-        margin-left: 0px;
-        margin-right: 0px;
+        margin: 0;
         padding-left: 0px !important;
         padding-right: 0px;
+        overflow: hidden;
     }
     .tree-no-control-found {
         display: block;
