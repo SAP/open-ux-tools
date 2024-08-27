@@ -168,6 +168,15 @@ describe('<Splitter />', () => {
         });
     });
 
+    it('Test "splitterTabIndex" property', () => {
+        // -1 because it is not defined and UISplitterType.Toggle is not used
+        expect(wrapper.find('.splitter--horizontal').prop('tabIndex')).toEqual(-1);
+        wrapper.setProps({
+            splitterTabIndex: 0
+        });
+        expect(wrapper.find('.splitter--horizontal').prop('tabIndex')).toEqual(0);
+    });
+
     it('Test "hidden" property', () => {
         expect(wrapper.find('.splitter--hidden').length).toEqual(0);
         wrapper.setProps({
