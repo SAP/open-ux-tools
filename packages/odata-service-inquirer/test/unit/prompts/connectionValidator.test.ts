@@ -449,4 +449,26 @@ describe('ConnectionValidator', () => {
         expect(connectValidator.validatedUrl).toBe(serviceInfoMock.url);
         expect(connectValidator.connectedSystemName).toBe('abap_btp_001');
     });
+
+    test('should attempt to validate auth using v4 catalog where v2 is not available or user is not authorized', async () => {
+        let listServicesV2Mock = jest
+            .spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
+            .mockRejectedValue(newAxiosErrorWithStatus(401));
+        const listServicesV4Mock = jest
+            .spyOn(axiosExtension.V4CatalogService.prototype, 'listServices')
+            .mockResolvedValueOnce([]);
+        const connectValidator = new ConnectionValidator();
+        await connectValidator.validateUrl('https://example.com:1234', { isSystem: true });
+
+        // If the V2 catalog service fails, the V4 catalog service should be called
+        expect(connectValidator.catalogs[axiosExtension.ODataVersion.v2]).toBeInstanceOf(
+            axiosExtension.V2CatalogService
+        );
+        expect(connectValidator.catalogs[axiosExtension.ODataVersion.v4]).toBeInstanceOf(
+            axiosExtension.V4CatalogService
+        );
+
+        expect(listServicesV2Mock).toHaveBeenCalled();
+        expect(listServicesV4Mock).toHaveBeenCalled();
+    });
 });
