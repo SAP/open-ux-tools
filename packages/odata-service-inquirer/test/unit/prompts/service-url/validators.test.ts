@@ -1,18 +1,25 @@
-import { V2CatalogService, createServiceForUrl } from '@sap-ux/axios-extension';
+import type { Annotations } from '@sap-ux/axios-extension';
+import { AbapServiceProvider, V2CatalogService, createServiceForUrl } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { AxiosResponse, AxiosError } from 'axios';
+import type { AxiosError, AxiosResponse } from 'axios';
 import { ErrorHandler } from '../../../../src/error-handler/error-handler';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { validateService } from '../../../../src/prompts/datasources/service-url/validators'; // Import the validateService function from its module
 import LoggerHelper from '../../../../src/prompts/logger-helper';
 import { PromptState } from '../../../../src/utils';
 
-/**
- * Workaround to allow spyOn
- */
+let mockAnnotations: Annotations[] = [];
+const catalogServiceMock = jest.fn().mockImplementation(() => ({
+    getAnnotations: jest.fn().mockResolvedValue(mockAnnotations),
+    interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } }
+}));
+
 jest.mock('@sap-ux/axios-extension', () => ({
     __esModule: true,
-    ...jest.requireActual('@sap-ux/axios-extension')
+    ...jest.requireActual('@sap-ux/axios-extension'),
+    AbapServiceProvider: jest.fn().mockImplementation(() => ({
+        catalog: catalogServiceMock
+    }))
 }));
 
 describe('Test service url validators', () => {
@@ -35,7 +42,11 @@ describe('Test service url validators', () => {
     beforeAll(async () => {
         // Pre-load i18 texts
         await initI18nOdataServiceInquirer();
+    });
+
+    beforeEach(() => {
         jest.restoreAllMocks();
+        mockAnnotations = [];
     });
 
     test('should validate service metadata', async () => {
@@ -44,10 +55,11 @@ describe('Test service url validators', () => {
         const serviceUrl = 'https://some.host:1234/service/path';
         const odataService = createServiceForUrl(serviceUrl);
         jest.spyOn(odataService, 'metadata').mockResolvedValueOnce(invalidMetadata);
+
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                axiosConfig: {}
+                abapServiceProvider: new AbapServiceProvider()
             })
         ).toMatch(t('prompts.validationMessages.metadataInvalid'));
 
@@ -56,37 +68,50 @@ describe('Test service url validators', () => {
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                axiosConfig: {}
+                abapServiceProvider: new AbapServiceProvider()
             })
         ).toBe(true);
+        expect(catalogServiceMock).toHaveBeenCalledWith(OdataVersion.v2);
 
         // Valid metadata with required version
-        expect(await validateService(serviceUrl, { odataService, axiosConfig: {} }, OdataVersion.v4)).toBe(
+        expect(
+            await validateService(
+                serviceUrl,
+                { odataService, abapServiceProvider: new AbapServiceProvider() },
+                OdataVersion.v4
+            )
+        ).toBe(
             t('prompts.validationMessages.odataVersionMismatch', {
                 requiredOdataVersion: OdataVersion.v4,
                 providedOdataVersion: OdataVersion.v2
             })
         );
-        expect(await validateService(serviceUrl, { odataService, axiosConfig: {} }, OdataVersion.v2)).toBe(true);
+        expect(
+            await validateService(
+                serviceUrl,
+                { odataService, abapServiceProvider: new AbapServiceProvider() },
+                OdataVersion.v2
+            )
+        ).toBe(true);
     });
 
     test('should set the prompt state', async () => {
         const serviceUrl = 'https://some.host:1234/service/path?sap-client=999';
         const odataService = createServiceForUrl(serviceUrl);
         jest.spyOn(odataService, 'metadata').mockResolvedValue(validMetadata);
-        jest.spyOn(V2CatalogService.prototype, 'getAnnotations').mockResolvedValue([
+        mockAnnotations = [
             {
                 Definitions: v2Annotations,
                 TechnicalName: 'TEST_SERVICE',
                 Version: '0001',
                 Uri: 'https://some.host:1234/service/path'
             }
-        ]);
+        ];
 
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                axiosConfig: {}
+                abapServiceProvider: new AbapServiceProvider()
             })
         ).toBe(true);
         expect(PromptState.odataService).toEqual({
@@ -110,13 +135,12 @@ describe('Test service url validators', () => {
         const serviceUrl = 'https://some.host:1234/service/path?sap-client=999';
         const odataService = createServiceForUrl('https://some.host:1234/service/path?sap-client=999');
         jest.spyOn(odataService, 'metadata').mockResolvedValue(validMetadata);
-        jest.spyOn(V2CatalogService.prototype, 'getAnnotations').mockResolvedValue([]);
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'info');
 
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                axiosConfig: {}
+                abapServiceProvider: new AbapServiceProvider()
             })
         ).toBe(true);
         expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.annotationsNotFound'));
@@ -127,7 +151,7 @@ describe('Test service url validators', () => {
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                axiosConfig: {}
+                abapServiceProvider: new AbapServiceProvider()
             })
         ).toBe(true);
         expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.annotationsNotFound'));
@@ -143,7 +167,7 @@ describe('Test service url validators', () => {
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                axiosConfig: {}
+                abapServiceProvider: new AbapServiceProvider()
             })
         ).toBe(t('errors.unknownError', { error: metadataRequestError.message }));
         expect(loggerSpy).toHaveBeenCalled();
@@ -155,7 +179,7 @@ describe('Test service url validators', () => {
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                axiosConfig: {}
+                abapServiceProvider: new AbapServiceProvider()
             })
         ).toBe(t('errors.odataServiceUrlNotFound'));
     });

@@ -6,12 +6,14 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
 import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { PromptState } from '../../../../../src/utils';
 import * as utils from '../../../../../src/utils';
-import { hostEnvironment } from '../../../../../src/types';
+import { hostEnvironment, promptNames } from '../../../../../src/types';
+import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
+import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
+import type { ChoiceOptions } from 'inquirer';
 
 const v2Metadata =
     '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
@@ -36,6 +38,7 @@ const catalogs = {
 };
 const connectionValidatorMock = {
     validity: {} as ConnectionValidator['validity'],
+    validatedUrl: '',
     validateUrl: validateUrlMock,
     validateAuth: validateAuthMock,
     isAuthRequired: isAuthRequiredMock,
@@ -94,7 +97,7 @@ describe('questions', () => {
                   "mandatory": true,
                 },
                 "message": "System URL",
-                "name": "systemUrl",
+                "name": "abapOnPrem:newSystemUrl",
                 "type": "input",
                 "validate": [Function],
               },
@@ -108,6 +111,7 @@ describe('questions', () => {
                 "validate": [Function],
               },
               {
+                "default": "",
                 "guiOptions": {
                   "mandatory": true,
                 },
@@ -118,6 +122,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "default": "",
                 "guiOptions": {
                   "mandatory": true,
                 },
@@ -135,9 +140,10 @@ describe('questions', () => {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": true,
                   "hint": "Entering a system name will save the connection for re-use.",
+                  "mandatory": true,
                 },
                 "message": "System name",
-                "name": "userSystemName",
+                "name": "abapOnPrem:userSystemName",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
@@ -151,15 +157,15 @@ describe('questions', () => {
                   "breadcrumb": "Service",
                   "mandatory": true,
                 },
-                "message": "Service name",
-                "name": "serviceSelection",
+                "message": [Function],
+                "name": "abapOnPrem:serviceSelection",
                 "source": [Function],
                 "type": "list",
                 "validate": [Function],
                 "when": [Function],
               },
               {
-                "name": "cliServicePromptName",
+                "name": "abapOnPrem:cliServiceSelection",
                 "when": [Function],
               },
             ]
@@ -168,19 +174,21 @@ describe('questions', () => {
 
     test('Should exclude specific system prompts based on prompt options', () => {
         const newSystemQuestions = getAbapOnPremQuestions({
-            userSystemName: { exclude: true }
+            userSystemName: { hide: true }
         });
         expect(newSystemQuestions.find((question) => question.name === 'userSystemName')).toBeFalsy();
     });
 
     test('Should connect to abap-on-prem system url using ConnectionValidator', async () => {
         const newSystemQuestions = getAbapOnPremQuestions();
-        const systemUrlQuestion = newSystemQuestions.find((question) => question.name === 'systemUrl');
+        const systemUrlQuestion = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${newSystemPromptNames.newSystemUrl}`
+        );
         const systemUrl = 'https://example.com';
         expect(await (systemUrlQuestion?.validate as Function)(systemUrl)).toBe(true);
         expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith('https://example.com', {
-            'isSystem': true,
-            'odataVersion': undefined
+            isSystem: true,
+            odataVersion: undefined
         });
         // Prompt state should be updated with the connected system
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toEqual(serviceProviderMock);
@@ -237,6 +245,7 @@ describe('questions', () => {
             authRequired: true,
             reachable: true
         };
+
         connectionValidatorMock.validateAuth = jest.fn().mockResolvedValue(true);
         const newSystemQuestions = getAbapOnPremQuestions();
         const userNamePrompt = newSystemQuestions.find((question) => question.name === 'abapSystemUsername');
@@ -250,16 +259,16 @@ describe('questions', () => {
 
         // Should validate to false if password, systemUrl or username is empty
         const systemUrl = 'http://some.abap.system:1234';
+        connectionValidatorMock.validatedUrl = systemUrl;
+
         const abapSystemUsername = 'user01';
         const password = 'pword01';
 
-        expect(await (passwordPrompt?.validate as Function)('', { systemUrl, abapSystemUsername })).toBe(false);
-        expect(await (passwordPrompt?.validate as Function)(password, { abapSystemUsername })).toBe(false);
-        expect(await (passwordPrompt?.validate as Function)(password, { systemUrl, abapSystemUsername: '' })).toBe(
-            false
-        );
-        // Should not have attempted to validate until all required above conditions are met
-        expect(connectionValidatorMock.validateAuth).not.toHaveBeenCalled();
+        expect(await (passwordPrompt?.validate as Function)('', { abapSystemUsername })).toBe(false);
+        expect(await (passwordPrompt?.validate as Function)(password, { abapSystemUsername: '' })).toBe(false);
+        expect(await (passwordPrompt?.validate as Function)(password, { abapSystemUsername })).toBe(true);
+        // Should have attempted to validate since required above conditions are met
+        expect(connectionValidatorMock.validateAuth).toHaveBeenCalled();
 
         expect(await (passwordPrompt?.validate as Function)('pword01', { systemUrl, abapSystemUsername })).toBe(true);
         expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(systemUrl, abapSystemUsername, password, {
@@ -271,34 +280,41 @@ describe('questions', () => {
 
     test('should prompt for new system name and create Backend System for storage (VSCode)', async () => {
         const systemUrl = 'http://some.abap.system:1234';
+        // Should show new system name prompt only once authenticated or authentication not required
+        const newSystemQuestions = getAbapOnPremQuestions();
+        const userSystemNamePrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.userSystemName}`
+        );
+
+        const systemUrlPromptName = `abapOnPrem:${newSystemPromptNames.newSystemUrl}`;
+
         connectionValidatorMock.validity = {
             authenticated: false,
             authRequired: true,
             reachable: true
         };
-        // Should show new system name prompt only once authenticated or authentication not required
-        const newSystemQuestions = getAbapOnPremQuestions();
-        const userSystemNamePrompt = newSystemQuestions.find((question) => question.name === 'userSystemName');
+        expect(await (userSystemNamePrompt?.when as Function)({ [systemUrlPromptName]: systemUrl })).toBe(false);
 
-        expect(await (userSystemNamePrompt?.when as Function)({ systemUrl })).toBe(false);
+        connectionValidatorMock.validity = {
+            authenticated: false,
+            authRequired: false,
+            reachable: true
+        };
+        expect(await (userSystemNamePrompt?.when as Function)({ [systemUrlPromptName]: systemUrl })).toBe(true);
 
         connectionValidatorMock.validity = {
             authenticated: true,
             authRequired: true,
             reachable: true
         };
-        expect(await (userSystemNamePrompt?.when as Function)({ systemUrl })).toBe(true);
-        connectionValidatorMock.validity = {
-            authenticated: false,
-            authRequired: false,
-            reachable: true
-        };
-        expect(await (userSystemNamePrompt?.when as Function)({ systemUrl })).toBe(true);
+        expect(await (userSystemNamePrompt?.when as Function)({ [systemUrlPromptName]: systemUrl })).toBe(true);
     });
 
     test('should prompt for service selection', async () => {
         let newSystemQuestions = getAbapOnPremQuestions();
-        let serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+        let serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
         expect(await (serviceSelectionPrompt?.when as Function)()).toBe(false);
         connectionValidatorMock.validity = {
             authRequired: false
@@ -311,16 +327,14 @@ describe('questions', () => {
         expect(await (serviceSelectionPrompt?.when as Function)()).toBe(true);
         // Should offer service selection choices from the catolog service
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
-        expect(
-            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
-                systemUrl: 'http://some.abap.system:1234'
-            })
-        ).toEqual([]);
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([]);
         expect(loggerSpy).toHaveBeenCalledWith('Number of services available: 0');
 
         // Reset state and service choices
         newSystemQuestions = getAbapOnPremQuestions();
-        serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+        serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
 
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
@@ -331,11 +345,7 @@ describe('questions', () => {
             }
         };
 
-        expect(
-            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
-                systemUrl: 'http://some.abap.system:1234'
-            })
-        ).toEqual([
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
             {
                 name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4',
                 value: {
@@ -358,12 +368,10 @@ describe('questions', () => {
 
         // The services choices should be restricted to the specified required odata version
         newSystemQuestions = getAbapOnPremQuestions({ serviceSelection: { requiredOdataVersion: OdataVersion.v2 } });
-        serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
-        expect(
-            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
-                systemUrl: 'http://some.abap.system:1234'
-            })
-        ).toEqual([
+        serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
             {
                 name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
                 value: {
@@ -378,13 +386,15 @@ describe('questions', () => {
 
     test('should show additional messages in service selection prompt when no matching services', async () => {
         let newSystemQuestions = getAbapOnPremQuestions();
-        let serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+        let serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
 
         // No services warnings should be shown if no services are available
         expect(
-            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)(/* {
                 systemUrl: 'http://some.abap.system:1234'
-            })
+            } */)
         ).toEqual([]);
 
         let message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)();
@@ -396,7 +406,9 @@ describe('questions', () => {
 
         // No odata version specific (`requiredOdataVersion`) service available
         newSystemQuestions = getAbapOnPremQuestions({ serviceSelection: { requiredOdataVersion: OdataVersion.v2 } });
-        serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+        serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
         // Choices must be initialised before we show additional messages
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
@@ -407,9 +419,9 @@ describe('questions', () => {
             }
         };
         expect(
-            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)(/* {
                 systemUrl: 'http://some.abap.system:1234'
-            })
+            } */)
         ).toEqual([]);
 
         message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)();
@@ -432,14 +444,15 @@ describe('questions', () => {
                 listServices: jest.fn().mockResolvedValue([serviceV4a])
             }
         };
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
 
         const newSystemQuestions = getAbapOnPremQuestions();
-        const serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+        const serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
         let choices: { name: string; value: ServiceAnswer }[] = await (
             (serviceSelectionPrompt as ListQuestion)?.choices as Function
-        )({
-            systemUrl: 'http://some.abap.system:1234'
-        });
+        )();
         expect(choices.length).toBe(2);
 
         let message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(
@@ -451,7 +464,7 @@ describe('questions', () => {
             severity: Severity.warning
         });
 
-        // For OData V2 services, where the service type is 'Not Determined', and additional call is made to get the service type from 'ServiceTypeForHUBServices'
+        // For OData V2 services, where the service type is 'Not Determined', an additional call is made to get the service type from 'ServiceTypeForHUBServices'
         const v2ServiceTypeNotDetermined = { ...serviceV2a, serviceType: ServiceType.NotDetermined };
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
@@ -463,10 +476,9 @@ describe('questions', () => {
             }
         };
 
-        // Using a new URL will force re-assignment of service choices
-        choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
-            systemUrl: 'http://some.abap.system:1235'
-        });
+        // If the service url (the validated url) has changed new choices should be listed
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1235';
+        choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)();
 
         let choiceV2 = choices.find((choice) => choice.value.serviceODataVersion === ODataVersion.v2);
         message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(choiceV2?.value);
@@ -481,10 +493,11 @@ describe('questions', () => {
                 listServices: jest.fn().mockResolvedValue([serviceV4a])
             }
         };
-
-        choices = (await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
-            systemUrl: 'http://some.abap.system:1236'
-        })) as { name: string; value: ServiceAnswer }[];
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1236';
+        choices = (await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()) as {
+            name: string;
+            value: ServiceAnswer;
+        }[];
 
         choiceV2 = choices.find((choice) => choice.value.serviceODataVersion === ODataVersion.v2);
         message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(choiceV2?.value);
@@ -503,17 +516,18 @@ describe('questions', () => {
                 listServices: jest.fn().mockResolvedValue([])
             }
         };
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
         let newSystemQuestions = getAbapOnPremQuestions();
-        let serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+        let serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
         // load choices
-        let choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
-            systemUrl: 'http://some.abap.system:1234'
-        });
+        let choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)();
         expect(choices.length).toBe(1);
 
-        let defaultIndex = await ((serviceSelectionPrompt as ListQuestion)?.default as Function)({
-            systemUrl: 'http://some.abap.system:1234'
-        });
+        let defaultIndex = await ((serviceSelectionPrompt as ListQuestion)?.default as Function)(
+            choices.map((choice: ChoiceOptions) => choice.value)
+        );
         expect(defaultIndex).toEqual(0);
 
         // More than one, no pre-selection
@@ -527,7 +541,9 @@ describe('questions', () => {
         };
 
         newSystemQuestions = getAbapOnPremQuestions();
-        serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+        serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
         choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({});
         expect(choices.length).toBe(2);
         defaultIndex = await ((serviceSelectionPrompt as ListQuestion)?.default as Function)();
@@ -561,7 +577,9 @@ describe('questions', () => {
         const serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider, 'service');
 
         const newSystemQuestions = getAbapOnPremQuestions();
-        const serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+        const serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
 
         const selectedService = {
             servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
@@ -569,9 +587,7 @@ describe('questions', () => {
             serviceType: 'Not implemented'
         } as ServiceAnswer;
 
-        const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService, {
-            systemUrl: 'http://some.abap.system:1234'
-        });
+        const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService);
         expect(validationResult).toBe(true);
         expect(serviceSpy).toHaveBeenCalledWith(selectedService.servicePath);
         expect(PromptState.odataService).toEqual({
@@ -583,7 +599,7 @@ describe('questions', () => {
         });
     });
 
-    test('Should get the service detailed on CLI using `when` condition(list validators dont run on CLI)', async () => {
+    test('Should get the service details on CLI using `when` condition(list validators dont run on CLI)', async () => {
         const getHostEnvSpy = jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         const annotations = [
             {
@@ -607,14 +623,16 @@ describe('questions', () => {
                 metadata: jest.fn().mockResolvedValue(v2Metadata)
             } as Partial<ODataService>)
         } as Partial<ServiceProvider>;
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
 
         const newSystemQuestions = getAbapOnPremQuestions();
         expect(getHostEnvSpy).toHaveBeenCalled();
-        const cliServicePromptName = newSystemQuestions.find((question) => question.name === 'cliServicePromptName');
+        const cliServicePromptName = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:cliServiceSelection`
+        );
         expect(
             await (cliServicePromptName?.when as Function)({
-                systemUrl: 'http://some.abap.system:1234',
-                serviceSelection: {
+                [`abapOnPrem:${promptNames.serviceSelection}`]: {
                     servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
                     serviceODataVersion: '2',
                     serviceType: 'Not Classified'
@@ -640,12 +658,14 @@ describe('questions', () => {
             }
         };
         const newSystemQuestions = getAbapOnPremQuestions({ serviceSelection: { useAutoComplete: true } });
-        const serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+        const serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
         // load choices from mock catalog service and find the choice for the flight service
         const flightChoice = (
-            (await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+            (await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)(/* {
                 systemUrl: 'http://some.abap.system:1234'
-            })) as { name: string; value: ServiceAnswer }[]
+            } */)) as { name: string; value: ServiceAnswer }[]
         ).find((choice) => choice.name === 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4');
 
         expect(serviceSelectionPrompt?.type).toBe('autocomplete');
@@ -673,7 +693,9 @@ describe('questions', () => {
 
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'error');
         const newSystemQuestions = getAbapOnPremQuestions();
-        const serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+        const serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
 
         const selectedService = {
             servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
@@ -681,9 +703,7 @@ describe('questions', () => {
             serviceType: 'Not implemented'
         } as ServiceAnswer;
 
-        const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService, {
-            systemUrl: 'http://some.abap.system:1234'
-        });
+        const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService);
         expect(loggerSpy).toHaveBeenCalledWith(
             t('errors.serviceMetadataErrorLog', {
                 servicePath: selectedService.servicePath,
