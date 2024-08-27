@@ -90,12 +90,48 @@ export interface UI5 {
      */
     descriptorVersion: string;
     /**
-     * The UI5 libraries that are required by the project. (e.g. manifest, ui5-local.yaml, flpSandbox.html)
+     * The UI5 libraries that are added as part of the project. (e.g. manifest.json, ui5-local.yaml, flpSandbox.html)
+     *
+     * ui5-local.yaml:
+     *
+     * @example
+     * ```yaml
+     * libraries:
+     *      -name: sap.m
+     *      -name: sap.ui.core
+     *      -name: sap.ushell
+     *      -name: sap.fe.templates
+     *```
+     * flpSandbox.html:
+     * @example
+     * ```HTML
+     * <script id="sap-ui-bootstrap"
+     *      data-sap-ui-libs="sap.m,sap.ui.core,sap.ushell,sap.fe.templates">
+     * </script>
+     * ```
      */
     ui5Libs: string | string[];
     /**
-     * (Optional) The UI5 libraries required specifically for the manifest file.
-     * If not provided, `ui5Libs` used as a fallback.
+     * (Optional) These libraries will be added to the manifest.json file as sap.ui5 dependencies.
+     * If `manifestLibs` not provided, `ui5Libs` libraries added to the manifest.json by default.
+     *
+     * manifest.json:
+     *
+     * @example
+     * ```json
+     * "sap.ui5": {
+     *  "flexEnabled": true,
+     *  "dependencies": {
+     *      "minUI5Version": "1.121.1",
+     *      "libs": {
+     *          "sap.m": {},
+     *          "sap.ui.core": {},
+     *          "sap.ushell": {},
+     *          "sap.fe.templates": {}
+     *      }
+     *  },
+     * }
+     * ```
      */
     manifestLibs?: string | string[];
     /**
@@ -103,7 +139,8 @@ export interface UI5 {
      */
     ui5Theme: string;
     /**
-     * (Optional) Custom UI5 libraries that should be included in the project.
+     * (Optional) Custom UI5 libraries that are included in the project.
+     * Added with ui5 dependencies in the manifest.json.
      */
     customUi5Libs?: string[];
 }
