@@ -90,7 +90,7 @@ describe('Building Blocks', () => {
                 fs
             )
         ).toThrowError(
-            /Both dependencies "sap.fe.core" and "sap.fe.templates" are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries./
+            /All of the dependencies sap.fe.templates, sap.fe.core are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries./
         );
     });
 
