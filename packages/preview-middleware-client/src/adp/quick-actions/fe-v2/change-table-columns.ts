@@ -255,13 +255,9 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
 
 async function getActionId(tableType: string): Promise<string[]> {
     const { major, minor } = await getUi5Version();
-    const isVersion = (version: string) => {
-        const [majorV, minorV] = version.split('.');
-        return major === Number(majorV) && minor === Number(minorV);
-    };
     switch (tableType) {
         case 'sap.ui.comp.smarttable.SmartTable':
-            if (isVersion('1.96')) {
+            if (major === 1 && minor === 96) {
                 return [M_TABLE_ACTION_ID];
             } else {
                 return [SMART_TABLE_ACTION_ID];
