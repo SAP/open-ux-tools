@@ -404,6 +404,9 @@ export class ChangeService {
     }
 
     private async getSelectorIdByChange(change: FlexChange): Promise<string> {
+        if (!change) {
+            return '';
+        }
         const changeDefinition = change.getDefinition();
 
 		let control = JsControlTreeModifier.bySelector(changeDefinition.selector, this.options.rta.getRootControlInstance());
