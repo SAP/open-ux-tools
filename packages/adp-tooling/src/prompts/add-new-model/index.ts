@@ -122,7 +122,7 @@ function validatePromptODataName(
         return t('validators.errorDuplicatedValueOData');
     }
 
-    if (value === answers.dataSourceName) {
+    if (answers.addAnnotationMode && value === answers.dataSourceName) {
         return t('validators.errorDuplicateNamesOData');
     }
 

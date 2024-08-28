@@ -1,5 +1,6 @@
 import type { Command } from 'commander';
 
+import type { DescriptorVariant, NewModelAnswers, NewModelData } from '@sap-ux/adp-tooling';
 import { generateChange, ChangeType, getPromptsForNewModel, getVariant } from '@sap-ux/adp-tooling';
 
 import { promptYUIQuestions } from '../../common';
@@ -38,10 +39,11 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
 
         const answers = await promptYUIQuestions(getPromptsForNewModel(basePath, variant.layer), false);
 
-        const fs = await generateChange<ChangeType.ADD_NEW_MODEL>(basePath, ChangeType.ADD_NEW_MODEL, {
-            variant,
-            answers
-        });
+        const fs = await generateChange<ChangeType.ADD_NEW_MODEL>(
+            basePath,
+            ChangeType.ADD_NEW_MODEL,
+            createNewModelData(variant, answers)
+        );
 
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));
@@ -52,4 +54,32 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
         logger.error(error.message);
         logger.debug(error);
     }
+}
+
+/**
+ * Returns the writer data for the new model change.
+ *
+ * @param {DescriptorVariant} variant - The variant of the adaptation project.
+ * @param {NewModelAnswers} answers - The answers to the prompts.
+ * @returns {NewModelData} The writer data for the new model change.
+ */
+function createNewModelData(variant: DescriptorVariant, answers: NewModelAnswers): NewModelData {
+    const { name, uri, modelName, version, modelSettings, addAnnotationMode } = answers;
+    return {
+        variant,
+        service: {
+            name,
+            uri,
+            modelName,
+            version,
+            modelSettings
+        },
+        ...(addAnnotationMode && {
+            annotation: {
+                dataSourceName: answers.dataSourceName,
+                dataSourceURI: answers.dataSourceURI,
+                settings: answers.annotationSettings
+            }
+        })
+    };
 }

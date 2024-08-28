@@ -2,7 +2,7 @@ import type { OutlineNode } from '@sap-ux-private/control-property-editor-common
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 import { isEditable, isReuseComponent } from './utils';
-import { getUi5Version } from '../../utils/version';
+import { getUi5Version, Ui5VersionInfo } from '../../utils/version';
 
 interface AdditionalData {
     text?: string;
@@ -87,9 +87,7 @@ export async function transformNodes(
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
-    const version = await getUi5Version();
-    const versionParts = version.split('.');
-    const minor = parseInt(versionParts[1], 10);
+    const ui5VersionInfo = await getUi5Version();
     while (stack.length) {
         const current = stack.shift();
         const editable = isEditable(current?.id);
@@ -114,7 +112,7 @@ export async function transformNodes(
                 children: transformedChildren
             };
 
-            fillReuseComponents(reuseComponentsIds, current, scenario, minor);
+            fillReuseComponents(reuseComponentsIds, current, scenario, ui5VersionInfo);
 
             items.push(node);
         }
@@ -150,15 +148,15 @@ export async function transformNodes(
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param node view node
  * @param scenario type of project
- * @param minorUI5Version miner UI5 version
+ * @param ui5VersionInfo UI5 version information
  */
 function fillReuseComponents(
     reuseComponentsIds: Set<string>,
     node: OutlineViewNode,
     scenario: Scenario,
-    minorUI5Version: number
+    ui5VersionInfo: Ui5VersionInfo
 ): void {
-    if (scenario === 'ADAPTATION_PROJECT' && node?.component && isReuseComponent(node.id, minorUI5Version)) {
+    if (scenario === 'ADAPTATION_PROJECT' && node?.component && isReuseComponent(node.id, ui5VersionInfo)) {
         reuseComponentsIds.add(node.id);
     }
 }

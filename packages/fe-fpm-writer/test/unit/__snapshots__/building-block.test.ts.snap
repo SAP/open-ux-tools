@@ -152,6 +152,70 @@ Object {
 }
 `;
 
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Absolute path without entity 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/REPLACE_WITH_ENTITY\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Absolute path without qualifier 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"/testEntitySet\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Complex absolute path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"@com.sap.vocabularies.UI.v1.Chart#chartMacro5\\"
+    contextPath=\\"/SessionMetrics\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Complex relative path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"@com.sap.vocabularies.UI.v1.Chart#chartMacro4\\"
+    contextPath=\\"/Sessions/Speed\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Relative path without entity 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/REPLACE_WITH_ENTITY\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Relative path without qualifier 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"/testEntitySet\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Simple absolute path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/testEntitySet\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Simple relative path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/testEntitySet\\"
+/>"
+`;
+
 exports[`Building Blocks Generate with optional parameters generate chart building block with metaPath as object: generate-chart-with-optional-params 1`] = `
 Object {
   "generate-chart-with-optional-params/webapp/ext/main/Main.view.xml": Object {
@@ -319,7 +383,8 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for chart building block 2`] = `
 "<macros:Chart
     id=\\"testChart\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
 />"
 `;
 
@@ -384,6 +449,25 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
     id=\\"testTable\\"
     metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
 />"
+`;
+
+exports[`Building Blocks generate building block with \`sap.fe.templates\` dependency only: generate-filter-bar-templates-library-only 1`] = `
+Object {
+  "../../../../unit/sample/building-block/webapp-prompts/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"testFilterBar\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "../../../../unit/sample/building-block/webapp-prompts/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "state": "modified",
+  },
+}
 `;
 
 exports[`Building Blocks generate building block, no fs 1`] = `

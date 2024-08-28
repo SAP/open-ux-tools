@@ -7,7 +7,7 @@ import type OutlineService from 'sap/ui/rta/command/OutlineService';
 
 import { transformNodes } from './nodes';
 import Log from 'sap/base/Log';
-import { getError } from '../error-utils';
+import { getError } from '../../utils/error';
 
 /**
  *

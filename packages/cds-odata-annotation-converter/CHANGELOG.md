@@ -1,5 +1,13 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.3.5
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/odata-vocabularies@0.4.2
+    -   @sap-ux/cds-annotation-parser@0.2.2
+
 ## 0.3.4
 
 ### Patch Changes

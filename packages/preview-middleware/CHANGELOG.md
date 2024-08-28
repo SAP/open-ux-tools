@@ -1,5 +1,74 @@
 # @sap-ux/preview-middleware
 
+## 0.16.55
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.42
+-   @sap-ux/project-access@1.26.9
+
+## 0.16.54
+
+### Patch Changes
+
+-   Updated dependencies [d3dafeb]
+    -   @sap-ux/btp-utils@0.15.2
+    -   @sap-ux/adp-tooling@0.12.41
+
+## 0.16.53
+
+### Patch Changes
+
+-   ceed987: Fixed copy to clipboard chaching old control id values
+
+## 0.16.52
+
+### Patch Changes
+
+-   Updated dependencies [6419b2c]
+    -   @sap-ux/adp-tooling@0.12.40
+
+## 0.16.51
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/adp-tooling@0.12.39
+
+## 0.16.50
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.38
+-   @sap-ux/project-access@1.26.7
+
+## 0.16.49
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/btp-utils@0.15.1
+    -   @sap-ux/adp-tooling@0.12.37
+
+## 0.16.48
+
+### Patch Changes
+
+-   53a5b13: fix static preview client url
+
+## 0.16.47
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.36
+
+## 0.16.46
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.35
+
 ## 0.16.45
 
 ### Patch Changes

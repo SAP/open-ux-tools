@@ -65,7 +65,7 @@ describe('adp', () => {
             return { dispose: jest.fn(), sendAction: jest.fn() };
         });
         const enableTelemetry = jest.spyOn(common, 'enableTelemetry');
-        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.118.1' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -93,7 +93,7 @@ describe('adp', () => {
             return { dispose: jest.fn(), sendAction: sendActionMock };
         });
 
-        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.70.0' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.70.0' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -111,7 +111,7 @@ describe('adp', () => {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
-                    'The current SAPUI5 version set for this Adaptation project is 1.70.0. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71',
+                    'The current SAPUI5 version set for this Adaptation project is 1.70. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71',
                 shouldHideIframe: true
             }
         });
@@ -133,7 +133,7 @@ describe('adp', () => {
             'application-app-preview-component---fin.ar.lineitems.display.appView': mockUI5Element
         });
 
-        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.123.1' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.123.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -172,7 +172,7 @@ describe('adp', () => {
 
         Element.registry.filter.mockReturnValue([mockUI5Element]);
 
-        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.118.1' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 

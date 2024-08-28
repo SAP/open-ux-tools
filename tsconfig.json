@@ -24,6 +24,9 @@
   },
   "references": [
     {
+      "path": "packages/abap-deploy-config-inquirer"
+    },
+    {
       "path": "packages/abap-deploy-config-writer"
     },
     {
@@ -96,6 +99,9 @@
       "path": "packages/fiori-generator-shared"
     },
     {
+      "path": "packages/guided-answers-helper"
+    },
+    {
       "path": "packages/i18n"
     },
     {
@@ -115,6 +121,9 @@
     },
     {
       "path": "packages/mockserver-config-writer"
+    },
+    {
+      "path": "packages/nodejs-utils"
     },
     {
       "path": "packages/odata-annotation-core-types"

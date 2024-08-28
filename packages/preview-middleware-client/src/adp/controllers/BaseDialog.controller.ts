@@ -12,7 +12,7 @@ import MessageToast from 'sap/m/MessageToast';
 import CommandExecutor from '../command-executor';
 import { matchesFragmentName } from '../utils';
 import type { Fragments } from '../api-handler';
-import { getError } from '../../cpe/error-utils';
+import { getError } from '../../utils/error';
 
 type BaseDialogModel = JSONModel & {
     getProperty(sPath: '/fragmentList'): Fragments;

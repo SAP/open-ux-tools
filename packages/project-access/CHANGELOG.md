@@ -1,5 +1,25 @@
 # @sap-ux/project-access
 
+## 1.26.9
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+
+## 1.26.8
+
+### Patch Changes
+
+-   df6262e: fix: use manifest.json path as root for `i18n` folder
+
+## 1.26.7
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+
 ## 1.26.6
 
 ### Patch Changes

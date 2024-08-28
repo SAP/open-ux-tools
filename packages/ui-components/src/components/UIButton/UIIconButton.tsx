@@ -3,6 +3,7 @@ import type { IButtonProps as IBaseButtonProps, IButtonStyles } from '@fluentui/
 import { IconButton } from '@fluentui/react';
 
 import { UIContextualMenu } from '../UIContextualMenu';
+import type { UIIContextualMenuProps } from '../UIContextualMenu';
 
 export enum UIIconButtonSizes {
     Default = 'Default',
@@ -11,6 +12,7 @@ export enum UIIconButtonSizes {
 
 export interface ButtonProps extends IBaseButtonProps {
     sizeType?: UIIconButtonSizes;
+    menuProps?: UIIContextualMenuProps;
 }
 
 /**

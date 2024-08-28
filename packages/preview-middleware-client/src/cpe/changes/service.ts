@@ -20,11 +20,11 @@ import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
-import { getError } from '../error-utils';
 import ChangesWriteAPI from 'sap/ui/fl/write/api/ChangesWriteAPI';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
 import FlexObjectFactory from 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory';
 import FlexChange from 'sap/ui/fl/Change';
+import { getError } from '../../utils/error';
 
 interface ChangeContent {
     property: string;

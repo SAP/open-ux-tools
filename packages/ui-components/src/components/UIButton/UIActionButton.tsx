@@ -3,6 +3,11 @@ import type { IButtonProps, IButtonStyles } from '@fluentui/react';
 import { ActionButton } from '@fluentui/react';
 
 import { UIContextualMenu } from '../UIContextualMenu';
+import type { UIIContextualMenuProps } from '../UIContextualMenu';
+
+interface UIButtonProps extends IButtonProps {
+    menuProps?: UIIContextualMenuProps;
+}
 
 /**
  * UIActionButton component
@@ -12,13 +17,13 @@ import { UIContextualMenu } from '../UIContextualMenu';
  * @class UIActionButton
  * @extends {React.Component<IButtonProps, {}>}
  */
-export class UIActionButton extends React.Component<IButtonProps, {}> {
+export class UIActionButton extends React.Component<UIButtonProps, {}> {
     /**
      * Initializes component properties.
      *
      * @param {IButtonProps} props
      */
-    public constructor(props: IButtonProps) {
+    public constructor(props: UIButtonProps) {
         super(props);
     }
 

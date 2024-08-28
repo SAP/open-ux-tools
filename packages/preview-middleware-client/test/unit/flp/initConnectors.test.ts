@@ -9,7 +9,7 @@ describe('flp/initConnectors', () => {
 
     test('enables fake lrep connector when ui5 version is 1.71', async () => {
         sapMock.ui.version = '1.71.60';
-        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.71.60' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.60' });
         await initConnectors();
 
         expect(sapMock.ui.require).toBeCalledWith(
@@ -26,7 +26,7 @@ describe('flp/initConnectors', () => {
 
     test('defines a local connector for writing and applying changes and returns it', async () => {
         sapMock.ui.version = '1.120.4';
-        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.120.4' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
 
         await initConnectors();
 

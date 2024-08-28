@@ -1,20 +1,35 @@
-import type { AxiosRequestConfig } from '@sap-ux/axios-extension';
+import {
+    AbapServiceProvider,
+    Annotations,
+    ODataService,
+    ODataVersion,
+    ServiceProvider,
+    type AxiosRequestConfig
+} from '@sap-ux/axios-extension';
 import * as axiosExtension from '@sap-ux/axios-extension';
-import { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
-import type { AxiosResponse } from 'axios';
-import { AxiosError } from 'axios';
+import { AxiosError, type AxiosResponse } from 'axios';
+import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { ErrorHandler } from '../../../src/error-handler/error-handler';
-import { GUIDED_ANSWERS_LAUNCH_CMD_ID } from '../../../src/error-handler/help/help-topics';
-import { GUIDED_ANSWERS_ICON } from '../../../src/error-handler/help/images';
+import { GUIDED_ANSWERS_LAUNCH_CMD_ID, GUIDED_ANSWERS_ICON } from '@sap-ux/guided-answers-helper';
 import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
 import { ConnectionValidator } from '../../../src/prompts/connectionValidator';
 
-/**
- * Workaround to allow spyOn
- */
+const catalogServiceMock = jest.fn().mockImplementation(() => ({
+    interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
+    listServices: jest.fn().mockResolvedValue([])
+}));
+
 jest.mock('@sap-ux/axios-extension', () => ({
     __esModule: true,
-    ...jest.requireActual('@sap-ux/axios-extension')
+    ...jest.requireActual('@sap-ux/axios-extension'),
+    AbapServiceProvider: jest.fn().mockImplementation(() => ({
+        catalog: catalogServiceMock
+    })),
+    createForAbapOnCloud: jest.fn().mockImplementation(() => ({
+        interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
+        catalog: catalogServiceMock,
+        user: jest.fn().mockReturnValue('user1@acme.com')
+    }))
 }));
 
 let mockIsAppStudio = false;
@@ -300,6 +315,7 @@ describe('ConnectionValidator', () => {
                 username: 'user1'
             },
             baseURL: 'https://example.com:1234',
+            url: '/',
             cookies: '',
             ignoreCertErrors: false,
             params: {
@@ -396,5 +412,75 @@ describe('ConnectionValidator', () => {
         getOdataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(401));
         expect(await connectValidator.isAuthRequired('https://example.com/serviceA', '111')).toBe(true);
         expect(getOdataServiceSpy).toHaveBeenCalled();
+    });
+
+    test('should validate service key info can be used to authenticate', async () => {
+        const createAbapOnCloudProviderSpy = jest.spyOn(axiosExtension, 'createForAbapOnCloud');
+        const serviceInfoMock: Partial<ServiceInfo> = {
+            uaa: {
+                clientid: 'clientid',
+                clientsecret: 'client',
+                url: 'https://example.com/uaa'
+            },
+            url: 'https://example.com/uaa',
+            catalogs: {
+                abap: {
+                    path: 'path',
+                    type: 'type'
+                }
+            },
+            systemid: 'abap_btp_001'
+        };
+        const connectValidator = new ConnectionValidator();
+        expect(await connectValidator.validateServiceInfo(serviceInfoMock as ServiceInfo)).toBe(true);
+        expect(createAbapOnCloudProviderSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                environment: 'Standalone',
+                refreshTokenChangedCb: expect.any(Function),
+                service: serviceInfoMock
+            })
+        );
+        expect(connectValidator.validity).toEqual({
+            authenticated: true,
+            reachable: true,
+            urlFormat: false // URL property format is not validated in service info
+        });
+        expect(connectValidator.connectedUserName).toBe('user1@acme.com');
+        expect(connectValidator.serviceInfo).toEqual(serviceInfoMock);
+        expect(connectValidator.validatedUrl).toBe(serviceInfoMock.url);
+        expect(connectValidator.connectedSystemName).toBe('abap_btp_001');
+    });
+
+    test('should attempt to validate auth using v4 catalog where v2 is not available or user is not authorized', async () => {
+        const listServicesV2Mock = jest
+            .spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
+            .mockRejectedValue(newAxiosErrorWithStatus(401));
+        const listServicesV4Mock = jest
+            .spyOn(axiosExtension.V4CatalogService.prototype, 'listServices')
+            .mockResolvedValue([]);
+        const connectValidator = new ConnectionValidator();
+        await connectValidator.validateUrl('https://example.com:1234', { isSystem: true });
+
+        // If the V2 catalog service fails, the V4 catalog service should be called
+        expect(connectValidator.catalogs[axiosExtension.ODataVersion.v2]).toBeInstanceOf(
+            axiosExtension.V2CatalogService
+        );
+        expect(connectValidator.catalogs[axiosExtension.ODataVersion.v4]).toBeInstanceOf(
+            axiosExtension.V4CatalogService
+        );
+
+        expect(listServicesV2Mock).toHaveBeenCalled();
+        expect(listServicesV4Mock).toHaveBeenCalled();
+
+        // If the only v4 catalog is required (perhaps due to a template limitation), it should be only used
+        listServicesV2Mock.mockClear();
+        listServicesV4Mock.mockClear();
+        // Uses a different URL to ensure the previous validation does not affect this test as we cache
+        await connectValidator.validateUrl('https://example.com:1235', {
+            isSystem: true,
+            odataVersion: ODataVersion.v4
+        });
+        expect(listServicesV2Mock).not.toHaveBeenCalled();
+        expect(listServicesV4Mock).toHaveBeenCalled();
     });
 });

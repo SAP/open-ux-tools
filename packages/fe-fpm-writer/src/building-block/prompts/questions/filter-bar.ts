@@ -4,6 +4,7 @@ import { i18nNamespaces, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
+    getBindingContextTypePrompt,
     getBuildingBlockIdPrompt,
     getCAPServicePrompt,
     getEntityPrompt,
@@ -17,7 +18,8 @@ import type { BuildingBlockConfig, FilterBar } from '../../types';
 export type FilterBarPromptsAnswer = BuildingBlockConfig<FilterBar> & Answers;
 
 const defaultAnswers = {
-    id: 'FilterBar'
+    id: 'FilterBar',
+    bindingContextType: 'absolute'
 };
 
 /**
@@ -46,6 +48,14 @@ export async function getFilterBarBuildingBlockPrompts(
                 default: defaultAnswers.id,
                 guiOptions: {
                     mandatory: true
+                }
+            }),
+            getBindingContextTypePrompt({
+                message: t('bindingContextType'),
+                default: defaultAnswers.bindingContextType,
+                guiOptions: {
+                    mandatory: true,
+                    dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
                 }
             }),
             ...(project && isCapProject(project)

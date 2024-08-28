@@ -1,5 +1,19 @@
 # @sap-ux/inquirer-common
 
+## 0.4.6
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/ui5-info@0.8.1
+
+## 0.4.5
+
+### Patch Changes
+
+-   Updated dependencies [cc1ac72]
+    -   @sap-ux/ui5-info@0.8.0
+
 ## 0.4.4
 
 ### Patch Changes

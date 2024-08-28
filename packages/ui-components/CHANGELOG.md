@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.17.6
+
+### Patch Changes
+
+-   7710aa5: chore upgrade @fluentui/react@8.120.5
+
+## 1.17.5
+
+### Patch Changes
+
+-   128a3dc: UIDefaultButton. Regression after context menu enhancements - ArrowDown icon always rendered for button
+
+## 1.17.4
+
+### Patch Changes
+
+-   ee7aeb8: Layout types for UIContextualMenu and consider underline prop for UILink
+
 ## 1.17.3
 
 ### Patch Changes

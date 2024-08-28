@@ -26,7 +26,7 @@ beforeAll(() => {
 });
 
 test('renders empty properties panel', () => {
-    render(<App previewUrl="" />);
+    render(<App previewUrl="" scenario={SCENARIO.FioriElementsFromScratch} />);
     const noControlSelected = screen.getByText(/No control selected/i);
     expect(noControlSelected).toBeInTheDocument();
 
@@ -38,7 +38,7 @@ test('renders empty properties panel', () => {
 });
 
 test('renders properties', () => {
-    const { store } = render(<App previewUrl="" />);
+    const { store } = render(<App previewUrl="" scenario={SCENARIO.FioriElementsFromScratch} />);
     const propNameString = 'activeIcon';
     const propNameDropDown = 'ariaHasPopup';
     const propNameCheckbox = 'visible';
@@ -164,7 +164,7 @@ test('renders properties', () => {
 });
 
 test('does not render warning dialog', async () => {
-    render(<App previewUrl="" />);
+    render(<App previewUrl="" scenario={SCENARIO.AdaptationProject} />);
     const dialogContent = screen.queryByText(
         /The Control Property Editor enables you to change control properties and behavior directly. These changes may not have the desired effect with Fiori elements applications. Please consult documentation to learn which changes are supported./i
     );
@@ -247,7 +247,7 @@ for (const testCase of testCases) {
         stateTemp.fitPreview = true;
         stateTemp.deviceType = testCase.deviceType;
 
-        const { dispatch } = render(<App previewUrl="" />, {
+        const { dispatch } = render(<App previewUrl="" scenario={SCENARIO.FioriElementsFromScratch} />, {
             initialState: stateTemp
         });
         await new Promise((resolve) => setTimeout(resolve, 1));

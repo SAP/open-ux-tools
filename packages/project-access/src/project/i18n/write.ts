@@ -79,9 +79,9 @@ async function createUI5I18nEntriesBase(
     const dirPath = dirname(defaultPath);
     if (!fs) {
         // create directory when mem-fs-editor is not provided. when mem-fs-editor is provided, directory is created on using `.commit()` API
-        await mkdir(join(root, dirPath), { recursive: true });
+        await mkdir(join(dirname(manifestPath), dirPath), { recursive: true });
     }
-    return createPropertiesI18nEntries(join(root, defaultPath), newEntries, root, fs);
+    return createPropertiesI18nEntries(join(dirname(manifestPath), defaultPath), newEntries, root, fs);
 }
 
 /**

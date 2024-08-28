@@ -132,12 +132,13 @@ export const BuildingBlockQuestions = (props: {
                     alignItems: 'stretch',
                     flexDirection: 'column',
                     gap: '20px',
-                    padding: '20px 10px',
+                    padding: '20px 0',
                     minWidth: '500px',
                     overflow: 'hidden'
                 }}>
                 <div
                     style={{
+                        padding: '0 10px',
                         height: '100%',
                         overflow: 'auto'
                     }}>

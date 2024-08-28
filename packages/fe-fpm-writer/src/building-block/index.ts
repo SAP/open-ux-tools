@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join, parse } from 'path';
-import { type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
+import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
@@ -16,6 +16,11 @@ const PLACEHOLDERS = {
     'entitySet': 'REPLACE_WITH_ENTITY',
     'qualifier': 'REPLACE_WITH_A_QUALIFIER'
 };
+
+interface MetadataPath {
+    contextPath?: string;
+    metaPath: string;
+}
 
 /**
  * Generates a building block into the provided xml view file.
@@ -34,7 +39,7 @@ export function generateBuildingBlock<T extends BuildingBlock>(
     if (!fs) {
         fs = create(createStorage());
     }
-    validateBasePath(basePath, fs, ['sap.fe.core']);
+    validateBasePath(basePath, fs, ['sap.fe.templates', 'sap.fe.core']);
     if (!fs.exists(join(basePath, config.viewOrFragmentPath))) {
         throw new Error(`Invalid view path ${config.viewOrFragmentPath}.`);
     }
@@ -94,22 +99,56 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
 }
 
 /**
- * Method converts object based metaPath to string.
+ * Method returns default values for metadata path.
  *
+ * @param {BuildingBlockType} type - building vlock type.
+ * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
+ * @returns {MetadataPath} Default values for metadata path.
+ */
+function getDefaultMetaPath(type: BuildingBlockType, usePlaceholders?: boolean): MetadataPath {
+    if (type === BuildingBlockType.Chart) {
+        return {
+            metaPath: usePlaceholders ? `/${PLACEHOLDERS.qualifier}` : '',
+            contextPath: usePlaceholders ? PLACEHOLDERS.entitySet : ''
+        };
+    }
+    return {
+        metaPath: usePlaceholders ? `/${PLACEHOLDERS.entitySet}/${PLACEHOLDERS.qualifier}` : ''
+    };
+}
+
+/**
+ * Method converts object based metaPath to metadata path.
+ *
+ * @param {BuildingBlockType} type - building vlock type.
  * @param {BuildingBlockMetaPath} metaPath - object based metaPath.
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
- * @returns {string} Resolved string metaPath.
+ * @returns {MetadataPath} Resolved metadata path information.
  */
-function getMetaPath(metaPath?: BuildingBlockMetaPath, usePlaceholders?: boolean): string {
+function getMetaPath(
+    type: BuildingBlockType,
+    metaPath?: BuildingBlockMetaPath,
+    usePlaceholders?: boolean
+): MetadataPath {
     if (!metaPath) {
-        return usePlaceholders ? `/${PLACEHOLDERS.entitySet}/${PLACEHOLDERS.qualifier}` : '';
+        return getDefaultMetaPath(type, usePlaceholders);
     }
-    const { entitySet, qualifier, bindingContextType = 'absolute' } = metaPath;
-    let entityPath = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
-    const lastIndex = entityPath.lastIndexOf('.');
-    entityPath = lastIndex >= 0 ? entityPath.substring?.(lastIndex + 1) : entityPath;
+    const { bindingContextType = 'absolute' } = metaPath;
+    let { entitySet, qualifier } = metaPath;
+    entitySet = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
     const qualifierOrPlaceholder = qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '');
-    return bindingContextType === 'absolute' ? `/${entityPath}/${qualifierOrPlaceholder}` : qualifierOrPlaceholder;
+    if (type === BuildingBlockType.Chart) {
+        // Special handling for chart - while runtime does not support approach without contextPath
+        const qualifierParts: string[] = qualifierOrPlaceholder.split('/');
+        qualifier = qualifierParts.pop() as string;
+        return {
+            metaPath: qualifier,
+            contextPath: qualifierParts.length ? `/${entitySet}/${qualifierParts.join('/')}` : `/${entitySet}`
+        };
+    }
+    return {
+        metaPath: bindingContextType === 'absolute' ? `/${entitySet}/${qualifierOrPlaceholder}` : qualifierOrPlaceholder
+    };
 }
 
 /**
@@ -131,8 +170,15 @@ function getTemplateContent<T extends BuildingBlock>(
     const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
     if (typeof buildingBlockData.metaPath === 'object' || buildingBlockData.metaPath === undefined) {
         // Convert object based metapath to string
-        const metaPath = getMetaPath(buildingBlockData.metaPath, usePlaceholders);
-        buildingBlockData = { ...buildingBlockData, metaPath };
+        const metadataPath = getMetaPath(
+            buildingBlockData.buildingBlockType,
+            buildingBlockData.metaPath,
+            usePlaceholders
+        );
+        buildingBlockData = { ...buildingBlockData, metaPath: metadataPath.metaPath };
+        if (!buildingBlockData.contextPath && metadataPath.contextPath) {
+            buildingBlockData.contextPath = metadataPath.contextPath;
+        }
     }
     // Apply placeholders
     if (!buildingBlockData.id) {

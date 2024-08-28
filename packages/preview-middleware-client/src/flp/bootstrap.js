@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,
                   @typescript-eslint/no-unsafe-member-access,
-                  @typescript-eslint/no-unsafe-assignment,
                   @typescript-eslint/no-unsafe-argument,
                   no-console */
 
@@ -9,14 +8,16 @@
  * @param fnCallback {Function} The callback function to be executed after the bootstrap is loaded.
  */
 async function ushellBootstrap(fnCallback) {
-    let src = '/test-resources/sap/ushell/bootstrap/sandbox.js';
+    const basePath = window['data-open-ux-preview-basePath'] ?? '';
+
+    let src = `${basePath}/test-resources/sap/ushell/bootstrap/sandbox.js`;
     try {
-        const response = await fetch('/resources/sap-ui-version.json');
+        const response = await fetch(`${basePath}/resources/sap-ui-version.json`);
         const json = await response.json();
-        const version = json?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
-        const major = version ? parseInt(version.split('.')[0], 10) : 2;
-        if (major >= 2) {
-            src = '/resources/sap/ushell/bootstrap/sandbox2.js';
+        const version = json?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version ?? '1.121.0';
+        const majorUi5Version = parseInt(version.split('.')[0], 10);
+        if (majorUi5Version >= 2) {
+            src = `${basePath}/resources/sap/ushell/bootstrap/sandbox2.js`;
         }
     } catch (error) {
         console.warn('Failed to fetch sap-ui-version.json. Assuming it is a 1.x version.');
