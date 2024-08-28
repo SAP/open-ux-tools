@@ -1,4 +1,4 @@
-const LayoutType = {
+export const LayoutType = {
     EndColumnFullScreen: 'EndColumnFullScreen',
     MidColumnFullScreen: 'MidColumnFullScreen',
     OneColumn: 'OneColumn',
