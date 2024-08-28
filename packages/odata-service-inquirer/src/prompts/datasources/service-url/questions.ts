@@ -10,6 +10,7 @@ import LoggerHelper from '../../logger-helper';
 import { ConnectionValidator } from '../../connectionValidator';
 import { serviceUrlInternalPromptNames } from './types';
 import { validateService } from './validators';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
@@ -58,8 +59,15 @@ function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVers
             }
 
             if (urlValidationState === true) {
-                if (!connectValidator.validity.authRequired) {
-                    return validateService(url, connectValidator, requiredVersion);
+                if (!connectValidator.validity.authRequired && connectValidator.odataService) {
+                    return validateService(
+                        url,
+                        {
+                            odataService: connectValidator.odataService,
+                            abapServiceProvider: connectValidator.serviceProvider as AbapServiceProvider
+                        },
+                        requiredVersion
+                    );
                 }
                 return true;
             }
@@ -105,8 +113,16 @@ function getIgnoreCertErrorsPrompt(
             });
 
             if (validUrl === true) {
-                if (!connectValidator.validity.authRequired) {
-                    return validateService(serviceUrl, connectValidator, requiredVersion, ignoreCertError);
+                if (!connectValidator.validity.authRequired && connectValidator.odataService) {
+                    return validateService(
+                        serviceUrl,
+                        {
+                            odataService: connectValidator.odataService,
+                            abapServiceProvider: connectValidator.serviceProvider as AbapServiceProvider
+                        },
+                        requiredVersion,
+                        ignoreCertError
+                    );
                 }
                 return true;
             }
@@ -145,9 +161,17 @@ function getCliIgnoreCertValidatePrompt(
                 if (validUrl !== true) {
                     throw new Error(validUrl.toString()); // exit
                 }
-                if (!connectValidator.validity.authRequired) {
+                if (!connectValidator.validity.authRequired && connectValidator.odataService) {
                     // Will log on CLI
-                    const validService = await validateService(serviceUrl, connectValidator, requiredVersion, true);
+                    const validService = await validateService(
+                        serviceUrl,
+                        {
+                            odataService: connectValidator.odataService,
+                            abapServiceProvider: connectValidator.serviceProvider as AbapServiceProvider
+                        },
+                        requiredVersion,
+                        true
+                    );
                     if (validService !== true) {
                         throw new Error(t('errors.exitingGeneration', { exitReason: validService.toString() }));
                     }
@@ -208,8 +232,16 @@ function getPasswordPrompt(
                 ignoreCertError,
                 sapClient
             });
-            if (validAuth === true) {
-                return validateService(serviceUrl, connectValidator, requiredVersion, ignoreCertError);
+            if (validAuth === true && connectValidator.odataService) {
+                return validateService(
+                    serviceUrl,
+                    {
+                        odataService: connectValidator.odataService,
+                        abapServiceProvider: connectValidator.serviceProvider as AbapServiceProvider
+                    },
+                    requiredVersion,
+                    ignoreCertError
+                );
             }
             return validAuth;
         }

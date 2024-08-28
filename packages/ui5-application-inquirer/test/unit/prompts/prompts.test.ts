@@ -109,12 +109,25 @@ describe('getQuestions', () => {
         // Default name provided
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.name]: {
-                default: 'defaultAppName'
+                default: 'defaultAppName',
+                defaultValue: 'shouldBeIgnoredAsDefaultIsProvided'
             }
         };
         questions = getQuestions([], promptOpts);
         const namePrompt = questions.find((question) => question.name === promptNames.name);
         expect(namePrompt?.default).toEqual(promptOpts.name?.default);
+
+        // Test `defaultValue` prompt option - should not replace existing default function
+        const promptOptionsDefaultValue = {
+            [promptNames.name]: {
+                defaultValue: 'defaultAppNameDontReplace'
+            }
+        };
+
+        questions = getQuestions([], promptOptionsDefaultValue);
+        const namePromptWithDefaultValue = questions.find((question) => question.name === promptNames.name);
+        expect(namePromptWithDefaultValue?.default({})).toEqual(promptOptionsDefaultValue.name?.defaultValue);
+        expect(namePromptWithDefaultValue?.default({ name: 'userInputName' })).toEqual('userInputName');
     });
 
     test('getQuestions, prompt: `title`, default', () => {
@@ -206,6 +219,24 @@ describe('getQuestions', () => {
         const args = ['/some/target/path', { name: 'project1' }] as const;
         expect(targetFolderPrompt?.validate!(...args)).toEqual(true);
         expect(projectValidatorSpy).toHaveBeenCalledWith(...[args[0], args[1].name]);
+
+        // Test `defaultValue` prompt option - should not replace existing default function
+        const promptOptionsDefaultValue = {
+            [promptNames.targetFolder]: {
+                defaultValue: '/default/target/folder'
+            }
+        };
+
+        questions = getQuestions([], promptOptionsDefaultValue);
+        const targetFolderPromptWithDefaultValue = questions.find(
+            (question) => question.name === promptNames.targetFolder
+        );
+        expect(targetFolderPromptWithDefaultValue?.default({})).toEqual(
+            promptOptionsDefaultValue.targetFolder?.defaultValue
+        );
+        expect(targetFolderPromptWithDefaultValue?.default({ targetFolder: 'user/input/target/folder' })).toEqual(
+            'user/input/target/folder'
+        );
     });
 
     test('getQuestions, prompt: `ui5VersionChoice`', () => {
