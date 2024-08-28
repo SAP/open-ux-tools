@@ -111,7 +111,6 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
-                "additionalMessages": [Function],
                 "choices": [Function],
                 "default": [Function],
                 "guiOptions": {
@@ -224,15 +223,14 @@ describe('questions', () => {
         const cfDiscoPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
         expect(cfDiscoPrompt).toBeDefined();
 
-        // YUI returns empty list and shows additional message
+        // YUI returns empty list and shows validation error message if no ABAP environments error occurs
         const errorHandlerSpy = jest.spyOn(ErrorHandler.prototype, 'logErrorMsgs');
         PromptState.isYUI = true;
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
         expect(errorHandlerSpy).toHaveBeenCalledWith(ERROR_TYPE.NO_ABAP_ENVS, t('errors.noAbapEnvsInCFSpace'));
-        expect(((cfDiscoPrompt as ListQuestion).additionalMessages as Function)()).toEqual({
-            message: 'No ABAP environments in CF space found. See log for more details.',
-            severity: 1
-        });
+        expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
+            'No ABAP environments in CF space found. See log for more details.'
+        );
 
         // CLI throws to exit, as you cannot continue
         PromptState.isYUI = false;
@@ -244,10 +242,9 @@ describe('questions', () => {
         // If user is not logged in to CF, a warning message is logged and shown
         (getServicesFromCF as jest.Mock).mockRejectedValueOnce(new Error('Not logged in'));
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
-        expect(((cfDiscoPrompt as ListQuestion).additionalMessages as Function)()).toEqual({
-            message: `${t('errors.abapEnvsCFDiscoveryFailed')} ${t('texts.seeLogForDetails')}`,
-            severity: 1
-        });
+        expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
+            `${t('errors.abapEnvsCFDiscoveryFailed')} ${t('texts.seeLogForDetails')}`
+        );
     });
 
     test('Cloud Foundry discovery prompt should connect to the choosen Abap environment (YUI)', async () => {
