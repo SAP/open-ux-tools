@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.24.1
+
+### Patch Changes
+
+-   1a99abc: separation between ui5libs and manifestlibs, to allow for different ui5 libraries set in manifest and other files
+
 ## 0.24.0
 
 ### Minor Changes

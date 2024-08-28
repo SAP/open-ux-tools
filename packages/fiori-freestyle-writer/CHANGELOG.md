@@ -1,5 +1,16 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.0.19
+
+### Patch Changes
+
+-   1a99abc: separation between ui5libs and manifestlibs, to allow for different ui5 libraries set in manifest and other files
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-application-writer@1.1.5
+    -   @sap-ux/ui5-config@0.24.1
+    -   @sap-ux/odata-service-writer@0.22.4
+    -   @sap-ux/fiori-generator-shared@0.3.17
+
 ## 1.0.18
 
 ### Patch Changes
