@@ -1,5 +1,14 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.31
+
+### Patch Changes
+
+-   e2f644a: Fix for CF logon validation message not shown
+    -   @sap-ux/project-access@1.26.9
+    -   @sap-ux/telemetry@0.5.25
+    -   @sap-ux/axios-extension@1.16.5
+
 ## 0.5.30
 
 ### Patch Changes

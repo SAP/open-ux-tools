@@ -1,5 +1,13 @@
 # @sap-ux/launch-config
 
+## 0.2.18
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+    -   @sap-ux/project-access@1.26.9
+
 ## 0.2.17
 
 ### Patch Changes
