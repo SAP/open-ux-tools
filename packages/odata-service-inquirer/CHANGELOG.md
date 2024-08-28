@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.30
+
+### Patch Changes
+
+-   f7d2895: Adds fallback to v4 catalog service for auth or not found errors
+
 ## 0.5.29
 
 ### Patch Changes
