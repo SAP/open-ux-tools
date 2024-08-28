@@ -1,5 +1,6 @@
 import NavContainer from 'sap/m/NavContainer';
 import FlexibleColumnLayout from 'sap/f/FlexibleColumnLayout';
+import { LayoutType } from 'sap/f/library';
 import Control from 'sap/ui/core/Control';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import Log from 'sap/base/Log';
@@ -47,13 +48,13 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
         return page;
     }
 
-     /**
+    /**
      * Returns a list of Active pages based on the provided control index.
      *
      * @param controlIndex - Control tree index.
      * @returns A list of Active pages.
      */
-     protected getActivePageContent(controlIndex: ControlTreeIndex): ActivePage<T>[] {
+    protected getActivePageContent(controlIndex: ControlTreeIndex): ActivePage<T>[] {
         const views = this.getActiveViews(controlIndex);
         const pages: ActivePage<T>[] = [];
         for (const view of views) {
@@ -97,7 +98,7 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
 
     /**
      * Finds active page controls from the control tree index.
-     * 
+     *
      * @param controlIndex - Control tree index.
      * @returns A list of page controls.
      */
@@ -114,17 +115,42 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
         if (flexibleLayoutNode) {
             const control = getControlById(flexibleLayoutNode.controlId);
             if (control instanceof FlexibleColumnLayout) {
-                // TODO: correctly return active pages (after visiting a page getCurrent* returns a control even though it is not active)
-                return [
-                    control.getCurrentBeginColumnPage(),
-                    control.getCurrentMidColumnPage(),
-                    control.getCurrentEndColumnPage()
-                ];
+                return this.getVisibleFlexibleColumnLayoutPages(control);
             }
         }
 
         return [];
     }
 
-   
+    /**
+     * Finds the visible Flexible Column Layout pages.
+     * 
+     * @param control - Flexible Column Layout control.
+     * @returns A list of visible pages.
+     */
+
+    private getVisibleFlexibleColumnLayoutPages(control: FlexibleColumnLayout): (Control | undefined)[] {
+        const layout = control.getLayout();
+        switch (layout) {
+            case LayoutType.OneColumn:
+                return [control.getCurrentBeginColumnPage()];
+            case LayoutType.MidColumnFullScreen:
+                return [control.getCurrentMidColumnPage()];
+            case LayoutType.EndColumnFullScreen:
+                return [control.getCurrentEndColumnPage()];
+            case LayoutType.ThreeColumnsBeginExpandedEndHidden:
+            case LayoutType.ThreeColumnsMidExpanded:
+            case LayoutType.ThreeColumnsMidExpandedEndHidden:
+            case LayoutType.ThreeColumnsEndExpanded:
+                return [
+                    control.getCurrentBeginColumnPage(),
+                    control.getCurrentMidColumnPage(),
+                    control.getCurrentEndColumnPage()
+                ];
+            case LayoutType.TwoColumnsMidExpanded:
+            case LayoutType.TwoColumnsBeginExpanded:
+                return [control.getCurrentBeginColumnPage(), control.getCurrentMidColumnPage()];
+        }
+        return [];
+    }
 }
