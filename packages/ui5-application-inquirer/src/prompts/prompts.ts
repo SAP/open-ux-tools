@@ -47,11 +47,11 @@ export function getQuestions(
     const appName =
         typeof promptOptions?.[promptNames.name]?.default === 'string'
             ? promptOptions[promptNames.name].default
-            : undefined; // Default functions will be applied later, these replace the existing defaults
+            : promptOptions?.[promptNames.name]?.defaultValue;
     const targetDir =
         typeof promptOptions?.[promptNames.targetFolder]?.default === 'string'
             ? promptOptions[promptNames.targetFolder].default // Default functions will be applied later, these replace the existing defaults
-            : process.cwd();
+            : promptOptions?.[promptNames.targetFolder]?.defaultValue ?? process.cwd();
     const isCapProject = !!capCdsInfo;
 
     const keyedPrompts: Record<promptNames, UI5ApplicationQuestion> = {

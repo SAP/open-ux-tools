@@ -1,5 +1,45 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.1.9
+
+### Patch Changes
+
+-   Updated dependencies [bb4305f]
+    -   @sap-ux/fe-fpm-writer@0.28.0
+
+## 1.1.8
+
+### Patch Changes
+
+-   1a99abc: separation between ui5libs and manifestlibs, to allow for different ui5 libraries set in manifest and other files
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-application-writer@1.1.5
+    -   @sap-ux/ui5-config@0.24.1
+    -   @sap-ux/odata-service-writer@0.22.4
+    -   @sap-ux/fe-fpm-writer@0.27.7
+    -   @sap-ux/fiori-generator-shared@0.3.17
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.1.7
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.16
+
+## 1.1.6
+
+### Patch Changes
+
+-   Updated dependencies [087752f]
+    -   @sap-ux/fe-fpm-writer@0.27.6
+
+## 1.1.5
+
+### Patch Changes
+
+-   Updated dependencies [3e1a83a]
+    -   @sap-ux/fiori-generator-shared@0.3.15
+
 ## 1.1.4
 
 ### Patch Changes
