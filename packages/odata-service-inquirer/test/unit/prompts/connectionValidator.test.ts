@@ -2,6 +2,7 @@ import {
     AbapServiceProvider,
     Annotations,
     ODataService,
+    ODataVersion,
     ServiceProvider,
     type AxiosRequestConfig
 } from '@sap-ux/axios-extension';
@@ -448,5 +449,38 @@ describe('ConnectionValidator', () => {
         expect(connectValidator.serviceInfo).toEqual(serviceInfoMock);
         expect(connectValidator.validatedUrl).toBe(serviceInfoMock.url);
         expect(connectValidator.connectedSystemName).toBe('abap_btp_001');
+    });
+
+    test('should attempt to validate auth using v4 catalog where v2 is not available or user is not authorized', async () => {
+        const listServicesV2Mock = jest
+            .spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
+            .mockRejectedValue(newAxiosErrorWithStatus(401));
+        const listServicesV4Mock = jest
+            .spyOn(axiosExtension.V4CatalogService.prototype, 'listServices')
+            .mockResolvedValue([]);
+        const connectValidator = new ConnectionValidator();
+        await connectValidator.validateUrl('https://example.com:1234', { isSystem: true });
+
+        // If the V2 catalog service fails, the V4 catalog service should be called
+        expect(connectValidator.catalogs[axiosExtension.ODataVersion.v2]).toBeInstanceOf(
+            axiosExtension.V2CatalogService
+        );
+        expect(connectValidator.catalogs[axiosExtension.ODataVersion.v4]).toBeInstanceOf(
+            axiosExtension.V4CatalogService
+        );
+
+        expect(listServicesV2Mock).toHaveBeenCalled();
+        expect(listServicesV4Mock).toHaveBeenCalled();
+
+        // If the only v4 catalog is required (perhaps due to a template limitation), it should be only used
+        listServicesV2Mock.mockClear();
+        listServicesV4Mock.mockClear();
+        // Uses a different URL to ensure the previous validation does not affect this test as we cache
+        await connectValidator.validateUrl('https://example.com:1235', {
+            isSystem: true,
+            odataVersion: ODataVersion.v4
+        });
+        expect(listServicesV2Mock).not.toHaveBeenCalled();
+        expect(listServicesV4Mock).toHaveBeenCalled();
     });
 });
