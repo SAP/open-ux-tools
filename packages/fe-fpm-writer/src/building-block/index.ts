@@ -7,7 +7,7 @@ import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type B
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
-import { checkRequiredLibraries, getErrorMessage } from '../common/validate';
+import { getErrorMessage, validateBasePath } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
 
@@ -39,7 +39,7 @@ export function generateBuildingBlock<T extends BuildingBlock>(
     if (!fs) {
         fs = create(createStorage());
     }
-    checkRequiredLibraries(basePath, fs, false);
+    validateBasePath(basePath, fs, ['sap.fe.templates', 'sap.fe.core']);
     if (!fs.exists(join(basePath, config.viewOrFragmentPath))) {
         throw new Error(`Invalid view path ${config.viewOrFragmentPath}.`);
     }
