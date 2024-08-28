@@ -13,11 +13,15 @@ declare module 'sap/ui/fl/Layer' {
 
 declare module 'sap/ui/fl/Change' {
     import type { Layer } from 'sap/ui/fl';
+
+    export interface ChangeSelector {
+        id: string;
+        idIsLocal: boolean;
+    }
+
     export interface ChangeDefinition {
         service: string;
-        selector: {
-            id: string
-        }
+        selector: ChangeSelector
         layer: Layer;
         changeType: string;
         packageName: string;

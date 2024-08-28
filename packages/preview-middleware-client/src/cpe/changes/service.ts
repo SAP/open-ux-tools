@@ -22,9 +22,6 @@ import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
 import { getError } from '../error-utils';
 import ChangesWriteAPI from 'sap/ui/fl/write/api/ChangesWriteAPI';
-import Utils from 'sap/ui/fl/Utils';
-import ElementUtil from 'sap/ui/dt/ElementUtil';
-import Control from 'sap/ui/core/Control';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
 import FlexObjectFactory from 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory';
 import FlexChange from 'sap/ui/fl/Change';
@@ -166,8 +163,8 @@ export class ChangeService {
     private updateStack() {
         this.sendAction(
             changeStackModified({
-                saved: this.savedChanges,
-                pending: this.pendingChanges
+                saved: this.savedChanges ?? [],
+                pending: this.pendingChanges ?? []
             })
         );
     }
@@ -409,11 +406,7 @@ export class ChangeService {
     private async getSelectorIdByChange(change: FlexChange): Promise<string> {
         const changeDefinition = change.getDefinition();
 
-        const oAppComponent = Utils.getAppComponentForControl(
-            ElementUtil.getElementInstance(changeDefinition.selector.id) as Control
-        );
-
-        let control = sap.ui.getCore().byId(changeDefinition.selector.id);
+		let control = JsControlTreeModifier.bySelector(changeDefinition.selector, this.options.rta.getRootControlInstance());
         if (!control) {
             return changeDefinition.selector.id;
         }
@@ -428,7 +421,7 @@ export class ChangeService {
         if (changeHandler && typeof changeHandler.getChangeVisualizationInfo === 'function') {
             const result: { affectedControls?: [string] } = await changeHandler.getChangeVisualizationInfo(
                 change,
-                oAppComponent
+                this.options.rta.getRootControlInstance()
             );
 
             return result?.affectedControls?.[0] ?? changeDefinition.selector.id;
