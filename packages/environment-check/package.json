@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/environment-check",
-    "version": "0.17.29",
+    "version": "0.17.32",
     "description": "SAP Fiori environment check",
     "license": "Apache-2.0",
     "bin": {
@@ -27,7 +27,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@sap/bas-sdk": "3.8.7",
+        "@sap/bas-sdk": "3.8.9",
         "archiver": "7.0.1",
         "axios": "1.7.4",
         "glob-gitignore": "1.0.14",

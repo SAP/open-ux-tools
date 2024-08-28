@@ -30,7 +30,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
 
     const questions: Question[] = [
         {
-            when: (): boolean => showPackageInputChoiceQuestion(),
+            when: (): boolean => showPackageInputChoiceQuestion(options.useAutocomplete),
             type: 'list',
             name: abapDeployConfigInternalPromptNames.packageInputChoice,
             message: t('prompts.config.package.packageInputChoice.message'),
@@ -74,7 +74,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
         },
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowManualPackageQuestion(isCli, previousAnswers.packageInputChoice),
+                defaultOrShowManualPackageQuestion(isCli, previousAnswers.packageInputChoice, options.useAutocomplete),
             type: 'input',
             name: abapDeployConfigInternalPromptNames.packageManual,
             message: t('prompts.config.package.packageManual.message'),
@@ -91,7 +91,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 packageInputChoiceValid === true &&
-                defaultOrShowSearchPackageQuestion(isCli, previousAnswers.packageInputChoice),
+                defaultOrShowSearchPackageQuestion(isCli, previousAnswers.packageInputChoice, options.useAutocomplete),
             type: 'autocomplete',
             name: abapDeployConfigInternalPromptNames.packageAutocomplete,
             message: `${t('prompts.config.package.packageAutocomplete.message')}${

@@ -10,7 +10,7 @@ import {
     HELP_NODES,
     HELP_TREE,
     getHelpUrl
-} from '@sap-ux/fiori-generator-shared';
+} from '@sap-ux/guided-answers-helper';
 
 const teleEventGALinkCreated = 'GA_LINK_CREATED';
 
@@ -146,7 +146,7 @@ export class ErrorHandler {
         [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: t('errors.destinationUnavailable'),
         [ERROR_TYPE.REDIRECT]: t('errors.redirectError'),
         [ERROR_TYPE.NO_SUCH_HOST]: t('errors.noSuchHostError'),
-        [ERROR_TYPE.NO_ABAP_ENVS]: t('error.abapEnvsUnavailable')
+        [ERROR_TYPE.NO_ABAP_ENVS]: t('errors.abapEnvsUnavailable')
     });
 
     /**
@@ -339,14 +339,14 @@ export class ErrorHandler {
      * Used by validate functions to report in-line user friendly errors.
      * Checks if there is an existing error.
      *
-     * @param error optional, if provided get the end user message that it maps to, otherwise get the previous error message
-     * @param reset optional, resets the previous error state if true
+     * @param error optional, if provided get the end user message that it maps to, otherwise get the previous error message, if a boolean is passed it will be interpreted as `reset`.
+     * @param reset optional, resets the previous error state if true, if error is omitted reset may be passed as the first argument
      * @param fallback optional, return the message of the specified ERROR_TYPE if no previous end user message and no error specified
      * @returns The error message
      */
     public getErrorMsg(error?: any, reset?: boolean, fallback?: ERROR_TYPE): string | undefined {
         let errorMsg;
-        if (error) {
+        if (error && typeof error !== 'boolean') {
             errorMsg = ErrorHandler.mapErrorToMsg(error).errorMsg;
         }
         // Get previous error message
@@ -354,7 +354,7 @@ export class ErrorHandler {
             errorMsg = this.currentErrorMsg ?? (fallback ? ErrorHandler.getErrorMsgFromType(fallback) : undefined);
         }
 
-        if (reset) {
+        if (error === true || reset) {
             this.currentErrorMsg = null;
             this.currentErrorType = null;
         }

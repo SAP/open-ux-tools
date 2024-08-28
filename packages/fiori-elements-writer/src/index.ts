@@ -51,24 +51,6 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
     return ignore;
 }
 /**
- * Configures the UI5 libraries based on the project type and template type.
- *
- * @param feApp - The FE app config.
- * @param isEdmxProjectType - Whether the project is of EDMX type.
- * @returns The configured UI5 libraries, or undefined if not applicable.
- */
-function configureUi5Libs<T extends {}>(feApp: FioriElementsApp<T>, isEdmxProjectType: boolean) {
-    let ui5Libs: string | string[] | undefined;
-    if (isEdmxProjectType) {
-        ui5Libs = feApp.ui5?.ui5Libs;
-        // FPM to preload sap.fe.templates for FLP template
-        if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
-            (ui5Libs as string[]).push('sap.fe.templates');
-        }
-    }
-    return ui5Libs;
-}
-/**
  * Generate a UI5 application based on the specified Fiori Elements floorplan template.
  *
  * @param basePath - the absolute target path where the application will be generated
@@ -115,7 +97,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         feApp.ui5?.frameworkUrl,
         feApp.ui5?.version
     );
-    const ui5Libs = configureUi5Libs(feApp, isEdmxProjectType);
+    const ui5Libs = isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined;
     // Define template options with changes preview and loader settings based on project type
     const templateOptions = getTemplateOptions(isEdmxProjectType, feApp.service.version, feApp.ui5?.version);
     const appConfig = {

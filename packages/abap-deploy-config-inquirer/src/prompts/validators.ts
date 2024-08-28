@@ -13,7 +13,7 @@ import { t } from '../i18n';
 import { findBackendSystemByUrl, initTransportConfig, getPackageAnswer, queryPackages } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
 import { AuthenticationType } from '@sap-ux/store';
-import { getHelpUrl, HELP_TREE } from '@sap-ux/fiori-generator-shared';
+import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
 import {
     ClientChoiceValue,
@@ -371,7 +371,7 @@ export async function validatePackage(
     };
 
     // checks if package is a local package and will update prompt state accordingly
-    await getTransportListFromService(input, answers.ui5AbapRepo ?? '', systemConfig, backendTarget);
+    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', systemConfig, backendTarget);
     return true;
 }
 
