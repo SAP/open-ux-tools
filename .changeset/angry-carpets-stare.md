@@ -2,4 +2,4 @@
 '@sap-ux/odata-service-inquirer': patch
 ---
 
-Fix for CF not logged on message not shown
+Fix for CF logon validation message not shown
