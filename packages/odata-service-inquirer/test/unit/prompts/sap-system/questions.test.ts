@@ -152,7 +152,6 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
-                "additionalMessages": [Function],
                 "choices": [Function],
                 "default": [Function],
                 "guiOptions": {
