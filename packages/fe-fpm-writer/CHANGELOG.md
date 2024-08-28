@@ -1,5 +1,18 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.28.0
+
+### Minor Changes
+
+-   bb4305f: Update fpm-writer to require either sap.fe.core or sap.fe.templates library, throw error if both are missing when creating a building block.
+
+## 0.27.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.9
+-   @sap-ux/fiori-annotation-api@0.1.38
+
 ## 0.27.6
 
 ### Patch Changes
