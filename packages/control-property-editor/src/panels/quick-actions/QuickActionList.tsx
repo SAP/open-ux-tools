@@ -16,7 +16,7 @@ import { NestedQuickActionListItem } from './NestedQuickAction';
 import './QuickAction.scss';
 
 /**
- * React element for all properties including id & type and property editors.
+ * React element for quick action list.
  *
  * @returns ReactElement
  */
@@ -25,7 +25,7 @@ export function QuickActionList(): ReactElement {
     const groups = useSelector<RootState, QuickActionGroup[]>((state) => state.quickActions);
 
     return (
-        <div className={`property-content app-panel-scroller`}>
+        <div className="property-content app-panel-scroller">
             <Stack>
                 {groups.flatMap((group) => {
                     const groupTitle = t('QUICK_ACTIONS', { title: group.title });

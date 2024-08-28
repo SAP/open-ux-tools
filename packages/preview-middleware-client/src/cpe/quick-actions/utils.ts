@@ -28,10 +28,18 @@ export function pageHasControlId(page: Control, controlId: string): boolean {
     return !!controlDomElement && !!page?.getDomRef()?.contains(controlDomElement);
 }
 
-function isDescendantOfPage(control: ManagedObject | null | undefined, oRootControl: ManagedObject) {
+
+/**
+ * Checks if control is a child element of the rootControl.
+ * 
+ * @param control - UI5 Control to be tested.
+ * @param rootControl - UI5 root control.
+ * @returns True if control is the child of the specified rootControl.
+ */
+function isDescendantOfPage(control: ManagedObject | null | undefined, rootControl: ManagedObject) {
     let currentControl = control;
     while (currentControl) {
-        if (currentControl === oRootControl) {
+        if (currentControl === rootControl) {
             return true;
         }
         // if parent is a reusable component, use oContainer to find the parent

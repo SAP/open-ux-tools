@@ -18,13 +18,17 @@ export interface NestedQuickActionListItemProps {
 }
 
 /**
- * Component for rendering Simple Quick Action.
+ * Component for rendering Nested Quick Action.
  *
  * @param props Component props.
+ * @param props.action
+ * @param props.actionIndex
  * @returns ReactElement
  */
-export function NestedQuickActionListItem(props: Readonly<NestedQuickActionListItemProps>): ReactElement {
-    const { action, actionIndex } = props;
+export function NestedQuickActionListItem({
+    action,
+    actionIndex
+}: Readonly<NestedQuickActionListItemProps>): ReactElement {
     const dispatch = useDispatch();
     const [showContextualMenu, setShowContextualMenu] = useState(false);
     const [target, setTarget] = useState<(EventTarget & (HTMLAnchorElement | HTMLElement | HTMLButtonElement)) | null>(
@@ -32,6 +36,7 @@ export function NestedQuickActionListItem(props: Readonly<NestedQuickActionListI
     );
 
     /**
+     * Build menu items for nested quick actions.
      *
      * @param children Node children.
      * @param nestedLevel Nested Level.
@@ -68,7 +73,7 @@ export function NestedQuickActionListItem(props: Readonly<NestedQuickActionListI
     };
 
     return (
-        <div className={`quick-action-item`}>
+        <div className="quick-action-item">
             {action.children.length === 1 && (
                 <>
                     <UILink
@@ -83,7 +88,7 @@ export function NestedQuickActionListItem(props: Readonly<NestedQuickActionListI
                                 })
                             );
                         }}>
-                        <span className={`link-text`}>{`${action.title} - ${action.children[0].label}`}</span>
+                        <span className="link-text">{`${action.title} - ${action.children[0].label}`}</span>
                     </UILink>
                 </>
             )}
@@ -100,7 +105,6 @@ export function NestedQuickActionListItem(props: Readonly<NestedQuickActionListI
                         <UIIcon
                             id={`quick-action-children-button${actionIndex}`}
                             iconName={IconName.dropdown}
-                            color="var()"
                             title={action.title}
                             style={{ verticalAlign: 'middle' }}
                             onClick={(): void => {

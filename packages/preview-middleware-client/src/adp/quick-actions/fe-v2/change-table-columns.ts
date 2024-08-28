@@ -16,7 +16,6 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/vers
 import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import TreeTable from 'sap/ui/table/TreeTable';
-import UITable from 'sap/ui/table/Table';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
@@ -237,10 +236,10 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
             // to avoid reopening the dialog after close
             table.attachEventOnce(
                 'updateFinished',
-                () => {
+                async () => {
                     if (!this.tableMap[path].tableUpdateEventAttachedOnce) {
                         this.tableMap[path].tableUpdateEventAttachedOnce = true;
-                        executeAction();
+                        await executeAction();
                     }
                 },
                 this

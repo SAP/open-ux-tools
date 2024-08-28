@@ -77,7 +77,12 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
         hasDefaultContent: false
     });
 }
-
+/**
+ * Creates conrol index for all controls in the app.
+ *
+ * @param {ControlTreeIndex} controlIndex - Control index for the ui5 app.
+ * @param {OutlineNode} node - control node added to the outline.
+ */
 function indexNode(controlIndex: ControlTreeIndex, node: OutlineNode): void {
     const indexedControls = controlIndex[node.controlType];
     if (indexedControls) {

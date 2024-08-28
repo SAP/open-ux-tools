@@ -31,7 +31,8 @@ export class QuickActionService implements Service {
     private texts: TextBundle;
 
     /**
-     *
+     * Qucik action service constructor.zrf
+     * 
      * @param rta - RTA object.
      * @param outlineService - Outline service instance.
      * @param registries - Quick action registries.
@@ -67,7 +68,7 @@ export class QuickActionService implements Service {
                     await this.rta.getCommandStack().pushAndExecute(command);
                 }
 
-                if (actionInstance.forceRefreshAfterExecution === true) {
+                if (actionInstance.forceRefreshAfterExecution) {
                     this.sendAction(updateQuickAction(actionInstance.getActionObject()));
                 }
             }

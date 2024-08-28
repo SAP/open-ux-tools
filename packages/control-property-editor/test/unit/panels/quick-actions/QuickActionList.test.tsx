@@ -90,8 +90,7 @@ describe('QuickActionList', () => {
         };
         const { dispatch } = render(<QuickActionList />, { initialState });
 
-        // check
-
+        // check elements in the document
         const pageTitle = screen.getByText(/list report quick actions/i);
         expect(pageTitle).toBeInTheDocument();
 

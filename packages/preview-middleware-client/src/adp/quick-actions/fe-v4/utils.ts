@@ -4,11 +4,11 @@ import Component from 'sap/ui/core/Component';
 import type TemplateComponent from 'sap/fe/core/TemplateComponent';
 import type AppComponent from 'sap/fe/core/AppComponent';
 
-import {  isA } from '../../../utils/core';
+import { isA } from '../../../utils/core';
 
 /**
  * Get the containing app component of a control.
- * 
+ *
  * @param control - UI5 control instance.
  * @returns App component to which the control belongs.
  */
@@ -21,7 +21,7 @@ export function getAppComponent(control: ManagedObject): AppComponent | undefine
 }
 /**
  * Get the containing page name of a control.
- * 
+ *
  * @param control - UI5 control instance.
  * @returns Page name to which the control belongs.
  */
@@ -36,7 +36,7 @@ export function getPageName(control: ManagedObject): string | undefined {
 
 /**
  * Gets a reference id for a control.
- * 
+ *
  * @param control - UI5 control instance.
  * @returns Reference id.
  */
