@@ -72,9 +72,9 @@ describe('Building Blocks', () => {
         ).toThrowError(/Invalid view path/);
     });
 
-    test('validate sap.fe.templates and sap.fe.core manifest dependencies are missing', async () => {
+    test('validate sap.fe.templates and sap.fe.core manifest dependencies both are missing', async () => {
         const basePath = join(testAppPath, 'validate-manifest-dep');
-        // Test generator without sap.fe.core as dependency in manifest.json
+        // Test generator without sap.fe.core or sap.fe.templates as dependency in manifest.json
         fs.write(join(basePath, manifestFilePath), JSON.stringify({ ...testManifestContent, 'sap.ui5': {} }));
         expect(() =>
             generateBuildingBlock<FilterBar>(
@@ -92,6 +92,38 @@ describe('Building Blocks', () => {
         ).toThrowError(
             /All of the dependencies sap.fe.templates, sap.fe.core are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries./
         );
+    });
+
+    test('generate building block with `sap.fe.templates` dependency only', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+        const basePath = join(__dirname, 'sample/building-block/webapp-prompts');
+        fs.write(
+            join(basePath, manifestFilePath),
+            JSON.stringify({
+                ...testManifestContent,
+                'sap.ui5': {
+                    'dependencies': {
+                        'libs': {
+                            'sap.fe.templates': {}
+                        }
+                    }
+                }
+            })
+        );
+        generateBuildingBlock<FilterBar>(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath: aggregationPath,
+                buildingBlockData: {
+                    id: 'testFilterBar',
+                    buildingBlockType: BuildingBlockType.FilterBar
+                }
+            },
+            fs
+        );
+        expect(fs.dump(testAppPath)).toMatchSnapshot('generate-filter-bar-templates-library-only');
+        await writeFilesForDebugging(fs);
     });
 
     test('validate aggregation path', async () => {
