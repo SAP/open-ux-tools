@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.5
+
+### Patch Changes
+
+-   fc58821: fix for local package verification
+
 ## 0.0.4
 
 ### Patch Changes
