@@ -313,7 +313,6 @@ describe('API tests', () => {
                 "when": [Function],
               },
               {
-                "additionalMessages": [Function],
                 "choices": [Function],
                 "default": [Function],
                 "guiOptions": {

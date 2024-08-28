@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 1.1.5
+
+### Patch Changes
+
+-   1a99abc: separation between ui5libs and manifestlibs, to allow for different ui5 libraries set in manifest and other files
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+
 ## 1.1.4
 
 ### Patch Changes
