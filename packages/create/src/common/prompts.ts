@@ -1,6 +1,6 @@
 import prompts from 'prompts';
 import type { PromptType, PromptObject, InitialReturnValue } from 'prompts';
-import type { ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Answers } from 'inquirer';
 import { getLogger } from '../tracing';
 
@@ -21,31 +21,56 @@ const QUESTION_TYPE_MAP: Record<string, PromptType> = {
     checkbox: 'multiselect'
 };
 
+type AutoCompleteCallbackFn = (answers: Answers, input: string) => Promise<Array<{ name: string; value: unknown }>>;
+
 /**
- * Enhances the new prompt with the choices from the original list question.
+ * Map choices from inquirer format to prompts format.
  *
- * @param listQuestion original list question
- * @param prompt converted prompt
- * @param answers previously given answers
+ * @param choices choices to be mapped
+ * @returns mapped choices
  */
-async function enhanceListQuestion(
-    listQuestion: ListQuestion,
-    prompt: PromptObject,
-    answers: { [key: string]: unknown }
-): Promise<void> {
-    const choices: Array<{ name: string; value: unknown } | string | number> = (
-        isFunction(listQuestion.choices) ? await listQuestion.choices(answers) : listQuestion.choices
-    ) as Array<{ name: string; value: unknown } | string | number>;
-    const mapppedChoices = choices.map((choice) => ({
+function mapChoices(
+    choices: Array<{ name: string; value: unknown } | string | number>
+): Array<{ title: string; value: unknown }> {
+    return choices.map((choice) => ({
         title: typeof choice === 'object' ? choice.name : `${choice}`,
         value: typeof choice === 'object' ? choice.value : choice
     }));
+}
+
+/**
+ * Enhances the new prompt with the choices from the original list question.
+ *
+ * @param origChoices choices of the original list/autocomplete question
+ * @param prompt converted prompt
+ * @param answers previously given answers
+ * @param autoCompleteCb callback for autocomplete
+ */
+async function enhanceListQuestion(
+    origChoices: unknown,
+    prompt: PromptObject,
+    answers: { [key: string]: unknown },
+    autoCompleteCb?: AutoCompleteCallbackFn
+): Promise<void> {
+    const choices = (isFunction(origChoices) ? await origChoices(answers) : origChoices) as Array<
+        { name: string; value: unknown } | string | number
+    >;
+    const mapppedChoices = mapChoices(choices);
     const initialValue = (prompt.initial as Function)();
     prompt.choices = mapppedChoices;
     prompt.initial = (): InitialReturnValue =>
         mapppedChoices[initialValue]
             ? initialValue
             : mapppedChoices.findIndex((choice) => choice.value === initialValue);
+    if (autoCompleteCb) {
+        prompt.suggest = async (input, choices): Promise<unknown> => {
+            if (input) {
+                const newChoices = await autoCompleteCb(answers, input);
+                return mapChoices(newChoices);
+            }
+            return choices;
+        };
+    }
 }
 
 /**
@@ -72,7 +97,7 @@ async function extractMessage<T extends Answers>(question: YUIQuestion<T>, answe
  * @returns question converted to prompts question
  */
 export async function convertQuestion<T extends Answers>(
-    question: YUIQuestion<T> & { choices?: unknown },
+    question: YUIQuestion<T> & { choices?: unknown; source?: AutoCompleteCallbackFn },
     answers: T
 ): Promise<PromptObject> {
     const prompt: PromptObject = {
@@ -83,8 +108,8 @@ export async function convertQuestion<T extends Answers>(
             isFunction(question.validate) ? await question.validate(value, answers) : question.validate ?? true,
         initial: () => (isFunction(question.default) ? question.default(answers) : question.default)
     };
-    if (question.choices) {
-        await enhanceListQuestion(question as ListQuestion, prompt, answers);
+    if (question.choices || question.source) {
+        await enhanceListQuestion(question.choices ?? question.source, prompt, answers, question.source);
     }
     return prompt;
 }
