@@ -110,5 +110,5 @@ export function getParentContainer<T extends ManagedObject>(
             currentControl = currentControl.getParent();
         }
     }
-    return;
+    return undefined;
 }

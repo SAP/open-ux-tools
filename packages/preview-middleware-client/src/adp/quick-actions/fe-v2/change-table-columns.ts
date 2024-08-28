@@ -28,6 +28,20 @@ const M_TABLE_TYPE = 'sap.m.Table';
 // maintain order if action id
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, 'sap.ui.table.TreeTable', 'sap.ui.table.Table'];
 
+async function getActionId(table: UI5Element): Promise<string[]> {
+    const { major, minor } = await getUi5Version();
+
+    if (isA(SMART_TABLE_TYPE, table)) {
+        if (major === 1 && minor === 96) {
+            return [M_TABLE_ACTION_ID];
+        } else {
+            return [SMART_TABLE_ACTION_ID];
+        }
+    }
+
+    return [M_TABLE_ACTION_ID, SETTINGS_ID];
+}
+
 export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinition {
     readonly kind = NESTED_QUICK_ACTION_KIND;
     readonly type = CHANGE_TABLE_COLUMNS;
@@ -55,7 +69,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     constructor(private context: QuickActionContext) {}
 
     async initialize(): Promise<void> {
-        // No action found in control designtime for version < 1.96
+        // No action found in control design time for version < 1.96
         // TODO check with RTA of using `openPersonalisationDialog("Column")`.
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 96 })) {
@@ -84,7 +98,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
             CONTROL_TYPES
         )) {
             const actions = await this.context.actionService.get(table.getId());
-            const actionsIds = await getActionId(table.getMetadata().getName());
+            const actionsIds = await getActionId(table);
             const changeColumnAction = actionsIds.find(
                 (actionId) => actions.findIndex((action) => action.id === actionId) > -1
             );
@@ -250,19 +264,5 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
         }
 
         return [];
-    }
-}
-
-async function getActionId(tableType: string): Promise<string[]> {
-    const { major, minor } = await getUi5Version();
-    switch (tableType) {
-        case 'sap.ui.comp.smarttable.SmartTable':
-            if (major === 1 && minor === 96) {
-                return [M_TABLE_ACTION_ID];
-            } else {
-                return [SMART_TABLE_ACTION_ID];
-            }
-        default:
-            return [M_TABLE_ACTION_ID, SETTINGS_ID];
     }
 }
