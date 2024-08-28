@@ -79,24 +79,7 @@ describe('main', () => {
     jest.spyOn(ui5Utils, 'getIcons').mockImplementation(() => {
         return mockIconResult;
     });
-    // const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
-    //     return newHandler;
-    // });
 
-    // const rta = {
-    //     attachSelectionChange,
-    //     getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
-    //     attachUndoRedoStackModified: jest.fn(),
-    // getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR', scenario: common.SCENARIO.UiAdaptation }),
-    //     getRootControlInstance: jest.fn().mockReturnValue({
-    //         getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
-    //     }),
-    //     attachStop: jest.fn(),
-    //     getService: jest.fn(),
-    //     attachModeChanged: jest.fn()
-    // } as any;
-
-    // RuntimeAuthoringMock;
     const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
         return { sendAction: sendActionMock, dispose: jest.fn() };
     });
