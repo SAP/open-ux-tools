@@ -13,7 +13,9 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --build",
+        "build": "npm-run-all2 -l clean -p build:tsc build:bundle",
+        "build:bundle": "node esbuild.js",
+        "build:tsc": "tsc --emitDeclarationOnly",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
@@ -24,7 +26,6 @@
     "files": [
         "LICENSE",
         "dist",
-        "templates",
         "!dist/*.map",
         "!dist/**/*.map"
     ],
@@ -51,7 +52,8 @@
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.5.2",
-        "@types/vinyl": "2.0.7"
+        "@types/vinyl": "2.0.7",
+        "npm-run-all2": "6.2.0"
     },
     "engines": {
         "node": ">=18.x"
