@@ -93,6 +93,24 @@ type EnableTypeScriptPromptOptions = Omit<PromptDefaultValue<boolean>, 'default'
     default?: (answers: UI5ApplicationAnswers & { capCdsInfo?: CdsUi5PluginInfo }) => boolean;
 };
 
+type TargetFolderPromptOptions = {
+    /**
+     * The default target folder path to be used in combination with the prompt default function and the name prompt validation.
+     * Use this instead of replacing the default function to keep the existing default function behaviour.
+     * Note that if a `default` option is also provided then this will be used instead of the `defaultValue` option.
+     */
+    defaultValue?: string;
+};
+
+type NamePromptOptions = {
+    /**
+     * The default name value to be used in combination with the prompt default function and the target folder prompt validation.
+     * Use this instead of replacing the default function to keep the existing default function behaviour.
+     * Note that if a `default` option is also provided then this will be used instead of the `defaultValue` option.
+     */
+    defaultValue?: string;
+};
+
 /**
  * These are boolean value prompt option keys
  */
@@ -136,7 +154,9 @@ export type UI5ApplicationCommonPromptOptions = {
  */
 type stringValuePromptOptions = Record<stringValuePrompts, UI5ApplicationCommonPromptOptions> &
     Record<DefaultValueInputPrompts, PromptDefaultValue<string>> &
-    Record<promptNames.ui5Version, UI5VersionPromptOptions>;
+    Record<promptNames.ui5Version, UI5VersionPromptOptions> &
+    Record<promptNames.targetFolder, TargetFolderPromptOptions> &
+    Record<promptNames.name, NamePromptOptions>;
 
 /**
  * Provide the correct type checking for boolean value prompts and validator callback options
