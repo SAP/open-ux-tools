@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.17.7
+
+### Patch Changes
+
+-   73f905f: Added optional `tabIndex` property for UISplitter component.
+
 ## 1.17.6
 
 ### Patch Changes

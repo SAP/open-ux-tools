@@ -18,6 +18,12 @@ export interface UISectionsProps {
     minSectionSize?: number | Array<number>;
     animation?: boolean | boolean[];
     splitterType?: UISplitterType;
+    /**
+     * Tabindex of splitter element.
+     *
+     * @default 0
+     */
+    splitterTabIndex?: -1 | 0;
     onClose?: () => void;
     splitterTitle?: string;
     splitterLayoutType?: UISplitterLayoutType;
@@ -632,6 +638,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             vertical,
             splitterTitle,
             splitterType = UISplitterType.Resize,
+            splitterTabIndex,
             splitterLayoutType = UISplitterLayoutType.Standard
         } = this.props;
         let isSplitterVisible = splitter && index > 0;
@@ -655,6 +662,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                         onToggle={this.onSplitterToggle.bind(this)}
                         hidden={isSectionHidden || isSingleSection}
                         type={splitterType}
+                        splitterTabIndex={splitterTabIndex}
                         title={splitterTitle}
                         splitterLayoutType={splitterLayoutType}
                     />
