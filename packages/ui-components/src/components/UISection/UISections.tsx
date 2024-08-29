@@ -18,6 +18,11 @@ export interface UISectionsProps {
     minSectionSize?: number | Array<number>;
     animation?: boolean | boolean[];
     splitterType?: UISplitterType;
+    /**
+     * Tabindex of splitter element.
+     *
+     * @default 0
+     */
     splitterTabIndex?: -1 | 0;
     onClose?: () => void;
     splitterTitle?: string;
