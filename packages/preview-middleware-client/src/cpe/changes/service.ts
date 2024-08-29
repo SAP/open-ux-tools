@@ -183,7 +183,7 @@ export class ChangeService {
                             let selectorId;
                             try {
                                 const flexObject = FlexObjectFactory.createFromFileContent(change);
-                                selectorId = await this.getElementIdByChange(flexObject as FlexChange);
+                                selectorId = await this.getControlIdByChange(flexObject as FlexChange);
                                 assertChange(change);
                                 if (
                                     [change.content.newValue, change.content.newBinding].every(
@@ -322,7 +322,7 @@ export class ChangeService {
 
         const change = command.getPreparedChange();
 
-        const selectorId = await this.getElementIdByChange(change);
+        const selectorId = await this.getControlIdByChange(change);
         const changeType = this.getCommandChangeType(command);
 
         if (!selectorId || !changeType) {
@@ -407,56 +407,57 @@ export class ChangeService {
      *
      * @param change to be executed for creating change
      * @returns element id or empty string
-    */
-    private async getElementIdByChange(change: FlexChange): Promise<string> {
+     */
+    private async getControlIdByChange(change: FlexChange): Promise<string> {
         if (!change) {
             return '';
         }
 
         const changeDefinition = change.getDefinition();
+        const appComponent = this.options.rta.getRootControlInstance();
 
-        let control = JsControlTreeModifier.bySelector(
-            changeDefinition.selector,
-            this.options.rta.getRootControlInstance()
-        );
-        if (!control) {
-            return changeDefinition.selector.id;
-        }
-        let changeHandlerAPI;
         try {
-            changeHandlerAPI = (await import('sap/ui/fl/write/api/ChangesWriteAPI')).default;
-        } catch(e) {
+            let control = JsControlTreeModifier.bySelector(changeDefinition.selector, appComponent);
+            if (!control) {
+                return changeDefinition.selector.id;
+            }
+
+            const changeHandlerAPI = (await import('sap/ui/fl/write/api/ChangesWriteAPI')).default;
+
+            const changeHandler = await changeHandlerAPI.getChangeHandler({
+                changeType: changeDefinition.changeType,
+                element: control,
+                modifier: JsControlTreeModifier,
+                layer: changeDefinition.layer
+            });
+
+            if (changeHandler && typeof changeHandler.getChangeVisualizationInfo === 'function') {
+                const result: { affectedControls?: [string] } = await changeHandler.getChangeVisualizationInfo(
+                    change,
+                    appComponent
+                );
+                return JsControlTreeModifier.getControlIdBySelector(
+                    result?.affectedControls?.[0] ?? changeDefinition.selector,
+                    appComponent
+                );
+            }
+
+            return JsControlTreeModifier.getControlIdBySelector(changeDefinition.selector, appComponent);
+        } catch (error) {
+            Log.error('Getting element ID from change has failed:', getError(error));
             return changeDefinition.selector.id;
         }
-        
-        const changeHandler = await changeHandlerAPI.getChangeHandler({
-            changeType: changeDefinition.changeType,
-            element: control,
-            modifier: JsControlTreeModifier,
-            layer: changeDefinition.layer
-        });
-
-        if (changeHandler && typeof changeHandler.getChangeVisualizationInfo === 'function') {
-            const result: { affectedControls?: [string] } = await changeHandler.getChangeVisualizationInfo(
-                change,
-                this.options.rta.getRootControlInstance()
-            );
-
-            return result?.affectedControls?.[0] ?? changeDefinition.selector.id;
-        }
-
-        return changeDefinition.selector.id;
     }
 
     /**
-     * Sync outline changes to place modification markers.
+     * Sync outline changes to place modification markers when outline is changed.
      *
      * @returns void
      */
     public async syncOutlineChanges(): Promise<void> {
         for (const change of this.savedChanges) {
             const flexObject = FlexObjectFactory.createFromFileContent(change.file as FlexChange);
-            change.controlId = await this.getElementIdByChange(flexObject as FlexChange);
+            change.controlId = await this.getControlIdByChange(flexObject as FlexChange);
         }
         this.updateStack();
     }
