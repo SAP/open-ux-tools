@@ -146,7 +146,7 @@ export class ErrorHandler {
         [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: t('errors.destinationUnavailable'),
         [ERROR_TYPE.REDIRECT]: t('errors.redirectError'),
         [ERROR_TYPE.NO_SUCH_HOST]: t('errors.noSuchHostError'),
-        [ERROR_TYPE.NO_ABAP_ENVS]: t('error.abapEnvsUnavailable')
+        [ERROR_TYPE.NO_ABAP_ENVS]: t('errors.abapEnvsUnavailable')
     });
 
     /**

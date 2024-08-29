@@ -58,15 +58,10 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         }
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
-    // ui5-local.yaml
     if (isEdmxProjectType) {
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         // write ui5-local.yaml only for non-CAP applications
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-        // default UI5 lib
-        if (!ui5App.ui5.ui5Libs.includes('sap.ushell')) {
-            (ui5App.ui5.ui5Libs as string[]).push('sap.ushell');
-        }
         ui5LocalConfig.addUI5Framework(
             ui5App.ui5.framework,
             ui5App.ui5.localVersion,

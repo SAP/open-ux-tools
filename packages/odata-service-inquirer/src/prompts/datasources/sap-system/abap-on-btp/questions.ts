@@ -1,5 +1,4 @@
-import type { IMessageSeverity, IValidationLink } from '@sap-devx/yeoman-ui-types';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type { FileBrowserQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { withCondition } from '@sap-ux/inquirer-common';
 import type { ServiceInstanceInfo } from '@sap/cf-tools';
@@ -193,18 +192,13 @@ export function getCFDiscoverPrompts(connectionValidator: ConnectionValidator): 
                 if (abapService) {
                     return await validateServiceInfo(abapService, connectionValidator);
                 }
-                return false;
-            },
-            additionalMessages: (): IMessageSeverity | undefined => {
                 const errorType = errorHandler.getCurrentErrorType();
                 if (errorType === ERROR_TYPE.NO_ABAP_ENVS) {
                     const errorMsg = errorHandler.getErrorMsg(true);
                     const seeLogMsg = t('texts.seeLogForDetails');
-                    return {
-                        message: `${errorMsg} ${seeLogMsg}`,
-                        severity: Severity.warning
-                    };
+                    return `${errorMsg} ${seeLogMsg}`;
                 }
+                return false;
             }
         } as ListQuestion
     ];
