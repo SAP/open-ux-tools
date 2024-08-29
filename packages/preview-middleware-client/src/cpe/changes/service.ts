@@ -20,7 +20,6 @@ import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
-import ChangesWriteAPI from 'sap/ui/fl/write/api/ChangesWriteAPI';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
 import FlexObjectFactory from 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory';
 import FlexChange from 'sap/ui/fl/Change';
@@ -184,7 +183,7 @@ export class ChangeService {
                             let selectorId;
                             try {
                                 const flexObject = FlexObjectFactory.createFromFileContent(change);
-                                selectorId = await this.getSelectorIdByChange(flexObject as FlexChange);
+                                selectorId = await this.getElementIdByChange(flexObject as FlexChange);
                                 assertChange(change);
                                 if (
                                     [change.content.newValue, change.content.newBinding].every(
@@ -323,7 +322,7 @@ export class ChangeService {
 
         const change = command.getPreparedChange();
 
-        const selectorId = await this.getSelectorIdByChange(change);
+        const selectorId = await this.getElementIdByChange(change);
         const changeType = this.getCommandChangeType(command);
 
         if (!selectorId || !changeType) {
@@ -403,18 +402,34 @@ export class ChangeService {
         ]);
     }
 
-    private async getSelectorIdByChange(change: FlexChange): Promise<string> {
+    /**
+     * Get element id by change.
+     *
+     * @param change to be executed for creating change
+     * @returns element id or empty string
+    */
+    private async getElementIdByChange(change: FlexChange): Promise<string> {
         if (!change) {
             return '';
         }
+
         const changeDefinition = change.getDefinition();
 
-		let control = JsControlTreeModifier.bySelector(changeDefinition.selector, this.options.rta.getRootControlInstance());
+        let control = JsControlTreeModifier.bySelector(
+            changeDefinition.selector,
+            this.options.rta.getRootControlInstance()
+        );
         if (!control) {
             return changeDefinition.selector.id;
         }
-
-        const changeHandler = await ChangesWriteAPI.getChangeHandler({
+        let changeHandlerAPI;
+        try {
+            changeHandlerAPI = (await import('sap/ui/fl/write/api/ChangesWriteAPI')).default;
+        } catch(e) {
+            return changeDefinition.selector.id;
+        }
+        
+        const changeHandler = await changeHandlerAPI.getChangeHandler({
             changeType: changeDefinition.changeType,
             element: control,
             modifier: JsControlTreeModifier,
@@ -433,10 +448,15 @@ export class ChangeService {
         return changeDefinition.selector.id;
     }
 
+    /**
+     * Sync outline changes to place modification markers.
+     *
+     * @returns void
+     */
     public async syncOutlineChanges(): Promise<void> {
         for (const change of this.savedChanges) {
             const flexObject = FlexObjectFactory.createFromFileContent(change.file as FlexChange);
-            change.controlId = await this.getSelectorIdByChange(flexObject as FlexChange);
+            change.controlId = await this.getElementIdByChange(flexObject as FlexChange);
         }
         this.updateStack();
     }
