@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
 import type { UIIContextualMenuProps } from '../../../src/components/UIContextualMenu';
-import { UIContextualMenu } from '../../../src/components/UIContextualMenu';
+import { getUIContextualMenuItemStyles, UIContextualMenu } from '../../../src/components/UIContextualMenu';
 import { ContextualMenu } from '@fluentui/react';
 import { UiIcons, initIcons } from '../../../src/components/Icons';
 
@@ -141,5 +141,43 @@ describe('<UIDropdown />', () => {
         expect(wrapper.find(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
         // Check if two menu items are rendered
         expect(wrapper.find('.ms-ContextualMenu-linkContent').length).toEqual(2);
+    });
+
+    it('getUIContextualMenuItemStyles - call without params', () => {
+        const styles = getUIContextualMenuItemStyles();
+        expect(styles).toEqual({
+            'checkmarkIcon': {
+                'color': 'var(--vscode-foreground)',
+                'fontSize': 16,
+                'lineHeight': 18,
+                'margin': 0,
+                'maxHeight': 18
+            },
+            'icon': {
+                'marginLeft': 0,
+                'marginRight': 6
+            },
+            'label': {
+                'fontFamily': 'var(--vscode-font-family)',
+                'height': 18,
+                'lineHeight': 18,
+                'paddingLeft': undefined
+            },
+            'linkContent': {
+                'fontSize': 13,
+                'height': 'auto'
+            },
+            'root': {
+                'padding': undefined,
+                'paddingRight': undefined
+            },
+            'subMenuIcon': {
+                'height': 16,
+                'lineHeight': 0,
+                'transform': 'rotate(-90deg)',
+                'transformOrigin': '50% 50%',
+                'width': 16
+            }
+        });
     });
 });
