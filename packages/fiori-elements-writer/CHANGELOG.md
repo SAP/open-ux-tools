@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.1.11
+
+### Patch Changes
+
+-   8cfd71a: ui5-application-writer - fix backward support for older ui5 versions in locate-reuse-libs.js
+-   Updated dependencies [8cfd71a]
+    -   @sap-ux/ui5-application-writer@1.1.6
+
 ## 1.1.10
 
 ### Patch Changes
