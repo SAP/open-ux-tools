@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.9
+
+## 0.6.0
+
+### Minor Changes
+
+-   e4a9da3: Adds support for `defaultValue` prompt option
+
 ## 0.5.26
 
 ### Patch Changes
