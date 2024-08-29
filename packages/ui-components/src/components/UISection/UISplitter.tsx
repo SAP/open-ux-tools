@@ -14,6 +14,11 @@ export interface UISplitterProps {
     onToggle?: () => void;
     title?: string;
     splitterLayoutType?: UISplitterLayoutType;
+    /**
+     * Tabindex of splitter element.
+     *
+     * @default 0
+     */
     splitterTabIndex?: -1 | 0;
 }
 
