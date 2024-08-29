@@ -158,13 +158,3 @@ export async function getExistingController(controllerName: string): Promise<Cod
 export async function writeChange<T>(data: T): Promise<T> {
     return request<T>(ApiEndpoints.CHANGES, RequestMethod.POST, data);
 }
-
-/**
- * Writes a change to manifest descriptor in the project's workspace
- *
- * @param data Data to be send to the server
- * @returns Generic Promise<T>
- */
-export async function writeManifestDescriptor<T>(data: T): Promise<T> {
-    return request<T>(ApiEndpoints.MANIFEST_APP_DESCRIPTOR, RequestMethod.POST, data);
-}
