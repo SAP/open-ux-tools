@@ -11,7 +11,7 @@ export default class <%- name %> extends Controller {
      * @memberOf <%- ns %>.<%- name %>
      */
     // public onInit(): void {
-    //
+    //     super.onInit(); // needs to be called to properly initialize the page controller
     //}
 
     /**
