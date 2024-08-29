@@ -99,7 +99,7 @@ export function getCapI18nFiles(root: string, env: CdsEnvironment, filePaths: st
  * Get an i18n folder for an existing CDS file. A new folder is only created, if it does not exist and optional `mem-fs-editor` instance is not provided.
  *
  * @param root project root
- * @param path path to cds file
+ * @param path Relative path to cds file
  * @param env CDS environment configuration,
  * @param fs optional `mem-fs-editor` instance. If provided, a new folder is not created, even if it does not exist
  * @returns i18n folder path

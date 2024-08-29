@@ -129,7 +129,7 @@ class ApplicationAccessImp implements ApplicationAccess {
     /**
      * Maintains new translation entries in CAP i18n files.
      *
-     * @param filePath file in which the translation entry will be used.
+     * @param filePath Relative file path in which the translation entry will be used.
      * @param newI18nEntries translation entries to write in the i18n file.
      * @returns boolean or exception
      */

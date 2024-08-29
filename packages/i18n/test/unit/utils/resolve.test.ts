@@ -116,18 +116,24 @@ describe('resolve', () => {
 
         const DATA_ROOT = join(__dirname, '..', 'data');
         const PROJECT_ROOT = join(DATA_ROOT, 'project');
-        test('i18n folder exist', async () => {
+        test('i18n folder exists in passed subpath', async () => {
             const env: CdsEnvironment = {
                 i18n: {
                     folders: ['_i18n', 'i18n', 'assets/i18n'],
                     default_language: 'en'
                 }
             };
-            const result = await getCapI18nFolder(
-                PROJECT_ROOT,
-                join(PROJECT_ROOT, 'app', 'properties-csv', 'service.cds'),
-                env
-            );
+            const result = await getCapI18nFolder(PROJECT_ROOT, join('app', 'properties-csv', 'service.cds'), env);
+            expect(result).toStrictEqual(join(PROJECT_ROOT, 'app', 'properties-csv', '_i18n'));
+        });
+        test('i18n folder exists in root', async () => {
+            const env: CdsEnvironment = {
+                i18n: {
+                    folders: ['_i18n', 'i18n', 'assets/i18n'],
+                    default_language: 'en'
+                }
+            };
+            const result = await getCapI18nFolder(PROJECT_ROOT, join('app', 'dummy'), env);
             expect(result).toStrictEqual(join(PROJECT_ROOT, 'i18n'));
         });
         test('i18n folder does not exist', async () => {

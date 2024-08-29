@@ -11,7 +11,7 @@ import type { Editor } from 'mem-fs-editor';
  * Maintains new translation entries in CAP i18n files.
  *
  * @param root project root.
- * @param filePath file in which the translation entry will be used.
+ * @param filePath Relative file path in which the translation entry will be used.
  * @param newI18nEntries translation entries to write in the i18n file.
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
  * In case of CAP project, some CDS APIs are used internally which depends on `fs` of node and not `mem-fs-editor`.

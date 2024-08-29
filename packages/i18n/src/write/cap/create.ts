@@ -10,7 +10,7 @@ import type { Editor } from 'mem-fs-editor';
  * Create new i18n entries to an existing file or in a new file if one does not exist.
  *
  * @param root project root, where i18n folder should reside if no i18n file exists
- * @param path path to cds file for which translation should be maintained
+ * @param path Relative path to cds file for which translation should be maintained
  * @param newI18nEntries new i18n entries that will be maintained
  * @param env CDS environment configuration
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
