@@ -23,7 +23,7 @@ describe('ui5Utils', () => {
                 return {};
             });
 
-            const { getComponent } = await import('../../../src/cpe/ui5-utils');
+            const { getComponent } = await import('../../../src/utils/core');
             const component = getComponent(testComponent.id);
 
             expect(sapCoreMock.getComponent).toBeCalledWith(testComponent.id);
@@ -37,8 +37,7 @@ describe('ui5Utils', () => {
             jest.mock('sap/ui/core/Component', () => {
                 return Component;
             });
-
-            const { getComponent } = await import('../../../src/cpe/ui5-utils');
+            const { getComponent } = await import('../../../src/utils/core');
             const component = getComponent(testComponent.id);
 
             expect(Component.get).toBeCalledWith(testComponent.id);
@@ -55,7 +54,7 @@ describe('ui5Utils', () => {
                 return Component;
             });
 
-            const { getComponent } = await import('../../../src/cpe/ui5-utils');
+            const { getComponent } = await import('../../../src/utils/core');
             const component = getComponent(testComponent.id);
 
             expect(Component.getComponentById).toBeCalledWith(testComponent.id);

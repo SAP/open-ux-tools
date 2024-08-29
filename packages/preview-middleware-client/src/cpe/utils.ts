@@ -8,7 +8,7 @@ import XMLView from 'sap/ui/core/mvc/XMLView';
 import UIComponent from 'sap/ui/core/UIComponent';
 
 
-import { getComponent } from './ui5-utils';
+import { getComponent } from '../utils/core';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 
 export interface PropertiesInfo {

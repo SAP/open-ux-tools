@@ -2,7 +2,7 @@ import { buildControlData } from '../control-data';
 import { getRuntimeControl } from '../utils';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import { getComponent } from '../ui5-utils';
+import { getComponent } from '../../utils/core';
 
 export const isEditable = (id = ''): boolean => {
     let editable = false;
