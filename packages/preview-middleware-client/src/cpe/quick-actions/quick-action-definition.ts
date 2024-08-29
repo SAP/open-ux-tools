@@ -4,8 +4,9 @@ import type { FlexSettings, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import type { ActionService } from 'sap/ui/rta/service/Action';
 import type XMLView from 'sap/ui/core/mvc/XMLView';
 
-import type { NestedQuickAction, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 import type {
+    NestedQuickAction,
+    SimpleQuickAction,
     NESTED_QUICK_ACTION_KIND,
     SIMPLE_QUICK_ACTION_KIND
 } from '@sap-ux-private/control-property-editor-common';
@@ -95,7 +96,7 @@ export interface NestedQuickActionDefinition extends QuickActionDefinitionBase {
     getActionObject: () => NestedQuickAction;
     /**
      * Executes the Quick Action.
-     * 
+     *
      * @param path - Path to the specific child action that needs to be executed (e.g '0/1').
      */
     execute: (path: string) => FlexCommand[] | Promise<FlexCommand[]>;

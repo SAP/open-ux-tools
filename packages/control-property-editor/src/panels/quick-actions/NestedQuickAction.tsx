@@ -75,22 +75,20 @@ export function NestedQuickActionListItem({
     return (
         <div className="quick-action-item">
             {action.children.length === 1 && (
-                <>
-                    <UILink
-                        underline={false}
-                        title={`${action.title} - ${action.children[0].label}`}
-                        onClick={(): void => {
-                            dispatch(
-                                executeQuickAction({
-                                    kind: action.kind,
-                                    id: action.id,
-                                    path: [0].join('/')
-                                })
-                            );
-                        }}>
-                        <span className="link-text">{`${action.title} - ${action.children[0].label}`}</span>
-                    </UILink>
-                </>
+                <UILink
+                    underline={false}
+                    title={`${action.title} - ${action.children[0].label}`}
+                    onClick={(): void => {
+                        dispatch(
+                            executeQuickAction({
+                                kind: action.kind,
+                                id: action.id,
+                                path: [0].join('/')
+                            })
+                        );
+                    }}>
+                    <span className="link-text">{`${action.title} - ${action.children[0].label}`}</span>
+                </UILink>
             )}
             {action.children.length > 1 && (
                 <>
