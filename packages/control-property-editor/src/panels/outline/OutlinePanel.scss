@@ -141,3 +141,14 @@
     background-color: var(--vscode-list-activeSelectionBackground);
     outline: 1px solid var(--vscode-contrastActiveBorder);
 }
+
+div.app-panel-selected-bg {
+    i.chevron {
+        svg {
+            path {
+                fill: var(--vscode-list-activeSelectionForeground)
+            }
+        }
+    }
+ }
+ 
