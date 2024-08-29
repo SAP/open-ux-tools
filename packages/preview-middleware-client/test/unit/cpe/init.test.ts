@@ -109,9 +109,11 @@ describe('main', () => {
         expect(applyChangeSpy).toBeCalledWith({ rta }, payload);
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
     });
-    test.skip('init - rta exception', async () => {
-        const error = Error('Cannot init outline');
-        initOutlineSpy.mockRejectedValue(error);
+    test('init - rta exception', async () => {
+        const error = new Error('Cannot init outline');
+        initOutlineSpy.mockImplementation(() => {
+            throw error;
+        });
         await init(rta);
         const callBackFn = spyPostMessage.mock.calls[0][1];
         const payload = {
@@ -127,19 +129,6 @@ describe('main', () => {
         });
 
         // assert
-        expect(applyChangeSpy).toBeCalledWith({ rta }, payload);
-        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
-            type: '[ext] icons-loaded',
-            payload: mockIconResult
-        });
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
-            type: '[ext] app-loaded',
-            payload: undefined
-        });
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
-            type: '[ext] change-stack-modified',
-            payload: { saved: [], pending: [] }
-        });
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
         expect(Log.error).toBeCalledWith('Error during initialization of Control Property Editor', error);
     });

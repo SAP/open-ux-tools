@@ -129,15 +129,20 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     }
 
     private getTableLabel(table: UI5Element): string {
-        let label = 'Unnamed table';
-        if (isA<SmartTable>(SMART_TABLE_TYPE, table) && table.getHeader()) {
-            label = `'${table.getHeader()}' table`;
+        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+            const header = table.getHeader();
+            if (header) {
+                return `'${header}' table`;
+            }
         }
-        if (isA<Table>(M_TABLE_TYPE, table) && table?.getHeaderToolbar()?.getTitleControl()?.getText()) {
-            label = `'${table?.getHeaderToolbar()?.getTitleControl()?.getText()}' table`;
+        if (isA<Table>(M_TABLE_TYPE, table)) {
+            const tilte = table?.getHeaderToolbar()?.getTitleControl()?.getText();
+            if (tilte) {
+                return `'${tilte}' table`;
+            }
         }
 
-        return label;
+        return 'Unnamed table';
     }
 
     private collectChildrenInSection(section: ObjectPageSection, table: UI5Element, changeColumnAction: string): void {
