@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.28.1
+
+### Patch Changes
+
+-   b10e3fd: fix: ensure that the controller template include an example call to super.onInit()
+
 ## 0.28.0
 
 ### Minor Changes
