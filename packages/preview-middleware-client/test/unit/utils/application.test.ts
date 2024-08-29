@@ -1,4 +1,3 @@
-import { isA, isManagedObject } from '../../../src/utils/core';
 import { getApplicationType } from '../../../src/utils/application';
 
 describe('getApplicationType - fev2', () => {
@@ -32,15 +31,14 @@ describe('getApplicationType - fev2', () => {
 describe('getApplicationType - fev4', () => {
     const manifestMockListreportApp = {
         ['sap.ui5']: {
-            routing: [
-                {
-                    targets: {
-                        'sap.fe.templates.ListReport|Products': {
-                            settings: {}
-                        }
+            routing: {
+                targets: {
+                    'ListReport|Products': {
+                        name: 'sap.fe.templates.ListReport',
+                        settings: {}
                     }
                 }
-            ]
+            }
         }
     } as any;
 
