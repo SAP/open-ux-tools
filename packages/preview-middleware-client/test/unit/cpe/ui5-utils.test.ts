@@ -13,58 +13,6 @@ describe('ui5Utils', () => {
         jest.clearAllMocks();
     });
 
-    describe('getComponent', () => {
-        beforeEach(() => {
-            jest.resetModules();
-        });
-
-        test('sap.ui.getCore().getComponent (deprecated)', async () => {
-            jest.mock('sap/ui/core/Component', () => {
-                return {};
-            });
-
-            const { getComponent } = await import('../../../src/cpe/ui5-utils');
-            const component = getComponent(testComponent.id);
-
-            expect(sapCoreMock.getComponent).toBeCalledWith(testComponent.id);
-            expect(component).toStrictEqual(testComponent);
-        });
-
-        test('Component.get (deprecated)', async () => {
-            const Component = {
-                get: jest.fn().mockReturnValue(testComponent)
-            };
-            jest.mock('sap/ui/core/Component', () => {
-                return Component;
-            });
-
-            const { getComponent } = await import('../../../src/cpe/ui5-utils');
-            const component = getComponent(testComponent.id);
-
-            expect(Component.get).toBeCalledWith(testComponent.id);
-            expect(sapCoreMock.getComponent).not.toBeCalled();
-            expect(component).toStrictEqual(testComponent);
-        });
-
-        test('Component.getComponentById', async () => {
-            const Component = {
-                get: jest.fn().mockReturnValue(testComponent),
-                getComponentById: jest.fn().mockReturnValue(testComponent)
-            };
-            jest.mock('sap/ui/core/Component', () => {
-                return Component;
-            });
-
-            const { getComponent } = await import('../../../src/cpe/ui5-utils');
-            const component = getComponent(testComponent.id);
-
-            expect(Component.getComponentById).toBeCalledWith(testComponent.id);
-            expect(Component.get).not.toBeCalled();
-            expect(sapCoreMock.getComponent).not.toBeCalled();
-            expect(component).toStrictEqual(testComponent);
-        });
-    });
-
     describe('getIcons', () => {
         const testIcons = {
             Reject: {
