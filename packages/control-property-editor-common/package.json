@@ -14,6 +14,7 @@
     "scripts": {
         "clean": "rimraf --glob dist reports *.tsbuildinfo",
         "build": "npm-run-all -l -s clean -p build:compile",
+        "madge": "madge --warning --circular --extensions ts ./",
         "build:compile": "tsc  --build ./tsconfig.json --pretty",
         "watch": "build:compile --watch",
         "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles --config='jest.config.js'",

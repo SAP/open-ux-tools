@@ -40,6 +40,8 @@ jobs:
               run: pnpm install
             - name: Run build
               run: pnpm run build
+            - name: Run madge
+              run: pnpm run madge
             - name: Run unit tests
               run: pnpm run test
             - name: Cache playwright browsers

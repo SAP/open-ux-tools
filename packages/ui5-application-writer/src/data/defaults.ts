@@ -64,9 +64,6 @@ export function mergeApp(app: App): App {
     );
 }
 
-// Required default libs
-export const defaultUI5Libs = ['sap.m', 'sap.ui.core'];
-
 /**
  * Merges version properties with the provided UI5 instance.
  * Coerces provided UI5 versions to valid semantic versions.

@@ -15,6 +15,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc --build",
+        "madge": "madge --warning --circular --extensions ts ./ --exclude dist",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",

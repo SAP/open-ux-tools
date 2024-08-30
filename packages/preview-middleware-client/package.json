@@ -12,6 +12,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc --noEmit && ui5 build --clean-dest --exclude-task minify --exclude-task generateComponentPreload",
+        "madge": "madge --warning --circular --extensions ts ./  --exclude \"^__mock__|^dist|^test\"",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",

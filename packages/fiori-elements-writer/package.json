@@ -14,6 +14,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc --build",
+        "madge": "madge --warning --circular --extensions ts ./",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",

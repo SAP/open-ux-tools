@@ -16,6 +16,7 @@
     "scripts": {
         "start:fixture": "ui5 serve --config test/fixtures/simple-app/ui5.yaml",
         "build": "npm-run-all -l -p build:middleware build:client",
+        "madge": "madge --warning --circular --extensions ts ./ --exclude dist",
         "build:middleware": "tsc --build",
         "build:client": "pnpm -C ../preview-middleware-client run build && copyfiles --exclude **/*-dbg.js --up 4 \"./node_modules/@private/preview-middleware-client/dist/**/*\" \"./dist/client\"",
         "watch": "tsc --watch",

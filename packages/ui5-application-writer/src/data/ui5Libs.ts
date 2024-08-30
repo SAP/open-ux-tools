@@ -1,4 +1,5 @@
-import { defaultUI5Libs } from './defaults';
+// Required default libs
+export const defaultUI5Libs = ['sap.m', 'sap.ui.core'];
 
 /**
  * Merges the specified ui5 libs with the defaults.

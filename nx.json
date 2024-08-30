@@ -1,60 +1,63 @@
 {
-    "tasksRunnerOptions": {
-        "default": {
-            "runner": "@nrwl/nx-cloud",
-            "options": {
-                "cacheableOperations": [
-                    "build",
-                    "lint",
-                    "test",
-                    "test:integration",
-                    "build:extension",
-                    "build:storybook",
-                    "build:storybook:bundle"
-                ],
-                "accessToken": "ZjFiYzA4OTYtYjFlNS00NTI2LTk4OTktNWZiYTAyMGE0ZGRmfHJlYWQtd3JpdGU=",
-                "canTrackAnalytics": false,
-                "showUsageWarnings": true
-            }
-        }
-    },
-    "namedInputs": {
-        "default": ["{projectRoot}/**/*"],
-        "prod": [
-            "!{projectRoot}/**/*.spec.tsx",
-            "!{projectRoot}/**/*.test.tsx",
-            "!{projectRoot}/**/*.spec.ts",
-            "!{projectRoot}/**/*.test.ts"
-        ]
-    },
-    "targetDefaults": {
-        "build": {
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/lib", "{projectRoot}/storybook"]
-        },
-        "test": {
-            "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
-            "outputs": ["{projectRoot}/coverage"]
-        },
-        "test:integration": {
-            "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
-            "outputs": ["{projectRoot}/playwright-report"]
-        },
-        "build:extension": {
-            "outputs": ["{projectRoot}/*.vsix"]
-        },
-        "build:storybook": {
-            "outputs": ["{projectRoot}/storybook"]
-        },
-        "lint": {
-            "inputs": ["default", "^prod"]
-        },
-        "lint:fix": {
-            "inputs": ["default", "^prod"]
-        },
-        "clean": {
-            "inputs": []
-        }
-    },
-    "defaultBase": "main"
+  "tasksRunnerOptions": {
+      "default": {
+          "runner": "@nrwl/nx-cloud",
+          "options": {
+              "cacheableOperations": [
+                  "build",
+                  "lint",
+                  "test",
+                  "test:integration",
+                  "build:extension",
+                  "build:storybook",
+                  "build:storybook:bundle"
+              ],
+              "accessToken": "ZjFiYzA4OTYtYjFlNS00NTI2LTk4OTktNWZiYTAyMGE0ZGRmfHJlYWQtd3JpdGU=",
+              "canTrackAnalytics": false,
+              "showUsageWarnings": true
+          }
+      }
+  },
+  "namedInputs": {
+      "default": ["{projectRoot}/**/*"],
+      "prod": [
+          "!{projectRoot}/**/*.spec.tsx",
+          "!{projectRoot}/**/*.test.tsx",
+          "!{projectRoot}/**/*.spec.ts",
+          "!{projectRoot}/**/*.test.ts"
+      ]
+  },
+  "targetDefaults": {
+      "build": {
+          "dependsOn": ["^build"],
+          "outputs": ["{projectRoot}/dist", "{projectRoot}/lib", "{projectRoot}/storybook"]
+      },
+      "test": {
+          "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
+          "outputs": ["{projectRoot}/coverage"]
+      },
+      "test:integration": {
+          "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
+          "outputs": ["{projectRoot}/playwright-report"]
+      },
+      "build:extension": {
+          "outputs": ["{projectRoot}/*.vsix"]
+      },
+      "build:storybook": {
+          "outputs": ["{projectRoot}/storybook"]
+      },
+      "lint": {
+          "inputs": ["default", "^prod"]
+      },
+      "lint:fix": {
+          "inputs": ["default", "^prod"]
+      },
+      "madge": {
+          "inputs": ["default", "^prod"]
+      },
+      "clean": {
+          "inputs": []
+      }
+  },
+  "defaultBase": "main"
 }

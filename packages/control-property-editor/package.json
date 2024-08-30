@@ -14,6 +14,7 @@
     "scripts": {
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "build": "npm-run-all -l -s clean -p build:compile build:webapp",
+        "madge": "madge --warning --circular --extensions ts ./",
         "build:compile": "tsc  --build ./tsconfig.json --pretty --dry",
         "build:webapp": "node esbuild.js",
         "watch": "npm-run-all -p watch:*",

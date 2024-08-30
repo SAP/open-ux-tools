@@ -9,6 +9,7 @@
         "install:yo": "npm install -g yo",
         "start": "yo ./generators/app",
         "build": "pnpm clean && tsc --build",
+        "madge": "madge --warning --circular --extensions ts ./",
         "watch": "tsc --watch",
         "clean": "rimraf --glob generators coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../../.prettierignore",
