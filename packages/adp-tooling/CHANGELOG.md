@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.44
+
+### Patch Changes
+
+-   1294b1c: fix: URI validation not executed for Replace OData prompting
+
 ## 0.12.43
 
 ### Patch Changes
