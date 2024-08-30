@@ -17,6 +17,7 @@ import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import TreeTable from 'sap/ui/table/TreeTable';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import ManagedObject from 'sap/ui/base/ManagedObject';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
@@ -70,7 +71,6 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
 
     async initialize(): Promise<void> {
         // No action found in control design time for version < 1.96
-        // TODO check with RTA of using `openPersonalisationDialog("Column")`.
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 96 })) {
             this.isActive = false;
@@ -253,21 +253,46 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
         } else if (isA<Table>(M_TABLE_TYPE, table)) {
             // if table is busy, i.e. lazy loading, then we subscribe to 'updateFinished' event and call action service when loading is done
             // to avoid reopening the dialog after close
-            table.attachEventOnce(
-                'updateFinished',
-                async () => {
-                    if (!this.tableMap[path].tableUpdateEventAttachedOnce) {
-                        this.tableMap[path].tableUpdateEventAttachedOnce = true;
-                        await executeAction();
-                    }
-                },
-                this
-            );
-            if (this.tableMap[path].tableUpdateEventAttachedOnce) {
+            if (this.isTableLoaded(table)) {
                 await executeAction();
+            } else {
+                table.attachEventOnce('updateFinished', executeAction, this);
             }
         }
 
         return [];
+    }
+
+    private isAbsoluteAggregationBinding(element: ManagedObject, aggregationName: string): boolean {
+        const mBindingInfo = element.getBindingInfo(aggregationName);
+        const path = mBindingInfo?.path;
+        if (!path) {
+            return false;
+        }
+        return path.indexOf('/') === 0;
+    }
+
+    /**
+     * Checks if table is loaded and has binding context available.
+     * This is needed to properly render change columns dialog.
+     * Based on {@link https://github.com/SAP/openui5/blob/rel-1.127/src/sap.ui.fl/src/sap/ui/fl/write/_internal/delegates/ODataV2ReadDelegate.js#L269-L271| ODataV2ReadDelegate.getPropertyInfo}.
+     *
+     * @param element - Table element.
+     * @returns True if binding context is available.
+     */
+    private isTableLoaded(element: ManagedObject): boolean {
+        const aggregationName = 'items';
+        if (this.isAbsoluteAggregationBinding(element, aggregationName)) {
+            const bindingInfo = element.getBindingInfo(aggregationName);
+            // check to be default model binding otherwise return undefined
+            if (typeof bindingInfo.model === 'string' && bindingInfo.model !== '') {
+                return false;
+            }
+            return bindingInfo.path !== undefined;
+        } else {
+            // here we explicitly request the default models binding context
+            const bindingContext = element.getBindingContext();
+            return !!bindingContext;
+        }
     }
 }

@@ -42,6 +42,5 @@ export interface Service {
 }
 
 export interface ControlTreeIndex {
-    // TODO: we probably need a new interface instead of OutlineNode
     [controlType: string]: OutlineNode[]
 }
