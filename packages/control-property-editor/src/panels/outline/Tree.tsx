@@ -413,7 +413,7 @@ export const Tree = (): ReactElement => {
                     onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
                     {groupHeaderProps?.group?.count !== 0 && (
                         <Icon
-                            className={`${chevronTransform} chevron`}
+                            className={`${chevronTransform} active-foreground`}
                             iconName={UiIcons.Chevron}
                             onClick={(event) => {
                                 onToggleCollapse(groupHeaderProps);
