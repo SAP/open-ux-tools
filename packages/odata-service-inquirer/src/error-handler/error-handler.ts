@@ -29,6 +29,7 @@ export enum ERROR_TYPE {
     CERT_SELF_SIGNED_CERT_IN_CHAIN = 'CERT_SELF_SIGNED_CERT_IN_CHAIN',
     UNKNOWN = 'UNKNOWN',
     INVALID_URL = 'INVALID_URL',
+    TIMEOUT = 'TIMEOUT',
     CONNECTION = 'CONNECTION',
     SERVICES_UNAVAILABLE = 'SERVICES_UNAVAILABLE', // All services
     SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE', // Specific service
@@ -57,6 +58,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
         /Unable to retrieve SAP Business Accelerator Hub key/ // API Hub error msg
     ],
     [ERROR_TYPE.AUTH_TIMEOUT]: [/UAATimeoutError/],
+    [ERROR_TYPE.TIMEOUT]: [/Timeout/],
     [ERROR_TYPE.CERT]: [], // General cert error, unspecified root cause
     [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: [
         /UNABLE_TO_GET_ISSUER_CERT/,
@@ -67,7 +69,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.CERT_SELF_SIGNED]: [/DEPTH_ZERO_SELF_SIGNED_CERT/],
     [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: [/SELF_SIGNED_CERT_IN_CHAIN/],
     [ERROR_TYPE.UNKNOWN]: [],
-    [ERROR_TYPE.CONNECTION]: [/ENOTFOUND/, /ECONNRESET/, /ECONNREFUSED/],
+    [ERROR_TYPE.CONNECTION]: [/ENOTFOUND/, /ECONNRESET/, /ECONNREFUSED/, /ConnectionError/],
     [ERROR_TYPE.SERVICES_UNAVAILABLE]: [],
     [ERROR_TYPE.SERVICE_UNAVAILABLE]: [/503/],
     [ERROR_TYPE.INVALID_URL]: [/Invalid URL/, /ERR_INVALID_URL/],
@@ -91,7 +93,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.NO_V4_SERVICES]: []
 };
 
-type ValidationLinkOrString = string | ValidationLink | undefined;
+type ValidationLinkOrString = string | ValidationLink;
 
 /**
  * Maps errors to end-user messages using some basic root cause analysis based on regex matching.
@@ -124,6 +126,7 @@ export class ErrorHandler {
         }),
         [ERROR_TYPE.AUTH]: t('errors.authenticationFailed', { error }),
         [ERROR_TYPE.AUTH_TIMEOUT]: t('errors.authenticationTimeout'),
+        [ERROR_TYPE.TIMEOUT]: t('errors.timeout, { error }'),
         [ERROR_TYPE.INVALID_URL]: t('errors.invalidUrl'),
         [ERROR_TYPE.CONNECTION]: t('errors.connectionError', {
             error: (error as Error)?.message || JSON.stringify(error)
@@ -184,7 +187,8 @@ export class ErrorHandler {
             [ERROR_TYPE.NOT_FOUND]: undefined,
             [ERROR_TYPE.ODATA_URL_NOT_FOUND]: undefined,
             [ERROR_TYPE.INTERNAL_SERVER_ERROR]: undefined,
-            [ERROR_TYPE.NO_V2_SERVICES]: undefined
+            [ERROR_TYPE.NO_V2_SERVICES]: undefined,
+            [ERROR_TYPE.TIMEOUT]: undefined
         };
         return errorToHelp[errorType];
     };
@@ -371,8 +375,8 @@ export class ErrorHandler {
      * @param reset optional, resets the previous error state if true
      * @returns An instance of @see {ValidationLink}
      */
-    public getValidationErrorHelp(error?: any, reset = false): ValidationLinkOrString {
-        let errorHelp: ValidationLinkOrString;
+    public getValidationErrorHelp(error?: any, reset = false): ValidationLinkOrString | undefined {
+        let errorHelp: ValidationLinkOrString | undefined;
         let errorMsg: string | undefined;
         if (error) {
             const resolvedError = ErrorHandler.mapErrorToMsg(error);
@@ -457,7 +461,7 @@ export class ErrorHandler {
      * @param errorMsg - the message to appear with the help link
      * @returns A validation help link or help link message
      */
-    public static getHelpForError(errorType: ERROR_TYPE, errorMsg?: string): ValidationLinkOrString {
+    public static getHelpForError(errorType: ERROR_TYPE, errorMsg?: string): ValidationLinkOrString | undefined {
         const helpNode = ErrorHandler.getHelpNode(errorType);
         const mappedErrorMsg = errorMsg ?? ErrorHandler.getErrorMsgFromType(errorType);
 

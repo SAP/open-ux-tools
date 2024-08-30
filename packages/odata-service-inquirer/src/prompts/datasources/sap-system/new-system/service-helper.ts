@@ -1,8 +1,8 @@
 import {
-    ServiceType,
-    type Annotations,
     type CatalogService,
-    type V2CatalogService,
+    ServiceType,
+    V2CatalogService,
+    type Annotations,
     type ODataServiceInfo,
     type ServiceProvider,
     ODataVersion
@@ -14,6 +14,8 @@ import type { ServiceAnswer } from './types';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import { PromptState } from '../../../../utils';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { errorHandler } from '../../../prompt-helpers';
+import { forEach } from 'lodash';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON/'];
@@ -59,25 +61,52 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
 };
 
 /**
+ * Logs the catalog reuest errors.
+ *
+ * @param requestErrors catalog request errors
+ */
+function logErrorsForHelp(requestErrors: Record<ODataVersion, unknown> | {}): void {
+    // Log the first error only
+    const catalogErrors = Object.values(requestErrors);
+    if (catalogErrors.length > 0) {
+        forEach(catalogErrors, (error) => {
+            errorHandler.logErrorMsgs(error);
+        });
+    }
+}
+
+/**
  * Get the service choices from the specified catalogs.
  *
  * @param catalogs catalogs to get the services from. There should be one per odata version required.
  * @returns service choices based on the provided catalogs
  */
 export async function getServiceChoices(catalogs: CatalogService[]): Promise<ListChoiceOptions<ServiceAnswer>[]> {
+    const requestErrors: Record<ODataVersion, unknown> | {} = {};
     const listServicesRequests = catalogs.map(async (catalog) => {
         try {
             return await catalog.listServices();
         } catch (error) {
             LoggerHelper.logger.error(
-                `An error occurred requesting services from: ${catalog.entitySet}. Some services may not be listed.`
+                t('errors.serviceCatalogRequest', {
+                    catalogRequestUri: catalog.getUri(),
+                    entitySet: catalog.entitySet,
+                    error
+                })
             );
+            // Save any errors for processing later as we may show more useful message to the user
+            Object.assign(requestErrors, {
+                [catalog instanceof V2CatalogService ? ODataVersion.v2 : ODataVersion.v4]: error
+            });
             return [];
         }
     });
     const serviceInfos: ODataServiceInfo[][] = await Promise.all(listServicesRequests);
     const flatServices = serviceInfos?.flat() ?? [];
     LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
+    if (flatServices.length === 0) {
+        logErrorsForHelp(requestErrors);
+    }
 
     return createServiceChoices(flatServices);
 }
