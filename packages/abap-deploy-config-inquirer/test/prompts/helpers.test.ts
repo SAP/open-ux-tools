@@ -73,7 +73,7 @@ describe('helpers', () => {
         });
 
         it('should update prompt state url (destination)', () => {
-            updatePromptStateUrl({ destination: 'Dest1' }, mockDestinations);
+            updatePromptStateUrl({ url: '', package: '', destination: 'Dest1' }, mockDestinations);
             expect(PromptState.abapDeployConfig.url).toBe('https://mock.url.dest1.com');
         });
     });
@@ -81,7 +81,7 @@ describe('helpers', () => {
     describe('getPackageChoices', () => {
         it('should return package choices and empty message', async () => {
             mockQueryPackages.mockResolvedValueOnce(['package1', 'package2']);
-            const result = await getPackageChoices(true, 'pack', {});
+            const result = await getPackageChoices(true, 'pack', { url: '', package: '' });
             expect(result).toEqual({
                 packages: ['package1', 'package2'],
                 morePackageResultsMsg: ''
@@ -96,7 +96,7 @@ describe('helpers', () => {
             }
 
             mockQueryPackages.mockResolvedValueOnce(packages);
-            const result = await getPackageChoices(true, 'pack', {});
+            const result = await getPackageChoices(true, 'pack', { url: '', package: '' });
             expect(result).toEqual({
                 packages,
                 morePackageResultsMsg: t('prompts.config.package.packageAutocomplete.sourceMessage', {
@@ -108,7 +108,11 @@ describe('helpers', () => {
         it('should return package choices and have previous answer to the top', async () => {
             mockQueryPackages.mockResolvedValueOnce(['package1', 'package2', 'package3']);
 
-            const result = await getPackageChoices(true, 'pack', { packageAutocomplete: 'package3' });
+            const result = await getPackageChoices(true, 'pack', {
+                url: '',
+                package: '',
+                packageAutocomplete: 'package3'
+            });
             expect(result).toEqual({
                 packages: ['package3', 'package1', 'package2'],
                 morePackageResultsMsg: ''

@@ -8,7 +8,7 @@ import {
     reconcileAnswers
 } from '@sap-ux/abap-deploy-config-inquirer';
 import { prompt, type PromptObject } from 'prompts';
-import type { AbapTarget, BspApp } from '@sap-ux/ui5-config';
+import type { AbapDeployConfig, AbapTarget } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
 import { promptYUIQuestions } from '../../common';
 
@@ -58,9 +58,10 @@ async function getTarget(target?: string): Promise<'abap' | 'cf'> {
                 // { title: 'Cloud Foundry', value: 'cf' }
             ]
         };
-        target = (await prompt(question)).target;
+        return (await prompt(question)).target;
+    } else {
+        return target;
     }
-    return target as 'abap' | 'cf';
 }
 
 /**
@@ -96,12 +97,10 @@ async function addDeployConfig(
                 logger,
                 false
             );
+
             const answers = reconcileAnswers(
-                await promptYUIQuestions<AbapDeployConfigAnswers>(
-                    abapPrompts,
-                    false,
-                    abapAnswers as AbapDeployConfigAnswers
-                )
+                await promptYUIQuestions<AbapDeployConfigAnswers>(abapPrompts, false),
+                abapAnswers
             );
 
             const config = {
@@ -110,18 +109,21 @@ async function addDeployConfig(
                     client: answers.client,
                     scp: answers.scp,
                     destination: answers.destination
-                } as AbapTarget,
+                },
                 app: {
                     name: answers.ui5AbapRepo,
                     package: answers.package,
                     description: answers.description,
                     transport: answers.transport
-                } as BspApp,
+                },
                 index: answers.index
-            };
+            } satisfies AbapDeployConfig;
 
             logger.debug(`Adding deployment configuration : ${JSON.stringify(config, null, 2)}`);
-            const fs = await generateDeployConfig(basePath, config, { baseFile, deployFile });
+            const fs = await generateDeployConfig(basePath, config, {
+                baseFile,
+                deployFile
+            });
             await traceChanges(fs);
 
             if (!simulate) {

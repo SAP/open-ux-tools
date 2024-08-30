@@ -424,7 +424,7 @@ async function handleCreateNewTransportChoice(
     const description = `For ABAP repository ${previousAnswers?.ui5AbapRepo?.toUpperCase()}, created by SAP Fiori Tools`;
     PromptState.transportAnswers.newTransportNumber = await createTransportNumber(
         {
-            packageName: getPackageAnswer(previousAnswers),
+            packageName: getPackageAnswer(previousAnswers, PromptState.abapDeployConfig.package),
             ui5AppName: previousAnswers?.ui5AbapRepo ?? '',
             description: description.length > 60 ? description.slice(0, 57) + '...' : description
         },
@@ -491,7 +491,7 @@ export async function validateTransportChoiceInput(
     prevTransportInputChoice?: TransportChoices,
     backendTarget?: BackendTarget
 ): Promise<boolean | string> {
-    const packageAnswer = getPackageAnswer(previousAnswers);
+    const packageAnswer = getPackageAnswer(previousAnswers, PromptState.abapDeployConfig.package);
     const systemConfig: SystemConfig = {
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
