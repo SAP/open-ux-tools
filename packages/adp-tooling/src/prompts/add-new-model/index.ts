@@ -239,9 +239,8 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             message: t('prompts.oDataServiceNameLabel'),
             default: defaultSeviceName,
             store: false,
-            validate: (value: string, answers: NewModelAnswers) => {
-                return validatePromptODataName(value, answers, isCustomerBase, changeFiles);
-            },
+            validate: (value: string, answers: NewModelAnswers) =>
+                validatePromptODataName(value, answers, isCustomerBase, changeFiles),
             guiOptions: {
                 mandatory: true,
                 hint: t('prompts.oDataServiceNameTooltip')
@@ -287,9 +286,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
                 hint: t('prompts.oDataServiceModelNameTooltip')
             },
             default: defaultSeviceName,
-            validate: (value: string) => {
-                return validatePromptModelName(value, isCustomerBase, changeFiles);
-            },
+            validate: (value: string) => validatePromptModelName(value, isCustomerBase, changeFiles),
             store: false
         } as InputQuestion<NewModelAnswers>,
         {
@@ -312,9 +309,8 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             type: 'input',
             name: 'dataSourceName',
             message: t('prompts.oDataAnnotationDataSourceNameLabel'),
-            validate: (value: string, answers: NewModelAnswers) => {
-                return validatePromptODataAnnotationsName(value, answers, isCustomerBase, changeFiles);
-            },
+            validate: (value: string, answers: NewModelAnswers) =>
+                validatePromptODataAnnotationsName(value, answers, isCustomerBase, changeFiles),
             default: defaultSeviceName,
             store: false,
             guiOptions: {

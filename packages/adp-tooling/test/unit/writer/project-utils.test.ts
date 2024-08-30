@@ -2,7 +2,7 @@ import path from 'path';
 import { readFileSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
 
-import type { AdpWriterConfig } from '../../../src';
+import { ApplicationType, FlexLayer, type AdpWriterConfig } from '../../../src';
 import {
     writeTemplateToFolder,
     writeUI5Yaml,
@@ -24,7 +24,9 @@ describe('Project Utils', () => {
     const data: AdpWriterConfig = {
         app: {
             id: 'my.test.app',
-            reference: 'the.original.app'
+            reference: 'the.original.app',
+            layer: FlexLayer.CUSTOMER_BASE,
+            appType: ApplicationType.FIORI_ELEMENTS
         },
         target: {
             url: 'http://sap.example'

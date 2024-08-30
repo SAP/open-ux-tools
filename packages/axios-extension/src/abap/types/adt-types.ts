@@ -104,6 +104,11 @@ export interface AtoSettings {
     isConfigured?: boolean;
 }
 
+export interface UIFlexSettings {
+    isOnPremise: boolean;
+    isUIFlex: boolean;
+}
+
 // Success | Error
 export type AdtTransportStatus = 'S' | 'E';
 

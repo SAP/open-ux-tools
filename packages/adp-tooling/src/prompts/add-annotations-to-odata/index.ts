@@ -3,9 +3,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types';
 import { t } from '../../i18n';
 import { filterDataSourcesByType } from '@sap-ux/project-access';
-import { existsSync } from 'fs';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { join, isAbsolute, sep } from 'path';
+import { validateAnnotationFile } from '@sap-ux/project-input-validator';
 
 /**
  * Gets the prompts for adding annotations to OData service.
@@ -60,24 +58,7 @@ export function getPrompts(
             default: '',
             when: (answers: AddAnnotationsAnswers) =>
                 answers.id !== '' && answers.fileSelectOption === AnnotationFileSelectType.ExistingFile,
-            validate: (value) => {
-                const validationResult = validateEmptyString(value);
-                if (typeof validationResult === 'string') {
-                    return validationResult;
-                }
-
-                const filePath = isAbsolute(value) ? value : join(basePath, value);
-                if (!existsSync(filePath)) {
-                    return t('validators.fileDoesNotExist');
-                }
-
-                const fileName = filePath.split(sep).pop();
-                if (existsSync(join(basePath, 'webapp', 'changes', 'annotations', fileName))) {
-                    return t('validators.annotationFileAlreadyExists');
-                }
-
-                return true;
-            }
+            validate: (value) => validateAnnotationFile(value, basePath)
         } as FileBrowserQuestion<AddAnnotationsAnswers>
     ];
 }

@@ -3,6 +3,7 @@ import type {
     Answers,
     ConfirmQuestion as BaseConfirmQuestion,
     InputQuestion as BaseInputQuestion,
+    PasswordQuestion as BasePasswordQuestion,
     ListQuestion as BaseListQuestion,
     CheckboxQuestion as BaseCheckBoxQuestion,
     NumberQuestion as BaseNumberQuestion,
@@ -33,6 +34,11 @@ export interface InquirerAdapter {
     promptModule?: PromptModule;
 }
 
+export interface LinkGuiOption {
+    text?: string;
+    url?: string;
+}
+
 /**
  * To be replaced when YUI specific types are available from `"@sap-devx/yeoman-ui-types`.
  *
@@ -54,6 +60,12 @@ export interface GuiOptions {
      * Indicate state in the left hand navigation panel in YUI
      */
     breadcrumb?: boolean | string;
+    /**
+     * Indicates the type of the prompt
+     */
+    type?: string;
+
+    link?: LinkGuiOption;
 }
 
 export type PromptSeverityMessage = (
@@ -92,6 +104,18 @@ export interface EditorQuestion<A extends Answers = Answers> extends BaseEditorQ
 export interface InputQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
+}
+
+export interface EditorQuestion<A extends Answers = Answers> extends BaseEditorQuestion<A> {
+    name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
+}
+
+export interface PasswordQuestion<A extends Answers = Answers> extends BasePasswordQuestion<A> {
+    name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
 }
 
 export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheckBoxQuestion<A> {
@@ -102,6 +126,17 @@ export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheck
 
 export interface NumberQuestion<A extends Answers = Answers> extends BaseNumberQuestion<A> {
     name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+}
+
+export interface AutocompleteQuestion<A extends Answers = Answers> extends YUIQuestion<A> {
+    type: 'autocomplete';
+    source: (answers: A, input: string) => Promise<string[]>;
+    suggestOnly?: boolean; // When false input cannot be used to provide an answer, which must be selected. This only applies to CLI use.
+    /**
+     * Additional messages can be shown based on auto-complete search results
+     */
+    additionalInfo: () => string;
     guiOptions?: YUIQuestion['guiOptions'];
 }
 /**

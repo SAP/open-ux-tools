@@ -43,6 +43,8 @@
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/environment-check": "workspace:*",
+        "@sap-ux/store": "workspace:*",
         "adm-zip": "0.5.10",
         "ejs": "3.1.10",
         "i18next": "23.11.2",
@@ -55,6 +57,7 @@
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
+        "@sap-devx/yeoman-ui-types": "1.14.4",
         "@types/adm-zip": "0.5.5",
         "@types/ejs": "3.1.2",
         "@types/express": "4.17.21",

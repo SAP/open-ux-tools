@@ -22,6 +22,19 @@ const QUESTION_TYPE_MAP: Record<string, PromptType> = {
 };
 
 /**
+ * Filters out questions from an array that are marked with the type 'label' in their GUI options.
+ *
+ * @param {YUIQuestion<T>[]} questions - An array of questions or prompts, where each question can contain various GUI options.
+ * @returns {Promise<YUIQuestion<T>[]>} A promise that resolves to an array of questions, excluding those with a 'label' type.
+ * @template T - The generic type parameter that extends Answers, used to type the questions array.
+ */
+export async function filterLabelTypeQuestions<T extends Answers>(
+    questions: YUIQuestion<T>[]
+): Promise<YUIQuestion<T>[]> {
+    return questions.filter((question) => question?.guiOptions?.type !== 'label');
+}
+
+/**
  * Enhances the new prompt with the choices from the original list question.
  *
  * @param listQuestion original list question

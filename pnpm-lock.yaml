@@ -409,6 +409,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/environment-check':
+        specifier: workspace:*
+        version: link:../environment-check
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
@@ -421,6 +424,9 @@ importers:
       '@sap-ux/project-input-validator':
         specifier: workspace:*
         version: link:../project-input-validator
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@sap-ux/system-access':
         specifier: workspace:*
         version: link:../system-access
@@ -455,9 +461,9 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
     devDependencies:
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
       '@types/adm-zip':
         specifier: 0.5.5
         version: 0.5.5
@@ -22557,6 +22563,7 @@ packages:
 
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
     dev: false
 
   /v8-compile-cache-lib@3.0.1:

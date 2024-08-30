@@ -1,8 +1,9 @@
 import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
-import type { OperationsType } from '@sap-ux/axios-extension';
+import type { AdaptationProjectType, OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
+import type { ResourceModel } from './writer/creation';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -43,12 +44,16 @@ export interface OnpremApp {
     id: string;
     /** Reference associated with the ID of the base application. */
     reference: string;
-    layer?: UI5FlexLayer;
+    layer: FlexLayer;
     title?: string;
+    fioriId?: string;
+    ach?: string;
     /** Optional: Application variant change content. */
     content?: Content[];
+    appType: ApplicationType;
     /** Optional: Description about i18n.properties. */
     i18nDescription?: string;
+    i18nModels?: ResourceModel[];
 }
 
 export interface CloudApp extends OnpremApp {
@@ -69,6 +74,7 @@ export interface AdpWriterConfig {
         minVersion?: string;
         version?: string;
         frameworkUrl?: string;
+        shouldSetMinVersion?: boolean;
     };
     package?: {
         name?: string;
@@ -117,7 +123,7 @@ export interface InternalInboundNavigation extends NewInboundNavigation {
     addInboundId: boolean;
 }
 
-export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
+export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation | undefined;
 
 export interface Language {
     sap: string;
@@ -577,4 +583,214 @@ export interface InboundChange {
             };
         };
     };
+}
+
+export interface IPrompt {
+    name: string;
+    description: string;
+}
+/**
+ *
+ */
+export declare class Prompts {
+    private readonly items;
+    private callback;
+    /**
+     *
+     */
+    constructor(items?: IPrompt[]);
+    /**
+     *
+     */
+    splice(start: number, deleteCount: number, items?: IPrompt[]): void;
+    /**
+     *
+     */
+    setCallback(callback: any): void;
+    size(): number;
+}
+
+export interface TargetEnvAnswers {
+    targetEnv: OperationsType;
+}
+
+export interface BasicInfoAnswers {
+    projectName: string;
+    applicationTitle: string;
+    namespace: string;
+}
+
+export interface ConfigurationInfoAnswers {
+    system: string;
+    client: string;
+    username: string;
+    password: string;
+    projectType: AdaptationProjectType;
+    application: Application;
+    ui5Version: string;
+    latestUI5version: string;
+    versionInfo: string;
+    confirmPrompt: boolean;
+    fioriId: string;
+    ach: string;
+}
+
+export interface FlexUISupportedSystem {
+    isUIFlex: boolean;
+    isOnPremise: boolean;
+}
+
+export interface SystemDetails {
+    url: string;
+    client: string;
+    username?: string;
+    password?: string;
+    authenticationType?: string;
+}
+
+export interface Application {
+    id: string;
+    title: string;
+    ach: string;
+    registrationIds: string[];
+    fileType: string;
+    bspUrl: string;
+    bspName: string;
+}
+
+export interface Choice {
+    name: string;
+    value: Application;
+}
+
+export interface UI5Version {
+    latest: VersionDetail;
+    [key: string]: VersionDetail;
+}
+
+export interface SapModel {
+    type?: string;
+    uri?: string;
+    settings?: {
+        bundleName?: string;
+    };
+}
+
+export interface VersionDetail {
+    version: string;
+    support: string;
+    lts: boolean;
+}
+
+export interface ChoiceOption<T = string> {
+    name: string;
+    value: T;
+}
+
+export interface ParamCheck {
+    shouldApply: boolean;
+    value: string | undefined;
+}
+
+export interface ParameterOptions {
+    required: boolean;
+    filter?: Value;
+    defaultValue?: Value;
+    renameTo?: string;
+}
+export interface Parameter {
+    [key: string]: ParameterOptions;
+}
+
+export interface Value {
+    value: string;
+    format: string;
+}
+
+export interface FlpConfigAnswers {
+    inboundId?: string;
+    title: string;
+    subTitle?: string;
+    action?: string;
+    semanticObject?: string;
+    parameters?: string;
+}
+
+export enum InputChoice {
+    ENTER_MANUALLY = 'Enter manually',
+    CHOOSE_FROM_EXISTING = 'Choose from existing'
+}
+
+export enum ApplicationType {
+    FIORI_ELEMENTS = 'FioriElements',
+    FIORI_ELEMENTS_OVP = 'FioriElementsOVP',
+    FREE_STYLE = 'FreeStyle',
+    NONE = ''
+}
+
+export interface DeployConfigAnswers {
+    abapRepository: string;
+    deployConfigDescription?: string;
+    packageInputChoice: InputChoice;
+    packageManual?: string;
+    packageAutocomplete?: string;
+    transportInputChoice: InputChoice;
+    transportManual?: string;
+    transportFromList?: string;
+}
+
+export type ParameterRules = {
+    /**
+     * Function that checks whether param has empty value, e.g parameter defined in the following format has empty value: param1=
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    isEmptyParam(param: string): ParamCheck;
+    /**
+     * Function that define whether param is mandatory, param which is placed inside () is not mandatory
+     *
+     * @param {string} param - param string
+     * @returns {boolean} whether param string is mandatory or not
+     */
+    isMandatoryParam(param: string): boolean;
+    /**
+     * Function that checks whehter param has filter value, e.g parameter value placed inside <> indicates for filter value: param1=<value>
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    shouldHavеFiltertValue(param: string): ParamCheck;
+    /**
+     * Function that checks whether parameter has rename to value, e.g param1=>value
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    shouldRenameTo(param: string): ParamCheck;
+    /**
+     * Function thath checks whether parameter value should have reference as format value, e.g param1=%%value%%
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    isReference(param: string): ParamCheck;
+};
+
+interface DestinationConfig {
+    name: string;
+    basUsage: string | undefined;
+    host: string | undefined;
+    sapClient: string | undefined;
+}
+
+export interface ExtProjectConfig {
+    username: string;
+    password: string;
+    destination: DestinationConfig;
+    applicationNS: string;
+    applicationName: string;
+    userUI5Ver: string;
+    BSPUrl: string;
+    namespace: string;
 }
