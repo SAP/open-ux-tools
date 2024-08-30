@@ -124,13 +124,13 @@ export function getUIContextualMenuItemStyles(
  * @returns consumable styles property for Callout
  */
 export function getUIcontextualMenuCalloutStyles(
-    props: IContextualMenuProps,
+    props?: IContextualMenuProps,
     maxWidth?: number
 ): Partial<ICalloutContentStyles> {
     return {
         root: {
             maxWidth: maxWidth,
-            ...extractRawStyles(props.styles, 'root')
+            ...(props ? extractRawStyles(props.styles, 'root') : undefined)
         }
     };
 }
