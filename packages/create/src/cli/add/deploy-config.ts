@@ -8,7 +8,7 @@ import {
     reconcileAnswers
 } from '@sap-ux/abap-deploy-config-inquirer';
 import { prompt, type PromptObject } from 'prompts';
-import type { AbapDeployConfig, AbapTarget } from '@sap-ux/ui5-config';
+import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
 import { promptYUIQuestions } from '../../common';
 
