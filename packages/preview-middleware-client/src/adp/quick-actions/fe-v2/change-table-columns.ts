@@ -277,7 +277,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
      * This is needed to properly render change columns dialog.
      * Based on {@link https://github.com/SAP/openui5/blob/rel-1.127/src/sap.ui.fl/src/sap/ui/fl/write/_internal/delegates/ODataV2ReadDelegate.js#L269-L271| ODataV2ReadDelegate.getPropertyInfo}.
      *
-     * @param element - Table element.
+     * @param element - Table control.
      * @returns True if binding context is available.
      */
     private isTableLoaded(element: ManagedObject): boolean {
