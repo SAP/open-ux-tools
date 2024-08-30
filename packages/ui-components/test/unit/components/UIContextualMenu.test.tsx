@@ -1,7 +1,11 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
 import type { UIIContextualMenuProps } from '../../../src/components/UIContextualMenu';
-import { getUIContextualMenuItemStyles, UIContextualMenu } from '../../../src/components/UIContextualMenu';
+import {
+    getUIcontextualMenuCalloutStyles,
+    getUIContextualMenuItemStyles,
+    UIContextualMenu
+} from '../../../src/components/UIContextualMenu';
 import { ContextualMenu } from '@fluentui/react';
 import { UiIcons, initIcons } from '../../../src/components/Icons';
 
@@ -178,6 +182,34 @@ describe('<UIDropdown />', () => {
                 'transformOrigin': '50% 50%',
                 'width': 16
             }
+        });
+    });
+
+    describe('<getUIcontextualMenuCalloutStyles />', () => {
+        it('getUIcontextualMenuCalloutStyles - call without params', () => {
+            const defaultStyles = getUIcontextualMenuCalloutStyles();
+            expect(defaultStyles).toEqual({
+                root: {}
+            });
+        });
+
+        it('getUIcontextualMenuCalloutStyles - pass maxWidth', () => {
+            const defaultStyles = getUIcontextualMenuCalloutStyles(undefined, 100);
+            expect(defaultStyles).toEqual({
+                root: {
+                    maxWidth: 100
+                }
+            });
+        });
+
+        it('getUIcontextualMenuCalloutStyles - pass maxWidth', () => {
+            const defaultStyles = getUIcontextualMenuCalloutStyles({ root: { background: 'green' } }, 100);
+            expect(defaultStyles).toEqual({
+                root: {
+                    maxWidth: 100,
+                    background: 'green'
+                }
+            });
         });
     });
 });
