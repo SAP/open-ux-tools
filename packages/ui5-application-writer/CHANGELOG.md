@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.1.6
+
+### Patch Changes
+
+-   8cfd71a: ui5-application-writer - fix backward support for older ui5 versions in locate-reuse-libs.js
+
 ## 1.1.5
 
 ### Patch Changes

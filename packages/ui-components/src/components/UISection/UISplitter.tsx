@@ -14,6 +14,12 @@ export interface UISplitterProps {
     onToggle?: () => void;
     title?: string;
     splitterLayoutType?: UISplitterLayoutType;
+    /**
+     * Tabindex of splitter element.
+     *
+     * @default 0
+     */
+    splitterTabIndex?: -1 | 0;
 }
 
 export enum UISplitterType {
@@ -228,6 +234,7 @@ export class UISplitter extends React.Component<UISplitterProps> {
      */
     render(): React.ReactElement {
         const { type, vertical, hidden, title, splitterLayoutType } = this.props;
+        const tabIndex = this.props.splitterTabIndex ?? 0;
         const size = splitterLayoutType === UISplitterLayoutType.Standard ? this.size : this.compactSize;
         const splitterOffset = type === UISplitterType.Toggle ? -size : -size / 2;
         const role = type === UISplitterType.Toggle ? 'button' : 'separator';
@@ -243,7 +250,7 @@ export class UISplitter extends React.Component<UISplitterProps> {
                 aria-orientation={orientation}
                 aria-pressed={ariaPressed}
                 title={title}
-                tabIndex={type === UISplitterType.Toggle ? 0 : -1}
+                tabIndex={tabIndex}
                 onKeyDown={this.onKeyDown.bind(this)}
                 style={{
                     ...(vertical && { height: size, top: splitterOffset }),
