@@ -13,6 +13,7 @@ import * as capValidators from '../../../../src/prompts/datasources/cap-project/
 import type { CapCustomPaths } from '@sap-ux/project-access';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import { type CdsVersionInfo } from '@sap-ux/project-access';
+import { error } from 'console';
 
 jest.mock('../../../../src/utils', () => ({
     ...jest.requireActual('../../../../src/utils'),
