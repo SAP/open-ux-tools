@@ -14,16 +14,15 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
 import type { SelectionService } from '../selection';
-
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
 import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
-import FlexObjectFactory from 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory';
 import FlexChange from 'sap/ui/fl/Change';
 import { getError } from '../../utils/error';
+import { isLowerThanMinimalUi5Version, getUi5Version } from '../../utils/version';
 
 interface ChangeContent {
     property: string;
@@ -182,7 +181,9 @@ export class ChangeService {
                             const change: Change = savedChanges[key];
                             let selectorId;
                             try {
-                                const flexObject = FlexObjectFactory.createFromFileContent(change);
+                                // const flexObject = FlexObjectFactory.createFromFileContent(change);
+                                //@ts-ignore
+                                const flexObject = await this.getFlexObject(change);
                                 selectorId = await this.getControlIdByChange(flexObject as FlexChange);
                                 assertChange(change);
                                 if (
@@ -406,6 +407,7 @@ export class ChangeService {
      * Get element id by change.
      *
      * @param change to be executed for creating change
+     * @param changeSelector selector of the change
      * @returns element id or empty string
      */
     private async getControlIdByChange(change: FlexChange): Promise<string> {
@@ -413,22 +415,24 @@ export class ChangeService {
             return '';
         }
 
-        const changeDefinition = change.getDefinition();
         const appComponent = this.options.rta.getRootControlInstance();
+        const selector = change.getSelector();
+        const changeType = change.getChangeType();
+        const layer = change.getLayer();
 
         try {
-            let control = JsControlTreeModifier.bySelector(changeDefinition.selector, appComponent);
+            let control = JsControlTreeModifier.bySelector(selector, appComponent);
             if (!control) {
-                return changeDefinition.selector.id;
+                return selector.id;
             }
 
             const changeHandlerAPI = (await import('sap/ui/fl/write/api/ChangesWriteAPI')).default;
 
             const changeHandler = await changeHandlerAPI.getChangeHandler({
-                changeType: changeDefinition.changeType,
+                changeType,
                 element: control,
                 modifier: JsControlTreeModifier,
-                layer: changeDefinition.layer
+                layer
             });
 
             if (changeHandler && typeof changeHandler.getChangeVisualizationInfo === 'function') {
@@ -437,15 +441,15 @@ export class ChangeService {
                     appComponent
                 );
                 return JsControlTreeModifier.getControlIdBySelector(
-                    result?.affectedControls?.[0] ?? changeDefinition.selector,
+                    result?.affectedControls?.[0] ?? selector,
                     appComponent
                 );
             }
 
-            return JsControlTreeModifier.getControlIdBySelector(changeDefinition.selector, appComponent);
+            return JsControlTreeModifier.getControlIdBySelector(selector, appComponent);
         } catch (error) {
             Log.error('Getting element ID from change has failed:', getError(error));
-            return changeDefinition.selector.id;
+            return selector.id;
         }
     }
 
@@ -456,9 +460,25 @@ export class ChangeService {
      */
     public async syncOutlineChanges(): Promise<void> {
         for (const change of this.savedChanges) {
-            const flexObject = FlexObjectFactory.createFromFileContent(change.file as FlexChange);
+            const flexObject = await this.getFlexObject(change.file);
             change.controlId = await this.getControlIdByChange(flexObject as FlexChange);
         }
         this.updateStack();
+    }
+
+    /**
+     * Get FlexObject from change object based on UI5 version.
+     *
+     * @param change change object
+     * @returns FlexChange
+     */
+    private async getFlexObject(change: object): Promise<FlexChange> {
+        if (isLowerThanMinimalUi5Version(await getUi5Version(), { major: 1, minor: 109 })) {
+            const Change = (await import('sap/ui/fl/Change')).default;
+            return new Change(change);
+        }
+
+        const FlexObjectFactory = (await import('sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory')).default;
+        return FlexObjectFactory.createFromFileContent(change) as FlexChange;
     }
 }

@@ -30,10 +30,14 @@ declare module 'sap/ui/fl/Change' {
         };
         fileName: string;
     }
-    interface Change {
+    class Change {
+        constructor(oFile: object): void;
         getDefinition: () => ChangeDefinition;
+        getSelector: () => ChangeSelector;
+        getChangeType: () => string;
+        getLayer: () => Layer;
     }
-
+    const Change: Change;
     export default Change;
 }
 /**
