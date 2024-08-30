@@ -15,7 +15,6 @@ import type { ConnectionValidator } from '../../../connectionValidator';
 import { PromptState } from '../../../../utils';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { errorHandler } from '../../../prompt-helpers';
-import { forEach } from 'lodash';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON/'];
@@ -69,9 +68,7 @@ function logErrorsForHelp(requestErrors: Record<ODataVersion, unknown> | {}): vo
     // Log the first error only
     const catalogErrors = Object.values(requestErrors);
     if (catalogErrors.length > 0) {
-        forEach(catalogErrors, (error) => {
-            errorHandler.logErrorMsgs(error);
-        });
+        catalogErrors.forEach((error) => errorHandler.logErrorMsgs(error));
     }
 }
 
