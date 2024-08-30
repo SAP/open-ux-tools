@@ -76,22 +76,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
             this.isActive = false;
             return;
         }
-        // Assumption only a tab bar control per page.
-        const tabBar = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
-            ICON_TAB_BAR_TYPE
-        ])[0];
-        const filters: { [key: string]: string } = {};
-        if (tabBar) {
-            const control = getControlById(tabBar.getId());
-            if (isA<IconTabBar>(ICON_TAB_BAR_TYPE, control)) {
-                this.iconTabBar = control;
-                for (const item of control.getItems()) {
-                    if (isManagedObject(item) && isA<IconTabFilter>('sap.m.IconTabFilter', item)) {
-                        filters[item.getKey()] = item.getText();
-                    }
-                }
-            }
-        }
+        const iconTabBarfilterMap = this.buildIconTabBarFilterMap();
         for (const table of getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
@@ -102,14 +87,14 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
             const changeColumnAction = actionsIds.find(
                 (actionId) => actions.findIndex((action) => action.id === actionId) > -1
             );
-            const tabKey = Object.keys(filters).find((key) => table.getId().endsWith(key));
+            const tabKey = Object.keys(iconTabBarfilterMap).find((key) => table.getId().endsWith(key));
             if (changeColumnAction) {
                 const section = getParentContainer<ObjectPageSection>(table, 'sap.uxap.ObjectPageSection');
                 if (section) {
                     this.collectChildrenInSection(section, table, changeColumnAction);
                 } else if (this.iconTabBar && tabKey) {
                     this.children.push({
-                        label: `'${filters[tabKey]}' table`,
+                        label: `'${iconTabBarfilterMap[tabKey]}' table`,
                         children: []
                     });
                     this.tableMap[`${this.children.length - 1}`] = {
@@ -143,6 +128,28 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
         }
 
         return 'Unnamed table';
+    }
+
+    private buildIconTabBarFilterMap(): { [key: string]: string } {
+        const iconTabBarfilterMap: { [key: string]: string } = {};
+
+        // Assumption only a tab bar control per page.
+        const tabBar = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
+            ICON_TAB_BAR_TYPE
+        ])[0];
+        if (tabBar) {
+            const control = getControlById(tabBar.getId());
+            if (isA<IconTabBar>(ICON_TAB_BAR_TYPE, control)) {
+                this.iconTabBar = control;
+                for (const item of control.getItems()) {
+                    if (isManagedObject(item) && isA<IconTabFilter>('sap.m.IconTabFilter', item)) {
+                        iconTabBarfilterMap[item.getKey()] = item.getText();
+                    }
+                }
+            }
+        }
+
+        return iconTabBarfilterMap;
     }
 
     private collectChildrenInSection(section: ObjectPageSection, table: UI5Element, changeColumnAction: string): void {

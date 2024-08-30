@@ -111,25 +111,13 @@ describe('main', () => {
     });
     test('init - rta exception', async () => {
         const error = new Error('Cannot init outline');
-        initOutlineSpy.mockImplementation(() => {
-            throw error;
-        });
+        initOutlineSpy.mockRejectedValue(error);
+
+        // act
         await init(rta);
-        const callBackFn = spyPostMessage.mock.calls[0][1];
-        const payload = {
-            controlId:
-                'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy',
-            propertyName: 'enabled',
-            value: 'falsee'
-        };
-        // apply change
-        await callBackFn({
-            type: '[ext] change-property',
-            payload
-        });
 
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
-        expect(Log.error).toBeCalledWith('Error during initialization of Control Property Editor', error);
+        expect(Log.error).toBeCalledWith('Service Initalization Failed: ', error);
     });
 });

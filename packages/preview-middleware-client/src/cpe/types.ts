@@ -38,7 +38,7 @@ export type SubscribeFunction = (handler: ActionHandler) => void;
 export type UnSubscribeFunction = (handler: ActionHandler) => void;
 
 export interface Service {
-    init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void;
+    init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void | Promise<void>;
 }
 
 export interface ControlTreeIndex {

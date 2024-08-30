@@ -76,7 +76,9 @@ export default function init(
         );
 
         for (const service of services) {
-            service.init(sendAction, subscribe);
+            service
+                .init(sendAction, subscribe)
+                ?.catch((reason) => Log.error('Service Initalization Failed: ', getError(reason)));
         }
 
         const icons = getIcons();
