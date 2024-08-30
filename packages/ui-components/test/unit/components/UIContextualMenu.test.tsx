@@ -203,10 +203,7 @@ describe('<UIDropdown />', () => {
         });
 
         it('getUIcontextualMenuCalloutStyles - pass maxWidth', () => {
-            const defaultStyles = getUIcontextualMenuCalloutStyles(
-                { styles: { root: { background: 'green' } }, items: [] },
-                100
-            );
+            const defaultStyles = getUIcontextualMenuCalloutStyles({ root: { background: 'green' } }, 100);
             expect(defaultStyles).toEqual({
                 root: {
                     maxWidth: 100,

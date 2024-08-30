@@ -2,4 +2,4 @@
 '@sap-ux/ui-components': patch
 ---
 
-UIContextualMenu.getUIcontextualMenuCalloutStyles - make `props` param optional
+UIContextualMenu.getUIcontextualMenuCalloutStyles - change parameter from `props?: IContextualMenuProps` to `styles?: IStyleFunctionOrObject<IContextualMenuStyleProps, IContextualMenuStyles>` and make parameter as optional

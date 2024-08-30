@@ -119,18 +119,18 @@ export function getUIContextualMenuItemStyles(
 /**
  * ContextualMenu sub-component styles prop generator.
  *
- * @param props Contextual menu properties.
+ * @param styles External styles of contextual menu.
  * @param maxWidth Maximal width of callout
  * @returns consumable styles property for Callout
  */
 export function getUIcontextualMenuCalloutStyles(
-    props?: IContextualMenuProps,
+    styles?: IStyleFunctionOrObject<IContextualMenuStyleProps, IContextualMenuStyles>,
     maxWidth?: number
 ): Partial<ICalloutContentStyles> {
     return {
         root: {
             maxWidth: maxWidth,
-            ...(props ? extractRawStyles(props.styles, 'root') : undefined)
+            ...(styles ? extractRawStyles(styles, 'root') : undefined)
         }
     };
 }
@@ -257,7 +257,7 @@ export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
             className={getClassNames(props)}
             items={injectContextualMenuItemsStyle(props)}
             calloutProps={{
-                styles: getUIcontextualMenuCalloutStyles(props, props.maxWidth),
+                styles: getUIcontextualMenuCalloutStyles(props.styles, props.maxWidth),
                 ...props.calloutProps,
                 className: getCalloutClassName(props)
             }}
