@@ -28,7 +28,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
     let morePackageResultsMsg = '';
     const isCli = !PromptState.isYUI;
 
-    const questions: Question[] = [
+    const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
             when: (): boolean => showPackageInputChoiceQuestion(options.useAutocomplete),
             type: 'list',
@@ -71,7 +71,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             },
             type: 'input',
             name: abapDeployConfigInternalPromptNames.packageCliExecution
-        },
+        } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowManualPackageQuestion(isCli, previousAnswers.packageInputChoice, options.useAutocomplete),

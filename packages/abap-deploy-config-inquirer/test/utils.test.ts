@@ -181,6 +181,8 @@ describe('Test utils', () => {
 
     it('should get package answer', () => {
         const previousAnswers = {
+            url: 'https://target.url',
+            package: '',
             packageInputChoice: PackageInputChoices.ListExistingChoice,
             packageAutocomplete: 'package1',
             packageManual: ''
@@ -220,9 +222,11 @@ describe('Test utils', () => {
         };
 
         const internalAnswers: AbapDeployConfigAnswersInternal = {
+            url: '',
             destination: 'Dest1',
             ui5AbapRepo: 'Mock Repo',
             description: 'Mock Description',
+            package: '',
             packageInputChoice: PackageInputChoices.EnterManualChoice,
             packageManual: 'PKGMOCK',
             transportInputChoice: TransportChoices.ListExistingChoice,
@@ -230,7 +234,7 @@ describe('Test utils', () => {
             index: true
         };
 
-        expect(reconcileAnswers(internalAnswers)).toStrictEqual(expectedAnswers);
+        expect(reconcileAnswers(internalAnswers, PromptState.abapDeployConfig)).toStrictEqual(expectedAnswers);
     });
 
     it('should return reconciled answers for target system', () => {
@@ -251,9 +255,11 @@ describe('Test utils', () => {
         };
 
         const internalAnswers: AbapDeployConfigAnswersInternal = {
+            url: 'http://dest.btp.url',
             targetSystem: 'htpp://target.url',
             ui5AbapRepo: 'Mock Repo',
             description: 'Mock Description',
+            package: '',
             packageInputChoice: PackageInputChoices.ListExistingChoice,
             packageAutocomplete: 'PKGMOCK',
             transportInputChoice: TransportChoices.CreateDuringDeployChoice,
@@ -261,6 +267,6 @@ describe('Test utils', () => {
             overwrite: false
         };
 
-        expect(reconcileAnswers(internalAnswers)).toStrictEqual(expectedAnswers);
+        expect(reconcileAnswers(internalAnswers, PromptState.abapDeployConfig)).toStrictEqual(expectedAnswers);
     });
 });

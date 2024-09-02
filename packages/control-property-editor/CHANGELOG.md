@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.30
+
+### Patch Changes
+
+-   2b6daf3: Changed color of chevron on selection
+
 ## 0.4.29
 
 ### Patch Changes
