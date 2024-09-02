@@ -1,5 +1,5 @@
 import { join } from 'path';
-import type { Position } from 'vscode-languageserver-types';
+import type { Position } from '@sap-ux/text-document-utils';
 
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 

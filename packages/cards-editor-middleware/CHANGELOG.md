@@ -1,5 +1,87 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.4.21
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+
+## 0.4.20
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.9
+
+## 0.4.19
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+
+## 0.4.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.7
+
+## 0.4.17
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+
+## 0.4.16
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+
+## 0.4.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+
+## 0.4.14
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+
+## 0.4.13
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+
+## 0.4.12
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+
+## 0.4.11
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+
+## 0.4.10
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+
 ## 0.4.9
 
 ### Patch Changes

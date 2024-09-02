@@ -1,5 +1,110 @@
 # @sap-ux/ui5-library-writer
 
+## 0.5.17
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/ui5-application-writer@1.1.6
+
+## 0.5.16
+
+### Patch Changes
+
+-   Updated dependencies [8cfd71a]
+    -   @sap-ux/ui5-application-writer@1.1.6
+
+## 0.5.15
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-application-writer@1.1.5
+    -   @sap-ux/ui5-config@0.24.1
+    -   @sap-ux/project-access@1.26.9
+
+## 0.5.14
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/ui5-application-writer@1.1.4
+
+## 0.5.13
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/ui5-application-writer@1.1.4
+    -   @sap-ux/project-access@1.26.7
+
+## 0.5.12
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+    -   @sap-ux/ui5-application-writer@1.1.3
+
+## 0.5.11
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/ui5-application-writer@1.1.3
+
+## 0.5.10
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+-   @sap-ux/ui5-application-writer@1.1.3
+
+## 0.5.9
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/ui5-application-writer@1.1.3
+
+## 0.5.8
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/ui5-application-writer@1.1.3
+
+## 0.5.7
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/ui5-application-writer@1.1.2
+
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/ui5-application-writer@1.1.2
+
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/ui5-application-writer@1.1.2
+
 ## 0.5.4
 
 ### Patch Changes

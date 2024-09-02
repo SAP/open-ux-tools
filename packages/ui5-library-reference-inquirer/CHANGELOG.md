@@ -1,5 +1,112 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.3.27
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+
+## 0.3.26
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.9
+
+## 0.3.25
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+
+## 0.3.24
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.7
+
+## 0.3.23
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.6
+
+## 0.3.22
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.5
+
+## 0.3.21
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+
+## 0.3.20
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.4
+
+## 0.3.19
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+
+## 0.3.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+
+## 0.3.17
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+
+## 0.3.16
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+
+## 0.3.15
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+
+## 0.3.14
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+
+## 0.3.13
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+
+## 0.3.12
+
+### Patch Changes
+
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+
 ## 0.3.11
 
 ### Patch Changes

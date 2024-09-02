@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Adeploy-tooling"
     },
-    "version": "0.15.5",
+    "version": "0.15.16",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -44,7 +44,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
-        "axios": "1.6.8",
+        "axios": "1.7.4",
         "commander": "9.4.0",
         "dotenv": "16.3.1",
         "prompts": "2.4.2",

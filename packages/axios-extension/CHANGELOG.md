@@ -1,5 +1,32 @@
 # @sap-ux/axios-extension
 
+## 1.16.5
+
+### Patch Changes
+
+-   Updated dependencies [d3dafeb]
+    -   @sap-ux/btp-utils@0.15.2
+
+## 1.16.4
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/btp-utils@0.15.1
+
+## 1.16.3
+
+### Patch Changes
+
+-   0084205: linting: use optional chaining operator ?
+
+## 1.16.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
 ## 1.16.1
 
 ### Patch Changes

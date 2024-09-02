@@ -23,12 +23,42 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "examples/fe-fpm-cli: Run Example",
+            "runtimeExecutable": "pnpm",
+            "runtimeArgs": ["start"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/examples/fe-fpm-cli"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "examples/prompting-ui: Run Example",
+            "runtimeExecutable": "pnpm",
+            "runtimeArgs": ["storybook"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/examples/prompting-ui"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "ui5-application-writer: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "cwd": "${workspaceFolder}/packages/ui5-application-writer"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Store: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/store"
         },
         {
             "type": "node",
@@ -140,6 +170,19 @@
                 "UX_DEBUG_FULL": "false"
             }
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "nodejs-utils: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/nodejs-utils/"
+        }
         {
             "type": "node",
             "request": "launch",
@@ -269,6 +312,19 @@
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
             "cwd": "${workspaceFolder}/packages/ui-components"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "ui-prompting: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/ui-prompting",
+            "env": {
+                "UX_DEBUG": "false"
+            }
         },
         {
             "type": "node",

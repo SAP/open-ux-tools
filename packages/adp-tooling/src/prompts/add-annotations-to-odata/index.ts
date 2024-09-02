@@ -4,7 +4,7 @@ import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../type
 import { t } from '../../i18n';
 import { filterDataSourcesByType } from '@sap-ux/project-access';
 import { existsSync } from 'fs';
-import { isNotEmptyString } from '../../base/validators';
+import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { join, isAbsolute, sep } from 'path';
 
 /**
@@ -61,17 +61,21 @@ export function getPrompts(
             when: (answers: AddAnnotationsAnswers) =>
                 answers.id !== '' && answers.fileSelectOption === AnnotationFileSelectType.ExistingFile,
             validate: (value) => {
-                if (!isNotEmptyString(value)) {
-                    return t('validators.inputCannotBeEmpty');
+                const validationResult = validateEmptyString(value);
+                if (typeof validationResult === 'string') {
+                    return validationResult;
                 }
+
                 const filePath = isAbsolute(value) ? value : join(basePath, value);
                 if (!existsSync(filePath)) {
                     return t('validators.fileDoesNotExist');
                 }
+
                 const fileName = filePath.split(sep).pop();
                 if (existsSync(join(basePath, 'webapp', 'changes', 'annotations', fileName))) {
                     return t('validators.annotationFileAlreadyExists');
                 }
+
                 return true;
             }
         } as FileBrowserQuestion<AddAnnotationsAnswers>

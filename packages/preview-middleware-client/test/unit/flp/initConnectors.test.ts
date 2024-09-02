@@ -1,14 +1,16 @@
 import { sapMock } from 'mock/window';
-import { initConnectors } from '../../../src/flp/initConnectors';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
+import initConnectors from '../../../src/flp/initConnectors';
 
 describe('flp/initConnectors', () => {
     afterEach(() => {
         jest.restoreAllMocks();
     });
 
-    test('enables fake lrep connector when ui5 version is 1.71', () => {
+    test('enables fake lrep connector when ui5 version is 1.71', async () => {
         sapMock.ui.version = '1.71.60';
-        initConnectors();
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.60' });
+        await initConnectors();
 
         expect(sapMock.ui.require).toBeCalledWith(
             ['open/ux/preview/client/flp/enableFakeConnector'],
@@ -22,10 +24,11 @@ describe('flp/initConnectors', () => {
         expect(enableFakeConSpy).toHaveBeenCalled();
     });
 
-    test('defines a local connector for writing and applying changes and returns it', () => {
+    test('defines a local connector for writing and applying changes and returns it', async () => {
         sapMock.ui.version = '1.120.4';
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
 
-        initConnectors();
+        await initConnectors();
 
         const WorkspaceConnectorMock = { layers: [] };
         const requireCb = sapMock.ui.define.mock.calls[0][2] as (WorkspaceConnector: unknown) => void;

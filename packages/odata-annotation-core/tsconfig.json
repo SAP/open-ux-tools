@@ -10,7 +10,7 @@
     "preserveConstEnums": false
   },
   "include": [
-    "src",
+    "src"
   ],
   "references": [
     {
@@ -18,6 +18,9 @@
     },
     {
       "path": "../odata-entity-model"
+    },
+    {
+      "path": "../text-document-utils"
     }
   ]
 }

@@ -1,5 +1,25 @@
 # @sap-ux/cards-editor-config-writer
 
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+
+## 0.4.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
 ## 0.4.1
 
 ### Patch Changes

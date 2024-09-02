@@ -2,13 +2,25 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
-import type { BuildingBlock, BuildingBlockConfig } from './types';
+import { join, parse } from 'path';
+import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
 import { getErrorMessage, validateBasePath } from '../common/validate';
 import { getTemplatePath } from '../templates';
+import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
+
+const PLACEHOLDERS = {
+    'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
+    'entitySet': 'REPLACE_WITH_ENTITY',
+    'qualifier': 'REPLACE_WITH_A_QUALIFIER'
+};
+
+interface MetadataPath {
+    contextPath?: string;
+    metaPath: string;
+}
 
 /**
  * Generates a building block into the provided xml view file.
@@ -27,7 +39,7 @@ export function generateBuildingBlock<T extends BuildingBlock>(
     if (!fs) {
         fs = create(createStorage());
     }
-    validateBasePath(basePath, fs);
+    validateBasePath(basePath, fs, ['sap.fe.templates', 'sap.fe.core']);
     if (!fs.exists(join(basePath, config.viewOrFragmentPath))) {
         throw new Error(`Invalid view path ${config.viewOrFragmentPath}.`);
     }
@@ -87,6 +99,102 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
 }
 
 /**
+ * Method returns default values for metadata path.
+ *
+ * @param {BuildingBlockType} type - building vlock type.
+ * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
+ * @returns {MetadataPath} Default values for metadata path.
+ */
+function getDefaultMetaPath(type: BuildingBlockType, usePlaceholders?: boolean): MetadataPath {
+    if (type === BuildingBlockType.Chart) {
+        return {
+            metaPath: usePlaceholders ? `/${PLACEHOLDERS.qualifier}` : '',
+            contextPath: usePlaceholders ? PLACEHOLDERS.entitySet : ''
+        };
+    }
+    return {
+        metaPath: usePlaceholders ? `/${PLACEHOLDERS.entitySet}/${PLACEHOLDERS.qualifier}` : ''
+    };
+}
+
+/**
+ * Method converts object based metaPath to metadata path.
+ *
+ * @param {BuildingBlockType} type - building vlock type.
+ * @param {BuildingBlockMetaPath} metaPath - object based metaPath.
+ * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
+ * @returns {MetadataPath} Resolved metadata path information.
+ */
+function getMetaPath(
+    type: BuildingBlockType,
+    metaPath?: BuildingBlockMetaPath,
+    usePlaceholders?: boolean
+): MetadataPath {
+    if (!metaPath) {
+        return getDefaultMetaPath(type, usePlaceholders);
+    }
+    const { bindingContextType = 'absolute' } = metaPath;
+    let { entitySet, qualifier } = metaPath;
+    entitySet = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
+    const qualifierOrPlaceholder = qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '');
+    if (type === BuildingBlockType.Chart) {
+        // Special handling for chart - while runtime does not support approach without contextPath
+        const qualifierParts: string[] = qualifierOrPlaceholder.split('/');
+        qualifier = qualifierParts.pop() as string;
+        return {
+            metaPath: qualifier,
+            contextPath: qualifierParts.length ? `/${entitySet}/${qualifierParts.join('/')}` : `/${entitySet}`
+        };
+    }
+    return {
+        metaPath: bindingContextType === 'absolute' ? `/${entitySet}/${qualifierOrPlaceholder}` : qualifierOrPlaceholder
+    };
+}
+
+/**
+ * Returns the content of the xml file document.
+ *
+ * @param {BuildingBlock} buildingBlockData - the building block data
+ * @param {Document} viewDocument - the view xml file document
+ * @param {Editor} fs - the memfs editor instance
+ * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
+ * @returns {string} the template xml file content
+ */
+function getTemplateContent<T extends BuildingBlock>(
+    buildingBlockData: T,
+    viewDocument: Document | undefined,
+    fs: Editor,
+    usePlaceholders?: boolean
+): string {
+    const templateFolderName = buildingBlockData.buildingBlockType;
+    const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
+    if (typeof buildingBlockData.metaPath === 'object' || buildingBlockData.metaPath === undefined) {
+        // Convert object based metapath to string
+        const metadataPath = getMetaPath(
+            buildingBlockData.buildingBlockType,
+            buildingBlockData.metaPath,
+            usePlaceholders
+        );
+        buildingBlockData = { ...buildingBlockData, metaPath: metadataPath.metaPath };
+        if (!buildingBlockData.contextPath && metadataPath.contextPath) {
+            buildingBlockData.contextPath = metadataPath.contextPath;
+        }
+    }
+    // Apply placeholders
+    if (!buildingBlockData.id) {
+        buildingBlockData.id = PLACEHOLDERS.id;
+    }
+    return render(
+        fs.read(templateFilePath),
+        {
+            macrosNamespace: viewDocument ? getOrAddMacrosNamespace(viewDocument) : 'macros',
+            data: buildingBlockData
+        },
+        {}
+    );
+}
+
+/**
  * Returns the template xml file document.
  *
  * @param {BuildingBlock} buildingBlockData - the building block data
@@ -96,19 +204,10 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
  */
 function getTemplateDocument<T extends BuildingBlock>(
     buildingBlockData: T,
-    viewDocument: Document,
+    viewDocument: Document | undefined,
     fs: Editor
 ): Document {
-    const templateFolderName = buildingBlockData.buildingBlockType;
-    const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
-    const templateContent = render(
-        fs.read(templateFilePath),
-        {
-            macrosNamespace: getOrAddMacrosNamespace(viewDocument),
-            data: buildingBlockData
-        },
-        {}
-    );
+    const templateContent = getTemplateContent(buildingBlockData, viewDocument, fs);
     const errorHandler = (level: string, message: string) => {
         throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
     };
@@ -159,4 +258,57 @@ function updateViewFile(
         throw new Error(`Aggregation control not found ${aggregationPath}.`);
     }
     return fs;
+}
+
+/**
+ * Gets the properties for the file if the relative path is defined.
+ *
+ * @param {string} basePath - The base path
+ * @param {string} relativePath - The relative path to the file in the config
+ * @returns {FilePathProps} An object with file properties
+ */
+function getFilePathProps(basePath: string, relativePath?: string): FilePathProps {
+    if (relativePath) {
+        return {
+            fileName: parse(relativePath).base,
+            relativePath,
+            fullPath: join(basePath, relativePath)
+        };
+    }
+    return {};
+}
+
+/**
+ * Gets the serialized content of the updated view file.
+ *
+ * @param {string} basePath - The base path
+ * @param {BuildingBlockConfig} config - The building block configuration
+ * @param {Editor} [fs] - The memfs editor instance
+ * @returns {{ [questionName: string]: CodeSnippet }} An object with serialized code snippet content and file props
+ */
+export function getSerializedFileContent<T extends BuildingBlock>(
+    basePath: string,
+    config: BuildingBlockConfig<T>,
+    fs?: Editor
+): { [questionName: string]: CodeSnippet } {
+    if (!config.buildingBlockData?.buildingBlockType) {
+        return {};
+    }
+    // Validate the base and view paths
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    // Read the view xml and template files and get content of the view xml file
+    const xmlDocument = config.viewOrFragmentPath
+        ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
+        : undefined;
+    const content = getTemplateContent(config.buildingBlockData, xmlDocument, fs, true);
+    const filePathProps = getFilePathProps(basePath, config.viewOrFragmentPath);
+    return {
+        viewOrFragmentPath: {
+            content,
+            language: CodeSnippetLanguage.XML,
+            filePathProps
+        }
+    };
 }

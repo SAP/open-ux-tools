@@ -1,3 +1,5 @@
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
+
 /**
  * Initializes UI5 connectors based on the current UI5 version.
  *
@@ -7,13 +9,9 @@
  *
  * @example
  * intiConnectors(); // Simply call the function without any arguments.
- * @returns {void}
  */
-export function initConnectors(): void {
-    const version = sap.ui.version;
-    const minor = parseInt(version.split('.')[1], 10);
-
-    if (minor < 72) {
+export default async function initConnectors(): Promise<void> {
+    if (isLowerThanMinimalUi5Version(await getUi5Version(), { major: 1, minor: 72 })) {
         sap.ui.require(['open/ux/preview/client/flp/enableFakeConnector'], function (enableFakeConnector: () => void) {
             enableFakeConnector();
         });
@@ -26,5 +24,3 @@ export function initConnectors(): void {
         );
     }
 }
-
-initConnectors();

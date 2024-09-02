@@ -1,0 +1,197 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`utils - questions entityPrompt 1`] = `
+Object {
+  "choices": [Function],
+  "guiOptions": Object {
+    "placeholder": "Select an entity",
+    "selectType": "dynamic",
+  },
+  "message": "entity",
+  "name": "buildingBlockData.metaPath.entitySet",
+  "type": "list",
+}
+`;
+
+exports[`utils - questions entityPrompt 2`] = `
+Array [
+  "C_CustomerBankDetailsOP",
+  "C_CustomerCompanyCodeOP",
+  "C_CustomerOP",
+  "C_CustomerSalesAreaOP",
+  "C_Custrecnclnacctvhtemp",
+  "C_OrderIsBlockedTextVHTemp",
+  "I_AccountingClerk",
+  "I_AccountingClerkStdVH",
+  "I_BillingBlockReason",
+  "I_BusinessPartnerVH",
+  "I_ChartOfAccountsStdVH",
+  "I_CompanyCode",
+  "I_CompanyCodeStdVH",
+  "I_ContactPersonDepartmentT",
+  "I_ContactPersonFunctionT",
+  "I_ControllingAreaStdVH",
+  "I_Country",
+  "I_CreditControlAreaStdVH",
+  "I_Customer_to_BusinessPartner",
+  "I_Customer_VH",
+  "I_CustomerContactOP",
+  "I_CustomerDunning",
+  "I_CustomerGroup",
+  "I_DeliveryBlockReason",
+  "I_DistributionChannel",
+  "I_Division",
+  "I_PaymentBlockingReason",
+  "I_SalesGroup",
+  "I_SalesOffice",
+  "I_SalesOrganization",
+]
+`;
+
+exports[`utils - questions getAggregationPathPrompt 1`] = `
+Object {
+  "choices": [Function],
+  "guiOptions": Object {
+    "placeholder": "Select an aggregation path",
+    "selectType": "dynamic",
+  },
+  "message": "AggregationPathMessage",
+  "name": "aggregationPath",
+  "type": "list",
+}
+`;
+
+exports[`utils - questions getAggregationPathPrompt 2`] = `
+Array [
+  Object {
+    "name": "/mvc:View",
+    "value": "/mvc:View",
+  },
+  Object {
+    "name": "/mvc:View/Page",
+    "value": "/mvc:View/*[local-name()='Page']",
+  },
+  Object {
+    "name": "/mvc:View/Page/content",
+    "value": "/mvc:View/*[local-name()='Page']/*[local-name()='content']",
+  },
+]
+`;
+
+exports[`utils - questions getAggregationPathPrompt 3`] = `
+Object {
+  "choices": [Function],
+  "guiOptions": Object {
+    "placeholder": "Select an aggregation path",
+    "selectType": "dynamic",
+  },
+  "name": "aggregationPath",
+  "type": "list",
+}
+`;
+
+exports[`utils - questions getAnnotationPathQualifierPrompt 1`] = `
+Object {
+  "choices": [Function],
+  "guiOptions": Object {
+    "selectType": "dynamic",
+  },
+  "message": "testMessage",
+  "name": "buildingBlockData.metaPath.qualifier",
+  "type": "list",
+}
+`;
+
+exports[`utils - questions getAnnotationPathQualifierPrompt 2`] = `
+Array [
+  Object {
+    "name": "@UI.LineItem",
+    "value": "@com.sap.vocabularies.UI.v1.LineItem",
+  },
+]
+`;
+
+exports[`utils - questions getAnnotationPathQualifierPrompt 3`] = `
+Object {
+  "choices": [Function],
+  "guiOptions": Object {
+    "selectType": "dynamic",
+  },
+  "name": "buildingBlockData.metaPath.qualifier",
+  "type": "list",
+}
+`;
+
+exports[`utils - questions getBindingContextType 1`] = `
+Object {
+  "choices": Array [
+    Object {
+      "name": "Relative",
+      "value": "relative",
+    },
+    Object {
+      "name": "Absolute",
+      "value": "absolute",
+    },
+  ],
+  "guiOptions": Object {
+    "dependantPromptNames": Array [
+      "buildingBlockData.metaPath.qualifier",
+    ],
+    "selectType": "static",
+  },
+  "message": "bindingContext",
+  "name": "buildingBlockData.metaPath.bindingContextType",
+  "type": "list",
+}
+`;
+
+exports[`utils - questions getBindingContextType 2`] = `
+Object {
+  "choices": Array [
+    Object {
+      "name": "Relative",
+      "value": "relative",
+    },
+    Object {
+      "name": "Absolute",
+      "value": "absolute",
+    },
+  ],
+  "guiOptions": Object {
+    "selectType": "static",
+  },
+  "name": "buildingBlockData.metaPath.bindingContextType",
+  "type": "list",
+}
+`;
+
+exports[`utils - questions getViewOrFragmentPathPrompt 1`] = `
+Object {
+  "choices": [Function],
+  "guiOptions": Object {
+    "dependantPromptNames": Array [
+      "aggregationPath",
+    ],
+    "placeholder": "Select a view or fragment file",
+    "selectType": "dynamic",
+  },
+  "message": "testMessage",
+  "name": "viewOrFragmentPath",
+  "type": "list",
+  "validate": [Function],
+}
+`;
+
+exports[`utils - questions getViewOrFragmentPathPrompt 2`] = `
+Object {
+  "choices": [Function],
+  "guiOptions": Object {
+    "placeholder": "Select a view or fragment file",
+    "selectType": "dynamic",
+  },
+  "name": "viewOrFragmentPath",
+  "type": "list",
+  "validate": [Function],
+}
+`;

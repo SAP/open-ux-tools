@@ -6,6 +6,7 @@ import type {
     ListQuestion as BaseListQuestion,
     CheckboxQuestion as BaseCheckBoxQuestion,
     NumberQuestion as BaseNumberQuestion,
+    EditorQuestion as BaseEditorQuestion,
     ListChoiceOptions,
     PromptFunction,
     PromptModule,
@@ -79,6 +80,11 @@ export interface ListQuestion<A extends Answers = Answers> extends BaseListQuest
 }
 
 export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfirmQuestion<A> {
+    name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+}
+
+export interface EditorQuestion<A extends Answers = Answers> extends BaseEditorQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
 }

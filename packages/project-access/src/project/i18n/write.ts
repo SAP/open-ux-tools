@@ -11,7 +11,7 @@ import type { Editor } from 'mem-fs-editor';
  * Maintains new translation entries in CAP i18n files.
  *
  * @param root project root.
- * @param filePath file in which the translation entry will be used.
+ * @param filePath absolute path to file in which the translation entry will be used.
  * @param newI18nEntries translation entries to write in the i18n file.
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
  * In case of CAP project, some CDS APIs are used internally which depends on `fs` of node and not `mem-fs-editor`.
@@ -79,9 +79,9 @@ async function createUI5I18nEntriesBase(
     const dirPath = dirname(defaultPath);
     if (!fs) {
         // create directory when mem-fs-editor is not provided. when mem-fs-editor is provided, directory is created on using `.commit()` API
-        await mkdir(join(root, dirPath), { recursive: true });
+        await mkdir(join(dirname(manifestPath), dirPath), { recursive: true });
     }
-    return createPropertiesI18nEntries(join(root, defaultPath), newEntries, root, fs);
+    return createPropertiesI18nEntries(join(dirname(manifestPath), defaultPath), newEntries, root, fs);
 }
 
 /**

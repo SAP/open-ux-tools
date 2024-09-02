@@ -56,8 +56,8 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: DataSourceData): Promise<void> {
-        const { variant, dataSources, answers } = data;
-        const { id, uri, maxAge, annotationUri } = answers;
+        const { variant, dataSources, service } = data;
+        const { id, uri, maxAge, annotationUri } = service;
         const annotationId = dataSources[id].settings?.annotations?.[0];
 
         const timestamp = Date.now();

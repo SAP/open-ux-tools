@@ -1,5 +1,85 @@
 # @sap-ux/project-access
 
+## 1.27.0
+
+### Minor Changes
+
+-   df29368: Method `createCapI18nEntries` - handle absolute path to cds file instead of relative path
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/i18n@0.2.0
+
+## 1.26.9
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+
+## 1.26.8
+
+### Patch Changes
+
+-   df6262e: fix: use manifest.json path as root for `i18n` folder
+
+## 1.26.7
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+
+## 1.26.6
+
+### Patch Changes
+
+-   82aaea3: Parallelize filtering of applications by manifest path
+
+## 1.26.5
+
+### Patch Changes
+
+-   cc16cbb: fix CAP CDS evironment e.g. loading cds jar dependencies
+
+## 1.26.4
+
+### Patch Changes
+
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/i18n@0.1.1
+
+## 1.26.3
+
+### Patch Changes
+
+-   88c8bf6: new public/exported method "getCapServiceName" which returns CAP service name by passed datasource uri
+
+## 1.26.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
+## 1.26.1
+
+### Patch Changes
+
+-   a986655: Revert "fix(#2173): consider variables in minUI5Version"
+
+## 1.26.0
+
+### Minor Changes
+
+-   518bf7e: Update CAP serviceInfo API handling
+
+## 1.25.8
+
+### Patch Changes
+
+-   99b7b5f: Fixed an issue where variables in minUI5Version were considered invalid
+
 ## 1.25.7
 
 ### Patch Changes

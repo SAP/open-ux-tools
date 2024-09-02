@@ -1,5 +1,35 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.10.9
+
+### Patch Changes
+
+-   904b048: Move error utils to dedicated utils folder
+
+## 0.10.8
+
+### Patch Changes
+
+-   bad92cf: refactor ui5 version handling
+
+## 0.10.7
+
+### Patch Changes
+
+-   cea1f9f: Fixed Add XML Fragment dialog not working if there is an unsaved "hideControl" change
+
+## 0.10.6
+
+### Patch Changes
+
+-   089b984: Fix handling of undefined response from sap/ui/VersionInfo.load
+
+## 0.10.5
+
+### Patch Changes
+
+-   ab2e5a0: Preview support for UI5 2.x
+
 ## 0.10.4
 
 ### Patch Changes

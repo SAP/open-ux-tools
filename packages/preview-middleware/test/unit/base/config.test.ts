@@ -40,6 +40,13 @@ describe('config', () => {
             const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
             expect(templateConfig).toMatchSnapshot();
         });
+
+        test('minimum settings with one reuse lib', () => {
+            const flpConfig = getFlpConfigWithDefaults({});
+            const resources = { 'my.reuse.lib': '/custom/path/my.reuse.lib' };
+            const templateConfig = createFlpTemplateConfig(flpConfig, manifest, resources);
+            expect(templateConfig).toMatchSnapshot();
+        });
     });
 
     describe('createTestTemplateConfig', () => {

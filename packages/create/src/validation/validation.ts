@@ -1,9 +1,8 @@
-import { getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
-import type { DescriptorVariantContent } from '@sap-ux/adp-tooling';
-import { getAppType, getWebappPath } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
-import { existsSync } from 'fs';
 import { join } from 'path';
+import { existsSync } from 'fs';
+import type { Editor } from 'mem-fs-editor';
+import { getAppType, getWebappPath } from '@sap-ux/project-access';
+import { type DescriptorVariantContent, getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
 
 /**
  * Validate base path of app, throw error if file is missing.
@@ -43,6 +42,7 @@ export async function validateAdpProject(basePath: string): Promise<void> {
     if ((await getAppType(basePath)) !== 'Fiori Adaptation') {
         throw new Error('This command can only be used for an adaptation project');
     }
+
     if (isCFEnvironment(basePath)) {
         throw new Error('This command is not supported for CF projects.');
     }

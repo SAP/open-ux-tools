@@ -1,5 +1,94 @@
 # @sap-ux/deploy-tooling
 
+## 0.15.16
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/system-access@0.5.10
+
+## 0.15.15
+
+### Patch Changes
+
+-   Updated dependencies [d3dafeb]
+    -   @sap-ux/btp-utils@0.15.2
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/system-access@0.5.10
+
+## 0.15.14
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/system-access@0.5.9
+
+## 0.15.13
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/btp-utils@0.15.1
+    -   @sap-ux/system-access@0.5.9
+
+## 0.15.12
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.8
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.15.11
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.7
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.15.10
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.6
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.15.9
+
+### Patch Changes
+
+-   Updated dependencies [593ad0f]
+    -   @sap-ux/project-input-validator@0.3.3
+
+## 0.15.8
+
+### Patch Changes
+
+-   Updated dependencies [0084205]
+    -   @sap-ux/axios-extension@1.16.3
+    -   @sap-ux/system-access@0.5.5
+
+## 0.15.7
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/axios-extension@1.16.2
+    -   @sap-ux/system-access@0.5.4
+
+## 0.15.6
+
+### Patch Changes
+
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/project-input-validator@0.3.2
+
 ## 0.15.5
 
 ### Patch Changes

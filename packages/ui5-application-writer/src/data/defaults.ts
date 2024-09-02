@@ -92,6 +92,9 @@ export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 
         ui5.typesVersion ?? (options?.typescript ? getEsmTypesVersion : getTypesVersion)(merged.minUI5Version);
     merged.typesPackage = getTypesPackage(merged.typesVersion);
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
+    if (ui5.manifestLibs && ui5.manifestLibs.length > 0) {
+        merged.manifestLibs = getUI5Libs(ui5.manifestLibs);
+    }
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 
     return Object.assign({}, ui5, merged) as UI5;

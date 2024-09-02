@@ -7,6 +7,9 @@ import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
+import { getError } from '../utils/error';
+import initConnectors from './initConnectors';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -138,7 +141,7 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
 function registerModules(dataFromAppIndex: AppIndexData) {
     Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
         const moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
-        if (moduleDefinition && moduleDefinition.dependencies) {
+        if (moduleDefinition?.dependencies) {
             moduleDefinition.dependencies.forEach(function (dependency) {
                 if (dependency.url && dependency.url.length > 0 && dependency.type === 'UI5LIB') {
                     Log.info('Registering Library ' + dependency.componentId + ' from server ' + dependency.url);
@@ -264,8 +267,9 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
+    const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container');
     let scenario: string = '';
+    const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
@@ -273,17 +277,16 @@ export async function init({
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
-                const version = sap.ui.version;
-                const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
                 const flexSettings = JSON.parse(flex) as FlexSettings;
                 const pluginScript = flexSettings.pluginScript ?? '';
 
                 let libs: string[] = [];
-                if (minor > 71) {
-                    libs.push('sap/ui/rta/api/startAdaptation');
-                } else {
+
+                if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
                     libs.push('open/ux/preview/client/flp/initRta');
+                } else {
+                    libs.push('sap/ui/rta/api/startAdaptation');
                 }
 
                 if (flexSettings.pluginScript) {
@@ -317,6 +320,9 @@ export async function init({
         await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
     }
 
+    // Load rta connector
+    await initConnectors();
+
     // Load custom initialization module
     if (customInit) {
         sap.ui.require([customInit]);
@@ -326,15 +332,21 @@ export async function init({
     const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
     setI18nTitle(resourceBundle);
     registerSAPFonts();
-    const renderer = await container.createRenderer(undefined, true);
+
+    const renderer =
+        ui5VersionInfo.major < 2
+            ? await container.createRenderer(undefined, true)
+            : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
 }
-
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
         customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
-    }).catch(() => Log.error('Sandbox initialization failed.'));
+    }).catch((e) => {
+        const error = getError(e);
+        Log.error('Sandbox initialization failed: ' + error.message);
+    });
 }

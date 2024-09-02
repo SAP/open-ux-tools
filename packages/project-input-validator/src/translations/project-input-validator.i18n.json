@@ -44,6 +44,10 @@
     },
     "general": {
         "invalidUrl": "Invalid URL: [{{-input}}]",
-        "invalidClient": "[{{client}}] is invalid. Leave empty or enter value between 000-999"
+        "invalidClient": "[{{client}}] is invalid. Leave empty or enter value between 000-999",
+        "inputCannotBeEmpty": "Input cannot be empty.",
+        "inputCannotHaveSpaces": "Input cannot contain spaces.",
+        "invalidJSON": "Invalid JSON",
+        "invalidValueForSpecialChars": "Input must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'"
     }
 }

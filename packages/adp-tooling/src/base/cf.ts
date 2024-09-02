@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { readFileSync, existsSync } from 'fs';
+
 /**
  * Check if the project is a CF project.
  *

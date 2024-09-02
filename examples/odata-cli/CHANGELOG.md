@@ -1,5 +1,36 @@
 # @sap-ux/odata-cli
 
+## 0.15.5
+
+### Patch Changes
+
+-   Updated dependencies [d3dafeb]
+    -   @sap-ux/btp-utils@0.15.2
+    -   @sap-ux/axios-extension@1.16.5
+
+## 0.15.4
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/btp-utils@0.15.1
+
+## 0.15.3
+
+### Patch Changes
+
+-   Updated dependencies [0084205]
+    -   @sap-ux/axios-extension@1.16.3
+
+## 0.15.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/axios-extension@1.16.2
+
 ## 0.15.1
 
 ### Patch Changes

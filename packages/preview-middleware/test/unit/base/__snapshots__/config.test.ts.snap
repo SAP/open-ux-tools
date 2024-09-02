@@ -29,7 +29,44 @@ Object {
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
-      "open.ux.preview.client": "/preview/client",
+      "open.ux.preview.client": "../preview/client",
+    },
+    "theme": "sap_horizon",
+  },
+}
+`;
+
+exports[`config createFlpTemplateConfig minimum settings with one reuse lib 1`] = `
+Object {
+  "apps": Object {},
+  "basePath": "..",
+  "init": undefined,
+  "locateReuseLibsScript": undefined,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "custom.connectors.WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "resources": Object {
+      "my.reuse.lib": "/custom/path/my.reuse.lib",
+      "open.ux.preview.client": "../preview/client",
     },
     "theme": "sap_horizon",
   },
@@ -79,7 +116,12 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -91,14 +133,10 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
-        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
-    </script>
-
-    <script type=\\"text/javascript\\">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
 
@@ -156,7 +194,12 @@ Object {
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -168,14 +211,10 @@ Object {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
-        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"/apps/simple-app\\",\\"test.fe.v2.other\\":\\"/apps/other-app\\"}'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"/apps/simple-app\\",\\"test.fe.v2.other\\":\\"/apps/other-app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
-    </script>
-
-    <script type=\\"text/javascript\\">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
 
@@ -236,7 +275,12 @@ Object {
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -248,14 +292,10 @@ Object {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
-        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
-    </script>
-
-    <script type=\\"text/javascript\\">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
 

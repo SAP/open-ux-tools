@@ -109,7 +109,7 @@ export class FlpSandbox {
         this.createFlexHandler();
         this.config.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app'].id;
-        this.templateConfig = createFlpTemplateConfig(this.config, manifest);
+        this.templateConfig = createFlpTemplateConfig(this.config, manifest, resources);
 
         await addApp(
             this.templateConfig,
@@ -229,7 +229,7 @@ export class FlpSandbox {
      */
     private addStandardRoutes() {
         // register static client sources
-        this.router.use(PREVIEW_URL.client.url, serveStatic(PREVIEW_URL.client.local));
+        this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {

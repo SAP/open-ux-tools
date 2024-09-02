@@ -40,7 +40,12 @@
         };
     </script>
 
-    <script src="<%- basePath %>/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
+    <script type="text/javascript">
+        window["data-open-ux-preview-basePath"] = "<%- basePath %>";
+    </script>
+
+    <script src="<%- basePath %>/preview/client/flp/bootstrap.js" id="preview-bootstrap"></script>
+    <script id="sap-ushell-bootstrap"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="<%- basePath %>/resources/sap-ui-core.js"
@@ -61,17 +66,13 @@
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
     </script>
 
-    <script type="text/javascript">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
-    </script>
-
 <% if (locals.flex && flex?.developerMode) { %>
         <!-- Hides Rta native toolbar  -->
     <style>
         #shell-header, .sapUiRtaToolbar {
             visibility: hidden;
             height: 1px;
-        } 
+        }
         .sapUshellShellCanvas {
             top: 0 !important;
         }

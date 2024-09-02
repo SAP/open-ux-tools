@@ -1,14 +1,13 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
-import type { FioriElementsApp, FPMSettings } from './types';
+import type { FioriElementsApp } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings, getTemplateOptions } from './data/defaults';
@@ -22,6 +21,7 @@ import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
+import { generateFpmConfig } from './fpmConfig';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -100,7 +100,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     const ui5Libs = isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined;
     // Define template options with changes preview and loader settings based on project type
     const templateOptions = getTemplateOptions(isEdmxProjectType, feApp.service.version, feApp.ui5?.version);
-
     const appConfig = {
         ...feApp,
         templateOptions,
@@ -148,17 +147,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Special handling for FPM because it is not based on template files but used the fpm writer
     if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
-        const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
-        generateCustomPage(
-            basePath,
-            {
-                entity: config.entityConfig.mainEntityName,
-                name: config.pageName,
-                minUI5Version: feApp.ui5?.minUI5Version,
-                typescript: feApp.appOptions?.typescript
-            },
-            fs
-        );
+        await generateFpmConfig(feApp, basePath, fs);
     } else {
         // Copy odata version specific common templates and version specific, floorplan specific templates
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);

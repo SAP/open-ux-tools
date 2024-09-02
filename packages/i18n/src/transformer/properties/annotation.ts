@@ -1,4 +1,4 @@
-import { Range } from '../../parser/utils';
+import { Range } from '@sap-ux/text-document-utils';
 import type { I18nAnnotationNode, ValueNode, SapTextType, TextNode } from './../../types';
 import type { CommentLine, PropertyLine } from '../../parser/properties/types';
 

@@ -1,5 +1,132 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.9
+
+## 0.6.0
+
+### Minor Changes
+
+-   e4a9da3: Adds support for `defaultValue` prompt option
+
+## 0.5.26
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+
+## 0.5.25
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.7
+
+## 0.5.24
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/ui5-info@0.8.1
+    -   @sap-ux/inquirer-common@0.4.6
+
+## 0.5.23
+
+### Patch Changes
+
+-   Updated dependencies [cc1ac72]
+    -   @sap-ux/ui5-info@0.8.0
+    -   @sap-ux/inquirer-common@0.4.5
+
+## 0.5.22
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+
+## 0.5.21
+
+### Patch Changes
+
+-   Updated dependencies [4fcb6fe]
+    -   @sap-ux/ui5-info@0.7.1
+    -   @sap-ux/inquirer-common@0.4.4
+
+## 0.5.20
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+
+## 0.5.19
+
+### Patch Changes
+
+-   Updated dependencies [593ad0f]
+    -   @sap-ux/project-input-validator@0.3.3
+
+## 0.5.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+
+## 0.5.17
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+
+## 0.5.16
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+
+## 0.5.15
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+
+## 0.5.14
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+
+## 0.5.13
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+
+## 0.5.12
+
+### Patch Changes
+
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+    -   @sap-ux/project-input-validator@0.3.2
+
 ## 0.5.11
 
 ### Patch Changes

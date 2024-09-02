@@ -24,6 +24,9 @@
   },
   "references": [
     {
+      "path": "packages/abap-deploy-config-inquirer"
+    },
+    {
       "path": "packages/abap-deploy-config-writer"
     },
     {
@@ -99,6 +102,9 @@
       "path": "packages/fiori-generator-shared"
     },
     {
+      "path": "packages/guided-answers-helper"
+    },
+    {
       "path": "packages/i18n"
     },
     {
@@ -118,6 +124,9 @@
     },
     {
       "path": "packages/mockserver-config-writer"
+    },
+    {
+      "path": "packages/nodejs-utils"
     },
     {
       "path": "packages/odata-annotation-core-types"
@@ -168,7 +177,13 @@
       "path": "packages/telemetry"
     },
     {
+      "path": "packages/text-document-utils"
+    },
+    {
       "path": "packages/ui-components"
+    },
+    {
+      "path": "packages/ui-prompting"
     },
     {
       "path": "packages/ui5-application-inquirer"
@@ -207,7 +222,13 @@
       "path": "packages/yaml"
     },
     {
+      "path": "examples/fe-fpm-cli"
+    },
+    {
       "path": "examples/odata-cli"
+    },
+    {
+      "path": "examples/prompting-ui"
     },
     {
       "path": "examples/simple-generator"

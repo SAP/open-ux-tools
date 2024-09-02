@@ -199,12 +199,20 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
-export const CUSTOMER_BASE = 'CUSTOMER_BASE';
-
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
     Controller = 'controller.ejs',
     Annotation = 'annotation.xml'
+}
+
+export const enum FlexLayer {
+    CUSTOMER_BASE = 'CUSTOMER_BASE',
+    VENDOR = 'VENDOR'
+}
+
+export const enum NamespacePrefix {
+    CUSTOMER = 'customer.',
+    EMPTY = ''
 }
 
 export const enum HttpStatusCodes {
@@ -288,9 +296,15 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
     : never;
 
 export interface AnnotationsData {
-    fileName?: string;
     variant: DescriptorVariant;
-    answers: AddAnnotationsAnswers;
+    annotation: {
+        /** Optional name of the annotation file. */
+        fileName?: string;
+        /** Data source associated with the annotation. */
+        dataSource: string;
+        /** Optional path to the annotation file. */
+        filePath?: string;
+    };
 }
 
 export const enum AnnotationFileSelectType {
@@ -298,9 +312,8 @@ export const enum AnnotationFileSelectType {
     NewEmptyFile = 2
 }
 
-export interface ComponentUsagesData {
-    projectData: AdpProjectData;
-    timestamp: number;
+export interface ComponentUsagesDataBase {
+    variant: DescriptorVariant;
     component: {
         /** Indicates whether the component is loaded lazily. */
         isLazy: string;
@@ -313,25 +326,51 @@ export interface ComponentUsagesData {
         /** Settings related to the component. */
         settings: string;
     };
+}
+
+export interface ComponentUsagesDataWithLibrary extends ComponentUsagesDataBase {
     library: {
         /** Reference to the component's library. */
         reference: string;
         /** Optional flag indicating if the library reference is lazy. */
-        referenceIsLazy?: string;
+        referenceIsLazy: string;
     };
 }
 
-export interface NewModelData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    annotation: {
-        /** Name of the OData annotation data source. */
-        dataSourceName: string;
-        /** Optional URI of the OData annotation data source. */
-        dataSourceURI?: string;
-        /** Optional settings for the OData annotation. */
-        settings?: string;
-    };
+export type ComponentUsagesData = ComponentUsagesDataBase | ComponentUsagesDataWithLibrary;
+
+export type AddComponentUsageAnswersWithoutLibrary = {
+    /** Indicates whether a library reference should be added */
+    shouldAddLibrary: false;
+};
+
+export type addComponentUsageAnswersWithLibrary = {
+    /** Indicates whether a library reference should be added */
+    shouldAddLibrary: true;
+    /** Reference to the component's library. */
+    library: string;
+    /** Indicates whether the library reference is loaded lazily. */
+    libraryIsLazy: string;
+};
+
+export type AddComponentUsageAnswersBase = {
+    /** Indicates whether the component is loaded lazily. */
+    isLazy: string;
+    /** Unique ID for the component usage. */
+    usageId: string;
+    /** Name of the component. */
+    name: string;
+    /** Serialized data specific to the component. */
+    data: string;
+    /** Settings related to the component. */
+    settings: string;
+};
+
+export type AddComponentUsageAnswers = AddComponentUsageAnswersBase &
+    (AddComponentUsageAnswersWithoutLibrary | addComponentUsageAnswersWithLibrary);
+
+export interface NewModelDataBase {
+    variant: DescriptorVariant;
     service: {
         /** Name of the OData service. */
         name: string;
@@ -342,32 +381,96 @@ export interface NewModelData {
         /** Version of OData used. */
         version: string;
         /** Settings for the OData service model. */
-        modelSettings: string;
+        modelSettings?: string;
     };
-    /** Indicates whether annotation mode is added. */
-    addAnnotationMode: boolean;
 }
+
+export interface NewModelDataWithAnnotations extends NewModelDataBase {
+    annotation: {
+        /** Name of the OData annotation data source. */
+        dataSourceName: string;
+        /** Optional URI of the OData annotation data source. */
+        dataSourceURI?: string;
+        /** Optional settings for the OData annotation. */
+        settings?: string;
+    };
+}
+
+export type NewModelData = NewModelDataBase | NewModelDataWithAnnotations;
+
+export interface NewModelAnswersBase {
+    /** Name of the OData service. */
+    name: string;
+    /** URI of the OData service. */
+    uri: string;
+    /** Name of the OData service model. */
+    modelName: string;
+    /** Version of OData used. */
+    version: string;
+    /** Settings for the OData service model. */
+    modelSettings: string;
+    /** Name of the OData annotation data source. */
+}
+
+export interface NewModelAnswersWithAnnotations extends NewModelAnswersBase {
+    addAnnotationMode: true;
+    /** Name of the OData annotation data source. */
+    dataSourceName: string;
+    /** Optional URI of the OData annotation data source. */
+    dataSourceURI?: string;
+    /** Optional settings for the OData annotation. */
+    annotationSettings?: string;
+}
+
+export interface NewModelAnswersWithoutAnnotations extends NewModelAnswersBase {
+    addAnnotationMode: false;
+}
+
+export type NewModelAnswers = NewModelAnswersBase &
+    (NewModelAnswersWithAnnotations | NewModelAnswersWithoutAnnotations);
 
 export interface DataSourceData {
     variant: DescriptorVariant;
     dataSources: Record<string, ManifestNamespace.DataSource>;
-    answers: ChangeDataSourceAnswers;
+    service: {
+        /** Data source identifier. */
+        id: string;
+        /** URI of the data source. */
+        uri: string;
+        /** Optional maximum age for the data source cache. */
+        maxAge?: number;
+        /** URI for the OData annotation source. */
+        annotationUri?: string;
+    };
 }
 
-export interface InboundChangeAnswers {
+export type RequireAtLeastOne<T> = {
+    [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>;
+}[keyof T];
+
+export interface InboundChangeAnswersBase {
     /** Title associated with the inbound navigation data. */
     title: string;
     /** Subtitle associated with the inbound navigation data. */
-    subTitle: string;
+    subtitle: string;
     /** Icon associated with the inbound navigation data. */
     icon: string;
 }
+
+export type InboundChangeAnswers = RequireAtLeastOne<InboundChangeAnswersBase>;
 
 export interface InboundData {
     /** Identifier for the inbound navigation data. */
     inboundId: string;
     variant: DescriptorVariant;
-    answers: InboundChangeAnswers;
+    flp: RequireAtLeastOne<{
+        /** Title associated with the inbound navigation data. */
+        title: string;
+        /** Subtitle associated with the inbound navigation data. */
+        subtitle: string;
+        /** Icon associated with the inbound navigation data. */
+        icon: string;
+    }>;
 }
 
 export interface InboundContent {

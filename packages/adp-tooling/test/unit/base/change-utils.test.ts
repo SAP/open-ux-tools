@@ -1,4 +1,4 @@
-import path from 'path';
+import path, { resolve } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync, existsSync, readdirSync } from 'fs';
@@ -8,12 +8,12 @@ import {
     type PropertyValueType,
     ChangeType,
     type ManifestChangeProperties,
-    type DescriptorVariant,
-    type AddAnnotationsAnswers
+    type DescriptorVariant
 } from '../../../src';
 import {
     findChangeWithInboundId,
     getChange,
+    getChangesByType,
     getParsedPropertyValue,
     parseStringToObject,
     writeAnnotationChange,
@@ -25,6 +25,11 @@ jest.mock('fs', () => ({
     existsSync: jest.fn(),
     readdirSync: jest.fn(),
     readFileSync: jest.fn()
+}));
+
+jest.mock('path', () => ({
+    ...jest.requireActual('path'),
+    resolve: jest.fn()
 }));
 
 describe('Change Utils', () => {
@@ -157,6 +162,88 @@ describe('Change Utils', () => {
         });
     });
 
+    describe('getChangesByType', () => {
+        const mockFiles = [
+            { name: 'id_addNewModel.change', isFile: () => true },
+            { name: 'id_changeDataSource.change', isFile: () => true }
+        ];
+
+        const mockChange1 = {
+            fileName: 'id_addNewModel.change',
+            changeType: 'appdescr_ui5_addNewModel'
+        };
+        const mockChange2 = {
+            fileName: 'id_changeDataSource.change',
+            changeType: 'appdescr_app_changeDataSource'
+        };
+
+        beforeEach(() => {
+            jest.resetAllMocks();
+        });
+
+        const existsSyncMock = existsSync as jest.Mock;
+        const readdirSyncMock = readdirSync as jest.Mock;
+        const readFileSyncMock = readFileSync as jest.Mock;
+        const resolveMock = path.resolve as jest.Mock;
+
+        beforeEach(() => {
+            existsSyncMock.mockReturnValue(true);
+            readdirSyncMock.mockReturnValue(mockFiles);
+            readFileSyncMock
+                .mockReturnValueOnce(JSON.stringify(mockChange1))
+                .mockReturnValueOnce(JSON.stringify(mockChange2));
+            resolveMock.mockImplementation((_, fileName) => `mock/path/${fileName}`);
+        });
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should return an array of change objects for a specific change type', () => {
+            const results = getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL);
+
+            expect(results).toHaveLength(1);
+            expect(results[0]).toMatchObject(mockChange1);
+        });
+
+        it('should return an empty array if no matching files are found', () => {
+            readdirSyncMock.mockReturnValue([]);
+            const results = getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL);
+
+            expect(results).toHaveLength(0);
+        });
+
+        it('should handle subdirectories correctly', () => {
+            getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL, 'manifest');
+
+            expect(resolve).toHaveBeenCalledWith('mock/project/webapp/changes/manifest', 'id_addNewModel.change');
+        });
+
+        it('should return an empty array if the target directory does not exist', () => {
+            existsSyncMock.mockReturnValue(false);
+            const results = getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL);
+
+            expect(results).toHaveLength(0);
+        });
+
+        it('should return an empty array if the subdirectory is given and target directory does not exist', () => {
+            existsSyncMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
+            const results = getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL, 'manifest');
+
+            expect(results).toHaveLength(0);
+        });
+
+        it('should throw an error if there is an issue reading the change files', () => {
+            readdirSyncMock.mockImplementation(() => {
+                throw new Error('Failed to read');
+            });
+
+            expect(() => getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL)).toThrow(
+                'Error reading change files: Failed to read'
+            );
+        });
+    });
+
     describe('findChangeWithInboundId', () => {
         const mockProjectPath = '/mock/project/path';
         const mockInboundId = 'mockInboundId';
@@ -222,17 +309,16 @@ describe('Change Utils', () => {
 
         const mockProjectPath = 'mock/project/path';
         const mockData = {
-            fileName: 'mockAnnotation.xml',
             variant: {
                 layer: 'CUSTOMER_BASE',
                 reference: 'mock.reference',
                 id: 'adp.mock.variant',
                 namespace: 'apps/adp.mock.variant'
             } as DescriptorVariant,
-            answers: {
-                id: '/sap/opu/odata/source',
-                fileSelectOption: 1
-            } as AddAnnotationsAnswers
+            annotation: {
+                fileName: 'mockAnnotation.xml',
+                dataSource: '/sap/opu/odata/source'
+            }
         } as AnnotationsData;
         const mockChange = { key: 'value' };
         const writeJsonSpy = jest.fn();
@@ -248,7 +334,7 @@ describe('Change Utils', () => {
             writeAnnotationChange(
                 mockProjectPath,
                 123456789,
-                mockData as unknown as AnnotationsData,
+                mockData.annotation as AnnotationsData['annotation'],
                 mockChange as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
             );
@@ -265,24 +351,24 @@ describe('Change Utils', () => {
         });
 
         it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
-            mockData.answers.filePath = `mock/path/to/annotation/file.xml`;
+            mockData.annotation.filePath = `mock/path/to/annotation/file.xml`;
 
             writeAnnotationChange(
                 mockProjectPath,
                 123456789,
-                mockData as unknown as AnnotationsData,
+                mockData.annotation as AnnotationsData['annotation'],
                 mockChange as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
             );
 
             expect(copySpy).toHaveBeenCalledWith(
-                mockData.answers.filePath,
+                mockData.annotation.filePath,
                 expect.stringContaining('mockAnnotation.xml')
             );
         });
 
         it('should not copy the annotation file if the selected directory is the same as the target', () => {
-            mockData.answers.filePath = path.join(
+            mockData.annotation.filePath = path.join(
                 'mock',
                 'project',
                 'path',
@@ -295,7 +381,7 @@ describe('Change Utils', () => {
             writeAnnotationChange(
                 mockProjectPath,
                 123456789,
-                mockData as unknown as AnnotationsData,
+                mockData.annotation as AnnotationsData['annotation'],
                 mockChange as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
             );
@@ -304,7 +390,7 @@ describe('Change Utils', () => {
         });
 
         it('should throw error when write operation fails', () => {
-            mockData.answers.filePath = '';
+            mockData.annotation.filePath = '';
 
             mockFs.writeJSON.mockImplementation(() => {
                 throw new Error('Failed to write JSON');
@@ -314,7 +400,7 @@ describe('Change Utils', () => {
                 writeAnnotationChange(
                     mockProjectPath,
                     123456789,
-                    mockData as unknown as AnnotationsData,
+                    mockData.annotation as AnnotationsData['annotation'],
                     mockChange as unknown as ManifestChangeProperties,
                     mockFs as unknown as Editor
                 );

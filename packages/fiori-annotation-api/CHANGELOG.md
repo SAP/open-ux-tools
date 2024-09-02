@@ -1,5 +1,124 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.39
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/cds-odata-annotation-converter@0.3.5
+
+## 0.1.38
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.9
+-   @sap-ux/cds-odata-annotation-converter@0.3.5
+
+## 0.1.37
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/cds-odata-annotation-converter@0.3.5
+
+## 0.1.36
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.7
+-   @sap-ux/cds-odata-annotation-converter@0.3.5
+
+## 0.1.35
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/odata-vocabularies@0.4.2
+    -   @sap-ux/cds-annotation-parser@0.2.2
+    -   @sap-ux/cds-odata-annotation-converter@0.3.5
+    -   @sap-ux/xml-odata-annotation-converter@0.3.1
+
+## 0.1.34
+
+### Patch Changes
+
+-   26379ea: - Updated dependencies - @sap/ux-cds-compiler-facade@1.14.1
+-   Updated dependencies [26379ea]
+    -   @sap-ux/cds-odata-annotation-converter@0.3.4
+
+## 0.1.33
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+    -   @sap-ux/cds-odata-annotation-converter@0.3.3
+
+## 0.1.32
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/cds-odata-annotation-converter@0.3.3
+
+## 0.1.31
+
+### Patch Changes
+
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/cds-annotation-parser@0.2.1
+    -   @sap-ux/cds-odata-annotation-converter@0.3.3
+    -   @sap-ux/project-access@1.26.4
+    -   @sap-ux/odata-annotation-core@0.2.1
+    -   @sap-ux/odata-annotation-core-types@0.4.1
+    -   @sap-ux/xml-odata-annotation-converter@0.3.1
+    -   @sap-ux/odata-entity-model@0.3.0
+    -   @sap-ux/odata-vocabularies@0.4.1
+
+## 0.1.30
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/cds-odata-annotation-converter@0.3.2
+
+## 0.1.29
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/cds-odata-annotation-converter@0.3.2
+
+## 0.1.28
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
+## 0.1.27
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
+## 0.1.26
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
 ## 0.1.25
 
 ### Patch Changes

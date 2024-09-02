@@ -49,7 +49,7 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         const fs = await generateChange<ChangeType.CHANGE_DATA_SOURCE>(basePath, ChangeType.CHANGE_DATA_SOURCE, {
             variant,
             dataSources,
-            answers
+            service: answers
         });
 
         if (!simulate) {

@@ -34,8 +34,8 @@ describe('outline nodes', () => {
     });
 
     beforeAll(() => {
-        VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
-    })
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
+    });
 
     describe('transformNodes', () => {
         test('empty tree', async () => {

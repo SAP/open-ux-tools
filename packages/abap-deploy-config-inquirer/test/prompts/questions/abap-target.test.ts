@@ -1,0 +1,388 @@
+import { isAppStudio, isOnPremiseDestination } from '@sap-ux/btp-utils';
+import {
+    abapDeployConfigInternalPromptNames,
+    AbapDeployConfigPromptOptions,
+    ClientChoiceValue,
+    TargetSystemType
+} from '../../../src/types';
+import { getAbapTargetPrompts } from '../../../src/prompts/questions';
+import { getAbapSystems } from '../../../src/utils';
+import { mockDestinations } from '../../fixtures/destinations';
+import { mockTargetSystems } from '../../fixtures/targets';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
+import * as validators from '../../../src/prompts/validators';
+import * as conditions from '../../../src/prompts/conditions';
+import { initI18n, t } from '../../../src/i18n';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+import { UrlAbapTarget } from '@sap-ux/system-access';
+import { PromptState } from '../../../src/prompts/prompt-state';
+
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
+    isOnPremiseDestination: jest.fn(),
+    isAppStudio: jest.fn()
+}));
+
+jest.mock('../../../src/utils', () => ({
+    ...jest.requireActual('../../../src/utils'),
+    getAbapSystems: jest.fn()
+}));
+
+const mockIsOnPremiseDestination = isOnPremiseDestination as jest.Mock;
+const mockIsAppStudio = isAppStudio as jest.Mock;
+const mockGetAbapSystems = getAbapSystems as jest.Mock;
+
+describe('getAbapTargetPrompts', () => {
+    beforeAll(async () => {
+        await initI18n();
+    });
+    it('should return expected prompts', async () => {
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: undefined,
+            backendSystems: undefined
+        });
+        PromptState.isYUI = true;
+        const prompts = await getAbapTargetPrompts({});
+        expect(prompts).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "additionalMessages": [Function],
+                "choices": [Function],
+                "default": [Function],
+                "filter": [Function],
+                "guiOptions": Object {
+                  "breadcrumb": true,
+                  "mandatory": true,
+                },
+                "message": "Destination",
+                "name": "destination",
+                "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
+              Object {
+                "choices": [Function],
+                "default": [Function],
+                "guiOptions": Object {
+                  "breadcrumb": "Target System",
+                  "mandatory": true,
+                },
+                "message": "Select Target system",
+                "name": "targetSystem",
+                "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
+              Object {
+                "default": [Function],
+                "filter": [Function],
+                "guiOptions": Object {
+                  "breadcrumb": true,
+                  "mandatory": true,
+                },
+                "message": "Target System URL",
+                "name": "url",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              Object {
+                "default": [Function],
+                "guiOptions": Object {
+                  "breadcrumb": "SCP",
+                },
+                "message": "Is this an SAP Business Technology Platform system?",
+                "name": "scp",
+                "type": "confirm",
+                "validate": [Function],
+                "when": [Function],
+              },
+              Object {
+                "choices": [Function],
+                "default": [Function],
+                "guiOptions": Object {
+                  "applyDefaultWhenDirty": true,
+                },
+                "message": "Client",
+                "name": "clientChoice",
+                "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
+              Object {
+                "default": [Function],
+                "filter": [Function],
+                "guiOptions": Object {
+                  "breadcrumb": "Client",
+                  "mandatory": true,
+                },
+                "message": "Enter client",
+                "name": "client",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+            ]
+        `);
+    });
+
+    test('should return expected values from destination prompt methods', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: mockDestinations,
+            backendSystems: undefined
+        });
+        mockIsOnPremiseDestination.mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validateDestinationQuestion').mockReturnValueOnce(true);
+
+        const abapDeployConfigPromptOptions = {
+            backendTarget: {
+                abapTarget: {
+                    destination: 'mockDest1'
+                }
+            }
+        } as AbapDeployConfigPromptOptions;
+
+        const abapTargetPrompts = await getAbapTargetPrompts(abapDeployConfigPromptOptions);
+        const destPrompt = abapTargetPrompts.find(
+            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.destination
+        );
+
+        if (destPrompt) {
+            expect((destPrompt.when as Function)()).toBe(true);
+            expect(destPrompt.message).toBe(t('prompts.target.destination.message'));
+            expect((destPrompt.default as Function)()).toEqual('mockDest1');
+            expect((destPrompt.filter as Function)('mockDest1 ')).toEqual('mockDest1');
+            expect((destPrompt.validate as Function)()).toEqual(true);
+            expect(((destPrompt as ListQuestion).additionalMessages as Function)('mockDestination')).toStrictEqual({
+                message: t('warnings.virtualHost'),
+                severity: Severity.warning
+            });
+            expect(((destPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "name": "Dest1 - https://mock.url.dest1.com",
+                    "scp": false,
+                    "url": "https://mock.url.dest1.com",
+                    "value": "Dest1",
+                  },
+                  Object {
+                    "name": "Dest2 - https://mock.url.dest2.com",
+                    "scp": false,
+                    "url": "https://mock.url.dest2.com",
+                    "value": "Dest2",
+                  },
+                ]
+            `);
+        } else {
+            throw new Error('Destination prompt not found');
+        }
+    });
+
+    test('should return expected values from destination prompt methods on CLI', async () => {
+        PromptState.isYUI = false;
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: mockDestinations,
+            backendSystems: undefined
+        });
+        const updateDestinationPromptStateSpy = jest.spyOn(validators, 'updateDestinationPromptState');
+        const abapTargetPrompts = await getAbapTargetPrompts({});
+        const destinationCliSetterPrompt = abapTargetPrompts.find(
+            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.destinationCliSetter
+        );
+
+        if (destinationCliSetterPrompt) {
+            expect(
+                ((await destinationCliSetterPrompt.when) as Function)({
+                    destination: 'mockDest1'
+                })
+            ).toBe(false);
+            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith('mockDest1', mockDestinations);
+        }
+    });
+
+    test('should return expected values from target system prompt methods', async () => {
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: undefined,
+            backendSystems: mockTargetSystems
+        });
+        jest.spyOn(validators, 'validateTargetSystem').mockReturnValueOnce(true);
+
+        const abapTargetPrompts = await getAbapTargetPrompts({});
+        const targetSystemPrompt = abapTargetPrompts.find(
+            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.targetSystem
+        );
+
+        if (targetSystemPrompt) {
+            expect((targetSystemPrompt.when as Function)()).toBe(true);
+            expect(targetSystemPrompt.message).toBe(t('prompts.target.targetSystem.message'));
+            expect((targetSystemPrompt.default as Function)()).toEqual(undefined);
+            expect((targetSystemPrompt.validate as Function)()).toEqual(true);
+            expect(((targetSystemPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "name": "Enter Target System URL",
+                    "value": "Url",
+                  },
+                  Object {
+                    "client": "000",
+                    "isDefault": false,
+                    "isS4HC": false,
+                    "name": "target1 [mockUser]",
+                    "scp": false,
+                    "value": "https://mock.url.target1.com",
+                  },
+                  Object {
+                    "client": "001",
+                    "isDefault": false,
+                    "isS4HC": true,
+                    "name": "target2 (S4HC) [mockUser2]",
+                    "scp": false,
+                    "value": "https://mock.url.target2.com",
+                  },
+                ]
+            `);
+        } else {
+            throw new Error('Target system prompt not found');
+        }
+    });
+
+    test('should return expected values from target prompt methods on CLI', async () => {
+        PromptState.isYUI = false;
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: undefined,
+            backendSystems: mockTargetSystems
+        });
+        const validateTargetSystemUrlCliSpy = jest.spyOn(validators, 'validateTargetSystemUrlCli');
+        const abapTargetPrompts = await getAbapTargetPrompts({});
+        const targetSystemCliSetterPrompt = abapTargetPrompts.find(
+            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.targetSystemCliSetter
+        );
+
+        if (targetSystemCliSetterPrompt) {
+            expect(
+                (targetSystemCliSetterPrompt.when as Function)({
+                    targetSystem: 'target1'
+                })
+            ).toBe(false);
+            expect(validateTargetSystemUrlCliSpy).toBeCalledTimes(1);
+        }
+    });
+
+    test('should return expected values from url prompt methods', async () => {
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: undefined,
+            backendSystems: undefined
+        });
+        PromptState.isYUI = true;
+        jest.spyOn(validators, 'validateTargetSystemUrlCli').mockReturnValueOnce();
+        jest.spyOn(validators, 'validateUrl').mockReturnValueOnce(true);
+        const abapTargetPrompts = await getAbapTargetPrompts({});
+        const urlPrompt = abapTargetPrompts.find((prompt) => prompt.name === abapDeployConfigInternalPromptNames.url);
+
+        if (urlPrompt) {
+            expect((urlPrompt.when as Function)({ targetSystem: TargetSystemType.Url })).toBe(true);
+            expect(urlPrompt.message).toBe(t('prompts.target.url.message'));
+            expect((urlPrompt.default as Function)({ targetSystem: TargetSystemType.Url })).toEqual('');
+            expect((urlPrompt.filter as Function)('target system 1 ')).toEqual('target system 1');
+            expect((urlPrompt.validate as Function)()).toEqual(true);
+        } else {
+            throw new Error('Url prompt not found');
+        }
+    });
+
+    test('should return expected values from scp prompt methods', async () => {
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: undefined,
+            backendSystems: undefined
+        });
+        jest.spyOn(conditions, 'showScpQuestion').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validateScpQuestion').mockReturnValueOnce(true);
+        const abapTargetPrompts = await getAbapTargetPrompts({
+            backendTarget: { abapTarget: { scp: true } as UrlAbapTarget }
+        });
+        const scpPrompt = abapTargetPrompts.find((prompt) => prompt.name === abapDeployConfigInternalPromptNames.scp);
+
+        if (scpPrompt) {
+            expect(
+                (scpPrompt.when as Function)({
+                    targetSystem: TargetSystemType.Url,
+                    url: 'https://mock.target1.url.com'
+                })
+            ).toBe(true);
+            expect(scpPrompt.message).toBe(t('prompts.target.scp.message'));
+            expect((scpPrompt.default as Function)()).toEqual(true);
+            expect((scpPrompt.validate as Function)()).toEqual(true);
+        } else {
+            throw new Error('Scp prompt not found');
+        }
+    });
+
+    test('should return expected values from client choice prompt methods', async () => {
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: undefined,
+            backendSystems: undefined
+        });
+        jest.spyOn(conditions, 'showClientChoiceQuestion').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validateClientChoiceQuestion').mockReturnValueOnce(true);
+        const abapTargetPrompts = await getAbapTargetPrompts({});
+        const clientChoicePrompt = abapTargetPrompts.find(
+            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.clientChoice
+        );
+
+        if (clientChoicePrompt) {
+            expect((clientChoicePrompt.when as Function)()).toBe(true);
+            expect(clientChoicePrompt.message).toBe(t('prompts.target.clientChoice.message'));
+            expect((clientChoicePrompt.default as Function)()).toEqual(ClientChoiceValue.Blank);
+            expect((clientChoicePrompt.validate as Function)()).toEqual(true);
+            expect(((clientChoicePrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "name": "Use project defined client ",
+                    "value": "base",
+                  },
+                  Object {
+                    "name": "Enter client",
+                    "value": "new",
+                  },
+                  Object {
+                    "name": "Use default system client",
+                    "value": "blank",
+                  },
+                ]
+            `);
+        } else {
+            throw new Error('Client choice prompt not found');
+        }
+    });
+
+    test('should return expected values from client prompt methods', async () => {
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: undefined,
+            backendSystems: undefined
+        });
+        jest.spyOn(conditions, 'showClientQuestion').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validateClientChoiceQuestion').mockReturnValueOnce(true);
+        const abapTargetPrompts = await getAbapTargetPrompts({
+            backendTarget: { abapTarget: { client: '100' } as UrlAbapTarget }
+        });
+        const clientPrompt = abapTargetPrompts.find(
+            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.client
+        );
+
+        if (clientPrompt) {
+            expect((clientPrompt.when as Function)({})).toBe(true);
+            expect(clientPrompt.message).toBe(t('prompts.target.client.message'));
+            expect((clientPrompt.default as Function)()).toEqual('100');
+            expect((clientPrompt.filter as Function)('100 ')).toEqual('100');
+
+            expect((clientPrompt.validate as Function)()).toEqual(true);
+        } else {
+            throw new Error('Client choice prompt not found');
+        }
+    });
+});

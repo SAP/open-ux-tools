@@ -1,4 +1,4 @@
-import { Position, Range } from 'vscode-languageserver-types';
+import { Position, Range } from '@sap-ux/text-document-utils';
 import { copyRange, copyPosition, ANNOTATION_GROUP_TYPE, ANNOTATION_TYPE, parse } from '@sap-ux/cds-annotation-parser';
 import { convertAnnotation } from './annotation';
 import type { Annotation, AnnotationGroup, Assignment, Identifier } from '@sap-ux/cds-annotation-parser';

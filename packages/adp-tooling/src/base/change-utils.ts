@@ -26,7 +26,7 @@ interface InboundChange extends ManifestChangeProperties {
  *
  * @param {string} projectPath - The root path of the project.
  * @param {number} timestamp - The timestamp of the change.
- * @param {AnnotationsData} data - The data object containing information about the annotation change.
+ * @param {AnnotationsData} annotation - The annotation data.
  * @param {ManifestChangeProperties} change - The annotation data change that will be written.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
@@ -34,12 +34,11 @@ interface InboundChange extends ManifestChangeProperties {
 export function writeAnnotationChange(
     projectPath: string,
     timestamp: number,
-    data: AnnotationsData,
+    annotation: AnnotationsData['annotation'],
     change: ManifestChangeProperties,
     fs: Editor
 ): void {
     try {
-        const { fileName, answers } = data;
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
         const changeFilePath = path.join(changesFolderPath, DirName.Manifest, changeFileName);
@@ -47,7 +46,7 @@ export function writeAnnotationChange(
 
         writeChangeToFile(changeFilePath, change, fs);
 
-        if (!answers.filePath) {
+        if (!annotation.filePath) {
             const annotationsTemplate = path.join(
                 __dirname,
                 '..',
@@ -56,11 +55,11 @@ export function writeAnnotationChange(
                 'changes',
                 TemplateFileName.Annotation
             );
-            fs.copy(annotationsTemplate, path.join(annotationsFolderPath, fileName ?? ''));
+            fs.copy(annotationsTemplate, path.join(annotationsFolderPath, annotation.fileName ?? ''));
         } else {
-            const selectedDir = path.dirname(answers.filePath);
+            const selectedDir = path.dirname(annotation.filePath);
             if (selectedDir !== annotationsFolderPath) {
-                fs.copy(answers.filePath, path.join(annotationsFolderPath, fileName ?? ''));
+                fs.copy(annotation.filePath, path.join(annotationsFolderPath, annotation.fileName ?? ''));
             }
         }
     } catch (e) {
@@ -147,6 +146,57 @@ export function getParsedPropertyValue(propertyValue: string): PropertyValueType
         return value;
     } catch (e) {
         return propertyValue as PropertyValueType;
+    }
+}
+
+/**
+ * Retrieves all change files from a specified project path that match a given change type,
+ * optionally within a specific subdirectory.
+ *
+ * @param {string} projectPath - The base path of the project.
+ * @param {ChangeType} changeType - The type of changes to filter by, ensuring only changes of this type are returned.
+ * @param {string} [subDir] - Optional subdirectory within the main changes directory.
+ * @returns An array of change objects matching the specified change type.
+ */
+export function getChangesByType(
+    projectPath: string,
+    changeType: ChangeType,
+    subDir?: string
+): ManifestChangeProperties[] {
+    try {
+        let targetDir = `${projectPath}/webapp/changes`;
+
+        if (!existsSync(targetDir)) {
+            return [];
+        }
+
+        if (subDir) {
+            targetDir = `${targetDir}/${subDir}`;
+            if (!existsSync(targetDir)) {
+                return [];
+            }
+        }
+
+        const fileNames = readdirSync(targetDir, { withFileTypes: true })
+            .filter((dirent) => dirent.isFile() && dirent.name.endsWith('.change'))
+            .map((dirent) => dirent.name);
+
+        if (fileNames.length === 0) {
+            return [];
+        }
+
+        const changeFiles: ManifestChangeProperties[] = fileNames
+            .map((fileName) => {
+                const filePath = path.resolve(targetDir, fileName);
+                const fileContent = readFileSync(filePath, 'utf-8');
+                const change: ManifestChangeProperties = JSON.parse(fileContent);
+                return change;
+            })
+            .filter((changeFileObject) => changeFileObject.changeType === changeType);
+
+        return changeFiles;
+    } catch (e) {
+        throw new Error(`Error reading change files: ${e.message}`);
     }
 }
 

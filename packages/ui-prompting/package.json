@@ -1,0 +1,79 @@
+{
+    "name": "@sap-ux/ui-prompting",
+    "version": "0.1.8",
+    "license": "Apache-2.0",
+    "description": "SAP UI Components Library",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "examples/ui-prompting"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui-components"
+    },
+    "private": false,
+    "files": [
+        "dist",
+        "LICENSE",
+        "storybook"
+    ],
+    "main": "dist/index.js",
+    "scripts": {
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo storybook",
+        "build": "npm-run-all -l -p build:extension build:copyfiles",
+        "build:extension": "tsc --build --pretty",
+        "build:copyfiles": "copyfiles --up 1 \"./src/**/*.scss\" ./dist/",
+        "lint": "eslint . --ext .ts,.tsx",
+        "lint:fix": "eslint . --ext .ts,.tsx --fix",
+        "format:fix": "prettier --write --ignore-path ../../.prettierignore",
+        "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
+        "storybook": "npm-run-all -l -p storybook:prepare storybook:run",
+        "storybook:prepare": "ts-node ./scripts/index.js",
+        "storybook:run": "storybook dev",
+        "test": "jest --ci --forceExit --colors --silent"
+    },
+    "dependencies": {
+        "@sap-ux/ui-components": "workspace:*",
+        "react-markdown": "5.0.2"
+    },
+    "peerDependencies": {
+        "react": ">=16.14.0",
+        "react-dom": ">=16.14.0"
+    },
+    "devDependencies": {
+        "@babel/core": "7.22.20",
+        "@babel/helper-define-map": "7.18.6",
+        "@babel/preset-env": "7.22.20",
+        "@babel/preset-react": "7.22.15",
+        "@babel/preset-typescript": "7.22.15",
+        "@sap-ux/inquirer-common": "workspace:*",
+        "@storybook/addons": "7.6.17",
+        "@storybook/components": "8.1.11",
+        "@storybook/react": "8.1.11",
+        "@storybook/react-webpack5": "8.1.11",
+        "@testing-library/jest-dom": "5.17.0",
+        "@testing-library/react": "12.1.5",
+        "@types/inquirer": "8.2.6",
+        "@types/react": "16.14.55",
+        "@types/react-dom": "16.9.24",
+        "babel-jest": "29.7.0",
+        "babel-loader": "9.1.3",
+        "copyfiles": "2.4.1",
+        "css-loader": "6.8.1",
+        "eslint-plugin-react": "7.33.2",
+        "eslint-plugin-storybook": "0.6.15",
+        "jest-environment-jsdom": "29.7.0",
+        "jest-scss-transform": "1.0.3",
+        "npm-run-all2": "6.2.0",
+        "react": "16.14.0",
+        "react-dom": "16.14.0",
+        "sass": "1.66.1",
+        "sass-loader": "13.3.2",
+        "storybook": "8.1.11",
+        "storybook-addon-turbo-build": "2.0.1",
+        "style-loader": "3.3.3",
+        "ts-loader": "9.4.4",
+        "ts-node": "10.9.2",
+        "typescript": "5.3.3"
+    }
+}

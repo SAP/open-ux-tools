@@ -1,5 +1,220 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.1.12
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.28.2
+-   @sap-ux/fiori-generator-shared@0.3.18
+-   @sap-ux/odata-service-writer@0.22.4
+-   @sap-ux/ui5-application-writer@1.1.6
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.1.11
+
+### Patch Changes
+
+-   8cfd71a: ui5-application-writer - fix backward support for older ui5 versions in locate-reuse-libs.js
+-   Updated dependencies [8cfd71a]
+    -   @sap-ux/ui5-application-writer@1.1.6
+
+## 1.1.10
+
+### Patch Changes
+
+-   Updated dependencies [b10e3fd]
+    -   @sap-ux/fe-fpm-writer@0.28.1
+
+## 1.1.9
+
+### Patch Changes
+
+-   Updated dependencies [bb4305f]
+    -   @sap-ux/fe-fpm-writer@0.28.0
+
+## 1.1.8
+
+### Patch Changes
+
+-   1a99abc: separation between ui5libs and manifestlibs, to allow for different ui5 libraries set in manifest and other files
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-application-writer@1.1.5
+    -   @sap-ux/ui5-config@0.24.1
+    -   @sap-ux/odata-service-writer@0.22.4
+    -   @sap-ux/fe-fpm-writer@0.27.7
+    -   @sap-ux/fiori-generator-shared@0.3.17
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.1.7
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.16
+
+## 1.1.6
+
+### Patch Changes
+
+-   Updated dependencies [087752f]
+    -   @sap-ux/fe-fpm-writer@0.27.6
+
+## 1.1.5
+
+### Patch Changes
+
+-   Updated dependencies [3e1a83a]
+    -   @sap-ux/fiori-generator-shared@0.3.15
+
+## 1.1.4
+
+### Patch Changes
+
+-   Updated dependencies [73aa3cd]
+    -   @sap-ux/fe-fpm-writer@0.27.5
+
+## 1.1.3
+
+### Patch Changes
+
+-   Updated dependencies [12504d5]
+    -   @sap-ux/fiori-generator-shared@0.3.14
+
+## 1.1.2
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.27.4
+-   @sap-ux/fiori-generator-shared@0.3.13
+-   @sap-ux/odata-service-writer@0.22.3
+-   @sap-ux/ui5-application-writer@1.1.4
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.1.1
+
+### Patch Changes
+
+-   Updated dependencies [6916f9e]
+    -   @sap-ux/fe-fpm-writer@0.27.3
+
+## 1.1.0
+
+### Minor Changes
+
+-   61721f2: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    removed dependency on sap.ushell for v4 manifest.json
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/ui5-application-writer@1.1.4
+    -   @sap-ux/odata-service-writer@0.22.3
+    -   @sap-ux/fe-fpm-writer@0.27.2
+    -   @sap-ux/fiori-generator-shared@0.3.12
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.0.18
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.27.1
+
+## 1.0.17
+
+### Patch Changes
+
+-   Updated dependencies [ec4a9c8]
+    -   @sap-ux/fe-fpm-writer@0.27.0
+
+## 1.0.16
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.26.4
+
+## 1.0.15
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.26.3
+-   @sap-ux/fiori-generator-shared@0.3.11
+-   @sap-ux/odata-service-writer@0.22.2
+-   @sap-ux/ui5-application-writer@1.1.3
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.0.14
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.26.2
+-   @sap-ux/fiori-generator-shared@0.3.10
+-   @sap-ux/odata-service-writer@0.22.2
+-   @sap-ux/ui5-application-writer@1.1.3
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.0.13
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.26.1
+-   @sap-ux/fiori-generator-shared@0.3.9
+-   @sap-ux/odata-service-writer@0.22.2
+-   @sap-ux/ui5-application-writer@1.1.3
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.0.12
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/fe-fpm-writer@0.26.0
+    -   @sap-ux/fiori-generator-shared@0.3.8
+    -   @sap-ux/odata-service-writer@0.22.2
+    -   @sap-ux/ui5-application-writer@1.1.3
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.0.11
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/odata-service-writer@0.22.2
+    -   @sap-ux/fe-fpm-writer@0.25.7
+    -   @sap-ux/fiori-generator-shared@0.3.7
+    -   @sap-ux/ui5-application-writer@1.1.3
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.0.10
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.25.6
+-   @sap-ux/fiori-generator-shared@0.3.6
+-   @sap-ux/odata-service-writer@0.22.1
+-   @sap-ux/ui5-application-writer@1.1.2
+-   @sap-ux/ui5-test-writer@0.4.0
+
+## 1.0.9
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.25.5
+-   @sap-ux/fiori-generator-shared@0.3.5
+-   @sap-ux/odata-service-writer@0.22.1
+-   @sap-ux/ui5-application-writer@1.1.2
+-   @sap-ux/ui5-test-writer@0.4.0
+
+## 1.0.8
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.25.4
+-   @sap-ux/fiori-generator-shared@0.3.4
+-   @sap-ux/odata-service-writer@0.22.1
+-   @sap-ux/ui5-application-writer@1.1.2
+-   @sap-ux/ui5-test-writer@0.4.0
+
 ## 1.0.7
 
 ### Patch Changes

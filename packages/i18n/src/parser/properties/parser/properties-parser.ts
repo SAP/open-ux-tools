@@ -1,4 +1,4 @@
-import { Range, getLineOffsets, rangeAt } from '../../utils';
+import { Range, getLineOffsets, rangeAt } from '@sap-ux/text-document-utils';
 import type { CommentLine, PropertyList, TextNode, Token } from '../types';
 
 /**
