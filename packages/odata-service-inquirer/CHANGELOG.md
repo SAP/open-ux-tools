@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.34
+
+### Patch Changes
+
+-   8a84adf: Fix for no services + error GA link
+
 ## 0.5.33
 
 ### Patch Changes
