@@ -215,7 +215,7 @@ server:
              * @memberOf fefpmjs.ext.main.Main
              */
             //  onInit: function () {
-            //
+            //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
             //  },
 
             /**
@@ -3655,10 +3655,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer(true).then(function (component) {
-                    component.placeAt(\\"content\\");
-                });
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -3984,7 +3989,7 @@ export default class Main extends Controller {
      * @memberOf fefpmts.ext.main.Main
      */
     // public onInit(): void {
-    //
+    //     super.onInit(); // needs to be called to properly initialize the page controller
     //}
 
     /**

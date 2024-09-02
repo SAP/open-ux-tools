@@ -130,6 +130,7 @@
         "authenticationTimeout": "Authorization was not verified within the allowed time. Please ensure you have authenticated using the associated browser window.",
         "invalidUrl": "Not a valid URL",
         "connectionError": "A connection error occurred, please ensure the target host is available on the network: {{- error}}",
+        "timeout": "A connection timeout error occurred: {{- error}}",
         "serviceUnavailable": "Selected service is returning an error.",
         "catalogServiceNotActive": "Catalog service is not active",
         "internalServerError": "The URL you have provided cannot be accessed and is returning: '{{- error}}'. Please ensure that the URL is accessible externally.",
@@ -155,7 +156,8 @@
         "serviceTypeRequestError": "Error retrieving service type: {{- error}}",
         "noAbapEnvsInCFSpace": "No ABAP environments in CF space found.",
         "abapEnvsCFDiscoveryFailed": "Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry (see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login).",
-        "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed."
+        "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed.",
+        "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}. {{error}}"
     },
     "texts": {
         "anExpiredCert": "an expired",

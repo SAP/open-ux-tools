@@ -1,5 +1,21 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.0.21
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.18
+-   @sap-ux/odata-service-writer@0.22.4
+-   @sap-ux/ui5-application-writer@1.1.6
+
+## 1.0.20
+
+### Patch Changes
+
+-   8cfd71a: ui5-application-writer - fix backward support for older ui5 versions in locate-reuse-libs.js
+-   Updated dependencies [8cfd71a]
+    -   @sap-ux/ui5-application-writer@1.1.6
+
 ## 1.0.19
 
 ### Patch Changes

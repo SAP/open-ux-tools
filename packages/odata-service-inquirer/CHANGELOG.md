@@ -1,5 +1,20 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.34
+
+### Patch Changes
+
+-   8a84adf: Fix for no services + error GA link
+
+## 0.5.33
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/telemetry@0.5.26
+
 ## 0.5.32
 
 ### Patch Changes
