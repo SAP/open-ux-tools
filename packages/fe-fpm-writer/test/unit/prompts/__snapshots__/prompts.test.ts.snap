@@ -1157,6 +1157,28 @@ exports[`Prompts getCodeSnippet Type "chart", get code snippet 1`] = `
 />"
 `;
 
+exports[`Prompts getCodeSnippet Type "chart", get code snippet, min ui5Version = 1.95.0 1`] = `
+"<macros:Chart
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    filterBar=\\"filterBar\\"
+    selectionMode=\\"testSelectionMode\\"
+    selectionChange=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "chart", get code snippet, min ui5Version is undefined 1`] = `
+"<macros:Chart
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    filterBar=\\"filterBar\\"
+    selectionMode=\\"testSelectionMode\\"
+    selectionChange=\\"function1\\"
+/>"
+`;
+
 exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet 1`] = `
 "<macros:FilterBar
     id=\\"id\\"
@@ -1166,10 +1188,54 @@ exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet 1`] = `
 />"
 `;
 
+exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version = 1.95.0 1`] = `
+"<macros:FilterBar
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    search=\\"function2\\"
+    filterChanged=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version is undefined 1`] = `
+"<macros:FilterBar
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    search=\\"function2\\"
+    filterChanged=\\"function1\\"
+/>"
+`;
+
 exports[`Prompts getCodeSnippet Type "table", get code snippet 1`] = `
 "<macros:Table
     id=\\"id\\"
     metaPath=\\"/entity/qualifier\\"
+    filterBar=\\"filterBar\\"
+    header=\\"header\\"
+    headerVisible=\\"true\\"
+    type=\\"ResponsiveTable\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version = 1.95.0 1`] = `
+"<macros:Table
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    filterBar=\\"filterBar\\"
+    header=\\"header\\"
+    headerVisible=\\"true\\"
+    type=\\"ResponsiveTable\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version is undefined 1`] = `
+"<macros:Table
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
     filterBar=\\"filterBar\\"
     header=\\"header\\"
     headerVisible=\\"true\\"
@@ -1680,6 +1746,16 @@ exports[`Prompts submitAnswers Type "chart" 1`] = `
 </mvc:View>"
 `;
 
+exports[`Prompts submitAnswers Type "chart", min ui5Version = 1.96.0 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Chart id=\\"id\\" metaPath=\\"qualifier\\" contextPath=\\"/entity\\" filterBar=\\"filterBar\\" selectionMode=\\"testSelectionMode\\" selectionChange=\\"function1\\"/>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
 exports[`Prompts submitAnswers Type "filter-bar" 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
@@ -1690,11 +1766,31 @@ exports[`Prompts submitAnswers Type "filter-bar" 1`] = `
 </mvc:View>"
 `;
 
+exports[`Prompts submitAnswers Type "filter-bar", min ui5Version = 1.96.0 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"id\\" metaPath=\\"qualifier\\" contextPath=\\"/entity\\" search=\\"function2\\" filterChanged=\\"function1\\"/>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
 exports[`Prompts submitAnswers Type "table" 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
             <macros:Table id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" header=\\"header\\" headerVisible=\\"true\\" type=\\"ResponsiveTable\\"/>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Prompts submitAnswers Type "table", min ui5Version = 1.96.0 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"id\\" metaPath=\\"qualifier\\" contextPath=\\"/entity\\" filterBar=\\"filterBar\\" header=\\"header\\" headerVisible=\\"true\\" type=\\"ResponsiveTable\\"/>
         </content>
     </Page>
 </mvc:View>"
