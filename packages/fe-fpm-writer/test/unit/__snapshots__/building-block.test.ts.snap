@@ -13,7 +13,7 @@ Object {
     "state": "modified",
   },
   "generate-chart-with-id-no-macros-ns/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -32,7 +32,7 @@ Object {
     "state": "modified",
   },
   "generate-field-with-id-no-macros-ns/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -51,7 +51,7 @@ Object {
     "state": "modified",
   },
   "generate-filter-bar-with-id-no-macros-ns/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -70,7 +70,7 @@ Object {
     "state": "modified",
   },
   "generate-table-with-id-no-macros-ns/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -89,7 +89,7 @@ Object {
     "state": "modified",
   },
   "generate-chart-with-id/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -108,7 +108,7 @@ Object {
     "state": "modified",
   },
   "generate-field-with-id/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -127,7 +127,7 @@ Object {
     "state": "modified",
   },
   "generate-filter-bar-with-id/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -146,7 +146,7 @@ Object {
     "state": "modified",
   },
   "generate-table-with-id/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -229,7 +229,7 @@ Object {
     "state": "modified",
   },
   "generate-chart-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -248,7 +248,7 @@ Object {
     "state": "modified",
   },
   "generate-chart-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -267,7 +267,7 @@ Object {
     "state": "modified",
   },
   "generate-field-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -286,7 +286,7 @@ Object {
     "state": "modified",
   },
   "generate-field-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -305,7 +305,7 @@ Object {
     "state": "modified",
   },
   "generate-filter-bar-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -324,7 +324,7 @@ Object {
     "state": "modified",
   },
   "generate-filter-bar-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -343,7 +343,7 @@ Object {
     "state": "modified",
   },
   "generate-table-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -362,7 +362,7 @@ Object {
     "state": "modified",
   },
   "generate-table-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
@@ -402,8 +402,7 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for field building block 2`] = `
 "<macros:Field
     id=\\"testField\\"
-    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
-    contextPath=\\"REPLACE_WITH_ENTITY\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
 />"
 `;
 
@@ -420,8 +419,7 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for filter-bar building block 2`] = `
 "<macros:FilterBar
     id=\\"testFilterBar\\"
-    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
-    contextPath=\\"REPLACE_WITH_ENTITY\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
 />"
 `;
 
@@ -449,8 +447,7 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for table building block 2`] = `
 "<macros:Table
     id=\\"testTable\\"
-    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
-    contextPath=\\"REPLACE_WITH_ENTITY\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
 />"
 `;
 
@@ -467,7 +464,7 @@ Object {
     "state": "modified",
   },
   "../../../../unit/sample/building-block/webapp-prompts/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
     "state": "modified",
   },
 }
