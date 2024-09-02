@@ -12,8 +12,10 @@ import { t } from '../../src/i18n';
 import { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { DirName } from '@sap-ux/project-access';
-import { homedir } from 'os';
+import { getFioriToolsDirectory } from '@sap-ux/store';
 import type { Logger } from '@sap-ux/logger';
+import { existsSync, mkdir } from 'fs';
+import fs from 'fs';
 
 // Mock dependencies
 jest.mock('mem-fs');
@@ -40,6 +42,40 @@ const mockEditor = {
     read: jest.fn(),
     write: jest.fn()
 } as unknown as Editor;
+const mockPath = '/mock/project/path';
+// Define a variable to control the behavior of writeFileSync
+let writeFileSyncMockBehavior: 'success' | 'error';
+
+jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
+    //mkdirSync: jest.fn(),
+    existsSync: jest.fn().mockReturnValue(true), 
+    readFileSync: jest.fn((path: string, encoding: string) => {
+        console.log(" I AM BEING MOCKED !!!!!", path)
+        // Mock different behaviors based on the path
+        if (path) {
+            return JSON.stringify({ latestGeneratedFiles: [] }); // Mock file content
+        }
+        throw new Error('Simulated read error');
+    }),
+    writeFileSync: jest.fn().mockImplementation(() => {
+        if (writeFileSyncMockBehavior === 'error') {
+            throw new Error('Simulated write error'); // Throw an error for `writeFileSync` when behavior is 'error'
+        }
+        // Otherwise, assume it succeeds
+    })
+}));
+
+// Function to set the behavior for writeFileSync
+const setWriteFileSyncBehavior = (behavior: 'success' | 'error') => {
+    writeFileSyncMockBehavior = behavior;
+    // Reinitialize the mock to apply the new behavior
+    fs.writeFileSync = jest.fn().mockImplementation(() => {
+        if (writeFileSyncMockBehavior === 'error') {
+            throw new Error();
+        }
+    });
+};
 
 describe('Config Functions', () => {
     const launchJson = {
@@ -55,24 +91,17 @@ describe('Config Functions', () => {
     });
 
     describe('writeApplicationInfoSettings', () => {
-        const mockPath = '/mock/project/path';
         it('should write application info settings to appInfo.json', () => {
-            writeApplicationInfoSettings(mockPath, mockEditor, mockLog);
-            expect(mockEditor.write).toHaveBeenCalledWith(
-                join(homedir(), '.fioritools', 'appInfo.json'),
+            writeApplicationInfoSettings(mockPath, mockLog);
+            expect(fs.writeFileSync).toHaveBeenCalledWith(
+                getFioriToolsDirectory(),
                 JSON.stringify({ latestGeneratedFiles: [mockPath] }, null, 2)
             );
         });
 
         it('should handle error while writing to appInfo.json', () => {
-            const mockEditorWithError = {
-                exists: jest.fn().mockReturnValue(false),
-                read: jest.fn(),
-                write: jest.fn().mockImplementation(() => {
-                    throw new Error();
-                })
-            } as unknown as Editor;
-            writeApplicationInfoSettings(mockPath, mockEditorWithError, mockLog);
+            setWriteFileSyncBehavior('error');
+            writeApplicationInfoSettings(mockPath, mockLog);
             expect(mockLog.error).toHaveBeenCalledWith(t('errorAppInfoFile'));
         });
     });
@@ -89,7 +118,7 @@ describe('Config Functions', () => {
                 },
                 projectName: 'Test Project'
             } as UpdateWorkspaceFolderOptions;
-            updateWorkspaceFoldersIfNeeded(updateOptions, '/root/folder/path', mockEditor, mockLog);
+            updateWorkspaceFoldersIfNeeded(updateOptions, '/root/folder/path', mockLog);
             expect(updateOptions.vscode.workspace.updateWorkspaceFolders).toHaveBeenCalledWith(0, undefined, {
                 name: 'Test Project',
                 uri: '/mock/uri'
@@ -98,34 +127,31 @@ describe('Config Functions', () => {
 
         it('should not update workspace folders if no options are provided', () => {
             const updateOptions: UpdateWorkspaceFolderOptions | undefined = undefined;
-            updateWorkspaceFoldersIfNeeded(updateOptions, '/root/folder/path', mockEditor, mockLog);
+            updateWorkspaceFoldersIfNeeded(updateOptions, '/root/folder/path', mockLog);
             // No updateWorkspaceFolders call expected hence no app info json written
-            expect(mockEditor.write).not.toHaveBeenCalled();
+            expect(fs.writeFileSync).not.toHaveBeenCalled();
         });
     });
 
     describe('createOrUpdateLaunchConfigJSON', () => {
         it('should create a new launch.json file if it does not exist', () => {
             const rootFolderPath = '/root/folder';
-            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, mockEditor, mockLog);
-            expect(mockEditor.write).toHaveBeenCalledWith(
+            fs.mkdirSync = jest.fn().mockReturnValue(rootFolderPath);
+            fs.existsSync = jest.fn().mockReturnValue(false);
+            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, mockLog);
+            expect(fs.writeFileSync).toHaveBeenCalledWith(
                 join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE),
-                JSON.stringify(launchJson, null, 4)
+                JSON.stringify(launchJson, null, 4),
+                'utf8'
             );
         });
 
         it('should update an existing launch.json file', () => {
             const rootFolderPath = '/root/folder';
+            fs.existsSync = jest.fn().mockReturnValue(true);
+            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, mockLog);
 
-            const mockEditor = {
-                exists: jest.fn().mockReturnValue(true),
-                read: jest.fn().mockReturnValue(JSON.stringify(existingLaunchJson)),
-                write: jest.fn()
-            } as unknown as Editor;
-
-            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, mockEditor, mockLog);
-
-            expect(mockEditor.write).toHaveBeenCalledWith(
+            expect(fs.writeFileSync).toHaveBeenCalledWith(
                 join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE),
                 JSON.stringify(
                     {
@@ -140,13 +166,8 @@ describe('Config Functions', () => {
         it('should handle errors while writing launch.json file', () => {
             const rootFolderPath = '/root/folder';
 
-            const mockEditor = {
-                exists: jest.fn().mockReturnValue(false),
-                write: jest.fn().mockImplementation(() => {
-                    throw new Error();
-                })
-            } as unknown as Editor;
-            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, mockEditor, mockLog);
+            setWriteFileSyncBehavior('error');
+            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, mockLog);
             expect(mockLog.error).toHaveBeenCalledWith(t('errorLaunchFile'));
         });
     });
@@ -164,12 +185,6 @@ describe('Config Functions', () => {
                 } as any
             } as DebugOptions;
 
-            const mockEditor = {
-                exists: jest.fn(),
-                read: jest.fn(),
-                write: jest.fn()
-            } as unknown as Editor;
-
             const mockLog = {
                 info: jest.fn(),
                 error: jest.fn()
@@ -183,7 +198,7 @@ describe('Config Functions', () => {
             });
 
             // Call the function under test
-            configureLaunchConfig(mockOptions, mockEditor, mockLog);
+            configureLaunchConfig(mockOptions, mockLog);
 
             // Expectations to ensure that workspace folders are updated correctly
             expect(mockOptions.vscode.workspace.updateWorkspaceFolders).toHaveBeenCalledWith(0, undefined, {
@@ -197,7 +212,7 @@ describe('Config Functions', () => {
                 datasourceType: DatasourceType.capProject,
                 projectPath: 'some/path'
             } as DebugOptions;
-            configureLaunchConfig(options, undefined, mockLog);
+            configureLaunchConfig(options, mockLog);
             expect(mockLog.info).toHaveBeenCalledWith(
                 t('startApp', { npmStart: '`npm start`', cdsRun: '`cds run --in-memory`' })
             );
@@ -209,7 +224,7 @@ describe('Config Functions', () => {
                 projectPath: 'some/path',
                 vscode: false
             } as DebugOptions;
-            configureLaunchConfig(options, undefined, mockLog);
+            configureLaunchConfig(options, mockLog);
             expect(mockLog.info).not.toHaveBeenCalled();
         });
     });
