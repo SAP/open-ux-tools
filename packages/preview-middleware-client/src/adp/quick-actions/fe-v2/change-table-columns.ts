@@ -34,7 +34,7 @@ async function getActionId(table: UI5Element): Promise<string[]> {
 
     if (isA(SMART_TABLE_TYPE, table)) {
         if (major === 1 && minor === 96) {
-            return [M_TABLE_ACTION_ID];
+            return [SETTINGS_ID];
         } else {
             return [SMART_TABLE_ACTION_ID];
         }
