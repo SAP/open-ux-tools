@@ -25,8 +25,10 @@ describe('index', () => {
         });
 
         const answers: AbapDeployConfigAnswersInternal = {
+            url: '',
             targetSystem: 'https://mock.url.target1.com',
             client: '000',
+            package: '',
             ui5AbapRepo: 'mockRepo',
             packageManual: 'mockPackage',
             transportManual: 'mockTransport'
