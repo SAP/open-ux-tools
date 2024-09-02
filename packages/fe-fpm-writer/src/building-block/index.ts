@@ -192,8 +192,7 @@ function getTemplateContent<T extends BuildingBlock>(
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
         const applyContextPath =
             buildingBlockData.buildingBlockType === BuildingBlockType.Chart ||
-            !minUI5Version ||
-            lte(minUI5Version, '1.96.0');
+            !!(minUI5Version && lte(minUI5Version, '1.96.0'));
         // Convert object based metapath to string
         const metadataPath = getMetaPath(applyContextPath, buildingBlockData.metaPath, usePlaceholders);
         buildingBlockData = { ...buildingBlockData, metaPath: metadataPath.metaPath };
