@@ -118,12 +118,12 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
 /**
  * Method returns default values for metadata path.
  *
- * @param {BuildingBlockType} type - building vlock type.
+ * @param {boolean} applyContextPath - whether to apply contextPath.
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
  * @returns {MetadataPath} Default values for metadata path.
  */
-function getDefaultMetaPath(type: BuildingBlockType, usePlaceholders?: boolean): MetadataPath {
-    if (type === BuildingBlockType.Chart) {
+function getDefaultMetaPath(applyContextPath: boolean, usePlaceholders?: boolean): MetadataPath {
+    if (applyContextPath) {
         return {
             metaPath: usePlaceholders ? `/${PLACEHOLDERS.qualifier}` : '',
             contextPath: usePlaceholders ? PLACEHOLDERS.entitySet : ''
@@ -137,20 +137,18 @@ function getDefaultMetaPath(type: BuildingBlockType, usePlaceholders?: boolean):
 /**
  * Method converts object based metaPath to metadata path.
  *
- * @param {BuildingBlockType} type - building vlock type.
+ * @param {boolean} applyContextPath - whether to apply contextPath.
  * @param {BuildingBlockMetaPath} metaPath - object based metaPath.
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
- * @param applyContextPath
  * @returns {MetadataPath} Resolved metadata path information.
  */
 function getMetaPath(
-    type: BuildingBlockType,
+    applyContextPath: boolean,
     metaPath?: BuildingBlockMetaPath,
-    usePlaceholders?: boolean,
-    applyContextPath = false
+    usePlaceholders?: boolean
 ): MetadataPath {
     if (!metaPath) {
-        return getDefaultMetaPath(type, usePlaceholders);
+        return getDefaultMetaPath(applyContextPath, usePlaceholders);
     }
     const { bindingContextType = 'absolute' } = metaPath;
     let { entitySet, qualifier } = metaPath;
@@ -158,7 +156,6 @@ function getMetaPath(
     const qualifierOrPlaceholder = qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '');
     if (applyContextPath) {
         const qualifierParts: string[] = qualifierOrPlaceholder.split('/');
-        0;
         qualifier = qualifierParts.pop() as string;
         return {
             metaPath: qualifier,
@@ -198,12 +195,7 @@ function getTemplateContent<T extends BuildingBlock>(
             !minUI5Version ||
             lte(minUI5Version, '1.96.0');
         // Convert object based metapath to string
-        const metadataPath = getMetaPath(
-            buildingBlockData.buildingBlockType,
-            buildingBlockData.metaPath,
-            usePlaceholders,
-            applyContextPath
-        );
+        const metadataPath = getMetaPath(applyContextPath, buildingBlockData.metaPath, usePlaceholders);
         buildingBlockData = { ...buildingBlockData, metaPath: metadataPath.metaPath };
         if (!buildingBlockData.contextPath && metadataPath.contextPath) {
             buildingBlockData.contextPath = metadataPath.contextPath;
