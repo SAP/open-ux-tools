@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.9
+
+### Patch Changes
+
+-   99d7394: adds create command add deploy-config
+
 ## 0.0.8
 
 ### Patch Changes
