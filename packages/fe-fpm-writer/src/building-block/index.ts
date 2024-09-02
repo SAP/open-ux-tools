@@ -30,7 +30,7 @@ interface MetadataPath {
  *
  * @param {string} basePath the base path
  * @param {Editor} fs the memfs editor instance
- * @returns {Manifest} the manifest content
+ * @returns {Manifest | undefined} the manifest content
  */
 function getManifest(basePath: string, fs: Editor): Manifest | undefined {
     const manifestPath = join(basePath, 'webapp/manifest.json');
@@ -172,7 +172,7 @@ function getMetaPath(
  *
  * @param {BuildingBlock} buildingBlockData - the building block data
  * @param {Document} viewDocument - the view xml file document
- * @param manifest
+ * @param {Manifest} manifest - the manifest content
  * @param {Editor} fs - the memfs editor instance
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
  * @returns {string} the template xml file content
@@ -221,7 +221,7 @@ function getTemplateContent<T extends BuildingBlock>(
  * @param {BuildingBlock} buildingBlockData - the building block data
  * @param {Document} viewDocument - the view xml file document
  * @param {Editor} fs - the memfs editor instance
- * @param manifest
+ * @param  {Manifest} manifest - the manifest content
  * @returns {Document} the template xml file document
  */
 function getTemplateDocument<T extends BuildingBlock>(
