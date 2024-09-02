@@ -5,7 +5,6 @@ import { findBackendSystemByUrl, initTransportConfig } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
 import { t } from '../i18n';
 import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 import LoggerHelper from '../logger-helper';
 import {
     ClientChoiceValue,
@@ -182,13 +181,15 @@ function defaultOrShowPackageQuestion(): boolean {
 /**
  * Determines if the choice of package input options should include both manual input and search (autocomplete) input options.
  *
+ * @param useAutocomplete - useAutocomplete option from prompt options
  * @returns boolean
  */
-export function showPackageInputChoiceQuestion(): boolean {
-    // Only show the input choice (manual/search) when the autocomplete prompt is supported; CLI or YUI specific version
-    return Boolean(
-        (!PromptState.isYUI || isFeatureEnabled('enableAutocompleteUIPrompt')) && defaultOrShowPackageQuestion()
-    );
+export function showPackageInputChoiceQuestion(useAutocomplete = false): boolean {
+    if (!useAutocomplete) {
+        return false;
+    }
+    const isPromptSupported = !PromptState.isYUI || (PromptState.isYUI && useAutocomplete);
+    return isPromptSupported && defaultOrShowPackageQuestion();
 }
 
 /**
@@ -196,13 +197,16 @@ export function showPackageInputChoiceQuestion(): boolean {
  *
  * @param isCli - is in CLI
  * @param packageInputChoice - package input choice from previous answers
+ * @param useAutocomplete - useAutocomplete option from prompt options
  * @returns boolean
  */
-export function defaultOrShowManualPackageQuestion(isCli: boolean, packageInputChoice?: string): boolean {
-    // Until the version of YUI installed supports auto-complete we must continue to show a manual input for packages
+export function defaultOrShowManualPackageQuestion(
+    isCli: boolean,
+    packageInputChoice?: string,
+    useAutocomplete = false
+): boolean {
     return (
-        ((!isCli && !isFeatureEnabled('enableAutocompleteUIPrompt')) ||
-            packageInputChoice === PackageInputChoices.EnterManualChoice) &&
+        (!isCli || packageInputChoice === PackageInputChoices.EnterManualChoice || !useAutocomplete) &&
         defaultOrShowPackageQuestion()
     );
 }
@@ -212,12 +216,17 @@ export function defaultOrShowManualPackageQuestion(isCli: boolean, packageInputC
  *
  * @param isCli - is in CLI
  * @param packageInputChoice - package input choice from previous answers
+ * @param useAutocomplete - useAutocomplete option from prompt options
  * @returns boolean
  */
-export function defaultOrShowSearchPackageQuestion(isCli: boolean, packageInputChoice?: string): boolean {
+export function defaultOrShowSearchPackageQuestion(
+    isCli: boolean,
+    packageInputChoice?: string,
+    useAutocomplete = false
+): boolean {
     // Only show the autocomplete prompt when the autocomplete prompt is supported; CLI or YUI specific version
     return (
-        (isCli || isFeatureEnabled('enableAutocompleteUIPrompt')) &&
+        (isCli || useAutocomplete) &&
         packageInputChoice === PackageInputChoices.ListExistingChoice &&
         defaultOrShowPackageQuestion()
     );

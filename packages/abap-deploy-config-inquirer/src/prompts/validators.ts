@@ -47,22 +47,26 @@ export function validateDestinationQuestion(destination: string, destinations?: 
  * @param props.client - client
  * @param props.isS4HC - is S/4HANA Cloud
  * @param props.scp - is SCP
+ * @param props.target - target system
  */
 function updatePromptState({
     url,
     client,
     isS4HC,
-    scp
+    scp,
+    target
 }: {
     url: string;
     client?: string;
     isS4HC?: boolean;
     scp?: boolean;
+    target?: string;
 }): void {
     PromptState.abapDeployConfig.url = url;
     PromptState.abapDeployConfig.client = client;
     PromptState.abapDeployConfig.isS4HC = isS4HC;
     PromptState.abapDeployConfig.scp = scp;
+    PromptState.abapDeployConfig.targetSystem = target;
 }
 
 /**
@@ -104,7 +108,8 @@ export function validateTargetSystem(target?: string, choices?: AbapSystemChoice
                 url: choice.value,
                 client: choice.client ?? '',
                 scp: choice.scp,
-                isS4HC: choice.isS4HC
+                isS4HC: choice.isS4HC,
+                target: target
             });
         }
     }
@@ -371,7 +376,7 @@ export async function validatePackage(
     };
 
     // checks if package is a local package and will update prompt state accordingly
-    await getTransportListFromService(input, answers.ui5AbapRepo ?? '', systemConfig, backendTarget);
+    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', systemConfig, backendTarget);
     return true;
 }
 
@@ -419,7 +424,7 @@ async function handleCreateNewTransportChoice(
     const description = `For ABAP repository ${previousAnswers?.ui5AbapRepo?.toUpperCase()}, created by SAP Fiori Tools`;
     PromptState.transportAnswers.newTransportNumber = await createTransportNumber(
         {
-            packageName: getPackageAnswer(previousAnswers),
+            packageName: getPackageAnswer(previousAnswers, PromptState.abapDeployConfig.package),
             ui5AppName: previousAnswers?.ui5AbapRepo ?? '',
             description: description.length > 60 ? description.slice(0, 57) + '...' : description
         },
@@ -486,7 +491,7 @@ export async function validateTransportChoiceInput(
     prevTransportInputChoice?: TransportChoices,
     backendTarget?: BackendTarget
 ): Promise<boolean | string> {
-    const packageAnswer = getPackageAnswer(previousAnswers);
+    const packageAnswer = getPackageAnswer(previousAnswers, PromptState.abapDeployConfig.package);
     const systemConfig: SystemConfig = {
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
@@ -500,7 +505,6 @@ export async function validateTransportChoiceInput(
         case TransportChoices.CreateNewChoice: {
             return handleCreateNewTransportChoice(
                 packageAnswer,
-
                 systemConfig,
                 input,
                 previousAnswers,

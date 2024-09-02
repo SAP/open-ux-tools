@@ -34,6 +34,7 @@ async function getPrompts(
     await initI18n();
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
     PromptState.isYUI = isYUI;
+    PromptState.resetAbapDeployConfig();
 
     return {
         prompts: await getAbapDeployConfigQuestions(promptOptions),
@@ -60,15 +61,13 @@ async function prompt(
     const abapDeployConfigPrompts = (await getPrompts(promptOptions, logger, isYUI)).prompts;
     const answers = await adapter.prompt<AbapDeployConfigAnswersInternal>(abapDeployConfigPrompts);
 
-    // Add dervied service answers to the answers object
-    Object.assign(answers, PromptState.abapDeployConfig);
-
-    return reconcileAnswers(answers);
+    return reconcileAnswers(answers, PromptState.abapDeployConfig);
 }
 
 export {
     getPrompts,
     prompt,
+    reconcileAnswers,
     TargetSystemType,
     PackageInputChoices,
     TransportChoices,

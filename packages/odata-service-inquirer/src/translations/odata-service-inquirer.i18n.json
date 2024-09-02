@@ -64,13 +64,12 @@
             "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services are not intended to be used for the generation of SAP Fiori UI applications",
             "noServicesAvailable": "No services available for the selected system, see logs for further details.",
             "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only"
-
         },
-        "systemUrl" : {
+        "systemUrl": {
             "message": "System URL",
             "description": "Enter the URL of the SAP System",
             "placeholder": "https://<host>:<port>"
-        }, 
+        },
         "sapClient": {
             "message": "SAP client (leave empty for default)",
             "breadcrumb": "SAP Client"
@@ -86,7 +85,7 @@
             "breadcrumb": "Service",
             "noServicesWarning": "No services available for the selected system, see logs for further details."
         },
-        "systemType": {
+        "newSystemType": {
             "choiceAbapOnPrem": "ABAP On Premise",
             "choiceAbapOnBtp": "ABAP Environment on SAP Business Technology Platform",
             "message": "System type",
@@ -101,6 +100,22 @@
         },
         "systemSelection": {
             "newSystemChoiceLabel": "New system"
+        },
+        "abapOnBTPType": {
+            "message": "ABAP environment definition source",
+            "choiceReentranceTicket": "Use Reentrance Ticket",
+            "choiceServiceKey": "Upload a Service Key File",
+            "choiceCloudFoundry": "Discover a Cloud Foundry Service"
+        },
+        "serviceKey": {
+            "message": "Service key file path",
+            "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
+            "incompleteServiceKeyInfo": "Service keys file does not contain the required information",
+            "unparseableServiceKey": "Service keys file contents are not a valid JSON format"
+        },
+        "cloudFoundryAbapSystem": {
+            "message": "ABAP environment",
+            "hint": "Enter the name of the Cloud Foundry service that contains the ABAP Environment instance"
         }
     },
     "errors": {
@@ -115,6 +130,7 @@
         "authenticationTimeout": "Authorization was not verified within the allowed time. Please ensure you have authenticated using the associated browser window.",
         "invalidUrl": "Not a valid URL",
         "connectionError": "A connection error occurred, please ensure the target host is available on the network: {{- error}}",
+        "timeout": "A connection timeout error occurred: {{- error}}",
         "serviceUnavailable": "Selected service is returning an error.",
         "catalogServiceNotActive": "Catalog service is not active",
         "internalServerError": "The URL you have provided cannot be accessed and is returning: '{{- error}}'. Please ensure that the URL is accessible externally.",
@@ -130,14 +146,18 @@
         "noSuchHostError": "No such host is known",
         "odataServiceVersionMismatch": "The template you have chosen supports V{{requiredVersion}} OData services only. The provided version is V{{serviceVersion}}.",
         "destinationAuthError": "The selected system is returning an authentication error. Please verify the destination configuration",
-        "systemOrserviceUrlNotFound": "Please verify the url: {{- url}}, target system configuration and network connectivity",
+        "systemOrServiceUrlNotFound": "Please verify the url: {{- url}}, target system configuration and network connectivity",
         "urlRedirect": "The service URL is redirecting",
         "certValidationRequired": "Certificate validation is required to continue.",
         "exitingGeneration": "Exiting generation. {{exitReason}}",
         "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}",
         "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). $t(texts.seeLogForDetails)",
         "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}",
-        "serviceTypeRequestError": "Error retrieving service type: {{- error}}"
+        "serviceTypeRequestError": "Error retrieving service type: {{- error}}",
+        "noAbapEnvsInCFSpace": "No ABAP environments in CF space found.",
+        "abapEnvsCFDiscoveryFailed": "Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry (see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login).",
+        "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed.",
+        "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}. {{error}}"
     },
     "texts": {
         "anExpiredCert": "an expired",
@@ -145,7 +165,8 @@
         "anUnknownOrInvalidCert": "an unknown or invalid",
         "anUntrustedRootCert": "an untrusted root",
         "suggestedSystemNameClient": ", client {{client}}",
-        "seeLogForDetails": "See log for more details."
+        "seeLogForDetails": "See log for more details.",
+        "forUserName": "(for user [{{username}}])"
     },
     "guidedAnswers": {
         "validationErrorHelpText": "Need help with this error?"
