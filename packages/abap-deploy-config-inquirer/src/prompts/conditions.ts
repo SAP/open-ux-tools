@@ -185,8 +185,11 @@ function defaultOrShowPackageQuestion(): boolean {
  * @returns boolean
  */
 export function showPackageInputChoiceQuestion(useAutocomplete = false): boolean {
-    // Only show the input choice (manual/search) when the autocomplete option is true, the prompt is supported; CLI or YUI specific version
-    return Boolean((!PromptState.isYUI || useAutocomplete) && defaultOrShowPackageQuestion());
+    if (!useAutocomplete) {
+        return false;
+    }
+    const isPromptSupported = !PromptState.isYUI || (PromptState.isYUI && useAutocomplete);
+    return isPromptSupported && defaultOrShowPackageQuestion();
 }
 
 /**
@@ -202,7 +205,6 @@ export function defaultOrShowManualPackageQuestion(
     packageInputChoice?: string,
     useAutocomplete = false
 ): boolean {
-    // Until the version of YUI installed supports auto-complete we must continue to show a manual input for packages
     return (
         (!isCli || packageInputChoice === PackageInputChoices.EnterManualChoice || !useAutocomplete) &&
         defaultOrShowPackageQuestion()

@@ -53,6 +53,7 @@ describe('getAbapTargetPrompts', () => {
                 "filter": [Function],
                 "guiOptions": Object {
                   "breadcrumb": true,
+                  "mandatory": true,
                 },
                 "message": "Destination",
                 "name": "destination",
@@ -65,6 +66,7 @@ describe('getAbapTargetPrompts', () => {
                 "default": [Function],
                 "guiOptions": Object {
                   "breadcrumb": "Target System",
+                  "mandatory": true,
                 },
                 "message": "Select Target system",
                 "name": "targetSystem",
