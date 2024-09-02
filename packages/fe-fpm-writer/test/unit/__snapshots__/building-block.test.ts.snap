@@ -402,7 +402,8 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for field building block 2`] = `
 "<macros:Field
     id=\\"testField\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
 />"
 `;
 
@@ -419,7 +420,8 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for filter-bar building block 2`] = `
 "<macros:FilterBar
     id=\\"testFilterBar\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
 />"
 `;
 
@@ -447,7 +449,8 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for table building block 2`] = `
 "<macros:Table
     id=\\"testTable\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
 />"
 `;
 

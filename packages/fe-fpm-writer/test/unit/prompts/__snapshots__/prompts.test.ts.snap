@@ -211,21 +211,24 @@ exports[`Prompts - no project getCodeSnippet Type "chart", get code snippet 1`] 
 exports[`Prompts - no project getCodeSnippet Type "filter-bar", get code snippet 1`] = `
 "<macros:FilterBar
     id=\\"id\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
 />"
 `;
 
 exports[`Prompts - no project getCodeSnippet Type "table", get code snippet 1`] = `
 "<macros:Table
     id=\\"id\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
 />"
 `;
 
 exports[`Prompts - no project getCodeSnippet get code snippet with placeholders 1`] = `
 "<macros:Table
     id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
     type=\\"GridTable\\"
 />"
 `;
