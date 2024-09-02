@@ -1,5 +1,12 @@
 # @sap-ux/launch-config
 
+## 0.2.19
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+
 ## 0.2.18
 
 ### Patch Changes

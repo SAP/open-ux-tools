@@ -68,11 +68,11 @@ export function getUIcontextualMenuStyles(): Partial<IContextualMenuStyles> {
  * @returns - consumable styles property for ContextualMenuItem
  */
 export function getUIContextualMenuItemStyles(
-    props: UIIContextualMenuProps,
+    props?: UIIContextualMenuProps,
     currentItemHasSubmenu?: boolean,
     itemsHaveSubMenu?: boolean
 ): Partial<IContextualMenuItemStyles> {
-    const { iconToLeft } = props;
+    const { iconToLeft } = props ?? {};
     const padding: { label?: number; root?: string; rootRight?: string } = {};
     if (iconToLeft && itemsHaveSubMenu) {
         padding.label = currentItemHasSubmenu ? 10 : 19;
@@ -119,18 +119,18 @@ export function getUIContextualMenuItemStyles(
 /**
  * ContextualMenu sub-component styles prop generator.
  *
- * @param props Contextual menu properties.
+ * @param styles External styles of contextual menu.
  * @param maxWidth Maximal width of callout
  * @returns consumable styles property for Callout
  */
 export function getUIcontextualMenuCalloutStyles(
-    props: IContextualMenuProps,
+    styles?: IStyleFunctionOrObject<IContextualMenuStyleProps, IContextualMenuStyles>,
     maxWidth?: number
 ): Partial<ICalloutContentStyles> {
     return {
         root: {
             maxWidth: maxWidth,
-            ...extractRawStyles(props.styles, 'root')
+            ...(styles ? extractRawStyles(styles, 'root') : undefined)
         }
     };
 }
@@ -257,7 +257,7 @@ export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
             className={getClassNames(props)}
             items={injectContextualMenuItemsStyle(props)}
             calloutProps={{
-                styles: getUIcontextualMenuCalloutStyles(props, props.maxWidth),
+                styles: getUIcontextualMenuCalloutStyles(props.styles, props.maxWidth),
                 ...props.calloutProps,
                 className: getCalloutClassName(props)
             }}

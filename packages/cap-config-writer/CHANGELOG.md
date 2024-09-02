@@ -1,5 +1,21 @@
 # @sap-ux/cap-config-writer
 
+## 0.7.34
+
+### Patch Changes
+
+-   Updated dependencies [8a84adf]
+    -   @sap-ux/odata-service-inquirer@0.5.34
+
+## 0.7.33
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/fiori-generator-shared@0.3.18
+    -   @sap-ux/odata-service-inquirer@0.5.33
+
 ## 0.7.32
 
 ### Patch Changes
