@@ -49,9 +49,9 @@ let writeFileSyncMockBehavior: 'success' | 'error';
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
     //mkdirSync: jest.fn(),
-    existsSync: jest.fn().mockReturnValue(true), 
+    existsSync: jest.fn().mockReturnValue(true),
     readFileSync: jest.fn((path: string, encoding: string) => {
-        console.log(" I AM BEING MOCKED !!!!!", path)
+        console.log(' I AM BEING MOCKED !!!!!', path);
         // Mock different behaviors based on the path
         if (path) {
             return JSON.stringify({ latestGeneratedFiles: [] }); // Mock file content

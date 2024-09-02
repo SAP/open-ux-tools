@@ -57,16 +57,15 @@ export async function createLaunchConfig(rootFolder: string, fioriOptions: Fiori
  * Adds the specified path to the latestGeneratedFiles array.
  *
  * @param {string} path - The project file path to add.
- * @param {Editor} editor - The file system editor instance.
  * @param log - The logger instance.
  */
 export function writeApplicationInfoSettings(path: string, log?: Logger): void {
     const appInfoFilePath: string = getFioriToolsDirectory();
-    console.log("appInfoFilePath", appInfoFilePath);
+    console.log('appInfoFilePath', appInfoFilePath);
     const appInfoContents = fs.existsSync(appInfoFilePath)
         ? JSON.parse(fs.readFileSync(appInfoFilePath, 'utf-8'))
         : { latestGeneratedFiles: [] };
-        console.log("appInfoContents", appInfoContents);
+    console.log('appInfoContents', appInfoContents);
     appInfoContents.latestGeneratedFiles.push(path);
     try {
         fs.writeFileSync(appInfoFilePath, JSON.stringify(appInfoContents, null, 2));
@@ -108,7 +107,6 @@ export function updateWorkspaceFoldersIfNeeded(
  * @param {LaunchJSON} launchJsonFile - The launch.json configuration to write.
  * @param {UpdateWorkspaceFolderOptions} [updateWorkspaceFolders] - Optional workspace folder update options.
  * @param log - The logger instance.
- * @returns {Editor} The file system editor instance.
  */
 export function createOrUpdateLaunchConfigJSON(
     rootFolderPath: string,
