@@ -211,24 +211,21 @@ exports[`Prompts - no project getCodeSnippet Type "chart", get code snippet 1`] 
 exports[`Prompts - no project getCodeSnippet Type "filter-bar", get code snippet 1`] = `
 "<macros:FilterBar
     id=\\"id\\"
-    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
-    contextPath=\\"REPLACE_WITH_ENTITY\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
 />"
 `;
 
 exports[`Prompts - no project getCodeSnippet Type "table", get code snippet 1`] = `
 "<macros:Table
     id=\\"id\\"
-    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
-    contextPath=\\"REPLACE_WITH_ENTITY\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
 />"
 `;
 
 exports[`Prompts - no project getCodeSnippet get code snippet with placeholders 1`] = `
 "<macros:Table
     id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
-    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
-    contextPath=\\"REPLACE_WITH_ENTITY\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
     type=\\"GridTable\\"
 />"
 `;
@@ -1160,7 +1157,29 @@ exports[`Prompts getCodeSnippet Type "chart", get code snippet 1`] = `
 />"
 `;
 
-exports[`Prompts getCodeSnippet Type "chart", get code snippet, min ui5Version = 1.95.0 1`] = `
+exports[`Prompts getCodeSnippet Type "chart", get code snippet, min ui5Version = 1.95.35 1`] = `
+"<macros:Chart
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    filterBar=\\"filterBar\\"
+    selectionMode=\\"testSelectionMode\\"
+    selectionChange=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "chart", get code snippet, min ui5Version = 1.96.0 1`] = `
+"<macros:Chart
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    filterBar=\\"filterBar\\"
+    selectionMode=\\"testSelectionMode\\"
+    selectionChange=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "chart", get code snippet, min ui5Version = 1.96.25 1`] = `
 "<macros:Chart
     id=\\"id\\"
     metaPath=\\"qualifier\\"
@@ -1191,7 +1210,7 @@ exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet 1`] = `
 />"
 `;
 
-exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version = 1.95.0 1`] = `
+exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version = 1.95.35 1`] = `
 "<macros:FilterBar
     id=\\"id\\"
     metaPath=\\"qualifier\\"
@@ -1201,11 +1220,29 @@ exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Vers
 />"
 `;
 
-exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version is undefined 1`] = `
+exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version = 1.96.0 1`] = `
 "<macros:FilterBar
     id=\\"id\\"
     metaPath=\\"qualifier\\"
     contextPath=\\"/entity\\"
+    search=\\"function2\\"
+    filterChanged=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version = 1.96.25 1`] = `
+"<macros:FilterBar
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
+    search=\\"function2\\"
+    filterChanged=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version is undefined 1`] = `
+"<macros:FilterBar
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
     search=\\"function2\\"
     filterChanged=\\"function1\\"
 />"
@@ -1222,7 +1259,7 @@ exports[`Prompts getCodeSnippet Type "table", get code snippet 1`] = `
 />"
 `;
 
-exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version = 1.95.0 1`] = `
+exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version = 1.95.35 1`] = `
 "<macros:Table
     id=\\"id\\"
     metaPath=\\"qualifier\\"
@@ -1234,11 +1271,33 @@ exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version =
 />"
 `;
 
-exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version is undefined 1`] = `
+exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version = 1.96.0 1`] = `
 "<macros:Table
     id=\\"id\\"
     metaPath=\\"qualifier\\"
     contextPath=\\"/entity\\"
+    filterBar=\\"filterBar\\"
+    header=\\"header\\"
+    headerVisible=\\"true\\"
+    type=\\"ResponsiveTable\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version = 1.96.25 1`] = `
+"<macros:Table
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
+    filterBar=\\"filterBar\\"
+    header=\\"header\\"
+    headerVisible=\\"true\\"
+    type=\\"ResponsiveTable\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version is undefined 1`] = `
+"<macros:Table
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
     filterBar=\\"filterBar\\"
     header=\\"header\\"
     headerVisible=\\"true\\"

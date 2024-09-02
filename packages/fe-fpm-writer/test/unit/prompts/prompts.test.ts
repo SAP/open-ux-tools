@@ -247,8 +247,22 @@ describe('Prompts', () => {
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
         });
 
-        test.each(types)('Type "%s", get code snippet, min ui5Version = 1.95.0', async (type: PromptsType) => {
-            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.95.0');
+        test.each(types)('Type "%s", get code snippet, min ui5Version = 1.95.35', async (type: PromptsType) => {
+            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.95.35');
+            const result = promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
+            expect(result.viewOrFragmentPath.content).toMatchSnapshot();
+            expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+        });
+
+        test.each(types)('Type "%s", get code snippet, min ui5Version = 1.96.0', async (type: PromptsType) => {
+            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.96.0');
+            const result = promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
+            expect(result.viewOrFragmentPath.content).toMatchSnapshot();
+            expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+        });
+
+        test.each(types)('Type "%s", get code snippet, min ui5Version = 1.96.25', async (type: PromptsType) => {
+            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.96.25');
             const result = promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
