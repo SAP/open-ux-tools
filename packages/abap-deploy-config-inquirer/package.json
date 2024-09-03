@@ -38,11 +38,13 @@
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "i18next": "23.5.1"
+        "i18next": "23.5.1",
+        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "inquirer-autocomplete-prompt": "2.0.1",
+        "inquirer": "8.2.6"
     },
     "devDependencies": {
         "@types/inquirer": "8.2.6",
-        "@types/inquirer-autocomplete-prompt": "2.0.1",
-        "@sap-devx/yeoman-ui-types": "1.14.4"
+        "@types/inquirer-autocomplete-prompt": "2.0.1"
     }
 }
