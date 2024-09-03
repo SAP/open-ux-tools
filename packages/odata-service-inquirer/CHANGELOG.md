@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.35
+
+### Patch Changes
+
+-   eb958a1: Fix for annotations not retrieved by service url prompt
+
 ## 0.5.34
 
 ### Patch Changes

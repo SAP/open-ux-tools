@@ -1,5 +1,22 @@
 # @sap-ux/create
 
+## 0.8.1
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.7.35
+
+## 0.8.0
+
+### Minor Changes
+
+-   99d7394: adds create command add deploy-config
+
+### Patch Changes
+
+-   Updated dependencies [99d7394]
+    -   @sap-ux/abap-deploy-config-inquirer@0.0.9
+
 ## 0.7.67
 
 ### Patch Changes
