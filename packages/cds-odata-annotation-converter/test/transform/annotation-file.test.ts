@@ -18,7 +18,7 @@ const cdsServiceName = 'AdminService';
 
 // global artifacts which are prepared once, should NOT be changed in tests
 // if changes are needed, call prepare() inside your test to generate custom artifacts
-let projectRoot = join(__dirname, testDataFolder, cdsProjectFolder);
+const projectRoot = join(__dirname, testDataFolder, cdsProjectFolder);
 let cdsCompilerFacade: CdsCompilerFacade;
 let metadataElementMap: MetadataElementMap;
 const serializeForSnapshot = (metadataElementMap: MetadataElementMap): string[] => {
