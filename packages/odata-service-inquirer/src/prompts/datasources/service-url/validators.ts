@@ -1,4 +1,4 @@
-import type { AbapServiceProvider, ODataService, ODataVersion } from '@sap-ux/axios-extension';
+import { createForAbap, type AxiosRequestConfig, type ODataService, type ODataVersion } from '@sap-ux/axios-extension';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { ERROR_TYPE, ErrorHandler } from '../../../error-handler/error-handler';
 import { t } from '../../../i18n';
@@ -15,14 +15,14 @@ import { errorHandler } from '../../prompt-helpers';
  * @param url the full odata service url including query parameters
  * @param connectionConfig the connection configuration to use for the validation, a subset of the ConnectionValidator properties
  * @param connectionConfig.odataService the odata service instance used to retrieve the metadata (as used by ConnectionValidator)
- * @param connectionConfig.abapServiceProvider the abap service provider instance used to retrieve annotations (as used by ConnectionValidator)
+ * @param connectionConfig.axiosConfig the axios config to use for the annotations request (as used by ConnectionValidator)
  * @param requiredVersion if specified and the service odata version does not match this version, an error is returned
  * @param ignoreCertError if true some certificate errors are ignored
  * @returns true if a valid odata service was returned, false or an error message string otherwise
  */
 export async function validateService(
     url: string,
-    { odataService, abapServiceProvider }: { odataService: ODataService; abapServiceProvider: AbapServiceProvider },
+    { odataService, axiosConfig }: { odataService: ODataService; axiosConfig: AxiosRequestConfig },
     requiredVersion: OdataVersion | undefined = undefined,
     ignoreCertError = false
 ): Promise<boolean | string> {
@@ -56,7 +56,8 @@ export async function validateService(
         // Best effort attempt to get annotations but dont throw an error if it fails as this may not even be an Abap system
         try {
             // Create an abap provider instance to get the annotations using the same request config
-            const catalogService = abapServiceProvider.catalog(serviceOdataVersion as unknown as ODataVersion);
+            const abapProvider = createForAbap(axiosConfig);
+            const catalogService = abapProvider.catalog(serviceOdataVersion as unknown as ODataVersion);
             LoggerHelper.attachAxiosLogger(catalogService.interceptors);
             LoggerHelper.logger.debug('Getting annotations for service');
             const annotations = await catalogService.getAnnotations({ path: fullUrl.pathname });
