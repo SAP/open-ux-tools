@@ -38,7 +38,7 @@ export default class CustomPage extends Controller {
      * @memberOf my.test.App.ext.customPage.CustomPage
      */
     // public onInit(): void {
-    //
+    //     super.onInit(); // needs to be called to properly initialize the page controller
     //}
 
     /**
@@ -83,7 +83,7 @@ export default class CustomPage extends Controller {
      * @memberOf my.test.App.ext.customPage.CustomPage
      */
     // public onInit(): void {
-    //
+    //    super.onInit(); // needs to be called to properly initialize the page controller
     //}
 
     /**
@@ -377,7 +377,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
              * @memberOf my.test.App.ext.customPage.CustomPage
              */
             //  onInit: function () {
-            //
+            //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
             //  },
 
             /**
@@ -478,7 +478,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
              * @memberOf my.test.App.ext.customPage.CustomPage
              */
             //  onInit: function () {
-            //
+            //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
             //  },
 
             /**
@@ -580,7 +580,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
              * @memberOf my.test.App.ext.customPage.CustomPage
              */
             //  onInit: function () {
-            //
+            //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
             //  },
 
             /**
@@ -682,7 +682,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
              * @memberOf my.test.App.ext.different.CustomPage
              */
             //  onInit: function () {
-            //
+            //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
             //  },
 
             /**
@@ -870,7 +870,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
              * @memberOf my.test.App.ext.customPage.CustomPage
              */
             //  onInit: function () {
-            //
+            //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
             //  },
 
             /**

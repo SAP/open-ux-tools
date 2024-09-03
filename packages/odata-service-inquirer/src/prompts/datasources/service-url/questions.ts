@@ -6,8 +6,8 @@ import { t } from '../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../types';
 import { hostEnvironment, promptNames } from '../../../types';
 import { PromptState, getHostEnvironment } from '../../../utils';
-import LoggerHelper from '../../logger-helper';
 import { ConnectionValidator } from '../../connectionValidator';
+import LoggerHelper from '../../logger-helper';
 import { serviceUrlInternalPromptNames } from './types';
 import { validateService } from './validators';
 
@@ -58,8 +58,15 @@ function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVers
             }
 
             if (urlValidationState === true) {
-                if (!connectValidator.validity.authRequired) {
-                    return validateService(url, connectValidator, requiredVersion);
+                if (!connectValidator.validity.authRequired && connectValidator.odataService) {
+                    return validateService(
+                        url,
+                        {
+                            odataService: connectValidator.odataService,
+                            axiosConfig: connectValidator.axiosConfig
+                        },
+                        requiredVersion
+                    );
                 }
                 return true;
             }
@@ -105,8 +112,16 @@ function getIgnoreCertErrorsPrompt(
             });
 
             if (validUrl === true) {
-                if (!connectValidator.validity.authRequired) {
-                    return validateService(serviceUrl, connectValidator, requiredVersion, ignoreCertError);
+                if (!connectValidator.validity.authRequired && connectValidator.odataService) {
+                    return validateService(
+                        serviceUrl,
+                        {
+                            odataService: connectValidator.odataService,
+                            axiosConfig: connectValidator.axiosConfig
+                        },
+                        requiredVersion,
+                        ignoreCertError
+                    );
                 }
                 return true;
             }
@@ -145,9 +160,17 @@ function getCliIgnoreCertValidatePrompt(
                 if (validUrl !== true) {
                     throw new Error(validUrl.toString()); // exit
                 }
-                if (!connectValidator.validity.authRequired) {
+                if (!connectValidator.validity.authRequired && connectValidator.odataService) {
                     // Will log on CLI
-                    const validService = await validateService(serviceUrl, connectValidator, requiredVersion, true);
+                    const validService = await validateService(
+                        serviceUrl,
+                        {
+                            odataService: connectValidator.odataService,
+                            axiosConfig: connectValidator.axiosConfig
+                        },
+                        requiredVersion,
+                        true
+                    );
                     if (validService !== true) {
                         throw new Error(t('errors.exitingGeneration', { exitReason: validService.toString() }));
                     }
@@ -208,8 +231,16 @@ function getPasswordPrompt(
                 ignoreCertError,
                 sapClient
             });
-            if (validAuth === true) {
-                return validateService(serviceUrl, connectValidator, requiredVersion, ignoreCertError);
+            if (validAuth === true && connectValidator.odataService) {
+                return validateService(
+                    serviceUrl,
+                    {
+                        odataService: connectValidator.odataService,
+                        axiosConfig: connectValidator.axiosConfig
+                    },
+                    requiredVersion,
+                    ignoreCertError
+                );
             }
             return validAuth;
         }

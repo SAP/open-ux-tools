@@ -64,7 +64,7 @@ describe('defaults', () => {
         } as unknown as TransportConfig;
 
         defaultPkg = defaultPackage();
-        expect(defaultPkg).toBe('$tmp');
+        expect(defaultPkg).toBe('$TMP');
     });
 
     it('should return default transport request choice', () => {

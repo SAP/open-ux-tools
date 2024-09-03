@@ -236,6 +236,25 @@ describe('Setting defaults', () => {
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
+        },
+        // 12 - Testing with manifestLibs type
+        {
+            input: {
+                manifestLibs: ['sap.m', 'sap.fe', 'sap.fe.templates']
+            },
+            expected: {
+                framework: 'SAPUI5',
+                frameworkUrl: 'https://ui5.sap.com',
+                version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
+                localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
+                minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
+                descriptorVersion: '1.12.0',
+                typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`,
+                typesPackage: UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME,
+                ui5Theme: 'sap_fiori_3',
+                ui5Libs: defaultUI5Libs,
+                manifestLibs: defaultUI5Libs.concat('sap.fe', 'sap.fe.templates')
+            }
         }
     ];
 

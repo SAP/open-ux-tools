@@ -4,7 +4,7 @@ import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { ListChoiceOptions } from 'inquirer';
-import type { BackendSystem } from '../../store/src';
+import type { BackendSystem } from '@sap-ux/store';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -20,7 +20,12 @@ export enum DatasourceType {
     projectSpecificDestination = 'projectSpecificDestination'
 }
 
-export type SapSystemType = 'abapOnPrem' | 'abapOnBtp';
+export const SapSystemTypes = {
+    abapOnPrem: 'abapOnPrem',
+    abapOnBtp: 'abapOnBtp'
+} as const;
+
+export type SapSystemType = keyof typeof SapSystemTypes;
 
 /**
  * Answers returned by the OdataServiceInquirer prompt API.
@@ -196,6 +201,12 @@ export type DatasourceTypePromptOptions = {
      * Include the `projectSpecificDestination` option in the datasource type prompt
      */
     includeProjectSpecificDest?: boolean;
+    /**
+     * Limit the offered datasource types to the specified types. Note that if `default` is also provided and not included in the choices, the default will be ignored.
+     * If `includeNone` is set to true, the `none` option will always be included.
+     *
+     */
+    choices?: DatasourceType[];
 };
 
 export type MetadataPromptOptions = {
@@ -222,7 +233,7 @@ export type SystemNamePromptOptions = {
      * This option allows the prompt to be excluded where later storage of the system with the provided name is not required.
      * If this propmt is not included then a BackendSystem will not be returned for the connected system.
      */
-    exclude?: boolean;
+    hide?: boolean;
 };
 
 export type OdataServiceUrlPromptOptions = {
