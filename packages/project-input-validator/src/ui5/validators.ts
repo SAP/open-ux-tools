@@ -184,7 +184,7 @@ function folderWritePermExists(dirPath: string): boolean {
  * Test if folder already contains an existing fiori project.
  *
  * @param dirPath - path to the directory to test
- * @returns true, if write is allowed
+ * @returns true, if its a fiori project.
  */
 function containsFioriProject(dirPath: string): boolean {
     const webappPath = join(dirPath, 'webapp');

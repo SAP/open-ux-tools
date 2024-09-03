@@ -85,6 +85,16 @@ describe('Test Validator functions', () => {
         expect(validateProjectFolder(path, 'anything')).toEqual(t('ui5.folderDoesNotHaveCorrectPermissions'));
         await fs.rmdir(path);
     });
+    it('Tests validateProjectFolder if it already contains an SAP Fiori App', async () => {
+        const path = join(__dirname, 'webapp');
+        try {
+            await fs.mkdir(path);
+        } catch {
+            // lint
+        }
+        expect(validateProjectFolder(__dirname, 'testing')).toEqual(t('ui5.folderContainsFioriApp'));
+        await fs.rmdir(path);
+    });
 
     it('Tests for validateProjectFolder', () => {
         expect(validateProjectFolder('doesntexistfolder$', 'projname')).toEqual(t('ui5.folderDoesNotExist'));
