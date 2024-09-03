@@ -344,9 +344,6 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
-      inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.6)
