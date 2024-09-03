@@ -68,7 +68,6 @@ export const prepare = async (
     additionalFilesToLoad: string[] = []
 ): Promise<{
     projectRoot: string;
-    fileCache: Map<string, string>;
     cdsCompilerFacade: CdsCompilerFacade;
     metadataElementMap: MetadataElementMap;
 }> => {
@@ -86,5 +85,5 @@ export const prepare = async (
     const cdsCompilerFacade = await createCdsCompilerFacadeForRoot(projectRoot, roots, fileCache);
     const metadataElementMap = cdsCompilerFacade.getMetadata(cdsServiceName);
 
-    return { projectRoot, cdsCompilerFacade, metadataElementMap, fileCache };
+    return { projectRoot, cdsCompilerFacade, metadataElementMap };
 };
