@@ -5,11 +5,10 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { NextFunction, Request, Response } from 'express';
 import type { ProxyConfig } from './types';
 import { existsSync, readFileSync } from 'fs';
-import { join, resolve } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
 import type { Url } from 'url';
 import { t } from '../i18n';
-import { ReaderCollection } from '@ui5/fs';
+import type { ReaderCollection } from '@ui5/fs';
 
 /**
  * Handler for the proxy response event.
@@ -233,7 +232,7 @@ export async function resolveUI5Version(version?: string, log?: ToolsLogger, man
  * @param ui5Configs - the configuration of the ui5-proxy-middleware
  * @returns The modified html file content
  */
-export function injectUI5Url(originalHtml: string, ui5Configs: ProxyConfig[]): string | undefined {
+export function injectUI5Url(originalHtml: string, ui5Configs: ProxyConfig[]): string {
     let html = originalHtml;
     for (const ui5Config of ui5Configs) {
         const ui5Host = ui5Config.url.replace(/\/$/, '');
@@ -276,9 +275,7 @@ export const injectScripts = async (
         } else {
             const originalHtml = await files[0].getString();
             const html = injectUI5Url(originalHtml, ui5Configs);
-            if (html) {
-                setHtmlResponse(res, html);
-            }
+            setHtmlResponse(res, html);
         }
     } catch (error) {
         next(error);
