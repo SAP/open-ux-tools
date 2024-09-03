@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.10
+
+### Patch Changes
+
+-   7926d8c: Add missing dependencies
+
 ## 0.0.9
 
 ### Patch Changes
