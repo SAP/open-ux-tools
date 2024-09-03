@@ -472,12 +472,6 @@ describe('Test Proxy Middleware Utils', () => {
             byGlob: byGlobMock
         } as unknown as ReaderCollection;
 
-        function mockChange(content?: string) {
-            return {
-                getString: () => Promise.resolve(content)
-            };
-        }
-
         const nextMock = jest.fn();
         const respMock: Response = {} as Partial<Response> as Response;
         respMock.writeHead = jest.fn();
@@ -491,7 +485,11 @@ describe('Test Proxy Middleware Utils', () => {
         });
 
         test('HTML is modified and response is sent', async () => {
-            byGlobMock.mockResolvedValueOnce([mockChange(html)]);
+            byGlobMock.mockResolvedValueOnce([
+                {
+                    getString: () => html
+                }
+            ]);
 
             await baseUtils.injectScripts({ url: 'test/flp.html' } as any, respMock, nextMock, [], rootProject);
             expect(respMock.writeHead).toBeCalledTimes(1);
