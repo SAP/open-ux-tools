@@ -464,7 +464,7 @@ export const Tree = (): ReactElement => {
     };
 
     return (
-        <div id="list-outline" className="app-panel-scroller tree-scroller">
+        <div id="list-outline" className="app-panel-scroller auto-element-scroller">
             <UIList
                 {...listProp}
                 items={items as never[]}

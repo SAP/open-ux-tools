@@ -33,6 +33,7 @@ export function LeftPanel(): ReactElement {
                 <OutlinePanel />
             </UISections.Section>
             <UISections.Section
+                scrollable={false}
                 layout={UISectionLayout.Standard}
                 className="editor__outline"
                 height="100%"
