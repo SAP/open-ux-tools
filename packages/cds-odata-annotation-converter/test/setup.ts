@@ -1,17 +1,17 @@
 import { promises } from 'fs';
 import { join, relative } from 'path';
-import { default as cds } from '@sap/cds';
 import type { Diagnostic, Element } from '@sap-ux/odata-annotation-core';
 import * as projectAccess from '@sap-ux/project-access';
 import type { AnnotationGroup, Annotation } from '@sap-ux/cds-annotation-parser';
 import { deserialize } from './deserialize-ast';
-import { getCdsArtifacts } from '@sap/ux-cds-compiler-facade';
-import type { CdsArtifactsType, File } from '@sap/ux-cds-compiler-facade';
+import { createCdsCompilerFacadeForRoot } from '@sap/ux-cds-compiler-facade';
+import type { CdsCompilerFacade, File, MetadataElementMap } from '@sap/ux-cds-compiler-facade';
+import { pathToFileURL } from 'url';
 
 export const getFileObj = async (root: string, fileUri: string): Promise<File> => {
     const fileContentBuffer = await promises.readFile(join(root, fileUri));
     const fileContent = fileContentBuffer.toString('utf-8'); // Convert Buffer to string
-    return { fileUri, fileContent };
+    return { fileUri: pathToFileURL(join(root, fileUri)).toString(), fileContent };
 };
 
 export type TestCaseName =
@@ -68,22 +68,23 @@ export const prepare = async (
     additionalFilesToLoad: string[] = []
 ): Promise<{
     projectRoot: string;
-    cdsArtifacts: CdsArtifactsType;
-    fileCache: Map<string, File>;
+    fileCache: Map<string, string>;
+    cdsCompilerFacade: CdsCompilerFacade;
+    metadataElementMap: MetadataElementMap;
 }> => {
     const projectRoot: string = projectRootFolder;
     const roots = await projectAccess.getCdsRoots(projectRoot);
-    const resolvedRoots = cds.resolve(roots ?? []);
-    const cdsFiles = resolvedRoots?.map((uri) => relative(projectRoot, uri));
-    let fileCache: Map<string, File> = new Map();
+    const cdsFiles = (roots ?? [])?.map((uri) => relative(projectRoot, uri));
+    let fileCache: Map<string, string> = new Map();
     if (cdsFiles) {
         const fileList = [...cdsFiles, ...additionalFilesToLoad.filter((f) => !cdsFiles.includes(f))];
         fileCache = (await Promise.all(fileList.map((f) => getFileObj(projectRoot, f)))).reduce((acc, file) => {
-            acc.set(file.fileUri, file);
+            acc.set(file.fileUri, file.fileContent);
             return acc;
-        }, new Map<string, File>());
+        }, new Map<string, string>());
     }
-    const cdsArtifacts = await getCdsArtifacts(projectRoot, cdsServiceName, roots, fileCache);
+    const cdsCompilerFacade = await createCdsCompilerFacadeForRoot(projectRoot, roots, fileCache);
+    const metadataElementMap = cdsCompilerFacade.getMetadata(cdsServiceName);
 
-    return { projectRoot, cdsArtifacts, fileCache };
+    return { projectRoot, cdsCompilerFacade, metadataElementMap, fileCache };
 };

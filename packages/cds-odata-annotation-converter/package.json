@@ -35,8 +35,6 @@
     "devDependencies": {
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap/cds": "7.9.2",
-        "@sap/cds-compiler": "4.8.0",
         "npm-run-all2": "6.2.0",
         "typescript": "5.3.3"
     }
