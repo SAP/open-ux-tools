@@ -10,7 +10,7 @@ import format from 'xml-formatter';
 import { getErrorMessage, validateBasePath } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
-import { coerce, lte } from 'semver';
+import { coerce, lt } from 'semver';
 import type { Manifest } from '@sap-ux/project-access';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 
@@ -192,7 +192,7 @@ function getTemplateContent<T extends BuildingBlock>(
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
         const applyContextPath =
             buildingBlockData.buildingBlockType === BuildingBlockType.Chart ||
-            !!(minUI5Version && lte(minUI5Version, '1.96.0'));
+            !!(minUI5Version && lt(minUI5Version, '1.97.0'));
         // Convert object based metapath to string
         const metadataPath = getMetaPath(applyContextPath, buildingBlockData.metaPath, usePlaceholders);
         buildingBlockData = { ...buildingBlockData, metaPath: metadataPath.metaPath };
