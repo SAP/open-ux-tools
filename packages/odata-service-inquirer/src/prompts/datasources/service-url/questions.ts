@@ -6,11 +6,10 @@ import { t } from '../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../types';
 import { hostEnvironment, promptNames } from '../../../types';
 import { PromptState, getHostEnvironment } from '../../../utils';
-import LoggerHelper from '../../logger-helper';
 import { ConnectionValidator } from '../../connectionValidator';
+import LoggerHelper from '../../logger-helper';
 import { serviceUrlInternalPromptNames } from './types';
 import { validateService } from './validators';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
@@ -64,7 +63,7 @@ function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVers
                         url,
                         {
                             odataService: connectValidator.odataService,
-                            abapServiceProvider: connectValidator.serviceProvider as AbapServiceProvider
+                            axiosConfig: connectValidator.axiosConfig
                         },
                         requiredVersion
                     );
@@ -118,7 +117,7 @@ function getIgnoreCertErrorsPrompt(
                         serviceUrl,
                         {
                             odataService: connectValidator.odataService,
-                            abapServiceProvider: connectValidator.serviceProvider as AbapServiceProvider
+                            axiosConfig: connectValidator.axiosConfig
                         },
                         requiredVersion,
                         ignoreCertError
@@ -167,7 +166,7 @@ function getCliIgnoreCertValidatePrompt(
                         serviceUrl,
                         {
                             odataService: connectValidator.odataService,
-                            abapServiceProvider: connectValidator.serviceProvider as AbapServiceProvider
+                            axiosConfig: connectValidator.axiosConfig
                         },
                         requiredVersion,
                         true
@@ -237,7 +236,7 @@ function getPasswordPrompt(
                     serviceUrl,
                     {
                         odataService: connectValidator.odataService,
-                        abapServiceProvider: connectValidator.serviceProvider as AbapServiceProvider
+                        axiosConfig: connectValidator.axiosConfig
                     },
                     requiredVersion,
                     ignoreCertError
