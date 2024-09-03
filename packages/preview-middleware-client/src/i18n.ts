@@ -11,6 +11,7 @@ export async function getResourceBundle(key: string): Promise<ResourceBundle> {
 
     const bundle = await ResourceBundle.create({
         bundleUrl: '/preview/client/messagebundle.properties',
+        url: '/preview/client/messagebundle.properties',
         supportedLocales: [''],
         locale: '',
         async: true
