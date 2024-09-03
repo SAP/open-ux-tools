@@ -64,13 +64,8 @@ export const getPaths = getDeserializer<string[]>('paths.json');
 
 export const prepare = async (
     projectRootFolder: string,
-    cdsServiceName: string,
     additionalFilesToLoad: string[] = []
-): Promise<{
-    projectRoot: string;
-    cdsCompilerFacade: CdsCompilerFacade;
-    metadataElementMap: MetadataElementMap;
-}> => {
+): Promise<CdsCompilerFacade> => {
     const projectRoot: string = projectRootFolder;
     const roots = await projectAccess.getCdsRoots(projectRoot);
     const cdsFiles = (roots ?? [])?.map((uri) => relative(projectRoot, uri));
@@ -83,7 +78,5 @@ export const prepare = async (
         }, new Map<string, string>());
     }
     const cdsCompilerFacade = await createCdsCompilerFacadeForRoot(projectRoot, roots, fileCache);
-    const metadataElementMap = cdsCompilerFacade.getMetadata(cdsServiceName);
-
-    return { projectRoot, cdsCompilerFacade, metadataElementMap };
+    return cdsCompilerFacade;
 };

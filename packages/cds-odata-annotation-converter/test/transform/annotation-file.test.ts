@@ -18,7 +18,7 @@ const cdsServiceName = 'AdminService';
 
 // global artifacts which are prepared once, should NOT be changed in tests
 // if changes are needed, call prepare() inside your test to generate custom artifacts
-let projectRoot: string;
+let projectRoot = join(__dirname, testDataFolder, cdsProjectFolder);
 let cdsCompilerFacade: CdsCompilerFacade;
 let metadataElementMap: MetadataElementMap;
 const serializeForSnapshot = (metadataElementMap: MetadataElementMap): string[] => {
@@ -29,14 +29,7 @@ const serializeForSnapshot = (metadataElementMap: MetadataElementMap): string[] 
 };
 
 beforeAll(async (): Promise<void> => {
-    const {
-        projectRoot: root,
-        cdsCompilerFacade: facade,
-        metadataElementMap: mdElementMap
-    } = await prepare(join(__dirname, testDataFolder, cdsProjectFolder), cdsServiceName);
-    projectRoot = root;
-    cdsCompilerFacade = facade;
-    metadataElementMap = mdElementMap;
+    cdsCompilerFacade = await prepare(projectRoot);
 });
 
 describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
@@ -49,7 +42,10 @@ describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
 
     test('toAnnotationFile', () => {
         // Prepare
-        const metadataCollector = createMetadataCollector(metadataElementMap, cdsCompilerFacade);
+        const metadataCollector = createMetadataCollector(
+            cdsCompilerFacade.getMetadata(cdsServiceName),
+            cdsCompilerFacade
+        );
 
         const fileUri = join('app/admin/fiori-service.cds');
         const absoluteUriString = toAbsoluteUriString(projectRoot, fileUri);
@@ -127,12 +123,11 @@ describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
     });
 
     test('toAnnotationFile (with metadata collection)', async () => {
-        const { cdsCompilerFacade: facade2 } = await prepare(
-            join(__dirname, testDataFolder, cdsProjectFolder),
-            cdsServiceName,
+        const compilerFacadePlus = await prepare(
+            projectRoot,
+
             [join('app/admin/fiori-service.cds')]
         );
-        const compilerFacadePlus: CdsCompilerFacade = facade2;
         const result: Map<string, string[]> = new Map();
         const actionBindingParamKey = 'AdminService.Books/addRating()/_it2';
         let actionBindingParameterMdElement: MetadataElement = {
