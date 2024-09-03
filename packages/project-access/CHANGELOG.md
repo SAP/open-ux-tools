@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.27.1
+
+### Patch Changes
+
+-   d962ce1: Move hasUI5CliV3 to project-access for common re-use
+
 ## 1.27.0
 
 ### Minor Changes
