@@ -95,7 +95,9 @@ export function validateProjectFolder(targetFolder: string, projectName: string)
     if (!folderWritePermExists(targetFolder)) {
         return t('ui5.folderDoesNotHaveCorrectPermissions');
     }
-
+    if (containsFioriProject(targetFolder)) {
+        return t('ui5.folderContainsFioriApp');
+    }
     if (targetFolder && targetFolder.length > 0 && !folderExists(join(targetFolder, projectName))) {
         return true;
     } else if (targetFolder && targetFolder.length > 0 && folderExists(join(targetFolder, projectName))) {
@@ -177,4 +179,14 @@ function folderWritePermExists(dirPath: string): boolean {
         folderPerm = false;
     }
     return folderPerm;
+}
+/**
+ * Test if folder already contains an existing fiori project.
+ *
+ * @param dirPath - path to the directory to test
+ * @returns true, if write is allowed
+ */
+function containsFioriProject(dirPath: string): boolean {
+    const webappPath = join(dirPath, 'webapp');
+    return existsSync(webappPath);
 }
