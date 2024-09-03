@@ -40,6 +40,7 @@ export interface DeployTaskConfig {
  * @param hideUi5AbapRepoPrompt - whether to hide the UI5 ABAP repository prompt
  * @param showOverwriteQuestion - whether to show the overwrite question (this can be determined by the caller)
  * @param indexGenerationAllowed - whether generating an index.html is allowed
+ * @param useAutocomplete -  determines if the prompt(s) (currently only package prompt) should use auto completion
  */
 export interface AbapDeployConfigPromptOptions {
     backendTarget?: BackendTarget;
@@ -47,6 +48,7 @@ export interface AbapDeployConfigPromptOptions {
     hideUi5AbapRepoPrompt?: boolean;
     showOverwriteQuestion?: boolean;
     indexGenerationAllowed?: boolean;
+    useAutocomplete?: boolean;
 }
 
 export interface AbapSystemChoice {
@@ -99,14 +101,14 @@ export interface TransportAnswers {
 }
 
 export interface AbapDeployConfigAnswers {
+    url: string;
     destination?: string;
     targetSystem?: string;
-    url?: string;
     client?: string;
     scp?: boolean;
     ui5AbapRepo?: string;
     description?: string;
-    package?: string;
+    package: string;
     transport?: string;
     index?: boolean;
     overwrite?: boolean;

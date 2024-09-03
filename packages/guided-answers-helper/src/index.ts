@@ -1,11 +1,13 @@
+export { GUIDED_ANSWERS_ICON } from './guided-answers-icon_svg_base64';
+
 /**
  * Mapping of human readable help topic to implementation specific ids
- * Help items are nodes under a root tree item. A node may have n additonal nodes.
+ * Help items are nodes under a root tree item. A node may have n additional nodes.
  *
  */
-export const enum HELP_TREE {
-    FIORI_TOOLS = 3046
-}
+export const HELP_TREE = {
+    FIORI_TOOLS: 3046
+};
 
 /**
  * Individual help topics which are mapped to node ids

@@ -10,6 +10,12 @@
   },
   "references": [
     {
+      "path": "../abap-deploy-config-inquirer"
+    },
+    {
+      "path": "../abap-deploy-config-writer"
+    },
+    {
       "path": "../adp-tooling"
     },
     {

@@ -1048,126 +1048,36 @@ Object {
 
 exports[`Prompts getChoices Choices for field "entitySet" 1`] = `
 Array [
-  Object {
-    "name": "C_CustomerBankDetailsOPType",
-    "value": "C_CUSTOMER_OP_SRV.C_CustomerBankDetailsOPType",
-  },
-  Object {
-    "name": "C_CustomerCompanyCodeOPType",
-    "value": "C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType",
-  },
-  Object {
-    "name": "C_CustomerOPType",
-    "value": "C_CUSTOMER_OP_SRV.C_CustomerOPType",
-  },
-  Object {
-    "name": "C_CustomerSalesAreaOPType",
-    "value": "C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType",
-  },
-  Object {
-    "name": "C_CustrecnclnacctvhtempType",
-    "value": "C_CUSTOMER_OP_SRV.C_CustrecnclnacctvhtempType",
-  },
-  Object {
-    "name": "C_OrderIsBlockedTextVHTempType",
-    "value": "C_CUSTOMER_OP_SRV.C_OrderIsBlockedTextVHTempType",
-  },
-  Object {
-    "name": "I_AccountingClerkStdVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_AccountingClerkStdVHType",
-  },
-  Object {
-    "name": "I_AccountingClerkType",
-    "value": "C_CUSTOMER_OP_SRV.I_AccountingClerkType",
-  },
-  Object {
-    "name": "I_BillingBlockReasonType",
-    "value": "C_CUSTOMER_OP_SRV.I_BillingBlockReasonType",
-  },
-  Object {
-    "name": "I_BusinessPartnerVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_BusinessPartnerVHType",
-  },
-  Object {
-    "name": "I_ChartOfAccountsStdVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_ChartOfAccountsStdVHType",
-  },
-  Object {
-    "name": "I_CompanyCodeStdVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_CompanyCodeStdVHType",
-  },
-  Object {
-    "name": "I_CompanyCodeType",
-    "value": "C_CUSTOMER_OP_SRV.I_CompanyCodeType",
-  },
-  Object {
-    "name": "I_ContactPersonDepartmentTType",
-    "value": "C_CUSTOMER_OP_SRV.I_ContactPersonDepartmentTType",
-  },
-  Object {
-    "name": "I_ContactPersonFunctionTType",
-    "value": "C_CUSTOMER_OP_SRV.I_ContactPersonFunctionTType",
-  },
-  Object {
-    "name": "I_ControllingAreaStdVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_ControllingAreaStdVHType",
-  },
-  Object {
-    "name": "I_CountryType",
-    "value": "C_CUSTOMER_OP_SRV.I_CountryType",
-  },
-  Object {
-    "name": "I_CreditControlAreaStdVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_CreditControlAreaStdVHType",
-  },
-  Object {
-    "name": "I_Customer_to_BusinessPartnerType",
-    "value": "C_CUSTOMER_OP_SRV.I_Customer_to_BusinessPartnerType",
-  },
-  Object {
-    "name": "I_Customer_VHType",
-    "value": "C_CUSTOMER_OP_SRV.I_Customer_VHType",
-  },
-  Object {
-    "name": "I_CustomerContactOPType",
-    "value": "C_CUSTOMER_OP_SRV.I_CustomerContactOPType",
-  },
-  Object {
-    "name": "I_CustomerDunningType",
-    "value": "C_CUSTOMER_OP_SRV.I_CustomerDunningType",
-  },
-  Object {
-    "name": "I_CustomerGroupType",
-    "value": "C_CUSTOMER_OP_SRV.I_CustomerGroupType",
-  },
-  Object {
-    "name": "I_DeliveryBlockReasonType",
-    "value": "C_CUSTOMER_OP_SRV.I_DeliveryBlockReasonType",
-  },
-  Object {
-    "name": "I_DistributionChannelType",
-    "value": "C_CUSTOMER_OP_SRV.I_DistributionChannelType",
-  },
-  Object {
-    "name": "I_DivisionType",
-    "value": "C_CUSTOMER_OP_SRV.I_DivisionType",
-  },
-  Object {
-    "name": "I_PaymentBlockingReasonType",
-    "value": "C_CUSTOMER_OP_SRV.I_PaymentBlockingReasonType",
-  },
-  Object {
-    "name": "I_SalesGroupType",
-    "value": "C_CUSTOMER_OP_SRV.I_SalesGroupType",
-  },
-  Object {
-    "name": "I_SalesOfficeType",
-    "value": "C_CUSTOMER_OP_SRV.I_SalesOfficeType",
-  },
-  Object {
-    "name": "I_SalesOrganizationType",
-    "value": "C_CUSTOMER_OP_SRV.I_SalesOrganizationType",
-  },
+  "C_CustomerBankDetailsOP",
+  "C_CustomerCompanyCodeOP",
+  "C_CustomerOP",
+  "C_CustomerSalesAreaOP",
+  "C_Custrecnclnacctvhtemp",
+  "C_OrderIsBlockedTextVHTemp",
+  "I_AccountingClerk",
+  "I_AccountingClerkStdVH",
+  "I_BillingBlockReason",
+  "I_BusinessPartnerVH",
+  "I_ChartOfAccountsStdVH",
+  "I_CompanyCode",
+  "I_CompanyCodeStdVH",
+  "I_ContactPersonDepartmentT",
+  "I_ContactPersonFunctionT",
+  "I_ControllingAreaStdVH",
+  "I_Country",
+  "I_CreditControlAreaStdVH",
+  "I_Customer_to_BusinessPartner",
+  "I_Customer_VH",
+  "I_CustomerContactOP",
+  "I_CustomerDunning",
+  "I_CustomerGroup",
+  "I_DeliveryBlockReason",
+  "I_DistributionChannel",
+  "I_Division",
+  "I_PaymentBlockingReason",
+  "I_SalesGroup",
+  "I_SalesOffice",
+  "I_SalesOrganization",
 ]
 `;
 

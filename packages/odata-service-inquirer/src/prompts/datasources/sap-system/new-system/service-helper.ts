@@ -1,15 +1,20 @@
 import {
-    ServiceType,
-    type Annotations,
     type CatalogService,
-    type V2CatalogService,
+    ServiceType,
+    V2CatalogService,
+    type Annotations,
     type ODataServiceInfo,
-    type ServiceProvider
+    type ServiceProvider,
+    ODataVersion
 } from '@sap-ux/axios-extension';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import LoggerHelper from '../../../logger-helper';
-import type { ServiceAnswer } from './questions';
+import type { ServiceAnswer } from './types';
+import type { ConnectionValidator } from '../../../connectionValidator';
+import { PromptState } from '../../../../utils';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { errorHandler } from '../../../prompt-helpers';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON/'];
@@ -55,25 +60,50 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
 };
 
 /**
+ * Logs the catalog reuest errors.
+ *
+ * @param requestErrors catalog request errors
+ */
+function logErrorsForHelp(requestErrors: Record<ODataVersion, unknown> | {}): void {
+    // Log the first error only
+    const catalogErrors = Object.values(requestErrors);
+    if (catalogErrors.length > 0) {
+        catalogErrors.forEach((error) => errorHandler.logErrorMsgs(error));
+    }
+}
+
+/**
  * Get the service choices from the specified catalogs.
  *
  * @param catalogs catalogs to get the services from. There should be one per odata version required.
  * @returns service choices based on the provided catalogs
  */
 export async function getServiceChoices(catalogs: CatalogService[]): Promise<ListChoiceOptions<ServiceAnswer>[]> {
+    const requestErrors: Record<ODataVersion, unknown> | {} = {};
     const listServicesRequests = catalogs.map(async (catalog) => {
         try {
             return await catalog.listServices();
         } catch (error) {
             LoggerHelper.logger.error(
-                `An error occurred requesting services from: ${catalog.entitySet}. Some services may not be listed.`
+                t('errors.serviceCatalogRequest', {
+                    catalogRequestUri: catalog.getUri(),
+                    entitySet: catalog.entitySet,
+                    error
+                })
             );
+            // Save any errors for processing later as we may show more useful message to the user
+            Object.assign(requestErrors, {
+                [catalog instanceof V2CatalogService ? ODataVersion.v2 : ODataVersion.v4]: error
+            });
             return [];
         }
     });
     const serviceInfos: ODataServiceInfo[][] = await Promise.all(listServicesRequests);
     const flatServices = serviceInfos?.flat() ?? [];
     LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
+    if (flatServices.length === 0) {
+        logErrorsForHelp(requestErrors);
+    }
 
     return createServiceChoices(flatServices);
 }
@@ -134,4 +164,40 @@ export async function getServiceType(
         }
     }
     return resolvedServiceType ?? (serviceType as ServiceType);
+}
+
+/**
+ * Requests and sets the service details to the PromptState.odataService properties.
+ * If an error occurs, the error message is returned for use in validators.
+ *
+ * @param service the specific service to get details for
+ * @param connectionValidator a reference to the connection validator which has an active connection to the backend
+ * @returns true if successful, setting the PromptState.odataService properties, or an error message indicating why the service details could not be retrieved.
+ */
+export async function getServiceDetails(
+    service: ServiceAnswer,
+    connectionValidator: ConnectionValidator
+): Promise<string | boolean> {
+    const serviceCatalog = connectionValidator.catalogs[service.serviceODataVersion];
+
+    if (!serviceCatalog || !connectionValidator.serviceProvider) {
+        LoggerHelper.logger.error('ConenctionValidator is not initialized');
+        return false;
+    }
+
+    const serviceResult = await getServiceMetadata(
+        service.servicePath,
+        serviceCatalog,
+        connectionValidator.serviceProvider
+    );
+    if (typeof serviceResult === 'string') {
+        return serviceResult;
+    }
+    PromptState.odataService.annotations = serviceResult?.annotations;
+    PromptState.odataService.metadata = serviceResult?.metadata;
+    PromptState.odataService.odataVersion =
+        service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4;
+    PromptState.odataService.servicePath = service.servicePath;
+    PromptState.odataService.origin = connectionValidator.validatedUrl;
+    return true;
 }

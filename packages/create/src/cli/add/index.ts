@@ -9,6 +9,7 @@ import { addAnnotationsToOdataCommand } from './annotations-to-odata';
 import { addAddHtmlFilesCmd } from './html';
 import { addComponentUsagesCommand } from './component-usages';
 import { addAddServiceCmd } from './service';
+import { addDeployConfigCommand } from './deploy-config';
 
 /**
  * Return 'create-fiori add *' commands. Commands include also the handler action.
@@ -37,5 +38,7 @@ export function getAddCommands(): Command {
     addComponentUsagesCommand(addCommands);
     // create-fiori add service
     addAddServiceCmd(addCommands);
+    // create-fiori add deploy-config
+    addDeployConfigCommand(addCommands);
     return addCommands;
 }

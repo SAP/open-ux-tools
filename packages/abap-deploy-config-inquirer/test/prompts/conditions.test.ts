@@ -1,11 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import {
-    AbapDeployConfigPromptOptions,
-    ClientChoiceValue,
-    PackageInputChoices,
-    TransportChoices,
-    TransportConfig
-} from '../../src/types';
+import { ClientChoiceValue, PackageInputChoices, TransportChoices, TransportConfig } from '../../src/types';
 import {
     defaultOrShowManualPackageQuestion,
     defaultOrShowManualTransportQuestion,
@@ -26,26 +20,19 @@ import {
 } from '../../src/prompts/conditions';
 import * as utils from '../../src/utils';
 import { PromptState } from '../../src/prompts/prompt-state';
-import { getHelpUrl } from '@sap-ux/fiori-generator-shared';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
+import { getHelpUrl } from '@sap-ux/guided-answers-helper';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
 
-jest.mock('@sap-ux/feature-toggle', () => ({
-    isFeatureEnabled: jest.fn()
-}));
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn(),
+jest.mock('@sap-ux/guided-answers-helper', () => ({
+    ...jest.requireActual('@sap-ux/guided-answers-helper'),
     getHelpUrl: jest.fn()
 }));
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
 const mockGetHelpUrl = getHelpUrl as jest.Mock;
-const mockIsFeatureEnabled = isFeatureEnabled as jest.Mock;
 
 describe('Test abap deploy config inquirer conditions', () => {
     beforeEach(() => {
@@ -63,9 +50,9 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should not show scp question', async () => {
         // 1 target not chosen
-        expect(showScpQuestion({})).toBe(false);
+        expect(showScpQuestion({ url: '', package: '' })).toBe(false);
         // 2 url target chosen but no url provided
-        expect(showScpQuestion({ targetSystem: 'Url', url: '' })).toBe(false);
+        expect(showScpQuestion({ targetSystem: 'Url', url: '', package: '' })).toBe(false);
 
         // 3 scp value has been retrieved from existing system
         jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue({
@@ -73,12 +60,12 @@ describe('Test abap deploy config inquirer conditions', () => {
             url: 'http://saved.target.url',
             client: '100'
         });
-        expect(showScpQuestion({ url: 'http://saved.target.url' })).toBe(false);
+        expect(showScpQuestion({ url: 'http://saved.target.url', package: '' })).toBe(false);
     });
 
     test('should show scp question', async () => {
         jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue(undefined);
-        expect(showScpQuestion({ targetSystem: 'Url', url: 'http://new.target.url' })).toBe(true);
+        expect(showScpQuestion({ targetSystem: 'Url', url: 'http://new.target.url', package: '' })).toBe(true);
     });
 
     test('should show client choice question', () => {
@@ -141,36 +128,23 @@ describe('Test abap deploy config inquirer conditions', () => {
     test('should show package input choice question', () => {
         // cli
         PromptState.isYUI = false;
-        expect(showPackageInputChoiceQuestion()).toBe(true);
-
-        // feature enabled
-        mockIsFeatureEnabled.mockReturnValueOnce(true);
-        expect(showPackageInputChoiceQuestion()).toBe(true);
+        expect(showPackageInputChoiceQuestion(true)).toBe(true);
     });
 
     test('should not show package input choice question', () => {
         PromptState.isYUI = true;
-        mockIsFeatureEnabled.mockReturnValueOnce(true);
         PromptState.transportAnswers.transportConfig = {
             getPackage: () => 'ZPACKAGE1'
         } as unknown as TransportConfig;
-        expect(showPackageInputChoiceQuestion()).toBe(false);
+        expect(showPackageInputChoiceQuestion(true)).toBe(false);
         expect(PromptState.abapDeployConfig.package).toBe('ZPACKAGE1');
     });
 
     test('should show manual package question', () => {
-        mockIsFeatureEnabled.mockReturnValueOnce(false);
-        expect(defaultOrShowManualPackageQuestion(false, '')).toBe(true);
-
-        // cli
         expect(defaultOrShowManualPackageQuestion(true, PackageInputChoices.EnterManualChoice)).toBe(true);
     });
 
     test('should show search package question', () => {
-        mockIsFeatureEnabled.mockReturnValueOnce(true);
-        expect(defaultOrShowSearchPackageQuestion(false, PackageInputChoices.ListExistingChoice)).toBe(true);
-
-        // cli
         expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.ListExistingChoice)).toBe(true);
     });
 
