@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.0
+
+### Minor Changes
+
+-   b1628da: Add quick actions to adaptation editor
+
 ## 0.4.30
 
 ### Patch Changes
