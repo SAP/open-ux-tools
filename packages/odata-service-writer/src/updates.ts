@@ -5,7 +5,7 @@ import { t } from './i18n';
 import type { OdataService, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import semVer from 'semver';
 import prettifyXml from 'prettify-xml';
-import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
+import { getMinimumUI5Version, type Manifest, hasUI5CliV3 } from '@sap-ux/project-access';
 
 /**
  * Internal function that updates the manifest.json based on the given service configuration.
@@ -151,19 +151,4 @@ export function updatePackageJson(path: string, fs: Editor, addMockServer: boole
         }
     }
     fs.writeJSON(path, packageJson);
-}
-
-/**
- * Check if dev dependencies contains @ui5/cli version greater than 2.
- *
- * @param devDependencies dev dependencies from package.json
- * @returns boolean
- */
-export function hasUI5CliV3(devDependencies: any): boolean {
-    let isV3 = false;
-    const ui5CliSemver = semVer.coerce(devDependencies['@ui5/cli']);
-    if (ui5CliSemver && semVer.gte(ui5CliSemver, '3.0.0')) {
-        isV3 = true;
-    }
-    return isV3;
 }
