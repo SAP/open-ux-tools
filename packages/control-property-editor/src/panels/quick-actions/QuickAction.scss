@@ -1,0 +1,32 @@
+.quick-action-item {
+    display: flex;
+    flex-direction: row;
+    line-height: 24px;
+    button.ms-Link {
+        display: flex;
+        align-items: center;
+        max-width: 200px;
+        overflow: hidden;
+        padding-right: 2px;
+        color: var(--vscode-textLink-foreground);
+        font-size: 13px;
+        font-weight: bold;
+        height: 24px;
+        line-height: 24px;
+        .link-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        i.ts-icon {
+            display: flex; 
+            svg {
+                align-self: center;
+                path {
+                    fill: var(--vscode-textLink-foreground);
+                }
+            }
+        }
+    }
+}

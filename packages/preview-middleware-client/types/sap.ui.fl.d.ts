@@ -28,8 +28,8 @@ declare module 'sap/ui/fl/Change' {
     export default Change;
 }
 /**
- * Available since version `1.102` of SAPUI5 
-**/
+ * Available since version `1.102` of SAPUI5
+ **/
 declare module 'sap/ui/fl/Scenario' {
     const scenario = {
         AppVariant: 'APP_VARIANT',
@@ -80,7 +80,9 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
         clear(): void;
         getItem(key: string): unknown;
         getItems(): Promise<unknown[]>;
-        fileChangeRequestNotifier: ((fileName: string, kind: 'create' | 'delete', changeType?: string) => void) | undefined;
+        fileChangeRequestNotifier:
+            | ((fileName: string, kind: 'create' | 'delete', changeType?: string) => void)
+            | undefined;
     }
 
     class ObjectStorageConnector {
@@ -90,4 +92,14 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
     }
 
     export default ObjectStorageConnector;
+}
+
+declare module 'sap/ui/fl/apply/api/FlexRuntimeInfoAPI' {
+    import type UI5Element from 'sap/ui/core/Element';
+
+    class FlexRuntimeInfoAPI {
+        static hasVariantManagement(parameters: { element: UI5Element }): boolean;
+    }
+
+    export default FlexRuntimeInfoAPI;
 }

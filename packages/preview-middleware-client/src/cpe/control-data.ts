@@ -18,9 +18,7 @@ import { UI5ControlProperty } from './types';
 import DataType from 'sap/ui/base/DataType';
 
 type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5Type' | 'enumValues'>;
-interface Name {
-    getName(): string;
-}
+
 /**
  * A property is disabled if it is an array or the type is 'any'
  * - since  we currently don't have a good editor for it Otherwise, it is enabled.
@@ -73,7 +71,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
     const analyzedType: AnalyzedType = {
         primitiveType: 'any',
         ui5Type: null,
-        enumValues: null,
+        enumValues: undefined,
         isArray: false
     };
     const propertyType = property?.getType();
@@ -105,8 +103,11 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
         if (propertyDataType && !(propertyDataType instanceof DataType)) {
             return analyzedType;
         }
+        // enum values are created differently and use DataType as prototype, which only has stubs for instance functions -> getName returns undefined
+        // array and base types also return undefined, but we have already handled those above
+        // https://github.com/SAP/openui5/blob/203ce22763a76e28b7a422f6c635a42480f733f1/src/sap.ui.core/src/sap/ui/base/DataType.js#L430
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        const name = (Object.getPrototypeOf(propertyDataType) as Name).getName();
+        const name = (Object.getPrototypeOf(propertyDataType) as DataType).getName();
         if (!name) {
             analyzedType.primitiveType = 'enum';
         } else {
@@ -115,8 +116,8 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
         analyzedType.ui5Type = typeName;
 
         // Determine base type for SAP types
-        if (analyzedType.primitiveType === 'enum') {
-            analyzedType.enumValues = sap.ui.require(analyzedType.ui5Type.split('.').join('/'));
+        if (analyzedType.primitiveType === 'enum' && typeof propertyDataType?.getEnumValues === 'function') {
+            analyzedType.enumValues = propertyDataType.getEnumValues();
         }
     }
 

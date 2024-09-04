@@ -120,7 +120,7 @@ export function ChangesPanel(): ReactElement {
                     onChange={onFilterChange}
                 />
             </div>
-            {renderChanges()}
+            <div className="app-panel-scroller auto-element-scroller">{renderChanges()}</div>
         </>
     );
 }

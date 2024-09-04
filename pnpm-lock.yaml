@@ -2079,12 +2079,18 @@ importers:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sapui5/types':
         specifier: 1.120.5
         version: 1.120.5
       '@ui5/cli':
         specifier: 3.8.0
         version: 3.8.0
+      npm-run-all2:
+        specifier: 6.2.0
+        version: 6.2.0
       ui5-tooling-modules:
         specifier: 3.0.5
         version: 3.0.5
@@ -19210,6 +19216,7 @@ packages:
   /pidtree@0.6.0:
     resolution: {integrity: sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g==}
     engines: {node: '>=0.10'}
+    hasBin: true
     dev: true
 
   /pify@2.3.0:
