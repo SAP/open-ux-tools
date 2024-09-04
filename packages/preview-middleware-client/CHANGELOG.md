@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.0
+
+### Minor Changes
+
+-   b1628da: Add quick actions to adaptation editor
+
 ## 0.10.9
 
 ### Patch Changes

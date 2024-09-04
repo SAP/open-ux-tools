@@ -18,7 +18,8 @@ const connectionValidatorMock = {
     validateUrl: validateUrlMockTrue,
     validateAuth: validateAuthTrue,
     odataService: odataServiceMock,
-    serviceProvider: serviceProviderMock
+    serviceProvider: serviceProviderMock,
+    axiosConfig: {}
 };
 jest.mock('../../../../src/prompts/connectionValidator', () => {
     return {
@@ -129,6 +130,7 @@ describe('Service URL prompts', () => {
             authRequired: false,
             authenticated: false
         };
+        connectionValidatorMock.axiosConfig = {};
 
         // Should validate service and return true if valid
         const serviceUrl = 'https://some.host:1234/service/path';
@@ -140,7 +142,7 @@ describe('Service URL prompts', () => {
 
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining({ 'abapServiceProvider': {}, 'odataService': {} }),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined
         );
         expect(validateUrlMockTrue).toHaveBeenCalledWith(serviceUrl);
@@ -155,7 +157,7 @@ describe('Service URL prompts', () => {
         expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl);
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining({ 'abapServiceProvider': {}, 'odataService': {} }),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             OdataVersion.v4
         );
 
@@ -243,7 +245,7 @@ describe('Service URL prompts', () => {
         });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining({ 'abapServiceProvider': {}, 'odataService': {} }),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined,
             true
         );
@@ -321,7 +323,7 @@ describe('Service URL prompts', () => {
         });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining({ 'abapServiceProvider': {}, 'odataService': {} }),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined,
             true
         );
@@ -400,7 +402,7 @@ describe('Service URL prompts', () => {
         });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining({ 'abapServiceProvider': {}, 'odataService': {} }),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined,
             undefined
         );

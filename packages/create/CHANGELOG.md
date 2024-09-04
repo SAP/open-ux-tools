@@ -1,5 +1,94 @@
 # @sap-ux/create
 
+## 0.8.6
+
+### Patch Changes
+
+-   Updated dependencies [0b7af6a]
+    -   @sap-ux/preview-middleware@0.16.60
+
+## 0.8.5
+
+### Patch Changes
+
+-   Updated dependencies [b1628da]
+    -   @sap-ux/preview-middleware@0.16.59
+
+## 0.8.4
+
+### Patch Changes
+
+-   Updated dependencies [40ce4ca]
+    -   @sap-ux/abap-deploy-config-inquirer@0.0.12
+
+## 0.8.3
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/abap-deploy-config-writer@0.0.40
+    -   @sap-ux/adp-tooling@0.12.45
+    -   @sap-ux/app-config-writer@0.4.31
+    -   @sap-ux/cap-config-writer@0.7.36
+    -   @sap-ux/cards-editor-config-writer@0.4.4
+    -   @sap-ux/mockserver-config-writer@0.6.4
+    -   @sap-ux/preview-middleware@0.16.58
+    -   @sap-ux/system-access@0.5.10
+    -   @sap-ux/abap-deploy-config-inquirer@0.0.11
+
+## 0.8.2
+
+### Patch Changes
+
+-   Updated dependencies [7926d8c]
+    -   @sap-ux/abap-deploy-config-inquirer@0.0.10
+
+## 0.8.1
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.7.35
+
+## 0.8.0
+
+### Minor Changes
+
+-   99d7394: adds create command add deploy-config
+
+### Patch Changes
+
+-   Updated dependencies [99d7394]
+    -   @sap-ux/abap-deploy-config-inquirer@0.0.9
+
+## 0.7.67
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.7.34
+
+## 0.7.66
+
+### Patch Changes
+
+-   Updated dependencies [1294b1c]
+    -   @sap-ux/adp-tooling@0.12.44
+    -   @sap-ux/preview-middleware@0.16.57
+
+## 0.7.65
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/adp-tooling@0.12.43
+    -   @sap-ux/app-config-writer@0.4.30
+    -   @sap-ux/cap-config-writer@0.7.33
+    -   @sap-ux/cards-editor-config-writer@0.4.4
+    -   @sap-ux/mockserver-config-writer@0.6.4
+    -   @sap-ux/preview-middleware@0.16.56
+    -   @sap-ux/system-access@0.5.10
+
 ## 0.7.64
 
 ### Patch Changes

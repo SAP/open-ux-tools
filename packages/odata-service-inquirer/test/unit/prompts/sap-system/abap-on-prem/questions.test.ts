@@ -1,5 +1,12 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
-import type { ODataService, ODataServiceInfo, ServiceProvider } from '@sap-ux/axios-extension';
+import type {
+    CatalogService,
+    ODataService,
+    ODataServiceInfo,
+    ServiceProvider,
+    V2CatalogService,
+    V4CatalogService
+} from '@sap-ux/axios-extension';
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
@@ -31,10 +38,10 @@ const serviceProviderMock = {} as Partial<ServiceProvider>;
 const catalogs = {
     [ODataVersion.v2]: {
         listServices: jest.fn().mockResolvedValue([])
-    } as { listServices: Function; getAnnotations?: Function; getServiceType?: Function },
+    } as Partial<V2CatalogService>,
     [ODataVersion.v4]: {
         listServices: jest.fn().mockResolvedValue([])
-    } as { listServices: Function; getAnnotations?: Function }
+    } as Partial<V4CatalogService>
 };
 const connectionValidatorMock = {
     validity: {} as ConnectionValidator['validity'],
@@ -711,5 +718,43 @@ describe('questions', () => {
             })
         );
         expect(validationResult).toBe(t('errors.serviceMetadataErrorUI', { servicePath: selectedService.servicePath }));
+    });
+
+    test('should show a guided answer link when no services are returned and an error was logged', async () => {
+        const mockV2CatUri = 'http://some.abap.system:1234/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/';
+        const mockV4CatUri =
+            'http://some.abap.system:1234/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups';
+        const entitySet = 'RecommendedServiceCollection';
+        const catRequestError = new Error('Failed to get services');
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockRejectedValue(catRequestError),
+                entitySet,
+                getUri: jest.fn().mockReturnValue(mockV2CatUri)
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([]),
+                entitySet,
+                getUri: jest.fn().mockReturnValue(mockV4CatUri)
+            }
+        };
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
+        const loggerSpy = jest.spyOn(LoggerHelper.logger, 'error');
+        const newSystemQuestions = getAbapOnPremQuestions();
+        const serviceSelectionPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${promptNames.serviceSelection}`
+        );
+        //
+        const choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)();
+        expect(choices).toEqual([]);
+        const valResult = await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)();
+        expect(valResult).toBe(t('errors.servicesUnavailable'));
+        expect(loggerSpy).toHaveBeenCalledWith(
+            t('errors.serviceCatalogRequest', {
+                catalogRequestUri: mockV2CatUri,
+                entitySet,
+                error: catRequestError
+            })
+        );
     });
 });

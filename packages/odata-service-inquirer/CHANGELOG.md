@@ -1,5 +1,35 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.36
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/telemetry@0.5.27
+
+## 0.5.35
+
+### Patch Changes
+
+-   eb958a1: Fix for annotations not retrieved by service url prompt
+
+## 0.5.34
+
+### Patch Changes
+
+-   8a84adf: Fix for no services + error GA link
+
+## 0.5.33
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/telemetry@0.5.26
+
 ## 0.5.32
 
 ### Patch Changes

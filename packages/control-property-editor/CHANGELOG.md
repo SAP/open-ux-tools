@@ -1,5 +1,23 @@
 # @sap-ux/control-property-editor
 
+## 0.5.1
+
+### Patch Changes
+
+-   0b7af6a: remove z-index for sticky Search and filter bar and added updating highlighting control logic
+
+## 0.5.0
+
+### Minor Changes
+
+-   b1628da: Add quick actions to adaptation editor
+
+## 0.4.30
+
+### Patch Changes
+
+-   2b6daf3: Changed color of chevron on selection
+
 ## 0.4.29
 
 ### Patch Changes

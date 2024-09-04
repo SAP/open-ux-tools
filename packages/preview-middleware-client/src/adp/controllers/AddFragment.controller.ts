@@ -44,7 +44,7 @@ type AddFragmentModel = JSONModel & {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, private aggregation?: string) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
@@ -181,7 +181,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             }
             return false;
         });
-        const defaultAggregation = controlMetadata.getDefaultAggregationName();
+        const defaultAggregation = this.aggregation ?? controlMetadata.getDefaultAggregationName();
         const selectedControlName = controlMetadata.getName();
 
         let selectedControlChildren: string[] | number[] = Object.keys(

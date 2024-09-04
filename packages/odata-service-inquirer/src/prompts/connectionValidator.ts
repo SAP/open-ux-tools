@@ -68,7 +68,7 @@ export class ConnectionValidator {
 
     private _odataService: ODataService | undefined;
     private _serviceProvider: ServiceProvider | undefined;
-    private _axiosConfig: (AxiosExtensionRequestConfig & ProviderConfiguration) | undefined;
+    private _axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration;
     private _catalogV2: CatalogService | undefined;
     private _catalogV4: CatalogService | undefined;
     private _systemAuthType: SystemAuthType | undefined;
@@ -82,7 +82,7 @@ export class ConnectionValidator {
      *
      * @returns the axios configuration
      */
-    public get axiosConfig(): AxiosRequestConfig | undefined {
+    public get axiosConfig(): AxiosRequestConfig {
         return this._axiosConfig;
     }
 

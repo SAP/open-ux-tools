@@ -3,14 +3,23 @@ import type { OutlineNode } from '@sap-ux-private/control-property-editor-common
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 
+import type { ControlTreeIndex } from 'open/ux/preview/client/cpe/types';
 import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
+
 import { sapCoreMock } from 'mock/window';
 import ComponentMock from 'mock/sap/ui/core/Component';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 
-jest.mock('../../../../src/cpe/outline/utils', () => {
+jest.mock('../../../../src/cpe/outline/editable', () => {
     return {
-        isEditable: () => false,
+        ...jest.requireActual('../../../../src/cpe/outline/editable'),
+        isEditable: () => false
+    };
+});
+
+jest.mock('../../../../src/cpe/utils', () => {
+    return {
+        ...jest.requireActual('../../../../src/cpe/utils'),
         isReuseComponent: () => true
     };
 });
@@ -19,8 +28,9 @@ describe('outline nodes', () => {
     const transformNodes = (
         nodes: OutlineViewNode[],
         scenario: Scenario,
-        reuseComponentsIds: Set<string> = new Set<string>()
-    ): Promise<OutlineNode[]> => tn(nodes, scenario, reuseComponentsIds);
+        reuseComponentsIds: Set<string> = new Set<string>(),
+        controlIndex: ControlTreeIndex = {}
+    ): Promise<OutlineNode[]> => tn(nodes, scenario, reuseComponentsIds, controlIndex);
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest
