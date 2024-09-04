@@ -1,8 +1,14 @@
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
-import { isEditable, isReuseComponent } from './utils';
+
 import { getUi5Version, Ui5VersionInfo } from '../../utils/version';
+import { getControlById } from '../../utils/core';
+
+import type { ControlTreeIndex } from '../types';
+import { isReuseComponent } from '../utils';
+
+import { isEditable } from './editable';
 
 interface AdditionalData {
     text?: string;
@@ -16,7 +22,7 @@ interface AdditionalData {
  * @returns An object containing the text and the technical name of the control.
  */
 function getAdditionalData(id: string): AdditionalData {
-    const control = sap.ui.getCore().byId(id);
+    const control = getControlById(id);
     if (!control) {
         return {};
     }
@@ -71,6 +77,20 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
         hasDefaultContent: false
     });
 }
+/**
+ * Creates conrol index for all controls in the app.
+ *
+ * @param {ControlTreeIndex} controlIndex - Control index for the ui5 app.
+ * @param {OutlineNode} node - control node added to the outline.
+ */
+function indexNode(controlIndex: ControlTreeIndex, node: OutlineNode): void {
+    const indexedControls = controlIndex[node.controlType];
+    if (indexedControls) {
+        indexedControls.push(node);
+    } else {
+        controlIndex[node.controlType] = [node];
+    }
+}
 
 /**
  * Transform node.
@@ -78,12 +98,14 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
  * @param input outline view node
  * @param scenario type of project
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
- * @returns {Promise<OutlineNode[]>} transformed outline tree nodes
+ * @param controlIndex Control tree index
+ * @returns transformed outline tree nodes
  */
 export async function transformNodes(
     input: OutlineViewNode[],
     scenario: Scenario,
-    reuseComponentsIds: Set<string>
+    reuseComponentsIds: Set<string>,
+    controlIndex: ControlTreeIndex
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
@@ -100,8 +122,8 @@ export async function transformNodes(
             const technicalName = current.technicalName.split('.').slice(-1)[0];
 
             const transformedChildren = isAdp
-                ? await handleDuplicateNodes(children, scenario, reuseComponentsIds)
-                : await transformNodes(children, scenario, reuseComponentsIds);
+                ? await handleDuplicateNodes(children, scenario, reuseComponentsIds, controlIndex)
+                : await transformNodes(children, scenario, reuseComponentsIds, controlIndex);
 
             const node: OutlineNode = {
                 controlId: current.id,
@@ -112,6 +134,7 @@ export async function transformNodes(
                 children: transformedChildren
             };
 
+            indexNode(controlIndex, node);
             fillReuseComponents(reuseComponentsIds, current, scenario, ui5VersionInfo);
 
             items.push(node);
@@ -167,12 +190,14 @@ function fillReuseComponents(
  * @param children outline view node children
  * @param scenario type of project
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
+ * @param controlIndex Control tree index
  * @returns transformed outline tree nodes
  */
 export async function handleDuplicateNodes(
     children: OutlineViewNode[],
     scenario: Scenario,
-    reuseComponentsIds: Set<string>
+    reuseComponentsIds: Set<string>,
+    controlIndex: ControlTreeIndex
 ): Promise<OutlineNode[]> {
     const extPointIDs = new Set<string>();
 
@@ -185,5 +210,5 @@ export async function handleDuplicateNodes(
 
     const uniqueChildren = children.filter((child) => !extPointIDs.has(child.id));
 
-    return transformNodes(uniqueChildren, scenario, reuseComponentsIds);
+    return transformNodes(uniqueChildren, scenario, reuseComponentsIds, controlIndex);
 }

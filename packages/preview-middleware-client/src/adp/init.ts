@@ -1,22 +1,24 @@
 import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import init from '../cpe/init';
-import { initDialogs } from './init-dialogs';
+
 import {
     ExternalAction,
     showMessage,
     startPostMessageCommunication,
     enableTelemetry
 } from '@sap-ux-private/control-property-editor-common';
+
 import { ActionHandler } from '../cpe/types';
-import UI5Element from 'sap/ui/dt/Element';
 import { getError } from '../utils/error';
-import {
-    getUi5Version,
-    getUI5VersionValidationMessage,
-    isLowerThanMinimalUi5Version,
-    Ui5VersionInfo
-} from '../utils/version';
+import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version } from '../utils/version';
+
+import init from '../cpe/init';
+import { getApplicationType } from '../utils/application';
+import { getTextBundle } from '../i18n';
+
+import { loadDefinitions } from './quick-actions/load';
+import { getAllSyncViewsIds } from './utils';
+import { initDialogs } from './init-dialogs';
 
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
@@ -55,7 +57,10 @@ export default async function (rta: RuntimeAuthoring) {
         extPointService.init(subscribe);
     }
 
-    await init(rta);
+    const applicationType = getApplicationType(rta.getRootControlInstance().getManifest());
+    const quickActionRegistries = await loadDefinitions(applicationType);
+
+    await init(rta, quickActionRegistries);
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
         sendAction(showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true }));
@@ -63,10 +68,10 @@ export default async function (rta: RuntimeAuthoring) {
     }
 
     if (syncViewsIds.length > 0) {
+        const bundle = await getTextBundle();
         sendAction(
             showMessage({
-                message:
-                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                message: bundle.getText('ADP_SYNC_VIEWS_MESSAGE'),
                 shouldHideIframe: false
             })
         );
@@ -74,47 +79,3 @@ export default async function (rta: RuntimeAuthoring) {
 
     log.debug('ADP init executed.');
 }
-
-/**
- * Get Ids for all sync views
- *
- * @param ui5VersionInfo UI5 Version Information
- *
- * @returns array of Ids for application sync views
- */
-async function getAllSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promise<string[]> {
-    const syncViewIds: string[] = [];
-    try {
-        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 120 })) {
-            const Element = (await import('sap/ui/core/Element')).default;
-            const elements = Element.registry.filter(() => true) as UI5Element[];
-            elements.forEach((ui5Element) => {
-                if (isSyncView(ui5Element)) {
-                    syncViewIds.push(ui5Element.getId());
-                }
-            });
-        } else {
-            const ElementRegistry = (await import('sap/ui/core/ElementRegistry')).default;
-            const elements = ElementRegistry.all() as Record<string, UI5Element>;
-            Object.entries(elements).forEach(([key, ui5Element]) => {
-                if (isSyncView(ui5Element)) {
-                    syncViewIds.push(key);
-                }
-            });
-        }
-    } catch (error) {
-        log.error('Could not get application sync views', getError(error));
-    }
-
-    return syncViewIds;
-}
-
-/**
- * Check if element is sync view
- *
- * @param element UI5Element
- * @returns boolean if element is sync view or not
- */
-const isSyncView = (element: UI5Element): boolean => {
-    return element?.getMetadata()?.getName()?.includes('XMLView') && element?.oAsyncState === undefined;
-};
