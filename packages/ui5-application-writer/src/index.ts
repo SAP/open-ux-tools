@@ -2,13 +2,13 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { App, AppOptions, Package, UI5 } from './types';
+import type { App, AppOptions, Package, UI5, ApiHubConfig } from './types';
 import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
 import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
-import { Ui5App } from './types';
+import { Ui5App, API_HUB_API_KEY, API_HUB_TYPE } from './types';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -19,6 +19,7 @@ import { Ui5App } from './types';
  * @returns the updated memfs editor instance
  */
 async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Promise<Editor> {
+    console.log("---- basePath ----", basePath);
     if (!fs) {
         fs = create(createStorage());
     }
@@ -58,7 +59,10 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         }
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
+    
     if (isEdmxProjectType) {
+        // add preview middleware to ui5Config
+        ui5Config.addFioriToolsPreviewMiddleware(ui5App.app.id, ui5App.ui5?.ui5Theme);
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         // write ui5-local.yaml only for non-CAP applications
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
@@ -71,6 +75,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ui5LocalConfig.addFioriToolsAppReloadMiddleware();
         // Add optional features
         await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
+        // add preview middleware to ui5LocalConfig
+        ui5LocalConfig.addFioriToolsPreviewMiddleware(ui5App.app.id, ui5App.ui5?.ui5Theme);
         // write ui5 local yaml
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     } else {
@@ -79,6 +85,12 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     }
     // write ui5 yaml
     fs.write(ui5ConfigPath, ui5Config.toString());
+
+    // Create the files for apiHub integration.
+    fs.write(
+        `${basePath}/.env`,
+        `${API_HUB_API_KEY}=${ui5App.appOptions.apiHubConfig?.apiHubKey}\n${API_HUB_TYPE}=${ui5App.appOptions.apiHubConfig?.apiHubType}`
+    );
 
     return fs;
 }
@@ -147,5 +159,5 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
     return fs;
 }
 
-export { Ui5App, generate, enableTypescript, isTypescriptEnabled };
+export { Ui5App, generate, enableTypescript, isTypescriptEnabled, type ApiHubConfig };
 export { App, Package, UI5, AppOptions };

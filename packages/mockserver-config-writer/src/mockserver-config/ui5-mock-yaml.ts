@@ -92,6 +92,7 @@ async function generateUi5MockYamlBasedOnUi5Yaml(
 ): Promise<UI5Config> {
     const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(join(basePath, 'ui5.yaml')));
     ui5MockYamlConfig.updateCustomMiddleware(await getNewMockserverMiddleware(path, annotationsConfig));
+    ui5MockYamlConfig.removeFioriToolsPreviewMiddleware();
     return ui5MockYamlConfig;
 }
 

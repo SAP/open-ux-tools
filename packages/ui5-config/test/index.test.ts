@@ -297,6 +297,38 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
+        test('removeFioriToolsPreviewMiddleware if provided in ui5 config', () => {
+            const customPreviewMiddleware = {
+                name: 'fiori-tools-preview',
+                afterMiddleware: 'fiori-tools-appreload',
+                configuration: {
+                    component: 'felropv2tsodatanone',
+                    ui5Theme: 'sap_horizon'
+                }
+            };
+            ui5Config.addCustomMiddleware([customPreviewMiddleware]);
+            ui5Config.removeFioriToolsPreviewMiddleware();
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('removeFioriToolsPreviewMiddleware does not do anything when fiori-tools-preview not available', () => {
+            const customPreviewMiddleware = {
+                name: 'custom-middleware',
+                afterMiddleware: '~otherMiddleware',
+                configuration: {
+                    ui5: {
+                        path: ['/resources', '/test-resources'],
+                        url: 'http://ui5.example'
+                    },
+                    version: '1.95.1',
+                    debug: true
+                } as UI5ProxyConfig
+            };
+            ui5Config.addCustomMiddleware([customPreviewMiddleware]);
+            ui5Config.removeFioriToolsPreviewMiddleware();
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
         test('updateMiddleware existing middleware', () => {
             const middlewareUpdate = {
                 name: 'custom-middleware',
