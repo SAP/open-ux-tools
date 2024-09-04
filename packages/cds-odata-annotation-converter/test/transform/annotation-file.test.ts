@@ -3,7 +3,7 @@ import type { Position } from '@sap-ux/text-document-utils';
 
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 
-import { prepare } from '../setup';
+import { getCDSCompilerFacade } from '../setup';
 import { toAbsoluteUriString } from '../../src';
 import { toAnnotationFile, toTarget, toTargetMap } from '../../src/transforms/annotation-file';
 
@@ -18,7 +18,7 @@ const cdsServiceName = 'AdminService';
 
 // global artifacts which are prepared once, should NOT be changed in tests
 // if changes are needed, call prepare() inside your test to generate custom artifacts
-const projectRoot = join(__dirname, testDataFolder, cdsProjectFolder);
+let projectRoot: string;
 let cdsCompilerFacade: CdsCompilerFacade;
 let metadataElementMap: MetadataElementMap;
 const serializeForSnapshot = (metadataElementMap: MetadataElementMap): string[] => {
@@ -28,14 +28,14 @@ const serializeForSnapshot = (metadataElementMap: MetadataElementMap): string[] 
     });
 };
 
-beforeAll(async (): Promise<void> => {
-    cdsCompilerFacade = await prepare(projectRoot);
-});
-
 describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
     let vocabularyService: VocabularyService;
     let position: Position;
 
+    beforeAll(async (): Promise<void> => {
+        projectRoot = join(__dirname, testDataFolder, cdsProjectFolder);
+        cdsCompilerFacade = await getCDSCompilerFacade(projectRoot);
+    });
     beforeEach(() => {
         vocabularyService = new VocabularyService(true);
     });
@@ -123,11 +123,6 @@ describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
     });
 
     test('toAnnotationFile (with metadata collection)', async () => {
-        const compilerFacadePlus = await prepare(
-            projectRoot,
-
-            [join('app/admin/fiori-service.cds')]
-        );
         const result: Map<string, string[]> = new Map();
         const actionBindingParamKey = 'AdminService.Books/addRating()/_it2';
         let actionBindingParameterMdElement: MetadataElement = {
@@ -138,22 +133,22 @@ describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
             kind: '',
             targetKinds: []
         };
-        compilerFacadePlus
+        cdsCompilerFacade
             ?.getAllSourceUris()
             .sort()
             .forEach((fileUri) => {
                 // Prepare
                 const metadataElementMap = new Map();
-                const metadataCollector = createMetadataCollector(metadataElementMap, compilerFacadePlus);
+                const metadataCollector = createMetadataCollector(metadataElementMap, cdsCompilerFacade);
 
                 const fileUriWithSchema = pathToFileURL(fileUri).toString();
-                const blitzIndex = compilerFacadePlus?.blitzIndex?.forUri(fileUriWithSchema) ?? undefined;
+                const blitzIndex = cdsCompilerFacade?.blitzIndex?.forUri(fileUriWithSchema) ?? undefined;
                 if (blitzIndex) {
                     const cdsAnnotationFile = toTargetMap(
                         blitzIndex,
                         fileUriWithSchema,
                         vocabularyService,
-                        compilerFacadePlus
+                        cdsCompilerFacade
                     );
 
                     // Act - metadata required for file should be collected in metadataCollector
