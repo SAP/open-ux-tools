@@ -11,7 +11,7 @@ import { getErrorMessage, validateBasePath } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
 import { coerce, lt } from 'semver';
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest } from '../common/types';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 
 const PLACEHOLDERS = {
@@ -34,8 +34,7 @@ interface MetadataPath {
  */
 function getManifest(basePath: string, fs: Editor): Manifest | undefined {
     const manifestPath = join(basePath, 'webapp/manifest.json');
-    const manifest = fs.readJSON(manifestPath);
-    return manifest ? (manifest as any as Manifest) : undefined;
+    return fs.readJSON(manifestPath) as Manifest;
 }
 
 /**
