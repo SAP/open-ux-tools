@@ -13,21 +13,6 @@ import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 
 /**
- * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
- *
- * @param basePath - the root path of an existing UI5 application
- * @param files - list of files that need to exist
- * @param fs - the memfs editor instance
- */
-function ensureExists(basePath: string, files: string[], fs: Editor): void {
-    files.forEach((path) => {
-        if (!fs.exists(join(basePath, path))) {
-            throw new Error(t('error.requiredProjectFileNotFound', { path }));
-        }
-    });
-}
-
-/**
  * Try finding a package.json and a ui5.yaml for the given project by looking upwards in the folder hierachy.
  *
  * @param {string} basePath - the root path of an existing UI5 application

@@ -107,7 +107,7 @@ export async function updateCdsFilesWithAnnotations(annotations: CdsAnnotationsI
  * @param minUI5Version - The minimum UI5 version.
  * @returns updated model settings.
  */
-function getModelSettings(minUI5Version: string | undefined) {
+function getModelSettings(minUI5Version: string | undefined): { includeSynchronizationMode: boolean } {
     let includeSynchronizationMode = false;
     if (minUI5Version) {
         includeSynchronizationMode = semVer.satisfies(minUI5Version, '<=1.110');
@@ -121,7 +121,7 @@ function getModelSettings(minUI5Version: string | undefined) {
  * @param fs - the memfs editor instance
  * @param addMockServer true if the mocksever middleware needs to be added as well
  */
-export function updatePackageJson(path: string, fs: Editor, addMockServer: boolean) {
+export function updatePackageJson(path: string, fs: Editor, addMockServer: boolean): void {
     const packageJson = JSON.parse(fs.read(path));
     packageJson.devDependencies = packageJson.devDependencies ?? {};
     if (!hasUI5CliV3(packageJson.devDependencies)) {
