@@ -206,7 +206,7 @@ export function defaultOrShowManualPackageQuestion(
     useAutocomplete = false
 ): boolean {
     return (
-        ((!isCli && !useAutocomplete) || packageInputChoice === PackageInputChoices.EnterManualChoice) &&
+        (!useAutocomplete || packageInputChoice === PackageInputChoices.EnterManualChoice) &&
         defaultOrShowPackageQuestion()
     );
 }
@@ -225,6 +225,9 @@ export function defaultOrShowSearchPackageQuestion(
     useAutocomplete = false
 ): boolean {
     // Only show the autocomplete prompt when the autocomplete prompt is supported; CLI or YUI specific version
+    if (!useAutocomplete) {
+        return false;
+    }
     return (
         (isCli || useAutocomplete) &&
         packageInputChoice === PackageInputChoices.ListExistingChoice &&
