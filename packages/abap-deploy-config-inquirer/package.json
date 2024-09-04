@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-inquirer"
     },
-    "version": "0.0.11",
+    "version": "0.0.12",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -40,8 +40,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "i18next": "23.5.1",
         "@sap-devx/yeoman-ui-types": "1.14.4",
-        "inquirer-autocomplete-prompt": "2.0.1",
-        "inquirer": "8.2.6"
+        "inquirer-autocomplete-prompt": "2.0.1"
     },
     "devDependencies": {
         "@types/inquirer": "8.2.6",

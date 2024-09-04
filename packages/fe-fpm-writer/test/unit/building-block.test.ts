@@ -508,7 +508,7 @@ describe('Building Blocks', () => {
                 );
                 const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
                 fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
-
+                fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
                 const codeSnippet = getSerializedFileContent(
                     basePath,
                     {
