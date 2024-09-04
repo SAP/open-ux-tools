@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import './ThemeSelectorCallout.scss';
 import { IconName } from '../icons';
 
-export type ThemeName = 'dark' | 'light' | 'high contrast';
+export type ThemeName = 'dark modern' | 'light modern' | 'high contrast black';
 
 /**
  * React element for theme selector.
@@ -17,7 +17,7 @@ export type ThemeName = 'dark' | 'light' | 'high contrast';
 export function ThemeSelectorCallout(): ReactElement {
     const { t } = useTranslation();
     const [isCalloutVisible, setValue] = useState(false);
-    const theme = localStorage.getItem('theme') ?? 'dark';
+    const theme = localStorage.getItem('theme') ?? 'dark modern';
     const [currentTheme, setTheme] = useState(theme);
     const buttonId = useId('callout-button');
     const initialFocusRoot = useRef<HTMLElement | null>(null);
@@ -37,15 +37,15 @@ export function ThemeSelectorCallout(): ReactElement {
     }
     const themes: ThemeButtonProps[] = [
         {
-            name: 'light',
+            name: 'light modern',
             tooltip: 'LIGHT_THEME_NAME'
         },
         {
-            name: 'dark',
+            name: 'dark modern',
             tooltip: 'DARK_THEME_NAME'
         },
         {
-            name: 'high contrast',
+            name: 'high contrast black',
             tooltip: 'HIGH_CONTRAST_THEME_NAME'
         }
     ];

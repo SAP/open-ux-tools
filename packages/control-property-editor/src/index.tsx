@@ -41,7 +41,7 @@ export function start(options: StartOptions): void {
     registerAppIcons();
     initIcons();
 
-    const theme = localStorage.getItem('theme') ?? 'dark';
+    const theme = localStorage.getItem('theme') ?? 'dark modern';
     setThemeOnDocument(theme as ThemeName);
 
     store.dispatch(setProjectScenario(scenario));
