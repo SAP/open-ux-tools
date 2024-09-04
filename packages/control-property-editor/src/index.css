@@ -22,7 +22,7 @@ code {
     font-family: var(--vscode-font-family);
 }
 
-html[data-theme='dark'] {
+html[data-theme='dark modern'] {
     --vscode-font-family: "Segoe WPC", "Segoe UI", sans-serif;
     --vscode-font-weight: normal;
     --vscode-font-size: 13px;
@@ -717,7 +717,7 @@ html[data-theme='dark'] {
     --vscode-gitDecoration-submoduleResourceForeground: #8db9e2;
 }
 
-html[data-theme='light'] {
+html[data-theme='light modern'] {
     --vscode-font-family: "Segoe WPC", "Segoe UI", sans-serif;
     --vscode-font-weight: normal;
     --vscode-font-size: 13px;
@@ -1414,7 +1414,7 @@ html[data-theme='light'] {
     --vscode-gitDecoration-submoduleResourceForeground: #1258a7;
 }
 
-html[data-theme='high contrast'] {
+html[data-theme='high contrast black'] {
     --vscode-font-family: "Segoe WPC", "Segoe UI", sans-serif;
     --vscode-font-weight: normal;
     --vscode-font-size: 13px;
