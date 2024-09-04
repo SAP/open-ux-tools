@@ -85,11 +85,9 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
         for (const page of pages) {
             if (page) {
                 const container = this.getComponentContainerFromPage(page);
-                if (container) {
-                    const rootControl = getRootControlFromComponentContainer(container);
-                    if (rootControl) {
-                        views.push(rootControl);
-                    }
+                const rootControl = getRootControlFromComponentContainer(container);
+                if (rootControl) {
+                    views.push(rootControl);
                 }
             }
         }

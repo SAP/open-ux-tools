@@ -58,12 +58,4 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
         }
         return definitionGroups;
     }
-
-    protected getComponentContainerFromPage(page: Control): Control | undefined {
-        if (page instanceof XMLView) {
-            return page.getContent()[0];
-        }
-        return undefined;
-    }
-
 }
