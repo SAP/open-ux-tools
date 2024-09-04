@@ -23,12 +23,12 @@ import type { Manifest } from '@sap-ux/project-access';
 import { join } from 'path';
 import type { ReaderCollection } from '@ui5/fs';
 
-describe('Test Proxy Middleware Utils', () => {
+describe('utils', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    describe('Test proxyHandlers', () => {
+    describe('proxyHandlers', () => {
         const logger = new ToolsLogger({
             transports: [new NullTransport()]
         });
@@ -105,7 +105,7 @@ describe('Test Proxy Middleware Utils', () => {
         });
     });
 
-    describe('Test getCorporateProxyServer', () => {
+    describe('getCorporateProxyServer', () => {
         const corporateProxy = 'https://myproxy.example:8443';
 
         test('get value from CLI (wins over input and env)', () => {
@@ -148,7 +148,7 @@ describe('Test Proxy Middleware Utils', () => {
         });
     });
 
-    describe('Test updateProxyEnv', () => {
+    describe('updateProxyEnv', () => {
         const corporateProxy = 'https://myproxy.example:8443';
         afterEach(() => {
             delete process.env.npm_config_proxy;
@@ -177,54 +177,54 @@ describe('Test Proxy Middleware Utils', () => {
         });
     });
 
-    describe('Test hideProxyCredentials', () => {
-        test('hideProxyCredentials: return undefined if no corporate proxy', () => {
+    describe('hideProxyCredentials', () => {
+        test('return undefined if no corporate proxy', () => {
             expect(hideProxyCredentials(undefined)).toBeUndefined();
         });
 
-        test('hideProxyCredentials: return corporate proxy if no credentials', () => {
+        test('return corporate proxy if no credentials', () => {
             expect(hideProxyCredentials('https://proxy.example')).toEqual('https://proxy.example');
         });
 
-        test('hideProxyCredentials: hides credentials from corporate proxy', () => {
+        test('hides credentials from corporate proxy', () => {
             expect(hideProxyCredentials('https://user:pass@proxy.example')).toEqual('https://***:***@proxy.example');
         });
     });
 
-    describe('Test getHTMLFile', () => {
-        test('getHTMLFile: returns html', () => {
+    describe('getHTMLFile', () => {
+        test('returns html', () => {
             const result = getHtmlFile('test.html');
             expect(result).toEqual('test.html');
         });
 
-        test('getHTMLFile: ? in the URL', () => {
+        test('? in the URL', () => {
             const result = getHtmlFile('/test/flpSandbox.html?sap-client=100');
             expect(result).toEqual('/test/flpSandbox.html');
         });
 
-        test('getHTMLFile: # URL', () => {
+        test('# URL', () => {
             const result = getHtmlFile('/test/flpSandboxMockServer.html#preview-app');
             expect(result).toEqual('/test/flpSandboxMockServer.html');
         });
 
-        test('getHTMLFile: ? and # in URL', () => {
+        test('? and # in URL', () => {
             const result = getHtmlFile('/index.html?sap-client=123#preview-app');
             expect(result).toEqual('/index.html');
         });
     });
 
-    describe('Test getYamlFile', () => {
-        test('getYamlFile: returns ui5.yaml if no args', () => {
+    describe('getYamlFile', () => {
+        test('returns ui5.yaml if no args', () => {
             const result = getYamlFile([]);
             expect(result).toEqual('ui5.yaml');
         });
 
-        test('getYamlFile: return yaml file from --config arg', () => {
+        test('return yaml file from --config arg', () => {
             const result = getYamlFile(['--config', 'test.yaml']);
             expect(result).toEqual('test.yaml');
         });
 
-        test('getYamlFile: return yaml file from -c arg', () => {
+        test('return yaml file from -c arg', () => {
             const result = getYamlFile(['-c', 'test.yaml']);
             expect(result).toEqual('test.yaml');
         });
@@ -297,8 +297,8 @@ describe('Test Proxy Middleware Utils', () => {
         });
     });
 
-    describe('Test setHtmlResponse', () => {
-        test('setHtmlResponse: use livereload write if present', () => {
+    describe('setHtmlResponse', () => {
+        test('use livereload write if present', () => {
             const mockWrite = jest.fn();
             const mockEnd = jest.fn();
             const res = {
@@ -313,7 +313,7 @@ describe('Test Proxy Middleware Utils', () => {
             expect(mockEnd).toHaveBeenCalledTimes(1);
         });
 
-        test('setHtmlResponse: use res.send()', () => {
+        test('use res.send()', () => {
             const res = {
                 writeHead: jest.fn(),
                 write: jest.fn(),
@@ -330,10 +330,10 @@ describe('Test Proxy Middleware Utils', () => {
         });
     });
 
-    describe('Test setUI5Version', () => {
+    describe('setUI5Version', () => {
         const readFileMock = jest.spyOn(fs, 'readFileSync');
 
-        test('setUI5Version: take version from YAML', async () => {
+        test('take version from YAML', async () => {
             const version = '1.90.0';
             const log: any = {
                 info: jest.fn()
@@ -344,7 +344,7 @@ describe('Test Proxy Middleware Utils', () => {
             expect(log.info).toHaveBeenCalledWith('Using UI5 version 1.90.0 based on ui5.yaml');
         });
 
-        test('setUI5Version: take version from CLI', async () => {
+        test('take version from CLI', async () => {
             const version = '';
             process.env.FIORI_TOOLS_UI5_VERSION = '';
             const log: any = {
@@ -359,7 +359,7 @@ describe('Test Proxy Middleware Utils', () => {
             );
         });
 
-        test('setUI5Version: take version from manifest.json', async () => {
+        test('take version from manifest.json', async () => {
             const log: any = {
                 info: jest.fn()
             };
@@ -373,7 +373,7 @@ describe('Test Proxy Middleware Utils', () => {
             expect(log.info).toHaveBeenCalledWith('Using UI5 version 1.96.0 based on manifest.json');
         });
 
-        test('setUI5Version: take version from manifest.json, version is variable', async () => {
+        test('take version from manifest.json, version is variable', async () => {
             const log: any = {
                 info: jest.fn()
             };
@@ -391,7 +391,7 @@ describe('Test Proxy Middleware Utils', () => {
         });
     });
 
-    describe('Test injectUI5Url', () => {
+    describe('injectUI5Url', () => {
         test('return unmodified html, if no ui5 config', () => {
             const html = '<html></html>';
             const result = injectUI5Url(html, []);
@@ -466,7 +466,7 @@ describe('Test Proxy Middleware Utils', () => {
         });
     });
 
-    describe('Test injectScripts', () => {
+    describe('injectScripts', () => {
         const byGlobMock = jest.fn();
         const rootProject = {
             byGlob: byGlobMock
@@ -515,8 +515,8 @@ describe('Test Proxy Middleware Utils', () => {
         });
     });
 
-    describe('Test filterCompressedHtmlFiles', () => {
-        test('filterCompressedHtmlFiles: returns true if accept header is not set', () => {
+    describe('filterCompressedHtmlFiles', () => {
+        test('returns true if accept header is not set', () => {
             const req = {
                 headers: {}
             };
@@ -524,7 +524,7 @@ describe('Test Proxy Middleware Utils', () => {
             expect(result).toBeTruthy();
         });
 
-        test('filterCompressedHtmlFiles: deletes accept-encoding header if accept header is text/html', () => {
+        test('deletes accept-encoding header if accept header is text/html', () => {
             const req = {
                 headers: {} as any
             };
@@ -535,7 +535,7 @@ describe('Test Proxy Middleware Utils', () => {
             expect(req.headers['accept-encoding']).toBeUndefined();
         });
 
-        test('filterCompressedHtmlFiles: deletes accept-encoding header if accept header is application/xhtml+xml', () => {
+        test('deletes accept-encoding header if accept header is application/xhtml+xml', () => {
             const req = {
                 headers: {} as any
             };
