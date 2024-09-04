@@ -311,6 +311,9 @@ importers:
 
   packages/abap-deploy-config-inquirer:
     dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -341,10 +344,13 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
+      inquirer-autocomplete-prompt:
+        specifier: 2.0.1
+        version: 2.0.1(inquirer@8.2.6)
     devDependencies:
-      '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -8015,7 +8021,6 @@ packages:
 
   /@sap-devx/yeoman-ui-types@1.14.4:
     resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
-    dev: true
 
   /@sap-ux/annotation-converter@0.8.0:
     resolution: {integrity: sha512-LrTDVMRGC2V5xphaB9cDDJMxsK+YBjNbObmQcHJCk6TL2P/trcZzV2UKDsckVv43ZCXjYGK5jkhkbiGgaLbokA==}
@@ -15916,7 +15921,7 @@ packages:
       ansi-escapes: 4.3.2
       figures: 3.2.0
       inquirer: 8.2.6
-      picocolors: 1.0.0
+      picocolors: 1.0.1
       run-async: 2.4.1
       rxjs: 7.8.1
     dev: false
