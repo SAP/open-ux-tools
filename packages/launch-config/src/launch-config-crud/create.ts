@@ -61,11 +61,9 @@ export async function createLaunchConfig(rootFolder: string, fioriOptions: Fiori
  */
 export function writeApplicationInfoSettings(path: string, log?: Logger): void {
     const appInfoFilePath: string = getFioriToolsDirectory();
-    console.log('appInfoFilePath', appInfoFilePath);
     const appInfoContents = fs.existsSync(appInfoFilePath)
         ? JSON.parse(fs.readFileSync(appInfoFilePath, 'utf-8'))
         : { latestGeneratedFiles: [] };
-    console.log('appInfoContents', appInfoContents);
     appInfoContents.latestGeneratedFiles.push(path);
     try {
         fs.writeFileSync(appInfoFilePath, JSON.stringify(appInfoContents, null, 2));
