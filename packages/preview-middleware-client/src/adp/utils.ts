@@ -1,5 +1,14 @@
 import MessageToast from 'sap/m/MessageToast';
+import Element from 'sap/ui/core/Element';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type DTElement from 'sap/ui/dt/Element';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+import Log from 'sap/base/Log';
+import FlexUtils from 'sap/ui/fl/Utils';
+
+import { getError } from '../utils/error';
+import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 
 export interface Deferred<T> {
     promise: Promise<T>;
@@ -62,4 +71,78 @@ export function notifyUser(message: string, duration: number = 5000) {
     MessageToast.show(message, {
         duration
     });
+}
+
+/**
+ * Check if element is sync view
+ *
+ * @param element Design time Element
+ * @returns boolean if element is sync view or not
+ */
+function isSyncView(element: DTElement): boolean {
+    return element?.getMetadata()?.getName()?.includes('XMLView') && element?.oAsyncState === undefined;
+}
+
+/**
+ * Get Ids for all sync views
+ *
+ * @param ui5VersionInfo UI5 Version Information
+ *
+ * @returns array of Ids for application sync views
+ */
+export async function getAllSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promise<string[]> {
+    const syncViewIds: string[] = [];
+    try {
+        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 120 })) {
+            const elements = Element.registry.filter(() => true) as DTElement[];
+            elements.forEach((ui5Element) => {
+                if (isSyncView(ui5Element)) {
+                    syncViewIds.push(ui5Element.getId());
+                }
+            });
+        } else {
+            const ElementRegistry = (await import('sap/ui/core/ElementRegistry')).default;
+            const elements = ElementRegistry.all() as Record<string, DTElement>;
+            Object.entries(elements).forEach(([key, ui5Element]) => {
+                if (isSyncView(ui5Element)) {
+                    syncViewIds.push(key);
+                }
+            });
+        }
+    } catch (error) {
+        Log.error('Could not get application sync views', getError(error));
+    }
+
+    return syncViewIds;
+}
+
+interface ControllerInfo {
+    controllerName: string;
+    viewId: string;
+}
+
+/**
+ * Gets controller name and view ID for the given UI5 control.
+ *
+ * @param control UI5 control.
+ * @returns The controller name and view ID.
+ */
+
+export function getControllerInfoForControl(control: ManagedObject): ControllerInfo {
+    const view = FlexUtils.getViewForControl(control);
+    const controllerName = view.getController().getMetadata().getName();
+    const viewId = view.getId();
+    return { controllerName, viewId };
+}
+
+/**
+ * Gets controller name and view ID for the given overlay control.
+ *
+ * @param overlayControl The overlay control.
+ * @returns The controller name and view ID.
+ */
+
+export function getControllerInfo(overlayControl: ElementOverlay): ControllerInfo {
+    const control = overlayControl.getElement();
+    return getControllerInfoForControl(control);
 }
