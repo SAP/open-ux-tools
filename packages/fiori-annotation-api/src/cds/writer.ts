@@ -181,6 +181,8 @@ export class CDSWriter implements ChangeHandler {
         this.resetState();
         this.processedChanges = preprocessChanges(this.document, this.changes);
 
+        console.log(this.changes)
+
         for (const change of this.processedChanges) {
             const path = getAstNodesFromPointer(this.document, change.pointer).reverse();
             const handler = this[change.type] as unknown as ChangeHandlerFunction<CDSDocumentChange>;

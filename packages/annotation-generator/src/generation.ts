@@ -57,6 +57,11 @@ export type AnnotationServiceParameters = {
      * Name of the app.
      */
     appName?: string;
+    /**
+     * Only applicable for CAP CDS projects.
+     * When set to true SAP annotations will be created instead of OData annotations.
+     */
+    writeSapAnnotations?: boolean;
 };
 /**
  * Generate annotations options.
@@ -141,7 +146,7 @@ async function getContext(
     annotationFilePath: string,
     annotationServiceParams: AnnotationServiceParameters
 ): Promise<Context> {
-    const { project, serviceName, appName } = annotationServiceParams;
+    const { project, serviceName, appName, writeSapAnnotations = false } = annotationServiceParams;
     const projectInstance = await adaptProject(project);
     const annotationService = await FioriAnnotationService.createService(
         projectInstance,
@@ -150,7 +155,8 @@ async function getContext(
         fs,
         {
             commitOnSave: false,
-            clearFileResolutionCache: true
+            clearFileResolutionCache: true,
+            writeSapAnnotations
         }
     );
 

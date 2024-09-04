@@ -7,7 +7,13 @@ import { create as createEditor } from 'mem-fs-editor';
 
 import type { Project } from '@sap-ux/project-access';
 
-import type { AnnotationRecord, Collection, PropertyPathExpression, RawAnnotation } from '@sap-ux/vocabularies-types';
+import type {
+    AnnotationRecord,
+    Collection,
+    PropertyPathExpression,
+    PropertyValue,
+    RawAnnotation
+} from '@sap-ux/vocabularies-types';
 import { getProject } from '@sap-ux/project-access';
 
 import type { Change, DeleteChange, InsertAnnotationChange, TextFile } from '../../src/types';
@@ -23,9 +29,10 @@ import { serialize } from './raw-metadata-serializer';
 import { CDSAnnotationServiceAdapter } from '../../src/cds/adapter';
 import type { CompilerMessage } from '@sap-ux/odata-annotation-core-types';
 import { DiagnosticSeverity, Range } from '@sap-ux/odata-annotation-core-types';
-import type { ApiError } from '../../src';
+import type { ApiError, FioriAnnotationServiceOptions } from '../../src';
 
 import { pathFromUri } from '../../src/utils';
+import { COMMON_VALUE_LIST_PARAMETER_DISPLAY_ONLY, COMMON_VALUE_LIST_PARAMETER_IN_OUT } from '../../src/sap/types';
 
 /**
  * Configuration
@@ -87,6 +94,7 @@ interface EditTestCase<T extends Record<string, string>> {
     getChanges: (files: T) => Change[];
     fsEditor?: Editor;
     log?: boolean;
+    fioriServiceOptions?: Partial<FioriAnnotationServiceOptions>;
 }
 
 interface CustomTest<T extends Record<string, string>> {
@@ -112,7 +120,8 @@ const createEditTestCase = (<T extends Record<string, string>>(): CustomTest<T> 
                             testCase.getChanges(files),
                             serviceName,
                             testCase.fsEditor,
-                            testCase.log
+                            testCase.log,
+                            testCase.fioriServiceOptions
                         );
 
                         expect(text).toMatchSnapshot();
@@ -141,11 +150,13 @@ async function testEdit(
     changes: Change[],
     serviceName: string,
     fsEditor?: Editor,
-    log?: boolean
+    log?: boolean,
+    fioriServiceOptions: Partial<FioriAnnotationServiceOptions> = {}
 ): Promise<string> {
     const editor = fsEditor ?? (await createFsEditorForProject(root));
     const project = await getProject(root);
     const service = await FioriAnnotationService.createService(project, serviceName, '', editor, {
+        ...fioriServiceOptions,
         commitOnSave: false
     });
     await service.sync();
@@ -337,10 +348,14 @@ function createDataWithLabel(value = 'sample'): AnnotationRecord {
     };
 }
 
-function createValueListWithRecord(uri: string, targetName: string): InsertAnnotationChange {
+function createValueListWithRecord(
+    uri: string,
+    targetName: string,
+    propertyValues: PropertyValue[] = []
+): InsertAnnotationChange {
     const record: AnnotationRecord = {
         type: `${COMMON}.ValueListType`,
-        propertyValues: []
+        propertyValues
     };
     return {
         kind: ChangeType.InsertAnnotation,
@@ -391,6 +406,67 @@ function createCommunicationContact(uri: string, targetName: string, phones: str
                 }
             }
         }
+    };
+}
+
+function createFieldGroup(
+    uri: string,
+    collection: AnnotationRecord[],
+    qualifier?: string,
+    target = targetName
+): InsertAnnotationChange {
+    return {
+        kind: ChangeType.InsertAnnotation,
+        uri,
+        content: {
+            type: 'annotation',
+            target,
+            value: {
+                term: FIELD_GROUP,
+                qualifier,
+                record: {
+                    propertyValues: [
+                        {
+                            name: 'Data',
+                            value: {
+                                type: 'Collection',
+                                Collection: collection
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    };
+}
+function createFacets(uri: string, facets: AnnotationRecord[]): InsertAnnotationChange {
+    return {
+        kind: ChangeType.InsertAnnotation,
+        uri,
+        content: {
+            target: targetName,
+            type: 'annotation',
+            value: {
+                term: `${UI}.Facets`,
+                collection: facets
+            }
+        }
+    };
+}
+
+function createReferenceFacet(annotationPath: string, additionalProperties: PropertyValue[] = []): AnnotationRecord {
+    return {
+        type: `${UI}.ReferenceFacet`,
+        propertyValues: [
+            {
+                name: 'Target',
+                value: {
+                    type: 'AnnotationPath',
+                    AnnotationPath: annotationPath
+                }
+            },
+            ...additionalProperties
+        ]
     };
 }
 
@@ -1864,6 +1940,128 @@ describe('fiori annotation service', () => {
                     }
                 ]
             });
+        });
+
+        describe('SAP annotations for CDS projects', () => {
+            const dataField = createDataField();
+            dataField.propertyValues.push({
+                name: 'Label',
+                value: {
+                    type: 'String',
+                    String: 'Test Label'
+                }
+            });
+
+            createEditTestCase({
+                name: 'UI.LineItem',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
+                getChanges: (files) => [createLineItem(files.annotations, [dataField])],
+                fioriServiceOptions: { writeSapAnnotations: true }
+            });
+            createEditTestCase({
+                name: 'UI.Facet',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
+                getChanges: (files) => [
+                    createFacets(files.annotations, [
+                        createReferenceFacet('@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation', [
+                            {
+                                name: 'ID',
+                                value: {
+                                    type: 'String',
+                                    String: 'testID'
+                                }
+                            }
+                        ])
+                    ]),
+                    createFieldGroup(files.annotations, [createDataField()], 'GeneralInformation', targetName)
+                ],
+                fioriServiceOptions: { writeSapAnnotations: true }
+            });
+
+            createEditTestCase.only({
+                name: 'Common.ValueList',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
+                getChanges: (files) => [
+                    createValueListWithRecord(files.annotations, 'IncidentService.Incidents/category', [
+                        {
+                            name: 'CollectionPath',
+                            value: { type: 'String', String: 'ZPath' }
+                        },
+                        {
+                            name: 'Parameters',
+                            value: {
+                                type: 'Collection',
+                                Collection: [
+                                    {
+                                        type: COMMON_VALUE_LIST_PARAMETER_IN_OUT,
+                                        propertyValues: [
+                                            {
+                                                name: 'LocalDataProperty',
+                                                value: {
+                                                    type: 'PropertyPath',
+                                                    PropertyPath: 'CategoryID'
+                                                }
+                                            },
+                                            {
+                                                name: 'ValueListProperty',
+                                                value: {
+                                                    type: 'String',
+                                                    String: 'Identifier'
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    // {
+                                    //     type: COMMON_VALUE_LIST_PARAMETER_DISPLAY_ONLY,
+                                    //     propertyValues: [
+                                    //         {
+                                    //             name: 'ValueListProperty',
+                                    //             value: {
+                                    //                 type: 'String',
+                                    //                 String: 'readonly'
+                                    //             }
+                                    //         }
+                                    //     ]
+                                    // }
+                                ]
+                            }
+                        }
+                    ])
+                ],
+                fioriServiceOptions: { writeSapAnnotations: true }
+            });
+
+            // createEditTestCase({
+            //     name: 'with existing annotation',
+            //     projectTestModels: TEST_TARGETS,
+            //     getInitialChanges: (files) => [createLineItem(files.annotations, [])],
+            //     getChanges: (files) => [createLineItem(files.annotations, [], 'second')]
+            // });
+
+            // createEditTestCase({
+            //     name: 'two annotations',
+            //     projectTestModels: TEST_TARGETS,
+            //     getInitialChanges: () => [],
+            //     getChanges: (files) => [
+            //         createLineItem(files.annotations, []),
+            //         createLineItem(files.annotations, [], 'second'),
+            //         {
+            //             kind: ChangeType.InsertAnnotation,
+            //             uri: files.annotations,
+            //             content: {
+            //                 type: 'annotation',
+            //                 target: `${targetName}/property`,
+            //                 value: {
+            //                     term: `${COMMON}.Text`,
+            //                     value: {
+            //                         type: 'Path',
+            //                         Path: 'something'
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //     ]
+            // });
         });
     });
     describe('delete', () => {
