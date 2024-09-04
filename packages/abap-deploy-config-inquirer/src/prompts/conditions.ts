@@ -206,13 +206,13 @@ export function defaultOrShowManualPackageQuestion(
     useAutocomplete = false
 ): boolean {
     return (
-        (!isCli || packageInputChoice === PackageInputChoices.EnterManualChoice || !useAutocomplete) &&
+        ((!isCli && !useAutocomplete) || packageInputChoice === PackageInputChoices.EnterManualChoice) &&
         defaultOrShowPackageQuestion()
     );
 }
 
 /**
- * Determines if the search (autcomplete) package input prompt can be shown based on backend availability.
+ * Determines if the search (autocomplete) package input prompt can be shown based on backend availability.
  *
  * @param isCli - is in CLI
  * @param packageInputChoice - package input choice from previous answers

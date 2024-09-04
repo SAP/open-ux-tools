@@ -129,6 +129,10 @@ describe('Test abap deploy config inquirer conditions', () => {
         // cli
         PromptState.isYUI = false;
         expect(showPackageInputChoiceQuestion(true)).toBe(true);
+        expect(showPackageInputChoiceQuestion()).toBe(false);
+        // YUI
+        PromptState.isYUI = true;
+        expect(showPackageInputChoiceQuestion(true)).toBe(true);
     });
 
     test('should not show package input choice question', () => {
@@ -142,10 +146,18 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should show manual package question', () => {
         expect(defaultOrShowManualPackageQuestion(true, PackageInputChoices.EnterManualChoice)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.EnterManualChoice)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.EnterManualChoice, true)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.ListExistingChoice, true)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.ListExistingChoice)).toBe(true); // Handles autoComplete
     });
 
-    test('should show search package question', () => {
+    test('should show search package autocomplete question', () => {
         expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.ListExistingChoice)).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(false, PackageInputChoices.ListExistingChoice)).toBe(false);
+        expect(defaultOrShowSearchPackageQuestion(false, PackageInputChoices.ListExistingChoice, true)).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.ListExistingChoice, true)).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.EnterManualChoice, true)).toBe(false);
     });
 
     test('should show transport input choice question', () => {
@@ -218,5 +230,30 @@ describe('Test abap deploy config inquirer conditions', () => {
                 existingDeployTaskConfig: {}
             })
         ).toBe(true);
+    });
+
+    // Typical flow
+    test('Validate typical flow from YUI as subgenerator', () => {
+        PromptState.isYUI = true;
+        // YUI - Autocomplete List
+        expect(showPackageInputChoiceQuestion(true)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.ListExistingChoice, true)).toBe(false);
+        expect(defaultOrShowSearchPackageQuestion(false, PackageInputChoices.ListExistingChoice, true)).toBe(true);
+        // YUI - Manual
+        expect(showPackageInputChoiceQuestion(true)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.EnterManualChoice, true)).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(false, PackageInputChoices.EnterManualChoice, true)).toBe(false);
+    });
+
+    test('Validate typical flow from CLI as subgenerator', () => {
+        PromptState.isYUI = false;
+        // YUI - Autocomplete List
+        expect(showPackageInputChoiceQuestion(true)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(true, PackageInputChoices.ListExistingChoice, true)).toBe(false);
+        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.ListExistingChoice, true)).toBe(true);
+        // YUI - Manual
+        expect(showPackageInputChoiceQuestion(true)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(true, PackageInputChoices.EnterManualChoice, true)).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.EnterManualChoice, true)).toBe(false);
     });
 });
