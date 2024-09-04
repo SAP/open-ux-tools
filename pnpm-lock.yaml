@@ -1659,8 +1659,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 20.6.1
-        version: 20.6.1
+        specifier: 23.5.1
+        version: 23.5.1
       jsonc-parser:
         specifier: 3.2.0
         version: 3.2.0
