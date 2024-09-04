@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.12
+
+### Patch Changes
+
+-   40ce4ca: remove inquirer package
+
 ## 0.0.11
 
 ### Patch Changes
