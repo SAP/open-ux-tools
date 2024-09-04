@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test Proxy Middleware Utils Test injectUI5Url injects UI5 URL in html 1`] = `
+exports[`utils injectUI5Url injects UI5 URL in html 1`] = `
 "
             <html>
             <head>
@@ -20,7 +20,7 @@ exports[`Test Proxy Middleware Utils Test injectUI5Url injects UI5 URL in html 1
             </html>"
 `;
 
-exports[`Test Proxy Middleware Utils Test injectUI5Url injects UI5 URL in html, latest ui5 version 1`] = `
+exports[`utils injectUI5Url injects UI5 URL in html, latest ui5 version 1`] = `
 "
             <html>
             <head>
