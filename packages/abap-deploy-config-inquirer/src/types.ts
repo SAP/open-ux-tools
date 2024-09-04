@@ -101,14 +101,14 @@ export interface TransportAnswers {
 }
 
 export interface AbapDeployConfigAnswers {
+    url: string;
     destination?: string;
     targetSystem?: string;
-    url?: string;
     client?: string;
     scp?: boolean;
     ui5AbapRepo?: string;
     description?: string;
-    package?: string;
+    package: string;
     transport?: string;
     index?: boolean;
     overwrite?: boolean;

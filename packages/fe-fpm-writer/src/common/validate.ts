@@ -19,7 +19,7 @@ export function validateVersion(ui5Version?: string): boolean {
 }
 
 /**
- * Validates the provided base path.
+ * Validates the provided base path, checks at least one of expected dependencies is present.
  *
  * @param {string} basePath - the base path
  * @param {Editor} fs - the memfs editor instance
@@ -37,13 +37,24 @@ export function validateBasePath(basePath: string, fs?: Editor, dependencies = [
     } else {
         const manifest = fs.readJSON(manifestPath) as any;
         const libs = manifest['sap.ui5']?.dependencies?.libs;
-        dependencies.forEach((dependency) => {
-            if (libs?.[dependency] === undefined) {
+        const valid = dependencies.length
+            ? dependencies.some((dependency) => {
+                  return libs?.[dependency] !== undefined;
+              })
+            : true;
+        if (!valid) {
+            if (dependencies.length === 1) {
                 throw new Error(
-                    `Dependency ${dependency} is missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.`
+                    `Dependency ${dependencies[0]} is missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.`
+                );
+            } else {
+                throw new Error(
+                    `All of the dependencies ${dependencies.join(
+                        ', '
+                    )} are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.`
                 );
             }
-        });
+        }
     }
 
     return true;

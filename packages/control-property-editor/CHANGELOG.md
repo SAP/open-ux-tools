@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.5.0
+
+### Minor Changes
+
+-   b1628da: Add quick actions to adaptation editor
+
+## 0.4.30
+
+### Patch Changes
+
+-   2b6daf3: Changed color of chevron on selection
+
 ## 0.4.29
 
 ### Patch Changes

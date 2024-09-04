@@ -19,7 +19,7 @@ import Log from 'sap/base/Log';
 import { getDocumentation } from './documentation';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-import { getComponent } from './ui5-utils';
+import { getComponent } from '../utils/core';
 import { getError } from '../utils/error';
 
 export interface PropertyChangeParams {

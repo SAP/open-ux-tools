@@ -19,7 +19,7 @@ import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import { isReuseComponent } from '../cpe/outline/utils';
+import { isReuseComponent } from '../cpe/utils';
 import { Ui5VersionInfo } from '../utils/version';
 
 export const enum DialogNames {
@@ -29,6 +29,26 @@ export const enum DialogNames {
 }
 
 type Controller = AddFragment | ControllerExtension | ExtensionPoint;
+
+/**
+ * Handler for enablement of Extend With Controller context menu entry
+ *
+ * @param control UI5 control.
+ * @param syncViewsIds Runtime Authoring
+ * @param ui5VersionInfo UI5 version information
+ *
+ * @returns boolean whether menu item is enabled or not
+ */
+export function isControllerExtensionEnabledForControl(
+    control: ManagedObject,
+    syncViewsIds: string[],
+    ui5VersionInfo: Ui5VersionInfo
+): boolean {
+    const clickedControlId = FlUtils.getViewForControl(control).getId();
+    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
+
+    return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
+}
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
@@ -47,11 +67,7 @@ export const isControllerExtensionEnabled = (
     if (overlays.length === 0 || overlays.length > 1) {
         return false;
     }
-
-    const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
-    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
-
-    return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
+    return isControllerExtensionEnabledForControl(overlays[0].getElement(), syncViewsIds, ui5VersionInfo);
 };
 
 /**
@@ -102,18 +118,25 @@ export const getAddFragmentItemText = (overlay: ElementOverlay) => {
  * @param rta Runtime Authoring
  * @param dialogName Dialog name
  * @param extensionPointData Control ID
+ * @param aggregation Name of aggregation that should be selected when dialog is opened
  */
 export async function handler(
     overlay: UI5Element,
     rta: RuntimeAuthoring,
     dialogName: DialogNames,
-    extensionPointData?: ExtensionPointData
+    extensionPointData?: ExtensionPointData,
+    aggregation?: string
 ): Promise<void> {
     let controller: Controller;
 
     switch (dialogName) {
         case DialogNames.ADD_FRAGMENT:
-            controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta);
+            controller = new AddFragment(
+                `open.ux.preview.client.adp.controllers.${dialogName}`,
+                overlay,
+                rta,
+                aggregation
+            );
             break;
         case DialogNames.CONTROLLER_EXTENSION:
             controller = new ControllerExtension(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta);
