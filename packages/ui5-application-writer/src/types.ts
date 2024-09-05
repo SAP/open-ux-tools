@@ -1,4 +1,12 @@
 import type { ProjectType } from '@sap-ux/project-access';
+
+/**
+ * SAP UX Layer
+ */
+export enum SapUxLayer {
+    VENDOR = 'VENDOR',
+    CUSTOMER_BASE = 'CUSTOMER_BASE'
+}
 export interface Package {
     name: string;
     version?: string;
@@ -9,6 +17,7 @@ export interface Package {
     ui5?: {
         dependencies?: string[];
     };
+    sapuxLayer?: SapUxLayer;
 }
 
 export interface App {
@@ -145,6 +154,19 @@ export interface UI5 {
     customUi5Libs?: string[];
 }
 
+export const enum ApiHubType {
+    apiHub = 'API_HUB',
+    apiHubEnterprise = 'API_HUB_ENTERPRISE'
+}
+
+/**
+ * Defines the api hub service properties or enterprise and non-enterprise versions
+ */
+export interface ApiHubConfig {
+    apiHubKey: string;
+    apiHubType: ApiHubType;
+}
+
 // Additional configurable features
 export interface AppOptions {
     codeAssist: boolean; // Enables code assist
@@ -171,6 +193,10 @@ export interface AppOptions {
      * Excludes the index.html from the template and does not add the `start-noflp` script in package.json
      */
     generateIndex?: boolean;
+    /**
+     * Api Hub configuration
+     */
+    apiHubConfig?: ApiHubConfig;
 }
 
 export interface Ui5App {

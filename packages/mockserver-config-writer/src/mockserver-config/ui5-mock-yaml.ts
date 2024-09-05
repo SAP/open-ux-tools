@@ -92,6 +92,10 @@ async function generateUi5MockYamlBasedOnUi5Yaml(
 ): Promise<UI5Config> {
     const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(join(basePath, 'ui5.yaml')));
     ui5MockYamlConfig.updateCustomMiddleware(await getNewMockserverMiddleware(path, annotationsConfig));
+    if (ui5MockYamlConfig.findCustomMiddleware('fiori-tools-preview')) {
+        // Remove 'fiori-tools-preview' middleware as it's not needed in the UI5 mock configuration, even if present in the UI5 YAML file.
+        ui5MockYamlConfig.removeCustomMiddleware('fiori-tools-preview');
+    }
     return ui5MockYamlConfig;
 }
 

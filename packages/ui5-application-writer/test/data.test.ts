@@ -2,6 +2,7 @@ import { UI5_DEFAULT } from '@sap-ux/ui5-config';
 import { mergeUi5, defaultUI5Libs, mergeApp, getSpecTagVersion } from '../src/data/defaults';
 import { mergeWithDefaults } from '../src/data/index';
 import type { App, UI5, Ui5App } from '../src/types';
+import { SapUxLayer } from '../src/types';
 
 const mockSpecVersions = JSON.stringify({ latest: '1.102.3', 'UI5-1.71': '1.71.64', 'UI5-1.92': '1.92.1' });
 jest.mock('child_process', () => ({
@@ -300,6 +301,7 @@ describe('Setting defaults', () => {
                 devDepB: '9.10.11'
             },
             name: 'test-package-name',
+            sapuxLayer: SapUxLayer.CUSTOMER_BASE,
             scripts: {
                 start: 'ui5 serve --config=ui5.yaml --open index.html',
                 'start-local': 'ui5 serve --config=ui5-local.yaml --open index.html',
