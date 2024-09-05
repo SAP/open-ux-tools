@@ -149,13 +149,3 @@
         }
     }
 }
-
-div.app-panel-selected-bg {
-    i.active-foreground {
-        svg {
-            path {
-                fill: var(--vscode-list-activeSelectionForeground)
-            }
-        }
-    }
- }
