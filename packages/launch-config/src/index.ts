@@ -1,5 +1,5 @@
 export * from './types';
-export { createLaunchConfig } from './launch-config-crud/create';
+export { createLaunchConfig, configureLaunchConfig } from './launch-config-crud/create';
 export { deleteLaunchConfig } from './launch-config-crud/delete';
 export { convertOldLaunchConfigToFioriRun } from './launch-config-crud/modify';
 export { getLaunchConfigs, getLaunchConfigByName } from './launch-config-crud/read';
