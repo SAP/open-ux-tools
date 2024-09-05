@@ -17,7 +17,6 @@ import type {
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { Destinations, Destination } from '@sap-ux/btp-utils';
 import { CREATE_TR_DURING_DEPLOY } from './constants';
-import { PromptState } from './prompts/prompt-state';
 
 let cachedDestinations: Destinations = {};
 let cachedBackendSystems: BackendSystem[] = [];
@@ -170,12 +169,12 @@ export async function queryPackages(
  * Determines the package from the various package related prompts.
  *
  * @param previousAnswers - previous answers
+ * @param statePackage - package from state
  * @returns package name
  */
-export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersInternal): string {
+export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersInternal, statePackage?: string): string {
     // Older versions of YUI do not have a packageInputChoice question
-    return PromptState.abapDeployConfig.package ??
-        previousAnswers?.packageInputChoice === PackageInputChoices.ListExistingChoice
+    return statePackage || previousAnswers?.packageInputChoice === PackageInputChoices.ListExistingChoice
         ? previousAnswers?.packageAutocomplete ?? ''
         : previousAnswers?.packageManual ?? '';
 }
@@ -212,25 +211,36 @@ export function useCreateTrDuringDeploy(existingDeployTaskConfig?: DeployTaskCon
  * Determines the url from the various sources.
  *
  * @param answers - internal abap deploy config answers
+ * @param stateUrl - url from state
  * @returns url if found
  */
-function getUrlAnswer(answers: AbapDeployConfigAnswersInternal): string | undefined {
-    let url;
-    if (answers.targetSystem && answers.targetSystem === TargetSystemType.Url && answers.url) {
-        url = answers.url;
-    } else if (PromptState.abapDeployConfig.url) {
-        url = PromptState.abapDeployConfig.url;
+function getUrlAnswer(answers: AbapDeployConfigAnswersInternal, stateUrl?: string): string {
+    let url = answers.url;
+    if (stateUrl) {
+        url = stateUrl;
     }
     return url;
 }
+
 /**
  * Convert internal answers to external answers to be used for writing deploy config.
  *
- * @param answers - internal abap deploy config answers
+ * @param answers - internal abap deploy config answers, direct from prompting
+ * @param state - partial internal abap deploy config answers derived from the state
  * @returns - external abap deploy config answers
  */
-export function reconcileAnswers(answers: AbapDeployConfigAnswersInternal): AbapDeployConfigAnswers {
-    const reconciledAnswers: AbapDeployConfigAnswers = {};
+export function reconcileAnswers(
+    answers: AbapDeployConfigAnswersInternal,
+    state: Partial<AbapDeployConfigAnswersInternal>
+): AbapDeployConfigAnswers {
+    // Add dervied service answers to the answers object
+    answers = Object.assign(answers, state);
+
+    const reconciledAnswers: AbapDeployConfigAnswers = {
+        url: getUrlAnswer(answers, state.url),
+        package: getPackageAnswer(answers, state.package)
+    };
+
     if (answers.destination) {
         reconciledAnswers.destination = answers.destination;
     }
@@ -239,16 +249,11 @@ export function reconcileAnswers(answers: AbapDeployConfigAnswersInternal): Abap
         reconciledAnswers.url = answers.targetSystem;
     }
 
-    const url = getUrlAnswer(answers);
-    if (url) {
-        reconciledAnswers.url = url;
+    if (answers.client || state.client) {
+        reconciledAnswers.client = answers.client || state.client;
     }
 
-    if (answers.client || PromptState.abapDeployConfig.client) {
-        reconciledAnswers.client = answers.client || PromptState.abapDeployConfig.client;
-    }
-
-    if (answers.scp || PromptState.abapDeployConfig.scp) {
+    if (answers.scp || state.scp) {
         reconciledAnswers.scp = true;
     }
 
@@ -258,11 +263,6 @@ export function reconcileAnswers(answers: AbapDeployConfigAnswersInternal): Abap
 
     if (answers.description) {
         reconciledAnswers.description = answers.description;
-    }
-
-    const packageAnswer = getPackageAnswer(answers);
-    if (packageAnswer) {
-        reconciledAnswers.package = packageAnswer;
     }
 
     const transportAnswer = getTransportAnswer(answers);

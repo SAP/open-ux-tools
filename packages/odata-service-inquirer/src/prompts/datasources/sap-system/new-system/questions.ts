@@ -21,6 +21,8 @@ import { type ServiceAnswer, newSystemPromptNames } from './types';
 import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
 import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions';
 import LoggerHelper from '../../../logger-helper';
+import { errorHandler } from '../../../prompt-helpers';
+import { ERROR_TYPE, ErrorHandler } from '../../../../error-handler/error-handler';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -285,6 +287,10 @@ export function getSystemServiceQuestion<T extends Answers>(
             if (!connectValidator.validatedUrl) {
                 return false;
             }
+            // if no choices are available and an error is present, return the error message
+            if (serviceChoices.length === 0 && errorHandler.hasError()) {
+                return ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE) ?? false;
+            }
             // Dont re-request the same service details
             if (service && previousService?.servicePath !== service.servicePath) {
                 previousService = service;
@@ -307,6 +313,10 @@ export function getSystemServiceQuestion<T extends Answers>(
                         LoggerHelper.logger.error(result);
                         throw new Error(result);
                     }
+                }
+                if (serviceChoices.length === 0 && errorHandler.hasError()) {
+                    const noServicesError = ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE)!.toString();
+                    throw new Error(noServicesError);
                 }
                 return false;
             },

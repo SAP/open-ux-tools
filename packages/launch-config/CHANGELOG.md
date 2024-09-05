@@ -1,5 +1,25 @@
 # @sap-ux/launch-config
 
+## 0.3.0
+
+### Minor Changes
+
+-   73fcd05: Add Launch Configuration Logic for debugging generated apps
+
+## 0.2.20
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+
+## 0.2.19
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+
 ## 0.2.18
 
 ### Patch Changes

@@ -1,5 +1,33 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.29.0
+
+### Minor Changes
+
+-   177cdc8: Apply the "contextPath" attribute in building blocks when the application has a minimum UI5 version equal to or below 1.96.
+
+## 0.28.3
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/fiori-annotation-api@0.1.40
+
+## 0.28.2
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/fiori-annotation-api@0.1.39
+
+## 0.28.1
+
+### Patch Changes
+
+-   b10e3fd: fix: ensure that the controller template include an example call to super.onInit()
+
 ## 0.28.0
 
 ### Minor Changes

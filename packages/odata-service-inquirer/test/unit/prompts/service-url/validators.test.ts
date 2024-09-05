@@ -19,7 +19,8 @@ jest.mock('@sap-ux/axios-extension', () => ({
     ...jest.requireActual('@sap-ux/axios-extension'),
     AbapServiceProvider: jest.fn().mockImplementation(() => ({
         catalog: catalogServiceMock
-    }))
+    })),
+    createForAbap: jest.fn().mockImplementation(() => new AbapServiceProvider())
 }));
 
 describe('Test service url validators', () => {
@@ -59,7 +60,7 @@ describe('Test service url validators', () => {
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                abapServiceProvider: new AbapServiceProvider()
+                axiosConfig: {}
             })
         ).toMatch(t('prompts.validationMessages.metadataInvalid'));
 
@@ -68,31 +69,19 @@ describe('Test service url validators', () => {
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                abapServiceProvider: new AbapServiceProvider()
+                axiosConfig: {}
             })
         ).toBe(true);
         expect(catalogServiceMock).toHaveBeenCalledWith(OdataVersion.v2);
 
         // Valid metadata with required version
-        expect(
-            await validateService(
-                serviceUrl,
-                { odataService, abapServiceProvider: new AbapServiceProvider() },
-                OdataVersion.v4
-            )
-        ).toBe(
+        expect(await validateService(serviceUrl, { odataService, axiosConfig: {} }, OdataVersion.v4)).toBe(
             t('prompts.validationMessages.odataVersionMismatch', {
                 requiredOdataVersion: OdataVersion.v4,
                 providedOdataVersion: OdataVersion.v2
             })
         );
-        expect(
-            await validateService(
-                serviceUrl,
-                { odataService, abapServiceProvider: new AbapServiceProvider() },
-                OdataVersion.v2
-            )
-        ).toBe(true);
+        expect(await validateService(serviceUrl, { odataService, axiosConfig: {} }, OdataVersion.v2)).toBe(true);
     });
 
     test('should set the prompt state', async () => {
@@ -111,7 +100,7 @@ describe('Test service url validators', () => {
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                abapServiceProvider: new AbapServiceProvider()
+                'axiosConfig': {}
             })
         ).toBe(true);
         expect(PromptState.odataService).toEqual({
@@ -140,7 +129,7 @@ describe('Test service url validators', () => {
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                abapServiceProvider: new AbapServiceProvider()
+                'axiosConfig': {}
             })
         ).toBe(true);
         expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.annotationsNotFound'));
@@ -151,7 +140,7 @@ describe('Test service url validators', () => {
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                abapServiceProvider: new AbapServiceProvider()
+                'axiosConfig': {}
             })
         ).toBe(true);
         expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.annotationsNotFound'));
@@ -167,7 +156,7 @@ describe('Test service url validators', () => {
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                abapServiceProvider: new AbapServiceProvider()
+                'axiosConfig': {}
             })
         ).toBe(t('errors.unknownError', { error: metadataRequestError.message }));
         expect(loggerSpy).toHaveBeenCalled();
@@ -179,7 +168,7 @@ describe('Test service url validators', () => {
         expect(
             await validateService(serviceUrl, {
                 odataService,
-                abapServiceProvider: new AbapServiceProvider()
+                'axiosConfig': {}
             })
         ).toBe(t('errors.odataServiceUrlNotFound'));
     });

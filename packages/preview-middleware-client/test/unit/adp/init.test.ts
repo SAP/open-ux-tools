@@ -2,7 +2,7 @@ import * as common from '@sap-ux-private/control-property-editor-common';
 import init from '../../../src/adp/init';
 import { fetchMock } from 'mock/window';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
-import * as outline from '../../../src/cpe/outline';
+import { OutlineService } from '../../../src/cpe/outline/service';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
@@ -39,7 +39,7 @@ describe('adp', () => {
             .mockImplementationOnce(() => Promise.resolve(apiJson))
             .mockImplementation(() => Promise.resolve({ json: jest.fn().mockResolvedValue({}) }));
 
-        initOutlineSpy = jest.spyOn(outline, 'initOutline').mockImplementation(() => {
+        initOutlineSpy = jest.spyOn(OutlineService.prototype, 'init').mockImplementation(() => {
             return Promise.resolve();
         });
 
@@ -147,7 +147,7 @@ describe('adp', () => {
             payload: undefined
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
@@ -176,7 +176,7 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
