@@ -1,6 +1,6 @@
 import { elementsWithName, getElementAttributeValue } from '@sap-ux/odata-annotation-core';
 import type { Attribute, Element, Range, Target } from '@sap-ux/odata-annotation-core-types';
-import { createElementNode, createTarget, Edm, ELEMENT_TYPE, Location } from '@sap-ux/odata-annotation-core-types';
+import { Edm, Location } from '@sap-ux/odata-annotation-core-types';
 import type {
     SupportedAnnotations,
     ODataAnnotations,
@@ -9,41 +9,38 @@ import type {
     ValueWithOrigin,
     UIReferenceFacetDefinition,
     UIFacetsDefinition,
-    UIFieldGroupDefinition,
-    CommonValueListDefinition,
-    CommonValueListParameterInOutDefinition,
-    CommonValueListParameterDisplayOnlyDefinition
+    UIFieldGroupDefinition
 } from './types';
-import {
-    UI_FACETS,
-    UI_LINE_ITEM,
-    UI_REFERENCE_FACET,
-    UI_FIELD_GROUP,
-    UI_DATA_FIELD,
-    COMMON_VALUE_LIST,
-    COMMON_VALUE_LIST_PARAMETER_DISPLAY_ONLY,
-    COMMON_VALUE_LIST_PARAMETER_IN_OUT
-} from './types';
-
-// type CollectorFunction = (target: Target, term: Element) => ODataAnnotations[];
+import { UI_FACETS, UI_LINE_ITEM, UI_REFERENCE_FACET, UI_FIELD_GROUP, UI_DATA_FIELD } from './types';
+import { logger } from '../logger';
+import { createValue } from './builders';
 
 type CollectorDefinition = {
     [A in SupportedAnnotations]: (target: Target, term: Element) => void;
 };
 
+/**
+ * Finds a property element based on property name.
+ *
+ * @param name - Property name to search for.
+ * @param properties - A list of properties which will be checked.
+ * @returns First matching element if one exists.
+ */
+function findProperty(name: string, properties: Element[]): Element | undefined {
+    return properties.find((property) => property.attributes[Edm.Property]?.value === name);
+}
+
+/**
+ * Extracts supported OData annotation information from Target in preparation for conversion to SAP Annotations.
+ */
 class ODataAnnotationCollector implements CollectorDefinition {
     readonly annotations: ODataAnnotations[] = [];
     constructor(private readonly uri: string) {}
 
     [UI_LINE_ITEM](target: Target, term: Element): void {
-        console.log(term);
-        const qualifier = term.attributes[Edm.Qualifier]?.value;
-
-        const collection = term.content.find(
-            (child): child is Element => child.type === ELEMENT_TYPE && child.name === Edm.Collection
-        );
+        const collection = elementsWithName(Edm.Collection, term)[0];
         if (!collection) {
-            // TODO: error handling?
+            logger.warn('Invalid UI.LineItem structure, missing "Collection" element.');
             return;
         }
         const lineItems: UILineItemDefinition = {
@@ -51,9 +48,9 @@ class ODataAnnotationCollector implements CollectorDefinition {
             target: this.createValue(target.name, target.nameRange),
             items: []
         };
-
+        const qualifier = this.createValueFromAttribute(term, Edm.Qualifier);
         if (qualifier) {
-            lineItems.qualifier = this.createValue(qualifier, term.attributes[Edm.Qualifier]?.valueRange);
+            lineItems.qualifier = qualifier;
         }
 
         if (term.range) {
@@ -61,55 +58,31 @@ class ODataAnnotationCollector implements CollectorDefinition {
         }
 
         for (const dataField of elementsWithName(Edm.Record, collection)) {
-            const properties = elementsWithName(Edm.PropertyValue, dataField);
-            const valueProperty = properties.find((property) => property.attributes[Edm.Property]?.value === 'Value');
-            const label = properties.find((property) => property.attributes[Edm.Property]?.value === 'Label');
-            // todo test with multiple path values
-            const valueAttribute = this.getPathAttribute(valueProperty);
-            // TODO: check record
-            if (!valueAttribute) {
-                // TODO: error handling?
-                continue;
+            const item = this.processDataField(dataField);
+            if (item) {
+                lineItems.items.push(item);
             }
-
-            // const targetName = [parentName, value].join('/'); // TODO: handle no value
-            // let target = this.targets.get(targetName);
-            // if (!target) {
-            //     target = createTarget(targetName);
-            //     this.targets.set(targetName, target);
-            // }
-            const item: UIDataFieldDefinition = {
-                type: UI_DATA_FIELD,
-                value: this.createValue(valueAttribute.value, valueAttribute.valueRange)
-            };
-            const labelValue = label?.attributes?.[Edm.String]?.value;
-            if (labelValue) {
-                item.label = this.createValue(labelValue, label?.attributes?.[Edm.String]?.valueRange);
-            }
-            lineItems.items.push(item);
         }
 
         this.annotations.push(lineItems);
     }
 
     [UI_FIELD_GROUP](target: Target, term: Element): void {
-        // TODO: check what to do with label
         const qualifier = term.attributes[Edm.Qualifier]?.value;
-        console.log(term);
         const record = elementsWithName(Edm.Record, term)?.[0];
         if (!record) {
-            // TODO: error handling?
+            logger.warn('Invalid UI.FieldGroup structure, missing root "Record" element.');
             return;
         }
         const fieldGroupProperties = elementsWithName(Edm.PropertyValue, record);
-        const data = fieldGroupProperties.find((property) => property.attributes[Edm.Property]?.value === 'Data');
+        const data = findProperty('Data', fieldGroupProperties);
         if (!data) {
-            // TODO: error handling?
+            logger.warn('Invalid UI.FieldGroup structure, missing "Data" property.');
             return;
         }
         const collection = elementsWithName(Edm.Collection, data)[0];
         if (!collection) {
-            // TODO: error handling?
+            logger.warn('Invalid UI.FieldGroup structure, missing "Collection" element in "Data" property.');
             return;
         }
         const annotation: UIFieldGroupDefinition = {
@@ -127,151 +100,19 @@ class ODataAnnotationCollector implements CollectorDefinition {
         }
 
         for (const dataField of elementsWithName(Edm.Record, collection)) {
-            const properties = elementsWithName(Edm.PropertyValue, dataField);
-            const valueProperty = properties.find((property) => property.attributes[Edm.Property]?.value === 'Value');
-            const label = properties.find((property) => property.attributes[Edm.Property]?.value === 'Label');
-            const valueAttribute = this.getPathAttribute(valueProperty);
-            // TODO: check record
-            if (!valueAttribute) {
-                // TODO: error handling?
-                continue;
-            }
-
-            // const targetName = [parentName, value].join('/'); // TODO: handle no value
-            // let target = this.targets.get(targetName);
-            // if (!target) {
-            //     target = createTarget(targetName);
-            //     this.targets.set(targetName, target);
-            // }
-            const item: UIDataFieldDefinition = {
-                type: UI_DATA_FIELD,
-                value: this.createValue(valueAttribute.value, valueAttribute.valueRange)
-            };
-            const labelValue = label?.attributes?.[Edm.String]?.value;
-            if (labelValue) {
-                item.label = this.createValue(labelValue, label?.attributes?.[Edm.String]?.valueRange);
-            }
-            annotation.data.push(item);
-        }
-
-        this.annotations.push(annotation);
-    }
-
-    [COMMON_VALUE_LIST](target: Target, term: Element): void {
-        // TODO: check what to do with label
-        const qualifier = term.attributes[Edm.Qualifier]?.value;
-        console.log(term);
-        const record = elementsWithName(Edm.Record, term)?.[0];
-        if (!record) {
-            // TODO: error handling?
-            return;
-        }
-        const fieldGroupProperties = elementsWithName(Edm.PropertyValue, record);
-        const collectionPathProperty = fieldGroupProperties.find(
-            (property) => property.attributes[Edm.Property]?.value === 'CollectionPath'
-        );
-        const collectionPath = collectionPathProperty?.attributes?.[Edm.String]?.value;
-        if (!collectionPath) {
-            // TODO: error handling?
-            return;
-        }
-        const parameters = fieldGroupProperties.find(
-            (property) => property.attributes[Edm.Property]?.value === 'Parameters'
-        );
-        if (!parameters) {
-            // TODO: error handling?
-            return;
-        }
-        const collection = elementsWithName(Edm.Collection, parameters)[0];
-        if (!collection) {
-            // TODO: error handling?
-            return;
-        }
-        const annotation: CommonValueListDefinition = {
-            term: COMMON_VALUE_LIST,
-            target: this.createValue(target.name, target.nameRange),
-            collectionPath: this.createValue(collectionPath, collectionPathProperty.attributes[Edm.String].valueRange),
-            parameters: []
-        };
-
-        if (qualifier) {
-            annotation.qualifier = this.createValue(qualifier, term.attributes[Edm.Qualifier]?.valueRange);
-        }
-
-        if (term.range) {
-            annotation.location = Location.create(this.uri, term.range);
-        }
-
-        for (const dataField of elementsWithName(Edm.Record, collection)) {
-            const type = dataField.attributes[Edm.Type]?.value;
-            if (type === COMMON_VALUE_LIST_PARAMETER_DISPLAY_ONLY) {
-                const properties = elementsWithName(Edm.PropertyValue, dataField);
-
-                const valueListProperty = properties.find(
-                    (property) => property.attributes[Edm.Property]?.value === 'ValueListProperty'
-                );
-
-                const value = valueListProperty?.attributes?.[Edm.String]?.value ?? '';
-                // TODO: check record
-                if (!value) {
-                    // TODO: error handling?
-                    continue;
-                }
-
-                const item: CommonValueListParameterDisplayOnlyDefinition = {
-                    type: COMMON_VALUE_LIST_PARAMETER_DISPLAY_ONLY,
-                    valueListProperty: this.createValue(value, valueListProperty?.attributes?.[Edm.String]?.valueRange)
-                };
-                annotation.parameters.push(item);
-            } else if (type === COMMON_VALUE_LIST_PARAMETER_IN_OUT) {
-                const properties = elementsWithName(Edm.PropertyValue, dataField);
-                const localDataProperty = properties.find(
-                    (property) => property.attributes[Edm.Property]?.value === 'LocalDataProperty'
-                );
-                const valueListProperty = properties.find(
-                    (property) => property.attributes[Edm.Property]?.value === 'ValueListProperty'
-                );
-                const localDataValue = localDataProperty?.attributes?.[Edm.PropertyPath]?.value ?? '';
-                // TODO: check record
-                if (!localDataValue) {
-                    // TODO: error handling?
-                    continue;
-                }
-
-                const value = valueListProperty?.attributes?.[Edm.String]?.value ?? '';
-                // TODO: check record
-                if (!value) {
-                    // TODO: error handling?
-                    continue;
-                }
-
-                const item: CommonValueListParameterInOutDefinition = {
-                    type: COMMON_VALUE_LIST_PARAMETER_IN_OUT,
-                    valueListProperty: this.createValue(value, valueListProperty?.attributes?.[Edm.String]?.valueRange),
-                    localDataProperty: this.createValue(
-                        value,
-                        localDataProperty?.attributes?.[Edm.PropertyPath]?.valueRange
-                    )
-                };
-                annotation.parameters.push(item);
+            const item = this.processDataField(dataField);
+            if (item) {
+                annotation.data.push(item);
             }
         }
-        const label = fieldGroupProperties.find((property) => property.attributes[Edm.Property]?.value === 'Label');
 
-        const labelValue = label?.attributes?.[Edm.String]?.value;
-        if (labelValue) {
-            annotation.label = this.createValue(labelValue, label?.attributes?.[Edm.String]?.valueRange);
-        }
         this.annotations.push(annotation);
     }
 
     [UI_FACETS](target: Target, term: Element): void {
-        console.log(term);
-        const collection = term.content.find(
-            (child): child is Element => child.type === ELEMENT_TYPE && child.name === Edm.Collection
-        );
+        const collection = elementsWithName(Edm.Collection, term)[0];
         if (!collection) {
-            // TODO: error handling?
+            logger.warn('Invalid UI.Facets structure, missing "Collection" element.');
             return;
         }
 
@@ -285,73 +126,121 @@ class ODataAnnotationCollector implements CollectorDefinition {
             annotation.location = Location.create(this.uri, term.range);
         }
         for (const facet of elementsWithName(Edm.Record, collection)) {
-            const recordType = facet.attributes[Edm.Type]?.value;
+            const recordType = facet.attributes[Edm.Type]?.value ?? '';
             if (recordType !== 'UI.ReferenceFacet') {
-                console.warn(`Facet ${recordType} type is not supported!`);
-                return;
+                logger.warn(`Facet with type "${recordType}" is not supported!`);
+                continue;
             }
             const properties = elementsWithName(Edm.PropertyValue, facet);
-            const idProperty = properties.find((property) => property.attributes[Edm.Property]?.value === 'ID');
-            const id = idProperty?.attributes?.[Edm.String]?.value;
-            console.log(annotation);
+            const id = this.createValueFromPrimitiveRecordProperty('ID', Edm.String, properties);
             if (!id) {
-                console.warn(`ID for facet on '${target.name}' is required!`);
-                return;
+                logger.warn(`ID for facet on "${target.name}" is required!`);
+                continue;
             }
-            const targetProperty = properties.find((property) => property.attributes[Edm.Property]?.value === 'Target');
-            const fieldGroupQualifier = targetProperty?.attributes?.[Edm.AnnotationPath]?.value?.split('#')[1];
+            const targetProperty = findProperty('Target', properties);
+            const targetPropertyPathAttribute = targetProperty?.attributes?.[Edm.AnnotationPath];
+            // Currently we assume that target annotation will always be UI.FieldGroup
+            const [targetAnnotation, fieldGroupQualifier] = targetPropertyPathAttribute?.value?.split('#') ?? [];
             if (!fieldGroupQualifier) {
-                console.warn(`Could not find target qualifier for facet '${id}'!`);
-                return;
+                logger.warn(`Could not find target qualifier for facet "${id.value}"!`);
+                continue;
             }
-            const label = properties.find((property) => property.attributes[Edm.Property]?.value === 'Label');
+            const targetQualifier = this.createValue(fieldGroupQualifier, targetPropertyPathAttribute?.valueRange);
+            if (targetQualifier.location) {
+                targetQualifier.location.range.start.character += targetAnnotation.length + 1; // do not include #
+            }
 
             const item: UIReferenceFacetDefinition = {
                 type: UI_REFERENCE_FACET,
-                id: this.createValue(id, idProperty?.attributes?.[Edm.String]?.valueRange),
-                // TODO: create correct range for target to only include the qualifier
-                target: this.createValue(
-                    fieldGroupQualifier,
-                    targetProperty?.attributes?.[Edm.AnnotationPath]?.valueRange
-                )
+                id,
+                target: targetQualifier
             };
 
-            const labelValue = label?.attributes?.[Edm.String]?.value;
-            if (labelValue) {
-                item.label = this.createValue(labelValue, label?.attributes?.[Edm.String]?.valueRange);
+            const label = this.createValueFromPrimitiveRecordProperty('Label', Edm.String, properties);
+            if (label) {
+                item.label = label;
             }
 
             annotation.facets.push(item);
         }
         this.annotations.push(annotation);
     }
+
     private createValue<T>(value: T, range?: Range): ValueWithOrigin<T> {
-        const result: ValueWithOrigin<T> = {
+        return createValue(value, this.uri, range);
+    }
+
+    private createValueFromPrimitiveRecordProperty(
+        propertyName: string,
+        valueType: Edm,
+        properties: Element[]
+    ): ValueWithOrigin<string> | undefined {
+        const element = findProperty(propertyName, properties);
+        return this.createValueFromAttribute(element, valueType);
+    }
+
+    private createValueFromPrimitiveRecordPropertyWithFirstMatchingType(
+        propertyName: string,
+        valueTypes: Edm[],
+        properties: Element[]
+    ): ValueWithOrigin<string> | undefined {
+        const element = findProperty(propertyName, properties);
+        for (const type of valueTypes) {
+            const value = this.createValueFromAttribute(element, type);
+
+            if (value) {
+                return value;
+            }
+        }
+        return undefined;
+    }
+
+    private createValueFromAttribute(
+        element: Element | undefined,
+        attributeName: Edm
+    ): ValueWithOrigin<string> | undefined {
+        const attribute = element?.attributes?.[attributeName];
+        const attributeValue = attribute?.value;
+        if (attributeValue) {
+            return createValue(attributeValue, this.uri, attribute.valueRange);
+        }
+
+        return undefined;
+    }
+
+    private processDataField(dataField: Element): UIDataFieldDefinition | undefined {
+        const properties = elementsWithName(Edm.PropertyValue, dataField);
+        const value = this.createValueFromPrimitiveRecordPropertyWithFirstMatchingType(
+            'Value',
+            [Edm.Path, Edm.PropertyPath],
+            properties
+        );
+
+        if (!value) {
+            logger.warn('Invalid UI.DataField structure, missing "Value" property.');
+            return undefined;
+        }
+
+        const result: UIDataFieldDefinition = {
+            type: UI_DATA_FIELD,
             value
         };
-        if (range) {
-            result.location = Location.create(this.uri, range);
+
+        const label = this.createValueFromPrimitiveRecordProperty('Label', Edm.String, properties);
+        if (label) {
+            result.label = label;
         }
 
         return result;
     }
-
-    private getPathAttribute(element: Element | undefined): Attribute | undefined {
-        if (!element) {
-            return undefined;
-        }
-        const attribute = element?.attributes?.[Edm.PropertyPath];
-        if (attribute) {
-            return attribute;
-        }
-        return element?.attributes?.[Edm.Path];
-    }
 }
 
 /**
+ * Extracts supported OData annotation information from Target in preparation for conversion to SAP Annotations.
  *
- * @param uri
- * @param input
+ * @param uri - Document URI.
+ * @param input - Targets with OData annotation for processing.
+ * @returns A list of supported OData annotations found in targets.
  */
 export function collectODataAnnotations(uri: string, input: Target[]): ODataAnnotations[] {
     const collector = new ODataAnnotationCollector(uri);
@@ -362,8 +251,7 @@ export function collectODataAnnotations(uri: string, input: Target[]): ODataAnno
             if (typeof handler === 'function') {
                 collector[termName](target, term);
             } else {
-                console.warn(`No handler found for ${termName}`);
-                // warn
+                logger.warn(`No handler found for ${termName}`);
             }
         }
     }

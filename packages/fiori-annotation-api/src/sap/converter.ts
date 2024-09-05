@@ -1,79 +1,16 @@
-import { elementsWithName, getElementAttributeValue } from '@sap-ux/odata-annotation-core';
-import type { Target, Element, ElementChild } from '@sap-ux/odata-annotation-core-types';
-import {
-    createAttributeNode,
-    createElementNode,
-    createTarget,
-    Edm,
-    ELEMENT_TYPE
-} from '@sap-ux/odata-annotation-core-types';
-import type {
-    CommonValueListDefinition,
-    CommonValueListParameterInOutDefinition,
-    ODataAnnotations,
-    UIFacetsDefinition,
-    UIFieldGroupDefinition,
-    UILineItemDefinition
-} from './types';
-import {
-    SupportedAnnotations,
-    UI_LINE_ITEM,
-    UI_FACETS,
-    UI_REFERENCE_FACET,
-    UI_FIELD_GROUP,
-    COMMON_VALUE_LIST,
-    COMMON_VALUE_LIST_PARAMETER_IN_OUT
-} from './types';
+import type { Target, Element } from '@sap-ux/odata-annotation-core-types';
+import { createElementNode, createTarget, Edm } from '@sap-ux/odata-annotation-core-types';
+
+import type { ODataAnnotations, UIFacetsDefinition, UIFieldGroupDefinition, UILineItemDefinition } from './types';
+import { UI_LINE_ITEM, UI_FACETS, UI_REFERENCE_FACET, UI_FIELD_GROUP } from './types';
 import { collectODataAnnotations } from './collector';
-
-function createPrimitiveElement(
-    elementName: Edm,
-    nameAttribute: Edm,
-    name: string,
-    valueType: Edm,
-    value: string
-): Element {
-    return createElementNode({
-        name: elementName,
-        attributes: {
-            [nameAttribute]: createAttributeNode(nameAttribute, name),
-            [valueType]: createAttributeNode(valueType, value)
-        }
-    });
-}
-
-function createComplexElement(elementName: Edm, nameAttribute: Edm, name: string, content: ElementChild[]): Element {
-    return createElementNode({
-        name: elementName,
-        attributes: {
-            [nameAttribute]: createAttributeNode(nameAttribute, name)
-        },
-        content
-    });
-}
-
-function createPrimitiveRecordProperty(name: string, valueType: Edm, value: string): Element {
-    return createPrimitiveElement(Edm.PropertyValue, Edm.Property, name, valueType, value);
-}
-
-function createComplexRecordProperty(name: string, value: Element): Element {
-    return createComplexElement(Edm.PropertyValue, Edm.Property, name, [value]);
-}
-
-function createPrimitiveAnnotation(termName: string, valueType: Edm, value: string): Element {
-    return createPrimitiveElement(Edm.Annotation, Edm.Term, termName, valueType, value);
-}
-
-function createComplexAnnotation(termName: string, content: ElementChild[]): Element {
-    return createElementNode({
-        name: Edm.Annotation,
-        attributes: {
-            [Edm.Term]: createAttributeNode(Edm.Term, termName)
-        },
-        content
-    });
-}
-
+import {
+    createComplexAnnotation,
+    createPrimitiveAnnotation,
+    createPrimitiveRecordProperty,
+    createRecord
+} from './builders';
+import { logger } from '../logger';
 /**
  * Converts OData annotations to SAP annotations.
  */
@@ -84,21 +21,14 @@ export class SAPAnnotationConverter {
     /**
      * Converts OData annotations to SAP annotations.
      *
-     * @param input Targets grouped by files with OData annotations.
+     * @param annotations - A list of OData annotations.
      * @returns Targets with SAP annotations.
      */
-    convertTargets(input: Record<string, Target[]>): Target[] {
+    convertAnnotations(annotations: ODataAnnotations[]): Target[] {
         this.targets.clear();
-        const annotations: ODataAnnotations[] = [];
-        for (const [uri, targets] of Object.entries(input)) {
-            const fileAnnotations = collectODataAnnotations(uri, targets);
-            for (const annotation of fileAnnotations) {
-                annotations.push(annotation);
-            }
-        }
-        console.log(JSON.stringify(annotations, undefined, 2));
+        this.targetProperties.clear();
+
         this.processLineItems(annotations);
-        this.processValueHelps(annotations);
         this.processFieldGroups(annotations);
         // Following functions expect that all the other annotations have been processed
         this.processFacets(annotations);
@@ -134,8 +64,6 @@ export class SAPAnnotationConverter {
     }
 
     private processLineItems(annotations: ODataAnnotations[]): void {
-        // TODO: check what to do with label
-        // const qualifier = term.attributes[Edm.Qualifier]?.value;
         const definitions = annotations.filter(
             (annotation): annotation is UILineItemDefinition => annotation.term === UI_LINE_ITEM
         );
@@ -144,20 +72,18 @@ export class SAPAnnotationConverter {
             for (const dataField of definition.items) {
                 const target = this.getPropertyTarget(definition.target.value, dataField.value.value);
                 target.terms.push(
-                    createComplexAnnotation('UI.lineItem', [
+                    createComplexAnnotation(
+                        'UI.lineItem',
                         createElementNode({
                             name: Edm.Collection,
                             content: [
-                                createElementNode({
-                                    name: Edm.Record,
-                                    content: [
-                                        createPrimitiveRecordProperty('position', Edm.Int, position.toString()),
-                                        createPrimitiveRecordProperty('importance', Edm.EnumMember, 'HIGH')
-                                    ]
-                                })
+                                createRecord([
+                                    createPrimitiveRecordProperty('position', Edm.Int, position.toString()),
+                                    createPrimitiveRecordProperty('importance', Edm.EnumMember, 'HIGH')
+                                ])
                             ]
                         })
-                    ])
+                    )
                 );
 
                 if (dataField.label) {
@@ -169,60 +95,8 @@ export class SAPAnnotationConverter {
             }
         }
     }
-    private processValueHelps(annotations: ODataAnnotations[]): void {
-        // TODO: check what to do with label
-        // const qualifier = term.attributes[Edm.Qualifier]?.value;
-        const definitions = annotations.filter(
-            (annotation): annotation is CommonValueListDefinition => annotation.term === COMMON_VALUE_LIST
-        );
-        for (const definition of definitions) {
-            const target = this.getTarget(definition.target.value);
-            const parameter = definition.parameters.find(
-                (parameter): parameter is CommonValueListParameterInOutDefinition =>
-                    parameter.type === COMMON_VALUE_LIST_PARAMETER_IN_OUT
-            );
-            const entityProperties = [
-                createPrimitiveRecordProperty('name', Edm.String, definition.collectionPath.value)
-            ];
-            if (!parameter) {
-                // TODO: error handling
-                return;
-            }
-            entityProperties.push(
-                createPrimitiveRecordProperty('element', Edm.String, parameter.valueListProperty.value)
-            );
 
-            const properties: Element[] = [
-                createComplexRecordProperty(
-                    'entity',
-                    createElementNode({
-                        name: Edm.Record,
-                        content: entityProperties
-                    })
-                )
-
-                // createPrimitiveRecordProperty('importance', Edm.EnumMember, 'HIGH')
-            ];
-
-            // const bindings: Element[] = [];
-            const annotation = createComplexAnnotation('Consumption.valueHelpDefinition', [
-                createElementNode({
-                    name: Edm.Collection,
-                    content: [
-                        createElementNode({
-                            name: Edm.Record,
-                            content: properties
-                        })
-                    ]
-                })
-            ]);
-
-            target.terms.push(annotation);
-        }
-    }
     private processFieldGroups(annotations: ODataAnnotations[]): void {
-        // TODO: check what to do with label
-        // const qualifier = term.attributes[Edm.Qualifier]?.value;
         const definitions = annotations.filter(
             (annotation): annotation is UIFieldGroupDefinition => annotation.term === UI_FIELD_GROUP
         );
@@ -237,20 +111,18 @@ export class SAPAnnotationConverter {
                     );
                 }
                 target.terms.push(
-                    createComplexAnnotation('UI.fieldGroup', [
+                    createComplexAnnotation(
+                        'UI.fieldGroup',
                         createElementNode({
                             name: Edm.Collection,
                             content: [
-                                createElementNode({
-                                    name: Edm.Record,
-                                    content: [
-                                        createPrimitiveRecordProperty('position', Edm.Int, position.toString()),
-                                        ...additionalProperties
-                                    ]
-                                })
+                                createRecord([
+                                    createPrimitiveRecordProperty('position', Edm.Int, position.toString()),
+                                    ...additionalProperties
+                                ])
                             ]
                         })
-                    ])
+                    )
                 );
 
                 if (dataField.label) {
@@ -271,7 +143,6 @@ export class SAPAnnotationConverter {
      * @param annotations - OData annotations.
      */
     private processFacets(annotations: ODataAnnotations[]): void {
-        // TODO: check what to do with label
         const definitions = annotations.filter(
             (annotation): annotation is UIFacetsDefinition => annotation.term === UI_FACETS
         );
@@ -280,18 +151,19 @@ export class SAPAnnotationConverter {
             const entityName = definition.target.value;
             const propertyName = this.targetProperties.get(entityName)?.values()?.next()?.value;
             if (!propertyName) {
-                console.log(`Could not find a property to which attach Facets annotation for entity ${entityName}`);
+                logger.warn(`Could not find a property to which attach Facets annotation for entity "${entityName}"`);
                 return;
             }
             const targetName = [entityName, propertyName].join('/');
             const target = this.getTarget(targetName);
             const content: Element[] = [];
-            const annotation = createComplexAnnotation('UI.facet', [
+            const annotation = createComplexAnnotation(
+                'UI.facet',
                 createElementNode({
                     name: Edm.Collection,
                     content
                 })
-            ]);
+            );
 
             for (const facet of definition.facets) {
                 if (facet.type === UI_REFERENCE_FACET) {
@@ -317,4 +189,22 @@ export class SAPAnnotationConverter {
             target.terms.push(annotation);
         }
     }
+}
+
+/**
+ * Converts OData annotations to SAP annotations.
+ *
+ * @param input Targets grouped by files with OData annotations.
+ * @returns Targets with SAP annotations.
+ */
+export function convertTargets(input: Record<string, Target[]>): Target[] {
+    const converter = new SAPAnnotationConverter();
+    const annotations: ODataAnnotations[] = [];
+    for (const [uri, targets] of Object.entries(input)) {
+        const fileAnnotations = collectODataAnnotations(uri, targets);
+        for (const annotation of fileAnnotations) {
+            annotations.push(annotation);
+        }
+    }
+    return converter.convertAnnotations(annotations);
 }

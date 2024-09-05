@@ -32,7 +32,6 @@ import { DiagnosticSeverity, Range } from '@sap-ux/odata-annotation-core-types';
 import type { ApiError, FioriAnnotationServiceOptions } from '../../src';
 
 import { pathFromUri } from '../../src/utils';
-import { COMMON_VALUE_LIST_PARAMETER_DISPLAY_ONLY, COMMON_VALUE_LIST_PARAMETER_IN_OUT } from '../../src/sap/types';
 
 /**
  * Configuration
@@ -1977,91 +1976,6 @@ describe('fiori annotation service', () => {
                 ],
                 fioriServiceOptions: { writeSapAnnotations: true }
             });
-
-            createEditTestCase.only({
-                name: 'Common.ValueList',
-                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
-                getChanges: (files) => [
-                    createValueListWithRecord(files.annotations, 'IncidentService.Incidents/category', [
-                        {
-                            name: 'CollectionPath',
-                            value: { type: 'String', String: 'ZPath' }
-                        },
-                        {
-                            name: 'Parameters',
-                            value: {
-                                type: 'Collection',
-                                Collection: [
-                                    {
-                                        type: COMMON_VALUE_LIST_PARAMETER_IN_OUT,
-                                        propertyValues: [
-                                            {
-                                                name: 'LocalDataProperty',
-                                                value: {
-                                                    type: 'PropertyPath',
-                                                    PropertyPath: 'CategoryID'
-                                                }
-                                            },
-                                            {
-                                                name: 'ValueListProperty',
-                                                value: {
-                                                    type: 'String',
-                                                    String: 'Identifier'
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    // {
-                                    //     type: COMMON_VALUE_LIST_PARAMETER_DISPLAY_ONLY,
-                                    //     propertyValues: [
-                                    //         {
-                                    //             name: 'ValueListProperty',
-                                    //             value: {
-                                    //                 type: 'String',
-                                    //                 String: 'readonly'
-                                    //             }
-                                    //         }
-                                    //     ]
-                                    // }
-                                ]
-                            }
-                        }
-                    ])
-                ],
-                fioriServiceOptions: { writeSapAnnotations: true }
-            });
-
-            // createEditTestCase({
-            //     name: 'with existing annotation',
-            //     projectTestModels: TEST_TARGETS,
-            //     getInitialChanges: (files) => [createLineItem(files.annotations, [])],
-            //     getChanges: (files) => [createLineItem(files.annotations, [], 'second')]
-            // });
-
-            // createEditTestCase({
-            //     name: 'two annotations',
-            //     projectTestModels: TEST_TARGETS,
-            //     getInitialChanges: () => [],
-            //     getChanges: (files) => [
-            //         createLineItem(files.annotations, []),
-            //         createLineItem(files.annotations, [], 'second'),
-            //         {
-            //             kind: ChangeType.InsertAnnotation,
-            //             uri: files.annotations,
-            //             content: {
-            //                 type: 'annotation',
-            //                 target: `${targetName}/property`,
-            //                 value: {
-            //                     term: `${COMMON}.Text`,
-            //                     value: {
-            //                         type: 'Path',
-            //                         Path: 'something'
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //     ]
-            // });
         });
     });
     describe('delete', () => {

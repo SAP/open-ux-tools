@@ -1,1 +1,1 @@
-export { SAPAnnotationConverter } from './converter';
+export { SAPAnnotationConverter, convertTargets } from './converter';

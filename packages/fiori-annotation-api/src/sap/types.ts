@@ -51,28 +51,5 @@ export interface UIReferenceFacetDefinition extends Record<typeof UI_REFERENCE_F
     label?: ValueWithOrigin<string>;
 }
 
-export const COMMON_VALUE_LIST = 'Common.ValueList';
-
-export interface CommonValueListDefinition extends BaseAnnotationDefinition<typeof COMMON_VALUE_LIST> {
-    collectionPath: ValueWithOrigin<string>;
-    parameters: Array<CommonValueListParameterInOutDefinition | CommonValueListParameterDisplayOnlyDefinition>;
-    label?: ValueWithOrigin<string>;
-}
-
-export const COMMON_VALUE_LIST_PARAMETER_IN_OUT = 'Common.ValueListParameterInOut';
-export interface CommonValueListParameterInOutDefinition extends Record<typeof COMMON_VALUE_LIST_PARAMETER_IN_OUT> {
-    localDataProperty: ValueWithOrigin<string>;
-
-    valueListProperty: ValueWithOrigin<string>;
-}
-export const COMMON_VALUE_LIST_PARAMETER_DISPLAY_ONLY = 'Common.ValueListParameterDisplayOnly';
-export interface CommonValueListParameterDisplayOnlyDefinition
-    extends Record<typeof COMMON_VALUE_LIST_PARAMETER_DISPLAY_ONLY> {
-    valueListProperty: ValueWithOrigin<string>;
-}
 export type SupportedAnnotations = ODataAnnotations['term'];
-export type ODataAnnotations =
-    | UILineItemDefinition
-    | UIFacetsDefinition
-    | UIFieldGroupDefinition
-    | CommonValueListDefinition;
+export type ODataAnnotations = UILineItemDefinition | UIFacetsDefinition | UIFieldGroupDefinition;

@@ -53,6 +53,9 @@ import { TARGET_TYPE, printTarget } from '@sap-ux/cds-odata-annotation-converter
 
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
+import { convertTargets } from '../sap';
+import { logger } from '../logger';
+
 import {
     type CompiledService,
     type TextFile,
@@ -79,7 +82,6 @@ import {
 } from '../types';
 import { ApiError, ApiErrorCode } from '../error';
 import type { Document } from './document';
-import { SAPAnnotationConverter } from '../sap';
 
 import { CDSWriter } from './writer';
 import { getMissingRefs } from './references';
@@ -143,11 +145,11 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         this._fileSequence = service.serviceFiles;
     }
     private facade: CdsCompilerFacade | undefined;
-    private setFileCache(fileCache: Map<string, string>) {
+    private setFileCache(fileCache: Map<string, string>): void {
         this.fileCache = fileCache;
     }
 
-    private setFacade(facade: CdsCompilerFacade) {
+    private setFacade(facade: CdsCompilerFacade): void {
         this.facade = facade;
     }
 
@@ -287,16 +289,14 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
 
         if (this.writeSapAnnotations) {
             if (changes.length === 0) {
-                // TODO: improve name
-                throw new Error('Nothing to do');
+                return {};
             }
             const uri = changes[0].uri;
             let writer = writers.get(uri);
             const document = this.documents.get(uri);
             const cachedFile = this.fileCache?.get(uri);
             if (!document || cachedFile === undefined || !this.facade) {
-                // TODO: improve name
-                throw new Error('Document not found');
+                throw new Error(`CDS document "${uri}" is not found!`);
             }
             if (!writer) {
                 //writable cds document (augment)
@@ -313,18 +313,16 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
                 );
                 writers.set(uri, writer);
             }
-            // extract annotations to a simpler format
 
-            // generate SAP annotations from it
-            const converter = new SAPAnnotationConverter();
-
-            const targets = converter.convertTargets({
+            const targets = convertTargets({
                 [uri]: changes
                     .map((change): Target | undefined => {
                         if (change.type === INSERT_TARGET) {
                             return change.target;
                         }
-                        // unsupported change log/throw
+                        logger.warn(
+                            `Change type "${change.type}" is not supported when "writeSapAnnotations" parameter is set.`
+                        );
                         return undefined;
                     })
                     .filter((target): target is Target => !!target)
@@ -357,7 +355,6 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
                 }
                 // TODO: check change type for SAP annotation generation - restrict to insert annotation
                 const changeHandler = this[change.type] as unknown as ChangeHandlerFunction<AnnotationFileChange>;
-                console.log(change);
 
                 changeHandler(writer, document, change);
             }

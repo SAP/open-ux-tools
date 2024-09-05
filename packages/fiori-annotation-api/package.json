@@ -25,6 +25,7 @@
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/vocabularies-types": "0.10.0",
         "@sap-ux/xml-odata-annotation-converter": "workspace:*",
