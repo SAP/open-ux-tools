@@ -13,7 +13,7 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "npm-run-all2 -l clean -p build:tsc build:bundle-templates",
+        "build": "npm-run-all2 -l clean build:tsc build:bundle-templates",
         "build:bundle-templates": "node esbuild.js",
         "build:tsc": "tsc  --build",
         "watch": "tsc --watch",
