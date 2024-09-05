@@ -13,9 +13,9 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "npm-run-all2 -l clean -p build:tsc build:bundle",
-        "build:bundle": "node esbuild.js",
-        "build:tsc": "tsc --emitDeclarationOnly",
+        "build": "npm-run-all2 -l clean -p build:tsc build:bundle-templates",
+        "build:bundle-templates": "node esbuild.js",
+        "build:tsc": "tsc  --build",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",

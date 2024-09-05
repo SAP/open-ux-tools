@@ -88,7 +88,7 @@ export function enhanceManifestAndGetActionsElementReference(manifest: any, targ
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export function generateCustomAction(basePath: string, actionConfig: CustomAction, fs?: Editor): Editor {
+export async function generateCustomAction(basePath: string, actionConfig: CustomAction, fs?: Editor): Promise<Editor> {
     validateVersion(actionConfig.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
@@ -116,7 +116,8 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
 
     // enhance manifest with action definition and controller reference
     const actions = enhanceManifestAndGetActionsElementReference(manifest, config.target);
-    Object.assign(actions, JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action.json`)), config, {})));
+    const { manifestActionTemplate } = await import('../templates/index');
+    Object.assign(actions, JSON.parse(render(manifestActionTemplate.default, config, {})));
     fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, actionConfig.tabInfo));
 
     return fs;
