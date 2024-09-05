@@ -39,7 +39,7 @@ export function getBootstrapResourceUrls(
 export function getVariantPreviewAppScript(sapClient?: string): string {
     const previewAppAnchor = '#preview-app';
     const DisableCacheParam = 'sap-ui-xx-viewCache=false';
-    const sapClientParam = sapClient ? `sap-client=${sapClient}` : '';
+    const sapClientParam = sapClient ? `&sap-client=${sapClient}` : '';
     const urlParam = `?${[
         sapClientParam,
         DisableCacheParam,
