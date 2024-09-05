@@ -9,7 +9,7 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
-import { getTemplatePath } from '../templates';
+import { manifestActionTemplate } from '../templates/index';
 import { getJsonSpace } from '../common/file';
 
 /**
@@ -116,7 +116,6 @@ export async function generateCustomAction(basePath: string, actionConfig: Custo
 
     // enhance manifest with action definition and controller reference
     const actions = enhanceManifestAndGetActionsElementReference(manifest, config.target);
-    const { manifestActionTemplate } = await import('../templates/index');
     Object.assign(actions, JSON.parse(render(manifestActionTemplate.default, config, {})));
     fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, actionConfig.tabInfo));
 
