@@ -1,5 +1,12 @@
 # @sap-ux/odata-service-writer
 
+## 0.22.5
+
+### Patch Changes
+
+-   d962ce1: Move hasUI5CliV3 to project-access for common re-use
+    -   @sap-ux/mockserver-config-writer@0.6.4
+
 ## 0.22.4
 
 ### Patch Changes

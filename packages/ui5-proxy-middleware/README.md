@@ -76,7 +76,7 @@ server:
 ### Loading UI5 sources directly from UI5 CDN
 If you don't load all UI5 source through the `ui5-proxy-middleware`, then you can set `directLoad: true`. This will inject the absolute UI5 URL in the bootstrap of your HTML file, thus loading the libraries directly from UI5 CDN.
 
-**NOTE: this works only for the default HTML files created by the [Fiori generator](https://www.npmjs.com/package/@sap/generator-fiori) when a project is generated. Hence index.html, flpSandbox.html and flpSandboxMockServer.html!**
+**NOTE: this does not work with virtualized html files provided by the `preview-middleware`. In that case, call `npx @sap-ux/create add html` to generate a physical copy of the virtualized files.**
 
 ```Yaml
 server:
