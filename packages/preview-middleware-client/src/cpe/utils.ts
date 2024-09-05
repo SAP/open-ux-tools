@@ -7,7 +7,6 @@ import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import UIComponent from 'sap/ui/core/UIComponent';
 
-
 import { getComponent } from '../utils/core';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 
@@ -21,7 +20,6 @@ export interface PropertiesInfo {
 export interface Properties {
     [key: string]: PropertiesInfo;
 }
-
 
 export interface ManagedObjectMetadataProperties {
     name: string;
@@ -102,8 +100,12 @@ export function isReuseComponent(controlId: string, ui5VersionInfo: Ui5VersionIn
  * @returns XMLView which is the root control of the component if it exists.
  */
 export function getRootControlFromComponentContainer(container?: Control): XMLView | undefined {
-    if (container instanceof ComponentContainer) {
-        const componentId = container.getComponent();
+    let componentContainer = container;
+    if (container instanceof XMLView) {
+        componentContainer = container.getContent()[0];
+    }
+    if (componentContainer instanceof ComponentContainer) {
+        const componentId = componentContainer.getComponent();
         const component = getComponent(componentId);
         if (component instanceof UIComponent) {
             const rootControl = component.getRootControl();
