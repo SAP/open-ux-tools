@@ -145,19 +145,19 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should show manual package question', () => {
-        expect(defaultOrShowManualPackageQuestion(true, PackageInputChoices.EnterManualChoice)).toBe(true);
-        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.EnterManualChoice)).toBe(true);
-        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.EnterManualChoice, true)).toBe(true);
-        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.ListExistingChoice, true)).toBe(false);
-        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.ListExistingChoice)).toBe(true); // Handles autoComplete
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.EnterManualChoice)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.EnterManualChoice, false)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.EnterManualChoice, true)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.ListExistingChoice, true)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.ListExistingChoice)).toBe(false);
     });
 
     test('should show search package autocomplete question', () => {
-        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.ListExistingChoice)).toBe(false);
-        expect(defaultOrShowSearchPackageQuestion(false, PackageInputChoices.ListExistingChoice)).toBe(false);
-        expect(defaultOrShowSearchPackageQuestion(false, PackageInputChoices.ListExistingChoice, true)).toBe(true);
-        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.ListExistingChoice, true)).toBe(true);
-        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.EnterManualChoice, true)).toBe(false);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice)).toBe(false);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice)).toBe(false);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice, true)).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice, true)).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.EnterManualChoice, true)).toBe(false);
     });
 
     test('should show transport input choice question', () => {
@@ -232,40 +232,17 @@ describe('Test abap deploy config inquirer conditions', () => {
         ).toBe(true);
     });
 
-    // Typical flow
-    test('Validate typical flow from YUI as subgenerator with autocomplete enabled', () => {
-        PromptState.isYUI = true;
-        // YUI - Autocomplete List
-        expect(showPackageInputChoiceQuestion(true)).toBe(true);
-        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.ListExistingChoice, true)).toBe(false);
-        expect(defaultOrShowSearchPackageQuestion(false, PackageInputChoices.ListExistingChoice, true)).toBe(true);
-        // YUI - Manual
-        expect(showPackageInputChoiceQuestion(true)).toBe(true);
-        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.EnterManualChoice, true)).toBe(true);
-        expect(defaultOrShowSearchPackageQuestion(false, PackageInputChoices.EnterManualChoice, true)).toBe(false);
-    });
-
-    test('Validate typical flow from CLI as subgenerator with autocomplete enabled', () => {
-        PromptState.isYUI = false;
-        // YUI - Autocomplete List
-        expect(showPackageInputChoiceQuestion(true)).toBe(true);
-        expect(defaultOrShowManualPackageQuestion(true, PackageInputChoices.ListExistingChoice, true)).toBe(false);
-        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.ListExistingChoice, true)).toBe(true);
-        // YUI - Manual
-        expect(showPackageInputChoiceQuestion(true)).toBe(true);
-        expect(defaultOrShowManualPackageQuestion(true, PackageInputChoices.EnterManualChoice, true)).toBe(true);
-        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.EnterManualChoice, true)).toBe(false);
-    });
-
-    test('Validate typical flow with autocomplete disabled on YUI and CLI', () => {
-        // Only manual package should be shown if autocomplete is disabled, even if ListExistingChoice is selected
+    test('Validate different state changes i.e. YUI | CLI', () => {
         PromptState.isYUI = false;
         expect(showPackageInputChoiceQuestion(false)).toBe(false);
-        expect(defaultOrShowManualPackageQuestion(true, PackageInputChoices.ListExistingChoice, false)).toBe(true);
-        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.ListExistingChoice, false)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.ListExistingChoice, false)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.EnterManualChoice, true)).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice, false)).toBe(false);
         PromptState.isYUI = true;
         expect(showPackageInputChoiceQuestion(false)).toBe(false);
-        expect(defaultOrShowManualPackageQuestion(false, PackageInputChoices.ListExistingChoice, false)).toBe(true);
-        expect(defaultOrShowSearchPackageQuestion(false, PackageInputChoices.ListExistingChoice, false)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.ListExistingChoice, false)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.EnterManualChoice, true)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.ListExistingChoice, true)).toBe(false);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice, false)).toBe(false);
     });
 });

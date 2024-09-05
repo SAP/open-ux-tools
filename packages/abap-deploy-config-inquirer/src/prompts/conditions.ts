@@ -195,44 +195,30 @@ export function showPackageInputChoiceQuestion(useAutocomplete = false): boolean
 /**
  * Determines if the manual package input prompt should be shown.
  *
- * @param isCli - is in CLI
  * @param packageInputChoice - package input choice from previous answers
  * @param useAutocomplete - useAutocomplete option from prompt options
  * @returns boolean
  */
-export function defaultOrShowManualPackageQuestion(
-    isCli: boolean,
-    packageInputChoice?: string,
-    useAutocomplete = false
-): boolean {
-    return (
-        (!useAutocomplete || packageInputChoice === PackageInputChoices.EnterManualChoice) &&
-        defaultOrShowPackageQuestion()
-    );
+export function defaultOrShowManualPackageQuestion(packageInputChoice?: string, useAutocomplete = false): boolean {
+    if (!useAutocomplete) {
+        return false;
+    }
+    return packageInputChoice === PackageInputChoices.EnterManualChoice && defaultOrShowPackageQuestion();
 }
 
 /**
  * Determines if the search (autocomplete) package input prompt can be shown based on backend availability.
  *
- * @param isCli - is in CLI
  * @param packageInputChoice - package input choice from previous answers
  * @param useAutocomplete - useAutocomplete option from prompt options
  * @returns boolean
  */
-export function defaultOrShowSearchPackageQuestion(
-    isCli: boolean,
-    packageInputChoice?: string,
-    useAutocomplete = false
-): boolean {
+export function defaultOrShowSearchPackageQuestion(packageInputChoice?: string, useAutocomplete = false): boolean {
     // Only show the autocomplete prompt when the autocomplete prompt is supported; CLI or YUI specific version
     if (!useAutocomplete) {
         return false;
     }
-    return (
-        (isCli || useAutocomplete) &&
-        packageInputChoice === PackageInputChoices.ListExistingChoice &&
-        defaultOrShowPackageQuestion()
-    );
+    return packageInputChoice === PackageInputChoices.ListExistingChoice && defaultOrShowPackageQuestion();
 }
 
 /**
