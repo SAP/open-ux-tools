@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.60
+
+### Patch Changes
+
+-   0b7af6a: remove z-index for sticky Search and filter bar and added updating highlighting control logic
+
 ## 0.16.59
 
 ### Patch Changes

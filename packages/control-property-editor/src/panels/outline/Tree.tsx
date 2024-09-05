@@ -22,6 +22,15 @@ interface OutlineNodeItem extends OutlineNode {
 }
 
 export const Tree = (): ReactElement => {
+    // padding + height of `Search` bar
+    const SEARCH_HEIGHT = 56;
+
+    // height of the tree row in a outline
+    const TREE_ROW_HEIGHT = 28;
+
+    // margin of the highlighted control from the top including `Search` bar height and tree row height, it doesn't include the height of main toolbar
+    const HIGHLIGHTED_CONTROL_TOP_MARGIN = SEARCH_HEIGHT + TREE_ROW_HEIGHT;
+
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
@@ -74,8 +83,10 @@ export const Tree = (): ReactElement => {
             setTimeout(() => {
                 // make sure that tree is fully rendered
                 const rect = node.getBoundingClientRect();
-                const outlineContainer = document.getElementsByClassName('section--scrollable')[0];
-                if (rect.top <= 20 || rect.bottom >= outlineContainer?.clientHeight) {
+                const outlineContainer = document.getElementsByClassName('auto-element-scroller')[0];
+
+                // check if highlighted control is behind the `Search` bar or check if it is outside of viewport from bottom
+                if (rect.top <= HIGHLIGHTED_CONTROL_TOP_MARGIN || rect.bottom >= outlineContainer?.clientHeight) {
                     node.scrollIntoView(true);
                 }
             }, 0);
@@ -462,7 +473,7 @@ export const Tree = (): ReactElement => {
     };
 
     return (
-        <div id="list-outline" className="app-panel-scroller">
+        <div id="list-outline" className="app-panel-scroller auto-element-scroller">
             <UIList
                 {...listProp}
                 items={items as never[]}
