@@ -7,6 +7,7 @@ import { getMinUI5VersionAsArray, getMinimumUI5Version, type Manifest } from '@s
 import { FCL_ROUTER } from '../common/defaults';
 import { getTemplatePath } from '../templates';
 import { addExtensionTypes } from '../common/utils';
+
 /**
  * Configurable options when enabling the Flexible Programming Model in a UI5 application.
  *
