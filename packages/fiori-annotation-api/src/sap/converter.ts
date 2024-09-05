@@ -1,7 +1,13 @@
 import type { Target, Element } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, createTarget, Edm } from '@sap-ux/odata-annotation-core-types';
 
-import type { ODataAnnotations, UIFacetsDefinition, UIFieldGroupDefinition, UILineItemDefinition } from './types';
+import type {
+    ODataAnnotations,
+    UIFacetsDefinition,
+    UIFieldGroupDefinition,
+    UILineItemDefinition,
+    ValueWithOrigin
+} from './types';
 import { UI_LINE_ITEM, UI_FACETS, UI_REFERENCE_FACET, UI_FIELD_GROUP } from './types';
 import { collectODataAnnotations } from './collector';
 import {
@@ -11,11 +17,14 @@ import {
     createRecord
 } from './builders';
 import { logger } from '../logger';
+
+type LabelDefinition = { source: ODataAnnotations['term']; value: ValueWithOrigin<string> };
 /**
  * Converts OData annotations to SAP annotations.
  */
 export class SAPAnnotationConverter {
     private targets = new Map<string, Target>();
+    private labels = new Map<string, LabelDefinition[]>();
     private targetProperties = new Map<string, Set<string>>();
 
     /**
@@ -27,11 +36,13 @@ export class SAPAnnotationConverter {
     convertAnnotations(annotations: ODataAnnotations[]): Target[] {
         this.targets.clear();
         this.targetProperties.clear();
+        this.labels.clear();
 
         this.processLineItems(annotations);
         this.processFieldGroups(annotations);
         // Following functions expect that all the other annotations have been processed
         this.processFacets(annotations);
+        this.processLabels();
         return [...this.targets.values()];
     }
 
@@ -42,6 +53,18 @@ export class SAPAnnotationConverter {
             this.targets.set(name, target);
         }
         return target;
+    }
+
+    private addLabel(target: string, term: ODataAnnotations['term'], value: ValueWithOrigin<string>): void {
+        let labels = this.labels.get(target);
+        if (!labels) {
+            labels = [];
+            this.labels.set(target, labels);
+        }
+        labels.push({
+            source: term,
+            value
+        });
     }
 
     /**
@@ -87,9 +110,7 @@ export class SAPAnnotationConverter {
                 );
 
                 if (dataField.label) {
-                    target.terms.push(
-                        createPrimitiveAnnotation('EndUserText.label', Edm.String, dataField.label.value)
-                    );
+                    this.addLabel(target.name, UI_LINE_ITEM, dataField.label);
                 }
                 position += 10;
             }
@@ -126,9 +147,7 @@ export class SAPAnnotationConverter {
                 );
 
                 if (dataField.label) {
-                    target.terms.push(
-                        createPrimitiveAnnotation('EndUserText.label', Edm.String, dataField.label.value)
-                    );
+                    this.addLabel(target.name, UI_FIELD_GROUP, dataField.label);
                 }
                 position += 10;
             }
@@ -187,6 +206,20 @@ export class SAPAnnotationConverter {
             }
 
             target.terms.push(annotation);
+        }
+    }
+
+    /**
+     * Adds labels from multiple sources.
+     * Priority is in annotation processing order (LineItem > FieldGroup).
+     */
+    private processLabels(): void {
+        for (const [targetName, definitions] of this.labels.entries()) {
+            const target = this.getTarget(targetName);
+            const definition = definitions[0];
+            if (definition) {
+                target.terms.push(createPrimitiveAnnotation('EndUserText.label', Edm.String, definition.value.value));
+            }
         }
     }
 }

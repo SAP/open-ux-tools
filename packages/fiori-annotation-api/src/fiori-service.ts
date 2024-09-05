@@ -62,7 +62,6 @@ export interface FioriAnnotationServiceOptions {
      * - UI.LineItem
      * - UI.Facets
      * - UI.FieldGroup
-     * - Common.ValueList
      *
      * @experimental
      */

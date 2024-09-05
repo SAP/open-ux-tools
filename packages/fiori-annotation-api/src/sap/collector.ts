@@ -1,5 +1,5 @@
 import { elementsWithName, getElementAttributeValue } from '@sap-ux/odata-annotation-core';
-import type { Attribute, Element, Range, Target } from '@sap-ux/odata-annotation-core-types';
+import type { Element, Range, Target } from '@sap-ux/odata-annotation-core-types';
 import { Edm, Location } from '@sap-ux/odata-annotation-core-types';
 import type {
     SupportedAnnotations,

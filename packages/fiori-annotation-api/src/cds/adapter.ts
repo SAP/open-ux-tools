@@ -288,48 +288,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         const writers = new Map<string, CDSWriter>();
 
         if (this.writeSapAnnotations) {
-            if (changes.length === 0) {
-                return {};
-            }
-            const uri = changes[0].uri;
-            let writer = writers.get(uri);
-            const document = this.documents.get(uri);
-            const cachedFile = this.fileCache?.get(uri);
-            if (!document || cachedFile === undefined || !this.facade) {
-                throw new Error(`CDS document "${uri}" is not found!`);
-            }
-            if (!writer) {
-                //writable cds document (augment)
-                const textDocument = TextDocument.create(uri, 'cds', 0, cachedFile);
-                writer = new CDSWriter(
-                    this.facade,
-                    this.vocabularyService,
-                    document.ast,
-                    document.comments,
-                    document.tokens,
-                    textDocument,
-                    this.project.root,
-                    document.annotationFile
-                );
-                writers.set(uri, writer);
-            }
-
-            const targets = convertTargets({
-                [uri]: changes
-                    .map((change): Target | undefined => {
-                        if (change.type === INSERT_TARGET) {
-                            return change.target;
-                        }
-                        logger.warn(
-                            `Change type "${change.type}" is not supported when "writeSapAnnotations" parameter is set.`
-                        );
-                        return undefined;
-                    })
-                    .filter((target): target is Target => !!target)
-            });
-            for (const target of targets) {
-                writer.addChange(createInsertTargetChange('target', target));
-            }
+            this.handleSapAnnotations(writers, changes);
         } else {
             for (const change of changes) {
                 let writer = writers.get(change.uri);
@@ -353,7 +312,6 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
                     );
                     writers.set(change.uri, writer);
                 }
-                // TODO: check change type for SAP annotation generation - restrict to insert annotation
                 const changeHandler = this[change.type] as unknown as ChangeHandlerFunction<AnnotationFileChange>;
 
                 changeHandler(writer, document, change);
@@ -371,6 +329,49 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         return {
             changes: workspaceChanges
         };
+    }
+
+    private handleSapAnnotations(writers: Map<string, CDSWriter>, changes: AnnotationFileChange[]): void {
+        if (changes.length === 0) {
+            return;
+        }
+
+        // only writing to a single files is supported
+        const uri = changes[0].uri;
+        const document = this.documents.get(uri);
+        const cachedFile = this.fileCache?.get(uri);
+        if (!document || cachedFile === undefined || !this.facade) {
+            throw new Error(`CDS document "${uri}" is not found!`);
+        }
+        const textDocument = TextDocument.create(uri, 'cds', 0, cachedFile);
+        const writer = new CDSWriter(
+            this.facade,
+            this.vocabularyService,
+            document.ast,
+            document.comments,
+            document.tokens,
+            textDocument,
+            this.project.root,
+            document.annotationFile
+        );
+        writers.set(uri, writer);
+
+        const targets = convertTargets({
+            [uri]: changes
+                .map((change): Target | undefined => {
+                    if (change.type === INSERT_TARGET) {
+                        return change.target;
+                    }
+                    logger.warn(
+                        `Change type "${change.type}" is not supported when "writeSapAnnotations" parameter is set.`
+                    );
+                    return undefined;
+                })
+                .filter((target): target is Target => !!target)
+        });
+        for (const target of targets) {
+            writer.addChange(createInsertTargetChange('target', target));
+        }
     }
 
     /**

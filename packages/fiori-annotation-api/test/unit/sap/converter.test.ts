@@ -167,4 +167,36 @@ describe('SAP Annotation Converter', () => {
             expect(result).toMatchSnapshot();
         });
     });
+
+    describe('combinations', () => {
+        test('multiple labels for the same property', () => {
+            const result = converter.convertAnnotations([
+                {
+                    target: createValue('Service.Entity'),
+                    term: 'UI.LineItem',
+                    items: [
+                        {
+                            type: 'UI.DataField',
+                            value: createValue('category'),
+                            label: createValue('Category From LineItem')
+                        }
+                    ]
+                },
+                {
+                    target: createValue('Service.Entity'),
+                    qualifier: createValue('general'),
+                    term: 'UI.FieldGroup',
+                    data: [
+                        {
+                            type: 'UI.DataField',
+                            value: createValue('category'),
+                            label: createValue('Category From FieldGroup')
+                        }
+                    ]
+                }
+            ]);
+            expect(logger.warn).toHaveBeenCalledTimes(0);
+            expect(result).toMatchSnapshot();
+        });
+    });
 });

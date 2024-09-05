@@ -60,6 +60,12 @@ export type AnnotationServiceParameters = {
     /**
      * Only applicable for CAP CDS projects.
      * When set to true SAP annotations will be created instead of OData annotations.
+     * Currently only supports insert changes for the following annotations:
+     * - UI.LineItem
+     * - UI.Facets
+     * - UI.FieldGroup
+     *
+     * @experimental
      */
     writeSapAnnotations?: boolean;
 };

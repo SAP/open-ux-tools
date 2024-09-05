@@ -743,3 +743,156 @@ Array [
   },
 ]
 `;
+
+exports[`SAP Annotation Converter combinations multiple labels for the same property 1`] = `
+Array [
+  Object {
+    "name": "Service.Entity/category",
+    "nameRange": undefined,
+    "range": undefined,
+    "terms": Array [
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.lineItem",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "10",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "EnumMember": Object {
+                        "name": "EnumMember",
+                        "type": "attribute",
+                        "value": "HIGH",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "importance",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.fieldGroup",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "10",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "qualifier",
+                      },
+                      "String": Object {
+                        "name": "String",
+                        "type": "attribute",
+                        "value": "general",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+      Object {
+        "attributes": Object {
+          "String": Object {
+            "name": "String",
+            "type": "attribute",
+            "value": "Category From LineItem",
+          },
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "EndUserText.label",
+          },
+        },
+        "content": Array [],
+        "name": "Annotation",
+        "type": "element",
+      },
+    ],
+    "termsRange": undefined,
+    "type": "target",
+  },
+]
+`;
