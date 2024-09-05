@@ -3,14 +3,7 @@ import { Router as createRouter } from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { ProxyConfig } from '../base';
-import {
-    getCorporateProxyServer,
-    HTML_MOUNT_PATHS,
-    injectScripts,
-    ui5Proxy,
-    resolveUI5Version,
-    hideProxyCredentials
-} from '../base';
+import { getCorporateProxyServer, injectScripts, ui5Proxy, resolveUI5Version, hideProxyCredentials } from '../base';
 import dotenv from 'dotenv';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
@@ -115,16 +108,14 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
     if (directLoad) {
         const directLoadProxy = (async (req: Request, res: Response, next: NextFunction): Promise<void> => {
             try {
-                await injectScripts(req, res, next, ui5Configs);
+                await injectScripts(req, res, next, ui5Configs, resources.rootProject);
             } catch (error) {
                 logger.error(error);
                 next(error);
             }
         }) as RequestHandler;
 
-        HTML_MOUNT_PATHS.forEach((path) => {
-            routes.push({ route: path, handler: directLoadProxy });
-        });
+        routes.push({ route: '*.html', handler: directLoadProxy });
     }
 
     return createRequestHandler(routes);
