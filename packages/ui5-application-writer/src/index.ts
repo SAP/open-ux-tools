@@ -8,7 +8,7 @@ import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
-import { Ui5App, API_HUB_API_KEY, API_HUB_TYPE } from './types';
+import { Ui5App } from './types';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -19,7 +19,6 @@ import { Ui5App, API_HUB_API_KEY, API_HUB_TYPE } from './types';
  * @returns the updated memfs editor instance
  */
 async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Promise<Editor> {
-    console.log("---- basePath ----", basePath);
     if (!fs) {
         fs = create(createStorage());
     }
@@ -86,11 +85,13 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     // write ui5 yaml
     fs.write(ui5ConfigPath, ui5Config.toString());
 
-    // Create the files for apiHub integration.
-    fs.write(
-        `${basePath}/.env`,
-        `${API_HUB_API_KEY}=${ui5App.appOptions.apiHubConfig?.apiHubKey}\n${API_HUB_TYPE}=${ui5App.appOptions.apiHubConfig?.apiHubType}`
-    );
+    if(ui5App.appOptions.apiHubConfig) {
+        // Create .env to store apiHub integration.
+        fs.write(
+            `${basePath}/.env`,
+            `API_HUB_API_KEY=${ui5App.appOptions.apiHubConfig.apiHubKey}\nAPI_HUB_TYPE=${ui5App.appOptions.apiHubConfig.apiHubType}`
+        );
+    }
 
     return fs;
 }

@@ -146,20 +146,17 @@ export interface UI5 {
     customUi5Libs?: string[];
 }
 
-export const API_HUB_API_KEY = 'API_HUB_API_KEY';
-export const API_HUB_TYPE = 'API_HUB_TYPE';
-
-const enum ApiHubType {
-    apiHub = 'API_HUB',
-    apiHubEnterprise = 'API_HUB_ENTERPRISE'
-}
-
 /**
  * SAP UX Layer
  */
 export enum SapUxLayer {
     VENDOR = 'VENDOR',
     CUSTOMER_BASE = 'CUSTOMER_BASE'
+}
+
+export const enum ApiHubType {
+    apiHub = 'API_HUB',
+    apiHubEnterprise = 'API_HUB_ENTERPRISE'
 }
 
 /**
