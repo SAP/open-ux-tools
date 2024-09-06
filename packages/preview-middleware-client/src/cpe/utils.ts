@@ -99,13 +99,9 @@ export function isReuseComponent(controlId: string, ui5VersionInfo: Ui5VersionIn
  * @param container ComponentContainer control.
  * @returns XMLView which is the root control of the component if it exists.
  */
-export function getRootControlFromComponentContainer(container?: Control): XMLView | undefined {
-    let componentContainer = container;
-    if (container instanceof XMLView) {
-        componentContainer = container.getContent()[0];
-    }
-    if (componentContainer instanceof ComponentContainer) {
-        const componentId = componentContainer.getComponent();
+export function getRootControlFromComponentContainer(container?: ComponentContainer): XMLView | undefined {
+    if (container) {
+        const componentId = container.getComponent();
         const component = getComponent(componentId);
         if (component instanceof UIComponent) {
             const rootControl = component.getRootControl();
