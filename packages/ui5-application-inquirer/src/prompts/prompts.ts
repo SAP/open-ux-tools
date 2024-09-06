@@ -26,7 +26,7 @@ import { t } from '../i18n';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
 import { promptNames } from '../types';
 import { defaultAppName, hidePrompts, isVersionIncluded } from './prompt-helpers';
-import { validateAppName } from './validators';
+import { validateAppName, validateFioriAppProjectFolder } from './validators';
 
 /**
  * Get the prompts that will provide input for UI5 application writing.
@@ -355,9 +355,19 @@ function getTargetFolderPrompt(targetDir: string): UI5ApplicationQuestion {
             breadcrumb: t('prompts.appFolderPathBreadcrumb')
         },
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
-        validate: (target, { name = '' }: UI5ApplicationAnswers): boolean | string => {
+        validate: async (target, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
             if (name.length > 2) {
-                return validateProjectFolder(target, name);
+                const isFioriValid = await validateFioriAppProjectFolder(target);
+                const isProjectValid = validateProjectFolder(target, name);
+                if (isFioriValid === true && isProjectValid === true) {
+                    return true;
+                }
+                if (isFioriValid) {
+                    return isFioriValid;
+                }
+                if (isProjectValid) {
+                    return isProjectValid;
+                }
             }
             return false;
         }

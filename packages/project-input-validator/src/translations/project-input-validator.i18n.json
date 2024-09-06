@@ -23,7 +23,6 @@
         "moduleNameMustStartWithLetter": "The module name must start with a letter",
         "nameCombinedTooLong": "The combined length of the namespace and module name must not exceed {{length}} characters",
         "folderDoesNotExist": "Folder does not exist. Please enter the root folder for your project",
-        "folderContainsFioriApp": "The project folder path already contains an SAP Fiori application. Please choose a different folder and try again.",
         "folderDoesNotHaveCorrectPermissions": "Selected folder does not have required permissions. Please ensure you have permission to write to the selected folder and try again.",
         "enterProjectFolder": "Please enter a project folder",
         "nameNull": "Module name cannot be null",

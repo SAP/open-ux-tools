@@ -1,8 +1,9 @@
 import * as projectValidators from '@sap-ux/project-input-validator';
 import * as promptHelpers from '../../../src/prompts/prompt-helpers';
 import { join } from 'path';
-import { initI18nUi5AppInquirer } from '../../../src/i18n';
-import { validateAppName } from '../../../src/prompts/validators';
+import { initI18nUi5AppInquirer, t } from '../../../src/i18n';
+import { validateAppName, validateFioriAppProjectFolder } from '../../../src/prompts/validators';
+import { findRootsForPath } from '@sap-ux/project-access';
 
 /**
  * Workaround to allow spyOn
@@ -13,6 +14,10 @@ jest.mock('@sap-ux/project-input-validator', () => {
         ...jest.requireActual('@sap-ux/project-input-validator')
     };
 });
+
+jest.mock('@sap-ux/project-access', () => ({
+    findRootsForPath: jest.fn()
+}));
 
 describe('validators', () => {
     beforeAll(async () => {
@@ -41,5 +46,33 @@ describe('validators', () => {
         expect(validateAppName(appName, targetPath)).toBe(
             `A module with this name already exists in the folder: ${targetPath}`
         );
+    });
+    describe('validateFioriAppProjectFolder', () => {
+        const mockFindRootsForPath = jest.fn();
+
+        beforeEach(() => {
+            (findRootsForPath as jest.Mock) = mockFindRootsForPath;
+            jest.clearAllMocks();
+        });
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should return true if no Fiori project is found in the target directory', async () => {
+            mockFindRootsForPath.mockResolvedValue(null);
+            const result = await validateFioriAppProjectFolder('/path/to/dir');
+            expect(result).toBe(true);
+            expect(mockFindRootsForPath).toHaveBeenCalledWith('/path/to/dir');
+        });
+
+        test('should return an error message if a Fiori project is found in the target directory', async () => {
+            const appRootPath = '/path/to/fiori/project';
+            const projectRootPath = 'test/path';
+            mockFindRootsForPath.mockResolvedValue({ appRoot: appRootPath, projectRoot: projectRootPath });
+            const result = await validateFioriAppProjectFolder('some/path');
+            expect(result).toEqual(t('validators.folderContainsFioriApp', { path: appRootPath }));
+            expect(mockFindRootsForPath).toHaveBeenCalledWith('some/path');
+        });
     });
 });
