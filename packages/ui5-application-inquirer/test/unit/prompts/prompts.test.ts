@@ -188,7 +188,7 @@ describe('getQuestions', () => {
         ).toMatchInlineSnapshot(`"abc 123"`);
     });
 
-    test('getQuestions, prompt: `targetFolder`', () => {
+    test('getQuestions, prompt: `targetFolder`', async () => {
         const mockCwd = '/any/current/working/directory';
         jest.spyOn(process, 'cwd').mockReturnValueOnce(mockCwd);
         let questions = getQuestions([]);
@@ -213,11 +213,12 @@ describe('getQuestions', () => {
         // validators
         questions = getQuestions([]);
         targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
-        expect(targetFolderPrompt?.validate!(undefined, {})).toEqual(false);
+
+        await expect(targetFolderPrompt?.validate!(undefined, {})).resolves.toEqual(false);
 
         const projectValidatorSpy = jest.spyOn(projectValidators, 'validateProjectFolder').mockReturnValueOnce(true);
         const args = ['/some/target/path', { name: 'project1' }] as const;
-        expect(targetFolderPrompt?.validate!(...args)).toEqual(true);
+        await expect(targetFolderPrompt?.validate!(...args)).resolves.toEqual(true);
         expect(projectValidatorSpy).toHaveBeenCalledWith(...[args[0], args[1].name]);
 
         // Test `defaultValue` prompt option - should not replace existing default function
