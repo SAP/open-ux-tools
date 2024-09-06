@@ -107,6 +107,10 @@ export const projectChecks = async (
                 console.log('stdout:', npmResult.stdout);
                 console.log('stderr:', npmResult.stderr);
             }
+            // Check UI5 Linter
+            npmResult = await exec(`npx @ui5/linter`, { cwd: rootPath });
+            console.log('stdout:', npmResult.stdout);
+            console.log('stderr:', npmResult.stderr);
         } catch (error) {
             console.log('stdout:', error?.stdout);
             console.log('stderr:', error?.stderr);
