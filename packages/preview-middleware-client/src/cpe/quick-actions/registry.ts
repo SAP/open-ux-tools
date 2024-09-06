@@ -4,6 +4,7 @@ import { LayoutType } from 'sap/f/library';
 import Control from 'sap/ui/core/Control';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import Log from 'sap/base/Log';
+import ComponentContainer from 'sap/ui/core/ComponentContainer';
 
 import { QuickActionActivationContext, QuickActionDefinitionGroup } from './quick-action-definition';
 
@@ -44,8 +45,11 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
      * @param page - Page control provided by containers.
      * @returns ComponentContainer control.
      */
-    protected getComponentContainerFromPage(page: Control): Control | undefined {
-        return page;
+    protected getComponentContainerFromPage(page: Control): ComponentContainer | undefined {
+        if (page instanceof ComponentContainer) {
+            return page;
+        }
+        return undefined;
     }
 
     /**
@@ -122,7 +126,6 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
 
     /**
      * Finds the visible Flexible Column Layout pages.
-     * 
      * @param control - Flexible Column Layout control.
      * @returns A list of visible pages.
      */
