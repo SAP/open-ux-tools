@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.61
+
+### Patch Changes
+
+-   247e0bb: fix: quick action titles
+
 ## 0.16.60
 
 ### Patch Changes
