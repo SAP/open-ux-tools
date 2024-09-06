@@ -15,7 +15,9 @@ import {
     DiagnosticSeverity,
     createAttributeNode,
     createElementNode,
-    createTextNode
+    createTextNode,
+    ANNOTATION_FILE_TYPE,
+    Range
 } from '@sap-ux/odata-annotation-core-types';
 import type {
     AnnotationFile,
@@ -86,7 +88,7 @@ import type { Document } from './document';
 import { CDSWriter } from './writer';
 import { getMissingRefs } from './references';
 import { addAllVocabulariesToAliasInformation } from '../vocabularies';
-import { getDocument, getGhostFileDocument } from './document';
+import { CDS_DOCUMENT_TYPE, getDocument, getGhostFileDocument } from './document';
 import { convertPointer, getAstNodesFromPointer } from './pointer';
 import { getGenericNodeFromPointer, pathFromUri, PRIMITIVE_TYPE_NAMES } from '../utils';
 import {
@@ -133,13 +135,15 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
      * @param vocabularyService - Vocabulary API.
      * @param appName - Name of the application.
      * @param writeSapAnnotations - If set to true will write SAP annotations instead of OData annotations.
+     * @param ignoreChangedFileInitialContent Flag indicating if to be changed files can be treated as empty.
      */
     constructor(
         private service: CDSService,
         private project: Project,
         private vocabularyService: VocabularyService,
         private appName: string,
-        private writeSapAnnotations: boolean
+        private writeSapAnnotations: boolean,
+        private ignoreChangedFileInitialContent: boolean
     ) {
         this.fileCache = new Map();
         this._fileSequence = service.serviceFiles;
@@ -319,7 +323,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
         for (const [uri, writer] of writers.entries()) {
             const document = this.documents.get(uri);
-            if (!document) {
+            if (!document && !this.ignoreChangedFileInitialContent) {
                 continue;
             }
             this.processMissingReferences(uri, writer);
@@ -338,28 +342,33 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
 
         // only writing to a single files is supported
         const uri = changes[0].uri;
-        const document = this.documents.get(uri);
-        const cachedFile = this.fileCache?.get(uri);
-        if (!document || cachedFile === undefined || !this.facade) {
-            throw new Error(`CDS document "${uri}" is not found!`);
-        }
-        const textDocument = TextDocument.create(uri, 'cds', 0, cachedFile);
-        const writer = new CDSWriter(
-            this.facade,
-            this.vocabularyService,
-            document.ast,
-            document.comments,
-            document.tokens,
-            textDocument,
-            this.project.root,
-            document.annotationFile
-        );
+
+        const writer = this.getWriter(uri);
         writers.set(uri, writer);
 
         const targets = convertTargets({
             [uri]: changes
                 .map((change): Target | undefined => {
                     if (change.type === INSERT_TARGET) {
+                        const aliasInfo = getAliasInfo(
+                            (writer as any).annotationFile,
+                            this.metadataService,
+                            this.vocabularyService
+                        );
+                        const missingReferences = getMissingRefs(
+                            this.documents,
+                            change.uri,
+                            change.target.name,
+                            change.target,
+                            aliasInfo,
+                            this.metadataService,
+                            {
+                                apps: Object.keys(this.project.apps),
+                                projectRoot: this.project.root,
+                                appName: this.appName
+                            }
+                        );
+                        this.addMissingReferences(change.uri, missingReferences);
                         return change.target;
                     }
                     logger.warn(
@@ -371,6 +380,53 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         });
         for (const target of targets) {
             writer.addChange(createInsertTargetChange('target', target));
+        }
+    }
+
+    private getWriter(uri: string): CDSWriter {
+        if (this.ignoreChangedFileInitialContent) {
+            if (!this.facade) {
+                throw new Error(`CDS facade not available!`);
+            }
+            const textDocument = TextDocument.create(uri, 'cds', 0, '');
+            return new CDSWriter(
+                this.facade,
+                this.vocabularyService,
+                {
+                    type: CDS_DOCUMENT_TYPE,
+                    uri,
+                    references: [],
+                    targets: [],
+                    range: Range.create(0, 0, 0, 0)
+                },
+                [],
+                [],
+                textDocument,
+                this.project.root,
+                {
+                    type: ANNOTATION_FILE_TYPE,
+                    uri,
+                    references: [],
+                    targets: []
+                }
+            );
+        } else {
+            const document = this.documents.get(uri);
+            const cachedFile = this.fileCache?.get(uri);
+            if (!document || cachedFile === undefined || !this.facade) {
+                throw new Error(`CDS document "${uri}" is not found!`);
+            }
+            const textDocument = TextDocument.create(uri, 'cds', 0, cachedFile);
+            return new CDSWriter(
+                this.facade,
+                this.vocabularyService,
+                document.ast,
+                document.comments,
+                document.tokens,
+                textDocument,
+                this.project.root,
+                document.annotationFile
+            );
         }
     }
 
@@ -450,7 +506,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     }
 
-    private addMissingReferences(uri: string, references: Set<string>) {
+    private addMissingReferences(uri: string, references: Set<string>): void {
         const missingReferences = (this.missingReferences[uri] ??= new Set());
         for (const reference of references) {
             missingReferences.add(reference);

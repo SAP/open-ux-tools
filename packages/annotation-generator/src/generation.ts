@@ -68,6 +68,8 @@ export type AnnotationServiceParameters = {
      * @experimental
      */
     writeSapAnnotations?: boolean;
+
+    ignoreChangedFileInitialContent?: boolean;
 };
 /**
  * Generate annotations options.
@@ -152,7 +154,13 @@ async function getContext(
     annotationFilePath: string,
     annotationServiceParams: AnnotationServiceParameters
 ): Promise<Context> {
-    const { project, serviceName, appName, writeSapAnnotations = false } = annotationServiceParams;
+    const {
+        project,
+        serviceName,
+        appName,
+        writeSapAnnotations = false,
+        ignoreChangedFileInitialContent = false
+    } = annotationServiceParams;
     const projectInstance = await adaptProject(project);
     const annotationService = await FioriAnnotationService.createService(
         projectInstance,
@@ -162,7 +170,8 @@ async function getContext(
         {
             commitOnSave: false,
             clearFileResolutionCache: true,
-            writeSapAnnotations
+            writeSapAnnotations,
+            ignoreChangedFileInitialContent
         }
     );
 
