@@ -81,6 +81,15 @@ declare module 'sap/ui/rta/command/CommandFactory' {
         flexSettings?: FlexSettings;
     }
 
+    export interface ExtendedFlexSettings extends FlexSettings {
+        /**
+         * Selector extension for custom fragment generation
+         */
+        selector?: {
+            templateName?: string;
+        };
+    }
+
     export default class CommandFactory {
         constructor(_: Arguments) {}
 
@@ -89,7 +98,7 @@ declare module 'sap/ui/rta/command/CommandFactory' {
             commandType: string, // type of
             settings: object,
             designTimeMetadata?: DesignTimeMetadata | null,
-            flexSettings?: FlexSettings
+            flexSettings?: ExtendedFlexSettings
         ): Promise<T>;
     }
 }

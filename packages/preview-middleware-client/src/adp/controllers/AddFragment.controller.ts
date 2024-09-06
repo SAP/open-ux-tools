@@ -25,6 +25,8 @@ import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
+import { ExtendedFlexSettings } from 'sap/ui/rta/command/CommandFactory';
+import { ApplicationType, getApplicationType } from '../../utils/application';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -262,7 +264,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
     private async createFragmentChange(fragmentData: CreateFragmentProps) {
         const { fragmentName, index, targetAggregation } = fragmentData;
 
-        const flexSettings = this.rta.getFlexSettings();
+        let flexSettings: ExtendedFlexSettings = this.rta.getFlexSettings();
 
         const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
         const designMetadata = overlay.getDesignTimeMetadata();
@@ -274,6 +276,16 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             targetAggregation: targetAggregation ?? 'content'
         };
 
+        const templateName = this.getFragmentTemplateName(modifiedValue.targetAggregation);
+        if (templateName) {
+            flexSettings = {
+                ...flexSettings
+            };
+            flexSettings.selector = {
+                templateName
+            };
+        }
+
         const command = await this.commandExecutor.getCommand(
             this.runtimeControl,
             'addXML',
@@ -283,5 +295,19 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         );
 
         await this.commandExecutor.pushAndExecuteCommand(command);
+    }
+
+    private getFragmentTemplateName(targetAggregation: string): string {
+        const currentControlName = this.runtimeControl.getMetadata().getName();
+        const prefixes: Record<ApplicationType, string> = {
+            'fe-v2': 'v2_',
+            'fe-v4': 'v4_',
+            freestyle: 'free_'
+        };
+
+        const applicationType = getApplicationType(this.rta.getRootControlInstance().getManifest());
+        return currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections'
+            ? prefixes[applicationType] + 'opCustomSection'
+            : '';
     }
 }

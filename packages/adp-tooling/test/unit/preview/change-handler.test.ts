@@ -1,5 +1,10 @@
+jest.mock('crypto', () => ({
+    randomBytes: jest.fn()
+}));
+
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
+import * as crypto from 'crypto';
 
 import {
     addXmlFragment,
@@ -123,7 +128,9 @@ describe('change-handler', () => {
     describe('addXmlFragment', () => {
         const mockFs = {
             exists: jest.fn(),
-            copy: jest.fn()
+            copy: jest.fn(),
+            read: jest.fn(),
+            write: jest.fn()
         };
 
         const mockLogger = {
@@ -142,6 +149,8 @@ describe('change-handler', () => {
         beforeEach(() => {
             mockFs.exists.mockClear();
             mockFs.copy.mockClear();
+            mockFs.read.mockClear();
+            mockFs.write.mockClear();
             mockLogger.info.mockClear();
             mockLogger.error.mockClear();
         });
@@ -166,6 +175,95 @@ describe('change-handler', () => {
             expect(mockLogger.error).toHaveBeenCalledWith(
                 expect.stringContaining(`Failed to create XML Fragment "${fragmentName}.fragment.xml"`)
             );
+        });
+
+        describe('custom fragments', () => {
+            describe('v2', () => {
+                beforeEach(() => {
+                    jest.spyOn(crypto, 'randomBytes').mockImplementation((size: number) =>
+                        Buffer.from('0'.repeat(size))
+                    );
+                });
+                it('should create Object Page custom section fragment', () => {
+                    mockFs.exists.mockReturnValue(false);
+                    const updatedChange = {
+                        ...change,
+                        selector: {
+                            templateName: `v2_opCustomSection`
+                        }
+                    } as unknown as AddXMLChange;
+                    mockFs.read.mockReturnValue(`
+id="<%- ids.objectPageSection %>"
+id="<%- ids.objectPageSubSection %>"
+id="<%- ids.hBox %>"`);
+                    addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+
+                    expect(mockFs.read).toHaveBeenCalled();
+                    expect(
+                        (mockFs.read.mock.calls[0][0] as string)
+                            .replace(/\\/g, '/')
+                            .endsWith('templates/rta/v2/opCustomSection.xml')
+                    ).toBe(true);
+
+                    expect(mockFs.write).toHaveBeenCalled();
+                    expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                        `"project/path/changes/Share.fragment.xml"`
+                    );
+                    expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+                        "
+                        id=\\"op-section-30303030\\"
+                        id=\\"op-subsection-30303030\\"
+                        id=\\"hbox-30303030\\""
+                    `);
+
+                    expect(mockLogger.info).toHaveBeenCalledWith(
+                        `XML Fragment "${fragmentName}.fragment.xml" was created`
+                    );
+                });
+            });
+            describe('v4', () => {
+                beforeEach(() => {
+                    jest.spyOn(crypto, 'randomBytes').mockImplementation((size: number) =>
+                        Buffer.from('0'.repeat(size))
+                    );
+                });
+                it('should create Object Page custom section fragment', () => {
+                    mockFs.exists.mockReturnValue(false);
+                    const updatedChange = {
+                        ...change,
+                        selector: {
+                            templateName: `v4_opCustomSection`
+                        }
+                    } as unknown as AddXMLChange;
+                    mockFs.read.mockReturnValue(`
+id="<%- ids.objectPageSection %>"
+id="<%- ids.objectPageSubSection %>"
+id="<%- ids.hBox %>"`);
+                    addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+
+                    expect(mockFs.read).toHaveBeenCalled();
+                    expect(
+                        (mockFs.read.mock.calls[0][0] as string)
+                            .replace(/\\/g, '/')
+                            .endsWith('templates/rta/v4/opCustomSection.xml')
+                    ).toBe(true);
+
+                    expect(mockFs.write).toHaveBeenCalled();
+                    expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                        `"project/path/changes/Share.fragment.xml"`
+                    );
+                    expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+                        "
+                        id=\\"op-section-30303030\\"
+                        id=\\"op-subsection-30303030\\"
+                        id=\\"hbox-30303030\\""
+                    `);
+
+                    expect(mockLogger.info).toHaveBeenCalledWith(
+                        `XML Fragment "${fragmentName}.fragment.xml" was created`
+                    );
+                });
+            });
         });
     });
 });

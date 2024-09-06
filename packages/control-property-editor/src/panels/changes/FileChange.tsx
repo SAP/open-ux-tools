@@ -3,7 +3,7 @@ import React from 'react';
 import { Stack, Text } from '@fluentui/react';
 import styles from './FileChange.module.scss';
 import { useDispatch } from 'react-redux';
-import { reloadApplication } from '@sap-ux-private/control-property-editor-common';
+import { reloadApplication, setAppMode } from '@sap-ux-private/control-property-editor-common';
 import { useTranslation } from 'react-i18next';
 interface FileChangeProps {
     hasUnsavedChanges: boolean;
@@ -22,6 +22,7 @@ export function FileChange({ hasUnsavedChanges }: Readonly<FileChangeProps>): Re
 
     function handleSaveAndReload() {
         dispatch(reloadApplication()); // dispatch your action here
+        dispatch(setAppMode('adaptation'));
     }
 
     return (

@@ -1,9 +1,50 @@
 import type { Editor } from 'mem-fs-editor';
-import { TemplateFileName } from '../types';
 import type { AddXMLChange, CommonChangeProperties, CodeExtChange } from '../types';
 import { join } from 'path';
 import { DirName } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
+import { render } from 'ejs';
+import { randomBytes } from 'crypto';
+
+const V2_OBJECT_PAGE_CUSTOM_SECTION = 'v2_opCustomSection';
+const V4_OBJECT_PAGE_CUSTOM_SECTION = 'v4_opCustomSection';
+
+interface FragmentTemplateConfig<T = { [key: string]: any }> {
+    /**
+     * Relative path to ../../templates/rta, includes template file name
+     */
+    path: string;
+    getData: () => T;
+}
+
+const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
+    [V2_OBJECT_PAGE_CUSTOM_SECTION]: {
+        path: 'v2/opCustomSection.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    objectPageSection: `op-section-${uuid}`,
+                    objectPageSubSection: `op-subsection-${uuid}`,
+                    hBox: `hbox-${uuid}`
+                }
+            };
+        }
+    },
+    [V4_OBJECT_PAGE_CUSTOM_SECTION]: {
+        path: 'v4/opCustomSection.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    objectPageSection: `op-section-${uuid}`,
+                    objectPageSubSection: `op-subsection-${uuid}`,
+                    hBox: `hbox-${uuid}`
+                }
+            };
+        }
+    }
+};
 
 /**
  * A mapping object that defines how to extract change content data from changes based on their type.
@@ -58,10 +99,19 @@ export function isAddXMLChange(change: CommonChangeProperties): change is AddXML
 export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Editor, logger: Logger): void {
     const { fragmentPath } = change.content;
     const fullPath = join(basePath, DirName.Changes, fragmentPath);
-
+    const templateConfig = fragmentTemplateDefinitions[change.selector?.templateName ?? ''];
     try {
-        const fragmentTemplatePath = join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
-        fs.copy(fragmentTemplatePath, fullPath);
+        if (templateConfig) {
+            const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
+            const text = fs.read(fragmentTemplatePath);
+            const template = render(text, templateConfig.getData());
+            fs.write(fullPath, template);
+        } else {
+            // copy default fragment template
+            const templateName = 'fragment.xml'; /* TemplateFileName.Fragment */
+            const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateName);
+            fs.copy(fragmentTemplatePath, fullPath);
+        }
         logger.info(`XML Fragment "${fragmentPath}" was created`);
     } catch (error) {
         logger.error(`Failed to create XML Fragment "${fragmentPath}": ${error}`);

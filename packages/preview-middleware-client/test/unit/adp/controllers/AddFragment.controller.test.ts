@@ -14,6 +14,7 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
+import Core from 'sap/ui/core/Core';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -505,7 +506,8 @@ describe('AddFragment', () => {
             jest.restoreAllMocks();
         });
         const testModel = {
-            getProperty: jest.fn().mockReturnValueOnce('Share').mockReturnValueOnce('0').mockReturnValueOnce('content')
+            getProperty: jest.fn().mockReturnValueOnce('Share').mockReturnValueOnce('0').mockReturnValueOnce('content'),
+            setProperty: jest.fn()
         } as unknown as JSONModel;
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
@@ -517,9 +519,24 @@ describe('AddFragment', () => {
             });
             rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
 
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            jest.spyOn(sap.ui, 'getCore').mockReturnValue({
+                byId: jest.fn().mockReturnValue({})
+            } as unknown as Core);
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
+                    getDefaultAggregationName: jest.fn().mockReturnValue('content')
+                })
+            } as unknown as ManagedObject);
+
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
-                {} as unknown as UI5Element,
+                overlays as unknown as UI5Element,
                 rtaMock as unknown as RuntimeAuthoring
             );
 
@@ -551,6 +568,14 @@ describe('AddFragment', () => {
 
             addFragment.handleDialogClose = jest.fn();
 
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
             await addFragment.onCreateBtnPress(event as unknown as Event);
 
             expect(executeSpy).toHaveBeenCalledWith({
@@ -561,6 +586,96 @@ describe('AddFragment', () => {
                     setModuleName: expect.any(Function)
                 }
             });
+            expect(CommandFactory.getCommandFor.mock.calls[0][4].selector).toBeUndefined();
+        });
+
+        test('creates new custom section fragment and a change', async () => {
+            sapMock.ui.version = '1.71.62';
+            const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                overlays as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                'sections'
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            const testModel = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('0')
+                    .mockReturnValueOnce('sections'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+            addFragment.model = testModel;
+
+            const commandForSpy = jest.fn().mockReturnValue({
+                _oPreparedChange: {
+                    _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                    setModuleName: jest.fn()
+                }
+            });
+            CommandFactory.getCommandFor = commandForSpy;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    id: 'id',
+                    reference: 'reference',
+                    namespace: 'namespace',
+                    layer: 'layer'
+                }),
+                text: jest.fn().mockReturnValue('XML Fragment was created!'),
+                ok: true
+            });
+
+            jest.spyOn(sap.ui, 'getCore').mockReturnValue({
+                byId: jest.fn().mockReturnValue({})
+            } as unknown as Core);
+
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout')
+                })
+            } as unknown as ManagedObject);
+
+            addFragment.handleDialogClose = jest.fn();
+
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await addFragment.onCreateBtnPress(event as unknown as Event);
+
+            expect(executeSpy).toHaveBeenCalledWith({
+                _oPreparedChange: {
+                    _oDefinition: {
+                        moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                    },
+                    setModuleName: expect.any(Function)
+                }
+            });
+
+            expect(commandForSpy.mock.calls[0][4].selector).toStrictEqual({ templateName: 'free_opCustomSection' });
         });
     });
 });

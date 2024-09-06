@@ -184,6 +184,7 @@ export interface AddXMLChange extends CommonChangeProperties {
     selector: {
         id: string;
         idIsLocal: boolean;
+        templateName?: string;
     };
     dependentSelector: Record<string, unknown>;
     jsOnly: boolean;
