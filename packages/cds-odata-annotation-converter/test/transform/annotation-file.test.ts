@@ -20,7 +20,6 @@ const cdsServiceName = 'AdminService';
 // if changes are needed, call prepare() inside your test to generate custom artifacts
 let projectRoot: string;
 let cdsCompilerFacade: CdsCompilerFacade;
-let metadataElementMap: MetadataElementMap;
 const serializeForSnapshot = (metadataElementMap: MetadataElementMap): string[] => {
     return [...metadataElementMap.keys()].sort().map((nodeName) => {
         const entry = metadataElementMap.get(nodeName);
@@ -31,9 +30,8 @@ const serializeForSnapshot = (metadataElementMap: MetadataElementMap): string[] 
 describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
     let vocabularyService: VocabularyService;
     let position: Position;
-
+    projectRoot = join(__dirname, testDataFolder, cdsProjectFolder);
     beforeAll(async (): Promise<void> => {
-        projectRoot = join(__dirname, testDataFolder, cdsProjectFolder);
         cdsCompilerFacade = await getCDSCompilerFacade(projectRoot);
     });
     beforeEach(() => {
@@ -90,7 +88,10 @@ describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
 
     test('toAnnotationFile (cds annos)', () => {
         // Prepare
-        const metadataCollector = createMetadataCollector(metadataElementMap, cdsCompilerFacade);
+        const metadataCollector = createMetadataCollector(
+            cdsCompilerFacade.getMetadata(cdsServiceName),
+            cdsCompilerFacade
+        );
 
         const fileUri = join('db/schema.cds');
         const absoluteUriString = toAbsoluteUriString(projectRoot, fileUri);

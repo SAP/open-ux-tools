@@ -858,8 +858,8 @@ importers:
         specifier: workspace:*
         version: link:../text-document-utils
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.14.2
-        version: 1.14.2(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.15.0
+        version: 1.15.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
         specifier: 20.6.1
         version: 20.6.1
@@ -1338,8 +1338,8 @@ importers:
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.14.1
-        version: 1.14.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.15.0
+        version: 1.15.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       '@xml-tools/ast':
         specifier: 5.0.5
         version: 5.0.5
@@ -8045,6 +8045,7 @@ packages:
     engines: {node: '>=16'}
     dependencies:
       antlr4: 4.9.3
+    dev: true
 
   /@sap/cf-tools@2.1.1:
     resolution: {integrity: sha512-GM1Os0/zLyJNNSwKawOy1zRC38qMg8K/gUvxThbqDKuwfR5raMZZjlHwuoLgF74MsJJ+kDDk71LWRJn9WWzH4w==}
@@ -8064,22 +8065,8 @@ packages:
       url: 0.11.0
     dev: false
 
-  /@sap/ux-cds-compiler-facade@1.14.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
-    resolution: {integrity: sha512-smDdRTV+w1Knh0aLdPf38NuBVTKR2/Un8+6IcsVoXxJkmkr9C0fk8yBFHBDWunHIpOSLv4rQJ4Si78Qi559PEw==}
-    engines: {node: '>=18.16.0'}
-    peerDependencies:
-      '@sap-ux/odata-annotation-core': '>=0.1.8'
-      '@sap-ux/odata-annotation-core-types': '>=0.3.1'
-      '@sap-ux/project-access': '>=1.26.3'
-    dependencies:
-      '@sap-ux/odata-annotation-core': link:packages/odata-annotation-core
-      '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
-      '@sap-ux/project-access': link:packages/project-access
-      '@sap/cds-compiler': 4.8.0
-    dev: false
-
-  /@sap/ux-cds-compiler-facade@1.14.2(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
-    resolution: {integrity: sha512-zTTEp8q7isJbrnyJXnEQFJ3Bp6+hegboxhfks3mcvDPK5ORV7DyAw9iVi5feZdHcWoRUHTqf07xVyA8Iqd7/Gg==}
+  /@sap/ux-cds-compiler-facade@1.15.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
+    resolution: {integrity: sha512-WeA/wnF0NoHNod6H/Rcpgbh3ue4TVBSAlHQoupWzdu91yl+RZ4rKS4hARaRH+LV7gTXxJ5k6llJ/wyUN7sMDdw==}
     engines: {node: '>=18.16.0'}
     peerDependencies:
       '@sap-ux/odata-annotation-core': '>=0.2.1'
@@ -8089,7 +8076,6 @@ packages:
       '@sap-ux/odata-annotation-core': link:packages/odata-annotation-core
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
       '@sap-ux/project-access': link:packages/project-access
-      '@sap/cds-compiler': 4.8.0
     dev: false
 
   /@sapui5/types@1.120.5:
@@ -10877,6 +10863,7 @@ packages:
   /antlr4@4.9.3:
     resolution: {integrity: sha512-qNy2odgsa0skmNMCuxzXhM4M8J1YDaPv3TI+vCdnOAanu0N982wBrSqziDKRDctEZLZy9VffqIZXc0UGjjSP/g==}
     engines: {node: '>=14'}
+    dev: true
 
   /anymatch@3.1.2:
     resolution: {integrity: sha512-P43ePfOAIupkguHUycrc4qJ9kz8ZiuOUijaETwX7THt0Y/GNK7v0aa8rY816xWjZ7rJdA5XdMcpVFTKMq+RvWg==}
