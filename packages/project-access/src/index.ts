@@ -43,11 +43,8 @@ export {
     filterDataSourcesByType,
     updatePackageScript,
     findCapProjectRoot,
-<<<<<<< Updated upstream
-    hasUI5CliV3
-=======
+    hasUI5CliV3,
     findRootsForPath
->>>>>>> Stashed changes
 } from './project';
 export * from './types';
 export * from './library';
