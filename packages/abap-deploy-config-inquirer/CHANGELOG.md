@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.13
+
+### Patch Changes
+
+-   8467c87: cleanup validation around autocomplete
+
 ## 0.0.12
 
 ### Patch Changes
