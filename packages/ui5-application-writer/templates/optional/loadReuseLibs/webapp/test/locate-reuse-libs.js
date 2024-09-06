@@ -1,15 +1,3 @@
-/* 
-** locate-reuse-libs.js 
-**
-** This new version was generated ot 2024-08-26 within BAS and the template SAP Fiori Generator
-** 
-** Patch 1 - determine resource root for i18n properties
-** patched to load ResourceBundles relative to the resource root determined by the manifestUri.
-**
-** Patch 2 - UI5 2.0 compatibility
-** reduce the Ui5 Linter errors from 26 to 1
-*/
-
 (function (sap) {
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
