@@ -28,7 +28,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/vocabularies-types": "0.10.0",
         "@sap-ux/xml-odata-annotation-converter": "workspace:*",
-        "@sap/ux-cds-compiler-facade": "1.14.1",
+       "@sap/ux-cds-compiler-facade": "1.15.0",
         "@xml-tools/ast": "5.0.5",
         "@xml-tools/parser": "1.0.11",
         "mem-fs": "2.1.0",
