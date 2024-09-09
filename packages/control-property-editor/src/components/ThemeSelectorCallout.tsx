@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 import './ThemeSelectorCallout.scss';
 import { IconName } from '../icons';
-
-export type ThemeName = 'dark modern' | 'light modern' | 'high contrast black';
+import { useTheme } from '../use-theme';
+import type { ThemeName } from '../use-theme';
 
 /**
  * React element for theme selector.
@@ -17,22 +17,11 @@ export type ThemeName = 'dark modern' | 'light modern' | 'high contrast black';
 export function ThemeSelectorCallout(): ReactElement {
     const { t } = useTranslation();
     const [isCalloutVisible, setValue] = useState(false);
-    const theme = localStorage.getItem('theme') ?? 'dark modern';
-    const [currentTheme, setTheme] = useState(theme);
+    const [theme, setTheme] = useTheme();
     const buttonId = useId('callout-button');
     const initialFocusRoot = useRef<HTMLElement | null>(null);
-
-    /**
-     *
-     * @param newTheme - ThemeName
-     */
-    function updateTheme(newTheme: ThemeName): void {
-        setTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
-        setThemeOnDocument(newTheme);
-    }
     interface ThemeButtonProps {
-        name: string;
+        name: ThemeName;
         tooltip: string;
     }
     const themes: ThemeButtonProps[] = [
@@ -59,7 +48,7 @@ export function ThemeSelectorCallout(): ReactElement {
     function createThemeButton(themeButtonProps: ThemeButtonProps): ReactElement {
         const { name, tooltip } = themeButtonProps;
         const nameSlug = name.replace(/ /g, '-');
-        const isCurrentTheme = currentTheme === name;
+        const isCurrentTheme = theme === name;
         return (
             <div
                 data-is-focusable={true}
@@ -74,7 +63,7 @@ export function ThemeSelectorCallout(): ReactElement {
                 role="button"
                 aria-pressed={isCurrentTheme}
                 onClick={(): void => {
-                    updateTheme(name as ThemeName);
+                    setTheme(name);
                 }}>
                 <div id={`theme-${nameSlug}`}></div>
             </div>

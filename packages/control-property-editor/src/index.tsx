@@ -10,8 +10,6 @@ import { initI18n } from './i18n';
 import './index.css';
 import App from './App';
 import { store } from './store';
-import type { ThemeName } from './components';
-import { setThemeOnDocument } from './components';
 import { registerAppIcons } from './icons';
 import { initializeLivereload, setProjectScenario } from './slice';
 
@@ -40,9 +38,6 @@ export function start(options: StartOptions): void {
     initI18n();
     registerAppIcons();
     initIcons();
-
-    const theme = localStorage.getItem('theme') ?? 'dark modern';
-    setThemeOnDocument(theme as ThemeName);
 
     store.dispatch(setProjectScenario(scenario));
     store.dispatch(initializeLivereload({ port: options.livereloadPort, url: options.livereloadUrl }));
