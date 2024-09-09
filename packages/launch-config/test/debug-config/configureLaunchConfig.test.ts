@@ -135,9 +135,10 @@ describe('Config Functions', () => {
     describe('createOrUpdateLaunchConfigJSON', () => {
         it('should create a new launch.json file if it does not exist', () => {
             const rootFolderPath = '/root/folder';
+            const appNotInWorkspace = false;
             fs.mkdirSync = jest.fn().mockReturnValue(rootFolderPath);
             fs.existsSync = jest.fn().mockReturnValue(false);
-            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, mockLog);
+            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, appNotInWorkspace, mockLog);
             expect(fs.writeFileSync).toHaveBeenCalledWith(
                 join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE),
                 JSON.stringify(launchJson, null, 4),
@@ -147,8 +148,9 @@ describe('Config Functions', () => {
 
         it('should update an existing launch.json file', () => {
             const rootFolderPath = '/root/folder';
+            const appNotInWorkspace = false;
             fs.existsSync = jest.fn().mockReturnValue(true);
-            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, mockLog);
+            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, appNotInWorkspace, mockLog);
 
             expect(fs.writeFileSync).toHaveBeenCalledWith(
                 join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE),
@@ -162,11 +164,23 @@ describe('Config Functions', () => {
             );
         });
 
+        it('should not update an existing launch.json file when app not in workspace', () => {
+            const rootFolderPath = '/root/folder';
+            const appNotInWorkspace = true;
+            fs.existsSync = jest.fn().mockReturnValue(true);
+            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, appNotInWorkspace, mockLog);
+            expect(fs.writeFileSync).toHaveBeenCalledWith(
+                join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE),
+                JSON.stringify(launchJson, null, 4),
+                'utf8'
+            );
+        });
+
         it('should handle errors while writing launch.json file', () => {
             const rootFolderPath = '/root/folder';
-
+            const appNotInWorkspace = false;
             setWriteFileSyncBehavior('error');
-            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, mockLog);
+            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, appNotInWorkspace, mockLog);
             expect(mockLog.error).toHaveBeenCalledWith(t('errorLaunchFile'));
         });
     });
