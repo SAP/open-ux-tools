@@ -108,10 +108,15 @@ export function getManifestLibs(type: TemplateType, version: OdataVersion, libs?
 export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<T> {
     // Add template information
     if (!feApp.app.sourceTemplate?.version || !feApp.app.sourceTemplate?.id) {
-        const packageInfo = readPkgUp.sync({ cwd: __dirname });
+        // const packageInfo = readPkgUp.sync({ cwd: __dirname });
+        // feApp.app.sourceTemplate = {
+        //     id: `${packageInfo?.packageJson.name}:${feApp.template.type}`,
+        //     version: packageInfo?.packageJson.version,
+        //     toolsId: feApp.app.sourceTemplate?.toolsId
+        // };
         feApp.app.sourceTemplate = {
-            id: `${packageInfo?.packageJson.name}:${feApp.template.type}`,
-            version: packageInfo?.packageJson.version,
+            id: `@sap/generator-fiori:${feApp.template.type}`,
+            version: "1.13.5",
             toolsId: feApp.app.sourceTemplate?.toolsId
         };
     }

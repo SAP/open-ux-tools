@@ -38,11 +38,11 @@ export function getBootstrapResourceUrls(
  */
 export function getVariantPreviewAppScript(sapClient?: string): string {
     const previewAppAnchor = '#preview-app';
-    const DisableCacheParam = 'sap-ui-xx-viewCache=false';
+    const disableCacheParam = 'sap-ui-xx-viewCache=false';
     const sapClientParam = sapClient ? `&sap-client=${sapClient}` : '';
     const urlParam = `?${[
         sapClientParam,
-        DisableCacheParam,
+        disableCacheParam,
         'fiori-tools-rta-mode=true',
         'sap-ui-rta-skip-flex-validation=true'
     ]

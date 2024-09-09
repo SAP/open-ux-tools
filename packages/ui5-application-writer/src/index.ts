@@ -8,7 +8,7 @@ import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
-import { Ui5App } from './types';
+import { Ui5App, ApiHubConfig } from './types';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -85,11 +85,10 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     fs.write(ui5ConfigPath, ui5Config.toString());
 
     if (ui5App.appOptions.apiHubConfig) {
+        const envFilePath = join(basePath, '.env');
+        const envContent = `API_HUB_API_KEY=${ui5App.appOptions.apiHubConfig.apiHubKey}\nAPI_HUB_TYPE=${ui5App.appOptions.apiHubConfig.apiHubType}`;
         // Create .env to store apiHub integration.
-        fs.write(
-            `${basePath}/.env`,
-            `API_HUB_API_KEY=${ui5App.appOptions.apiHubConfig.apiHubKey}\nAPI_HUB_TYPE=${ui5App.appOptions.apiHubConfig.apiHubType}`
-        );
+        fs.write(envFilePath, envContent);
     }
 
     return fs;
@@ -159,5 +158,5 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
     return fs;
 }
 
-export { Ui5App, generate, enableTypescript, isTypescriptEnabled };
+export { Ui5App, ApiHubConfig, generate, enableTypescript, isTypescriptEnabled };
 export { App, Package, UI5, AppOptions };
