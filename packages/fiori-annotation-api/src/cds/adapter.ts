@@ -93,6 +93,7 @@ import { convertPointer, getAstNodesFromPointer } from './pointer';
 import { getGenericNodeFromPointer, pathFromUri, PRIMITIVE_TYPE_NAMES } from '../utils';
 import {
     INSERT_PRIMITIVE_VALUE_TYPE,
+    INSERT_TARGET_CHANGE_TYPE,
     createDeleteQualifierChange,
     createInsertCollectionChange,
     createInsertEmbeddedAnnotationChange,
@@ -295,27 +296,11 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
             this.handleSapAnnotations(writers, changes);
         } else {
             for (const change of changes) {
-                let writer = writers.get(change.uri);
                 const document = this.documents.get(change.uri);
-                const cachedFile = this.fileCache?.get(change.uri);
-                if (!document || cachedFile === undefined || !this.facade) {
+                if (!document || !this.facade) {
                     continue;
                 }
-                if (!writer) {
-                    //writable cds document (augment)
-                    const textDocument = TextDocument.create(change.uri, 'cds', 0, cachedFile);
-                    writer = new CDSWriter(
-                        this.facade,
-                        this.vocabularyService,
-                        document.ast,
-                        document.comments,
-                        document.tokens,
-                        textDocument,
-                        this.project.root,
-                        document.annotationFile
-                    );
-                    writers.set(change.uri, writer);
-                }
+                const writer = this.getWriterForChange(writers, change);
                 const changeHandler = this[change.type] as unknown as ChangeHandlerFunction<AnnotationFileChange>;
 
                 changeHandler(writer, document, change);
@@ -343,18 +328,15 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         // only writing to a single files is supported
         const uri = changes[0].uri;
 
-        const writer = this.getWriter(uri);
-        writers.set(uri, writer);
+        const writer = this.getWriterForChange(writers, changes[0]);
 
         const targets = convertTargets({
             [uri]: changes
                 .map((change): Target | undefined => {
                     if (change.type === INSERT_TARGET) {
-                        const aliasInfo = getAliasInfo(
-                            (writer as any).annotationFile,
-                            this.metadataService,
-                            this.vocabularyService
-                        );
+                        const annotationFile =
+                            this.documents.get(change.uri)?.annotationFile ?? this.createEmptyAnnotationFile(change);
+                        const aliasInfo = getAliasInfo(annotationFile, this.metadataService, this.vocabularyService);
                         const missingReferences = getMissingRefs(
                             this.documents,
                             change.uri,
@@ -382,19 +364,43 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
             writer.addChange(createInsertTargetChange('target', target));
         }
     }
+    private getWriterForChange(writers: Map<string, CDSWriter>, change: AnnotationFileChange): CDSWriter {
+        const cachedWriter = writers.get(change.uri);
+        if (cachedWriter) {
+            return cachedWriter;
+        }
+        const writer = this.createWriter(change);
+        writers.set(change.uri, writer);
+        return writer;
+    }
 
-    private getWriter(uri: string): CDSWriter {
-        if (this.ignoreChangedFileInitialContent) {
+    private createEmptyAnnotationFile(change: AnnotationFileChange): AnnotationFile {
+        return {
+            type: ANNOTATION_FILE_TYPE,
+            uri: change.uri,
+            references: [],
+            targets: []
+        };
+    }
+
+    private createWriter(change: AnnotationFileChange): CDSWriter {
+        const document = this.documents.get(change.uri);
+        if (!document && this.ignoreChangedFileInitialContent) {
             if (!this.facade) {
                 throw new Error(`CDS facade not available!`);
             }
-            const textDocument = TextDocument.create(uri, 'cds', 0, '');
+            if (change.type !== INSERT_TARGET_CHANGE_TYPE) {
+                throw new Error(
+                    `Change "${change.type}" type is not supported with parameter "${this.ignoreChangedFileInitialContent}".`
+                );
+            }
+            const textDocument = TextDocument.create(change.uri, 'cds', 0, '');
             return new CDSWriter(
                 this.facade,
                 this.vocabularyService,
                 {
                     type: CDS_DOCUMENT_TYPE,
-                    uri,
+                    uri: change.uri,
                     references: [],
                     targets: [],
                     range: Range.create(0, 0, 0, 0)
@@ -403,20 +409,14 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
                 [],
                 textDocument,
                 this.project.root,
-                {
-                    type: ANNOTATION_FILE_TYPE,
-                    uri,
-                    references: [],
-                    targets: []
-                }
+                this.createEmptyAnnotationFile(change)
             );
         } else {
-            const document = this.documents.get(uri);
-            const cachedFile = this.fileCache?.get(uri);
+            const cachedFile = this.fileCache?.get(change.uri);
             if (!document || cachedFile === undefined || !this.facade) {
-                throw new Error(`CDS document "${uri}" is not found!`);
+                throw new Error(`CDS document "${change.uri}" is not found!`);
             }
-            const textDocument = TextDocument.create(uri, 'cds', 0, cachedFile);
+            const textDocument = TextDocument.create(change.uri, 'cds', 0, cachedFile);
             return new CDSWriter(
                 this.facade,
                 this.vocabularyService,

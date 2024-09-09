@@ -125,6 +125,9 @@ export async function generateAnnotations(
         const generated = await generateValueHelps(context);
         annotationsGenerated = annotationsGenerated || generated;
     }
+    if (annotationsGenerated && annotationServiceParams.ignoreChangedFileInitialContent) {
+        await context.annotationService.save();
+    }
     return annotationsGenerated;
 }
 interface Context {
@@ -135,6 +138,7 @@ interface Context {
     convertedSchema: ConvertedMetadata;
     entityTypeName: string;
     entityType: EntityType;
+    ignoreChangedFileInitialContent: boolean;
 }
 
 async function adaptProject(projectOrRoot: string | Project): Promise<Project> {
@@ -187,7 +191,8 @@ async function getContext(
         metadataService,
         convertedSchema,
         entityTypeName,
-        entityType
+        entityType,
+        ignoreChangedFileInitialContent
     };
 }
 
@@ -256,7 +261,9 @@ async function generateDefaultFacets(context: Context): Promise<boolean> {
             }
         ];
         annotationService.edit(changes);
-        await annotationService.save();
+        if (!context.ignoreChangedFileInitialContent) {
+            await annotationService.save();
+        }
         return true;
     } catch (e) {
         exception = e instanceof ApiError ? e : new ApiError(`Generating sections failed. ${e}`);
@@ -457,7 +464,9 @@ async function generateDefaultLineItem(context: Context): Promise<boolean> {
             }
         };
         annotationService.edit(change);
-        await annotationService.save();
+        if (!context.ignoreChangedFileInitialContent) {
+            await annotationService.save();
+        }
         return true;
     } catch (e) {
         exception = e instanceof ApiError ? e : new ApiError(`Generating LineItem failed. ${e}`);
@@ -547,7 +556,10 @@ async function generateValueList(context: Context, navProperties: NavigationProp
         ];
         annotationService.edit(changes);
     });
-    await annotationService.save();
+
+    if (!context.ignoreChangedFileInitialContent) {
+        await annotationService.save();
+    }
 }
 
 function getValueListParameterInOut(

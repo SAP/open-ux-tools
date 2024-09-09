@@ -58,7 +58,7 @@ export interface FioriAnnotationServiceOptions {
     /**
      * Only applicable for CAP CDS projects.
      * When set to true SAP annotations will be created instead of OData annotations.
-     * Currently only supports insert changes for the following annotations:
+     * Currently only supports "insert-annotation" changes for the following annotations:
      * - UI.LineItem
      * - UI.Facets
      * - UI.FieldGroup
@@ -69,6 +69,10 @@ export interface FioriAnnotationServiceOptions {
     /**
      * If set to true will assume that files specified in changes are empty.
      * If there is existing content, then it will be ignored.
+     * Only "insert-annotation" changes are supported.
+     * Does not support {@link FioriAnnotationService.save} multiple times.
+     *
+     * @experimental
      */
     ignoreChangedFileInitialContent: boolean;
 }
