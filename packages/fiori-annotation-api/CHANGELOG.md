@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.2.0
+
+### Minor Changes
+
+-   6ac4f50: Enable generating SAP annotations for CAP CDS projects
+
 ## 0.1.41
 
 ### Patch Changes
