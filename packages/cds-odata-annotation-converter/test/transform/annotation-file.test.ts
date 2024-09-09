@@ -18,7 +18,7 @@ const cdsServiceName = 'AdminService';
 
 // global artifacts which are prepared once, should NOT be changed in tests
 // if changes are needed, call prepare() inside your test to generate custom artifacts
-let projectRoot: string;
+const projectRoot: string = join(__dirname, testDataFolder, cdsProjectFolder);
 let cdsCompilerFacade: CdsCompilerFacade;
 const serializeForSnapshot = (metadataElementMap: MetadataElementMap): string[] => {
     return [...metadataElementMap.keys()].sort().map((nodeName) => {
@@ -30,7 +30,6 @@ const serializeForSnapshot = (metadataElementMap: MetadataElementMap): string[] 
 describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
     let vocabularyService: VocabularyService;
     let position: Position;
-    projectRoot = join(__dirname, testDataFolder, cdsProjectFolder);
     beforeAll(async (): Promise<void> => {
         cdsCompilerFacade = await getCDSCompilerFacade(projectRoot);
     });
