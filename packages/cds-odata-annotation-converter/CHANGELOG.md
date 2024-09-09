@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.3.6
+
+### Patch Changes
+
+-   2f64664: Refactor unit tests and remove cdsArtifacts method
+
 ## 0.3.5
 
 ### Patch Changes
