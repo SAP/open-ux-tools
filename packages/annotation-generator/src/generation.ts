@@ -60,6 +60,7 @@ export type AnnotationServiceParameters = {
     /**
      * Only applicable for CAP CDS projects.
      * When set to true SAP annotations will be created instead of OData annotations.
+     * File provided via "annotationPath" is assumed to be empty and it's content is not evaluated by the generator.
      * Currently only supports insert changes for the following annotations:
      * - UI.LineItem
      * - UI.Facets
@@ -68,8 +69,6 @@ export type AnnotationServiceParameters = {
      * @experimental
      */
     writeSapAnnotations?: boolean;
-
-    ignoreChangedFileInitialContent?: boolean;
 };
 /**
  * Generate annotations options.
@@ -125,7 +124,7 @@ export async function generateAnnotations(
         const generated = await generateValueHelps(context);
         annotationsGenerated = annotationsGenerated || generated;
     }
-    if (annotationsGenerated && annotationServiceParams.ignoreChangedFileInitialContent) {
+    if (annotationsGenerated && annotationServiceParams.writeSapAnnotations) {
         await context.annotationService.save();
     }
     return annotationsGenerated;
@@ -158,13 +157,7 @@ async function getContext(
     annotationFilePath: string,
     annotationServiceParams: AnnotationServiceParameters
 ): Promise<Context> {
-    const {
-        project,
-        serviceName,
-        appName,
-        writeSapAnnotations = false,
-        ignoreChangedFileInitialContent = false
-    } = annotationServiceParams;
+    const { project, serviceName, appName, writeSapAnnotations = false } = annotationServiceParams;
     const projectInstance = await adaptProject(project);
     const annotationService = await FioriAnnotationService.createService(
         projectInstance,
@@ -175,7 +168,7 @@ async function getContext(
             commitOnSave: false,
             clearFileResolutionCache: true,
             writeSapAnnotations,
-            ignoreChangedFileInitialContent
+            ignoreChangedFileInitialContent: writeSapAnnotations
         }
     );
 
@@ -192,7 +185,7 @@ async function getContext(
         convertedSchema,
         entityTypeName,
         entityType,
-        ignoreChangedFileInitialContent
+        ignoreChangedFileInitialContent: writeSapAnnotations
     };
 }
 
@@ -278,7 +271,10 @@ function findEntitySet(convertedSchema: ConvertedMetadata, entityTypeName: strin
     return entitySet?.name ?? '';
 }
 
-function findEntityType(convertedSchema: ConvertedMetadata, entitySetName: string) {
+function findEntityType(
+    convertedSchema: ConvertedMetadata,
+    entitySetName: string
+): { entityType: EntityType; entityTypeName: string } {
     const entityTypeName = convertedSchema.entitySets.by_name(entitySetName)?.entityTypeName ?? '';
     if (!entityTypeName) {
         throw new ApiError(`Entity set not found: ${entitySetName}`, ApiErrorCode.General);
