@@ -90,7 +90,7 @@ describe('Test validators', () => {
     });
 
     describe('validateUrl', () => {
-        it('should return true for valid URL', () => {
+        it('should return true for valid URL found in backend', () => {
             jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue({
                 name: 'Target1',
                 url: 'https://mock.url.target1.com',
@@ -100,9 +100,28 @@ describe('Test validators', () => {
             });
             let result = validateUrl('https://mock.url.target1.com');
             expect(result).toBe(true);
+            expect(PromptState.abapDeployConfig).toStrictEqual({
+                url: 'https://mock.url.target1.com',
+                client: '001',
+                destination: undefined,
+                isS4HC: true,
+                scp: true,
+                targetSystem: undefined
+            });
+        });
 
-            result = validateUrl('https://mock.url.target1.com');
+        it('should return true for valid URL not found in backend', () => {
+            jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue(undefined);
+            const result = validateUrl('https://mock.notfound.url.target1.com');
             expect(result).toBe(true);
+            expect(PromptState.abapDeployConfig).toStrictEqual({
+                url: 'https://mock.notfound.url.target1.com',
+                client: undefined,
+                destination: undefined,
+                isS4HC: false,
+                scp: false,
+                targetSystem: undefined
+            });
         });
 
         it('should return false empty URL', () => {
