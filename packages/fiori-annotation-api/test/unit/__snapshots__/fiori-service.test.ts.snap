@@ -594,6 +594,46 @@ exports[`fiori annotation service initial file content xml 1`] = `
 "
 `;
 
+exports[`fiori annotation service insert SAP annotations for CDS projects UI.Facet CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.test with {
+    path @(UI.fieldGroup : [
+            {
+                position : 10,
+                qualifier : 'GeneralInformation',
+            },
+        ],
+        UI.facet : [
+            {
+                id : 'testID',
+                purpose : #STANDARD,
+                type : #FIELDGROUP_REFERENCE,
+                targetQualifier : 'GeneralInformation',
+                position : 10,
+            },
+        ]
+)};
+
+"
+`;
+
+exports[`fiori annotation service insert SAP annotations for CDS projects UI.LineItem CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.test with {
+    path @(UI.lineItem : [
+            {
+                position : 10,
+                importance : #HIGH,
+            },
+        ],
+        EndUserText.label : 'Test Label'
+)};
+
+"
+`;
+
 exports[`fiori annotation service insert collection empty collection CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 

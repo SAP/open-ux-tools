@@ -53,6 +53,9 @@ import { TARGET_TYPE, printTarget } from '@sap-ux/cds-odata-annotation-converter
 
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
+import { convertTargets } from '../sap';
+import { logger } from '../logger';
+
 import {
     type CompiledService,
     type TextFile,
@@ -129,22 +132,24 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
      * @param project - Project structure.
      * @param vocabularyService - Vocabulary API.
      * @param appName - Name of the application.
+     * @param writeSapAnnotations - If set to true will write SAP annotations instead of OData annotations.
      */
     constructor(
         private service: CDSService,
         private project: Project,
         private vocabularyService: VocabularyService,
-        private appName: string
+        private appName: string,
+        private writeSapAnnotations: boolean
     ) {
         this.fileCache = new Map();
         this._fileSequence = service.serviceFiles;
     }
     private facade: CdsCompilerFacade | undefined;
-    private setFileCache(fileCache: Map<string, string>) {
+    private setFileCache(fileCache: Map<string, string>): void {
         this.fileCache = fileCache;
     }
 
-    private setFacade(facade: CdsCompilerFacade) {
+    private setFacade(facade: CdsCompilerFacade): void {
         this.facade = facade;
     }
 
@@ -281,31 +286,36 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         const workspaceChanges: { [uri: string]: TextEdit[] } = {};
         this.clearState();
         const writers = new Map<string, CDSWriter>();
-        for (const change of changes) {
-            let writer = writers.get(change.uri);
-            const document = this.documents.get(change.uri);
-            const cachedFile = this.fileCache?.get(change.uri);
-            if (!document || cachedFile === undefined || !this.facade) {
-                continue;
-            }
-            if (!writer) {
-                //writable cds document (augment)
-                const textDocument = TextDocument.create(change.uri, 'cds', 0, cachedFile);
-                writer = new CDSWriter(
-                    this.facade,
-                    this.vocabularyService,
-                    document.ast,
-                    document.comments,
-                    document.tokens,
-                    textDocument,
-                    this.project.root,
-                    document.annotationFile
-                );
-                writers.set(change.uri, writer);
-            }
-            const changeHandler = this[change.type] as unknown as ChangeHandlerFunction<AnnotationFileChange>;
 
-            changeHandler(writer, document, change);
+        if (this.writeSapAnnotations) {
+            this.handleSapAnnotations(writers, changes);
+        } else {
+            for (const change of changes) {
+                let writer = writers.get(change.uri);
+                const document = this.documents.get(change.uri);
+                const cachedFile = this.fileCache?.get(change.uri);
+                if (!document || cachedFile === undefined || !this.facade) {
+                    continue;
+                }
+                if (!writer) {
+                    //writable cds document (augment)
+                    const textDocument = TextDocument.create(change.uri, 'cds', 0, cachedFile);
+                    writer = new CDSWriter(
+                        this.facade,
+                        this.vocabularyService,
+                        document.ast,
+                        document.comments,
+                        document.tokens,
+                        textDocument,
+                        this.project.root,
+                        document.annotationFile
+                    );
+                    writers.set(change.uri, writer);
+                }
+                const changeHandler = this[change.type] as unknown as ChangeHandlerFunction<AnnotationFileChange>;
+
+                changeHandler(writer, document, change);
+            }
         }
         for (const [uri, writer] of writers.entries()) {
             const document = this.documents.get(uri);
@@ -319,6 +329,49 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         return {
             changes: workspaceChanges
         };
+    }
+
+    private handleSapAnnotations(writers: Map<string, CDSWriter>, changes: AnnotationFileChange[]): void {
+        if (changes.length === 0) {
+            return;
+        }
+
+        // only writing to a single files is supported
+        const uri = changes[0].uri;
+        const document = this.documents.get(uri);
+        const cachedFile = this.fileCache?.get(uri);
+        if (!document || cachedFile === undefined || !this.facade) {
+            throw new Error(`CDS document "${uri}" is not found!`);
+        }
+        const textDocument = TextDocument.create(uri, 'cds', 0, cachedFile);
+        const writer = new CDSWriter(
+            this.facade,
+            this.vocabularyService,
+            document.ast,
+            document.comments,
+            document.tokens,
+            textDocument,
+            this.project.root,
+            document.annotationFile
+        );
+        writers.set(uri, writer);
+
+        const targets = convertTargets({
+            [uri]: changes
+                .map((change): Target | undefined => {
+                    if (change.type === INSERT_TARGET) {
+                        return change.target;
+                    }
+                    logger.warn(
+                        `Change type "${change.type}" is not supported when "writeSapAnnotations" parameter is set.`
+                    );
+                    return undefined;
+                })
+                .filter((target): target is Target => !!target)
+        });
+        for (const target of targets) {
+            writer.addChange(createInsertTargetChange('target', target));
+        }
     }
 
     /**
