@@ -11,20 +11,6 @@ jest.mock('../../../../src/adp/init-dialogs', () => {
     };
 });
 
-// jest.mock('sap/ui/core/ComponentContainer', () => {
-//     const actual = jest.requireActual('sap/ui/core/ComponentContainer');
-//     return {
-//         __esModule: true,
-//         default: jest.fn().mockImplementation(() => {
-//             const a = Object.create(actual.default.prototype);
-//             return Object.assign(a, {
-//                 getComponent() {
-//                     new UIComponentMock();
-//                 }
-//             });
-//         })
-//     };
-// });
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
 
