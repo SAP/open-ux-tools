@@ -130,14 +130,12 @@ export function validateUrl(input: string): boolean | string {
     const result = isValidUrl(input?.trim());
     if (result) {
         const backendSystem = findBackendSystemByUrl(input);
-        if (backendSystem) {
-            updatePromptState({
-                url: backendSystem.url,
-                client: backendSystem.client,
-                scp: !!backendSystem.serviceKeys,
-                isS4HC: backendSystem.authenticationType === AuthenticationType.ReentranceTicket
-            });
-        }
+        updatePromptState({
+            url: input.trim(),
+            client: backendSystem?.client,
+            scp: !!backendSystem?.serviceKeys,
+            isS4HC: backendSystem?.authenticationType === AuthenticationType.ReentranceTicket
+        });
     } else {
         return t('errors.invalidUrl', { url: input?.trim() });
     }
@@ -374,7 +372,6 @@ export async function validatePackage(
         client: PromptState.abapDeployConfig.client,
         destination: PromptState.abapDeployConfig.destination
     };
-
     // checks if package is a local package and will update prompt state accordingly
     await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', systemConfig, backendTarget);
     return true;
