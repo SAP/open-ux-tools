@@ -608,7 +608,7 @@ describe('FE V2 quick actions', () => {
                                     kind: 'simple',
                                     id: 'objectPage0-add-controller-to-page',
                                     enabled: true,
-                                    title: 'Add controller to page'
+                                    title: 'Add Controller to Page'
                                 },
                                 {
                                     kind: 'simple',
