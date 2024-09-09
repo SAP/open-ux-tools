@@ -9,7 +9,7 @@ import {
     configureLaunchConfig
 } from '../../src/launch-config-crud/create';
 import { t } from '../../src/i18n';
-import { DatasourceType } from '@sap-ux/odata-service-inquirer';
+import { DatasourceType } from '../../src/types';
 import type { Editor } from 'mem-fs-editor';
 import { DirName } from '@sap-ux/project-access';
 import { getFioriToolsDirectory } from '@sap-ux/store';

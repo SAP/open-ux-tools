@@ -1,6 +1,5 @@
 import type { ODataVersion } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { OdataVersion, DatasourceType } from '@sap-ux/odata-service-inquirer';
 
 export enum Arguments {
     FrameworkVersion = '--framework-version',
@@ -58,6 +57,17 @@ export interface LaunchConfigEnv {
 export interface LaunchConfigInfo {
     launchConfigs: LaunchConfig[];
     filePath: string;
+}
+
+export enum DatasourceType {
+    capProject = 'capProject',
+    odataServiceUrl = 'odataServiceUrl',
+    metadataFile = 'metadataFile'
+}
+
+export enum OdataVersion {
+    v2 = '2',
+    v4 = '4'
 }
 
 /**

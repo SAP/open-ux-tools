@@ -1,4 +1,4 @@
-import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
+import { DatasourceType, OdataVersion } from '../types';
 import { basename } from 'path';
 import { getLaunchConfig } from '../launch-config-crud/utils';
 import type { LaunchConfig, LaunchJSON, DebugOptions, LaunchConfigEnv } from '../types';

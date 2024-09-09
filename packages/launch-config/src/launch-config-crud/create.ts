@@ -12,7 +12,7 @@ import { handleWorkspaceConfig } from '../debug-config/workspaceManager';
 import { configureLaunchJsonFile } from '../debug-config/config';
 import { getFioriToolsDirectory } from '@sap-ux/store';
 import type { Logger } from '@sap-ux/logger';
-import { DatasourceType } from '@sap-ux/odata-service-inquirer';
+import { DatasourceType } from '../types';
 import { t } from '../i18n';
 import fs from 'fs';
 
