@@ -1316,6 +1316,9 @@ importers:
       '@sap-ux/cds-odata-annotation-converter':
         specifier: workspace:*
         version: link:../cds-odata-annotation-converter
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@sap-ux/odata-annotation-core':
         specifier: workspace:*
         version: link:../odata-annotation-core
