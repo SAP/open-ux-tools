@@ -1,5 +1,23 @@
 # @sap-ux/preview-middleware
 
+## 0.16.61
+
+### Patch Changes
+
+-   247e0bb: fix: quick action titles
+
+## 0.16.60
+
+### Patch Changes
+
+-   0b7af6a: remove z-index for sticky Search and filter bar and added updating highlighting control logic
+
+## 0.16.59
+
+### Patch Changes
+
+-   b1628da: Add quick actions to adaptation editor
+
 ## 0.16.58
 
 ### Patch Changes

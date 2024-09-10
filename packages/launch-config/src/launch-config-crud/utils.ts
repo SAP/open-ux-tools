@@ -79,7 +79,7 @@ export function mergeArgs(newArgs: string[] | undefined, oldArgs: string[] | und
  * @param env - environment variables for the application.
  * @returns launch config object.
  */
-function getLaunchConfig(
+export function getLaunchConfig(
     name: string,
     cwd: string,
     runtimeArgs: string[],
@@ -88,15 +88,15 @@ function getLaunchConfig(
 ): LaunchConfig {
     return {
         name,
-        cwd,
-        runtimeArgs,
         type: 'node',
         request: 'launch',
+        cwd,
         runtimeExecutable: 'npx',
-        args, // default arguments
         windows: {
             runtimeExecutable: `npx.cmd`
         },
+        runtimeArgs,
+        args, // default arguments
         console: 'internalConsole',
         internalConsoleOptions: 'openOnSessionStart',
         outputCapture: 'std',
