@@ -14,7 +14,6 @@ import { getFioriToolsDirectory } from '@sap-ux/store';
 import type { Logger } from '@sap-ux/logger';
 import { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { t } from '../i18n';
-import fs from 'fs';
 
 /**
  * Enhance or create the launch.json file with new launch config.
@@ -57,16 +56,17 @@ export async function createLaunchConfig(rootFolder: string, fioriOptions: Fiori
  * Adds the specified path to the latestGeneratedFiles array.
  *
  * @param {string} path - The project file path to add.
+ * @param fs - The memfs editor instance.
  * @param log - The logger instance.
  */
-export function writeApplicationInfoSettings(path: string, log?: Logger): void {
+export function writeApplicationInfoSettings(path: string, fs: Editor, log?: Logger): void {
     const appInfoFilePath: string = getFioriToolsDirectory();
-    const appInfoContents = fs.existsSync(appInfoFilePath)
-        ? JSON.parse(fs.readFileSync(appInfoFilePath, 'utf-8'))
+    const appInfoContents = fs.exists(appInfoFilePath)
+        ? JSON.parse(fs.read(appInfoFilePath))
         : { latestGeneratedFiles: [] };
     appInfoContents.latestGeneratedFiles.push(path);
     try {
-        fs.writeFileSync(appInfoFilePath, JSON.stringify(appInfoContents, null, 2));
+        fs.write(appInfoFilePath, JSON.stringify(appInfoContents, null, 2));
     } catch (error) {
         log?.error(t('errorAppInfoFile', { error: error }));
     }
@@ -77,16 +77,18 @@ export function writeApplicationInfoSettings(path: string, log?: Logger): void {
  *
  * @param {UpdateWorkspaceFolderOptions} updateWorkspaceFolders - The options for updating workspace folders.
  * @param {string} rootFolderPath - The root folder path of the project.
+ * @param fs - The memfs editor instance.
  * @param log - The logger instance.
  */
 export function updateWorkspaceFoldersIfNeeded(
     updateWorkspaceFolders: UpdateWorkspaceFolderOptions | undefined,
     rootFolderPath: string,
+    fs: Editor,
     log?: Logger
 ): void {
     if (updateWorkspaceFolders) {
         const { uri, vscode, projectName } = updateWorkspaceFolders;
-        writeApplicationInfoSettings(rootFolderPath, log);
+        //writeApplicationInfoSettings(rootFolderPath, fs, log);
 
         if (uri && vscode) {
             const currentWorkspaceFolders = vscode.workspace.workspaceFolders || [];
@@ -105,6 +107,7 @@ export function updateWorkspaceFoldersIfNeeded(
  * @param {LaunchJSON} launchJsonFile - The launch.json configuration to write.
  * @param {UpdateWorkspaceFolderOptions} [updateWorkspaceFolders] - Optional workspace folder update options.
  * @param {boolean} appNotInWorkspace - Indicates if the app is not in the workspace.
+ * @param fs - The memfs editor instance.
  * @param log - The logger instance.
  */
 export function createOrUpdateLaunchConfigJSON(
@@ -112,38 +115,42 @@ export function createOrUpdateLaunchConfigJSON(
     launchJsonFile?: LaunchJSON,
     updateWorkspaceFolders?: UpdateWorkspaceFolderOptions,
     appNotInWorkspace: boolean = false,
+    fs?: Editor,
     log?: Logger
 ): void {
+    if (!fs) {
+        fs = create(createStorage());
+    }
     try {
         const launchJSONPath = join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE);
-        if (fs.existsSync(launchJSONPath) && !appNotInWorkspace) {
-            const existingLaunchConfig = parse(fs.readFileSync(launchJSONPath, 'utf-8')) as LaunchJSON;
+        if (fs.exists(launchJSONPath) && !appNotInWorkspace) {
+            const existingLaunchConfig = parse(fs.read(launchJSONPath)) as LaunchJSON;
             const updatedConfigurations = existingLaunchConfig.configurations.concat(
                 launchJsonFile?.configurations ?? []
             );
-            fs.writeFileSync(
+            fs.write(
                 launchJSONPath,
                 JSON.stringify({ ...existingLaunchConfig, configurations: updatedConfigurations }, null, 4)
             );
         } else {
             const dotVscodePath = join(rootFolderPath, DirName.VSCode);
-            fs.mkdirSync(dotVscodePath, { recursive: true });
             const path = join(dotVscodePath, 'launch.json');
-            fs.writeFileSync(path, JSON.stringify(launchJsonFile ?? {}, null, 4), 'utf8');
+            fs.write(path, JSON.stringify(launchJsonFile ?? {}, null, 4));
         }
     } catch (error) {
         log?.error(t('errorLaunchFile', { error: error }));
     }
-    updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders, rootFolderPath, log);
+    updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders, rootFolderPath, fs, log);
 }
 
 /**
  * Generates and creates launch configuration for the project based on debug options.
  *
  * @param {DebugOptions} options - The options for configuring the debug setup.
+ * @param fs - The memfs editor instance.
  * @param log - The logger instance.
  */
-export function configureLaunchConfig(options: DebugOptions, log?: Logger): void {
+export function configureLaunchConfig(options: DebugOptions, fs?: Editor, log?: Logger): void {
     const { datasourceType, projectPath, vscode } = options;
     if (datasourceType === DatasourceType.capProject) {
         log?.info(t('startApp', { npmStart: '`npm start`', cdsRun: '`cds run --in-memory`' }));
@@ -164,7 +171,7 @@ export function configureLaunchConfig(options: DebugOptions, log?: Logger): void
           }
         : undefined;
 
-    createOrUpdateLaunchConfigJSON(launchJsonPath, launchJsonFile, updateWorkspaceFolders, appNotInWorkspace, log);
+    createOrUpdateLaunchConfigJSON(launchJsonPath, launchJsonFile, updateWorkspaceFolders, appNotInWorkspace, fs, log);
 
     const npmCommand = datasourceType === DatasourceType.metadataFile ? 'run start-mock' : 'start';
     const projectName = basename(projectPath);
