@@ -96,10 +96,10 @@ export async function validateTargetFolder(targetPath: string, appName: string):
         return false;
     }
     const isFioriValid = await validateFioriAppProjectFolder(targetPath);
-    const isProjectValid = validateProjectFolder(targetPath, appName);
     if (isFioriValid !== true) {
         return isFioriValid;
     }
+    const isProjectValid = validateProjectFolder(targetPath, appName);
     if (isProjectValid !== true) {
         return isProjectValid;
     }
