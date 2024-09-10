@@ -1,8 +1,7 @@
-import { DatasourceType, OdataVersion } from '../types';
 import { basename } from 'path';
 import { getLaunchConfig } from '../launch-config-crud/utils';
 import type { LaunchConfig, LaunchJSON, DebugOptions, LaunchConfigEnv } from '../types';
-import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
+import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID, DatasourceType, OdataVersion } from '../types';
 
 // debug constants
 const testFlpSandboxHtml = 'test/flpSandbox.html';

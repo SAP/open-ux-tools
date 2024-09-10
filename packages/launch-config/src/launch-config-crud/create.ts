@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join, basename } from 'path';
 import { DirName } from '@sap-ux/project-access';
-import { LAUNCH_JSON_FILE } from '../types';
+import { LAUNCH_JSON_FILE, DatasourceType } from '../types';
 import type { FioriOptions, LaunchJSON, UpdateWorkspaceFolderOptions, DebugOptions } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig } from './utils';
@@ -12,7 +12,6 @@ import { handleWorkspaceConfig } from '../debug-config/workspaceManager';
 import { configureLaunchJsonFile } from '../debug-config/config';
 import { getFioriToolsDirectory } from '@sap-ux/store';
 import type { Logger } from '@sap-ux/logger';
-import { DatasourceType } from '../types';
 import { t } from '../i18n';
 import fs from 'fs';
 
