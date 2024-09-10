@@ -10,7 +10,6 @@ import { updateLaunchJSON } from './writer';
 import { parse } from 'jsonc-parser';
 import { handleWorkspaceConfig } from '../debug-config/workspaceManager';
 import { configureLaunchJsonFile } from '../debug-config/config';
-import { getFioriToolsDirectory } from '@sap-ux/store';
 import type { Logger } from '@sap-ux/logger';
 import { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { t } from '../i18n';
@@ -52,44 +51,15 @@ export async function createLaunchConfig(rootFolder: string, fioriOptions: Fiori
 }
 
 /**
- * Writes the application info settings to the appInfo.json file.
- * Adds the specified path to the latestGeneratedFiles array.
- *
- * @param {string} path - The project file path to add.
- * @param fs - The memfs editor instance.
- * @param log - The logger instance.
- */
-export function writeApplicationInfoSettings(path: string, fs: Editor, log?: Logger): void {
-    const appInfoFilePath: string = getFioriToolsDirectory();
-    const appInfoContents = fs.exists(appInfoFilePath)
-        ? JSON.parse(fs.read(appInfoFilePath))
-        : { latestGeneratedFiles: [] };
-    appInfoContents.latestGeneratedFiles.push(path);
-    try {
-        fs.write(appInfoFilePath, JSON.stringify(appInfoContents, null, 2));
-    } catch (error) {
-        log?.error(t('errorAppInfoFile', { error: error }));
-    }
-}
-
-/**
  * Updates the workspace folders in VSCode if the update options are provided.
  *
  * @param {UpdateWorkspaceFolderOptions} updateWorkspaceFolders - The options for updating workspace folders.
- * @param {string} rootFolderPath - The root folder path of the project.
- * @param fs - The memfs editor instance.
- * @param log - The logger instance.
  */
 export function updateWorkspaceFoldersIfNeeded(
-    updateWorkspaceFolders: UpdateWorkspaceFolderOptions | undefined,
-    rootFolderPath: string,
-    fs: Editor,
-    log?: Logger
+    updateWorkspaceFolders: UpdateWorkspaceFolderOptions | undefined
 ): void {
     if (updateWorkspaceFolders) {
         const { uri, vscode, projectName } = updateWorkspaceFolders;
-        //writeApplicationInfoSettings(rootFolderPath, fs, log);
-
         if (uri && vscode) {
             const currentWorkspaceFolders = vscode.workspace.workspaceFolders || [];
             vscode.workspace.updateWorkspaceFolders(currentWorkspaceFolders.length, undefined, {
@@ -140,7 +110,7 @@ export function createOrUpdateLaunchConfigJSON(
     } catch (error) {
         log?.error(t('errorLaunchFile', { error: error }));
     }
-    updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders, rootFolderPath, fs, log);
+    updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders);
 }
 
 /**
@@ -149,8 +119,9 @@ export function createOrUpdateLaunchConfigJSON(
  * @param {DebugOptions} options - The options for configuring the debug setup.
  * @param fs - The memfs editor instance.
  * @param log - The logger instance.
+ * @returns {string | undefined} The path to the launch.json file. Returns undefined if the datasource type is CAP project or no vscode is available.
  */
-export function configureLaunchConfig(options: DebugOptions, fs?: Editor, log?: Logger): void {
+export function configureLaunchConfig(options: DebugOptions, fs?: Editor, log?: Logger): string | undefined {
     const { datasourceType, projectPath, vscode } = options;
     if (datasourceType === DatasourceType.capProject) {
         log?.info(t('startApp', { npmStart: '`npm start`', cdsRun: '`cds run --in-memory`' }));
@@ -181,4 +152,5 @@ export function configureLaunchConfig(options: DebugOptions, fs?: Editor, log?: 
             npmCommand
         })
     );
+    return launchJsonPath;
 }
