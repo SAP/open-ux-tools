@@ -8,6 +8,10 @@ import type { ApplicationType } from '../../utils/application';
  * @returns Quick Action registries.
  */
 export async function loadDefinitions(appType: ApplicationType): Promise<QuickActionDefinitionRegistry<string>[]> {
+    // eslint-disable-next-line fiori-custom/sap-no-localstorage
+    if (localStorage.getItem('com.sap.ux.control-property-editor.features.quick-actions') !== 'true') {
+        return [];
+    }
     if (appType === 'fe-v2') {
         const FEV2QuickActionRegistry = (await import('open/ux/preview/client/adp/quick-actions/fe-v2/registry'))
             .default;

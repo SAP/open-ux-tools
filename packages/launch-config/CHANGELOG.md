@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.4.0
+
+### Minor Changes
+
+-   8e41abf: Dont Update launch.json if App is Not in Workspace but launch Config Exists
+
 ## 0.3.0
 
 ### Minor Changes
