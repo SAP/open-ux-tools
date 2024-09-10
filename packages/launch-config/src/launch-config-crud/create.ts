@@ -104,17 +104,19 @@ export function updateWorkspaceFoldersIfNeeded(
  * @param {string} rootFolderPath - The root folder path of the project.
  * @param {LaunchJSON} launchJsonFile - The launch.json configuration to write.
  * @param {UpdateWorkspaceFolderOptions} [updateWorkspaceFolders] - Optional workspace folder update options.
+ * @param {boolean} appNotInWorkspace - Indicates if the app is not in the workspace.
  * @param log - The logger instance.
  */
 export function createOrUpdateLaunchConfigJSON(
     rootFolderPath: string,
     launchJsonFile?: LaunchJSON,
     updateWorkspaceFolders?: UpdateWorkspaceFolderOptions,
+    appNotInWorkspace: boolean = false,
     log?: Logger
 ): void {
     try {
         const launchJSONPath = join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE);
-        if (fs.existsSync(launchJSONPath)) {
+        if (fs.existsSync(launchJSONPath) && !appNotInWorkspace) {
             const existingLaunchConfig = parse(fs.readFileSync(launchJSONPath, 'utf-8')) as LaunchJSON;
             const updatedConfigurations = existingLaunchConfig.configurations.concat(
                 launchJsonFile?.configurations ?? []
@@ -150,7 +152,7 @@ export function configureLaunchConfig(options: DebugOptions, log?: Logger): void
     if (!vscode) {
         return;
     }
-    const { launchJsonPath, workspaceFolderUri, cwd } = handleWorkspaceConfig(options);
+    const { launchJsonPath, workspaceFolderUri, cwd, appNotInWorkspace } = handleWorkspaceConfig(options);
     // construct launch.json file
     const launchJsonFile = configureLaunchJsonFile(cwd, options);
     // update workspace folders if workspaceFolderUri is available
@@ -162,7 +164,7 @@ export function configureLaunchConfig(options: DebugOptions, log?: Logger): void
           }
         : undefined;
 
-    createOrUpdateLaunchConfigJSON(launchJsonPath, launchJsonFile, updateWorkspaceFolders, log);
+    createOrUpdateLaunchConfigJSON(launchJsonPath, launchJsonFile, updateWorkspaceFolders, appNotInWorkspace, log);
 
     const npmCommand = datasourceType === DatasourceType.metadataFile ? 'run start-mock' : 'start';
     const projectName = basename(projectPath);

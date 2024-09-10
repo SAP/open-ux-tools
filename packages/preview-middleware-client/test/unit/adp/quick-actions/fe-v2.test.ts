@@ -116,7 +116,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'kind': 'simple',
                                     id: 'listReport0-enable-clear-filter-bar',
-                                    title: 'Enable clear filterbar button',
+                                    title: 'Enable "Clear" Button in Filter Bar',
                                     enabled: true
                                 }
                             ]
@@ -237,7 +237,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'kind': 'simple',
                                     id: 'listReport0-add-controller-to-page',
-                                    title: 'Add controller to page',
+                                    title: 'Add Controller to Page',
                                     enabled: true
                                 }
                             ]
@@ -348,7 +348,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'kind': 'nested',
                                     id: 'listReport0-change-table-columns',
-                                    title: 'Change table columns',
+                                    title: 'Change Table Columns',
                                     enabled: true,
                                     children: [
                                         {
@@ -475,7 +475,7 @@ describe('FE V2 quick actions', () => {
                                     kind: 'simple',
                                     id: 'objectPage0-add-controller-to-page',
                                     enabled: true,
-                                    title: 'Add controller to page'
+                                    title: 'Add Controller to Page'
                                 },
                                 {
                                     kind: 'simple',

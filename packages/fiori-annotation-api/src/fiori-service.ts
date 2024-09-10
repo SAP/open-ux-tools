@@ -55,12 +55,24 @@ export interface FioriAnnotationServiceConstructor<T> {
 export interface FioriAnnotationServiceOptions {
     commitOnSave: boolean;
     clearFileResolutionCache: boolean;
+    /**
+     * Only applicable for CAP CDS projects.
+     * When set to true SAP annotations will be created instead of OData annotations.
+     * Currently only supports insert changes for the following annotations:
+     * - UI.LineItem
+     * - UI.Facets
+     * - UI.FieldGroup
+     *
+     * @experimental
+     */
+    writeSapAnnotations: boolean;
 }
 
 function getOptionsWithDefaults(options: Partial<FioriAnnotationServiceOptions>): FioriAnnotationServiceOptions {
     return {
         commitOnSave: options.commitOnSave ?? true,
-        clearFileResolutionCache: options.clearFileResolutionCache ?? false
+        clearFileResolutionCache: options.clearFileResolutionCache ?? false,
+        writeSapAnnotations: options.writeSapAnnotations ?? false
     };
 }
 
@@ -134,7 +146,7 @@ export class FioriAnnotationService {
         );
         const finalOptions = getOptionsWithDefaults(options);
         const service = await getService(project, serviceName, appName, finalOptions.clearFileResolutionCache);
-        const adapter = createAdapter(project, service, vocabularyAPI, appName);
+        const adapter = createAdapter(project, service, vocabularyAPI, appName, finalOptions.writeSapAnnotations);
 
         // prepare fs editor if not provided
         let fsEditor: Editor;
@@ -446,12 +458,13 @@ function createAdapter(
     project: Project,
     service: Service,
     vocabularyService: VocabularyService,
-    appName: string
+    appName: string,
+    writeSapAnnotations: boolean
 ): AnnotationServiceAdapter {
     if (service.type === 'local-edmx') {
         return new XMLAnnotationServiceAdapter(service, vocabularyService, project, appName);
     } else if (service.type === 'cap-cds') {
-        return new CDSAnnotationServiceAdapter(service, project, vocabularyService, appName);
+        return new CDSAnnotationServiceAdapter(service, project, vocabularyService, appName, writeSapAnnotations);
     } else {
         throw new Error(`Unsupported service type "${(service as unknown as Service).type}"!`);
     }

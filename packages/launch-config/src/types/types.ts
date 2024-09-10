@@ -112,4 +112,6 @@ export interface WorkspaceHandlerInfo {
     cwd: string;
     /** URI of the workspace folder. */
     workspaceFolderUri?: string;
+    /** replace file and dont update if app is outside workspace */
+    appNotInWorkspace?: boolean;
 }
