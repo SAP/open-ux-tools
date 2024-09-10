@@ -3,7 +3,7 @@ import React from 'react';
 import { Stack, Text } from '@fluentui/react';
 import styles from './FileChange.module.scss';
 import { useDispatch } from 'react-redux';
-import { reloadApplication, setAppMode } from '@sap-ux-private/control-property-editor-common';
+import { reloadApplication } from '@sap-ux-private/control-property-editor-common';
 import { useTranslation } from 'react-i18next';
 interface FileChangeProps {
     hasUnsavedChanges: boolean;
