@@ -4,4 +4,4 @@
 '@sap-ux/adp-tooling': patch
 ---
 
-Object Page Add Custom Section qick action support
+Object Page Add Custom Section quick action support

@@ -26,7 +26,6 @@ export class AddControllerToPageQuickAction
         super(ADD_CONTROLLER_TO_PAGE_TYPE, CONTROL_TYPES, '', context);
     }
 
-    isActiveAction = false;
     private controllerExists = false;
 
     async initialize(): Promise<void> {
