@@ -14,7 +14,7 @@ import {
     extendWithOptions
 } from '@sap-ux/inquirer-common';
 import { getMtaPath } from '@sap-ux/project-access';
-import { validateModuleName, validateNamespace, validateProjectFolder } from '@sap-ux/project-input-validator';
+import { validateModuleName, validateNamespace } from '@sap-ux/project-input-validator';
 import {
     defaultVersion,
     getDefaultUI5Theme,
@@ -25,8 +25,8 @@ import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
 import { promptNames } from '../types';
-import { defaultAppName, hidePrompts, isVersionIncluded } from './prompt-helpers';
-import { validateAppName, validateFioriAppProjectFolder } from './validators';
+import { defaultAppName, hidePrompts, isVersionIncluded, validateTargetFolder } from './prompt-helpers';
+import { validateAppName } from './validators';
 
 /**
  * Get the prompts that will provide input for UI5 application writing.
@@ -356,20 +356,7 @@ function getTargetFolderPrompt(targetDir: string): UI5ApplicationQuestion {
         },
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
         validate: async (target, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
-            if (name.length > 2) {
-                const isFioriValid = await validateFioriAppProjectFolder(target);
-                const isProjectValid = validateProjectFolder(target, name);
-                if (isFioriValid === true && isProjectValid === true) {
-                    return true;
-                }
-                if (isFioriValid) {
-                    return isFioriValid;
-                }
-                if (isProjectValid) {
-                    return isProjectValid;
-                }
-            }
-            return false;
+            return await validateTargetFolder(target, name);
         }
     } as FileBrowserQuestion<UI5ApplicationAnswers>;
 }

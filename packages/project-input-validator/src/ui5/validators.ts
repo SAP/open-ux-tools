@@ -95,6 +95,7 @@ export function validateProjectFolder(targetFolder: string, projectName: string)
     if (!folderWritePermExists(targetFolder)) {
         return t('ui5.folderDoesNotHaveCorrectPermissions');
     }
+
     if (targetFolder && targetFolder.length > 0 && !folderExists(join(targetFolder, projectName))) {
         return true;
     } else if (targetFolder && targetFolder.length > 0 && folderExists(join(targetFolder, projectName))) {

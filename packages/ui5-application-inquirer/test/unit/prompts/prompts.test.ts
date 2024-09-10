@@ -216,10 +216,10 @@ describe('getQuestions', () => {
 
         await expect(targetFolderPrompt?.validate!(undefined, {})).resolves.toEqual(false);
 
-        const projectValidatorSpy = jest.spyOn(projectValidators, 'validateProjectFolder').mockReturnValueOnce(true);
+        const validateTargetFolderSpy = jest.spyOn(promptHelpers, 'validateTargetFolder').mockResolvedValueOnce(true);
         const args = ['/some/target/path', { name: 'project1' }] as const;
         await expect(targetFolderPrompt?.validate!(...args)).resolves.toEqual(true);
-        expect(projectValidatorSpy).toHaveBeenCalledWith(...[args[0], args[1].name]);
+        expect(validateTargetFolderSpy).toHaveBeenCalledWith(...[args[0]], args[1].name);
 
         // Test `defaultValue` prompt option - should not replace existing default function
         const promptOptionsDefaultValue = {

@@ -4,6 +4,8 @@ import { join } from 'path';
 import { coerce, gte } from 'semver';
 import { defaultProjectNumber, t } from '../i18n';
 import { promptNames, type UI5ApplicationPromptOptions, type UI5ApplicationQuestion } from '../types';
+import { validateProjectFolder } from '@sap-ux/project-input-validator';
+import { validateFioriAppProjectFolder } from './validators';
 
 /**
  * Tests if a directory with the specified `appName` exists at the path specified by `targetPath`.
@@ -82,4 +84,24 @@ export function hidePrompts(
         questions.push(...Object.values(prompts));
     }
     return questions;
+}
+
+/**
+ * @param target test.
+ * @param name test.
+ * @returns test.
+ */
+export async function validateTargetFolder(target: string, name: string): Promise<string | boolean> {
+    if (name.length <= 2) {
+        return false;
+    }
+    const isFioriValid = await validateFioriAppProjectFolder(target);
+    const isProjectValid = validateProjectFolder(target, name);
+    if (isFioriValid !== true) {
+        return isFioriValid;
+    }
+    if (isProjectValid !== true) {
+        return isProjectValid;
+    }
+    return true;
 }
