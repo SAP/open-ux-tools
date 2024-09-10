@@ -55,9 +55,7 @@ export async function createLaunchConfig(rootFolder: string, fioriOptions: Fiori
  *
  * @param {UpdateWorkspaceFolderOptions} updateWorkspaceFolders - The options for updating workspace folders.
  */
-export function updateWorkspaceFoldersIfNeeded(
-    updateWorkspaceFolders: UpdateWorkspaceFolderOptions | undefined
-): void {
+export function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders: UpdateWorkspaceFolderOptions | undefined): void {
     if (updateWorkspaceFolders) {
         const { uri, vscode, projectName } = updateWorkspaceFolders;
         if (uri && vscode) {
@@ -138,7 +136,7 @@ export function configureLaunchConfig(options: DebugOptions, fs?: Editor, log?: 
               vscode
           }
         : undefined;
-        
+
     if (!fs) {
         fs = create(createStorage());
     }

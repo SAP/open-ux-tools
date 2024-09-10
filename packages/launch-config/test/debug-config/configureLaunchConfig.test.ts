@@ -82,9 +82,15 @@ describe('Config Functions', () => {
         it('should create a new launch.json file if it does not exist', () => {
             const rootFolderPath = '/root/folder';
             const appNotInWorkspace = false;
-            //fs.mkdirSync = jest.fn().mockReturnValue(rootFolderPath);
             mockEditor.exists = jest.fn().mockReturnValue(false);
-            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, appNotInWorkspace, mockEditor, mockLog);
+            createOrUpdateLaunchConfigJSON(
+                rootFolderPath,
+                launchJson,
+                mockEditor,
+                undefined,
+                appNotInWorkspace,
+                mockLog
+            );
             expect(mockEditor.write).toHaveBeenCalledWith(
                 join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE),
                 JSON.stringify(launchJson, null, 4)
@@ -95,7 +101,14 @@ describe('Config Functions', () => {
             const rootFolderPath = '/root/folder';
             const appNotInWorkspace = false;
             mockEditor.exists = jest.fn().mockReturnValue(true);
-            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, appNotInWorkspace, mockEditor, mockLog);
+            createOrUpdateLaunchConfigJSON(
+                rootFolderPath,
+                launchJson,
+                mockEditor,
+                undefined,
+                appNotInWorkspace,
+                mockLog
+            );
 
             expect(mockEditor.write).toHaveBeenCalledWith(
                 join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE),
@@ -113,7 +126,14 @@ describe('Config Functions', () => {
             const rootFolderPath = '/root/folder';
             const appNotInWorkspace = true;
             mockEditor.exists = jest.fn().mockReturnValue(true);
-            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, appNotInWorkspace, mockEditor, mockLog);
+            createOrUpdateLaunchConfigJSON(
+                rootFolderPath,
+                launchJson,
+                mockEditor,
+                undefined,
+                appNotInWorkspace,
+                mockLog
+            );
             expect(mockEditor.write).toHaveBeenCalledWith(
                 join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE),
                 JSON.stringify(launchJson, null, 4)
@@ -130,7 +150,14 @@ describe('Config Functions', () => {
                     throw new Error();
                 })
             } as unknown as Editor;
-            createOrUpdateLaunchConfigJSON(rootFolderPath, launchJson, undefined, appNotInWorkspace, mockEditorWithError, mockLog);
+            createOrUpdateLaunchConfigJSON(
+                rootFolderPath,
+                launchJson,
+                mockEditorWithError,
+                undefined,
+                appNotInWorkspace,
+                mockLog
+            );
             expect(mockLog.error).toHaveBeenCalledWith(t('errorLaunchFile'));
         });
     });
