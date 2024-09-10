@@ -47,7 +47,7 @@ describe('getVariantPreviewAppScript', () => {
     it('should return the correct command with a given SAP client', () => {
         const sapClient = '100';
         const expectedCommand =
-            'fiori run --open "preview.html?sap-client=100&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
+            'fiori run --open "preview.html?&sap-client=100&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
         expect(getVariantPreviewAppScript(sapClient)).toBe(expectedCommand);
     });
 
