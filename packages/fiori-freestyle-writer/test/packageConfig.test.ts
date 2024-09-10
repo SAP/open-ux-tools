@@ -16,7 +16,7 @@ describe('Test common utils', () => {
                   "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile\\"",
                   "start-mock": "fiori run --config ./ui5-mock.yaml --open \\"test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile\\"",
                   "start-noflp": "fiori run --open \\"index.html?sap-client=100&sap-ui-xx-viewCache=false\\"",
-                  "start-variants-management": "fiori run --open \\"preview.html?sap-client=100&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\"",
+                  "start-variants-management": "fiori run --open \\"preview.html?&sap-client=100&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\"",
                 }
             `);
         });
