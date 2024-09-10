@@ -115,7 +115,6 @@ describe('getAbapTargetPrompts', () => {
                 "filter": [Function],
                 "guiOptions": Object {
                   "breadcrumb": "Client",
-                  "mandatory": true,
                 },
                 "message": "Enter client",
                 "name": "client",
