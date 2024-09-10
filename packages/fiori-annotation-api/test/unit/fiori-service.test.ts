@@ -177,7 +177,9 @@ async function testEdit(
 
     for (const uri of changedFileUris.values()) {
         const path = pathFromUri(uri);
-        const original = await promises.readFile(path, { encoding: 'utf-8' });
+        const original = fioriServiceOptions.ignoreChangedFileInitialContent
+            ? ''
+            : await promises.readFile(path, { encoding: 'utf-8' });
         const afterInitialChanges = initialChangeCache.get(uri);
         const textAfterEdit = editor.read(path);
         if (log) {
@@ -443,7 +445,7 @@ function createFacets(uri: string, facets: AnnotationRecord[]): InsertAnnotation
         kind: ChangeType.InsertAnnotation,
         uri,
         content: {
-            target: targetName,
+            target: TARGET_INCIDENTS,
             type: 'annotation',
             value: {
                 term: `${UI}.Facets`,
@@ -1954,7 +1956,7 @@ describe('fiori annotation service', () => {
             createEditTestCase({
                 name: 'UI.LineItem',
                 projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
-                getChanges: (files) => [createLineItem(files.annotations, [dataField])],
+                getChanges: (files) => [createLineItem(files.annotations, [dataField], undefined, TARGET_INCIDENTS)],
                 fioriServiceOptions: { writeSapAnnotations: true }
             });
             createEditTestCase({
@@ -1972,9 +1974,22 @@ describe('fiori annotation service', () => {
                             }
                         ])
                     ]),
-                    createFieldGroup(files.annotations, [createDataField()], 'GeneralInformation', targetName)
+                    createFieldGroup(files.annotations, [createDataField()], 'GeneralInformation', TARGET_INCIDENTS)
                 ],
                 fioriServiceOptions: { writeSapAnnotations: true }
+            });
+
+            const editor = createEditor(createStore());
+            const fakePath = join(__dirname, 'fake.cds');
+            editor.write(fakePath, '');
+            createEditTestCase({
+                name: 'external cds file',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
+                getChanges: () => [
+                    createLineItem(pathToFileURL(fakePath).toString(), [dataField], undefined, TARGET_INCIDENTS)
+                ],
+                fioriServiceOptions: { writeSapAnnotations: true, ignoreChangedFileInitialContent: true },
+                fsEditor: editor
             });
         });
     });
