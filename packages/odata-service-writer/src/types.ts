@@ -74,5 +74,4 @@ export interface OdataService {
     annotations?: EdmxAnnotationsInfo | CdsAnnotationsInfo;
     localAnnotationsName?: string; // The name used in the manifest.json and as the filename for local annotations
     previewSettings?: Partial<ProxyBackend>;
-    ignoreCertError?: boolean;
 }

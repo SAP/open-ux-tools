@@ -95,8 +95,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         } catch (error: any) {
             if (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) {
                 ui5Config.addFioriToolsProxydMiddleware({
-                    backend: [service.previewSettings as ProxyBackend],
-                    ignoreCertError: service.ignoreCertError
+                    backend: [service.previewSettings as ProxyBackend]
                 });
             } else {
                 throw error;
@@ -110,8 +109,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         if (fs.exists(ui5LocalConfigPath)) {
             ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
             ui5LocalConfig.addFioriToolsProxydMiddleware({
-                backend: [service.previewSettings as ProxyBackend],
-                ignoreCertError: service.ignoreCertError
+                backend: [service.previewSettings as ProxyBackend]
             });
         }
     }

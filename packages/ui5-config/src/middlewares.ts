@@ -79,8 +79,7 @@ export function getBackendComments(
 export function getFioriToolsProxyMiddlewareConfig(
     backends?: FioriToolsProxyConfigBackend[],
     ui5?: Partial<FioriToolsProxyConfigUI5>,
-    afterMiddleware = 'compression',
-    ignoreCertError = false
+    afterMiddleware = 'compression'
 ): {
     config: CustomMiddleware<FioriToolsProxyConfig>;
     comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[];
@@ -89,7 +88,7 @@ export function getFioriToolsProxyMiddlewareConfig(
         name: 'fiori-tools-proxy',
         afterMiddleware,
         configuration: {
-            ignoreCertError: ignoreCertError
+            ignoreCertError: false
         }
     };
     let comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] = [
