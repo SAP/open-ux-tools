@@ -238,7 +238,8 @@ export class UI5Config {
         const { config, comments } = getFioriToolsProxyMiddlewareConfig(
             proxyConfig.backend,
             proxyConfig.ui5,
-            afterMiddleware
+            afterMiddleware,
+            proxyConfig.ignoreCertError
         );
         this.document.appendTo({
             path: 'server.customMiddleware',

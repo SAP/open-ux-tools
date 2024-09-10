@@ -94,7 +94,10 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
             ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
         } catch (error: any) {
             if (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) {
-                ui5Config.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
+                ui5Config.addFioriToolsProxydMiddleware({ 
+                    backend: [service.previewSettings as ProxyBackend],
+                    ignoreCertError: service.ignoreCertError
+                });
             } else {
                 throw error;
             }
@@ -106,7 +109,10 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
         if (fs.exists(ui5LocalConfigPath)) {
             ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-            ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
+            ui5LocalConfig.addFioriToolsProxydMiddleware({
+                backend: [service.previewSettings as ProxyBackend],
+                ignoreCertError: service.ignoreCertError
+            });
         }
     }
 
