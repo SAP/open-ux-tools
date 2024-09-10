@@ -162,7 +162,7 @@ describe('prompt-helpers', () => {
         const resultForProjectError = await validateTargetFolder('/some/target/path', 'validName');
         expect(resultForProjectError).toBe(projectErrorMessage);
     });
-    test('validateTargetFolder - fiori app project error', async () => {
+    test('validateTargetFolder - fiori app project validation error', async () => {
         // Test when Fiori validation fails
         const fioriErrorMessage = 'Fiori validation error';
         jest.spyOn(validators, 'validateFioriAppProjectFolder').mockResolvedValue(fioriErrorMessage);
