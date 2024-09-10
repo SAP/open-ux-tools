@@ -6,8 +6,7 @@ import type { Logger } from '@sap-ux/logger';
 import { render } from 'ejs';
 import { randomBytes } from 'crypto';
 
-const V2_OBJECT_PAGE_CUSTOM_SECTION = 'v2_opCustomSection';
-const V4_OBJECT_PAGE_CUSTOM_SECTION = 'v4_opCustomSection';
+const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 
 interface FragmentTemplateConfig<T = { [key: string]: any }> {
     /**
@@ -18,21 +17,8 @@ interface FragmentTemplateConfig<T = { [key: string]: any }> {
 }
 
 const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
-    [V2_OBJECT_PAGE_CUSTOM_SECTION]: {
-        path: 'v2/opCustomSection.xml',
-        getData: () => {
-            const uuid = randomBytes(4).toString('hex');
-            return {
-                ids: {
-                    objectPageSection: `op-section-${uuid}`,
-                    objectPageSubSection: `op-subsection-${uuid}`,
-                    hBox: `hbox-${uuid}`
-                }
-            };
-        }
-    },
-    [V4_OBJECT_PAGE_CUSTOM_SECTION]: {
-        path: 'v4/opCustomSection.xml',
+    [OBJECT_PAGE_CUSTOM_SECTION]: {
+        path: 'common/op-custom-section.xml',
         getData: () => {
             const uuid = randomBytes(4).toString('hex');
             return {

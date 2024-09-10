@@ -523,9 +523,7 @@ describe('AddFragment', () => {
                 getId: jest.fn().mockReturnValue('some-id')
             };
 
-            jest.spyOn(sap.ui, 'getCore').mockReturnValue({
-                byId: jest.fn().mockReturnValue({})
-            } as unknown as Core);
+            sapCoreMock.byId.mockReturnValue({});
             jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
                 getMetadata: jest.fn().mockReturnValue({
                     getAllAggregations: jest.fn().mockReturnValue({}),
@@ -675,7 +673,7 @@ describe('AddFragment', () => {
                 }
             });
 
-            expect(commandForSpy.mock.calls[0][4].selector).toStrictEqual({ templateName: 'free_opCustomSection' });
+            expect(commandForSpy.mock.calls[0][4].selector).toStrictEqual({ templateName: 'OBJECT_PAGE_CUSTOM_SECTION' });
         });
     });
 });

@@ -26,7 +26,6 @@ import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
 import { ExtendedFlexSettings } from 'sap/ui/rta/command/CommandFactory';
-import { ApplicationType, getApplicationType } from '../../utils/application';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -299,15 +298,8 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
     private getFragmentTemplateName(targetAggregation: string): string {
         const currentControlName = this.runtimeControl.getMetadata().getName();
-        const prefixes: Record<ApplicationType, string> = {
-            'fe-v2': 'v2_',
-            'fe-v4': 'v4_',
-            freestyle: 'free_'
-        };
-
-        const applicationType = getApplicationType(this.rta.getRootControlInstance().getManifest());
         return currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections'
-            ? prefixes[applicationType] + 'opCustomSection'
+            ? 'OBJECT_PAGE_CUSTOM_SECTION'
             : '';
     }
 }

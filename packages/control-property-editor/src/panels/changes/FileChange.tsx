@@ -22,7 +22,6 @@ export function FileChange({ hasUnsavedChanges }: Readonly<FileChangeProps>): Re
 
     function handleSaveAndReload() {
         dispatch(reloadApplication()); // dispatch your action here
-        dispatch(setAppMode('adaptation'));
     }
 
     return (
