@@ -1,7 +1,7 @@
 import type { Element, TextNode } from '@sap-ux/odata-annotation-core';
 import { createElementNode, createTextNode, createAttributeNode, Edm } from '@sap-ux/odata-annotation-core';
 
-import { DiagnosticSeverity } from 'vscode-languageserver-types';
+import { DiagnosticSeverity } from '@sap-ux/text-document-utils';
 import type {
     AnnotationNode,
     Record,

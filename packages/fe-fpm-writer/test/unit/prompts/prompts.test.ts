@@ -5,6 +5,7 @@ import { create as createStorage } from 'mem-fs';
 import { PromptsType, PromptsAPI, BuildingBlockType } from '../../../src';
 import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
 import type { ChoiceOptions } from 'inquirer';
+import * as projectAccess from '@sap-ux/project-access';
 
 describe('Prompts', () => {
     let fs: Editor;
@@ -76,7 +77,7 @@ describe('Prompts', () => {
             const choices = await promptsAPI.getChoices(type, 'buildingBlockData.metaPath.qualifier', {
                 buildingBlockData: {
                     metaPath: {
-                        entitySet: 'C_CUSTOMER_OP_SRV.C_CustomerOPType'
+                        entitySet: 'C_CustomerOP'
                     }
                 }
             });
@@ -202,7 +203,7 @@ describe('Prompts', () => {
         buildingBlockData: {
             id: 'id',
             metaPath: {
-                entitySet: 'test.entity',
+                entitySet: 'entity',
                 qualifier: 'qualifier'
             }
         }
@@ -246,6 +247,33 @@ describe('Prompts', () => {
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
         });
 
+        test.each(types)('Type "%s", get code snippet, min ui5Version = 1.96.25', async (type: PromptsType) => {
+            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.96.25');
+            const result = promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
+            expect(result.viewOrFragmentPath.content).toMatchSnapshot();
+            expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+        });
+
+        test.each(types)('Type "%s", get code snippet, min ui5Version = 1.97.0', async (type: PromptsType) => {
+            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.97.0');
+            const result = promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
+            expect(result.viewOrFragmentPath.content).toMatchSnapshot();
+            expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+        });
+        test.each(types)('Type "%s", get code snippet, min ui5Version = 1.97.35', async (type: PromptsType) => {
+            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.97.35');
+            const result = promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
+            expect(result.viewOrFragmentPath.content).toMatchSnapshot();
+            expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+        });
+
+        test.each(types)('Type "%s", get code snippet, min ui5Version is undefined', async (type: PromptsType) => {
+            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce(undefined);
+            const result = promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
+            expect(result.viewOrFragmentPath.content).toMatchSnapshot();
+            expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+        });
+
         test('get code snippet with placeholders', async () => {
             const result = promptsAPI.getCodeSnippets(PromptsType.Table, {
                 buildingBlockData: {
@@ -268,6 +296,28 @@ describe('Prompts', () => {
 
     describe('submitAnswers', () => {
         test.each(types)('Type "%s"', async (type: PromptsType) => {
+            const result = promptsAPI.submitAnswers(type, answers[type] as SupportedGeneratorAnswers);
+            expect(result.read(join(projectPath, baseAnswers.viewOrFragmentPath))).toMatchSnapshot();
+        });
+
+        test.each(types)('Type "%s", min ui5Version = 1.96.0', async (type: PromptsType) => {
+            const filePath = join(projectPath, 'webapp/manifest.json');
+            const json = `{
+    "sap.app": {
+        "id": "my.test.App"
+    },
+    "sap.ui5": {
+        "dependencies": {
+            "minUI5Version": "1.96.0",
+            "libs": {
+                "sap.fe.core": {},
+                "sap.fe.templates": {}
+            }
+        }
+    }
+}
+`;
+            fs.write(filePath, json);
             const result = promptsAPI.submitAnswers(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.read(join(projectPath, baseAnswers.viewOrFragmentPath))).toMatchSnapshot();
         });

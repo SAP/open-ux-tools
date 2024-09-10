@@ -25,7 +25,7 @@ describe('connector-service', () => {
     });
 
     test('init - ui5 < v1.72', async () => {
-        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.71.67' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.67' });
         const wsConnector = new WorkspaceConnectorService();
         await wsConnector.init(sendActionMock);
 

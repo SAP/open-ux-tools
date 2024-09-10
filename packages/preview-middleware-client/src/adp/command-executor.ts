@@ -5,7 +5,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import { getError } from '../cpe/error-utils';
+import { getError } from '../utils/error';
 
 type CommandNames = 'addXML';
 

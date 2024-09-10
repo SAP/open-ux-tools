@@ -3,7 +3,7 @@ import { csvPath, discoverLineEnding, getI18nConfiguration, doesExist, readFile,
 
 import type { TextEdit } from 'vscode-languageserver-textdocument';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { Range, Position } from '../../parser/utils';
+import { Range, Position } from '@sap-ux/text-document-utils';
 import { parseCsv } from '../../parser/csv/parser';
 import type { CsvField } from '../../parser/csv/types';
 import type { Editor } from 'mem-fs-editor';

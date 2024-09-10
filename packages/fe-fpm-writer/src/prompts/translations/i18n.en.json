@@ -103,7 +103,8 @@
             "qualifier": "Selection Fields Qualifier",
             "qualifierPlaceholder": "Select selection fields qualifier",
             "aggregation": "Aggregation Path",
-            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
+            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type",
+            "bindingContextType": "Binding Context Path Type"
         },
         "table": {
             "tableBuildingBlockPropertiesTitle": "Table Building Block Properties",

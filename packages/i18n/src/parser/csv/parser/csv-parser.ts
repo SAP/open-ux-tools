@@ -1,4 +1,4 @@
-import { Range, positionAt, getLineOffsets } from '../../utils';
+import { Range, positionAt, getLineOffsets } from '@sap-ux/text-document-utils';
 import { type CsvDocument, type Token, type CsvField, type CsvRow, type CsvParseResult, TokenType } from '../types';
 import { tokenize } from '../lexer';
 

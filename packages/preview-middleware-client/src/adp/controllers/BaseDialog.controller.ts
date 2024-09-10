@@ -12,7 +12,7 @@ import MessageToast from 'sap/m/MessageToast';
 import CommandExecutor from '../command-executor';
 import { matchesFragmentName } from '../utils';
 import type { Fragments } from '../api-handler';
-import { getError } from '../../cpe/error-utils';
+import { getError } from '../../utils/error';
 
 type BaseDialogModel = JSONModel & {
     getProperty(sPath: '/fragmentList'): Fragments;
@@ -126,7 +126,7 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
         const allCommands = this.rta.getCommandStack().getCommands();
 
         return allCommands.some((command: FlexCommand) => {
-            if (command?.getProperty('name') === 'composite') {
+            if (typeof command.getCommands === 'function') {
                 const addXmlCommand = command
                     .getCommands()
                     .find((c: FlexCommand) => c?.getProperty('name') === 'addXMLAtExtensionPoint');

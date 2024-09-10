@@ -45,6 +45,7 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
         vertical: props.vertical,
         splitterType: UISplitterType.Resize,
         splitter: true,
+        splitterTabIndex: 0,
         minSectionSize: [300, 300],
         animation: true,
         splitterLayoutType: UISplitterLayoutType.Standard,
@@ -109,6 +110,14 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
                         options={getOptions([UISplitterType.Resize, UISplitterType.Toggle])}
                         // ts-ignore
                         onChange={dropdownChange.bind(this, 'splitterType')}
+                    />
+                    <UIDropdown
+                        id="splitterTabIndex"
+                        label="splitterTabIndex"
+                        selectedKey={sectionsProps.splitterTabIndex?.toString()}
+                        options={getOptions(['-1', '0'])}
+                        // ts-ignore
+                        onChange={dropdownChange.bind(this, 'splitterTabIndex')}
                     />
                     <UIDropdown
                         id="splitterLayoutType"

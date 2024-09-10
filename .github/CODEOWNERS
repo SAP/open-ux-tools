@@ -105,6 +105,9 @@
 # Module: fiori-annotation-api
 /packages/annotation-generator/ @SAP/ux-tools-annotations
 
+# Module: text-document-utils
+/packages/text-document-utils/ @SAP/ux-tools-annotations
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin

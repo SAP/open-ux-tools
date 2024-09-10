@@ -1,5 +1,17 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.2
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+
+## 0.4.1
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core-types@0.4.1
+
 ## 0.4.0
 
 ### Minor Changes

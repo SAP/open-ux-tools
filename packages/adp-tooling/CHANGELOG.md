@@ -1,5 +1,170 @@
 # @sap-ux/adp-tooling
 
+## 0.12.45
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/system-access@0.5.10
+
+## 0.12.44
+
+### Patch Changes
+
+-   1294b1c: fix: URI validation not executed for Replace OData prompting
+
+## 0.12.43
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/system-access@0.5.10
+
+## 0.12.42
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+    -   @sap-ux/project-access@1.26.9
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/system-access@0.5.10
+
+## 0.12.41
+
+### Patch Changes
+
+-   Updated dependencies [d3dafeb]
+    -   @sap-ux/btp-utils@0.15.2
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/system-access@0.5.10
+
+## 0.12.40
+
+### Patch Changes
+
+-   6419b2c: Clean separation between prompting and writing in adp-tooling
+
+## 0.12.39
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/system-access@0.5.9
+
+## 0.12.38
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/project-access@1.26.7
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/system-access@0.5.9
+
+## 0.12.37
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/btp-utils@0.15.1
+    -   @sap-ux/system-access@0.5.9
+    -   @sap-ux/inquirer-common@0.4.6
+
+## 0.12.36
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.8
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.12.35
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.5
+
+## 0.12.34
+
+### Patch Changes
+
+-   b813843: Fix validation in change-inbound prompts
+
+## 0.12.33
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.7
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.12.32
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.6
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.12.31
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+    -   @sap-ux/axios-extension@1.16.3
+    -   @sap-ux/system-access@0.5.5
+
+## 0.12.30
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.4
+
+## 0.12.29
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/axios-extension@1.16.3
+    -   @sap-ux/system-access@0.5.5
+
+## 0.12.28
+
+### Patch Changes
+
+-   593ad0f: Adp-tooling prompting validations
+-   Updated dependencies [593ad0f]
+    -   @sap-ux/project-input-validator@0.3.3
+
+## 0.12.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+-   @sap-ux/axios-extension@1.16.3
+-   @sap-ux/system-access@0.5.5
+
+## 0.12.26
+
+### Patch Changes
+
+-   Updated dependencies [0084205]
+    -   @sap-ux/axios-extension@1.16.3
+    -   @sap-ux/system-access@0.5.5
+
+## 0.12.25
+
+### Patch Changes
+
+-   c473d24: feat: Add Adaptation Project's Component Usages prompting
+
 ## 0.12.24
 
 ### Patch Changes

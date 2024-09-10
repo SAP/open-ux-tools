@@ -53,6 +53,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Store: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/store"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "i18n: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
@@ -160,6 +170,19 @@
                 "UX_DEBUG_FULL": "false"
             }
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "nodejs-utils: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/nodejs-utils/"
+        }
         {
             "type": "node",
             "request": "launch",

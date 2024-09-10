@@ -27,7 +27,7 @@ export function addRemoveMockserverConfigCommand(cmd: Command): void {
  * @param basePath - path to application root
  * @param force - if true, do not ask before deleting files; otherwise ask
  */
-async function removeMockserverConfiguration(basePath: string, force: boolean) {
+async function removeMockserverConfiguration(basePath: string, force: boolean): Promise<void> {
     const logger = getLogger();
     try {
         logger.debug(`Called remove mockserver-config for path '${basePath}', force is '${force}'`);

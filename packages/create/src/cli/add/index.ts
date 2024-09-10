@@ -7,6 +7,8 @@ import { addCardsEditorConfigCommand } from './cards-editor';
 import { addNewModelCommand } from './new-model';
 import { addAnnotationsToOdataCommand } from './annotations-to-odata';
 import { addAddHtmlFilesCmd } from './html';
+import { addComponentUsagesCommand } from './component-usages';
+import { addDeployConfigCommand } from './deploy-config';
 
 /**
  * Return 'create-fiori add *' commands. Commands include also the handler action.
@@ -31,5 +33,9 @@ export function getAddCommands(): Command {
     addAnnotationsToOdataCommand(addCommands);
     // create-fiori add html
     addAddHtmlFilesCmd(addCommands);
+    // create-fiori add component-usages
+    addComponentUsagesCommand(addCommands);
+    // create-fiori add deploy-config
+    addDeployConfigCommand(addCommands);
     return addCommands;
 }

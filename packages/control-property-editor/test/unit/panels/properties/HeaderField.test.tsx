@@ -33,4 +33,21 @@ describe('HeaderField', () => {
         expect(screen.getByText('Copied to clipboard')).toBeInTheDocument();
         expect(writeTextMock).toBeCalled();
     });
+
+    test('clipboard is updated after prop change', () => {
+        const { rerender, debug } = render(<HeaderField {...headerFieldProps} />);
+
+        const newHeaderFieldProps: HeaderFieldProps = {
+            label: 'otherLabel',
+            value: 'otherValue',
+            hidden: false
+        };
+        rerender(<HeaderField {...newHeaderFieldProps} />);
+
+        const copyButton = screen.getByRole('button');
+        fireEvent.click(copyButton);
+
+        expect(screen.getByText('Copied to clipboard')).toBeInTheDocument();
+        expect(writeTextMock).toBeCalledWith('otherValue');
+    });
 });

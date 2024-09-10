@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/cds-annotation-parser",
-    "version": "0.2.0",
+    "version": "0.2.2",
     "description": "Annotation Parser for CDS",
     "publisher": "SAPSE",
     "author": "SAP SE",
@@ -25,7 +25,7 @@
         "@sap-ux/odata-vocabularies": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "chevrotain": "7.1.1",
-        "vscode-languageserver-types": "3.17.2"
+        "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
         "typescript": "5.3.3",

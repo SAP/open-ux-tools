@@ -1,6 +1,6 @@
 import { extractI18nKey, getI18nUniqueKey, extractDoubleCurlyBracketsKey } from '../../../src';
 import type { I18nEntry, I18nBundle } from '../../../src';
-import { Range } from '../../../src/parser/utils';
+import { Range } from '@sap-ux/text-document-utils';
 
 describe('key', () => {
     describe('extractI18nKey', () => {

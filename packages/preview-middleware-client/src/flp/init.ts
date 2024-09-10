@@ -7,10 +7,9 @@ import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
-import VersionInfo from 'sap/ui/VersionInfo';
-import { getError } from '../cpe/error-utils';
+import { getError } from '../utils/error';
 import initConnectors from './initConnectors';
-import type {SingleVersionInfo} from '../../types/global';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -142,7 +141,7 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
 function registerModules(dataFromAppIndex: AppIndexData) {
     Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
         const moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
-        if (moduleDefinition && moduleDefinition.dependencies) {
+        if (moduleDefinition?.dependencies) {
             moduleDefinition.dependencies.forEach(function (dependency) {
                 if (dependency.url && dependency.url.length > 0 && dependency.type === 'UI5LIB') {
                     Log.info('Registering Library ' + dependency.componentId + ' from server ' + dependency.url);
@@ -270,7 +269,7 @@ export async function init({
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container');
     let scenario: string = '';
-    const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
+    const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
@@ -278,16 +277,16 @@ export async function init({
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
-                const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
                 const flexSettings = JSON.parse(flex) as FlexSettings;
                 const pluginScript = flexSettings.pluginScript ?? '';
 
                 let libs: string[] = [];
-                if (minor > 71) {
-                    libs.push('sap/ui/rta/api/startAdaptation');
-                } else {
+
+                if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
                     libs.push('open/ux/preview/client/flp/initRta');
+                } else {
+                    libs.push('sap/ui/rta/api/startAdaptation');
                 }
 
                 if (flexSettings.pluginScript) {
@@ -333,10 +332,9 @@ export async function init({
     const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
     setI18nTitle(resourceBundle);
     registerSAPFonts();
-    const major = version ? parseInt(version.split('.')[0], 10) : 2;
 
     const renderer =
-        major < 2
+        ui5VersionInfo.major < 2
             ? await container.createRenderer(undefined, true)
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');

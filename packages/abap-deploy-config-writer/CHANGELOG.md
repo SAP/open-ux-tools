@@ -1,5 +1,113 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.40
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/system-access@0.5.10
+
+## 0.0.39
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/system-access@0.5.10
+
+## 0.0.38
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+    -   @sap-ux/project-access@1.26.9
+    -   @sap-ux/system-access@0.5.10
+
+## 0.0.37
+
+### Patch Changes
+
+-   Updated dependencies [d3dafeb]
+    -   @sap-ux/btp-utils@0.15.2
+    -   @sap-ux/system-access@0.5.10
+
+## 0.0.36
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/system-access@0.5.9
+
+## 0.0.35
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/project-access@1.26.7
+    -   @sap-ux/system-access@0.5.9
+
+## 0.0.34
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/btp-utils@0.15.1
+    -   @sap-ux/system-access@0.5.9
+
+## 0.0.33
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.8
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.0.32
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.7
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.0.31
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.6
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.0.30
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+    -   @sap-ux/system-access@0.5.5
+
+## 0.0.29
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/system-access@0.5.5
+
+## 0.0.28
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+-   @sap-ux/system-access@0.5.5
+
+## 0.0.27
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.5
+
 ## 0.0.26
 
 ### Patch Changes

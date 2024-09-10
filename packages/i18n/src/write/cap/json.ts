@@ -11,7 +11,7 @@ import {
     readFile,
     writeFile
 } from '../../utils';
-import { Range } from '../../parser/utils';
+import { Range } from '@sap-ux/text-document-utils';
 import type { Node } from 'jsonc-parser';
 import { parseTree } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';

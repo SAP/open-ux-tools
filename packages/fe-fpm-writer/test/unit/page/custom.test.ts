@@ -51,6 +51,14 @@ describe('CustomPage', () => {
         expect(() => validateBasePath(target, fs)).toThrowError('Dependency sap.fe.templates is missing');
     });
 
+    test('validateBasePath - required libs `sap.fe.templates` or `sap.fe.core` missing', () => {
+        const target = join(testDir, 'validateBasePathRequired');
+        fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+        expect(() => validateBasePath(target, fs, ['sap.fe.templates', 'sap.fe.core'])).toThrowError(
+            'All of the dependencies sap.fe.templates, sap.fe.core are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
+        );
+    });
+
     test('validateBasePath', () => {
         const target = join(testDir, 'validateBasePath');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);

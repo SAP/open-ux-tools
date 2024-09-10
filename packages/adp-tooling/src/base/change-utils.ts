@@ -26,7 +26,7 @@ interface InboundChange extends ManifestChangeProperties {
  *
  * @param {string} projectPath - The root path of the project.
  * @param {number} timestamp - The timestamp of the change.
- * @param {AnnotationsData} data - The data object containing information about the annotation change.
+ * @param {AnnotationsData} annotation - The annotation data.
  * @param {ManifestChangeProperties} change - The annotation data change that will be written.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
@@ -34,12 +34,11 @@ interface InboundChange extends ManifestChangeProperties {
 export function writeAnnotationChange(
     projectPath: string,
     timestamp: number,
-    data: AnnotationsData,
+    annotation: AnnotationsData['annotation'],
     change: ManifestChangeProperties,
     fs: Editor
 ): void {
     try {
-        const { fileName, answers } = data;
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
         const changeFilePath = path.join(changesFolderPath, DirName.Manifest, changeFileName);
@@ -47,7 +46,7 @@ export function writeAnnotationChange(
 
         writeChangeToFile(changeFilePath, change, fs);
 
-        if (!answers.filePath) {
+        if (!annotation.filePath) {
             const annotationsTemplate = path.join(
                 __dirname,
                 '..',
@@ -56,11 +55,11 @@ export function writeAnnotationChange(
                 'changes',
                 TemplateFileName.Annotation
             );
-            fs.copy(annotationsTemplate, path.join(annotationsFolderPath, fileName ?? ''));
+            fs.copy(annotationsTemplate, path.join(annotationsFolderPath, annotation.fileName ?? ''));
         } else {
-            const selectedDir = path.dirname(answers.filePath);
+            const selectedDir = path.dirname(annotation.filePath);
             if (selectedDir !== annotationsFolderPath) {
-                fs.copy(answers.filePath, path.join(annotationsFolderPath, fileName ?? ''));
+                fs.copy(annotation.filePath, path.join(annotationsFolderPath, annotation.fileName ?? ''));
             }
         }
     } catch (e) {

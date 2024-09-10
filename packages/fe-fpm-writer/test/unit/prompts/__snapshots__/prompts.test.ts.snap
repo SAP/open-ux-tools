@@ -203,7 +203,8 @@ Array [
 exports[`Prompts - no project getCodeSnippet Type "chart", get code snippet 1`] = `
 "<macros:Chart
     id=\\"id\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
 />"
 `;
 
@@ -262,6 +263,29 @@ Object {
       "name": "buildingBlockData.id",
       "type": "input",
       "validate": [Function],
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+      ],
+      "default": "absolute",
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.metaPath.qualifier",
+        ],
+        "mandatory": true,
+        "selectType": "static",
+      },
+      "message": "Binding Context Path Type",
+      "name": "buildingBlockData.metaPath.bindingContextType",
+      "type": "list",
     },
     Object {
       "choices": Array [],
@@ -745,6 +769,10 @@ Object {
     "errorMessage": "Please enter a value",
     "isValid": false,
   },
+  "buildingBlockData.metaPath.bindingContextType": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
   "buildingBlockData.metaPath.entitySet": Object {
     "errorMessage": "Please select a value",
     "isValid": false,
@@ -1020,126 +1048,36 @@ Object {
 
 exports[`Prompts getChoices Choices for field "entitySet" 1`] = `
 Array [
-  Object {
-    "name": "C_CustomerBankDetailsOPType",
-    "value": "C_CUSTOMER_OP_SRV.C_CustomerBankDetailsOPType",
-  },
-  Object {
-    "name": "C_CustomerCompanyCodeOPType",
-    "value": "C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType",
-  },
-  Object {
-    "name": "C_CustomerOPType",
-    "value": "C_CUSTOMER_OP_SRV.C_CustomerOPType",
-  },
-  Object {
-    "name": "C_CustomerSalesAreaOPType",
-    "value": "C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType",
-  },
-  Object {
-    "name": "C_CustrecnclnacctvhtempType",
-    "value": "C_CUSTOMER_OP_SRV.C_CustrecnclnacctvhtempType",
-  },
-  Object {
-    "name": "C_OrderIsBlockedTextVHTempType",
-    "value": "C_CUSTOMER_OP_SRV.C_OrderIsBlockedTextVHTempType",
-  },
-  Object {
-    "name": "I_AccountingClerkStdVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_AccountingClerkStdVHType",
-  },
-  Object {
-    "name": "I_AccountingClerkType",
-    "value": "C_CUSTOMER_OP_SRV.I_AccountingClerkType",
-  },
-  Object {
-    "name": "I_BillingBlockReasonType",
-    "value": "C_CUSTOMER_OP_SRV.I_BillingBlockReasonType",
-  },
-  Object {
-    "name": "I_BusinessPartnerVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_BusinessPartnerVHType",
-  },
-  Object {
-    "name": "I_ChartOfAccountsStdVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_ChartOfAccountsStdVHType",
-  },
-  Object {
-    "name": "I_CompanyCodeStdVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_CompanyCodeStdVHType",
-  },
-  Object {
-    "name": "I_CompanyCodeType",
-    "value": "C_CUSTOMER_OP_SRV.I_CompanyCodeType",
-  },
-  Object {
-    "name": "I_ContactPersonDepartmentTType",
-    "value": "C_CUSTOMER_OP_SRV.I_ContactPersonDepartmentTType",
-  },
-  Object {
-    "name": "I_ContactPersonFunctionTType",
-    "value": "C_CUSTOMER_OP_SRV.I_ContactPersonFunctionTType",
-  },
-  Object {
-    "name": "I_ControllingAreaStdVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_ControllingAreaStdVHType",
-  },
-  Object {
-    "name": "I_CountryType",
-    "value": "C_CUSTOMER_OP_SRV.I_CountryType",
-  },
-  Object {
-    "name": "I_CreditControlAreaStdVHType",
-    "value": "C_CUSTOMER_OP_SRV.I_CreditControlAreaStdVHType",
-  },
-  Object {
-    "name": "I_Customer_to_BusinessPartnerType",
-    "value": "C_CUSTOMER_OP_SRV.I_Customer_to_BusinessPartnerType",
-  },
-  Object {
-    "name": "I_Customer_VHType",
-    "value": "C_CUSTOMER_OP_SRV.I_Customer_VHType",
-  },
-  Object {
-    "name": "I_CustomerContactOPType",
-    "value": "C_CUSTOMER_OP_SRV.I_CustomerContactOPType",
-  },
-  Object {
-    "name": "I_CustomerDunningType",
-    "value": "C_CUSTOMER_OP_SRV.I_CustomerDunningType",
-  },
-  Object {
-    "name": "I_CustomerGroupType",
-    "value": "C_CUSTOMER_OP_SRV.I_CustomerGroupType",
-  },
-  Object {
-    "name": "I_DeliveryBlockReasonType",
-    "value": "C_CUSTOMER_OP_SRV.I_DeliveryBlockReasonType",
-  },
-  Object {
-    "name": "I_DistributionChannelType",
-    "value": "C_CUSTOMER_OP_SRV.I_DistributionChannelType",
-  },
-  Object {
-    "name": "I_DivisionType",
-    "value": "C_CUSTOMER_OP_SRV.I_DivisionType",
-  },
-  Object {
-    "name": "I_PaymentBlockingReasonType",
-    "value": "C_CUSTOMER_OP_SRV.I_PaymentBlockingReasonType",
-  },
-  Object {
-    "name": "I_SalesGroupType",
-    "value": "C_CUSTOMER_OP_SRV.I_SalesGroupType",
-  },
-  Object {
-    "name": "I_SalesOfficeType",
-    "value": "C_CUSTOMER_OP_SRV.I_SalesOfficeType",
-  },
-  Object {
-    "name": "I_SalesOrganizationType",
-    "value": "C_CUSTOMER_OP_SRV.I_SalesOrganizationType",
-  },
+  "C_CustomerBankDetailsOP",
+  "C_CustomerCompanyCodeOP",
+  "C_CustomerOP",
+  "C_CustomerSalesAreaOP",
+  "C_Custrecnclnacctvhtemp",
+  "C_OrderIsBlockedTextVHTemp",
+  "I_AccountingClerk",
+  "I_AccountingClerkStdVH",
+  "I_BillingBlockReason",
+  "I_BusinessPartnerVH",
+  "I_ChartOfAccountsStdVH",
+  "I_CompanyCode",
+  "I_CompanyCodeStdVH",
+  "I_ContactPersonDepartmentT",
+  "I_ContactPersonFunctionT",
+  "I_ControllingAreaStdVH",
+  "I_Country",
+  "I_CreditControlAreaStdVH",
+  "I_Customer_to_BusinessPartner",
+  "I_Customer_VH",
+  "I_CustomerContactOP",
+  "I_CustomerDunning",
+  "I_CustomerGroup",
+  "I_DeliveryBlockReason",
+  "I_DistributionChannel",
+  "I_Division",
+  "I_PaymentBlockingReason",
+  "I_SalesGroup",
+  "I_SalesOffice",
+  "I_SalesOrganization",
 ]
 `;
 
@@ -1211,7 +1149,52 @@ Array [
 exports[`Prompts getCodeSnippet Type "chart", get code snippet 1`] = `
 "<macros:Chart
     id=\\"id\\"
-    metaPath=\\"/entity/qualifier\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    filterBar=\\"filterBar\\"
+    selectionMode=\\"testSelectionMode\\"
+    selectionChange=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "chart", get code snippet, min ui5Version = 1.96.25 1`] = `
+"<macros:Chart
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    filterBar=\\"filterBar\\"
+    selectionMode=\\"testSelectionMode\\"
+    selectionChange=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "chart", get code snippet, min ui5Version = 1.97.0 1`] = `
+"<macros:Chart
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    filterBar=\\"filterBar\\"
+    selectionMode=\\"testSelectionMode\\"
+    selectionChange=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "chart", get code snippet, min ui5Version = 1.97.35 1`] = `
+"<macros:Chart
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    filterBar=\\"filterBar\\"
+    selectionMode=\\"testSelectionMode\\"
+    selectionChange=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "chart", get code snippet, min ui5Version is undefined 1`] = `
+"<macros:Chart
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
     filterBar=\\"filterBar\\"
     selectionMode=\\"testSelectionMode\\"
     selectionChange=\\"function1\\"
@@ -1227,7 +1210,89 @@ exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet 1`] = `
 />"
 `;
 
+exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version = 1.96.25 1`] = `
+"<macros:FilterBar
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    search=\\"function2\\"
+    filterChanged=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version = 1.97.0 1`] = `
+"<macros:FilterBar
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
+    search=\\"function2\\"
+    filterChanged=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version = 1.97.35 1`] = `
+"<macros:FilterBar
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
+    search=\\"function2\\"
+    filterChanged=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet, min ui5Version is undefined 1`] = `
+"<macros:FilterBar
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
+    search=\\"function2\\"
+    filterChanged=\\"function1\\"
+/>"
+`;
+
 exports[`Prompts getCodeSnippet Type "table", get code snippet 1`] = `
+"<macros:Table
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
+    filterBar=\\"filterBar\\"
+    header=\\"header\\"
+    headerVisible=\\"true\\"
+    type=\\"ResponsiveTable\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version = 1.96.25 1`] = `
+"<macros:Table
+    id=\\"id\\"
+    metaPath=\\"qualifier\\"
+    contextPath=\\"/entity\\"
+    filterBar=\\"filterBar\\"
+    header=\\"header\\"
+    headerVisible=\\"true\\"
+    type=\\"ResponsiveTable\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version = 1.97.0 1`] = `
+"<macros:Table
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
+    filterBar=\\"filterBar\\"
+    header=\\"header\\"
+    headerVisible=\\"true\\"
+    type=\\"ResponsiveTable\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version = 1.97.35 1`] = `
+"<macros:Table
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
+    filterBar=\\"filterBar\\"
+    header=\\"header\\"
+    headerVisible=\\"true\\"
+    type=\\"ResponsiveTable\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "table", get code snippet, min ui5Version is undefined 1`] = `
 "<macros:Table
     id=\\"id\\"
     metaPath=\\"/entity/qualifier\\"
@@ -1279,6 +1344,29 @@ Object {
       "name": "buildingBlockData.id",
       "type": "input",
       "validate": [Function],
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+      ],
+      "default": "absolute",
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.metaPath.qualifier",
+        ],
+        "mandatory": true,
+        "selectType": "static",
+      },
+      "message": "Binding Context Path Type",
+      "name": "buildingBlockData.metaPath.bindingContextType",
+      "type": "list",
     },
     Object {
       "choices": [Function],
@@ -1712,7 +1800,17 @@ exports[`Prompts submitAnswers Type "chart" 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Chart id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" selectionMode=\\"testSelectionMode\\" selectionChange=\\"function1\\"/>
+            <macros:Chart id=\\"id\\" metaPath=\\"qualifier\\" contextPath=\\"/entity\\" filterBar=\\"filterBar\\" selectionMode=\\"testSelectionMode\\" selectionChange=\\"function1\\"/>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Prompts submitAnswers Type "chart", min ui5Version = 1.96.0 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Chart id=\\"id\\" metaPath=\\"qualifier\\" contextPath=\\"/entity\\" filterBar=\\"filterBar\\" selectionMode=\\"testSelectionMode\\" selectionChange=\\"function1\\"/>
         </content>
     </Page>
 </mvc:View>"
@@ -1728,11 +1826,31 @@ exports[`Prompts submitAnswers Type "filter-bar" 1`] = `
 </mvc:View>"
 `;
 
+exports[`Prompts submitAnswers Type "filter-bar", min ui5Version = 1.96.0 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"id\\" metaPath=\\"qualifier\\" contextPath=\\"/entity\\" search=\\"function2\\" filterChanged=\\"function1\\"/>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
 exports[`Prompts submitAnswers Type "table" 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
             <macros:Table id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" header=\\"header\\" headerVisible=\\"true\\" type=\\"ResponsiveTable\\"/>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Prompts submitAnswers Type "table", min ui5Version = 1.96.0 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"id\\" metaPath=\\"qualifier\\" contextPath=\\"/entity\\" filterBar=\\"filterBar\\" header=\\"header\\" headerVisible=\\"true\\" type=\\"ResponsiveTable\\"/>
         </content>
     </Page>
 </mvc:View>"
@@ -1800,6 +1918,10 @@ Object {
   },
   "buildingBlockData.id": Object {
     "errorMessage": "Please enter a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.bindingContextType": Object {
+    "errorMessage": "Please select a value",
     "isValid": false,
   },
   "buildingBlockData.metaPath.entitySet": Object {

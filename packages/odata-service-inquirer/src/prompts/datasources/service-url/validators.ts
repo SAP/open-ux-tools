@@ -4,9 +4,9 @@ import { ERROR_TYPE, ErrorHandler } from '../../../error-handler/error-handler';
 import { t } from '../../../i18n';
 import { SAP_CLIENT_KEY } from '../../../types';
 import { PromptState, originToRelative, parseOdataVersion } from '../../../utils';
+import { ConnectionValidator } from '../../connectionValidator';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
-import { ConnectionValidator } from '../../connectionValidator';
 
 /**
  * Validates that a service specified by the service url is accessible, has the required version and returns valid metadata.

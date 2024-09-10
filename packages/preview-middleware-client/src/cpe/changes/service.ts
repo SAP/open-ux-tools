@@ -20,7 +20,7 @@ import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
-import { getError } from '../error-utils';
+import { getError } from '../../utils/error';
 
 interface ChangeContent {
     property: string;
@@ -265,8 +265,8 @@ export class ChangeService {
                 try {
                     if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();
-                        subCommands.forEach((command) => {
-                            const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
+                        subCommands.forEach((subCommand) => {
+                            const pendingChange = this.prepareChangeType(subCommand, inactiveCommandCount, i);
                             if (pendingChange) {
                                 activeChanges.push(pendingChange);
                             }

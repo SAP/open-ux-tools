@@ -15,7 +15,8 @@ import {
     getBaseComponent,
     getTemplateUi5Libs,
     TemplateTypeAttributes,
-    changesPreviewToVersion
+    changesPreviewToVersion,
+    getTemplateManifestLibs
 } from './templateAttributes';
 import { getAnnotationV4Libs } from './annotationCustomUi5Libs';
 import { type TemplateOptions } from './templateAttributes';
@@ -86,6 +87,19 @@ export function getUi5Libs(type: TemplateType, version: OdataVersion, ui5Libs?: 
 }
 
 /**
+ * Gets the required manifest libs for the specified template type and OData version.
+ *
+ * @param type - The template type of the required base component
+ * @param version - The odata service version determines the appropriate base component to use
+ * @param libs - manifest libs
+ * @returns The manifest libs required by the specified template type and OData version and UI5 annotation libs
+ */
+export function getManifestLibs(type: TemplateType, version: OdataVersion, libs?: string | string[]): string[] {
+    const templateLibs = getTemplateManifestLibs(type, version);
+    return [...templateLibs].concat(libs ?? []);
+}
+
+/**
  * Sets defaults for the specified Fiori elements application.
  *
  * @param feApp - Fiori elements application config
@@ -116,6 +130,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     feApp.ui5 = {
         ...feApp.ui5,
         ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.ui5?.ui5Libs),
+        manifestLibs: getManifestLibs(feApp.template.type, feApp.service.version, feApp.ui5?.manifestLibs),
         customUi5Libs: customUi5Libs
     };
 

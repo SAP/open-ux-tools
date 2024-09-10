@@ -1,5 +1,134 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.29.2
+
+### Patch Changes
+
+-   Updated dependencies [6ac4f50]
+    -   @sap-ux/fiori-annotation-api@0.2.0
+
+## 0.29.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.1.41
+
+## 0.29.0
+
+### Minor Changes
+
+-   177cdc8: Apply the "contextPath" attribute in building blocks when the application has a minimum UI5 version equal to or below 1.96.
+
+## 0.28.3
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/fiori-annotation-api@0.1.40
+
+## 0.28.2
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/fiori-annotation-api@0.1.39
+
+## 0.28.1
+
+### Patch Changes
+
+-   b10e3fd: fix: ensure that the controller template include an example call to super.onInit()
+
+## 0.28.0
+
+### Minor Changes
+
+-   bb4305f: Update fpm-writer to require either sap.fe.core or sap.fe.templates library, throw error if both are missing when creating a building block.
+
+## 0.27.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.9
+-   @sap-ux/fiori-annotation-api@0.1.38
+
+## 0.27.6
+
+### Patch Changes
+
+-   087752f: Building block Prompts. Use EntitySets instead of EntityTypes for displaying choices and writing metaPath or contextPath
+
+## 0.27.5
+
+### Patch Changes
+
+-   73aa3cd: FilterBar prompt. Show binding context path type for filter bar
+
+## 0.27.4
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/fiori-annotation-api@0.1.37
+
+## 0.27.3
+
+### Patch Changes
+
+-   6916f9e: Chart building block creation. Create 'contextPath' attribute when 'metaPath' property is received as 'BuildingBlockMetaPath' object
+
+## 0.27.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.7
+-   @sap-ux/fiori-annotation-api@0.1.36
+
+## 0.27.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.1.35
+
+## 0.27.0
+
+### Minor Changes
+
+-   ec4a9c8: Update fpm-writer to validate sap.fe.core as minimum library required for building block creation
+
+## 0.26.4
+
+### Patch Changes
+
+-   Updated dependencies [26379ea]
+    -   @sap-ux/fiori-annotation-api@0.1.34
+
+## 0.26.3
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+    -   @sap-ux/fiori-annotation-api@0.1.33
+
+## 0.26.2
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/fiori-annotation-api@0.1.32
+
+## 0.26.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.1.31
+-   @sap-ux/project-access@1.26.4
+
 ## 0.26.0
 
 ### Minor Changes

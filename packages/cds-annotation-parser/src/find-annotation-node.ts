@@ -1,4 +1,4 @@
-import type { Position } from 'vscode-languageserver-types';
+import type { Position } from '@sap-ux/text-document-utils';
 
 import type { AnnotationNode, AnnotationNodeType } from './transformer/annotation-ast-nodes';
 import {
