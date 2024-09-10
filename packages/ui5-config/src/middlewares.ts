@@ -73,7 +73,6 @@ export function getBackendComments(
  * @param backends configuration of backends
  * @param ui5 UI5 configuration
  * @param afterMiddleware middleware after which fiori-tools-proxy middleware will be started
- * @param ignoreCertError ignore certificate errors
  * @returns {{config, comments}} configuration and comments
  */
 export function getFioriToolsProxyMiddlewareConfig(
