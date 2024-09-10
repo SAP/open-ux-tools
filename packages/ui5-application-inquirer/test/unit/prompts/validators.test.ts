@@ -55,10 +55,6 @@ describe('validators', () => {
             jest.clearAllMocks();
         });
 
-        beforeEach(() => {
-            jest.clearAllMocks();
-        });
-
         test('should return true if no Fiori project is found in the target directory', async () => {
             mockFindRootsForPath.mockResolvedValue(null);
             const result = await validateFioriAppProjectFolder('/path/to/dir');
