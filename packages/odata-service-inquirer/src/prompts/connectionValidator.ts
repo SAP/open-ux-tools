@@ -338,7 +338,6 @@ export class ConnectionValidator {
         this._connectedUserName = undefined;
         this._refreshToken = undefined;
         this._connectedSystemName = undefined;
-        // this.resetValidity();
     }
 
     /**
