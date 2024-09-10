@@ -75,22 +75,19 @@ export function updateWorkspaceFoldersIfNeeded(
  *
  * @param {string} rootFolderPath - The root folder path of the project.
  * @param {LaunchJSON} launchJsonFile - The launch.json configuration to write.
+ * @param fs - The memfs editor instance.
  * @param {UpdateWorkspaceFolderOptions} [updateWorkspaceFolders] - Optional workspace folder update options.
  * @param {boolean} appNotInWorkspace - Indicates if the app is not in the workspace.
- * @param fs - The memfs editor instance.
  * @param log - The logger instance.
  */
 export function createOrUpdateLaunchConfigJSON(
     rootFolderPath: string,
-    launchJsonFile?: LaunchJSON,
+    launchJsonFile: LaunchJSON,
+    fs: Editor,
     updateWorkspaceFolders?: UpdateWorkspaceFolderOptions,
     appNotInWorkspace: boolean = false,
-    fs?: Editor,
     log?: Logger
 ): void {
-    if (!fs) {
-        fs = create(createStorage());
-    }
     try {
         const launchJSONPath = join(rootFolderPath, DirName.VSCode, LAUNCH_JSON_FILE);
         if (fs.exists(launchJSONPath) && !appNotInWorkspace) {
@@ -119,9 +116,9 @@ export function createOrUpdateLaunchConfigJSON(
  * @param {DebugOptions} options - The options for configuring the debug setup.
  * @param fs - The memfs editor instance.
  * @param log - The logger instance.
- * @returns {string | undefined} The path to the launch.json file. Returns undefined if the datasource type is CAP project or no vscode is available.
+ * @returns {Editor | undefined} memfs editor instance. Returns undefined if the datasource type is CAP project or no vscode is available.
  */
-export function configureLaunchConfig(options: DebugOptions, fs?: Editor, log?: Logger): string | undefined {
+export function configureLaunchConfig(options: DebugOptions, fs?: Editor, log?: Logger): Editor | undefined {
     const { datasourceType, projectPath, vscode } = options;
     if (datasourceType === DatasourceType.capProject) {
         log?.info(t('startApp', { npmStart: '`npm start`', cdsRun: '`cds run --in-memory`' }));
@@ -141,8 +138,11 @@ export function configureLaunchConfig(options: DebugOptions, fs?: Editor, log?: 
               vscode
           }
         : undefined;
-
-    createOrUpdateLaunchConfigJSON(launchJsonPath, launchJsonFile, updateWorkspaceFolders, appNotInWorkspace, fs, log);
+        
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    createOrUpdateLaunchConfigJSON(launchJsonPath, launchJsonFile, fs, updateWorkspaceFolders, appNotInWorkspace, log);
 
     const npmCommand = datasourceType === DatasourceType.metadataFile ? 'run start-mock' : 'start';
     const projectName = basename(projectPath);
@@ -152,5 +152,5 @@ export function configureLaunchConfig(options: DebugOptions, fs?: Editor, log?: 
             npmCommand
         })
     );
-    return launchJsonPath;
+    return fs;
 }
