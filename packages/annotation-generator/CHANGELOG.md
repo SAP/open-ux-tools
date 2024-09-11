@@ -1,5 +1,13 @@
 # @sap-ux/annotation-generator
 
+## 0.2.1
+
+### Patch Changes
+
+-   a0836d0: Fixed writing SAP annotations to a file outside CDS project
+-   Updated dependencies [a0836d0]
+    -   @sap-ux/fiori-annotation-api@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
