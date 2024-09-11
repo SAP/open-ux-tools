@@ -150,7 +150,7 @@ export class ChangeService {
             // eslint-disable-next-line fiori-custom/sap-no-location-reload
             location.reload();
         });
-        this.options.rta.attachUndoRedoStackModified(await this.createOnStackChangeHandler());
+        this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
     }
 
     /**
