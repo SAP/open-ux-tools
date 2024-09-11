@@ -14,7 +14,6 @@ import { coerce, lt } from 'semver';
 import type { Manifest } from '../common/types';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
-import { getManifestJsonExtensionHelper } from '../page/common';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
