@@ -51,9 +51,14 @@ export class AdpPreview {
             const resources = {
                 [this.mergedDescriptor.name]: this.mergedDescriptor.url
             };
-            this.mergedDescriptor.asyncHints.libs.forEach((lib) => {
+            this.mergedDescriptor.asyncHints.libs?.forEach((lib) => {
                 if (lib.url?.url) {
                     resources[lib.name] = lib.url.url;
+                }
+            });
+            this.mergedDescriptor.asyncHints.components?.forEach((comp) => {
+                if (comp.url?.url) {
+                    resources[comp.name] = comp.url.url;
                 }
             });
             return resources;

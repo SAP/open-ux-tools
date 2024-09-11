@@ -142,6 +142,15 @@ export class ConnectionValidator {
     }
 
     /**
+     * Get the validated client code. This is the client code that has been successfully validated by a request.
+     *
+     * @returns the validated client code
+     */
+    public get validatedClient(): string | undefined {
+        return this._validatedClient;
+    }
+
+    /**
      * Get the service info used to connect to the system.
      *
      * @returns the service info
@@ -329,7 +338,6 @@ export class ConnectionValidator {
         this._connectedUserName = undefined;
         this._refreshToken = undefined;
         this._connectedSystemName = undefined;
-        this.resetValidity();
     }
 
     /**
