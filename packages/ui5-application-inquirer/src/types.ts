@@ -101,9 +101,16 @@ type TargetFolderPromptOptions = {
      */
     defaultValue?: string;
     /**
-     * Determines whether to validate the target folder as a Fiori application project folder.
-     * If `true`, `validateTargetFolder` will run `validateFioriAppProjectFolder`
-     * to validate if the target path contains a Fiori project.
+     * If set to `true`, the target folder prompt's validator will perform additional validation to
+     * determine if the specified target path contains a Fiori application project.
+     *
+     * **Behavior**:
+     * - **CAP Projects**: Validates if the target folder is part of a CAP project with a supported Fiori app.
+     * - **Non-CAP Projects**: Checks for recognised SAP Fiori apps, such as Fiori elements or SAPUI5
+     *   freestyle apps that have the correct structure and required dependencies.
+     * - **Validation Outcome**: Returns a validation message if the target folder meets the Fiori app criteria.
+     *
+     * If `false` or not provided, only ui5 project validation is performed without specific Fiori app checks.
      */
     validateFioriAppFolder?: boolean;
 };
