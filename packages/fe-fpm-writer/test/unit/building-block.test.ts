@@ -72,7 +72,7 @@ describe('Building Blocks', () => {
         ).toThrowError(/Invalid view path/);
     });
 
-    test('validate sap.fe.templates and sap.fe.core manifest dependencies both are missing', async () => {
+    test('validate view path', async () => {
         const basePath = join(testAppPath, 'validate-manifest-dep');
         // Test generator without sap.fe.core or sap.fe.templates as dependency in manifest.json
         fs.write(join(basePath, manifestFilePath), JSON.stringify({ ...testManifestContent, 'sap.ui5': {} }));
@@ -89,12 +89,24 @@ describe('Building Blocks', () => {
                 },
                 fs
             )
-        ).toThrowError(
-            /All of the dependencies sap.fe.templates, sap.fe.core are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries./
-        );
+        ).toThrowError(/Invalid view path testViewPath./);
     });
 
-    test('generate building block with `sap.fe.templates` dependency only', async () => {
+    const dependenciesInput = [
+        {
+            name: 'generate building block with `sap.fe.templates` dependency',
+            dependencies: {
+                libs: {
+                    'sap.fe.templates': {}
+                }
+            }
+        },
+        {
+            name: 'generate building block without dependencies',
+            dependencies: undefined
+        }
+    ];
+    test.each(dependenciesInput)('$name', async ({ dependencies }) => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
         const basePath = join(__dirname, 'sample/building-block/webapp-prompts');
         fs.write(
@@ -102,11 +114,7 @@ describe('Building Blocks', () => {
             JSON.stringify({
                 ...testManifestContent,
                 'sap.ui5': {
-                    'dependencies': {
-                        'libs': {
-                            'sap.fe.templates': {}
-                        }
-                    }
+                    dependencies
                 }
             })
         );
