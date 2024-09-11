@@ -360,7 +360,10 @@ function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?: boole
         },
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
         validate: async (target, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
-            return await validateTargetFolder(target, name, validateFioriAppFolder);
+            if (name.length > 2) {
+                return await validateTargetFolder(target, name, validateFioriAppFolder);
+            }
+            return false;
         }
     } as FileBrowserQuestion<UI5ApplicationAnswers>;
 }

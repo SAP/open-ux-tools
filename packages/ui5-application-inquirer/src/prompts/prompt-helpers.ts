@@ -97,9 +97,6 @@ export async function validateTargetFolder(
     appName: string,
     validateFioriAppFolder?: boolean
 ): Promise<string | boolean> {
-    if (appName.length <= 2) {
-        return false;
-    }
     if (validateFioriAppFolder === true) {
         const isFioriValid = await validateFioriAppProjectFolder(targetPath);
         if (isFioriValid !== true) {

@@ -145,10 +145,6 @@ describe('prompt-helpers', () => {
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.ui5Version }]));
     });
     test('validateTargetFolder', async () => {
-        // Test when name length is <= 2
-        const resultForShortName = await validateTargetFolder('/some/target/path', 'ab');
-        expect(resultForShortName).toBe(false);
-
         // Test when name length > 2 and both validations pass
         jest.spyOn(projectValidators, 'validateProjectFolder').mockReturnValue(true);
         jest.spyOn(validators, 'validateFioriAppProjectFolder').mockResolvedValue(true);
