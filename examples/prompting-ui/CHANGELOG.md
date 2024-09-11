@@ -1,5 +1,13 @@
 # @sap-ux/fe-fpm-writer-ui
 
+## 0.0.11
+
+### Patch Changes
+
+-   Updated dependencies [a492b41]
+    -   @sap-ux/ui-components@1.18.0
+    -   @sap-ux/ui-prompting@0.1.9
+
 ## 0.0.10
 
 ### Patch Changes
