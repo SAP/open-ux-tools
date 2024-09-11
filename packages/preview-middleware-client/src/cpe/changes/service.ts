@@ -181,10 +181,8 @@ export class ChangeService {
                             const change: Change = savedChanges[key];
                             let selectorId;
                             try {
-                                // const flexObject = FlexObjectFactory.createFromFileContent(change);
-                                //@ts-ignore
                                 const flexObject = await this.getFlexObject(change);
-                                selectorId = await this.getControlIdByChange(flexObject as FlexChange);
+                                selectorId = await this.getControlIdByChange(flexObject);
                                 assertChange(change);
                                 if (
                                     [change.content.newValue, change.content.newBinding].every(
@@ -273,7 +271,7 @@ export class ChangeService {
      * @param sendAction send action method
      * @returns (event: sap.ui.base.Event) => Promise<void>
      */
-    private async createOnStackChangeHandler(): Promise<(event: Event) => Promise<void>> {
+    private createOnStackChangeHandler():(event: Event) => Promise<void> {
         const handleStackChange = modeAndStackChangeHandler(this.sendAction, this.options.rta);
         return async (): Promise<void> => {
             const stack = this.options.rta.getCommandStack();
@@ -461,7 +459,7 @@ export class ChangeService {
     public async syncOutlineChanges(): Promise<void> {
         for (const change of this.savedChanges) {
             const flexObject = await this.getFlexObject(change.file);
-            change.controlId = await this.getControlIdByChange(flexObject as FlexChange);
+            change.controlId = await this.getControlIdByChange(flexObject);
         }
         this.updateStack();
     }

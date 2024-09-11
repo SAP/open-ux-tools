@@ -8,6 +8,7 @@ import { fetchMock, sapCoreMock } from 'mock/window';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import connector from '../../../src/flp/WorkspaceConnector';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
+import { ChangeService } from '../../../src/cpe/changes/service';
 
 describe('main', () => {
     let sendActionMock: jest.Mock;
@@ -106,7 +107,7 @@ describe('main', () => {
 
         //assert
         expect(applyChangeSpy).toBeCalledWith({ rta: rta }, payload);
-        expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
+        expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock, expect.any(ChangeService));
     });
     test('init - rta exception', async () => {
         const error = new Error('Cannot init outline');
@@ -139,7 +140,7 @@ describe('main', () => {
             type: '[ext] change-stack-modified',
             payload: { saved: [], pending: [] }
         });
-        expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
+        expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock, expect.any(ChangeService));
         expect(Log.error).toBeCalledWith('Error during initialization of Control Property Editor', error);
     });
 });

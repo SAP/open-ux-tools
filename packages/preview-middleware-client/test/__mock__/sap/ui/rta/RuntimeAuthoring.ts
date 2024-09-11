@@ -24,6 +24,7 @@ class RuntimeAuthoringMock {
     public redo = jest.fn();
     public save = jest.fn();
     public _serializeToLrep = jest.fn();
+    public getRootControlInstance = jest.fn();
 }
 
 export default RuntimeAuthoringMock as unknown as RuntimeAuthoring & typeof RuntimeAuthoringMock;

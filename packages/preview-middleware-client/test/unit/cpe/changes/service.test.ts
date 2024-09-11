@@ -7,8 +7,8 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
-
 import { fetchMock } from 'mock/window';
+
 describe('SelectionService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
         return Promise.resolve();
@@ -104,7 +104,8 @@ describe('SelectionService', () => {
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         propertyName: 'enabled',
                         value: '{i18n>CREATE_OBJECT2}',
-                        timestamp: 1640106817301
+                        timestamp: 1640106817301,
+                        file: expect.any(Object) as Object
                     },
                     {
                         type: 'saved',
@@ -112,7 +113,8 @@ describe('SelectionService', () => {
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         fileName: 'id_1640106755570_204_propertyChange',
-                        timestamp: 1640106817301
+                        timestamp: 1640106817301,
+                        file: expect.any(Object) as Object
                     },
                     {
                         changeType: 'propertyChange',
@@ -124,7 +126,8 @@ describe('SelectionService', () => {
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         propertyName: 'enabled',
                         value: true,
-                        timestamp: 1640106757301
+                        timestamp: 1640106757301,
+                        file: expect.any(Object) as Object
                     }
                 ]
             }
@@ -180,7 +183,8 @@ describe('SelectionService', () => {
                         kind: 'unknown',
                         fileName: 'unknown',
                         timestamp: 1640106877301,
-                        controlId: 'SEPMRA_C_PD_Product--template::ListReport::TableToolbar'
+                        controlId: 'SEPMRA_C_PD_Product--template::ListReport::TableToolbar',
+                        file: expect.any(Object) as object
                     },
                     {
                         type: 'saved',
@@ -192,7 +196,8 @@ describe('SelectionService', () => {
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         propertyName: 'enabled',
                         value: '{i18n>CREATE_OBJECT2}',
-                        timestamp: 1640106817301
+                        timestamp: 1640106817301,
+                        file: expect.any(Object) as object
                     }
                 ]
             }
@@ -221,9 +226,16 @@ describe('SelectionService', () => {
                 getChangeType: (): any => {
                     return cache.get('changeType');
                 },
-                getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
-                    return { getDefinition: () => ({ fileName: 'testFileName' }) };
-                }
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getSelector: jest.fn().mockReturnValue({
+                        id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                    }),
+                    getChangeType: jest.fn().mockReturnValue(cache.get('changeType')),
+                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
+                    getDefinition: jest.fn().mockReturnValue({
+                        fileName: 'testFileName'
+                    })
+                })
             };
         }
         const subCommands = [
@@ -300,6 +312,11 @@ describe('SelectionService', () => {
                     getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
                 }),
                 getPreparedChange: jest.fn().mockReturnValue({
+                    getSelector: jest.fn().mockReturnValue({
+                        id: '_ST_SmartVariantManagement'
+                    }),
+                    getChangeType: jest.fn().mockReturnValue('page'),
+                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
                     getDefinition: jest.fn().mockReturnValue({
                         changeType: 'page'
                     })
@@ -414,9 +431,16 @@ describe('SelectionService', () => {
                         getId: () => 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
                     })
                 }),
-                getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
-                    return { getDefinition: () => ({ fileName: 'testFileName' }) };
-                }
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getSelector: jest.fn().mockReturnValue({
+                        id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                    }),
+                    getChangeType: jest.fn().mockReturnValue(cache.get('changeType')),
+                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
+                    getDefinition: jest.fn().mockReturnValue({
+                        fileName: 'testFileName'
+                    })
+                })
             };
         }
         const commands = [
