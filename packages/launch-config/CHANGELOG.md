@@ -1,5 +1,12 @@
 # @sap-ux/launch-config
 
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [97f1d2a]
+    -   @sap-ux/odata-service-inquirer@0.5.37
+
 ## 0.4.0
 
 ### Minor Changes
