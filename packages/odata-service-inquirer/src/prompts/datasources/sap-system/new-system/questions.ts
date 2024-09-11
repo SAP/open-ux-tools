@@ -11,7 +11,7 @@ import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions, SapSystemType, ValidationLink } from '../../../../types';
-import { SAP_CLIENT_KEY, hostEnvironment, promptNames } from '../../../../types';
+import { hostEnvironment, promptNames } from '../../../../types';
 import { PromptState, convertODataVersionType, getDefaultChoiceIndex, getHostEnvironment } from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
 import { suggestSystemName } from '../prompt-helpers';
@@ -171,10 +171,7 @@ export function getUserSystemNameQuestion(
         default: async () => {
             const systemName = connectValidator.connectedSystemName;
             if (systemName && !userModifiedSystemName) {
-                defaultSystemName = await suggestSystemName(
-                    systemName,
-                    connectValidator.axiosConfig?.params?.sapClient
-                );
+                defaultSystemName = await suggestSystemName(systemName, connectValidator.validatedClient);
                 return defaultSystemName;
             }
             return defaultSystemName;
@@ -200,7 +197,7 @@ export function getUserSystemNameQuestion(
                         authenticationType: systemAuthTypeToAuthenticationType(connectValidator.systemAuthType),
                         name: systemName,
                         url: connectValidator.validatedUrl,
-                        client: connectValidator.axiosConfig?.params?.[SAP_CLIENT_KEY],
+                        client: connectValidator.validatedClient,
                         username: connectValidator.axiosConfig?.auth?.username,
                         password: connectValidator.axiosConfig?.auth?.password,
                         serviceKeys: connectValidator.serviceInfo,
@@ -246,8 +243,9 @@ export function getSystemServiceQuestion<T extends Answers>(
     promptOptions?: OdataServicePromptOptions
 ): Question<T>[] {
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
-    // Prevent re-requesting services repeatedly by only requesting them once and when the system is changed
+    // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
     let previousSystemUrl: string | undefined;
+    let previousClient: string | undefined;
     let previousService: ServiceAnswer | undefined;
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
 
@@ -264,7 +262,11 @@ export function getSystemServiceQuestion<T extends Answers>(
         },
         source: (prevAnswers: T, input: string) => searchChoices(input, serviceChoices as ListChoiceOptions[]),
         choices: async () => {
-            if (serviceChoices.length === 0 || previousSystemUrl !== connectValidator.validatedUrl) {
+            if (
+                serviceChoices.length === 0 ||
+                previousSystemUrl !== connectValidator.validatedUrl ||
+                previousClient !== connectValidator.validatedClient
+            ) {
                 let catalogs: CatalogService[] = [];
                 if (requiredOdataVersion && connectValidator.catalogs[requiredOdataVersion]) {
                     catalogs.push(connectValidator.catalogs[requiredOdataVersion]!);
@@ -274,7 +276,7 @@ export function getSystemServiceQuestion<T extends Answers>(
                     ) as CatalogService[];
                 }
                 previousSystemUrl = connectValidator.validatedUrl;
-
+                previousClient = connectValidator.validatedClient;
                 serviceChoices = await getServiceChoices(catalogs);
             }
             return serviceChoices;

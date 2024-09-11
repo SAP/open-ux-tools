@@ -749,6 +749,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
                 )}
                 <div className={this.getClassNames()}>
                     <UITextInput
+                        {...this.props}
                         componentRef={this.inputRef}
                         disabled={this.state.isDisabled}
                         readOnly={this.props.readOnly}
