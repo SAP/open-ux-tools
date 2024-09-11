@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.37
+
+### Patch Changes
+
+-   97f1d2a: Fixes for client issues when running in YUI
+
 ## 0.5.36
 
 ### Patch Changes
