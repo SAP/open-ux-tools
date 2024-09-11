@@ -137,7 +137,7 @@ class DefaultTransportConfig implements TransportConfig {
             deleteCachedServiceProvider();
             if (err.response?.status === 401) {
                 const auth: string = err.response.headers?.['www-authenticate'];
-                result.transportConfigNeedsCreds = auth?.toLowerCase()?.startsWith('basic') ? true : false;
+                result.transportConfigNeedsCreds = !!auth?.toLowerCase()?.startsWith('basic');
                 LoggerHelper.logger.debug(
                     t('errors.debugAbapTargetSystemAuthFound', { isFound: !!result.transportConfigNeedsCreds })
                 );
