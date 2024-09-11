@@ -59,7 +59,10 @@ export function getQuestions(
         [promptNames.title]: getTitlePrompt(),
         [promptNames.namespace]: getNamespacePrompt(appName),
         [promptNames.description]: getDescriptionPrompt(),
-        [promptNames.targetFolder]: getTargetFolderPrompt(targetDir),
+        [promptNames.targetFolder]: getTargetFolderPrompt(
+            targetDir,
+            promptOptions?.[promptNames.targetFolder]?.validateFioriAppFolder
+        ),
         [promptNames.ui5Version]: getUI5VersionPrompt(ui5Versions, promptOptions?.ui5Version),
         [promptNames.addDeployConfig]: getAddDeployConfigPrompt(
             targetDir,
@@ -341,9 +344,10 @@ function getUI5VersionPrompt(
  * Gets the `targetFolder` prompt.
  *
  * @param targetDir provides a default value for the target folder path
+ * @param validateFioriAppFolder validates the target folder path as a Fiori app project
  * @returns the `targetFolder` prompt
  */
-function getTargetFolderPrompt(targetDir: string): UI5ApplicationQuestion {
+function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?: boolean): UI5ApplicationQuestion {
     return {
         type: 'input',
         name: promptNames.targetFolder,
@@ -356,7 +360,7 @@ function getTargetFolderPrompt(targetDir: string): UI5ApplicationQuestion {
         },
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
         validate: async (target, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
-            return await validateTargetFolder(target, name);
+            return await validateTargetFolder(target, name, validateFioriAppFolder);
         }
     } as FileBrowserQuestion<UI5ApplicationAnswers>;
 }

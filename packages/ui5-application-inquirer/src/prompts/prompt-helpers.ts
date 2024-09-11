@@ -89,15 +89,22 @@ export function hidePrompts(
 /**
  * @param targetPath the target directory path.
  * @param appName the application directory name.
+ * @param validateFioriAppFolder if true, validates the target path as a Fiori App project.
  * @returns true if validated for Fiori App Project and Project Folder, false if appName length is less than 2. Otherwise appropriate validation message.
  */
-export async function validateTargetFolder(targetPath: string, appName: string): Promise<string | boolean> {
+export async function validateTargetFolder(
+    targetPath: string,
+    appName: string,
+    validateFioriAppFolder?: boolean
+): Promise<string | boolean> {
     if (appName.length <= 2) {
         return false;
     }
-    const isFioriValid = await validateFioriAppProjectFolder(targetPath);
-    if (isFioriValid !== true) {
-        return isFioriValid;
+    if (validateFioriAppFolder === true) {
+        const isFioriValid = await validateFioriAppProjectFolder(targetPath);
+        if (isFioriValid !== true) {
+            return isFioriValid;
+        }
     }
     const isProjectValid = validateProjectFolder(targetPath, appName);
     if (isProjectValid !== true) {

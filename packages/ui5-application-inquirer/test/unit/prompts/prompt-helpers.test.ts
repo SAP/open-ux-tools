@@ -152,7 +152,7 @@ describe('prompt-helpers', () => {
         // Test when name length > 2 and both validations pass
         jest.spyOn(projectValidators, 'validateProjectFolder').mockReturnValue(true);
         jest.spyOn(validators, 'validateFioriAppProjectFolder').mockResolvedValue(true);
-        const resultForValidCase = await validateTargetFolder('/some/target/path', 'validName');
+        const resultForValidCase = await validateTargetFolder('/some/target/path', 'validName', true);
         expect(resultForValidCase).toBe(true);
     });
     test('validateTargetFolder - project folder validation error', async () => {
@@ -166,7 +166,7 @@ describe('prompt-helpers', () => {
         // Test when Fiori validation fails
         const fioriErrorMessage = 'Fiori validation error';
         jest.spyOn(validators, 'validateFioriAppProjectFolder').mockResolvedValue(fioriErrorMessage);
-        const resultForFioriError = await validateTargetFolder('/some/target/path', 'validName');
+        const resultForFioriError = await validateTargetFolder('/some/target/path', 'validName', true);
         expect(resultForFioriError).toBe(fioriErrorMessage);
     });
 });

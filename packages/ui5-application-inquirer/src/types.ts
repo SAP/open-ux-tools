@@ -100,6 +100,12 @@ type TargetFolderPromptOptions = {
      * Note that if a `default` option is also provided then this will be used instead of the `defaultValue` option.
      */
     defaultValue?: string;
+    /**
+     * Determines whether to validate the target folder as a Fiori application project folder.
+     * If `true`, `validateTargetFolder` will run `validateFioriAppProjectFolder`
+     * to validate if the target path contains a Fiori project.
+     */
+    validateFioriAppFolder?: boolean;
 };
 
 type NamePromptOptions = {
