@@ -1,3 +1,6 @@
+import Log from 'sap/base/Log';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
     startPostMessageCommunication,
@@ -5,21 +8,24 @@ import {
     enableTelemetry,
     appLoaded
 } from '@sap-ux-private/control-property-editor-common';
-import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import type { ActionHandler, Service } from './types';
-import { initOutline } from './outline/index';
+import { OutlineService } from './outline/service';
 import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
-import Log from 'sap/base/Log';
 import { logger } from './logger';
 import { getIcons } from './ui5-utils';
 import { WorkspaceConnectorService } from './connector-service';
 import { RtaService } from './rta-service';
 import { getError } from '../utils/error';
+import { QuickActionService } from './quick-actions/quick-action-service';
+import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
 
-export default function init(rta: RuntimeAuthoring): Promise<void> {
+export default function init(
+    rta: RuntimeAuthoring,
+    registries: QuickActionDefinitionRegistry<string>[] = []
+): Promise<void> {
     Log.info('Initializing Control Property Editor');
 
     // enable telemetry if requested
@@ -42,7 +48,17 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
     const changesService = new ChangeService({ rta }, selectionService);
     const connectorService = new WorkspaceConnectorService();
     const rtaService = new RtaService(rta);
-    const services: Service[] = [selectionService, changesService, connectorService, rtaService];
+    const outlineService = new OutlineService(rta);
+    const quickActionService = new QuickActionService(rta, outlineService, registries);
+    const services: Service[] = [
+        selectionService,
+        changesService,
+        connectorService,
+        outlineService,
+        rtaService,
+        quickActionService
+    ];
+
     try {
         loadDefaultLibraries();
         const { sendAction } = startPostMessageCommunication<ExternalAction>(
@@ -60,13 +76,11 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         );
 
         for (const service of services) {
-            service.init(sendAction, subscribe);
+            service
+                .init(sendAction, subscribe)
+                ?.catch((reason) => Log.error('Service Initalization Failed: ', getError(reason)));
         }
-        // For initOutline to complete the RTA needs to already running (to access RTA provided services).
-        // That can only happen if the plugin initialization has completed.
-        initOutline(rta, sendAction, changesService).catch((error) =>
-            Log.error('Error during initialization of Control Property Editor', getError(error))
-        );
+
         const icons = getIcons();
 
         sendAction(iconsLoaded(icons));

@@ -1,23 +1,20 @@
 import { sapCoreMock } from 'mock/window';
-import { initOutline } from '../../../../src/cpe/outline/index';
+import { OutlineService } from '../../../../src/cpe/outline/service';
 import * as nodes from '../../../../src/cpe/outline/nodes';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import Log from 'sap/base/Log';
-import { ChangeService } from '../../../../src/cpe/changes/service';
 
 jest.useFakeTimers();
 
 describe('index', () => {
+ 
     const mockSendAction = jest.fn();
     const mockAttachEvent = jest.fn();
     const transformNodesSpy = jest.spyOn(nodes, 'transformNodes');
     Log.error = jest.fn();
     Log.info = jest.fn();
-    const mockChangeService = {
-        syncOutlineChanges: jest.fn()
-    }
     sapCoreMock.byId.mockReturnValue({
         getMetadata: () => {
             return {
@@ -55,7 +52,8 @@ describe('index', () => {
                 visible: true
             }
         ]);
-        await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction, mockChangeService as unknown as ChangeService);
+        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring);
+        await service.init(mockSendAction);
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
         expect(mockSendAction).toMatchInlineSnapshot(`
             [MockFunction] {
@@ -88,7 +86,8 @@ describe('index', () => {
 
     test('initOutline - exception', async () => {
         transformNodesSpy.mockRejectedValue('error');
-        await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction, mockChangeService as unknown as ChangeService);
+        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring);
+        await service.init(mockSendAction);
         // transformNodesSpy called but rejected.
         expect(transformNodesSpy).toHaveBeenCalled();
         expect(mockSendAction).not.toHaveBeenCalled();
@@ -108,7 +107,8 @@ describe('index', () => {
         ]);
         transformNodesSpy.mockRejectedValue('error');
 
-        await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction, mockChangeService as unknown as ChangeService);
+        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring);
+        await service.init(mockSendAction);
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
     });
 
@@ -120,7 +120,8 @@ describe('index', () => {
         rtaMock.getFlexSettings.mockReturnValue({
             scenario: 'ADAPTATION_PROJECT'
         });
-        await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction, mockChangeService as unknown as ChangeService);
+        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring);
+        await service.init(mockSendAction);
         expect(mockSendAction).toHaveBeenNthCalledWith(2, {
             type: '[ext] show-dialog-message',
             payload: {

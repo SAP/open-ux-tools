@@ -68,7 +68,7 @@ export class ConnectionValidator {
 
     private _odataService: ODataService | undefined;
     private _serviceProvider: ServiceProvider | undefined;
-    private _axiosConfig: (AxiosExtensionRequestConfig & ProviderConfiguration) | undefined;
+    private _axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration;
     private _catalogV2: CatalogService | undefined;
     private _catalogV4: CatalogService | undefined;
     private _systemAuthType: SystemAuthType | undefined;
@@ -82,7 +82,7 @@ export class ConnectionValidator {
      *
      * @returns the axios configuration
      */
-    public get axiosConfig(): AxiosRequestConfig | undefined {
+    public get axiosConfig(): AxiosRequestConfig {
         return this._axiosConfig;
     }
 
@@ -139,6 +139,15 @@ export class ConnectionValidator {
      */
     public get validatedUrl(): string | undefined {
         return this._validatedUrl;
+    }
+
+    /**
+     * Get the validated client code. This is the client code that has been successfully validated by a request.
+     *
+     * @returns the validated client code
+     */
+    public get validatedClient(): string | undefined {
+        return this._validatedClient;
     }
 
     /**
@@ -329,7 +338,6 @@ export class ConnectionValidator {
         this._connectedUserName = undefined;
         this._refreshToken = undefined;
         this._connectedSystemName = undefined;
-        this.resetValidity();
     }
 
     /**

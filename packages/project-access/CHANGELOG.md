@@ -1,5 +1,22 @@
 # @sap-ux/project-access
 
+## 1.27.1
+
+### Patch Changes
+
+-   d962ce1: Move hasUI5CliV3 to project-access for common re-use
+
+## 1.27.0
+
+### Minor Changes
+
+-   df29368: Method `createCapI18nEntries` - handle absolute path to cds file instead of relative path
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/i18n@0.2.0
+
 ## 1.26.9
 
 ### Patch Changes

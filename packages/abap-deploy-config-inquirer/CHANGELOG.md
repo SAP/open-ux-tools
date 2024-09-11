@@ -1,5 +1,66 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.15
+
+### Patch Changes
+
+-   Updated dependencies [aa72f3c]
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/system-access@0.5.11
+
+## 0.0.14
+
+### Patch Changes
+
+-   515900b: cleanup prompts and translation text
+
+## 0.0.13
+
+### Patch Changes
+
+-   8467c87: cleanup validation around autocomplete
+
+## 0.0.12
+
+### Patch Changes
+
+-   40ce4ca: remove inquirer package
+
+## 0.0.11
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.5
+-   @sap-ux/fiori-generator-shared@0.3.19
+-   @sap-ux/system-access@0.5.10
+
+## 0.0.10
+
+### Patch Changes
+
+-   7926d8c: Add missing dependencies
+
+## 0.0.9
+
+### Patch Changes
+
+-   99d7394: adds create command add deploy-config
+
+## 0.0.8
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.5
+-   @sap-ux/fiori-generator-shared@0.3.18
+-   @sap-ux/system-access@0.5.10
+
+## 0.0.7
+
+### Patch Changes
+
+-   Updated dependencies [342e4be]
+    -   @sap-ux/guided-answers-helper@0.0.2
+
 ## 0.0.6
 
 ### Patch Changes

@@ -20,13 +20,7 @@ import {
     validateUrl
 } from '../../src/prompts/validators';
 import * as validatorUtils from '../../src/validator-utils';
-import {
-    AbapDeployConfigAnswersInternal,
-    ClientChoiceValue,
-    PackageInputChoices,
-    TargetSystemType,
-    TransportChoices
-} from '../../src/types';
+import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
 import * as utils from '../../src/utils';
 import { mockDestinations } from '../fixtures/destinations';
 import * as serviceProviderUtils from '../../src/service-provider-utils';
@@ -36,6 +30,11 @@ jest.mock('../../src/service-provider-utils', () => ({
 }));
 
 describe('Test validators', () => {
+    const previousAnswers = {
+        url: 'https://mock.url.target1.com',
+        package: 'ZPACKAGE'
+    };
+
     beforeAll(async () => {
         await initI18n();
     });
@@ -78,7 +77,8 @@ describe('Test validators', () => {
                 client: '001',
                 destination: undefined,
                 isS4HC: false,
-                scp: false
+                scp: false,
+                targetSystem: 'https://mock.url.target1.com'
             });
             expect(result).toBe(true);
         });
@@ -90,7 +90,7 @@ describe('Test validators', () => {
     });
 
     describe('validateUrl', () => {
-        it('should return true for valid URL', () => {
+        it('should return true for valid URL found in backend', () => {
             jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue({
                 name: 'Target1',
                 url: 'https://mock.url.target1.com',
@@ -100,9 +100,28 @@ describe('Test validators', () => {
             });
             let result = validateUrl('https://mock.url.target1.com');
             expect(result).toBe(true);
+            expect(PromptState.abapDeployConfig).toStrictEqual({
+                url: 'https://mock.url.target1.com',
+                client: '001',
+                destination: undefined,
+                isS4HC: true,
+                scp: true,
+                targetSystem: undefined
+            });
+        });
 
-            result = validateUrl('https://mock.url.target1.com');
+        it('should return true for valid URL not found in backend', () => {
+            jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue(undefined);
+            const result = validateUrl('https://mock.notfound.url.target1.com');
             expect(result).toBe(true);
+            expect(PromptState.abapDeployConfig).toStrictEqual({
+                url: 'https://mock.notfound.url.target1.com',
+                client: undefined,
+                destination: undefined,
+                isS4HC: false,
+                scp: false,
+                targetSystem: undefined
+            });
         });
 
         it('should return false empty URL', () => {
@@ -190,7 +209,7 @@ describe('Test validators', () => {
 
     describe('validateCredentials', () => {
         it('should return error for no credentials', async () => {
-            expect(await validateCredentials('', {})).toBe(t('errors.requireCredentials'));
+            expect(await validateCredentials('', previousAnswers)).toBe(t('errors.requireCredentials'));
         });
 
         it('should return true for valid credentials', async () => {
@@ -198,7 +217,7 @@ describe('Test validators', () => {
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: false
             });
-            expect(await validateCredentials('pass1', { username: 'user1' })).toBe(true);
+            expect(await validateCredentials('pass1', { ...previousAnswers, username: 'user1' })).toBe(true);
         });
 
         it('should return error message for invalid credentials', async () => {
@@ -206,7 +225,9 @@ describe('Test validators', () => {
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: true
             });
-            expect(await validateCredentials('pass1', { username: 'user1' })).toBe(t('errors.incorrectCredentials'));
+            expect(await validateCredentials('pass1', { ...previousAnswers, username: 'user1' })).toBe(
+                t('errors.incorrectCredentials')
+            );
         });
     });
 
@@ -284,13 +305,14 @@ describe('Test validators', () => {
             const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
 
             const result = await validatePackage('zpackage', {
+                ...previousAnswers,
                 ui5AbapRepo: 'ZUI5REPO'
             });
             expect(result).toBe(true);
             expect(getTransportListFromServiceSpy).toBeCalledWith('ZPACKAGE', 'ZUI5REPO', {}, undefined);
         });
         it('should return error for invalid package input', async () => {
-            const result = await validatePackage(' ', {});
+            const result = await validatePackage(' ', previousAnswers);
             expect(result).toBe(t('warnings.providePackage'));
         });
     });
@@ -301,46 +323,51 @@ describe('Test validators', () => {
         });
 
         it('should return error for invalid package / ui5 abap repo name', async () => {
-            const previousAnswers: AbapDeployConfigAnswersInternal = {};
             let result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, previousAnswers);
             expect(result).toBe(t('errors.validators.transportListPreReqs'));
 
-            previousAnswers.packageManual = 'ZPACKAGE';
-            result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, previousAnswers);
+            result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {
+                ...previousAnswers,
+                packageManual: 'ZPACKAGE'
+            });
             expect(result).toBe(t('errors.validators.transportListPreReqs'));
         });
 
         it('should return true for listing transport when transport request found for given config', async () => {
-            const previousAnswers: AbapDeployConfigAnswersInternal = {
-                packageManual: 'ZPACKAGE',
-                ui5AbapRepo: 'ZUI5REPO'
-            };
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([
                 { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport request' }
             ]);
-            const result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, previousAnswers);
+            const result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {
+                ...previousAnswers,
+                packageManual: 'ZPACKAGE',
+                ui5AbapRepo: 'ZUI5REPO'
+            });
             expect(result).toBe(true);
         });
 
         it('should return errors messages for listing transport when transport request empty or undefined', async () => {
-            const previousAnswers: AbapDeployConfigAnswersInternal = {
+            jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([]);
+
+            let result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {
+                ...previousAnswers,
                 packageManual: 'ZPACKAGE',
                 ui5AbapRepo: 'ZUI5REPO'
-            };
-            jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([]);
-            let result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, previousAnswers);
+            });
             expect(result).toBe(t('warnings.noTransportReqs'));
 
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce(undefined);
-            result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, previousAnswers);
+            result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {
+                ...previousAnswers,
+                packageManual: 'ZPACKAGE',
+                ui5AbapRepo: 'ZUI5REPO'
+            });
             expect(result).toBe(t('warnings.noExistingTransportReqList'));
         });
 
         it('should return true if transport request is same as previous', async () => {
             const result = await validateTransportChoiceInput(
                 TransportChoices.CreateNewChoice,
-                {},
-
+                previousAnswers,
                 true,
                 TransportChoices.CreateNewChoice
             );
@@ -354,8 +381,7 @@ describe('Test validators', () => {
 
             const result = await validateTransportChoiceInput(
                 TransportChoices.CreateNewChoice,
-                {},
-
+                previousAnswers,
                 true,
                 undefined
             );
@@ -368,8 +394,7 @@ describe('Test validators', () => {
 
             const result = await validateTransportChoiceInput(
                 TransportChoices.CreateNewChoice,
-                {},
-
+                previousAnswers,
                 false,
                 undefined
             );
@@ -382,8 +407,7 @@ describe('Test validators', () => {
 
             const result = await validateTransportChoiceInput(
                 TransportChoices.CreateNewChoice,
-                {},
-
+                previousAnswers,
                 false,
                 undefined
             );
@@ -394,8 +418,7 @@ describe('Test validators', () => {
         it('should return error if creating a new transport request returns undefined', async () => {
             const result = await validateTransportChoiceInput(
                 TransportChoices.EnterManualChoice,
-                {},
-
+                previousAnswers,
                 false,
                 undefined
             );
@@ -413,7 +436,7 @@ describe('Test validators', () => {
         it('should return true for valid transport', async () => {
             PromptState.transportAnswers.transportRequired = true;
             const result = validateTransportQuestion('');
-            expect(result).toBe(t('prompts.config.transport.provideTransportRequest'));
+            expect(result).toBe(t('prompts.config.transport.common.provideTransportRequest'));
         });
 
         it('should return true when transport is not required', async () => {

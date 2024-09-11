@@ -1,5 +1,44 @@
 # @sap-ux/launch-config
 
+## 0.4.2
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.38
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [97f1d2a]
+    -   @sap-ux/odata-service-inquirer@0.5.37
+
+## 0.4.0
+
+### Minor Changes
+
+-   8e41abf: Dont Update launch.json if App is Not in Workspace but launch Config Exists
+
+## 0.3.0
+
+### Minor Changes
+
+-   73fcd05: Add Launch Configuration Logic for debugging generated apps
+
+## 0.2.20
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+
+## 0.2.19
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+
 ## 0.2.18
 
 ### Patch Changes

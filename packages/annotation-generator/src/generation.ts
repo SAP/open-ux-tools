@@ -57,6 +57,18 @@ export type AnnotationServiceParameters = {
      * Name of the app.
      */
     appName?: string;
+    /**
+     * Only applicable for CAP CDS projects.
+     * When set to true SAP annotations will be created instead of OData annotations.
+     * File provided via "annotationPath" is assumed to be empty and it's content is not evaluated by the generator.
+     * Currently only supports insert changes for the following annotations:
+     * - UI.LineItem
+     * - UI.Facets
+     * - UI.FieldGroup
+     *
+     * @experimental
+     */
+    writeSapAnnotations?: boolean;
 };
 /**
  * Generate annotations options.
@@ -112,6 +124,9 @@ export async function generateAnnotations(
         const generated = await generateValueHelps(context);
         annotationsGenerated = annotationsGenerated || generated;
     }
+    if (annotationsGenerated && annotationServiceParams.writeSapAnnotations) {
+        await context.annotationService.save();
+    }
     return annotationsGenerated;
 }
 interface Context {
@@ -122,6 +137,7 @@ interface Context {
     convertedSchema: ConvertedMetadata;
     entityTypeName: string;
     entityType: EntityType;
+    ignoreChangedFileInitialContent: boolean;
 }
 
 async function adaptProject(projectOrRoot: string | Project): Promise<Project> {
@@ -141,7 +157,7 @@ async function getContext(
     annotationFilePath: string,
     annotationServiceParams: AnnotationServiceParameters
 ): Promise<Context> {
-    const { project, serviceName, appName } = annotationServiceParams;
+    const { project, serviceName, appName, writeSapAnnotations = false } = annotationServiceParams;
     const projectInstance = await adaptProject(project);
     const annotationService = await FioriAnnotationService.createService(
         projectInstance,
@@ -150,7 +166,9 @@ async function getContext(
         fs,
         {
             commitOnSave: false,
-            clearFileResolutionCache: true
+            clearFileResolutionCache: true,
+            writeSapAnnotations,
+            ignoreChangedFileInitialContent: writeSapAnnotations
         }
     );
 
@@ -166,7 +184,8 @@ async function getContext(
         metadataService,
         convertedSchema,
         entityTypeName,
-        entityType
+        entityType,
+        ignoreChangedFileInitialContent: writeSapAnnotations
     };
 }
 
@@ -235,7 +254,9 @@ async function generateDefaultFacets(context: Context): Promise<boolean> {
             }
         ];
         annotationService.edit(changes);
-        await annotationService.save();
+        if (!context.ignoreChangedFileInitialContent) {
+            await annotationService.save();
+        }
         return true;
     } catch (e) {
         exception = e instanceof ApiError ? e : new ApiError(`Generating sections failed. ${e}`);
@@ -250,7 +271,10 @@ function findEntitySet(convertedSchema: ConvertedMetadata, entityTypeName: strin
     return entitySet?.name ?? '';
 }
 
-function findEntityType(convertedSchema: ConvertedMetadata, entitySetName: string) {
+function findEntityType(
+    convertedSchema: ConvertedMetadata,
+    entitySetName: string
+): { entityType: EntityType; entityTypeName: string } {
     const entityTypeName = convertedSchema.entitySets.by_name(entitySetName)?.entityTypeName ?? '';
     if (!entityTypeName) {
         throw new ApiError(`Entity set not found: ${entitySetName}`, ApiErrorCode.General);
@@ -436,7 +460,9 @@ async function generateDefaultLineItem(context: Context): Promise<boolean> {
             }
         };
         annotationService.edit(change);
-        await annotationService.save();
+        if (!context.ignoreChangedFileInitialContent) {
+            await annotationService.save();
+        }
         return true;
     } catch (e) {
         exception = e instanceof ApiError ? e : new ApiError(`Generating LineItem failed. ${e}`);
@@ -526,7 +552,10 @@ async function generateValueList(context: Context, navProperties: NavigationProp
         ];
         annotationService.edit(changes);
     });
-    await annotationService.save();
+
+    if (!context.ignoreChangedFileInitialContent) {
+        await annotationService.save();
+    }
 }
 
 function getValueListParameterInOut(

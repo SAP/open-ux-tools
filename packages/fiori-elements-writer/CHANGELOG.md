@@ -1,5 +1,66 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.1.17
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.29.3
+
+## 1.1.16
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.29.2
+
+## 1.1.15
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.29.1
+
+## 1.1.14
+
+### Patch Changes
+
+-   Updated dependencies [177cdc8]
+    -   @sap-ux/fe-fpm-writer@0.29.0
+
+## 1.1.13
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/odata-service-writer@0.22.5
+    -   @sap-ux/fe-fpm-writer@0.28.3
+    -   @sap-ux/fiori-generator-shared@0.3.19
+    -   @sap-ux/ui5-application-writer@1.1.6
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.1.12
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.28.2
+-   @sap-ux/fiori-generator-shared@0.3.18
+-   @sap-ux/odata-service-writer@0.22.4
+-   @sap-ux/ui5-application-writer@1.1.6
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.1.11
+
+### Patch Changes
+
+-   8cfd71a: ui5-application-writer - fix backward support for older ui5 versions in locate-reuse-libs.js
+-   Updated dependencies [8cfd71a]
+    -   @sap-ux/ui5-application-writer@1.1.6
+
+## 1.1.10
+
+### Patch Changes
+
+-   Updated dependencies [b10e3fd]
+    -   @sap-ux/fe-fpm-writer@0.28.1
+
 ## 1.1.9
 
 ### Patch Changes

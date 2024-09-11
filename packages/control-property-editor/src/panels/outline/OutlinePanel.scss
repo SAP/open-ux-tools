@@ -3,10 +3,11 @@
     padding: 15px 14px 15px 14px;
     flex-direction: row;
     align-items: center;
-    position: sticky;
-    top: 0px;
-    z-index: 1;
     background-color: var(--vscode-sideBar-background);
+}
+
+.auto-element-scroller {
+    height: calc(100% - 55px);
 }
 
 .funnel-icon {
@@ -140,4 +141,11 @@
     color: var(--vscode-list-activeSelectionForeground);
     background-color: var(--vscode-list-activeSelectionBackground);
     outline: 1px solid var(--vscode-contrastActiveBorder);
+    i {
+        svg {
+            path {
+                fill: var(--vscode-list-activeSelectionForeground)
+            }
+        }
+    }
 }

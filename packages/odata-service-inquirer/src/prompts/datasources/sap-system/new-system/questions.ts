@@ -11,7 +11,7 @@ import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions, SapSystemType, ValidationLink } from '../../../../types';
-import { SAP_CLIENT_KEY, hostEnvironment, promptNames } from '../../../../types';
+import { hostEnvironment, promptNames } from '../../../../types';
 import { PromptState, convertODataVersionType, getDefaultChoiceIndex, getHostEnvironment } from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
 import { suggestSystemName } from '../prompt-helpers';
@@ -21,6 +21,8 @@ import { type ServiceAnswer, newSystemPromptNames } from './types';
 import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
 import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions';
 import LoggerHelper from '../../../logger-helper';
+import { errorHandler } from '../../../prompt-helpers';
+import { ERROR_TYPE, ErrorHandler } from '../../../../error-handler/error-handler';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -169,10 +171,7 @@ export function getUserSystemNameQuestion(
         default: async () => {
             const systemName = connectValidator.connectedSystemName;
             if (systemName && !userModifiedSystemName) {
-                defaultSystemName = await suggestSystemName(
-                    systemName,
-                    connectValidator.axiosConfig?.params?.sapClient
-                );
+                defaultSystemName = await suggestSystemName(systemName, connectValidator.validatedClient);
                 return defaultSystemName;
             }
             return defaultSystemName;
@@ -198,7 +197,7 @@ export function getUserSystemNameQuestion(
                         authenticationType: systemAuthTypeToAuthenticationType(connectValidator.systemAuthType),
                         name: systemName,
                         url: connectValidator.validatedUrl,
-                        client: connectValidator.axiosConfig?.params?.[SAP_CLIENT_KEY],
+                        client: connectValidator.validatedClient,
                         username: connectValidator.axiosConfig?.auth?.username,
                         password: connectValidator.axiosConfig?.auth?.password,
                         serviceKeys: connectValidator.serviceInfo,
@@ -244,8 +243,9 @@ export function getSystemServiceQuestion<T extends Answers>(
     promptOptions?: OdataServicePromptOptions
 ): Question<T>[] {
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
-    // Prevent re-requesting services repeatedly by only requesting them once and when the system is changed
+    // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
     let previousSystemUrl: string | undefined;
+    let previousClient: string | undefined;
     let previousService: ServiceAnswer | undefined;
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
 
@@ -262,7 +262,11 @@ export function getSystemServiceQuestion<T extends Answers>(
         },
         source: (prevAnswers: T, input: string) => searchChoices(input, serviceChoices as ListChoiceOptions[]),
         choices: async () => {
-            if (serviceChoices.length === 0 || previousSystemUrl !== connectValidator.validatedUrl) {
+            if (
+                serviceChoices.length === 0 ||
+                previousSystemUrl !== connectValidator.validatedUrl ||
+                previousClient !== connectValidator.validatedClient
+            ) {
                 let catalogs: CatalogService[] = [];
                 if (requiredOdataVersion && connectValidator.catalogs[requiredOdataVersion]) {
                     catalogs.push(connectValidator.catalogs[requiredOdataVersion]!);
@@ -272,7 +276,7 @@ export function getSystemServiceQuestion<T extends Answers>(
                     ) as CatalogService[];
                 }
                 previousSystemUrl = connectValidator.validatedUrl;
-
+                previousClient = connectValidator.validatedClient;
                 serviceChoices = await getServiceChoices(catalogs);
             }
             return serviceChoices;
@@ -284,6 +288,10 @@ export function getSystemServiceQuestion<T extends Answers>(
         validate: async (service: ServiceAnswer): Promise<string | boolean | ValidationLink> => {
             if (!connectValidator.validatedUrl) {
                 return false;
+            }
+            // if no choices are available and an error is present, return the error message
+            if (serviceChoices.length === 0 && errorHandler.hasError()) {
+                return ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE) ?? false;
             }
             // Dont re-request the same service details
             if (service && previousService?.servicePath !== service.servicePath) {
@@ -307,6 +315,10 @@ export function getSystemServiceQuestion<T extends Answers>(
                         LoggerHelper.logger.error(result);
                         throw new Error(result);
                     }
+                }
+                if (serviceChoices.length === 0 && errorHandler.hasError()) {
+                    const noServicesError = ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE)!.toString();
+                    throw new Error(noServicesError);
                 }
                 return false;
             },
