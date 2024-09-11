@@ -102,7 +102,7 @@ type TargetFolderPromptOptions = {
     defaultValue?: string;
     /**
      * If set to `true`, the target folder prompt's validator will perform additional validation to
-     * determine if the specified target path contains a Fiori application project.
+     * determine if the specified target path is contained in an existing Fiori application project path, which is invalid.
      *
      * **Behavior**:
      * - **CAP Projects**: Validates if the target folder is part of a CAP project with a supported Fiori app.
