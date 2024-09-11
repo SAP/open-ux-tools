@@ -27,6 +27,7 @@ export interface BuildingBlockMetaPath {
     bindingContextType?: BindingContextType;
     /**
      * Always generate absolute paths.
+     *
      * @default true
      */
     alwaysAbsolutePath?: boolean;
