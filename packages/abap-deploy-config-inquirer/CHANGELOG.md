@@ -1,5 +1,13 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.15
+
+### Patch Changes
+
+-   Updated dependencies [aa72f3c]
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/system-access@0.5.11
+
 ## 0.0.14
 
 ### Patch Changes
