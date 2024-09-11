@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.18.0
+
+### Minor Changes
+
+-   a492b41: Provide the ability to pass any props to UITreeDropdown input.
+
 ## 1.17.9
 
 ### Patch Changes
