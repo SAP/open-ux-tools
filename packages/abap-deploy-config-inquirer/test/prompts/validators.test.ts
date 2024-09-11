@@ -436,7 +436,7 @@ describe('Test validators', () => {
         it('should return true for valid transport', async () => {
             PromptState.transportAnswers.transportRequired = true;
             const result = validateTransportQuestion('');
-            expect(result).toBe(t('prompts.config.transport.provideTransportRequest'));
+            expect(result).toBe(t('prompts.config.transport.common.provideTransportRequest'));
         });
 
         it('should return true when transport is not required', async () => {

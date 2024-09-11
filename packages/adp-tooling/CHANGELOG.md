@@ -1,5 +1,14 @@
 # @sap-ux/adp-tooling
 
+## 0.12.46
+
+### Patch Changes
+
+-   aa72f3c: Fix preview adp project with component dependencies
+-   Updated dependencies [aa72f3c]
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/system-access@0.5.11
+
 ## 0.12.45
 
 ### Patch Changes
