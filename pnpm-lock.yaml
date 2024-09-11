@@ -1643,9 +1643,6 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
