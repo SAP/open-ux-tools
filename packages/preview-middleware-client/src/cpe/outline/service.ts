@@ -1,6 +1,7 @@
 import Log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
+import type { ChangeService } from '../changes/service';
 
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import { outlineChanged, SCENARIO, showMessage } from '@sap-ux-private/control-property-editor-common';
@@ -19,7 +20,7 @@ export interface OutlineChangedEventDetail {
  * A Class of WorkspaceConnectorService
  */
 export class OutlineService extends EventTarget {
-    constructor(private rta: RuntimeAuthoring) {
+    constructor(private rta: RuntimeAuthoring, private changeService: ChangeService) {
         super();
     }
 
@@ -41,6 +42,7 @@ export class OutlineService extends EventTarget {
                 const viewNodes = await outline.get();
                 const controlIndex: ControlTreeIndex = {};
                 const outlineNodes = await transformNodes(viewNodes, scenario, reuseComponentsIds, controlIndex);
+                await this.changeService.syncOutlineChanges();
 
                 const event = new CustomEvent(OUTLINE_CHANGE_EVENT, {
                     detail: {
