@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.27.2
+
+### Patch Changes
+
+-   09522df: Validates provided path does not contain a Fiori project, appropriate validation message displayed.
+
 ## 1.27.1
 
 ### Patch Changes
