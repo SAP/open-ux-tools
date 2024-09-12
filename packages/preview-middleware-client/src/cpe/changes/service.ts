@@ -404,7 +404,6 @@ export class ChangeService {
      * Get element id by change.
      *
      * @param change to be executed for creating change
-     * @param changeSelector selector of the change
      * @returns element id or empty string
      */
     private async getControlIdByChange(change: FlexChange): Promise<string> {
