@@ -445,7 +445,34 @@ Object {
     "state": "modified",
   },
   "generate-chart-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -648,7 +675,34 @@ Object {
     "state": "modified",
   },
   "generate-filter-bar-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
