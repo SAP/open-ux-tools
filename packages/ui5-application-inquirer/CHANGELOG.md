@@ -1,5 +1,39 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.6.4
+
+### Patch Changes
+
+-   09522df: Validates provided path does not contain a Fiori project, appropriate validation message displayed.
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.9
+
+## 0.6.0
+
+### Minor Changes
+
+-   e4a9da3: Adds support for `defaultValue` prompt option
+
 ## 0.5.26
 
 ### Patch Changes

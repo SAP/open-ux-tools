@@ -86,7 +86,7 @@ declare module 'sap/ui/rta/command/CommandFactory' {
 
         static async getCommandFor<T extends FlexCommand = FlexCommand>(
             control: Element | ManagedObject | string,
-            commandType: string,
+            commandType: string, // type of
             settings: object,
             designTimeMetadata?: DesignTimeMetadata | null,
             flexSettings?: FlexSettings
@@ -106,7 +106,7 @@ declare module 'sap/ui/rta/command/OutlineService' {
         instanceName?: string;
         name?: string;
         icon?: string;
-        component?: boolean; 
+        component?: boolean;
     }
 
     export interface AggregationOutlineViewNode extends BaseOutlineViewNode {
@@ -159,6 +159,9 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         };
         'sap.ui5': {
             [key: string]: string;
+            routing?: {
+                targets?: Record<string, { name?: string }>;
+            };
             flexEnabled?: boolean;
         };
     };
@@ -206,6 +209,14 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         validateAppVersion: boolean;
     }
 
+    export interface FEAppPage {
+        hasStyleClass(className: string): boolean;
+        getContent(): {
+            getComponentInstance(): Component;
+        }[];
+        getDomRef(): Element | null;
+    }
+
     export default class RuntimeAuthoring {
         constructor(_: RTAOptions) {}
 
@@ -223,6 +234,9 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         setPlugins: (defaultPlugins: object) => void;
         getRootControlInstance: () => {
             getManifest(): Manifest;
+            getRootControl(): {
+                getPages(): FEAppPage[];
+            };
         } & Component;
         stop: (bSkipSave, bSkipRestart) => Promise<void>;
         attachStop: (handler: (event: Event) => void) => void;
@@ -247,4 +261,39 @@ declare module 'sap/ui/rta/api/startAdaptation' {
     const startAdaptation: StartAdaptation;
 
     export default startAdaptation;
+}
+
+declare module 'sap/ui/rta/service/Action' {
+    export type ActionObject = {
+        /**
+         * ID of the action.
+         */
+        id: string;
+        /**
+         * Group name in case the action has been grouped with other action(s).
+         */
+        group: string;
+        /**
+         * Icon name.
+         */
+        icon: string;
+        /**
+         * Indicates whether the action is active and can be executed.
+         */
+        enabled: boolean;
+        /**
+         * Sorting rank for visual representation of the action position.
+         */
+        rank: number;
+        /**
+         * Action name
+         */
+        text: string;
+    };
+    export type ActionService = {
+        get: (controlId: string) => Promise<ActionObject[]>;
+        get: (controlIds: string[]) => Promise<ActionObject[]>;
+        execute: (controlId: string, actionId: string) => Promise<void>;
+        execute: (controlIds: string[], actionId: string) => Promise<void>;
+    };
 }

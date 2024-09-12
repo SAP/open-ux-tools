@@ -185,49 +185,40 @@ function defaultOrShowPackageQuestion(): boolean {
  * @returns boolean
  */
 export function showPackageInputChoiceQuestion(useAutocomplete = false): boolean {
-    // Only show the input choice (manual/search) when the autocomplete option is true, the prompt is supported; CLI or YUI specific version
-    return Boolean((!PromptState.isYUI || useAutocomplete) && defaultOrShowPackageQuestion());
+    if (!useAutocomplete) {
+        return false;
+    }
+    const isPromptSupported = !PromptState.isYUI || (PromptState.isYUI && useAutocomplete);
+    return isPromptSupported && defaultOrShowPackageQuestion();
 }
 
 /**
  * Determines if the manual package input prompt should be shown.
  *
- * @param isCli - is in CLI
  * @param packageInputChoice - package input choice from previous answers
  * @param useAutocomplete - useAutocomplete option from prompt options
  * @returns boolean
  */
-export function defaultOrShowManualPackageQuestion(
-    isCli: boolean,
-    packageInputChoice?: string,
-    useAutocomplete = false
-): boolean {
-    // Until the version of YUI installed supports auto-complete we must continue to show a manual input for packages
-    return (
-        (!isCli || packageInputChoice === PackageInputChoices.EnterManualChoice || !useAutocomplete) &&
-        defaultOrShowPackageQuestion()
-    );
+export function defaultOrShowManualPackageQuestion(packageInputChoice?: string, useAutocomplete = false): boolean {
+    if (!useAutocomplete) {
+        return false;
+    }
+    return packageInputChoice === PackageInputChoices.EnterManualChoice && defaultOrShowPackageQuestion();
 }
 
 /**
- * Determines if the search (autcomplete) package input prompt can be shown based on backend availability.
+ * Determines if the search (autocomplete) package input prompt can be shown based on backend availability.
  *
- * @param isCli - is in CLI
  * @param packageInputChoice - package input choice from previous answers
  * @param useAutocomplete - useAutocomplete option from prompt options
  * @returns boolean
  */
-export function defaultOrShowSearchPackageQuestion(
-    isCli: boolean,
-    packageInputChoice?: string,
-    useAutocomplete = false
-): boolean {
+export function defaultOrShowSearchPackageQuestion(packageInputChoice?: string, useAutocomplete = false): boolean {
     // Only show the autocomplete prompt when the autocomplete prompt is supported; CLI or YUI specific version
-    return (
-        (isCli || useAutocomplete) &&
-        packageInputChoice === PackageInputChoices.ListExistingChoice &&
-        defaultOrShowPackageQuestion()
-    );
+    if (!useAutocomplete) {
+        return false;
+    }
+    return packageInputChoice === PackageInputChoices.ListExistingChoice && defaultOrShowPackageQuestion();
 }
 
 /**

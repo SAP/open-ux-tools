@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 1.18.0
+
+### Minor Changes
+
+-   a492b41: Provide the ability to pass any props to UITreeDropdown input.
+
+## 1.17.9
+
+### Patch Changes
+
+-   ea0674c: UIContextualMenu.getUIcontextualMenuCalloutStyles - change parameter from `props?: IContextualMenuProps` to `styles?: IStyleFunctionOrObject<IContextualMenuStyleProps, IContextualMenuStyles>` and make parameter as optional
+
+## 1.17.8
+
+### Patch Changes
+
+-   b124873: UIContextualMenu.getUIContextualMenuItemStyles - make `props` param optional
+
+## 1.17.7
+
+### Patch Changes
+
+-   73f905f: Added optional `tabIndex` property for UISplitter component.
+
 ## 1.17.6
 
 ### Patch Changes

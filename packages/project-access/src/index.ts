@@ -42,7 +42,9 @@ export {
     toReferenceUri,
     filterDataSourcesByType,
     updatePackageScript,
-    findCapProjectRoot
+    findCapProjectRoot,
+    hasUI5CliV3,
+    findRootsForPath
 } from './project';
 export * from './types';
 export * from './library';

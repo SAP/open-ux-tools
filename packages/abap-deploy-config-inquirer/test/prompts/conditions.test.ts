@@ -50,9 +50,9 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should not show scp question', async () => {
         // 1 target not chosen
-        expect(showScpQuestion({})).toBe(false);
+        expect(showScpQuestion({ url: '', package: '' })).toBe(false);
         // 2 url target chosen but no url provided
-        expect(showScpQuestion({ targetSystem: 'Url', url: '' })).toBe(false);
+        expect(showScpQuestion({ targetSystem: 'Url', url: '', package: '' })).toBe(false);
 
         // 3 scp value has been retrieved from existing system
         jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue({
@@ -60,12 +60,12 @@ describe('Test abap deploy config inquirer conditions', () => {
             url: 'http://saved.target.url',
             client: '100'
         });
-        expect(showScpQuestion({ url: 'http://saved.target.url' })).toBe(false);
+        expect(showScpQuestion({ url: 'http://saved.target.url', package: '' })).toBe(false);
     });
 
     test('should show scp question', async () => {
         jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue(undefined);
-        expect(showScpQuestion({ targetSystem: 'Url', url: 'http://new.target.url' })).toBe(true);
+        expect(showScpQuestion({ targetSystem: 'Url', url: 'http://new.target.url', package: '' })).toBe(true);
     });
 
     test('should show client choice question', () => {
@@ -128,7 +128,11 @@ describe('Test abap deploy config inquirer conditions', () => {
     test('should show package input choice question', () => {
         // cli
         PromptState.isYUI = false;
-        expect(showPackageInputChoiceQuestion()).toBe(true);
+        expect(showPackageInputChoiceQuestion(true)).toBe(true);
+        expect(showPackageInputChoiceQuestion()).toBe(false);
+        // YUI
+        PromptState.isYUI = true;
+        expect(showPackageInputChoiceQuestion(true)).toBe(true);
     });
 
     test('should not show package input choice question', () => {
@@ -141,11 +145,19 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should show manual package question', () => {
-        expect(defaultOrShowManualPackageQuestion(true, PackageInputChoices.EnterManualChoice)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.EnterManualChoice)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.EnterManualChoice, false)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.EnterManualChoice, true)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.ListExistingChoice, true)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.ListExistingChoice)).toBe(false);
     });
 
-    test('should show search package question', () => {
-        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.ListExistingChoice)).toBe(true);
+    test('should show search package autocomplete question', () => {
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice)).toBe(false);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice)).toBe(false);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice, true)).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice, true)).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.EnterManualChoice, true)).toBe(false);
     });
 
     test('should show transport input choice question', () => {
@@ -218,5 +230,19 @@ describe('Test abap deploy config inquirer conditions', () => {
                 existingDeployTaskConfig: {}
             })
         ).toBe(true);
+    });
+
+    test('Validate different state changes i.e. YUI | CLI', () => {
+        PromptState.isYUI = false;
+        expect(showPackageInputChoiceQuestion(false)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.ListExistingChoice, false)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.EnterManualChoice, true)).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice, false)).toBe(false);
+        PromptState.isYUI = true;
+        expect(showPackageInputChoiceQuestion(false)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.ListExistingChoice, false)).toBe(false);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.EnterManualChoice, true)).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(PackageInputChoices.ListExistingChoice, true)).toBe(false);
+        expect(defaultOrShowSearchPackageQuestion(PackageInputChoices.ListExistingChoice, false)).toBe(false);
     });
 });

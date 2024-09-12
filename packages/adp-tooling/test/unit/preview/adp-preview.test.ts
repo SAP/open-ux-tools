@@ -84,6 +84,15 @@ describe('AdaptationProject', () => {
                     name: 'sap.reuse.lib',
                     url: { url: '/sap/reuse/lib' }
                 }
+            ],
+            components: [
+                {
+                    name: 'app.variant1',
+                    url: { url: '/webapp' }
+                },
+                {
+                    name: 'sap.io.lib.reuse'
+                }
             ]
         },
         name: 'the.original.app',
@@ -148,7 +157,8 @@ describe('AdaptationProject', () => {
             expect(adp.descriptor).toEqual(mockMergedDescriptor);
             expect(adp.resources).toEqual({
                 'sap.reuse.lib': '/sap/reuse/lib',
-                'the.original.app': mockMergedDescriptor.url
+                'the.original.app': mockMergedDescriptor.url,
+                'app.variant1': '/webapp'
             });
         });
 

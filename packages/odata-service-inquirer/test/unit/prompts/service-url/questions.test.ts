@@ -6,13 +6,20 @@ import { getServiceUrlQuestions } from '../../../../src/prompts/datasources/serv
 import { serviceUrlInternalPromptNames } from '../../../../src/prompts/datasources/service-url/types';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
 import { hostEnvironment } from '../../../../src/types';
+import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 
 const validateUrlMockTrue = jest.fn().mockResolvedValue(true);
 const validateAuthTrue = jest.fn().mockResolvedValue(true);
+const odataServiceMock = {} as Partial<ODataService>;
+const serviceProviderMock = {} as Partial<ServiceProvider>;
+
 const connectionValidatorMock = {
     validity: {},
     validateUrl: validateUrlMockTrue,
-    validateAuth: validateAuthTrue
+    validateAuth: validateAuthTrue,
+    odataService: odataServiceMock,
+    serviceProvider: serviceProviderMock,
+    axiosConfig: {}
 };
 jest.mock('../../../../src/prompts/connectionValidator', () => {
     return {
@@ -123,15 +130,19 @@ describe('Service URL prompts', () => {
             authRequired: false,
             authenticated: false
         };
+        connectionValidatorMock.axiosConfig = {};
 
         // Should validate service and return true if valid
         const serviceUrl = 'https://some.host:1234/service/path';
         let questions = getServiceUrlQuestions();
         let serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl);
         expect(await (serviceUrlQuestion?.validate as Function)(serviceUrl)).toBe(true);
+
+        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl);
+
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining(connectionValidatorMock),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined
         );
         expect(validateUrlMockTrue).toHaveBeenCalledWith(serviceUrl);
@@ -141,11 +152,12 @@ describe('Service URL prompts', () => {
         connectionValidatorMock.validateUrl.mockClear();
         questions = getServiceUrlQuestions({ serviceUrl: { requiredOdataVersion: OdataVersion.v4 } });
         serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl);
+
         expect(await (serviceUrlQuestion?.validate as Function)(serviceUrl)).toBe(true);
         expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl);
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining(connectionValidatorMock),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             OdataVersion.v4
         );
 
@@ -233,7 +245,7 @@ describe('Service URL prompts', () => {
         });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining(connectionValidatorMock),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined,
             true
         );
@@ -311,7 +323,7 @@ describe('Service URL prompts', () => {
         });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining(connectionValidatorMock),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined,
             true
         );
@@ -390,7 +402,7 @@ describe('Service URL prompts', () => {
         });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining(connectionValidatorMock),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined,
             undefined
         );

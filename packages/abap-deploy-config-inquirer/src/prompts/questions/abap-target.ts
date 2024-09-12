@@ -47,6 +47,7 @@ function getDestinationPrompt(
             name: abapDeployConfigInternalPromptNames.destination,
             message: t('prompts.target.destination.message'),
             guiOptions: {
+                mandatory: true,
                 breadcrumb: true
             },
             default: (): string | undefined => backendTarget?.abapTarget?.destination,
@@ -97,6 +98,7 @@ function getTargetSystemPrompt(
             name: abapDeployConfigInternalPromptNames.targetSystem,
             message: t('prompts.target.targetSystem.message'),
             guiOptions: {
+                mandatory: true,
                 breadcrumb: t('prompts.target.targetSystem.breadcrumb')
             },
             choices: (): AbapSystemChoice[] => choices,
@@ -199,7 +201,7 @@ function getClientChoicePrompt(
 
     if (!PromptState.isYUI) {
         prompts.push({
-            when: async (answers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
+            when: (answers: AbapDeployConfigAnswersInternal): boolean => {
                 const clientChoice = answers[abapDeployConfigInternalPromptNames.clientChoice];
                 if (clientChoice) {
                     validateClientChoiceQuestion(clientChoice as ClientChoiceValue, backendTarget?.abapTarget?.client);
@@ -231,7 +233,6 @@ function getClientPrompt(backendTarget?: BackendTarget): Question<AbapDeployConf
         name: abapDeployConfigInternalPromptNames.client,
         message: t('prompts.target.client.message'),
         guiOptions: {
-            mandatory: true,
             breadcrumb: t('prompts.target.client.breadcrumb')
         },
         default: (): string | undefined => backendTarget?.abapTarget?.client,

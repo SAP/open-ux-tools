@@ -1,5 +1,85 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.39
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/telemetry@0.5.28
+
+## 0.5.38
+
+### Patch Changes
+
+-   Updated dependencies [aa72f3c]
+    -   @sap-ux/axios-extension@1.16.6
+
+## 0.5.37
+
+### Patch Changes
+
+-   97f1d2a: Fixes for client issues when running in YUI
+
+## 0.5.36
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/telemetry@0.5.27
+
+## 0.5.35
+
+### Patch Changes
+
+-   eb958a1: Fix for annotations not retrieved by service url prompt
+
+## 0.5.34
+
+### Patch Changes
+
+-   8a84adf: Fix for no services + error GA link
+
+## 0.5.33
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/axios-extension@1.16.5
+    -   @sap-ux/telemetry@0.5.26
+
+## 0.5.32
+
+### Patch Changes
+
+-   Updated dependencies [342e4be]
+    -   @sap-ux/guided-answers-helper@0.0.2
+
+## 0.5.31
+
+### Patch Changes
+
+-   e2f644a: Fix for CF logon validation message not shown
+    -   @sap-ux/project-access@1.26.9
+    -   @sap-ux/telemetry@0.5.25
+    -   @sap-ux/axios-extension@1.16.5
+
+## 0.5.30
+
+### Patch Changes
+
+-   f7d2895: Adds fallback to v4 catalog service for auth or not found errors
+
+## 0.5.29
+
+### Patch Changes
+
+-   34b2606: Adds new system prompts for Abap on BTP
+
 ## 0.5.28
 
 ### Patch Changes

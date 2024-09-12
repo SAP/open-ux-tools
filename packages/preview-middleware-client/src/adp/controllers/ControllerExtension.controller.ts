@@ -17,9 +17,6 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-/** sap.ui.fl */
-import Utils from 'sap/ui/fl/Utils';
-
 /** sap.ui.layout */
 import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
 
@@ -35,14 +32,10 @@ import {
     writeController
 } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
+import { getControllerInfo } from '../utils';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
-}
-
-interface ControllerInfo {
-    controllerName: string;
-    viewId: string;
 }
 
 type ControllerModel = JSONModel & {
@@ -164,7 +157,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         const selectorId = this.overlays.getId();
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
 
-        const { controllerName, viewId } = this.getControllerInfo(overlayControl);
+        const { controllerName, viewId } = getControllerInfo(overlayControl);
         const existingController = await this.getExistingController(controllerName);
 
         if (existingController) {
@@ -184,21 +177,6 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             }
         }
     }
-
-    /**
-     * Gets controller name and view ID for the given overlay control.
-     *
-     * @param overlayControl The overlay control.
-     * @returns The controller name and view ID.
-     */
-    private getControllerInfo(overlayControl: ElementOverlay): ControllerInfo {
-        const control = overlayControl.getElement();
-        const view = Utils.getViewForControl(control);
-        const controllerName = view.getController().getMetadata().getName();
-        const viewId = view.getId();
-        return { controllerName, viewId };
-    }
-
     /**
      * Updates the model properties for an existing controller.
      *

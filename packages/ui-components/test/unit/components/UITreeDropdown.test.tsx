@@ -98,6 +98,7 @@ describe('<UITreeDropdown />', () => {
                         ]
                     }
                 ]}
+                aria-label="testAriaLabel"
             />
         );
     });
@@ -154,6 +155,12 @@ describe('<UITreeDropdown />', () => {
         expect(wrapper.state().value).toEqual('Title');
         // Cleanup
         getElementsByClassNameSpy.mockClear();
+    });
+
+    it('Additional properties are set', () => {
+        expect(wrapper.find(selectors.wrapper.readonly).length).toEqual(0);
+        const textfield = wrapper.find(UITextInput);
+        expect(textfield.prop('aria-label')).toEqual('testAriaLabel');
     });
 
     describe('Value change', () => {

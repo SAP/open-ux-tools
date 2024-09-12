@@ -75,7 +75,8 @@ describe('getPrompts', () => {
                 message: i18n.t('prompts.oDataAnnotationSourceURILabel'),
                 guiOptions: {
                     hint: i18n.t('prompts.oDataAnnotationSourceURITooltip')
-                }
+                },
+                validate: expect.any(Function)
             }
         ]);
         const maxAgeCondition = (prompts[2] as any).when;
@@ -126,10 +127,77 @@ describe('getPrompts', () => {
                 message: i18n.t('prompts.oDataAnnotationSourceURILabel'),
                 guiOptions: {
                     hint: i18n.t('prompts.oDataAnnotationSourceURITooltip')
-                }
+                },
+                validate: expect.any(Function)
             }
         ]);
         const maxAgeCondition = (prompts[2] as any).when;
         expect(maxAgeCondition({ uri: '' })).toBeFalsy();
+    });
+
+    describe('Validations', () => {
+        describe('Odata URI validation', () => {
+            test('should return true for valid URI', () => {
+                const uri = '/sap/test/odata/';
+                const result = (getPrompts({})[1].validate as Function)(uri);
+                expect(result).toBe(true);
+            });
+
+            test('should return error message for empty URI', () => {
+                const uri = '';
+                const result = (getPrompts({})[1].validate as Function)(uri);
+                expect(result).toBe('general.inputCannotBeEmpty');
+            });
+
+            test('should return error message for URI with whitespaces', () => {
+                const uri = 'sap/test /odata/';
+                const result = (getPrompts({})[1].validate as Function)(uri);
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
+            });
+
+            test('should return error message for URI without "/" at the end', () => {
+                const uri = '/sap/test';
+                const result = (getPrompts({})[1].validate as Function)(uri);
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
+            });
+
+            test('should return error message for URI without "/" at the beginning', () => {
+                const uri = 'sap/test/';
+                const result = (getPrompts({})[1].validate as Function)(uri);
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
+            });
+        });
+
+        describe('OData Annotation URI validation', () => {
+            test('should return true for valid URI', () => {
+                const uri = '/sap/test/odata/';
+                const result = (getPrompts({})[3].validate as Function)(uri);
+                expect(result).toBe(true);
+            });
+
+            test('should return true for empty URI', () => {
+                const uri = '';
+                const result = (getPrompts({})[3].validate as Function)(uri);
+                expect(result).toBe(true);
+            });
+
+            test('should return error message for URI with whitespaces', () => {
+                const uri = 'sap/test /odata/';
+                const result = (getPrompts({})[3].validate as Function)(uri);
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
+            });
+
+            test('should return error message for URI without "/" at the end', () => {
+                const uri = '/sap/test';
+                const result = (getPrompts({})[3].validate as Function)(uri);
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
+            });
+
+            test('should return error message for URI without "/" at the beginning', () => {
+                const uri = 'sap/test/';
+                const result = (getPrompts({})[3].validate as Function)(uri);
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
+            });
+        });
     });
 });

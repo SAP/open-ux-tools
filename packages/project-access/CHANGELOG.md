@@ -1,5 +1,35 @@
 # @sap-ux/project-access
 
+## 1.27.2
+
+### Patch Changes
+
+-   09522df: Validates provided path does not contain a Fiori project, appropriate validation message displayed.
+
+## 1.27.1
+
+### Patch Changes
+
+-   d962ce1: Move hasUI5CliV3 to project-access for common re-use
+
+## 1.27.0
+
+### Minor Changes
+
+-   df29368: Method `createCapI18nEntries` - handle absolute path to cds file instead of relative path
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/i18n@0.2.0
+
+## 1.26.9
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+
 ## 1.26.8
 
 ### Patch Changes

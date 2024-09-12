@@ -14,7 +14,7 @@ import {
     extendWithOptions
 } from '@sap-ux/inquirer-common';
 import { getMtaPath } from '@sap-ux/project-access';
-import { validateModuleName, validateNamespace, validateProjectFolder } from '@sap-ux/project-input-validator';
+import { validateModuleName, validateNamespace } from '@sap-ux/project-input-validator';
 import {
     defaultVersion,
     getDefaultUI5Theme,
@@ -25,7 +25,7 @@ import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
 import { promptNames } from '../types';
-import { defaultAppName, hidePrompts, isVersionIncluded } from './prompt-helpers';
+import { defaultAppName, hidePrompts, isVersionIncluded, validateTargetFolder } from './prompt-helpers';
 import { validateAppName } from './validators';
 
 /**
@@ -47,11 +47,11 @@ export function getQuestions(
     const appName =
         typeof promptOptions?.[promptNames.name]?.default === 'string'
             ? promptOptions[promptNames.name].default
-            : undefined; // Default functions will be applied later, these replace the existing defaults
+            : promptOptions?.[promptNames.name]?.defaultValue;
     const targetDir =
         typeof promptOptions?.[promptNames.targetFolder]?.default === 'string'
             ? promptOptions[promptNames.targetFolder].default // Default functions will be applied later, these replace the existing defaults
-            : process.cwd();
+            : promptOptions?.[promptNames.targetFolder]?.defaultValue ?? process.cwd();
     const isCapProject = !!capCdsInfo;
 
     const keyedPrompts: Record<promptNames, UI5ApplicationQuestion> = {
@@ -59,7 +59,10 @@ export function getQuestions(
         [promptNames.title]: getTitlePrompt(),
         [promptNames.namespace]: getNamespacePrompt(appName),
         [promptNames.description]: getDescriptionPrompt(),
-        [promptNames.targetFolder]: getTargetFolderPrompt(targetDir),
+        [promptNames.targetFolder]: getTargetFolderPrompt(
+            targetDir,
+            promptOptions?.[promptNames.targetFolder]?.validateFioriAppFolder
+        ),
         [promptNames.ui5Version]: getUI5VersionPrompt(ui5Versions, promptOptions?.ui5Version),
         [promptNames.addDeployConfig]: getAddDeployConfigPrompt(
             targetDir,
@@ -341,9 +344,10 @@ function getUI5VersionPrompt(
  * Gets the `targetFolder` prompt.
  *
  * @param targetDir provides a default value for the target folder path
+ * @param validateFioriAppFolder validates the target folder path as a Fiori app project
  * @returns the `targetFolder` prompt
  */
-function getTargetFolderPrompt(targetDir: string): UI5ApplicationQuestion {
+function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?: boolean): UI5ApplicationQuestion {
     return {
         type: 'input',
         name: promptNames.targetFolder,
@@ -355,9 +359,9 @@ function getTargetFolderPrompt(targetDir: string): UI5ApplicationQuestion {
             breadcrumb: t('prompts.appFolderPathBreadcrumb')
         },
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
-        validate: (target, { name = '' }: UI5ApplicationAnswers): boolean | string => {
+        validate: async (target, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
             if (name.length > 2) {
-                return validateProjectFolder(target, name);
+                return await validateTargetFolder(target, name, validateFioriAppFolder);
             }
             return false;
         }

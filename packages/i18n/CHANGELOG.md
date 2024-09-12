@@ -1,5 +1,11 @@
 # @sap-ux/i18n
 
+## 0.2.0
+
+### Minor Changes
+
+-   df29368: Methods `createCapI18nEntries`, `getCapI18nFolder` - handle absolute path to cds file instead of relative path
+
 ## 0.1.1
 
 ### Patch Changes
