@@ -11,6 +11,7 @@ import { fetchMock } from 'mock/window';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
 import Control from 'sap/ui/core/Control';
 import * as Utils from '../../../../src/utils/version';
+import { get } from 'http';
 
 describe('SelectionService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
@@ -248,6 +249,66 @@ describe('SelectionService', () => {
             }
         });
     });
+
+    test('no command stack', async () => {
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue([]),
+            getAllExecutedCommands: jest.fn().mockReturnValue([])
+        });
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        await service.init(sendActionMock, subscribeMock);
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+
+        expect(sendActionMock).toHaveBeenCalledWith({
+            type: '[ext] change-stack-modified',
+            payload: {
+                pending: [],
+                saved: [
+                    {
+                        changeType: 'propertyChange',
+                        type: 'saved',
+                        kind: 'valid',
+                        fileName: 'id_1640106755570_204_propertyChange',
+                        controlName: 'Button',
+                        controlId:
+                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+                        propertyName: 'enabled',
+                        value: '{i18n>CREATE_OBJECT2}',
+                        timestamp: 1640106817301,
+                        file: expect.any(Object) as Object
+                    },
+                    {
+                        type: 'saved',
+                        kind: 'unknown',
+                        controlId:
+                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+                        fileName: 'id_1640106755570_204_propertyChange',
+                        timestamp: 1640106817301,
+                        file: expect.any(Object) as Object
+                    },
+                    {
+                        changeType: 'propertyChange',
+                        type: 'saved',
+                        kind: 'valid',
+                        fileName: 'id_1640106755570_203_propertyChange',
+                        controlName: 'Button',
+                        controlId:
+                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+                        propertyName: 'enabled',
+                        value: true,
+                        timestamp: 1640106757301,
+                        file: expect.any(Object) as Object
+                    }
+                ]
+            }
+        });
+    })
 
     test('unknown change with timestamp', async () => {
         fetchMock.mockResolvedValue({
