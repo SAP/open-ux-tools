@@ -11,7 +11,6 @@ import { fetchMock } from 'mock/window';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
 import Control from 'sap/ui/core/Control';
 import * as Utils from '../../../../src/utils/version';
-import { get } from 'http';
 
 describe('SelectionService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
