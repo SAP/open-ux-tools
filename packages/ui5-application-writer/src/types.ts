@@ -10,6 +10,12 @@ export interface Package {
     ui5?: {
         dependencies?: string[];
     };
+    /**
+     * Defines the SAPUI5 flexibility layer to manage smart control changes and provide personalization functions for your SAPUI5 applications.
+     *
+     * - `VENDOR`: Stores SAP-delivered content.
+     * - `CUSTOMER_BASE`: Stores customer-specific changes.
+     */
     sapuxLayer?: UI5FlexLayer;
 }
 
