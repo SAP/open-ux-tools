@@ -95,7 +95,7 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
 export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
     private sendAction: (action: ExternalAction) => void;
-    private pendingChanges: PendingChange[];
+    private pendingChanges: PendingChange[] = [];
     /**
      *
      * @param options ui5 adaptation options.
@@ -278,37 +278,36 @@ export class ChangeService {
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
             const inactiveCommandCount = allCommands.length - executedCommands.length;
-            let activeChanges: PendingChange[] = [];
             let i: number, command: FlexCommand;
             for ([i, command] of allCommands.entries()) {
                 try {
                     if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();
                         for (const subCommand of subCommands) {
-                            const pendingChange = await this.prepareChangeType(subCommand, inactiveCommandCount, i);
-                            if (pendingChange) {
-                                activeChanges.push(pendingChange);
-                            }
+                            await this.handleCommand(subCommand, inactiveCommandCount, i);
                         }
                     } else {
-                        const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, i);
-                        if (pendingChange) {
-                            activeChanges.push(pendingChange);
-                        }
+                        await this.handleCommand(command, inactiveCommandCount, i);
                     }
                 } catch (error) {
                     Log.error('CPE: Change creation Failed', getError(error));
                 }
             }
-            activeChanges = activeChanges.filter((change): boolean => !!change);
 
             if (Array.isArray(allCommands) && allCommands.length === 0) {
+                this.pendingChanges = [];
                 await this.fetchSavedChanges();
             }
-            this.pendingChanges = activeChanges;
             this.updateStack();
             handleStackChange();
         };
+    }
+
+    private async handleCommand(command: FlexCommand, inactiveCommandCount: number,  index: number): Promise<void> {
+        const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, index);
+        if (pendingChange) {
+            this.pendingChanges.push(pendingChange);
+        }
     }
 
     private async prepareChangeType(
