@@ -1,5 +1,18 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.38
+
+### Patch Changes
+
+-   Updated dependencies [aa72f3c]
+    -   @sap-ux/axios-extension@1.16.6
+
+## 0.5.37
+
+### Patch Changes
+
+-   97f1d2a: Fixes for client issues when running in YUI
+
 ## 0.5.36
 
 ### Patch Changes

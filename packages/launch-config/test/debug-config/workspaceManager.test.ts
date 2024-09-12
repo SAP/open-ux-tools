@@ -245,8 +245,8 @@ describe('launchConfig Unit Tests', () => {
         });
 
         it('should handle unsaved workspace case', () => {
-            const mockProjectPath = '/mock/project/path';
-            const mockTargetFolder = '/target/folder';
+            const mockProjectPath = path.join('/mock/project/path');
+            const mockTargetFolder = path.join('/target/folder');
             const mockVscode = {
                 workspace: {
                     getWorkspaceFolder: jest.fn().mockReturnValue(undefined),
