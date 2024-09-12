@@ -432,13 +432,32 @@ exports[`Building Blocks Generate with optional parameters Generate Chart from o
 />"
 `;
 
+exports[`Building Blocks Generate with optional parameters generate chart building block with metaPath as object. Relative: generate-chart-with-optional-params 1`] = `
+Object {
+  "generate-chart-with-optional-params/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Chart id=\\"testChart\\" metaPath=\\"testQualifier\\" contextPath=\\"/testEntitySet\\" filterBar=\\"testFilterBar\\" personalization=\\"testPersonalization\\" selectionMode=\\"MULTIPLE\\" selectionChange=\\"testOnSelectionChange\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-chart-with-optional-params/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`Building Blocks Generate with optional parameters generate chart building block with metaPath as object: generate-chart-with-optional-params 1`] = `
 Object {
   "generate-chart-with-optional-params/webapp/ext/main/Main.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Chart id=\\"testChart\\" metaPath=\\"testQualifier\\" contextPath=\\"testContextPath\\" filterBar=\\"testFilterBar\\" personalization=\\"testPersonalization\\" selectionMode=\\"MULTIPLE\\" selectionChange=\\"testOnSelectionChange\\"/>
+            <macros:Chart id=\\"testChart\\" metaPath=\\"testQualifier\\" contextPath=\\"/testEntitySet\\" filterBar=\\"testFilterBar\\" personalization=\\"testPersonalization\\" selectionMode=\\"MULTIPLE\\" selectionChange=\\"testOnSelectionChange\\"/>
         </content>
     </Page>
 </mvc:View>",
@@ -530,7 +549,7 @@ Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Field id=\\"testField\\" metaPath=\\"testQualifier\\" contextPath=\\"testContextPath\\" formatOptions=\\"{'displayMode':'Value'}\\" readOnly=\\"true\\" semanticObject=\\"testSemanticObject\\"/>
+            <macros:Field id=\\"testField\\" metaPath=\\"/testEntitySet/testQualifier\\" formatOptions=\\"{'displayMode':'Value'}\\" readOnly=\\"true\\" semanticObject=\\"testSemanticObject\\"/>
         </content>
     </Page>
 </mvc:View>",
@@ -616,13 +635,32 @@ Object {
 }
 `;
 
+exports[`Building Blocks Generate with optional parameters generate filter-bar building block with metaPath as object. Relative: generate-filter-bar-with-optional-params 1`] = `
+Object {
+  "generate-filter-bar-with-optional-params/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"testQualifier\\" search=\\"testOnSearch\\" filterChanged=\\"testOnFilterChanged\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-filter-bar-with-optional-params/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"minUI5Version\\":\\"1.127.0\\",\\"libs\\":{\\"sap.fe.core\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`Building Blocks Generate with optional parameters generate filter-bar building block with metaPath as object: generate-filter-bar-with-optional-params 1`] = `
 Object {
   "generate-filter-bar-with-optional-params/webapp/ext/main/Main.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"testQualifier\\" contextPath=\\"testContextPath\\" search=\\"testOnSearch\\" filterChanged=\\"testOnFilterChanged\\"/>
+            <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"/testEntitySet/testQualifier\\" search=\\"testOnSearch\\" filterChanged=\\"testOnFilterChanged\\"/>
         </content>
     </Page>
 </mvc:View>",
@@ -714,7 +752,7 @@ Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Table id=\\"testTable\\" metaPath=\\"testQualifier\\" contextPath=\\"testContextPath\\" busy=\\"true\\" enableAutoColumnWidth=\\"true\\" enableExport=\\"true\\" enableFullScreen=\\"true\\" enablePaste=\\"true\\" filterBar=\\"testFilterBar\\" header=\\"Test Header\\" headerVisible=\\"true\\" isSearchable=\\"true\\" personalization=\\"Column\\" readOnly=\\"true\\" type=\\"ResponsiveTable\\" variantManagement=\\"None\\"/>
+            <macros:Table id=\\"testTable\\" metaPath=\\"/testEntitySet/testQualifier\\" busy=\\"true\\" enableAutoColumnWidth=\\"true\\" enableExport=\\"true\\" enableFullScreen=\\"true\\" enablePaste=\\"true\\" filterBar=\\"testFilterBar\\" header=\\"Test Header\\" headerVisible=\\"true\\" isSearchable=\\"true\\" personalization=\\"Column\\" readOnly=\\"true\\" type=\\"ResponsiveTable\\" variantManagement=\\"None\\"/>
         </content>
     </Page>
 </mvc:View>",

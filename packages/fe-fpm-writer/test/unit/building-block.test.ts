@@ -6,6 +6,7 @@ import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } fr
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'fs';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
+import type { BindingContextType } from '../../src/building-block/types';
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -373,60 +374,64 @@ describe('Building Blocks', () => {
     });
 
     describe('Generate with optional parameters', () => {
+        const filterbarBuiildingBlock: FilterBar = {
+            id: 'testFilterBar',
+            buildingBlockType: BuildingBlockType.FilterBar,
+            contextPath: 'testContextPath',
+            metaPath: 'testMetaPath',
+            filterChanged: 'testOnFilterChanged',
+            search: 'testOnSearch'
+        };
+        const chartBuiildingBlock: Chart = {
+            id: 'testChart',
+            buildingBlockType: BuildingBlockType.Chart,
+            contextPath: 'testContextPath',
+            metaPath: 'testMetaPath',
+            filterBar: 'testFilterBar',
+            personalization: 'testPersonalization',
+            selectionMode: 'MULTIPLE',
+            selectionChange: 'testOnSelectionChange'
+        };
+        const fieldBuiildingBlock: Field = {
+            id: 'testField',
+            buildingBlockType: BuildingBlockType.Field,
+            contextPath: 'testContextPath',
+            metaPath: 'testMetaPath',
+            formatOptions: JSON.stringify({ displayMode: 'Value' }).replace(/\"/g, `'`),
+            readOnly: true,
+            semanticObject: 'testSemanticObject'
+        } as Field;
+        const tableBuildingBlock: Table = {
+            id: 'testTable',
+            buildingBlockType: BuildingBlockType.Table,
+            contextPath: 'testContextPath',
+            metaPath: 'testMetaPath',
+            busy: true,
+            enableAutoColumnWidth: true,
+            enableExport: true,
+            enableFullScreen: true,
+            enablePaste: true,
+            filterBar: 'testFilterBar',
+            header: 'Test Header',
+            headerVisible: true,
+            isSearchable: true,
+            personalization: 'Column',
+            readOnly: true,
+            type: 'ResponsiveTable',
+            variantManagement: 'None'
+        };
         const testInput = [
             {
-                buildingBlockData: {
-                    id: 'testFilterBar',
-                    buildingBlockType: BuildingBlockType.FilterBar,
-                    contextPath: 'testContextPath',
-                    metaPath: 'testMetaPath',
-                    filterChanged: 'testOnFilterChanged',
-                    search: 'testOnSearch'
-                } as FilterBar
+                buildingBlockData: filterbarBuiildingBlock
             },
             {
-                buildingBlockData: {
-                    id: 'testChart',
-                    buildingBlockType: BuildingBlockType.Chart,
-                    contextPath: 'testContextPath',
-                    metaPath: 'testMetaPath',
-                    filterBar: 'testFilterBar',
-                    personalization: 'testPersonalization',
-                    selectionMode: 'MULTIPLE',
-                    selectionChange: 'testOnSelectionChange'
-                } as Chart
+                buildingBlockData: chartBuiildingBlock
             },
             {
-                buildingBlockData: {
-                    id: 'testField',
-                    buildingBlockType: BuildingBlockType.Field,
-                    contextPath: 'testContextPath',
-                    metaPath: 'testMetaPath',
-                    formatOptions: JSON.stringify({ displayMode: 'Value' }).replace(/\"/g, `'`),
-                    readOnly: true,
-                    semanticObject: 'testSemanticObject'
-                } as Field
+                buildingBlockData: fieldBuiildingBlock
             },
             {
-                buildingBlockData: {
-                    id: 'testTable',
-                    buildingBlockType: BuildingBlockType.Table,
-                    contextPath: 'testContextPath',
-                    metaPath: 'testMetaPath',
-                    busy: true,
-                    enableAutoColumnWidth: true,
-                    enableExport: true,
-                    enableFullScreen: true,
-                    enablePaste: true,
-                    filterBar: 'testFilterBar',
-                    header: 'Test Header',
-                    headerVisible: true,
-                    isSearchable: true,
-                    personalization: 'Column',
-                    readOnly: true,
-                    type: 'ResponsiveTable',
-                    variantManagement: 'None'
-                } as Table
+                buildingBlockData: tableBuildingBlock
             }
         ];
 
@@ -455,39 +460,90 @@ describe('Building Blocks', () => {
             await writeFilesForDebugging(fs);
         });
 
-        test.each(testInput)(
-            'generate $buildingBlockData.buildingBlockType building block with metaPath as object',
-            async (testData) => {
-                const basePath = join(
-                    testAppPath,
-                    `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
-                );
-                const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
-                fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
-                fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
-
-                await generateBuildingBlock(
-                    basePath,
-                    {
-                        viewOrFragmentPath: xmlViewFilePath,
-                        aggregationPath,
-                        buildingBlockData: {
-                            ...testData.buildingBlockData,
-                            metaPath: {
-                                entitySet: 'testEntitySet',
-                                qualifier: 'testQualifier',
-                                bindingContextType: 'relative'
-                            }
-                        }
-                    },
-                    fs
-                );
-                expect(fs.dump(testAppPath)).toMatchSnapshot(
-                    `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
-                );
-                await writeFilesForDebugging(fs);
+        const metaPathInput = [
+            {
+                name: 'generate filter-bar building block with metaPath as object',
+                buildingBlockData: { ...filterbarBuiildingBlock, contextPath: undefined },
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'relative' as BindingContextType
+                }
+            },
+            {
+                name: 'generate chart building block with metaPath as object',
+                buildingBlockData: { ...chartBuiildingBlock, contextPath: undefined },
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'relative' as BindingContextType
+                }
+            },
+            {
+                name: 'generate field building block with metaPath as object',
+                buildingBlockData: { ...fieldBuiildingBlock, contextPath: undefined },
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'relative' as BindingContextType
+                }
+            },
+            {
+                name: 'generate table building block with metaPath as object',
+                buildingBlockData: { ...tableBuildingBlock, contextPath: undefined },
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'relative' as BindingContextType
+                }
+            },
+            {
+                name: 'generate filter-bar building block with metaPath as object. Relative',
+                buildingBlockData: { ...filterbarBuiildingBlock, contextPath: undefined },
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'relative' as BindingContextType,
+                    alwaysAbsolutePath: false
+                }
+            },
+            {
+                name: 'generate chart building block with metaPath as object. Relative',
+                buildingBlockData: { ...chartBuiildingBlock, contextPath: undefined },
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'relative' as BindingContextType,
+                    alwaysAbsolutePath: false
+                }
             }
-        );
+        ];
+        test.each(metaPathInput)('$name', async (testData) => {
+            const basePath = join(
+                testAppPath,
+                `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
+            );
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: {
+                        ...testData.buildingBlockData,
+                        metaPath: testData.metaPath
+                    }
+                },
+                fs
+            );
+            expect(fs.dump(testAppPath)).toMatchSnapshot(
+                `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
+            );
+            await writeFilesForDebugging(fs);
+        });
 
         test.each(testInput)(
             'getSerializedFileContent for $buildingBlockData.buildingBlockType building block',

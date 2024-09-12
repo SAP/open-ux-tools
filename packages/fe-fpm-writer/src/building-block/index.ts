@@ -175,7 +175,7 @@ function getMetaPath(
     if (!metaPath) {
         return getDefaultMetaPath(applyContextPath, usePlaceholders);
     }
-    const { bindingContextType = 'absolute' } = metaPath;
+    const { bindingContextType = 'absolute', alwaysAbsolutePath = true } = metaPath;
     let { entitySet, qualifier } = metaPath;
     entitySet = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
     const qualifierOrPlaceholder = qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '');
@@ -188,7 +188,10 @@ function getMetaPath(
         };
     }
     return {
-        metaPath: bindingContextType === 'absolute' ? `/${entitySet}/${qualifierOrPlaceholder}` : qualifierOrPlaceholder
+        metaPath:
+            bindingContextType === 'absolute' || alwaysAbsolutePath
+                ? `/${entitySet}/${qualifierOrPlaceholder}`
+                : qualifierOrPlaceholder
     };
 }
 

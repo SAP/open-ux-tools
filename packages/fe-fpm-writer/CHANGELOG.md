@@ -1,5 +1,19 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.29.5
+
+### Patch Changes
+
+-   19e3b0e: Extend the building block generation by adding the `alwaysAbsolutePath` property to `BuildingBlockMetaPath`, allowing the generation of either relative or absolute paths
+
+## 0.29.4
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/fiori-annotation-api@0.2.2
+
 ## 0.29.3
 
 ### Patch Changes
