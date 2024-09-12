@@ -251,7 +251,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         expect(await fs.read(Component.js).includes('my/demo/App')).toBeTruthy();
     });
 
-    test('sapuxLayer is added to package json for edmx projects', async () => {
+    test('sapuxLayer is added to package json for edmx projects when provided', async () => {
         const freestyleApp: FreestyleApp<any> = {
             app: {
                 id: 'my.demo.App',

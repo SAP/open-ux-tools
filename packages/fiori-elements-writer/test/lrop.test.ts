@@ -404,7 +404,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         });
     });
 
-    test('sapuxLayer is added to package json for edmx projects', async () => {
+    test('sapuxLayer is added to package json for edmx projects when provided', async () => {
         const fioriElementsApp: FioriElementsApp<LROPSettings> = {
             ...Object.assign(feBaseConfig('felrop1'), {
                 template: {
