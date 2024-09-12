@@ -1,3 +1,4 @@
 export default {
-    bySelector: jest.fn()
+    bySelector: jest.fn(),
+    getControlIdBySelector: jest.fn()
 }

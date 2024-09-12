@@ -409,10 +409,6 @@ export class ChangeService {
      * @returns element id or empty string
      */
     private async getControlIdByChange(change: FlexChange): Promise<string> {
-        if (!change) {
-            return '';
-        }
-
         const appComponent = this.options.rta.getRootControlInstance();
         const selector = change.getSelector();
         const changeType = change.getChangeType();
