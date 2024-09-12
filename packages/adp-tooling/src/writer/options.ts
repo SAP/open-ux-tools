@@ -14,8 +14,10 @@ import type {
     Content,
     CloudApp,
     ChangeInboundNavigation,
-    InternalInboundNavigation
+    InternalInboundNavigation,
+    CloudCustomTaskConfig
 } from '../types';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 /**
  * Generate the configuration for the middlewares required for the ui5.yaml.
@@ -178,21 +180,28 @@ function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
  * @returns list of required tasks.
  */
 function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget } & { app: CloudApp }): CustomTask[] {
+    const configuration: CloudCustomTaskConfig = {
+        type: 'abap',
+        destination: config.target?.destination,
+        appName: config?.app?.bspName,
+        languages: config?.app?.languages?.map((language: Language) => {
+            return {
+                sap: language.sap,
+                i18n: language.i18n
+            };
+        })
+    };
+
+    if (!isAppStudio()) {
+        configuration.connections = [
+            { url: config.target.url, authenticationType: config.target.authenticationType, ignoreCertErrors: false }
+        ];
+    }
     return [
         {
             name: 'app-variant-bundler-build',
             beforeTask: 'escapeNonAsciiCharacters',
-            configuration: {
-                type: 'abap',
-                destination: config.target?.destination,
-                appName: config?.app?.bspName,
-                languages: config?.app?.languages?.map((language: Language) => {
-                    return {
-                        sap: language.sap,
-                        i18n: language.i18n
-                    };
-                })
-            }
+            configuration
         }
     ];
 }

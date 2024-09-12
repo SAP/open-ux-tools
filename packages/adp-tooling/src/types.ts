@@ -531,6 +531,20 @@ export interface CustomConfig {
     };
 }
 
+export interface CloudCustomTaskConfig {
+    type: string;
+    destination: string | undefined;
+    appName: string | undefined;
+    languages: Language[];
+    connections?: Connection[];
+}
+
+export interface Connection {
+    url: string | undefined;
+    authenticationType: string | undefined;
+    ignoreCertErrors: boolean;
+}
+
 export interface InboundChangeContentAddInboundId {
     inbound: {
         [inboundId: string]: AddInboundModel;
