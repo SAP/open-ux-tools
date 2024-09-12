@@ -4,7 +4,7 @@ import { useLocalStorage } from './use-local-storage';
 
 export type ThemeName = 'dark modern' | 'light modern' | 'high contrast black';
 /**
- * Use local storage.
+ * React hook that lets you read and update applications theme.
  *
  * @returns [theme, setTheme] [T, React.Dispatch<T>]
  */
