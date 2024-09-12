@@ -1,5 +1,19 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/cds-odata-annotation-converter@0.3.6
+
+## 0.2.1
+
+### Patch Changes
+
+-   a0836d0: Fixed writing SAP annotations to a file outside CDS project
+
 ## 0.2.0
 
 ### Minor Changes

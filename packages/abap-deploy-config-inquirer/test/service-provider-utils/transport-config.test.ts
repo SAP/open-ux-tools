@@ -128,7 +128,7 @@ describe('getTransportConfigInstance', () => {
     });
 
     it('should handle errors and return transport config', async () => {
-        // 401
+        // 401 with headers
         const mockGetAdtService401 = {
             getAtoInfo: jest.fn().mockRejectedValueOnce({
                 message: 'Failed to get ATO info',
@@ -147,6 +147,26 @@ describe('getTransportConfigInstance', () => {
             systemConfig: {}
         });
         expect(transportConfigResult.transportConfigNeedsCreds).toBe(true);
+
+        // 401 without headers
+        const mockGetAdtService401WithoutHeaders = {
+            getAtoInfo: jest.fn().mockRejectedValueOnce({
+                message: 'Failed to get ATO info',
+                response: { status: 401 }
+            })
+        };
+
+        mockGetOrCreateServiceProvider.mockResolvedValueOnce({
+            getAdtService: jest.fn().mockResolvedValueOnce(mockGetAdtService401WithoutHeaders)
+        });
+
+        const transportConfigResultWithoutHeaders = await getTransportConfigInstance({
+            backendTarget: undefined,
+            scp: false,
+            credentials: {},
+            systemConfig: {}
+        });
+        expect(transportConfigResultWithoutHeaders.transportConfigNeedsCreds).toBe(false);
 
         // 500 error
         const mockGetAdtService500 = {
