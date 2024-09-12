@@ -1,8 +1,8 @@
-import { UIDefaultButton, UISmallButton, initIcons } from '@sap-ux/ui-components';
+import { UICheckbox, UIDefaultButton, UISmallButton, initIcons } from '@sap-ux/ui-components';
 import React, { useEffect, useState } from 'react';
 import type { PromptsType } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers } from './utils/communication';
-import { Questions, PromptsLayoutType } from '@sap-ux/ui-prompting';
+import { Questions, PromptsLayoutType, setAnswer } from '@sap-ux/ui-prompting';
 import type { ValidationResults, ValidationResult } from '@sap-ux/ui-prompting';
 import { useChoices, useQuestions } from './utils/hooks';
 import type { Answers } from 'inquirer';
@@ -34,6 +34,7 @@ export const BuildingBlockQuestions = (props: {
         multiColumn: true,
         showDescriptions: true
     });
+    const [alwaysAbsolutePath, setAlwaysAbsolutePath] = useState(true);
     const choices = useChoices();
     const { groups, questions, initialAnswers = {} } = useQuestions(type, visibleQuestions);
     const [answers, setAnswers] = useState<Answers>(externalAnswers ?? initialAnswers);
@@ -123,6 +124,19 @@ export const BuildingBlockQuestions = (props: {
                 <UISmallButton onClick={toggleLayout.bind(window, 'showDescriptions')}>
                     {layoutSettings.showDescriptions ? 'Hide descriptions' : 'Show descriptions'}
                 </UISmallButton>
+                <UICheckbox
+                    label="AlwaysAbsolutePath"
+                    checked={alwaysAbsolutePath}
+                    onChange={(ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean) => {
+                        const newAnswers = setAnswer(
+                            { ...answers },
+                            'buildingBlockData.metaPath.alwaysAbsolutePath',
+                            checked
+                        );
+                        setAnswers(newAnswers);
+                        setAlwaysAbsolutePath(!!checked);
+                    }}
+                />
             </div>
             <div
                 style={{
