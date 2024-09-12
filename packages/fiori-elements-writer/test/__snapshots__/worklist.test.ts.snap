@@ -43,6 +43,7 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?&sap-client=012&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
+  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\",
   \\"sapux\\": true
 }
 ",
@@ -3660,6 +3661,7 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?&sap-client=012&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
+  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\",
   \\"sapux\\": true
 }
 ",
@@ -7277,6 +7279,7 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
+  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\",
   \\"sapux\\": true
 }
 ",
@@ -10947,6 +10950,7 @@ archive.zip
     \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/integration/opaTests.qunit.html\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
+  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\",
   \\"sapux\\": true
 }
 ",

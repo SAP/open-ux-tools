@@ -36,6 +36,8 @@ archive.zip
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
 }    
+    ,\\"sapuxLayer\\": \\"CUSTOMER_BASE\\"
+    
 }",
     "state": "modified",
   },

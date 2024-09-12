@@ -31,9 +31,12 @@ export function mergeWithDefaults(ui5App: Ui5App): {
         ui5App.package
     );
 
-    if (ui5App.package.sapuxLayer && !isEdmxProjectType) {
-        // Ensure sapuxLayer is not set for CAP projects even if provided
+    if (!isEdmxProjectType) {
+        // sapuxLayer if not defined for cap projects
         ui5App.package.sapuxLayer = undefined;
+    } else if (!ui5App.package.sapuxLayer) {
+        // Set to default when sapuxLayer is not provided for EDMX project
+        ui5App.package.sapuxLayer = 'CUSTOMER_BASE';
     }
 
     if (ui5App.appOptions.sapux && isEdmxProjectType) {

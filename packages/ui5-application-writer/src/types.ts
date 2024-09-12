@@ -15,6 +15,7 @@ export interface Package {
      *
      * - `VENDOR`: Stores SAP-delivered content.
      * - `CUSTOMER_BASE`: Stores customer-specific changes.
+     * By default the layer is set to `CUSTOMER_BASE`.
      */
     sapuxLayer?: UI5FlexLayer;
 }
