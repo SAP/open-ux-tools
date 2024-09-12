@@ -61,6 +61,14 @@ export interface MergedAppDescriptor {
                 final: boolean;
             };
         }[];
+        components: {
+            name: string;
+            lazy?: boolean;
+            url?: {
+                url: string;
+                final: boolean;
+            };
+        }[];
         requests?: unknown[];
     };
 }

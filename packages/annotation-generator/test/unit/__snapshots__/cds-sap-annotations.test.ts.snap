@@ -1,0 +1,130 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`annotation generation (CDS) generate default facets and line items 1`] = `
+"using from '../../srv/service';
+using from '../../db/schema';
+annotate MainService.Consultants with {
+    identifier @(UI.lineItem : [
+            {
+                position : 10,
+                importance : #HIGH,
+            },
+        ],
+        UI.fieldGroup : [
+            {
+                position : 10,
+                qualifier : 'GeneratedGroup',
+            },
+        ],
+        UI.facet : [
+            {
+                id : 'GeneratedFacet1',
+                purpose : #STANDARD,
+                type : #FIELDGROUP_REFERENCE,
+                targetQualifier : 'GeneratedGroup',
+                position : 10,
+                label : 'General Information',
+            },
+        ]
+)};
+
+annotate MainService.Consultants with {
+    name @(UI.lineItem : [
+            {
+                position : 20,
+                importance : #HIGH,
+            },
+        ],
+        UI.fieldGroup : [
+            {
+                position : 20,
+                qualifier : 'GeneratedGroup',
+            },
+        ]
+)};
+
+annotate MainService.Consultants with {
+    address @(UI.lineItem : [
+            {
+                position : 30,
+                importance : #HIGH,
+            },
+        ],
+        UI.fieldGroup : [
+            {
+                position : 30,
+                qualifier : 'GeneratedGroup',
+            },
+        ],
+        EndUserText.label : 'address'
+)};
+
+annotate MainService.Consultants with {
+    street @(UI.lineItem : [
+            {
+                position : 40,
+                importance : #HIGH,
+            },
+        ],
+        UI.fieldGroup : [
+            {
+                position : 40,
+                qualifier : 'GeneratedGroup',
+            },
+        ]
+)};
+
+annotate MainService.Consultants with {
+    building @(UI.lineItem : [
+            {
+                position : 50,
+                importance : #HIGH,
+            },
+        ],
+        UI.fieldGroup : [
+            {
+                position : 50,
+                qualifier : 'GeneratedGroup',
+            },
+        ]
+)};
+
+annotate MainService.Consultants with {
+    postCode @UI.fieldGroup : [
+        {
+            position : 60,
+            qualifier : 'GeneratedGroup',
+        },
+    ]
+};
+
+annotate MainService.Consultants with {
+    city @UI.fieldGroup : [
+        {
+            position : 70,
+            qualifier : 'GeneratedGroup',
+        },
+    ]
+};
+
+annotate MainService.Consultants with {
+    country_code @(UI.fieldGroup : [
+            {
+                position : 80,
+                qualifier : 'GeneratedGroup',
+            },
+        ],
+        EndUserText.label : 'country_code'
+)};
+
+annotate MainService.Consultants with {
+    phone @UI.fieldGroup : [
+        {
+            position : 90,
+            qualifier : 'GeneratedGroup',
+        },
+    ]
+};
+
+"
+`;

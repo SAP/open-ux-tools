@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.16.6
+
+### Patch Changes
+
+-   aa72f3c: Fix preview adp project with component dependencies
+
 ## 1.16.5
 
 ### Patch Changes
