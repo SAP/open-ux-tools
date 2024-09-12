@@ -6,8 +6,6 @@ import semVer from 'semver';
 import type { SemVer } from 'semver';
 import { t } from '../i18n';
 import merge from 'lodash/mergeWith';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { SapUxLayer } from '../types';
 
 /**
  * Returns a package instance with default properties.
@@ -34,8 +32,7 @@ export function packageDefaults(version?: string, description?: string, isEdmxPr
                 start: 'ui5 serve --config=ui5.yaml --open index.html',
                 'start-local': 'ui5 serve --config=ui5-local.yaml --open index.html',
                 build: 'ui5 build --config=ui5.yaml --clean-dest --dest dist'
-            },
-            sapuxLayer: isInternalFeaturesSettingEnabled() ? SapUxLayer.VENDOR : SapUxLayer.CUSTOMER_BASE
+            }
         };
     }
     return {

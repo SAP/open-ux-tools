@@ -1,12 +1,5 @@
 import type { ProjectType } from '@sap-ux/project-access';
 
-/**
- * SAP UX Layer
- */
-export enum SapUxLayer {
-    VENDOR = 'VENDOR',
-    CUSTOMER_BASE = 'CUSTOMER_BASE'
-}
 export interface Package {
     name: string;
     version?: string;
@@ -17,7 +10,6 @@ export interface Package {
     ui5?: {
         dependencies?: string[];
     };
-    sapuxLayer?: SapUxLayer;
 }
 
 export interface App {

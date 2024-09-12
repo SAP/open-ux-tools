@@ -55,7 +55,6 @@ archive.zip
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"lint\\": \\"eslint ./\\"
   },
-  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\",
   \\"sapux\\": true
 }
 ",
@@ -324,7 +323,6 @@ archive.zip
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
   },
-  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\",
   \\"sapux\\": true
 }
 ",
@@ -576,10 +574,7 @@ archive.zip
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
-}    
-    ,\\"sapuxLayer\\": \\"CUSTOMER_BASE\\"
-    
-}
+}}
 ",
     "state": "modified",
   },
@@ -1069,8 +1064,7 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\"
-  },
-  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\"
+  }
 }
 "
 `;
@@ -1168,7 +1162,6 @@ archive.zip
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\"
   },
-  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\",
   \\"sapux\\": true
 }
 ",

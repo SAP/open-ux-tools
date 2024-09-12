@@ -44,7 +44,6 @@
     "devDependencies": {
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/feature-toggle": "workspace:*",
         "@types/ejs": "3.1.2",
         "@types/fs-extra": "9.0.13",
         "@types/lodash": "4.14.202",
