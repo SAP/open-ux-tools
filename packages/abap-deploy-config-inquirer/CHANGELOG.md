@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.17
+
+### Patch Changes
+
+-   c538657: handle missing www-auth header
+
 ## 0.0.16
 
 ### Patch Changes
