@@ -1,4 +1,5 @@
-import type { ProjectType } from '@sap-ux/project-access';
+import type { ProjectType, UI5FlexLayer } from '@sap-ux/project-access';
+
 export interface Package {
     name: string;
     version?: string;
@@ -9,6 +10,7 @@ export interface Package {
     ui5?: {
         dependencies?: string[];
     };
+    sapuxLayer?: UI5FlexLayer;
 }
 
 export interface App {

@@ -31,6 +31,11 @@ export function mergeWithDefaults(ui5App: Ui5App): {
         ui5App.package
     );
 
+    if (ui5App.package.sapuxLayer && !isEdmxProjectType) {
+        // Ensure sapuxLayer is not set for CAP projects even if provided
+        ui5App.package.sapuxLayer = undefined;
+    }
+
     if (ui5App.appOptions.sapux && isEdmxProjectType) {
         // Add @sap/ux-specification to devDependencies only for non-CAP projects
         ui5App.package.devDependencies = ui5App.package.devDependencies || {};
