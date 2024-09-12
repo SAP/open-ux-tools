@@ -1,9 +1,4 @@
-import {
-    handleWorkspaceConfig,
-    handleUnsavedWorkspace,
-    handleSavedWorkspace,
-    handleOpenFolderButNoWorkspaceFile
-} from '../../src/debug-config/workspaceManager';
+import { handleWorkspaceConfig } from '../../src/debug-config/workspaceManager';
 import {
     formatCwd,
     getLaunchJsonPath,
@@ -44,85 +39,22 @@ describe('launchConfig Unit Tests', () => {
         jest.clearAllMocks();
     });
 
-    describe('handleUnsavedWorkspace', () => {
-        it('should update paths for nested folders inside a workspace', () => {
-            const mockProjectPath = '/mock/project/nestedFolder';
-            const mockWsFolder = '/mock/workspace/folder';
-            const mockNestedFolder = 'nestedFolder';
-            mockVscode.workspace.getWorkspaceFolder.mockReturnValue({ uri: { fsPath: mockWsFolder } });
-            (path.relative as jest.Mock).mockReturnValue(mockNestedFolder);
-            (formatCwd as jest.Mock).mockReturnValue('${workspaceFolder}/nestedFolder');
-
-            const result = handleUnsavedWorkspace(mockProjectPath, mockVscode);
-            expect(result).toEqual({
-                launchJsonPath: mockWsFolder,
-                cwd: '${workspaceFolder}/nestedFolder'
-            });
-        });
-    });
-
-    describe('handleSavedWorkspace', () => {
-        it('should handle projects inside the workspace', () => {
-            const mockProjectPath = '/mock/project/path';
-            const mockProjectName = 'project';
-            const mockTargetFolder = '/target/folder';
-            (isFolderInWorkspace as jest.Mock).mockReturnValue(true);
-            (formatCwd as jest.Mock).mockReturnValue('${workspaceFolder}/project');
-            (getLaunchJsonPath as jest.Mock).mockReturnValue(mockTargetFolder);
-
-            const result = handleSavedWorkspace(
-                mockProjectPath,
-                mockProjectName,
-                mockTargetFolder,
-                isAppStudio,
-                mockVscode
-            );
-            expect(result).toEqual({
-                launchJsonPath: mockTargetFolder,
-                cwd: '${workspaceFolder}/project'
-            });
-        });
-
-        it('should create a launch config for non-workspace apps', () => {
-            const mockProjectPath = '/mock/project/path';
-            const mockProjectName = 'project';
-            const mockTargetFolder = '/target/folder';
-            (isFolderInWorkspace as jest.Mock).mockReturnValue(false);
-            (handleAppsNotInWorkspace as jest.Mock).mockReturnValue({
-                launchJsonPath: mockProjectPath,
-                cwd: '${workspaceFolder}'
-            });
-
-            const result = handleSavedWorkspace(
-                mockProjectPath,
-                mockProjectName,
-                mockTargetFolder,
-                isAppStudio,
-                mockVscode
-            );
-            expect(result).toEqual({
-                launchJsonPath: mockProjectPath,
-                cwd: '${workspaceFolder}'
-            });
-        });
-    });
-
     describe('handleOpenFolderButNoWorkspaceFile', () => {
         it('should create a launch config for non-workspace apps if folder is not in workspace', () => {
             const mockProjectPath = '/mock/project/path';
-            const mockTargetFolder = '/target/folder';
             (isFolderInWorkspace as jest.Mock).mockReturnValue(false);
             (handleAppsNotInWorkspace as jest.Mock).mockReturnValue({
                 launchJsonPath: mockProjectPath,
                 cwd: '${workspaceFolder}'
             });
 
-            const result = handleOpenFolderButNoWorkspaceFile(
-                mockProjectPath,
-                mockTargetFolder,
+            const options = {
+                projectPath: mockProjectPath,
                 isAppStudio,
-                mockVscode
-            );
+                vscode: mockVscode
+            } as DebugOptions;
+
+            const result = handleWorkspaceConfig(options);
             expect(result).toEqual({
                 launchJsonPath: mockProjectPath,
                 cwd: '${workspaceFolder}'
@@ -132,23 +64,84 @@ describe('launchConfig Unit Tests', () => {
         it('should update paths for nested folders inside an open folder', () => {
             const mockProjectPath = '/mock/project/nestedFolder';
             const mockTargetFolder = '/target/folder';
-            const mockWsFolder = '/mock/workspace/folder';
             const mockNestedFolder = 'nestedFolder';
 
             (isFolderInWorkspace as jest.Mock).mockReturnValue(true);
-            mockVscode.workspace.getWorkspaceFolder.mockReturnValue({ uri: { fsPath: mockWsFolder } });
             (path.relative as jest.Mock).mockReturnValue(mockNestedFolder);
             (formatCwd as jest.Mock).mockReturnValue('${workspaceFolder}/nestedFolder');
             (getLaunchJsonPath as jest.Mock).mockReturnValue(mockTargetFolder);
 
-            const result = handleOpenFolderButNoWorkspaceFile(
-                mockProjectPath,
-                mockTargetFolder,
+            const options = {
+                projectPath: mockProjectPath,
                 isAppStudio,
-                mockVscode
-            );
+                vscode: mockVscode
+            } as DebugOptions;
+
+            const result = handleWorkspaceConfig(options);
             expect(result).toEqual({
                 launchJsonPath: mockTargetFolder,
+                cwd: '${workspaceFolder}/nestedFolder'
+            });
+        });
+    });
+
+    describe('handleSavedWorkspace', () => {
+        it('should handle projects inside the workspace', () => {
+            const mockProjectPath = '/mock/project/path';
+            const mockTargetFolder = '/target/folder';
+            (isFolderInWorkspace as jest.Mock).mockReturnValue(true);
+            (formatCwd as jest.Mock).mockReturnValue('${workspaceFolder}/project');
+            (getLaunchJsonPath as jest.Mock).mockReturnValue(mockTargetFolder);
+
+            const options = {
+                projectPath: mockProjectPath,
+                isAppStudio,
+                vscode: mockVscode
+            } as DebugOptions;
+            const result = handleWorkspaceConfig(options);
+            expect(result).toEqual({
+                launchJsonPath: mockTargetFolder,
+                cwd: '${workspaceFolder}/project'
+            });
+        });
+
+        it('should create a launch config for non-workspace apps', () => {
+            const mockProjectPath = '/mock/project/path';
+            (isFolderInWorkspace as jest.Mock).mockReturnValue(false);
+            (handleAppsNotInWorkspace as jest.Mock).mockReturnValue({
+                launchJsonPath: mockProjectPath,
+                cwd: '${workspaceFolder}'
+            });
+
+            const options = {
+                projectPath: mockProjectPath,
+                isAppStudio,
+                vscode: mockVscode
+            } as DebugOptions;
+            const result = handleWorkspaceConfig(options);
+            expect(result).toEqual({
+                launchJsonPath: mockProjectPath,
+                cwd: '${workspaceFolder}'
+            });
+        });
+    });
+
+    describe('handleUnsavedWorkspace', () => {
+        it('should update paths for nested folders inside a workspace', () => {
+            const mockProjectPath = '/mock/project/nestedFolder';
+            const mockWsFolder = '/mock/workspace/folder';
+            const mockNestedFolder = 'nestedFolder';
+            mockVscode.workspace.getWorkspaceFolder.mockReturnValue({ uri: { fsPath: mockWsFolder } });
+            mockVscode.workspace.workspaceFile.scheme = 'folder';
+            (path.relative as jest.Mock).mockReturnValue(mockNestedFolder);
+            (formatCwd as jest.Mock).mockReturnValue('${workspaceFolder}/nestedFolder');
+            const options = {
+                projectPath: mockProjectPath,
+                vscode: mockVscode
+            } as DebugOptions;
+            const result = handleWorkspaceConfig(options);
+            expect(result).toEqual({
+                launchJsonPath: mockWsFolder,
                 cwd: '${workspaceFolder}/nestedFolder'
             });
         });

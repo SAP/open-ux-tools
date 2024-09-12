@@ -10,7 +10,7 @@ import { formatCwd, getLaunchJsonPath, isFolderInWorkspace, handleAppsNotInWorks
  * @param {any} vscode - The VS Code API object.
  * @returns {WorkspaceHandlerInfo} An object containing the path to the `launch.json` configuration file and the cwd for the launch configuration.
  */
-export function handleUnsavedWorkspace(projectPath: string, vscode: any): WorkspaceHandlerInfo {
+function handleUnsavedWorkspace(projectPath: string, vscode: any): WorkspaceHandlerInfo {
     const workspace = vscode.workspace;
     const wsFolder = workspace.getWorkspaceFolder(vscode.Uri.file(projectPath))?.uri?.fsPath;
     const nestedFolder = relative(wsFolder ?? projectPath, projectPath);
@@ -31,7 +31,7 @@ export function handleUnsavedWorkspace(projectPath: string, vscode: any): Worksp
  * @param {any} vscode - The VS Code API object.
  * @returns {WorkspaceHandlerInfo} An object containing the path to the `launch.json` configuration file and the cwd for the launch configuration.
  */
-export function handleSavedWorkspace(
+function handleSavedWorkspace(
     projectPath: string,
     projectName: string,
     targetFolder: string,
@@ -58,7 +58,7 @@ export function handleSavedWorkspace(
  * @param {any} vscode - The VS Code API object.
  * @returns {WorkspaceHandlerInfo} An object containing the path to the `launch.json` configuration file and the cwd for the launch configuration.
  */
-export function handleOpenFolderButNoWorkspaceFile(
+function handleOpenFolderButNoWorkspaceFile(
     projectPath: string,
     targetFolder: string,
     isAppStudio: boolean,
