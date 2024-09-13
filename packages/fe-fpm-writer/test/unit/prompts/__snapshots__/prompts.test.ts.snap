@@ -28,6 +28,38 @@ Object {
 
 exports[`Prompts - no project getChartBuildingBlockPrompts 1`] = `
 Object {
+  "groups": Array [
+    Object {
+      "description": Array [
+        "Select the \`View or Fragment File\` where you would like to insert the chart building block and provide a \`Building Block ID\` to identify the chart.",
+        "Select an \`Entity Set\`, and a \`Chart Annotation\` you would like to use for the chart building block.",
+        "Select an \`Aggregation Path\` to determine where you would like the chart to be placed on the page.",
+      ],
+      "id": "chartBuildingBlockProperties",
+      "title": "Chart Building Block Properties",
+    },
+    Object {
+      "description": Array [
+        "Configure your chart using the properties below.",
+      ],
+      "id": "chartVisualizationProperties",
+      "title": "Chart Visualization Properties",
+    },
+    Object {
+      "description": Array [
+        "Configure the below properties to react to events. Event handler methods are invoked when an event occurs.",
+      ],
+      "id": "chartConfigureEvents",
+      "title": "Configure Events",
+    },
+    Object {
+      "description": Array [
+        "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet.",
+      ],
+      "id": "manifestLibraries",
+      "title": "Manifest Libraries",
+    },
+  ],
   "initialAnswers": Object {
     "buildingBlockData": Object {
       "buildingBlockType": "chart",
@@ -41,6 +73,7 @@ Object {
           "aggregationPath",
           "buildingBlockData.filterBar",
         ],
+        "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select a view or fragment file",
         "selectType": "dynamic",
@@ -53,6 +86,7 @@ Object {
     Object {
       "default": "Chart",
       "guiOptions": Object {
+        "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Enter a building block ID",
       },
@@ -77,6 +111,7 @@ Object {
         "dependantPromptNames": Array [
           "buildingBlockData.metaPath.qualifier",
         ],
+        "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
         "selectType": "static",
       },
@@ -90,6 +125,7 @@ Object {
         "dependantPromptNames": Array [
           "buildingBlockData.metaPath.qualifier",
         ],
+        "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select an entity",
         "selectType": "dynamic",
@@ -101,18 +137,20 @@ Object {
     Object {
       "choices": Array [],
       "guiOptions": Object {
-        "hint": "Values are dependent on entity type",
+        "groupId": "chartBuildingBlockProperties",
+        "hint": "Values are dependent on entity set",
         "mandatory": true,
-        "placeholder": "Select chart qualifier",
+        "placeholder": "Select a chart annotation path",
         "selectType": "dynamic",
       },
-      "message": "Chart Qualifier",
+      "message": "Chart Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
       "type": "list",
     },
     Object {
       "choices": Array [],
       "guiOptions": Object {
+        "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select an aggregation path",
         "selectType": "dynamic",
@@ -127,6 +165,7 @@ Object {
         "creation": Object {
           "placeholder": "Enter a new filter bar ID",
         },
+        "groupId": "chartBuildingBlockProperties",
         "placeholder": "Select or enter a filter bar ID",
         "selectType": "dynamic",
       },
@@ -150,6 +189,7 @@ Object {
         },
       ],
       "guiOptions": Object {
+        "groupId": "chartVisualizationProperties",
         "placeholder": "Select chart personalization",
         "selectType": "static",
       },
@@ -169,6 +209,7 @@ Object {
         },
       ],
       "guiOptions": Object {
+        "groupId": "chartConfigureEvents",
         "selectType": "static",
       },
       "message": "Selection Mode",
@@ -177,6 +218,7 @@ Object {
     },
     Object {
       "guiOptions": Object {
+        "groupId": "chartConfigureEvents",
         "placeholder": "Enter a selecton change function",
       },
       "message": "Selection Change Function",
@@ -232,6 +274,31 @@ exports[`Prompts - no project getCodeSnippet get code snippet with placeholders 
 
 exports[`Prompts - no project getFilterBarBuildingBlockPrompts 1`] = `
 Object {
+  "groups": Array [
+    Object {
+      "description": Array [
+        "Select the \`View or Fragment File\` where you would like to insert the filter bar building block and provide a \`Building Block ID\` to identify the filter bar.",
+        "Select an \`Entity Set\`, and a \`Selection Field Annotation\` you would like to use for the filter bar building block.",
+        "Select an \`Aggregation Path\` to determine where you would like the filter bar to be placed on the page.",
+      ],
+      "id": "filterBarBuildingBlockProperties",
+      "title": "Filter Bar Building Block Properties",
+    },
+    Object {
+      "description": Array [
+        "Configure the below properties to react to events. Event handler methods are invoked when an event occurs.",
+      ],
+      "id": "filterConfigureEvents",
+      "title": "Configure Events",
+    },
+    Object {
+      "description": Array [
+        "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet.",
+      ],
+      "id": "manifestLibraries",
+      "title": "Manifest Libraries",
+    },
+  ],
   "initialAnswers": Object {
     "buildingBlockData": Object {
       "buildingBlockType": "filter-bar",
@@ -244,6 +311,7 @@ Object {
         "dependantPromptNames": Array [
           "aggregationPath",
         ],
+        "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select a view or fragment file",
         "selectType": "dynamic",
@@ -256,6 +324,7 @@ Object {
     Object {
       "default": "FilterBar",
       "guiOptions": Object {
+        "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Enter a building block ID",
       },
@@ -280,6 +349,7 @@ Object {
         "dependantPromptNames": Array [
           "buildingBlockData.metaPath.qualifier",
         ],
+        "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
         "selectType": "static",
       },
@@ -290,6 +360,7 @@ Object {
     Object {
       "choices": Array [],
       "guiOptions": Object {
+        "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select an aggregation path",
         "selectType": "dynamic",
@@ -304,6 +375,7 @@ Object {
         "dependantPromptNames": Array [
           "buildingBlockData.metaPath.qualifier",
         ],
+        "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select an entity",
         "selectType": "dynamic",
@@ -315,22 +387,29 @@ Object {
     Object {
       "choices": Array [],
       "guiOptions": Object {
-        "hint": "Values are dependent on entity type",
+        "groupId": "filterBarBuildingBlockProperties",
+        "hint": "Values are dependent on entity set",
         "mandatory": true,
-        "placeholder": "Select selection fields qualifier",
+        "placeholder": "Select a selection field annotation path",
         "selectType": "dynamic",
       },
-      "message": "Selection Fields Qualifier",
+      "message": "Selection Field Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
       "type": "list",
     },
     Object {
-      "message": "Filter Function",
+      "guiOptions": Object {
+        "groupId": "filterConfigureEvents",
+      },
+      "message": "Filter Changed Event",
       "name": "buildingBlockData.filterChanged",
       "type": "input",
     },
     Object {
-      "message": "Search Function",
+      "guiOptions": Object {
+        "groupId": "filterConfigureEvents",
+      },
+      "message": "Search Event",
       "name": "buildingBlockData.search",
       "type": "input",
     },
@@ -344,9 +423,9 @@ Object {
     Object {
       "description": Array [
         "Select the \`View or Fragment File\` where you would like to insert the table building block and provide a \`Building Block ID\` to identify the table.",
-        "Select an \`Entity Type\`, and a \`Line Item Qualifier\` you would like to use for the table building block.",
-        "Select an \`Aggregation Path\` to determine where you would like the table to be placed on the page.",
-        "If you would like to link the table to an existing filter bar, provide the \`Associated Filter Bar ID\`.",
+        "Select an \`Entity Set\`, and a \`Line Item Annotation\` you would like to use for the table building block.",
+        "Select an \`Aggregation Path\` to determine where you would like the table to appear on the page.",
+        "Provide the Associated Filter Bar ID if you want to link the table to an existing filter bar.",
       ],
       "id": "tableBuildingBlockProperties",
       "title": "Table Building Block Properties",
@@ -357,6 +436,13 @@ Object {
       ],
       "id": "tableVisualizationProperties",
       "title": "Table Visualization Properties",
+    },
+    Object {
+      "description": Array [
+        "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet.",
+      ],
+      "id": "manifestLibraries",
+      "title": "Manifest Libraries",
     },
   ],
   "initialAnswers": Object {
@@ -437,12 +523,12 @@ Object {
       "choices": Array [],
       "guiOptions": Object {
         "groupId": "tableBuildingBlockProperties",
-        "hint": "Values are dependent on entity type",
+        "hint": "Values are dependent on entity set",
         "mandatory": true,
-        "placeholder": "Select a line item qualifier",
+        "placeholder": "Select a line item annotation path",
         "selectType": "dynamic",
       },
-      "message": "Line Item Qualifier",
+      "message": "Line Item Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
       "type": "list",
     },
@@ -887,6 +973,38 @@ Object {
 
 exports[`Prompts getChartBuildingBlockPrompts 1`] = `
 Object {
+  "groups": Array [
+    Object {
+      "description": Array [
+        "Select the \`View or Fragment File\` where you would like to insert the chart building block and provide a \`Building Block ID\` to identify the chart.",
+        "Select an \`Entity Set\`, and a \`Chart Annotation\` you would like to use for the chart building block.",
+        "Select an \`Aggregation Path\` to determine where you would like the chart to be placed on the page.",
+      ],
+      "id": "chartBuildingBlockProperties",
+      "title": "Chart Building Block Properties",
+    },
+    Object {
+      "description": Array [
+        "Configure your chart using the properties below.",
+      ],
+      "id": "chartVisualizationProperties",
+      "title": "Chart Visualization Properties",
+    },
+    Object {
+      "description": Array [
+        "Configure the below properties to react to events. Event handler methods are invoked when an event occurs.",
+      ],
+      "id": "chartConfigureEvents",
+      "title": "Configure Events",
+    },
+    Object {
+      "description": Array [
+        "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet.",
+      ],
+      "id": "manifestLibraries",
+      "title": "Manifest Libraries",
+    },
+  ],
   "initialAnswers": Object {
     "buildingBlockData": Object {
       "buildingBlockType": "chart",
@@ -900,6 +1018,7 @@ Object {
           "aggregationPath",
           "buildingBlockData.filterBar",
         ],
+        "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select a view or fragment file",
         "selectType": "dynamic",
@@ -912,6 +1031,7 @@ Object {
     Object {
       "default": "Chart",
       "guiOptions": Object {
+        "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Enter a building block ID",
       },
@@ -936,6 +1056,7 @@ Object {
         "dependantPromptNames": Array [
           "buildingBlockData.metaPath.qualifier",
         ],
+        "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
         "selectType": "static",
       },
@@ -949,6 +1070,7 @@ Object {
         "dependantPromptNames": Array [
           "buildingBlockData.metaPath.qualifier",
         ],
+        "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select an entity",
         "selectType": "dynamic",
@@ -960,18 +1082,20 @@ Object {
     Object {
       "choices": [Function],
       "guiOptions": Object {
-        "hint": "Values are dependent on entity type",
+        "groupId": "chartBuildingBlockProperties",
+        "hint": "Values are dependent on entity set",
         "mandatory": true,
-        "placeholder": "Select chart qualifier",
+        "placeholder": "Select a chart annotation path",
         "selectType": "dynamic",
       },
-      "message": "Chart Qualifier",
+      "message": "Chart Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
       "type": "list",
     },
     Object {
       "choices": [Function],
       "guiOptions": Object {
+        "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select an aggregation path",
         "selectType": "dynamic",
@@ -986,6 +1110,7 @@ Object {
         "creation": Object {
           "placeholder": "Enter a new filter bar ID",
         },
+        "groupId": "chartBuildingBlockProperties",
         "placeholder": "Select or enter a filter bar ID",
         "selectType": "dynamic",
       },
@@ -1009,6 +1134,7 @@ Object {
         },
       ],
       "guiOptions": Object {
+        "groupId": "chartVisualizationProperties",
         "placeholder": "Select chart personalization",
         "selectType": "static",
       },
@@ -1028,6 +1154,7 @@ Object {
         },
       ],
       "guiOptions": Object {
+        "groupId": "chartConfigureEvents",
         "selectType": "static",
       },
       "message": "Selection Mode",
@@ -1036,6 +1163,7 @@ Object {
     },
     Object {
       "guiOptions": Object {
+        "groupId": "chartConfigureEvents",
         "placeholder": "Enter a selecton change function",
       },
       "message": "Selection Change Function",
@@ -1313,6 +1441,31 @@ exports[`Prompts getCodeSnippet get code snippet with placeholders 1`] = `
 
 exports[`Prompts getFilterBarBuildingBlockPrompts 1`] = `
 Object {
+  "groups": Array [
+    Object {
+      "description": Array [
+        "Select the \`View or Fragment File\` where you would like to insert the filter bar building block and provide a \`Building Block ID\` to identify the filter bar.",
+        "Select an \`Entity Set\`, and a \`Selection Field Annotation\` you would like to use for the filter bar building block.",
+        "Select an \`Aggregation Path\` to determine where you would like the filter bar to be placed on the page.",
+      ],
+      "id": "filterBarBuildingBlockProperties",
+      "title": "Filter Bar Building Block Properties",
+    },
+    Object {
+      "description": Array [
+        "Configure the below properties to react to events. Event handler methods are invoked when an event occurs.",
+      ],
+      "id": "filterConfigureEvents",
+      "title": "Configure Events",
+    },
+    Object {
+      "description": Array [
+        "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet.",
+      ],
+      "id": "manifestLibraries",
+      "title": "Manifest Libraries",
+    },
+  ],
   "initialAnswers": Object {
     "buildingBlockData": Object {
       "buildingBlockType": "filter-bar",
@@ -1325,6 +1478,7 @@ Object {
         "dependantPromptNames": Array [
           "aggregationPath",
         ],
+        "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select a view or fragment file",
         "selectType": "dynamic",
@@ -1337,6 +1491,7 @@ Object {
     Object {
       "default": "FilterBar",
       "guiOptions": Object {
+        "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Enter a building block ID",
       },
@@ -1361,6 +1516,7 @@ Object {
         "dependantPromptNames": Array [
           "buildingBlockData.metaPath.qualifier",
         ],
+        "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
         "selectType": "static",
       },
@@ -1371,6 +1527,7 @@ Object {
     Object {
       "choices": [Function],
       "guiOptions": Object {
+        "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select an aggregation path",
         "selectType": "dynamic",
@@ -1385,6 +1542,7 @@ Object {
         "dependantPromptNames": Array [
           "buildingBlockData.metaPath.qualifier",
         ],
+        "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
         "placeholder": "Select an entity",
         "selectType": "dynamic",
@@ -1396,22 +1554,29 @@ Object {
     Object {
       "choices": [Function],
       "guiOptions": Object {
-        "hint": "Values are dependent on entity type",
+        "groupId": "filterBarBuildingBlockProperties",
+        "hint": "Values are dependent on entity set",
         "mandatory": true,
-        "placeholder": "Select selection fields qualifier",
+        "placeholder": "Select a selection field annotation path",
         "selectType": "dynamic",
       },
-      "message": "Selection Fields Qualifier",
+      "message": "Selection Field Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
       "type": "list",
     },
     Object {
-      "message": "Filter Function",
+      "guiOptions": Object {
+        "groupId": "filterConfigureEvents",
+      },
+      "message": "Filter Changed Event",
       "name": "buildingBlockData.filterChanged",
       "type": "input",
     },
     Object {
-      "message": "Search Function",
+      "guiOptions": Object {
+        "groupId": "filterConfigureEvents",
+      },
+      "message": "Search Event",
       "name": "buildingBlockData.search",
       "type": "input",
     },
@@ -1425,9 +1590,9 @@ Object {
     Object {
       "description": Array [
         "Select the \`View or Fragment File\` where you would like to insert the table building block and provide a \`Building Block ID\` to identify the table.",
-        "Select an \`Entity Type\`, and a \`Line Item Qualifier\` you would like to use for the table building block.",
-        "Select an \`Aggregation Path\` to determine where you would like the table to be placed on the page.",
-        "If you would like to link the table to an existing filter bar, provide the \`Associated Filter Bar ID\`.",
+        "Select an \`Entity Set\`, and a \`Line Item Annotation\` you would like to use for the table building block.",
+        "Select an \`Aggregation Path\` to determine where you would like the table to appear on the page.",
+        "Provide the Associated Filter Bar ID if you want to link the table to an existing filter bar.",
       ],
       "id": "tableBuildingBlockProperties",
       "title": "Table Building Block Properties",
@@ -1438,6 +1603,13 @@ Object {
       ],
       "id": "tableVisualizationProperties",
       "title": "Table Visualization Properties",
+    },
+    Object {
+      "description": Array [
+        "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet.",
+      ],
+      "id": "manifestLibraries",
+      "title": "Manifest Libraries",
     },
   ],
   "initialAnswers": Object {
@@ -1518,12 +1690,12 @@ Object {
       "choices": [Function],
       "guiOptions": Object {
         "groupId": "tableBuildingBlockProperties",
-        "hint": "Values are dependent on entity type",
+        "hint": "Values are dependent on entity set",
         "mandatory": true,
-        "placeholder": "Select a line item qualifier",
+        "placeholder": "Select a line item annotation path",
         "selectType": "dynamic",
       },
-      "message": "Line Item Qualifier",
+      "message": "Line Item Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
       "type": "list",
     },
