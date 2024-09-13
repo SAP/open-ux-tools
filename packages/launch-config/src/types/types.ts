@@ -21,6 +21,7 @@ export interface FioriOptions {
     backendConfigs?: FioriToolsProxyConfigBackend[];
     urlParameters?: string;
     visible?: boolean;
+    debugOptions?: DebugOptions;
 }
 
 export interface LaunchJSON {

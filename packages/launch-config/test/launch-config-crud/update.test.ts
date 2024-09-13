@@ -34,7 +34,7 @@ describe('update', () => {
     test('Create and then update existing launch config in launch.json', async (): Promise<void> => {
         // create a new
         const launchJSONPath = join(TestPaths.feProjectsLaunchConfig);
-        let result = await createLaunchConfig(
+        let result: any = await createLaunchConfig(
             TestPaths.feProjects,
             {
                 name: 'LaunchConfig_One',

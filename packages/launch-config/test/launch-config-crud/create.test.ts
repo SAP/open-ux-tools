@@ -19,7 +19,7 @@ describe('create', () => {
     });
 
     test('launch.json file is missing, create new file with new config', async () => {
-        const result = await createLaunchConfig(
+        const result: any = await createLaunchConfig(
             TestPaths.tmpDir,
             { name: 'LaunchConfig_One', projectRoot: join(TestPaths.tmpDir, 'fe-projects') },
             memFs
@@ -64,7 +64,7 @@ describe('create', () => {
         const ui5VersionUri = 'DUMMY_UI5_URI';
         // Select destination
         const backendConfigs = [{ path: 'TEST_PATH', name: 'TEST_DESTINAME', url: 'dummy' }];
-        const result = await createLaunchConfig(
+        const result: any = await createLaunchConfig(
             TestPaths.tmpDir,
             {
                 name: 'LaunchConfig_One',
@@ -117,7 +117,7 @@ describe('create', () => {
                 }
             ]
         });
-        const result = await createLaunchConfig(
+        const result: any = await createLaunchConfig(
             TestPaths.tmpDir,
             { name: 'LaunchConfig_Two', projectRoot: join(TestPaths.tmpDir, 'fe-projects') },
             memFs
