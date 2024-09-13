@@ -22,7 +22,8 @@ export type TablePromptsAnswer = BuildingBlockConfig<Table> & Answers;
 
 const groupIds = {
     commonBlockProperties: 'tableBuildingBlockProperties',
-    visualisationProperties: 'tableVisualizationProperties'
+    visualisationProperties: 'tableVisualizationProperties',
+    manifestLibraries: 'manifestLibraries'
 };
 
 const defaultAnswers = {
@@ -59,6 +60,11 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             id: groupIds.visualisationProperties,
             title: t('tableVisualizationPropertiesTitle'),
             description: t('tableVisualizationPropertiesDescription', { returnObjects: true })
+        },
+        {
+            id: groupIds.manifestLibraries,
+            title: t('manifestLibrariesTitle'),
+            description: t('manifestLibrariesDescription', { returnObjects: true })
         }
     ];
 

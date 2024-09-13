@@ -44,6 +44,22 @@
             }
         },
         "chart": {
+            "chartBuildingBlockPropertiesTitle": "Chart Building Block Properties",
+            "chartBuildingBlockPropertiesDescription": [
+                "Select the `View or Fragment File` where you would like to insert the chart building block and provide a `Building Block ID` to identify the chart.",
+                "Select an `Entity Set`, and a `Chart Annotation` you would like to use for the chart building block.",
+                "Select an `Aggregation Path` to determine where you would like the chart to be placed on the page."
+            ],
+            "chartVisualizationPropertiesTitle": "Chart Visualization Properties",
+            "chartVisualizationPropertiesDescription": ["Configure your chart using the properties below."],
+            "chartConfigureEventsTitle": "Configure Events",
+            "chartConfigureEventsDescription": [
+                "Configure the below properties to react to events. Event handler methods are invoked when an event occurs."
+            ],
+            "manifestLibrariesTitle": "Manifest Libraries",
+            "manifestLibrariesDescription": [
+                "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet."
+            ],
             "id": {
                 "message": "Building Block ID",
                 "validation": "An ID is required to generate the chart building block"
@@ -82,11 +98,25 @@
             },
             "selectionChange": "Selection Change Function",
             "selectionChangePlaceholder": "Enter a selecton change function",
-            "qualifier": "Chart Qualifier",
-            "qualifierPlaceholder": "Select chart qualifier",
-            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
+            "qualifier": "Chart Annotation Path",
+            "qualifierPlaceholder": "Select a chart annotation path",
+            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity set"
         },
         "filterBar": {
+            "filterBarBuildingBlockPropertiesTitle": "Filter Bar Building Block Properties",
+            "filterBarBuildingBlockPropertiesDescription": [
+                "Select the `View or Fragment File` where you would like to insert the filter bar building block and provide a `Building Block ID` to identify the filter bar.",
+                "Select an `Entity Set`, and a `Selection Field Annotation` you would like to use for the filter bar building block.",
+                "Select an `Aggregation Path` to determine where you would like the filter bar to be placed on the page."
+            ],
+            "filterBarConfigureEventsTitle": "Configure Events",
+            "filterBarConfigureEventsDescription": [
+                "Configure the below properties to react to events. Event handler methods are invoked when an event occurs."
+            ],
+            "manifestLibrariesTitle": "Manifest Libraries",
+            "manifestLibrariesDescription": [
+                "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet."
+            ],
             "id": {
                 "message": "Building Block ID",
                 "validation": "An ID is required to generate the filter bar building block"
@@ -98,24 +128,28 @@
             "entity": "Entity",
             "service": "Service",
             "metaPath": "Enter the relative path of the property in the meta model",
-            "filterChanged": "Filter Function",
-            "search": "Search Function",
-            "qualifier": "Selection Fields Qualifier",
-            "qualifierPlaceholder": "Select selection fields qualifier",
+            "filterChanged": "Filter Changed Event",
+            "search": "Search Event",
+            "qualifier": "Selection Field Annotation Path",
+            "qualifierPlaceholder": "Select a selection field annotation path",
             "aggregation": "Aggregation Path",
-            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type",
+            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity set",
             "bindingContextType": "Binding Context Path Type"
         },
         "table": {
             "tableBuildingBlockPropertiesTitle": "Table Building Block Properties",
             "tableBuildingBlockPropertiesDescription": [
                 "Select the `View or Fragment File` where you would like to insert the table building block and provide a `Building Block ID` to identify the table.",
-                "Select an `Entity Type`, and a `Line Item Qualifier` you would like to use for the table building block.",
-                "Select an `Aggregation Path` to determine where you would like the table to be placed on the page.",
-                "If you would like to link the table to an existing filter bar, provide the `Associated Filter Bar ID`."
+                "Select an `Entity Set`, and a `Line Item Annotation` you would like to use for the table building block.",
+                "Select an `Aggregation Path` to determine where you would like the table to appear on the page.",
+                "Provide the Associated Filter Bar ID if you want to link the table to an existing filter bar."
             ],
             "tableVisualizationPropertiesTitle": "Table Visualization Properties",
             "tableVisualizationPropertiesDescription": ["Configure your table using the properties below."],
+            "manifestLibrariesTitle": "Manifest Libraries",
+            "manifestLibrariesDescription": [
+                "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet."
+            ],
             "viewOrFragmentPath": {
                 "message": "View or Fragment File",
                 "validation": "A View or Fragment is required to generate the table building block"
@@ -127,8 +161,8 @@
             "bindingContextType": "Binding Context Path Type",
             "entity": "Entity",
             "service": "Service",
-            "qualifier": "Line Item Qualifier",
-            "qualifierPlaceholder": "Select a line item qualifier",
+            "qualifier": "Line Item Annotation Path",
+            "qualifierPlaceholder": "Select a line item annotation path",
             "aggregation": "Aggregation Path",
             "filterBar": {
                 "message": "Associated Filter Bar ID",
@@ -165,7 +199,7 @@
             "fullScreenMode": "Enable Full Screen Mode",
             "pasteFromClipboard": "Enable Paste From Clipboard",
             "tableSearchableToggle": "Table Searchable Toggle",
-            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
+            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity set"
         }
     }
 }
