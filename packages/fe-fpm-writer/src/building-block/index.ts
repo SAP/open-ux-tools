@@ -330,7 +330,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
     const xmlDocument = config.viewOrFragmentPath
         ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
         : undefined;
-    const { content: manifest } = await getManifest(basePath, fs);
+    const { content: manifest } = await getManifest(basePath, fs, false);
     const content = getTemplateContent(config.buildingBlockData, xmlDocument, manifest, fs, true);
     const filePathProps = getFilePathProps(basePath, config.viewOrFragmentPath);
     return {

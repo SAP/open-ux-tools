@@ -86,14 +86,14 @@ export async function getManifestPath(basePath: string, fs: Editor): Promise<str
  *
  * @param {string} basePath the base path
  * @param {Editor} fs the memfs editor instance
+ * @param {boolean} [validate=true] validate if 'manifest.json' file exists - throw error if file does not exist
  * @returns {Manifest | undefined} The content and path of the manifest
  */
-export async function getManifest(basePath: string, fs: Editor): Promise<ManifestData> {
+export async function getManifest(basePath: string, fs: Editor, validate = true): Promise<ManifestData> {
     const path = await getManifestPath(basePath, fs);
-    // ToDo???
-    // if (!fs.exists(manifestPath)) {
-    //     throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
-    // }
+    if (validate && !fs.exists(path)) {
+        throw new Error(`Invalid project folder. Cannot find required file ${path}`);
+    }
     return {
         path,
         content: fs.readJSON(path) as Manifest
