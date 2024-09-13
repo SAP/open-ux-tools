@@ -127,11 +127,11 @@ describe('<UITable />', () => {
         expect(wrapper.find('.ms-DetailsList').length).toEqual(1);
     });
 
-    it.only('Render table with data', () => {
+    it('Render table with data', () => {
         const moduleName = {
             key: 'moduleName',
             name: 'moduleName',
-            fieldName: 'text',
+            fieldName: 'moduleName',
             minWidth: 100,
             maxWidth: 200,
             isResizable: true,
@@ -145,7 +145,7 @@ describe('<UITable />', () => {
             <UITable
                 {...defaultProps}
                 columns={[columnText, moduleName]}
-                items={[{ text: 'apple' }, { text: 'module' }]}
+                items={[{ text: 'apple' }, { text: 'module', hideCells: true }]}
             />
         );
         expect(wrapper.find('[data-automationid="DetailsRowCell"]').at(0).key()).toEqual('textcolumn');

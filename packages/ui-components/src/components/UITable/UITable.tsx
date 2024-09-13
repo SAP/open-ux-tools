@@ -277,7 +277,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             );
         } else {
             return (
-                <div data-xxx={key} key={key} {...(cell?.props || {})} data-is-focusable={true} onClick={onClick} tabIndex="0">
+                <div key={key} {...(cell?.props || {})} data-is-focusable={true} onClick={onClick} tabIndex="0">
                     {cell?.props?.children || null}
                 </div>
             );
