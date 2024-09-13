@@ -49,12 +49,11 @@ describe('launchConfig Unit Tests', () => {
             });
 
             const options = {
-                projectPath: mockProjectPath,
                 isAppStudio,
                 vscode: mockVscode
             } as DebugOptions;
 
-            const result = handleWorkspaceConfig(options);
+            const result = handleWorkspaceConfig(mockProjectPath, options);
             expect(result).toEqual({
                 launchJsonPath: mockProjectPath,
                 cwd: '${workspaceFolder}'
@@ -72,12 +71,11 @@ describe('launchConfig Unit Tests', () => {
             (getLaunchJsonPath as jest.Mock).mockReturnValue(mockTargetFolder);
 
             const options = {
-                projectPath: mockProjectPath,
                 isAppStudio,
                 vscode: mockVscode
             } as DebugOptions;
 
-            const result = handleWorkspaceConfig(options);
+            const result = handleWorkspaceConfig(mockProjectPath, options);
             expect(result).toEqual({
                 launchJsonPath: mockTargetFolder,
                 cwd: '${workspaceFolder}/nestedFolder'
@@ -94,11 +92,10 @@ describe('launchConfig Unit Tests', () => {
             (getLaunchJsonPath as jest.Mock).mockReturnValue(mockTargetFolder);
 
             const options = {
-                projectPath: mockProjectPath,
                 isAppStudio,
                 vscode: mockVscode
             } as DebugOptions;
-            const result = handleWorkspaceConfig(options);
+            const result = handleWorkspaceConfig(mockProjectPath, options);
             expect(result).toEqual({
                 launchJsonPath: mockTargetFolder,
                 cwd: '${workspaceFolder}/project'
@@ -114,11 +111,10 @@ describe('launchConfig Unit Tests', () => {
             });
 
             const options = {
-                projectPath: mockProjectPath,
                 isAppStudio,
                 vscode: mockVscode
             } as DebugOptions;
-            const result = handleWorkspaceConfig(options);
+            const result = handleWorkspaceConfig(mockProjectPath, options);
             expect(result).toEqual({
                 launchJsonPath: mockProjectPath,
                 cwd: '${workspaceFolder}'
@@ -136,10 +132,9 @@ describe('launchConfig Unit Tests', () => {
             (path.relative as jest.Mock).mockReturnValue(mockNestedFolder);
             (formatCwd as jest.Mock).mockReturnValue('${workspaceFolder}/nestedFolder');
             const options = {
-                projectPath: mockProjectPath,
                 vscode: mockVscode
             } as DebugOptions;
-            const result = handleWorkspaceConfig(options);
+            const result = handleWorkspaceConfig(mockProjectPath, options);
             expect(result).toEqual({
                 launchJsonPath: mockWsFolder,
                 cwd: '${workspaceFolder}/nestedFolder'
@@ -151,7 +146,6 @@ describe('launchConfig Unit Tests', () => {
         it('should handle writeToAppOnly option', () => {
             const mockProjectPath = '/mock/project/path';
             const options = {
-                projectPath: mockProjectPath,
                 writeToAppOnly: true,
                 vscode: mockVscode
             } as DebugOptions;
@@ -161,7 +155,7 @@ describe('launchConfig Unit Tests', () => {
                 cwd: '${workspaceFolder}'
             });
 
-            const result = handleWorkspaceConfig(options);
+            const result = handleWorkspaceConfig(mockProjectPath, options);
             expect(result).toEqual({
                 launchJsonPath: mockProjectPath,
                 cwd: '${workspaceFolder}'
@@ -173,7 +167,6 @@ describe('launchConfig Unit Tests', () => {
             const mockProjectPath = '/mock/project/path';
             const mockTargetFolder = '/target/folder';
             const options = {
-                projectPath: mockProjectPath,
                 vscode: {
                     ...mockVscode,
                     workspace: { ...mockVscode.workspace, workspaceFile: undefined }
@@ -186,7 +179,7 @@ describe('launchConfig Unit Tests', () => {
             (getLaunchJsonPath as jest.Mock).mockReturnValue(mockTargetFolder);
 
             // Call the function under test
-            const result = handleWorkspaceConfig(options);
+            const result = handleWorkspaceConfig(mockProjectPath, options);
 
             // Assertions
             expect(result).toEqual({
@@ -205,7 +198,6 @@ describe('launchConfig Unit Tests', () => {
         it('should handle no workspace case', () => {
             const mockProjectPath = '/mock/project/path';
             const options = {
-                projectPath: mockProjectPath,
                 vscode: { ...mockVscode, workspace: undefined }
             } as DebugOptions;
             (handleAppsNotInWorkspace as jest.Mock).mockReturnValue({
@@ -213,7 +205,7 @@ describe('launchConfig Unit Tests', () => {
                 cwd: '${workspaceFolder}'
             });
 
-            const result = handleWorkspaceConfig(options);
+            const result = handleWorkspaceConfig(mockProjectPath, options);
             expect(result).toEqual({
                 launchJsonPath: mockProjectPath,
                 cwd: '${workspaceFolder}'
@@ -232,11 +224,10 @@ describe('launchConfig Unit Tests', () => {
             };
             // Prepare options for the test
             const options = {
-                projectPath: mockProjectPath,
                 vscode: mockVscode
             } as DebugOptions;
             // Call the function under test
-            const result = handleWorkspaceConfig(options);
+            const result = handleWorkspaceConfig(mockProjectPath, options);
             // Assertions
             expect(result).toEqual({
                 launchJsonPath: mockTargetFolder,
@@ -263,11 +254,10 @@ describe('launchConfig Unit Tests', () => {
 
             // Prepare options for the test
             const options = {
-                projectPath: mockProjectPath,
                 vscode: mockVscode
             } as DebugOptions;
             // Call the function under test
-            const result = handleWorkspaceConfig(options);
+            const result = handleWorkspaceConfig(mockProjectPath, options);
             // Assertions
             expect(result).toEqual({
                 launchJsonPath: mockProjectPath,

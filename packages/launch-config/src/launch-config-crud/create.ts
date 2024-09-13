@@ -20,9 +20,9 @@ import { t } from '../i18n';
  * @param {Editor} fs - The file system editor used to write the `launch.json` file.
  * @param {string} launchJSONPath - The full path to the `launch.json` file.
  * @param {LaunchConfig[]} configurations - An array of launch configurations to be included in the `launch.json` file.
- * @returns {Promise<void>} - A promise that resolves once the `launch.json` file has been written.
+ * @returns {void}
  */
-async function writeLaunchJsonFile(fs: Editor, launchJSONPath: string, configurations: LaunchConfig[]): Promise<void> {
+function writeLaunchJsonFile(fs: Editor, launchJSONPath: string, configurations: LaunchConfig[]): void {
     const newLaunchJSONContent = { version: '0.2.0', configurations };
     fs.write(launchJSONPath, JSON.stringify(newLaunchJSONContent, null, 4));
 }
@@ -67,7 +67,7 @@ async function handleNoDebugOptions(rootFolder: string, fioriOptions: FioriOptio
     }
     // launch.json is missing, new file with new config
     const configurations = [generateNewFioriLaunchConfig(rootFolder, fioriOptions)];
-    await writeLaunchJsonFile(fs, launchJsonWritePath, configurations);
+    writeLaunchJsonFile(fs, launchJsonWritePath, configurations);
     return fs;
 }
 
@@ -80,7 +80,7 @@ async function handleNoDebugOptions(rootFolder: string, fioriOptions: FioriOptio
  * @param {Editor} fs - The file system editor to read and write the `launch.json` file.
  * @param {string} launchJSONPath - The path to the existing `launch.json` file.
  * @param {LaunchConfig[]} configurations - An array of new launch configurations to be added or replaced.
- * @param {boolean | undefined} replaceWithNew - A flag indicating whether to replace the existing `launch.json`
+ * @param {boolean} replaceWithNew - A flag indicating whether to replace the existing `launch.json`
  *     with new configurations (`true`) or append to the existing ones (`false`).
  * @returns {Promise<void>} - A promise that resolves once the `launch.json` file has been updated or replaced.
  */
@@ -88,15 +88,14 @@ async function handleExistingLaunchJson(
     fs: Editor,
     launchJSONPath: string,
     configurations: LaunchConfig[],
-    replaceWithNew: boolean | undefined
+    replaceWithNew: boolean = false
 ): Promise<void> {
     const launchJsonString = fs.read(launchJSONPath);
     const launchJson = parse(launchJsonString) as LaunchJSON;
-
     if (replaceWithNew) {
         // replaceWithNew is needed in cases where launch config exists in
         // `.vscode` but isn't added to the workspace. If `replaceWithNew` is `true`, it indicates that the app is not
-        // in the workspace, so the entire `launch.json` and replaced since launch config is then generated in app folder. 
+        // in the workspace, so the entire `launch.json` and replaced since launch config is then generated in app folder.
         const newLaunchJSONContent = { version: '0.2.0', configurations };
         fs.write(launchJSONPath, JSON.stringify(newLaunchJSONContent, null, 4));
     } else {
@@ -119,7 +118,7 @@ async function handleExistingLaunchJson(
  *
  * @param {UpdateWorkspaceFolderOptions} updateWorkspaceFolders - The options for updating workspace folders.
  */
-export function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders: UpdateWorkspaceFolderOptions | undefined): void {
+function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders?: UpdateWorkspaceFolderOptions): void {
     if (updateWorkspaceFolders) {
         const { uri, vscode, projectName } = updateWorkspaceFolders;
         if (uri && vscode) {
@@ -137,6 +136,7 @@ export function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders: UpdateWor
  * This function processes workspace configuration, updates the `launch.json` file if it exists,
  * and creates it if it does not. Additionally, it updates workspace folders if applicable.
  *
+ * @param rootFolder - root folder.
  * @param {Editor} fs - The file system editor to read and write the `launch.json` file.
  * @param {DebugOptions} debugOptions - Debug configuration options that dictate how the `launch.json`
  *     should be generated and what commands should be logged.
@@ -144,22 +144,30 @@ export function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders: UpdateWor
  * @returns {Promise<Editor>} - Returns the file system editor after potentially modifying the workspace
  *     and updating or creating the `launch.json` file.
  */
-async function handleDebugOptions(fs: Editor, debugOptions: DebugOptions, log?: Logger): Promise<Editor> {
-    const { launchJsonPath, workspaceFolderUri, cwd, appNotInWorkspace } = handleWorkspaceConfig(debugOptions);
-    const configurations = configureLaunchJsonFile(cwd, debugOptions).configurations;
+async function handleDebugOptions(
+    rootFolder: string,
+    fs: Editor,
+    debugOptions: DebugOptions,
+    log?: Logger
+): Promise<Editor> {
+    const { launchJsonPath, workspaceFolderUri, cwd, appNotInWorkspace } = handleWorkspaceConfig(
+        rootFolder,
+        debugOptions
+    );
+    const configurations = configureLaunchJsonFile(rootFolder, cwd, debugOptions).configurations;
 
     const npmCommand = debugOptions.datasourceType === DatasourceType.metadataFile ? 'run start-mock' : 'start';
     log?.info(
         t('startServerMessage', {
-            folder: basename(debugOptions.projectPath),
+            folder: basename(rootFolder),
             npmCommand
         })
     );
     const launchJsonWritePath = getLaunchJsonPath(launchJsonPath);
-    if (fs.exists(launchJsonPath)) {
+    if (fs.exists(launchJsonWritePath)) {
         await handleExistingLaunchJson(fs, launchJsonWritePath, configurations, appNotInWorkspace);
     } else {
-        await writeLaunchJsonFile(fs, launchJsonWritePath, configurations);
+        writeLaunchJsonFile(fs, launchJsonWritePath, configurations);
     }
 
     // The `workspaceFolderUri` is a URI obtained from VS Code that specifies the path to the workspace folder.
@@ -168,7 +176,7 @@ async function handleDebugOptions(fs: Editor, debugOptions: DebugOptions, log?: 
     const updateWorkspaceFolders = workspaceFolderUri
         ? ({
               uri: workspaceFolderUri,
-              projectName: basename(debugOptions.projectPath),
+              projectName: basename(rootFolder),
               vscode: debugOptions.vscode
           } as UpdateWorkspaceFolderOptions)
         : undefined;
@@ -191,22 +199,18 @@ export async function createLaunchConfig(
     fioriOptions: FioriOptions,
     fs?: Editor,
     log?: Logger
-): Promise<Editor | undefined> {
+): Promise<Editor> {
     fs = fs ?? create(createStorage());
-
     const debugOptions = fioriOptions.debugOptions;
-
     if (!debugOptions) {
         return await handleNoDebugOptions(rootFolder, fioriOptions, fs);
     }
-
+    if (!debugOptions.vscode) {
+        return fs;
+    }
     if (debugOptions.datasourceType === DatasourceType.capProject) {
         log?.info(t('startApp', { npmStart: '`npm start`', cdsRun: '`cds run --in-memory`' }));
-        return;
+        return fs;
     }
-
-    if (!debugOptions.vscode) {
-        return;
-    }
-    return await handleDebugOptions(fs, debugOptions, log);
+    return await handleDebugOptions(rootFolder, fs, debugOptions, log);
 }

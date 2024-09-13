@@ -56,13 +56,13 @@ function createLaunchConfig(
 /**
  * Configures the launch.json file based on provided options.
  *
+ * @param rootFolder
  * @param {string} cwd - The current working directory.
  * @param {DebugOptions} configOpts - Configuration options for the launch.json file.
  * @returns {LaunchJSON} The configured launch.json object.
  */
-export function configureLaunchJsonFile(cwd: string, configOpts: DebugOptions): LaunchJSON {
+export function configureLaunchJsonFile(rootFolder: string, cwd: string, configOpts: DebugOptions): LaunchJSON {
     const {
-        projectPath,
         isAppStudio,
         datasourceType,
         flpAppId,
@@ -73,14 +73,13 @@ export function configureLaunchJsonFile(cwd: string, configOpts: DebugOptions): 
         isFioriElement,
         migratorMockIntent
     } = configOpts;
-
-    const projectName = basename(projectPath);
+    const projectName = basename(rootFolder);
     const flpAppIdWithHash = flpAppId && !flpAppId.startsWith('#') ? `#${flpAppId}` : flpAppId;
     const startHtmlFile = flpSandboxAvailable ? testFlpSandboxHtml : indexHtml;
     const runConfig = isAppStudio
         ? JSON.stringify({
               handlerId: FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID,
-              runnableId: projectPath
+              runnableId: rootFolder
           })
         : undefined;
     const envUrlParam = getEnvUrlParams(sapClientParam);

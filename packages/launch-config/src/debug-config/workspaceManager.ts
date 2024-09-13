@@ -83,6 +83,7 @@ function handleOpenFolderButNoWorkspaceFile(
  * This function handles different scenarios depending on whether a workspace is open,
  * whether the project is inside or outside of a workspace, and other factors.
  *
+ * @param rootFolder
  * @param {DebugOptions} options - The options used to determine how to manage the workspace configuration.
  * @param {string} options.projectPath -The project's path including project name.
  * @param {boolean} [options.isAppStudio] - A boolean indicating whether the current environment is BAS.
@@ -90,30 +91,30 @@ function handleOpenFolderButNoWorkspaceFile(
  * @param {any} options.vscode - The VS Code API object.
  * @returns {WorkspaceHandlerInfo} An object containing the path to the `launch.json` configuration file, the cwd command, workspaceFolderUri if provided will enable reload.
  */
-export function handleWorkspaceConfig(options: DebugOptions): WorkspaceHandlerInfo {
-    const { projectPath, isAppStudio = false, writeToAppOnly = false, vscode } = options;
+export function handleWorkspaceConfig(rootFolder: string, options: DebugOptions): WorkspaceHandlerInfo {
+    const { isAppStudio = false, writeToAppOnly = false, vscode } = options;
 
-    const projectName = basename(projectPath);
-    const targetFolder = dirname(projectPath);
+    const projectName = basename(rootFolder);
+    const targetFolder = dirname(rootFolder);
 
     // Directly handle the case where we ignore workspace settings
     if (writeToAppOnly) {
-        return handleAppsNotInWorkspace(projectPath, isAppStudio, vscode);
+        return handleAppsNotInWorkspace(rootFolder, isAppStudio, vscode);
     }
     const workspace = vscode.workspace;
     const workspaceFile = workspace?.workspaceFile;
     // Handles the scenario where no workspace or folder is open in VS Code.
     if (!workspace) {
-        return handleAppsNotInWorkspace(projectPath, isAppStudio, vscode);
+        return handleAppsNotInWorkspace(rootFolder, isAppStudio, vscode);
     }
     // Handle case where a folder is open, but not a workspace file
     if (!workspaceFile) {
-        return handleOpenFolderButNoWorkspaceFile(projectPath, targetFolder, isAppStudio, vscode);
+        return handleOpenFolderButNoWorkspaceFile(rootFolder, targetFolder, isAppStudio, vscode);
     }
     // Handles the case where a previously saved workspace is open
     if (workspaceFile.scheme === 'file') {
-        return handleSavedWorkspace(projectPath, projectName, targetFolder, isAppStudio, vscode);
+        return handleSavedWorkspace(rootFolder, projectName, targetFolder, isAppStudio, vscode);
     }
     // Handles the case where an unsaved workspace is open
-    return handleUnsavedWorkspace(projectPath, vscode);
+    return handleUnsavedWorkspace(rootFolder, vscode);
 }

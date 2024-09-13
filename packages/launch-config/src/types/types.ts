@@ -65,8 +65,6 @@ export interface LaunchConfigInfo {
  * Configuration options for debugging launch configurations.
  */
 export interface DebugOptions {
-    /** Path to the project directory. */
-    projectPath: string;
     /** Type of the data source used in the project. */
     datasourceType: DatasourceType;
     /** SAP client parameter for the connection. */
