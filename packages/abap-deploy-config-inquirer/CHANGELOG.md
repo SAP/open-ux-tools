@@ -1,5 +1,19 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.17
+
+### Patch Changes
+
+-   c538657: handle missing www-auth header
+
+## 0.0.16
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/fiori-generator-shared@0.3.20
+-   @sap-ux/system-access@0.5.11
+
 ## 0.0.15
 
 ### Patch Changes
