@@ -1,5 +1,12 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.29.6
+
+### Patch Changes
+
+-   86bcf45: - During building block creation, add the 'sap.fe.macros' library to the 'manifest.json' if it is not already listed
+    -   The API methods `generateBuildingBlock`, `getSerializedFileContent`, `PromptsAPI.submitAnswers`, and `PromptsAPI.getCodeSnippets` changed from synchronous to asynchronous.
+
 ## 0.29.5
 
 ### Patch Changes
