@@ -117,8 +117,7 @@ describe('SelectionService', () => {
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         propertyName: 'enabled',
                         value: '{i18n>CREATE_OBJECT2}',
-                        timestamp: 1640106817301,
-                        file: expect.any(Object) as Object
+                        timestamp: 1640106817301
                     },
                     {
                         type: 'saved',
@@ -126,8 +125,7 @@ describe('SelectionService', () => {
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         fileName: 'id_1640106755570_204_propertyChange',
-                        timestamp: 1640106817301,
-                        file: expect.any(Object) as Object
+                        timestamp: 1640106817301
                     },
                     {
                         changeType: 'propertyChange',
@@ -139,8 +137,7 @@ describe('SelectionService', () => {
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         propertyName: 'enabled',
                         value: true,
-                        timestamp: 1640106757301,
-                        file: expect.any(Object) as Object
+                        timestamp: 1640106757301
                     }
                 ]
             }
@@ -219,8 +216,7 @@ describe('SelectionService', () => {
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         propertyName: 'enabled',
                         value: '{i18n>CREATE_OBJECT2}',
-                        timestamp: 1640106817301,
-                        file: expect.any(Object) as Object
+                        timestamp: 1640106817301
                     },
                     {
                         type: 'saved',
@@ -228,8 +224,7 @@ describe('SelectionService', () => {
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         fileName: 'id_1640106755570_204_propertyChange',
-                        timestamp: 1640106817301,
-                        file: expect.any(Object) as Object
+                        timestamp: 1640106817301
                     },
                     {
                         changeType: 'propertyChange',
@@ -241,8 +236,7 @@ describe('SelectionService', () => {
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         propertyName: 'enabled',
                         value: true,
-                        timestamp: 1640106757301,
-                        file: expect.any(Object) as Object
+                        timestamp: 1640106757301
                     }
                 ]
             }
@@ -279,8 +273,7 @@ describe('SelectionService', () => {
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         propertyName: 'enabled',
                         value: '{i18n>CREATE_OBJECT2}',
-                        timestamp: 1640106817301,
-                        file: expect.any(Object) as Object
+                        timestamp: 1640106817301
                     },
                     {
                         type: 'saved',
@@ -288,8 +281,7 @@ describe('SelectionService', () => {
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         fileName: 'id_1640106755570_204_propertyChange',
-                        timestamp: 1640106817301,
-                        file: expect.any(Object) as Object
+                        timestamp: 1640106817301
                     },
                     {
                         changeType: 'propertyChange',
@@ -301,8 +293,7 @@ describe('SelectionService', () => {
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         propertyName: 'enabled',
                         value: true,
-                        timestamp: 1640106757301,
-                        file: expect.any(Object) as Object
+                        timestamp: 1640106757301
                     }
                 ]
             }
@@ -358,8 +349,7 @@ describe('SelectionService', () => {
                         kind: 'unknown',
                         fileName: 'unknown',
                         timestamp: 1640106877301,
-                        controlId: 'SEPMRA_C_PD_Product--template::ListReport::TableToolbar',
-                        file: expect.any(Object) as object
+                        controlId: 'SEPMRA_C_PD_Product--template::ListReport::TableToolbar'
                     },
                     {
                         type: 'saved',
@@ -371,8 +361,7 @@ describe('SelectionService', () => {
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         propertyName: 'enabled',
                         value: '{i18n>CREATE_OBJECT2}',
-                        timestamp: 1640106817301,
-                        file: expect.any(Object) as object
+                        timestamp: 1640106817301
                     }
                 ]
             }

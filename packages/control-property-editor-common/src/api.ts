@@ -139,7 +139,6 @@ export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> ex
     kind: 'valid';
     fileName: string;
     timestamp: number;
-    file: object;
 }
 
 export interface UnknownSavedChange {
@@ -148,7 +147,6 @@ export interface UnknownSavedChange {
     fileName: string;
     controlId?: string;
     timestamp?: number;
-    file: object;
 }
 export type ValidChange = PendingPropertyChange | SavedPropertyChange;
 export type Change = ValidChange | UnknownSavedChange;

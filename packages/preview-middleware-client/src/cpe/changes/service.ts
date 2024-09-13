@@ -50,6 +50,10 @@ interface Change {
 
 type SavedChangesResponse = Record<string, Change>;
 
+type SavedChangeFile = {
+    fileName: string;
+};
+
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
 /**
  * Assert change for its validity. Throws error if no value found in saved changes.
@@ -96,6 +100,7 @@ export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
     private sendAction: (action: ExternalAction) => void;
     private pendingChanges: PendingChange[] = [];
+    private savedChangeFiles: SavedChangeFile[] = [];
     /**
      *
      * @param options ui5 adaptation options.
@@ -171,6 +176,7 @@ export class ChangeService {
      * Fetches saved changes from the workspace and sorts them.
      */
     private async fetchSavedChanges(): Promise<void> {
+        this.savedChangeFiles = [];
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
         const savedChanges = (await savedChangesResponse.json()) as SavedChangesResponse;
         const changes = (
@@ -197,6 +203,7 @@ export class ChangeService {
                                 ) {
                                     throw new Error('Unknown Change Type');
                                 }
+                                this.savedChangeFiles.push(change);
                                 return {
                                     type: 'saved',
                                     kind: 'valid',
@@ -208,18 +215,17 @@ export class ChangeService {
                                     controlName: change.selector.type
                                         ? (change.selector.type.split('.').pop() as string)
                                         : '',
-                                    changeType: change.changeType,
-                                    file: change
+                                    changeType: change.changeType
                                 };
                             } catch (error) {
                                 // Gracefully handle change files with invalid content
                                 if (change.fileName) {
+                                    this.savedChangeFiles.push(change);
                                     const unknownChange: UnknownSavedChange = {
                                         type: 'saved',
                                         kind: 'unknown',
                                         fileName: change.fileName,
-                                        controlId: selectorId, // some changes may not have selector
-                                        file: change
+                                        controlId: selectorId // some changes may not have selector
                                     };
                                     if (change.creation) {
                                         unknownChange.timestamp = new Date(change.creation).getTime();
@@ -271,7 +277,7 @@ export class ChangeService {
      * @param sendAction send action method
      * @returns (event: sap.ui.base.Event) => Promise<void>
      */
-    private createOnStackChangeHandler():(event: Event) => Promise<void> {
+    private createOnStackChangeHandler(): (event: Event) => Promise<void> {
         const handleStackChange = modeAndStackChangeHandler(this.sendAction, this.options.rta);
         return async (): Promise<void> => {
             const stack = this.options.rta.getCommandStack();
@@ -303,7 +309,7 @@ export class ChangeService {
         };
     }
 
-    private async handleCommand(command: FlexCommand, inactiveCommandCount: number,  index: number): Promise<void> {
+    private async handleCommand(command: FlexCommand, inactiveCommandCount: number, index: number): Promise<void> {
         const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, index);
         if (pendingChange) {
             this.pendingChanges.push(pendingChange);
@@ -451,9 +457,12 @@ export class ChangeService {
      * @returns void
      */
     public async syncOutlineChanges(): Promise<void> {
-        for (const change of this.savedChanges) {
-            const flexObject = await this.getFlexObject(change.file);
-            change.controlId = await this.getControlIdByChange(flexObject);
+        for (const file of this.savedChangeFiles) {
+            const flexObject = await this.getFlexObject(file);
+            const savedChange = this.savedChanges.find((change) => change.fileName === file.fileName);
+            if (savedChange) {
+                savedChange.controlId = await this.getControlIdByChange(flexObject);
+            }
         }
         this.updateStack();
     }
