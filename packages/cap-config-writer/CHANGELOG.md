@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.7.40
+
+### Patch Changes
+
+-   614045c: Moves type only dep as dev dep to odata-service-inquirer
+
 ## 0.7.39
 
 ### Patch Changes
