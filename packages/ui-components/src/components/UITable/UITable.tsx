@@ -254,6 +254,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             return null;
         }
         const cell = defaultRender(props);
+        const { column, cellValueKey } = props;
+        const key = `${column.key}${cellValueKey !== undefined ? `-${cellValueKey}` : ''}`;
         const onClick = (e: React.MouseEvent<HTMLElement, MouseEvent> | null) => {
             const target = e?.target as HTMLElement;
             const targetTag = target?.tagName;
@@ -266,7 +268,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         // in app-migrator, show a warning message for library projects on main migration view
         if (props.item.hideCells && props.column.fieldName === 'moduleName' && !props.item.status) {
             return (
-                <div {...(cell?.props || {})} data-is-focusable={true} onClick={onClick} tabIndex="0">
+                <div key={key} {...(cell?.props || {})} data-is-focusable={true} onClick={onClick} tabIndex="0">
                     {cell?.props?.children || null}
                     <div className="table-item-warning">
                         This is a reuse library and does not require input during migration
@@ -275,7 +277,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             );
         } else {
             return (
-                <div {...(cell?.props || {})} data-is-focusable={true} onClick={onClick} tabIndex="0">
+                <div data-xxx={key} key={key} {...(cell?.props || {})} data-is-focusable={true} onClick={onClick} tabIndex="0">
                     {cell?.props?.children || null}
                 </div>
             );

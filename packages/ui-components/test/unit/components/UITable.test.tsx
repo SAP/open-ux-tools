@@ -127,6 +127,31 @@ describe('<UITable />', () => {
         expect(wrapper.find('.ms-DetailsList').length).toEqual(1);
     });
 
+    it.only('Render table with data', () => {
+        const moduleName = {
+            key: 'moduleName',
+            name: 'moduleName',
+            fieldName: 'text',
+            minWidth: 100,
+            maxWidth: 200,
+            isResizable: true,
+            editable: true,
+            validate: undefined as any,
+            iconName: undefined as any,
+            iconTooltip: undefined as any,
+            columnControlType: ColumnControlType.UITextInput
+        };
+        const wrapper = Enzyme.mount(
+            <UITable
+                {...defaultProps}
+                columns={[columnText, moduleName]}
+                items={[{ text: 'apple' }, { text: 'module' }]}
+            />
+        );
+        expect(wrapper.find('[data-automationid="DetailsRowCell"]').at(0).key()).toEqual('textcolumn');
+        expect(wrapper.find('[data-automationid="DetailsRowCell"]').at(1).key()).toEqual('moduleName');
+    });
+
     it('Toggle cell for editing', () => {
         const wrapper = Enzyme.mount(<UITable {...defaultProps} columns={[columnText]} items={[{ text: 'apple' }]} />);
 
