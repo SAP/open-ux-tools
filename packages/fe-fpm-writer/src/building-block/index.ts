@@ -12,8 +12,9 @@ import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
 import { coerce, lt } from 'semver';
 import type { Manifest } from '../common/types';
-import { getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
+import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
+import { getManifest, getManifestPath } from '../common/utils';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -24,29 +25,6 @@ const PLACEHOLDERS = {
 interface MetadataPath {
     contextPath?: string;
     metaPath: string;
-}
-
-/**
- * Gets manifest path.
- *
- * @param {string} basePath the base path
- * @param {Editor} fs the memfs editor instance
- * @returns {Manifest | undefined} path to manifest file
- */
-async function getManifestPath(basePath: string, fs: Editor): Promise<string> {
-    return join(await getWebappPath(basePath, fs), 'manifest.json');
-}
-
-/**
- * Gets manifest content.
- *
- * @param {string} basePath the base path
- * @param {Editor} fs the memfs editor instance
- * @returns {Manifest | undefined} the manifest content
- */
-async function getManifest(basePath: string, fs: Editor): Promise<Manifest | undefined> {
-    const manifestPath = await getManifestPath(basePath, fs);
-    return fs.readJSON(manifestPath) as Manifest;
 }
 
 /**
@@ -74,7 +52,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs);
-    const manifest = await getManifest(basePath, fs);
+    const { content: manifest } = await getManifest(basePath, fs);
     const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs, manifest);
     fs = updateViewFile(basePath, config.viewOrFragmentPath, config.aggregationPath, xmlDocument, templateDocument, fs);
 
@@ -352,7 +330,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
     const xmlDocument = config.viewOrFragmentPath
         ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
         : undefined;
-    const manifest = await getManifest(basePath, fs);
+    const { content: manifest } = await getManifest(basePath, fs);
     const content = getTemplateContent(config.buildingBlockData, xmlDocument, manifest, fs, true);
     const filePathProps = getFilePathProps(basePath, config.viewOrFragmentPath);
     return {

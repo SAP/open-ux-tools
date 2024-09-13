@@ -11,6 +11,7 @@ import { setCommonDefaults } from '../common/defaults';
 import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
 import { getTemplatePath } from '../templates';
 import { getJsonSpace } from '../common/file';
+import { getManifest } from '../common/utils';
 
 /**
  * Enhances the provided custom action configuration with default data.
@@ -88,15 +89,14 @@ export function enhanceManifestAndGetActionsElementReference(manifest: any, targ
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export function generateCustomAction(basePath: string, actionConfig: CustomAction, fs?: Editor): Editor {
+export async function generateCustomAction(basePath: string, actionConfig: CustomAction, fs?: Editor): Promise<Editor> {
     validateVersion(actionConfig.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
     }
     validateBasePath(basePath, fs);
 
-    const manifestPath = join(basePath, 'webapp/manifest.json');
-    const manifest = fs.readJSON(manifestPath) as Manifest;
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     const config = enhanceConfig(actionConfig, manifestPath, manifest);
 

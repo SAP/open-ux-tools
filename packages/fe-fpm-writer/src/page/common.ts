@@ -23,6 +23,7 @@ import { FCL_ROUTER } from '../common/defaults';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
+import { getManifest } from '../common/utils';
 
 type EnhancePageConfigFunction = (
     data: ObjectPage | ListReport,
@@ -257,20 +258,19 @@ export function validatePageConfig(
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-export function extendPageJSON(
+export async function extendPageJSON(
     basePath: string,
     data: ObjectPage,
     enhanceDataFn: EnhancePageConfigFunction,
     templatePath: string,
     fs?: Editor
-): Editor {
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
     validatePageConfig(basePath, data, fs);
 
-    const manifestPath = join(basePath, 'webapp/manifest.json');
-    const manifest = fs.readJSON(manifestPath) as Manifest;
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     const config = enhanceDataFn(data, manifest);
 
