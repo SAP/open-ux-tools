@@ -2,17 +2,8 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { render } from '../utils';
-import { initI18n } from '../../../src/i18n';
 
 import { ThemeSelectorCallout } from '../../../src/components/ThemeSelectorCallout';
-import { mockResizeObserver } from '../../utils/utils';
-import { initIcons } from '@sap-ux/ui-components';
-
-beforeAll(() => {
-    mockResizeObserver();
-    initI18n();
-    initIcons();
-});
 
 const triggerKeyDown = (key: string, code: number) => {
     const element = document.activeElement as HTMLElement;
