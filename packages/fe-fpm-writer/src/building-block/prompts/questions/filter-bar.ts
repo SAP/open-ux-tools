@@ -15,6 +15,9 @@ import type { Prompts, PromptContext, PromptsGroup } from '../../../prompts/type
 import { BuildingBlockType } from '../../types';
 import type { BuildingBlockConfig, FilterBar } from '../../types';
 import type { TFunction } from 'i18next';
+import { getManifestPromptsGroup } from './building-blocks';
+
+const MANIFEST_LIBRARIES_GROUP = getManifestPromptsGroup();
 
 export type FilterBarPromptsAnswer = BuildingBlockConfig<FilterBar> & Answers;
 
@@ -25,8 +28,7 @@ const defaultAnswers = {
 
 const groupIds = {
     commonBlockProperties: 'filterBarBuildingBlockProperties',
-    filterConfigureEvents: 'filterConfigureEvents',
-    manifestLibraries: 'manifestLibraries'
+    filterConfigureEvents: 'filterConfigureEvents'
 };
 
 /**
@@ -51,11 +53,7 @@ export async function getFilterBarBuildingBlockPrompts(
             title: t('filterBarConfigureEventsTitle'),
             description: t('filterBarConfigureEventsDescription', { returnObjects: true })
         },
-        {
-            id: groupIds.manifestLibraries,
-            title: t('manifestLibrariesTitle'),
-            description: t('manifestLibrariesDescription', { returnObjects: true })
-        }
+        MANIFEST_LIBRARIES_GROUP
     ];
     return {
         groups,

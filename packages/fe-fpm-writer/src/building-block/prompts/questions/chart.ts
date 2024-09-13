@@ -16,6 +16,9 @@ import {
 import type { PromptContext, Prompts, PromptsGroup } from '../../../prompts/types';
 import { BuildingBlockType } from '../../types';
 import type { BuildingBlockConfig, Chart } from '../../types';
+import { getManifestPromptsGroup } from './building-blocks';
+
+const MANIFEST_LIBRARIES_GROUP = getManifestPromptsGroup();
 
 export type ChartPromptsAnswer = BuildingBlockConfig<Chart> & Answers;
 
@@ -27,8 +30,7 @@ const defaultAnswers = {
 const groupIds = {
     commonBlockProperties: 'chartBuildingBlockProperties',
     chartVisualizationProperties: 'chartVisualizationProperties',
-    chartConfigureEvents: 'chartConfigureEvents',
-    manifestLibraries: 'manifestLibraries'
+    chartConfigureEvents: 'chartConfigureEvents'
 };
 
 /**
@@ -56,11 +58,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
             title: t('chartConfigureEventsTitle'),
             description: t('chartConfigureEventsDescription', { returnObjects: true })
         },
-        {
-            id: groupIds.manifestLibraries,
-            title: t('manifestLibrariesTitle'),
-            description: t('manifestLibrariesDescription', { returnObjects: true })
-        }
+        MANIFEST_LIBRARIES_GROUP
     ];
     return {
         groups,

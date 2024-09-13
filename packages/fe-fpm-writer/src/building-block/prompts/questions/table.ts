@@ -17,13 +17,15 @@ import {
 import type { PromptContext, Prompts, PromptsGroup } from '../../../prompts/types';
 import { BuildingBlockType } from '../../types';
 import type { BuildingBlockConfig, Table } from '../../types';
+import { getManifestPromptsGroup } from './building-blocks';
+
+const MANIFEST_LIBRARIES_GROUP = getManifestPromptsGroup();
 
 export type TablePromptsAnswer = BuildingBlockConfig<Table> & Answers;
 
 const groupIds = {
     commonBlockProperties: 'tableBuildingBlockProperties',
-    visualisationProperties: 'tableVisualizationProperties',
-    manifestLibraries: 'manifestLibraries'
+    visualisationProperties: 'tableVisualizationProperties'
 };
 
 const defaultAnswers = {
@@ -61,11 +63,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             title: t('tableVisualizationPropertiesTitle'),
             description: t('tableVisualizationPropertiesDescription', { returnObjects: true })
         },
-        {
-            id: groupIds.manifestLibraries,
-            title: t('manifestLibrariesTitle'),
-            description: t('manifestLibrariesDescription', { returnObjects: true })
-        }
+        MANIFEST_LIBRARIES_GROUP
     ];
 
     return {

@@ -8,6 +8,12 @@
                     "filterBar": "Filter Bar",
                     "table": "Table"
                 }
+            },
+            "manifestGroup": {
+                "manifestLibrariesTitle": "Manifest Libraries",
+                "manifestLibrariesDescription": [
+                    "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet."
+                ]
             }
         },
         "common": {
@@ -55,10 +61,6 @@
             "chartConfigureEventsTitle": "Configure Events",
             "chartConfigureEventsDescription": [
                 "Configure the below properties to react to events. Event handler methods are invoked when an event occurs."
-            ],
-            "manifestLibrariesTitle": "Manifest Libraries",
-            "manifestLibrariesDescription": [
-                "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet."
             ],
             "id": {
                 "message": "Building Block ID",
@@ -113,10 +115,6 @@
             "filterBarConfigureEventsDescription": [
                 "Configure the below properties to react to events. Event handler methods are invoked when an event occurs."
             ],
-            "manifestLibrariesTitle": "Manifest Libraries",
-            "manifestLibrariesDescription": [
-                "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet."
-            ],
             "id": {
                 "message": "Building Block ID",
                 "validation": "An ID is required to generate the filter bar building block"
@@ -146,10 +144,6 @@
             ],
             "tableVisualizationPropertiesTitle": "Table Visualization Properties",
             "tableVisualizationPropertiesDescription": ["Configure your table using the properties below."],
-            "manifestLibrariesTitle": "Manifest Libraries",
-            "manifestLibrariesDescription": [
-                "In order for macros to work, we need to ensure that the sap.fe.macros library is maintained in manifest.json. Please see the code snippet."
-            ],
             "viewOrFragmentPath": {
                 "message": "View or Fragment File",
                 "validation": "A View or Fragment is required to generate the table building block"
