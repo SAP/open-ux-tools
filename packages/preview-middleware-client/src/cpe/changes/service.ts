@@ -50,7 +50,7 @@ interface Change {
 
 type SavedChangesResponse = Record<string, Change>;
 
-type SavedChangeFile = {
+type ChangeFiles = {
     fileName: string;
 };
 
@@ -100,7 +100,7 @@ export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
     private sendAction: (action: ExternalAction) => void;
     private pendingChanges: PendingChange[] = [];
-    private savedChangeFiles: SavedChangeFile[] = [];
+    private changedFiles: ChangeFiles[] = [];
     /**
      *
      * @param options ui5 adaptation options.
@@ -176,7 +176,7 @@ export class ChangeService {
      * Fetches saved changes from the workspace and sorts them.
      */
     private async fetchSavedChanges(): Promise<void> {
-        this.savedChangeFiles = [];
+        this.changedFiles = [];
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
         const savedChanges = (await savedChangesResponse.json()) as SavedChangesResponse;
         const changes = (
@@ -203,7 +203,7 @@ export class ChangeService {
                                 ) {
                                     throw new Error('Unknown Change Type');
                                 }
-                                this.savedChangeFiles.push(change);
+                                this.changedFiles.push(change);
                                 return {
                                     type: 'saved',
                                     kind: 'valid',
@@ -220,7 +220,7 @@ export class ChangeService {
                             } catch (error) {
                                 // Gracefully handle change files with invalid content
                                 if (change.fileName) {
-                                    this.savedChangeFiles.push(change);
+                                    this.changedFiles.push(change);
                                     const unknownChange: UnknownSavedChange = {
                                         type: 'saved',
                                         kind: 'unknown',
@@ -457,7 +457,7 @@ export class ChangeService {
      * @returns void
      */
     public async syncOutlineChanges(): Promise<void> {
-        for (const file of this.savedChangeFiles) {
+        for (const file of this.changedFiles) {
             const flexObject = await this.getFlexObject(file);
             const savedChange = this.savedChanges.find((change) => change.fileName === file.fileName);
             if (savedChange) {

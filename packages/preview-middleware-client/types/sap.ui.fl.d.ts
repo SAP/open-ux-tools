@@ -2,6 +2,12 @@ declare module 'sap/ui/fl' {
     export type Layer = 'USER' | 'PUBLIC' | 'CUSTOMER' | 'CUSTOMER_BASE' | 'PARTNER' | 'VENDOR' | 'BASE';
 }
 
+declare module 'sap/ui/fl/Selector' {
+    export default interface Selector {
+        id: string;
+        idIsLocal: boolean;
+    }
+}
 declare module 'sap/ui/fl/Layer' {
     const Layer = {
         CUSTOMER_BASE: 'CUSTOMER_BASE',
@@ -13,15 +19,10 @@ declare module 'sap/ui/fl/Layer' {
 
 declare module 'sap/ui/fl/Change' {
     import type { Layer } from 'sap/ui/fl';
-
-    export interface ChangeSelector {
-        id: string;
-        idIsLocal: boolean;
-    }
-
+    import type Selector from 'sap/ui/fl/Selector';
     export interface ChangeDefinition {
         service: string;
-        selector: ChangeSelector
+        selector: Selector;
         layer: Layer;
         changeType: string;
         packageName: string;
@@ -33,7 +34,7 @@ declare module 'sap/ui/fl/Change' {
     class Change {
         constructor(oFile: object): void;
         getDefinition: () => ChangeDefinition;
-        getSelector: () => ChangeSelector;
+        getSelector: () => Selector;
         getChangeType: () => string;
         getLayer: () => Layer;
     }
