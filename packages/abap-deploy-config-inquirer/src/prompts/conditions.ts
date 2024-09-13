@@ -7,7 +7,6 @@ import { t } from '../i18n';
 import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
 import {
-    ClientChoiceValue,
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
@@ -83,22 +82,13 @@ export function showClientChoiceQuestion(client?: string, isS4HanaCloudSystem?: 
 }
 
 /**
- * Determines if the client question should be shown.
- * Note: In some instances, when a yaml conf is parsed, double quoted properties i.e. client: "100" are saved as a number instead of a string.
+ * Only show the client prompt for URL flow.
  *
- * @param clientChoice - client choice from previous answers
- * @param client - client
- * @param isS4HanaCloudSystem - is S/4 HANA Cloud system
+ * @param targetSystem - System selected
  * @returns boolean
  */
-export function showClientQuestion(clientChoice?: string, client?: string, isS4HanaCloudSystem?: boolean): boolean {
-    const clientCondition = showClientCondition(isS4HanaCloudSystem);
-
-    if (clientCondition && client) {
-        PromptState.abapDeployConfig.client = String(client);
-    }
-    const showOnCli = clientChoice === ClientChoiceValue.New || !client;
-    return !PromptState.isYUI ? showOnCli && clientCondition : clientCondition;
+export function showClientQuestion(targetSystem?: string): boolean {
+    return targetSystem === TargetSystemType.Url;
 }
 
 /**

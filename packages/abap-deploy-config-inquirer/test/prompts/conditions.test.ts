@@ -1,5 +1,11 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { ClientChoiceValue, PackageInputChoices, TransportChoices, TransportConfig } from '../../src/types';
+import {
+    ClientChoiceValue,
+    PackageInputChoices,
+    TargetSystemType,
+    TransportChoices,
+    TransportConfig
+} from '../../src/types';
 import {
     defaultOrShowManualPackageQuestion,
     defaultOrShowManualTransportQuestion,
@@ -81,15 +87,8 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should show client question', () => {
-        PromptState.isYUI = true;
-        mockIsAppStudio.mockReturnValueOnce(false);
-        expect(showClientQuestion(undefined, undefined, false)).toBe(true);
-    });
-
-    test('should show client question (CLI)', () => {
-        PromptState.isYUI = false;
-        mockIsAppStudio.mockReturnValue(false);
-        expect(showClientQuestion(ClientChoiceValue.New, undefined, false)).toBe(true);
+        expect(showClientQuestion()).toBe(false);
+        expect(showClientQuestion(TargetSystemType.Url)).toBe(true);
     });
 
     test('should show username question', async () => {

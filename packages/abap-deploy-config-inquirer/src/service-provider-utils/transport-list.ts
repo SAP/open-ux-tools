@@ -23,10 +23,15 @@ export async function getTransportListFromService(
 ): Promise<TransportListItem[] | undefined> {
     let transportListItems: TransportListItem[] | undefined;
     try {
+        LoggerHelper.logger.debug(
+            `getTransportListFromService ${packageName} ${appName} ${JSON.stringify(systemConfig)} ${JSON.stringify(
+                backendTarget
+            )}`
+        );
         const provider = await getOrCreateServiceProvider(systemConfig, backendTarget);
         const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
         const transportReqList = await adtService?.getTransportRequests(packageName, appName);
-
+        LoggerHelper.logger.debug(`getTransportListFromService transport list ${JSON.stringify(transportReqList)}`);
         if (transportReqList) {
             transportListItems = transportReqList.map((transportReq) => {
                 return {
@@ -36,6 +41,7 @@ export async function getTransportListFromService(
             });
         }
     } catch (e) {
+        LoggerHelper.logger.debug(`getTransportListFromService error ${JSON.stringify(e)}`);
         if (e.message === TransportChecksService.LocalPackageError) {
             PromptState.transportAnswers.transportRequired = false;
         }

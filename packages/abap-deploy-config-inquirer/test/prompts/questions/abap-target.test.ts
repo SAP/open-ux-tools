@@ -360,6 +360,7 @@ describe('getAbapTargetPrompts', () => {
     });
 
     test('should return expected values from client prompt methods', async () => {
+        PromptState.abapDeployConfig.client = '100';
         mockGetAbapSystems.mockResolvedValueOnce({
             destinations: undefined,
             backendSystems: undefined
@@ -383,5 +384,6 @@ describe('getAbapTargetPrompts', () => {
         } else {
             throw new Error('Client choice prompt not found');
         }
+        PromptState.resetAbapDeployConfig();
     });
 });

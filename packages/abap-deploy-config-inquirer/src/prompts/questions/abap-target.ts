@@ -215,27 +215,21 @@ function getClientChoicePrompt(
 }
 
 /**
- * Returns the client prompt.
+ * Returns the client prompt using prompt state to populate the default value.
  *
- * @param backendTarget - backend target
  * @returns input question for client
  */
-function getClientPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigAnswersInternal> {
+function getClientPrompt(): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => {
-            return showClientQuestion(
-                previousAnswers.clientChoice,
-                backendTarget?.abapTarget?.client,
-                PromptState.abapDeployConfig?.isS4HC
-            );
-        },
+        when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
+            showClientQuestion(previousAnswers.targetSystem),
         type: 'input',
         name: abapDeployConfigInternalPromptNames.client,
         message: t('prompts.target.client.message'),
         guiOptions: {
             breadcrumb: t('prompts.target.client.breadcrumb')
         },
-        default: (): string | undefined => backendTarget?.abapTarget?.client,
+        default: (): string | undefined => PromptState.abapDeployConfig?.client,
         filter: (input: string): string => input?.trim(),
         validate: (client: string): boolean | string => validateClient(client)
     } as InputQuestion<AbapDeployConfigAnswersInternal>;
@@ -258,6 +252,6 @@ export async function getAbapTargetPrompts(
         getUrlPrompt(destinations, options.backendTarget),
         getScpPrompt(options.backendTarget),
         ...getClientChoicePrompt(options.backendTarget),
-        getClientPrompt(options.backendTarget)
+        getClientPrompt()
     ];
 }
