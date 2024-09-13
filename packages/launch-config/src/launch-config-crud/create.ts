@@ -96,7 +96,7 @@ async function handleExistingLaunchJson(
     if (replaceWithNew) {
         // replaceWithNew is needed in cases where launch config exists in
         // `.vscode` but isn't added to the workspace. If `replaceWithNew` is `true`, it indicates that the app is not
-        // in the workspace, so the entire `launch.json` and replaced since launch config is then generated in app folder. 
+        // in the workspace, so the entire `launch.json` and replaced since launch config is then generated in app folder.
         const newLaunchJSONContent = { version: '0.2.0', configurations };
         fs.write(launchJSONPath, JSON.stringify(newLaunchJSONContent, null, 4));
     } else {
