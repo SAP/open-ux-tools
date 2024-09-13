@@ -3,7 +3,6 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomAction, CustomActionTarget, InternalCustomAction } from './types';
 import { TargetControl } from './types';
-import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
