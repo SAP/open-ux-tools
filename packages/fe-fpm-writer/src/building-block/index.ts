@@ -7,12 +7,13 @@ import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type B
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
-import { getErrorMessage, validateBasePath } from '../common/validate';
+import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
 import { coerce, lt } from 'semver';
 import type { Manifest } from '../common/types';
-import { getMinimumUI5Version } from '@sap-ux/project-access';
+import { getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
+import { detectTabSpacing, extendJSON } from '../common/file';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -26,14 +27,25 @@ interface MetadataPath {
 }
 
 /**
+ * Gets manifest path.
+ *
+ * @param {string} basePath the base path
+ * @param {Editor} fs the memfs editor instance
+ * @returns {Manifest | undefined} path to manifest file
+ */
+async function getManifestPath(basePath: string, fs: Editor): Promise<string> {
+    return join(await getWebappPath(basePath, fs), 'manifest.json');
+}
+
+/**
  * Gets manifest content.
  *
  * @param {string} basePath the base path
  * @param {Editor} fs the memfs editor instance
  * @returns {Manifest | undefined} the manifest content
  */
-function getManifest(basePath: string, fs: Editor): Manifest | undefined {
-    const manifestPath = join(basePath, 'webapp/manifest.json');
+async function getManifest(basePath: string, fs: Editor): Promise<Manifest | undefined> {
+    const manifestPath = await getManifestPath(basePath, fs);
     return fs.readJSON(manifestPath) as Manifest;
 }
 
@@ -45,25 +57,39 @@ function getManifest(basePath: string, fs: Editor): Manifest | undefined {
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Editor} the updated memfs editor instance
  */
-export function generateBuildingBlock<T extends BuildingBlock>(
+export async function generateBuildingBlock<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
     fs?: Editor
-): Editor {
+): Promise<Editor> {
     // Validate the base and view paths
     if (!fs) {
         fs = create(createStorage());
     }
-    validateBasePath(basePath, fs, ['sap.fe.templates', 'sap.fe.core']);
+    validateBasePath(basePath, fs, []);
+
     if (!fs.exists(join(basePath, config.viewOrFragmentPath))) {
         throw new Error(`Invalid view path ${config.viewOrFragmentPath}.`);
     }
 
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs);
-    const manifest = getManifest(basePath, fs);
+    const manifest = await getManifest(basePath, fs);
     const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs, manifest);
     fs = updateViewFile(basePath, config.viewOrFragmentPath, config.aggregationPath, xmlDocument, templateDocument, fs);
+
+    if (manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
+        // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
+        const manifestPath = await getManifestPath(basePath, fs);
+        const templatePath = getTemplatePath('/building-block/common/manifest.json');
+        const content = fs.read(manifestPath);
+        const tabInfo = detectTabSpacing(content);
+        extendJSON(fs, {
+            filepath: manifestPath,
+            content: render(fs.read(templatePath), { libraries: { 'sap.fe.macros': {} } }),
+            tabInfo: tabInfo
+        });
+    }
 
     return fs;
 }
@@ -310,11 +336,11 @@ function getFilePathProps(basePath: string, relativePath?: string): FilePathProp
  * @param {Editor} [fs] - The memfs editor instance
  * @returns {{ [questionName: string]: CodeSnippet }} An object with serialized code snippet content and file props
  */
-export function getSerializedFileContent<T extends BuildingBlock>(
+export async function getSerializedFileContent<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
     fs?: Editor
-): { [questionName: string]: CodeSnippet } {
+): Promise<{ [questionName: string]: CodeSnippet }> {
     if (!config.buildingBlockData?.buildingBlockType) {
         return {};
     }
@@ -326,7 +352,7 @@ export function getSerializedFileContent<T extends BuildingBlock>(
     const xmlDocument = config.viewOrFragmentPath
         ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
         : undefined;
-    const manifest = getManifest(basePath, fs);
+    const manifest = await getManifest(basePath, fs);
     const content = getTemplateContent(config.buildingBlockData, xmlDocument, manifest, fs, true);
     const filePathProps = getFilePathProps(basePath, config.viewOrFragmentPath);
     return {

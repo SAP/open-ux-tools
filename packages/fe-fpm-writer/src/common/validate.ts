@@ -3,6 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { coerce, lt } from 'semver';
+import type { Manifest } from './types';
 
 /**
  * Validate that the UI5 version requirement is valid.
@@ -16,6 +17,22 @@ export function validateVersion(ui5Version?: string): boolean {
         throw new Error('SAP Fiori elements for OData v4 is only supported starting with SAPUI5 1.84.');
     }
     return true;
+}
+
+/**
+ * Validates the library dependencies - at least one of expected dependencies is present.
+ *
+ * @param {string} manifest - the manifest content
+ * @param {string[]} dependencies - expected dependencies
+ * @returns true if at least one of expected dependencies is presented in manifest.
+ */
+export function validateDependenciesLibs(manifest: Manifest, dependencies: string[]): boolean {
+    const libs = manifest['sap.ui5']?.dependencies?.libs;
+    return dependencies.length
+        ? dependencies.some((dependency) => {
+              return libs?.[dependency] !== undefined;
+          })
+        : true;
 }
 
 /**
@@ -35,14 +52,8 @@ export function validateBasePath(basePath: string, fs?: Editor, dependencies = [
     if (!fs.exists(manifestPath)) {
         throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
     } else {
-        const manifest = fs.readJSON(manifestPath) as any;
-        const libs = manifest['sap.ui5']?.dependencies?.libs;
-        const valid = dependencies.length
-            ? dependencies.some((dependency) => {
-                  return libs?.[dependency] !== undefined;
-              })
-            : true;
-        if (!valid) {
+        const manifest = fs.readJSON(manifestPath) as Manifest;
+        if (!validateDependenciesLibs(manifest, dependencies)) {
             if (dependencies.length === 1) {
                 throw new Error(
                     `Dependency ${dependencies[0]} is missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.`
