@@ -1,8 +1,12 @@
 import { configureLaunchJsonFile } from '../../src/debug-config/config';
 import type { DebugOptions, LaunchConfig, LaunchJSON } from '../../src/types';
 import path from 'path';
-import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../../src/types';
+import {
+    FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID,
+    ProjectDataSourceType,
+    oDataVersionV2,
+    oDataVersionV4
+} from '../../src/types';
 
 const projectName = 'project1';
 const cwd = `\${workspaceFolder}`;
@@ -57,12 +61,12 @@ describe('debug config tests', () => {
     beforeEach(() => {
         configOptions = {
             vscode: vscodeMock,
-            odataVersion: OdataVersion.v2,
+            odataVersion: oDataVersionV2,
             sapClientParam: '',
             flpAppId: 'project1-tile',
             isFioriElement: true,
             flpSandboxAvailable: true,
-            datasourceType: DatasourceType.odataServiceUrl
+            datasourceType: ProjectDataSourceType.odataServiceUrl
         };
     });
 
@@ -81,7 +85,7 @@ describe('debug config tests', () => {
     });
 
     it('Should return the correct configuration for OData v4', () => {
-        configOptions.odataVersion = OdataVersion.v4;
+        configOptions.odataVersion = oDataVersionV4;
         const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         expect(launchFile.configurations.length).toBe(3);
 
@@ -91,7 +95,7 @@ describe('debug config tests', () => {
     });
 
     it('Should return correct configuration for local metadata', () => {
-        configOptions.datasourceType = DatasourceType.metadataFile;
+        configOptions.datasourceType = ProjectDataSourceType.metadataFile;
         const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         expect(launchFile.configurations.length).toBe(2);
 
@@ -133,8 +137,8 @@ describe('debug config tests', () => {
     });
 
     it('Should return correct configuration on BAS and sapClientParam is available', () => {
-        configOptions.odataVersion = OdataVersion.v2;
-        configOptions.datasourceType = DatasourceType.odataServiceUrl;
+        configOptions.odataVersion = oDataVersionV2;
+        configOptions.datasourceType = ProjectDataSourceType.odataServiceUrl;
         configOptions.sapClientParam = 'sapClientParam';
         configOptions.isAppStudio = true;
 

@@ -5,9 +5,8 @@ import { createLaunchConfig } from '../../src/launch-config-crud/create';
 import { DirName, FileName } from '@sap-ux/project-access';
 import { TestPaths } from '../test-data/utils';
 import type { DebugOptions } from '../../src/types';
-import { LAUNCH_JSON_FILE } from '../../src/types';
+import { LAUNCH_JSON_FILE, ProjectDataSourceType } from '../../src/types';
 import type { Logger } from '@sap-ux/logger';
-import { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { t } from '../../src/i18n';
 import { isFolderInWorkspace } from '../../src/debug-config/helpers';
 
@@ -188,7 +187,7 @@ describe('create', () => {
                 name: 'test-projects',
                 projectRoot: projectPath,
                 debugOptions: {
-                    datasourceType: DatasourceType.odataServiceUrl,
+                    datasourceType: ProjectDataSourceType.odataServiceUrl,
                     vscode: true
                 } as DebugOptions
             },
@@ -258,7 +257,7 @@ describe('create', () => {
                 name: 'test-projects',
                 projectRoot: projectPath,
                 debugOptions: {
-                    datasourceType: DatasourceType.capProject,
+                    datasourceType: ProjectDataSourceType.capProject,
                     vscode: true
                 } as DebugOptions
             },
@@ -281,7 +280,7 @@ describe('create', () => {
                 name: 'test-projects',
                 projectRoot: projectPath,
                 debugOptions: {
-                    datasourceType: DatasourceType.capProject,
+                    datasourceType: ProjectDataSourceType.capProject,
                     vscode: false
                 } as DebugOptions
             },
@@ -310,7 +309,7 @@ describe('create', () => {
                 name: 'test-projects',
                 projectRoot: projectPath,
                 debugOptions: {
-                    datasourceType: DatasourceType.odataServiceUrl,
+                    datasourceType: ProjectDataSourceType.odataServiceUrl,
                     vscode: {
                         workspace: {
                             workspaceFile: { scheme: 'file' }
@@ -390,7 +389,7 @@ describe('create', () => {
                 name: 'test-projects',
                 projectRoot: projectPath,
                 debugOptions: {
-                    datasourceType: DatasourceType.odataServiceUrl,
+                    datasourceType: ProjectDataSourceType.odataServiceUrl,
                     vscode: {
                         workspace: {
                             workspaceFile: { scheme: 'file' }

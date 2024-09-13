@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join, basename } from 'path';
 import { DirName } from '@sap-ux/project-access';
-import { LAUNCH_JSON_FILE } from '../types';
+import { LAUNCH_JSON_FILE, ProjectDataSourceType } from '../types';
 import type { FioriOptions, LaunchJSON, UpdateWorkspaceFolderOptions, DebugOptions, LaunchConfig } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig } from './utils';
@@ -11,7 +11,6 @@ import { parse } from 'jsonc-parser';
 import { handleWorkspaceConfig } from '../debug-config/workspaceManager';
 import { configureLaunchJsonFile } from '../debug-config/config';
 import type { Logger } from '@sap-ux/logger';
-import { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { t } from '../i18n';
 
 /**
@@ -156,7 +155,7 @@ async function handleDebugOptions(
     );
     const configurations = configureLaunchJsonFile(rootFolder, cwd, debugOptions).configurations;
 
-    const npmCommand = debugOptions.datasourceType === DatasourceType.metadataFile ? 'run start-mock' : 'start';
+    const npmCommand = debugOptions.datasourceType === ProjectDataSourceType.metadataFile ? 'run start-mock' : 'start';
     log?.info(
         t('startServerMessage', {
             folder: basename(rootFolder),
@@ -208,7 +207,7 @@ export async function createLaunchConfig(
     if (!debugOptions.vscode) {
         return fs;
     }
-    if (debugOptions.datasourceType === DatasourceType.capProject) {
+    if (debugOptions.datasourceType === ProjectDataSourceType.capProject) {
         log?.info(t('startApp', { npmStart: '`npm start`', cdsRun: '`cds run --in-memory`' }));
         return fs;
     }

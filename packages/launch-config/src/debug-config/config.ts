@@ -1,8 +1,7 @@
-import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { basename } from 'path';
 import { getLaunchConfig } from '../launch-config-crud/utils';
 import type { LaunchConfig, LaunchJSON, DebugOptions, LaunchConfigEnv } from '../types';
-import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
+import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID, ProjectDataSourceType, oDataVersionV2, oDataVersionV4 } from '../types';
 
 // debug constants
 const testFlpSandboxHtml = 'test/flpSandbox.html';
@@ -87,7 +86,7 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
     const launchFile: LaunchJSON = { version: '0.2.0', configurations: [] };
 
     // Add live configuration if the datasource is not from a metadata file
-    if (datasourceType !== DatasourceType.metadataFile) {
+    if (datasourceType !== ProjectDataSourceType.metadataFile) {
         const startCommand = `${startHtmlFile}${flpAppIdWithHash}`;
         const liveConfig = createLaunchConfig(
             `Start ${projectName}`,
@@ -101,10 +100,10 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
     }
 
     // Add mock configuration for OData V2 or V4
-    if (odataVersion && [OdataVersion.v2, OdataVersion.v4].includes(odataVersion)) {
+    if (odataVersion && [oDataVersionV2, oDataVersionV4].includes(odataVersion)) {
         const params = `${flpAppIdWithHash ?? ''}`;
         const mockCmdArgs =
-            isMigrator && odataVersion === OdataVersion.v2
+            isMigrator && odataVersion === oDataVersionV2
                 ? ['--open', `${testFlpSandboxMockServerHtml}${params}`]
                 : ['--config', './ui5-mock.yaml', '--open', `${testFlpSandboxHtml}${params}`];
         const mockConfig = createLaunchConfig(
@@ -119,7 +118,7 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
     }
 
     // Add local configuration
-    const shouldUseMockServer = isFioriElement && odataVersion === OdataVersion.v2 && isMigrator;
+    const shouldUseMockServer = isFioriElement && odataVersion === oDataVersionV2 && isMigrator;
     const localHtmlFile = shouldUseMockServer ? testFlpSandboxMockServerHtml : startHtmlFile;
     const startLocalCommand = `${localHtmlFile}${
         migratorMockIntent ? `#${migratorMockIntent.replace('#', '')}` : flpAppIdWithHash
