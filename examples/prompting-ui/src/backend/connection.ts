@@ -158,7 +158,7 @@ async function handleAction(action: Actions): Promise<void> {
             }
             case APPLY_ANSWERS: {
                 const { answers, buildingBlockType } = action;
-                const _fs = promptsAPI.submitAnswers(buildingBlockType, answers);
+                const _fs = await promptsAPI.submitAnswers(buildingBlockType, answers);
                 await promisify(_fs.commit).call(_fs);
                 const responseAction: ResetAnswers = {
                     type: RESET_ANSWERS,
@@ -177,7 +177,7 @@ async function handleAction(action: Actions): Promise<void> {
             }
             case GET_CODE_SNIPPET: {
                 const { answers, buildingBlockType } = action;
-                const codeSnippets = promptsAPI.getCodeSnippets(buildingBlockType, answers);
+                const codeSnippets = await promptsAPI.getCodeSnippets(buildingBlockType, answers);
                 const responseAction: UpdateCodeSnippet = {
                     type: UPDATE_CODE_SNIPPET,
                     buildingBlockType,

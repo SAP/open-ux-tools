@@ -43,7 +43,7 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
         prompt.questions,
         prompt.initialAnswers
     )) as FilterBarPromptsAnswer;
-    fs = promptsAPI.submitAnswers(PromptsType.FilterBar, answers);
+    fs = await promptsAPI.submitAnswers(PromptsType.FilterBar, answers);
     return fs;
 }
 
@@ -61,7 +61,7 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
         prompt.questions,
         prompt.initialAnswers
     )) as ChartPromptsAnswer;
-    fs = promptsAPI.submitAnswers(PromptsType.Chart, answers);
+    fs = await promptsAPI.submitAnswers(PromptsType.Chart, answers);
     return fs;
 }
 /**
@@ -78,7 +78,7 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
         prompt.questions,
         prompt.initialAnswers
     )) as TablePromptsAnswer;
-    fs = promptsAPI.submitAnswers(PromptsType.Table, answers);
+    fs = await promptsAPI.submitAnswers(PromptsType.Table, answers);
     return fs;
 }
 
