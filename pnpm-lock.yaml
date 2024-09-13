@@ -736,9 +736,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@sap-ux/odata-service-inquirer':
-        specifier: workspace:*
-        version: link:../odata-service-inquirer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -761,6 +758,9 @@ importers:
         specifier: 1.6.11
         version: 1.6.11
     devDependencies:
+      '@sap-ux/odata-service-inquirer':
+        specifier: workspace:*
+        version: link:../odata-service-inquirer
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
