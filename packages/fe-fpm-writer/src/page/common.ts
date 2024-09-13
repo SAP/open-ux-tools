@@ -1,7 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
 import { render } from 'ejs';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { validateBasePath } from '../common/validate';
@@ -213,19 +212,20 @@ export function initializeTargetSettings(
  * @param dependencies - expected dependencies
  * @returns the updated memfs editor instance
  */
-export function validatePageConfig(
+export async function validatePageConfig(
     basePath: string,
     config: CustomPage | ObjectPage,
     fs: Editor,
     dependencies = []
-): Editor {
+): Promise<Editor> {
     // common validators
 
     validateBasePath(basePath, fs, dependencies);
 
     // validate config against the manifest
     if (config.navigation?.sourcePage) {
-        const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as Manifest;
+        const { content: manifest } = await getManifest(basePath, fs);
+
         if (!manifest['sap.ui5']?.routing?.targets?.[config.navigation.sourcePage]) {
             throw new Error(`Could not find navigation source ${config.navigation.sourcePage}!`);
         }
@@ -268,7 +268,7 @@ export async function extendPageJSON(
     if (!fs) {
         fs = create(createStorage());
     }
-    validatePageConfig(basePath, data, fs);
+    await validatePageConfig(basePath, data, fs);
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 

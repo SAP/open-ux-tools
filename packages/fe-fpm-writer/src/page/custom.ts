@@ -79,7 +79,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor):
         fs = create(createStorage());
     }
     validateVersion(data.minUI5Version);
-    validatePageConfig(basePath, data, fs, []);
+    await validatePageConfig(basePath, data, fs, []);
 
     const manifestPath = await getManifestPath(basePath, fs);
 
