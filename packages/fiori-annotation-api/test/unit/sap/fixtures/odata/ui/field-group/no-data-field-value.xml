@@ -1,0 +1,11 @@
+<Annotation Term="UI.FieldGroup" Qualifier="GeneratedGroup1">
+    <Record Type="UI.FieldGroupType">
+        <PropertyValue Property="Data">
+            <Collection>
+                <Record Type="UI.DataField">
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+<!-- To get the correct annotation line in test add 7 to the line number of this file -->

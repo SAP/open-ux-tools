@@ -1,5 +1,26 @@
 # @sap-ux/preview-middleware
 
+## 0.16.63
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/adp-tooling@0.12.47
+
+## 0.16.62
+
+### Patch Changes
+
+-   Updated dependencies [aa72f3c]
+    -   @sap-ux/adp-tooling@0.12.46
+
+## 0.16.61
+
+### Patch Changes
+
+-   247e0bb: fix: quick action titles
+
 ## 0.16.60
 
 ### Patch Changes

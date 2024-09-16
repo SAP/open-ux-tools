@@ -46,8 +46,8 @@ describe('launchConfig Unit Tests', () => {
 
     describe('handleUnsavedWorkspace', () => {
         it('should update paths for nested folders inside a workspace', () => {
-            const mockProjectPath = '/mock/project/nestedFolder';
-            const mockWsFolder = '/mock/workspace/folder';
+            const mockProjectPath = path.join('/mock/project/nestedFolder');
+            const mockWsFolder = path.join('/mock/workspace/folder');
             const mockNestedFolder = 'nestedFolder';
             mockVscode.workspace.getWorkspaceFolder.mockReturnValue({ uri: { fsPath: mockWsFolder } });
             (path.relative as jest.Mock).mockReturnValue(mockNestedFolder);
@@ -252,8 +252,8 @@ describe('launchConfig Unit Tests', () => {
         });
 
         it('should handle unsaved workspace case', () => {
-            const mockProjectPath = '/mock/project/path';
-            const mockTargetFolder = '/target/folder';
+            const mockProjectPath = path.join('/mock/project/path');
+            const mockTargetFolder = path.join('/target/folder');
             const mockVscode = {
                 workspace: {
                     getWorkspaceFolder: jest.fn().mockReturnValue(undefined),

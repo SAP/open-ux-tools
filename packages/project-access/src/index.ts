@@ -43,7 +43,8 @@ export {
     filterDataSourcesByType,
     updatePackageScript,
     findCapProjectRoot,
-    hasUI5CliV3
+    hasUI5CliV3,
+    findRootsForPath
 } from './project';
 export * from './types';
 export * from './library';

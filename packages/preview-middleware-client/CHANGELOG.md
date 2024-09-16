@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.2
+
+### Patch Changes
+
+-   c08bb59: Fixed quick actions panel not rendered in case of app running ui5 v.1.71
+
+## 0.11.1
+
+### Patch Changes
+
+-   247e0bb: fix: quick action titles
+
 ## 0.11.0
 
 ### Minor Changes
