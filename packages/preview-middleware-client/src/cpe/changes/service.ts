@@ -45,14 +45,9 @@ interface Change {
     content: ChangeContent;
     creation: string;
     changeType: string;
-    file: object;
 }
 
 type SavedChangesResponse = Record<string, Change>;
-
-type ChangeFiles = {
-    fileName: string;
-};
 
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
 /**
@@ -100,7 +95,7 @@ export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
     private sendAction: (action: ExternalAction) => void;
     private pendingChanges: PendingChange[] = [];
-    private changedFiles: ChangeFiles[] = [];
+    private changedFiles: Record<'fileName', string>[] = [];
     /**
      *
      * @param options ui5 adaptation options.
