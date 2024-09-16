@@ -11,6 +11,7 @@ import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
+import { getManifest } from '../common/utils';
 
 type CustomSectionUnion = CustomHeaderSection | CustomSection | CustomSubSection;
 
@@ -91,20 +92,19 @@ function enhanceConfig(
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
-function generate(
+async function generate(
     basePath: string,
     customSection: CustomSectionUnion,
     manifestTemplateRoot: string,
     fs?: Editor
-): { editor: Editor; section: InternalCustomSection } {
+): Promise<{ editor: Editor; section: InternalCustomSection }> {
     validateVersion(customSection.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
     }
     validateBasePath(basePath, fs);
 
-    const manifestPath = join(basePath, 'webapp/manifest.json');
-    const manifest = fs.readJSON(manifestPath) as Manifest;
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     // merge with defaults
     const completeSection = enhanceConfig(fs, customSection, manifestPath, manifest);
@@ -134,11 +134,11 @@ function generate(
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
-export function generateCustomHeaderSection(
+export async function generateCustomHeaderSection(
     basePath: string,
     customHeaderSection: CustomHeaderSection,
     fs?: Editor
-): Editor {
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -148,13 +148,12 @@ export function generateCustomHeaderSection(
     // Prepare 'templateEdit' - apply namespace and folder path resolution
     if (customHeaderSection.edit && (!minVersion || gte(minVersion, '1.86.0'))) {
         editSection = customHeaderSection.edit;
-        const manifestPath = join(basePath, 'webapp/manifest.json');
-        const manifest = fs.readJSON(manifestPath) as Manifest;
+        const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
         // Set folder, ns and path for edit fragment
         setCommonDefaults(editSection, manifestPath, manifest);
     }
     // Call standard custom section generation
-    const { editor, section } = generate(basePath, customHeaderSection, manifestRoot, fs);
+    const { editor, section } = await generate(basePath, customHeaderSection, manifestRoot, fs);
     // Handle 'templateEdit' - edit fragment details
     if (editSection) {
         // Apply event handler for edit fragment
@@ -192,9 +191,13 @@ export function generateCustomHeaderSection(
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
-export function generateCustomSection(basePath: string, customSection: CustomSection, fs?: Editor): Editor {
+export async function generateCustomSection(
+    basePath: string,
+    customSection: CustomSection,
+    fs?: Editor
+): Promise<Editor> {
     const manifestRoot = getManifestRoot('section', customSection.minUI5Version);
-    return generate(basePath, customSection, manifestRoot, fs).editor;
+    return (await generate(basePath, customSection, manifestRoot, fs)).editor;
 }
 
 /**
@@ -205,7 +208,11 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
-export function generateCustomSubSection(basePath: string, customSubSection: CustomSubSection, fs?: Editor): Editor {
+export async function generateCustomSubSection(
+    basePath: string,
+    customSubSection: CustomSubSection,
+    fs?: Editor
+): Promise<Editor> {
     const manifestRoot = getManifestRoot('subsection', customSubSection.minUI5Version);
-    return generate(basePath, customSubSection, manifestRoot, fs).editor;
+    return (await generate(basePath, customSubSection, manifestRoot, fs)).editor;
 }
