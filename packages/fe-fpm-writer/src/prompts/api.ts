@@ -162,10 +162,10 @@ export class PromptsAPI {
      * @param answers The answers object
      * @returns The updated memfs editor instance
      */
-    public submitAnswers<N extends SupportedPrompts['type']>(
+    public async submitAnswers<N extends SupportedPrompts['type']>(
         type: N,
         answers: NarrowPrompt<typeof type>['answers']
-    ): Editor {
+    ): Promise<Editor> {
         const config = { type, answers };
         if (!this.isGenerationSupported(config)) {
             return this.context.fs;
@@ -183,10 +183,10 @@ export class PromptsAPI {
      * @param answers The answers object
      * @returns Code snippet content.
      */
-    public getCodeSnippets<N extends SupportedPrompts['type']>(
+    public async getCodeSnippets<N extends SupportedPrompts['type']>(
         type: N,
         answers: NarrowPrompt<typeof type>['answers']
-    ): { [questionName: string]: CodeSnippet } {
+    ): Promise<{ [questionName: string]: CodeSnippet }> {
         const config = { type, answers };
         if (!this.isGenerationSupported(config)) {
             return {};

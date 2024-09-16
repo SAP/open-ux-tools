@@ -40,62 +40,77 @@ describe('Building Blocks', () => {
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
 
         // Test generator with an invalid base path
-        expect(() =>
-            generateBuildingBlock<FilterBar>(
-                'invalidBasePath',
-                {
-                    viewOrFragmentPath: 'testViewPath',
-                    aggregationPath: 'testAggregation',
-                    buildingBlockData: {
-                        id: 'testFilterBar',
-                        buildingBlockType: BuildingBlockType.FilterBar
-                    }
-                },
-                fs
-            )
-        ).toThrowError(/Invalid project folder/);
+        await expect(
+            async () =>
+                await generateBuildingBlock<FilterBar>(
+                    'invalidBasePath',
+                    {
+                        viewOrFragmentPath: 'testViewPath',
+                        aggregationPath: 'testAggregation',
+                        buildingBlockData: {
+                            id: 'testFilterBar',
+                            buildingBlockType: BuildingBlockType.FilterBar
+                        }
+                    },
+                    fs
+                )
+        ).rejects.toThrowError(/Invalid project folder/);
 
         // Test generator with an invalid view path
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
-        expect(() =>
-            generateBuildingBlock<FilterBar>(
-                basePath,
-                {
-                    viewOrFragmentPath: 'invalidXmlViewFilePath',
-                    aggregationPath: 'testAggregation',
-                    buildingBlockData: {
-                        id: 'testFilterBar',
-                        buildingBlockType: BuildingBlockType.FilterBar
-                    }
-                },
-                fs
-            )
-        ).toThrowError(/Invalid view path/);
+        await expect(
+            async () =>
+                await generateBuildingBlock<FilterBar>(
+                    basePath,
+                    {
+                        viewOrFragmentPath: 'invalidXmlViewFilePath',
+                        aggregationPath: 'testAggregation',
+                        buildingBlockData: {
+                            id: 'testFilterBar',
+                            buildingBlockType: BuildingBlockType.FilterBar
+                        }
+                    },
+                    fs
+                )
+        ).rejects.toThrowError(/Invalid view path/);
     });
 
-    test('validate sap.fe.templates and sap.fe.core manifest dependencies both are missing', async () => {
+    test('validate view path', async () => {
         const basePath = join(testAppPath, 'validate-manifest-dep');
         // Test generator without sap.fe.core or sap.fe.templates as dependency in manifest.json
         fs.write(join(basePath, manifestFilePath), JSON.stringify({ ...testManifestContent, 'sap.ui5': {} }));
-        expect(() =>
-            generateBuildingBlock<FilterBar>(
-                basePath,
-                {
-                    viewOrFragmentPath: 'testViewPath',
-                    aggregationPath: 'testAggregation',
-                    buildingBlockData: {
-                        id: 'testFilterBar',
-                        buildingBlockType: BuildingBlockType.FilterBar
-                    }
-                },
-                fs
-            )
-        ).toThrowError(
-            /All of the dependencies sap.fe.templates, sap.fe.core are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries./
-        );
+        await expect(
+            async () =>
+                await generateBuildingBlock<FilterBar>(
+                    basePath,
+                    {
+                        viewOrFragmentPath: 'testViewPath',
+                        aggregationPath: 'testAggregation',
+                        buildingBlockData: {
+                            id: 'testFilterBar',
+                            buildingBlockType: BuildingBlockType.FilterBar
+                        }
+                    },
+                    fs
+                )
+        ).rejects.toThrowError(/Invalid view path testViewPath./);
     });
 
-    test('generate building block with `sap.fe.templates` dependency only', async () => {
+    const dependenciesInput = [
+        {
+            name: 'generate building block with `sap.fe.templates` dependency',
+            dependencies: {
+                libs: {
+                    'sap.fe.templates': {}
+                }
+            }
+        },
+        {
+            name: 'generate building block without dependencies',
+            dependencies: undefined
+        }
+    ];
+    test.each(dependenciesInput)('$name', async ({ dependencies }) => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
         const basePath = join(__dirname, 'sample/building-block/webapp-prompts');
         fs.write(
@@ -103,15 +118,11 @@ describe('Building Blocks', () => {
             JSON.stringify({
                 ...testManifestContent,
                 'sap.ui5': {
-                    'dependencies': {
-                        'libs': {
-                            'sap.fe.templates': {}
-                        }
-                    }
+                    dependencies
                 }
             })
         );
-        generateBuildingBlock<FilterBar>(
+        await generateBuildingBlock<FilterBar>(
             basePath,
             {
                 viewOrFragmentPath: xmlViewFilePath,
@@ -135,20 +146,21 @@ describe('Building Blocks', () => {
 
         // Test generator with an invalid aggregation path
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
-        expect(() =>
-            generateBuildingBlock<FilterBar>(
-                basePath,
-                {
-                    viewOrFragmentPath: xmlViewFilePath,
-                    aggregationPath: aggregationPath,
-                    buildingBlockData: {
-                        id: 'testFilterBar',
-                        buildingBlockType: BuildingBlockType.FilterBar
-                    }
-                },
-                fs
-            )
-        ).toThrowError(/Aggregation control not found/);
+        await expect(
+            async () =>
+                await generateBuildingBlock<FilterBar>(
+                    basePath,
+                    {
+                        viewOrFragmentPath: xmlViewFilePath,
+                        aggregationPath: aggregationPath,
+                        buildingBlockData: {
+                            id: 'testFilterBar',
+                            buildingBlockType: BuildingBlockType.FilterBar
+                        }
+                    },
+                    fs
+                )
+        ).rejects.toThrowError(/Aggregation control not found/);
     });
 
     test('validate xml view file', async () => {
@@ -156,20 +168,21 @@ describe('Building Blocks', () => {
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
 
         // Test generator with a xml file that doesn't exist
-        expect(() =>
-            generateBuildingBlock<FilterBar>(
-                basePath,
-                {
-                    viewOrFragmentPath: 'invalidXmlViewFilePath',
-                    aggregationPath: 'testAggregationPath',
-                    buildingBlockData: {
-                        id: 'testFilterBar',
-                        buildingBlockType: BuildingBlockType.FilterBar
-                    }
-                },
-                fs
-            )
-        ).toThrowError(/Invalid view path/);
+        await expect(
+            async () =>
+                await generateBuildingBlock<FilterBar>(
+                    basePath,
+                    {
+                        viewOrFragmentPath: 'invalidXmlViewFilePath',
+                        aggregationPath: 'testAggregationPath',
+                        buildingBlockData: {
+                            id: 'testFilterBar',
+                            buildingBlockType: BuildingBlockType.FilterBar
+                        }
+                    },
+                    fs
+                )
+        ).rejects.toThrowError(/Invalid view path/);
     });
 
     test('validate xml view content', async () => {
@@ -185,35 +198,37 @@ describe('Building Blocks', () => {
         fs.write(join(basePath, xmlViewFilePath), invalidXmlViewContent);
 
         // Test generator with invalid xml file contents
-        expect(() =>
-            generateBuildingBlock<FilterBar>(
-                basePath,
-                {
-                    viewOrFragmentPath: xmlViewFilePath,
-                    aggregationPath: aggregationPath,
-                    buildingBlockData: {
-                        id: 'testFilterBar',
-                        buildingBlockType: BuildingBlockType.FilterBar
-                    }
-                },
-                fs
-            )
-        ).toThrowError(/Unable to parse xml view file/);
+        await expect(
+            async () =>
+                await generateBuildingBlock<FilterBar>(
+                    basePath,
+                    {
+                        viewOrFragmentPath: xmlViewFilePath,
+                        aggregationPath: aggregationPath,
+                        buildingBlockData: {
+                            id: 'testFilterBar',
+                            buildingBlockType: BuildingBlockType.FilterBar
+                        }
+                    },
+                    fs
+                )
+        ).rejects.toThrowError(/Unable to parse xml view file/);
     });
 
     test('fails to read view content', async () => {
         const basePath = join(testAppPath, 'validate-aggregation-path');
         // Test code snippet with unexisting xml file
-        expect(() =>
-            getSerializedFileContent<FilterBar>(basePath, {
-                viewOrFragmentPath: 'invalidXmlViewFilePath',
-                aggregationPath: 'testAggregationPath',
-                buildingBlockData: {
-                    id: 'testFilterBar',
-                    buildingBlockType: BuildingBlockType.FilterBar
-                }
-            })
-        ).toThrowError(/Unable to read xml view file/);
+        await expect(
+            async () =>
+                await getSerializedFileContent<FilterBar>(basePath, {
+                    viewOrFragmentPath: 'invalidXmlViewFilePath',
+                    aggregationPath: 'testAggregationPath',
+                    buildingBlockData: {
+                        id: 'testFilterBar',
+                        buildingBlockType: BuildingBlockType.FilterBar
+                    }
+                })
+        ).rejects.toThrowError(/Unable to read xml view file/);
     });
 
     const testInput = [
@@ -229,14 +244,14 @@ describe('Building Blocks', () => {
     test.each(testInput)('Unsuficient data for snippet. $name', async ({ config }) => {
         const basePath = join(testAppPath, 'test');
         // Test code snippet with unexisting xml file
-        const codeSnippet = getSerializedFileContent<FilterBar>(basePath, config);
+        const codeSnippet = await getSerializedFileContent<FilterBar>(basePath, config);
         expect(codeSnippet).toEqual({});
     });
 
     test('generate building block, no fs', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
         const basePath = join(__dirname, 'sample/building-block/webapp-prompts');
-        const testFS = generateBuildingBlock<FilterBar>(basePath, {
+        const testFS = await generateBuildingBlock<FilterBar>(basePath, {
             viewOrFragmentPath: xmlViewFilePath,
             aggregationPath: aggregationPath,
             buildingBlockData: {
@@ -291,7 +306,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), xmlViewContentWithoutMacrosNs);
 
             // Test generator with valid manifest.json, view.xml files and build block data with just id
-            generateBuildingBlock(
+            await generateBuildingBlock(
                 basePath,
                 {
                     viewOrFragmentPath: xmlViewFilePath,
@@ -342,7 +357,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
             // Test generator with valid manifest.json, view.xml files and build block data with just id
-            generateBuildingBlock(
+            await generateBuildingBlock(
                 basePath,
                 {
                     viewOrFragmentPath: xmlViewFilePath,
@@ -430,7 +445,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
             // Test generator with valid manifest.json, view.xml files and building block data with optional parameters
-            generateBuildingBlock(
+            await generateBuildingBlock(
                 basePath,
                 {
                     viewOrFragmentPath: xmlViewFilePath,
@@ -512,7 +527,7 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
             fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
-            generateBuildingBlock(
+            await generateBuildingBlock(
                 basePath,
                 {
                     viewOrFragmentPath: xmlViewFilePath,
@@ -540,7 +555,7 @@ describe('Building Blocks', () => {
                 const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
                 fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
-                const codeSnippet = getSerializedFileContent(
+                const codeSnippet = await getSerializedFileContent(
                     basePath,
                     {
                         viewOrFragmentPath: xmlViewFilePath,
@@ -565,7 +580,7 @@ describe('Building Blocks', () => {
                 const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
                 fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
                 fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
-                const codeSnippet = getSerializedFileContent(
+                const codeSnippet = await getSerializedFileContent(
                     basePath,
                     {
                         viewOrFragmentPath: '',
@@ -651,7 +666,7 @@ describe('Building Blocks', () => {
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
-            const codeSnippet = getSerializedFileContent(
+            const codeSnippet = await getSerializedFileContent(
                 basePath,
                 {
                     viewOrFragmentPath: '',
