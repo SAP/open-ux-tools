@@ -1,5 +1,7 @@
 import { spawn } from 'child_process';
-import { dirname, join, normalize, relative, sep } from 'path';
+import { basename, dirname, join, normalize, relative, sep } from 'path';
+import type { Logger } from '@sap-ux/logger';
+import type { Editor } from 'mem-fs-editor';
 import { FileName } from '../constants';
 import type {
     CapCustomPaths,
@@ -12,9 +14,18 @@ import type {
     ServiceInfo,
     CdsVersionInfo
 } from '../types';
-import { fileExists, readFile, readJSON } from '../file';
+import {
+    deleteFile,
+    fileExists,
+    readFile,
+    readJSON,
+    updatePackageJSON,
+    writeFile,
+    readDirectory,
+    deleteDirectory
+} from '../file';
 import { loadModuleFromProject } from './module-loader';
-import type { Logger } from '@sap-ux/logger';
+import { findCapProjectRoot } from './search';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
@@ -673,4 +684,83 @@ export async function getCapServiceName(projectRoot: string, datasourceUri: stri
         throw Error(errorMessage);
     }
     return service.name;
+}
+
+/**
+ * Method cleans up cds files after deletion of passed appName.
+ * @param cdsFilePaths - cds files to cleanup
+ * @param appName - CAP application name
+ * @param logger: function to log messages (optional)
+ */
+async function cleanupCdsFiles(
+    cdsFilePaths: string[],
+    appName: string,
+    memFs?: Editor,
+    logger?: Logger
+): Promise<void> {
+    const usingEntry = `using from './${appName}/annotations';`;
+    for (const cdsFilePath of cdsFilePaths) {
+        if (await fileExists(cdsFilePath)) {
+            try {
+                let cdsFile = await readFile(cdsFilePath);
+                if (cdsFile.indexOf(usingEntry) !== -1) {
+                    logger?.info(`Removing using statement for './${appName}/annotations' from '${cdsFilePath}'.`);
+                    cdsFile = cdsFile.replace(usingEntry, '');
+                    if (cdsFile.replace(/\n/g, '').trim() === '') {
+                        logger?.info(`File '${cdsFilePath}' is now empty, removing it.`);
+                        await deleteFile(cdsFilePath);
+                    } else {
+                        await writeFile(cdsFilePath, cdsFile, memFs);
+                    }
+                }
+            } catch (error) {
+                logger?.error(`Could not modify file '${cdsFilePath}'. Skipping this file.`);
+            }
+        }
+    }
+}
+
+/**
+ * Delete application from CAP project
+ * @param appPath - path to the application in a CAP project
+ */
+export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Logger): Promise<void> {
+    const appName = basename(appPath);
+    const projectRoot = await findCapProjectRoot(appPath);
+    if (!projectRoot) {
+        const message = `Project root was not found for CAP application with path '${appPath}'`;
+        logger?.error(message);
+        throw Error(message);
+    }
+    const packageJsonPath = join(projectRoot, FileName.Package);
+    const packageJson = await readJSON<Package>(packageJsonPath);
+    const cdsFilePaths = [join(dirname(appPath), FileName.ServiceCds), join(dirname(appPath), FileName.IndexCds)];
+
+    logger?.info(`Deleting app '${appName}' from CAP project '${projectRoot}'.`);
+    // Update `sapux` array if presented in package.json
+    if (Array.isArray(packageJson.sapux)) {
+        const posixAppPath = appPath.replace(/\\/g, '/');
+        packageJson.sapux = packageJson.sapux.filter((a) => !posixAppPath.endsWith(a));
+        if (packageJson.sapux.length === 0) {
+            logger?.info(
+                `This was the last app in this CAP project. Deleting property 'sapux' from '${packageJsonPath}'.`
+            );
+            delete packageJson.sapux;
+        }
+    }
+    if (packageJson.scripts?.[`watch-${appName}`]) {
+        delete packageJson.scripts[`watch-${appName}`];
+    }
+    await updatePackageJSON(packageJsonPath, packageJson, memFs);
+    logger?.info(`File '${packageJsonPath}' updated.`);
+    await deleteDirectory(appPath);
+    logger?.info(`Directory '${appPath}' deleted.`);
+
+    // Cleanup app/service.cds and app/index.cds files
+    await cleanupCdsFiles(cdsFilePaths, appName, memFs, logger);
+    // Check if app folder is now empty
+    if ((await readDirectory(dirname(appPath))).length === 0) {
+        logger?.info(`Directory '${dirname(appPath)}' is now empty. Deleting it.`);
+        await deleteDirectory(dirname(appPath));
+    }
 }

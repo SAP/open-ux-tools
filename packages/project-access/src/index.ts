@@ -44,7 +44,8 @@ export {
     updatePackageScript,
     findCapProjectRoot,
     hasUI5CliV3,
-    findRootsForPath
+    findRootsForPath,
+    deleteCapApp
 } from './project';
 export * from './types';
 export * from './library';

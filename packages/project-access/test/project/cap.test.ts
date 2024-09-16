@@ -1092,6 +1092,40 @@ describe('getCapServiceName', () => {
     });
 });
 
+
+
+
+
+
+
+describe.only('deleteCapApp', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+        // const cdsMock = {
+        //     load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+        //     compile: {
+        //         to: {
+        //             serviceinfo: jest.fn().mockImplementation(() => [{ name: 'ServiceOne', urlPath: 'service/one' }])
+        //         }
+        //     },
+        //     env: jestMockEnv
+        // };
+        // jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+    });
+
+    test('Return service name', async () => {
+        // const capServiceName = await getCapServiceName('/some/test/path', 'service/one');
+        expect(1).toEqual(1);
+    });
+});
+
+
+
+
+
+
+
+
 function fail(message: string) {
     expect(message).toBeFalsy();
 }

@@ -107,3 +107,56 @@ async function updateJSON(path: string, content: object, memFs?: Editor): Promis
     const result = JSON.stringify(content, null, oldContentJson[indent]) + '\n';
     await writeFile(path, result, memFs);
 }
+
+// ToDo - annotation
+export async function deleteFile(path: string, memFs?: Editor): Promise<void> {
+    if (memFs) {
+        return memFs.delete(path);
+    }
+    return fs.unlink(path);
+}
+
+// function readdir(store: Stora, directoryPath: string) {
+//     const files: string[] = [];
+
+//     // Iterate over the store's file system
+//     store.each((file) => {
+//         const relativeFilePath = path.relative(process.cwd(), file.path);
+
+//         // Check if the file is inside the specified directory
+//         if (relativeFilePath.startsWith(directoryPath)) {
+//             // Push the file path relative to the directory
+//             files.push(path.relative(directoryPath, relativeFilePath));
+//         }
+//     });
+
+//     return files;
+// }
+
+async function memFsReaddir(directoryPath: string, memFs: Editor): Promise<string[]> {
+    const files: string[] = [];
+
+    // memFs.store.each((file) => {
+    //     const relativeFilePath = path.relative(process.cwd(), file.path);
+
+    //     // Check if the file is inside the specified directory
+    //     if (relativeFilePath.startsWith(directoryPath)) {
+    //         // Push the file path relative to the directory
+    //         const fileInDir = path.relative(directoryPath, relativeFilePath);
+    //         if (fileInDir && !fileInDir.includes(path.sep)) {
+    //             // Push only files directly in the specified directory, ignore subdirectories
+    //             files.push(fileInDir);
+    //         }
+    //     }
+    // });
+
+    return files;
+}
+
+export async function readDirectory(path: string): Promise<string[]> {
+    return fs.readdir(path, { encoding: 'utf8' });
+}
+
+export async function deleteDirectory(path: string): Promise<void> {
+    return fs.rm(path, { recursive: true, force: true });
+}

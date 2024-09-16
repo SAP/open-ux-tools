@@ -12,7 +12,8 @@ export {
     readCapServiceMetadataEdmx,
     getCapServiceName,
     toReferenceUri,
-    clearCdsModuleCache
+    clearCdsModuleCache,
+    deleteCapApp
 } from './cap';
 export { filterDataSourcesByType } from './service';
 export { addPackageDevDependency, getNodeModulesPath } from './dependencies';
