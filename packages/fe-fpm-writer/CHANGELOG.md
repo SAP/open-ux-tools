@@ -1,5 +1,39 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.30.0
+
+### Minor Changes
+
+-   ddc2d84: The API methods `generateCustomAction`, `generateCustomColumn`, `generateControllerExtension`, `generateCustomFilter`, `generateCustomHeaderSection`, `generateCustomSection`, `generateCustomSubSection`, `generateCustomPage`, `generateObjectPage`, `generateListReport`, `enableFPM` changed from synchronous to asynchronous.
+
+## 0.29.6
+
+### Patch Changes
+
+-   86bcf45: - During building block creation, add the 'sap.fe.macros' library to the 'manifest.json' if it is not already listed
+    -   The API methods `generateBuildingBlock`, `getSerializedFileContent`, `PromptsAPI.submitAnswers`, and `PromptsAPI.getCodeSnippets` changed from synchronous to asynchronous.
+
+## 0.29.5
+
+### Patch Changes
+
+-   19e3b0e: Extend the building block generation by adding the `alwaysAbsolutePath` property to `BuildingBlockMetaPath`, allowing the generation of either relative or absolute paths
+
+## 0.29.4
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/fiori-annotation-api@0.2.2
+
+## 0.29.3
+
+### Patch Changes
+
+-   Updated dependencies [a0836d0]
+    -   @sap-ux/fiori-annotation-api@0.2.1
+
 ## 0.29.2
 
 ### Patch Changes

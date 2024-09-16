@@ -126,6 +126,7 @@ type ChangeHandler = {
 export class CDSWriter implements ChangeHandler {
     private readonly changes: CDSDocumentChange[] = [];
     private edits: TextEdit[] = [];
+    private referenceEdits: TextEdit[] = [];
     private indentLevelCache: { [pointer: string]: number } = {};
     private vocabularyAliases = new Set<string>();
     private deletionRangesMapForTarget: Map<string, DeletionRange[]> = new Map();
@@ -202,6 +203,7 @@ export class CDSWriter implements ChangeHandler {
                 this.edits.push(...targetDeletions);
             }
         }
+        this.edits.unshift(...this.referenceEdits);
         this.edits.sort(compareByRange);
 
         return this.edits;
@@ -213,6 +215,7 @@ export class CDSWriter implements ChangeHandler {
      */
     private resetState(): void {
         this.edits = [];
+        this.referenceEdits = [];
         this.processedChanges = [];
         this.indentLevelCache = {};
         this.deletionRangesMapForTarget = new Map();
@@ -419,7 +422,7 @@ export class CDSWriter implements ChangeHandler {
             this.document.uri,
             this.projectRoot
         )}`;
-        this.edits.push(TextEdit.insert(position, text));
+        this.referenceEdits.push(TextEdit.insert(position, text));
     };
 
     //#endregion

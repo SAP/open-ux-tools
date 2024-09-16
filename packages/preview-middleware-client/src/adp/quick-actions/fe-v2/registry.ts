@@ -1,4 +1,6 @@
 import XMLView from 'sap/ui/core/mvc/XMLView';
+import Control from 'sap/ui/core/Control';
+import ComponentContainer from 'sap/ui/core/ComponentContainer';
 
 import type {
     QuickActionActivationContext,
@@ -11,7 +13,6 @@ import { AddControllerToPageQuickAction } from '../common/add-controller-to-page
 import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
 import { ChangeTableColumnsQuickAction } from './change-table-columns';
 import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
-import Control from 'sap/ui/core/Control';
 import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
 
 type PageName = 'listReport' | 'objectPage';
@@ -61,11 +62,12 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
         return definitionGroups;
     }
 
-    protected getComponentContainerFromPage(page: Control): Control | undefined {
-        if (page instanceof XMLView) {
-            return page.getContent()[0];
+    protected getComponentContainerFromPage(page: Control): ComponentContainer | undefined {
+        // in ui5 version 1.71 there is no XMLView wrapper around ComponentContainer
+        const componentContainer = page instanceof XMLView ? page.getContent()[0] : page;
+        if (componentContainer instanceof ComponentContainer) {
+            return componentContainer;
         }
         return undefined;
     }
-
 }

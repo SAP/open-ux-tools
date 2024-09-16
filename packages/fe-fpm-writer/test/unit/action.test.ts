@@ -69,14 +69,14 @@ describe('CustomAction', () => {
             fs.write(join(testDir, 'webapp/manifest.json'), testAppManifest);
         });
 
-        test('minimal settings (no eventhandler)', () => {
-            generateCustomAction(testDir, { name, target, settings }, fs);
+        test('minimal settings (no eventhandler)', async () => {
+            await generateCustomAction(testDir, { name, target, settings }, fs);
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
         });
 
-        test('with new event handler as string', () => {
-            generateCustomAction(
+        test('with new event handler as string', async () => {
+            await generateCustomAction(
                 testDir,
                 {
                     name,
@@ -91,10 +91,10 @@ describe('CustomAction', () => {
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
-        test('with existing event handler as string', () => {
+        test('with existing event handler as string', async () => {
             const controllerPath = 'my.test.App.ext.ExistingHandler.onCustomAction';
             fs.write(controllerPath, 'dummyContent');
-            generateCustomAction(
+            await generateCustomAction(
                 testDir,
                 {
                     name,
@@ -111,8 +111,8 @@ describe('CustomAction', () => {
             expect(fs.read(controllerPath)).toEqual('dummyContent');
         });
 
-        test('specific target folder, event handler as boolean', () => {
-            generateCustomAction(
+        test('specific target folder, event handler as boolean', async () => {
+            await generateCustomAction(
                 testDir,
                 {
                     name,
@@ -129,8 +129,8 @@ describe('CustomAction', () => {
             expect(fs.read(join(testDir, 'webapp/ext/MyCustomAction.js'))).toMatchSnapshot();
         });
 
-        test('specific control as target', () => {
-            generateCustomAction(
+        test('specific control as target', async () => {
+            await generateCustomAction(
                 testDir,
                 {
                     name,
@@ -148,8 +148,8 @@ describe('CustomAction', () => {
             expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
         });
 
-        test('custom section as target', () => {
-            generateCustomAction(
+        test('custom section as target', async () => {
+            await generateCustomAction(
                 testDir,
                 {
                     name,
@@ -186,8 +186,8 @@ describe('CustomAction', () => {
             }
         ];
         positionTests.forEach((testCase) => {
-            test(`Test 'position' property. ${testCase.name}`, () => {
-                generateCustomAction(
+            test(`Test 'position' property. ${testCase.name}`, async () => {
+                await generateCustomAction(
                     testDir,
                     {
                         name,
@@ -206,8 +206,8 @@ describe('CustomAction', () => {
 
         const requiresSelectionValues = [undefined, true, false];
         requiresSelectionValues.forEach((value?: boolean) => {
-            test(`Test property "requiresSelection" with value "${value}"`, () => {
-                generateCustomAction(
+            test(`Test property "requiresSelection" with value "${value}"`, async () => {
+                await generateCustomAction(
                     testDir,
                     {
                         name,
@@ -231,12 +231,12 @@ describe('CustomAction', () => {
         });
 
         describe('Test property "eventHandler"', () => {
-            const generateCustomActionWithEventHandler = (
+            const generateCustomActionWithEventHandler = async (
                 actionId: string,
                 eventHandler: string | EventHandlerConfiguration,
                 folder?: string
             ) => {
-                generateCustomAction(
+                await generateCustomAction(
                     testDir,
                     {
                         name: actionId,
@@ -258,8 +258,8 @@ describe('CustomAction', () => {
                 return settings['content']['header']['actions'][actionId];
             };
 
-            test('"eventHandler" is empty "object" - create new file with default function name', () => {
-                generateCustomActionWithEventHandler(name, {});
+            test('"eventHandler" is empty "object" - create new file with default function name', async () => {
+                await generateCustomActionWithEventHandler(name, {});
 
                 const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
                 const action = getActionByName(manifest, name);
@@ -269,13 +269,13 @@ describe('CustomAction', () => {
                 ).toMatchSnapshot();
             });
 
-            test('"eventHandler" is "object" - create new file with custom file and function names', () => {
+            test('"eventHandler" is "object" - create new file with custom file and function names', async () => {
                 const extension = {
                     fnName: 'DummyOnAction',
                     fileName: 'dummyAction'
                 };
                 const folder = join('ext', 'custom');
-                generateCustomActionWithEventHandler(name, extension, folder);
+                await generateCustomActionWithEventHandler(name, extension, folder);
 
                 const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
                 const action = getActionByName(manifest, name);
@@ -283,8 +283,8 @@ describe('CustomAction', () => {
                 expect(fs.read(join(testDir, 'webapp', 'ext', 'custom', `${extension.fileName}.js`))).toMatchSnapshot();
             });
 
-            test('"eventHandler" is "object" - create new file with custom function name', () => {
-                generateCustomActionWithEventHandler(name, {
+            test('"eventHandler" is "object" - create new file with custom function name', async () => {
+                await generateCustomActionWithEventHandler(name, {
                     fnName: 'DummyOnAction'
                 });
 
@@ -296,8 +296,8 @@ describe('CustomAction', () => {
                 ).toMatchSnapshot();
             });
 
-            test('"eventHandler" is "object", action with lowercase first letter', () => {
-                generateCustomActionWithEventHandler(name, {
+            test('"eventHandler" is "object", action with lowercase first letter', async () => {
+                await generateCustomActionWithEventHandler(name, {
                     fnName: 'dummyOnAction'
                 });
 
@@ -307,8 +307,8 @@ describe('CustomAction', () => {
                 expect(fs.exists(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))).toBeTruthy();
             });
 
-            test(`"eventHandler" is String - no changes to handler file`, () => {
-                generateCustomActionWithEventHandler(name, 'my.test.App.ext.ExistingHandler.onCustomAction');
+            test(`"eventHandler" is String - no changes to handler file`, async () => {
+                await generateCustomActionWithEventHandler(name, 'my.test.App.ext.ExistingHandler.onCustomAction');
                 const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Manifest;
                 const action = getActionByName(manifest, name);
                 expect(action['press']).toEqual('my.test.App.ext.ExistingHandler.onCustomAction');
@@ -328,7 +328,7 @@ describe('CustomAction', () => {
                 ['absolute position', 196, 8]
             ])(
                 '"eventHandler" is object. Append new function to existing js file with %s',
-                (_desc: string, position: number | FileContentPosition, appendLines?: number) => {
+                async (_desc: string, position: number | FileContentPosition, appendLines?: number) => {
                     const fileName = 'MyExistingAction';
                     // Create existing file with existing actions
                     const folder = join('ext', 'fragments');
@@ -344,7 +344,7 @@ describe('CustomAction', () => {
                     // Create third action - append existing js file
                     const actionName = 'CustomAction2';
                     const fnName = 'onHandleSecondAction';
-                    generateCustomActionWithEventHandler(
+                    await generateCustomActionWithEventHandler(
                         actionName,
                         {
                             fnName,
@@ -366,7 +366,7 @@ describe('CustomAction', () => {
                 }
             );
 
-            test('"eventHandler" is "object", append new function to controller extension', () => {
+            test('"eventHandler" is "object", append new function to controller extension', async () => {
                 const expectedFileName = 'MyExistingAction';
                 const fileName = `${expectedFileName}.controller`;
                 // Create existing file with existing actions
@@ -381,7 +381,7 @@ describe('CustomAction', () => {
                 const fnName = 'onHandleSecondAction';
                 const controllerPrefix = '.extension';
                 // use controller prefix to make sure it is controller extension
-                generateCustomActionWithEventHandler(
+                await generateCustomActionWithEventHandler(
                     actionName,
                     {
                         fnName,
@@ -410,13 +410,13 @@ describe('CustomAction', () => {
         });
 
         describe('Test property custom "tabSizing"', () => {
-            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
-                generateCustomAction(testDir, { name, target, settings, tabInfo }, fs);
+            test.each(tabSizingTestCases)('$name', async ({ tabInfo, expectedAfterSave }) => {
+                await generateCustomAction(testDir, { name, target, settings, tabInfo }, fs);
                 let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
                 let result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
                 // Generate another action and check if new tab sizing recalculated correctly without passing tab size info
-                generateCustomAction(testDir, { name: 'Second', target, settings }, fs);
+                await generateCustomAction(testDir, { name: 'Second', target, settings }, fs);
                 updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
                 result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);

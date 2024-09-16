@@ -2,8 +2,9 @@ import type { Editor } from 'mem-fs-editor';
 import os from 'os';
 import { join } from 'path';
 import { coerce, minor } from 'semver';
+import { getWebappPath } from '@sap-ux/project-access';
 import { getTemplatePath } from '../templates';
-import type { FileContentPosition } from '../common/types';
+import type { FileContentPosition, Manifest, ManifestData } from './types';
 
 /**
  * Method inserts passed text into content by char index position.
@@ -67,4 +68,34 @@ export function addExtensionTypes(basePath: string, minUI5Version: string | unde
     if (version < 108 && version !== 102 && !fs.exists(path)) {
         fs.copyTpl(getTemplatePath('common/sap.fe.d.ts'), path, { version });
     }
+}
+
+/**
+ * Gets manifest path.
+ *
+ * @param {string} basePath the base path
+ * @param {Editor} fs the memfs editor instance
+ * @returns {Manifest | undefined} path to manifest file
+ */
+export async function getManifestPath(basePath: string, fs: Editor): Promise<string> {
+    return join(await getWebappPath(basePath, fs), 'manifest.json');
+}
+
+/**
+ * Gets content and path of the manifest.
+ *
+ * @param {string} basePath the base path
+ * @param {Editor} fs the memfs editor instance
+ * @param {boolean} [validate] validate if 'manifest.json' file exists - throw error if file does not exist
+ * @returns {Manifest | undefined} The content and path of the manifest
+ */
+export async function getManifest(basePath: string, fs: Editor, validate = true): Promise<ManifestData> {
+    const path = await getManifestPath(basePath, fs);
+    if (validate && !fs.exists(path)) {
+        throw new Error(`Invalid project folder. Cannot find required file ${path}`);
+    }
+    return {
+        path,
+        content: fs.readJSON(path) as Manifest
+    };
 }

@@ -442,8 +442,7 @@ describe('ConnectionValidator', () => {
         );
         expect(connectValidator.validity).toEqual({
             authenticated: true,
-            reachable: true,
-            urlFormat: false // URL property format is not validated in service info
+            reachable: true
         });
         expect(connectValidator.connectedUserName).toBe('user1@acme.com');
         expect(connectValidator.serviceInfo).toEqual(serviceInfoMock);
