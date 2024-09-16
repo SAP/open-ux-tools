@@ -27,7 +27,7 @@ const defaultAnswers = {
 };
 
 const groupIds = {
-    commonBlockProperties: 'filterBarBuildingBlockProperties',
+    commonFilterBarBuildingBlockProperties: 'filterBarBuildingBlockProperties',
     filterConfigureEvents: 'filterConfigureEvents'
 };
 
@@ -44,7 +44,7 @@ export async function getFilterBarBuildingBlockPrompts(
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.filterBar.');
     const groups: PromptsGroup[] = [
         {
-            id: groupIds.commonBlockProperties,
+            id: groupIds.commonFilterBarBuildingBlockProperties,
             title: t('filterBarBuildingBlockPropertiesTitle'),
             description: t('filterBarBuildingBlockPropertiesDescription', { returnObjects: true })
         },
@@ -61,7 +61,7 @@ export async function getFilterBarBuildingBlockPrompts(
             getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {
                 message: t('viewOrFragmentPath.message'),
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonFilterBarBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['aggregationPath']
                 }
@@ -69,13 +69,13 @@ export async function getFilterBarBuildingBlockPrompts(
             getBuildingBlockIdPrompt(context, t('id.validation'), {
                 message: t('id.message'),
                 default: defaultAnswers.id,
-                guiOptions: { groupId: groupIds.commonBlockProperties, mandatory: true }
+                guiOptions: { groupId: groupIds.commonFilterBarBuildingBlockProperties, mandatory: true }
             }),
             getBindingContextTypePrompt({
                 message: t('bindingContextType'),
                 default: defaultAnswers.bindingContextType,
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonFilterBarBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
                 }
@@ -85,7 +85,7 @@ export async function getFilterBarBuildingBlockPrompts(
                       await getCAPServicePrompt(context, {
                           message: t('service'),
                           guiOptions: {
-                              groupId: groupIds.commonBlockProperties,
+                              groupId: groupIds.commonFilterBarBuildingBlockProperties,
                               mandatory: true,
                               dependantPromptNames: []
                           }
@@ -94,12 +94,12 @@ export async function getFilterBarBuildingBlockPrompts(
                 : []),
             getAggregationPathPrompt(context, {
                 message: t('aggregation'),
-                guiOptions: { groupId: groupIds.commonBlockProperties, mandatory: true }
+                guiOptions: { groupId: groupIds.commonFilterBarBuildingBlockProperties, mandatory: true }
             }),
             getEntityPrompt(context, {
                 message: t('entity'),
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonFilterBarBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
                 }
@@ -109,7 +109,7 @@ export async function getFilterBarBuildingBlockPrompts(
                 {
                     message: t('qualifier'),
                     guiOptions: {
-                        groupId: groupIds.commonBlockProperties,
+                        groupId: groupIds.commonFilterBarBuildingBlockProperties,
                         mandatory: true,
                         placeholder: t('qualifierPlaceholder'),
                         hint: t('valuesDependentOnEntityTypeInfo')

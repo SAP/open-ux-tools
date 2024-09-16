@@ -28,7 +28,7 @@ const defaultAnswers = {
 };
 
 const groupIds = {
-    commonBlockProperties: 'chartBuildingBlockProperties',
+    commonChartBuildingBlockProperties: 'chartBuildingBlockProperties',
     chartVisualizationProperties: 'chartVisualizationProperties',
     chartConfigureEvents: 'chartConfigureEvents'
 };
@@ -44,7 +44,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
     const groups: PromptsGroup[] = [
         {
-            id: groupIds.commonBlockProperties,
+            id: groupIds.commonChartBuildingBlockProperties,
             title: t('chartBuildingBlockPropertiesTitle'),
             description: t('chartBuildingBlockPropertiesDescription', { returnObjects: true })
         },
@@ -66,7 +66,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
             getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {
                 message: t('viewOrFragmentPath.message'),
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonChartBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['aggregationPath', 'buildingBlockData.filterBar']
                 }
@@ -74,13 +74,13 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
             getBuildingBlockIdPrompt(context, t('id.validation'), {
                 message: t('id.message'),
                 default: defaultAnswers.id,
-                guiOptions: { groupId: groupIds.commonBlockProperties, mandatory: true }
+                guiOptions: { groupId: groupIds.commonChartBuildingBlockProperties, mandatory: true }
             }),
             getBindingContextTypePrompt({
                 message: t('bindingContextType'),
                 default: defaultAnswers.bindingContextType,
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonChartBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
                 }
@@ -90,7 +90,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
                       await getCAPServicePrompt(context, {
                           message: t('service'),
                           guiOptions: {
-                              groupId: groupIds.commonBlockProperties,
+                              groupId: groupIds.commonChartBuildingBlockProperties,
                               mandatory: true,
                               dependantPromptNames: []
                           }
@@ -100,7 +100,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
             getEntityPrompt(context, {
                 message: t('entity'),
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonChartBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
                 }
@@ -110,7 +110,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
                 {
                     message: t('qualifier'),
                     guiOptions: {
-                        groupId: groupIds.commonBlockProperties,
+                        groupId: groupIds.commonChartBuildingBlockProperties,
                         mandatory: true,
                         placeholder: t('qualifierPlaceholder'),
                         hint: t('valuesDependentOnEntityTypeInfo')
@@ -120,13 +120,13 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
             ),
             getAggregationPathPrompt(context, {
                 message: t('aggregation'),
-                guiOptions: { groupId: groupIds.commonBlockProperties, mandatory: true }
+                guiOptions: { groupId: groupIds.commonChartBuildingBlockProperties, mandatory: true }
             }),
             getFilterBarIdPrompt(context, {
                 message: t('filterBar.message'),
                 type: 'list',
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonChartBuildingBlockProperties,
                     placeholder: t('filterBar.placeholder'),
                     creation: { placeholder: t('filterBar.inputPlaceholder') }
                 }
