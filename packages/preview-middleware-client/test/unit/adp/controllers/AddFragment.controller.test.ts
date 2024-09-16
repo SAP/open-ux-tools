@@ -15,6 +15,7 @@ import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import Core from 'sap/ui/core/Core';
+import { ChangeContentType } from 'sap/ui/fl/Change';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -622,11 +623,22 @@ describe('AddFragment', () => {
             } as unknown as JSONModel;
             addFragment.model = testModel;
 
+            const dummyContent: ChangeContentType = {
+                fragmentPath: 'dummyPath',
+                index: 1,
+                targetAggregation: 'sections'
+            };
+
+            const setContentSpy = jest.fn();
             const commandForSpy = jest.fn().mockReturnValue({
                 _oPreparedChange: {
                     _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
                     setModuleName: jest.fn()
-                }
+                },
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getContent: jest.fn().mockReturnValue(dummyContent),
+                    setContent: setContentSpy
+                })
             });
             CommandFactory.getCommandFor = commandForSpy;
 
@@ -670,10 +682,14 @@ describe('AddFragment', () => {
                         moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
                     },
                     setModuleName: expect.any(Function)
-                }
+                },
+                getPreparedChange: expect.any(Function)
             });
 
-            expect(commandForSpy.mock.calls[0][4].selector).toStrictEqual({ templateName: 'OBJECT_PAGE_CUSTOM_SECTION' });
+            expect(setContentSpy).toHaveBeenCalledWith({
+                ...dummyContent,
+                templateName: 'OBJECT_PAGE_CUSTOM_SECTION'
+            });
         });
     });
 });
