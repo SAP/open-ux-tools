@@ -30,7 +30,10 @@ import {
     setSaveEnablement,
     appLoaded,
     updateQuickAction,
-    quickActionListChanged
+    quickActionListChanged,
+    UNKNOWN_CHANGE_KIND,
+    SAVED_CHANGE_TYPE,
+    PENDING_CHANGE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -225,54 +228,49 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.changes.controls = {};
 
                 for (const change of [...action.payload.pending, ...action.payload.saved].reverse()) {
-                    if (change.kind !== 'unknown') {
-                        const { controlId, propertyName, type, controlName } = change;
-                        const key = `${controlId}`;
-                        // state.changes.controls[key] ||= {
-                        //           pending: 0,
-                        //           saved: 0,
-                        //           controlName: controlName ?? '',
-                        //           properties: {}
-                        //       }
-                        const control = state.changes.controls[key]
-                            ? {
-                                  pending: state.changes.controls[key].pending,
-                                  saved: state.changes.controls[key].saved,
-                                  controlName: state.changes.controls[key].controlName,
-                                  properties: state.changes.controls[key].properties
-                              }
-                            : {
-                                  pending: 0,
-                                  saved: 0,
-                                  controlName: controlName ?? '',
-                                  properties: {}
-                              };
-                        if (type === 'pending') {
-                            control.pending++;
-                        } else if (type === 'saved') {
-                            control.saved++;
-                        }
-                        const property = control.properties[propertyName]
-                            ? {
-                                  pending: control.properties[propertyName].pending,
-                                  saved: control.properties[propertyName].saved,
-                                  lastSavedChange: control.properties[propertyName].lastSavedChange,
-                                  lastChange: control.properties[propertyName].lastChange
-                              }
-                            : {
-                                  pending: 0,
-                                  saved: 0
-                              };
-                        if (change.type === 'pending') {
-                            property.pending++;
-                            property.lastChange = change;
-                        } else if (change.type === 'saved') {
-                            property.lastSavedChange = change;
-                            property.saved++;
-                        }
-                        control.properties[propertyName] = property;
-                        state.changes.controls[key] = control;
+                    if (change.kind === UNKNOWN_CHANGE_KIND) {
+                        continue;
                     }
+                    const { controlId, propertyName, type, controlName } = change;
+                    const key = `${controlId}`;
+                    const control = state.changes.controls[key]
+                        ? {
+                              pending: state.changes.controls[key].pending,
+                              saved: state.changes.controls[key].saved,
+                              controlName: state.changes.controls[key].controlName,
+                              properties: state.changes.controls[key].properties
+                          }
+                        : {
+                              pending: 0,
+                              saved: 0,
+                              controlName: controlName ?? '',
+                              properties: {}
+                          };
+                    if (type === PENDING_CHANGE_TYPE) {
+                        control.pending++;
+                    } else if (type === SAVED_CHANGE_TYPE) {
+                        control.saved++;
+                    }
+                    const property = control.properties[propertyName]
+                        ? {
+                              pending: control.properties[propertyName].pending,
+                              saved: control.properties[propertyName].saved,
+                              lastSavedChange: control.properties[propertyName].lastSavedChange,
+                              lastChange: control.properties[propertyName].lastChange
+                          }
+                        : {
+                              pending: 0,
+                              saved: 0
+                          };
+                    if (change.type === PENDING_CHANGE_TYPE) {
+                        property.pending++;
+                        property.lastChange = change;
+                    } else if (change.type === SAVED_CHANGE_TYPE) {
+                        property.lastSavedChange = change;
+                        property.saved++;
+                    }
+                    control.properties[propertyName] = property;
+                    state.changes.controls[key] = control;
                 }
             })
             .addMatcher(showMessage.match, (state, action: ReturnType<typeof showMessage>): void => {
