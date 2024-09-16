@@ -217,7 +217,7 @@ function getPasswordPrompt(
         type: 'password',
         guiOptions: {
             applyDefaultWhenDirty: true,
-            mandatory: true,
+            mandatory: true
         },
         guiType: 'login',
         name: promptNames.serviceUrlPassword,

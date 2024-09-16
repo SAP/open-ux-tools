@@ -217,8 +217,6 @@ export function getSelectedServiceLabel(username: string | undefined): string {
     return message;
 }
 
-
-
 /**
  * Get the service selection prompt additional message. This prompt will make an additional call to the system backend
  * to retrieve the service type and display a warning message if the service type is not UI.

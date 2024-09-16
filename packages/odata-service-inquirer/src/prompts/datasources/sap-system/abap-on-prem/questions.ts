@@ -7,8 +7,7 @@ import type {
     OdataServiceAnswers,
     OdataServicePromptOptions,
     ServiceSelectionPromptOptions,
-    SystemNamePromptOptions,
-    promptNames
+    SystemNamePromptOptions
 } from '../../../../types';
 import { PromptState } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
@@ -37,7 +36,9 @@ interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
  * @param promptOptions options for prompts. Applicable options are: {@link ServiceSelectionPromptOptions}, {@link SystemNamePromptOptions}
  * @returns property questions for the Abap on-premise datasource
  */
-export function getAbapOnPremQuestions(promptOptions?: OdataServicePromptOptions): Question<AbapOnPremAnswers & ServiceAnswer>[] {
+export function getAbapOnPremQuestions(
+    promptOptions?: OdataServicePromptOptions
+): Question<AbapOnPremAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
     // Prompt options

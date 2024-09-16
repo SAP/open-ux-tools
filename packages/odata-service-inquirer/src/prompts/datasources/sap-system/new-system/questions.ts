@@ -182,7 +182,7 @@ export function getUserSystemNameQuestion(
                         password: connectValidator.axiosConfig?.auth?.password,
                         serviceKeys: connectValidator.serviceInfo,
                         userDisplayName: connectValidator.connectedUserName,
-                        refreshToken: connectValidator.refreshToken,
+                        refreshToken: connectValidator.refreshToken
                     });
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
                     PromptState.odataService.connectedSystem.backendSystem.newOrUpdated = true;
@@ -194,4 +194,3 @@ export function getUserSystemNameQuestion(
 
     return newSystemNamePrompt;
 }
-

@@ -1,16 +1,25 @@
-import { Answers, ListChoiceOptions, Question } from 'inquirer';
-import { OdataServiceAnswers, OdataServicePromptOptions, OdataServiceQuestion, SapSystemType } from '../../../../types';
-import { listDestinations, isAppStudio, Destination, ServiceInfo } from '@sap-ux/btp-utils';
-import { ListQuestion, withCondition } from '@sap-ux/inquirer-common';
-import { BackendSystem, BackendSystemKey, getService, SystemService } from '@sap-ux/store';
-import LoggerHelper from '../../../logger-helper';
+import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
+import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
+import { withCondition } from '@sap-ux/inquirer-common';
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { BackendSystem } from '@sap-ux/store';
+import { SystemService } from '@sap-ux/store';
+import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
+import type {
+    OdataServiceAnswers,
+    OdataServicePromptOptions,
+    OdataServiceQuestion,
+    SapSystemType
+} from '../../../../types';
 import { convertODataVersionType, PromptState } from '../../../../utils';
-import { ConnectionValidator, ValidationResult } from '../../../connectionValidator';
-import { getSystemServiceQuestion } from '../service-selection/questions';
-import { ServiceAnswer } from '../service-selection';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { ValidationResult } from '../../../connectionValidator';
+import { ConnectionValidator } from '../../../connectionValidator';
+import LoggerHelper from '../../../logger-helper';
 import { getNewSystemQuestions } from '../new-system/questions';
+import type { ServiceAnswer } from '../service-selection';
+import { getSystemServiceQuestion } from '../service-selection/questions';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -29,6 +38,12 @@ export interface SystemSelectionAnswer extends OdataServiceAnswers {
     [systemSelectionPromptNames.systemSelection]?: Destination | BackendSystem | NewSystemChoice;
 }
 
+/**
+ * Creates and returns a display name for the system, appending the system type and user display name if available.
+ *
+ * @param system the backend system to create a display name for
+ * @returns the display name for the system
+ */
 export function getSystemDisplayName(system: BackendSystem): string {
     const userDisplayName = system.userDisplayName ? ` [${system.userDisplayName}]` : '';
     const systemTypeName =
@@ -39,6 +54,11 @@ export function getSystemDisplayName(system: BackendSystem): string {
     return `${system.name}${systemTypeName}${userDisplayName}`;
 }
 
+/**
+ * Creates a list of choices for the system selection prompt using destinations or stored backend systems, depending on the environment.
+ *
+ * @returns a list of choices for the system selection prompt
+ */
 async function createSystemChoices(): Promise<ListChoiceOptions<SystemSelectionAnswer>[]> {
     let systemChoices: ListChoiceOptions<SystemSelectionAnswer>[] = [];
     let newSystemChoice: ListChoiceOptions<SystemSelectionAnswer>;
@@ -70,6 +90,14 @@ async function createSystemChoices(): Promise<ListChoiceOptions<SystemSelectionA
     return systemChoices;
 }
 
+/**
+ * Connects to the specified backend system and validates the connection.
+ *
+ * @param backendSystem the backend system to connect to
+ * @param connectionValidator the connection validator to use for the connection
+ * @param requiredOdataVersion the required OData version for the service, this will be used to narrow the catalog service connections
+ * @returns the validation result of the backend system connection
+ */
 async function connectWithBackendSystem(
     backendSystem: BackendSystem,
     connectionValidator: ConnectionValidator,
@@ -114,6 +142,12 @@ async function connectWithBackendSystem(
     return connectValResult;
 }
 
+/**
+ * Returns a list of questions for creating a new system configuration or selecting an existing stored system.
+ *
+ * @param promptOptions prompt options that may be used to customize the questions
+ * @returns a list of questions for creating a new system configuration or selecting an existing stored system
+ */
 export async function getSystemSelectionQuestions(
     promptOptions?: OdataServicePromptOptions
 ): Promise<Question<SystemSelectionAnswer & ServiceAnswer>> {
@@ -144,7 +178,11 @@ export async function getSystemSelectionQuestions(
 }
 
 /**
- * Returns a list of available SapSystems
+ * Returns a list of existing systems, either destinations or backend systems from persistent store, depending on the environment.
+ *
+ * @param connectionValidator A reference to the active connection validator, used to validate the service selection and retrieve service details.
+ * @param requiredOdataVersion the required OData version for the service, this will be used to narrow the catalog service connections
+ * @returns a list of existing systems
  */
 export async function getSystemSelectionQuestion(
     connectionValidator: ConnectionValidator,
@@ -165,7 +203,11 @@ export async function getSystemSelectionQuestion(
             let connectValResult: ValidationResult = false;
             // Assumption: non-BAS systems are BackendSystems
             if (systemSelection && !isAppStudio()) {
-                connectValResult = await connectWithBackendSystem(systemSelection as BackendSystem, connectionValidator, requiredOdataVersion);
+                connectValResult = await connectWithBackendSystem(
+                    systemSelection as BackendSystem,
+                    connectionValidator,
+                    requiredOdataVersion
+                );
             }
             /* else if (destination) */
             return connectValResult ?? false;

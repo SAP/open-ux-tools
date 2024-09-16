@@ -12,9 +12,8 @@ import {
 } from '../types';
 import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
 import { getMetadataFileQuestion } from './datasources/metadata-file';
-import { getNewSystemQuestions } from './datasources/sap-system/new-system/questions';
+import { getSystemSelectionQuestions } from './datasources/sap-system/system-selection';
 import { getServiceUrlQuestions } from './datasources/service-url/questions';
-import { newSystemChoiceValue, getSystemSelectionQuestions, type SystemSelectionAnswer } from './datasources/sap-system/system-selection';
 import LoggerHelper from './logger-helper';
 import { getDatasourceTypeChoices } from './prompt-helpers';
 
@@ -55,7 +54,7 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
                 [
                     DatasourceType.businessHub,
                     DatasourceType.none,
-                    DatasourceType.projectSpecificDestination,
+                    DatasourceType.projectSpecificDestination
                     // DatasourceType.sapSystem
                 ].includes(source)
             ) {
@@ -92,12 +91,12 @@ async function getDatasourceTypeConditionalQuestions(
 
     conditionalQuestions.push(
         ...(withCondition(
-            await getSystemSelectionQuestions(promptOptions) as Question[],
+            (await getSystemSelectionQuestions(promptOptions)) as Question[],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem
         ) as OdataServiceQuestion[])
     );
 
-   conditionalQuestions.push(
+    conditionalQuestions.push(
         ...(withCondition(
             [getMetadataFileQuestion(promptOptions?.metadataFilePath) as Question],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.metadataFile

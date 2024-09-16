@@ -105,5 +105,5 @@ export {
     type CapService,
     type InquirerAdapter,
     type OdataServiceAnswers,
-    type OdataServicePromptOptions,
+    type OdataServicePromptOptions
 };

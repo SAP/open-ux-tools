@@ -5,7 +5,8 @@ import * as utils from '../../../src/utils';
 import * as btpUtils from '@sap-ux/btp-utils';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { ToolsLogger } from '@sap-ux/logger';
-import { BackendSystem, getService } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
+import { getService } from '@sap-ux/store';
 import { Service } from '@sap-ux/axios-extension';
 
 /**

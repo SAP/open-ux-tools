@@ -1,4 +1,3 @@
-
 export const newSystemPromptNames = {
     newSystemType: 'newSystemType',
     newSystemUrl: 'newSystemUrl',

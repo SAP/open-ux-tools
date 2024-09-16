@@ -42,7 +42,9 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
  * @param promptOptions The prompt options which control the service selection and system name]
  * @returns The list of questions for the ABAP on BTP system
  */
-export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOptions): Question<AbapOnBtpAnswers & ServiceAnswer>[] {
+export function getAbapOnBTPSystemQuestions(
+    promptOptions?: OdataServicePromptOptions
+): Question<AbapOnBtpAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
     const questions: Question<AbapOnBtpAnswers & ServiceAnswer>[] = [];
