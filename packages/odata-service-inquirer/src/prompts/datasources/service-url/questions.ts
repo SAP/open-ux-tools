@@ -217,11 +217,12 @@ function getPasswordPrompt(
         type: 'password',
         guiOptions: {
             applyDefaultWhenDirty: true,
-            mandatory: true
+            mandatory: true,
         },
+        guiType: 'login',
         name: promptNames.serviceUrlPassword,
         message: t('prompts.servicePassword.message'),
-        guiType: 'login',
+        //guiType: 'login',
         mask: '*',
         validate: async (password: string, { username, serviceUrl, ignoreCertError, sapClient }: ServiceUrlAnswers) => {
             if (!serviceUrl || !username || !password) {

@@ -12,9 +12,9 @@ import {
 } from '../types';
 import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
 import { getMetadataFileQuestion } from './datasources/metadata-file';
-import type { SystemSelectionAnswer } from './datasources/sap-system/new-system/questions';
-import { getNewSystemQuestions, newSystemChoiceValue } from './datasources/sap-system/new-system/questions';
+import { getNewSystemQuestions } from './datasources/sap-system/new-system/questions';
 import { getServiceUrlQuestions } from './datasources/service-url/questions';
+import { newSystemChoiceValue, getSystemSelectionQuestions, type SystemSelectionAnswer } from './datasources/sap-system/system-selection';
 import LoggerHelper from './logger-helper';
 import { getDatasourceTypeChoices } from './prompt-helpers';
 
@@ -56,7 +56,7 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
                     DatasourceType.businessHub,
                     DatasourceType.none,
                     DatasourceType.projectSpecificDestination,
-                    DatasourceType.sapSystem
+                    // DatasourceType.sapSystem
                 ].includes(source)
             ) {
                 LoggerHelper.logger?.warn(
@@ -92,6 +92,13 @@ async function getDatasourceTypeConditionalQuestions(
 
     conditionalQuestions.push(
         ...(withCondition(
+            await getSystemSelectionQuestions(promptOptions) as Question[],
+            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem
+        ) as OdataServiceQuestion[])
+    );
+
+   conditionalQuestions.push(
+        ...(withCondition(
             [getMetadataFileQuestion(promptOptions?.metadataFilePath) as Question],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.metadataFile
         ) as OdataServiceQuestion[])
@@ -110,17 +117,6 @@ async function getDatasourceTypeConditionalQuestions(
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.odataServiceUrl
         ) as OdataServiceQuestion[])
     );
-
-    conditionalQuestions.push(
-        ...(withCondition(
-            getNewSystemQuestions(promptOptions) as Question[],
-            (answers: Answers) =>
-                (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem &&
-                (answers as SystemSelectionAnswer).system === newSystemChoiceValue
-        ) as OdataServiceQuestion[])
-    );
-
-    //...further data sources to be added here
 
     return conditionalQuestions;
 }

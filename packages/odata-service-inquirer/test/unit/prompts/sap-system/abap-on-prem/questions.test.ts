@@ -18,9 +18,9 @@ import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { PromptState } from '../../../../../src/utils';
 import * as utils from '../../../../../src/utils';
 import { hostEnvironment, promptNames } from '../../../../../src/types';
-import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import type { ChoiceOptions } from 'inquirer';
+import { type ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection/types';
 
 const v2Metadata =
     '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';

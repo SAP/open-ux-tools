@@ -12,8 +12,9 @@ import type {
 } from '../../../../types';
 import { PromptState } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
-import { getSystemServiceQuestion, getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
-import { newSystemPromptNames, type ServiceAnswer } from '../new-system/types';
+import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
+import { newSystemPromptNames } from '../new-system/types';
+import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
 
 const abapOnPremPromptNamespace = 'abapOnPrem';
 const systemUrlPromptName = `${abapOnPremPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
@@ -28,7 +29,6 @@ interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
     [systemUrlPromptName]?: string;
     [abapOnPremInternalPromptNames.systemUsername]?: string;
     [abapOnPremInternalPromptNames.systemPassword]?: string;
-    [promptNames.serviceSelection]?: ServiceAnswer;
 }
 
 /**
@@ -37,13 +37,13 @@ interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
  * @param promptOptions options for prompts. Applicable options are: {@link ServiceSelectionPromptOptions}, {@link SystemNamePromptOptions}
  * @returns property questions for the Abap on-premise datasource
  */
-export function getAbapOnPremQuestions(promptOptions?: OdataServicePromptOptions): Question<AbapOnPremAnswers>[] {
+export function getAbapOnPremQuestions(promptOptions?: OdataServicePromptOptions): Question<AbapOnPremAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
     // Prompt options
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
 
-    const questions: Question<AbapOnPremAnswers>[] = getAbapOnPremSystemQuestions(
+    const questions: Question<AbapOnPremAnswers & ServiceAnswer>[] = getAbapOnPremSystemQuestions(
         promptOptions?.userSystemName,
         connectValidator,
         requiredOdataVersion
@@ -106,9 +106,10 @@ export function getAbapOnPremSystemQuestions(
             guiOptions: {
                 mandatory: true
             },
+            guiType: 'login',
             name: abapOnPremInternalPromptNames.systemPassword,
             message: t('prompts.systemPassword.message'),
-            guiType: 'login',
+            //guiType: 'login',
             mask: '*',
             default: '',
             validate: async (password, answers: AbapOnPremAnswers & Answers) => {

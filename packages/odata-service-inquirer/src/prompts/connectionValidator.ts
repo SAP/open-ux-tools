@@ -40,7 +40,7 @@ interface Validity {
     canSkipCertError?: boolean;
 }
 
-type ValidationResult = string | boolean | IValidationLink;
+export type ValidationResult = string | boolean | IValidationLink;
 
 // Cert errors that may be ignored by prompt user
 const ignorableCertErrors = [ERROR_TYPE.CERT_SELF_SIGNED, ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN];
@@ -75,6 +75,7 @@ export class ConnectionValidator {
     private _serviceInfo: ServiceInfo | undefined;
     private _connectedUserName: string | undefined;
     private _connectedSystemName: string | undefined;
+    // todo: private _isS4HanaCloud: boolean | undefined;
 
     private _refreshToken: string | undefined;
     /**
@@ -139,6 +140,15 @@ export class ConnectionValidator {
      */
     public get validatedUrl(): string | undefined {
         return this._validatedUrl;
+    }
+
+    /**
+     * Get the validated client code. This is the client code that has been successfully validated by a request.
+     *
+     * @returns the validated client code
+     */
+    public get validatedClient(): string | undefined {
+        return this._validatedClient;
     }
 
     /**
@@ -329,7 +339,7 @@ export class ConnectionValidator {
         this._connectedUserName = undefined;
         this._refreshToken = undefined;
         this._connectedSystemName = undefined;
-        this.resetValidity();
+        // this.resetValidity();
     }
 
     /**
@@ -363,6 +373,7 @@ export class ConnectionValidator {
 
         if (this._serviceProvider) {
             LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
+            //this._isS4HanaCloud = await (this._serviceProvider as AbapServiceProvider).isS4Cloud();
         }
 
         if (!odataVersion || odataVersion === ODataVersion.v2) {
@@ -425,7 +436,7 @@ export class ConnectionValidator {
      * @param serviceInfo the service info
      * @returns the service provider
      */
-    private getAbapOnCloudServiceProvider(url?: URL, serviceInfo?: ServiceInfo): ServiceProvider {
+    private getAbapOnCloudServiceProvider(url?: URL, serviceInfo?: ServiceInfo): AbapServiceProvider {
         if (this.systemAuthType === 'reentranceTicket' && url) {
             return createForAbapOnCloud({
                 environment: AbapCloudEnvironment.EmbeddedSteampunk,
@@ -446,6 +457,8 @@ export class ConnectionValidator {
 
     /**
      * Validate the system connectivity with the specified service info (containing UAA details).
+     * This will create a connection to the system, updating the service provider reference.
+     * The connected user name will be cached for later use.
      *
      * @param serviceInfo the service info containing the UAA details
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
@@ -482,6 +495,7 @@ export class ConnectionValidator {
      * @param options.forceReValidation force re-validation of the url
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url, this value is retained for subsequent calls
      * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
+     * @param options.systemAuthType the system auth type used to create system connections, if not specified or `isSystem` is false or undefined, `basic` is assumed
      * @returns true if the url is reachable, false if not, or an error message string
      */
     public async validateUrl(
@@ -490,17 +504,22 @@ export class ConnectionValidator {
             ignoreCertError = false,
             forceReValidation = false,
             isSystem = false,
-            odataVersion
+            odataVersion,
+            systemAuthType
         }: {
             ignoreCertError?: boolean;
             forceReValidation?: boolean;
             isSystem?: boolean;
             odataVersion?: ODataVersion;
+            systemAuthType?: SystemAuthType;
         } = {}
     ): Promise<ValidationResult> {
         if (this.isEmptyString(serviceUrl)) {
             this.resetValidity();
             return false;
+        }
+        if (systemAuthType) {
+            this.systemAuthType = systemAuthType;
         }
         try {
             const url = new URL(serviceUrl);

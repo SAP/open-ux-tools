@@ -81,7 +81,7 @@
             "message": "Password"
         },
         "systemService": {
-            "message": "Service name",
+            "message": "Service",
             "breadcrumb": "Service",
             "noServicesWarning": "No services available for the selected system, see logs for further details."
         },
@@ -99,7 +99,8 @@
             "emptySystemNameWarning": "System name cannot be empty."
         },
         "systemSelection": {
-            "newSystemChoiceLabel": "New system"
+            "newSystemChoiceLabel": "New system",
+            "message": "Select a system configuration"
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
@@ -166,7 +167,9 @@
         "anUntrustedRootCert": "an untrusted root",
         "suggestedSystemNameClient": ", client {{client}}",
         "seeLogForDetails": "See log for more details.",
-        "forUserName": "(for user [{{username}}])"
+        "forUserName": "(for user [{{username}}])",
+        "systemTypeBTP": "BTP",
+        "systemTypeS4HC": "S4HC"
     },
     "guidedAnswers": {
         "validationErrorHelpText": "Need help with this error?"

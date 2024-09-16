@@ -89,8 +89,9 @@ export interface OdataServiceAnswers {
 
         /**
          * The persistable backend system representation of the connected service provider
+         * `newOrUpdated` is set to true if the system was newly created or updated during the connection validation process and should be considered for storage.
          */
-        backendSystem?: BackendSystem;
+        backendSystem?: BackendSystem & { newOrUpdated?: boolean };
     };
 }
 

@@ -15,6 +15,7 @@ import type { ConnectionValidator } from '../../../connectionValidator';
 import { PromptState } from '../../../../utils';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { errorHandler } from '../../../prompt-helpers';
+import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON/'];
@@ -181,7 +182,7 @@ export async function getServiceDetails(
     const serviceCatalog = connectionValidator.catalogs[service.serviceODataVersion];
 
     if (!serviceCatalog || !connectionValidator.serviceProvider) {
-        LoggerHelper.logger.error('ConenctionValidator is not initialized');
+        LoggerHelper.logger.error('ConnectionValidator is not initialized');
         return false;
     }
 
@@ -200,4 +201,69 @@ export async function getServiceDetails(
     PromptState.odataService.servicePath = service.servicePath;
     PromptState.odataService.origin = connectionValidator.validatedUrl;
     return true;
+}
+
+/**
+ * Create a value for the service selection prompt message, which may include thge active connected user name.
+ *
+ * @param username The connected user name
+ * @returns The service selection prompt message
+ */
+export function getSelectedServiceLabel(username: string | undefined): string {
+    let message = t('prompts.systemService.message');
+    if (username) {
+        message = message.concat(` ${t('texts.forUserName', { username })}`);
+    }
+    return message;
+}
+
+
+
+/**
+ * Get the service selection prompt additional message. This prompt will make an additional call to the system backend
+ * to retrieve the service type and display a warning message if the service type is not UI.
+ *
+ * @param serviceChoices a list of service choices
+ * @param selectedService the selected service
+ * @param connectValidator the connection validator
+ * @param requiredOdataVersion the required OData version for the service
+ * @returns the service selection prompt additional message
+ */
+export async function getSelectedServiceMessage(
+    serviceChoices: ListChoiceOptions<ServiceAnswer>[],
+    selectedService: ServiceAnswer,
+    connectValidator: ConnectionValidator,
+    requiredOdataVersion?: OdataVersion
+): Promise<IMessageSeverity | undefined> {
+    if (serviceChoices?.length === 0) {
+        if (requiredOdataVersion) {
+            return {
+                message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
+                    odataVersion: requiredOdataVersion
+                }),
+                severity: Severity.warning
+            };
+        } else {
+            return {
+                message: t('prompts.warnings.noServicesAvailable'),
+                severity: Severity.warning
+            };
+        }
+    }
+    if (selectedService) {
+        let serviceType = selectedService.serviceType;
+        if (selectedService.serviceODataVersion === ODataVersion.v2) {
+            serviceType = await getServiceType(
+                selectedService.servicePath,
+                selectedService.serviceType,
+                connectValidator.catalogs[ODataVersion.v2] as V2CatalogService
+            );
+        }
+        if (serviceType && serviceType !== ServiceType.UI) {
+            return {
+                message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+                severity: Severity.warning
+            };
+        }
+    }
 }
