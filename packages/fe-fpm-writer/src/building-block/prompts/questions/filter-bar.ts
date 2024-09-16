@@ -121,13 +121,13 @@ export async function getFilterBarBuildingBlockPrompts(
                 type: 'input',
                 name: 'buildingBlockData.filterChanged',
                 message: t('filterChanged'),
-                guiOptions: { groupId: groupIds.filterConfigureEvents }
+                guiOptions: { groupId: groupIds.filterConfigureEvents, placeholder: t('filterChangedPlaceholder') }
             },
             {
                 type: 'input',
                 name: 'buildingBlockData.search',
                 message: t('search'),
-                guiOptions: { groupId: groupIds.filterConfigureEvents }
+                guiOptions: { groupId: groupIds.filterConfigureEvents, placeholder: t('searchPlaceholder') }
             }
         ],
         initialAnswers: {

@@ -219,9 +219,9 @@ Object {
     Object {
       "guiOptions": Object {
         "groupId": "chartConfigureEvents",
-        "placeholder": "Enter a selecton change function",
+        "placeholder": "Enter a function to be executed",
       },
-      "message": "Selection Change Function",
+      "message": "Selection Change Event",
       "name": "buildingBlockData.selectionChange",
       "type": "input",
     },
@@ -400,6 +400,7 @@ Object {
     Object {
       "guiOptions": Object {
         "groupId": "filterConfigureEvents",
+        "placeholder": "Enter a function to be executed",
       },
       "message": "Filter Changed Event",
       "name": "buildingBlockData.filterChanged",
@@ -408,6 +409,7 @@ Object {
     Object {
       "guiOptions": Object {
         "groupId": "filterConfigureEvents",
+        "placeholder": "Enter a function to be executed",
       },
       "message": "Search Event",
       "name": "buildingBlockData.search",
@@ -1164,9 +1166,9 @@ Object {
     Object {
       "guiOptions": Object {
         "groupId": "chartConfigureEvents",
-        "placeholder": "Enter a selecton change function",
+        "placeholder": "Enter a function to be executed",
       },
-      "message": "Selection Change Function",
+      "message": "Selection Change Event",
       "name": "buildingBlockData.selectionChange",
       "type": "input",
     },
@@ -1567,6 +1569,7 @@ Object {
     Object {
       "guiOptions": Object {
         "groupId": "filterConfigureEvents",
+        "placeholder": "Enter a function to be executed",
       },
       "message": "Filter Changed Event",
       "name": "buildingBlockData.filterChanged",
@@ -1575,6 +1578,7 @@ Object {
     Object {
       "guiOptions": Object {
         "groupId": "filterConfigureEvents",
+        "placeholder": "Enter a function to be executed",
       },
       "message": "Search Event",
       "name": "buildingBlockData.search",

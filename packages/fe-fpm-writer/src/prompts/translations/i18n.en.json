@@ -98,8 +98,8 @@
                     "multiple": "Multiple"
                 }
             },
-            "selectionChange": "Selection Change Function",
-            "selectionChangePlaceholder": "Enter a selecton change function",
+            "selectionChange": "Selection Change Event",
+            "selectionChangePlaceholder": "Enter a function to be executed",
             "qualifier": "Chart Annotation Path",
             "qualifierPlaceholder": "Select a chart annotation path",
             "valuesDependentOnEntityTypeInfo": "Values are dependent on entity set"
@@ -127,7 +127,9 @@
             "service": "Service",
             "metaPath": "Enter the relative path of the property in the meta model",
             "filterChanged": "Filter Changed Event",
+            "filterChangedPlaceholder": "Enter a function to be executed",
             "search": "Search Event",
+            "searchPlaceholder": "Enter a function to be executed",
             "qualifier": "Selection Field Annotation Path",
             "qualifierPlaceholder": "Select a selection field annotation path",
             "aggregation": "Aggregation Path",
