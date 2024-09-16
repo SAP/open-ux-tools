@@ -275,16 +275,6 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             targetAggregation: targetAggregation ?? 'content'
         };
 
-        const templateName = this.getFragmentTemplateName(modifiedValue.targetAggregation);
-        if (templateName) {
-            flexSettings = {
-                ...flexSettings
-            };
-            flexSettings.selector = {
-                templateName
-            };
-        }
-
         const command = await this.commandExecutor.getCommand(
             this.runtimeControl,
             'addXML',
@@ -293,6 +283,12 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             flexSettings
         );
 
+        const templateName = this.getFragmentTemplateName(modifiedValue.targetAggregation);
+        if (templateName) {
+            const preparedChange = command.getPreparedChange();
+            const content = preparedChange.getContent();
+            preparedChange.setContent({ ...content, templateName });
+        }
         await this.commandExecutor.pushAndExecuteCommand(command);
     }
 

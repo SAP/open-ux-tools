@@ -85,7 +85,7 @@ export function isAddXMLChange(change: CommonChangeProperties): change is AddXML
 export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Editor, logger: Logger): void {
     const { fragmentPath } = change.content;
     const fullPath = join(basePath, DirName.Changes, fragmentPath);
-    const templateConfig = fragmentTemplateDefinitions[change.selector?.templateName ?? ''];
+    const templateConfig = fragmentTemplateDefinitions[change.content?.templateName ?? ''];
     try {
         if (templateConfig) {
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);

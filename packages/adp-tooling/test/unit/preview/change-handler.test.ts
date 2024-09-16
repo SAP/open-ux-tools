@@ -185,7 +185,8 @@ describe('change-handler', () => {
                 mockFs.exists.mockReturnValue(false);
                 const updatedChange = {
                     ...change,
-                    selector: {
+                    content: {
+                        ...change.content,
                         templateName: `OBJECT_PAGE_CUSTOM_SECTION`
                     }
                 } as unknown as AddXMLChange;

@@ -21,8 +21,17 @@ declare module 'sap/ui/fl/Change' {
         };
         fileName: string;
     }
+    export interface ChangeContentType {
+        fragmentPath: string;
+        index: number;
+        targetAggregation: string;
+        templateName?: string;
+    }
+
     interface Change {
         getDefinition: () => ChangeDefinition;
+        getContent: () => ChangeContentType;
+        setContent: (newContent: ChangeContentType) => void;
     }
 
     export default Change;
