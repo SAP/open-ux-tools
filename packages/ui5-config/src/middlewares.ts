@@ -116,11 +116,14 @@ export const getMockServerMiddlewareConfig = (
         beforeMiddleware: 'csp',
         configuration: {
             mountPath: '/',
+            // Services should be empty in case no service is provided services: []
             services: [
                 {
                     urlPath: path ?? '',
-                    metadataPath: './webapp/localService/metadata.xml',
-                    mockdataPath: './webapp/localService/data',
+                    metadataPath: 'metadataPath',
+                    // mockdata path should not be generated in case no mock data exists
+                    mockdataPath: 'mockdataPath',
+                    // In case of update, this user value should not be overwritten
                     generateMockData: true
                 }
             ],

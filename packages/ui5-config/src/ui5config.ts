@@ -322,9 +322,12 @@ export class UI5Config {
      * @memberof UI5Config
      */
     public addMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
-        this.document.appendTo({
+        const middleware = getMockServerMiddlewareConfig(path, annotationsConfig);
+        this.document.updateAt({
             path: 'server.customMiddleware',
-            value: getMockServerMiddlewareConfig(path, annotationsConfig)
+            matcher: { key: 'name', value: middleware.name },
+            value: middleware,
+            mode: 'merge'
         });
         return this;
     }
@@ -488,7 +491,7 @@ export class UI5Config {
                 path: 'server.customMiddleware',
                 matcher: { key: 'name', value: name },
                 value: middleware,
-                mode: 'overwrite'
+                mode: 'merge'
             });
         } else {
             this.addCustomMiddleware([middleware]);
@@ -503,7 +506,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    private mergeCustomMiddleware(middleware: CustomMiddleware<unknown>): this {
+    public mergeCustomMiddleware(middleware: CustomMiddleware<unknown>): this {
         const name = middleware.name;
         if (this.findCustomMiddleware(name)) {
             this.document.updateAt({
