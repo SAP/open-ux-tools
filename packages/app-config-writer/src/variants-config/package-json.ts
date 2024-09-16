@@ -20,18 +20,19 @@ const PREVIEW_APP_NAME = 'preview-app';
 /**
  * Extracts sap client string from existing scripts in package.json.
  *
- * @param packageJson - parsed package.json content
- * @returns - sap-client string or undefined
+ * @param packageJson - path to package.json
  */
-function getSapClientFromPackageJson(packageJson: Package): string | undefined {
-    const scripts = packageJson.script;
-    // check if sap-client is needed when starting the app
-    for (const script of scripts) {
-        const match = script.match(SAP_CLIENT_REGEX);
+function getSapClientFromPackageJson(packageJson: Package): any {
+    const scripts = (packageJson.script ||= {});
+    // ToDo: check for different iteration
+    const scriptValues = Object.values(scripts);
+    scriptValues.forEach((scriptValue) => {
+        const match = scriptValue.match(SAP_CLIENT_REGEX);
         if (match) {
-            return match[1];
+            return match;
         }
-    }
+        return undefined;
+    });
 }
 
 /**
@@ -86,10 +87,10 @@ export function addVariantsManagementScript(fs: Editor, basePath: string): void 
         const url = getPreviewUrl(query).slice(1);
         //TDo: check script name
         const startVariantsManagement = 'start-variants-management';
-        const variantsScript = { [startVariantsManagement]: `fiori run --open "${url}"` };
-        //TDo: check for packageJSON update -> use fs.writeJSON
-        Object.assign(packageJson.scripts, variantsScript);
-        // const appAccess = createApplicationAccess(basePath, fs);
-        // (await appAccess).updatePackageJSON(packageJson);
+        const variantsScript = `fiori run --open "${url}"`;
+
+        packageJson.scripts[startVariantsManagement] = variantsScript;
+
+        fs.writeJSON(packageJsonPath, packageJson);
     }
 }

@@ -18,6 +18,6 @@ export async function generateVariantsConfig(basePath: string, logger?: ToolsLog
         fs = create(createStorage());
     }
     await addVariantsManagementScript(fs, basePath);
-    await addPreviewMiddlewareToYaml(basePath, args, logger);
+    await addPreviewMiddlewareToYaml(fs, basePath, logger);
     return fs;
 }
