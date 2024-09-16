@@ -95,7 +95,7 @@ export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
     private sendAction: (action: ExternalAction) => void;
     private pendingChanges: PendingChange[] = [];
-    private changedFiles: Record<'fileName', string>[] = [];
+    private changedFiles: Record<string, object> = {};
     /**
      *
      * @param options ui5 adaptation options.
@@ -171,7 +171,7 @@ export class ChangeService {
      * Fetches saved changes from the workspace and sorts them.
      */
     private async fetchSavedChanges(): Promise<void> {
-        this.changedFiles = [];
+        this.changedFiles = {};
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
         const savedChanges = (await savedChangesResponse.json()) as SavedChangesResponse;
         const changes = (
@@ -198,7 +198,7 @@ export class ChangeService {
                                 ) {
                                     throw new Error('Unknown Change Type');
                                 }
-                                this.changedFiles.push(change);
+                                this.changedFiles[change.fileName] = change;
                                 return {
                                     type: 'saved',
                                     kind: 'valid',
@@ -215,7 +215,7 @@ export class ChangeService {
                             } catch (error) {
                                 // Gracefully handle change files with invalid content
                                 if (change.fileName) {
-                                    this.changedFiles.push(change);
+                                    this.changedFiles[change.fileName] = change;
                                     const unknownChange: UnknownSavedChange = {
                                         type: 'saved',
                                         kind: 'unknown',
@@ -452,12 +452,9 @@ export class ChangeService {
      * @returns void
      */
     public async syncOutlineChanges(): Promise<void> {
-        for (const file of this.changedFiles) {
-            const flexObject = await this.getFlexObject(file);
-            const savedChange = this.savedChanges.find((change) => change.fileName === file.fileName);
-            if (savedChange) {
-                savedChange.controlId = await this.getControlIdByChange(flexObject);
-            }
+        for (const change of this.savedChanges) {
+            const flexObject = await this.getFlexObject(this.changedFiles[change.fileName]);
+            change.controlId = await this.getControlIdByChange(flexObject);
         }
         this.updateStack();
     }
