@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.30.0
+
+### Minor Changes
+
+-   ddc2d84: The API methods `generateCustomAction`, `generateCustomColumn`, `generateControllerExtension`, `generateCustomFilter`, `generateCustomHeaderSection`, `generateCustomSection`, `generateCustomSubSection`, `generateCustomPage`, `generateObjectPage`, `generateListReport`, `enableFPM` changed from synchronous to asynchronous.
+
 ## 0.29.6
 
 ### Patch Changes

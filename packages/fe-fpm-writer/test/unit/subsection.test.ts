@@ -39,14 +39,14 @@ describe('SubCustomSection generateCustomSubSection', () => {
     });
 
     const testVersions = ['1.85', '1.86', '1.98'];
-    test.each(testVersions)('Versions %s', (minUI5Version) => {
+    test.each(testVersions)('Versions %s', async (minUI5Version) => {
         const testCustomSubSection: CustomSubSection = {
             ...customSubSection,
             eventHandler: true,
             minUI5Version
         };
 
-        generateCustomSubSection(testDir, { ...testCustomSubSection }, fs);
+        await generateCustomSubSection(testDir, { ...testCustomSubSection }, fs);
 
         const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
         const settings = (
@@ -69,7 +69,7 @@ describe('SubCustomSection generateCustomSubSection', () => {
             parentSection: 'ExistingFacet2'
         }
     ];
-    test.each(existingParentSectionTestCases)('$name', ({ parentSection }) => {
+    test.each(existingParentSectionTestCases)('$name', async ({ parentSection }) => {
         // Prepare manifest by adding existing sections
         const manifestTemp = JSON.parse(JSON.stringify(manifest));
         manifestTemp['sap.ui5'].routing.targets.sample.options.settings.content.body.sections = {
@@ -95,7 +95,7 @@ describe('SubCustomSection generateCustomSubSection', () => {
             ...customSubSection,
             parentSection
         };
-        generateCustomSubSection(testDir, { ...testCustomSubSection }, fs);
+        await generateCustomSubSection(testDir, { ...testCustomSubSection }, fs);
         const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
         const settings = (
             updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
@@ -143,8 +143,8 @@ describe('SubCustomSection generateCustomSubSection', () => {
         }
     ];
     positionTests.forEach((testCase) => {
-        test(`Test 'position' property. ${testCase.name}`, () => {
-            generateCustomSubSection(
+        test(`Test 'position' property. ${testCase.name}`, async () => {
+            await generateCustomSubSection(
                 testDir,
                 {
                     ...customSubSection,
