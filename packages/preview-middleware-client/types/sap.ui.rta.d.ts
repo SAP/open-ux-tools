@@ -43,14 +43,14 @@ declare module 'sap/ui/rta/command/FlexCommand' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
     import type Change from 'sap/ui/fl/Change';
 
-    interface FlexCommand extends Omit<BaseCommand, 'getCommands'> {
+    interface FlexCommand<ChangeContentType = any> extends Omit<BaseCommand, 'getCommands'> {
         _oPreparedChange?: {
             _oDefinition: {
                 moduleName: string;
             };
             setModuleName(moduleName: string): void;
         };
-        getPreparedChange(): Change;
+        getPreparedChange(): Change<ChangeContentType>;
         getCommands(): FlexCommand[];
     }
 
@@ -81,15 +81,6 @@ declare module 'sap/ui/rta/command/CommandFactory' {
         flexSettings?: FlexSettings;
     }
 
-    export interface ExtendedFlexSettings extends FlexSettings {
-        /**
-         * Selector extension for custom fragment generation
-         */
-        selector?: {
-            templateName?: string;
-        };
-    }
-
     export default class CommandFactory {
         constructor(_: Arguments) {}
 
@@ -98,7 +89,7 @@ declare module 'sap/ui/rta/command/CommandFactory' {
             commandType: string, // type of
             settings: object,
             designTimeMetadata?: DesignTimeMetadata | null,
-            flexSettings?: ExtendedFlexSettings
+            flexSettings?: FlexSettings
         ): Promise<T>;
     }
 }

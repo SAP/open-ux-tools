@@ -20,12 +20,14 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
+/** sap.ui.fl */
+import {type AddFragmentChangeContentType} from 'sap/ui/fl/Change';
+
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
-import { ExtendedFlexSettings } from 'sap/ui/rta/command/CommandFactory';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -263,7 +265,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
     private async createFragmentChange(fragmentData: CreateFragmentProps) {
         const { fragmentName, index, targetAggregation } = fragmentData;
 
-        let flexSettings: ExtendedFlexSettings = this.rta.getFlexSettings();
+        const flexSettings = this.rta.getFlexSettings();
 
         const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
         const designMetadata = overlay.getDesignTimeMetadata();
@@ -275,7 +277,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             targetAggregation: targetAggregation ?? 'content'
         };
 
-        const command = await this.commandExecutor.getCommand(
+        const command = await this.commandExecutor.getCommand<AddFragmentChangeContentType>(
             this.runtimeControl,
             'addXML',
             modifiedValue,

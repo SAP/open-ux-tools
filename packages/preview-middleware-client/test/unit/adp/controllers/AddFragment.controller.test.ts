@@ -15,7 +15,7 @@ import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import Core from 'sap/ui/core/Core';
-import { ChangeContentType } from 'sap/ui/fl/Change';
+import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -623,7 +623,7 @@ describe('AddFragment', () => {
             } as unknown as JSONModel;
             addFragment.model = testModel;
 
-            const dummyContent: ChangeContentType = {
+            const dummyContent: AddFragmentChangeContentType = {
                 fragmentPath: 'dummyPath',
                 index: 1,
                 targetAggregation: 'sections'
