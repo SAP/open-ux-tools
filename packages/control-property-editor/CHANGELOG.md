@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.2
+
+### Patch Changes
+
+-   cdabb95: updated color variables for themes
+
 ## 0.5.1
 
 ### Patch Changes
