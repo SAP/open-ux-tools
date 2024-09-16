@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.1.21
+
+### Patch Changes
+
+-   ddc2d84: call 'generateCustomPage' from 'fe-fpm-writer' as async function
+-   Updated dependencies [ddc2d84]
+    -   @sap-ux/fe-fpm-writer@0.30.0
+
 ## 1.1.20
 
 ### Patch Changes
