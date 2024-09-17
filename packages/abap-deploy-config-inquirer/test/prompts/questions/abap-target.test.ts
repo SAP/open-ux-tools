@@ -95,7 +95,10 @@ describe('getAbapTargetPrompts', () => {
                 "message": "Is this an SAP Business Technology Platform system?",
                 "name": "scp",
                 "type": "confirm",
-                "validate": [Function],
+                "when": [Function],
+              },
+              Object {
+                "name": "scpSetter",
                 "when": [Function],
               },
               Object {
@@ -300,7 +303,6 @@ describe('getAbapTargetPrompts', () => {
             backendSystems: undefined
         });
         jest.spyOn(conditions, 'showScpQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateScpQuestion').mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({
             backendTarget: { abapTarget: { scp: true } as UrlAbapTarget }
         });
@@ -315,7 +317,6 @@ describe('getAbapTargetPrompts', () => {
             ).toBe(true);
             expect(scpPrompt.message).toBe(t('prompts.target.scp.message'));
             expect((scpPrompt.default as Function)()).toEqual(true);
-            expect((scpPrompt.validate as Function)()).toEqual(true);
         } else {
             throw new Error('Scp prompt not found');
         }
@@ -374,6 +375,7 @@ describe('getAbapTargetPrompts', () => {
         );
 
         if (clientPrompt) {
+            PromptState.abapDeployConfig.client = '100';
             expect((clientPrompt.when as Function)({})).toBe(true);
             expect(clientPrompt.message).toBe(t('prompts.target.client.message'));
             expect((clientPrompt.default as Function)()).toEqual('100');
@@ -383,5 +385,6 @@ describe('getAbapTargetPrompts', () => {
         } else {
             throw new Error('Client choice prompt not found');
         }
+        PromptState.resetAbapDeployConfig();
     });
 });

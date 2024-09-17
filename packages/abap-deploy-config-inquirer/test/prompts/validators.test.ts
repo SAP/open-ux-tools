@@ -11,7 +11,6 @@ import {
     validatePackage,
     validatePackageChoiceInput,
     validatePackageChoiceInputForCli,
-    validateScpQuestion,
     validateTargetSystem,
     validateTargetSystemUrlCli,
     validateTransportChoiceInput,
@@ -151,16 +150,9 @@ describe('Test validators', () => {
         });
     });
 
-    describe('validateScpQuestion', () => {
-        it('should return true and update prompt state for valid SCP', () => {
-            const result = validateScpQuestion(true);
-            expect(PromptState.abapDeployConfig.scp).toBe(true);
-            expect(result).toBe(true);
-        });
-    });
-
     describe('validateClientChoiceQuestion', () => {
         it('should return true for valid client', () => {
+            PromptState.resetAbapDeployConfig();
             // Base
             let result = validateClientChoiceQuestion(ClientChoiceValue.Base, '000');
             expect(PromptState.abapDeployConfig.client).toBe('000');
@@ -178,6 +170,7 @@ describe('Test validators', () => {
 
     describe('validateClientChoiceQuestion', () => {
         it('should return true for valid client', () => {
+            PromptState.resetAbapDeployConfig();
             // Base
             let result = validateClientChoiceQuestion(ClientChoiceValue.Base, '000');
             expect(PromptState.abapDeployConfig.client).toBe('000');
