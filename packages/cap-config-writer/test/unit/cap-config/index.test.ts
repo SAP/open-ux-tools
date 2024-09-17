@@ -87,9 +87,7 @@ describe('Test checkCdsUi5PluginEnabled()', () => {
 
     test('CAP project with valid cds-plugin-ui', async () => {
         expect(await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'))).toBe(true);
-        expect(
-            await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'), undefined, true)
-        ).toEqual({
+        expect(await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'), undefined, true)).toEqual({
             hasCdsUi5Plugin: true,
             hasMinCdsVersion: true,
             isCdsUi5PluginEnabled: true,

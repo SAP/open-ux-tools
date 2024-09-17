@@ -48,7 +48,8 @@ describe('updates', () => {
             ['1.115.0', true],
             ['', false],
             ['1.105.0', false],
-            [undefined, false]
+            [undefined, false],
+            [['1.120.10', '2.0.0'], true]
         ])('Ensure synchronizationMode is correctly set for minUI5Version %s', (minUI5Version, syncMode) => {
             const testManifest = {
                 'sap.app': {

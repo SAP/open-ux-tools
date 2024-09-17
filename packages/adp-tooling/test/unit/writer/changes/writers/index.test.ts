@@ -3,16 +3,18 @@ import type { Editor } from 'mem-fs-editor';
 import {
     writeAnnotationChange,
     writeChangeToFolder,
-    getGenericChange,
     findChangeWithInboundId,
-    writeChangeToFile
+    writeChangeToFile,
+    getChange
 } from '../../../../../src/base/change-utils';
 import type {
-    AdpProjectData,
     AnnotationsData,
-    ComponentUsagesData,
+    ComponentUsagesDataBase,
+    ComponentUsagesDataWithLibrary,
     DataSourceData,
-    InboundData
+    NewModelData,
+    InboundData,
+    DescriptorVariant
 } from '../../../../../src';
 import {
     AnnotationsWriter,
@@ -27,13 +29,13 @@ jest.mock('../../../../../src/base/change-utils', () => ({
     ...jest.requireActual('../../../../../src/base/change-utils'),
     writeAnnotationChange: jest.fn(),
     writeChangeToFolder: jest.fn(),
-    getGenericChange: jest.fn().mockReturnValue({}),
+    getChange: jest.fn().mockReturnValue({}),
     findChangeWithInboundId: jest.fn(),
     writeChangeToFile: jest.fn()
 }));
 
 const writeAnnotationChangeMock = writeAnnotationChange as jest.Mock;
-const getGenericChangeMock = getGenericChange as jest.Mock;
+const getChangeMock = getChange as jest.Mock;
 const writeChangeToFolderMock = writeChangeToFolder as jest.Mock;
 const findChangeWithInboundIdMock = findChangeWithInboundId as jest.Mock;
 const writeChangeToFileMock = writeChangeToFile as jest.Mock;
@@ -47,39 +49,109 @@ describe('AnnotationsWriter', () => {
 
     it('should correctly construct content and write annotation change', async () => {
         const mockData: AnnotationsData = {
+            variant: {
+                layer: 'CUSTOMER_BASE',
+                reference: 'mock.reference',
+                id: 'adp.mock.variant',
+                namespace: 'apps/adp.mock.variant'
+            } as DescriptorVariant,
             annotation: {
+                fileName: '',
                 dataSource: '/sap/opu/odata/source',
-                filePath: '/mock/path/to/annotation/file.xml',
-                fileName: 'mockAnnotation.xml'
-            },
-            projectData: { namespace: 'apps/mock', layer: 'VENDOR', id: 'mockId' } as AdpProjectData,
-            timestamp: Date.now(),
-            isInternalUsage: false
+                filePath: '/mock/path/to/annotation/file.xml'
+            }
         };
 
         const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
 
         await writer.write(mockData);
 
-        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(mockProjectPath, mockData, expect.any(Object), {});
+        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+            mockProjectPath,
+            expect.any(Number),
+            mockData.annotation,
+            expect.any(Object),
+            {}
+        );
+    });
+
+    it('should correctly construct content without filePath', async () => {
+        const mockData: AnnotationsData = {
+            variant: {
+                layer: 'CUSTOMER_BASE',
+                reference: 'mock.reference',
+                id: 'adp.mock.variant',
+                namespace: 'apps/adp.mock.variant'
+            } as DescriptorVariant,
+            annotation: {
+                fileName: '',
+                dataSource: '/sap/opu/odata/source',
+                filePath: ''
+            }
+        };
+
+        const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
+
+        await writer.write(mockData);
+
+        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+            mockProjectPath,
+            expect.any(Number),
+            mockData.annotation,
+            expect.any(Object),
+            {}
+        );
+    });
+
+    it('should correctly construct content with relative path', async () => {
+        const mockData: AnnotationsData = {
+            variant: {
+                layer: 'CUSTOMER_BASE',
+                reference: 'mock.reference',
+                id: 'adp.mock.variant',
+                namespace: 'apps/adp.mock.variant'
+            } as DescriptorVariant,
+            annotation: {
+                fileName: '',
+                dataSource: '/sap/opu/odata/source',
+                filePath: 'file.xml'
+            }
+        };
+
+        const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
+
+        await writer.write(mockData);
+
+        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+            mockProjectPath,
+            expect.any(Number),
+            mockData.annotation,
+            expect.any(Object),
+            {}
+        );
     });
 });
 
 describe('ComponentUsagesWriter', () => {
     const mockData = {
+        variant: {
+            layer: 'CUSTOMER_BASE',
+            reference: 'mock.reference',
+            id: 'adp.mock.variant',
+            namespace: 'apps/adp.mock.variant'
+        } as DescriptorVariant,
         component: {
+            isLazy: 'true',
             usageId: 'mockID',
             name: 'mockName',
-            isLazy: 'true',
-            settings: '"key": "value"',
-            data: '"key": "value"'
+            data: '"key": "value"',
+            settings: '"key": "value"'
         },
         library: {
             reference: 'mockLibrary',
             referenceIsLazy: 'false'
-        },
-        timestamp: 1234567890
-    };
+        }
+    } as ComponentUsagesDataWithLibrary;
 
     let writer: ComponentUsagesWriter;
 
@@ -89,9 +161,10 @@ describe('ComponentUsagesWriter', () => {
     });
 
     it('should write component usages and library reference changes when required', async () => {
-        await writer.write(mockData as ComponentUsagesData);
+        await writer.write(mockData);
 
-        expect(getGenericChangeMock).toHaveBeenCalledWith(
+        expect(getChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
             expect.anything(),
             expect.objectContaining({
                 componentUsages: {
@@ -106,7 +179,8 @@ describe('ComponentUsagesWriter', () => {
             ChangeType.ADD_COMPONENT_USAGES
         );
 
-        expect(getGenericChangeMock).toHaveBeenCalledWith(
+        expect(getChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
             expect.anything(),
             expect.objectContaining({ libraries: { mockLibrary: { lazy: false } } }),
             ChangeType.ADD_LIBRARY_REFERENCE
@@ -116,15 +190,23 @@ describe('ComponentUsagesWriter', () => {
     });
 
     it('should only write component usages changes when library reference is not required', async () => {
-        mockData.library.reference = '';
+        const mockDataWithoutLibrary = {
+            variant: mockData.variant,
+            component: mockData.component
+        } as ComponentUsagesDataBase;
 
-        await writer.write(mockData as ComponentUsagesData);
+        const systemTime = new Date('2024-03-10');
+        jest.useFakeTimers().setSystemTime(systemTime);
+
+        await writer.write(mockDataWithoutLibrary);
+
+        jest.useRealTimers();
 
         expect(writeChangeToFolderMock).toHaveBeenCalledTimes(1);
         expect(writeChangeToFolderMock).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Object),
-            'id_1234567891_addComponentUsages.change',
+            `id_${systemTime.getTime()}_addComponentUsages.change`,
             {},
             'manifest'
         );
@@ -140,27 +222,26 @@ describe('NewModelWriter', () => {
     });
 
     it('should correctly construct content and write new model change', async () => {
-        const mockData = {
-            projectData: {} as AdpProjectData,
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
             service: {
                 name: 'ODataService',
                 uri: '/sap/opu/odata/custom',
-                version: '4.0',
                 modelName: 'ODataModel',
+                version: '4.0',
                 modelSettings: '"someSetting": "someValue"'
             },
             annotation: {
                 dataSourceName: 'ODataAnnotations',
                 dataSourceURI: 'some/path/annotations.xml',
                 settings: '"anotherSetting": "anotherValue"'
-            },
-            addAnnotationMode: true,
-            timestamp: 1234567890
+            }
         };
 
         await writer.write(mockData);
 
-        expect(getGenericChangeMock).toHaveBeenCalledWith(
+        expect(getChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
             expect.anything(),
             {
                 'dataSource': {
@@ -195,7 +276,7 @@ describe('NewModelWriter', () => {
         expect(writeChangeToFolderMock).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Object),
-            `id_${mockData.timestamp}_addNewModel.change`,
+            expect.stringContaining('_addNewModel.change'),
             {},
             'manifest'
         );
@@ -205,15 +286,25 @@ describe('NewModelWriter', () => {
 describe('DataSourceWriter', () => {
     const mockData: DataSourceData = {
         service: {
-            name: 'CustomOData',
+            id: 'CustomOData',
             uri: '/sap/opu/odata/custom',
             annotationUri: '',
             maxAge: 60
         },
-        projectData: {} as AdpProjectData,
-        timestamp: 1234567890,
-        dataSourcesDictionary: {
-            CustomODataOData1: 'DataSource1'
+        dataSources: {
+            'CustomOData': {
+                settings: {
+                    annotations: ['CustomAnnotation']
+                },
+                uri: '/datasource/uri'
+            }
+        },
+        variant: {
+            layer: 'VENDOR',
+            reference: '',
+            id: '',
+            namespace: '',
+            content: []
         }
     };
 
@@ -225,12 +316,15 @@ describe('DataSourceWriter', () => {
     });
 
     it('should write data source change with provided data', async () => {
-        await writer.write(mockData as unknown as DataSourceData);
-
-        expect(getGenericChangeMock).toHaveBeenCalledWith(
+        const systemTime = new Date('2024-03-10');
+        jest.useFakeTimers().setSystemTime(systemTime);
+        await writer.write(mockData);
+        jest.useRealTimers();
+        expect(getChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
             expect.anything(),
             expect.objectContaining({
-                dataSourceId: mockData.service.name,
+                dataSourceId: mockData.service.id,
                 entityPropertyChange: expect.arrayContaining([
                     expect.objectContaining({
                         propertyPath: 'uri',
@@ -250,7 +344,7 @@ describe('DataSourceWriter', () => {
         expect(writeChangeToFolder).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Object),
-            `id_${mockData.timestamp}_changeDataSource.change`,
+            `id_${systemTime.getTime()}_changeDataSource.change`,
             {},
             'manifest'
         );
@@ -261,7 +355,7 @@ describe('DataSourceWriter', () => {
 
         await writer.write(mockData);
 
-        expect(getGenericChange).toHaveBeenCalledTimes(2);
+        expect(getChange).toHaveBeenCalledTimes(2);
         expect(writeChangeToFolder).toHaveBeenCalledTimes(2);
     });
 });
@@ -276,33 +370,33 @@ describe('InboundWriter', () => {
     });
 
     it('should create a new inbound change when no existing change is found', async () => {
-        const mockData = {
+        const mockData: InboundData = {
             inboundId: 'testInboundId',
-            timestamp: 1234567890,
             flp: {
                 title: 'Test Title',
-                subTitle: 'Test SubTitle',
+                subtitle: 'Test SubTitle',
                 icon: 'Test Icon'
-            }
+            },
+            variant: {} as DescriptorVariant
         };
 
         findChangeWithInboundIdMock.mockReturnValue({ changeWithInboundId: null, filePath: '' });
 
-        await writer.write(mockData as InboundData);
+        await writer.write(mockData);
 
-        expect(getGenericChangeMock).toHaveBeenCalled();
+        expect(getChangeMock).toHaveBeenCalled();
         expect(writeChangeToFolderMock).toHaveBeenCalled();
     });
 
     it('should enhance existing inbound change content when found', async () => {
         const mockData = {
             inboundId: 'testInboundId',
-            timestamp: 1234567890,
             flp: {
                 title: 'New Title',
-                subTitle: 'New SubTitle',
+                subtitle: 'New SubTitle',
                 icon: 'New Icon'
-            }
+            },
+            variant: {} as DescriptorVariant
         };
 
         const existingChangeContent = { inboundId: 'testInboundId', entityPropertyChange: [] };

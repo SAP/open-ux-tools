@@ -7,6 +7,7 @@ import type {
     OutlineNode,
     PendingPropertyChange,
     PropertyChange,
+    QuickActionGroup,
     SavedPropertyChange,
     Scenario,
     ShowMessage
@@ -19,13 +20,15 @@ import {
     propertyChanged,
     propertyChangeFailed,
     showMessage,
-    scenario,
+    SCENARIO,
     reloadApplication,
     storageFileChanged,
     setAppMode,
     setUndoRedoEnablement,
     setSaveEnablement,
-    appLoaded
+    appLoaded,
+    updateQuickAction,
+    quickActionListChanged
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -53,6 +56,7 @@ interface SliceState {
     };
     canSave: boolean;
     isAppLoading: boolean;
+    quickActions: QuickActionGroup[];
 }
 
 export interface ChangesSlice {
@@ -122,7 +126,7 @@ export const initialState: SliceState = {
     selectedControl: undefined,
     outline: [],
     filterQuery: filterInitOptions,
-    scenario: scenario.UiAdaptation,
+    scenario: SCENARIO.UiAdaptation,
     isAdpProject: false,
     icons: [],
     changes: {
@@ -133,21 +137,22 @@ export const initialState: SliceState = {
     },
     dialogMessage: undefined,
     appMode: 'adaptation',
-
     changeStack: {
         canUndo: false,
         canRedo: false
     },
     canSave: false,
-    isAppLoading: true
+    isAppLoading: true,
+    quickActions: []
 };
+
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
     initialState,
     reducers: {
         setProjectScenario: (state, action: PayloadAction<Scenario>) => {
             state.scenario = action.payload;
-            state.isAdpProject = action.payload === scenario.AdaptationProject;
+            state.isAdpProject = action.payload === SCENARIO.AdaptationProject;
         }
     },
     extraReducers: (builder) =>
@@ -307,6 +312,26 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             .addMatcher(appLoaded.match, (state): void => {
                 state.isAppLoading = false;
             })
+            .addMatcher(
+                quickActionListChanged.match,
+                (state: SliceState, action: ReturnType<typeof quickActionListChanged>): void => {
+                    state.quickActions = action.payload;
+                }
+            )
+            .addMatcher(
+                updateQuickAction.match,
+                (state: SliceState, action: ReturnType<typeof updateQuickAction>): void => {
+                    for (const group of state.quickActions) {
+                        for (let index = 0; index < group.actions.length; index++) {
+                            const quickAction = group.actions[index];
+                            if (quickAction.id === action.payload.id) {
+                                group.actions[index] = action.payload;
+                                return;
+                            }
+                        }
+                    }
+                }
+            )
 });
 
 export const { setProjectScenario } = slice.actions;

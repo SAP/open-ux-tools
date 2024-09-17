@@ -28,6 +28,17 @@ describe('generate/adaptation-project', () => {
     const reference = 'test.reference';
     const layer = 'CUSTOMER_BASE';
     const url = 'http://sap.example';
+    const content = [
+        {
+            changeType: 'appdescr_ui5_addNewModelEnhanceWith',
+            content: {
+                modelId: 'i18n',
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: [''],
+                fallbackLocale: ''
+            }
+        }
+    ];
 
     // mocks
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
@@ -55,7 +66,7 @@ describe('generate/adaptation-project', () => {
         expect(generateSpy).toBeCalledWith(
             expectedAppRoot,
             expect.objectContaining({
-                app: { id, reference, layer },
+                app: { id, reference, layer, content },
                 target: { url, client: '123' }
             } as Partial<adp.AdpWriterConfig>)
         );
@@ -139,7 +150,7 @@ describe('generate/adaptation-project', () => {
         expect(generateSpy).toBeCalledWith(
             appRoot,
             expect.objectContaining({
-                app: { id, reference, layer },
+                app: { id, reference, layer, content },
                 target: { url }
             } as Partial<adp.AdpWriterConfig>)
         );

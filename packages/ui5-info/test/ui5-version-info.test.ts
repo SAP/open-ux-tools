@@ -2,7 +2,8 @@ import nock from 'nock';
 import axios from 'axios';
 import snapshotResponse from './testdata/snapshot-response.json';
 import officialResponse from './testdata/official-response.json';
-import overviewResponse from './testdata/overview-response.json';
+import officialOutOfMaintenanceResponse from './testdata/official-response-latest-out-of-maintenance.json';
+import officialBlockOutOfMaintenanceResponse from './testdata/official-latest-block-out-of-maintenance.json';
 
 import { getLatestUI5Version, getUI5Versions } from '../src/ui5-version-info';
 import * as commands from '../src/commands';
@@ -14,13 +15,10 @@ const snapshotVersionsHost = 'http://ui5.versions.snapshots';
 describe('getUI5Versions', () => {
     beforeEach(() => {
         nock(ui5VersionRequestInfo.OfficialUrl)
+            .persist()
             .get(`/${ui5VersionRequestInfo.VersionsFile}`)
             .reply(200, officialResponse);
-        nock(snapshotVersionsHost).get(`/${ui5VersionRequestInfo.NeoAppFile}`).reply(200, snapshotResponse);
-        nock(ui5VersionRequestInfo.OfficialUrl)
-            .persist()
-            .get(`/${ui5VersionRequestInfo.VersionsOverview}`)
-            .reply(200, overviewResponse);
+        nock(snapshotVersionsHost).persist().get(`/${ui5VersionRequestInfo.NeoAppFile}`).reply(200, snapshotResponse);
     });
 
     afterEach(() => {
@@ -103,7 +101,7 @@ describe('getUI5Versions', () => {
             useCache: true,
             includeMaintained: true
         });
-        expect(axiosGetSpy).toHaveBeenCalled();
+        // ui5VersionsType.support is already cached when ui5VersionsType.offical is called(1st test case)
         expect(versions5).toMatchSnapshot();
 
         axiosGetSpy.mockClear();
@@ -127,9 +125,40 @@ describe('getUI5Versions', () => {
         let supportedCount = 0,
             notSupportedCount = 0;
         versions.forEach((version) => (version.maintained ? supportedCount++ : notSupportedCount++));
-        expect(supportedCount).toEqual(65);
-        expect(notSupportedCount).toEqual(80);
+        expect(supportedCount).toEqual(91);
+        expect(notSupportedCount).toEqual(54);
         expect(versions).toMatchSnapshot();
+    }, 1000000);
+
+    test('filterOptions: includeDefault and includeMaintained combined look for next maintained version if latest one is Out of maintenance', async () => {
+        nock.cleanAll();
+        nock(ui5VersionRequestInfo.OfficialUrl)
+            .persist()
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, officialOutOfMaintenanceResponse);
+
+        const versions = await getUI5Versions({
+            includeDefault: true,
+            includeMaintained: true
+        });
+        // Returns next maintained version if latest is `Out of maintenance`
+        expect(versions[1].version).toEqual('1.125.1');
+        expect(versions[1].default).toEqual(true);
+    });
+    test('filterOptions: includeDefault and includeMaintained combined look for next maintained version when `latest` block from official is out of maintenance', async () => {
+        nock.cleanAll();
+        nock(ui5VersionRequestInfo.OfficialUrl)
+            .persist()
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, officialBlockOutOfMaintenanceResponse);
+
+        const versions = await getUI5Versions({
+            includeDefault: true,
+            includeMaintained: true
+        });
+        // Returns next maintained version if latest string in official is `Out of maintenance`
+        expect(versions[2].version).toEqual('1.124.2');
+        expect(versions[2].default).toEqual(true);
     });
 });
 

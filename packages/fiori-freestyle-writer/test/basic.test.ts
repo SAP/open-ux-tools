@@ -3,7 +3,7 @@ import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath } from './common';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { BasicAppSettings } from '../src/types';
 import { projectChecks } from './common';
 
@@ -31,7 +31,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: 'test-template'
-            }
+            },
+            projectType: 'EDMXBackend'
         },
         package: {
             name: 'nods1',
@@ -164,6 +165,43 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 appOptions: { generateIndex: true }
             },
             settings: {}
+        },
+        {
+            name: 'basic_cap',
+            config: {
+                ...commonConfig,
+                app: {
+                    ...commonConfig.app,
+                    projectType: 'CAPNodejs'
+                },
+                service: {
+                    ...commonConfig.service,
+                    type: ServiceType.CDS,
+                    metadata: undefined
+                },
+                appOptions: { generateIndex: true }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_cap_typescript',
+            config: {
+                ...commonConfig,
+                app: {
+                    ...commonConfig.app,
+                    projectType: 'CAPNodejs'
+                },
+                service: {
+                    ...commonConfig.service,
+                    type: ServiceType.CDS,
+                    metadata: undefined
+                },
+                appOptions: {
+                    generateIndex: true,
+                    typescript: true
+                }
+            },
+            settings: {}
         }
     ];
 
@@ -193,7 +231,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     test("app id prefix correctly generated in template's Component.js", async () => {
         const freestyleApp: FreestyleApp<any> = {
             app: {
-                id: 'my.demo.App'
+                id: 'my.demo.App',
+                projectType: 'EDMXBackend'
             },
             package: {
                 name: 'my.demo.App'
@@ -216,7 +255,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         const viewPrefix = 'MainView';
         const freestyleApp: FreestyleApp<BasicAppSettings> = {
             app: {
-                id: 'someId'
+                id: 'someId',
+                projectType: 'EDMXBackend'
             },
             package: {
                 name: 'someId'

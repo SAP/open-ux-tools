@@ -1,5 +1,23 @@
 # @sap-ux/btp-utils
 
+## 0.15.2
+
+### Patch Changes
+
+-   d3dafeb: FEAT - Add @sap-ux/nodejs-utils module
+
+## 0.15.1
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+
+## 0.15.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
 ## 0.14.4
 
 ### Patch Changes

@@ -1,5 +1,113 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.4
+
+### Patch Changes
+
+-   2fd82b1: Object Page Add Custom Section quick action support
+
+## 0.11.3
+
+### Patch Changes
+
+-   09f91c3: Fix changing index in Add Fragment dialog
+
+## 0.11.2
+
+### Patch Changes
+
+-   c08bb59: Fixed quick actions panel not rendered in case of app running ui5 v.1.71
+
+## 0.11.1
+
+### Patch Changes
+
+-   247e0bb: fix: quick action titles
+
+## 0.11.0
+
+### Minor Changes
+
+-   b1628da: Add quick actions to adaptation editor
+
+## 0.10.9
+
+### Patch Changes
+
+-   904b048: Move error utils to dedicated utils folder
+
+## 0.10.8
+
+### Patch Changes
+
+-   bad92cf: refactor ui5 version handling
+
+## 0.10.7
+
+### Patch Changes
+
+-   cea1f9f: Fixed Add XML Fragment dialog not working if there is an unsaved "hideControl" change
+
+## 0.10.6
+
+### Patch Changes
+
+-   089b984: Fix handling of undefined response from sap/ui/VersionInfo.load
+
+## 0.10.5
+
+### Patch Changes
+
+-   ab2e5a0: Preview support for UI5 2.x
+
+## 0.10.4
+
+### Patch Changes
+
+-   42486a5: fix(locate-reuse-lib): corrected extraction of component name
+
+## 0.10.3
+
+### Patch Changes
+
+-   90a8291: Extension points break the outline tree sync for apps with UI5 version =< 1.96.33
+
+## 0.10.2
+
+### Patch Changes
+
+-   671242b: Disable add fragment and controller extension rt-a menu items if clicked element is from reuse component view
+
+## 0.10.1
+
+### Patch Changes
+
+-   b2d5843: fix: Missing Scenario API in lower SAPUI5 versions
+
+## 0.10.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.9.18
+
+### Patch Changes
+
+-   8f57ac28: i18n bindings validation fails for nested \*.properties files
+
+## 0.9.17
+
+### Patch Changes
+
+-   0e0c2864: Fix Error message regression
+
+## 0.9.16
+
+### Patch Changes
+
+-   fb2ff8d6: Reduce eslint warnings
+
 ## 0.9.15
 
 ### Patch Changes

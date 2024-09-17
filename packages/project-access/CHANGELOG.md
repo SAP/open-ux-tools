@@ -1,5 +1,181 @@
 # @sap-ux/project-access
 
+## 1.27.2
+
+### Patch Changes
+
+-   09522df: Validates provided path does not contain a Fiori project, appropriate validation message displayed.
+
+## 1.27.1
+
+### Patch Changes
+
+-   d962ce1: Move hasUI5CliV3 to project-access for common re-use
+
+## 1.27.0
+
+### Minor Changes
+
+-   df29368: Method `createCapI18nEntries` - handle absolute path to cds file instead of relative path
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/i18n@0.2.0
+
+## 1.26.9
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+
+## 1.26.8
+
+### Patch Changes
+
+-   df6262e: fix: use manifest.json path as root for `i18n` folder
+
+## 1.26.7
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+
+## 1.26.6
+
+### Patch Changes
+
+-   82aaea3: Parallelize filtering of applications by manifest path
+
+## 1.26.5
+
+### Patch Changes
+
+-   cc16cbb: fix CAP CDS evironment e.g. loading cds jar dependencies
+
+## 1.26.4
+
+### Patch Changes
+
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/i18n@0.1.1
+
+## 1.26.3
+
+### Patch Changes
+
+-   88c8bf6: new public/exported method "getCapServiceName" which returns CAP service name by passed datasource uri
+
+## 1.26.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
+## 1.26.1
+
+### Patch Changes
+
+-   a986655: Revert "fix(#2173): consider variables in minUI5Version"
+
+## 1.26.0
+
+### Minor Changes
+
+-   518bf7e: Update CAP serviceInfo API handling
+
+## 1.25.8
+
+### Patch Changes
+
+-   99b7b5f: Fixed an issue where variables in minUI5Version were considered invalid
+
+## 1.25.7
+
+### Patch Changes
+
+-   d549173: - Adjusts getMinUI5VersionAsArray so that semver valid check is included; the function now only returns valid versions.
+    -   Upgrade of @ui5/manifest to 1.66.0; adjustment of all components so that minimumUI5Version definitions as array are processed properly.
+
+## 1.25.6
+
+### Patch Changes
+
+-   a9fac04: Caching promise to load global cds module:
+    -   When loading the global installed cds module is required, we call `cds --version` to locate the path to load from. As this call is quite expensive, so far, after the result was retrieved, the path was cached. Now, we already cache the promise waiting for the result and resolving to the loaded module.
+    -   When `loadGlobalCdsModule` was called a second time before the first execution was finished, by this, we can avoid a useless second expensive call to `cds --version`.
+    -   If your code is calling `loadGlobalCdsModule` (or any method using it) several times, you could possibly have observed sequential execution being faster than parallel execution. In that case you should consider to gain performance by changing to parallel execution now.
+
+## 1.25.5
+
+### Patch Changes
+
+-   421f3ca: fix: module-loader fails to install specification dependecy in '.fioritools' folder when user has 'node_modules' in user home folder
+
+## 1.25.4
+
+### Patch Changes
+
+-   173b5f2: export findCapProjectRoot, required by other modules
+
+## 1.25.3
+
+### Patch Changes
+
+-   e7b9184: fix: outputs specification version when loading from cache
+
+## 1.25.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+
+## 1.25.1
+
+### Patch Changes
+
+-   0f3cf6b: feat: Add path to specification
+
+## 1.25.0
+
+### Minor Changes
+
+-   f076dd3: Add freestyle CAP app support.
+
+## 1.24.0
+
+### Minor Changes
+
+-   0ae685e: Add feature to cache node modules locally, consumed by specification
+
+## 1.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/i18n@0.1.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 1.22.4
+
+### Patch Changes
+
+-   9ea58ad4: fix: Release version of @sap-ux/project-access with filterDataSourcesByType
+
+## 1.22.3
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+
 ## 1.22.2
 
 ### Patch Changes

@@ -20,6 +20,13 @@ export interface Navigation {
     navKey?: boolean;
 }
 
+/**
+ * Libraries to be added to the application
+ */
+export type Libraries = {
+    [key: string]: {};
+};
+
 export type StandardPageSettings = {
     enhanceI18n?: string | true;
     variantManagement?: 'Page' | 'None';
@@ -60,6 +67,11 @@ export interface FpmPage {
      * If nothing can be generated for the given version then an exception is thrown.
      */
     minUI5Version?: string;
+
+    /**
+     * UI5 Libraries that should be added to the application.
+     */
+    libraries?: Libraries;
 }
 
 /**
@@ -132,11 +144,17 @@ export type InternalFpmPage = FCL & {
     settings: Record<string, unknown | undefined>;
 };
 
+export enum PageType {
+    ListReport = 'ListReport',
+    ObjectPage = 'ObjectPage',
+    CustomPage = 'CustomPage'
+}
+
 /**
  * Additional internal configuration options that will be calculated based on the provided input as well as the target application.
  */
 export type InternalCustomPage = CustomPage & InternalFpmPage & InternalCustomElement;
 
-export type InternalListReport = ListReport & InternalFpmPage & { name: 'ListReport'; navigation?: Navigation };
+export type InternalListReport = ListReport & InternalFpmPage & { name: PageType.ListReport; navigation?: Navigation };
 
-export type InternalObjectPage = ObjectPage & InternalFpmPage & { name: 'ObjectPage' };
+export type InternalObjectPage = ObjectPage & InternalFpmPage & { name: PageType.ObjectPage };

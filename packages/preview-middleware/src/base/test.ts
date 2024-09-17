@@ -29,20 +29,15 @@ const DEFAULTS: Record<string, InternalTestConfig> = {
  * @returns merged test configuration
  */
 export function mergeTestConfigDefaults(config: TestConfig) {
-    const key = config.framework.toLowerCase();
-    const defaults = DEFAULTS[key] ?? {};
-    if (config.path && !config.path.startsWith('/')) {
-        config.path = `/${config.path}`;
+    const defaults = DEFAULTS[config.framework.toLowerCase()] ?? {};
+    const merged: InternalTestConfig = { ...defaults, ...config };
+    if (!merged.path.startsWith('/')) {
+        merged.path = `/${merged.path}`;
     }
-    if (config.init && !config.init.startsWith('/')) {
-        config.init = `/${config.init}`;
+    if (!merged.init.startsWith('/')) {
+        merged.init = `/${config.init}`;
     }
-    return {
-        framework: config.framework,
-        path: config.path ?? defaults.path,
-        init: config.init ?? defaults.init,
-        pattern: config.pattern ?? defaults.pattern
-    } satisfies TestConfig;
+    return merged;
 }
 
 /**

@@ -103,7 +103,7 @@ describe('Test getProject()', () => {
 
         expect(project.root).toBe(projectRoot);
         expect(project.projectType).toBe('CAPNodejs');
-        expect(Object.keys(project.apps).length).toBe(2);
+        expect(Object.keys(project.apps).length).toBe(3);
 
         const appOne = project.apps[join('apps/one')];
         expect(appOne.appRoot).toBe(join(projectRoot, 'apps/one'));
@@ -163,6 +163,24 @@ describe('Test getProject()', () => {
             {
                 'uri': 'annotations/annotation.xml',
                 'local': join(appTwo.appRoot, 'webapp/annotations/annotation.xml')
+            }
+        ]);
+
+        const appFreestyle = project.apps[join('apps/freestyle')];
+        expect(appFreestyle.appRoot).toBe(join(projectRoot, 'apps/freestyle'));
+        expect(appFreestyle.manifest).toBe(join(appFreestyle.appRoot, 'webapp/manifest.json'));
+        expect(appFreestyle.changes).toBe(join(appFreestyle.appRoot, 'webapp/changes'));
+        expect(appFreestyle.i18n['sap.app']).toEqual(join(appFreestyle.appRoot, 'webapp/i18n/i18n.properties'));
+        expect(appFreestyle.i18n.models.i18n).toBeUndefined();
+        expect(appFreestyle.mainService).toBe('main');
+        expect(Object.keys(appFreestyle.services).length).toBe(1);
+        expect(appFreestyle.services.main.uri).toBe('/sap/opu/odata4/dmo/ODATA_SERVICE/');
+        expect(appFreestyle.services.main.local).toBe(join(appFreestyle.appRoot, 'webapp/localService/metadata.xml'));
+        expect(appFreestyle.services.main.odataVersion).toBe('4.0');
+        expect(appFreestyle.services.main.annotations).toEqual([
+            {
+                'uri': 'annotations/annotation.xml',
+                'local': join(appFreestyle.appRoot, 'webapp/annotations/annotation.xml')
             }
         ]);
     });

@@ -1,0 +1,33 @@
+{
+  // Dummy comment
+  "version": "0.2.0",
+  "configurations": [
+      {
+          "name": "Debug",
+          "request": "launch",
+          "type": "chrome",
+          "webRoot": "${workspaceFolder}/webapp",
+          "url": "DUMMY_URL",
+          "console": "integratedTerminal",
+          "skipFiles": [
+              "${workspaceFolder}/node_modules/**/*.js",
+              "<node_internals>/**/*.js",
+              "${workspaceFolder}/webapp/resources/**/*.js"
+          ]
+      },
+      {
+          "name": "Debugger attach",
+          "request": "attach",
+          "type": "chrome",
+          "webRoot": "${workspaceFolder}/webapp",
+          "port": 8080,
+          "url": "DUMMY_URL",
+          "console": "integratedTerminal",
+          "skipFiles": [
+              "${workspaceFolder}/node_modules/**/*.js",
+              "<node_internals>/**/*.js",
+              "${workspaceFolder}/webapp/resources/**/*.js"
+          ]
+      }
+  ]
+}

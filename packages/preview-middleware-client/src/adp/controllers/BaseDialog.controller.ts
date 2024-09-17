@@ -8,14 +8,20 @@ import Controller from 'sap/ui/core/mvc/Controller';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-
+import MessageToast from 'sap/m/MessageToast';
 import CommandExecutor from '../command-executor';
 import { matchesFragmentName } from '../utils';
+import type { Fragments } from '../api-handler';
+import { getError } from '../../utils/error';
+
+type BaseDialogModel = JSONModel & {
+    getProperty(sPath: '/fragmentList'): Fragments;
+};
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default abstract class BaseDialog extends Controller {
+export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogModel> extends Controller {
     /**
      * Runtime Authoring
      */
@@ -27,7 +33,7 @@ export default abstract class BaseDialog extends Controller {
     /**
      * JSON Model that has the data
      */
-    public model: JSONModel;
+    public model: T;
     /**
      * Runtime control managed object
      */
@@ -61,7 +67,7 @@ export default abstract class BaseDialog extends Controller {
         const beginBtn = this.dialog.getBeginButton();
 
         const fragmentName: string = input.getValue();
-        const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList');
+        const fragmentList: Fragments = this.model.getProperty('/fragmentList');
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
             input.setValueState(valueState).setValueStateText(valueStateText);
@@ -120,7 +126,7 @@ export default abstract class BaseDialog extends Controller {
         const allCommands = this.rta.getCommandStack().getCommands();
 
         return allCommands.some((command: FlexCommand) => {
-            if (command?.getProperty('name') === 'composite') {
+            if (typeof command.getCommands === 'function') {
                 const addXmlCommand = command
                     .getCommands()
                     .find((c: FlexCommand) => c?.getProperty('name') === 'addXMLAtExtensionPoint');
@@ -148,5 +154,17 @@ export default abstract class BaseDialog extends Controller {
     handleDialogClose() {
         this.dialog.close();
         this.dialog.destroy();
+    }
+
+    /**
+     * Function that handles runtime thrown errors with MessageToast
+     *
+     * @param e error instance
+     * @throws {Error}.
+     */
+    protected handleError(e: unknown): void {
+        const error = getError(e);
+        MessageToast.show(error.message, { duration: 5000 });
+        throw error;
     }
 }

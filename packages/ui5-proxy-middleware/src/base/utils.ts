@@ -1,14 +1,14 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
+import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { NextFunction, Request, Response } from 'express';
 import type { ProxyConfig } from './types';
 import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
 import type { Url } from 'url';
 import { t } from '../i18n';
+import type { ReaderCollection } from '@ui5/fs';
 
 /**
  * Handler for the proxy response event.
@@ -213,8 +213,7 @@ export async function resolveUI5Version(version?: string, log?: ToolsLogger, man
         ui5Version = version ? version : '';
         ui5VersionLocation = getYamlFile(process.argv);
     } else {
-        const minUI5Version = manifest?.['sap.ui5']?.dependencies?.minUI5Version;
-        ui5Version = minUI5Version && !isNaN(parseFloat(minUI5Version)) ? minUI5Version : '';
+        ui5Version = (manifest && getMinimumUI5Version(manifest)) || '';
         ui5VersionLocation = 'manifest.json';
     }
 
@@ -229,31 +228,27 @@ export async function resolveUI5Version(version?: string, log?: ToolsLogger, man
 /**
  * Injects the absolute UI5 urls into the html file, which is used to preview the application.
  *
- * @param htmlFilePath - path to the html file which is used for previwing the application
+ * @param originalHtml - the content of the html file
  * @param ui5Configs - the configuration of the ui5-proxy-middleware
  * @returns The modified html file content
  */
-export function injectUI5Url(htmlFilePath: string, ui5Configs: ProxyConfig[]): string | undefined {
-    if (existsSync(htmlFilePath)) {
-        let html = readFileSync(htmlFilePath, { encoding: 'utf8' });
-        for (const ui5Config of ui5Configs) {
-            const ui5Host = ui5Config.url.replace(/\/$/, '');
-            const ui5Url = ui5Config.version ? `${ui5Host}/${ui5Config.version}` : ui5Host;
+export function injectUI5Url(originalHtml: string, ui5Configs: ProxyConfig[]): string {
+    let html = originalHtml;
+    for (const ui5Config of ui5Configs) {
+        const ui5Host = ui5Config.url.replace(/\/$/, '');
+        const ui5Url = ui5Config.version ? `${ui5Host}/${ui5Config.version}` : ui5Host;
 
-            if (ui5Config.path === '/resources') {
-                const resourcesUrl = `src="${ui5Url}/${BOOTSTRAP_LINK}"`;
-                html = html.replace(BOOTSTRAP_REPLACE_REGEX, resourcesUrl);
-            }
-
-            if (ui5Config.path === '/test-resources') {
-                const testResourcesUrl = `src="${ui5Url}/${SANDBOX_LINK}"`;
-                html = html.replace(SANDBOX_REPLACE_REGEX, testResourcesUrl);
-            }
+        if (ui5Config.path === '/resources') {
+            const resourcesUrl = `src="${ui5Url}/${BOOTSTRAP_LINK}"`;
+            html = html.replace(BOOTSTRAP_REPLACE_REGEX, resourcesUrl);
         }
-        return html;
-    } else {
-        return undefined;
+
+        if (ui5Config.path === '/test-resources') {
+            const testResourcesUrl = `src="${ui5Url}/${SANDBOX_LINK}"`;
+            html = html.replace(SANDBOX_REPLACE_REGEX, testResourcesUrl);
+        }
     }
+    return html;
 }
 
 /**
@@ -263,27 +258,24 @@ export function injectUI5Url(htmlFilePath: string, ui5Configs: ProxyConfig[]): s
  * @param res - the http response object
  * @param next - the next function, used to forward the request to the next available handler
  * @param ui5Configs - the UI5 configuration of the ui5-proxy-middleware
+ * @param rootProject - the root project
  */
 export const injectScripts = async (
     req: Request,
     res: Response,
     next: NextFunction,
-    ui5Configs: ProxyConfig[]
+    ui5Configs: ProxyConfig[],
+    rootProject: ReaderCollection
 ): Promise<void> => {
     try {
-        const projectRoot = process.cwd();
-        const args = process.argv;
-        const htmlFileName = getHtmlFile(req.baseUrl);
-        const yamlFileName = getYamlFile(args);
-        const ui5YamlPath = join(projectRoot, yamlFileName);
-        const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
-        const htmlFilePath = join(projectRoot, webAppFolder, htmlFileName);
-        const html = injectUI5Url(htmlFilePath, ui5Configs);
-
-        if (html) {
-            setHtmlResponse(res, html);
-        } else {
+        const htmlFileName = getHtmlFile(req.url);
+        const files = await rootProject.byGlob(`**/${htmlFileName}`);
+        if (files.length === 0) {
             next();
+        } else {
+            const originalHtml = await files[0].getString();
+            const html = injectUI5Url(originalHtml, ui5Configs);
+            setHtmlResponse(res, html);
         }
     } catch (error) {
         next(error);

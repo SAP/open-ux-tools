@@ -194,6 +194,7 @@ export type Deletes =
     | DeleteRecord
     | DeleteRecordProperty
     | DeleteAnnotationGroup
+    | DeleteAnnotationGroupItems
     | DeleteAnnotation
     | DeleteEmbeddedAnnotation
     | DeletePrimitiveValue
@@ -246,6 +247,15 @@ export interface DeleteAnnotationGroup {
     pointer: JsonPointer;
 }
 
+export const DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE = 'delete-annotation-group-items';
+export interface DeleteAnnotationGroupItems {
+    type: typeof DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE;
+    /**
+     * This must resolve to a annotation group items.
+     */
+    pointer: JsonPointer;
+}
+
 /**
  *
  * @param pointer - pointer to an annotation group
@@ -254,6 +264,18 @@ export interface DeleteAnnotationGroup {
 export function createDeleteAnnotationGroupChange(pointer: JsonPointer): DeleteAnnotationGroup {
     return {
         type: DELETE_ANNOTATION_GROUP_CHANGE_TYPE,
+        pointer
+    };
+}
+
+/**
+ *
+ * @param pointer - pointer to an annotation group
+ * @returns Delete annotation group change.
+ */
+export function createDeleteAnnotationGroupItemsChange(pointer: JsonPointer): DeleteAnnotationGroupItems {
+    return {
+        type: DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE,
         pointer
     };
 }

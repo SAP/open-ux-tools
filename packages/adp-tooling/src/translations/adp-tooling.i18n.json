@@ -1,0 +1,80 @@
+{
+    "prompts": {
+        "oDataSourceLabel": "Target OData Service",
+        "oDataSourceTooltip": "Select the OData service you want to replace",
+        "oDataSourceURILabel": "OData Source URI",
+        "oDataSourceURITooltip": "Enter the URI for the new OData source. The URI should start and end with '/' and should not contain any whitespaces or parameters",
+        "maxAgeLabel": "New maxAge",
+        "maxAgeTooltip": "(Optional) Enter the time in seconds it takes for a cached response of the service to expire.",
+        "oDataAnnotationSourceURILabel": "OData Annotation Data Source URI",
+        "oDataAnnotationSourceURITooltip": "Server side annotations have been detected for the selected OData service. If needed, enter new annotation data source URI for the changed service. The URI should start and end with '/' and should not contain any whitespaces or parameters",
+        "fileSelectOptionLabel": "Annotation XML",
+        "fileSelectOptionTooltip": "Select the annotation file source",
+        "filePathLabel": "Annotation File path",
+        "filePathTooltip": "Select the annotation file from your workspace",
+        "addAnnotationOdataSourceTooltip": "Select the OData service you want to add annotation file to",
+        "oDataServiceNameLabel": "OData Service Name",
+        "oDataServiceNameTooltip": "Enter a name for the OData service you want to add",
+        "oDataServiceUriLabel": "OData Service URI",
+        "oDataServiceUriTooltip": "Enter the URI for the OData service you want to add. The URI should start and end with '/' and should not contain any whitespaces or parameters",
+        "oDataServiceVersionLabel": "OData Version",
+        "oDataServiceVersionTooltip": "Select the version of OData of the service you want to add",
+        "oDataServiceModelNameLabel": "OData Service SAPUI5 Model Name",
+        "oDataServiceModelNameTooltip": "Enter a name for the SAPUI5 model you want to use from the service",
+        "oDataServiceModelSettingsLabel": "OData Service SAPUI5 Model Settings",
+        "oDataServiceModelSettingsTooltip": "If needed enter any additional model settings in the \"key1\":\"value1\",\"key2\":\"value2\" format",
+        "oDataAnnotationDataSourceNameLabel": "OData Annotation Data Source Name",
+        "oDataAnnotationDataSourceNameTooltip": "Enter a name for the OData annotation data source",
+        "oDataAnnotationDataSourceUriLabel": "OData Annotation Data Source URI",
+        "oDataAnnotationDataSourceUriTooltip": "Enter URI for the OData annotation data source. The URI should start and end with '/' and should not contain any whitespaces or parameters",
+        "oDataAnnotationSettingsLabel": "OData Annotation Settings",
+        "oDataAnnotationSettingsTooltip": "If needed enter any additional {{value}} settings in the \"key1\":\"value1\",\"key2\":\"value2\" format",
+        "component": {
+            "usage": "Component usage",
+            "usageIdLabel": "Component Usage ID",
+            "usageIdTooltip": "Enter the component usage ID you want to add",
+            "nameLabel": "Component Name",
+            "nameTooltip": "Enter the name of the component you want to add",
+            "isLazyLabel": "Set Component as Lazy",
+            "isLazyTooltip": "Select if the component should be lazy or not",
+            "settingsLabel": "Component Settings",
+            "dataLabel": "Component Data",
+            "tooltip": "If needed enter any additional {{input}} in the  \"key1\":\"value1\",\"key2\":\"value2\" format",
+            "shouldAddLibraryLabel": "Do you want to add library reference?",
+            "shouldAddLibraryTooltip": "Choose if you want to add library reference",
+            "libraryLabel": "Library Reference",
+            "libraryTooltip": "Enter the library reference",
+            "libraryIsLazyLabel": "Set Library as Lazy",
+            "libraryIsLazyTooltip": "Choose if you want the library reference to be lazy or not"
+        },
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "icon": "Icon"
+    },
+    "tooltips": {
+        "title": "Enter title for your FLP configuration",
+        "subtitle": "Enter subtitle for your FLP configuration",
+        "icon": "Enter icon path for your FLP configuration"
+    },
+    "validators": {
+        "missingIconOrTitleOrSubtitle": "At least one of Title, Subtitle and Icon should have a value.",
+        "fileDoesNotExist": "The file doesn't exist",
+        "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again",
+        "errorDuplicatedValueOData": "OData Annotation or OData Service with the same name was already added to the project",
+        "errorDuplicatedValueSapui5Model": "SAPUI5 Model with the same name was already added to the project",
+        "errorDuplicateValueComponentId": "Component usage with the same name was already added to the project",
+        "errorDuplicateValueLibrary": "Library with the same name was already added to the project",
+        "errorDuplicateNamesOData": "OData Service Name must be different from OData Annotation Data Source Name",
+        "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
+        "errorCustomerEmptyValue": "{{value}} should contain at least one character in addition to '{{prefix}}'",
+        "errorInvalidDataSourceURI": "Invalid URI. Should start and end with '/' and contain no spaces"
+    },
+    "choices": {
+        "true": "true",
+        "false": "false",
+        "annotationFile": {
+            "selectFromWorkspace": "Select annotation file from workspace",
+            "createEmptyFile": "Create an empty annotation file"
+        }
+    }
+}

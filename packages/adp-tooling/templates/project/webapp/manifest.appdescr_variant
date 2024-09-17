@@ -16,17 +16,6 @@
       "texts": {
         "i18n": "i18n/i18n.properties"
       }
-    },
-    {
-      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
-      "content": {
-        "modelId": "i18n",
-        "bundleUrl": "i18n/i18n.properties",
-        "supportedLocales": [
-          ""
-        ],
-        "fallbackLocale": ""
-      }
     }
   ]
 }

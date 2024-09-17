@@ -2,7 +2,7 @@ import { join, dirname, sep } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { updateManifest, updatePackageJson, updateCdsFilesWithAnnotations, writeAnnotationXmlFiles, serviceIsCds } from './updates';
+import { updateManifest, updatePackageJson, updateCdsFilesWithAnnotations, writeAnnotationXmlFiles } from './updates';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
@@ -71,12 +71,13 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     const paths = await findProjectFiles(basePath, fs);
     ensureExists(basePath, ['webapp/manifest.json'], fs);
     enhanceData(service);
-
+    // set isServiceTypeEdmx true if service is EDMX
+    const isServiceTypeEdmx = service.type === ServiceType.EDMX;
     // merge content into existing files
     const templateRoot = join(__dirname, '../templates');
 
     // update cds files with annotations only if service type is CDS and annotations are provided
-    if (serviceIsCds(service) && service.annotations) {
+    if (!isServiceTypeEdmx && service.annotations) {
         await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
     }
     // manifest.json
@@ -86,8 +87,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
     let ui5LocalConfigPath: string | undefined;
-    if (!serviceIsCds(service) &&  paths.ui5Yaml) {
-        // Dont extend backend middlewares if service type is CDS 
+    if (isServiceTypeEdmx && paths.ui5Yaml) {
+        // Dont extend backend middlewares if service type is CDS.
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
         try {
             ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
@@ -110,8 +111,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     }
 
     // Add mockserver entries
-    if (!serviceIsCds(service) && service.metadata) {
-        // mockserver entries are not required if service type is CDS 
+    if (isServiceTypeEdmx && service.metadata) {
+        // mockserver entries are not required if service type is CDS
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
             const webappPath = await getWebappPath(basePath, fs);
@@ -143,17 +144,20 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         }
     }
 
-    // update package.json if required
-    if (paths.packageJson && paths.ui5Yaml) {
+    // update package.json for non-cap applications
+    if (isServiceTypeEdmx && paths.packageJson && paths.ui5Yaml) {
         updatePackageJson(paths.packageJson, fs, !!service.metadata);
     }
 
-    if (ui5LocalConfigPath && ui5LocalConfig) {
+    if (isServiceTypeEdmx && ui5LocalConfigPath && ui5LocalConfig) {
+        // write ui5 local yaml if service type is not CDS
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
     // Write annotation xml if annotations are provided and service type is EDMX
-    writeAnnotationXmlFiles(fs, basePath, service);
+    if (isServiceTypeEdmx) {
+        writeAnnotationXmlFiles(fs, basePath, service);
+    }
 
     return fs;
 }

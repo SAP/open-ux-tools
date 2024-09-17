@@ -15,7 +15,9 @@ import {
     DiagnosticSeverity,
     createAttributeNode,
     createElementNode,
-    createTextNode
+    createTextNode,
+    ANNOTATION_FILE_TYPE,
+    Range
 } from '@sap-ux/odata-annotation-core-types';
 import type {
     AnnotationFile,
@@ -47,12 +49,14 @@ import {
     getAllNamespacesAndReferences,
     isElementWithName,
     parseIdentifier,
-    toAliasQualifiedName,
     toFullyQualifiedName
 } from '@sap-ux/odata-annotation-core';
 import { TARGET_TYPE, printTarget } from '@sap-ux/cds-odata-annotation-converter';
 
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
+
+import { convertTargets } from '../sap';
+import { logger } from '../logger';
 
 import {
     type CompiledService,
@@ -84,11 +88,12 @@ import type { Document } from './document';
 import { CDSWriter } from './writer';
 import { getMissingRefs } from './references';
 import { addAllVocabulariesToAliasInformation } from '../vocabularies';
-import { getDocument, getGhostFileDocument } from './document';
+import { CDS_DOCUMENT_TYPE, getDocument, getGhostFileDocument } from './document';
 import { convertPointer, getAstNodesFromPointer } from './pointer';
 import { getGenericNodeFromPointer, pathFromUri, PRIMITIVE_TYPE_NAMES } from '../utils';
 import {
     INSERT_PRIMITIVE_VALUE_TYPE,
+    INSERT_TARGET_CHANGE_TYPE,
     createDeleteQualifierChange,
     createInsertCollectionChange,
     createInsertEmbeddedAnnotationChange,
@@ -130,22 +135,26 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
      * @param project - Project structure.
      * @param vocabularyService - Vocabulary API.
      * @param appName - Name of the application.
+     * @param writeSapAnnotations - If set to true will write SAP annotations instead of OData annotations.
+     * @param ignoreChangedFileInitialContent Flag indicating if to be changed files can be treated as empty.
      */
     constructor(
         private service: CDSService,
         private project: Project,
         private vocabularyService: VocabularyService,
-        private appName: string
+        private appName: string,
+        private writeSapAnnotations: boolean,
+        private ignoreChangedFileInitialContent: boolean
     ) {
         this.fileCache = new Map();
         this._fileSequence = service.serviceFiles;
     }
     private facade: CdsCompilerFacade | undefined;
-    private setFileCache(fileCache: Map<string, string>) {
+    private setFileCache(fileCache: Map<string, string>): void {
         this.fileCache = fileCache;
     }
 
-    private setFacade(facade: CdsCompilerFacade) {
+    private setFacade(facade: CdsCompilerFacade): void {
         this.facade = facade;
     }
 
@@ -282,35 +291,24 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         const workspaceChanges: { [uri: string]: TextEdit[] } = {};
         this.clearState();
         const writers = new Map<string, CDSWriter>();
-        for (const change of changes) {
-            let writer = writers.get(change.uri);
-            const document = this.documents.get(change.uri);
-            const cachedFile = this.fileCache?.get(change.uri);
-            if (!document || cachedFile === undefined || !this.facade) {
-                continue;
-            }
-            if (!writer) {
-                //writable cds document (augment)
-                const textDocument = TextDocument.create(change.uri, 'cds', 0, cachedFile);
-                writer = new CDSWriter(
-                    this.facade,
-                    this.vocabularyService,
-                    document.ast,
-                    document.comments,
-                    document.tokens,
-                    textDocument,
-                    this.project.root,
-                    document.annotationFile
-                );
-                writers.set(change.uri, writer);
-            }
-            const changeHandler = this[change.type] as unknown as ChangeHandlerFunction<AnnotationFileChange>;
 
-            changeHandler(writer, document, change);
+        if (this.writeSapAnnotations) {
+            this.handleSapAnnotations(writers, changes);
+        } else {
+            for (const change of changes) {
+                const document = this.documents.get(change.uri);
+                if (!document || !this.facade) {
+                    continue;
+                }
+                const writer = this.getWriterForChange(writers, change);
+                const changeHandler = this[change.type] as unknown as ChangeHandlerFunction<AnnotationFileChange>;
+
+                changeHandler(writer, document, change);
+            }
         }
         for (const [uri, writer] of writers.entries()) {
             const document = this.documents.get(uri);
-            if (!document) {
+            if (!document && !this.ignoreChangedFileInitialContent) {
                 continue;
             }
             this.processMissingReferences(uri, writer);
@@ -320,6 +318,116 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         return {
             changes: workspaceChanges
         };
+    }
+
+    private handleSapAnnotations(writers: Map<string, CDSWriter>, changes: AnnotationFileChange[]): void {
+        if (changes.length === 0) {
+            return;
+        }
+
+        // only writing to a single files is supported
+        const uri = changes[0].uri;
+
+        const writer = this.getWriterForChange(writers, changes[0]);
+
+        const targets = convertTargets({
+            [uri]: changes
+                .map((change): Target | undefined => {
+                    if (change.type === INSERT_TARGET) {
+                        const annotationFile =
+                            this.documents.get(change.uri)?.annotationFile ?? this.createEmptyAnnotationFile(change);
+                        const aliasInfo = getAliasInfo(annotationFile, this.metadataService, this.vocabularyService);
+                        const missingReferences = getMissingRefs(
+                            this.documents,
+                            change.uri,
+                            change.target.name,
+                            change.target,
+                            aliasInfo,
+                            this.metadataService,
+                            {
+                                apps: Object.keys(this.project.apps),
+                                projectRoot: this.project.root,
+                                appName: this.appName
+                            }
+                        );
+                        this.addMissingReferences(change.uri, missingReferences);
+                        return change.target;
+                    }
+                    logger.warn(
+                        `Change type "${change.type}" is not supported when "writeSapAnnotations" parameter is set.`
+                    );
+                    return undefined;
+                })
+                .filter((target): target is Target => !!target)
+        });
+        for (const target of targets) {
+            writer.addChange(createInsertTargetChange('target', target));
+        }
+    }
+    private getWriterForChange(writers: Map<string, CDSWriter>, change: AnnotationFileChange): CDSWriter {
+        const cachedWriter = writers.get(change.uri);
+        if (cachedWriter) {
+            return cachedWriter;
+        }
+        const writer = this.createWriter(change);
+        writers.set(change.uri, writer);
+        return writer;
+    }
+
+    private createEmptyAnnotationFile(change: AnnotationFileChange): AnnotationFile {
+        return {
+            type: ANNOTATION_FILE_TYPE,
+            uri: change.uri,
+            references: [],
+            targets: []
+        };
+    }
+
+    private createWriter(change: AnnotationFileChange): CDSWriter {
+        const document = this.documents.get(change.uri);
+        if (!document && this.ignoreChangedFileInitialContent) {
+            if (!this.facade) {
+                throw new Error(`CDS facade not available!`);
+            }
+            if (change.type !== INSERT_TARGET_CHANGE_TYPE) {
+                throw new Error(
+                    `Change "${change.type}" type is not supported with parameter "${this.ignoreChangedFileInitialContent}".`
+                );
+            }
+            const textDocument = TextDocument.create(change.uri, 'cds', 0, '');
+            return new CDSWriter(
+                this.facade,
+                this.vocabularyService,
+                {
+                    type: CDS_DOCUMENT_TYPE,
+                    uri: change.uri,
+                    references: [],
+                    targets: [],
+                    range: Range.create(0, 0, 0, 0)
+                },
+                [],
+                [],
+                textDocument,
+                this.project.root,
+                this.createEmptyAnnotationFile(change)
+            );
+        } else {
+            const cachedFile = this.fileCache?.get(change.uri);
+            if (!document || cachedFile === undefined || !this.facade) {
+                throw new Error(`CDS document "${change.uri}" is not found!`);
+            }
+            const textDocument = TextDocument.create(change.uri, 'cds', 0, cachedFile);
+            return new CDSWriter(
+                this.facade,
+                this.vocabularyService,
+                document.ast,
+                document.comments,
+                document.tokens,
+                textDocument,
+                this.project.root,
+                document.annotationFile
+            );
+        }
     }
 
     /**
@@ -398,7 +506,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     }
 
-    private addMissingReferences(uri: string, references: Set<string>) {
+    private addMissingReferences(uri: string, references: Set<string>): void {
         const missingReferences = (this.missingReferences[uri] ??= new Set());
         for (const reference of references) {
             missingReferences.add(reference);
@@ -429,8 +537,14 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         const fullyQualifiedPath =
             toFullyQualifiedName(aliasInfo.aliasMap, aliasInfo.currentFileNamespace, parsedName) ?? '';
         const metadataElement = this.metadataService.getMetadataElement(fullyQualifiedPath);
-        const pathBaseOriginal = toAliasQualifiedName(metadataElement?.originalName ?? pathBase, aliasInfo);
-        change.target.name = [pathBaseOriginal, ...pathSegments].join('/');
+        let originalPathBase = metadataElement?.originalName ?? pathBase;
+        if (parsedName.namespaceOrAlias !== undefined) {
+            const namespace = aliasInfo.aliasMap[parsedName.namespaceOrAlias];
+            if (namespace) {
+                originalPathBase = originalPathBase.replace(namespace, parsedName.namespaceOrAlias);
+            }
+        }
+        change.target.name = [originalPathBase, ...pathSegments].join('/');
         writer.addChange(createInsertTargetChange('target', change.target));
     };
 

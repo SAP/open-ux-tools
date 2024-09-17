@@ -1,0 +1,25 @@
+{
+    "latest": {
+        "version": "1.125.1",
+        "support": "Out of maintenance",
+        "lts": false
+    },
+    "1.126": {
+        "version": "1.126.0",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.126.0"]
+    },
+    "1.125": {
+        "version": "1.125.1",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.125.1"]
+    },
+    "1.124": {
+        "version": "1.124.2",
+        "support": "Maintenance",
+        "lts": false,
+        "patches": ["1.124.2", "1.124.1", "1.124.0"]
+    }
+}

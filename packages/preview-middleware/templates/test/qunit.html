@@ -6,15 +6,16 @@
 
 	<script
 		src="<%- basePath %>/resources/sap-ui-core.js"
-		data-sap-ui-theme='sap_fiori_3'
+		data-sap-ui-theme='<%- theme %>'
 		data-sap-ui-resourceroots='{
 			"<%- id %>": "<%- basePath %>"
 		}'
 		data-sap-ui-animation="false"
 		data-sap-ui-compatVersion="edge"
-		data-sap-ui-async="true"
-		data-sap-ui-oninit="module:<%- initPath %>">
+		data-sap-ui-async="true">
 	</script>
+
+	<script src="<%- initPath %>"></script>
 
 	<link rel="stylesheet" type="text/css" href="<%- basePath %>/resources/sap/ui/thirdparty/qunit-2.css">
 </head>

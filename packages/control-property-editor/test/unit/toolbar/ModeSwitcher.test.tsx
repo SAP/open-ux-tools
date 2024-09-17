@@ -8,7 +8,7 @@ import { ModeSwitcher } from '../../../src/toolbar/ModeSwitcher';
 import { mockResizeObserver } from '../../utils/utils';
 import { initIcons } from '@sap-ux/ui-components';
 import { appLoaded, setAppMode } from '@sap-ux-private/control-property-editor-common';
-import { initialState } from '../../../src/slice';
+import { initialState, setProjectScenario } from '../../../src/slice';
 
 beforeAll(() => {
     mockResizeObserver();
@@ -36,5 +36,30 @@ test('renders ModeSwitcher', () => {
     expect(dispatch).toBeCalledWith(setAppMode('navigation'));
 
     editBtn.click();
+    expect(dispatch).toBeCalledWith(setAppMode('adaptation'));
+});
+
+test('renders ModeSwitcher with changed button names for ADP', () => {
+    const { dispatch, store } = render(<ModeSwitcher />, { initialState });
+    store.dispatch(setProjectScenario('ADAPTATION_PROJECT'));
+    store.dispatch(appLoaded());
+    dispatch.mockClear();
+
+    expect(screen.getByText(/mode:/i)).toBeDefined();
+    const themeCalloutContent = screen.getAllByRole('button');
+    expect(themeCalloutContent).toHaveLength(2);
+
+    expect(screen.getByText(/mode:/i)).toBeInTheDocument();
+
+    const uiAdaptationBtn = screen.getByRole('button', { name: /ui adaptation/i });
+    expect(uiAdaptationBtn).toBeInTheDocument();
+
+    const navigationBtn = screen.getByRole('button', { name: /navigation/i });
+    expect(navigationBtn).toBeInTheDocument();
+
+    navigationBtn.click();
+    expect(dispatch).toBeCalledWith(setAppMode('navigation'));
+
+    uiAdaptationBtn.click();
     expect(dispatch).toBeCalledWith(setAppMode('adaptation'));
 });

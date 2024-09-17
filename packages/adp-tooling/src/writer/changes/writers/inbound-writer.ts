@@ -5,7 +5,7 @@ import { DirName } from '@sap-ux/project-access';
 import {
     getParsedPropertyValue,
     findChangeWithInboundId,
-    getGenericChange,
+    getChange,
     writeChangeToFolder,
     writeChangeToFile
 } from '../../../base/change-utils';
@@ -46,20 +46,20 @@ export class InboundWriter implements IWriter<InboundData> {
      * @returns {void}
      */
     private getEnhancedContent(data: InboundData, content: InboundContent): void {
-        const { icon, title, subTitle } = data.flp;
+        const { icon, title, subtitle } = data.flp;
         if (title) {
             content.entityPropertyChange.push({
                 propertyPath: 'title',
                 operation: 'UPSERT',
-                propertyValue: title
+                propertyValue: getParsedPropertyValue(title)
             });
         }
 
-        if (subTitle) {
+        if (subtitle) {
             content.entityPropertyChange.push({
                 propertyPath: 'subTitle',
                 operation: 'UPSERT',
-                propertyValue: subTitle
+                propertyValue: getParsedPropertyValue(subtitle)
             });
         }
 
@@ -67,31 +67,10 @@ export class InboundWriter implements IWriter<InboundData> {
             content.entityPropertyChange.push({
                 propertyPath: 'icon',
                 operation: 'UPSERT',
-                propertyValue: icon
+                propertyValue: getParsedPropertyValue(icon)
             });
         }
     }
-
-    /**
-     * Processes the provided answers object to parse its properties into the correct format.
-     *
-     * @param {InboundData} data - An object containing raw answers for inboundId, title, subTitle, and icon.
-     * @returns {InboundData} A new answers object with properties modified
-     *                           to ensure they are in the correct format for use in content construction.
-     */
-    private getModifiedData(data: InboundData): InboundData {
-        const { title, subTitle, icon } = data.flp;
-
-        return {
-            ...data,
-            flp: {
-                title: getParsedPropertyValue(title),
-                subTitle: getParsedPropertyValue(subTitle),
-                icon: getParsedPropertyValue(icon)
-            }
-        };
-    }
-
     /**
      * Writes the inbound data change to the project based on the provided data.
      *
@@ -99,23 +78,23 @@ export class InboundWriter implements IWriter<InboundData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: InboundData): Promise<void> {
-        const answers = this.getModifiedData(data);
-        const { changeWithInboundId, filePath } = findChangeWithInboundId(this.projectPath, answers.inboundId);
+        const { changeWithInboundId, filePath } = findChangeWithInboundId(this.projectPath, data.inboundId);
+        const timestamp = Date.now();
 
         if (!changeWithInboundId) {
-            const content = this.constructContent(answers);
-            const change = getGenericChange(data, content, ChangeType.CHANGE_INBOUND);
+            const content = this.constructContent(data);
+            const change = getChange(data.variant, timestamp, content, ChangeType.CHANGE_INBOUND);
 
             writeChangeToFolder(
                 this.projectPath,
                 change,
-                `id_${data.timestamp}_changeInbound.change`,
+                `id_${timestamp}_changeInbound.change`,
                 this.fs,
                 DirName.Manifest
             );
         } else {
             if (changeWithInboundId.content) {
-                this.getEnhancedContent(answers, changeWithInboundId.content);
+                this.getEnhancedContent(data, changeWithInboundId.content);
             }
             writeChangeToFile(filePath, changeWithInboundId, this.fs);
         }

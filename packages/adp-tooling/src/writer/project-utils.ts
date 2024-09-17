@@ -1,4 +1,5 @@
 import { join } from 'path';
+import { readFileSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
 import type { CloudApp, AdpWriterConfig } from '../types';
 import {
@@ -8,7 +9,28 @@ import {
     enhanceUI5YamlWithCustomConfig,
     enhanceUI5YamlWithCustomTask
 } from './options';
+
 import { UI5Config } from '@sap-ux/ui5-config';
+
+type PackageJSON = { name: string; version: string };
+
+/**
+ * Retrieves the package name and version from the package.json file located two levels up the directory tree.
+ *
+ * @returns {PackageJSON} An object containing the `name` and `version` of the package.
+ */
+export function getPackageJSONInfo(): PackageJSON {
+    const defaultPackage = {
+        name: '@sap-ux/adp-tooling',
+        version: 'NO_VERSION_FOUND'
+    };
+
+    try {
+        return JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8'));
+    } catch (e) {
+        return defaultPackage;
+    }
+}
 
 /**
  * Writes a given project template files within a specified folder in the project directory.
@@ -48,8 +70,9 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
         const ui5ConfigPath = join(projectPath, 'ui5.yaml');
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
         const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
-        enhanceUI5Yaml(ui5Config, data);
+        ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
         enhanceUI5YamlWithCustomConfig(ui5Config, data?.customConfig);
+        enhanceUI5Yaml(ui5Config, data);
         if (data.customConfig?.adp?.environment === 'C') {
             enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
         }

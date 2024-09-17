@@ -7,7 +7,6 @@ import { AdtService } from '../services';
  * Extension of the Generator service to generate OData services
  */
 export class ODataServiceGenerator extends AdtService {
-    public log: Logger;
 
     /**
      * package to be used for generated objects

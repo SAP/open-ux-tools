@@ -1,9 +1,12 @@
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
-import { ToolsLogger, type Logger } from '@sap-ux/logger';
+import { type Logger } from '@sap-ux/logger';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
-import { ErrorHandler, ERROR_TYPE } from './error-handler/error-handler';
+import autocomplete from 'inquirer-autocomplete-prompt';
+import { ERROR_TYPE, ErrorHandler } from './error-handler/error-handler';
+import { initI18nOdataServiceInquirer } from './i18n';
 import { getQuestions } from './prompts';
+import { newSystemChoiceValue } from './prompts/datasources/sap-system/new-system/questions';
 import LoggerHelper from './prompts/logger-helper';
 import {
     DatasourceType,
@@ -12,10 +15,10 @@ import {
     type CapService,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    type OdataServiceQuestion
+    type OdataServiceQuestion,
+    type SapSystemType
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
-import { initI18nOdataServiceInquirer } from './i18n';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -36,7 +39,9 @@ async function getPrompts(
 ): Promise<{ prompts: OdataServiceQuestion[]; answers: Partial<OdataServiceAnswers> }> {
     // prompt texts must be loaded before the prompts are created, wait for the i18n bundle to be initialized
     await initI18nOdataServiceInquirer();
-    LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
+    if (logger) {
+        LoggerHelper.logger = logger;
+    }
     ErrorHandler.logger = LoggerHelper.logger;
     ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
     PromptState.isYUI = isYUI;
@@ -68,6 +73,10 @@ async function prompt(
     telemetryClient?: ToolsSuiteTelemetryClient,
     isYUI = false
 ): Promise<OdataServiceAnswers> {
+    if (adapter?.promptModule && promptOptions?.serviceSelection?.useAutoComplete) {
+        const pm = adapter.promptModule;
+        pm.registerPrompt('autocomplete', autocomplete);
+    }
     const odataServicePrompts = (await getPrompts(promptOptions, logger, enableGuidedAnswers, telemetryClient, isYUI))
         .prompts;
     const answers = await adapter.prompt<OdataServiceAnswers>(odataServicePrompts);
@@ -78,8 +87,11 @@ async function prompt(
 
 export {
     DatasourceType,
+    ERROR_TYPE,
+    ErrorHandler,
     OdataVersion,
     getPrompts,
+    newSystemChoiceValue,
     prompt,
     promptNames,
     type CapRuntime,
@@ -87,7 +99,5 @@ export {
     type InquirerAdapter,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
-    ERROR_TYPE,
-    ErrorHandler
+    type SapSystemType
 };

@@ -30,7 +30,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
     const logger = getLogger();
     try {
         logger.debug(`Called add inbound navigation-config for path '${basePath}', simulate is '${simulate}'`);
-        validateBasePath(basePath);
+        await validateBasePath(basePath);
 
         const { config, fs } = await promptInboundNavigationConfig(basePath);
         if (config) {

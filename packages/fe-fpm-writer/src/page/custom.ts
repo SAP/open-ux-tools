@@ -4,13 +4,20 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { CustomPage, InternalCustomPage } from './types';
-import { initializeTargetSettings, getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
+import { PageType } from './types';
+import {
+    initializeTargetSettings,
+    getFclConfig,
+    getManifestJsonExtensionHelper,
+    validatePageConfig,
+    getLibraryDependencies
+} from './common';
 import { setCommonDefaults } from '../common/defaults';
 import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
-import { addExtensionTypes } from '../common/utils';
+import { addExtensionTypes, getManifestPath } from '../common/utils';
 import { extendJSON } from '../common/file';
 
 /**
@@ -27,6 +34,9 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
     // set common defaults
     const config = setCommonDefaults(data, manifestPath, manifest) as InternalCustomPage;
     config.settings = initializeTargetSettings(data);
+
+    // set library dependencies
+    config.libraries = getLibraryDependencies(PageType.CustomPage);
 
     // set FCL configuration
     const fclConfig = getFclConfig(manifest, config.navigation);
@@ -64,14 +74,14 @@ export function getTemplateRoot(ui5Version?: string): string {
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export function generate(basePath: string, data: CustomPage, fs?: Editor): Editor {
+export async function generate(basePath: string, data: CustomPage, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
     validateVersion(data.minUI5Version);
-    validatePageConfig(basePath, data, fs);
+    await validatePageConfig(basePath, data, fs, []);
 
-    const manifestPath = join(basePath, 'webapp/manifest.json');
+    const manifestPath = await getManifestPath(basePath, fs);
 
     const config = enhanceData(data, manifestPath, fs);
 

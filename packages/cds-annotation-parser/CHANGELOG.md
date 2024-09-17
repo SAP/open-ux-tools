@@ -1,5 +1,36 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/odata-vocabularies@0.4.2
+
+## 0.2.1
+
+### Patch Changes
+
+-   ac22b7e: feat: new package for text document utility functions and types
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/text-document-utils@0.2.0
+    -   @sap-ux/odata-annotation-core@0.2.1
+    -   @sap-ux/odata-entity-model@0.3.0
+    -   @sap-ux/odata-vocabularies@0.4.1
+
+## 0.2.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/odata-annotation-core@0.2.0
+    -   @sap-ux/odata-entity-model@0.3.0
+    -   @sap-ux/odata-vocabularies@0.4.0
+
 ## 0.1.13
 
 ### Patch Changes

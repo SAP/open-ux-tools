@@ -140,6 +140,12 @@ export type BusinessObject = {
     description?: string;
 };
 
+export type AbapCDSView = {
+    name: string;
+    uri: string;
+    description?: string;
+};
+
 export type PublishResponse = { SEVERITY: string; SHORT_TEXT: string; LONG_TEXT: string };
 
 // messages com.sap.adt.StatusMessage
@@ -154,3 +160,5 @@ export type ODataServiceTechnicalDetails = {
     serviceVersion: string;
     serviceDefinitionName: string;
 };
+
+export type ValidationResponse = { severity: string; short_text: string; long_text: string };

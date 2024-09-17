@@ -6,7 +6,7 @@ import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
-import type { AtoSettings, BusinessObject } from './types';
+import type { AbapCDSView, AtoSettings, BusinessObject } from './types';
 import { TenantType } from './types';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -218,19 +218,19 @@ export class AbapServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Create a UI Service generator for the given business object.
+     * Create a UI Service generator for the given referenced object.
      *
-     * @param bo - business object
+     * @param referencedObject - referenced object (business object or abap cds view)
      * @returns a UI Service generator
      */
-    public async getUiServiceGenerator(bo: BusinessObject): Promise<UiServiceGenerator> {
+    public async getUiServiceGenerator(referencedObject: BusinessObject | AbapCDSView): Promise<UiServiceGenerator> {
         const generatorService = await this.getAdtService<GeneratorService>(GeneratorService);
         if (!generatorService) {
-            throw new Error('Generators are not support on this system');
+            throw new Error('Generators are not supported on this system');
         }
-        const config = await generatorService.getUIServiceGeneratorConfig(bo.name);
+        const config = await generatorService.getUIServiceGeneratorConfig(referencedObject.uri);
         const gen = this.createService<UiServiceGenerator>(this.getServiceUrlFromConfig(config), UiServiceGenerator);
-        gen.configure(config, bo);
+        gen.configure(config, referencedObject);
         return gen;
     }
 

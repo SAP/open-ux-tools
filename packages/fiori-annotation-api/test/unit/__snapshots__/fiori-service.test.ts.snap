@@ -389,6 +389,13 @@ exports[`fiori annotation service delete record complete value EDMXBackend xml-s
 "
 `;
 
+exports[`fiori annotation service flattened annotations delete common text and textArrangement 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+            "
+`;
+
 exports[`fiori annotation service flattened annotations delete record property value 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
@@ -584,6 +591,61 @@ exports[`fiori annotation service initial file content xml 1`] = `
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>
+"
+`;
+
+exports[`fiori annotation service insert SAP annotations for CDS projects UI.Facet CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.Incidents with {
+    path @(UI.fieldGroup : [
+            {
+                position : 10,
+                qualifier : 'GeneralInformation',
+            },
+        ],
+        UI.facet : [
+            {
+                id : 'testID',
+                purpose : #STANDARD,
+                type : #FIELDGROUP_REFERENCE,
+                targetQualifier : 'GeneralInformation',
+                position : 10,
+            },
+        ]
+)};
+
+"
+`;
+
+exports[`fiori annotation service insert SAP annotations for CDS projects UI.LineItem CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.Incidents with {
+    path @(UI.lineItem : [
+            {
+                position : 10,
+                importance : #HIGH,
+            },
+        ],
+        EndUserText.label : 'Test Label'
+)};
+
+"
+`;
+
+exports[`fiori annotation service insert SAP annotations for CDS projects external cds file CAPNodejs cap-start v4 1`] = `
+"using from '../data/cds/cap-start/srv/incidentservice';
+annotate IncidentService.Incidents with {
+    path @(UI.lineItem : [
+            {
+                position : 10,
+                importance : #HIGH,
+            },
+        ],
+        EndUserText.label : 'Test Label'
+)};
+
 "
 `;
 
@@ -1522,6 +1584,43 @@ exports[`fiori annotation service insert record update propertyValue value 'stri
 "
 `;
 
+exports[`fiori annotation service insert record update value to null CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.test with @(
+    UI.DataPoint : {
+        Value : null,
+    }
+);
+
+"
+`;
+
+exports[`fiori annotation service insert record update value to null EDMXBackend xml-start v4 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+            <Annotations Target=\\"IncidentService.test\\">
+                <Annotation Term=\\"UI.DataPoint\\">
+                    <Record>
+                        <PropertyValue Property=\\"Value\\">
+                            <Null/>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+"
+`;
+
 exports[`fiori annotation service insert reference delete and insert in the same target CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
@@ -1624,12 +1723,12 @@ using from '../../db/schema';
 using from '../../srv/common';
 
 
-annotate IncidentService.Incidents.composition with @(
+annotate service.Incidents.composition with @(
     UI.LineItem : [
     ]
 );
 
-annotate IncidentService.Incidents.composition with {
+annotate service.Incidents.composition with {
     name @Common.Text : 'Something'
 };
 
@@ -3841,7 +3940,19 @@ annotate service.Individual with {
 "
 `;
 
-exports[`serializeTarget xml cds cap-start 1`] = `
+exports[`serializeTarget cds Delete Criticality and criticality Representation 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+              annotate IncidentService.Incidents with @UI : {
+                FieldGroup #DateData1 : {Data : [
+                    { $Type : 'UI.DataField', Value : title, }
+                  ]}
+                };
+            "
+`;
+
+exports[`serializeTarget cds cap-start 1`] = `
 "annotate IncidentService.Incidents with @(
     UI.Facets : [
         {
@@ -3853,6 +3964,186 @@ exports[`serializeTarget xml cds cap-start 1`] = `
     ]
 );
 "
+`;
+
+exports[`serializeTarget xml move section case 1 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+        
+                <Annotations Target=\\"IncidentService.Incidents\\">
+                    <Annotation Term=\\"UI.Facets\\">
+                        <Collection>
+                            <Record Type=\\"UI.CollectionFacet\\">
+                                <PropertyValue Property=\\"Label\\" String=\\"group 1\\"/>
+                                <PropertyValue Property=\\"ID\\" String=\\"group1\\"/>
+                                <PropertyValue Property=\\"Facets\\">
+                                    <Collection>
+                                        <Record Type=\\"UI.ReferenceFacet\\">
+                                                                 <PropertyValue Property=\\"Label\\" String=\\"test 1\\"/>
+                                                <PropertyValue Property=\\"Target\\" AnnotationPath=\\"@UI.FieldGroup\\"/>
+                                                    <Annotation Term=\\"UI.Hidden\\"/>
+                              <PropertyValue Property=\\"ID\\" String=\\"formsection\\"/>
+                                        </Record>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </Collection>
+                    </Annotation>
+                </Annotations>
+            </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+
+            "
+`;
+
+exports[`serializeTarget xml move section case 2 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+        
+                <Annotations Target=\\"IncidentService.Incidents\\">
+                    <Annotation Term=\\"UI.Facets\\">
+                        <Collection>
+                            <Record Type=\\"UI.CollectionFacet\\">
+                                <PropertyValue Property=\\"Label\\" String=\\"group 1\\"/>
+                                <PropertyValue Property=\\"ID\\" String=\\"group1\\"/>
+                                <PropertyValue Property=\\"Facets\\">
+                                    <Collection>
+                                        <Record Type=\\"UI.ReferenceFacet\\">
+                                            <PropertyValue Property=\\"Label\\" String=\\"test 1\\"/>
+                                        </Record>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </Collection>
+                    </Annotation>
+                </Annotations>
+            </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+
+            "
+`;
+
+exports[`serializeTarget xml move section case 3 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+        
+                <Annotations Target=\\"IncidentService.Incidents\\">
+                    <Annotation Term=\\"UI.Facets\\">
+                        <Collection>
+                            <Record Type=\\"UI.CollectionFacet\\">
+                                <PropertyValue Property=\\"Label\\" String=\\"group 1\\"/>
+                                <PropertyValue Property=\\"ID\\" String=\\"group1\\"/>
+                                <PropertyValue Property=\\"Facets\\">
+                                    <Collection>
+                                        <Record Type=\\"UI.ReferenceFacet\\">
+                                            <PropertyValue Property=\\"Label\\" String=\\"test 1\\"/>
+                                        </Record>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </Collection>
+                    </Annotation>
+                </Annotations>
+            </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+
+            "
+`;
+
+exports[`serializeTarget xml move section case 4 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+        
+<Annotations Target=\\"IncidentService.Incidents\\">
+<Annotation Term=\\"UI.Facets\\">
+<Collection>
+<Record Type=\\"UI.CollectionFacet\\">
+<PropertyValue Property=\\"Label\\" String=\\"group 1\\"/>
+<PropertyValue Property=\\"ID\\" String=\\"group1\\"/>
+<PropertyValue Property=\\"Facets\\">
+<Collection>
+    <Record Type=\\"UI.ReferenceFacet\\">
+        <PropertyValue Property=\\"Label\\" String=\\"test 1\\"/>
+<PropertyValue Property=\\"ID\\" String=\\"test\\"/>
+<PropertyValue Property=\\"ID\\" String=\\"group1\\"/>
+    </Record>
+</Collection>
+</PropertyValue>
+</Record>
+    </Collection>
+</Annotation>
+</Annotations>
+</Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+
+            "
+`;
+
+exports[`serializeTarget xml move section case 5 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+        
+                <Annotations Target=\\"IncidentService.Incidents\\">
+                    <Annotation Term=\\"UI.Facets\\">
+                        <Collection>
+                            <Record Type=\\"UI.CollectionFacet\\">
+                                <PropertyValue Property=\\"Label\\" String=\\"group 1\\"/>
+                                <PropertyValue Property=\\"ID\\" String=\\"group1\\"/>
+                                <PropertyValue Property=\\"Facets\\">
+                                    <Collection>
+                                        <Record Type=\\"UI.ReferenceFacet\\">
+                                            <PropertyValue Property=\\"Label\\" String=\\"test 1\\"/>
+                                        </Record>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </Collection>
+                    </Annotation>
+                </Annotations>
+            </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+
+            "
 `;
 
 exports[`serializeTarget xml v4-app 1`] = `

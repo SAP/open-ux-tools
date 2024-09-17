@@ -1,7 +1,6 @@
 {
   "name": "<%= libraryName %>",
   "version": "1.0.0",
-  "private": true,
   "devDependencies": {
     "@ui5/cli": "^3.9.1",
     "karma": "6.3.17",

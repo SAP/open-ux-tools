@@ -1,5 +1,40 @@
 # @sap-ux/ui5-info
 
+## 0.8.1
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+
+## 0.8.0
+
+### Minor Changes
+
+-   cc1ac72: Move away from using versionoverview UI5 specification for version metadata, use 'official' instead.
+
+## 0.7.1
+
+### Patch Changes
+
+-   4fcb6fe: Updates ui5 version fallbacks
+
+## 0.7.0
+
+### Minor Changes
+
+-   6ebfae0: A combination of includeMaintained and includeDefault properties of UI5VersionFilterOptions now looks for next maintained version if the default is out of maintenance.
+
+## 0.6.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+
 ## 0.5.0
 
 ### Minor Changes

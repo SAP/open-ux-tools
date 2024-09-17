@@ -168,6 +168,15 @@ describe('<Splitter />', () => {
         });
     });
 
+    it('Test "splitterTabIndex" property', () => {
+        // default value
+        expect(wrapper.find('.splitter--horizontal').prop('tabIndex')).toEqual(0);
+        wrapper.setProps({
+            splitterTabIndex: -1
+        });
+        expect(wrapper.find('.splitter--horizontal').prop('tabIndex')).toEqual(-1);
+    });
+
     it('Test "hidden" property', () => {
         expect(wrapper.find('.splitter--hidden').length).toEqual(0);
         wrapper.setProps({

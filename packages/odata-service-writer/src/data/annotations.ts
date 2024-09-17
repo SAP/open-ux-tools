@@ -20,10 +20,10 @@ export function getAnnotationNamespaces({ metadata, annotations }: Partial<Odata
 
         return schemaNamespaces.map((schema: NamespaceAlias) => {
             // Check if alias exists in backend annotation file, if so use it
-            const annotationAlias = 
-            edmxAnnotations.xml && schema.namespace 
-            ? getAliasFromAnnotation(annotationsJson, schema.namespace) 
-            : '';
+            const annotationAlias =
+                edmxAnnotations.xml && schema.namespace
+                    ? getAliasFromAnnotation(annotationsJson, schema.namespace)
+                    : '';
             if (annotationAlias) {
                 schema.alias = annotationAlias;
             }

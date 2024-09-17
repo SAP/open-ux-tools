@@ -108,7 +108,9 @@ export async function checkCdsUi5PluginEnabled(
         // Below line checks if 'cdsVersionInfo' is available and contains version information.
         // If it does, it uses that version information to determine if it satisfies the minimum CDS version required.
         // If 'cdsVersionInfo' is not available or does not contain version information,it falls back to check the version specified in the package.json file.
-        hasMinCdsVersion: cdsVersionInfo?.version ? satisfies(cdsVersionInfo?.version, `>=${minCdsVersion}`) : satisfiesMinCdsVersion(packageJson),
+        hasMinCdsVersion: cdsVersionInfo?.version
+            ? satisfies(cdsVersionInfo?.version, `>=${minCdsVersion}`)
+            : satisfiesMinCdsVersion(packageJson),
         isWorkspaceEnabled: workspaceEnabled,
         hasCdsUi5Plugin: hasCdsPluginUi5(packageJson),
         isCdsUi5PluginEnabled: false

@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/project-access",
-    "version": "1.22.2",
+    "version": "1.27.2",
     "description": "Library to access SAP Fiori tools projects",
     "repository": {
         "type": "git",
@@ -34,7 +34,7 @@
     "dependencies": {
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "fast-xml-parser": "4.2.7",
+        "fast-xml-parser": "4.4.1",
         "findit2": "2.2.3",
         "json-parse-even-better-errors": "3.0.2",
         "mem-fs": "2.1.0",
@@ -46,7 +46,7 @@
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.5.2",
-        "@ui5/manifest": "1.61.0",
+        "@ui5/manifest": "1.66.0",
         "vscode-uri": "3.0.7"
     }
 }

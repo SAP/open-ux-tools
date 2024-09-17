@@ -1,19 +1,34 @@
+import { readFileSync } from 'fs';
+import { join, isAbsolute } from 'path';
+import { UI5Config } from '@sap-ux/ui5-config';
+import type { DescriptorVariant, AdpPreviewConfig } from '../types';
+
 /**
- * Checks if the input is a non-empty string.
+ * Get the app descriptor variant.
  *
- * @param input - input to check
- * @returns true if the input is a non-empty string
+ * @param {string} basePath - The path to the adaptation project.
+ * @returns {DescriptorVariant} The app descriptor variant.
  */
-export function isNotEmptyString(input: string | undefined): boolean {
-    return typeof input === 'string' && input.trim().length > 0;
+export function getVariant(basePath: string): DescriptorVariant {
+    return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
 }
 
 /**
- * Checks if the input is a valid SAP client.
+ * Returns the adaptation project configuration, throws an error if not found.
  *
- * @param input - input to check
- * @returns true if the input is a valid SAP client
+ * @param {string} basePath - The path to the adaptation project.
+ * @param {string} yamlPath - The path to yaml configuration file.
+ * @returns {Promise<AdpPreviewConfig>} the adp configuration
  */
-export function isValidSapClient(input: string | undefined): boolean {
-    return !input || (input.length < 4 && !!new RegExp(/^\d*$/).exec(input));
+export async function getAdpConfig(basePath: string, yamlPath: string): Promise<AdpPreviewConfig> {
+    const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
+    const ui5Conf = await UI5Config.newInstance(readFileSync(ui5ConfigPath, 'utf-8'));
+    const customMiddlerware =
+        ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
+        ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
+    const adp = customMiddlerware?.configuration?.adp;
+    if (!adp) {
+        throw new Error('No system configuration found in ui5.yaml');
+    }
+    return adp;
 }

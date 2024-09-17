@@ -1,8 +1,9 @@
 .filter {
     display: flex;
-    margin: 17px 15px 10px 15px;
+    padding: 15px 15px 15px 15px;
     flex-direction: row;
     align-items: center;
+    background-color: var(--vscode-sideBar-background);
 }
 
 .noData {

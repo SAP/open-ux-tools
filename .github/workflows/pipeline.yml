@@ -13,18 +13,18 @@ jobs:
                 os: [ubuntu-latest, windows-latest]
                 node-version: [18.x, 20.x]
         runs-on: ${{ matrix.os }}
-        timeout-minutes: 15
+        timeout-minutes: 30
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   fetch-depth: 0
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.4.0
+              uses: pnpm/action-setup@v4
               with:
                   run_install: true
             - name: Cache pnpm modules
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               env:
                   cache-name: cache-pnpm-modules
               with:
@@ -33,7 +33,7 @@ jobs:
                   restore-keys: |
                       ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
             - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node-version }}
             - name: Install pnpm modules
@@ -44,7 +44,7 @@ jobs:
               run: pnpm run test
             - name: Cache playwright browsers
               id: cache-playwright-browsers
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                 path: |
                   ${{ runner.os == 'Windows' }}:
@@ -81,16 +81,16 @@ jobs:
             changes: ${{ steps.changesetVersion.outputs.changes }} # map step output to job output
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.4.0
+              uses: pnpm/action-setup@v4
               with:
                   run_install: true
             - name: Cache pnpm modules
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               env:
                   cache-name: cache-pnpm-modules
               with:
@@ -99,7 +99,7 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
             - name: Use Node.js 18.x
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: 18.x
             - name: Install pnpm modules
@@ -129,13 +129,13 @@ jobs:
         needs: version
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.4.0
+              uses: pnpm/action-setup@v4
               with:
                   run_install: true
             - name: Cache pnpm modules
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               env:
                   cache-name: cache-pnpm-modules
               with:
@@ -144,7 +144,7 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
             - name: Use Node.js 18.x
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: 18.x
             - name: Install pnpm modules
@@ -171,7 +171,7 @@ jobs:
                 echo "$EOF" >> $GITHUB_ENV
             - name: Send Slack notification
               if: steps.changesetPublish.outputs.published == 'true'
-              uses: slackapi/slack-github-action@v1.24.0
+              uses: slackapi/slack-github-action@v1.26.0
               with:
                 payload: |
                   {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }

@@ -10,7 +10,7 @@ import {
     doesExits,
     getBase
 } from './utils';
-import type { Position } from 'vscode-languageserver-types';
+import type { Position } from '@sap-ux/text-document-utils';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import { findAnnotationNode, getAstNodes, getNode, parse } from '../src';

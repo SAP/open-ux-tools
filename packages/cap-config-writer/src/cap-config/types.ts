@@ -22,3 +22,13 @@ export type CdsUi5PluginInfo = {
 export interface CapServiceCdsInfo extends CapService {
     cdsUi5PluginInfo: CdsUi5PluginInfo;
 }
+
+export interface CapProjectSettings {
+    appRoot: string;
+    packageName: string;
+    appId: string;
+    sapux?: boolean;
+    enableNPMWorkspaces?: boolean;
+    enableCdsUi5Plugin?: boolean;
+    enableTypescript?: boolean;
+}

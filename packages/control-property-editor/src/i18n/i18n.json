@@ -51,9 +51,9 @@
   "DEFAULT_VALUE_TOOLTIP": "This is default value set by SAP UI5 control and it may be different than the one that is used by SAP Fiori Elements. This means that after deleting all the changes for the property it's value may differ from the one displayed here.",
   "CURRENT_VALUE": "Current value",
   "DESCRIPTION": "Description",
-  "SAVED_AND_UNSAVED_CHANGES": "Saved & Unsaved",
-  "UNSAVED_CHANGES": "Modified & Unsaved",
-  "SAVED_CHANGES": "Modified & Saved",
+  "SAVED_AND_UNSAVED_CHANGES": "This {{type}} has previously saved changes and currently unsaved changes",
+  "UNSAVED_CHANGES": "All changes on this {{type}} are not saved",
+  "SAVED_CHANGES": "All changes on this {{type}} are saved",
   "SAVED_VALUE": "Saved value",
   "SAVE_AND_RELOAD": "Save and Reload",
   "RELOAD": "Reload",
@@ -78,9 +78,13 @@
   "CONTROL": "Selector Id: ",
   "MODE": "Mode",
   "LIVE": "Live",
-  "EDIT": "Edit",
+  "EDIT": "Edit",  
+  "UI_ADAPTATION": "UI Adaptation",
   "SAVE": "Save",
   "UNDO": "Undo",
   "REDO": "Redo",
-  "NAVIGATE": "Navigate"
+  "NAVIGATION": "Navigation",
+  "NAVIGATE": "Navigate",
+  "LIST": "list",
+  "QUICK_ACTIONS": "{{title}} QUICK ACTIONS"
 }

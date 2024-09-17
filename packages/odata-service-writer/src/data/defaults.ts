@@ -1,5 +1,5 @@
 import type { OdataService, EdmxAnnotationsInfo } from '../types';
-import { serviceIsCds } from '../updates';
+import { ServiceType } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
 
 /**
@@ -41,13 +41,6 @@ function setDefaultServiceModel(service: OdataService): void {
  * @param {OdataService} service - The service object whose annotations name needs to be set or modified.
  */
 function setDefaultAnnotationsName(service: OdataService): void {
-    /**
-     * In the manifest EJS template, annotation names are referred to for adding annotations to the manifest.json.
-     * For CAP projects, annotations are added to the annotations.cds file and not to the manifest.json.
-     */
-    if (serviceIsCds(service)) {
-        return;
-    }
     const annotations = service.annotations as EdmxAnnotationsInfo;
     if (annotations?.technicalName && !annotations.name) {
         annotations.name = annotations?.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');
@@ -64,7 +57,16 @@ export function enhanceData(service: OdataService): void {
     setDefaultServicePath(service);
     setDefaultServiceName(service);
     setDefaultServiceModel(service);
-    setDefaultAnnotationsName(service);
+    // set service type to EDMX if not defined
+    service.type = service.type ?? ServiceType.EDMX;
+    /**
+     * In the manifest EJS template, annotation names are used to add annotations to the manifest.json.
+     * For CAP projects, annotations are added to the annotations.cds file instead of the manifest.json.
+     * If the service type is EDMX, this function sets the default annotation names to be included in the manifest.json.
+     */
+    if (service.type === ServiceType.EDMX) {
+        setDefaultAnnotationsName(service);
+    }
 
     // enhance preview settings with service configuration
     service.previewSettings = service.previewSettings || {};

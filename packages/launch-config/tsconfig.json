@@ -1,0 +1,32 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/mem-fs-editor.d.ts",
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../odata-service-inquirer"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../ui5-config"
+    },
+    {
+      "path": "../ui5-info"
+    }
+  ]
+}

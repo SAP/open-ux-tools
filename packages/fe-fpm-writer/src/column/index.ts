@@ -11,6 +11,7 @@ import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
+import { getManifest } from '../common/utils';
 
 /**
  * Get the template folder for the given UI5 version.
@@ -72,17 +73,20 @@ function enhanceConfig(
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  * @param {string} basePath - the base path
  * @param {CustomTableColumn} customColumn - the custom column configuration
- * @param {Editor} [fs] - the mem-fs editor instance
+ * @param {Promise<Editor>} [fs] - the mem-fs editor instance
  */
-export function generateCustomColumn(basePath: string, customColumn: CustomTableColumn, fs?: Editor): Editor {
+export async function generateCustomColumn(
+    basePath: string,
+    customColumn: CustomTableColumn,
+    fs?: Editor
+): Promise<Editor> {
     validateVersion(customColumn.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
     }
     validateBasePath(basePath, fs);
 
-    const manifestPath = join(basePath, 'webapp/manifest.json');
-    const manifest = fs.readJSON(manifestPath) as Manifest;
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     // merge with defaults
     const completeColumn = enhanceConfig(fs, customColumn, manifestPath, manifest);

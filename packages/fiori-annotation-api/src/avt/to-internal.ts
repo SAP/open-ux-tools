@@ -257,10 +257,10 @@ export function convertApplyToInternal(aliasInfo: AliasInformation, apply: Apply
  */
 export function convertPrimitiveValueToInternal(
     type: string,
-    value: string | number | boolean,
+    value: string | number | boolean | undefined,
     aliasInfo: AliasInformation
 ): string {
-    const text = value.toString();
+    const text = value === undefined ? '' : value.toString();
     if (!text) {
         return text;
     } else if (type === Edm.EnumMember) {

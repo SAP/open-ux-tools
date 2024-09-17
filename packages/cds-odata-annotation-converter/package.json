@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/cds-odata-annotation-converter",
     "description": "Converter for OData annotations in CDS format.",
-    "version": "0.2.9",
+    "version": "0.3.6",
     "publisher": "SAPSE",
     "author": "SAP SE",
     "license": "Apache-2.0",
@@ -28,15 +28,13 @@
         "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
-        "@sap/ux-cds-compiler-facade": "1.13.6",
+        "@sap/ux-cds-compiler-facade": "1.15.0",
         "i18next": "20.6.1",
-        "vscode-languageserver-types": "3.17.2"
+        "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap/cds": "7.9.2",
-        "@sap/cds-compiler": "4.8.0",
         "npm-run-all2": "6.2.0",
         "typescript": "5.3.3"
     }

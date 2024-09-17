@@ -1,0 +1,47 @@
+{
+  "fileName": "manifest",
+  "layer": "CUSTOMER_BASE",
+  "fileType": "appdescr_variant",
+  "reference": "ExampleApp",
+  "id": "customer.app.variant1",
+  "namespace": "apps/ExampleApp/appVariants/customer.app.variant1/",
+  "content": [
+      {
+          "changeType": "appdescr_app_changeInbound",
+          "content": {
+              "inboundId": "displayBank",
+              "entityPropertyChange": [
+                  {
+                      "propertyPath": "title",
+                      "operation": "UPSERT",
+                      "propertyValue": "{{customer.app.variant1_sap.app.crossNavigation.inbounds.displayBank.title}}"
+                  },
+                  {
+                      "propertyPath": "signature/parameters/sap-appvar-id",
+                      "operation": "UPSERT",
+                      "propertyValue": {
+                          "required": true,
+                          "filter": {
+                              "value": "customer.app.variant1",
+                              "format": "plain"
+                          },
+                          "launcherValue": {
+                              "value": "customer.app.variant1"
+                          }
+                      }
+                  }
+              ]
+          },
+          "texts": {
+              "i18n": "i18n/i18n.properties"
+          }
+      },
+      {
+          "changeType": "appdescr_app_removeAllInboundsExceptOne",
+          "content": {
+              "inboundId": "displayBank"
+          },
+          "texts": {}
+      }
+  ]
+}

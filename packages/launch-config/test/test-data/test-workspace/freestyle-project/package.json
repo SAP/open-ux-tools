@@ -1,0 +1,7 @@
+{
+  "name": "freestyle",
+  "main": "webapp/index.html",
+  "scripts": {
+    "start": "fiori run -o test/flpSandbox.html?sap-client=100#masterDetail-display -c ui5.yaml"
+  }
+}

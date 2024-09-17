@@ -10,6 +10,12 @@
   },
   "references": [
     {
+      "path": "../abap-deploy-config-inquirer"
+    },
+    {
+      "path": "../abap-deploy-config-writer"
+    },
+    {
       "path": "../adp-tooling"
     },
     {
@@ -31,10 +37,19 @@
       "path": "../mockserver-config-writer"
     },
     {
+      "path": "../preview-middleware"
+    },
+    {
       "path": "../project-access"
     },
     {
       "path": "../store"
+    },
+    {
+      "path": "../system-access"
+    },
+    {
+      "path": "../ui5-config"
     }
   ]
 }

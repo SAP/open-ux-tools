@@ -7,8 +7,8 @@ import {
     TransportRequestService,
     ListPackageService,
     FileStoreService,
-    BusinessObjectsService,
-    PublishService
+    BusinessObjectsService
+    //AbapCDSViewService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
 
@@ -188,6 +188,9 @@ export async function testDeployUndeployDTA(
  *
  * @param provider instance of a service provider
  * @param env object representing the content of the .env file.
+ * @param env.TEST_BO_NAME
+ * @param env.TEST_PACKAGE
+ * @param env.TEST_TRANSPORT
  */
 export async function testUiServiceGenerator(
     provider: AbapServiceProvider,
@@ -208,45 +211,27 @@ export async function testUiServiceGenerator(
     const bo = bos.find((bo) => bo.name === env.TEST_BO_NAME);
     logger.debug(bos.map((bo) => bo.name));
 
-    // Generator service
+    //This is used for manually testing, this blocked commented should not be run together with business object search and can be uncommented and used for testing when needed.
+    // Get Abap CDS Views
+    // const cdsViewService = await provider.getAdtService<AbapCDSViewService>(AbapCDSViewService);
+    // const cdsViews = await cdsViewService.getAbapCDSViews();
+
+    // Get generator service
     const generator = await provider.getUiServiceGenerator(bo);
     const content = await generator.getContent(env.TEST_PACKAGE);
-    logger.debug('content: ' + content);
-    let generatedRefs;
+
+    // Validate package and content
+    logger.info('validate package: ' + JSON.stringify(await generator.validatePackage(env.TEST_PACKAGE)));
+    logger.info('validate content: ' + JSON.stringify(await generator.validateContent(content)));
+
+    // Generate (including publish)
     try {
         logger.info('Start generation of service');
-        generatedRefs = await generator.generate(content, env.TEST_TRANSPORT);
-        logger.debug('generatedRefs: ' + JSON.stringify(generatedRefs));
+        await generator.generate(content, env.TEST_TRANSPORT);
         logger.info('Generation of service completed');
     } catch (error) {
         logger.error(`${error.code}: ${error.message}`);
         logger.debug(error);
         return;
-    }
-
-    // Publish (including lock service binding)
-    if (generatedRefs) {
-        const serviceLockGen = await provider.createLockServiceBindingGenerator(generatedRefs.objectReference.uri);
-        try {
-            await serviceLockGen.lockServiceBinding();
-        } catch (error) {
-            if (error.response && error.response.status === 403) {
-                logger.warn(`${error.code} ${error.response.status} ${error.response.data}`);
-            } else {
-                logger.warn(error);
-                return;
-            }
-        }
-    }
-    const publishService = await provider.getAdtService<PublishService>(PublishService);
-    try {
-        logger.info('Start publish');
-        const publishResult = await publishService.publish(
-            generatedRefs.objectReference.type,
-            generatedRefs.objectReference.name
-        );
-        logger.info(`Publish result: ${publishResult.SEVERITY} ${publishResult.LONG_TEXT || publishResult.SHORT_TEXT}`);
-    } catch (error) {
-        logger.error(error);
     }
 }

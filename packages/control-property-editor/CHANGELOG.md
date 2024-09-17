@@ -1,5 +1,83 @@
 # @sap-ux/control-property-editor
 
+## 0.5.5
+
+### Patch Changes
+
+-   30360e9: Update the CSS variable "--vscode-font-family" with a MacOS-specific font-family to match the VSCode UI when the control property editor is running on MacOS.
+
+## 0.5.4
+
+### Patch Changes
+
+-   9506a73: Uniform funnel checkboxes
+
+## 0.5.3
+
+### Patch Changes
+
+-   2fd82b1: Object Page Add Custom Section quick action support
+
+## 0.5.2
+
+### Patch Changes
+
+-   cdabb95: updated color variables for themes
+
+## 0.5.1
+
+### Patch Changes
+
+-   0b7af6a: remove z-index for sticky Search and filter bar and added updating highlighting control logic
+
+## 0.5.0
+
+### Minor Changes
+
+-   b1628da: Add quick actions to adaptation editor
+
+## 0.4.30
+
+### Patch Changes
+
+-   2b6daf3: Changed color of chevron on selection
+
+## 0.4.29
+
+### Patch Changes
+
+-   7710aa5: chore upgrade @fluentui/react@8.120.5
+
+## 0.4.28
+
+### Patch Changes
+
+-   ceed987: Fixed copy to clipboard chaching old control id values
+
+## 0.4.27
+
+### Patch Changes
+
+-   b5d9461: Add sticky search bar for outline and filter search
+
+## 0.4.26
+
+### Patch Changes
+
+-   f8a2e9e: Changed tooltip for green circles
+
+## 0.4.25
+
+### Patch Changes
+
+-   671242b: Disable add fragment and controller extension rt-a menu items if clicked element is from reuse component view
+
+## 0.4.24
+
+### Patch Changes
+
+-   cec4a97: Live and Edit buttons are visible as Navigation and UI Adpatation only when in ADP scenario.
+
 ## 0.4.23
 
 ### Patch Changes

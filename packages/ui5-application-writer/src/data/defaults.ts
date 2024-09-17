@@ -12,21 +12,32 @@ import merge from 'lodash/mergeWith';
  *
  * @param {string} [version] - the package version
  * @param {string} [description] - the package description
+ * @param {boolean} [isEdmxProjectType] - whether the project type is Edmx or CAP
  * @returns {Partial<Package>} the package instance
  */
-export function packageDefaults(version?: string, description?: string): Partial<Package> {
-    return {
+export function packageDefaults(version?: string, description?: string, isEdmxProjectType?: boolean): Partial<Package> {
+    const defaults = {
         version: version || '0.0.1',
         description: description || '',
         devDependencies: {
             '@ui5/cli': '^3.0.0',
             '@sap/ux-ui5-tooling': '1'
-        },
-        scripts: {
-            start: 'ui5 serve --config=ui5.yaml --open index.html',
-            'start-local': 'ui5 serve --config=ui5-local.yaml --open index.html',
-            build: 'ui5 build --config=ui5.yaml --clean-dest --dest dist'
         }
+    };
+    if (isEdmxProjectType) {
+        // Add scripts for non-CAP projects
+        return {
+            ...defaults,
+            scripts: {
+                start: 'ui5 serve --config=ui5.yaml --open index.html',
+                'start-local': 'ui5 serve --config=ui5-local.yaml --open index.html',
+                build: 'ui5 build --config=ui5.yaml --clean-dest --dest dist'
+            }
+        };
+    }
+    return {
+        ...defaults,
+        scripts: {}
     };
 }
 
@@ -81,6 +92,9 @@ export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 
         ui5.typesVersion ?? (options?.typescript ? getEsmTypesVersion : getTypesVersion)(merged.minUI5Version);
     merged.typesPackage = getTypesPackage(merged.typesVersion);
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
+    if (ui5.manifestLibs && ui5.manifestLibs.length > 0) {
+        merged.manifestLibs = getUI5Libs(ui5.manifestLibs);
+    }
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 
     return Object.assign({}, ui5, merged) as UI5;

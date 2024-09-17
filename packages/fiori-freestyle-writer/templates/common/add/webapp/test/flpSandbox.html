@@ -55,10 +55,10 @@
         };
     </script>
 
-    <script src="../test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
+    <script src="<%- locals.uShellBootstrapResourceUrl %>" id="sap-ushell-bootstrap"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
-        src="../resources/sap-ui-core.js"
+        src="<%- locals.uiBootstrapResourceUrl %>"
         data-sap-ui-libs="<%- ui5.ui5Libs %>"
         data-sap-ui-async="true"
         data-sap-ui-preload="async"

@@ -7,7 +7,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "lib": [
-      "es6",
+      "ES2022",
       "dom",
       "dom.iterable"
     ],
@@ -17,17 +17,23 @@
     "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "target": "ES6",
+    "target": "ES2022",
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "useUnknownInCatchVariables": false
   },
   "references": [
     {
+      "path": "packages/abap-deploy-config-inquirer"
+    },
+    {
       "path": "packages/abap-deploy-config-writer"
     },
     {
       "path": "packages/adp-tooling"
+    },
+    {
+      "path": "packages/annotation-generator"
     },
     {
       "path": "packages/app-config-writer"
@@ -93,6 +99,9 @@
       "path": "packages/fiori-generator-shared"
     },
     {
+      "path": "packages/guided-answers-helper"
+    },
+    {
       "path": "packages/i18n"
     },
     {
@@ -105,10 +114,16 @@
       "path": "packages/jest-runner-puppeteer"
     },
     {
+      "path": "packages/launch-config"
+    },
+    {
       "path": "packages/logger"
     },
     {
       "path": "packages/mockserver-config-writer"
+    },
+    {
+      "path": "packages/nodejs-utils"
     },
     {
       "path": "packages/odata-annotation-core-types"
@@ -159,7 +174,13 @@
       "path": "packages/telemetry"
     },
     {
+      "path": "packages/text-document-utils"
+    },
+    {
       "path": "packages/ui-components"
+    },
+    {
+      "path": "packages/ui-prompting"
     },
     {
       "path": "packages/ui5-application-inquirer"
@@ -198,7 +219,13 @@
       "path": "packages/yaml"
     },
     {
+      "path": "examples/fe-fpm-cli"
+    },
+    {
       "path": "examples/odata-cli"
+    },
+    {
+      "path": "examples/prompting-ui"
     },
     {
       "path": "examples/simple-generator"

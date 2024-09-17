@@ -1,5 +1,11 @@
 # @sap-ux/types
 
+## 1.2.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
 ## 1.1.3
 
 ### Patch Changes

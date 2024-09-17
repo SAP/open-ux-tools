@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { ChangeType } from '../../../types';
 import { DirName } from '@sap-ux/project-access';
 import type { IWriter, DataSourceData } from '../../../types';
-import { getGenericChange, writeChangeToFolder } from '../../../base/change-utils';
+import { getChange, writeChangeToFolder } from '../../../base/change-utils';
 
 /**
  * Handles the creation and writing of data source data changes for a project.
@@ -56,28 +56,31 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: DataSourceData): Promise<void> {
-        const { dataSourcesDictionary, service } = data;
-        const content = this.constructContent(service.name, service.uri, service.maxAge);
-        const change = getGenericChange(data, content, ChangeType.CHANGE_DATA_SOURCE);
+        const { variant, dataSources, service } = data;
+        const { id, uri, maxAge, annotationUri } = service;
+        const annotationId = dataSources[id].settings?.annotations?.[0];
+
+        const timestamp = Date.now();
+        const content = this.constructContent(id, uri, maxAge);
+        const change = getChange(variant, timestamp, content, ChangeType.CHANGE_DATA_SOURCE);
 
         writeChangeToFolder(
             this.projectPath,
             change,
-            `id_${data.timestamp}_changeDataSource.change`,
+            `id_${timestamp}_changeDataSource.change`,
             this.fs,
             DirName.Manifest
         );
 
-        const shouldAddAnnotation = service.annotationUri && service.annotationUri.length > 0;
-        if (shouldAddAnnotation) {
-            data.timestamp += 1;
-            const annotationContent = this.constructContent(dataSourcesDictionary[service.name], service.annotationUri);
-            const annotationChange = getGenericChange(data, annotationContent, ChangeType.CHANGE_DATA_SOURCE);
+        if (annotationId && annotationUri) {
+            const annotationContent = this.constructContent(annotationId, annotationUri);
+            const annotationTs = timestamp + 1;
+            const annotationChange = getChange(variant, annotationTs, annotationContent, ChangeType.CHANGE_DATA_SOURCE);
 
             writeChangeToFolder(
                 this.projectPath,
                 annotationChange,
-                `id_${data.timestamp}_changeDataSource.change`,
+                `id_${annotationTs}_changeDataSource.change`,
                 this.fs,
                 DirName.Manifest
             );

@@ -3,10 +3,12 @@ import {
     iconsLoaded,
     propertyChanged,
     propertyChangeFailed,
+    quickActionListChanged,
     reloadApplication,
-    scenario,
+    SCENARIO,
     showMessage,
-    storageFileChanged
+    storageFileChanged,
+    updateQuickAction
 } from '@sap-ux-private/control-property-editor-common';
 
 import reducer, {
@@ -167,8 +169,8 @@ describe('main redux slice', () => {
 
         test('setProjectScenario', () => {
             expect(
-                reducer({ scenario: scenario.UiAdaptation } as any, setProjectScenario(scenario.AdaptationProject))
-            ).toStrictEqual({ scenario: scenario.AdaptationProject, isAdpProject: true });
+                reducer({ scenario: SCENARIO.UiAdaptation } as any, setProjectScenario(SCENARIO.AdaptationProject))
+            ).toStrictEqual({ scenario: SCENARIO.AdaptationProject, isAdpProject: true });
         });
 
         test('non existing property', () => {
@@ -404,6 +406,182 @@ describe('main redux slice', () => {
             ).toStrictEqual({
                 fileChanges: [],
                 isAppLoading: true
+            });
+        });
+
+        test('quickActionListChanged', () => {
+            expect(
+                reducer(
+                    { quickActions: [] } as any,
+                    quickActionListChanged([
+                        {
+                            actions: [
+                                {
+                                    id: 'test id 1',
+                                    enabled: true,
+                                    kind: 'simple',
+                                    title: 'test title'
+                                }
+                            ],
+                            title: 'test title 1'
+                        },
+                        {
+                            actions: [
+                                {
+                                    id: 'test id 2',
+                                    enabled: true,
+                                    kind: 'nested',
+                                    children: [
+                                        {
+                                            label: 'test label',
+                                            children: [
+                                                {
+                                                    label: 'test label 2',
+                                                    children: []
+                                                },
+                                                {
+                                                    label: 'test label 3',
+                                                    children: []
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    title: 'test title'
+                                }
+                            ],
+                            title: 'test title 1'
+                        }
+                    ])
+                )
+            ).toStrictEqual({
+                quickActions: [
+                    {
+                        actions: [
+                            {
+                                id: 'test id 1',
+                                enabled: true,
+                                kind: 'simple',
+                                title: 'test title'
+                            }
+                        ],
+                        title: 'test title 1'
+                    },
+                    {
+                        actions: [
+                            {
+                                id: 'test id 2',
+                                enabled: true,
+                                kind: 'nested',
+                                children: [
+                                    {
+                                        label: 'test label',
+                                        children: [
+                                            {
+                                                label: 'test label 2',
+                                                children: []
+                                            },
+                                            {
+                                                label: 'test label 3',
+                                                children: []
+                                            }
+                                        ]
+                                    }
+                                ],
+                                title: 'test title'
+                            }
+                        ],
+                        title: 'test title 1'
+                    }
+                ]
+            });
+        });
+
+        test('updateQuickAction', () => {
+            expect(
+                reducer(
+                    {
+                        quickActions: [
+                            {
+                                actions: [
+                                    {
+                                        id: 'test id 1',
+                                        enabled: true,
+                                        kind: 'simple',
+                                        title: 'test title'
+                                    }
+                                ],
+                                title: 'test title 1'
+                            },
+                            {
+                                actions: [
+                                    {
+                                        id: 'test id 2',
+                                        enabled: true,
+                                        kind: 'nested',
+                                        children: [
+                                            {
+                                                label: 'test label',
+                                                children: [
+                                                    {
+                                                        label: 'test label 2',
+                                                        children: []
+                                                    },
+                                                    {
+                                                        label: 'test label 3',
+                                                        children: []
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        title: 'test title 22'
+                                    }
+                                ],
+                                title: 'test title 2'
+                            }
+                        ]
+                    } as any,
+                    updateQuickAction({ id: 'test id 1', enabled: false, kind: 'simple', title: 'new test' })
+                )
+            ).toStrictEqual({
+                quickActions: [
+                    {
+                        actions: [
+                            {
+                                id: 'test id 1',
+                                enabled: false,
+                                kind: 'simple',
+                                title: 'new test'
+                            }
+                        ],
+                        title: 'test title 1'
+                    },
+                    {
+                        actions: [
+                            {
+                                id: 'test id 2',
+                                enabled: true,
+                                kind: 'nested',
+                                children: [
+                                    {
+                                        label: 'test label',
+                                        children: [
+                                            {
+                                                label: 'test label 2',
+                                                children: []
+                                            },
+                                            {
+                                                label: 'test label 3',
+                                                children: []
+                                            }
+                                        ]
+                                    }
+                                ],
+                                title: 'test title 22'
+                            }
+                        ],
+                        title: 'test title 2'
+                    }
+                ]
             });
         });
     });

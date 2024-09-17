@@ -37,6 +37,7 @@ export default class LoggerHelper {
         request: AxiosInterceptorManager<InternalAxiosRequestConfig>;
         response: AxiosInterceptorManager<AxiosResponse>;
     }): void {
+        const debugLogger = LoggerHelper.logger.debug.bind(LoggerHelper.logger);
         interceptors.request.use(
             (request) => {
                 return AxiosLogger.requestLogger(request, {
@@ -44,12 +45,12 @@ export default class LoggerHelper {
                     data: true,
                     prefixText: '@sap-ux/odata-service-inquirer',
                     headers: true,
-                    logger: LoggerHelper.logger.debug.bind(this)
+                    logger: debugLogger
                 });
             },
             (error) => {
                 return AxiosLogger.errorLogger(error, {
-                    logger: LoggerHelper.logger.debug
+                    logger: debugLogger
                 });
             }
         );
@@ -60,12 +61,12 @@ export default class LoggerHelper {
                     prefixText: '@sap-ux/odata-service-inquirer',
                     status: true,
                     headers: true,
-                    logger: LoggerHelper.logger.debug
+                    logger: debugLogger
                 });
             },
             (err) => {
                 return AxiosLogger.errorLogger(err, {
-                    logger: LoggerHelper.logger.debug
+                    logger: debugLogger
                 });
             }
         );

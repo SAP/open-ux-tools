@@ -1,4 +1,5 @@
 import type { Layer } from 'sap/ui/fl';
+import { getError } from '../utils/error';
 
 export const enum ApiEndpoints {
     CHANGES = '/preview/api/changes',
@@ -16,8 +17,9 @@ export const enum RequestMethod {
     DELETE = 'DELETE'
 }
 
-type Fragments = { fragmentName: string }[];
-type Controllers = { controllerName: string }[];
+export type Fragments = { fragmentName: string }[];
+export type Controllers = { controllerName: string }[];
+type ResponseMessage = { message?: string };
 
 export interface FragmentsResponse {
     fragments: Fragments;
@@ -68,7 +70,7 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
         const response: Response = await fetch(endpoint, config);
 
         if (!response.ok) {
-            const errorData = await response.json();
+            const errorData = (await response.json()) as ResponseMessage;
             const message = errorData?.message ?? '';
             throw new Error(`Request failed, status: ${response.status}. ${message}`.trim());
         }
@@ -86,7 +88,7 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
                 return response.json() as T;
         }
     } catch (e) {
-        throw new Error(e.message);
+        throw getError(e);
     }
 }
 

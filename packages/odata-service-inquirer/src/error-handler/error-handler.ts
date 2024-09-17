@@ -4,8 +4,13 @@ import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
 import { ValidationLink } from '../types';
 import { sendTelemetryEvent } from '../utils';
-import { GUIDED_ANSWERS_LAUNCH_CMD_ID, HELP_NODES, HELP_TREE, getHelpUrl } from './help/help-topics';
-import { GUIDED_ANSWERS_ICON } from './help/images';
+import {
+    GUIDED_ANSWERS_ICON,
+    GUIDED_ANSWERS_LAUNCH_CMD_ID,
+    HELP_NODES,
+    HELP_TREE,
+    getHelpUrl
+} from '@sap-ux/guided-answers-helper';
 
 const teleEventGALinkCreated = 'GA_LINK_CREATED';
 
@@ -24,6 +29,7 @@ export enum ERROR_TYPE {
     CERT_SELF_SIGNED_CERT_IN_CHAIN = 'CERT_SELF_SIGNED_CERT_IN_CHAIN',
     UNKNOWN = 'UNKNOWN',
     INVALID_URL = 'INVALID_URL',
+    TIMEOUT = 'TIMEOUT',
     CONNECTION = 'CONNECTION',
     SERVICES_UNAVAILABLE = 'SERVICES_UNAVAILABLE', // All services
     SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE', // Specific service
@@ -52,6 +58,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
         /Unable to retrieve SAP Business Accelerator Hub key/ // API Hub error msg
     ],
     [ERROR_TYPE.AUTH_TIMEOUT]: [/UAATimeoutError/],
+    [ERROR_TYPE.TIMEOUT]: [/Timeout/],
     [ERROR_TYPE.CERT]: [], // General cert error, unspecified root cause
     [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: [
         /UNABLE_TO_GET_ISSUER_CERT/,
@@ -62,7 +69,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.CERT_SELF_SIGNED]: [/DEPTH_ZERO_SELF_SIGNED_CERT/],
     [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: [/SELF_SIGNED_CERT_IN_CHAIN/],
     [ERROR_TYPE.UNKNOWN]: [],
-    [ERROR_TYPE.CONNECTION]: [/ENOTFOUND/, /ECONNRESET/, /ECONNREFUSED/],
+    [ERROR_TYPE.CONNECTION]: [/ENOTFOUND/, /ECONNRESET/, /ECONNREFUSED/, /ConnectionError/],
     [ERROR_TYPE.SERVICES_UNAVAILABLE]: [],
     [ERROR_TYPE.SERVICE_UNAVAILABLE]: [/503/],
     [ERROR_TYPE.INVALID_URL]: [/Invalid URL/, /ERR_INVALID_URL/],
@@ -86,7 +93,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.NO_V4_SERVICES]: []
 };
 
-type ValidationLinkOrString = string | ValidationLink | undefined;
+type ValidationLinkOrString = string | ValidationLink;
 
 /**
  * Maps errors to end-user messages using some basic root cause analysis based on regex matching.
@@ -119,6 +126,7 @@ export class ErrorHandler {
         }),
         [ERROR_TYPE.AUTH]: t('errors.authenticationFailed', { error }),
         [ERROR_TYPE.AUTH_TIMEOUT]: t('errors.authenticationTimeout'),
+        [ERROR_TYPE.TIMEOUT]: t('errors.timeout, { error }'),
         [ERROR_TYPE.INVALID_URL]: t('errors.invalidUrl'),
         [ERROR_TYPE.CONNECTION]: t('errors.connectionError', {
             error: (error as Error)?.message || JSON.stringify(error)
@@ -141,7 +149,7 @@ export class ErrorHandler {
         [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: t('errors.destinationUnavailable'),
         [ERROR_TYPE.REDIRECT]: t('errors.redirectError'),
         [ERROR_TYPE.NO_SUCH_HOST]: t('errors.noSuchHostError'),
-        [ERROR_TYPE.NO_ABAP_ENVS]: t('error.abapEnvsUnavailable')
+        [ERROR_TYPE.NO_ABAP_ENVS]: t('errors.abapEnvsUnavailable')
     });
 
     /**
@@ -179,7 +187,8 @@ export class ErrorHandler {
             [ERROR_TYPE.NOT_FOUND]: undefined,
             [ERROR_TYPE.ODATA_URL_NOT_FOUND]: undefined,
             [ERROR_TYPE.INTERNAL_SERVER_ERROR]: undefined,
-            [ERROR_TYPE.NO_V2_SERVICES]: undefined
+            [ERROR_TYPE.NO_V2_SERVICES]: undefined,
+            [ERROR_TYPE.TIMEOUT]: undefined
         };
         return errorToHelp[errorType];
     };
@@ -334,14 +343,14 @@ export class ErrorHandler {
      * Used by validate functions to report in-line user friendly errors.
      * Checks if there is an existing error.
      *
-     * @param error optional, if provided get the end user message that it maps to, otherwise get the previous error message
-     * @param reset optional, resets the previous error state if true
+     * @param error optional, if provided get the end user message that it maps to, otherwise get the previous error message, if a boolean is passed it will be interpreted as `reset`.
+     * @param reset optional, resets the previous error state if true, if error is omitted reset may be passed as the first argument
      * @param fallback optional, return the message of the specified ERROR_TYPE if no previous end user message and no error specified
      * @returns The error message
      */
     public getErrorMsg(error?: any, reset?: boolean, fallback?: ERROR_TYPE): string | undefined {
         let errorMsg;
-        if (error) {
+        if (error && typeof error !== 'boolean') {
             errorMsg = ErrorHandler.mapErrorToMsg(error).errorMsg;
         }
         // Get previous error message
@@ -349,7 +358,7 @@ export class ErrorHandler {
             errorMsg = this.currentErrorMsg ?? (fallback ? ErrorHandler.getErrorMsgFromType(fallback) : undefined);
         }
 
-        if (reset) {
+        if (error === true || reset) {
             this.currentErrorMsg = null;
             this.currentErrorType = null;
         }
@@ -366,8 +375,8 @@ export class ErrorHandler {
      * @param reset optional, resets the previous error state if true
      * @returns An instance of @see {ValidationLink}
      */
-    public getValidationErrorHelp(error?: any, reset = false): ValidationLinkOrString {
-        let errorHelp: ValidationLinkOrString;
+    public getValidationErrorHelp(error?: any, reset = false): ValidationLinkOrString | undefined {
+        let errorHelp: ValidationLinkOrString | undefined;
         let errorMsg: string | undefined;
         if (error) {
             const resolvedError = ErrorHandler.mapErrorToMsg(error);
@@ -452,7 +461,7 @@ export class ErrorHandler {
      * @param errorMsg - the message to appear with the help link
      * @returns A validation help link or help link message
      */
-    public static getHelpForError(errorType: ERROR_TYPE, errorMsg?: string): ValidationLinkOrString {
+    public static getHelpForError(errorType: ERROR_TYPE, errorMsg?: string): ValidationLinkOrString | undefined {
         const helpNode = ErrorHandler.getHelpNode(errorType);
         const mappedErrorMsg = errorMsg ?? ErrorHandler.getErrorMsgFromType(errorType);
 

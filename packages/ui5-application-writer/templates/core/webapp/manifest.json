@@ -36,7 +36,7 @@
       "flexEnabled": true,
       "dependencies": {
         "minUI5Version": "<%- ui5.minUI5Version %>",
-        "libs": {<% ui5.ui5Libs.forEach((ui5Lib, idx, libs) => { %>
+        "libs": {<% (ui5.manifestLibs?.length ? ui5.manifestLibs : ui5.ui5Libs).concat(ui5.customUi5Libs ?? []).forEach((ui5Lib, idx, libs) => {%>
           <%- `"${ui5Lib}": {}${idx+1 < libs.length ? ',' : ''}` %><% }); %>
         }
       },

@@ -1,5 +1,255 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.0.23
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.20
+-   @sap-ux/odata-service-writer@0.22.5
+-   @sap-ux/ui5-application-writer@1.1.6
+
+## 1.0.22
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/odata-service-writer@0.22.5
+    -   @sap-ux/fiori-generator-shared@0.3.19
+    -   @sap-ux/ui5-application-writer@1.1.6
+
+## 1.0.21
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.18
+-   @sap-ux/odata-service-writer@0.22.4
+-   @sap-ux/ui5-application-writer@1.1.6
+
+## 1.0.20
+
+### Patch Changes
+
+-   8cfd71a: ui5-application-writer - fix backward support for older ui5 versions in locate-reuse-libs.js
+-   Updated dependencies [8cfd71a]
+    -   @sap-ux/ui5-application-writer@1.1.6
+
+## 1.0.19
+
+### Patch Changes
+
+-   1a99abc: separation between ui5libs and manifestlibs, to allow for different ui5 libraries set in manifest and other files
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-application-writer@1.1.5
+    -   @sap-ux/ui5-config@0.24.1
+    -   @sap-ux/odata-service-writer@0.22.4
+    -   @sap-ux/fiori-generator-shared@0.3.17
+
+## 1.0.18
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.16
+
+## 1.0.17
+
+### Patch Changes
+
+-   Updated dependencies [3e1a83a]
+    -   @sap-ux/fiori-generator-shared@0.3.15
+
+## 1.0.16
+
+### Patch Changes
+
+-   Updated dependencies [12504d5]
+    -   @sap-ux/fiori-generator-shared@0.3.14
+
+## 1.0.15
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.13
+-   @sap-ux/odata-service-writer@0.22.3
+-   @sap-ux/ui5-application-writer@1.1.4
+
+## 1.0.14
+
+### Patch Changes
+
+-   61721f2: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    removed dependency on sap.ushell for v4 manifest.json
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/ui5-application-writer@1.1.4
+    -   @sap-ux/odata-service-writer@0.22.3
+    -   @sap-ux/fiori-generator-shared@0.3.12
+
+## 1.0.13
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.11
+-   @sap-ux/odata-service-writer@0.22.2
+-   @sap-ux/ui5-application-writer@1.1.3
+
+## 1.0.12
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.10
+-   @sap-ux/odata-service-writer@0.22.2
+-   @sap-ux/ui5-application-writer@1.1.3
+
+## 1.0.11
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.9
+-   @sap-ux/odata-service-writer@0.22.2
+-   @sap-ux/ui5-application-writer@1.1.3
+
+## 1.0.10
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.8
+-   @sap-ux/odata-service-writer@0.22.2
+-   @sap-ux/ui5-application-writer@1.1.3
+
+## 1.0.9
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/odata-service-writer@0.22.2
+    -   @sap-ux/fiori-generator-shared@0.3.7
+    -   @sap-ux/ui5-application-writer@1.1.3
+
+## 1.0.8
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.6
+-   @sap-ux/odata-service-writer@0.22.1
+-   @sap-ux/ui5-application-writer@1.1.2
+
+## 1.0.7
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.5
+-   @sap-ux/odata-service-writer@0.22.1
+-   @sap-ux/ui5-application-writer@1.1.2
+
+## 1.0.6
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.4
+-   @sap-ux/odata-service-writer@0.22.1
+-   @sap-ux/ui5-application-writer@1.1.2
+
+## 1.0.5
+
+### Patch Changes
+
+-   42486a5: fix(locate-reuse-lib): corrected extraction of component name
+-   Updated dependencies [42486a5]
+    -   @sap-ux/ui5-application-writer@1.1.2
+
+## 1.0.4
+
+### Patch Changes
+
+-   Updated dependencies [d549173]
+    -   @sap-ux/odata-service-writer@0.22.1
+    -   @sap-ux/ui5-application-writer@1.1.1
+    -   @sap-ux/fiori-generator-shared@0.3.3
+
+## 1.0.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.2
+-   @sap-ux/odata-service-writer@0.22.0
+-   @sap-ux/ui5-application-writer@1.1.0
+
+## 1.0.2
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.1
+-   @sap-ux/odata-service-writer@0.22.0
+-   @sap-ux/ui5-application-writer@1.1.0
+
+## 1.0.1
+
+### Patch Changes
+
+-   Updated dependencies [1a0e478]
+    -   @sap-ux/ui5-application-writer@1.1.0
+
+## 1.0.0
+
+### Major Changes
+
+-   5b243ac: Add `projectType` mandatory option to `App` interface to specify the type of project being processed. This option determines file inclusion/exclusion and script updates in the template:
+    -   For projects of type 'CAPJava' or 'CAPNodejs':
+        -   Exclude `ui5-local.yaml` and `.gitignore` from the template.
+        -   Update `package.json` to include only the script `deploy-config`.
+        -   Use full URLs to determine resource URLs in `webapp/index.html` and `flpSandbox.html`.
+    -   For projects of type 'EDMXBackend':
+        -   Include `ui5-local.yaml` and `.gitignore` in the template.
+        -   Update `package.json` to include the following scripts: start, start-local, build, start-noflp, start-mock, int-test, deploy, and sap-ux.
+        -   Include relative URLs to determine resource URLs in `webapp/index.html` and `flpSandbox.html`.
+
+### Patch Changes
+
+-   Updated dependencies [5b243ac]
+    -   @sap-ux/ui5-application-writer@1.0.0
+    -   @sap-ux/fiori-generator-shared@0.3.0
+    -   @sap-ux/odata-service-writer@0.22.0
+
+## 0.23.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/odata-service-writer@0.21.1
+    -   @sap-ux/ui5-application-writer@0.27.2
+
+## 0.23.1
+
+### Patch Changes
+
+-   Updated dependencies [8b7ee1f]
+    -   @sap-ux/ui5-application-writer@0.27.1
+
+## 0.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/odata-service-writer@0.21.0
+    -   @sap-ux/ui5-application-writer@0.27.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 0.22.15
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+    -   @sap-ux/odata-service-writer@0.20.5
+    -   @sap-ux/ui5-application-writer@0.26.18
+
 ## 0.22.14
 
 ### Patch Changes

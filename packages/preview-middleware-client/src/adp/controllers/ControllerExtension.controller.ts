@@ -17,9 +17,6 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-/** sap.ui.fl */
-import Utils from 'sap/ui/fl/Utils';
-
 /** sap.ui.layout */
 import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
 
@@ -35,20 +32,24 @@ import {
     writeController
 } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
+import { getControllerInfo } from '../utils';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
 }
 
-interface ControllerInfo {
-    controllerName: string;
-    viewId: string;
-}
+type ControllerModel = JSONModel & {
+    getProperty(sPath: '/controllersList'): { controllerName: string }[];
+    getProperty(sPath: '/controllerExists'): boolean;
+    getProperty(sPath: '/newControllerName'): string;
+    getProperty(sPath: '/viewId'): string;
+    getProperty(sPath: '/controllerPath'): string;
+};
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default class ControllerExtension extends BaseDialog {
+export default class ControllerExtension extends BaseDialog<ControllerModel> {
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
         super(name);
         this.rta = rta;
@@ -83,7 +84,7 @@ export default class ControllerExtension extends BaseDialog {
         const beginBtn = this.dialog.getBeginButton();
 
         const controllerName: string = input.getValue();
-        const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
+        const controllerList = this.model.getProperty('/controllersList');
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
             input.setValueState(valueState).setValueStateText(valueStateText);
@@ -156,39 +157,26 @@ export default class ControllerExtension extends BaseDialog {
         const selectorId = this.overlays.getId();
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
 
-        const { controllerName, viewId } = this.getControllerInfo(overlayControl);
+        const { controllerName, viewId } = getControllerInfo(overlayControl);
+        const existingController = await this.getExistingController(controllerName);
 
-        const { controllerExists, controllerPath, controllerPathFromRoot, isRunningInBAS } =
-            await this.getExistingController(controllerName);
+        if (existingController) {
+            const { controllerExists, controllerPath, controllerPathFromRoot, isRunningInBAS } = existingController;
 
-        if (controllerExists) {
-            this.updateModelForExistingController(
-                controllerExists,
-                controllerPath,
-                controllerPathFromRoot,
-                isRunningInBAS
-            );
-        } else {
-            this.updateModelForNewController(viewId);
+            if (controllerExists) {
+                this.updateModelForExistingController(
+                    controllerExists,
+                    controllerPath,
+                    controllerPathFromRoot,
+                    isRunningInBAS
+                );
+            } else {
+                this.updateModelForNewController(viewId);
 
-            await this.getControllers();
+                await this.getControllers();
+            }
         }
     }
-
-    /**
-     * Gets controller name and view ID for the given overlay control.
-     *
-     * @param overlayControl The overlay control.
-     * @returns The controller name and view ID.
-     */
-    private getControllerInfo(overlayControl: ElementOverlay): ControllerInfo {
-        const control = overlayControl.getElement();
-        const view = Utils.getViewForControl(control);
-        const controllerName = view.getController().getMetadata().getName();
-        const viewId = view.getId();
-        return { controllerName, viewId };
-    }
-
     /**
      * Updates the model properties for an existing controller.
      *
@@ -238,14 +226,15 @@ export default class ControllerExtension extends BaseDialog {
      * @param controllerName Controller name that exists in the view
      * @returns Returnsexisting controller data
      */
-    private async getExistingController(controllerName: string): Promise<CodeExtResponse> {
+    private async getExistingController(controllerName: string): Promise<CodeExtResponse | undefined> {
+        let data: CodeExtResponse | undefined;
         try {
-            const data = await getExistingController(controllerName);
-            return data;
+            data = await getExistingController(controllerName);
         } catch (e) {
-            MessageToast.show(e.message, { duration: 5000 });
-            throw new Error(e.message);
+            this.handleError(e);
         }
+
+        return data;
     }
 
     /**
@@ -256,8 +245,7 @@ export default class ControllerExtension extends BaseDialog {
             const { controllers } = await readControllers<ControllersResponse>();
             this.model.setProperty('/controllersList', controllers);
         } catch (e) {
-            MessageToast.show(e.message, { duration: 5000 });
-            throw new Error(e.message);
+            this.handleError(e);
         }
     }
 
@@ -288,8 +276,7 @@ export default class ControllerExtension extends BaseDialog {
             // We want to update the model incase we have already created a controller file but failed when creating a change file,
             // so when the user types the same controller name again he does not get 409 from the server, instead an error is shown in the UI
             await this.getControllers();
-            MessageToast.show(e.message);
-            throw new Error(e.message);
+            this.handleError(e);
         }
     }
 }

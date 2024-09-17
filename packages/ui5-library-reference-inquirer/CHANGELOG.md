@@ -1,5 +1,233 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.3.29
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+
+## 0.3.28
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+
+## 0.3.27
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+
+## 0.3.26
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.9
+
+## 0.3.25
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+
+## 0.3.24
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.7
+
+## 0.3.23
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.6
+
+## 0.3.22
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.5
+
+## 0.3.21
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+
+## 0.3.20
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.4
+
+## 0.3.19
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+
+## 0.3.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+
+## 0.3.17
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+
+## 0.3.16
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+
+## 0.3.15
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+
+## 0.3.14
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+
+## 0.3.13
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+
+## 0.3.12
+
+### Patch Changes
+
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+
+## 0.3.11
+
+### Patch Changes
+
+-   Updated dependencies [d549173]
+    -   @sap-ux/project-access@1.25.7
+
+## 0.3.10
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.2
+
+## 0.3.9
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [108336f]
+    -   @sap-ux/inquirer-common@0.4.1
+
+## 0.3.7
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+
+## 0.3.6
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+
+## 0.3.5
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+
+## 0.3.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.25.2
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+
+## 0.3.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/inquirer-common@0.4.0
+    -   @sap-ux/project-access@1.23.0
+
+## 0.2.37
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/project-access@1.22.4
+
+## 0.2.36
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/inquirer-common@0.3.1
+
+## 0.2.35
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.3
+
 ## 0.2.34
 
 ### Patch Changes

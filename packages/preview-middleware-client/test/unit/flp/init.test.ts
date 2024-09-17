@@ -3,30 +3,70 @@ import {
     registerComponentDependencyPaths,
     registerSAPFonts,
     setI18nTitle,
-    resetAppState
+    resetAppState,
+    loadI18nResourceBundle
 } from '../../../src/flp/init';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
-import { mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
+import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
+import * as apiHandler from '../../../src/adp/api-handler';
 import { fetchMock, sapMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { Scenario } from '@sap-ux-private/control-property-editor-common';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
 
 describe('flp/init', () => {
     test('registerSAPFonts', () => {
         registerSAPFonts();
         expect(IconPoolMock.registerFont).toBeCalledTimes(2);
     });
-
     test('setI18nTitle', () => {
         const title = '~testTitle';
-        mockBundle.getText.mockReturnValue(title);
+        const mockResourceBundle = {
+            hasText: jest.fn().mockReturnValueOnce(true),
+            getText: jest.fn().mockReturnValueOnce(title)
+        };
 
-        mockBundle.hasText.mockReturnValueOnce(true);
-        setI18nTitle();
+        setI18nTitle(mockResourceBundle, title);
         expect(document.title).toBe(title);
 
-        mockBundle.hasText.mockReturnValueOnce(false);
-        setI18nTitle();
+        mockResourceBundle.hasText.mockReturnValueOnce(false);
+        setI18nTitle(mockResourceBundle);
         expect(document.title).toBe(title);
+    });
+    test('loadI18nResourceBundle', async () => {
+        jest.spyOn(apiHandler, 'getManifestAppdescr').mockResolvedValueOnce({
+            content: [
+                {
+                    texts: {
+                        i18n: 'i18n/test/i18n.properties'
+                    }
+                }
+            ]
+        } as unknown as apiHandler.ManifestAppdescr);
+        await loadI18nResourceBundle('other' as Scenario);
+        expect(mockBundle.create).toBeCalledWith({
+            url: 'i18n/i18n.properties'
+        });
+    });
+    test('loadI18nResourceBundle - adaptation project', async () => {
+        jest.spyOn(apiHandler, 'getManifestAppdescr').mockResolvedValueOnce({
+            content: [
+                {
+                    texts: {
+                        i18n: 'i18n/test/i18n.properties'
+                    }
+                }
+            ]
+        } as unknown as apiHandler.ManifestAppdescr);
+        await loadI18nResourceBundle('ADAPTATION_PROJECT');
+        expect(mockBundle.create).toBeCalledWith({
+            url: '../i18n/i18n.properties',
+            enhanceWith: [
+                {
+                    bundleUrl: '../i18n/test/i18n.properties'
+                }
+            ]
+        });
     });
 
     describe('registerComponentDependencyPaths', () => {
@@ -35,6 +75,12 @@ describe('flp/init', () => {
             'sap.ui5': {
                 dependencies: {
                     libs: {} as Record<string, unknown>
+                },
+                componentUsages: {
+                    componentUsage1: {
+                        'name': '',
+                        'lazy': true
+                    }
                 }
             }
         };
@@ -57,6 +103,30 @@ describe('flp/init', () => {
                 json: () => ({
                     'test.lib': {
                         dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
+                    }
+                })
+            });
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+            expect(loaderMock).toBeCalledWith({ paths: { 'test/lib/component': '~url' } });
+        });
+
+        test('single app, one reuse lib and one componentUsage', async () => {
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            manifest['sap.ui5'].componentUsages = {
+                componentUsage1: {
+                    'name': 'test.componentUsage',
+                    'lazy': true
+                }
+            };
+            fetchMock.mockResolvedValueOnce({ json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                json: () => ({
+                    'test.lib': {
+                        dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
+                    },
+                    'test.componentUsage': {
+                        dependencies: [{ url: '~url2', type: 'UI5COMP', componentId: 'test.componentUsage' }]
                     }
                 })
             });
@@ -127,6 +197,7 @@ describe('flp/init', () => {
         });
 
         test('nothing configured', async () => {
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
@@ -138,7 +209,7 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            sapMock.ui.version = '1.84.50';
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.84.50' });
             await init({ flex: JSON.stringify(flexSettings) });
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
@@ -161,7 +232,7 @@ describe('flp/init', () => {
                 expect.anything()
             );
 
-            const requireCb = sapMock.ui.require.mock.calls[1][1] as (
+            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
                 startAdaptation: StartAdaptation,
                 pluginScript?: RTAPlugin
             ) => void;
@@ -176,7 +247,7 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            sapMock.ui.version = '1.71.60';
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.60' });
             await init({ flex: JSON.stringify(flexSettings) });
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
@@ -199,24 +270,33 @@ describe('flp/init', () => {
                 expect.anything()
             );
 
-            const requireCb = sapMock.ui.require.mock.calls[1][1] as (
+            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
                 initRta: InitRtaScript,
                 pluginScript?: RTAPlugin
             ) => Promise<void>;
             const initRtaMock = jest.fn();
             const plugnScriptMock = jest.fn();
             await requireCb(initRtaMock, plugnScriptMock);
-            expect(initRtaMock).toBeCalledWith(expect.anything(), plugnScriptMock);
+            expect(initRtaMock).toBeCalled();
         });
 
         test('custom init module configured & ui5 version is 1.120.9', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
-            sapMock.ui.version = '1.120.09';
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.9' });
+
             await init({ customInit: customInit });
 
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
-
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+        });
+
+        test('custom init module configured & ui5 version is 2.0.0', async () => {
+            const customInit = 'my/app/test/integration/opaTests.qunit';
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '2.0.0' });
+
+            await init({ customInit: customInit });
+
+            expect(sapMock.ui.require).toBeCalledWith([customInit]);
         });
     });
 });

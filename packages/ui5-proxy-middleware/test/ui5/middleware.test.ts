@@ -229,7 +229,7 @@ describe('middleware', () => {
         });
 
         test('valid manifest.json', async () => {
-            const ui5Version = '1.123';
+            const ui5Version = '1.123.0';
             const loadManifestMock = jest
                 .fn()
                 .mockResolvedValue(`{ "sap.ui5": { "dependencies": { "minUI5Version": "${ui5Version}"}}}`);

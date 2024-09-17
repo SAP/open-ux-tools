@@ -7,7 +7,13 @@ import { create as createEditor } from 'mem-fs-editor';
 
 import type { Project } from '@sap-ux/project-access';
 
-import type { AnnotationRecord, Collection, PropertyPathExpression, RawAnnotation } from '@sap-ux/vocabularies-types';
+import type {
+    AnnotationRecord,
+    Collection,
+    PropertyPathExpression,
+    PropertyValue,
+    RawAnnotation
+} from '@sap-ux/vocabularies-types';
 import { getProject } from '@sap-ux/project-access';
 
 import type { Change, DeleteChange, InsertAnnotationChange, TextFile } from '../../src/types';
@@ -23,7 +29,7 @@ import { serialize } from './raw-metadata-serializer';
 import { CDSAnnotationServiceAdapter } from '../../src/cds/adapter';
 import type { CompilerMessage } from '@sap-ux/odata-annotation-core-types';
 import { DiagnosticSeverity, Range } from '@sap-ux/odata-annotation-core-types';
-import type { ApiError } from '../../src';
+import type { ApiError, FioriAnnotationServiceOptions } from '../../src';
 
 import { pathFromUri } from '../../src/utils';
 
@@ -87,6 +93,7 @@ interface EditTestCase<T extends Record<string, string>> {
     getChanges: (files: T) => Change[];
     fsEditor?: Editor;
     log?: boolean;
+    fioriServiceOptions?: Partial<FioriAnnotationServiceOptions>;
 }
 
 interface CustomTest<T extends Record<string, string>> {
@@ -112,7 +119,8 @@ const createEditTestCase = (<T extends Record<string, string>>(): CustomTest<T> 
                             testCase.getChanges(files),
                             serviceName,
                             testCase.fsEditor,
-                            testCase.log
+                            testCase.log,
+                            testCase.fioriServiceOptions
                         );
 
                         expect(text).toMatchSnapshot();
@@ -141,11 +149,13 @@ async function testEdit(
     changes: Change[],
     serviceName: string,
     fsEditor?: Editor,
-    log?: boolean
+    log?: boolean,
+    fioriServiceOptions: Partial<FioriAnnotationServiceOptions> = {}
 ): Promise<string> {
     const editor = fsEditor ?? (await createFsEditorForProject(root));
     const project = await getProject(root);
     const service = await FioriAnnotationService.createService(project, serviceName, '', editor, {
+        ...fioriServiceOptions,
         commitOnSave: false
     });
     await service.sync();
@@ -167,7 +177,9 @@ async function testEdit(
 
     for (const uri of changedFileUris.values()) {
         const path = pathFromUri(uri);
-        const original = await promises.readFile(path, { encoding: 'utf-8' });
+        const original = fioriServiceOptions.ignoreChangedFileInitialContent
+            ? ''
+            : await promises.readFile(path, { encoding: 'utf-8' });
         const afterInitialChanges = initialChangeCache.get(uri);
         const textAfterEdit = editor.read(path);
         if (log) {
@@ -337,10 +349,14 @@ function createDataWithLabel(value = 'sample'): AnnotationRecord {
     };
 }
 
-function createValueListWithRecord(uri: string, targetName: string): InsertAnnotationChange {
+function createValueListWithRecord(
+    uri: string,
+    targetName: string,
+    propertyValues: PropertyValue[] = []
+): InsertAnnotationChange {
     const record: AnnotationRecord = {
         type: `${COMMON}.ValueListType`,
-        propertyValues: []
+        propertyValues
     };
     return {
         kind: ChangeType.InsertAnnotation,
@@ -391,6 +407,67 @@ function createCommunicationContact(uri: string, targetName: string, phones: str
                 }
             }
         }
+    };
+}
+
+function createFieldGroup(
+    uri: string,
+    collection: AnnotationRecord[],
+    qualifier?: string,
+    target = targetName
+): InsertAnnotationChange {
+    return {
+        kind: ChangeType.InsertAnnotation,
+        uri,
+        content: {
+            type: 'annotation',
+            target,
+            value: {
+                term: FIELD_GROUP,
+                qualifier,
+                record: {
+                    propertyValues: [
+                        {
+                            name: 'Data',
+                            value: {
+                                type: 'Collection',
+                                Collection: collection
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    };
+}
+function createFacets(uri: string, facets: AnnotationRecord[]): InsertAnnotationChange {
+    return {
+        kind: ChangeType.InsertAnnotation,
+        uri,
+        content: {
+            target: TARGET_INCIDENTS,
+            type: 'annotation',
+            value: {
+                term: `${UI}.Facets`,
+                collection: facets
+            }
+        }
+    };
+}
+
+function createReferenceFacet(annotationPath: string, additionalProperties: PropertyValue[] = []): AnnotationRecord {
+    return {
+        type: `${UI}.ReferenceFacet`,
+        propertyValues: [
+            {
+                name: 'Target',
+                value: {
+                    type: 'AnnotationPath',
+                    AnnotationPath: annotationPath
+                }
+            },
+            ...additionalProperties
+        ]
     };
 }
 
@@ -522,6 +599,7 @@ describe('fiori annotation service', () => {
             const files = service.getAllFiles(true);
             expect(convertFilesForSnapshots(PROJECTS.V4_CDS_START.root, files)).toMatchSnapshot();
         });
+
         test('cds layering', async () => {
             const service = await testRead(PROJECTS.CDS_LAYERING.root, [], 'TravelService');
             const files = service.getAllFiles();
@@ -595,6 +673,7 @@ describe('fiori annotation service', () => {
                     projectType: 'EDMXBackend',
                     apps: {
                         '': {
+                            appType: 'SAP Fiori elements',
                             appRoot: '',
                             i18n: {
                                 'sap.app': '',
@@ -1310,6 +1389,52 @@ describe('fiori annotation service', () => {
                     }
                 ]
             });
+
+            createEditTestCase({
+                name: 'update value to null',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            type: 'annotation',
+                            target: targetName,
+                            value: {
+                                term: DATA_POINT,
+                                record: {
+                                    propertyValues: [
+                                        {
+                                            name: 'Value',
+                                            value: {
+                                                type: 'String',
+                                                String: 'testString'
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: targetName,
+                            term: DATA_POINT
+                        },
+                        uri: files.annotations,
+                        pointer: 'record/propertyValues/0/value',
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'Null'
+                            }
+                        }
+                    }
+                ]
+            });
             createEditTestCase({
                 name: "update propertyValue value 'string' value",
                 projectTestModels: TEST_TARGETS,
@@ -1815,6 +1940,56 @@ describe('fiori annotation service', () => {
                         index: 0
                     }
                 ]
+            });
+        });
+
+        describe('SAP annotations for CDS projects', () => {
+            const dataField = createDataField();
+            dataField.propertyValues.push({
+                name: 'Label',
+                value: {
+                    type: 'String',
+                    String: 'Test Label'
+                }
+            });
+
+            createEditTestCase({
+                name: 'UI.LineItem',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
+                getChanges: (files) => [createLineItem(files.annotations, [dataField], undefined, TARGET_INCIDENTS)],
+                fioriServiceOptions: { writeSapAnnotations: true }
+            });
+            createEditTestCase({
+                name: 'UI.Facet',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
+                getChanges: (files) => [
+                    createFacets(files.annotations, [
+                        createReferenceFacet('@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation', [
+                            {
+                                name: 'ID',
+                                value: {
+                                    type: 'String',
+                                    String: 'testID'
+                                }
+                            }
+                        ])
+                    ]),
+                    createFieldGroup(files.annotations, [createDataField()], 'GeneralInformation', TARGET_INCIDENTS)
+                ],
+                fioriServiceOptions: { writeSapAnnotations: true }
+            });
+
+            const editor = createEditor(createStore());
+            const fakePath = join(__dirname, 'fake.cds');
+            editor.write(fakePath, '');
+            createEditTestCase({
+                name: 'external cds file',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
+                getChanges: () => [
+                    createLineItem(pathToFileURL(fakePath).toString(), [dataField], undefined, TARGET_INCIDENTS)
+                ],
+                fioriServiceOptions: { writeSapAnnotations: true, ignoreChangedFileInitialContent: true },
+                fsEditor: editor
             });
         });
     });
@@ -3254,6 +3429,52 @@ describe('fiori annotation service', () => {
 
             expect(text).toMatchSnapshot();
         });
+
+        test('delete common text and textArrangement', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+            annotate IncidentService.Incidents with { 
+                assignedIndividual @Common: {
+                                                Text: assignedIndividual.modifiedBy, 
+                                                TextArrangement : #TextLast 
+                                            } };
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: 'IncidentService.Incidents/assignedIndividual',
+                            term: `${COMMON}.Text`
+                        },
+                        uri: project.files.annotations,
+                        pointer: ''
+                    },
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: 'IncidentService.Incidents/assignedIndividual',
+                            term: `${COMMON}.TextArrangement`
+                        },
+                        uri: project.files.annotations,
+                        pointer: ''
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
         test('multiple levels', async () => {
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
@@ -3326,32 +3547,376 @@ describe('serializeTarget', () => {
             expect(result).toMatchSnapshot();
         });
 
-        describe('cds', () => {
-            test('cap-start', async () => {
-                const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService');
-                const targetPath = 'IncidentService.Incidents';
-                const annotation: RawAnnotation = {
-                    term: 'com.sap.vocabularies.UI.v1.Facets',
-                    collection: [
-                        {
-                            type: 'com.sap.vocabularies.UI.v1.ReferenceFacet',
-                            propertyValues: [
-                                { name: 'Label', value: { type: 'String', String: 'title' } },
-                                { name: 'ID', value: { type: 'String', String: 'incidentID' } },
-                                {
-                                    name: 'Target',
-                                    value: {
-                                        type: 'AnnotationPath',
-                                        AnnotationPath: '@UI.FieldGroup#GeneralInformation'
-                                    }
+        test('move section case 1', async () => {
+            const project = PROJECTS.V4_XML_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content.replace(
+                '</Schema>',
+                `
+                <Annotations Target="IncidentService.Incidents">
+                    <Annotation Term="UI.Facets">
+                        <Collection>
+                            <Record Type="UI.CollectionFacet">
+                                <PropertyValue Property="Label" String="group 1"/>
+                                <PropertyValue Property="ID" String="group1"/>
+                                <PropertyValue Property="Facets">
+                                    <Collection/>
+                                </PropertyValue>
+                            </Record>
+                            <Record Type="UI.ReferenceFacet">
+                                                     <PropertyValue Property="Label" String="test 1"/>
+                                    <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup"/>
+                                        <Annotation Term="UI.Hidden"/>
+                  <PropertyValue Property="ID" String="formsection"/>
+                            </Record>
+                        </Collection>
+                    </Annotation>
+                </Annotations>
+            </Schema>`
+            )}
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        index: 0,
+                        kind: ChangeType.Move,
+                        uri: project.files.annotations,
+                        reference: {
+                            term: 'com.sap.vocabularies.UI.v1.Facets',
+                            target: 'IncidentService.Incidents',
+                            qualifier: ''
+                        },
+                        pointer: '/collection/0/propertyValues/2/value/Collection',
+                        moveReference: [
+                            {
+                                fromPointer: ['/collection/1']
+                            }
+                        ]
+                    }
+                ],
+                'mainService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
+        test('move section case 2', async () => {
+            const project = PROJECTS.V4_XML_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content.replace(
+                '</Schema>',
+                `
+                <Annotations Target="IncidentService.Incidents">
+                    <Annotation Term="UI.Facets">
+                        <Collection>
+                            <Record Type="UI.CollectionFacet">
+                                <PropertyValue Property="Label" String="group 1"/>
+                                <PropertyValue Property="ID" String="group1"/>
+                                <PropertyValue Property="Facets">
+                                    <Collection/>
+                                </PropertyValue>
+                            </Record>
+                <Record Type="UI.ReferenceFacet">
+                    <PropertyValue Property="Label" String="test 1"/>
+                </Record>
+                        </Collection>
+                    </Annotation>
+                </Annotations>
+            </Schema>`
+            )}
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        index: 0,
+                        kind: ChangeType.Move,
+                        uri: project.files.annotations,
+                        reference: {
+                            term: 'com.sap.vocabularies.UI.v1.Facets',
+                            target: 'IncidentService.Incidents',
+                            qualifier: ''
+                        },
+                        pointer: '/collection/0/propertyValues/2/value/Collection',
+                        moveReference: [
+                            {
+                                fromPointer: ['/collection/1']
+                            }
+                        ]
+                    }
+                ],
+                'mainService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
+        test('move section case 3', async () => {
+            const project = PROJECTS.V4_XML_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content.replace(
+                '</Schema>',
+                `
+                <Annotations Target="IncidentService.Incidents">
+                    <Annotation Term="UI.Facets">
+                        <Collection>
+                            <Record Type="UI.CollectionFacet">
+                                <PropertyValue Property="Label" String="group 1"/>
+                                <PropertyValue Property="ID" String="group1"/>
+                                <PropertyValue Property="Facets">
+                                    <Collection/>
+                                </PropertyValue>
+                            </Record>
+                                        <Record Type="UI.ReferenceFacet">
+                                            <PropertyValue Property="Label" String="test 1"/>
+                                        </Record>
+                        </Collection>
+                    </Annotation>
+                </Annotations>
+            </Schema>`
+            )}
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        index: 0,
+                        kind: ChangeType.Move,
+                        uri: project.files.annotations,
+                        reference: {
+                            term: 'com.sap.vocabularies.UI.v1.Facets',
+                            target: 'IncidentService.Incidents',
+                            qualifier: ''
+                        },
+                        pointer: '/collection/0/propertyValues/2/value/Collection',
+                        moveReference: [
+                            {
+                                fromPointer: ['/collection/1']
+                            }
+                        ]
+                    }
+                ],
+                'mainService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
+        test('move section case 4', async () => {
+            const project = PROJECTS.V4_XML_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content.replace(
+                '</Schema>',
+                `
+<Annotations Target="IncidentService.Incidents">
+<Annotation Term="UI.Facets">
+<Collection>
+<Record Type="UI.CollectionFacet">
+<PropertyValue Property="Label" String="group 1"/>
+<PropertyValue Property="ID" String="group1"/>
+<PropertyValue Property="Facets">
+<Collection/>
+</PropertyValue>
+</Record>
+                                <Record Type="UI.ReferenceFacet">
+                                    <PropertyValue Property="Label" String="test 1"/>
+                <PropertyValue Property="ID" String="test"/>
+    <PropertyValue Property="ID" String="group1"/>
+                                </Record>
+    </Collection>
+</Annotation>
+</Annotations>
+</Schema>`
+            )}
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        index: 0,
+                        kind: ChangeType.Move,
+                        uri: project.files.annotations,
+                        reference: {
+                            term: 'com.sap.vocabularies.UI.v1.Facets',
+                            target: 'IncidentService.Incidents',
+                            qualifier: ''
+                        },
+                        pointer: '/collection/0/propertyValues/2/value/Collection',
+                        moveReference: [
+                            {
+                                fromPointer: ['/collection/1']
+                            }
+                        ]
+                    }
+                ],
+                'mainService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
+        test('move section case 5', async () => {
+            const project = PROJECTS.V4_XML_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content.replace(
+                '</Schema>',
+                `
+                <Annotations Target="IncidentService.Incidents">
+                    <Annotation Term="UI.Facets">
+                        <Collection>
+                            <Record Type="UI.CollectionFacet">
+                                <PropertyValue Property="Label" String="group 1"/>
+                                <PropertyValue Property="ID" String="group1"/>
+                                <PropertyValue Property="Facets">
+                                    <Collection/>
+                                </PropertyValue>
+                            </Record>
+                             <Record Type="UI.ReferenceFacet">
+                                 <PropertyValue Property="Label" String="test 1"/>
+                             </Record>
+                        </Collection>
+                    </Annotation>
+                </Annotations>
+            </Schema>`
+            )}
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        index: 0,
+                        kind: ChangeType.Move,
+                        uri: project.files.annotations,
+                        reference: {
+                            term: 'com.sap.vocabularies.UI.v1.Facets',
+                            target: 'IncidentService.Incidents',
+                            qualifier: ''
+                        },
+                        pointer: '/collection/0/propertyValues/2/value/Collection',
+                        moveReference: [
+                            {
+                                fromPointer: ['/collection/1']
+                            }
+                        ]
+                    }
+                ],
+                'mainService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+    });
+
+    describe('cds', () => {
+        test('cap-start', async () => {
+            const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService');
+            const targetPath = 'IncidentService.Incidents';
+            const annotation: RawAnnotation = {
+                term: 'com.sap.vocabularies.UI.v1.Facets',
+                collection: [
+                    {
+                        type: 'com.sap.vocabularies.UI.v1.ReferenceFacet',
+                        propertyValues: [
+                            { name: 'Label', value: { type: 'String', String: 'title' } },
+                            { name: 'ID', value: { type: 'String', String: 'incidentID' } },
+                            {
+                                name: 'Target',
+                                value: {
+                                    type: 'AnnotationPath',
+                                    AnnotationPath: '@UI.FieldGroup#GeneralInformation'
                                 }
-                            ]
-                        }
-                    ]
+                            }
+                        ]
+                    }
+                ]
+            };
+            const result = service.serializeTarget({ target: targetPath, annotations: [annotation] });
+            expect(result).toMatchSnapshot();
+        });
+
+        test('Delete Criticality and criticality Representation', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+              annotate IncidentService.Incidents with @UI : {
+                FieldGroup #DateData1 : {Data : [
+                    { $Type : 'UI.DataField', Value : title, 
+                      Criticality : priority.criticality,
+                      CriticalityRepresentation : #WithIcon }
+                  ]}
                 };
-                const result = service.serializeTarget({ target: targetPath, annotations: [annotation] });
-                expect(result).toMatchSnapshot();
-            });
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: 'IncidentService.Incidents',
+                            term: `com.sap.vocabularies.UI.v1.FieldGroup`,
+                            qualifier: 'DateData1'
+                        },
+                        uri: project.files.annotations,
+                        pointer: '/record/propertyValues/0/value/Collection/0/propertyValues/1'
+                    },
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: 'IncidentService.Incidents',
+                            term: `com.sap.vocabularies.UI.v1.FieldGroup`,
+                            qualifier: 'DateData1'
+                        },
+                        uri: project.files.annotations,
+                        pointer: '/record/propertyValues/0/value/Collection/0/propertyValues/2'
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
         });
     });
 });

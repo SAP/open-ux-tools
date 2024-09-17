@@ -20,7 +20,13 @@ const YUI_TEST_QUESTION: Record<string, YUIQuestion | ListQuestion> = {
             { name: 'second', value: 'b' }
         ],
         default: 'b'
-    } as ListQuestion
+    } as ListQuestion,
+    OptionalQuestion: {
+        type: 'input',
+        name: 'OptionalQuestion',
+        message: async () => 'Optional question',
+        guiOptions: { mandatory: false }
+    } as YUIQuestion
 };
 
 describe('common', () => {
@@ -59,6 +65,12 @@ describe('common', () => {
                 initial: expect.any(Function)
             });
             expect((result.initial as Function)()).toBe(1);
+        });
+        test('convert an optional question', async () => {
+            const question = YUI_TEST_QUESTION.OptionalQuestion;
+            const answers = {};
+            const result = await convertQuestion(question, answers);
+            expect(typeof result.message === 'string' && result.message.endsWith('(optional)')).toBe(true);
         });
     });
 

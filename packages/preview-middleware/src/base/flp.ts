@@ -10,19 +10,26 @@ import { dirname, join, posix } from 'path';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
-import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 import {
     AdpPreview,
     type AdpPreviewConfig,
     type CommonChangeProperties,
     type OperationType
 } from '@sap-ux/adp-tooling';
-import { createProjectAccess } from '@sap-ux/project-access';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import type { Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import {
+    getFlpConfigWithDefaults,
+    createFlpTemplateConfig,
+    PREVIEW_URL,
+    type TemplateConfig,
+    createTestTemplateConfig,
+    addApp
+} from './config';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -34,34 +41,6 @@ const DEVELOPER_MODE_CONFIG = new Map([
     ['xx-viewCache', 'false']
 ]);
 
-/**
- * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
- */
-const UI5_LIBS = [
-    'sap.apf',
-    'sap.base',
-    'sap.chart',
-    'sap.collaboration',
-    'sap.f',
-    'sap.fe',
-    'sap.fileviewer',
-    'sap.gantt',
-    'sap.landvisz',
-    'sap.m',
-    'sap.ndc',
-    'sap.ovp',
-    'sap.rules',
-    'sap.suite',
-    'sap.tnt',
-    'sap.ui',
-    'sap.uiext',
-    'sap.ushell',
-    'sap.uxap',
-    'sap.viz',
-    'sap.webanalytics',
-    'sap.zen'
-];
-
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
 /**
@@ -70,81 +49,6 @@ const DEFAULT_LIVERELOAD_PORT = 35729;
 export type EnhancedRouter = Router & {
     getAppPages?: () => string[];
 };
-
-/**
- * Default theme
- */
-const DEFAULT_THEME = 'sap_horizon';
-
-/**
- * Default path for mounting the local FLP.
- */
-const DEFAULT_PATH = '/test/flp.html';
-
-/**
- * Default intent
- */
-const DEFAULT_INTENT = {
-    object: 'app',
-    action: 'preview'
-};
-
-/**
- * Static settings
- */
-const PREVIEW_URL = {
-    client: {
-        url: '/preview/client',
-        local: join(__dirname, '../../dist/client'),
-        ns: 'open.ux.preview.client'
-    },
-    api: '/preview/api'
-};
-
-export interface CustomConnector {
-    applyConnector: string;
-    writeConnector: string;
-    custom: boolean;
-}
-
-export interface FlexConnector {
-    connector: string;
-    layers: string[];
-    url?: string;
-}
-
-/**
- * Internal structure used to fill the sandbox.html template
- */
-export interface TemplateConfig {
-    basePath: string;
-    apps: Record<
-        string,
-        {
-            title: string;
-            description: string;
-            additionalInformation: string;
-            applicationType: 'URL';
-            url: string;
-            applicationDependencies?: { manifest: boolean };
-        }
-    >;
-    ui5: {
-        libs: string;
-        theme: string;
-        flex: (CustomConnector | FlexConnector)[];
-        bootstrapOptions: string;
-        resources: Record<string, string>;
-    };
-    init?: string;
-    flex?: {
-        [key: string]: unknown;
-        layer: UI5FlexLayer;
-        developerMode: boolean;
-        pluginScript?: string;
-    };
-    locateReuseLibsScript?: boolean;
-}
 
 type OnChangeRequestHandler = (
     type: OperationType,
@@ -178,17 +82,7 @@ export class FlpSandbox {
         private readonly utils: MiddlewareUtils,
         private readonly logger: Logger
     ) {
-        this.config = {
-            path: config.flp?.path ?? DEFAULT_PATH,
-            intent: config.flp?.intent ?? DEFAULT_INTENT,
-            apps: config.flp?.apps ?? [],
-            libs: config.flp?.libs,
-            theme: config.flp?.theme,
-            init: config.flp?.init
-        };
-        if (!this.config.path.startsWith('/')) {
-            this.config.path = `/${this.config.path}`;
-        }
+        this.config = getFlpConfigWithDefaults(config.flp);
         this.test = config.test;
         this.rta = config.rta;
         logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta, test: this.test })}`);
@@ -213,35 +107,21 @@ export class FlpSandbox {
      */
     async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
         this.createFlexHandler();
-        const flex = this.getFlexSettings();
-        const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
-        const ui5Theme =
-            this.config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
+        this.config.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app'].id;
-        const ns = id.replace(/\./g, '/');
-        this.templateConfig = {
-            basePath: posix.relative(posix.dirname(this.config.path), '/') ?? '.',
-            apps: {},
-            init: this.config.init ? ns + this.config.init : undefined,
-            ui5: {
-                libs: this.getUI5Libs(manifest),
-                theme: ui5Theme,
-                flex,
-                resources: {
-                    ...resources,
-                    [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
-                },
-                bootstrapOptions: ''
-            },
-            locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
-        };
+        this.templateConfig = createFlpTemplateConfig(this.config, manifest, resources);
 
-        await this.addApp(manifest, {
-            componentId,
-            target: resources[componentId ?? id] ?? this.templateConfig.basePath,
-            local: '.',
-            intent: this.config.intent
-        });
+        await addApp(
+            this.templateConfig,
+            manifest,
+            {
+                componentId,
+                target: resources[componentId ?? id] ?? this.templateConfig.basePath,
+                local: '.',
+                intent: this.config.intent
+            },
+            this.logger
+        );
         this.addStandardRoutes();
         if (this.rta) {
             this.rta.options ??= {};
@@ -349,7 +229,7 @@ export class FlpSandbox {
      */
     private addStandardRoutes() {
         // register static client sources
-        this.router.use(PREVIEW_URL.client.url, serveStatic(PREVIEW_URL.client.local));
+        this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {
@@ -395,7 +275,7 @@ export class FlpSandbox {
                 } as Manifest;
             }
             if (manifest) {
-                await this.addApp(manifest, app);
+                await addApp(this.templateConfig, manifest, app, this.logger);
                 this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
             } else {
                 this.logger.info(
@@ -403,29 +283,6 @@ export class FlpSandbox {
                 );
             }
         }
-    }
-
-    /**
-     * Retrieves the configuration settings for UI5 flexibility services.
-     *
-     * @returns An array of flexibility service configurations, each specifying a connector
-     *          and its options, such as the layers it applies to and its service URL, if applicable.
-     */
-    private getFlexSettings(): TemplateConfig['ui5']['flex'] {
-        const localConnectorPath = 'custom.connectors.WorkspaceConnector';
-
-        return [
-            { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
-            {
-                applyConnector: localConnectorPath,
-                writeConnector: localConnectorPath,
-                custom: true
-            },
-            {
-                connector: 'LocalStorageConnector',
-                layers: ['CUSTOMER', 'USER']
-            }
-        ];
     }
 
     /**
@@ -506,6 +363,7 @@ export class FlpSandbox {
         this.router.get(config.path, (async (_req, res) => {
             this.logger.debug(`Serving test route: ${config.path}`);
             const templateConfig = {
+                basePath: this.templateConfig.basePath,
                 initPath: config.init
             };
             const html = render(testsuite, templateConfig);
@@ -524,18 +382,24 @@ export class FlpSandbox {
             if (testConfig.framework === 'Testsuite') {
                 continue;
             }
-            const config = mergeTestConfigDefaults(testConfig);
-            testPaths.push(config.path);
+            const mergedConfig = mergeTestConfigDefaults(testConfig);
+            testPaths.push(posix.relative(posix.dirname(config.path), mergedConfig.path));
         }
 
         this.logger.debug(`Add route for ${config.init}`);
-        this.router.get(config.init, (async (_req, res) => {
-            this.logger.debug(`Serving test route: ${config.init}`);
-            const templateConfig = {
-                testPaths: testPaths
-            };
-            const js = render(initTemplate, templateConfig);
-            this.sendResponse(res, 'application/javascript', 200, js);
+        this.router.get(config.init, (async (_req, res, next) => {
+            const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
+            if (files?.length > 0) {
+                this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
+                next();
+            } else {
+                this.logger.debug(`Serving test route: ${config.init}`);
+                const templateConfig = {
+                    testPaths: testPaths
+                };
+                const js = render(initTemplate, templateConfig);
+                this.sendResponse(res, 'application/javascript', 200, js);
+            }
         }) as RequestHandler);
     }
 
@@ -578,12 +442,7 @@ export class FlpSandbox {
                     this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
                     next();
                 } else {
-                    const templateConfig = {
-                        id,
-                        framework: config.framework,
-                        basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
-                        initPath: `${ns}${config.init.replace('.js', '')}`
-                    };
+                    const templateConfig = createTestTemplateConfig(config, id, this.templateConfig.ui5.theme);
                     const html = render(htmlTemplate, templateConfig);
                     this.sendResponse(res, 'text/html', 200, html);
                 }
@@ -597,7 +456,7 @@ export class FlpSandbox {
             this.router.get(config.init, (async (_req, res, next) => {
                 this.logger.debug(`Serving test init script: ${config.init}`);
 
-                const files = await this.project.byGlob(config.init.replace('.js', '.*'));
+                const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
                 if (files?.length > 0) {
                     this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
                     next();
@@ -609,75 +468,6 @@ export class FlpSandbox {
                 }
             }) as RequestHandler);
         }
-    }
-
-    /**
-     * Add an application to the local FLP preview.
-     *
-     * @param manifest manifest of the additional target app
-     * @param app configuration for the preview
-     */
-    async addApp(manifest: Manifest, app: App) {
-        const id = manifest['sap.app'].id;
-        app.intent ??= {
-            object: id.replace(/\./g, ''),
-            action: 'preview'
-        };
-        this.templateConfig.ui5.resources[id] = app.target;
-        this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-            title: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? id,
-            description: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '',
-            additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
-            applicationType: 'URL',
-            url: app.target,
-            applicationDependencies: { manifest: true }
-        };
-    }
-
-    /**
-     * Get the i18n text of the given property.
-     *
-     * @param projectRoot absolute path to the project root
-     * @param propertyValue value of the property
-     * @returns i18n text of the property
-     * @private
-     */
-    private async getI18nTextFromProperty(projectRoot: string | undefined, propertyValue: string | undefined) {
-        //i18n model format could be {{key}} or {i18n>key}
-        if (!projectRoot || !propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
-            return propertyValue;
-        }
-        const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
-        const projectAccess = await createProjectAccess(projectRoot);
-        try {
-            const bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];
-            return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
-        } catch (e) {
-            this.logger.warn('Failed to load i18n properties bundle');
-        }
-        return propertyI18nKey;
-    }
-
-    /**
-     * Gets the UI5 libs dependencies from manifest.json.
-     *
-     * @param manifest application manifest
-     * @returns UI5 libs that should preloaded
-     */
-    private getUI5Libs(manifest: Manifest): string {
-        const libs = manifest['sap.ui5']?.dependencies?.libs ?? {};
-        // add libs that should always be preloaded
-        libs['sap.m'] = {};
-        libs['sap.ui.core'] = {};
-        libs['sap.ushell'] = {};
-
-        return Object.keys(libs)
-            .filter((key) => {
-                return UI5_LIBS.some((substring) => {
-                    return key === substring || key.startsWith(substring + '.');
-                });
-            })
-            .join(',');
     }
 }
 

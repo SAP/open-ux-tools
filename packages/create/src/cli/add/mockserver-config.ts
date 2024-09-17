@@ -51,7 +51,7 @@ async function addMockserverConfig(
         logger.debug(
             `Called add mockserver-config for path '${basePath}', simulate is '${simulate}', skip install is '${skipInstall}'`
         );
-        validateBasePath(basePath);
+        await validateBasePath(basePath);
         const webappPath = await getWebappPath(basePath);
         const config: MockserverConfig = { webappPath };
         if (interactive) {

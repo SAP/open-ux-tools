@@ -1,5 +1,61 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.3.6
+
+### Patch Changes
+
+-   2f64664: Refactor unit tests and remove cdsArtifacts method
+
+## 0.3.5
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/odata-vocabularies@0.4.2
+    -   @sap-ux/cds-annotation-parser@0.2.2
+
+## 0.3.4
+
+### Patch Changes
+
+-   26379ea: - Updated dependencies - @sap/ux-cds-compiler-facade@1.14.1
+
+## 0.3.3
+
+### Patch Changes
+
+-   ac22b7e: feat: new package for text document utility functions and types
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/cds-annotation-parser@0.2.1
+    -   @sap-ux/text-document-utils@0.2.0
+    -   @sap-ux/odata-annotation-core@0.2.1
+    -   @sap-ux/odata-vocabularies@0.4.1
+
+## 0.3.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
+## 0.3.1
+
+### Patch Changes
+
+-   94cee16: Cds compiler facade version bump in dependencies
+
+## 0.3.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/cds-annotation-parser@0.2.0
+    -   @sap-ux/odata-annotation-core@0.2.0
+    -   @sap-ux/odata-vocabularies@0.4.0
+
 ## 0.2.9
 
 ### Patch Changes

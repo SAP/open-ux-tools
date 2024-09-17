@@ -109,12 +109,25 @@ describe('getQuestions', () => {
         // Default name provided
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.name]: {
-                default: 'defaultAppName'
+                default: 'defaultAppName',
+                defaultValue: 'shouldBeIgnoredAsDefaultIsProvided'
             }
         };
         questions = getQuestions([], promptOpts);
         const namePrompt = questions.find((question) => question.name === promptNames.name);
         expect(namePrompt?.default).toEqual(promptOpts.name?.default);
+
+        // Test `defaultValue` prompt option - should not replace existing default function
+        const promptOptionsDefaultValue = {
+            [promptNames.name]: {
+                defaultValue: 'defaultAppNameDontReplace'
+            }
+        };
+
+        questions = getQuestions([], promptOptionsDefaultValue);
+        const namePromptWithDefaultValue = questions.find((question) => question.name === promptNames.name);
+        expect(namePromptWithDefaultValue?.default({})).toEqual(promptOptionsDefaultValue.name?.defaultValue);
+        expect(namePromptWithDefaultValue?.default({ name: 'userInputName' })).toEqual('userInputName');
     });
 
     test('getQuestions, prompt: `title`, default', () => {
@@ -175,7 +188,7 @@ describe('getQuestions', () => {
         ).toMatchInlineSnapshot(`"abc 123"`);
     });
 
-    test('getQuestions, prompt: `targetFolder`', () => {
+    test('getQuestions, prompt: `targetFolder`', async () => {
         const mockCwd = '/any/current/working/directory';
         jest.spyOn(process, 'cwd').mockReturnValueOnce(mockCwd);
         let questions = getQuestions([]);
@@ -200,12 +213,31 @@ describe('getQuestions', () => {
         // validators
         questions = getQuestions([]);
         targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
-        expect(targetFolderPrompt?.validate!(undefined, {})).toEqual(false);
 
-        const projectValidatorSpy = jest.spyOn(projectValidators, 'validateProjectFolder').mockReturnValueOnce(true);
+        await expect(targetFolderPrompt?.validate!(undefined, {})).resolves.toEqual(false);
+
+        const validateTargetFolderSpy = jest.spyOn(promptHelpers, 'validateTargetFolder').mockResolvedValueOnce(true);
         const args = ['/some/target/path', { name: 'project1' }] as const;
-        expect(targetFolderPrompt?.validate!(...args)).toEqual(true);
-        expect(projectValidatorSpy).toHaveBeenCalledWith(...[args[0], args[1].name]);
+        await expect(targetFolderPrompt?.validate!(...args)).resolves.toEqual(true);
+        expect(validateTargetFolderSpy).toHaveBeenCalledWith(...[args[0]], args[1].name, undefined);
+
+        // Test `defaultValue` prompt option - should not replace existing default function
+        const promptOptionsDefaultValue = {
+            [promptNames.targetFolder]: {
+                defaultValue: '/default/target/folder'
+            }
+        };
+
+        questions = getQuestions([], promptOptionsDefaultValue);
+        const targetFolderPromptWithDefaultValue = questions.find(
+            (question) => question.name === promptNames.targetFolder
+        );
+        expect(targetFolderPromptWithDefaultValue?.default({})).toEqual(
+            promptOptionsDefaultValue.targetFolder?.defaultValue
+        );
+        expect(targetFolderPromptWithDefaultValue?.default({ targetFolder: 'user/input/target/folder' })).toEqual(
+            'user/input/target/folder'
+        );
     });
 
     test('getQuestions, prompt: `ui5VersionChoice`', () => {

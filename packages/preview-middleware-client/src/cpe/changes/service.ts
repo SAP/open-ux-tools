@@ -20,6 +20,7 @@ import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
+import { getError } from '../../utils/error';
 
 interface ChangeContent {
     property: string;
@@ -43,6 +44,8 @@ interface Change {
     creation: string;
     changeType: string;
 }
+
+type SavedChangesResponse = Record<string, Change>;
 
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
 /**
@@ -121,8 +124,10 @@ export class ChangeService {
                     if (control) {
                         name = control.getMetadata().getName();
                     }
+
+                    const error = getError(exception);
                     // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
-                    const modifiedMessage = modifyRTAErrorMessage(exception?.toString(), id, name);
+                    const modifiedMessage = modifyRTAErrorMessage(error.toString(), id, name);
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
                     const propertyChangeFailedAction = propertyChangeFailed({ ...action.payload, errorMessage });
@@ -163,7 +168,7 @@ export class ChangeService {
      */
     private async fetchSavedChanges(): Promise<void> {
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
-        const savedChanges = await savedChangesResponse.json();
+        const savedChanges = (await savedChangesResponse.json()) as SavedChangesResponse;
         const changes = (
             Object.keys(savedChanges ?? {})
                 .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {
@@ -236,7 +241,7 @@ export class ChangeService {
                 })
             );
 
-        await Promise.all(filesToDelete).catch((error) => Log.error(error));
+        await Promise.all(filesToDelete).catch((error) => Log.error(getError(error).message));
 
         await this.fetchSavedChanges();
         this.updateStack();
@@ -260,8 +265,8 @@ export class ChangeService {
                 try {
                     if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();
-                        subCommands.forEach((command) => {
-                            const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
+                        subCommands.forEach((subCommand) => {
+                            const pendingChange = this.prepareChangeType(subCommand, inactiveCommandCount, i);
                             if (pendingChange) {
                                 activeChanges.push(pendingChange);
                             }
@@ -273,7 +278,7 @@ export class ChangeService {
                         }
                     }
                 } catch (error) {
-                    Log.error('CPE: Change creation Failed', error);
+                    Log.error('CPE: Change creation Failed', getError(error));
                 }
             });
 
@@ -304,10 +309,10 @@ export class ChangeService {
 
         switch (changeType) {
             case 'propertyChange':
-                value = command.getProperty('newValue');
+                value = command.getProperty('newValue') as string;
                 break;
             case 'propertyBindingChange':
-                value = command.getProperty('newBinding');
+                value = command.getProperty('newBinding') as string;
                 break;
         }
         const { fileName } = command.getPreparedChange().getDefinition();
@@ -316,7 +321,7 @@ export class ChangeService {
                 type: 'pending',
                 changeType,
                 controlId: selectorId,
-                propertyName: command.getProperty('propertyName'),
+                propertyName: command.getProperty('propertyName') as string,
                 isActive: index >= inactiveCommandCount,
                 value,
                 controlName: command.getElement().getMetadata().getName().split('.').pop() ?? '',
@@ -354,7 +359,7 @@ export class ChangeService {
                 }
                 return result;
             } catch (error) {
-                Log.error(`Retry operation failed: ${error?.message}`);
+                Log.error('Retry operation failed:', getError(error));
                 continue;
             }
         }

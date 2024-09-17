@@ -1,5 +1,28 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.2
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+
+## 0.4.1
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core-types@0.4.1
+
+## 0.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/odata-annotation-core-types@0.4.0
+
 ## 0.3.8
 
 ### Patch Changes

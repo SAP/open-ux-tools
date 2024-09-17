@@ -10,9 +10,11 @@ export {
     isCapNodeJsProject,
     getCapEnvironment,
     readCapServiceMetadataEdmx,
+    getCapServiceName,
     toReferenceUri,
     clearCdsModuleCache
 } from './cap';
+export { filterDataSourcesByType } from './service';
 export { addPackageDevDependency, getNodeModulesPath } from './dependencies';
 export { getCapI18nFolderNames, getI18nPropertiesPaths } from './i18n';
 export {
@@ -25,8 +27,17 @@ export {
     getProjectType
 } from './info';
 export { loadModuleFromProject } from './module-loader';
-export { findAllApps, findCapProjects, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from './search';
+export {
+    findAllApps,
+    findCapProjects,
+    findFioriArtifacts,
+    findProjectRoot,
+    getAppRootFromWebappPath,
+    findCapProjectRoot,
+    findRootsForPath
+} from './search';
 export { getWebappPath, readUi5Yaml } from './ui5-config';
 export { getMtaPath } from './mta';
 export { createApplicationAccess, createProjectAccess } from './access';
-export { updatePackageScript } from './script';
+export { updatePackageScript, hasUI5CliV3 } from './script';
+export { getSpecification, getSpecificationPath, refreshSpecificationDistTags } from './specification';

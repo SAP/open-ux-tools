@@ -194,7 +194,7 @@ describe('Setting defaults', () => {
                 version: '1.199.0',
                 localVersion: '1.199.0',
                 minUI5Version: '1.199.0',
-                descriptorVersion: '1.60.0',
+                descriptorVersion: '1.65.0',
                 typesVersion: `~1.199.0`,
                 typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
@@ -236,6 +236,25 @@ describe('Setting defaults', () => {
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
+        },
+        // 12 - Testing with manifestLibs type
+        {
+            input: {
+                manifestLibs: ['sap.m', 'sap.fe', 'sap.fe.templates']
+            },
+            expected: {
+                framework: 'SAPUI5',
+                frameworkUrl: 'https://ui5.sap.com',
+                version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
+                localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
+                minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
+                descriptorVersion: '1.12.0',
+                typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`,
+                typesPackage: UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME,
+                ui5Theme: 'sap_fiori_3',
+                ui5Libs: defaultUI5Libs,
+                manifestLibs: defaultUI5Libs.concat('sap.fe', 'sap.fe.templates')
+            }
         }
     ];
 
@@ -247,7 +266,8 @@ describe('Setting defaults', () => {
         const input: Ui5App = {
             app: {
                 id: 'test_appId',
-                description: 'Should be default package description'
+                description: 'Should be default package description',
+                projectType: 'EDMXBackend'
             },
             'package': {
                 name: 'test-package-name',
@@ -293,11 +313,55 @@ describe('Setting defaults', () => {
         expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
     });
 
+    it('merge Ui5App.package settings with defaults for cap projects', async () => {
+        const input: Ui5App = {
+            app: {
+                id: 'test_appId_cap',
+                description: 'Should be default package description',
+                projectType: 'CAPJava'
+            },
+            'package': {
+                name: 'test-package-name',
+                dependencies: {
+                    depA: '1.2.3',
+                    depB: '3.4.5'
+                },
+                devDependencies: {
+                    '@ui5/cli': '3.0.0'
+                },
+                scripts: {
+                    doTaskA: 'echo "Doing task A"',
+                    doTaskB: 'echo "Doing task B"'
+                }
+            }
+        };
+
+        const expectedPackage = {
+            dependencies: {
+                depA: '1.2.3',
+                depB: '3.4.5'
+            },
+            description: 'Should be default package description',
+            devDependencies: {
+                '@ui5/cli': '3.0.0',
+                '@sap/ux-ui5-tooling': '1'
+            },
+            name: 'test-package-name',
+            scripts: {
+                doTaskA: 'echo "Doing task A"',
+                doTaskB: 'echo "Doing task B"'
+            },
+            version: '0.0.1'
+        };
+        expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
+    });
+
     // Test function `mergeApp` sets the correct defaults
     describe('mergeApp', () => {
         const baseInput: App = {
             id: 'test_appId',
-            description: 'Should be default package description'
+            description: 'Should be default package description',
+            projectType: 'EDMXBackend'
         };
 
         const expectedApp = {
@@ -309,7 +373,8 @@ describe('Setting defaults', () => {
                 version: ''
             },
             title: 'Title of test_appId',
-            version: '0.0.1'
+            version: '0.0.1',
+            projectType: 'EDMXBackend'
         } as App;
 
         test('minimal input', async () => {

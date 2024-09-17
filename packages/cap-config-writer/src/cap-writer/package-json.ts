@@ -15,10 +15,7 @@ import { t } from '../i18n';
     If appId is provided, it will be used to open the application instead of the project name. This option is available for use with npm workspaces.
  * @returns {{ [x: string]: string }} The CDS watch script for the CAP app.
  */
-export function getCDSWatchScript(
-    projectName: string,
-    appId?: string
-): { [x: string]: string } {
+export function getCDSWatchScript(projectName: string, appId?: string): { [x: string]: string } {
     const DisableCacheParam = 'sap-ui-xx-viewCache=false';
     // projects by default are served base on the folder name in the app/ folder
     const project = appId ?? projectName + '/webapp';
@@ -26,7 +23,7 @@ export function getCDSWatchScript(
         [`watch-${projectName}`]: `cds watch --open ${project}/index.html?${DisableCacheParam}${
             appId ? ' --livereload false' : ''
         }`
-    }
+    };
     return watchScript;
 }
 
@@ -69,14 +66,17 @@ async function updateScripts(
     // If 'cdsUi5PluginInfo' contains version information and it satisfies the minimum required CDS version,
     // or if 'cdsUi5PluginInfo' is not available and the version specified in 'package.json' satisfies the minimum required version,
     // then set 'addScripts' to true. Otherwise, set it to false.
-    const addScripts = cdsUi5PluginInfo?.hasMinCdsVersion ? cdsUi5PluginInfo.hasMinCdsVersion : satisfiesMinCdsVersion(packageJson);
+    const addScripts = cdsUi5PluginInfo?.hasMinCdsVersion
+        ? cdsUi5PluginInfo.hasMinCdsVersion
+        : satisfiesMinCdsVersion(packageJson);
     let cdsScript;
     if (addScripts) {
-        if(enableNPMWorkspaces ?? hasNPMworkspaces) {
-            // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId 
+        if (enableNPMWorkspaces ?? hasNPMworkspaces) {
+            // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId
             cdsScript = getCDSWatchScript(projectName, appId);
+        } else {
+            cdsScript = getCDSWatchScript(projectName);
         }
-        else cdsScript = getCDSWatchScript(projectName);
         updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
     } else {
         log?.warn(t('warn.cdsDKNotInstalled', { minCdsVersion: minCdsVersion }));

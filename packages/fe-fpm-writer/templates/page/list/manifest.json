@@ -1,5 +1,8 @@
 {
     "sap.ui5": {
+        "dependencies": {
+            "libs": <%- JSON.stringify(libraries) %>
+        },
         "routing": {
             "targets": {
                 "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ListReport<% } %>": {

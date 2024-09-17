@@ -1,5 +1,70 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.4.6
+
+### Patch Changes
+
+-   8aa367a: Fix: directLoad: true does not work and fails with Error: EISDIR: illegal operation on a directory, read
+
+## 1.4.5
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+
+## 1.4.4
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+
+## 1.4.3
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
+## 1.4.2
+
+### Patch Changes
+
+-   d549173: - Adjusts getMinUI5VersionAsArray so that semver valid check is included; the function now only returns valid versions.
+    -   Upgrade of @ui5/manifest to 1.66.0; adjustment of all components so that minimumUI5Version definitions as array are processed properly.
+
+## 1.4.1
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+
+## 1.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 1.3.16
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+
+## 1.3.15
+
+### Patch Changes
+
+-   899cdb23: FIX: enabled running the middleware with karma
+
 ## 1.3.14
 
 ### Patch Changes

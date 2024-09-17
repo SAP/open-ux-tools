@@ -1,0 +1,38 @@
+{
+    "name": "@sap-ux/annotation-generator",
+    "version": "0.2.2",
+    "description": "Library that provides API for generation of annotations by SAP Fiori App Generator",
+    "publisher": "SAPSE",
+    "author": "SAP SE",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "compile": "tsc --build",
+        "build": "npm-run-all clean compile",
+        "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo  ./reports",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "pre-commit": "lint-staged --quiet",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=3",
+        "watch": "tsc  --build ./ -watch"
+    },
+    "dependencies": {
+        "@sap-ux/annotation-converter": "0.8.0",
+        "@sap-ux/fiori-annotation-api": "workspace:*",
+        "@sap-ux/odata-annotation-core-types": "workspace:*",
+        "@sap-ux/odata-entity-model": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/vocabularies-types": "0.10.0",
+        "mem-fs-editor": "9.4.0"
+    },
+    "devDependencies": {
+        "mem-fs": "2.1.0",
+        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
+        "npm-run-all": "4.1.5"
+    },
+    "files": [
+        "dist/"
+    ]
+}

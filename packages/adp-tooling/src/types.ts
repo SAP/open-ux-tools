@@ -1,4 +1,4 @@
-import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { OperationsType } from '@sap-ux/axios-extension';
@@ -9,7 +9,19 @@ export interface DescriptorVariant {
     reference: string;
     id: string;
     namespace: string;
-    content: object[];
+    content: DescriptorVariantContent[];
+}
+
+export interface DescriptorVariantContent {
+    changeType: string;
+    content: Record<string, unknown>;
+    texts?: string;
+}
+
+export interface ToolsSupport {
+    id: string;
+    version: string;
+    toolsId: string;
 }
 
 /**
@@ -35,6 +47,8 @@ export interface OnpremApp {
     title?: string;
     /** Optional: Application variant change content. */
     content?: Content[];
+    /** Optional: Description about i18n.properties. */
+    i18nDescription?: string;
 }
 
 export interface CloudApp extends OnpremApp {
@@ -166,6 +180,7 @@ export interface AddXMLChange extends CommonChangeProperties {
         targetAggregation: string;
         index: number;
         fragmentPath: string;
+        templateName?: string;
     };
     selector: {
         id: string;
@@ -187,7 +202,18 @@ export interface CodeExtChange extends CommonChangeProperties {
 
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
-    Controller = 'controller.ejs'
+    Controller = 'controller.ejs',
+    Annotation = 'annotation.xml'
+}
+
+export const enum FlexLayer {
+    CUSTOMER_BASE = 'CUSTOMER_BASE',
+    VENDOR = 'VENDOR'
+}
+
+export const enum NamespacePrefix {
+    CUSTOMER = 'customer.',
+    EMPTY = ''
 }
 
 export const enum HttpStatusCodes {
@@ -271,23 +297,24 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
     : never;
 
 export interface AnnotationsData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    /** Indicates whether the annotation is for internal use only. */
-    isInternalUsage: boolean;
+    variant: DescriptorVariant;
     annotation: {
         /** Optional name of the annotation file. */
         fileName?: string;
         /** Data source associated with the annotation. */
         dataSource: string;
-        /** Path to the annotation file. */
-        filePath: string;
+        /** Optional path to the annotation file. */
+        filePath?: string;
     };
 }
 
-export interface ComponentUsagesData {
-    projectData: AdpProjectData;
-    timestamp: number;
+export const enum AnnotationFileSelectType {
+    ExistingFile = 1,
+    NewEmptyFile = 2
+}
+
+export interface ComponentUsagesDataBase {
+    variant: DescriptorVariant;
     component: {
         /** Indicates whether the component is loaded lazily. */
         isLazy: string;
@@ -300,25 +327,51 @@ export interface ComponentUsagesData {
         /** Settings related to the component. */
         settings: string;
     };
+}
+
+export interface ComponentUsagesDataWithLibrary extends ComponentUsagesDataBase {
     library: {
         /** Reference to the component's library. */
         reference: string;
         /** Optional flag indicating if the library reference is lazy. */
-        referenceIsLazy?: string;
+        referenceIsLazy: string;
     };
 }
 
-export interface NewModelData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    annotation: {
-        /** Name of the OData annotation data source. */
-        dataSourceName: string;
-        /** Optional URI of the OData annotation data source. */
-        dataSourceURI?: string;
-        /** Optional settings for the OData annotation. */
-        settings?: string;
-    };
+export type ComponentUsagesData = ComponentUsagesDataBase | ComponentUsagesDataWithLibrary;
+
+export type AddComponentUsageAnswersWithoutLibrary = {
+    /** Indicates whether a library reference should be added */
+    shouldAddLibrary: false;
+};
+
+export type addComponentUsageAnswersWithLibrary = {
+    /** Indicates whether a library reference should be added */
+    shouldAddLibrary: true;
+    /** Reference to the component's library. */
+    library: string;
+    /** Indicates whether the library reference is loaded lazily. */
+    libraryIsLazy: string;
+};
+
+export type AddComponentUsageAnswersBase = {
+    /** Indicates whether the component is loaded lazily. */
+    isLazy: string;
+    /** Unique ID for the component usage. */
+    usageId: string;
+    /** Name of the component. */
+    name: string;
+    /** Serialized data specific to the component. */
+    data: string;
+    /** Settings related to the component. */
+    settings: string;
+};
+
+export type AddComponentUsageAnswers = AddComponentUsageAnswersBase &
+    (AddComponentUsageAnswersWithoutLibrary | addComponentUsageAnswersWithLibrary);
+
+export interface NewModelDataBase {
+    variant: DescriptorVariant;
     service: {
         /** Name of the OData service. */
         name: string;
@@ -329,44 +382,96 @@ export interface NewModelData {
         /** Version of OData used. */
         version: string;
         /** Settings for the OData service model. */
-        modelSettings: string;
+        modelSettings?: string;
     };
-    /** Indicates whether annotation mode is added. */
-    addAnnotationMode: boolean;
 }
 
+export interface NewModelDataWithAnnotations extends NewModelDataBase {
+    annotation: {
+        /** Name of the OData annotation data source. */
+        dataSourceName: string;
+        /** Optional URI of the OData annotation data source. */
+        dataSourceURI?: string;
+        /** Optional settings for the OData annotation. */
+        settings?: string;
+    };
+}
+
+export type NewModelData = NewModelDataBase | NewModelDataWithAnnotations;
+
+export interface NewModelAnswersBase {
+    /** Name of the OData service. */
+    name: string;
+    /** URI of the OData service. */
+    uri: string;
+    /** Name of the OData service model. */
+    modelName: string;
+    /** Version of OData used. */
+    version: string;
+    /** Settings for the OData service model. */
+    modelSettings: string;
+    /** Name of the OData annotation data source. */
+}
+
+export interface NewModelAnswersWithAnnotations extends NewModelAnswersBase {
+    addAnnotationMode: true;
+    /** Name of the OData annotation data source. */
+    dataSourceName: string;
+    /** Optional URI of the OData annotation data source. */
+    dataSourceURI?: string;
+    /** Optional settings for the OData annotation. */
+    annotationSettings?: string;
+}
+
+export interface NewModelAnswersWithoutAnnotations extends NewModelAnswersBase {
+    addAnnotationMode: false;
+}
+
+export type NewModelAnswers = NewModelAnswersBase &
+    (NewModelAnswersWithAnnotations | NewModelAnswersWithoutAnnotations);
+
 export interface DataSourceData {
-    projectData: AdpProjectData;
-    timestamp: number;
+    variant: DescriptorVariant;
+    dataSources: Record<string, ManifestNamespace.DataSource>;
     service: {
         /** Data source identifier. */
-        name: string;
+        id: string;
         /** URI of the data source. */
         uri: string;
         /** Optional maximum age for the data source cache. */
         maxAge?: number;
         /** URI for the OData annotation source. */
-        annotationUri: string;
+        annotationUri?: string;
     };
-    /** Dictionary mapping data source keys to their values. */
-    dataSourcesDictionary: { [key: string]: string };
 }
 
+export type RequireAtLeastOne<T> = {
+    [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>;
+}[keyof T];
+
+export interface InboundChangeAnswersBase {
+    /** Title associated with the inbound navigation data. */
+    title: string;
+    /** Subtitle associated with the inbound navigation data. */
+    subtitle: string;
+    /** Icon associated with the inbound navigation data. */
+    icon: string;
+}
+
+export type InboundChangeAnswers = RequireAtLeastOne<InboundChangeAnswersBase>;
+
 export interface InboundData {
-    projectData: AdpProjectData;
-    timestamp: number;
     /** Identifier for the inbound navigation data. */
     inboundId: string;
-    flp: {
+    variant: DescriptorVariant;
+    flp: RequireAtLeastOne<{
         /** Title associated with the inbound navigation data. */
-        title: PropertyValueType;
+        title: string;
         /** Subtitle associated with the inbound navigation data. */
-        subTitle: PropertyValueType;
+        subtitle: string;
         /** Icon associated with the inbound navigation data. */
-        icon: PropertyValueType;
-    };
-    /** Optional flag indicating if the project is in safe mode. */
-    isInSafeMode?: boolean;
+        icon: string;
+    }>;
 }
 
 export interface InboundContent {
@@ -390,19 +495,40 @@ export interface AdpProjectData {
     namespace: string;
     ui5Version: string;
     name: string;
-    layer: string;
+    layer: UI5FlexLayer;
     environment: string;
-    safeMode: boolean;
     sourceSystem: string;
     applicationIdx: string;
     reference: string;
     id: string;
 }
 
+export interface ChangeDataSourceAnswers {
+    /** Data Source identifier  */
+    id: string;
+    /** Data Source URI */
+    uri: string;
+    /** Data Source Max Age */
+    maxAge?: number;
+    /** Data Source Annotation URI */
+    annotationUri?: string;
+}
+
+export interface AddAnnotationsAnswers {
+    /** Data Source identifier  */
+    id: string;
+    /** Selected option for Annotation File */
+    fileSelectOption: number;
+    /** Annotation File path */
+    filePath?: string;
+}
+
+export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };
+
 export interface CustomConfig {
     adp: {
-        safeMode: boolean;
         environment: OperationsType;
+        support: ToolsSupport;
     };
 }
 

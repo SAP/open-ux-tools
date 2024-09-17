@@ -12,7 +12,8 @@ describe('generateChange', () => {
 
     it('should successfully invoke the writer for a given generator type', async () => {
         const fs = await generateChange('/path/to/project', ChangeType.ADD_ANNOTATIONS_TO_ODATA, {
-            projectData: {}
+            variant: {},
+            annotation: {}
         } as AnnotationsData);
 
         expect(WriterFactory.createWriter).toHaveBeenCalledWith(
@@ -21,7 +22,7 @@ describe('generateChange', () => {
             '/path/to/project'
         );
 
-        expect(writeSpy).toHaveBeenCalledWith({ projectData: {} });
+        expect(writeSpy).toHaveBeenCalledWith({ variant: {}, annotation: {} });
         expect(fs).toBeDefined();
     });
 });

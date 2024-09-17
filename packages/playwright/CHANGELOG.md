@@ -1,5 +1,16 @@
 # @sap-ux-private/playwright
 
+## 0.1.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+
 ## 0.0.3
 
 ### Patch Changes

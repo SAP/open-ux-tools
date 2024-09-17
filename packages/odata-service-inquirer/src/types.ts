@@ -1,9 +1,10 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { ListChoiceOptions } from 'inquirer';
+import type { BackendSystem } from '@sap-ux/store';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -18,6 +19,13 @@ export enum DatasourceType {
     metadataFile = 'metadataFile',
     projectSpecificDestination = 'projectSpecificDestination'
 }
+
+export const SapSystemTypes = {
+    abapOnPrem: 'abapOnPrem',
+    abapOnBtp: 'abapOnBtp'
+} as const;
+
+export type SapSystemType = keyof typeof SapSystemTypes;
 
 /**
  * Answers returned by the OdataServiceInquirer prompt API.
@@ -65,19 +73,25 @@ export interface OdataServiceAnswers {
     sapClient?: string;
 
     /**
-     * User name for the service where basic authentication is required.
-     */
-    username?: string;
-
-    /**
-     * Password for the service where basic authentication is required.
-     */
-    password?: string;
-
-    /**
      * Metadata file path
      */
     metadataFilePath?: string;
+
+    /**
+     * The connected system will allow downstream consumers to access the connected system without creating new connections.
+     *
+     */
+    connectedSystem?: {
+        /**
+         * Convienence property to pass the connected system
+         */
+        serviceProvider: ServiceProvider;
+
+        /**
+         * The persistable backend system representation of the connected service provider
+         */
+        backendSystem?: BackendSystem;
+    };
 }
 
 /**
@@ -107,7 +121,15 @@ export enum promptNames {
     /**
      * password
      */
-    serviceUrlPassword = 'serviceUrlPassword'
+    serviceUrlPassword = 'serviceUrlPassword',
+    /**
+     * Service selection
+     */
+    serviceSelection = 'serviceSelection',
+    /**
+     * Newly created systems can be named for storage
+     */
+    userSystemName = 'userSystemName'
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
@@ -179,6 +201,12 @@ export type DatasourceTypePromptOptions = {
      * Include the `projectSpecificDestination` option in the datasource type prompt
      */
     includeProjectSpecificDest?: boolean;
+    /**
+     * Limit the offered datasource types to the specified types. Note that if `default` is also provided and not included in the choices, the default will be ignored.
+     * If `includeNone` is set to true, the `none` option will always be included.
+     *
+     */
+    choices?: DatasourceType[];
 };
 
 export type MetadataPromptOptions = {
@@ -186,6 +214,26 @@ export type MetadataPromptOptions = {
      * Used to validate the metadata file contains the required odata version edmx
      */
     requiredOdataVersion?: OdataVersion;
+};
+
+export type ServiceSelectionPromptOptions = {
+    /**
+     * Determines if the service selection prompt should use auto complete prompt for service names.
+     * Note that the auto-complete module must be registered with the inquirer instance to use this feature.
+     */
+    useAutoComplete?: boolean;
+    /**
+     * Used to validate the selected service is of the required odata version
+     */
+    requiredOdataVersion?: OdataVersion;
+} & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
+
+export type SystemNamePromptOptions = {
+    /**
+     * This option allows the prompt to be excluded where later storage of the system with the provided name is not required.
+     * If this propmt is not included then a BackendSystem will not be returned for the connected system.
+     */
+    hide?: boolean;
 };
 
 export type OdataServiceUrlPromptOptions = {
@@ -205,7 +253,9 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.capProject, CapProjectPromptOptions> &
     Record<promptNames.capService, CapServicePromptOptions> &
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
-    Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions>;
+    Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
+    Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
+    Record<promptNames.userSystemName, SystemNamePromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 

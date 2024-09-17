@@ -5,6 +5,8 @@ import type {
     InputQuestion as BaseInputQuestion,
     ListQuestion as BaseListQuestion,
     CheckboxQuestion as BaseCheckBoxQuestion,
+    NumberQuestion as BaseNumberQuestion,
+    EditorQuestion as BaseEditorQuestion,
     ListChoiceOptions,
     PromptFunction,
     PromptModule,
@@ -54,7 +56,10 @@ export interface GuiOptions {
     breadcrumb?: boolean | string;
 }
 
-export type PromptSeverityMessage = (input?: unknown, previousAnswers?: Answers) => IMessageSeverity | undefined;
+export type PromptSeverityMessage = (
+    input?: unknown,
+    previousAnswers?: Answers
+) => IMessageSeverity | undefined | Promise<IMessageSeverity | undefined>;
 
 export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
     name: string;
@@ -71,9 +76,15 @@ export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseIn
 export interface ListQuestion<A extends Answers = Answers> extends BaseListQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
 }
 
 export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfirmQuestion<A> {
+    name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+}
+
+export interface EditorQuestion<A extends Answers = Answers> extends BaseEditorQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
 }
@@ -89,6 +100,10 @@ export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheck
     additionalMessages?: YUIQuestion['additionalMessages'];
 }
 
+export interface NumberQuestion<A extends Answers = Answers> extends BaseNumberQuestion<A> {
+    name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+}
 /**
  * Defines prompt/question default values and/or whether or not they should be shown.
  */

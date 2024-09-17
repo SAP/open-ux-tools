@@ -5,5 +5,9 @@
         "rootDir": "src",
         "outDir": "dist"
     },
-    "references": []
+    "references": [
+    {
+      "path": "../text-document-utils"
+    }
+  ]
 }

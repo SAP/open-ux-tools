@@ -3,6 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { coerce, lt } from 'semver';
+import type { Manifest } from './types';
 
 /**
  * Validate that the UI5 version requirement is valid.
@@ -19,13 +20,30 @@ export function validateVersion(ui5Version?: string): boolean {
 }
 
 /**
- * Validates the provided base path.
+ * Validates the library dependencies - at least one of expected dependencies is present.
+ *
+ * @param {string} manifest - the manifest content
+ * @param {string[]} dependencies - expected dependencies
+ * @returns true if at least one of expected dependencies is presented in manifest.
+ */
+export function validateDependenciesLibs(manifest: Manifest, dependencies: string[]): boolean {
+    const libs = manifest['sap.ui5']?.dependencies?.libs;
+    return dependencies.length
+        ? dependencies.some((dependency) => {
+              return libs?.[dependency] !== undefined;
+          })
+        : true;
+}
+
+/**
+ * Validates the provided base path, checks at least one of expected dependencies is present.
  *
  * @param {string} basePath - the base path
  * @param {Editor} fs - the memfs editor instance
+ * @param {string[]} dependencies - expected dependencies
  * @returns true if the path is valid, otherwise, throws and error
  */
-export function validateBasePath(basePath: string, fs?: Editor): boolean {
+export function validateBasePath(basePath: string, fs?: Editor, dependencies = ['sap.fe.templates']): boolean {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -34,12 +52,19 @@ export function validateBasePath(basePath: string, fs?: Editor): boolean {
     if (!fs.exists(manifestPath)) {
         throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
     } else {
-        const manifest = fs.readJSON(manifestPath) as any;
-        const ui5Dependencies = manifest['sap.ui5']?.dependencies?.libs;
-        if (!(ui5Dependencies && (ui5Dependencies['sap.fe.core'] || ui5Dependencies['sap.fe.templates']))) {
-            throw new Error(
-                'Dependencies sap.fe.core or sap.fe.templates are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
-            );
+        const manifest = fs.readJSON(manifestPath) as Manifest;
+        if (!validateDependenciesLibs(manifest, dependencies)) {
+            if (dependencies.length === 1) {
+                throw new Error(
+                    `Dependency ${dependencies[0]} is missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.`
+                );
+            } else {
+                throw new Error(
+                    `All of the dependencies ${dependencies.join(
+                        ', '
+                    )} are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.`
+                );
+            }
         }
     }
 

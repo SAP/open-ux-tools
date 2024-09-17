@@ -6,12 +6,13 @@ import { getFilePaths } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
 import { mergeObjects, UI5_DEFAULT } from '@sap-ux/ui5-config';
+import type { ProjectType } from '@sap-ux/project-access';
 
 /**
  * Input required to enable optional features.
  */
 export interface FeatureInput {
-    ui5App: { app: { id: string; baseComponent?: string } };
+    ui5App: { app: { id: string; baseComponent?: string; projectType?: ProjectType } };
     fs: Editor;
     basePath: string;
     tmplPath: string;
@@ -56,7 +57,11 @@ const factories: { [key: string]: (input: FeatureInput) => Promise<void> } = {
     codeAssist: async (input: FeatureInput) => await copyTemplates('codeAssist', input),
     eslint: async (input: FeatureInput) => await copyTemplates('eslint', input),
     loadReuseLibs: async (input: FeatureInput) => await copyTemplates('loadReuseLibs', input),
-    sapux: async (input: FeatureInput) => await copyTemplates('sapux', input),
+    sapux: async (input: FeatureInput) => {
+        if (input.ui5App.app.projectType === 'EDMXBackend') {
+            await copyTemplates('sapux', input);
+        }
+    },
     typescript: async (input: FeatureInput) => await enableTypescript(input),
     npmPackageConsumption: async (input: FeatureInput) => await enableNpmPackageConsumption(input)
 };
@@ -117,5 +122,29 @@ export async function applyOptionalFeatures(
                 await factories[key]?.({ ui5App, fs, basePath, tmplPath, ui5Configs });
             }
         }
+    }
+}
+
+/**
+ * Generates the resource URL based on the project type and ui5 framework details.
+ *
+ * @param {boolean} isEdmxProjectType Indicates if the project type is Edmx or CAP.
+ * @param {string} [frameworkUrl] URL of the ui5 framework.
+ * @param {string} [version] version of the ui5 framework.
+ * @returns {string} - The constructed resource URL based on project type.
+ */
+export function getTemplateOptions(isEdmxProjectType: boolean, frameworkUrl?: string, version?: string): string {
+    const resourcePath = 'resources/sap-ui-core.js';
+    if (isEdmxProjectType || !frameworkUrl) {
+        // Use relative path for Edmx projects or if frameworkUrl is not available
+        return resourcePath;
+    } else {
+        // return the full URL for CAP projects
+        let url = frameworkUrl;
+        if (version) {
+            url += `/${version}`;
+        }
+        url += `/${resourcePath}`;
+        return url;
     }
 }

@@ -6,7 +6,7 @@ import { render, mockDomEventListener } from './utils';
 import { initI18n } from '../../src/i18n';
 
 import App from '../../src/App';
-import { controlSelected, scenario } from '@sap-ux-private/control-property-editor-common';
+import { controlSelected, SCENARIO } from '@sap-ux-private/control-property-editor-common';
 import { mockResizeObserver } from '../utils/utils';
 import { InputType } from '../../src/panels/properties/types';
 import { registerAppIcons } from '../../src/icons';
@@ -26,7 +26,7 @@ beforeAll(() => {
 });
 
 test('renders empty properties panel', () => {
-    render(<App previewUrl="" />);
+    render(<App previewUrl="" scenario={SCENARIO.FioriElementsFromScratch} />);
     const noControlSelected = screen.getByText(/No control selected/i);
     expect(noControlSelected).toBeInTheDocument();
 
@@ -38,7 +38,7 @@ test('renders empty properties panel', () => {
 });
 
 test('renders properties', () => {
-    const { store } = render(<App previewUrl="" />);
+    const { store } = render(<App previewUrl="" scenario={SCENARIO.FioriElementsFromScratch} />);
     const propNameString = 'activeIcon';
     const propNameDropDown = 'ariaHasPopup';
     const propNameCheckbox = 'visible';
@@ -164,7 +164,7 @@ test('renders properties', () => {
 });
 
 test('does not render warning dialog', async () => {
-    render(<App previewUrl="" />);
+    render(<App previewUrl="" scenario={SCENARIO.AdaptationProject} />);
     const dialogContent = screen.queryByText(
         /The Control Property Editor enables you to change control properties and behavior directly. These changes may not have the desired effect with Fiori elements applications. Please consult documentation to learn which changes are supported./i
     );
@@ -195,7 +195,7 @@ test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
             { name: FilterName.changeSummaryFilterQuery, value: '' },
             { name: FilterName.showEditableProperties, value: true }
         ],
-        scenario: scenario.AdaptationProject,
+        scenario: SCENARIO.AdaptationProject,
         isAdpProject: true,
         icons: [],
         changes: {
@@ -212,6 +212,7 @@ test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
             canUndo: true,
             canRedo: true
         },
+        quickActions: [],
         canSave: true
     };
     render(<App previewUrl="" scenario="ADAPTATION_PROJECT" />, { initialState });
@@ -220,6 +221,14 @@ test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
     expect(warningDialog).toBeInTheDocument();
     const okButton = screen.getByText(/ok/i);
     expect(okButton).toBeInTheDocument();
+    fireEvent.click(okButton);
+    let notFoundException = null;
+    try {
+        screen.getByText(/Some Text/i);
+    } catch (e) {
+        notFoundException = e;
+    }
+    expect(notFoundException).toBeTruthy();
 });
 
 const testCases = [
@@ -239,7 +248,7 @@ for (const testCase of testCases) {
         stateTemp.fitPreview = true;
         stateTemp.deviceType = testCase.deviceType;
 
-        const { dispatch } = render(<App previewUrl="" />, {
+        const { dispatch } = render(<App previewUrl="" scenario={SCENARIO.FioriElementsFromScratch} />, {
             initialState: stateTemp
         });
         await new Promise((resolve) => setTimeout(resolve, 1));

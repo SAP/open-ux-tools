@@ -11,6 +11,29 @@ export enum BuildingBlockType {
 }
 
 /**
+ * Binding context type.
+ * Dictates where to search for annotation path qualifiers.
+ * absolute - gets annotation path qualifiers in entity.
+ * relative - gets annotation path qualifiers in navigation path 1 level deep.
+ */
+export type BindingContextType = 'absolute' | 'relative';
+
+/**
+ * Represents a building block metaPath object.
+ */
+export interface BuildingBlockMetaPath {
+    entitySet: string;
+    qualifier: string;
+    bindingContextType?: BindingContextType;
+    /**
+     * Always generate absolute paths.
+     *
+     * @default true
+     */
+    alwaysAbsolutePath?: boolean;
+}
+
+/**
  * Represents a building block control.
  */
 export interface BuildingBlock {
@@ -32,7 +55,7 @@ export interface BuildingBlock {
     /**
      * Defines the relative path of the property in the metamodel, based on the current contextPath.
      */
-    metaPath?: string;
+    metaPath?: string | BuildingBlockMetaPath;
 }
 
 /**

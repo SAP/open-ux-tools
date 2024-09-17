@@ -19,7 +19,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop2\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -3406,6 +3405,23 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -3425,7 +3441,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -3575,8 +3591,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -3604,7 +3627,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop2\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -6991,6 +7013,23 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -7010,7 +7049,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -7160,8 +7199,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -7197,7 +7243,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lrop_v2_ts\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -10676,7 +10721,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop1\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -10719,8 +10763,8 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.fe.templates
-    - name: themelib_sap_belize
     - name: sap.ushell
+    - name: themelib_sap_belize
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -14122,6 +14166,23 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -14141,7 +14202,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -14291,8 +14352,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -14320,7 +14388,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop194\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -14363,8 +14430,8 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.fe.templates
-    - name: themelib_sap_fiori_3
     - name: sap.ushell
+    - name: themelib_sap_fiori_3
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -17766,6 +17833,23 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -17785,7 +17869,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -17935,8 +18019,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -17964,7 +18055,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lrop_v4_addtests\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -18008,8 +18098,8 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.fe.templates
-    - name: themelib_sap_belize
     - name: sap.ushell
+    - name: themelib_sap_belize
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -21576,6 +21666,23 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -21595,7 +21702,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -21745,8 +21852,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -21783,24 +21897,10 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_addtests_cds 1`] = `
 Object {
-  ".gitignore": Object {
-    "contents": "node_modules/
-dist/
-.scp/
-.env
-Makefile*.mta
-mta_archives
-mta-*
-resources
-archive.zip
-.*_mta_build_tmp",
-    "state": "modified",
-  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v4_addtests_cds\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -21811,47 +21911,12 @@ archive.zip
   \\"dependencies\\": {},
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
-    \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\"
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests_cds-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests_cds-tile\\\\\\"\\",
-    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"deploy\\": \\"fiori verify\\",
-    \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/integration/opaTests.qunit.html\\\\\\"\\"
-  },
-  \\"sapux\\": true
+    \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\"
+  }
 }
-",
-    "state": "modified",
-  },
-  "ui5-local.yaml": Object {
-    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
-specVersion: \\"3.1\\"
-metadata:
-  name: lrop_v4_addtests_cds
-type: application
-framework:
-  name: SAPUI5
-  version: 1.86.3
-  libraries:
-    - name: sap.m
-    - name: sap.ui.core
-    - name: sap.fe.templates
-    - name: themelib_sap_belize
-    - name: sap.ushell
-server:
-  customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
 ",
     "state": "modified",
   },
@@ -21924,7 +21989,7 @@ appDescription=A Fiori application.",
     </style>
     <script
         id=\\"sap-ui-bootstrap\\"
-        src=\\"resources/sap-ui-core.js\\"
+        src=\\"https://ui5.sap.com/1.92.0/resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
             \\"lrop_v4_addtests_cds\\": \\"./\\"
@@ -22182,11 +22247,11 @@ appDescription=A Fiori application.",
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"https://ui5.sap.com/1.92.0/test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.fe.templates,sap.ushell\\"
+        src=\\"https://ui5.sap.com/1.92.0/resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"
@@ -22418,6 +22483,23 @@ appDescription=A Fiori application.",
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -22437,7 +22519,7 @@ appDescription=A Fiori application.",
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -22587,8 +22669,2230 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
+            });
+        }
+    });",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_addtests_cds_typescript 1`] = `
+Object {
+  ".eslintrc": Object {
+    "contents": "{
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
+    \\"root\\": true
+}
+",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"lrop_v4_addtests_cds\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"description\\": \\"A Fiori application.\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
+    \\"typescript\\": \\"^5.1.6\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
+  },
+  \\"scripts\\": {
+    \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "tsconfig.json": Object {
+    "contents": "{
+    \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
+        \\"module\\": \\"es2022\\",
+        \\"skipLibCheck\\": true,
+        \\"allowJs\\": true,
+        \\"strict\\": true,
+        \\"strictPropertyInitialization\\": false,
+        \\"moduleResolution\\": \\"node\\",
+        \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
+        \\"baseUrl\\": \\"./\\",
+        \\"paths\\": {
+            \\"lrop_v4_addtests_cds/*\\": [
+                \\"./webapp/*\\"
+            ]
+        },
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
+        ]
+    },
+    \\"include\\": [
+        \\"./webapp/**/*\\"
+    ]
+}",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: lrop_v4_addtests_cds
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
+        excludePatterns:
+          - /Component-preload.js
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
+",
+    "state": "modified",
+  },
+  "webapp/Component.ts": Object {
+    "contents": "import BaseComponent from \\"sap/fe/core/AppComponent\\";
+
+/**
+ * @namespace lrop_v4_addtests_cds
+ */
+export default class Component extends BaseComponent {
+
+	public static metadata = {
+		manifest: \\"json\\"
+	};
+
+    /**
+     * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+     * @public
+     * @override
+     */
+	//public init() : void {
+    //    super.init();
+	//}
+}",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for lrop_v4_addtests_cds
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=App \\"Title\\" \\\\\\"
+
+#YDES: Application description
+appDescription=A Fiori application.",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html lang=\\"en\\">
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>App &#34;Title&#34; \\\\&#34;</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"https://ui5.sap.com/1.92.0/resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-resourceroots='{
+            \\"lrop_v4_addtests_cds\\": \\"./\\"
+        }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"lrop_v4_addtests_cds\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"lrop_v4_addtests_cds\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.37.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"lrop_v4_addtests_cds\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"0.0.1\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-fe-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"annotation\\"
+          ],
+          \\"odataVersion\\": \\"4.0\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"flexEnabled\\": true,
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"libs\\": {
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {},
+        \\"sap.fe.templates\\": {}
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"lrop_v4_addtests_cds.i18n.i18n\\"
+        }
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"synchronizationMode\\": \\"None\\",
+          \\"operationMode\\": \\"Server\\",
+          \\"autoExpandSelect\\": true,
+          \\"earlyRequests\\": true
+        }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    \\"resources\\": {
+      \\"css\\": []
+    },
+    \\"routing\\": {
+      \\"config\\": {},
+      \\"routes\\": [
+        {
+          \\"pattern\\": \\":?query:\\",
+          \\"name\\": \\"TravelList\\",
+          \\"target\\": \\"TravelList\\"
+        },
+        {
+          \\"pattern\\": \\"Travel({key}):?query:\\",
+          \\"name\\": \\"TravelObjectPage\\",
+          \\"target\\": \\"TravelObjectPage\\"
+        },
+        {
+          \\"pattern\\": \\"Travel({key})/_Booking({key2}):?query:\\",
+          \\"name\\": \\"BookingObjectPage\\",
+          \\"target\\": \\"BookingObjectPage\\"
+        }
+      ],
+      \\"targets\\": {
+        \\"TravelList\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"TravelList\\",
+          \\"name\\": \\"sap.fe.templates.ListReport\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Travel\\",
+              \\"variantManagement\\": \\"Page\\",
+              \\"navigation\\": {
+                \\"Travel\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"TravelObjectPage\\"
+                  }
+                }
+              },
+              \\"controlConfiguration\\": {
+                \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
+                  \\"tableSettings\\": {
+                    \\"type\\": \\"ResponsiveTable\\"
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"TravelObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"TravelObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"editableHeaderContent\\": false,
+              \\"entitySet\\": \\"Travel\\",
+              \\"navigation\\": {
+                \\"_Booking\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"BookingObjectPage\\"
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"BookingObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"BookingObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"editableHeaderContent\\": false,
+              \\"entitySet\\": \\"Booking\\"
+            }
+          }
+        }
+      }
+    }
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/flpSandbox.html": Object {
+    "contents": "<!DOCTYPE HTML>
+<html lang=\\"en\\">
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>{{appTitle}}</title>
+
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
+
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
+
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            bootstrapPlugins: {
+                \\"RuntimeAuthoringPlugin\\": {
+                    component: \\"sap.ushell.plugins.rta\\",
+                    config: {
+                        validateAppVersion: false
+                    }
+                }
+            },
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
+                }
+            },
+            applications: {
+                \\"lrop_v4_addtests_cds-tile\\": {
+                    title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
+                    description: \\"A Fiori application.\\",
+                    additionalInformation: \\"SAPUI5.Component=lrop_v4_addtests_cds\\",
+                    applicationType: \\"URL\\",
+                    url: \\"../\\"
+                }
+            }
+        };
+    </script>
+
+    <script src=\\"https://ui5.sap.com/1.92.0/test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"https://ui5.sap.com/1.92.0/resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-resourceroots='{\\"lrop_v4_addtests_cds\\": \\"../\\"}'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
+</head>
+
+<!-- UI Content -->
+
+<body class=\\"sapUiBody\\" id=\\"content\\">
+</body>
+
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheTravelList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheTravelList.onFilterBar().iExecuteSearch();
+                
+                Then.onTheTravelList.onTable().iCheckRows();
+
+                When.onTheTravelList.onTable().iPressRow(0);
+                Then.onTheTravelObjectPage.iSeeThisPage();
+
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"lrop_v4_addtests_cds\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'lrop_v4_addtests_cds/test/integration/FirstJourney',
+		'lrop_v4_addtests_cds/test/integration/pages/TravelList',
+		'lrop_v4_addtests_cds/test/integration/pages/TravelObjectPage',
+		'lrop_v4_addtests_cds/test/integration/pages/BookingObjectPage'
+    ],
+    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests_cds-tile in web folder
+            launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests_cds-tile'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheTravelList: TravelList,
+					onTheTravelObjectPage: TravelObjectPage,
+					onTheBookingObjectPage: BookingObjectPage
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/BookingObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'lrop_v4_addtests_cds',
+            componentId: 'BookingObjectPage',
+            entitySet: 'Booking'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/TravelList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'lrop_v4_addtests_cds',
+            componentId: 'TravelList',
+            entitySet: 'Travel'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/TravelObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'lrop_v4_addtests_cds',
+            componentId: 'TravelObjectPage',
+            entitySet: 'Travel'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/locate-reuse-libs.js": Object {
+    "contents": "(function (sap) {
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
+        var result = \\"\\";
+        // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
+        var ui5Libs = [
+            \\"sap.apf\\",
+            \\"sap.base\\",
+            \\"sap.chart\\",
+            \\"sap.collaboration\\",
+            \\"sap.f\\",
+            \\"sap.fe\\",
+            \\"sap.fileviewer\\",
+            \\"sap.gantt\\",
+            \\"sap.landvisz\\",
+            \\"sap.m\\",
+            \\"sap.ndc\\",
+            \\"sap.ovp\\",
+            \\"sap.rules\\",
+            \\"sap.suite\\",
+            \\"sap.tnt\\",
+            \\"sap.ui\\",
+            \\"sap.uiext\\",
+            \\"sap.ushell\\",
+            \\"sap.uxap\\",
+            \\"sap.viz\\",
+            \\"sap.webanalytics\\",
+            \\"sap.zen\\"
+        ];
+        function getKeys(libOrComp, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            Object.keys(libOrComp).forEach(function (libOrCompKey) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + libOrCompKey;
+                    } else {
+                        libOrCompKeysStringTmp = libOrCompKey;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
+        return new Promise(function (resolve, reject) {
+            $.ajax(url)
+                .done(function (manifest) {
+                    if (manifest) {
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].dependencies
+                        ) {
+                            if (manifest[\\"sap.ui5\\"].dependencies.libs) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result);
+                            }
+                            if (manifest[\\"sap.ui5\\"].dependencies.components) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result);
+                            }
+                        }
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].componentUsages
+                        ) {
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
+                        }
+                    }
+                    resolve(result);
+                })
+                .fail(function () {
+                    reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
+                });
+        });
+    };
+    function registerModules(dataFromAppIndex) {
+        Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
+            var moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
+            if (moduleDefinition && moduleDefinition.dependencies) {
+                moduleDefinition.dependencies.forEach(function (dependency) {
+                    if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
+                        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+                            Log.info(\\"Registering Library \\" +
+                                dependency.componentId +
+                                \\" from server \\" +
+                                dependency.url);
+                        });
+                        var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
+                        var config = {
+                            paths: {
+                            }
+                        };
+                        config.paths[compId] = dependency.url;
+                        sap.ui.loader.config(config);
+                    }
+                });
+            }
+        });
+    }
+    /**
+     * Registers the module paths for dependencies of the given component.
+     * @param {string} manifestPath The the path to the app manifest path
+     * for which the dependencies should be registered.
+     * @returns {Promise} A promise which is resolved when the ajax request for
+     * the app-index was successful and the module paths were registered.
+     */
+    sap.registerComponentDependencyPaths = function (manifestPath) {
+
+        return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
+            if (libs && libs.length > 0) {
+                var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
+                var sapClient = \\"\\";
+
+                return new Promise(
+                    function (resolve) {
+                        sap.ui.require([\\"sap/base/util/UriParameters\\"], function (UriParameters) {
+                            sapClient = UriParameters.fromQuery(window.location.search).get(\\"sap-client\\");
+                            if (sapClient && sapClient.length === 3) {
+                                url = url + \\"&sap-client=\\" + sapClient;
+                            }
+                            resolve(url);
+                        });
+                    }).then(function (url2) {
+                        return $.ajax(url2).done(function (data) {
+                            if (data) {
+                                registerModules(data);
+                            }
+                        });
+                    });
+            } else {
+                return undefined;
+            }
+        });
+    };
+})(sap);
+
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
+var currentScript = document.getElementById(\\"locate-reuse-libs\\");
+if (!currentScript) {
+    currentScript = document.currentScript;
+}
+var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
+var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
+var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
+
+sap.registerComponentDependencyPaths(manifestUri)
+    .catch(function (error) {
+        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+            Log.error(error);
+        });
+    })
+    .finally(function () {
+
+        // setting the app title with internationalization 
+        sap.ui.getCore().attachInit(function () {
+            var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+            sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                var oResourceBundle = ResourceBundle.create({
+                    url: \\"i18n/i18n.properties\\",
+                    locale: sLocale
+                });
+                document.title = oResourceBundle.getText(\\"appTitle\\");
+            });
+        });
+
+        if (componentName && componentName.length > 0) {
+            if (useMockserver && useMockserver === \\"true\\") {
+                sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
+                    sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
+                        // set up test service for local testing
+                        server.init();
+                        // initialize the ushell sandbox component
+                        sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                    });
+                });
+            } else {
+                // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
+                sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
+
+                // setting the app title with the i18n text 
+                sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
+                    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+                    sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                        var oResourceBundle = ResourceBundle.create({
+                            url: \\"i18n/i18n.properties\\",
+                            locale: sLocale
+                        });
+                        document.title = oResourceBundle.getText(\\"appTitle\\");
+                    });
+                });
+            }
+        } else {
+            sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
+            });
+        }
+    });",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_annotation_reuse_lib 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"lrop_v4_annotation_reuse_lib\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"description\\": \\"A Fiori application.\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_annotation_reuse_lib-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_annotation_reuse_lib-tile\\\\\\"\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_annotation_reuse_lib-tile\\\\\\"\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/integration/opaTests.qunit.html\\\\\\"\\"
+  },
+  \\"sapux\\": true
+}
+",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: lrop_v4_annotation_reuse_lib
+type: application
+framework:
+  name: SAPUI5
+  version: 1.86.3
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.fe.templates
+    - name: sap.ushell
+    - name: themelib_sap_belize
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://example.feop.v4
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+",
+    "state": "modified",
+  },
+  "ui5-mock.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: lrop_v4_annotation_reuse_lib
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://example.feop.v4
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/annotations/annotation.xml
+            urlPath: annotations/annotation.xml
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: lrop_v4_annotation_reuse_lib
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://example.feop.v4
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+",
+    "state": "modified",
+  },
+  "webapp/Component.js": Object {
+    "contents": "sap.ui.define(
+    [\\"sap/fe/core/AppComponent\\"],
+    function (Component) {
+        \\"use strict\\";
+
+        return Component.extend(\\"lrop_v4_annotation_reuse_lib.Component\\", {
+            metadata: {
+                manifest: \\"json\\"
+            }
+        });
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/annotations/annotation.xml": Object {
+    "contents": "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Common.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.Common.v1\\" Alias=\\"Common\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Communication.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/$metadata\\">
+        <edmx:Include Namespace=\\"NotesComponent\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"local\\">
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for lrop_v4_annotation_reuse_lib
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=App \\"Title\\" \\\\\\"
+
+#YDES: Application description
+appDescription=A Fiori application.",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html lang=\\"en\\">
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>App &#34;Title&#34; \\\\&#34;</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-resourceroots='{
+            \\"lrop_v4_annotation_reuse_lib\\": \\"./\\"
+        }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"lrop_v4_annotation_reuse_lib\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"lrop_v4_annotation_reuse_lib\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/localService/metadata.xml": Object {
+    "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
+<edmx:Edmx Version=\\"4.0\\"
+xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
+<edmx:Reference Uri=\\"https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml\\">
+    <edmx:Include Alias=\\"Capabilities\\" Namespace=\\"Org.OData.Capabilities.V1\\"/>
+</edmx:Reference>
+<edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Common.xml\\">
+    <edmx:Include Alias=\\"Common\\" Namespace=\\"com.sap.vocabularies.Common.v1\\"/>
+</edmx:Reference>
+<edmx:Reference Uri=\\"https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml\\">
+    <edmx:Include Alias=\\"Core\\" Namespace=\\"Org.OData.Core.V1\\"/>
+</edmx:Reference>
+<edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+    <edmx:Include Alias=\\"UI\\" Namespace=\\"com.sap.vocabularies.UI.v1\\"/>
+</edmx:Reference>
+<edmx:DataServices>
+    <Schema Namespace=\\"NotesComponent\\"
+    xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\">
+    <EntityContainer Name=\\"EntityContainer\\">
+        <EntitySet Name=\\"RootEntity\\" EntityType=\\"NotesComponent.RootEntity\\">
+            <NavigationPropertyBinding Path=\\"notes\\" Target=\\"C_NoteBasicTPType\\"/>
+            <NavigationPropertyBinding Path=\\"SiblingEntity\\" Target=\\"RootEntity\\"/>
+        </EntitySet>
+        <EntitySet Name=\\"C_NoteBasicTPType\\" EntityType=\\"NotesComponent.C_NoteBasicTPType\\">
+            <NavigationPropertyBinding Path=\\"Parent\\" Target=\\"RootEntity\\"/>
+        </EntitySet>
+    </EntityContainer>
+    <EntityType Name=\\"RootEntity\\">
+        <Key>
+            <PropertyRef Name=\\"ID\\"/>
+            <PropertyRef Name=\\"IsActiveEntity\\"/>
+        </Key>
+        <Property Name=\\"ID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\"/>
+        <Property Name=\\"Title\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"Description\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"Requester\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"ProductGroup\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"Progress\\" Type=\\"Edm.Int32\\"/>
+        <Property Name=\\"Rating\\" Type=\\"Edm.Int32\\"/>
+        <Property Name=\\"Classification\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"NotesObjectID\\" Type=\\"Edm.String\\"/>
+        <NavigationProperty Name=\\"notes\\" Type=\\"Collection(NotesComponent.C_NoteBasicTPType)\\" Partner=\\"Parent\\"/>
+        <Property Name=\\"IsActiveEntity\\" Type=\\"Edm.Boolean\\" Nullable=\\"false\\" DefaultValue=\\"true\\"/>
+        <Property Name=\\"HasActiveEntity\\" Type=\\"Edm.Boolean\\" Nullable=\\"false\\" DefaultValue=\\"false\\"/>
+        <Property Name=\\"HasDraftEntity\\" Type=\\"Edm.Boolean\\" Nullable=\\"false\\" DefaultValue=\\"false\\"/>
+        <NavigationProperty Name=\\"DraftAdministrativeData\\" Type=\\"NotesComponent.DraftAdministrativeData\\" ContainsTarget=\\"true\\"/>
+        <NavigationProperty Name=\\"SiblingEntity\\" Type=\\"NotesComponent.RootEntity\\"/>
+    </EntityType>
+    <EntityType Name=\\"C_NoteBasicTPType\\">
+        <Key>
+            <PropertyRef Name=\\"ID\\"/>
+        </Key>
+        <Property Name=\\"ID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\"/>
+        <Property Name=\\"NoteBasicTitle\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"NoteBasicObjectNodeType\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"NoteBasicLanguage\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"NoteBasicType\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"NoteBasicContent\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"NoteBasicTypeMaximumLength\\" Type=\\"Edm.Int32\\"/>
+        <Property Name=\\"NoteBasicTypeMultipleNotes\\" Type=\\"Edm.Boolean\\"/>
+        <Property Name=\\"CreatedBy\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"CreatedAt\\" Type=\\"Edm.DateTimeOffset\\" Precision=\\"7\\"/>
+        <Property Name=\\"ChangedBy\\" Type=\\"Edm.String\\"/>
+        <Property Name=\\"ChangedAt\\" Type=\\"Edm.DateTimeOffset\\" Precision=\\"7\\"/>
+        <NavigationProperty Name=\\"Parent\\" Type=\\"NotesComponent.RootEntity\\" Partner=\\"notes\\">
+            <ReferentialConstraint Property=\\"Parent_ID\\" ReferencedProperty=\\"ID\\"/>
+        </NavigationProperty>
+        <Property Name=\\"Parent_ID\\" Type=\\"Edm.Int32\\"/>
+    </EntityType>
+    <EntityType Name=\\"DraftAdministrativeData\\">
+        <Key>
+            <PropertyRef Name=\\"DraftUUID\\"/>
+        </Key>
+        <Property Name=\\"DraftUUID\\" Type=\\"Edm.Guid\\" Nullable=\\"false\\"/>
+        <Property Name=\\"CreationDateTime\\" Type=\\"Edm.DateTimeOffset\\" Precision=\\"7\\"/>
+        <Property Name=\\"CreatedByUser\\" Type=\\"Edm.String\\" MaxLength=\\"256\\"/>
+        <Property Name=\\"DraftIsCreatedByMe\\" Type=\\"Edm.Boolean\\"/>
+        <Property Name=\\"LastChangeDateTime\\" Type=\\"Edm.DateTimeOffset\\" Precision=\\"7\\"/>
+        <Property Name=\\"LastChangedByUser\\" Type=\\"Edm.String\\" MaxLength=\\"256\\"/>
+        <Property Name=\\"InProcessByUser\\" Type=\\"Edm.String\\" MaxLength=\\"256\\"/>
+        <Property Name=\\"DraftIsProcessedByMe\\" Type=\\"Edm.Boolean\\"/>
+    </EntityType>
+    <Action Name=\\"draftPrepare\\" IsBound=\\"true\\" EntitySetPath=\\"in\\">
+        <Parameter Name=\\"in\\" Type=\\"NotesComponent.RootEntity\\"/>
+        <Parameter Name=\\"SideEffectsQualifier\\" Type=\\"Edm.String\\"/>
+        <ReturnType Type=\\"NotesComponent.RootEntity\\"/>
+    </Action>
+    <Action Name=\\"draftActivate\\" IsBound=\\"true\\" EntitySetPath=\\"in\\">
+        <Parameter Name=\\"in\\" Type=\\"NotesComponent.RootEntity\\"/>
+        <ReturnType Type=\\"NotesComponent.RootEntity\\"/>
+    </Action>
+    <Action Name=\\"draftEdit\\" IsBound=\\"true\\" EntitySetPath=\\"in\\">
+        <Parameter Name=\\"in\\" Type=\\"NotesComponent.RootEntity\\"/>
+        <Parameter Name=\\"PreserveChanges\\" Type=\\"Edm.Boolean\\"/>
+        <ReturnType Type=\\"NotesComponent.RootEntity\\"/>
+    </Action>
+    <Annotations Target=\\"NotesComponent.RootEntity\\">
+        <Annotation Term=\\"Common.SAPObjectNodeType\\">
+            <Record Type=\\"Common.SAPObjectNodeTypeType\\">
+                <PropertyValue Property=\\"Name\\" String=\\"Demo Note\\"/>
+            </Record>
+        </Annotation>
+        <Annotation Term=\\"UI.PresentationVariant\\">
+            <Record Type=\\"UI.PresentationVariantType\\">
+                <PropertyValue Property=\\"Visualizations\\">
+                    <Collection>
+                        <AnnotationPath>@UI.LineItem</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term=\\"UI.SelectionFields\\">
+            <Collection>
+                <PropertyPath>ID</PropertyPath>
+                <PropertyPath>Title</PropertyPath>
+            </Collection>
+        </Annotation>
+        <Annotation Term=\\"UI.HeaderInfo\\">
+            <Record Type=\\"UI.HeaderInfoType\\">
+                <PropertyValue Property=\\"TypeName\\" String=\\"{i18n>RootEntity.TypeName}\\"/>
+                    <PropertyValue Property=\\"TypeNamePlural\\" String=\\"{i18n>RootEntity.TypeNamePlural}\\"/>
+                        <PropertyValue Property=\\"TypeImageUrl\\" String=\\"sap-icon://product\\"/>
+                        <PropertyValue Property=\\"Title\\">
+                            <Record Type=\\"UI.DataField\\">
+                                <PropertyValue Property=\\"Value\\" Path=\\"Title\\"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term=\\"UI.Facets\\">
+                    <Collection>
+                        <Record Type=\\"UI.ReferenceFacet\\">
+                            <PropertyValue Property=\\"Label\\" String=\\"{i18n>InformationGeneral}\\"/>
+                                <PropertyValue Property=\\"Target\\" AnnotationPath=\\"@UI.FieldGroup#GeneralInformation\\"/>
+                            </Record>
+                            <Record Type=\\"UI.ReferenceFacet\\">
+                                <PropertyValue Property=\\"Label\\" String=\\"{i18n>InformationAdditional}\\"/>
+                                    <PropertyValue Property=\\"Target\\" AnnotationPath=\\"@UI.FieldGroup#AdditionalInformation\\"/>
+                                </Record>
+                                <Record Type=\\"UI.ReferenceFacet\\">
+                                    <PropertyValue Property=\\"Label\\" String=\\"Notes\\"/>
+                                    <PropertyValue Property=\\"Target\\" AnnotationPath=\\"notes/@UI.Note\\"/>
+                                </Record>
+                            </Collection>
+                        </Annotation>
+                        <Annotation Term=\\"UI.DataPoint\\" Qualifier=\\"Rating\\">
+                            <Record Type=\\"UI.DataPointType\\">
+                                <PropertyValue Property=\\"Value\\" Path=\\"Rating\\"/>
+                                <PropertyValue Property=\\"TargetValue\\" Int=\\"5\\"/>
+                                <PropertyValue Property=\\"Title\\" String=\\"Rating\\"/>
+                                <PropertyValue Property=\\"Visualization\\" EnumMember=\\"UI.VisualizationType/Rating\\"/>
+                            </Record>
+                        </Annotation>
+                        <Annotation Term=\\"UI.DataPoint\\" Qualifier=\\"Progress\\">
+                            <Record Type=\\"UI.DataPointType\\">
+                                <PropertyValue Property=\\"Value\\" Path=\\"Progress\\"/>
+                                <PropertyValue Property=\\"TargetValue\\" Int=\\"100\\"/>
+                                <PropertyValue Property=\\"Title\\" String=\\"Progress\\"/>
+                                <PropertyValue Property=\\"Visualization\\" EnumMember=\\"UI.VisualizationType/Progress\\"/>
+                            </Record>
+                        </Annotation>
+                        <Annotation Term=\\"UI.Chart\\" Qualifier=\\"Progress\\">
+                            <Record Type=\\"UI.ChartDefinitionType\\">
+                                <PropertyValue Property=\\"ChartType\\" EnumMember=\\"UI.ChartType/Donut\\"/>
+                                <PropertyValue Property=\\"Measures\\">
+                                    <Collection>
+                                        <PropertyPath>Progress</PropertyPath>
+                                    </Collection>
+                                </PropertyValue>
+                                <PropertyValue Property=\\"Title\\" String=\\"Progress\\"/>
+                                <PropertyValue Property=\\"MeasureAttributes\\">
+                                    <Collection>
+                                        <Record Type=\\"UI.ChartMeasureAttributeType\\">
+                                            <PropertyValue Property=\\"Measure\\" PropertyPath=\\"Progress\\"/>
+                                            <PropertyValue Property=\\"Role\\" EnumMember=\\"UI.ChartMeasureRoleType/Axis1\\"/>
+                                            <PropertyValue Property=\\"DataPoint\\" AnnotationPath=\\"@UI.DataPoint#Progress\\"/>
+                                        </Record>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </Annotation>
+                        <Annotation Term=\\"UI.FieldGroup\\" Qualifier=\\"GeneralInformation\\">
+                            <Record Type=\\"UI.FieldGroupType\\">
+                                <PropertyValue Property=\\"Label\\" String=\\"General Information\\"/>
+                                <PropertyValue Property=\\"Data\\">
+                                    <Collection>
+                                        <Record Type=\\"UI.DataField\\">
+                                            <PropertyValue Property=\\"Value\\" Path=\\"Title\\"/>
+                                        </Record>
+                                        <Record Type=\\"UI.DataField\\">
+                                            <PropertyValue Property=\\"Value\\" Path=\\"Requester\\"/>
+                                        </Record>
+                                        <Record Type=\\"UI.DataField\\">
+                                            <PropertyValue Property=\\"Value\\" Path=\\"Description\\"/>
+                                        </Record>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </Annotation>
+                        <Annotation Term=\\"UI.FieldGroup\\" Qualifier=\\"AdditionalInformation\\">
+                            <Record Type=\\"UI.FieldGroupType\\">
+                                <PropertyValue Property=\\"Label\\" String=\\"Product Information\\"/>
+                                <PropertyValue Property=\\"Data\\">
+                                    <Collection>
+                                        <Record Type=\\"UI.DataField\\">
+                                            <PropertyValue Property=\\"Value\\" Path=\\"ProductGroup\\"/>
+                                        </Record>
+                                        <Record Type=\\"UI.DataField\\">
+                                            <PropertyValue Property=\\"Value\\" Path=\\"Classification\\"/>
+                                        </Record>
+                                        <Record Type=\\"UI.DataFieldForAnnotation\\">
+                                            <PropertyValue Property=\\"Target\\" AnnotationPath=\\"@UI.DataPoint#Progress\\"/>
+                                            <PropertyValue Property=\\"Label\\" String=\\"Progress\\"/>
+                                        </Record>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </Annotation>
+                        <Annotation Term=\\"UI.LineItem\\">
+                            <Collection>
+                                <Record Type=\\"UI.DataField\\">
+                                    <PropertyValue Property=\\"Value\\" Path=\\"Title\\"/>
+                                    <Annotation Term=\\"UI.Importance\\" EnumMember=\\"UI.ImportanceType/High\\"/>
+                                </Record>
+                                <Record Type=\\"UI.DataFieldForAnnotation\\">
+                                    <PropertyValue Property=\\"Target\\" AnnotationPath=\\"@UI.Chart#Progress\\"/>
+                                    <PropertyValue Property=\\"Label\\" String=\\"Progress\\"/>
+                                    <Annotation Term=\\"UI.Importance\\" EnumMember=\\"UI.ImportanceType/High\\"/>
+                                </Record>
+                                <Record Type=\\"UI.DataField\\">
+                                    <PropertyValue Property=\\"Value\\" Path=\\"Description\\"/>
+                                    <Annotation Term=\\"UI.Importance\\" EnumMember=\\"UI.ImportanceType/Medium\\"/>
+                                </Record>
+                                <Record Type=\\"UI.DataField\\">
+                                    <PropertyValue Property=\\"Value\\" Path=\\"Classification\\"/>
+                                    <Annotation Term=\\"UI.Importance\\" EnumMember=\\"UI.ImportanceType/Low\\"/>
+                                </Record>
+                                <Record Type=\\"UI.DataField\\">
+                                    <PropertyValue Property=\\"Value\\" Path=\\"Requester\\"/>
+                                    <Annotation Term=\\"UI.Importance\\" EnumMember=\\"UI.ImportanceType/High\\"/>
+                                </Record>
+                                <Record Type=\\"UI.DataField\\">
+                                    <PropertyValue Property=\\"Value\\" Path=\\"ProductGroup\\"/>
+                                    <Annotation Term=\\"UI.Importance\\" EnumMember=\\"UI.ImportanceType/Medium\\"/>
+                                </Record>
+                                <Record Type=\\"UI.DataFieldForAnnotation\\">
+                                    <PropertyValue Property=\\"Target\\" AnnotationPath=\\"@UI.DataPoint#Rating\\"/>
+                                    <PropertyValue Property=\\"Label\\" String=\\"Rating\\"/>
+                                    <Annotation Term=\\"UI.Importance\\" EnumMember=\\"UI.ImportanceType/Medium\\"/>
+                                </Record>
+                            </Collection>
+                        </Annotation>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.EntityContainer/RootEntity\\">
+                        <Annotation Term=\\"Common.DraftRoot\\">
+                            <Record Type=\\"Common.DraftRootType\\">
+                                <PropertyValue Property=\\"ActivationAction\\" String=\\"NotesComponent.draftActivate\\"/>
+                                <PropertyValue Property=\\"EditAction\\" String=\\"NotesComponent.draftEdit\\"/>
+                                <PropertyValue Property=\\"PreparationAction\\" String=\\"NotesComponent.draftPrepare\\"/>
+                            </Record>
+                        </Annotation>
+                        <Annotation Term=\\"UI.PresentationVariant\\">
+                            <Record Type=\\"UI.PresentationVariantType\\">
+                                <PropertyValue Property=\\"Visualizations\\">
+                                    <Collection>
+                                        <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </Annotation>
+                        <Annotation Term=\\"Capabilities.DeleteRestrictions\\">
+                            <Record Type=\\"Capabilities.DeleteRestrictionsType\\">
+                                <PropertyValue Property=\\"Deletable\\" Bool=\\"true\\"/>
+                            </Record>
+                        </Annotation>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/ID\\">
+                        <Annotation Term=\\"Common.Label\\" String=\\"Identifier\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/Title\\">
+                        <Annotation Term=\\"UI.HiddenFilter\\" Bool=\\"true\\"/>
+                        <Annotation Term=\\"Common.Label\\" String=\\"Product Title\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/Description\\">
+                        <Annotation Term=\\"UI.HiddenFilter\\" Bool=\\"true\\"/>
+                        <Annotation Term=\\"Common.Label\\" String=\\"Product Description\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/Requester\\">
+                        <Annotation Term=\\"Common.Label\\" String=\\"Requester\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/ProductGroup\\">
+                        <Annotation Term=\\"Common.Label\\" String=\\"Product Group\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/Progress\\">
+                        <Annotation Term=\\"Common.Label\\" String=\\"Progress\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/Rating\\">
+                        <Annotation Term=\\"Common.Label\\" String=\\"Rating\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/Classification\\">
+                        <Annotation Term=\\"Common.Label\\" String=\\"Product Classification\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/NotesObjectID\\">
+                        <Annotation Term=\\"Common.SAPObjectNodeTypeReference\\" String=\\"NoteBasic\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/IsActiveEntity\\">
+                        <Annotation Term=\\"UI.Hidden\\" Bool=\\"true\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/HasActiveEntity\\">
+                        <Annotation Term=\\"UI.Hidden\\" Bool=\\"true\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/HasDraftEntity\\">
+                        <Annotation Term=\\"UI.Hidden\\" Bool=\\"true\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.RootEntity/DraftAdministrativeData\\">
+                        <Annotation Term=\\"UI.Hidden\\" Bool=\\"true\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.C_NoteBasicTPType\\">
+                        <Annotation Term=\\"UI.Note\\">
+                            <Record Type=\\"UI.NoteType\\">
+                                <PropertyValue Property=\\"Title\\" Path=\\"NoteBasicTitle\\">
+                                    <Annotation Term=\\"UI.Hidden\\" Path=\\"NoteBasicTypeHideTitle\\"/>
+                                </PropertyValue>
+                                <PropertyValue Property=\\"Content\\" Path=\\"NoteBasicContent\\"/>
+                                <PropertyValue Property=\\"Type\\" Path=\\"NoteBasicType\\"/>
+                                <PropertyValue Property=\\"MaxLength\\" Path=\\"NoteBasicTypeMaximumLength\\"/>
+                                <PropertyValue Property=\\"MultipleNotes\\" Path=\\"NoteBasicTypeMultipleNotes\\"/>
+                            </Record>
+                        </Annotation>
+                        <Annotation Term=\\"Common.Label\\" String=\\"Notes\\"/>
+                        <Annotation Term=\\"Common.SAPObjectNodeType\\">
+                            <Record Type=\\"Common.SAPObjectNodeTypeType\\">
+                                <PropertyValue Property=\\"Name\\" String=\\"NoteBasic\\"/>
+                            </Record>
+                        </Annotation>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.C_NoteBasicTPType/ID\\">
+                        <Annotation Term=\\"Common.Label\\" String=\\"Note Guid\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.C_NoteBasicTPType/NoteBasicContent\\">
+                        <Annotation Term=\\"Common.SAPObjectNodeTypeReference\\" Path=\\"NoteBasicObjectNodeType\\"/>
+                    </Annotations>
+                    <Annotations Target=\\"NotesComponent.DraftAdministrativeData\\">
+                        <Annotation Term=\\"Common.Label\\" String=\\"{i18n>Draft_DraftAdministrativeData}\\"/>
+                        </Annotations>
+                        <Annotations Target=\\"NotesComponent.DraftAdministrativeData/DraftUUID\\">
+                            <Annotation Term=\\"UI.Hidden\\" Bool=\\"true\\"/>
+                            <Annotation Term=\\"Common.Label\\" String=\\"{i18n>Draft_DraftUUID}\\"/>
+                                <Annotation Term=\\"Core.ComputedDefaultValue\\" Bool=\\"true\\"/>
+                            </Annotations>
+                            <Annotations Target=\\"NotesComponent.DraftAdministrativeData/CreationDateTime\\">
+                                <Annotation Term=\\"Common.Label\\" String=\\"{i18n>Draft_CreationDateTime}\\"/>
+                                </Annotations>
+                                <Annotations Target=\\"NotesComponent.DraftAdministrativeData/CreatedByUser\\">
+                                    <Annotation Term=\\"Common.Label\\" String=\\"{i18n>Draft_CreatedByUser}\\"/>
+                                    </Annotations>
+                                    <Annotations Target=\\"NotesComponent.DraftAdministrativeData/DraftIsCreatedByMe\\">
+                                        <Annotation Term=\\"UI.Hidden\\" Bool=\\"true\\"/>
+                                        <Annotation Term=\\"Common.Label\\" String=\\"{i18n>Draft_DraftIsCreatedByMe}\\"/>
+                                        </Annotations>
+                                        <Annotations Target=\\"NotesComponent.DraftAdministrativeData/LastChangeDateTime\\">
+                                            <Annotation Term=\\"Common.Label\\" String=\\"{i18n>Draft_LastChangeDateTime}\\"/>
+                                            </Annotations>
+                                            <Annotations Target=\\"NotesComponent.DraftAdministrativeData/LastChangedByUser\\">
+                                                <Annotation Term=\\"Common.Label\\" String=\\"{i18n>Draft_LastChangedByUser}\\"/>
+                                                </Annotations>
+                                                <Annotations Target=\\"NotesComponent.DraftAdministrativeData/InProcessByUser\\">
+                                                    <Annotation Term=\\"Common.Label\\" String=\\"{i18n>Draft_InProcessByUser}\\"/>
+                                                    </Annotations>
+                                                    <Annotations Target=\\"NotesComponent.DraftAdministrativeData/DraftIsProcessedByMe\\">
+                                                        <Annotation Term=\\"UI.Hidden\\" Bool=\\"true\\"/>
+                                                        <Annotation Term=\\"Common.Label\\" String=\\"{i18n>Draft_DraftIsProcessedByMe}\\"/>
+                                                        </Annotations>
+                                                    </Schema>
+                                                </edmx:DataServices>
+                                            </edmx:Edmx>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.37.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"lrop_v4_annotation_reuse_lib\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"0.0.1\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-fe-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"odataVersion\\": \\"4.0\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"flexEnabled\\": true,
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"libs\\": {
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {},
+        \\"sap.fe.templates\\": {},
+        \\"sap.nw.core.gbt.notes.lib.reuse\\": {}
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"lrop_v4_annotation_reuse_lib.i18n.i18n\\"
+        }
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"synchronizationMode\\": \\"None\\",
+          \\"operationMode\\": \\"Server\\",
+          \\"autoExpandSelect\\": true,
+          \\"earlyRequests\\": true
+        }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    \\"resources\\": {
+      \\"css\\": []
+    },
+    \\"routing\\": {
+      \\"config\\": {},
+      \\"routes\\": [
+        {
+          \\"pattern\\": \\":?query:\\",
+          \\"name\\": \\"TravelList\\",
+          \\"target\\": \\"TravelList\\"
+        },
+        {
+          \\"pattern\\": \\"Travel({key}):?query:\\",
+          \\"name\\": \\"TravelObjectPage\\",
+          \\"target\\": \\"TravelObjectPage\\"
+        },
+        {
+          \\"pattern\\": \\"Travel({key})/_Booking({key2}):?query:\\",
+          \\"name\\": \\"BookingObjectPage\\",
+          \\"target\\": \\"BookingObjectPage\\"
+        }
+      ],
+      \\"targets\\": {
+        \\"TravelList\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"TravelList\\",
+          \\"name\\": \\"sap.fe.templates.ListReport\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Travel\\",
+              \\"variantManagement\\": \\"Page\\",
+              \\"navigation\\": {
+                \\"Travel\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"TravelObjectPage\\"
+                  }
+                }
+              },
+              \\"controlConfiguration\\": {
+                \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
+                  \\"tableSettings\\": {
+                    \\"type\\": \\"ResponsiveTable\\"
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"TravelObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"TravelObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"editableHeaderContent\\": false,
+              \\"entitySet\\": \\"Travel\\",
+              \\"navigation\\": {
+                \\"_Booking\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"BookingObjectPage\\"
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"BookingObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"BookingObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"editableHeaderContent\\": false,
+              \\"entitySet\\": \\"Booking\\"
+            }
+          }
+        }
+      }
+    }
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/flpSandbox.html": Object {
+    "contents": "<!DOCTYPE HTML>
+<html lang=\\"en\\">
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>{{appTitle}}</title>
+
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
+
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
+
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            bootstrapPlugins: {
+                \\"RuntimeAuthoringPlugin\\": {
+                    component: \\"sap.ushell.plugins.rta\\",
+                    config: {
+                        validateAppVersion: false
+                    }
+                }
+            },
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
+                }
+            },
+            applications: {
+                \\"lrop_v4_annotation_reuse_lib-tile\\": {
+                    title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
+                    description: \\"A Fiori application.\\",
+                    additionalInformation: \\"SAPUI5.Component=lrop_v4_annotation_reuse_lib\\",
+                    applicationType: \\"URL\\",
+                    url: \\"../\\"
+                }
+            }
+        };
+    </script>
+
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.fe.templates,sap.ushell\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-resourceroots='{\\"lrop_v4_annotation_reuse_lib\\": \\"../\\"}'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
+</head>
+
+<!-- UI Content -->
+
+<body class=\\"sapUiBody\\" id=\\"content\\">
+</body>
+
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheTravelList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheTravelList.onFilterBar().iExecuteSearch();
+                
+                Then.onTheTravelList.onTable().iCheckRows();
+
+                When.onTheTravelList.onTable().iPressRow(0);
+                Then.onTheTravelObjectPage.iSeeThisPage();
+
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"lrop_v4_annotation_reuse_lib\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'lrop_v4_annotation_reuse_lib/test/integration/FirstJourney',
+		'lrop_v4_annotation_reuse_lib/test/integration/pages/TravelList',
+		'lrop_v4_annotation_reuse_lib/test/integration/pages/TravelObjectPage',
+		'lrop_v4_annotation_reuse_lib/test/integration/pages/BookingObjectPage'
+    ],
+    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('lrop_v4_annotation_reuse_lib') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheTravelList: TravelList,
+					onTheTravelObjectPage: TravelObjectPage,
+					onTheBookingObjectPage: BookingObjectPage
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/BookingObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'lrop_v4_annotation_reuse_lib',
+            componentId: 'BookingObjectPage',
+            entitySet: 'Booking'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/TravelList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'lrop_v4_annotation_reuse_lib',
+            componentId: 'TravelList',
+            entitySet: 'Travel'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/TravelObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'lrop_v4_annotation_reuse_lib',
+            componentId: 'TravelObjectPage',
+            entitySet: 'Travel'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/locate-reuse-libs.js": Object {
+    "contents": "(function (sap) {
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
+        var result = \\"\\";
+        // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
+        var ui5Libs = [
+            \\"sap.apf\\",
+            \\"sap.base\\",
+            \\"sap.chart\\",
+            \\"sap.collaboration\\",
+            \\"sap.f\\",
+            \\"sap.fe\\",
+            \\"sap.fileviewer\\",
+            \\"sap.gantt\\",
+            \\"sap.landvisz\\",
+            \\"sap.m\\",
+            \\"sap.ndc\\",
+            \\"sap.ovp\\",
+            \\"sap.rules\\",
+            \\"sap.suite\\",
+            \\"sap.tnt\\",
+            \\"sap.ui\\",
+            \\"sap.uiext\\",
+            \\"sap.ushell\\",
+            \\"sap.uxap\\",
+            \\"sap.viz\\",
+            \\"sap.webanalytics\\",
+            \\"sap.zen\\"
+        ];
+        function getKeys(libOrComp, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            Object.keys(libOrComp).forEach(function (libOrCompKey) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + libOrCompKey;
+                    } else {
+                        libOrCompKeysStringTmp = libOrCompKey;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
+        return new Promise(function (resolve, reject) {
+            $.ajax(url)
+                .done(function (manifest) {
+                    if (manifest) {
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].dependencies
+                        ) {
+                            if (manifest[\\"sap.ui5\\"].dependencies.libs) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result);
+                            }
+                            if (manifest[\\"sap.ui5\\"].dependencies.components) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result);
+                            }
+                        }
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].componentUsages
+                        ) {
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
+                        }
+                    }
+                    resolve(result);
+                })
+                .fail(function () {
+                    reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
+                });
+        });
+    };
+    function registerModules(dataFromAppIndex) {
+        Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
+            var moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
+            if (moduleDefinition && moduleDefinition.dependencies) {
+                moduleDefinition.dependencies.forEach(function (dependency) {
+                    if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
+                        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+                            Log.info(\\"Registering Library \\" +
+                                dependency.componentId +
+                                \\" from server \\" +
+                                dependency.url);
+                        });
+                        var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
+                        var config = {
+                            paths: {
+                            }
+                        };
+                        config.paths[compId] = dependency.url;
+                        sap.ui.loader.config(config);
+                    }
+                });
+            }
+        });
+    }
+    /**
+     * Registers the module paths for dependencies of the given component.
+     * @param {string} manifestPath The the path to the app manifest path
+     * for which the dependencies should be registered.
+     * @returns {Promise} A promise which is resolved when the ajax request for
+     * the app-index was successful and the module paths were registered.
+     */
+    sap.registerComponentDependencyPaths = function (manifestPath) {
+
+        return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
+            if (libs && libs.length > 0) {
+                var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
+                var sapClient = \\"\\";
+
+                return new Promise(
+                    function (resolve) {
+                        sap.ui.require([\\"sap/base/util/UriParameters\\"], function (UriParameters) {
+                            sapClient = UriParameters.fromQuery(window.location.search).get(\\"sap-client\\");
+                            if (sapClient && sapClient.length === 3) {
+                                url = url + \\"&sap-client=\\" + sapClient;
+                            }
+                            resolve(url);
+                        });
+                    }).then(function (url2) {
+                        return $.ajax(url2).done(function (data) {
+                            if (data) {
+                                registerModules(data);
+                            }
+                        });
+                    });
+            } else {
+                return undefined;
+            }
+        });
+    };
+})(sap);
+
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
+var currentScript = document.getElementById(\\"locate-reuse-libs\\");
+if (!currentScript) {
+    currentScript = document.currentScript;
+}
+var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
+var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
+var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
+
+sap.registerComponentDependencyPaths(manifestUri)
+    .catch(function (error) {
+        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+            Log.error(error);
+        });
+    })
+    .finally(function () {
+
+        // setting the app title with internationalization 
+        sap.ui.getCore().attachInit(function () {
+            var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+            sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                var oResourceBundle = ResourceBundle.create({
+                    url: \\"i18n/i18n.properties\\",
+                    locale: sLocale
+                });
+                document.title = oResourceBundle.getText(\\"appTitle\\");
+            });
+        });
+
+        if (componentName && componentName.length > 0) {
+            if (useMockserver && useMockserver === \\"true\\") {
+                sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
+                    sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
+                        // set up test service for local testing
+                        server.init();
+                        // initialize the ushell sandbox component
+                        sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                    });
+                });
+            } else {
+                // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
+                sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
+
+                // setting the app title with the i18n text 
+                sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
+                    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+                    sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                        var oResourceBundle = ResourceBundle.create({
+                            url: \\"i18n/i18n.properties\\",
+                            locale: sLocale
+                        });
+                        document.title = oResourceBundle.getText(\\"appTitle\\");
+                    });
+                });
+            }
+        } else {
+            sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -22642,7 +24946,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felropui5\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -22685,8 +24988,8 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.fe.templates
-    - name: themelib_sap_fiori_3
     - name: sap.ushell
+    - name: themelib_sap_fiori_3
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -26088,6 +28391,23 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -26107,7 +28427,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -26257,8 +28577,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -26286,7 +28613,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felropui5\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -26329,8 +28655,8 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.fe.templates
-    - name: themelib_sap_fiori_3
     - name: sap.ushell
+    - name: themelib_sap_fiori_3
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -29733,6 +32059,23 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -29752,7 +32095,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -29902,8 +32245,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -29931,7 +32281,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop3\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -33320,6 +35669,23 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -33339,7 +35705,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -33489,8 +35855,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -33518,7 +35891,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop4\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -36888,7 +39260,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lropv2_set_toolsid\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -40276,6 +42647,23 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -40295,7 +42683,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -40445,8 +42833,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -40474,7 +42869,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lropv2_set_toolsid_only\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -43862,6 +46256,23 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -43881,7 +46292,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -44031,8 +46442,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -44068,7 +46486,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lropv2_ts_ui5_1_108\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -47544,7 +49961,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lropv2_ts_ui5_1_111\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -51020,7 +53436,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lropv2_ts_ui5_1_113\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -54488,7 +56903,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lrop_v2_ts\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -54529,8 +56943,8 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.fe.templates
-    - name: themelib_sap_fiori_3
     - name: sap.ushell
+    - name: themelib_sap_fiori_3
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -54931,7 +57345,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lrop_v2_ts\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",

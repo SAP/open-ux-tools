@@ -1,5 +1,5 @@
 import type { ReaderCollection } from '@ui5/fs';
-import type { TemplateConfig } from '../../../src/base/flp';
+import type { TemplateConfig } from '../../../src/base/config';
 import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
 import type { FlpConfig } from '../../../src/types';
 import type { MiddlewareUtils } from '@ui5/server';
@@ -24,8 +24,8 @@ jest.mock('@sap-ux/adp-tooling', () => {
 });
 
 class FlpSandbox extends FlpSandboxUnderTest {
-    public templateConfig: TemplateConfig;
-    public readonly config: FlpConfig;
+    public declare templateConfig: TemplateConfig;
+    public declare readonly config: FlpConfig;
 }
 
 describe('FlpSandbox', () => {
@@ -115,6 +115,9 @@ describe('FlpSandbox', () => {
         test('i18n manifest', async () => {
             const projectAccessMock = jest.spyOn(projectAccess, 'createProjectAccess').mockImplementation(() => {
                 return Promise.resolve({
+                    getApplicationIds: () => {
+                        return Promise.resolve(['my.id']);
+                    },
                     getApplication: () => {
                         return {
                             getI18nBundles: () => {

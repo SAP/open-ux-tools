@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import prompts, { type Answers } from 'prompts';
 import type { CustomConfig, AdpWriterConfig } from '../types';
 import type { AbapTarget } from '@sap-ux/system-access';
@@ -5,7 +6,8 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { Logger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { AppIndex } from '@sap-ux/axios-extension';
-import { isNotEmptyString, isValidSapClient } from './helper';
+import { validateClient, validateEmptyString } from '@sap-ux/project-input-validator';
+import { getPackageJSONInfo } from '../writer/project-utils';
 
 export type PromptDefaults = {
     id?: string;
@@ -128,7 +130,7 @@ export async function promptTarget(
                     name: 'url',
                     message: 'Target system url:',
                     initial: target.url,
-                    validate: isNotEmptyString,
+                    validate: validateEmptyString,
                     format: (input) => input.trim()
                 },
                 {
@@ -136,7 +138,7 @@ export async function promptTarget(
                     name: 'client',
                     message: 'Client (optional):',
                     initial: target.client,
-                    validate: isValidSapClient
+                    validate: validateClient
                 }
             ]);
             const systemInfo = await fetchSystemInformation(target, defaults.ignoreCertErrors, logger);
@@ -184,10 +186,15 @@ async function fetchSystemInformation(
     logger.info('Fetching system information...');
     const ato = await provider.getAtoInfo();
     const layer = ato.tenantType === 'SAP' ? 'VENDOR' : 'CUSTOMER_BASE';
+    const packageJson = getPackageJSONInfo();
     const customConfig: CustomConfig = {
         adp: {
             environment: ato.operationsType ?? 'P',
-            safeMode: true
+            support: {
+                id: packageJson.name,
+                version: packageJson.version,
+                toolsId: uuidv4()
+            }
         }
     };
     logger.info(`Target layer: ${layer}`);

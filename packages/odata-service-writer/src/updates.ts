@@ -3,26 +3,9 @@ import type { Editor } from 'mem-fs-editor';
 import path, { join } from 'path';
 import { t } from './i18n';
 import type { OdataService, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
-import { ServiceType } from './types';
 import semVer from 'semver';
 import prettifyXml from 'prettify-xml';
-import type { Manifest } from '@sap-ux/project-access';
-
-/**
- * Function to check if the service type is CDS.
- *
- * @param service - the OData service instance
- * @returns true if the service type is CDS
- */
-export function serviceIsCds(service: OdataService): boolean {
-    // if service type is not defined, set EDMX as default
-    let serviceType = service.type;
-    serviceType ||= ServiceType.EDMX;
-    if (serviceType === ServiceType.CDS) {
-        return true;
-    }
-    return false;
-}
+import { getMinimumUI5Version, type Manifest, hasUI5CliV3 } from '@sap-ux/project-access';
 
 /**
  * Internal function that updates the manifest.json based on the given service configuration.
@@ -46,8 +29,7 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
     }
 
     const manifestJsonExt = fs.read(join(templateRoot, 'extend', `manifest.json`));
-    const minUI5Version = manifest['sap.ui5']?.dependencies?.minUI5Version;
-    const manifestSettings = Object.assign(service, getModelSettings(minUI5Version));
+    const manifestSettings = Object.assign(service, getModelSettings(getMinimumUI5Version(manifest)));
     // If the service object includes ejs options, for example 'client' (see: https://ejs.co/#docs),
     // resulting in unexpected behaviour and problems when webpacking. Passing an empty options object prevents this.
     fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, manifestSettings, {})));
@@ -87,9 +69,6 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
  * @param {OdataService} service - The OData service information.
  */
 export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
-    if (serviceIsCds(service)) {
-        return;
-    }
     // Write annotation xml if annotations are provided and service type is EDMX
     const annotations = service.annotations as EdmxAnnotationsInfo;
     if (annotations?.xml) {
@@ -129,7 +108,7 @@ export async function updateCdsFilesWithAnnotations(annotations: CdsAnnotationsI
  */
 function getModelSettings(minUI5Version: string | undefined) {
     let includeSynchronizationMode = false;
-    if (minUI5Version && semVer.valid(minUI5Version)) {
+    if (minUI5Version) {
         includeSynchronizationMode = semVer.satisfies(minUI5Version, '<=1.110');
     }
     return { includeSynchronizationMode };
@@ -172,19 +151,4 @@ export function updatePackageJson(path: string, fs: Editor, addMockServer: boole
         }
     }
     fs.writeJSON(path, packageJson);
-}
-
-/**
- * Check if dev dependencies contains @ui5/cli version greater than 2.
- *
- * @param devDependencies dev dependencies from package.json
- * @returns boolean
- */
-export function hasUI5CliV3(devDependencies: any): boolean {
-    let isV3 = false;
-    const ui5CliSemver = semVer.coerce(devDependencies['@ui5/cli']);
-    if (ui5CliSemver && semVer.gte(ui5CliSemver, '3.0.0')) {
-        isV3 = true;
-    }
-    return isV3;
 }

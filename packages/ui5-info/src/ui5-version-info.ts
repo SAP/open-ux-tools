@@ -1,10 +1,10 @@
-import { coerce, major, minor, valid, maxSatisfying } from 'semver';
-import type { UI5VersionFilterOptions, UI5VersionOverview, UI5VersionsResponse, UI5Version } from './types';
+import { major, minor, valid, maxSatisfying } from 'semver';
+import type { UI5VersionFilterOptions, UI5VersionsResponse, UI5VersionSupport, UI5Version } from './types';
 import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import { ui5VersionFallbacks, defaultUi5Versions } from './ui5-version-fallback';
+import { defaultUi5Versions } from './ui5-version-fallback';
 import {
     defaultMinUi5Version,
     defaultVersion,
@@ -106,16 +106,20 @@ async function requestUI5Versions<T>(
 }
 
 /**
- * Return the list of UI5 version strings for a given URL.
+ * Returns the list of UI5 version strings and metadata information for Major.Minor UI5 versions.
  *
- * @param url - optional, url from which to request the UI5 versions
- * @returns ui5 version strings
+ * @param url optional, url from which to request the UI5 versions
+ * @returns ui5 version strings and metadata information
  */
-async function parseUI5Versions(url = ui5VersionRequestInfo.OfficialUrl.toString()): Promise<string[]> {
+async function parseUI5VersionsAndSupport(
+    url = ui5VersionRequestInfo.OfficialUrl.toString()
+): Promise<{ versions: string[]; support: UI5VersionSupport[] }> {
     const response = await requestUI5Versions<UI5VersionsResponse>(url);
-    let result: string[] = [];
+    let versionStrings: string[] = [];
+    const supportInfo: UI5VersionSupport[] = [];
+
     if (Array.isArray(response.routes)) {
-        result = response.routes.map((route: { path: string; target: { version: string } }) => {
+        versionStrings = response.routes.map((route: { path: string; target: { version: string } }) => {
             if (route.path === '/') {
                 latestUI5Version = route.target.version;
             }
@@ -123,63 +127,43 @@ async function parseUI5Versions(url = ui5VersionRequestInfo.OfficialUrl.toString
         });
     } else {
         latestUI5Version = response['latest'].version;
-        Object.values(response).forEach(({ patches = [] }) => result.push(...patches));
+        Object.values(response).forEach(({ version, support, patches = [] }) => {
+            versionStrings.push(...patches);
+            supportInfo.push({ version: version, support: support });
+        });
     }
-    return result;
-}
 
-/**
- * Returns metadata information for Major.Minor UI5 versions.
- *
- * @returns ui5 versions
- */
-async function parseUI5VersionsOverview(): Promise<UI5VersionOverview[]> {
-    let result: UI5VersionOverview[] = [];
-    let versions: UI5VersionOverview[] = [];
-    try {
-        const response = await requestUI5Versions<{ versions: UI5VersionOverview[] }>(
-            ui5VersionRequestInfo.OfficialUrl,
-            `/${ui5VersionRequestInfo.VersionsOverview}`
-        );
-        versions = response.versions;
-    } catch (error) {
-        new ToolsLogger().warn(
-            `Request to '${ui5VersionRequestInfo.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
-        );
-        versions = ui5VersionFallbacks;
-    }
-    result = versions.map((ver: any): UI5VersionOverview | undefined => {
-        const parsedVersion = coerce(ver.version)?.version;
-        return parsedVersion !== undefined ? { version: parsedVersion, support: ver.support } : undefined;
-    }) as UI5VersionOverview[];
-
-    return result;
+    return { versions: versionStrings, support: supportInfo };
 }
 
 /**
  * Returns ui5 versions from cache object.
  *
- * @param type 'officialVersions' or 'snapshotsVersions
+ * @param type 'officialVersions', 'snapshotsVersions or 'support'
  * @param useCache - will not make a network call but use pre-cached versions
- * @param snapshotUrl - the url from which snapshot UI% versions may be requested
- * @returns Array of UI5 versions
+ * @param snapshotUrl - the url from which snapshot UI5 versions may be requested
+ * @returns Array of UI5 versions or UI5VersionSupport objects
  */
 const retrieveUI5VersionsCache = async (
-    type: ui5VersionsType.official | ui5VersionsType.snapshot | ui5VersionsType.overview,
+    type: ui5VersionsType.official | ui5VersionsType.snapshot | ui5VersionsType.support,
     useCache = false,
     snapshotUrl?: string
-): Promise<string[] | UI5VersionOverview[]> => {
+): Promise<string[] | UI5VersionSupport[]> => {
+    let versions: string[] = [];
+    let support: UI5VersionSupport[] = [];
+
     if (!useCache) {
         switch (type) {
             case ui5VersionsType.official:
-                return parseUI5Versions(ui5VersionRequestInfo.OfficialUrl);
+            case ui5VersionsType.support:
+                ({ versions, support } = await parseUI5VersionsAndSupport());
+                return type === ui5VersionsType.official ? versions : support;
             case ui5VersionsType.snapshot:
                 if (snapshotUrl) {
-                    return parseUI5Versions(snapshotUrl);
+                    ({ versions } = await parseUI5VersionsAndSupport(snapshotUrl));
+                    return versions;
                 }
                 break;
-            case ui5VersionsType.overview:
-                return parseUI5VersionsOverview();
             default:
         }
     }
@@ -187,15 +171,16 @@ const retrieveUI5VersionsCache = async (
     if (ui5VersionsCache[type].length === 0) {
         switch (type) {
             case ui5VersionsType.official:
-                ui5VersionsCache[type] = await parseUI5Versions(ui5VersionRequestInfo.OfficialUrl);
+            case ui5VersionsType.support:
+                ({ versions, support } = await parseUI5VersionsAndSupport());
+                ui5VersionsCache.officialVersions = versions;
+                ui5VersionsCache.support = support;
                 break;
             case ui5VersionsType.snapshot:
                 if (snapshotUrl) {
-                    ui5VersionsCache[type] = await parseUI5Versions(snapshotUrl);
+                    ({ versions } = await parseUI5VersionsAndSupport(snapshotUrl));
+                    ui5VersionsCache.snapshotsVersions = versions;
                 }
-                break;
-            case ui5VersionsType.overview:
-                ui5VersionsCache[type] = await parseUI5VersionsOverview();
                 break;
             default:
         }
@@ -343,30 +328,42 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         );
         filteredUI5Versions = defaultUi5Versions.slice();
     }
+
     const defaultUI5Version = filteredUI5Versions[0];
+    let ui5VersionsOverview: UI5VersionSupport[];
+    let finalDefaultUI5Version = defaultUI5Version;
 
-    let ui5VersionsOverview: UI5VersionOverview[] | undefined;
-    if (filterOptions?.includeMaintained === true) {
+    // Retrieve UI5 versions overview if maintained versions are to be included, note: overview and official versions are not the same
+    if (filterOptions?.includeMaintained) {
         ui5VersionsOverview = (await retrieveUI5VersionsCache(
-            ui5VersionsType.overview,
-            filterOptions?.useCache
-        )) as UI5VersionOverview[];
+            ui5VersionsType.support,
+            filterOptions.useCache
+        )) as UI5Version[];
     }
+    // Semantically filter the UI5 version, based on the support (maintained or not) and default version
+    const isMaintained = (ui5: string) =>
+        ui5VersionsOverview?.some(
+            (v) =>
+                v &&
+                `${major(v.version)}.${minor(v.version)}` === `${major(ui5)}.${minor(ui5)}` &&
+                v.support === 'Maintenance'
+        ) ?? false;
 
-    return filteredUI5Versions.map((ui5: string) => {
+    // If the default version is not maintained, then fallback to the semantically latest maintained version
+    if (filterOptions?.includeDefault && filterOptions.includeMaintained && !isMaintained(defaultUI5Version)) {
+        const maintainedVersion = filteredUI5Versions.find(isMaintained);
+        finalDefaultUI5Version = maintainedVersion ?? defaultUI5Version;
+    }
+    // Map the UI5 versions to the UI5Version type, respecting the filter options
+    return filteredUI5Versions.map((ui5): UI5Version => {
         const ui5Version: UI5Version = {
             version: ui5
         };
-        if (filterOptions?.includeDefault && defaultUI5Version === ui5) {
-            ui5Version.default = true;
+        if (filterOptions?.includeDefault) {
+            ui5Version.default = ui5 === finalDefaultUI5Version;
         }
-        if (filterOptions?.includeMaintained === true && ui5VersionsOverview !== undefined) {
-            ui5Version.maintained = ui5VersionsOverview.some((v): boolean | undefined =>
-                v !== undefined
-                    ? `${major(v.version)}.${minor(v.version)}` === `${major(ui5)}.${minor(ui5)}` &&
-                      v.support === 'Maintenance'
-                    : undefined
-            );
+        if (filterOptions?.includeMaintained) {
+            ui5Version.maintained = isMaintained(ui5);
         }
         return ui5Version;
     });

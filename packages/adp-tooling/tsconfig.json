@@ -3,7 +3,8 @@
   "include": [
     "../../types/ui5.d.ts",
     "../../types/mem-fs-editor.d.ts",
-    "src"
+    "src",
+    "src/**/*.json"
   ],
   "compilerOptions": {
     "rootDir": "src",
@@ -17,10 +18,16 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../inquirer-common"
+    },
+    {
       "path": "../logger"
     },
     {
       "path": "../project-access"
+    },
+    {
+      "path": "../project-input-validator"
     },
     {
       "path": "../store"

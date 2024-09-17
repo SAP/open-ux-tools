@@ -1,5 +1,450 @@
 # @sap-ux/cap-config-writer
 
+## 0.7.40
+
+### Patch Changes
+
+-   614045c: Moves type only dep as dev dep to odata-service-inquirer
+
+## 0.7.39
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/fiori-generator-shared@0.3.20
+    -   @sap-ux/odata-service-inquirer@0.5.39
+
+## 0.7.38
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.38
+
+## 0.7.37
+
+### Patch Changes
+
+-   Updated dependencies [97f1d2a]
+    -   @sap-ux/odata-service-inquirer@0.5.37
+
+## 0.7.36
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/odata-service-inquirer@0.5.36
+    -   @sap-ux/fiori-generator-shared@0.3.19
+
+## 0.7.35
+
+### Patch Changes
+
+-   Updated dependencies [eb958a1]
+    -   @sap-ux/odata-service-inquirer@0.5.35
+
+## 0.7.34
+
+### Patch Changes
+
+-   Updated dependencies [8a84adf]
+    -   @sap-ux/odata-service-inquirer@0.5.34
+
+## 0.7.33
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/fiori-generator-shared@0.3.18
+    -   @sap-ux/odata-service-inquirer@0.5.33
+
+## 0.7.32
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.32
+
+## 0.7.31
+
+### Patch Changes
+
+-   Updated dependencies [e2f644a]
+    -   @sap-ux/odata-service-inquirer@0.5.31
+    -   @sap-ux/project-access@1.26.9
+    -   @sap-ux/fiori-generator-shared@0.3.17
+
+## 0.7.30
+
+### Patch Changes
+
+-   Updated dependencies [f7d2895]
+    -   @sap-ux/odata-service-inquirer@0.5.30
+
+## 0.7.29
+
+### Patch Changes
+
+-   Updated dependencies [34b2606]
+    -   @sap-ux/odata-service-inquirer@0.5.29
+
+## 0.7.28
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.16
+-   @sap-ux/odata-service-inquirer@0.5.28
+
+## 0.7.27
+
+### Patch Changes
+
+-   Updated dependencies [3e1a83a]
+    -   @sap-ux/fiori-generator-shared@0.3.15
+    -   @sap-ux/odata-service-inquirer@0.5.27
+
+## 0.7.26
+
+### Patch Changes
+
+-   Updated dependencies [12504d5]
+    -   @sap-ux/fiori-generator-shared@0.3.14
+    -   @sap-ux/odata-service-inquirer@0.5.26
+
+## 0.7.25
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/fiori-generator-shared@0.3.13
+    -   @sap-ux/odata-service-inquirer@0.5.25
+
+## 0.7.24
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.7
+-   @sap-ux/odata-service-inquirer@0.5.24
+-   @sap-ux/fiori-generator-shared@0.3.12
+
+## 0.7.23
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/odata-service-inquirer@0.5.23
+
+## 0.7.22
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.22
+
+## 0.7.21
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.21
+
+## 0.7.20
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.20
+
+## 0.7.19
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.19
+
+## 0.7.18
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+    -   @sap-ux/fiori-generator-shared@0.3.11
+    -   @sap-ux/odata-service-inquirer@0.5.18
+
+## 0.7.17
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.17
+
+## 0.7.16
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/fiori-generator-shared@0.3.10
+    -   @sap-ux/odata-service-inquirer@0.5.16
+
+## 0.7.15
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.15
+
+## 0.7.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+-   @sap-ux/fiori-generator-shared@0.3.9
+-   @sap-ux/odata-service-inquirer@0.5.14
+
+## 0.7.13
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.13
+
+## 0.7.12
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/fiori-generator-shared@0.3.8
+    -   @sap-ux/odata-service-inquirer@0.5.12
+
+## 0.7.11
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/odata-service-inquirer@0.5.11
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/fiori-generator-shared@0.3.7
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/fiori-generator-shared@0.3.6
+    -   @sap-ux/odata-service-inquirer@0.5.10
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [ad55f26]
+    -   @sap-ux/odata-service-inquirer@0.5.9
+
+## 0.7.8
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/fiori-generator-shared@0.3.5
+    -   @sap-ux/odata-service-inquirer@0.5.8
+
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/fiori-generator-shared@0.3.4
+    -   @sap-ux/odata-service-inquirer@0.5.7
+
+## 0.7.6
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.6
+
+## 0.7.5
+
+### Patch Changes
+
+-   Updated dependencies [eb1adcc]
+    -   @sap-ux/odata-service-inquirer@0.5.5
+
+## 0.7.4
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.4
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [d549173]
+    -   @sap-ux/project-access@1.25.7
+    -   @sap-ux/odata-service-inquirer@0.5.3
+    -   @sap-ux/fiori-generator-shared@0.3.3
+
+## 0.7.2
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.2
+
+## 0.7.1
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/fiori-generator-shared@0.3.2
+    -   @sap-ux/odata-service-inquirer@0.5.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   cac5277: Consolidates multiple export functions into a single function applyCAPUpdates, which handles updates for both Node.js and Java CAP projects
+
+## 0.6.10
+
+### Patch Changes
+
+-   Updated dependencies [108336f]
+    -   @sap-ux/odata-service-inquirer@0.5.0
+
+## 0.6.9
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.4.9
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/odata-service-inquirer@0.4.8
+
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/odata-service-inquirer@0.4.7
+
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/odata-service-inquirer@0.4.6
+
+## 0.6.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.25.2
+-   @sap-ux/odata-service-inquirer@0.4.5
+
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/odata-service-inquirer@0.4.4
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/odata-service-inquirer@0.4.3
+
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/odata-service-inquirer@0.4.2
+
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.4.1
+
+## 0.6.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/odata-service-inquirer@0.4.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/yaml@0.16.0
+
+## 0.5.7
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/project-access@1.22.4
+    -   @sap-ux/odata-service-inquirer@0.3.11
+
+## 0.5.6
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.10
+
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.9
+
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.8
+
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.3
+-   @sap-ux/odata-service-inquirer@0.3.7
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.6
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.5
+
+## 0.5.0
+
+### Minor Changes
+
+-   200894d7: Add support for passing launch text for Cap projects to generate README files
+
 ## 0.4.1
 
 ### Patch Changes

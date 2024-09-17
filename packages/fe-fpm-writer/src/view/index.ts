@@ -10,6 +10,7 @@ import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
+import { getManifest } from '../common/utils';
 
 /**
  * Merge the new view into the list of existing views (if any).
@@ -85,15 +86,14 @@ function enhanceConfig(fs: Editor, data: CustomView, manifestPath: string, manif
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
-export function generateCustomView(basePath: string, customView: CustomView, fs?: Editor): Editor {
+export async function generateCustomView(basePath: string, customView: CustomView, fs?: Editor): Promise<Editor> {
     validateVersion(customView.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
     }
     validateBasePath(basePath, fs);
 
-    const manifestPath = join(basePath, 'webapp/manifest.json');
-    const manifest = fs.readJSON(manifestPath) as Manifest;
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     // merge with defaults
     const completeView = enhanceConfig(fs, customView, manifestPath, manifest);

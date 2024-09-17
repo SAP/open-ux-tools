@@ -43,7 +43,7 @@ export const INPUT_EDITOR_TYPE = 'input';
 export const DROPDOWN_EDITOR_TYPE = 'dropdown';
 export const CHECKBOX_EDITOR_TYPE = 'checkbox';
 
-export const scenario = {
+export const SCENARIO = {
     AppVariant: 'APP_VARIANT',
     VersionedAppVariant: 'VERSIONED_APP_VARIANT',
     AdaptationProject: 'ADAPTATION_PROJECT',
@@ -51,7 +51,7 @@ export const scenario = {
     UiAdaptation: 'UI_ADAPTATION'
 } as const;
 
-export type Scenario = (typeof scenario)[keyof typeof scenario];
+export type Scenario = (typeof SCENARIO)[keyof typeof SCENARIO];
 
 interface ControlPropertyBase<T, V, E> {
     type: T;
@@ -167,6 +167,48 @@ export interface ShowMessage {
     shouldHideIframe: boolean;
 }
 
+export const SIMPLE_QUICK_ACTION_KIND = 'simple';
+export interface SimpleQuickAction {
+    kind: typeof SIMPLE_QUICK_ACTION_KIND;
+    id: string;
+    title: string;
+    enabled: boolean;
+}
+
+export const NESTED_QUICK_ACTION_KIND = 'nested';
+export interface NestedQuickAction {
+    kind: typeof NESTED_QUICK_ACTION_KIND;
+    id: string;
+    title: string;
+    enabled: boolean;
+    children: NestedQuickActionChild[];
+}
+
+export interface NestedQuickActionChild {
+    label: string;
+    children: NestedQuickActionChild[];
+}
+
+export type QuickAction = SimpleQuickAction | NestedQuickAction;
+
+export interface QuickActionGroup {
+    title: string;
+    actions: QuickAction[];
+}
+
+export interface SimpleQuickActionExecutionPayload {
+    kind: typeof SIMPLE_QUICK_ACTION_KIND;
+    id: string;
+}
+
+export interface NestedQuickActionExecutionPayload {
+    kind: typeof NESTED_QUICK_ACTION_KIND;
+    id: string;
+    path: string;
+}
+
+export type QuickActionExecutionPayload = SimpleQuickActionExecutionPayload | NestedQuickActionExecutionPayload;
+
 /**
  * ACTIONS
  */
@@ -243,6 +285,9 @@ export const appLoaded = createExternalAction<void>('app-loaded');
 export const undo = createExternalAction<void>('undo');
 export const redo = createExternalAction<void>('redo');
 export const save = createExternalAction<void>('save');
+export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('quick-action-list-changed');
+export const updateQuickAction = createExternalAction<QuickAction>('update-quick-action');
+export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -264,4 +309,7 @@ export type ExternalAction =
     | ReturnType<typeof undo>
     | ReturnType<typeof redo>
     | ReturnType<typeof save>
-    | ReturnType<typeof appLoaded>;
+    | ReturnType<typeof appLoaded>
+    | ReturnType<typeof quickActionListChanged>
+    | ReturnType<typeof updateQuickAction>
+    | ReturnType<typeof executeQuickAction>;

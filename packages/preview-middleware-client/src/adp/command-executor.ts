@@ -5,6 +5,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import { getError } from '../utils/error';
 
 type CommandNames = 'addXML';
 
@@ -27,13 +28,13 @@ export default class CommandExecutor {
      * @param designMetadata Design time metadata
      * @param flexSettings Additional flex settings
      */
-    public async getCommand(
+    public async getCommand<T>(
         runtimeControl: ManagedObject,
         commandName: CommandNames,
         modifiedValue: object,
         designMetadata: DesignTimeMetadata,
         flexSettings: FlexSettings
-    ): Promise<FlexCommand> {
+    ): Promise<FlexCommand<T>> {
         try {
             return await CommandFactory.getCommandFor(
                 runtimeControl,
@@ -43,9 +44,11 @@ export default class CommandExecutor {
                 flexSettings
             );
         } catch (e) {
-            const errorMsg = `Could not get command for '${commandName}'. ${e.message}`;
-            MessageToast.show(errorMsg);
-            throw new Error(errorMsg);
+            const error = getError(e);
+            const msgToastErrorMsg = `Could not get command for '${commandName}'. ${error.message}`;
+            error.message = msgToastErrorMsg;
+            MessageToast.show(msgToastErrorMsg);
+            throw error;
         }
     }
 
@@ -61,8 +64,9 @@ export default class CommandExecutor {
              */
             await this.rta.getCommandStack().pushAndExecute(command);
         } catch (e) {
-            MessageToast.show(e.message);
-            throw new Error(e.message);
+            const error = getError(e);
+            MessageToast.show(error.message);
+            throw error;
         }
     }
 }

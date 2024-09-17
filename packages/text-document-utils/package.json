@@ -1,0 +1,34 @@
+{
+    "name": "@sap-ux/text-document-utils",
+    "version": "0.2.0",
+    "description": "Library for text document utility functions and types",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/text-document-utils"
+    },
+    "license": "Apache-2.0",
+    "private": false,
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "watch": "tsc --watch"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "engines": {
+        "node": ">=18.x"
+    },
+    "dependencies": {
+        "vscode-languageserver-types": "3.17.2"
+    }
+}

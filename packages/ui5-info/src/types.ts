@@ -28,11 +28,11 @@ export interface UI5VersionFilterOptions {
      */
     useCache?: boolean;
     /**
-     * Includes the optional property `maintained` to indicate the UI5 version support level
+     * Includes the optional property `maintained` to indicate the UI5 version support level. With `includeDefault`, finds next maintained version if default is out of maintenance
      */
     includeMaintained?: boolean;
     /**
-     * Adds the property `default` to the default ui5 version
+     * Adds the property `default` to the default ui5 version. With `includeMaintained`, finds next maintained version if default is out of maintenance
      */
     includeDefault?: boolean;
     /**
@@ -50,16 +50,15 @@ export interface UI5Version {
     maintained?: boolean;
 }
 
-export interface UI5VersionOverview {
-    version: string;
-    support: string;
+export interface UI5VersionSupport extends UI5Version {
+    support?: string;
     lts?: string;
 }
 
 export interface UI5VersionsResponse {
     [key: string]: {
         patches?: string[];
-    } & UI5VersionOverview;
+    } & UI5VersionSupport;
 }
 
 export interface UI5Theme {

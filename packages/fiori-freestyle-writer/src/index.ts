@@ -11,6 +11,7 @@ import { FreestyleApp, TemplateType } from './types';
 import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
+import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -33,18 +34,28 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
-    // Common files
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
-    // Check if sap.ushell is already in the ui5Libs array
-    const ushellLib = 'sap.ushell';
-    const ui5Libs = Array.isArray(ffApp.ui5?.ui5Libs) ? ffApp.ui5.ui5Libs : [ffApp.ui5?.ui5Libs];
-    if (!ui5Libs.includes(ushellLib)) {
-        ui5Libs.push(ushellLib);
-    }
+
+    // Determine if the project type is 'EDMXBackend'.
+    const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
+    // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
+    const { uShellBootstrapResourceUrl, uiBootstrapResourceUrl } = getBootstrapResourceUrls(
+        isEdmxProjectType,
+        ffApp.ui5?.frameworkUrl,
+        ffApp.ui5?.version
+    );
+    const appConfig = {
+        ...ffApp,
+        uShellBootstrapResourceUrl,
+        uiBootstrapResourceUrl
+    };
     fs.copyTpl(
         join(tmplPath, 'common', 'add'),
         basePath,
-        { ...ffApp, ui5: { ...ffApp.ui5, ui5Libs }, escapeFLPText },
+        {
+            ...appConfig,
+            escapeFLPText
+        },
         undefined,
         {
             globOptions: { ignore, dot: true }
@@ -76,25 +87,33 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // package.json
     const packagePath = join(basePath, 'package.json');
+    // extend package.json with scripts for non-CAP projects
     fs.extendJSON(
         packagePath,
         JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {}))
     );
+
     const packageJson: Package = JSON.parse(fs.read(packagePath));
-
-    packageJson.scripts = {
-        ...packageJson.scripts,
-        ...getPackageJsonTasks({
-            localOnly: !!ffApp.service && !ffApp.service?.url,
-            addMock: !!ffApp.service?.metadata,
-            sapClient: ffApp.service?.client,
-            flpAppId: ffApp.app.flpAppId,
-            startFile: data?.app?.startFile,
-            localStartFile: data?.app?.localStartFile,
-            generateIndex: ffApp.appOptions?.generateIndex
-        })
-    };
-
+    if (isEdmxProjectType) {
+        // Add scripts for non-CAP applications
+        packageJson.scripts = {
+            ...packageJson.scripts,
+            ...getPackageJsonTasks({
+                localOnly: !!ffApp.service && !ffApp.service?.url,
+                addMock: !!ffApp.service?.metadata,
+                sapClient: ffApp.service?.client,
+                flpAppId: ffApp.app.flpAppId,
+                startFile: data?.app?.startFile,
+                localStartFile: data?.app?.localStartFile,
+                generateIndex: ffApp.appOptions?.generateIndex
+            })
+        };
+    } else {
+        // Add deploy-config for CAP applications
+        packageJson.scripts = {
+            'deploy-config': 'npx -p @sap/ux-ui5-tooling fiori add deploy-config cf'
+        };
+    }
     fs.writeJSON(packagePath, packageJson);
 
     // Add service to the project if provided
@@ -107,12 +126,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         ui5LocalConfig.addFioriToolsProxydMiddleware({});
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
-
-    // Extend ui5-local.yaml with additional UI5 lib
-    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addUI5Libs([ushellLib]);
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     return fs;
 }

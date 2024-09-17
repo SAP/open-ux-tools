@@ -103,7 +103,8 @@ import {
     REPLACE_TEXT_VALUE_CHANGE_TYPE,
     DELETE_TARGET_CHANGE_TYPE,
     CONVERT_TO_COMPOUND_ANNOTATION_CHANGE_TYPE,
-    DELETE_ANNOTATION_GROUP_CHANGE_TYPE
+    DELETE_ANNOTATION_GROUP_CHANGE_TYPE,
+    DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE
 } from './change';
 import { preprocessChanges } from './preprocessor';
 import type { CompilerToken } from './cds-compiler-tokens';
@@ -125,6 +126,7 @@ type ChangeHandler = {
 export class CDSWriter implements ChangeHandler {
     private readonly changes: CDSDocumentChange[] = [];
     private edits: TextEdit[] = [];
+    private referenceEdits: TextEdit[] = [];
     private indentLevelCache: { [pointer: string]: number } = {};
     private vocabularyAliases = new Set<string>();
     private deletionRangesMapForTarget: Map<string, DeletionRange[]> = new Map();
@@ -201,6 +203,7 @@ export class CDSWriter implements ChangeHandler {
                 this.edits.push(...targetDeletions);
             }
         }
+        this.edits.unshift(...this.referenceEdits);
         this.edits.sort(compareByRange);
 
         return this.edits;
@@ -212,6 +215,7 @@ export class CDSWriter implements ChangeHandler {
      */
     private resetState(): void {
         this.edits = [];
+        this.referenceEdits = [];
         this.processedChanges = [];
         this.indentLevelCache = {};
         this.deletionRangesMapForTarget = new Map();
@@ -277,7 +281,7 @@ export class CDSWriter implements ChangeHandler {
             this.insertIntoNodeWithContent(
                 content,
                 astNode,
-                [change],
+                change,
                 indentLevel,
                 this.isFirstInsert(change.pointer, astNode, change.index)
             );
@@ -306,7 +310,7 @@ export class CDSWriter implements ChangeHandler {
         this.convertInsertNodeToTextEdits(
             content,
             astNode,
-            [change],
+            change,
             indentLevel,
             this.isFirstInsert(change.pointer, astNode, change.index)
         );
@@ -320,7 +324,7 @@ export class CDSWriter implements ChangeHandler {
             this.insertIntoNodeWithContent(
                 content,
                 astNode,
-                [change],
+                change,
                 indentLevel,
                 this.isFirstInsert(change.pointer, astNode, change.index)
             );
@@ -336,7 +340,7 @@ export class CDSWriter implements ChangeHandler {
                 this.insertIntoNodeWithContent(
                     content,
                     value,
-                    [change],
+                    change,
                     adjustedIndentLevel,
                     this.isFirstInsert(change.pointer, value, change.index)
                 );
@@ -377,7 +381,7 @@ export class CDSWriter implements ChangeHandler {
         this.convertInsertNodeToTextEdits(
             content,
             astNode,
-            [change],
+            change,
             indentLevel,
             this.isFirstInsert(change.pointer, astNode, change.index)
         );
@@ -391,7 +395,7 @@ export class CDSWriter implements ChangeHandler {
             this.convertInsertNodeToTextEdits(
                 content,
                 astNode,
-                [change],
+                change,
                 indentLevel,
                 this.isFirstInsert(change.pointer, astNode, change.index)
             );
@@ -418,7 +422,7 @@ export class CDSWriter implements ChangeHandler {
             this.document.uri,
             this.projectRoot
         )}`;
-        this.edits.push(TextEdit.insert(position, text));
+        this.referenceEdits.push(TextEdit.insert(position, text));
     };
 
     //#endregion
@@ -490,6 +494,11 @@ export class CDSWriter implements ChangeHandler {
         const content = getContainerContent(parent, this.comments, this.tokens);
         const { startContentIndex } = findContentIndices(content, index, index);
         deleteBlock(this.edits, content, startContentIndex);
+    };
+
+    [DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE] = (): void => {
+        // should never be called
+        // preprocessor converts these changes to DeleteAnnotationGroup
     };
 
     private getDeletionRange(annotation: Annotation, target: Target, index: number): DeletionRange | undefined {
@@ -687,7 +696,7 @@ export class CDSWriter implements ChangeHandler {
             return;
         }
         const content = getContainerContent(astNode, this.comments, this.tokens);
-        const anchor = findInsertPosition(content, astNode, change.index);
+        const anchor = this.findInsertPosition(content, astNode, change.pointer, change.index);
         const indentLevel = this.getIndentLevel(change.pointer);
         if (anchor) {
             if (anchor.commaPosition) {
@@ -736,57 +745,54 @@ export class CDSWriter implements ChangeHandler {
     private insertIntoNodeWithContent<T extends ElementInserts>(
         content: ContainerContentBlock[],
         parent: ContainerNode,
-        changes: T[],
+        change: T,
         indentLevel: number,
         firstInsert: boolean
     ): void {
-        const [indices, changesByIndex] = indexInserts(changes, getChildCount(parent));
-        for (const index of indices) {
-            // change.index should not be used in this scope, because changes with indices outside the container size are merged
-            // and change.index would not correctly reflect the place where a change needs to be inserted
-            const changeSet = changesByIndex.get(index);
-            if (!changeSet || !parent.range) {
-                continue;
+        const index = getIndexForInsertion(getChildCount(parent), change.index);
+        // change.index should not be used in this scope, because changes with indices outside the container size are merged
+        // and change.index would not correctly reflect the place where a change needs to be inserted
+        if (!change || !parent.range) {
+            return;
+        }
+        const newElements = printChange(parent)(change);
+        if (getChildCount(parent) === 0) {
+            const fragments: string[] = [];
+            const range = copyRange(parent.range);
+            // we need to adjust range to exclude boundary characters
+            range.start.character++; // range includes '{' or '[' characters
+            range.end.character--; // range includes '}' or ']' characters
+
+            fragments.push('\n');
+            fragments.push(newElements);
+            fragments.push(',');
+            const text = indent(deIndent(fragments.join('')), {
+                level: indentLevel + 1,
+                skipFirstLine: true
+            });
+            this.insertText(range, text, indentLevel, firstInsert);
+        } else {
+            const anchor = this.findInsertPosition(content, parent, change.pointer, index ?? -1);
+            if (!anchor) {
+                return;
             }
-            const newElements = changeSet.map(printChange(parent)).join(',\n');
-            if (getChildCount(parent) === 0) {
-                const fragments: string[] = [];
-                const range = copyRange(parent.range);
-                // we need to adjust range to exclude boundary characters
-                range.start.character++; // range includes '{' or '[' characters
-                range.end.character--; // range includes '}' or ']' characters
+            const fragments: string[] = [];
 
-                fragments.push('\n');
-                fragments.push(newElements);
-                fragments.push(',');
-                const text = indent(deIndent(fragments.join('')), {
-                    level: indentLevel + 1,
-                    skipFirstLine: true
-                });
-                this.insertText(range, text, indentLevel, firstInsert);
-            } else {
-                const anchor = findInsertPosition(content, parent, index ?? -1);
-                if (!anchor) {
-                    continue;
-                }
-                const fragments: string[] = [];
-
-                if (firstInsert && anchor.commaPosition) {
-                    // for repeated inserts at the same spot we'll already have the trailing comma
-                    this.edits.push(TextEdit.insert(anchor.commaPosition, ','));
-                }
-
-                fragments.push('\n');
-                fragments.push(newElements);
-                fragments.push(',');
-                let finalText = fragments.join('');
-                finalText = deIndent(finalText);
-                const text = indent(finalText, {
-                    level: indentLevel + 1,
-                    skipFirstLine: true
-                });
-                this.edits.push(TextEdit.insert(anchor.position, text));
+            if (firstInsert && anchor.commaPosition) {
+                // for repeated inserts at the same spot we'll already have the trailing comma
+                this.edits.push(TextEdit.insert(anchor.commaPosition, ','));
             }
+
+            fragments.push('\n');
+            fragments.push(newElements);
+            fragments.push(',');
+            let finalText = fragments.join('');
+            finalText = deIndent(finalText);
+            const text = indent(finalText, {
+                level: indentLevel + 1,
+                skipFirstLine: true
+            });
+            this.edits.push(TextEdit.insert(anchor.position, text));
         }
     }
 
@@ -805,26 +811,56 @@ export class CDSWriter implements ChangeHandler {
         }
     }
 
-    private convertInsertNodeToTextEdits<
-        T extends
-            | InsertRecord
-            | InsertRecordProperty
-            | InsertAnnotation
-            | InsertPrimitiveValue
-            | InsertEmbeddedAnnotation
-    >(
+    private convertInsertNodeToTextEdits<T extends ElementInserts>(
         content: ContainerContentBlock[],
         parent: ContainerNode | CDSDocument,
-        changes: Array<T>,
+        change: T,
         childIndentLevel: number,
         firstInsert: boolean
     ): void {
-        if (changes.length === 0) {
+        if (!change) {
             return;
         }
         if (parent.type !== CDS_DOCUMENT_TYPE) {
-            this.insertIntoNodeWithContent(content, parent, changes, childIndentLevel, firstInsert);
+            this.insertIntoNodeWithContent(content, parent, change, childIndentLevel, firstInsert);
         }
+    }
+
+    private findInsertPosition(
+        content: ContainerContentBlock[],
+        parent: ContainerNode,
+        insertionPointer: string,
+        index = -1
+    ): { position: Position; commaPosition?: Position } | undefined {
+        const childCount = getChildCount(parent);
+        if (childCount === 0) {
+            if (!parent.range) {
+                return undefined;
+            }
+            const position = copyPosition(parent.range.start);
+            position.character++; // range includes '{' or '[' characters
+            return { position };
+        }
+        const i = index > -1 ? Math.min(index, childCount) : childCount;
+        const { previousContentIndex, startContentIndex } = findContentIndices(content, i);
+        const anchor = getStartAnchor(content, parent, previousContentIndex, startContentIndex);
+        const previousElement = content[previousContentIndex];
+        if (anchor) {
+            if (
+                previousElement?.type === 'element' &&
+                !previousElement.trailingComma &&
+                previousElement.element.range
+            ) {
+                if (!skipCommaInsertion(this.changes, content, this.document, previousContentIndex)) {
+                    return {
+                        position: anchor,
+                        commaPosition: copyPosition(previousElement.element.range.end)
+                    };
+                }
+            }
+            return { position: anchor };
+        }
+        return undefined;
     }
 }
 
@@ -903,11 +939,39 @@ function deleteBlock(edits: TextEdit[], content: ContainerContentBlock[], blockI
         edits.push(TextEdit.del(Range.create(block.range.end, next.range.start)));
     } else if (previous?.range) {
         // if the last child element is being deleted then white space between the last and previous should be removed as well
-        const edit = TextEdit.del(Range.create(previous.range.end, block.range.start));
-        // other deletion edits with the same range may already exist
-        if (!edits.some((item) => isRangesEqual(item.range, edit.range))) {
-            edits.push(edit);
+        deletePreviousElementWhiteSpaces(previous, block, edits);
+        // iterate over the previous of previous element, if the previous element is already deleted.ß
+        enhanceDeletionRange(edits, content, blockIndex);
+    }
+}
+
+function enhanceDeletionRange(edits: TextEdit[], content: ContainerContentBlock[], blockIndex: number) {
+    for (let i = blockIndex - 1; i > -1; i--) {
+        const prev = content[i];
+        if (edits.some((item) => isRangesEqual(item.range, prev.range))) {
+            // previous element is being deleted
+            // the space above it should be included in deletion scope
+            const beforePrev = content[i - 1];
+            if (beforePrev?.range) {
+                deletePreviousElementWhiteSpaces(beforePrev, prev, edits);
+            } else {
+                break;
+            }
+        } else {
+            break;
         }
+    }
+}
+
+function deletePreviousElementWhiteSpaces(
+    previousElement: ContainerContentBlock,
+    currentBlock: ContainerContentBlock,
+    edits: TextEdit[]
+): void {
+    const edit = TextEdit.del(Range.create(previousElement.range!.end, currentBlock.range!.start));
+    // other deletion edits with the same range may already exist
+    if (!edits.some((item) => isRangesEqual(item.range, edit.range))) {
+        edits.push(edit);
     }
 }
 
@@ -963,54 +1027,10 @@ function printChange(parent: ContainerNode | undefined) {
     };
 }
 
-function indexInserts<T extends ElementInserts>(
-    changes: Array<T>,
-    containerSize: number
-): [(number | undefined)[], Map<number | undefined, T[]>] {
-    const changesByIndex = new Map<number | undefined, T[]>();
-    const indices: (number | undefined)[] = [];
-    for (const change of changes) {
-        const index =
-            change.index !== undefined && change.index > -1 ? Math.min(change.index, containerSize) : containerSize;
-        let changeSet = changesByIndex.get(index);
-        if (!changeSet) {
-            changeSet = [];
-            indices.push(index);
-            changesByIndex.set(index, changeSet);
-        }
-        changeSet.push(change);
-    }
-    return [indices, changesByIndex];
-}
-
-function findInsertPosition(
-    content: ContainerContentBlock[],
-    parent: ContainerNode,
-    index = -1
-): { position: Position; commaPosition?: Position } | undefined {
-    const childCount = getChildCount(parent);
-    if (childCount === 0) {
-        if (!parent.range) {
-            return undefined;
-        }
-        const position = copyPosition(parent.range.start);
-        position.character++; // range includes '{' or '[' characters
-        return { position };
-    }
-    const i = index > -1 ? Math.min(index, childCount) : childCount;
-    const { previousContentIndex, startContentIndex } = findContentIndices(content, i);
-    const anchor = getStartAnchor(content, parent, previousContentIndex, startContentIndex);
-    const previousElement = content[previousContentIndex];
-    if (anchor) {
-        if (previousElement?.type === 'element' && !previousElement.trailingComma && previousElement.element.range) {
-            return {
-                position: anchor,
-                commaPosition: copyPosition(previousElement.element.range.end)
-            };
-        }
-        return { position: anchor };
-    }
-    return undefined;
+function getIndexForInsertion(containerSize: number, insertionIndex?: number): number {
+    return insertionIndex !== undefined && insertionIndex > -1
+        ? Math.min(insertionIndex, containerSize)
+        : containerSize;
 }
 
 function getCommas(container: ContainerNode, tokens: CompilerToken[]): Token[] {
@@ -1415,4 +1435,27 @@ function processNode(content: ContainerContentBlock[], item: Comment | AstNode):
         }
         content.push(element);
     }
+}
+function skipCommaInsertion(
+    changes: CDSDocumentChange[],
+    content: ContainerContentBlock[],
+    document: CDSDocument,
+    insertAfterIndex: number
+) {
+    return !!changes.find((change) => {
+        if (!change.type.startsWith('delete')) {
+            return false;
+        }
+        const astNodes = getAstNodesFromPointer(document, change.pointer);
+        const toBeDeletedNodes = astNodes[astNodes.length - 1];
+        const node = content[insertAfterIndex];
+        if (node.type === 'element' && node?.element === toBeDeletedNodes) {
+            if (toBeDeletedNodes.type === 'annotation' && content.length === 1) {
+                return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    });
 }

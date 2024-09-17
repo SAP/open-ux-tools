@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 0.4.1
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
+## 0.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
 ## 0.3.3
 
 ### Patch Changes

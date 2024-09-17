@@ -19,6 +19,9 @@
       "path": "../feature-toggle"
     },
     {
+      "path": "../guided-answers-helper"
+    },
+    {
       "path": "../inquirer-common"
     },
     {
@@ -29,6 +32,12 @@
     },
     {
       "path": "../project-access"
+    },
+    {
+      "path": "../project-input-validator"
+    },
+    {
+      "path": "../store"
     },
     {
       "path": "../telemetry"

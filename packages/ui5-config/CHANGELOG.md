@@ -1,5 +1,41 @@
 # @sap-ux/ui5-config
 
+## 0.24.1
+
+### Patch Changes
+
+-   1a99abc: separation between ui5libs and manifestlibs, to allow for different ui5 libraries set in manifest and other files
+
+## 0.24.0
+
+### Minor Changes
+
+-   61721f2: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    removed dependency on sap.ushell for v4 manifest.json
+
+## 0.23.1
+
+### Patch Changes
+
+-   22e4ad8: Generate correct ui5.yaml
+
+## 0.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/yaml@0.16.0
+
+## 0.22.10
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+
 ## 0.22.9
 
 ### Patch Changes

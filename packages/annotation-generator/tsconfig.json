@@ -1,0 +1,30 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/mem-fs-editor.d.ts",
+    "src",
+    "index.d.ts"
+  ],
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "noErrorTruncation": true,
+    "lib": [
+      "ES2021"
+    ]
+  },
+  "references": [
+    {
+      "path": "../fiori-annotation-api"
+    },
+    {
+      "path": "../odata-annotation-core-types"
+    },
+    {
+      "path": "../odata-entity-model"
+    },
+    {
+      "path": "../project-access"
+    }
+  ]
+}

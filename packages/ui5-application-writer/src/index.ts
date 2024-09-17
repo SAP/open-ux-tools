@@ -4,10 +4,10 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { App, AppOptions, Package, UI5 } from './types';
 import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
-import type { Manifest } from '@sap-ux/project-access';
+import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
-import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
+import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
 import { Ui5App } from './types';
 
 /**
@@ -31,8 +31,20 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     if (ui5AppConfig.appOptions?.generateIndex === false) {
         ignore.push('**/webapp/index.html');
     }
-
-    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, {
+    const isEdmxProjectType = ui5AppConfig.app.projectType === 'EDMXBackend';
+    if (!isEdmxProjectType) {
+        // ignore the ui5-local.yaml file for CAP applications
+        ignore.push('**/ui5-local.yaml');
+        // ignore the .gitignore.tmpl file for CAP applications
+        ignore.push('**/gitignore.tmpl');
+    }
+    // Determine the UI5 resource URL based on project type and UI5 framework details
+    const ui5ResourceUrl = getTemplateOptions(isEdmxProjectType, ui5App.ui5?.frameworkUrl, ui5App.ui5?.version);
+    const templateOptions = {
+        ...ui5App,
+        ui5ResourceUrl
+    };
+    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), templateOptions, undefined, {
         globOptions: { dot: true, ignore },
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
     });
@@ -46,24 +58,27 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         }
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
-
-    // ui5-local.yaml
-    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addUI5Framework(
-        ui5App.ui5.framework,
-        ui5App.ui5.localVersion,
-        ui5App.ui5.ui5Libs as string[],
-        ui5App.ui5.ui5Theme
-    );
-    ui5LocalConfig.addFioriToolsAppReloadMiddleware();
-
-    // Add optional features
-    await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
-
-    // write ui5 yamls
+    if (isEdmxProjectType) {
+        const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
+        // write ui5-local.yaml only for non-CAP applications
+        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+        ui5LocalConfig.addUI5Framework(
+            ui5App.ui5.framework,
+            ui5App.ui5.localVersion,
+            ui5App.ui5.ui5Libs as string[],
+            ui5App.ui5.ui5Theme
+        );
+        ui5LocalConfig.addFioriToolsAppReloadMiddleware();
+        // Add optional features
+        await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
+        // write ui5 local yaml
+        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    } else {
+        // Add optional features
+        await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
+    }
+    // write ui5 yaml
     fs.write(ui5ConfigPath, ui5Config.toString());
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     return fs;
 }
@@ -115,7 +130,8 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
 
     const tmplPath = join(__dirname, '..', 'templates');
-    const typesVersion = getEsmTypesVersion(manifest['sap.ui5']?.dependencies?.minUI5Version);
+    //By chosing getMinimumUI5Version we assume that the esm type is compatible if there are multiple versions.
+    const typesVersion = getEsmTypesVersion(getMinimumUI5Version(manifest));
     const typesPackage = getTypesPackage(typesVersion);
     const ui5App = {
         app: manifest['sap.app'],

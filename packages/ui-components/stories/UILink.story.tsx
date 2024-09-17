@@ -21,6 +21,15 @@ export const defaultUsage = (): JSX.Element => {
 
             <Stack tokens={stackTokens}>
                 <Text variant={'large'} className="textColor" block>
+                    Primary UILink with no underline
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <UILink underline={false} href="JavaScript:void(0)">I am a link</UILink>
+                </Stack>
+            </Stack>
+
+            <Stack tokens={stackTokens}>
+                <Text variant={'large'} className="textColor" block>
                     Secondary UILink
                 </Text>
                 <Stack horizontal tokens={stackTokens}>

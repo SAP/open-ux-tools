@@ -1,5 +1,71 @@
 # @sap-ux/ui-components
 
+## 1.18.0
+
+### Minor Changes
+
+-   a492b41: Provide the ability to pass any props to UITreeDropdown input.
+
+## 1.17.9
+
+### Patch Changes
+
+-   ea0674c: UIContextualMenu.getUIcontextualMenuCalloutStyles - change parameter from `props?: IContextualMenuProps` to `styles?: IStyleFunctionOrObject<IContextualMenuStyleProps, IContextualMenuStyles>` and make parameter as optional
+
+## 1.17.8
+
+### Patch Changes
+
+-   b124873: UIContextualMenu.getUIContextualMenuItemStyles - make `props` param optional
+
+## 1.17.7
+
+### Patch Changes
+
+-   73f905f: Added optional `tabIndex` property for UISplitter component.
+
+## 1.17.6
+
+### Patch Changes
+
+-   7710aa5: chore upgrade @fluentui/react@8.120.5
+
+## 1.17.5
+
+### Patch Changes
+
+-   128a3dc: UIDefaultButton. Regression after context menu enhancements - ArrowDown icon always rendered for button
+
+## 1.17.4
+
+### Patch Changes
+
+-   ee7aeb8: Layout types for UIContextualMenu and consider underline prop for UILink
+
+## 1.17.3
+
+### Patch Changes
+
+-   0084205: chore: update sanitize-html and transitive dependencies
+
+## 1.17.2
+
+### Patch Changes
+
+-   88c8bf6: export interface for UISelectableOption(ISelectableOption from fluent-ui) which support generic type for "data" property
+
+## 1.17.1
+
+### Patch Changes
+
+-   9b7f144: adjust storybook after stroybook update from "7.6.18" to "8.1.11"
+
+## 1.17.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
 ## 1.16.3
 
 ### Patch Changes

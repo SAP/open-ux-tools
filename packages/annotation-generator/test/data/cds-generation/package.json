@@ -1,0 +1,30 @@
+{
+  "name": "cdsAnnotationGenerationTest",
+  "description": "",
+  "dependencies": {
+    "@sap/cds": "7.9.3"
+  },
+  "scripts": {
+    "start": "npx cds run"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sql"
+      },
+      "uaa": {
+        "kind": "xsuaa",
+        "credentials": {}
+      }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
+    }
+  },
+  "sapux": [
+    "app/project1"
+  ],
+  "devDependencies": {
+    "@sap/ux-specification": "^1.84.6"
+  }
+}

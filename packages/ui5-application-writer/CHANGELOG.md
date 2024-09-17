@@ -1,5 +1,98 @@
 # @sap-ux/ui5-application-writer
 
+## 1.1.6
+
+### Patch Changes
+
+-   8cfd71a: ui5-application-writer - fix backward support for older ui5 versions in locate-reuse-libs.js
+
+## 1.1.5
+
+### Patch Changes
+
+-   1a99abc: separation between ui5libs and manifestlibs, to allow for different ui5 libraries set in manifest and other files
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+
+## 1.1.4
+
+### Patch Changes
+
+-   61721f2: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    removed dependency on sap.ushell for v4 manifest.json
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+
+## 1.1.3
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
+## 1.1.2
+
+### Patch Changes
+
+-   42486a5: fix(locate-reuse-lib): corrected extraction of component name
+
+## 1.1.1
+
+### Patch Changes
+
+-   d549173: - Adjusts getMinUI5VersionAsArray so that semver valid check is included; the function now only returns valid versions.
+    -   Upgrade of @ui5/manifest to 1.66.0; adjustment of all components so that minimumUI5Version definitions as array are processed properly.
+
+## 1.1.0
+
+### Minor Changes
+
+-   1a0e478: Removal of private: true Flag from Package.json Templates
+
+## 1.0.0
+
+### Major Changes
+
+-   5b243ac: Add `projectType` mandatory option to `App` interface to specify the type of project being processed. This option determines file inclusion/exclusion and script updates in the template:
+    -   For projects of type 'CAPJava' or 'CAPNodejs':
+        -   Exclude `ui5-local.yaml` and `.gitignore` from the template.
+        -   Update `package.json` to include only the script `deploy-config`.
+        -   Use full URLs to determine resource URLs in `webapp/index.html` and `flpSandbox.html`.
+    -   For projects of type 'EDMXBackend':
+        -   Include `ui5-local.yaml` and `.gitignore` in the template.
+        -   Update `package.json` to include the following scripts: start, start-local, build, start-noflp, start-mock, int-test, deploy, and sap-ux.
+        -   Include relative URLs to determine resource URLs in `webapp/index.html` and `flpSandbox.html`.
+
+## 0.27.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+
+## 0.27.1
+
+### Patch Changes
+
+-   8b7ee1f: Do not add reuse libraries to the ui5-local.yaml
+
+## 0.27.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/ui5-config@0.23.0
+
+## 0.26.18
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+
 ## 0.26.17
 
 ### Patch Changes

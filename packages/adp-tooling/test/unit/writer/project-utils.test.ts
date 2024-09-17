@@ -1,14 +1,24 @@
 import path from 'path';
+import { readFileSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
+
 import type { AdpWriterConfig } from '../../../src';
-import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from '../../../src/writer/project-utils';
+import {
+    writeTemplateToFolder,
+    writeUI5Yaml,
+    writeUI5DeployYaml,
+    getPackageJSONInfo
+} from '../../../src/writer/project-utils';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
     read: jest.fn(),
     copyTpl: jest.fn(),
-    write: jest.fn()
+    write: jest.fn(),
+    readFileSync: jest.fn()
 }));
+
+const readFileSyncMock = readFileSync as jest.Mock;
 
 describe('Project Utils', () => {
     const data: AdpWriterConfig = {
@@ -26,6 +36,31 @@ describe('Project Utils', () => {
                     metadata:
                     name: ${data.app.id}
                     type: application`;
+
+    describe('getPackageJSONInfo', () => {
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        it('should return package.json content when file is read successfully', () => {
+            const mockJSON = { name: 'test-package', version: '1.0.0' };
+            readFileSyncMock.mockReturnValue(JSON.stringify(mockJSON));
+
+            const result = getPackageJSONInfo();
+
+            expect(result).toEqual(mockJSON);
+        });
+
+        it('should return default package info on read failure', () => {
+            readFileSyncMock.mockImplementation(() => {
+                throw new Error('File not found');
+            });
+
+            const result = getPackageJSONInfo();
+
+            expect(result).toEqual({ name: '@sap-ux/adp-tooling', version: 'NO_VERSION_FOUND' });
+        });
+    });
 
     describe('writeTemplateToFolder', () => {
         beforeEach(() => {

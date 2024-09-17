@@ -1,5 +1,98 @@
 # @sap-ux/axios-extension
 
+## 1.16.6
+
+### Patch Changes
+
+-   aa72f3c: Fix preview adp project with component dependencies
+
+## 1.16.5
+
+### Patch Changes
+
+-   Updated dependencies [d3dafeb]
+    -   @sap-ux/btp-utils@0.15.2
+
+## 1.16.4
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/btp-utils@0.15.1
+
+## 1.16.3
+
+### Patch Changes
+
+-   0084205: linting: use optional chaining operator ?
+
+## 1.16.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
+## 1.16.1
+
+### Patch Changes
+
+-   ad9b56d: Extend axios-extension services
+
+## 1.16.0
+
+### Minor Changes
+
+-   3a878f3: Add support for abap cds view service generation
+
+## 1.15.1
+
+### Patch Changes
+
+-   abf491a7: add service type to catalog request results
+
+## 1.15.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/logger@0.6.0
+
+## 1.14.4
+
+### Patch Changes
+
+-   4492fe10: fix for ui service generation response parsing
+
+## 1.14.3
+
+### Patch Changes
+
+-   d5d3626c: chore - Update to "qs": "6.11.0"
+
+## 1.14.2
+
+### Patch Changes
+
+-   65bfb244: Add Adaptation Project's Change Data Source generator prompting
+
+## 1.14.1
+
+### Patch Changes
+
+-   844e79c4: fix for v2 catalog services
+
+## 1.14.0
+
+### Minor Changes
+
+-   31cc53f8: Use new api endpoint for ui service generator
+
 ## 1.13.1
 
 ### Patch Changes

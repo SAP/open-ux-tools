@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/cards-editor-config-writer",
-    "version": "0.3.8",
+    "version": "0.4.4",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",

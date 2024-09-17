@@ -66,7 +66,8 @@ export function getServiceProvider(
             auth: {
                 username: endpoint.Credentials?.username,
                 password: endpoint.Credentials?.password
-            }
+            },
+            params: endpoint.Client ? { 'sap-client': endpoint.Client } : undefined
         });
     }
     return abapServiceProvider;

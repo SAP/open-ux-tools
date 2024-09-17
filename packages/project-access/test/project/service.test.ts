@@ -1,6 +1,6 @@
 import { join } from 'path';
-import type { Manifest } from '../../src';
-import { getMainService, getServicesAndAnnotations } from '../../src/project/service';
+import type { Manifest, ManifestNamespace } from '../../src';
+import { getMainService, getServicesAndAnnotations, filterDataSourcesByType } from '../../src/project/service';
 
 describe('Test getMainService()', () => {
     test('No manifest', () => {
@@ -128,5 +128,29 @@ describe('Test getServicesAndAnnotations()', () => {
                 ]
             }
         });
+    });
+});
+
+describe('Test filterDataSourcesByType()', () => {
+    const dataSources = {
+        'foo': {
+            'uri': 'bar',
+            'type': 'OData',
+            'settings': {
+                'annotations': ['anno1']
+            }
+        },
+        'anno1': {
+            'uri': 'anno1/uri',
+            'type': 'ODataAnnotation',
+            'settings': {
+                'localUri': 'anno1/path'
+            }
+        }
+    } as Record<string, ManifestNamespace.DataSource>;
+
+    test('Filter Sources of type OData', async () => {
+        const result = filterDataSourcesByType(dataSources, 'OData');
+        expect(result).toEqual({ 'foo': dataSources['foo'] });
     });
 });

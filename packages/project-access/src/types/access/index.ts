@@ -1,5 +1,6 @@
-import type { I18nBundles } from '../i18n';
+import type { Logger } from '@sap-ux/logger';
 import type { NewI18nEntry } from '@sap-ux/i18n';
+import type { I18nBundles } from '../i18n';
 import type { ApplicationStructure, I18nPropertiesPaths, Project, ProjectType } from '../info';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '../package';
@@ -10,7 +11,9 @@ interface BaseAccess {
     readonly root: string;
     readonly projectType: ProjectType;
 }
-
+export interface ApplicationAccessOptions extends ProjectAccessOptions {
+    fs?: Editor;
+}
 export interface ApplicationAccess extends BaseAccess {
     readonly app: ApplicationStructure;
     /**
@@ -67,7 +70,7 @@ export interface ApplicationAccess extends BaseAccess {
     /**
      * Maintains new translation entries in CAP i18n files.
      *
-     * @param filePath file in which the translation entry will be used.
+     * @param filePath absolute path to file in which the translation entry will be used.
      * @param newI18nEntries translation entries to write in the i18n file.
      * @returns boolean or exception
      */
@@ -98,6 +101,10 @@ export interface ApplicationAccess extends BaseAccess {
      */
     getI18nPropertiesPaths(): Promise<I18nPropertiesPaths>;
     /**
+     * Returns an instance of @sap/ux-specification for the application.
+     */
+    getSpecification<T>(): Promise<T>;
+    /**
      * Updates package.json file asynchronously by keeping the previous indentation.
      *
      * @param packageJson - updated package.json file content
@@ -111,6 +118,10 @@ export interface ApplicationAccess extends BaseAccess {
      * @param memFs - optional mem-fs-editor instance
      */
     updateManifestJSON(manifest: Manifest, memFs?: Editor): Promise<void>;
+}
+
+export interface ProjectAccessOptions {
+    logger?: Logger;
 }
 
 export interface ProjectAccess extends BaseAccess {

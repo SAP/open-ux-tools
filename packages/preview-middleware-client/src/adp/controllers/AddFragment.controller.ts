@@ -2,7 +2,6 @@
 import Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
-import MessageToast from 'sap/m/MessageToast';
 
 /** sap.ui.core */
 import type UI5Element from 'sap/ui/core/Element';
@@ -21,6 +20,9 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
+/** sap.ui.fl */
+import {type AddFragmentChangeContentType} from 'sap/ui/fl/Change';
+
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
@@ -33,11 +35,19 @@ interface CreateFragmentProps {
     targetAggregation: string;
 }
 
+const radix = 10;
+
+type AddFragmentModel = JSONModel & {
+    getProperty(sPath: '/newFragmentName'): string;
+    getProperty(sPath: '/selectedIndex'): number;
+    getProperty(sPath: '/selectedAggregation/value'): string;
+};
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default class AddFragment extends BaseDialog {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
+export default class AddFragment extends BaseDialog<AddFragmentModel> {
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, private aggregation?: string) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
@@ -114,7 +124,7 @@ export default class AddFragment extends BaseDialog {
         );
 
         newSelectedControlChildren = newSelectedControlChildren.map((key) => {
-            return parseInt(key);
+            return parseInt(key, radix);
         });
 
         this.specialIndexHandling(selectedItemText);
@@ -135,7 +145,7 @@ export default class AddFragment extends BaseDialog {
         source.setEnabled(false);
 
         const fragmentName = this.model.getProperty('/newFragmentName');
-        const index = parseInt(this.model.getProperty('/selectedIndex'));
+        const index = this.model.getProperty('/selectedIndex');
         const targetAggregation = this.model.getProperty('/selectedAggregation/value');
         const fragmentData = {
             index,
@@ -174,7 +184,7 @@ export default class AddFragment extends BaseDialog {
             }
             return false;
         });
-        const defaultAggregation = controlMetadata.getDefaultAggregationName();
+        const defaultAggregation = this.aggregation ?? controlMetadata.getDefaultAggregationName();
         const selectedControlName = controlMetadata.getName();
 
         let selectedControlChildren: string[] | number[] = Object.keys(
@@ -182,7 +192,7 @@ export default class AddFragment extends BaseDialog {
         );
 
         selectedControlChildren = selectedControlChildren.map((key) => {
-            return parseInt(key);
+            return parseInt(key, radix);
         });
 
         this.model.setProperty('/selectedControlName', selectedControlName);
@@ -216,8 +226,7 @@ export default class AddFragment extends BaseDialog {
 
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
-            MessageToast.show(e.message);
-            throw new Error(e.message);
+            this.handleError(e);
         }
 
         this.model.setProperty('/selectedIndex', indexArray.length - 1);
@@ -268,7 +277,7 @@ export default class AddFragment extends BaseDialog {
             targetAggregation: targetAggregation ?? 'content'
         };
 
-        const command = await this.commandExecutor.getCommand(
+        const command = await this.commandExecutor.getCommand<AddFragmentChangeContentType>(
             this.runtimeControl,
             'addXML',
             modifiedValue,
@@ -276,6 +285,19 @@ export default class AddFragment extends BaseDialog {
             flexSettings
         );
 
+        const templateName = this.getFragmentTemplateName(modifiedValue.targetAggregation);
+        if (templateName) {
+            const preparedChange = command.getPreparedChange();
+            const content = preparedChange.getContent();
+            preparedChange.setContent({ ...content, templateName });
+        }
         await this.commandExecutor.pushAndExecuteCommand(command);
+    }
+
+    private getFragmentTemplateName(targetAggregation: string): string {
+        const currentControlName = this.runtimeControl.getMetadata().getName();
+        return currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections'
+            ? 'OBJECT_PAGE_CUSTOM_SECTION'
+            : '';
     }
 }

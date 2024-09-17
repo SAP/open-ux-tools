@@ -1,11 +1,16 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import { SCENARIO, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
-import type Localization from 'sap/base/i18n/Localization';
+import { getManifestAppdescr } from '../adp/api-handler';
+import { getError } from '../utils/error';
+import initConnectors from './initConnectors';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
+
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
@@ -34,6 +39,27 @@ const UI5_LIBS = [
     'sap.zen'
 ];
 
+interface Manifest {
+    ['sap.ui5']?: {
+        dependencies?: {
+            libs: Record<string, unknown>;
+            components: Record<string, unknown>;
+        };
+        componentUsages?: Record<string, { name: string }>;
+    };
+}
+
+type AppIndexData = Record<
+    string,
+    {
+        dependencies?: {
+            url?: string;
+            type?: string;
+            componentId: string;
+        }[];
+    }
+>;
+
 /**
  * Check whether a specific dependency is a custom library, and if yes, add it to the map.
  *
@@ -42,6 +68,28 @@ const UI5_LIBS = [
  */
 function addKeys(dependency: Record<string, unknown>, customLibs: Record<string, true>): void {
     Object.keys(dependency).forEach(function (key) {
+        // ignore libs or Components that start with SAPUI5 delivered namespaces
+        if (
+            !UI5_LIBS.some(function (substring) {
+                return key === substring || key.startsWith(substring + '.');
+            })
+        ) {
+            customLibs[key] = true;
+        }
+    });
+}
+
+/**
+ * Check whether a specific ComponentUsage is a custom component, and if yes, add it to the map.
+ *
+ * @param compUsages ComponentUsage from the manifest
+ * @param customLibs map containing the required custom libraries
+ */
+function getComponentUsageNames(compUsages: Record<string, { name: string }>, customLibs: Record<string, true>): void {
+    const compNames = Object.keys(compUsages).map(function (compUsageKey: string) {
+        return compUsages[compUsageKey].name;
+    });
+    compNames.forEach(function (key) {
         // ignore libs or Components that start with SAPUI5 delivered namespaces
         if (
             !UI5_LIBS.some(function (substring) {
@@ -65,9 +113,9 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
     for (const url of appUrls) {
         promises.push(
             fetch(`${url}/manifest.json`).then(async (resp) => {
-                const manifest = await resp.json();
+                const manifest = (await resp.json()) as Manifest;
                 if (manifest) {
-                    if (manifest['sap.ui5'] && manifest['sap.ui5'].dependencies) {
+                    if (manifest['sap.ui5']?.dependencies) {
                         if (manifest['sap.ui5'].dependencies.libs) {
                             addKeys(manifest['sap.ui5'].dependencies.libs, result);
                         }
@@ -75,8 +123,8 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
                             addKeys(manifest['sap.ui5'].dependencies.components, result);
                         }
                     }
-                    if (manifest['sap.ui5'] && manifest['sap.ui5'].componentUsages) {
-                        addKeys(manifest['sap.ui5'].componentUsages, result);
+                    if (manifest['sap.ui5']?.componentUsages) {
+                        getComponentUsageNames(manifest['sap.ui5'].componentUsages, result);
                     }
                 }
             })
@@ -90,21 +138,10 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
  *
  * @param dataFromAppIndex data returned from the app index service
  */
-function registerModules(
-    dataFromAppIndex: Record<
-        string,
-        {
-            dependencies?: {
-                url?: string;
-                type?: string;
-                componentId: string;
-            }[];
-        }
-    >
-) {
+function registerModules(dataFromAppIndex: AppIndexData) {
     Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
         const moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
-        if (moduleDefinition && moduleDefinition.dependencies) {
+        if (moduleDefinition?.dependencies) {
             moduleDefinition.dependencies.forEach(function (dependency) {
                 if (dependency.url && dependency.url.length > 0 && dependency.type === 'UI5LIB') {
                     Log.info('Registering Library ' + dependency.componentId + ' from server ' + dependency.url);
@@ -151,7 +188,7 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
         }
         const response = await fetch(url);
         try {
-            registerModules(await response.json());
+            registerModules((await response.json()) as AppIndexData);
         } catch (error) {
             Log.error(`Registering of reuse libs failed. Error:${error}`);
         }
@@ -179,18 +216,33 @@ export function registerSAPFonts() {
 }
 
 /**
+ * Create Resource Bundle based on the scenario.
+ *
+ * @param scenario to be used for the resource bundle.
+ */
+export async function loadI18nResourceBundle(scenario: Scenario): Promise<ResourceBundle> {
+    if (scenario === SCENARIO.AdaptationProject) {
+        const manifest = await getManifestAppdescr();
+        const enhanceWith = (manifest.content as { texts: { i18n: string } }[])
+            .filter((content) => content.texts?.i18n)
+            .map((content) => ({ bundleUrl: `../${content.texts.i18n}` }));
+        return ResourceBundle.create({
+            url: '../i18n/i18n.properties',
+            enhanceWith
+        });
+    }
+    return ResourceBundle.create({
+        url: 'i18n/i18n.properties'
+    });
+}
+
+/**
  * Read the application title from the resource bundle and set it as document title.
  *
+ * @param resourceBundle resource bundle to read the title from.
  * @param i18nKey optional parameter to define the i18n key to be used for the title.
  */
-export function setI18nTitle(i18nKey = 'appTitle') {
-    const localization =
-        (sap.ui.require('sap/base/i18n/Localization') as Localization) ?? sap.ui.getCore().getConfiguration();
-    const locale = localization.getLanguage();
-    const resourceBundle = ResourceBundle.create({
-        url: 'i18n/i18n.properties',
-        locale
-    }) as ResourceBundle;
+export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle') {
     if (resourceBundle.hasText(i18nKey)) {
         document.title = resourceBundle.getText(i18nKey) ?? document.title;
     }
@@ -215,27 +267,30 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
+    const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container');
+    let scenario: string = '';
+    const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
     if (flex) {
+        const flexSettings = JSON.parse(flex) as FlexSettings;
+        scenario = flexSettings.scenario;
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
-                const version = sap.ui.version;
-                const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
-                const flexSettings = JSON.parse(flex);
+                const flexSettings = JSON.parse(flex) as FlexSettings;
                 const pluginScript = flexSettings.pluginScript ?? '';
 
                 let libs: string[] = [];
-                if (minor > 71) {
-                    libs.push('sap/ui/rta/api/startAdaptation');
-                } else {
+
+                if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
                     libs.push('open/ux/preview/client/flp/initRta');
+                } else {
+                    libs.push('sap/ui/rta/api/startAdaptation');
                 }
 
                 if (flexSettings.pluginScript) {
-                    libs.push(pluginScript);
+                    libs.push(pluginScript as string);
                     delete flexSettings.pluginScript;
                 }
 
@@ -265,23 +320,33 @@ export async function init({
         await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
     }
 
+    // Load rta connector
+    await initConnectors();
+
     // Load custom initialization module
     if (customInit) {
         sap.ui.require([customInit]);
     }
 
     // init
-    setI18nTitle();
+    const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
+    setI18nTitle(resourceBundle);
     registerSAPFonts();
-    const renderer = await container.createRenderer(undefined, true);
+
+    const renderer =
+        ui5VersionInfo.major < 2
+            ? await container.createRenderer(undefined, true)
+            : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
 }
-
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
         customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
-    }).catch(() => Log.error('Sandbox initialization failed.'));
+    }).catch((e) => {
+        const error = getError(e);
+        Log.error('Sandbox initialization failed: ' + error.message);
+    });
 }

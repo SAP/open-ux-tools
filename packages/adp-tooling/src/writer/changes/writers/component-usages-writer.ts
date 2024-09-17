@@ -2,8 +2,8 @@ import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
 import { DirName } from '@sap-ux/project-access';
-import type { IWriter, ComponentUsagesData } from '../../../types';
-import { parseStringToObject, getGenericChange, writeChangeToFolder } from '../../../base/change-utils';
+import type { IWriter, ComponentUsagesData, ComponentUsagesDataWithLibrary } from '../../../types';
+import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
 
 /**
  * Handles the creation and writing of component usages data changes for a project.
@@ -31,7 +31,6 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
                 data: parseStringToObject(data)
             }
         };
-
         return {
             componentUsages
         };
@@ -40,24 +39,19 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
     /**
      * Constructs the content for an library reference change based on provided data.
      *
-     * @param {ComponentUsagesData} data - The answers object containing information needed to construct the content property.
-     * @returns {object | undefined} The constructed content object for the library reference change.
+     * @param {ComponentUsagesData} library - The answers object containing information needed to construct the content property.
+     * @returns {object} The constructed content object for the library reference change.
      */
-    private constructLibContent(data: ComponentUsagesData): object | undefined {
-        const library = data.library;
-        if (!library.reference) {
-            return undefined;
-        }
-
+    private constructLibContent({ library }: ComponentUsagesDataWithLibrary): object {
+        const { reference, referenceIsLazy } = library;
         return {
             libraries: {
-                [library.reference]: {
-                    lazy: library.referenceIsLazy === 'true'
+                [reference]: {
+                    lazy: referenceIsLazy === 'true'
                 }
             }
         };
     }
-
     /**
      * Writes the component usages change to the project based on the provided data.
      *
@@ -66,30 +60,37 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
      */
     async write(data: ComponentUsagesData): Promise<void> {
         const componentUsagesContent = this.constructContent(data);
-        const libRefContent = this.constructLibContent(data);
+        const timestamp = Date.now();
 
-        const shouldAddLibRef = libRefContent !== undefined;
-        const compUsagesChange = getGenericChange(data, componentUsagesContent, ChangeType.ADD_COMPONENT_USAGES);
+        const compUsagesChange = getChange(
+            data.variant,
+            timestamp,
+            componentUsagesContent,
+            ChangeType.ADD_COMPONENT_USAGES
+        );
 
         writeChangeToFolder(
             this.projectPath,
             compUsagesChange,
-            `id_${data.timestamp}_addComponentUsages.change`,
+            `id_${timestamp}_addComponentUsages.change`,
             this.fs,
             DirName.Manifest
         );
 
-        if (shouldAddLibRef) {
-            data.timestamp += 1;
-            const refLibChange = getGenericChange(data, libRefContent, ChangeType.ADD_LIBRARY_REFERENCE);
-
-            writeChangeToFolder(
-                this.projectPath,
-                refLibChange,
-                `id_${data.timestamp}_addLibraries.change`,
-                this.fs,
-                DirName.Manifest
-            );
+        if (!('library' in data)) {
+            return;
         }
+
+        const libRefContent = this.constructLibContent(data);
+        const libTimestamp = timestamp + 1;
+        const refLibChange = getChange(data.variant, libTimestamp, libRefContent, ChangeType.ADD_LIBRARY_REFERENCE);
+
+        writeChangeToFolder(
+            this.projectPath,
+            refLibChange,
+            `id_${libTimestamp}_addLibraries.change`,
+            this.fs,
+            DirName.Manifest
+        );
     }
 }

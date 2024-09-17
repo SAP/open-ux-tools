@@ -1,15 +1,9 @@
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
+import { Router as createRouter } from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { ProxyConfig } from '../base';
-import {
-    getCorporateProxyServer,
-    HTML_MOUNT_PATHS,
-    injectScripts,
-    ui5Proxy,
-    resolveUI5Version,
-    hideProxyCredentials
-} from '../base';
+import { getCorporateProxyServer, injectScripts, ui5Proxy, resolveUI5Version, hideProxyCredentials } from '../base';
 import dotenv from 'dotenv';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
@@ -38,15 +32,11 @@ function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Option
  * @returns handler function
  */
 function createRequestHandler(routes: { route: string; handler: RequestHandler }[]): RequestHandler {
-    return (req, res, next): void => {
-        for (const route of routes) {
-            if (req.path.startsWith(route.route)) {
-                route.handler(req, res, next);
-                return;
-            }
-        }
-        next();
-    };
+    const router = createRouter();
+    for (const route of routes) {
+        router.get(`${route.route}*`, route.handler);
+    }
+    return router;
 }
 
 /**
@@ -118,16 +108,14 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
     if (directLoad) {
         const directLoadProxy = (async (req: Request, res: Response, next: NextFunction): Promise<void> => {
             try {
-                await injectScripts(req, res, next, ui5Configs);
+                await injectScripts(req, res, next, ui5Configs, resources.rootProject);
             } catch (error) {
                 logger.error(error);
                 next(error);
             }
         }) as RequestHandler;
 
-        HTML_MOUNT_PATHS.forEach((path) => {
-            routes.push({ route: path, handler: directLoadProxy });
-        });
+        routes.push({ route: '*.html', handler: directLoadProxy });
     }
 
     return createRequestHandler(routes);

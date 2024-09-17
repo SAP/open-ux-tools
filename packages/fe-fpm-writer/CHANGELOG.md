@@ -1,5 +1,247 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.31.0
+
+### Minor Changes
+
+-   327ebec: Divide chart, filter bar and table building block prompts questions into groups, add Manifest Change group.
+    Update custom chart example in prompting-ui.
+
+## 0.30.0
+
+### Minor Changes
+
+-   ddc2d84: The API methods `generateCustomAction`, `generateCustomColumn`, `generateControllerExtension`, `generateCustomFilter`, `generateCustomHeaderSection`, `generateCustomSection`, `generateCustomSubSection`, `generateCustomPage`, `generateObjectPage`, `generateListReport`, `enableFPM` changed from synchronous to asynchronous.
+
+## 0.29.6
+
+### Patch Changes
+
+-   86bcf45: - During building block creation, add the 'sap.fe.macros' library to the 'manifest.json' if it is not already listed
+    -   The API methods `generateBuildingBlock`, `getSerializedFileContent`, `PromptsAPI.submitAnswers`, and `PromptsAPI.getCodeSnippets` changed from synchronous to asynchronous.
+
+## 0.29.5
+
+### Patch Changes
+
+-   19e3b0e: Extend the building block generation by adding the `alwaysAbsolutePath` property to `BuildingBlockMetaPath`, allowing the generation of either relative or absolute paths
+
+## 0.29.4
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/fiori-annotation-api@0.2.2
+
+## 0.29.3
+
+### Patch Changes
+
+-   Updated dependencies [a0836d0]
+    -   @sap-ux/fiori-annotation-api@0.2.1
+
+## 0.29.2
+
+### Patch Changes
+
+-   Updated dependencies [6ac4f50]
+    -   @sap-ux/fiori-annotation-api@0.2.0
+
+## 0.29.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.1.41
+
+## 0.29.0
+
+### Minor Changes
+
+-   177cdc8: Apply the "contextPath" attribute in building blocks when the application has a minimum UI5 version equal to or below 1.96.
+
+## 0.28.3
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/fiori-annotation-api@0.1.40
+
+## 0.28.2
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/fiori-annotation-api@0.1.39
+
+## 0.28.1
+
+### Patch Changes
+
+-   b10e3fd: fix: ensure that the controller template include an example call to super.onInit()
+
+## 0.28.0
+
+### Minor Changes
+
+-   bb4305f: Update fpm-writer to require either sap.fe.core or sap.fe.templates library, throw error if both are missing when creating a building block.
+
+## 0.27.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.9
+-   @sap-ux/fiori-annotation-api@0.1.38
+
+## 0.27.6
+
+### Patch Changes
+
+-   087752f: Building block Prompts. Use EntitySets instead of EntityTypes for displaying choices and writing metaPath or contextPath
+
+## 0.27.5
+
+### Patch Changes
+
+-   73aa3cd: FilterBar prompt. Show binding context path type for filter bar
+
+## 0.27.4
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/fiori-annotation-api@0.1.37
+
+## 0.27.3
+
+### Patch Changes
+
+-   6916f9e: Chart building block creation. Create 'contextPath' attribute when 'metaPath' property is received as 'BuildingBlockMetaPath' object
+
+## 0.27.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.7
+-   @sap-ux/fiori-annotation-api@0.1.36
+
+## 0.27.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.1.35
+
+## 0.27.0
+
+### Minor Changes
+
+-   ec4a9c8: Update fpm-writer to validate sap.fe.core as minimum library required for building block creation
+
+## 0.26.4
+
+### Patch Changes
+
+-   Updated dependencies [26379ea]
+    -   @sap-ux/fiori-annotation-api@0.1.34
+
+## 0.26.3
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+    -   @sap-ux/fiori-annotation-api@0.1.33
+
+## 0.26.2
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/fiori-annotation-api@0.1.32
+
+## 0.26.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.1.31
+-   @sap-ux/project-access@1.26.4
+
+## 0.26.0
+
+### Minor Changes
+
+-   88c8bf6: feat: Prompt API to request question and submit answers for Table, Chart and FilterBar building blocks
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/fiori-annotation-api@0.1.30
+
+## 0.25.7
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+
+## 0.25.6
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+
+## 0.25.5
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+
+## 0.25.4
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+
+## 0.25.3
+
+### Patch Changes
+
+-   dc60d98: fix: add `@sap-ux/project-access` dependency
+
+## 0.25.2
+
+### Patch Changes
+
+-   29bebd2: feat: add required libraries on page addition
+
+## 0.25.1
+
+### Patch Changes
+
+-   d549173: - Adjusts getMinUI5VersionAsArray so that semver valid check is included; the function now only returns valid versions.
+    -   Upgrade of @ui5/manifest to 1.66.0; adjustment of all components so that minimumUI5Version definitions as array are processed properly.
+
+## 0.25.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.24.16
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+
 ## 0.24.15
 
 ### Patch Changes

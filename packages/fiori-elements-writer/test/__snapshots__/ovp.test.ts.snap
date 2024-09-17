@@ -19,7 +19,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"feovp1\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -1476,6 +1475,23 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -1495,7 +1511,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -1645,8 +1661,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -1682,7 +1705,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"feovp1\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -3229,7 +3251,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"feovp2\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -3272,11 +3293,11 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.fe.templates
+    - name: sap.ushell
     - name: sap.ovp
     - name: sap.ui.rta
     - name: sap.ui.layout
     - name: themelib_sap_fiori_3
-    - name: sap.ushell
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -8856,7 +8877,7 @@ appDescription=A Fiori application.",
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.fe.templates,sap.ovp,sap.ui.rta,sap.ui.layout,sap.ushell\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.fe.templates,sap.ushell,sap.ovp,sap.ui.rta,sap.ui.layout\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
@@ -8923,6 +8944,23 @@ appDescription=A Fiori application.",
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -8942,7 +8980,7 @@ appDescription=A Fiori application.",
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -9092,8 +9130,15 @@ sap.registerComponentDependencyPaths(manifestUri)
         } else {
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
-                // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                try {
+                    // initialize the ushell sandbox component in ui5 v2
+                    sap.ushell.Container.createRenderer(true).then(function (component) {
+                        component.placeAt(\\"content\\");
+                    });
+                } catch {
+                    // support older versions of ui5 
+                    sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                }
             });
         }
     });",
@@ -9129,7 +9174,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"feovp2\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -9211,11 +9255,11 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.fe.templates
+    - name: sap.ushell
     - name: sap.ovp
     - name: sap.ui.rta
     - name: sap.ui.layout
     - name: themelib_sap_fiori_3
-    - name: sap.ushell
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -14851,7 +14895,7 @@ appDescription=A Fiori application.",
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.fe.templates,sap.ovp,sap.ui.rta,sap.ui.layout,sap.ushell\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.fe.templates,sap.ushell,sap.ovp,sap.ui.rta,sap.ui.layout\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"

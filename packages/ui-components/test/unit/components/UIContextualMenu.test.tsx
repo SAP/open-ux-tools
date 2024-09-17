@@ -1,7 +1,11 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
 import type { UIIContextualMenuProps } from '../../../src/components/UIContextualMenu';
-import { UIContextualMenu } from '../../../src/components/UIContextualMenu';
+import {
+    getUIcontextualMenuCalloutStyles,
+    getUIContextualMenuItemStyles,
+    UIContextualMenu
+} from '../../../src/components/UIContextualMenu';
 import { ContextualMenu } from '@fluentui/react';
 import { UiIcons, initIcons } from '../../../src/components/Icons';
 
@@ -35,11 +39,13 @@ describe('<UIDropdown />', () => {
     });
 
     it('Test className property', () => {
-        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu');
+        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu ts-ContextualMenu--dropdown');
         wrapper.setProps({
             className: 'dummy'
         });
-        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu dummy');
+        expect(wrapper.find(ContextualMenu).prop('className')).toEqual(
+            'ts-ContextualMenu ts-ContextualMenu--dropdown dummy'
+        );
     });
 
     for (const testMaxWidth of [350, undefined]) {
@@ -55,6 +61,45 @@ describe('<UIDropdown />', () => {
             });
         });
     }
+
+    it('iconToLeft prop', () => {
+        wrapper.setProps({
+            items: [
+                {
+                    key: 'item1',
+                    text: 'menu item 1',
+                    subMenuProps: {
+                        items: [
+                            {
+                                key: 'item1',
+                                text: 'item 1 - submenu1'
+                            }
+                        ]
+                    }
+                },
+                {
+                    key: 'item2',
+                    text: 'menu item 2'
+                }
+            ],
+            iconToLeft: true
+        });
+        wrapper.update();
+        //Check if submenu icon is rendered
+        // Check if icon is on left side
+
+        const containerElements = wrapper.find('.ms-ContextualMenu-linkContent');
+        containerElements.forEach((containerElement, index) => {
+            const textElement = containerElement.find('.ms-ContextualMenu-itemText').getDOMNode();
+            if (index === 0) {
+                const iconElement = containerElement.find('i.ms-ContextualMenu-submenuIcon').getDOMNode();
+                expect(containerElement.getDOMNode().childNodes[0]).toBe(iconElement);
+                expect(containerElement.getDOMNode().childNodes[1]).toBe(textElement);
+            } else {
+                expect(containerElement.getDOMNode().childNodes[0]).toBe(textElement);
+            }
+        });
+    });
 
     it('Test item with icon', () => {
         wrapper.setProps({
@@ -100,5 +145,71 @@ describe('<UIDropdown />', () => {
         expect(wrapper.find(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
         // Check if two menu items are rendered
         expect(wrapper.find('.ms-ContextualMenu-linkContent').length).toEqual(2);
+    });
+
+    it('getUIContextualMenuItemStyles - call without params', () => {
+        const styles = getUIContextualMenuItemStyles();
+        expect(styles).toEqual({
+            'checkmarkIcon': {
+                'color': 'var(--vscode-foreground)',
+                'fontSize': 16,
+                'lineHeight': 18,
+                'margin': 0,
+                'maxHeight': 18
+            },
+            'icon': {
+                'marginLeft': 0,
+                'marginRight': 6
+            },
+            'label': {
+                'fontFamily': 'var(--vscode-font-family)',
+                'height': 18,
+                'lineHeight': 18,
+                'paddingLeft': undefined
+            },
+            'linkContent': {
+                'fontSize': 13,
+                'height': 'auto'
+            },
+            'root': {
+                'padding': undefined,
+                'paddingRight': undefined
+            },
+            'subMenuIcon': {
+                'height': 16,
+                'lineHeight': 0,
+                'transform': 'rotate(-90deg)',
+                'transformOrigin': '50% 50%',
+                'width': 16
+            }
+        });
+    });
+
+    describe('<getUIcontextualMenuCalloutStyles />', () => {
+        it('getUIcontextualMenuCalloutStyles - call without params', () => {
+            const defaultStyles = getUIcontextualMenuCalloutStyles();
+            expect(defaultStyles).toEqual({
+                root: {}
+            });
+        });
+
+        it('getUIcontextualMenuCalloutStyles - pass maxWidth', () => {
+            const defaultStyles = getUIcontextualMenuCalloutStyles(undefined, 100);
+            expect(defaultStyles).toEqual({
+                root: {
+                    maxWidth: 100
+                }
+            });
+        });
+
+        it('getUIcontextualMenuCalloutStyles - pass maxWidth', () => {
+            const defaultStyles = getUIcontextualMenuCalloutStyles({ root: { background: 'green' } }, 100);
+            expect(defaultStyles).toEqual({
+                root: {
+                    maxWidth: 100,
+                    background: 'green'
+                }
+            });
+        });
     });
 });

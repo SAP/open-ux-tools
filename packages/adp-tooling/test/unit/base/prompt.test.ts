@@ -1,10 +1,13 @@
 import prompts from 'prompts';
 import { promptGeneratorInput, promptTarget } from '../../../src/base/prompt';
+import * as utils from '../../../src/writer/project-utils';
+
 import { ToolsLogger } from '@sap-ux/logger';
 import type { AbapTarget } from '@sap-ux/system-access';
 
 const logger = new ToolsLogger();
 
+const toolsId = '1234-5678-9abc-def0';
 const url = 'https://customer.example';
 const sapUrl = 'https://sap.example';
 const certErrorUrl = 'https://cert.error.example';
@@ -20,6 +23,7 @@ const testApps = [
         'sap.app/title': 'My Title'
     }
 ];
+
 jest.mock('@sap-ux/system-access', () => {
     return {
         ...jest.requireActual('@sap-ux/system-access'),
@@ -39,6 +43,10 @@ jest.mock('@sap-ux/system-access', () => {
         }
     };
 });
+
+jest.mock('uuid', () => ({
+    v4: jest.fn(() => toolsId)
+}));
 
 describe('base/prompts', () => {
     describe('promptTarget', () => {
@@ -70,6 +78,12 @@ describe('base/prompts', () => {
             package: 'TESTPACKAGE',
             transport: 'TESTTRANSPORT'
         };
+
+        const name = '@sap-ux/adp-tooling';
+        const version = '0.0.1';
+
+        jest.spyOn(utils, 'getPackageJSONInfo').mockReturnValue({ name, version });
+
         test('defaults provided', async () => {
             prompts.inject([undefined]);
             const config = await promptGeneratorInput(defaults, logger);
@@ -83,7 +97,11 @@ describe('base/prompts', () => {
                 customConfig: {
                     adp: {
                         environment: 'P',
-                        safeMode: true
+                        support: {
+                            id: name,
+                            toolsId,
+                            version: version
+                        }
                     }
                 },
                 target: {
@@ -122,7 +140,11 @@ describe('base/prompts', () => {
                 customConfig: {
                     adp: {
                         environment: 'P',
-                        safeMode: true
+                        support: {
+                            id: name,
+                            toolsId,
+                            version: version
+                        }
                     }
                 },
                 target: {

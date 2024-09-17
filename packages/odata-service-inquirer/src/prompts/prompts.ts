@@ -6,15 +6,17 @@ import {
     DatasourceType,
     promptNames,
     type DatasourceTypePromptOptions,
-    type OdataServicePromptOptions,
     type OdataServiceAnswers,
+    type OdataServicePromptOptions,
     type OdataServiceQuestion
 } from '../types';
-import { getMetadataFileQuestion } from './datasources/metadata-file';
-import { getDatasourceTypeChoices } from './prompt-helpers';
 import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
-import LoggerHelper from './logger-helper';
+import { getMetadataFileQuestion } from './datasources/metadata-file';
+import type { SystemSelectionAnswer } from './datasources/sap-system/new-system/questions';
+import { getNewSystemQuestions, newSystemChoiceValue } from './datasources/sap-system/new-system/questions';
 import { getServiceUrlQuestions } from './datasources/service-url/questions';
+import LoggerHelper from './logger-helper';
+import { getDatasourceTypeChoices } from './prompt-helpers';
 
 /**
  * Get the prompts for the OData service inquirer.
@@ -68,7 +70,7 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
             if (source === DatasourceType.businessHub) {
                 return {
                     message: t('prompts.nonUIServiceTypeWarningMessage', {
-                        serviceTypeDesc: t('prompts.datasourceType.businessHubName')
+                        serviceType: t('prompts.datasourceType.businessHubName')
                     }),
                     severity: Severity.warning
                 };
@@ -106,6 +108,15 @@ async function getDatasourceTypeConditionalQuestions(
         ...(withCondition(
             getServiceUrlQuestions(promptOptions) as Question[],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.odataServiceUrl
+        ) as OdataServiceQuestion[])
+    );
+
+    conditionalQuestions.push(
+        ...(withCondition(
+            getNewSystemQuestions(promptOptions) as Question[],
+            (answers: Answers) =>
+                (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem &&
+                (answers as SystemSelectionAnswer).system === newSystemChoiceValue
         ) as OdataServiceQuestion[])
     );
 

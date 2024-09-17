@@ -22,7 +22,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: 'test-template'
-            }
+            },
+            projectType: 'EDMXBackend'
         },
         'package': {
             name: 'nods1',
@@ -44,7 +45,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             localVersion: '1.86.3',
             ui5Theme: 'sap_belize'
         }
-    };
+    } as FreestyleApp<unknown>;
 
     const v2Service = {
         path: '/sap/opu/odata/sap/SEPMRA_PROD_MAN',

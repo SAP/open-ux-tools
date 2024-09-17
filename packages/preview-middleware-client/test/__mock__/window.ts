@@ -26,6 +26,7 @@ export const sapMock = {
     ushell: {
         Container: {
             createRenderer: jest.fn().mockReturnValue({ placeAt: jest.fn() }),
+            createRendererInternal: jest.fn().mockReturnValue({ placeAt: jest.fn() }),
             attachRendererCreatedEvent: jest.fn(),
             getServiceAsync: jest.fn()
         }

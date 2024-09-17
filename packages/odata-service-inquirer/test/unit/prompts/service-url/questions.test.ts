@@ -6,15 +6,22 @@ import { getServiceUrlQuestions } from '../../../../src/prompts/datasources/serv
 import { serviceUrlInternalPromptNames } from '../../../../src/prompts/datasources/service-url/types';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
 import { hostEnvironment } from '../../../../src/types';
+import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 
 const validateUrlMockTrue = jest.fn().mockResolvedValue(true);
 const validateAuthTrue = jest.fn().mockResolvedValue(true);
+const odataServiceMock = {} as Partial<ODataService>;
+const serviceProviderMock = {} as Partial<ServiceProvider>;
+
 const connectionValidatorMock = {
     validity: {},
     validateUrl: validateUrlMockTrue,
-    validateAuth: validateAuthTrue
+    validateAuth: validateAuthTrue,
+    odataService: odataServiceMock,
+    serviceProvider: serviceProviderMock,
+    axiosConfig: {}
 };
-jest.mock('../../../../src/prompts/datasources/service-url/connectionValidator', () => {
+jest.mock('../../../../src/prompts/connectionValidator', () => {
     return {
         ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
     };
@@ -123,15 +130,19 @@ describe('Service URL prompts', () => {
             authRequired: false,
             authenticated: false
         };
+        connectionValidatorMock.axiosConfig = {};
 
         // Should validate service and return true if valid
         const serviceUrl = 'https://some.host:1234/service/path';
         let questions = getServiceUrlQuestions();
         let serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl);
         expect(await (serviceUrlQuestion?.validate as Function)(serviceUrl)).toBe(true);
+
+        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl);
+
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining(connectionValidatorMock),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined
         );
         expect(validateUrlMockTrue).toHaveBeenCalledWith(serviceUrl);
@@ -141,11 +152,12 @@ describe('Service URL prompts', () => {
         connectionValidatorMock.validateUrl.mockClear();
         questions = getServiceUrlQuestions({ serviceUrl: { requiredOdataVersion: OdataVersion.v4 } });
         serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl);
+
         expect(await (serviceUrlQuestion?.validate as Function)(serviceUrl)).toBe(true);
         expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl);
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining(connectionValidatorMock),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             OdataVersion.v4
         );
 
@@ -227,10 +239,13 @@ describe('Service URL prompts', () => {
         expect(
             await (ignorableCertErrorsPrompt?.validate as Function)(true, { [promptNames.serviceUrl]: serviceUrl })
         ).toBe(true);
-        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, true, true);
+        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, {
+            forceReValidation: true,
+            ignoreCertError: true
+        });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining(connectionValidatorMock),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined,
             true
         );
@@ -246,7 +261,10 @@ describe('Service URL prompts', () => {
         expect(
             await (ignorableCertErrorsPrompt?.validate as Function)(true, { [promptNames.serviceUrl]: serviceUrl })
         ).toBe('A connection error message');
-        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, true, true);
+        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, {
+            forceReValidation: true,
+            ignoreCertError: true
+        });
         // Should not validate service
         expect(serviceValidatorSpy).not.toHaveBeenCalled();
 
@@ -299,10 +317,13 @@ describe('Service URL prompts', () => {
         ).toBe(false);
 
         expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.warningCertificateValidationDisabled'));
-        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, true, true);
+        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, {
+            forceReValidation: true,
+            ignoreCertError: true
+        });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining(connectionValidatorMock),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined,
             true
         );
@@ -322,7 +343,10 @@ describe('Service URL prompts', () => {
                 [serviceUrlInternalPromptNames.ignoreCertError]: true
             })
         ).toBe(false);
-        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, true, true);
+        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, {
+            forceReValidation: true,
+            ignoreCertError: true
+        });
 
         connectionValidatorMock.validity = {
             urlFormat: true,
@@ -373,10 +397,12 @@ describe('Service URL prompts', () => {
 
         let serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
         expect(await (passwordPrompt?.validate as Function)(password, { serviceUrl, username })).toBe(true);
-        expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(serviceUrl, username, password, undefined);
+        expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(serviceUrl, username, password, {
+            ignoreCertError: undefined
+        });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
-            expect.objectContaining(connectionValidatorMock),
+            expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
             undefined,
             undefined
         );

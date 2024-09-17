@@ -1,4 +1,4 @@
-import { basename, dirname, join, parse, sep } from 'path';
+import { basename, dirname, isAbsolute, join, parse, sep } from 'path';
 import type {
     AdaptationResults,
     AllAppResults,
@@ -170,7 +170,7 @@ export async function getAppRootFromWebappPath(webappPath: string): Promise<stri
  * @param path - path to check, e.g. to the manifest.json
  * @returns - in case a supported app is found this function returns the appRoot and projectRoot path
  */
-async function findRootsForPath(path: string): Promise<{ appRoot: string; projectRoot: string } | null> {
+export async function findRootsForPath(path: string): Promise<{ appRoot: string; projectRoot: string } | null> {
     try {
         // Get the root of the app, that is where the package.json is, otherwise not supported
         const appRoot = await findProjectRoot(path, false);
@@ -217,8 +217,11 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
  * @param path - path inside CAP project
  * @returns - CAP project root path
  */
-async function findCapProjectRoot(path: string): Promise<string | null> {
+export async function findCapProjectRoot(path: string): Promise<string | null> {
     try {
+        if (!isAbsolute(path)) {
+            return null;
+        }
         const { root } = parse(path);
         let projectRoot = dirname(path);
         while (projectRoot !== root) {
@@ -259,25 +262,27 @@ export async function findAllApps(
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
 async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResults[]> {
-    const result: AllAppResults[] = [];
-    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
-    for (const manifestPath of manifestPaths) {
-        try {
-            // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
-            pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
-            const manifest = pathMap[manifestPath] as Manifest;
-            if (!manifest['sap.app']?.id || manifest['sap.app'].type !== 'application') {
-                continue;
-            }
-            const roots = await findRootsForPath(manifestPath);
+    const filterApplicationByManifest = async (manifestPath: string) => {
+        pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
+        const manifest: Manifest = pathMap[manifestPath] as Manifest; // cast needed as pathMap also allows strings and any other objects
+        // cast allowed, as this is the only place pathMap is filled for manifests
+        if (manifest['sap.app'].id && manifest['sap.app'].type === 'application') {
+            const roots = await findRootsForPath(dirname(manifestPath));
             if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
-                result.push({ appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest, manifestPath });
+                return { appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest: manifest, manifestPath };
             }
-        } catch {
-            // ignore exceptions for invalid manifests
         }
-    }
-    return result;
+        throw new Error('Not relevant');
+    };
+
+    const isFulFilled = (input: PromiseSettledResult<AllAppResults>): input is PromiseFulfilledResult<AllAppResults> =>
+        input.status === 'fulfilled';
+
+    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
+
+    return (await Promise.allSettled(manifestPaths.map(filterApplicationByManifest)))
+        .filter(isFulFilled) // returning only valid applications
+        .map(({ value }) => value);
 }
 
 /**

@@ -2,7 +2,7 @@ import * as common from '@sap-ux-private/control-property-editor-common';
 import init from '../../../src/adp/init';
 import { fetchMock } from 'mock/window';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
-import * as outline from '../../../src/cpe/outline';
+import { OutlineService } from '../../../src/cpe/outline/service';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
@@ -39,7 +39,7 @@ describe('adp', () => {
             .mockImplementationOnce(() => Promise.resolve(apiJson))
             .mockImplementation(() => Promise.resolve({ json: jest.fn().mockResolvedValue({}) }));
 
-        initOutlineSpy = jest.spyOn(outline, 'initOutline').mockImplementation(() => {
+        initOutlineSpy = jest.spyOn(OutlineService.prototype, 'init').mockImplementation(() => {
             return Promise.resolve();
         });
 
@@ -65,7 +65,7 @@ describe('adp', () => {
             return { dispose: jest.fn(), sendAction: jest.fn() };
         });
         const enableTelemetry = jest.spyOn(common, 'enableTelemetry');
-        VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -93,7 +93,7 @@ describe('adp', () => {
             return { dispose: jest.fn(), sendAction: sendActionMock };
         });
 
-        VersionInfo.load.mockResolvedValue({ version: '1.70.0' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.70.0' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -111,7 +111,7 @@ describe('adp', () => {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
-                    'The current SAPUI5 version set for this Adaptation project is 1.70.0. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71',
+                    'The current SAPUI5 version set for this Adaptation project is 1.70. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71',
                 shouldHideIframe: true
             }
         });
@@ -133,7 +133,7 @@ describe('adp', () => {
             'application-app-preview-component---fin.ar.lineitems.display.appView': mockUI5Element
         });
 
-        VersionInfo.load.mockResolvedValue({ version: '1.123.1' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.123.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -147,7 +147,7 @@ describe('adp', () => {
             payload: undefined
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
@@ -172,11 +172,11 @@ describe('adp', () => {
 
         Element.registry.filter.mockReturnValue([mockUI5Element]);
 
-        VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
