@@ -4,7 +4,8 @@ import type {
     FioriAppReloadConfig,
     FioriToolsProxyConfig,
     MockserverConfig,
-    FioriToolsProxyConfigUI5
+    FioriToolsProxyConfigUI5,
+    FioriPreviewConfig
 } from './types';
 import type { NodeComment } from '@sap-ux/yaml';
 
@@ -21,6 +22,24 @@ export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadC
             port: 35729,
             path: 'webapp',
             delay: 300
+        }
+    };
+}
+
+/**
+ * Generates the configuration for a Fiori preview middleware.
+ *
+ * @param {string} appId - The ID of the application for which the preview middleware is being configured.
+ * @param {string} ui5Theme - The theme to be used for the application.
+ * @returns {CustomMiddleware<FioriPreviewConfig>} The configuration object for the middleware.
+ */
+export function getPreviewMiddlewareConfig(appId: string, ui5Theme: string): CustomMiddleware<FioriPreviewConfig> {
+    return {
+        name: 'fiori-tools-preview',
+        afterMiddleware: 'fiori-tools-appreload',
+        configuration: {
+            component: appId,
+            ui5Theme: ui5Theme
         }
     };
 }

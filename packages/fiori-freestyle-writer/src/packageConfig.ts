@@ -1,6 +1,21 @@
 import { t } from './i18n';
 import type { PackageJsonScripts } from './types';
-import { getVariantPreviewAppScript } from '@sap-ux/fiori-generator-shared';
+//import { getVariantPreviewAppScript } from '@sap-ux/fiori-generator-shared';
+
+export function getVariantPreviewAppScript(sapClient?: string): string {
+    const previewAppAnchor = '#preview-app';
+    const disableCacheParam = 'sap-ui-xx-viewCache=false';
+    const sapClientParam = sapClient ? `&sap-client=${sapClient}` : '';
+    const urlParam = `?${[
+        sapClientParam,
+        disableCacheParam,
+        'fiori-tools-rta-mode=true',
+        'sap-ui-rta-skip-flex-validation=true'
+    ]
+        .filter(Boolean)
+        .join('&')}`;
+    return `fiori run --open \"preview.html${urlParam}${previewAppAnchor}\"`;
+}
 
 /**
  * Get an object reflecting the scripts that need to be added to the package.json.
