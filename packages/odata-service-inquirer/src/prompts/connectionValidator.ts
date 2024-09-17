@@ -259,7 +259,11 @@ export class ConnectionValidator {
                 // Full service URL
                 await this.createOdataServiceConnection(axiosConfig, url.pathname);
             }
-            this._validatedClient = url.searchParams.get(SAP_CLIENT_KEY) ?? undefined;
+            this._validatedClient =
+                url.searchParams.get(SAP_CLIENT_KEY) ??
+                this.getSapClient(this._serviceProvider?.cookies?.toString()) ??
+                undefined;
+
             return 200;
         } catch (e) {
             LoggerHelper.logger.debug(`ConnectionValidator.checkSapService() - error: ${e.message}`);
@@ -453,6 +457,16 @@ export class ConnectionValidator {
     }
 
     /**
+     * Checks the cookies for the sap-client value.
+     *
+     * @param cookies - cookies as a string
+     * @returns sap-client value if found in the cookies
+     */
+    private getSapClient(cookies?: string): string | undefined {
+        return cookies?.match(/sap-client=(\w+)/)?.[1];
+    }
+
+    /**
      * Validate the system connectivity with the specified service info (containing UAA details).
      *
      * @param serviceInfo the service info containing the UAA details
@@ -470,6 +484,7 @@ export class ConnectionValidator {
             this._connectedUserName = await (this.serviceProvider as AbapServiceProvider).user();
             this._serviceInfo = serviceInfo;
             this._validatedUrl = serviceInfo.url;
+            this._validatedClient = this.getSapClient(this._serviceProvider?.cookies?.toString());
             return this.getValidationResultFromStatusCode(200);
         } catch (error) {
             LoggerHelper.logger.debug(`ConnectionValidator.validateServiceInfo() - error: ${error.message}`);

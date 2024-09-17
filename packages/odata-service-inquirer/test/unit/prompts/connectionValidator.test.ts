@@ -28,6 +28,7 @@ jest.mock('@sap-ux/axios-extension', () => ({
     createForAbapOnCloud: jest.fn().mockImplementation(() => ({
         interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
         catalog: catalogServiceMock,
+        cookies: 'sap-usercontext=sap-client=100;',
         user: jest.fn().mockReturnValue('user1@acme.com')
     }))
 }));
@@ -448,6 +449,7 @@ describe('ConnectionValidator', () => {
         expect(connectValidator.serviceInfo).toEqual(serviceInfoMock);
         expect(connectValidator.validatedUrl).toBe(serviceInfoMock.url);
         expect(connectValidator.connectedSystemName).toBe('abap_btp_001');
+        expect(connectValidator.validatedClient).toBe('100');
     });
 
     test('should attempt to validate auth using v4 catalog where v2 is not available or user is not authorized', async () => {
