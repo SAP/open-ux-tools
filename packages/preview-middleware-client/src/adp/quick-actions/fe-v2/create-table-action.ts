@@ -7,6 +7,8 @@ import { getControlById, isA } from '../../../utils/core';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { DialogNames, handler } from '../../init-dialogs';
 import { TableQuickActionDefinitionBase } from './table-quick-action-base';
+import ManagedObject from 'sap/ui/base/ManagedObject';
+import UI5Element from 'sap/ui/core/Element';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
@@ -39,21 +41,17 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         if (this.iconTabBar && iconTabBarFilterKey) {
             this.iconTabBar.setSelectedKey(iconTabBarFilterKey);
         }
-        
-        // open dialogBox to add, and content is selected ByDefault
-        const openContentDialog = async (headerToolbar: any) => {
-            if (headerToolbar) {
-                const overlay = OverlayRegistry.getOverlay(headerToolbar) || [];
-                await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, 'content');
-            }
-        };
+
         let headerToolbar;
         if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
-            headerToolbar = (table as any).getAggregation('items')[0].getHeaderToolbar();
+            headerToolbar = (table.getAggregation('items') as ManagedObject[])[0].getAggregation('headerToolbar');
         } else if (isA<Table>(M_TABLE_TYPE, table)) {
             headerToolbar = table.getAggregation('headerToolbar');
         }
-        await openContentDialog(headerToolbar);
+
+        // open dialogBox to add, and content is selected ByDefault
+        const overlay = OverlayRegistry.getOverlay(headerToolbar as UI5Element) || [];
+        await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, 'content');
         return [];
     }
 }
