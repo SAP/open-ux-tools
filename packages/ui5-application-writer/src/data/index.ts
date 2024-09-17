@@ -1,4 +1,5 @@
-import type { App, UI5, AppOptions, Package, Ui5App } from '../types';
+import type { App, UI5, AppOptions, Ui5App } from '../types';
+import type { Package } from '@sap-ux/project-access';
 import { mergeObjects } from '@sap-ux/ui5-config';
 import { mergeApp, packageDefaults, mergeUi5, getSpecTagVersion } from './defaults';
 import { validate } from './validators';

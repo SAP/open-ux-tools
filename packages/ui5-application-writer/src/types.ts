@@ -1,23 +1,4 @@
-import type { ProjectType, UI5FlexLayer } from '@sap-ux/project-access';
-
-export interface Package {
-    name: string;
-    version?: string;
-    description?: string;
-    scripts?: Record<string, string>;
-    dependencies?: Record<string, string>;
-    devDependencies?: Record<string, string>;
-    ui5?: {
-        dependencies?: string[];
-    };
-    /**
-     * Defines the SAPUI5 flexibility layer to manage smart control changes and provide personalization functions for your SAPUI5 applications.
-     *
-     * - `VENDOR`: Stores SAP-delivered content.
-     * - `CUSTOMER_BASE`: Stores customer-specific changes.
-     */
-    sapuxLayer?: UI5FlexLayer;
-}
+import type { ProjectType, Package } from '@sap-ux/project-access';
 
 export interface App {
     id: string;
