@@ -718,7 +718,7 @@ html[data-theme='dark modern'] {
 }
 
 html[data-theme='light modern'] {
-     --vscode-font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", sans-serif;
+    --vscode-font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", sans-serif;
     --vscode-font-weight: normal;
     --vscode-font-size: 13px;
     --vscode-editor-font-family: Consolas, 'Courier New', monospace;
