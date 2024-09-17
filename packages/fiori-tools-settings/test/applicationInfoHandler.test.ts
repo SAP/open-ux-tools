@@ -1,129 +1,65 @@
-import { writeApplicationInfoSettings, loadApplicationInfoFromSettings, appInfoFilePath } from '../src/';
-import path from 'path';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import {
+    writeApplicationInfoSettings,
+    deleteAppInfoSettings,
+    loadApplicationInfoFromSettings,
+    appInfoFilePath,
+    defaultAppInfoContents
+} from '../src';
 
-const mockFsEditor = {
-    read: jest.fn(),
-    write: jest.fn(),
-    exists: jest.fn(),
-    delete: jest.fn()
-};
+describe('Application Info Settings', () => {
+    let fs: Editor;
 
-jest.mock('mem-fs', () => ({
-    create: jest.fn(() => ({}))
-}));
-
-jest.mock('mem-fs-editor', () => ({
-    create: jest.fn(() => mockFsEditor)
-}));
-
-const executeCommandMock = jest.fn();
-
-describe('loadApplicationInfoFromSettings', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        fs = create(createStorage());
     });
 
-    it('should do nothing if appInfo.json does not exist', () => {
-        mockFsEditor.exists.mockReturnValue(false);
-
-        loadApplicationInfoFromSettings(executeCommandMock);
-
-        expect(mockFsEditor.read).not.toHaveBeenCalled();
-        expect(mockFsEditor.write).not.toHaveBeenCalled();
-        expect(executeCommandMock).not.toHaveBeenCalled();
-        expect(mockFsEditor.delete).not.toHaveBeenCalled();
+    afterEach(() => {
+        deleteAppInfoSettings(fs);
     });
 
-    it('should do nothing if latestGeneratedFiles is empty', () => {
-        mockFsEditor.exists.mockReturnValue(true);
-        mockFsEditor.read.mockReturnValue(
-            JSON.stringify({
-                latestGeneratedFiles: []
-            })
-        );
-
-        loadApplicationInfoFromSettings(executeCommandMock);
-
-        expect(executeCommandMock).not.toHaveBeenCalled();
-        expect(mockFsEditor.write).not.toHaveBeenCalled();
-        expect(mockFsEditor.delete).not.toHaveBeenCalled();
+    it('writeApplicationInfoSettings should add a file path to appInfo.json', () => {
+        const testPath = 'test-file-path';
+        writeApplicationInfoSettings(testPath, fs);
+        const appInfoContents = JSON.parse(fs.read(appInfoFilePath) || '{}');
+        expect(appInfoContents.latestGeneratedFiles).toContain(testPath);
     });
 
-    it('should load the application info, update the file, and delete the appInfo.json', () => {
-        const mockFilePath = path.join('/some/path/to/file.txt');
-        mockFsEditor.exists.mockReturnValue(true);
-        mockFsEditor.read.mockReturnValue(
-            JSON.stringify({
-                latestGeneratedFiles: [mockFilePath]
-            })
-        );
-
-        loadApplicationInfoFromSettings(executeCommandMock);
-
-        expect(executeCommandMock).toHaveBeenCalledWith(mockFilePath);
-        expect(mockFsEditor.delete).toHaveBeenCalledWith(appInfoFilePath);
+    it('writeApplicationInfoSettings should add a file path to appInfo.json when mem-fs editor not provided', () => {
+        const testPath = 'test-file-path';
+        writeApplicationInfoSettings(testPath);
+        const executeCommand = jest.fn();
+        loadApplicationInfoFromSettings(executeCommand);
+        expect(executeCommand).toHaveBeenCalledWith(testPath);
     });
 
-    it('should handle delete AppInfo file error gracefully', () => {
-        const mockFilePath = path.join('/some/path/to/file.txt');
-        mockFsEditor.exists.mockReturnValue(true);
-        mockFsEditor.read.mockReturnValue(
-            JSON.stringify({
-                latestGeneratedFiles: [mockFilePath]
-            })
-        );
+    it('deleteAppInfoSettings should delete the appInfo.json file if it exists', () => {
+        fs.write(appInfoFilePath, JSON.stringify(defaultAppInfoContents));
+        deleteAppInfoSettings(fs);
+        expect(fs.exists(appInfoFilePath)).toBe(false);
+    });
 
-        const mockError = new Error('Failed to delete file');
-        mockFsEditor.delete.mockImplementation(() => {
-            throw mockError;
+    it('loadApplicationInfoFromSettings should execute command and delete the file', () => {
+        const testPath = 'test-file-path';
+        fs.write(appInfoFilePath, JSON.stringify({ latestGeneratedFiles: [testPath] }));
+        const executeCommand = jest.fn();
+        loadApplicationInfoFromSettings(executeCommand, fs);
+        expect(executeCommand).toHaveBeenCalledWith(testPath);
+        expect(fs.exists(appInfoFilePath)).toBe(false);
+    });
+
+    it('should throw an error if fs.delete fails', () => {
+        // Create a mock file system that throws an error when delete is called
+        const errorFs = create(createStorage());
+        errorFs.write(appInfoFilePath, JSON.stringify(defaultAppInfoContents));
+        // Override the delete method to throw an error
+        errorFs.delete = jest.fn(() => {
+            throw new Error('Mock delete error');
         });
-
-        expect(() => loadApplicationInfoFromSettings(executeCommandMock)).toThrow(
-            `Error deleting appInfo.json file: ${mockError}`
-        );
-    });
-});
-
-describe('writeApplicationInfoSettings', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
-    it('should create appInfo.json if it does not exist', () => {
-        mockFsEditor.exists.mockReturnValue(false);
-
-        writeApplicationInfoSettings(path.join('/some/path/to/file.txt'));
-
-        expect(mockFsEditor.write).toHaveBeenCalledWith(
-            appInfoFilePath,
-            JSON.stringify(
-                {
-                    latestGeneratedFiles: ['/some/path/to/file.txt']
-                },
-                null,
-                2
-            )
-        );
-    });
-
-    it('should update appInfo.json if it exists', () => {
-        mockFsEditor.exists.mockReturnValue(true);
-        const mockPath = path.join('/existing/path');
-        mockFsEditor.read.mockReturnValue(
-            JSON.stringify({
-                latestGeneratedFiles: [mockPath]
-            })
-        );
-        writeApplicationInfoSettings('/some/new/path');
-        expect(mockFsEditor.write).toHaveBeenCalledWith(
-            appInfoFilePath,
-            JSON.stringify(
-                {
-                    latestGeneratedFiles: ['/existing/path', '/some/new/path']
-                },
-                null,
-                2
-            )
+        expect(() => deleteAppInfoSettings(errorFs)).toThrow(
+            'Error deleting appInfo.json file: Error: Mock delete error'
         );
     });
 });

@@ -5,7 +5,7 @@ import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 
 export const appInfoFilePath = join(homedir(), '.fioritools', 'appInfo.json');
-const defaultAppInfoContents = {
+export const defaultAppInfoContents = {
     latestGeneratedFiles: []
 };
 
