@@ -46,6 +46,17 @@
     background-color: var(--vscode-progressBar-background);
 }
 
+.theme-child:hover {
+    color: rgb(16, 110, 190);
+    background-color: var(--vscode-toolbar-hoverBackground, var(--vscode-menubar-selectionBackground));
+    outline: 1px dashed var(--vscode-contrastActiveBorder);
+}
+
+.selected:hover {
+    border-radius: 1px;
+    background-color: var(--vscode-progressBar-background);
+}
+
 div#theme-light-modern {
     margin-left: 3px;
     margin-bottom: 3px;
@@ -59,3 +70,7 @@ div#theme-high-contrast-black {
     margin-left: 3px;
     margin-top: 3px;
 }
+
+// #themes-selector {
+//     border: 1px solid var(--vscode-widget-border)
+// }
