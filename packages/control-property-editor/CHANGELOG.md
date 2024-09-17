@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.3
+
+### Patch Changes
+
+-   2fd82b1: Object Page Add Custom Section quick action support
+
 ## 0.5.2
 
 ### Patch Changes

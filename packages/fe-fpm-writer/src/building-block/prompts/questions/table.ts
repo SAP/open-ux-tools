@@ -17,11 +17,14 @@ import {
 import type { PromptContext, Prompts, PromptsGroup } from '../../../prompts/types';
 import { BuildingBlockType } from '../../types';
 import type { BuildingBlockConfig, Table } from '../../types';
+import { getManifestPromptsGroup } from './building-blocks';
+
+const MANIFEST_LIBRARIES_GROUP = getManifestPromptsGroup();
 
 export type TablePromptsAnswer = BuildingBlockConfig<Table> & Answers;
 
 const groupIds = {
-    commonBlockProperties: 'tableBuildingBlockProperties',
+    commonTableBuildingBlockProperties: 'tableBuildingBlockProperties',
     visualisationProperties: 'tableVisualizationProperties'
 };
 
@@ -51,7 +54,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.table.');
     const groups: PromptsGroup[] = [
         {
-            id: groupIds.commonBlockProperties,
+            id: groupIds.commonTableBuildingBlockProperties,
             title: t('tableBuildingBlockPropertiesTitle'),
             description: t('tableBuildingBlockPropertiesDescription', { returnObjects: true })
         },
@@ -59,7 +62,8 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             id: groupIds.visualisationProperties,
             title: t('tableVisualizationPropertiesTitle'),
             description: t('tableVisualizationPropertiesDescription', { returnObjects: true })
-        }
+        },
+        MANIFEST_LIBRARIES_GROUP
     ];
 
     return {
@@ -69,7 +73,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {
                 message: t('viewOrFragmentPath.message'),
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonTableBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['aggregationPath', 'buildingBlockData.filterBar']
                 }
@@ -78,7 +82,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 message: t('id.message'),
                 default: defaultAnswers.id,
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonTableBuildingBlockProperties,
                     mandatory: true
                 }
             }),
@@ -86,7 +90,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 message: t('bindingContextType'),
                 default: defaultAnswers.bindingContextType,
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonTableBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
                 }
@@ -96,7 +100,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                       await getCAPServicePrompt(context, {
                           message: t('service'),
                           guiOptions: {
-                              groupId: groupIds.commonBlockProperties,
+                              groupId: groupIds.commonTableBuildingBlockProperties,
                               mandatory: true,
                               dependantPromptNames: []
                           }
@@ -106,7 +110,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             getEntityPrompt(context, {
                 message: t('entity'),
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonTableBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
                 }
@@ -117,7 +121,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                     message: t('qualifier'),
                     guiOptions: {
                         hint: t('valuesDependentOnEntityTypeInfo'),
-                        groupId: groupIds.commonBlockProperties,
+                        groupId: groupIds.commonTableBuildingBlockProperties,
                         mandatory: true,
                         placeholder: t('qualifierPlaceholder')
                     }
@@ -127,7 +131,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             getAggregationPathPrompt(context, {
                 message: t('aggregation'),
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonTableBuildingBlockProperties,
                     mandatory: true
                 }
             }),
@@ -135,7 +139,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 message: t('filterBar.message'),
                 type: 'list',
                 guiOptions: {
-                    groupId: groupIds.commonBlockProperties,
+                    groupId: groupIds.commonTableBuildingBlockProperties,
                     placeholder: t('filterBar.placeholder'),
                     creation: { placeholder: t('filterBar.inputPlaceholder') }
                 }

@@ -28,13 +28,13 @@ export default class CommandExecutor {
      * @param designMetadata Design time metadata
      * @param flexSettings Additional flex settings
      */
-    public async getCommand(
+    public async getCommand<T>(
         runtimeControl: ManagedObject,
         commandName: CommandNames,
         modifiedValue: object,
         designMetadata: DesignTimeMetadata,
         flexSettings: FlexSettings
-    ): Promise<FlexCommand> {
+    ): Promise<FlexCommand<T>> {
         try {
             return await CommandFactory.getCommandFor(
                 runtimeControl,
