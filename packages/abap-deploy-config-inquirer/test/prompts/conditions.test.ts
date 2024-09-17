@@ -77,13 +77,17 @@ describe('Test abap deploy config inquirer conditions', () => {
     test('should show client choice question', () => {
         mockIsAppStudio.mockReturnValueOnce(false);
         PromptState.isYUI = false;
-        expect(showClientChoiceQuestion(false, '100', false)).toBe(true);
+        PromptState.abapDeployConfig.isS4HC = false;
+        expect(showClientChoiceQuestion(false, '100')).toBe(true);
+        PromptState.resetAbapDeployConfig();
     });
 
     test('should not show client choice question', () => {
         mockIsAppStudio.mockReturnValueOnce(false);
         PromptState.isYUI = false;
-        expect(showClientChoiceQuestion(true, undefined, true)).toBe(false);
+        PromptState.abapDeployConfig.isS4HC = true;
+        expect(showClientChoiceQuestion(true, undefined)).toBe(false);
+        PromptState.resetAbapDeployConfig();
     });
 
     it.each([
