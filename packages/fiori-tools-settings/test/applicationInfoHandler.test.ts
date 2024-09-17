@@ -79,7 +79,7 @@ describe('loadApplicationInfoFromSettings', () => {
         });
 
         expect(() => loadApplicationInfoFromSettings(executeCommandMock)).toThrow(
-            `Error in deleting AppInfo.json file, ${mockError}`
+            `Error deleting appInfo.json file: ${mockError}`
         );
     });
 });
