@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.4
+
+### Patch Changes
+
+-   9506a73: Uniform funnel checkboxes
+
 ## 0.5.3
 
 ### Patch Changes
