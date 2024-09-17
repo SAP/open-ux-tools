@@ -43,14 +43,14 @@ declare module 'sap/ui/rta/command/FlexCommand' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
     import type Change from 'sap/ui/fl/Change';
 
-    interface FlexCommand extends Omit<BaseCommand, 'getCommands'> {
+    interface FlexCommand<ChangeContentType = any> extends Omit<BaseCommand, 'getCommands'> {
         _oPreparedChange?: {
             _oDefinition: {
                 moduleName: string;
             };
             setModuleName(moduleName: string): void;
         };
-        getPreparedChange(): Change;
+        getPreparedChange(): Change<ChangeContentType>;
         getCommands(): FlexCommand[];
     }
 

@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.16.65
+
+### Patch Changes
+
+-   Updated dependencies [2fd82b1]
+    -   @sap-ux/adp-tooling@0.12.48
+
+## 0.16.64
+
+### Patch Changes
+
+-   09f91c3: Fix changing index in Add Fragment dialog
+
 ## 0.16.63
 
 ### Patch Changes
