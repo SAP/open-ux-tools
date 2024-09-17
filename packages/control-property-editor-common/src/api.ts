@@ -297,6 +297,9 @@ export const save = createExternalAction<void>('save');
 export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('quick-action-list-changed');
 export const updateQuickAction = createExternalAction<QuickAction>('update-quick-action');
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
+export const numberOfChangesRequiringReloadChanged = createExternalAction<number>(
+    'number-of-changes-requiring-reload-changed'
+);
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -320,5 +323,6 @@ export type ExternalAction =
     | ReturnType<typeof save>
     | ReturnType<typeof appLoaded>
     | ReturnType<typeof quickActionListChanged>
+    | ReturnType<typeof numberOfChangesRequiringReloadChanged>
     | ReturnType<typeof updateQuickAction>
     | ReturnType<typeof executeQuickAction>;

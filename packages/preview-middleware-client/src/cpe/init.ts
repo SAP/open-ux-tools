@@ -51,9 +51,9 @@ export default function init(
     const outlineService = new OutlineService(rta);
     const quickActionService = new QuickActionService(rta, outlineService, registries);
     const services: Service[] = [
+        connectorService,
         selectionService,
         changesService,
-        connectorService,
         outlineService,
         rtaService,
         quickActionService

@@ -15,7 +15,7 @@ describe('connector-service', () => {
     test('init - ui5 > v1.72', async () => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
         const wsConnector = new WorkspaceConnectorService();
-        await wsConnector.init(sendActionMock);
+        await wsConnector.init(sendActionMock, jest.fn());
 
         expect(connector.storage.fileChangeRequestNotifier).toBeInstanceOf(Function);
 
@@ -27,7 +27,7 @@ describe('connector-service', () => {
     test('init - ui5 < v1.72', async () => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.67' });
         const wsConnector = new WorkspaceConnectorService();
-        await wsConnector.init(sendActionMock);
+        await wsConnector.init(sendActionMock, jest.fn());
 
         expect(FakeLrepConnector.fileChangeRequestNotifier).toBeInstanceOf(Function);
 
