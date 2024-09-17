@@ -21,7 +21,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 /** sap.ui.fl */
-import {type AddFragmentChangeContentType} from 'sap/ui/fl/Change';
+import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
@@ -296,8 +296,16 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
     private getFragmentTemplateName(targetAggregation: string): string {
         const currentControlName = this.runtimeControl.getMetadata().getName();
-        return currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections'
-            ? 'OBJECT_PAGE_CUSTOM_SECTION'
-            : '';
+        if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections') {
+            return 'OBJECT_PAGE_CUSTOM_SECTION';
+        } else if (
+            ((currentControlName === 'sap.f.DynamicPageTitle' || currentControlName === 'sap.uxap.ObjectPageHeader') &&
+                targetAggregation === 'actions') ||
+            (currentControlName === 'sap.m.OverflowToolbar' && targetAggregation === 'content')
+        ) {
+            return 'CUSTOM_ACTION';
+        } else {
+            return '';
+        }
     }
 }
