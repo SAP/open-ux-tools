@@ -36,8 +36,8 @@
         "@sap-ux/logger": "workspace:*"
     },
     "devDependencies": {
-        "express": "4.19.2",
-        "serve-static": "1.15.0",
+        "express": "4.21.0",
+        "serve-static": "1.16.2",
         "supertest": "6.3.3",
         "@types/express": "4.17.21",
         "@types/serve-static": "1.15.5",
