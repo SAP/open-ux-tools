@@ -28,7 +28,7 @@
                 <HBox alignItems="Center">
                     <Select
                         enabled="{/indexHandlingFlag}"
-                        selectedKey='{/selectedIndex}'
+                        selectedKey="{path: '/selectedIndex', type: 'sap.ui.model.type.Integer'}"
                         items="{
                             path: '/index',
                             sorter: { path: 'text' }
