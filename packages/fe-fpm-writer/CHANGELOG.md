@@ -1,5 +1,12 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.31.0
+
+### Minor Changes
+
+-   327ebec: Divide chart, filter bar and table building block prompts questions into groups, add Manifest Change group.
+    Update custom chart example in prompting-ui.
+
 ## 0.30.0
 
 ### Minor Changes
