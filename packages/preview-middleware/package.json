@@ -70,7 +70,7 @@
         "@sap-ux/i18n": "workspace:*"
     },
     "peerDependencies": {
-        "express": "4"
+        "express": "4.20.0"
     },
     "engines": {
         "node": ">=18.x"
