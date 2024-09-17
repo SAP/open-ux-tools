@@ -34,7 +34,7 @@ export async function readJSON<T>(path: string, memFs?: Editor): Promise<T> {
 }
 
 /**
- * Read file asynchronously. Throws error if file does not exist.
+ * Write file asynchronously. Throws error if file does not exist.
  *
  * @param path - path to file
  * @param content - content to write to a file
@@ -108,7 +108,13 @@ async function updateJSON(path: string, content: object, memFs?: Editor): Promis
     await writeFile(path, result, memFs);
 }
 
-// ToDo - annotation
+/**
+ * Deletes file asynchronously.
+ *
+ * @param path - path to file
+ * @param memFs - optional mem-fs-editor instance
+ * @returns Promise to void.
+ */
 export async function deleteFile(path: string, memFs?: Editor): Promise<void> {
     if (memFs) {
         return memFs.delete(path);
@@ -116,47 +122,26 @@ export async function deleteFile(path: string, memFs?: Editor): Promise<void> {
     return fs.unlink(path);
 }
 
-// function readdir(store: Stora, directoryPath: string) {
-//     const files: string[] = [];
-
-//     // Iterate over the store's file system
-//     store.each((file) => {
-//         const relativeFilePath = path.relative(process.cwd(), file.path);
-
-//         // Check if the file is inside the specified directory
-//         if (relativeFilePath.startsWith(directoryPath)) {
-//             // Push the file path relative to the directory
-//             files.push(path.relative(directoryPath, relativeFilePath));
-//         }
-//     });
-
-//     return files;
-// }
-
-async function memFsReaddir(directoryPath: string, memFs: Editor): Promise<string[]> {
-    const files: string[] = [];
-
-    // memFs.store.each((file) => {
-    //     const relativeFilePath = path.relative(process.cwd(), file.path);
-
-    //     // Check if the file is inside the specified directory
-    //     if (relativeFilePath.startsWith(directoryPath)) {
-    //         // Push the file path relative to the directory
-    //         const fileInDir = path.relative(directoryPath, relativeFilePath);
-    //         if (fileInDir && !fileInDir.includes(path.sep)) {
-    //             // Push only files directly in the specified directory, ignore subdirectories
-    //             files.push(fileInDir);
-    //         }
-    //     }
-    // });
-
-    return files;
-}
-
+/**
+ * Read array of files from folder asynchronously.
+ *
+ * @param path - path to folder
+ * @returns Array of the names of the files in the directory.
+ */
 export async function readDirectory(path: string): Promise<string[]> {
     return fs.readdir(path, { encoding: 'utf8' });
 }
 
-export async function deleteDirectory(path: string): Promise<void> {
+/**
+ * Deletes folder asynchronously.
+ *
+ * @param path - path to folder
+ * @param memFs - optional mem-fs-editor instance
+ * @returns Promise to void.
+ */
+export async function deleteDirectory(path: string, memFs?: Editor): Promise<void> {
+    if (memFs) {
+        return memFs.delete(path);
+    }
     return fs.rm(path, { recursive: true, force: true });
 }

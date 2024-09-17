@@ -688,9 +688,11 @@ export async function getCapServiceName(projectRoot: string, datasourceUri: stri
 
 /**
  * Method cleans up cds files after deletion of passed appName.
+ *
  * @param cdsFilePaths - cds files to cleanup
  * @param appName - CAP application name
- * @param logger: function to log messages (optional)
+ * @param memFs - optional mem-fs-editor instance
+ * @param logger - function to log messages (optional)
  */
 async function cleanupCdsFiles(
     cdsFilePaths: string[],
@@ -700,15 +702,15 @@ async function cleanupCdsFiles(
 ): Promise<void> {
     const usingEntry = `using from './${appName}/annotations';`;
     for (const cdsFilePath of cdsFilePaths) {
-        if (await fileExists(cdsFilePath)) {
+        if (await fileExists(cdsFilePath, memFs)) {
             try {
-                let cdsFile = await readFile(cdsFilePath);
+                let cdsFile = await readFile(cdsFilePath, memFs);
                 if (cdsFile.indexOf(usingEntry) !== -1) {
                     logger?.info(`Removing using statement for './${appName}/annotations' from '${cdsFilePath}'.`);
                     cdsFile = cdsFile.replace(usingEntry, '');
                     if (cdsFile.replace(/\n/g, '').trim() === '') {
                         logger?.info(`File '${cdsFilePath}' is now empty, removing it.`);
-                        await deleteFile(cdsFilePath);
+                        await deleteFile(cdsFilePath, memFs);
                     } else {
                         await writeFile(cdsFilePath, cdsFile, memFs);
                     }
@@ -721,8 +723,11 @@ async function cleanupCdsFiles(
 }
 
 /**
- * Delete application from CAP project
+ * Delete application from CAP project.
+ *
  * @param appPath - path to the application in a CAP project
+ * @param memFs - optional mem-fs-editor instance
+ * @param logger - function to log messages (optional)
  */
 export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Logger): Promise<void> {
     const appName = basename(appPath);
@@ -733,14 +738,14 @@ export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Log
         throw Error(message);
     }
     const packageJsonPath = join(projectRoot, FileName.Package);
-    const packageJson = await readJSON<Package>(packageJsonPath);
+    const packageJson = await readJSON<Package>(packageJsonPath, memFs);
     const cdsFilePaths = [join(dirname(appPath), FileName.ServiceCds), join(dirname(appPath), FileName.IndexCds)];
 
     logger?.info(`Deleting app '${appName}' from CAP project '${projectRoot}'.`);
     // Update `sapux` array if presented in package.json
     if (Array.isArray(packageJson.sapux)) {
         const posixAppPath = appPath.replace(/\\/g, '/');
-        packageJson.sapux = packageJson.sapux.filter((a) => !posixAppPath.endsWith(a));
+        packageJson.sapux = packageJson.sapux.filter((a) => !posixAppPath.endsWith(a.replace(/\\/g, '/')));
         if (packageJson.sapux.length === 0) {
             logger?.info(
                 `This was the last app in this CAP project. Deleting property 'sapux' from '${packageJsonPath}'.`
@@ -753,7 +758,7 @@ export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Log
     }
     await updatePackageJSON(packageJsonPath, packageJson, memFs);
     logger?.info(`File '${packageJsonPath}' updated.`);
-    await deleteDirectory(appPath);
+    await deleteDirectory(appPath, memFs);
     logger?.info(`Directory '${appPath}' deleted.`);
 
     // Cleanup app/service.cds and app/index.cds files
@@ -761,6 +766,6 @@ export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Log
     // Check if app folder is now empty
     if ((await readDirectory(dirname(appPath))).length === 0) {
         logger?.info(`Directory '${dirname(appPath)}' is now empty. Deleting it.`);
-        await deleteDirectory(dirname(appPath));
+        await deleteDirectory(dirname(appPath), memFs);
     }
 }
