@@ -32,12 +32,12 @@ test('renders theme selector callout', () => {
 });
 
 test('check selected theme', () => {
-    localStorage.setItem('theme', 'light');
+    localStorage.setItem('com.sap.ux.control-property-editor.theme', '"light modern"');
     render(<ThemeSelectorCallout />);
     screen.getByRole('button').click();
     const themeCalloutContent = screen.getAllByRole('button', { pressed: true });
     const pressedButton = themeCalloutContent.find((button) => button.getAttribute('aria-pressed') === 'true');
-    expect(pressedButton?.getAttribute('id')).toStrictEqual('theme-light-rect');
+    expect(pressedButton?.getAttribute('id')).toStrictEqual('theme-light-modern-rect');
 });
 
 test('change theme to light', () => {
@@ -46,12 +46,12 @@ test('change theme to light', () => {
     screen.getByTitle('Light').click();
     const themeCalloutContent = screen.getAllByRole('button', { pressed: true });
     const pressedButton = themeCalloutContent.find((button) => button.getAttribute('aria-pressed') === 'true');
-    expect(pressedButton?.getAttribute('id')).toStrictEqual('theme-light-rect');
-    expect(localStorage.getItem('theme')).toStrictEqual('light');
+    expect(pressedButton?.getAttribute('id')).toStrictEqual('theme-light-modern-rect');
+    expect(localStorage.getItem('com.sap.ux.control-property-editor.theme')).toStrictEqual('"light modern"');
 });
 
 test('change theme to light and navigate via keyboard for dark to have focus', async () => {
-    localStorage.setItem('theme', 'light');
+    localStorage.setItem('com.sap.ux.control-property-editor.theme', '"light modern"');
     // Use 'isVisible' property to make virtual nodes visible - 'isVisible' is used by fluent for testing purposes
     Object.defineProperty(HTMLElement.prototype, 'isVisible', {
         configurable: true,
@@ -75,7 +75,7 @@ test('change theme to light and navigate via keyboard for dark to have focus', a
     const darkButton = screen.getByTitle('Dark');
     expect(document.activeElement).toEqual(darkButton);
     // select focused theme
-    expect(localStorage.getItem('theme')).toStrictEqual('light');
+    expect(localStorage.getItem('com.sap.ux.control-property-editor.theme')).toStrictEqual('"light modern"');
     triggerKeyDown('Enter', 13);
-    expect(localStorage.getItem('theme')).toStrictEqual('dark');
+    expect(localStorage.getItem('com.sap.ux.control-property-editor.theme')).toStrictEqual('"dark modern"');
 });

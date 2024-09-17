@@ -135,13 +135,12 @@ class DefaultTransportConfig implements TransportConfig {
             }
         } catch (err) {
             deleteCachedServiceProvider();
-
             if (err.response?.status === 401) {
-                const auth: string = err.response.headers['www-authenticate'];
-
-                if (auth?.toLowerCase()?.startsWith('basic')) {
-                    result.transportConfigNeedsCreds = true;
-                }
+                const auth: string = err.response.headers?.['www-authenticate'];
+                result.transportConfigNeedsCreds = !!auth?.toLowerCase()?.startsWith('basic');
+                LoggerHelper.logger.debug(
+                    t('errors.debugAbapTargetSystemAuthFound', { isFound: !!result.transportConfigNeedsCreds })
+                );
             } else {
                 // Everything from network errors to service being inactive is a warning.
                 // Will be logged and the user is allowed to move on
@@ -149,7 +148,6 @@ class DefaultTransportConfig implements TransportConfig {
                 result.warning = err.message;
                 result.transportConfigNeedsCreds = false;
             }
-
             LoggerHelper.logger.debug(t('errors.debugAbapTargetSystem', { method: 'init', error: err.message }));
         }
         const initSuccessful = !result.error && !result.transportConfigNeedsCreds;
