@@ -107,6 +107,7 @@ export function getFioriToolsProxyMiddlewareConfig(
 }
 
 export const getMockServerMiddlewareConfig = (
+    services: MockserverConfig['services'] = [],
     path?: string,
     annotationsConfig: MockserverConfig['annotations'] = []
 ): CustomMiddleware<MockserverConfig> => {
@@ -118,6 +119,7 @@ export const getMockServerMiddlewareConfig = (
             mountPath: '/',
             // Services should be empty in case no service is provided services: []
             services: [
+                ...services,
                 {
                     urlPath: path ?? '',
                     metadataPath: 'metadataPath',

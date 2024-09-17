@@ -1,6 +1,7 @@
 import { AuthenticationType } from '@sap-ux/store';
 import type { BspApp, UI5ProxyConfig } from '../src';
 import { UI5Config } from '../src';
+import type { MockserverConfig } from '../src/types';
 
 describe('UI5Config', () => {
     // values for testing
@@ -259,6 +260,29 @@ describe('UI5Config', () => {
         });
         test('add with path and annotationsConfig', () => {
             ui5Config.addMockServerMiddleware(path, annotationsConfig);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
+    describe('updateMockServerMiddlewareServices', () => {
+        test('add with given path and annotationsConfig', () => {
+            const mockserverMiddlewareConfig: MockserverConfig = {
+                mountPath: '/',
+                services: [
+                    {
+                        urlPath: '/~different-testpath~',
+                        metadataPath: 'different-metadataPath',
+                        generateMockData: true
+                    }
+                ]
+            };
+            const customMockserverMiddleware = {
+                name: 'sap-fe-mockserver',
+                beforeMiddleware: 'csp',
+                configuration: mockserverMiddlewareConfig
+            };
+            ui5Config.addCustomMiddleware([customMockserverMiddleware]);
+            ui5Config.updateMockServerMiddlewareServices(path, annotationsConfig);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
