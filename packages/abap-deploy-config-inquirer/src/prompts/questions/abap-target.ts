@@ -25,6 +25,7 @@ import {
 } from '../../types';
 import type { InputQuestion, ListQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Question } from 'inquirer';
+import { TargetSystemType } from '../../types';
 
 /**
  * Returns the destination prompt.
@@ -173,7 +174,14 @@ function getScpPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigA
     prompts.push({
         when: (answers: AbapDeployConfigAnswersInternal): boolean => {
             const scpChoice = answers[abapDeployConfigInternalPromptNames.scp];
-            PromptState.abapDeployConfig.scp ||= scpChoice === true; // Keep this updated, will only reset to false if scp is not already true.
+            const targetChoice = answers[abapDeployConfigInternalPromptNames.targetSystem];
+            // scpChoice by default is true so only update state if target system is a URL
+            if (scpChoice && targetChoice === TargetSystemType.Url) {
+                PromptState.abapDeployConfig.scp = true;
+            } else if (targetChoice === TargetSystemType.Url) {
+                // Needs to be reset when user is toggling between scp and non-scp
+                PromptState.abapDeployConfig.scp = false;
+            }
             return false;
         },
         name: abapDeployConfigInternalPromptNames.scpSetter

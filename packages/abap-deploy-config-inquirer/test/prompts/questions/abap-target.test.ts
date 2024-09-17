@@ -202,6 +202,8 @@ describe('getAbapTargetPrompts', () => {
                 })
             ).toBe(false);
             expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith('mockDest1', mockDestinations);
+        } else {
+            throw new Error('Destination setter prompt not found');
         }
     });
 
@@ -272,6 +274,8 @@ describe('getAbapTargetPrompts', () => {
                 })
             ).toBe(false);
             expect(validateTargetSystemUrlCliSpy).toBeCalledTimes(1);
+        } else {
+            throw new Error('Target system setter prompt not found');
         }
     });
 
@@ -307,6 +311,9 @@ describe('getAbapTargetPrompts', () => {
             backendTarget: { abapTarget: { scp: true } as UrlAbapTarget }
         });
         const scpPrompt = abapTargetPrompts.find((prompt) => prompt.name === abapDeployConfigInternalPromptNames.scp);
+        const scpSetterPrompt = abapTargetPrompts.find(
+            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.scpSetter
+        );
 
         if (scpPrompt) {
             expect(
@@ -320,6 +327,30 @@ describe('getAbapTargetPrompts', () => {
         } else {
             throw new Error('Scp prompt not found');
         }
+
+        if (scpSetterPrompt) {
+            PromptState.resetAbapDeployConfig();
+            expect(PromptState.abapDeployConfig.scp).toBeUndefined();
+            expect(
+                (scpSetterPrompt.when as Function)({
+                    targetSystem: TargetSystemType.Url,
+                    url: 'https://mock.target1.url.com',
+                    scp: true
+                })
+            ).toBe(false);
+            // Lets toggle the question
+            expect(
+                (scpSetterPrompt.when as Function)({
+                    targetSystem: TargetSystemType.Url,
+                    url: 'https://mock.target1.url.com',
+                    scp: false
+                })
+            ).toBe(false);
+            expect(PromptState.abapDeployConfig.scp).toBe(false);
+        } else {
+            throw new Error('Scp setter prompt not found');
+        }
+        PromptState.resetAbapDeployConfig();
     });
 
     test('should return expected values from client choice prompt methods', async () => {
