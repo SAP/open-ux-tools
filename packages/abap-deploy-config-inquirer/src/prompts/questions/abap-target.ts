@@ -194,7 +194,7 @@ function getClientChoicePrompt(
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                showClientChoiceQuestion(previousAnswers?.scp, backendTarget?.abapTarget?.client),
+                showClientChoiceQuestion(previousAnswers, backendTarget?.abapTarget?.client),
             type: 'list',
             name: abapDeployConfigInternalPromptNames.clientChoice,
             message: t('prompts.target.clientChoice.message'),

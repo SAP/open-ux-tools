@@ -78,7 +78,21 @@ describe('Test abap deploy config inquirer conditions', () => {
         mockIsAppStudio.mockReturnValueOnce(false);
         PromptState.isYUI = false;
         PromptState.abapDeployConfig.isS4HC = false;
-        expect(showClientChoiceQuestion(false, '100')).toBe(true);
+        expect(
+            showClientChoiceQuestion({ scp: false, targetSystem: TargetSystemType.Url, url: '', package: '' }, '100')
+        ).toBe(true);
+        PromptState.resetAbapDeployConfig();
+        // Should not show client choice question if SCP is enabled
+        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.scp = true;
+        expect(
+            showClientChoiceQuestion({ scp: false, targetSystem: TargetSystemType.Url, url: '', package: '' }, '100')
+        ).toBe(false);
+        PromptState.resetAbapDeployConfig();
+        // Should not show client choice question if target system is not a URL
+        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.scp = true;
+        expect(showClientChoiceQuestion({ scp: true, url: '', package: '' }, '100')).toBe(false);
         PromptState.resetAbapDeployConfig();
     });
 
@@ -86,7 +100,9 @@ describe('Test abap deploy config inquirer conditions', () => {
         mockIsAppStudio.mockReturnValueOnce(false);
         PromptState.isYUI = false;
         PromptState.abapDeployConfig.isS4HC = true;
-        expect(showClientChoiceQuestion(true, undefined)).toBe(false);
+        expect(
+            showClientChoiceQuestion({ scp: true, targetSystem: TargetSystemType.Url, url: '', package: '' }, undefined)
+        ).toBe(false);
         PromptState.resetAbapDeployConfig();
     });
 
