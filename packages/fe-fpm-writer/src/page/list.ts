@@ -45,6 +45,6 @@ function enhanceData(data: ListReport, manifest: Manifest): InternalListReport {
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-export function generate(basePath: string, data: ListReport, fs?: Editor): Editor {
+export async function generate(basePath: string, data: ListReport, fs?: Editor): Promise<Editor> {
     return extendPageJSON(basePath, data, enhanceData, 'page/list/manifest.json', fs);
 }
