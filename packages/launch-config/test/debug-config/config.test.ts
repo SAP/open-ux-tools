@@ -1,12 +1,7 @@
 import { configureLaunchJsonFile } from '../../src/debug-config/config';
 import type { DebugOptions, LaunchConfig, LaunchJSON } from '../../src/types';
 import path from 'path';
-import {
-    FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID,
-    ProjectDataSourceType,
-    oDataVersionV2,
-    oDataVersionV4
-} from '../../src/types';
+import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID, ProjectDataSourceType } from '../../src/types';
 
 const projectName = 'project1';
 const cwd = `\${workspaceFolder}`;
@@ -61,7 +56,7 @@ describe('debug config tests', () => {
     beforeEach(() => {
         configOptions = {
             vscode: vscodeMock,
-            odataVersion: oDataVersionV2,
+            odataVersion: '2.0',
             sapClientParam: '',
             flpAppId: 'project1-tile',
             isFioriElement: true,
@@ -85,7 +80,7 @@ describe('debug config tests', () => {
     });
 
     it('Should return the correct configuration for OData v4', () => {
-        configOptions.odataVersion = oDataVersionV4;
+        configOptions.odataVersion = '4.0';
         const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         expect(launchFile.configurations.length).toBe(3);
 
@@ -137,7 +132,7 @@ describe('debug config tests', () => {
     });
 
     it('Should return correct configuration on BAS and sapClientParam is available', () => {
-        configOptions.odataVersion = oDataVersionV2;
+        configOptions.odataVersion = '2.0';
         configOptions.datasourceType = ProjectDataSourceType.odataServiceUrl;
         configOptions.sapClientParam = 'sapClientParam';
         configOptions.isAppStudio = true;

@@ -84,7 +84,7 @@ export interface DebugOptions {
     /** Indicates if the FLP sandbox environment is available. */
     flpSandboxAvailable: boolean;
     /** Version of the OData service. */
-    odataVersion?: string;
+    odataVersion?: ODataVersion;
     /** Indicates if the project is a Fiori Element. */
     isFioriElement?: boolean;
     /** Intent parameter for the migrator mock. */

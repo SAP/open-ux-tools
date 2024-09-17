@@ -27,16 +27,6 @@ function writeLaunchJsonFile(fs: Editor, launchJSONPath: string, configurations:
 }
 
 /**
- * Constructs the full path to the `launch.json` file based on the provided root folder.
- *
- * @param {string} rootFolder - The root directory where the `.vscode` folder is located.
- * @returns {string} - The full path to the `launch.json` file.
- */
-function getLaunchJsonPath(rootFolder: string): string {
-    return join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
-}
-
-/**
  * Handles the case where there are no debug options provided. It either enhances an existing `launch.json`
  * file with a new launch configuration or creates a new `launch.json` file with the initial configuration.
  *
@@ -47,7 +37,7 @@ function getLaunchJsonPath(rootFolder: string): string {
  *     updated or created.
  */
 async function handleNoDebugOptions(rootFolder: string, fioriOptions: FioriOptions, fs: Editor): Promise<Editor> {
-    const launchJsonWritePath = getLaunchJsonPath(rootFolder);
+    const launchJsonWritePath = join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
     if (fs.exists(launchJsonWritePath)) {
         // launch.json exists, enhance existing file with new config
         const launchConfig = generateNewFioriLaunchConfig(rootFolder, fioriOptions);
@@ -95,8 +85,7 @@ async function handleExistingLaunchJson(
         // replaceWithNew is needed in cases where launch config exists in
         // `.vscode` but isn't added to the workspace. If `replaceWithNew` is `true`, it indicates that the app is not
         // in the workspace, so the entire `launch.json` and replaced since launch config is then generated in app folder.
-        const newLaunchJSONContent = { version: '0.2.0', configurations };
-        fs.write(launchJSONPath, JSON.stringify(newLaunchJSONContent, null, 4));
+        writeLaunchJsonFile(fs, launchJSONPath, configurations);
     } else {
         for (const config of configurations) {
             await updateLaunchJSON(
@@ -162,7 +151,7 @@ async function handleDebugOptions(
             npmCommand
         })
     );
-    const launchJsonWritePath = getLaunchJsonPath(launchJsonPath);
+    const launchJsonWritePath = join(launchJsonPath, DirName.VSCode, LAUNCH_JSON_FILE);
     if (fs.exists(launchJsonWritePath)) {
         await handleExistingLaunchJson(fs, launchJsonWritePath, configurations, appNotInWorkspace);
     } else {

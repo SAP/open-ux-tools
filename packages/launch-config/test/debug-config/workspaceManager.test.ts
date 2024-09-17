@@ -41,7 +41,7 @@ describe('launchConfig Unit Tests', () => {
 
     describe('handleOpenFolderButNoWorkspaceFile', () => {
         it('should create a launch config for non-workspace apps if folder is not in workspace', () => {
-            const mockProjectPath = '/mock/project/path';
+            const mockProjectPath = path.join('/mock/project/path');
             (isFolderInWorkspace as jest.Mock).mockReturnValue(false);
             (handleAppsNotInWorkspace as jest.Mock).mockReturnValue({
                 launchJsonPath: mockProjectPath,
@@ -61,8 +61,8 @@ describe('launchConfig Unit Tests', () => {
         });
 
         it('should update paths for nested folders inside an open folder', () => {
-            const mockProjectPath = '/mock/project/nestedFolder';
-            const mockTargetFolder = '/target/folder';
+            const mockProjectPath = path.join('/mock/project/nestedFolder');
+            const mockTargetFolder = path.join('/target/folder');
             const mockNestedFolder = 'nestedFolder';
 
             (isFolderInWorkspace as jest.Mock).mockReturnValue(true);
@@ -85,8 +85,8 @@ describe('launchConfig Unit Tests', () => {
 
     describe('handleSavedWorkspace', () => {
         it('should handle projects inside the workspace', () => {
-            const mockProjectPath = '/mock/project/path';
-            const mockTargetFolder = '/target/folder';
+            const mockProjectPath = path.join('/mock/project/path');
+            const mockTargetFolder = path.join('/target/folder');
             (isFolderInWorkspace as jest.Mock).mockReturnValue(true);
             (formatCwd as jest.Mock).mockReturnValue('${workspaceFolder}/project');
             (getLaunchJsonPath as jest.Mock).mockReturnValue(mockTargetFolder);
@@ -103,7 +103,7 @@ describe('launchConfig Unit Tests', () => {
         });
 
         it('should create a launch config for non-workspace apps', () => {
-            const mockProjectPath = '/mock/project/path';
+            const mockProjectPath = path.join('/mock/project/path');
             (isFolderInWorkspace as jest.Mock).mockReturnValue(false);
             (handleAppsNotInWorkspace as jest.Mock).mockReturnValue({
                 launchJsonPath: mockProjectPath,
@@ -124,8 +124,8 @@ describe('launchConfig Unit Tests', () => {
 
     describe('handleUnsavedWorkspace', () => {
         it('should update paths for nested folders inside a workspace', () => {
-            const mockProjectPath = '/mock/project/nestedFolder';
-            const mockWsFolder = '/mock/workspace/folder';
+            const mockProjectPath = path.join('mock/project/configureLaunchConfig');
+            const mockWsFolder = path.join('mock/workspace/folder');
             const mockNestedFolder = 'nestedFolder';
             mockVscode.workspace.getWorkspaceFolder.mockReturnValue({ uri: { fsPath: mockWsFolder } });
             mockVscode.workspace.workspaceFile.scheme = 'folder';
@@ -144,7 +144,7 @@ describe('launchConfig Unit Tests', () => {
 
     describe('handleWorkspaceConfig', () => {
         it('should handle writeToAppOnly option', () => {
-            const mockProjectPath = '/mock/project/path';
+            const mockProjectPath = path.join('/mock/project/path');
             const options = {
                 writeToAppOnly: true,
                 vscode: mockVscode
@@ -164,8 +164,8 @@ describe('launchConfig Unit Tests', () => {
         });
 
         it('should handle open folder but no workspace file case', () => {
-            const mockProjectPath = '/mock/project/path';
-            const mockTargetFolder = '/target/folder';
+            const mockProjectPath = path.join('/mock/project/path');
+            const mockTargetFolder = path.join('/target/folder');
             const options = {
                 vscode: {
                     ...mockVscode,
@@ -196,7 +196,7 @@ describe('launchConfig Unit Tests', () => {
         });
 
         it('should handle no workspace case', () => {
-            const mockProjectPath = '/mock/project/path';
+            const mockProjectPath = path.join('/mock/project/path');
             const options = {
                 vscode: { ...mockVscode, workspace: undefined }
             } as DebugOptions;
@@ -214,8 +214,8 @@ describe('launchConfig Unit Tests', () => {
         });
 
         it('should handle saved workspace case', () => {
-            const mockProjectPath = '/mock/project/path';
-            const mockTargetFolder = '/target/folder';
+            const mockProjectPath = path.join('/mock/project/path');
+            const mockTargetFolder = path.join('/target/folder');
             const mockVscode = {
                 workspace: {
                     getWorkspaceFolder: jest.fn().mockReturnValue({ uri: { fsPath: mockTargetFolder } }),
