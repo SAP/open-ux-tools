@@ -1,6 +1,16 @@
 import { join } from 'path';
 import type { Manifest, Package } from '../../src';
-import { readFile, readJSON, fileExists, updateManifestJSON, updatePackageJSON, writeFile } from '../../src/file';
+import {
+    readFile,
+    readJSON,
+    fileExists,
+    updateManifestJSON,
+    updatePackageJSON,
+    writeFile,
+    deleteFile,
+    deleteDirectory,
+    readDirectory
+} from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { promises } from 'fs';
@@ -160,6 +170,53 @@ describe('fileAccess', () => {
             await updateManifestJSON(manifestPath, updateFileContent, memFs);
             const result = memFs.read(manifestPath);
             expect(result).toBe(`{\n    "sap.app": {\n        "id": "single_apps-fiori_elements"\n    }\n}\n`);
+        });
+    });
+
+    describe('deleteFile', () => {
+        const filePath = join(__dirname, 'delete-file.txt');
+        beforeEach(() => {
+            jest.resetAllMocks();
+            memFs.write(filePath, '');
+        });
+        test('Delete file - mem-fs-editor', async () => {
+            await deleteFile(filePath, memFs);
+            expect(memFs.exists(filePath)).toEqual(false);
+        });
+        test('Delete file', async () => {
+            const unlinkSpy = jest.spyOn(promises, 'unlink').mockResolvedValue();
+            await deleteFile(filePath);
+            expect(unlinkSpy).toHaveBeenNthCalledWith(1, filePath);
+        });
+    });
+
+    describe('deleteDirectory', () => {
+        const folderPath = join(__dirname, 'delete-folder');
+        beforeEach(() => {
+            jest.resetAllMocks();
+        });
+        test('Delete folder - mem-fs-editor', async () => {
+            const deleteSpy = jest.spyOn(memFs, 'delete');
+            await deleteDirectory(folderPath, memFs);
+            expect(deleteSpy).toHaveBeenNthCalledWith(1, folderPath);
+        });
+        test('Delete folder', async () => {
+            const rmSpy = jest.spyOn(promises, 'rm');
+            await deleteDirectory(folderPath);
+            expect(rmSpy).toHaveBeenNthCalledWith(1, folderPath, { recursive: true, force: true });
+        });
+    });
+
+    describe('readDirectory', () => {
+        beforeEach(() => {
+            jest.resetAllMocks();
+        });
+        test('Read directory', async () => {
+            const folderPath = join(__dirname, 'delete-folder');
+            const readdirSpy = jest.spyOn(promises, 'readdir').mockResolvedValue([]);
+            const files = await readDirectory(folderPath);
+            expect(readdirSpy).toHaveBeenNthCalledWith(1, folderPath, { encoding: 'utf8' });
+            expect(files).toEqual([]);
         });
     });
 });
