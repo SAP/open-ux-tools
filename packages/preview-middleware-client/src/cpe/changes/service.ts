@@ -142,7 +142,6 @@ export class ChangeService {
                 await this.deleteChange(action.payload.controlId, action.payload.propertyName, action.payload.fileName);
             } else if (reloadApplication.match(action)) {
                 this.sendAction(numberOfChangesRequiringReloadChanged(0));
-                await this.options.rta.stop(false, true);
             } else if (save.match(action)) {
                 this.changesRequiringReload = 0;
                 this.sendAction(numberOfChangesRequiringReloadChanged(0));
@@ -151,10 +150,7 @@ export class ChangeService {
 
         await this.fetchSavedChanges();
         this.updateStack();
-        this.options.rta.attachStop(() => {
-            // eslint-disable-next-line fiori-custom/sap-no-location-reload
-            location.reload();
-        });
+
         this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
     }
 

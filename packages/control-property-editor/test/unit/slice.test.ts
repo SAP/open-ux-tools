@@ -404,7 +404,7 @@ describe('main redux slice', () => {
                     {
                         fileChanges: ['testFile']
                     } as any,
-                    reloadApplication()
+                    reloadApplication({ save: false })
                 )
             ).toStrictEqual({
                 fileChanges: [],

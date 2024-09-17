@@ -19,7 +19,8 @@ export enum IconName {
     arrow = 'arrow',
     grabber = 'grabber',
     themePainter = 'themePainter',
-    chevronLeft = 'chevronLeft'
+    chevronLeft = 'chevronLeft',
+    saveAndReload = 'saveAndReload'
 }
 
 export function registerAppIcons(): void {
@@ -213,6 +214,23 @@ export function registerAppIcons(): void {
                         d="M9.24927 13L9.99927 12.338L6.16727 7.997L9.99527 3.662L9.24527 3L5.12527 7.666C4.95827 7.855 4.95827 8.139 5.12527 8.328L9.24927 13Z"
                         fill="var(--vscode-editor-foreground)"
                     />
+                </svg>
+            ),
+            saveAndReload: (
+                <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clipPath="url(#a)" fill="var(--vscode-editor-foreground)">
+                        <path d="M7 7h4v4h-1V8.33682C8.81753 8.89855 8 10.1038 8 11.5c0 1.933 1.567 3.5 3.5 3.5s3.5-1.567 3.5-3.5c0-1.76323-1.3039-3.22194-3-3.46455V7.02747c2.25.24872 4 2.15625 4 4.47253 0 2.4853-2.0147 4.5-4.5 4.5C9.01472 16 7 13.9853 7 11.5c0-1.4136.65183-2.67502 1.67133-3.5H7V7Z" />
+                        <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M7 14H2V2h2v3.999h7.008V2h1.78L14 3.207V7h1V2.999c0-.133-.053-.261-.147-.354l-1.505-1.499c-.094-.093-.221-.146-.353-.146H1.5c-.276 0-.5.224-.5.5v13c0 .276.224.5.5.5H7v-1Zm3-9.046H8V2h2v2.954Z"
+                        />
+                    </g>
+                    <defs>
+                        <clipPath id="a">
+                            <path fill="var(--vscode-editor-background)" d="M0 0h16v16H0z" />
+                        </clipPath>
+                    </defs>
                 </svg>
             )
         }

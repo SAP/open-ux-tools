@@ -35,4 +35,26 @@ describe('connector-service', () => {
         await create([{ changeType: 'propertyType', fileName: 'sap.ui.fl.testFile', support: {} }]);
         expect(sendActionMock).toHaveBeenCalledWith(common.storageFileChanged('testFile'));
     });
+
+    test('appdescr_fe_changePageConfiguration change', async () => {
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
+        const wsConnector = new WorkspaceConnectorService();
+        await wsConnector.init(sendActionMock, jest.fn());
+
+        // call notifier
+        await create([{ changeType: 'appdescr_fe_changePageConfiguration', fileName: 'sap.ui.fl.testFile', support: {} }]);
+        expect(sendActionMock).toHaveBeenCalledTimes(0);
+    });
+
+    test('appdescr_fe_changePageConfiguration change when app is reloading ', async () => {
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
+        const wsConnector = new WorkspaceConnectorService();
+        const subscribeSpy = jest.fn();
+        await wsConnector.init(sendActionMock, subscribeSpy);
+
+        subscribeSpy.mock.calls[0](common.reloadApplication({ save: false }))
+        // call notifier
+        await create([{ changeType: 'appdescr_fe_changePageConfiguration', fileName: 'sap.ui.fl.testFile', support: {} }]);
+        expect(sendActionMock).toHaveBeenCalledWith(common.storageFileChanged('testFile'));
+    });
 });

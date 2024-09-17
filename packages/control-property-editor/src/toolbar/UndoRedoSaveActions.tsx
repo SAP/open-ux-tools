@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { redo, save, undo } from '@sap-ux-private/control-property-editor-common';
+import { redo, reloadApplication, save, undo } from '@sap-ux-private/control-property-editor-common';
 import { UIIconButton, UiIcons } from '@sap-ux/ui-components';
 
+import type { ChangesSlice } from '../slice';
 import type { RootState } from '../store';
 import { Separator } from '../components';
+import { IconName } from '../icons';
 
 /**
  * React element for Undo, Redo and Save.
@@ -20,6 +22,12 @@ export function UndoRedoSaveActions(): ReactElement {
     const changeStack = useSelector<RootState, { canRedo: boolean; canUndo: boolean }>((state) => state.changeStack);
     const canSave = useSelector<RootState, boolean>((state) => state.canSave);
     const isLoading = useSelector<RootState, boolean>((state) => state.isAppLoading);
+    const fileChanges = useSelector<RootState, string[] | undefined>((state) => state.fileChanges) ?? [];
+    const pendingChangesRequiresSaveAndReload = useSelector<RootState, boolean>(
+        (state) => state.pendingChangesRequiresSaveAndReload
+    );
+    const { pending } = useSelector<RootState, ChangesSlice>((state) => state.changes);
+    const saveAndReload = (fileChanges.length > 0 && pending.length > 0) || pendingChangesRequiresSaveAndReload;
     return (
         <>
             <UIIconButton
@@ -48,11 +56,11 @@ export function UndoRedoSaveActions(): ReactElement {
             <UIIconButton
                 id="save-button"
                 iconProps={{
-                    iconName: UiIcons.Save
+                    iconName: saveAndReload ? IconName.saveAndReload : UiIcons.Save
                 }}
                 title={t('SAVE')}
                 onClick={(): void => {
-                    dispatch(save());
+                    dispatch(saveAndReload ? reloadApplication({ save: true }) : save());
                 }}
                 disabled={!canSave || isLoading}
             />

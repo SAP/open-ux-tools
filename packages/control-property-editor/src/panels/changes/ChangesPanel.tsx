@@ -18,7 +18,6 @@ import { ChangeStackHeader } from './ChangeStackHeader';
 import styles from './ChangesPanel.module.scss';
 import { FileChange } from './FileChange';
 import { defaultFontSize } from '../properties/constants';
-import { ReloadRequired } from './ReloadRequired';
 
 /**
  * React element for ChangePanel.
@@ -29,9 +28,6 @@ export function ChangesPanel(): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { pending, saved } = useSelector<RootState, ChangesSlice>((state) => state.changes);
-    const pendingChangesRequiresSaveAndReload = useSelector<RootState, boolean>(
-        (state) => state.pendingChangesRequiresSaveAndReload
-    );
     const fileChanges = useSelector<RootState, string[] | undefined>((state) => state.fileChanges) ?? [];
     const onFilterChange = (
         event?: React.ChangeEvent<HTMLInputElement> | undefined,
@@ -53,21 +49,6 @@ export function ChangesPanel(): ReactElement {
         const fileChangesTooltip = t('CHANGES_IN_FILES') + '\n' + fileChanges.join('\n');
         return (
             <>
-                {fileChanges.length === 0 && pendingChangesRequiresSaveAndReload && (
-                    <>
-                        <Separator />
-                        <Icon iconName="Info" title={fileChangesTooltip} className={styles.infoIcon} />
-                        <ChangeStackHeader
-                            backgroundColor="var(--vscode-sideBar-background)"
-                            color="var(--vscode-editor-foreground)"
-                            fontSize={defaultFontSize}
-                            tooltip={fileChangesTooltip}
-                            isMessageHeader={true}
-                            text={t('SAVE_AND_RELOAD_REQUIRED')}
-                        />
-                        <ReloadRequired key="file-reload-required" />
-                    </>
-                )}
                 {fileChanges.length > 0 && (
                     <>
                         <Separator />
