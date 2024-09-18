@@ -95,6 +95,7 @@ export type ControlProperty =
     | IntegerControlProperty
     | FloatControlProperty
     | StringControlProperty
+    | ControlPropertyBase<typeof STRING_VALUE_TYPE, string, 'unknown'>
     | StringControlPropertyWithOptions;
 
 export interface OutlineNode {
@@ -114,8 +115,13 @@ export interface IconDetails {
     fontFamily: string;
 }
 
+export const PENDING_CHANGE_TYPE = 'pending';
+export const SAVED_CHANGE_TYPE = 'saved';
+export const PROPERTY_CHANGE_KIND = 'property';
+export const UNKNOWN_CHANGE_KIND = 'unknown';
 export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
-    type: 'pending';
+    type: typeof PENDING_CHANGE_TYPE;
+    kind: typeof PROPERTY_CHANGE_KIND;
     /**
      * Indicates if change is before or after current position in undo redo stack
      */
@@ -124,7 +130,8 @@ export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> 
 }
 
 export interface PendingOtherChange {
-    type: 'pending';
+    type: typeof PENDING_CHANGE_TYPE;
+    kind: typeof UNKNOWN_CHANGE_KIND;
     isActive: boolean;
     changeType: string;
     controlId: string;
@@ -133,27 +140,29 @@ export interface PendingOtherChange {
 }
 
 export type PendingChange = PendingPropertyChange | PendingOtherChange;
+export type SavedChange = SavedPropertyChange | UnknownSavedChange;
 
 export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
-    type: 'saved';
-    kind: 'valid';
+    type: typeof SAVED_CHANGE_TYPE;
+    kind: typeof PROPERTY_CHANGE_KIND;
     fileName: string;
     timestamp: number;
 }
 
 export interface UnknownSavedChange {
-    type: 'saved';
-    kind: 'unknown';
+    type: typeof SAVED_CHANGE_TYPE;
+    kind: typeof UNKNOWN_CHANGE_KIND;
     fileName: string;
+    changeType: string;
     controlId?: string;
     timestamp?: number;
 }
-export type ValidChange = PendingPropertyChange | SavedPropertyChange;
-export type Change = ValidChange | UnknownSavedChange;
+
+export type Change = PendingChange | SavedChange;
 
 export interface ChangeStackModified {
     pending: PendingChange[];
-    saved: SavedPropertyChange[];
+    saved: SavedChange[];
 }
 
 export interface PropertyChangeDeletionDetails {

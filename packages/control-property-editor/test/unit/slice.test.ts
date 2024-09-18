@@ -219,6 +219,7 @@ describe('main redux slice', () => {
                     changeStackModified({
                         pending: [
                             {
+                                kind: 'property',
                                 type: 'pending',
                                 controlName: 'Button',
                                 controlId: 'control1',
@@ -235,7 +236,7 @@ describe('main redux slice', () => {
                                 controlName: 'Button',
                                 propertyName: 'text',
                                 type: 'saved',
-                                kind: 'valid',
+                                kind: 'property',
                                 fileName: 'file',
                                 timestamp: 123,
                                 value: 'abc',
@@ -254,6 +255,7 @@ describe('main redux slice', () => {
                             properties: {
                                 text: {
                                     lastChange: {
+                                        kind: 'property',
                                         changeType: 'propertyChange',
                                         controlName: 'Button',
                                         controlId: 'control1',
@@ -267,7 +269,7 @@ describe('main redux slice', () => {
                                         changeType: 'propertyChange',
                                         controlId: 'control1',
                                         controlName: 'Button',
-                                        kind: 'valid',
+                                        kind: 'property',
                                         fileName: 'file',
                                         propertyName: 'text',
                                         timestamp: 123,
@@ -282,6 +284,7 @@ describe('main redux slice', () => {
                     },
                     pending: [
                         {
+                            kind: 'property',
                             changeType: 'propertyChange',
                             type: 'pending',
                             controlName: 'Button',
@@ -299,7 +302,7 @@ describe('main redux slice', () => {
                             controlName: 'Button',
                             propertyName: 'text',
                             type: 'saved',
-                            kind: 'valid',
+                            kind: 'property',
                             fileName: 'file',
                             timestamp: 123,
                             value: 'abc'

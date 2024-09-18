@@ -180,6 +180,7 @@ export interface AddXMLChange extends CommonChangeProperties {
         targetAggregation: string;
         index: number;
         fragmentPath: string;
+        templateName?: string;
     };
     selector: {
         id: string;

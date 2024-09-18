@@ -2,11 +2,8 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { render } from '../utils';
-import { initI18n } from '../../../src/i18n';
 
 import { UndoRedoSaveActions } from '../../../src/toolbar/UndoRedoSaveActions';
-import { mockResizeObserver } from '../../utils/utils';
-import { initIcons } from '@sap-ux/ui-components';
 import {
     setUndoRedoEnablement,
     setSaveEnablement,
@@ -15,16 +12,9 @@ import {
     save,
     undo
 } from '@sap-ux-private/control-property-editor-common';
-import { initialState } from '../../../src/slice';
-
-beforeAll(() => {
-    mockResizeObserver();
-    initI18n();
-    initIcons();
-});
 
 test('renders UndoRedoSaveActions', () => {
-    const { dispatch, store } = render(<UndoRedoSaveActions />, { initialState });
+    const { dispatch, store } = render(<UndoRedoSaveActions />);
 
     // update state
     store.dispatch(setUndoRedoEnablement({ canRedo: true, canUndo: true }));
