@@ -12,7 +12,7 @@ import {
     INPUT_EDITOR_TYPE,
     STRING_VALUE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
-import { IconName, registerAppIcons } from '../../../../src/icons';
+import { IconName } from '../../../../src/icons';
 import { getValueForInputType, InputTypeToggle } from '../../../../src/panels/properties/InputTypeToggle';
 import type { InputTypeToggleOptionProps } from '../../../../src/panels/properties/types';
 import { InputType } from '../../../../src/panels/properties/types';
@@ -96,7 +96,6 @@ describe('InputTypeToggle', () => {
         };
         const testId = `${propertyName}--InputTypeToggle--${InputType.booleanTrue}`;
 
-        registerAppIcons();
         const spyGetChangePropertyAction = jest.spyOn(slice, 'changeProperty');
 
         // act

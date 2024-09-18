@@ -4,7 +4,6 @@ import { screen } from '@testing-library/react';
 import { render } from '../../utils';
 import { useDispatch } from 'react-redux';
 import { reloadApplication } from '@sap-ux-private/control-property-editor-common';
-import { initI18n } from '../../../../src/i18n';
 
 // Mock the useDispatch hook
 jest.mock('react-redux', () => ({
@@ -13,10 +12,6 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('FileChange', () => {
-    beforeAll(() => {
-        initI18n();
-    });
-
     it('renders the component with correct text when fileName is provided', () => {
         const hasUnsavedChanges = true;
 
