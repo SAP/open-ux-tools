@@ -97,7 +97,7 @@ describe('SelectionService', () => {
                     {
                         changeType: 'propertyChange',
                         type: 'saved',
-                        kind: 'valid',
+                        kind: 'property',
                         fileName: 'id_1640106755570_204_propertyChange',
                         controlName: 'Button',
                         controlId:
@@ -107,6 +107,7 @@ describe('SelectionService', () => {
                         timestamp: 1640106817301
                     },
                     {
+                        changeType: 'propertyChange',
                         type: 'saved',
                         kind: 'unknown',
                         controlId:
@@ -117,7 +118,7 @@ describe('SelectionService', () => {
                     {
                         changeType: 'propertyChange',
                         type: 'saved',
-                        kind: 'valid',
+                        kind: 'property',
                         fileName: 'id_1640106755570_203_propertyChange',
                         controlName: 'Button',
                         controlId:
@@ -179,12 +180,13 @@ describe('SelectionService', () => {
                         type: 'saved',
                         kind: 'unknown',
                         fileName: 'unknown',
+                        changeType: 'addXML',
                         timestamp: 1640106877301,
                         controlId: 'SEPMRA_C_PD_Product--template::ListReport::TableToolbar'
                     },
                     {
                         type: 'saved',
-                        kind: 'valid',
+                        kind: 'property',
                         changeType: 'propertyChange',
                         fileName: 'id_1640106755570_204_propertyChange',
                         controlName: 'Button',
@@ -271,6 +273,7 @@ describe('SelectionService', () => {
                         isActive: true,
                         controlName: 'SimpleForm',
                         fileName: 'testFileName',
+                        kind: 'unknown',
                         type: 'pending'
                     },
                     {
@@ -279,6 +282,7 @@ describe('SelectionService', () => {
                         isActive: true,
                         controlName: 'SimpleForm',
                         fileName: 'testFileName',
+                        kind: 'unknown',
                         type: 'pending'
                     }
                 ]
@@ -301,7 +305,8 @@ describe('SelectionService', () => {
                 }),
                 getPreparedChange: jest.fn().mockReturnValue({
                     getDefinition: jest.fn().mockReturnValue({
-                        changeType: 'page'
+                        changeType: 'page',
+                        fileName: 'fileName'
                     })
                 })
             };
@@ -334,6 +339,8 @@ describe('SelectionService', () => {
                         controlId: '_ST_SmartVariantManagement',
                         isActive: true,
                         controlName: 'SimpleForm',
+                        kind: 'unknown',
+                        fileName: 'fileName',
                         type: 'pending'
                     },
                     {
@@ -341,6 +348,8 @@ describe('SelectionService', () => {
                         controlId: '_ST_SmartVariantManagement',
                         isActive: true,
                         controlName: 'SimpleForm',
+                        kind: 'unknown',
+                        fileName: 'fileName',
                         type: 'pending'
                     }
                 ]
@@ -472,6 +481,7 @@ describe('SelectionService', () => {
                         controlName: 'Button',
                         fileName: 'testFileName',
                         type: 'pending',
+                        kind: 'property',
                         value: 'abc'
                     },
                     {
@@ -482,6 +492,7 @@ describe('SelectionService', () => {
                         controlName: 'Button',
                         fileName: 'testFileName',
                         type: 'pending',
+                        kind: 'property',
                         value: '{i18n>DELETE}'
                     },
                     {
@@ -490,6 +501,7 @@ describe('SelectionService', () => {
                         controlName: 'ExtensionPoint1',
                         fileName: 'testFileName',
                         isActive: true,
+                        kind: 'unknown',
                         type: 'pending'
                     }
                 ]

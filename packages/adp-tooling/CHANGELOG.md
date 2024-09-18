@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.48
+
+### Patch Changes
+
+-   2fd82b1: Object Page Add Custom Section quick action support
+
 ## 0.12.47
 
 ### Patch Changes

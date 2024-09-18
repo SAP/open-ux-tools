@@ -45,7 +45,7 @@
         "@types/livereload": "0.9.5",
         "@types/supertest": "2.0.12",
         "axios": "1.7.4",
-        "express": "4.19.2",
+        "express": "4.21.0",
         "supertest": "6.3.3"
     },
     "engines": {

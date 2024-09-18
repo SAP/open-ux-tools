@@ -10,6 +10,7 @@ jest.mock('../../../../src/adp/init-dialogs', () => {
         handler: jest.fn()
     };
 });
+
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
 
@@ -17,7 +18,7 @@ import FEV2QuickActionRegistry from '../../../../src/adp/quick-actions/fe-v2/reg
 import { sapCoreMock } from 'mock/window';
 import NavContainer from 'mock/sap/m/NavContainer';
 import XMLView from 'mock/sap/ui/core/mvc/XMLView';
-import ComponentContainer from 'mock/sap/ui/core/ComponentContainer';
+import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import UIComponentMock from 'mock/sap/ui/core/UIComponent';
 import Component from 'mock/sap/ui/core/Component';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
@@ -409,7 +410,7 @@ describe('FE V2 quick actions', () => {
                             getDomRef: () => ({}),
                             getParent: () => pageView,
                             getHeaderContent: () => {
-                                return [new FlexBox()]
+                                return [new FlexBox()];
                             }
                         };
                     }
@@ -482,6 +483,12 @@ describe('FE V2 quick actions', () => {
                                     id: 'objectPage0-op-add-header-field',
                                     title: 'Add Header Field',
                                     enabled: true
+                                },
+                                {
+                                    kind: 'simple',
+                                    id: 'objectPage0-op-add-custom-section',
+                                    title: 'Add Custom Section',
+                                    enabled: true
                                 }
                             ]
                         }
@@ -496,6 +503,138 @@ describe('FE V2 quick actions', () => {
                 );
 
                 expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'items');
+            });
+        });
+        describe('add custom section', () => {
+            test('initialize and execute action', async () => {
+                const pageView = new XMLView();
+                FlexUtils.getViewForControl.mockImplementation(() => {
+                    return {
+                        getId: () => 'MyView',
+                        getController: () => {
+                            return {
+                                getMetadata: () => {
+                                    return {
+                                        getName: () => 'MyController'
+                                    };
+                                }
+                            };
+                        }
+                    };
+                });
+                fetchMock.mockResolvedValue({
+                    json: jest
+                        .fn()
+                        .mockReturnValueOnce({
+                            controllerExists: false,
+                            controllerPath: '',
+                            controllerPathFromRoot: '',
+                            isRunningInBAS: false
+                        })
+                        .mockReturnValueOnce({ controllers: [] }),
+                    text: jest.fn(),
+                    ok: true
+                });
+
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'ObjectPageLayout') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView,
+                            getHeaderContent: () => {
+                                return [new FlexBox()];
+                            }
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.uxap.ObjectPageLayout': [
+                        {
+                            controlId: 'ObjectPageLayout'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'OBJECT PAGE',
+                            actions: [
+                                {
+                                    kind: 'simple',
+                                    id: 'objectPage0-add-controller-to-page',
+                                    enabled: true,
+                                    title: 'Add Controller to Page'
+                                },
+                                {
+                                    kind: 'simple',
+                                    id: 'objectPage0-op-add-header-field',
+                                    title: 'Add Header Field',
+                                    enabled: true
+                                },
+                                {
+                                    kind: 'simple',
+                                    id: 'objectPage0-op-add-custom-section',
+                                    title: 'Add Custom Section',
+                                    enabled: true
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'objectPage0-op-add-custom-section', kind: 'simple' })
+                );
+                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
+                    '../../../../src/adp/init-dialogs'
+                );
+
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'sections');
             });
         });
     });

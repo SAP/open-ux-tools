@@ -5,9 +5,11 @@ import type {
     Control,
     IconDetails,
     OutlineNode,
+    PendingChange,
     PendingPropertyChange,
     PropertyChange,
     QuickActionGroup,
+    SavedChange,
     SavedPropertyChange,
     Scenario,
     ShowMessage
@@ -28,7 +30,10 @@ import {
     setSaveEnablement,
     appLoaded,
     updateQuickAction,
-    quickActionListChanged
+    quickActionListChanged,
+    UNKNOWN_CHANGE_KIND,
+    SAVED_CHANGE_TYPE,
+    PENDING_CHANGE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -61,8 +66,8 @@ interface SliceState {
 
 export interface ChangesSlice {
     controls: ControlChanges;
-    pending: PendingPropertyChange[];
-    saved: SavedPropertyChange[];
+    pending: PendingChange[];
+    saved: SavedChange[];
     pendingChangeIds: string[];
 }
 export interface ControlChanges {
@@ -223,6 +228,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.changes.controls = {};
 
                 for (const change of [...action.payload.pending, ...action.payload.saved].reverse()) {
+                    if (change.kind === UNKNOWN_CHANGE_KIND) {
+                        continue;
+                    }
                     const { controlId, propertyName, type, controlName } = change;
                     const key = `${controlId}`;
                     const control = state.changes.controls[key]
@@ -238,9 +246,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                               controlName: controlName ?? '',
                               properties: {}
                           };
-                    if (type === 'pending') {
+                    if (type === PENDING_CHANGE_TYPE) {
                         control.pending++;
-                    } else if (type === 'saved') {
+                    } else if (type === SAVED_CHANGE_TYPE) {
                         control.saved++;
                     }
                     const property = control.properties[propertyName]
@@ -254,10 +262,10 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                               pending: 0,
                               saved: 0
                           };
-                    if (change.type === 'pending') {
+                    if (change.type === PENDING_CHANGE_TYPE) {
                         property.pending++;
                         property.lastChange = change;
-                    } else if (change.type === 'saved') {
+                    } else if (change.type === SAVED_CHANGE_TYPE) {
                         property.lastSavedChange = change;
                         property.saved++;
                     }
