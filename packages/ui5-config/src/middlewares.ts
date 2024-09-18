@@ -118,17 +118,20 @@ export const getMockServerMiddlewareConfig = (
         configuration: {
             mountPath: '/',
             // Services should be empty in case no service is provided services: []
-            services: [
-                ...services,
-                {
-                    urlPath: path ?? '',
-                    metadataPath: 'metadataPath',
-                    // mockdata path should not be generated in case no mock data exists
-                    mockdataPath: 'mockdataPath',
-                    // In case of update, this user value should not be overwritten
-                    generateMockData: true
-                }
-            ],
+            services:
+                services.length > 0
+                    ? [
+                          ...services,
+                          {
+                              urlPath: path ?? '',
+                              metadataPath: 'metadataPath',
+                              // mockdata path should not be generated in case no mock data exists
+                              mockdataPath: 'mockdataPath',
+                              // In case of update, this user value should not be overwritten
+                              generateMockData: true
+                          }
+                      ]
+                    : undefined,
             annotations: annotationsConfig
         }
     };

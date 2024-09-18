@@ -264,7 +264,8 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('updateMockServerMiddlewareServices', () => {
+    describe('updateMockServerMiddleware', () => {
+        const MOCKSERVER_MIDDLEWARE_NAME = 'sap-fe-mockserver';
         const mockserverMiddlewareConfig: MockserverConfig = {
             mountPath: '/',
             services: [
@@ -276,7 +277,7 @@ describe('UI5Config', () => {
             ]
         };
         const customMockserverMiddleware = {
-            name: 'sap-fe-mockserver',
+            name: MOCKSERVER_MIDDLEWARE_NAME,
             beforeMiddleware: 'csp',
             configuration: mockserverMiddlewareConfig
         };
@@ -285,24 +286,24 @@ describe('UI5Config', () => {
             ui5Config.addCustomMiddleware([customMockserverMiddleware]);
         });
 
-        test('add with overwrite', () => {
-            // should overwrite existing services
-            ui5Config.updateMockServerMiddlewareServices(path, undefined, true);
+        test('update with given path (no existing services)', () => {
+            ui5Config.removeCustomMiddleware(MOCKSERVER_MIDDLEWARE_NAME);
+            ui5Config.updateMockServerMiddleware(path);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('add with given path', () => {
-            ui5Config.updateMockServerMiddlewareServices(path);
+        test('update with given path (existing services)', () => {
+            ui5Config.updateMockServerMiddleware(path);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('add without path', () => {
-            ui5Config.updateMockServerMiddlewareServices();
+        test('update without path (existing services)', () => {
+            ui5Config.updateMockServerMiddleware();
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('add with given path and annotationsConfig', () => {
-            ui5Config.updateMockServerMiddlewareServices(path, annotationsConfig);
+        test('update with given path and annotationsConfig (existing services)', () => {
+            ui5Config.updateMockServerMiddleware(path, annotationsConfig);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
