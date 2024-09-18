@@ -592,6 +592,22 @@ exports[`UI5Config updateMockServerMiddlewareServices add with given path and an
 "
 `;
 
+exports[`UI5Config updateMockServerMiddlewareServices add with overwrite 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: metadataPath
+            mockdataPath: mockdataPath
+            generateMockData: true
+        annotations: []
+"
+`;
+
 exports[`UI5Config updateMockServerMiddlewareServices add without path 1`] = `
 "server:
   customMiddleware:

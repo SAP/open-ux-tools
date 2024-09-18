@@ -336,22 +336,29 @@ export class UI5Config {
      * Updates mockserver instance services.
      *
      * @param path option path that is to be mocked
-     * @param annotationsConfig optional annotations config that is to be mocked
+     * @param annotationsConfig optional, annotations config that is to be mocked
+     * @param overwrite optional, whether services should be overwritten
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
     public updateMockServerMiddlewareServices(
         path?: string,
-        annotationsConfig?: MockserverConfig['annotations']
+        annotationsConfig?: MockserverConfig['annotations'],
+        overwrite = false
     ): this {
-        const customMockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver');
-        const customMockserverMiddlewareConfig = customMockserverMiddleware?.configuration as MockserverConfig;
-        const middleware = getMockServerMiddlewareConfig(
-            customMockserverMiddlewareConfig.services,
-            path,
-            annotationsConfig
-        );
-        this.mergeCustomMiddleware(middleware);
+        if (overwrite) {
+            const middleware = getMockServerMiddlewareConfig(undefined, path, annotationsConfig);
+            this.overwriteCustomMiddleware(middleware);
+        } else {
+            const customMockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver');
+            const customMockserverMiddlewareConfig = customMockserverMiddleware?.configuration as MockserverConfig;
+            const middleware = getMockServerMiddlewareConfig(
+                customMockserverMiddlewareConfig.services,
+                path,
+                annotationsConfig
+            );
+            this.mergeCustomMiddleware(middleware);
+        }
         return this;
     }
 
@@ -537,6 +544,26 @@ export class UI5Config {
                 matcher: { key: 'name', value: name },
                 value: middleware,
                 mode: 'merge'
+            });
+        }
+        return this;
+    }
+
+    /**
+     * Overwrites existing custom middleware with the passed config.
+     *
+     * @param middleware - middleware config
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    private overwriteCustomMiddleware(middleware: CustomMiddleware<unknown>): this {
+        const name = middleware.name;
+        if (this.findCustomMiddleware(name)) {
+            this.document.updateAt({
+                path: 'server.customMiddleware',
+                matcher: { key: 'name', value: name },
+                value: middleware,
+                mode: 'overwrite'
             });
         }
         return this;

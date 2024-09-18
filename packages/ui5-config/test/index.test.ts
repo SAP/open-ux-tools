@@ -285,6 +285,12 @@ describe('UI5Config', () => {
             ui5Config.addCustomMiddleware([customMockserverMiddleware]);
         });
 
+        test('add with overwrite', () => {
+            // should overwrite existing services
+            ui5Config.updateMockServerMiddlewareServices(path, undefined, true);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
         test('add with given path', () => {
             ui5Config.updateMockServerMiddlewareServices(path);
             expect(ui5Config.toString()).toMatchSnapshot();
