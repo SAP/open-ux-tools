@@ -1,169 +1,149 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { initIcons } from '@sap-ux/ui-components';
+
+import type { PendingChange, SavedChange } from '@sap-ux-private/control-property-editor-common';
 
 import { render } from '../../utils';
+
 import { FilterName } from '../../../../src/slice';
-import type { FilterOptions, ChangesSlice, default as reducer } from '../../../../src/slice';
-import { DeviceType } from '../../../../src/devices';
-import { registerAppIcons } from '../../../../src/icons';
+import type { FilterOptions, ChangesSlice } from '../../../../src/slice';
 import { ChangesPanel } from '../../../../src/panels/changes';
-import { initI18n } from '../../../../src/i18n';
-import type { PendingChange, SavedPropertyChange } from '@sap-ux-private/control-property-editor-common';
 
-export type State = ReturnType<typeof reducer>;
-
-const getEmptyModel = (): ChangesSlice => {
-    const model: ChangesSlice = {
-        controls: {} as any,
-        pending: [],
-        saved: [],
+const getChanges = (generateSavedChanges = false): ChangesSlice => {
+    const pending: PendingChange[] = !generateSavedChanges
+        ? [
+              {
+                  kind: 'property',
+                  controlId: 'testId1',
+                  controlName: 'controlName1',
+                  propertyName: 'testPropertyName1',
+                  type: 'pending',
+                  value: 'testValue1',
+                  isActive: true,
+                  changeType: 'propertyChange',
+                  fileName: 'testFile1'
+              },
+              {
+                  kind: 'property',
+                  controlId: 'testId1BoolFalse',
+                  controlName: 'controlNameBoolFalse',
+                  propertyName: 'testPropertyNameBoolFalse',
+                  type: 'pending',
+                  value: false,
+                  isActive: true,
+                  changeType: 'propertyChange',
+                  fileName: 'testFile2'
+              },
+              {
+                  kind: 'property',
+                  controlId: 'testId1Exp',
+                  controlName: 'controlNameExp',
+                  propertyName: 'testPropertyNameExp',
+                  type: 'pending',
+                  value: '{expression}',
+                  isActive: true,
+                  changeType: 'propertyBindingChange',
+                  fileName: 'testFile3'
+              },
+              {
+                  kind: 'unknown',
+                  controlId: 'ListReport::TableToolbar',
+                  controlName: 'OverflowToolbar',
+                  type: 'pending',
+                  isActive: true,
+                  changeType: 'addXML',
+                  fileName: 'testFile4'
+              },
+              {
+                  kind: 'unknown',
+                  controlId: 'FieldGroup::TechnicalData::FormGroup',
+                  controlName: 'Group',
+                  type: 'pending',
+                  isActive: true,
+                  changeType: 'addFields',
+                  fileName: 'testFile5'
+              }
+          ]
+        : [];
+    const saved: SavedChange[] = generateSavedChanges
+        ? [
+              {
+                  controlId: 'testId2',
+                  controlName: 'controlName2',
+                  propertyName: 'testPropertyName2',
+                  type: 'saved',
+                  value: 'testValue2',
+                  fileName: 'testFileName',
+                  kind: 'property',
+                  timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
+                  changeType: 'propertyChange'
+              },
+              {
+                  controlId: 'testId2',
+                  controlName: 'controlName2',
+                  propertyName: 'Icon',
+                  type: 'saved',
+                  value: 'sap-icon://accept',
+                  fileName: 'testFileName2',
+                  kind: 'property',
+                  timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
+                  changeType: 'propertyChange'
+              },
+              {
+                  controlId: 'testId3',
+                  controlName: 'controlNameBoolean',
+                  propertyName: 'testPropertyNameBool',
+                  type: 'saved',
+                  value: true,
+                  fileName: 'testFileNameBool',
+                  kind: 'property',
+                  timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
+                  changeType: 'propertyChange'
+              },
+              {
+                  controlId: 'testId4',
+                  controlName: 'controlNameNumber',
+                  propertyName: 'testPropertyNameNum',
+                  type: 'saved',
+                  value: 2,
+                  fileName: 'testFileNameNum',
+                  kind: 'property',
+                  timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
+                  changeType: 'propertyChange'
+              },
+              {
+                  controlId: 'supplierView--supplierForm',
+                  changeType: 'move',
+                  type: 'saved',
+                  fileName: 'id_1698648267087_373_moveSimpleFormField',
+                  kind: 'unknown',
+                  timestamp: new Date('2023-10-11T12:06:53.939Z').getTime()
+              },
+              {
+                  controlId: 'supplierView--supplierForm',
+                  changeType: 'move',
+                  type: 'saved',
+                  fileName: 'id_1698648267088_374_moveSimpleFormField',
+                  kind: 'unknown',
+                  timestamp: new Date('2023-10-12T12:06:53.939Z').getTime()
+              }
+          ]
+        : [];
+    return {
+        pending,
+        saved,
+        controls: {},
         pendingChangeIds: []
     };
-    return model;
-};
-
-const getModel = (saved = false): ChangesSlice => {
-    const model: ChangesSlice = {
-        controls: {} as any,
-        pendingChangeIds: [],
-        pending: !saved
-            ? ([
-                  {
-                      controlId: 'testId1',
-                      controlName: 'controlName1',
-                      propertyName: 'testPropertyName1',
-                      type: 'pending',
-                      value: 'testValue1',
-                      isActive: true,
-                      changeType: 'propertyChange',
-                      fileName: 'testFile1'
-                  },
-                  {
-                      controlId: 'testId1BoolFalse',
-                      controlName: 'controlNameBoolFalse',
-                      propertyName: 'testPropertyNameBoolFalse',
-                      type: 'pending',
-                      value: false,
-                      isActive: true,
-                      changeType: 'propertyChange',
-                      fileName: 'testFile2'
-                  },
-                  {
-                      controlId: 'testId1Exp',
-                      controlName: 'controlNameExp',
-                      propertyName: 'testPropertyNameExp',
-                      type: 'pending',
-                      value: '{expression}',
-                      isActive: true,
-                      changeType: 'propertyBindingChange',
-                      fileName: 'testFile3'
-                  },
-                  {
-                      controlId: 'ListReport::TableToolbar',
-                      controlName: 'OverflowToolbar',
-                      type: 'pending',
-                      isActive: true,
-                      changeType: 'addXML',
-                      fileName: 'testFile4'
-                  },
-                  {
-                      controlId: 'FieldGroup::TechnicalData::FormGroup',
-                      controlName: 'Group',
-                      type: 'pending',
-                      isActive: true,
-                      changeType: 'addFields',
-                      fileName: 'testFile5'
-                  }
-              ] as PendingChange[])
-            : [],
-        saved: saved
-            ? ([
-                  {
-                      controlId: 'testId2',
-                      controlName: 'controlName2',
-                      propertyName: 'testPropertyName2',
-                      type: 'saved',
-                      value: 'testValue2',
-                      fileName: 'testFileName',
-                      kind: 'valid',
-                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                      changeType: 'propertyChange'
-                  },
-                  {
-                      controlId: 'testId2',
-                      controlName: 'controlName2',
-                      propertyName: 'Icon',
-                      type: 'saved',
-                      value: 'sap-icon://accept',
-                      fileName: 'testFileName',
-                      kind: 'valid',
-                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                      changeType: 'propertyChange'
-                  },
-                  {
-                      controlId: 'testId3',
-                      controlName: 'controlNameBoolean',
-                      propertyName: 'testPropertyNameBool',
-                      type: 'saved',
-                      value: true,
-                      fileName: 'testFileNameBool',
-                      kind: 'valid',
-                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                      changeType: 'propertyChange'
-                  },
-                  {
-                      controlId: 'testId4',
-                      controlName: 'controlNameNumber',
-                      propertyName: 'testPropertyNameNum',
-                      type: 'saved',
-                      value: 2,
-                      fileName: 'testFileNameNum',
-                      kind: 'valid',
-                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                      changeType: 'propertyChange'
-                  },
-                  {
-                      controlId: 'supplierView--supplierForm',
-                      type: 'saved',
-                      fileName: 'id_1698648267087_373_moveSimpleFormField',
-                      kind: 'unknown',
-                      timestamp: new Date('2023-10-11T12:06:53.939Z').getTime()
-                  },
-                  {
-                      controlId: 'supplierView--supplierForm',
-                      type: 'saved',
-                      fileName: 'id_1698648267088_374_moveSimpleFormField',
-                      kind: 'unknown',
-                      timestamp: new Date('2023-10-12T12:06:53.939Z').getTime()
-                  }
-              ] as SavedPropertyChange[])
-            : []
-    };
-    return model;
 };
 const filterInitOptions: FilterOptions[] = [{ name: FilterName.changeSummaryFilterQuery, value: '' }];
 describe('ChangePanel', () => {
-    beforeAll(() => {
-        initI18n();
-        initIcons();
-        registerAppIcons();
-    });
-
     test('ChangePanel - check if search filter rendered', () => {
-        const model = getEmptyModel();
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: {} as any,
-            filterQuery: filterInitOptions,
-            selectedControl: undefined,
-            changes: model,
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-        render(<ChangesPanel />, { initialState });
+        render(<ChangesPanel />, {
+            initialState: {
+                filterQuery: filterInitOptions
+            }
+        });
 
         // check if search box exists
         const searchBarByRole = screen.getByRole('searchbox');
@@ -174,19 +154,11 @@ describe('ChangePanel', () => {
     });
 
     test('ChangePanel empty save and pending', () => {
-        const model = getEmptyModel();
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: {} as any,
-            filterQuery: filterInitOptions,
-            selectedControl: undefined,
-            changes: model,
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-        render(<ChangesPanel />, { initialState });
+        render(<ChangesPanel />, {
+            initialState: {
+                filterQuery: filterInitOptions
+            }
+        });
 
         // check no controls found
         const noControlFound = screen.getByText(/no control changes found/i);
@@ -194,20 +166,12 @@ describe('ChangePanel', () => {
     });
 
     test('unsaved changes - all changes', () => {
-        const model = getModel();
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: {} as any,
-            filterQuery: filterInitOptions,
-            selectedControl: undefined,
-            changes: model,
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false,
-            scenario: 'APP_VARIANT'
-        };
-        render(<ChangesPanel />, { initialState });
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(),
+                filterQuery: filterInitOptions
+            }
+        });
 
         // check unsaved changes
         const unsavedChangesTitle = screen.getByText(/unsaved changes/i);
@@ -230,19 +194,12 @@ describe('ChangePanel', () => {
     });
 
     test('saved changes - property change', () => {
-        const model = getModel(true);
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: {} as any,
-            filterQuery: filterInitOptions,
-            selectedControl: undefined,
-            changes: model,
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-        render(<ChangesPanel />, { initialState });
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(true),
+                filterQuery: filterInitOptions
+            }
+        });
 
         // check saved changes
         const savedChangesTitle = screen.getByText(/saved changes/i);
@@ -296,32 +253,25 @@ describe('ChangePanel', () => {
     });
 
     test('saved changes - Other change', () => {
-        const model: ChangesSlice = {
-            controls: {} as any,
-            pending: [],
-            saved: [
-                {
-                    fileName: 'testFileName2',
-                    type: 'saved',
-                    kind: 'unknown',
-                    controlId: 'someSelectorId',
-                    header: true
-                } as any
-            ],
-            pendingChangeIds: []
-        };
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: {} as any,
-            filterQuery: filterInitOptions,
-            selectedControl: undefined,
-            changes: model,
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-        render(<ChangesPanel />, { initialState });
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: {
+                    controls: {},
+                    pending: [],
+                    saved: [
+                        {
+                            changeType: '',
+                            fileName: 'testFileName2',
+                            type: 'saved',
+                            kind: 'unknown',
+                            controlId: 'someSelectorId'
+                        }
+                    ],
+                    pendingChangeIds: []
+                },
+                filterQuery: filterInitOptions
+            }
+        });
 
         // check unknown changes
         const savedChangesTitle = screen.getByText(/saved changes/i);
@@ -362,20 +312,13 @@ describe('ChangePanel', () => {
     });
 
     test('Filter unsaved changes', () => {
-        const model = getModel();
         const filterInitOptions: FilterOptions[] = [{ name: FilterName.changeSummaryFilterQuery, value: 'toolbar' }];
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: {} as any,
-            filterQuery: filterInitOptions,
-            selectedControl: undefined,
-            changes: model,
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-        render(<ChangesPanel />, { initialState });
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(),
+                filterQuery: filterInitOptions
+            }
+        });
 
         // check unsaved changes
         const savedChangesTitle = screen.getByText(/unsaved changes/i);
@@ -386,22 +329,15 @@ describe('ChangePanel', () => {
     });
 
     test('Filter saved changes', () => {
-        const model = getModel(true);
         const filterInitOptions: FilterOptions[] = [
             { name: FilterName.changeSummaryFilterQuery, value: 'Simple Form' }
         ];
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: {} as any,
-            filterQuery: filterInitOptions,
-            selectedControl: undefined,
-            changes: model,
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-        render(<ChangesPanel />, { initialState });
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(true),
+                filterQuery: filterInitOptions
+            }
+        });
 
         // check unsaved changes
         const savedChangesTitle = screen.getByText(/saved changes/i);
@@ -412,24 +348,18 @@ describe('ChangePanel', () => {
     });
 
     test('External changes', () => {
-        const model = getModel(true);
         const filterInitOptions: FilterOptions[] = [
             { name: FilterName.changeSummaryFilterQuery, value: 'Simple Form' }
         ];
         const externalChanges: string[] = ['example1.changes', 'example2.changes'];
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: {} as any,
-            filterQuery: filterInitOptions,
-            selectedControl: undefined,
-            changes: model,
-            icons: [],
-            fileChanges: externalChanges,
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-        render(<ChangesPanel />, { initialState });
+
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(true),
+                filterQuery: filterInitOptions,
+                fileChanges: externalChanges
+            }
+        });
 
         // check unsaved changes
         const externalChangesTitle = screen.getByText(/Changes detected!/i);
