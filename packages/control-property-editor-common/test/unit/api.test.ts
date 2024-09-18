@@ -115,7 +115,7 @@ describe('createExternalAction', () => {
     });
 
     test('changeStackModified', () => {
-        const payload = {
+        const payload: ChangeStackModified = {
             pending: [
                 {
                     controlId: 'testPendingId',
@@ -123,7 +123,10 @@ describe('createExternalAction', () => {
                     propertyName: 'testPendingProp',
                     type: 'pending',
                     value: 'test',
-                    controlName: 'test'
+                    controlName: 'test',
+                    kind: 'property',
+                    changeType: 'propertyChange',
+                    fileName: 'fileName1'
                 }
             ],
             saved: [
@@ -133,11 +136,13 @@ describe('createExternalAction', () => {
                     type: 'saved',
                     value: 'test',
                     fileName: 'testSaveId.change',
-                    kind: 'valid',
+                    kind: 'property',
+                    changeType: 'propertyChange',
+                    controlName: 'button',
                     timestamp: 12343310032023
                 }
             ]
-        } as ChangeStackModified;
+        };
         const changedProp = changeStackModified(payload);
         expect(changedProp.type).toBe('[ext] change-stack-modified');
         expect(changedProp.payload).toStrictEqual(payload);
