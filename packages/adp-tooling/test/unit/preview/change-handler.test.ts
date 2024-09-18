@@ -238,7 +238,9 @@ id="<%- ids.toolbarActionButton %>`);
                 ).toBe(true);
 
                 expect(mockFs.write).toHaveBeenCalled();
-                expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(`"project/path/changes/Share.fragment.xml"`);
+                expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                    `"project/path/changes/Share.fragment.xml"`
+                );
                 expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
 "
 id=\\"btn-30303030"
