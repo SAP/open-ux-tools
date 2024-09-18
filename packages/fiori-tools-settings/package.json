@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-tools-settings",
     "description": "Utilities for managing and persisting Fiori tools configuration settings in the hidden .fioritools folder.",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -15,7 +15,7 @@
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests --silent",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"

@@ -49,6 +49,9 @@ export function writeApplicationInfoSettings(path: string, fs?: Editor) {
     const appInfoContents: AppInfoSettings = readJSONFile(appInfoFilePath, fs);
     appInfoContents.latestGeneratedFiles.push(path);
     fs.write(appInfoFilePath, JSON.stringify(appInfoContents, null, 2));
+    fs.commit((err) => {
+        console.log('Error in writting to AppInfo.json file', err);
+    });
 }
 
 /**
