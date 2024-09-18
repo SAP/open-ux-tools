@@ -1,4 +1,5 @@
 import type { ReaderCollection } from '@ui5/fs';
+import chokidar from 'chokidar';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor as MemFsEditor } from 'mem-fs-editor';
@@ -6,7 +7,7 @@ import { render } from 'ejs';
 import type http from 'http';
 import type { Request, RequestHandler, Response, Router, NextFunction } from 'express';
 import { readFileSync } from 'fs';
-import { dirname, join, posix } from 'path';
+import { dirname, extname, join, posix } from 'path';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
@@ -518,6 +519,7 @@ export async function initAdp(
         const adp = new AdpPreview(config, rootProject, util, logger);
         const variant = JSON.parse(await appVariant.getString());
         const layer = await adp.init(variant);
+        const sync = debounce(() => adp.sync(variant), 10);
         if (flp.rta) {
             flp.rta.layer = layer;
             flp.rta.options = {
@@ -539,7 +541,42 @@ export async function initAdp(
         flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         flp.router.use(json());
         adp.addApis(flp.router);
+        const sourcePath = util.getProject().getSourcePath();
+        chokidar
+            .watch(sourcePath, {
+                ignoreInitial: true,
+                awaitWriteFinish: true
+            })
+            .on('all', async (_event, path) => {
+                const fileExtension = extname(path);
+                if (fileExtension === '.appdescr_variant') {
+                    sync();
+                } else if (fileExtension === '.change') {
+                    if (path.endsWith('appdescr_fe_changePageConfiguration.change')) {
+                        sync();
+                    }
+                }
+            });
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
     }
+}
+
+/**
+ * Returns a function which calls the callback function only after the specified idle time
+ * Works similar to the Debounce operator from rxjs https://reactivex.io/documentation/operators/debounce.html link.
+ *
+ * @param callback Function to execute
+ * @param delay Idle period in milliseconds after which the callback will be executed
+ * @returns A wrapper function that should be called to invoke the callback function after delay
+ */
+function debounce<T extends []>(callback: (...args: T) => void, delay: number): (...args: T) => void {
+    let timerId: NodeJS.Timeout;
+    return (...args: T): void => {
+        clearTimeout(timerId);
+
+        timerId = setTimeout(() => {
+            callback(...args);
+        }, delay) as unknown as NodeJS.Timeout;
+    };
 }

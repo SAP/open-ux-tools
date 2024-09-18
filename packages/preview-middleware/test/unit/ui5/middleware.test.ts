@@ -48,7 +48,11 @@ async function getRouter(fixture?: string, configuration: Partial<MiddlewareConf
                 }
             }
         },
-        middlewareUtil: {}
+        middlewareUtil: {
+            getProject: jest.fn().mockReturnValue({
+                getSourcePath: jest.fn().mockReturnValue('webapp')
+            })
+        }
     });
 }
 

@@ -6,7 +6,7 @@ import type { NextFunction, Request, Response, Router, RequestHandler } from 'ex
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import type { LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
 import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
@@ -32,10 +32,12 @@ export class AdpPreview {
      */
     private routesHandler: RoutesHandler;
 
+    private lrep: LayeredRepositoryService | undefined;
+
     /**
      * @returns merged manifest.
      */
-    get descriptor() {
+    get descriptor(): MergedAppDescriptor {
         if (this.mergedDescriptor) {
             return this.mergedDescriptor;
         } else {
@@ -46,7 +48,9 @@ export class AdpPreview {
     /**
      * @returns a list of resources required to the adaptation project as well as the original app.
      */
-    get resources() {
+    get resources(): {
+        [name: string]: string;
+    } {
         if (this.mergedDescriptor) {
             const resources = {
                 [this.mergedDescriptor.name]: this.mergedDescriptor.url
@@ -97,8 +101,23 @@ export class AdpPreview {
             true,
             this.logger
         );
-        const lrep = provider.getLayeredRepository();
+        this.lrep = provider.getLayeredRepository();
+        // fetch a merged descriptor from the backend
+        await this.lrep.getCsrfToken();
 
+        await this.sync(descriptorVariant);
+        return descriptorVariant.layer;
+    }
+
+    /**
+     * Synchronize local changes with the backend.
+     *
+     * @param descriptorVariant descriptor variant from the project
+     */
+    async sync(descriptorVariant: DescriptorVariant): Promise<void> {
+        if (!this.lrep) {
+            throw new Error('Not initialized');
+        }
         const zip = new ZipFile();
         const files = await this.project.byGlob('**/*.*');
         for (const file of files) {
@@ -106,11 +125,7 @@ export class AdpPreview {
         }
         const buffer = zip.toBuffer();
 
-        // fetch a merged descriptor from the backend
-        await lrep.getCsrfToken();
-        this.mergedDescriptor = (await lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
-
-        return descriptorVariant.layer;
+        this.mergedDescriptor = (await this.lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
     }
 
     /**

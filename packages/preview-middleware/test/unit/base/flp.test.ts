@@ -15,6 +15,7 @@ import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
+import { on, watch } from '../../__mocks__/chokidar';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -524,6 +525,7 @@ describe('FlpSandbox', () => {
 
 describe('initAdp', () => {
     const url = 'http://sap.example';
+    const syncSpy = jest.fn();
     const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
         return {
             init: () => {
@@ -539,6 +541,7 @@ describe('initAdp', () => {
             },
             resources: [],
             proxy: jest.fn(),
+            sync: syncSpy,
             onChangeRequest: jest.fn(),
             addApis: jest.fn()
         } as unknown as adpTooling.AdpPreview;
@@ -589,8 +592,123 @@ describe('initAdp', () => {
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-        await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
+        await initAdp(
+            mockAdpProject,
+            config.adp,
+            flp,
+            {
+                getProject: jest.fn().mockReturnValue({
+                    getSourcePath: jest.fn().mockReturnValue('webapp')
+                })
+            } as MiddlewareUtils,
+            logger
+        );
+        expect(watch).toHaveBeenCalledWith('webapp', {
+            ignoreInitial: true,
+            awaitWriteFinish: true
+        });
+        expect(on).toHaveBeenCalledTimes(1);
         expect(adpToolingMock).toBeCalled();
         expect(flpInitMock).toBeCalled();
+    });
+
+    describe('adp backend sync', () => {
+        beforeAll(() => {
+            jest.useFakeTimers({ advanceTimers: true });
+        });
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        afterAll(() => {
+            jest.useRealTimers();
+        });
+
+        test('ignore property changes', async () => {
+            const config = { adp: { target: { url } } };
+            const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, {} as MiddlewareUtils, logger);
+            const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+                jest.fn();
+            });
+            await initAdp(
+                mockAdpProject,
+                config.adp,
+                flp,
+                {
+                    getProject: jest.fn().mockReturnValue({
+                        getSourcePath: jest.fn().mockReturnValue('webapp')
+                    })
+                } as MiddlewareUtils,
+                logger
+            );
+            on.mock.calls[0][1]('add', 'property.change');
+            jest.advanceTimersByTime(100);
+            expect(syncSpy).not.toBeCalled();
+        });
+        test('sync on appdescr_variant changes', async () => {
+            const config = { adp: { target: { url } } };
+            const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, {} as MiddlewareUtils, logger);
+            const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+                jest.fn();
+            });
+            await initAdp(
+                mockAdpProject,
+                config.adp,
+                flp,
+                {
+                    getProject: jest.fn().mockReturnValue({
+                        getSourcePath: jest.fn().mockReturnValue('webapp')
+                    })
+                } as MiddlewareUtils,
+                logger
+            );
+            on.mock.calls[0][1]('change', 'manifest.appdescr_variant');
+            jest.advanceTimersByTime(100);
+            expect(syncSpy).toBeCalled();
+        });
+        test('sync on manifest change', async () => {
+            const config = { adp: { target: { url } } };
+            const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, {} as MiddlewareUtils, logger);
+            const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+                jest.fn();
+            });
+            await initAdp(
+                mockAdpProject,
+                config.adp,
+                flp,
+                {
+                    getProject: jest.fn().mockReturnValue({
+                        getSourcePath: jest.fn().mockReturnValue('webapp')
+                    })
+                } as MiddlewareUtils,
+                logger
+            );
+            on.mock.calls[0][1]('add', '123_appdescr_fe_changePageConfiguration.change');
+            jest.advanceTimersByTime(100);
+            expect(syncSpy).toBeCalled();
+        });
+        test('only call sync once', async () => {
+            const config = { adp: { target: { url } } };
+            const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, {} as MiddlewareUtils, logger);
+            const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+                jest.fn();
+            });
+            await initAdp(
+                mockAdpProject,
+                config.adp,
+                flp,
+                {
+                    getProject: jest.fn().mockReturnValue({
+                        getSourcePath: jest.fn().mockReturnValue('webapp')
+                    })
+                } as MiddlewareUtils,
+                logger
+            );
+            on.mock.calls[0][1]('add', 'manifest.appdescr_variant');
+            on.mock.calls[0][1]('add', '123_appdescr_fe_changePageConfiguration.change');
+            jest.advanceTimersByTime(100);
+            expect(syncSpy).toBeCalledTimes(1);
+        });
     });
 });

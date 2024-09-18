@@ -1,4 +1,4 @@
-import nock from 'nock';
+import nock, { back } from 'nock';
 import { join } from 'path';
 import express from 'express';
 import supertest from 'supertest';
@@ -176,6 +176,32 @@ describe('AdaptationProject', () => {
 
             expect(() => adp.descriptor).toThrowError();
             expect(() => adp.resources).toThrowError();
+            await expect(() => adp.sync(JSON.parse(descriptorVariant))).rejects.toEqual(Error('Not initialized'));
+        });
+    });
+    describe('sync', () => {
+        test('updates merged descriptor', async () => {
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getPath: () => '/manifest.appdescr_variant',
+                    getBuffer: () => Buffer.from(descriptorVariant)
+                }
+            ]);
+            await adp.init(JSON.parse(descriptorVariant));
+            (adp as any).mergedDescriptor = undefined;
+            await adp.sync(JSON.parse(descriptorVariant));
+            expect(adp.descriptor).toBeDefined();
         });
     });
     describe('proxy', () => {

@@ -47,6 +47,7 @@
         "ejs": "3.1.10",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
+        "chokidar": "3.5.3",
         "@sap-ux/project-access": "workspace:*"
     },
     "devDependencies": {
