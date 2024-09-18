@@ -71,7 +71,7 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
     if (localOnly) {
         return `echo \\"${t('info.mockOnlyWarning')}\\"`;
     }
-    return `fiori run --open "${startFile || 'test/flpSandbox.html'}${params}"`;
+    return `fiori run --open "${startFile ?? 'test/flpSandbox.html'}${params}"`;
 }
 
 /**
@@ -98,19 +98,13 @@ export function generatePackageScripts({
     localStartFile,
     generateIndex = true
 }: PackageScriptsOptions): PackageJsonScripts {
-    // Build search param part of preview launch url
-    const searchParamList: string[][] = [];
-    if (sapClient) {
-        searchParamList.push([`sap-client`, `${sapClient}`]);
-    }
-    searchParamList.push(['sap-ui-xx-viewCache', 'false']);
     const searchParams = buildSearchParams(sapClient);
     const params = buildParams(searchParams, flpAppId);
 
     const scripts: PackageJsonScripts = {
         start: buildStartCommand(localOnly, params, startFile),
         'start-local': `fiori run --config ./ui5-local.yaml --open "${
-            localStartFile || 'test/flpSandbox.html'
+            localStartFile ?? 'test/flpSandbox.html'
         }${params}"`
     };
 

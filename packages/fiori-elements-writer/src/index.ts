@@ -5,7 +5,6 @@ import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
-import { generatePackageScripts } from '@sap-ux/fiori-generator-shared';
 import cloneDeep from 'lodash/cloneDeep';
 import type { FioriElementsApp } from './types';
 import { TemplateType } from './types';
@@ -20,7 +19,7 @@ import {
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
-import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
+import { getBootstrapResourceUrls, generatePackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
