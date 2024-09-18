@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.19
+
+### Patch Changes
+
+-   7b60a4c: update destination validator
+
 ## 0.0.18
 
 ### Patch Changes

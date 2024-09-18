@@ -5,7 +5,8 @@ import {
     undo,
     redo,
     save,
-    ExternalAction
+    ExternalAction,
+    reloadApplication
 } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
@@ -37,19 +38,34 @@ export class RtaService {
             if (redo.match(action)) {
                 this.rta.redo();
             }
+            if (reloadApplication.match(action)) {
+                if (action.payload.save === true) {
+                    await this.save();
+                }
+                await this.rta.stop(false, true);
+            }
 
             if (save.match(action)) {
-                if (this.rta.save) {
-                    // v1.107.x and above
-                    this.rta.save();
-                } else {
-                    // v1.71.x and above
-                    this.rta?._serializeToLrep();
-                }
+                await this.save();
             }
             return Promise.resolve();
         });
+
+        this.rta.attachStop(() => {
+            // eslint-disable-next-line fiori-custom/sap-no-location-reload
+            location.reload();
+        });
         this.rta.attachModeChanged(modeAndStackChangeHandler(sendAction, this.rta));
+    }
+
+    private save(): Promise<void> {
+        if (this.rta.save) {
+            // v1.107.x and above
+            return this.rta.save();
+        } else {
+            // v1.71.x and above
+            return this.rta?._serializeToLrep();
+        }
     }
 }
 
