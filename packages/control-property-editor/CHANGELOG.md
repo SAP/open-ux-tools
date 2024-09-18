@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.6
+
+### Patch Changes
+
+-   37851a2: Fixed wrong chevron color for high contrast theme
+
 ## 0.5.5
 
 ### Patch Changes
