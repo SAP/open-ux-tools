@@ -47,7 +47,6 @@
 }
 
 .theme-child:hover {
-    color: rgb(16, 110, 190);
     background-color: var(--vscode-toolbar-hoverBackground, var(--vscode-menubar-selectionBackground));
     outline: 1px dashed var(--vscode-contrastActiveBorder);
 }
