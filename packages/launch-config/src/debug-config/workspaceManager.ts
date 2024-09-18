@@ -83,7 +83,7 @@ function handleOpenFolderButNoWorkspaceFile(
  * This function handles different scenarios depending on whether a workspace is open,
  * whether the project is inside or outside of a workspace, and other factors.
  *
- * @param rootFolder
+ * @param rootFolder - The root folder path where the app will be generated.
  * @param {DebugOptions} options - The options used to determine how to manage the workspace configuration.
  * @param {string} options.projectPath -The project's path including project name.
  * @param {boolean} [options.isAppStudio] - A boolean indicating whether the current environment is BAS.

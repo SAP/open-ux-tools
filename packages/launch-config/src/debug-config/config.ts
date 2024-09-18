@@ -55,7 +55,7 @@ function configureLaunchConfig(
 /**
  * Configures the launch.json file based on provided options.
  *
- * @param rootFolder
+ * @param rootFolder - The root folder path where the app will be generated.
  * @param {string} cwd - The current working directory.
  * @param {DebugOptions} configOpts - Configuration options for the launch.json file.
  * @returns {LaunchJSON} The configured launch.json object.

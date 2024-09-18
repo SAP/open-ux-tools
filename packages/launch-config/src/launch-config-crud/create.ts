@@ -128,7 +128,7 @@ function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders?: UpdateWorkspace
  * @param {Editor} fs - The file system editor to read and write the `launch.json` file.
  * @param {DebugOptions} debugOptions - Debug configuration options that dictate how the `launch.json`
  *     should be generated and what commands should be logged.
- * @param {Logger} log - Logger instance for logging information or warnings.
+ * @param {Logger} logger - Logger instance for logging information or warnings.
  * @returns {Promise<Editor>} - Returns the file system editor after potentially modifying the workspace
  *     and updating or creating the `launch.json` file.
  */
@@ -136,7 +136,7 @@ async function handleDebugOptions(
     rootFolder: string,
     fs: Editor,
     debugOptions: DebugOptions,
-    log?: Logger
+    logger?: Logger
 ): Promise<Editor> {
     const { launchJsonPath, workspaceFolderUri, cwd, appNotInWorkspace } = handleWorkspaceConfig(
         rootFolder,
@@ -145,7 +145,7 @@ async function handleDebugOptions(
     const configurations = configureLaunchJsonFile(rootFolder, cwd, debugOptions).configurations;
 
     const npmCommand = debugOptions.datasourceType === ProjectDataSourceType.metadataFile ? 'run start-mock' : 'start';
-    log?.info(
+    logger?.info(
         t('startServerMessage', {
             folder: basename(rootFolder),
             npmCommand
@@ -179,14 +179,14 @@ async function handleDebugOptions(
  * @param rootFolder - workspace root folder.
  * @param fioriOptions - options for the new launch config.
  * @param fs - optional, the memfs editor instance.
- * @param log
+ * @param logger - optional, the logger instance.
  * @returns memfs editor instance.
  */
 export async function createLaunchConfig(
     rootFolder: string,
     fioriOptions: FioriOptions,
     fs?: Editor,
-    log?: Logger
+    logger?: Logger
 ): Promise<Editor> {
     fs = fs ?? create(createStorage());
     const debugOptions = fioriOptions.debugOptions;
@@ -197,8 +197,8 @@ export async function createLaunchConfig(
         return fs;
     }
     if (debugOptions.datasourceType === ProjectDataSourceType.capProject) {
-        log?.info(t('startApp', { npmStart: '`npm start`', cdsRun: '`cds run --in-memory`' }));
+        logger?.info(t('startApp', { npmStart: '`npm start`', cdsRun: '`cds run --in-memory`' }));
         return fs;
     }
-    return await handleDebugOptions(rootFolder, fs, debugOptions, log);
+    return await handleDebugOptions(rootFolder, fs, debugOptions, logger);
 }
