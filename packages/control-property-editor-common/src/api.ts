@@ -283,7 +283,9 @@ export const propertyChanged = createExternalAction<PropertyChanged>('property-c
 export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('change-property-failed');
 export const changeStackModified = createExternalAction<ChangeStackModified>('change-stack-modified');
 export const showMessage = createExternalAction<ShowMessage>('show-dialog-message');
-export const reloadApplication = createExternalAction<void>('reload-application');
+export const reloadApplication = createExternalAction<{
+    save?: boolean;
+}>('reload-application');
 export const storageFileChanged = createExternalAction<string>('storage-file-changed');
 export const setAppMode = createExternalAction<'navigation' | 'adaptation'>('set-app-mode');
 export const setUndoRedoEnablement = createExternalAction<{ canRedo: boolean; canUndo: boolean }>(
@@ -297,6 +299,9 @@ export const save = createExternalAction<void>('save');
 export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('quick-action-list-changed');
 export const updateQuickAction = createExternalAction<QuickAction>('update-quick-action');
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
+export const numberOfChangesRequiringReloadChanged = createExternalAction<number>(
+    'number-of-changes-requiring-reload-changed'
+);
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -320,5 +325,6 @@ export type ExternalAction =
     | ReturnType<typeof save>
     | ReturnType<typeof appLoaded>
     | ReturnType<typeof quickActionListChanged>
+    | ReturnType<typeof numberOfChangesRequiringReloadChanged>
     | ReturnType<typeof updateQuickAction>
     | ReturnType<typeof executeQuickAction>;
