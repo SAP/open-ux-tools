@@ -187,7 +187,7 @@ export class ChangeService {
                         }
                         return {
                             type: 'saved',
-                            kind: 'valid',
+                            kind: 'property',
                             fileName: change.fileName,
                             controlId: change.selector.id,
                             propertyName: change.content.property,
@@ -202,6 +202,7 @@ export class ChangeService {
                             const unknownChange: UnknownSavedChange = {
                                 type: 'saved',
                                 kind: 'unknown',
+                                changeType: change.changeType,
                                 fileName: change.fileName,
                                 controlId: change.selector?.id // some changes may not have selector
                             };
@@ -319,6 +320,7 @@ export class ChangeService {
         if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
             result = {
                 type: 'pending',
+                kind: 'property',
                 changeType,
                 controlId: selectorId,
                 propertyName: command.getProperty('propertyName') as string,
@@ -330,6 +332,7 @@ export class ChangeService {
         } else {
             result = {
                 type: 'pending',
+                kind: 'unknown',
                 controlId: selectorId,
                 changeType,
                 isActive: index >= inactiveCommandCount,

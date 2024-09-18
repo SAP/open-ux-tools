@@ -23,7 +23,13 @@ export const valueChanged = (
     controlName: string
 ): { payload: PropertyChange<string | number | boolean>; type: string } => {
     setCachedValue(controlId, name, InputType.enumMember, newValue);
-    return changeProperty({ controlId, propertyName: name, value: newValue, controlName });
+    return changeProperty({
+        changeType: 'propertyChange',
+        controlId,
+        propertyName: name,
+        value: newValue,
+        controlName
+    });
 };
 
 /**

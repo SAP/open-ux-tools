@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.4
+
+### Patch Changes
+
+-   2fd82b1: Object Page Add Custom Section quick action support
+
+## 0.11.3
+
+### Patch Changes
+
+-   09f91c3: Fix changing index in Add Fragment dialog
+
 ## 0.11.2
 
 ### Patch Changes

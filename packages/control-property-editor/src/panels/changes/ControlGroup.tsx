@@ -3,9 +3,9 @@ import React from 'react';
 import { Link, Stack } from '@fluentui/react';
 
 import { useAppDispatch } from '../../store';
-import { selectControl } from '@sap-ux-private/control-property-editor-common';
+import type { Change } from '@sap-ux-private/control-property-editor-common';
+import { PROPERTY_CHANGE_KIND, SAVED_CHANGE_TYPE, selectControl } from '@sap-ux-private/control-property-editor-common';
 
-import type { ChangeProps } from './ChangesPanel';
 import { PropertyChange } from './PropertyChange';
 import { OtherChange } from './OtherChange';
 
@@ -15,10 +15,9 @@ export interface ControlGroupProps {
     text: string;
     controlId: string;
     controlName: string;
-    changeIndex: number;
-    changes: ControlChange[];
+    index: number;
+    changes: Change[];
 }
-export type ControlChange = Omit<ChangeProps, 'actionClassName'>;
 
 /**
  * React Element for control groups.
@@ -29,7 +28,7 @@ export type ControlChange = Omit<ChangeProps, 'actionClassName'>;
 export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement {
     const { text, controlId, changes } = controlGroupProps;
     const dispatch = useAppDispatch();
-    const stackName = changes[0].timestamp ? `saved-changes-stack` : `unsaved-changes-stack`;
+    const stackName = changes[0].type === SAVED_CHANGE_TYPE ? `saved-changes-stack` : `unsaved-changes-stack`;
     return (
         <Stack>
             <Stack.Item className={styles.header}>
@@ -50,20 +49,22 @@ export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement
                     {text}
                 </Link>
             </Stack.Item>
-            {changes.map((change) => (
-                <Stack.Item
-                    data-testid={`${stackName}-${controlId}-${change.propertyName ?? change.changeType}-${
-                        change.changeIndex
-                    }`}
-                    key={`${change.changeIndex}`}
-                    className={styles.item}>
-                    {['propertyChange', 'propertyBindingChange'].includes(change.changeType) ? (
-                        <PropertyChange {...change} actionClassName={styles.actions} />
-                    ) : (
-                        <OtherChange {...change} actionClassName={styles.actions} />
-                    )}
-                </Stack.Item>
-            ))}
+            {changes.map((change) => {
+                return (
+                    <Stack.Item
+                        data-testid={`${stackName}-${controlId}-${
+                            change.kind === PROPERTY_CHANGE_KIND ? change.propertyName : change.changeType
+                        }-${change.fileName}`}
+                        key={change.fileName}
+                        className={styles.item}>
+                        {change.kind === PROPERTY_CHANGE_KIND ? (
+                            <PropertyChange change={change} actionClassName={styles.actions} />
+                        ) : (
+                            <OtherChange change={change} actionClassName={styles.actions} />
+                        )}
+                    </Stack.Item>
+                );
+            })}
         </Stack>
     );
 }

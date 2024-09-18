@@ -47,9 +47,6 @@ const Funnel = (): ReactElement => {
                     contentPadding={UICalloutContentPadding.Standard}>
                     <UICheckbox
                         id={'editable-properties-checkbox'}
-                        styles={{
-                            checkbox: { width: 20, height: 20 }
-                        }}
                         label={t('SHOW_EDITABLE_PROPERTIES')}
                         checked={showEditablePropertiesChecked}
                         onChange={(ev?: React.FormEvent<HTMLElement | HTMLInputElement>, isChecked?: boolean) => {

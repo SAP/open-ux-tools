@@ -1,5 +1,21 @@
 # @sap-ux/launch-config
 
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/odata-service-inquirer@0.5.40
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/odata-service-inquirer@0.5.39
+
 ## 0.4.2
 
 ### Patch Changes

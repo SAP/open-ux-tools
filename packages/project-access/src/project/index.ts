@@ -1,18 +1,19 @@
 export {
+    clearCdsModuleCache,
+    deleteCapApp,
     getCapCustomPaths,
+    getCapEnvironment,
     getCapModelAndServices,
     getCapProjectType,
+    getCapServiceName,
     getCdsFiles,
     getCdsRoots,
     getCdsServices,
     isCapProject,
     isCapJavaProject,
     isCapNodeJsProject,
-    getCapEnvironment,
     readCapServiceMetadataEdmx,
-    getCapServiceName,
-    toReferenceUri,
-    clearCdsModuleCache
+    toReferenceUri
 } from './cap';
 export { filterDataSourcesByType } from './service';
 export { addPackageDevDependency, getNodeModulesPath } from './dependencies';
@@ -33,7 +34,8 @@ export {
     findFioriArtifacts,
     findProjectRoot,
     getAppRootFromWebappPath,
-    findCapProjectRoot
+    findCapProjectRoot,
+    findRootsForPath
 } from './search';
 export { getWebappPath, readUi5Yaml } from './ui5-config';
 export { getMtaPath } from './mta';

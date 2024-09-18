@@ -57,27 +57,27 @@ describe('ObjectPage', () => {
             entity: 'OtherEntity'
         };
 
-        test('minimal input', () => {
+        test('minimal input', async () => {
             const target = join(testDir, 'minimal-input');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-            generate(target, minimalInput, fs);
+            await generate(target, minimalInput, fs);
 
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
-        test('minimal input, plus minUi5Version and contextPath', () => {
+        test('minimal input, plus minUi5Version and contextPath', async () => {
             const target = join(testDir, 'minimal-input');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             const testApiData = JSON.parse(JSON.stringify(minimalInput));
             testApiData.minUI5Version = '1.110';
             testApiData.contextPath = '/my/navigation';
             //act
-            generate(target, testApiData, fs);
+            await generate(target, testApiData, fs);
             //check
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
-        test('minimal input, plus optional page id', () => {
+        test('minimal input, plus optional page id', async () => {
             const target = join(testDir, 'minimal-input');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             const minInput = {
@@ -86,15 +86,15 @@ describe('ObjectPage', () => {
             };
             const testApiData = JSON.parse(JSON.stringify(minInput));
             //act
-            generate(target, testApiData, fs);
+            await generate(target, testApiData, fs);
             //check
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
-        test('all optional settings', () => {
+        test('all optional settings', async () => {
             const target = join(testDir, 'all-settings');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-            generate(
+            await generate(
                 target,
                 {
                     ...minimalInput,
@@ -109,10 +109,10 @@ describe('ObjectPage', () => {
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
-        test('simple inbound navigation', () => {
+        test('simple inbound navigation', async () => {
             const target = join(testDir, 'with-nav');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-            generate(
+            await generate(
                 target,
                 {
                     ...minimalInput,
@@ -127,7 +127,7 @@ describe('ObjectPage', () => {
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
-        test('simple inbound navigation, plus optional page id', () => {
+        test('simple inbound navigation, plus optional page id', async () => {
             const target = join(testDir, 'with-nav');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             const minInput = {
@@ -139,14 +139,14 @@ describe('ObjectPage', () => {
                     navKey: true
                 }
             };
-            generate(target, minInput, fs);
+            await generate(target, minInput, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
-        test('simple nested navigation', () => {
+        test('simple nested navigation', async () => {
             const target = join(testDir, 'with-nested-nav');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-            generate(
+            await generate(
                 target,
                 {
                     ...minimalInput,
@@ -162,29 +162,29 @@ describe('ObjectPage', () => {
         });
 
         describe('Test property custom "tabSizing"', () => {
-            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+            test.each(tabSizingTestCases)('$name', async ({ tabInfo, expectedAfterSave }) => {
                 const target = join(testDir, 'tab-sizing');
                 fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-                generate(target, { ...minimalInput, tabInfo }, fs);
+                await generate(target, { ...minimalInput, tabInfo }, fs);
 
                 let updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
                 let result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
                 // Generate another page and check if new tab sizing recalculated correctly without passing tab size info
-                generate(target, { entity: 'Second' }, fs);
+                await generate(target, { entity: 'Second' }, fs);
                 updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
                 result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
             });
         });
 
-        test('Add library dependency `sap.fe.templates` ', () => {
+        test('Add library dependency `sap.fe.templates` ', async () => {
             const testManifest = JSON.parse(testAppManifest);
             delete testManifest['sap.ui5'].dependencies;
             const target = join(testDir, 'libraryDependency');
             fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(testManifest));
             //act
-            generate(target, minimalInput, fs);
+            await generate(target, minimalInput, fs);
             //check
             expect(
                 (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].dependencies
