@@ -1,4 +1,4 @@
-import type { PackageJsonScripts } from './types';
+import type { PackageJsonScripts, PackageScriptsOptions } from './types';
 import { t } from './i18n';
 
 /**
@@ -97,16 +97,7 @@ export function generatePackageScripts({
     startFile,
     localStartFile,
     generateIndex = true
-}: {
-    localOnly: boolean;
-    addMock: boolean;
-    addTest?: boolean;
-    sapClient?: string;
-    flpAppId?: string;
-    startFile?: string;
-    localStartFile?: string;
-    generateIndex?: boolean;
-}): PackageJsonScripts {
+}: PackageScriptsOptions): PackageJsonScripts {
     // Build search param part of preview launch url
     const searchParamList: string[][] = [];
     if (sapClient) {
