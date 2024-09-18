@@ -1,15 +1,15 @@
 import { join } from 'path';
 import type { Manifest, Package } from '../../src';
 import {
+    deleteDirectory,
+    deleteFile,
+    fileExists,
+    readDirectory,
     readFile,
     readJSON,
-    fileExists,
     updateManifestJSON,
     updatePackageJSON,
-    writeFile,
-    deleteFile,
-    deleteDirectory,
-    readDirectory
+    writeFile
 } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';

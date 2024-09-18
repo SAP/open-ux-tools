@@ -15,14 +15,14 @@ import type {
     CdsVersionInfo
 } from '../types';
 import {
+    deleteDirectory,
     deleteFile,
     fileExists,
+    readDirectory,
     readFile,
     readJSON,
     updatePackageJSON,
-    writeFile,
-    readDirectory,
-    deleteDirectory
+    writeFile
 } from '../file';
 import { loadModuleFromProject } from './module-loader';
 import { findCapProjectRoot } from './search';
@@ -315,7 +315,7 @@ function extractCdsFilesFromMessage(sources: Record<string, { filename?: string 
  * @param url - url to uniform
  * @returns - uniform url
  */
-function uniformUrl(url: string) {
+function uniformUrl(url: string): string {
     return url
         .replace(/\\/g, '/')
         .replace(/\/\//g, '/')
@@ -603,7 +603,7 @@ async function loadGlobalCdsModule(): Promise<CdsFacade> {
 /**
  * Clear cache of request to load global cds module.
  */
-export function clearGlobalCdsModulePromiseCache() {
+export function clearGlobalCdsModulePromiseCache(): void {
     globalCdsModulePromise = undefined;
 }
 
@@ -726,8 +726,8 @@ async function cleanupCdsFiles(
  * Delete application from CAP project.
  *
  * @param appPath - path to the application in a CAP project
- * @param memFs - optional mem-fs-editor instance
- * @param logger - function to log messages (optional)
+ * @param [memFs] - optional mem-fs-editor instance
+ * @param [logger] - function to log messages (optional)
  */
 export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Logger): Promise<void> {
     const appName = basename(appPath);

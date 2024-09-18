@@ -5,6 +5,7 @@ export const FileName = {
     AdaptationConfig: 'config.json',
     CapJavaApplicationYaml: 'application.yaml',
     ExtConfigJson: '.extconfig.json',
+    IndexCds: 'index.cds',
     Library: '.library',
     Manifest: 'manifest.json',
     ManifestAppDescrVar: 'manifest.appdescr_variant',
@@ -12,13 +13,12 @@ export const FileName = {
     Package: 'package.json',
     Pom: 'pom.xml',
     SpecificationDistTags: 'specification-dist-tags.json',
+    ServiceCds: 'services.cds',
     Tsconfig: 'tsconfig.json',
     Ui5Yaml: 'ui5.yaml',
     Ui5LocalYaml: 'ui5-local.yaml',
     Ui5MockYaml: 'ui5-mock.yaml',
-    UI5DeployYaml: 'ui5-deploy.yaml',
-    ServiceCds: 'services.cds',
-    IndexCds: 'index.cds'
+    UI5DeployYaml: 'ui5-deploy.yaml'
 } as const;
 
 export const DirName = {
