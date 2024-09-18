@@ -106,10 +106,39 @@ export function getFioriToolsProxyMiddlewareConfig(
     return { config: fioriToolsProxy, comments };
 }
 
-export const getMockServerMiddlewareConfig = (
+const handleServicesForMiddlewareConfig = (
+    forceAddService: boolean,
     services: MockserverConfig['services'] = [],
+    path?: string
+): MockserverConfig['services'] => {
+    const serviceData = {
+        urlPath: path ?? '',
+        metadataPath: './webapp/localService/metadata.xml',
+        mockdataPath: './webapp/localService/data',
+        generateMockData: true
+    };
+    const placeholderService = {
+        urlPath: path ?? '',
+        metadataPath: 'metadataPath',
+        // mockdata path should not be generated in case no mock data exists
+        mockdataPath: 'mockdataPath',
+        // In case of update, this user value should not be overwritten
+        generateMockData: true
+    };
+    if (forceAddService) {
+        return [serviceData];
+    } else if (services.length === 0) {
+        return [placeholderService];
+    } else {
+        return [...services, placeholderService];
+    }
+};
+
+export const getMockServerMiddlewareConfig = (
+    services: MockserverConfig['services'],
     path?: string,
-    annotationsConfig: MockserverConfig['annotations'] = []
+    annotationsConfig: MockserverConfig['annotations'] = [],
+    forceAddService = false
 ): CustomMiddleware<MockserverConfig> => {
     path = path?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
     return {
@@ -117,21 +146,7 @@ export const getMockServerMiddlewareConfig = (
         beforeMiddleware: 'csp',
         configuration: {
             mountPath: '/',
-            // Services should be empty in case no service is provided services: []
-            services:
-                services.length > 0
-                    ? [
-                          ...services,
-                          {
-                              urlPath: path ?? '',
-                              metadataPath: 'metadataPath',
-                              // mockdata path should not be generated in case no mock data exists
-                              mockdataPath: 'mockdataPath',
-                              // In case of update, this user value should not be overwritten
-                              generateMockData: true
-                          }
-                      ]
-                    : undefined,
+            services: handleServicesForMiddlewareConfig(forceAddService, services, path),
             annotations: annotationsConfig
         }
     };

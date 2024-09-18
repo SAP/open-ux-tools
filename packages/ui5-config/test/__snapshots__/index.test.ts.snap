@@ -317,6 +317,11 @@ exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
       beforeMiddleware: csp
       configuration:
         mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
         annotations: []
 "
 `;
@@ -328,6 +333,11 @@ exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1
       beforeMiddleware: csp
       configuration:
         mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
         annotations:
           - localPath: ./webapp/annotations/annotations.xml
             urlPath: annotations.xml
@@ -341,6 +351,11 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
       beforeMiddleware: csp
       configuration:
         mountPath: /
+        services:
+          - urlPath: ''
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
         annotations: []
 "
 `;
@@ -537,7 +552,7 @@ exports[`UI5Config setMetadata set name and copyright 1`] = `
 "
 `;
 
-exports[`UI5Config updateMockServerMiddlewareServices update with given path (existing services) 1`] = `
+exports[`UI5Config updateMockServerMiddleware update with given path (existing services) 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
@@ -556,18 +571,23 @@ exports[`UI5Config updateMockServerMiddlewareServices update with given path (ex
 "
 `;
 
-exports[`UI5Config updateMockServerMiddlewareServices update with given path (no existing services) 1`] = `
+exports[`UI5Config updateMockServerMiddleware update with given path (no existing services) 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
         mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: metadataPath
+            mockdataPath: mockdataPath
+            generateMockData: true
         annotations: []
 "
 `;
 
-exports[`UI5Config updateMockServerMiddlewareServices update with given path and annotationsConfig (existing services) 1`] = `
+exports[`UI5Config updateMockServerMiddleware update with given path and annotationsConfig (existing services) 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
@@ -588,7 +608,7 @@ exports[`UI5Config updateMockServerMiddlewareServices update with given path and
 "
 `;
 
-exports[`UI5Config updateMockServerMiddlewareServices update without path (existing services) 1`] = `
+exports[`UI5Config updateMockServerMiddleware update without path (existing services) 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
