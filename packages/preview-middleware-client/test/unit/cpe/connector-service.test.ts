@@ -5,6 +5,7 @@ import FakeLrepConnector from 'mock/sap/ui/fl/FakeLrepConnector';
 import { create } from '../../../src/flp/enableFakeConnector';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { fetchMock } from 'mock/window';
+import { ActionHandler } from '../../../src/cpe/types';
 
 describe('connector-service', () => {
     let sendActionMock: jest.Mock;
@@ -42,19 +43,27 @@ describe('connector-service', () => {
         await wsConnector.init(sendActionMock, jest.fn());
 
         // call notifier
-        await create([{ changeType: 'appdescr_fe_changePageConfiguration', fileName: 'sap.ui.fl.testFile', support: {} }]);
+        await connector.storage.setItem('sap.ui.fl.testFile', {
+            changeType: 'appdescr_fe_changePageConfiguration',
+            fileName: 'sap.ui.fl.testFile',
+            support: {}
+        });
         expect(sendActionMock).toHaveBeenCalledTimes(0);
     });
 
     test('appdescr_fe_changePageConfiguration change when app is reloading ', async () => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
         const wsConnector = new WorkspaceConnectorService();
-        const subscribeSpy = jest.fn();
+        const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
 
-        subscribeSpy.mock.calls[0](common.reloadApplication({ save: false }))
+        subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: false }));
         // call notifier
-        await create([{ changeType: 'appdescr_fe_changePageConfiguration', fileName: 'sap.ui.fl.testFile', support: {} }]);
+        await connector.storage.setItem('sap.ui.fl.testFile', {
+            changeType: 'appdescr_fe_changePageConfiguration',
+            fileName: 'sap.ui.fl.testFile',
+            support: {}
+        });
         expect(sendActionMock).toHaveBeenCalledWith(common.storageFileChanged('testFile'));
     });
 });

@@ -53,17 +53,31 @@ export function UndoRedoSaveActions(): ReactElement {
                 disabled={!changeStack.canRedo || isLoading}
             />
             <Separator direction="vertical" style={{ marginLeft: '10px', marginRight: '10px' }} />
-            <UIIconButton
-                id="save-button"
-                iconProps={{
-                    iconName: saveAndReload ? IconName.saveAndReload : UiIcons.Save
-                }}
-                title={t('SAVE')}
-                onClick={(): void => {
-                    dispatch(saveAndReload ? reloadApplication({ save: true }) : save());
-                }}
-                disabled={!canSave || isLoading}
-            />
+            {saveAndReload ? (
+                <UIIconButton
+                    id="save-button"
+                    iconProps={{
+                        iconName: IconName.saveAndReload
+                    }}
+                    title={t('SAVE_AND_RELOAD')}
+                    onClick={(): void => {
+                        dispatch(reloadApplication({ save: true }));
+                    }}
+                    disabled={!canSave || isLoading}
+                />
+            ) : (
+                <UIIconButton
+                    id="save-button"
+                    iconProps={{
+                        iconName: UiIcons.Save
+                    }}
+                    title={t('SAVE')}
+                    onClick={(): void => {
+                        dispatch(save());
+                    }}
+                    disabled={!canSave || isLoading}
+                />
+            )}
         </>
     );
 }
