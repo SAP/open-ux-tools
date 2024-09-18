@@ -1,6 +1,15 @@
-import { screen, fireEvent } from '@testing-library/react';
-import { render } from '../../utils';
 import React from 'react';
+import { screen, fireEvent } from '@testing-library/react';
+
+import type {
+    FloatControlProperty,
+    IntegerControlProperty,
+    StringControlProperty,
+    StringControlPropertyWithOptions
+} from '@sap-ux-private/control-property-editor-common';
+
+import { render } from '../../utils';
+import type { PropertyInputProps } from '../../../../src/panels/properties/types';
 import { StringEditor } from '../../../../src/panels/properties/StringEditor';
 
 describe('StringEditor', () => {
@@ -8,56 +17,68 @@ describe('StringEditor', () => {
 
     test('initial load', () => {
         const value = 'testValue12345';
-        const props: any = {
-            icons: [],
+        const property: StringControlProperty = {
+            editor: 'input',
+            readableName: 'Test Property',
+            type: 'string',
             isIcon: false,
             isEnabled: false,
             name: 'testProperty',
             value
         };
-        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+        render(<StringEditor controlName="testControl" property={property} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
     });
     test('render suffix', () => {
         const value = 'testValue12345';
-        const props: any = {
-            icons: [
-                {
-                    content: 'testData2',
-                    fontFamily: 'SAP-fontFamily',
-                    name: 'testName2'
-                },
-                {
-                    content: 'testData3',
-                    fontFamily: 'SAP-fontFamily',
-                    name: 'testName3'
-                }
-            ],
-            isEnabled: false,
+        const props: StringControlProperty = {
+            editor: 'input',
+            readableName: 'Test Property',
+            type: 'string',
+            isEnabled: true,
             isIcon: true,
             name: 'testProperty',
             value
         };
-        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+        render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />, {
+            initialState: {
+                icons: [
+                    {
+                        content: 'testData2',
+                        fontFamily: 'SAP-fontFamily',
+                        name: 'testName2'
+                    },
+                    {
+                        content: 'testData3',
+                        fontFamily: 'SAP-fontFamily',
+                        name: 'testName3'
+                    }
+                ]
+            }
+        });
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
+
+        const valueHelpButton = screen.getByTitle('Select Icon');
+        expect(valueHelpButton).toBeInTheDocument();
     });
 
     test('integer value', () => {
         const value = '12345';
-        const props: any = {
-            icons: [],
-            isEnabled: false,
+        const props: IntegerControlProperty = {
+            editor: 'input',
+            readableName: 'Test Property',
+            isEnabled: true,
             isIcon: false,
             name: 'testProperty',
             value,
             type: 'integer'
         };
 
-        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+        render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -67,8 +88,9 @@ describe('StringEditor', () => {
     });
     test('integer value onBlur', () => {
         const value = '1234';
-        const props: any = {
-            icons: [],
+        const props: IntegerControlProperty = {
+            editor: 'input',
+            readableName: 'Test Property',
             isEnabled: false,
             isIcon: false,
             name: 'testProperty',
@@ -76,7 +98,7 @@ describe('StringEditor', () => {
             type: 'integer'
         };
 
-        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+        render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -88,15 +110,18 @@ describe('StringEditor', () => {
 
     test('Do not trigger changeProperty when no change in prop value', () => {
         const value = '1234';
-        const props: any = {
-            icons: [],
+        const props: IntegerControlProperty = {
+            editor: 'input',
+            readableName: 'Test Property',
             isEnabled: false,
             isIcon: false,
             name: 'testProperty',
             value,
             type: 'integer'
         };
-        const { dispatch } = render(<StringEditor property={{ ...props }} controlId={controlId} />);
+        const { dispatch } = render(
+            <StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />
+        );
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -107,8 +132,9 @@ describe('StringEditor', () => {
 
     test('integer value onPress "Enter"', () => {
         const value = '1234';
-        const props: any = {
-            icons: [],
+        const props: IntegerControlProperty = {
+            editor: 'input',
+            readableName: 'Test Property',
             isEnabled: false,
             isIcon: false,
             name: 'testProperty',
@@ -116,7 +142,7 @@ describe('StringEditor', () => {
             type: 'integer'
         };
 
-        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+        render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -128,8 +154,9 @@ describe('StringEditor', () => {
 
     test('float value', () => {
         const value = '0.12345';
-        const props: any = {
-            icons: [],
+        const props: FloatControlProperty = {
+            editor: 'input',
+            readableName: 'Test Property',
             isEnabled: false,
             isIcon: false,
             name: 'testProperty',
@@ -137,7 +164,7 @@ describe('StringEditor', () => {
             type: 'float'
         };
 
-        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+        render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -147,8 +174,9 @@ describe('StringEditor', () => {
     });
     test('float value onBlur', () => {
         const value = '5.300';
-        const props: any = {
-            icons: [],
+        const props: FloatControlProperty = {
+            editor: 'input',
+            readableName: 'Test Property',
             isEnabled: false,
             isIcon: false,
             name: 'testProperty',
@@ -156,7 +184,7 @@ describe('StringEditor', () => {
             type: 'float'
         };
 
-        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+        render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -166,8 +194,9 @@ describe('StringEditor', () => {
     });
     test('float value onPress "Enter"', () => {
         const value = '5.300';
-        const props: any = {
-            icons: [],
+        const props: FloatControlProperty = {
+            editor: 'input',
+            readableName: 'Test Property',
             isEnabled: false,
             isIcon: false,
             name: 'testProperty',
@@ -175,7 +204,7 @@ describe('StringEditor', () => {
             type: 'float'
         };
 
-        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+        render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();

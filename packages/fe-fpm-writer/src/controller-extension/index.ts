@@ -14,7 +14,7 @@ import { validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { getTemplatePath } from '../templates';
-import { addExtensionTypes } from '../common/utils';
+import { addExtensionTypes, getManifest } from '../common/utils';
 import { extendJSON } from '../common/file';
 
 export const UI5_CONTROLLER_EXTENSION_LIST_REPORT = 'sap.fe.templates.ListReport.ListReportController';
@@ -206,21 +206,20 @@ function getManifestReplacer(
  * @param {string} basePath - the base path
  * @param {ControllerExtension} controllerConfig - the controller extension configuration
  * @param {Editor} [fs] - the memfs editor instance
- * @returns {Editor} the updated memfs editor instance
+ * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export function generateControllerExtension(
+export async function generateControllerExtension(
     basePath: string,
     controllerConfig: ControllerExtension,
     fs?: Editor
-): Editor {
+): Promise<Editor> {
     // Validate the base and view paths
     if (!fs) {
         fs = create(createStorage());
     }
     validateBasePath(basePath, fs);
 
-    const manifestPath = join(basePath, 'webapp/manifest.json');
-    const manifest = fs.readJSON(manifestPath) as Manifest;
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     // merge with defaults
     const internalConfig = enhanceConfig(controllerConfig, manifestPath, manifest);

@@ -35,21 +35,29 @@ describe('DropdownEditor', () => {
         const { dispatch } = render(<DropdownEditor property={property} controlId={controlId} controlName="Button" />);
         const dropDownEditor = screen.getByTestId(testId);
         const dropDownEditorInput = dropDownEditor.querySelector('input');
-        jest.spyOn(window, 'setTimeout').mockImplementation((cb: any) => {
-            cb(undefined, undefined, 'option2');
-        });
+
         if (dropDownEditorInput) {
             fireEvent.focus(dropDownEditorInput);
             fireEvent.input(dropDownEditorInput, { target: { value: 'option2' } });
             fireEvent.blur(dropDownEditorInput);
         }
-        expect(dispatch).toBeCalledTimes(1);
+        expect(dispatch).toHaveBeenCalledWith({
+            'payload': {
+                'changeType': 'propertyChange',
+                'controlId': 'testControlId',
+                'controlName': 'Button',
+                'propertyName': 'testProperty',
+                'value': 'option2'
+            },
+            'type': 'app/change-property'
+        });
     });
     test('valueChanged function', () => {
         const result = valueChanged('testControlId', 'testPropertyName', 'newValue', 'Button');
         expect(result).toMatchInlineSnapshot(`
             Object {
               "payload": Object {
+                "changeType": "propertyChange",
                 "controlId": "testControlId",
                 "controlName": "Button",
                 "propertyName": "testPropertyName",

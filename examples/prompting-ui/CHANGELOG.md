@@ -1,5 +1,18 @@
 # @sap-ux/fe-fpm-writer-ui
 
+## 0.1.0
+
+### Minor Changes
+
+-   327ebec: Divide chart, filter bar and table building block prompts questions into groups, add Manifest Change group.
+    Update custom chart example in prompting-ui.
+
+## 0.0.12
+
+### Patch Changes
+
+-   19e3b0e: Extend the building block examples with an option to toggle the `alwaysAbsolutePath` property, allowing the generation of either relative or always absolute paths.
+
 ## 0.0.11
 
 ### Patch Changes

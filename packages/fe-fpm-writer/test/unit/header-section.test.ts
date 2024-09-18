@@ -53,7 +53,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
         });
 
-        test(`for version 1.85 (edit mode not supported)`, () => {
+        test(`for version 1.85 (edit mode not supported)`, async () => {
             const customHeaderSection = createCustomHeaderSectionWithEditFragment('1.85.0', {
                 name: 'NewCustomHeaderSectionEdit',
                 folder: 'extensions/custom',
@@ -69,7 +69,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
                     `webapp/${customHeaderSection.edit.folder}/${customHeaderSection.edit.name}.fragment.xml`
                 );
             }
-            generateCustomHeaderSection(testDir, { ...customHeaderSection }, fs);
+            await generateCustomHeaderSection(testDir, { ...customHeaderSection }, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -87,13 +87,13 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             }
         });
 
-        test(`for version 1.86 (edit mode disabled)`, () => {
+        test(`for version 1.86 (edit mode disabled)`, async () => {
             const customHeaderSection = createCustomHeaderSectionWithEditFragment('1.86.0', undefined);
             const expectedFragmentPath = join(
                 testDir,
                 `webapp/${customHeaderSection.folder}/${customHeaderSection.name}.fragment.xml`
             );
-            generateCustomHeaderSection(testDir, { ...customHeaderSection }, fs);
+            await generateCustomHeaderSection(testDir, { ...customHeaderSection }, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -111,7 +111,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             }
         });
 
-        test(`for version 1.86 (eventHandler should not generate)`, () => {
+        test(`for version 1.86 (eventHandler should not generate)`, async () => {
             const customHeaderSection = createCustomHeaderSectionWithEditFragment('1.86.0', {
                 name: 'NewCustomHeaderSectionEdit',
                 folder: 'extensions/custom'
@@ -126,7 +126,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
                     `webapp/${customHeaderSection.edit.folder}/${customHeaderSection.edit.name}.fragment.xml`
                 );
             }
-            generateCustomHeaderSection(testDir, { ...customHeaderSection }, fs);
+            await generateCustomHeaderSection(testDir, { ...customHeaderSection }, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -145,7 +145,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
         });
 
         testVersions.forEach((minUI5Version: string) => {
-            test(`for version ${minUI5Version}`, () => {
+            test(`for version ${minUI5Version}`, async () => {
                 const customHeaderSection = createCustomHeaderSectionWithEditFragment(minUI5Version, {
                     name: 'NewCustomHeaderSectionEdit',
                     folder: 'extensions/custom',
@@ -161,7 +161,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
                         `webapp/${customHeaderSection.edit.folder}/${customHeaderSection.edit.name}.fragment.xml`
                     );
                 }
-                generateCustomHeaderSection(testDir, { ...customHeaderSection }, fs);
+                await generateCustomHeaderSection(testDir, { ...customHeaderSection }, fs);
 
                 const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
                 const settings = (
@@ -176,7 +176,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             });
         });
 
-        test('custom control for edit mode', () => {
+        test('custom control for edit mode', async () => {
             const customHeaderSection = createCustomHeaderSectionWithEditFragment('1.98', {
                 name: 'NewCustomHeaderSectionEdit',
                 folder: 'extensions/custom',
@@ -186,7 +186,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
                 testDir,
                 `webapp/${customHeaderSection.edit?.folder}/${customHeaderSection.edit?.name}.fragment.xml`
             );
-            generateCustomHeaderSection(testDir, customHeaderSection, fs);
+            await generateCustomHeaderSection(testDir, customHeaderSection, fs);
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
@@ -204,7 +204,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
         });
 
         // folder in edit property differs
-        test(`for version 1.86`, () => {
+        test(`for version 1.86`, async () => {
             const customHeaderSection = createCustomHeaderSectionWithEditFragment('1.86.0', {
                 name: 'NewCustomHeaderSectionEdit',
                 folder: 'extensions/custom/different',
@@ -220,7 +220,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
                     `webapp/${customHeaderSection.edit.folder}/${customHeaderSection.edit.name}.fragment.xml`
                 );
             }
-            generateCustomHeaderSection(testDir, { ...customHeaderSection }, fs);
+            await generateCustomHeaderSection(testDir, { ...customHeaderSection }, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -277,12 +277,12 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             }
         ];
         positionTests.forEach((testCase) => {
-            test(`Test 'position' property. ${testCase.name}`, () => {
+            test(`Test 'position' property. ${testCase.name}`, async () => {
                 const customHeaderSection = createCustomHeaderSectionWithEditFragment(testCase.minUI5Version, {
                     name: 'NewCustomHeaderSectionEdit',
                     folder: 'extensions/custom'
                 });
-                generateCustomHeaderSection(
+                await generateCustomHeaderSection(
                     testDir,
                     {
                         ...customHeaderSection,

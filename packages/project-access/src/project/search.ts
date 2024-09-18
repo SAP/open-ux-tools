@@ -170,7 +170,7 @@ export async function getAppRootFromWebappPath(webappPath: string): Promise<stri
  * @param path - path to check, e.g. to the manifest.json
  * @returns - in case a supported app is found this function returns the appRoot and projectRoot path
  */
-async function findRootsForPath(path: string): Promise<{ appRoot: string; projectRoot: string } | null> {
+export async function findRootsForPath(path: string): Promise<{ appRoot: string; projectRoot: string } | null> {
     try {
         // Get the root of the app, that is where the package.json is, otherwise not supported
         const appRoot = await findProjectRoot(path, false);
