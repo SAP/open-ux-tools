@@ -4,7 +4,7 @@ import { render } from 'ejs';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
-import { getPackageJsonTasks } from './packageConfig';
+import { generatePackageScripts } from '@sap-ux/fiori-generator-shared';
 import cloneDeep from 'lodash/cloneDeep';
 import type { BasicAppSettings } from './types';
 import { FreestyleApp, TemplateType } from './types';
@@ -98,7 +98,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         // Add scripts for non-CAP applications
         packageJson.scripts = {
             ...packageJson.scripts,
-            ...getPackageJsonTasks({
+            ...generatePackageScripts({
                 localOnly: !!ffApp.service && !ffApp.service?.url,
                 addMock: !!ffApp.service?.metadata,
                 sapClient: ffApp.service?.client,
