@@ -323,11 +323,9 @@ export class UI5Config {
      */
     public addMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
         const middleware = getMockServerMiddlewareConfig(undefined, path, annotationsConfig);
-        this.document.updateAt({
+        this.document.appendTo({
             path: 'server.customMiddleware',
-            matcher: { key: 'name', value: middleware.name },
-            value: middleware,
-            mode: 'merge'
+            value: middleware
         });
         return this;
     }
