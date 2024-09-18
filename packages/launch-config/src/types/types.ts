@@ -67,7 +67,6 @@ export interface LaunchConfigInfo {
 export enum ProjectDataSourceType {
     capProject = 'capProject',
     odataServiceUrl = 'odataServiceUrl',
-    none = 'none',
     metadataFile = 'metadataFile'
 }
 
