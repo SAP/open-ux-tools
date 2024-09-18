@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.67
+
+### Patch Changes
+
+-   1c20352: Added missing notification when manifest change is created
+
 ## 0.16.66
 
 ### Patch Changes

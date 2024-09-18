@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.7
+
+### Patch Changes
+
+-   1c20352: Added missing notification when manifest change is created
+
 ## 0.5.6
 
 ### Patch Changes
