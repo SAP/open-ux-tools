@@ -265,23 +265,37 @@ describe('UI5Config', () => {
     });
 
     describe('updateMockServerMiddlewareServices', () => {
-        test('add with given path and annotationsConfig', () => {
-            const mockserverMiddlewareConfig: MockserverConfig = {
-                mountPath: '/',
-                services: [
-                    {
-                        urlPath: '/~different-testpath~',
-                        metadataPath: 'different-metadataPath',
-                        generateMockData: true
-                    }
-                ]
-            };
-            const customMockserverMiddleware = {
-                name: 'sap-fe-mockserver',
-                beforeMiddleware: 'csp',
-                configuration: mockserverMiddlewareConfig
-            };
+        const mockserverMiddlewareConfig: MockserverConfig = {
+            mountPath: '/',
+            services: [
+                {
+                    urlPath: '/~different-testpath~',
+                    metadataPath: 'different-metadataPath',
+                    generateMockData: true
+                }
+            ]
+        };
+        const customMockserverMiddleware = {
+            name: 'sap-fe-mockserver',
+            beforeMiddleware: 'csp',
+            configuration: mockserverMiddlewareConfig
+        };
+
+        beforeEach(() => {
             ui5Config.addCustomMiddleware([customMockserverMiddleware]);
+        });
+
+        test('add with given path', () => {
+            ui5Config.updateMockServerMiddlewareServices(path);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add without path', () => {
+            ui5Config.updateMockServerMiddlewareServices();
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add with given path and annotationsConfig', () => {
             ui5Config.updateMockServerMiddlewareServices(path, annotationsConfig);
             expect(ui5Config.toString()).toMatchSnapshot();
         });

@@ -552,6 +552,25 @@ exports[`UI5Config setMetadata set name and copyright 1`] = `
 "
 `;
 
+exports[`UI5Config updateMockServerMiddlewareServices add with given path 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~different-testpath~
+            metadataPath: different-metadataPath
+            generateMockData: true
+          - urlPath: /~testpath~
+            metadataPath: metadataPath
+            mockdataPath: mockdataPath
+            generateMockData: true
+        annotations: []
+"
+`;
+
 exports[`UI5Config updateMockServerMiddlewareServices add with given path and annotationsConfig 1`] = `
 "server:
   customMiddleware:
@@ -570,5 +589,24 @@ exports[`UI5Config updateMockServerMiddlewareServices add with given path and an
         annotations:
           - localPath: ./webapp/annotations/annotations.xml
             urlPath: annotations.xml
+"
+`;
+
+exports[`UI5Config updateMockServerMiddlewareServices add without path 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~different-testpath~
+            metadataPath: different-metadataPath
+            generateMockData: true
+          - urlPath: ''
+            metadataPath: metadataPath
+            mockdataPath: mockdataPath
+            generateMockData: true
+        annotations: []
 "
 `;
