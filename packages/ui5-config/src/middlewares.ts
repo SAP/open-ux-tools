@@ -60,7 +60,7 @@ export function getBackendComments(
 export function getFioriToolsProxyMiddlewareConfig(
     backends?: FioriToolsProxyConfigBackend[],
     ui5?: Partial<FioriToolsProxyConfigUI5>,
-    afterMiddleware = 'compression', 
+    afterMiddleware = 'compression',
     ignoreCertError: boolean = false
 ): {
     config: CustomMiddleware<FioriToolsProxyConfig>;

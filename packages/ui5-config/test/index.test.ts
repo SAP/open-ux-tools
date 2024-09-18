@@ -194,7 +194,7 @@ describe('UI5Config', () => {
         test('add backend with flexible parameters (and UI5 defaults) & writes ignoreCertError true if enabled', () => {
             ui5Config.addFioriToolsProxydMiddleware({
                 backend: [{ url, path, pathPrefix: '/~prefix', scp: true }],
-                ignoreCertError: true, 
+                ignoreCertError: true,
                 ui5: {}
             });
             expect(ui5Config.toString()).toMatchSnapshot();

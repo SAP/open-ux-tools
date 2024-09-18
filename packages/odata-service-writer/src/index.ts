@@ -94,7 +94,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
             ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
         } catch (error: any) {
             if (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) {
-                ui5Config.addFioriToolsProxydMiddleware({ 
+                ui5Config.addFioriToolsProxydMiddleware({
                     backend: [service.previewSettings as ProxyBackend],
                     ignoreCertError: service.ignoreCertError
                 });
