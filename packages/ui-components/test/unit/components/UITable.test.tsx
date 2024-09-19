@@ -139,17 +139,19 @@ describe('<UITable />', () => {
             validate: undefined as any,
             iconName: undefined as any,
             iconTooltip: undefined as any,
-            columnControlType: ColumnControlType.UITextInput
+            columnControlType: ColumnControlType.UITextInput,
+            getValueKey: () => 'dummyKey'
         };
         const wrapper = Enzyme.mount(
             <UITable
                 {...defaultProps}
+                enableUpdateAnimations={true}
                 columns={[columnText, moduleName]}
                 items={[{ text: 'apple' }, { text: 'module', hideCells: true }]}
             />
         );
         expect(wrapper.find('[data-automationid="DetailsRowCell"]').at(0).key()).toEqual('textcolumn');
-        expect(wrapper.find('[data-automationid="DetailsRowCell"]').at(1).key()).toEqual('moduleName');
+        expect(wrapper.find('[data-automationid="DetailsRowCell"]').at(1).key()).toEqual('moduleName-dummyKey');
     });
 
     it('Toggle cell for editing', () => {

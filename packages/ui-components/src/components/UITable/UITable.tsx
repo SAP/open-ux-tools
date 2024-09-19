@@ -255,7 +255,10 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         }
         const cell = defaultRender(props);
         const { column, cellValueKey } = props;
-        const key = `${column.key}${cellValueKey !== undefined ? `-${cellValueKey}` : ''}`;
+        let key = column.key;
+        if (cellValueKey !== undefined) {
+            key += `-${cellValueKey}`;
+        }
         const onClick = (e: React.MouseEvent<HTMLElement, MouseEvent> | null) => {
             const target = e?.target as HTMLElement;
             const targetTag = target?.tagName;
