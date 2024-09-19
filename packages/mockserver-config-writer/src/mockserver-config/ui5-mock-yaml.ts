@@ -71,7 +71,7 @@ async function updateUi5MockYamlConfig(
     annotationsConfig?: MockserverConfig['annotations']
 ): Promise<UI5Config> {
     const existingUi5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
-    existingUi5MockYamlConfig.updateCustomMiddleware(await getNewMockserverMiddleware(path, annotationsConfig));
+    existingUi5MockYamlConfig.updateMockServerMiddleware(path, annotationsConfig);
     return existingUi5MockYamlConfig;
 }
 

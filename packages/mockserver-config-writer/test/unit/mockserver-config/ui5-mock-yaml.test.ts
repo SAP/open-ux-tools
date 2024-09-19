@@ -149,7 +149,7 @@ server:
   - name: sap-fe-mockserver
     beforeMiddleware: fiori-tools-proxy
     configuration:
-      service:
+      services:
         urlBasePath: /some/previous/service/uri
         name: ''
         metadataXmlPath: ./webapp/localService/metadata.xml
