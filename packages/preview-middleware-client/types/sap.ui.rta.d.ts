@@ -246,8 +246,8 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         canSave?: () => boolean;
         undo: () => void;
         redo: () => void;
-        save?: () => void;
-        _serializeToLrep: () => void;
+        save?: () => Promise<void>;
+        _serializeToLrep: () => Promise<void>;
     }
 }
 

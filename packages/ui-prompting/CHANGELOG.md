@@ -1,5 +1,12 @@
 # @sap-ux/ui-prompting
 
+## 0.1.10
+
+### Patch Changes
+
+-   3174ebc: - List/dropdown question - automatically select the option when only one item is available in a dropdown list.
+    -   Updated README.md to remove the mention of `ui-components`.
+
 ## 0.1.9
 
 ### Patch Changes
