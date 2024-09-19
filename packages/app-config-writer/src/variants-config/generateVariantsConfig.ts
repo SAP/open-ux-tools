@@ -1,10 +1,9 @@
-import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { addPreviewMiddlewareToYaml } from './ui5-yaml';
+import { addVariantsManagementScript } from './package-json';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addVariantsManagementScript } from './package-json';
-import { addPreviewMiddlewareToYaml } from './ui5-yaml';
-
 /**
  * Add variants configuration to a UI5 application.
  *
@@ -17,7 +16,7 @@ export async function generateVariantsConfig(basePath: string, logger?: ToolsLog
     if (!fs) {
         fs = create(createStorage());
     }
-    await addVariantsManagementScript(fs, basePath);
+    addVariantsManagementScript(fs, basePath);
     await addPreviewMiddlewareToYaml(fs, basePath, logger);
     return fs;
 }

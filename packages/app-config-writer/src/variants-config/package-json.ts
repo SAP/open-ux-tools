@@ -1,18 +1,10 @@
 import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
-// import { createApplicationAccess } from '@sap-ux/project-access';
-import type { Package } from '@sap-ux/project-access';
 import { stringify } from 'querystring';
+import { SAP_CLIENT_REGEX, FIORI_TOOLS_RTA_MODE_TRUE } from '../types';
+import type { Editor } from 'mem-fs-editor';
+import type { FioriToolsRtaMode } from '../types';
+import type { Package } from '@sap-ux/project-access';
 
-//TDo: check for i18n
-const SAP_CLIENT_REGEX = /sap-client=([0-9]{3})/;
-const FIORI_TOOLS_RTA_MODE_TRUE = 'true';
-const FIORI_TOOLS_RTA_MODE_VARIANTS = 'forVariants';
-const FIORI_TOOLS_RTA_MODE_ADAPTATION = 'forAdaptation';
-type FioriToolsRtaMode =
-    | typeof FIORI_TOOLS_RTA_MODE_TRUE
-    | typeof FIORI_TOOLS_RTA_MODE_VARIANTS
-    | typeof FIORI_TOOLS_RTA_MODE_ADAPTATION;
 //TDo: check for endpoint and hash
 const PREVIEW_PAGE = 'preview.html';
 const PREVIEW_APP_NAME = 'preview-app';
@@ -24,7 +16,6 @@ const PREVIEW_APP_NAME = 'preview-app';
  */
 function getSapClientFromPackageJson(packageJson: Package): any {
     const scripts = (packageJson.script ||= {});
-    // ToDo: check for different iteration
     const scriptValues = Object.values(scripts);
     scriptValues.forEach((scriptValue) => {
         const match = scriptValue.match(SAP_CLIENT_REGEX);
@@ -40,7 +31,7 @@ function getSapClientFromPackageJson(packageJson: Package): any {
  *
  * @param rtaMode - path to package.json
  * @param overwritingParams - parameters to be overwritten
- * @returns - overwritten parameters
+ * @returns - UI5 url parameters
  */
 function getUi5UrlParameters(
     rtaMode: FioriToolsRtaMode,
@@ -79,13 +70,14 @@ export function addVariantsManagementScript(fs: Editor, basePath: string): void 
         // check if sap-client is needed when starting the app
         const urlParameters: Record<string, string> = {};
         const sapClient = getSapClientFromPackageJson(packageJson);
+
         if (sapClient) {
             urlParameters['sap-client'] = sapClient;
         }
+
         const query = getUi5UrlParameters(FIORI_TOOLS_RTA_MODE_TRUE, urlParameters);
-        // Remove  /
         const url = getPreviewUrl(query).slice(1);
-        //TDo: check script name
+
         const startVariantsManagement = 'start-variants-management';
         const variantsScript = `fiori run --open "${url}"`;
 

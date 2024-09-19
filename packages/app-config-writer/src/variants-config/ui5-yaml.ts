@@ -1,20 +1,13 @@
 import { join } from 'path';
+import { MiddlewareConfigs } from '../types';
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
-import type { UI5Config } from '@sap-ux/ui5-config';
+import { convertDeprecatedConfig, isDeprecatedConfig } from './utils';
 import type { Editor } from 'mem-fs-editor';
-import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { PreviewConfigOptions, DeprecatedConfig, MiddlewareConfig } from './types';
-
-/**
- * Checks if a fiori-tools-preview middleware configuration is decprecated.
- *
- * @param config fiori-tools-preview middleware configuration
- * @returns type conversion if true
- */
-function isDeprecatedConfig(config: PreviewConfigOptions): config is DeprecatedConfig {
-    return (config as DeprecatedConfig)?.component !== undefined;
-}
+import type { UI5Config } from '@sap-ux/ui5-config';
+import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import type { FioriAppReloadConfig } from '@sap-ux/ui5-config';
+import type { FioriToolsPreviewConfig, FioriPreviewConfigOptions } from '../types';
 
 /**
  * Adds the fiori-tools-preview middleware configuration.
@@ -22,41 +15,33 @@ function isDeprecatedConfig(config: PreviewConfigOptions): config is DeprecatedC
  * @param ui5YamlConfig existing ui5 yaml configurations
  * @returns 'fiori-tools-preview' configuration
  */
-async function addPreviewMiddleware(
-    ui5YamlConfig: UI5Config
-    // ToDo: create middleware type
-): Promise<CustomMiddleware<MiddlewareConfig>> {
+async function getPreviewMiddleware(ui5YamlConfig: UI5Config): Promise<CustomMiddleware<FioriToolsPreviewConfig>> {
+    // ToDO: check for needed flp config
     const previewMiddlewareConfig = {
         name: 'fiori-tools-preview',
         afterMiddleware: 'compression',
         configuration: {}
     };
 
-    // ToDo: check if needed
-    // replace null occurrences with an empty string
-    // yamlContent = JSON.parse(JSON.stringify(yamlContent).replace(/null/g, '""'));
+    const existingPreviewMiddleware = ui5YamlConfig.findCustomMiddleware<FioriPreviewConfigOptions>(
+        MiddlewareConfigs.FioriToolsPreview
+    );
+    const existingLivereloadMiddleware = ui5YamlConfig.findCustomMiddleware<FioriAppReloadConfig>(
+        MiddlewareConfigs.FioriToolsAppreload
+    );
 
-    const existingPreviewMiddleware = ui5YamlConfig.findCustomMiddleware<PreviewConfigOptions>('firoi-tools-preview');
-    const existingLivereloadMiddleware = ui5YamlConfig.findCustomMiddleware<any>('fiori-tools-appreload');
-
-    if (isDeprecatedConfig(existingPreviewMiddleware!.configuration)) {
-        previewMiddlewareConfig.configuration = {
-            flp: {
-                path: '/test/flpSandbox.html',
-                intent: { object: 'preview', action: 'app' },
-                theme: existingPreviewMiddleware?.configuration.ui5Theme,
-                libs: existingPreviewMiddleware?.configuration.libs
-            }
-        };
+    if (existingPreviewMiddleware && isDeprecatedConfig(existingPreviewMiddleware.configuration)) {
+        previewMiddlewareConfig.configuration = convertDeprecatedConfig(existingPreviewMiddleware.configuration);
     } else {
         previewMiddlewareConfig.configuration = existingPreviewMiddleware?.configuration
             ? { ...existingPreviewMiddleware?.configuration }
-            : {};
+            : '';
     }
 
     if (existingLivereloadMiddleware) {
         previewMiddlewareConfig.afterMiddleware = 'fiori-tools-appreload';
-        existingLivereloadMiddleware.configuration.delay = 300;
+        // ToDo: check for app-reload config and update
+        // ui5YamlConfig.addFioriToolsAppReloadMiddleware();
     }
 
     return previewMiddlewareConfig;
@@ -74,24 +59,19 @@ export async function addPreviewMiddlewareToYaml(fs: Editor, basePath: string, l
     for (const ui5Yaml of ui5Yamls) {
         let existingUi5YamlConfig: UI5Config;
         try {
-            // existingUi5YamlConfig = await UI5Config.newInstance(fs.read(ui5Yaml));
             existingUi5YamlConfig = await readUi5Yaml(basePath, ui5Yaml);
-            // previewMiddlewareConfig = await addPreviewMiddleware(fs, existingUi5YamlConfig, ui5YamlPath);
         } catch (error) {
             logger?.debug(`File ${ui5Yaml} not existing`);
             //ToDo: check continue
             continue;
         }
 
-        //ToDo: check for logic if middleware is there
         const previewMiddlewareConfig = existingUi5YamlConfig.updateCustomMiddleware(
-            await addPreviewMiddleware(existingUi5YamlConfig)
+            await getPreviewMiddleware(existingUi5YamlConfig)
         );
 
         if (previewMiddlewareConfig) {
-            // const yamlConfig = existingUi5YamlConfig.updateCustomMiddleware(previewMiddlewareConfig);
-            const yamlConfig = previewMiddlewareConfig.toString();
-            fs.write(join(basePath, ui5Yaml), yamlConfig);
+            fs.write(join(basePath, ui5Yaml), previewMiddlewareConfig.toString());
         }
     }
 }

@@ -30,7 +30,6 @@ async function addVariantsConfig(basePath: string, simulate: boolean): Promise<v
     const logger = getLogger();
     try {
         logger.debug(`Called add variants-config for path '${basePath}', simulate is '${simulate}'`);
-        //ToDo: check if validate is needed
         await validateBasePath(basePath);
         const fs = await generateVariantsConfig(basePath, logger);
         await traceChanges(fs);

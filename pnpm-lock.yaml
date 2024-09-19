@@ -552,6 +552,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/preview-middleware':
+        specifier: workspace:*
+        version: link:../preview-middleware
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
