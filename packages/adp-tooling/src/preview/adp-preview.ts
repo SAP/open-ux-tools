@@ -14,7 +14,7 @@ import type { Editor } from 'mem-fs-editor';
 import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
 
 declare global {
-    // false positive, const can't be used here
+    // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
     // eslint-disable-next-line no-var
     var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
 }

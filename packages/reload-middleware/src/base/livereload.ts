@@ -11,6 +11,8 @@ import { extname } from 'path';
 import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from './constants';
 
 declare global {
+    // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
+    // eslint-disable-next-line no-var
     var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
 }
 
@@ -62,8 +64,8 @@ export const getConnectLivereload = async (options: ConnectLivereloadOptions): P
 
 /**
  * Listen to file changes to set a global flag if there are any changes that affect manifest.json.
- * 
- * @param livereload 
+ *
+ * @param livereload - Live reload server.
  */
 export function watchManifestChanges(livereload: LiveReloadServer): void {
     livereload.watcher.on('all', async (_event, path) => {

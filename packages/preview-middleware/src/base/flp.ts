@@ -6,7 +6,7 @@ import { render } from 'ejs';
 import type http from 'http';
 import type { Request, RequestHandler, Response, Router, NextFunction } from 'express';
 import { readFileSync } from 'fs';
-import { dirname, extname, join, posix } from 'path';
+import { dirname, join, posix } from 'path';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
