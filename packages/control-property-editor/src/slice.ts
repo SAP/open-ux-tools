@@ -32,6 +32,7 @@ import {
     appLoaded,
     updateQuickAction,
     quickActionListChanged,
+    applicationModeChanged,
     UNKNOWN_CHANGE_KIND,
     SAVED_CHANGE_TYPE,
     PENDING_CHANGE_TYPE
@@ -309,8 +310,15 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 }
             })
             .addMatcher(setAppMode.match, (state, action: ReturnType<typeof setAppMode>): void => {
+                // optimistic update
                 state.appMode = action.payload;
             })
+            .addMatcher(
+                applicationModeChanged.match,
+                (state, action: ReturnType<typeof applicationModeChanged>): void => {
+                    state.appMode = action.payload;
+                }
+            )
             .addMatcher(
                 setUndoRedoEnablement.match,
                 (state, action: ReturnType<typeof setUndoRedoEnablement>): void => {

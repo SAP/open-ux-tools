@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import type { UIContextualMenuItem } from '@sap-ux/ui-components';
 import { UIDirectionalHint, UIIcon, UILink, UIContextualMenu, UIContextualMenuLayoutType } from '@sap-ux/ui-components';
@@ -8,6 +8,7 @@ import { UIDirectionalHint, UIIcon, UILink, UIContextualMenu, UIContextualMenuLa
 import type { NestedQuickAction, NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { IconName } from '../../icons';
+import type { RootState } from '../../store';
 
 export interface NestedQuickActionListItemProps {
     action: Readonly<NestedQuickAction>;
@@ -30,6 +31,7 @@ export function NestedQuickActionListItem({
     actionIndex
 }: Readonly<NestedQuickActionListItemProps>): ReactElement {
     const dispatch = useDispatch();
+    const isDisabled = useSelector<RootState, boolean>((state) => state.appMode === 'navigation');
     const [showContextualMenu, setShowContextualMenu] = useState(false);
     const [target, setTarget] = useState<(EventTarget & (HTMLAnchorElement | HTMLElement | HTMLButtonElement)) | null>(
         null
@@ -77,6 +79,7 @@ export function NestedQuickActionListItem({
             {action.children.length === 1 && (
                 <UILink
                     underline={false}
+                    disabled={isDisabled}
                     title={`${action.title} - ${action.children[0].label}`}
                     onClick={(): void => {
                         dispatch(
@@ -94,6 +97,7 @@ export function NestedQuickActionListItem({
                 <>
                     <UILink
                         title={action.title}
+                        disabled={isDisabled}
                         underline={false}
                         onClick={() => {
                             setShowContextualMenu(true);
