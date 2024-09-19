@@ -5,6 +5,7 @@ export class DummyStore implements SecureStore {
     private readonly log: Logger;
 
     constructor(log: Logger) {
+        console.log("------------- DummyStore ------------- ");
         this.log = log;
     }
 

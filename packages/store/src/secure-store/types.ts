@@ -19,3 +19,9 @@ export interface SecureStore {
      */
     getAll<T>(service: string): Promise<{ [key: string]: T }>;
 }
+
+export type SupportedPlatform = 'darwin' | 'win32' | 'linux';
+
+export type Entities<T> = {
+    [key: string]: T;
+};

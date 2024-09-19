@@ -7,6 +7,8 @@ import type { SecureStore } from './types';
 import { join, dirname } from 'path';
 import { homedir } from 'os';
 import { default as fs } from 'fs';
+import { Wrapper } from './wrapper';
+
 // __non_webpack_require__ is used to ensure the require is not bundled by webpack and resolved at runtime
 declare function __non_webpack_require__(m: string): any;
 
@@ -89,8 +91,10 @@ export const getSecureStore = (log: Logger): SecureStore => {
     if (isAppStudio() || process.env.FIORI_TOOLS_DISABLE_SECURE_STORE) {
         return new DummyStore(log);
     } else {
-        const keytar = getKeytar(log);
-        return keytar ? new KeytarStore(log, keytar) : new DummyStore(log);
+        // const keytar = getKeytar(log);
+        // console.log(" --- keytar ----", keytar)
+        // return keytar ? new KeytarStore(log, keytar) : new DummyStore(log);
+        return new Wrapper(log) ?? new DummyStore(log);
     }
 };
 

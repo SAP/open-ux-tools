@@ -12,6 +12,7 @@ export class KeytarStore implements SecureStore {
     private readonly keytar: typeof Keytar;
 
     constructor(log: Logger, keytar: typeof Keytar) {
+        console.log("------------- keytar store constructor ------------- ");
         this.log = log;
         this.keytar = keytar;
     }
@@ -31,6 +32,7 @@ export class KeytarStore implements SecureStore {
     public async retrieve<T>(service: string, key: string): Promise<T | undefined> {
         try {
             const serializedValue = await this.keytar.getPassword(service, key);
+            console.log("------------- keytar store constructor retrieve", service, "result",  serializedValue && JSON.parse(serializedValue));
             return serializedValue && JSON.parse(serializedValue);
         } catch (e) {
             this.log.error(`Error retrieving from secure store. Service: [${service}], key: [${key}]`);
@@ -54,8 +56,10 @@ export class KeytarStore implements SecureStore {
             return (await this.keytar.findCredentials(service)).reduce((result, entry) => {
                 try {
                     result[String(entry.account)] = JSON.parse(entry.password);
+                    console.log("------------- keytar store constructor rror getting values for service ", service, "result", result);
                 } catch (e) {
                     this.log.error(`Error parsing credentials for [${entry.account}]`);
+                    console.log("------------- keytar store constructor rror getting values for service ", service, e);
                 }
                 return result;
             }, {} as Entities<T>);
