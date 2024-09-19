@@ -142,11 +142,7 @@ export const BuildingBlockQuestions = (props: {
                     label="AllowAutoAddDependencyLib"
                     checked={allowAutoAddDependencyLib}
                     onChange={(ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean) => {
-                        const newAnswers = setAnswer(
-                            { ...answers },
-                            'allowAutoAddDependencyLib',
-                            checked
-                        );
+                        const newAnswers = setAnswer({ ...answers }, 'allowAutoAddDependencyLib', checked);
                         setAnswers(newAnswers);
                         setAllowAutoAddDependencyLib(!!checked);
                     }}
