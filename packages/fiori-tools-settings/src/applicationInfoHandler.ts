@@ -67,6 +67,9 @@ export function deleteAppInfoSettings(fs?: Editor) {
     if (fs.exists(appInfoFilePath)) {
         try {
             fs.delete(appInfoFilePath);
+            fs.commit((err) => {
+                console.log('Failed to commit the deletion of the AppInfo.json file: ', err);
+            });
         } catch (err) {
             throw new Error(`Error deleting appInfo.json file: ${err}`);
         }
