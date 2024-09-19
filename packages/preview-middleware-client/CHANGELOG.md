@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.5
+
+### Patch Changes
+
+-   1c20352: Added missing notification when manifest change is created
+
+## 0.11.4
+
+### Patch Changes
+
+-   2fd82b1: Object Page Add Custom Section quick action support
+
 ## 0.11.3
 
 ### Patch Changes

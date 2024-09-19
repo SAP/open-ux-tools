@@ -20,6 +20,9 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
+/** sap.ui.fl */
+import {type AddFragmentChangeContentType} from 'sap/ui/fl/Change';
+
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
@@ -274,7 +277,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             targetAggregation: targetAggregation ?? 'content'
         };
 
-        const command = await this.commandExecutor.getCommand(
+        const command = await this.commandExecutor.getCommand<AddFragmentChangeContentType>(
             this.runtimeControl,
             'addXML',
             modifiedValue,
@@ -282,6 +285,19 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             flexSettings
         );
 
+        const templateName = this.getFragmentTemplateName(modifiedValue.targetAggregation);
+        if (templateName) {
+            const preparedChange = command.getPreparedChange();
+            const content = preparedChange.getContent();
+            preparedChange.setContent({ ...content, templateName });
+        }
         await this.commandExecutor.pushAndExecuteCommand(command);
+    }
+
+    private getFragmentTemplateName(targetAggregation: string): string {
+        const currentControlName = this.runtimeControl.getMetadata().getName();
+        return currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections'
+            ? 'OBJECT_PAGE_CUSTOM_SECTION'
+            : '';
     }
 }

@@ -1,5 +1,20 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.31.1
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/fiori-annotation-api@0.2.3
+
+## 0.31.0
+
+### Minor Changes
+
+-   327ebec: Divide chart, filter bar and table building block prompts questions into groups, add Manifest Change group.
+    Update custom chart example in prompting-ui.
+
 ## 0.30.0
 
 ### Minor Changes

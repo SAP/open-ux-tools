@@ -2,19 +2,27 @@ import type { ReactElement } from 'react';
 import React from 'react';
 
 import { Stack, Text } from '@fluentui/react';
-import { convertCamelCaseToPascalCase } from '@sap-ux-private/control-property-editor-common';
+import type { PendingOtherChange, UnknownSavedChange } from '@sap-ux-private/control-property-editor-common';
+import { convertCamelCaseToPascalCase, SAVED_CHANGE_TYPE } from '@sap-ux-private/control-property-editor-common';
 
 import styles from './OtherChange.module.scss';
-import type { ChangeProps } from './ChangesPanel';
+
+export interface OtherChangeProps {
+    /**
+     * Class used for showing and hiding actions
+     */
+    actionClassName: string;
+    change: PendingOtherChange | UnknownSavedChange;
+}
 
 /**
  * React element for Other change.
  *
- * @param OtherChangeProps OtherChangeProps
+ * @param props OtherChangeProps
  * @returns ReactElement
  */
-export function OtherChange(OtherChangeProps: Readonly<ChangeProps>): ReactElement {
-    const { changeType, isActive } = OtherChangeProps;
+export function OtherChange(props: Readonly<OtherChangeProps>): ReactElement {
+    const { change } = props;
     return (
         <Stack
             tokens={{
@@ -22,7 +30,7 @@ export function OtherChange(OtherChangeProps: Readonly<ChangeProps>): ReactEleme
             }}
             className={styles.container}
             style={{
-                opacity: isActive ? 1 : 0.4
+                opacity: change.type === SAVED_CHANGE_TYPE || change.isActive ? 1 : 0.4
             }}>
             <Stack.Item className={styles.changeType}>
                 <Stack
@@ -32,7 +40,7 @@ export function OtherChange(OtherChangeProps: Readonly<ChangeProps>): ReactEleme
                         childrenGap: 5
                     }}>
                     <Stack.Item>
-                        <Text className={styles.text}>{convertCamelCaseToPascalCase(changeType)}</Text>
+                        <Text className={styles.text}>{convertCamelCaseToPascalCase(change.changeType)}</Text>
                     </Stack.Item>
                 </Stack>
             </Stack.Item>
