@@ -9,7 +9,7 @@ import * as xpath from 'xpath';
 import format from 'xml-formatter';
 import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
-import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet, Subset } from '../prompts/types';
+import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
 import { coerce, lt } from 'semver';
 import type { Manifest } from '../common/types';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
