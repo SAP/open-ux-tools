@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.18.1
+
+### Patch Changes
+
+-   15c57bc: fix(ui-c): accessibility updates for uitable
+
 ## 1.18.0
 
 ### Minor Changes
