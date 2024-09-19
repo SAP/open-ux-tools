@@ -117,20 +117,21 @@ const handleServicesForMiddlewareConfig = (
         mockdataPath: './webapp/localService/data',
         generateMockData: true
     };
-    const placeholderService = {
-        urlPath: path ?? '',
-        metadataPath: 'metadataPath',
-        // mockdata path should not be generated in case no mock data exists
-        mockdataPath: 'mockdataPath',
-        // In case of update, this user value should not be overwritten
-        generateMockData: true
-    };
     if (forceAddService) {
         return [serviceData];
     } else if (services.length === 0) {
+        // some dummy data (later overwritten with real service data) to make sure there is always service defined
+        const placeholderService = {
+            urlPath: path ?? '',
+            metadataPath: 'metadataPath',
+            // mockdata path should not be generated in case no mock data exists
+            mockdataPath: 'mockdataPath',
+            // In case of update, this user value should not be overwritten
+            generateMockData: true
+        };
         return [placeholderService];
     } else {
-        return [...services, placeholderService];
+        return [...services, serviceData];
     }
 };
 

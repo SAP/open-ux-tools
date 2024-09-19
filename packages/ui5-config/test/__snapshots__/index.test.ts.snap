@@ -564,8 +564,8 @@ exports[`UI5Config updateMockServerMiddleware update with given path (existing s
             metadataPath: different-metadataPath
             generateMockData: true
           - urlPath: /~testpath~
-            metadataPath: metadataPath
-            mockdataPath: mockdataPath
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
 "
@@ -599,8 +599,8 @@ exports[`UI5Config updateMockServerMiddleware update with given path and annotat
             metadataPath: different-metadataPath
             generateMockData: true
           - urlPath: /~testpath~
-            metadataPath: metadataPath
-            mockdataPath: mockdataPath
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/annotations/annotations.xml
@@ -620,8 +620,8 @@ exports[`UI5Config updateMockServerMiddleware update without path (existing serv
             metadataPath: different-metadataPath
             generateMockData: true
           - urlPath: ''
-            metadataPath: metadataPath
-            mockdataPath: mockdataPath
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
 "
