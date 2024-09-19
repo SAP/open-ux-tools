@@ -61,6 +61,7 @@ export const getConnectLivereload = async (options: ConnectLivereloadOptions): P
 };
 
 /**
+ * Listen to file changes to set a global flag if there are any changes that affect manifest.json.
  * 
  * @param livereload 
  */

@@ -15,7 +15,6 @@ import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
-import { on, watch } from '../../__mocks__/chokidar';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -592,22 +591,7 @@ describe('initAdp', () => {
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-        await initAdp(
-            mockAdpProject,
-            config.adp,
-            flp,
-            {
-                getProject: jest.fn().mockReturnValue({
-                    getSourcePath: jest.fn().mockReturnValue('webapp')
-                })
-            } as MiddlewareUtils,
-            logger
-        );
-        expect(watch).toHaveBeenCalledWith('webapp', {
-            ignoreInitial: true,
-            awaitWriteFinish: true
-        });
-        expect(on).toHaveBeenCalledTimes(1);
+        await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
         expect(adpToolingMock).toBeCalled();
         expect(flpInitMock).toBeCalled();
     });

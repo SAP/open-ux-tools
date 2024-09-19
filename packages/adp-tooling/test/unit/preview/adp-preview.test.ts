@@ -1,4 +1,4 @@
-import nock, { back } from 'nock';
+import nock from 'nock';
 import { join } from 'path';
 import express from 'express';
 import supertest from 'supertest';
