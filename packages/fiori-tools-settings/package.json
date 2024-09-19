@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-tools-settings",
     "description": "Utilities for managing and persisting Fiori tools configuration settings in the hidden .fioritools folder.",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
