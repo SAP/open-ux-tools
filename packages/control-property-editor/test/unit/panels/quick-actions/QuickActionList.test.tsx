@@ -72,7 +72,7 @@ describe('QuickActionList', () => {
         expect(quickAction2).toBeInTheDocument();
 
         // nested quick action - single child
-        const quickAction3 = screen.getByRole('button', { name: /quick action 3 - submenu1/i });
+        const quickAction3 = screen.getByRole('button', { name: /quick action 3/i });
         expect(quickAction3).toBeInTheDocument();
 
         // simple quick action
@@ -174,7 +174,7 @@ describe('QuickActionList', () => {
         expect(quickAction2).toBeDisabled();
 
         // nested quick action - single child
-        const quickAction3 = screen.getByRole('button', { name: /quick action 3 - submenu1/i });
+        const quickAction3 = screen.getByRole('button', { name: /quick action 3/i });
         expect(quickAction3).toBeDisabled();
     });
 });
