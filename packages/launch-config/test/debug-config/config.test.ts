@@ -1,7 +1,7 @@
 import { configureLaunchJsonFile } from '../../src/debug-config/config';
 import type { DebugOptions, LaunchConfig, LaunchJSON } from '../../src/types';
 import path from 'path';
-import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
+import { DatasourceType, OdataVersion } from '../../src/types';
 import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../../src/types';
 
 const projectName = 'project1';
