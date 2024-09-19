@@ -1,5 +1,19 @@
 # @sap-ux/fe-fpm-writer-ui
 
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [3174ebc]
+    -   @sap-ux/ui-prompting@0.1.10
+
+## 0.1.0
+
+### Minor Changes
+
+-   327ebec: Divide chart, filter bar and table building block prompts questions into groups, add Manifest Change group.
+    Update custom chart example in prompting-ui.
+
 ## 0.0.12
 
 ### Patch Changes
