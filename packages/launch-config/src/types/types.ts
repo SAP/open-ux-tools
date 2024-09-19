@@ -1,6 +1,5 @@
 import type { ODataVersion } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { OdataVersion, DatasourceType } from '@sap-ux/odata-service-inquirer';
 
 export enum Arguments {
     FrameworkVersion = '--framework-version',
@@ -21,6 +20,7 @@ export interface FioriOptions {
     backendConfigs?: FioriToolsProxyConfigBackend[];
     urlParameters?: string;
     visible?: boolean;
+    debugOptions?: DebugOptions;
 }
 
 export interface LaunchJSON {
@@ -61,13 +61,21 @@ export interface LaunchConfigInfo {
 }
 
 /**
+ * Enum representing the types of data sources or origins for a project.
+ * These types indicate how a project is generated.
+ */
+export enum ProjectDataSourceType {
+    capProject = 'capProject',
+    odataServiceUrl = 'odataServiceUrl',
+    metadataFile = 'metadataFile'
+}
+
+/**
  * Configuration options for debugging launch configurations.
  */
 export interface DebugOptions {
-    /** Path to the project directory. */
-    projectPath: string;
     /** Type of the data source used in the project. */
-    datasourceType: DatasourceType;
+    datasourceType: ProjectDataSourceType;
     /** SAP client parameter for the connection. */
     sapClientParam: string;
     /** FLP application ID. */
@@ -75,7 +83,7 @@ export interface DebugOptions {
     /** Indicates if the FLP sandbox environment is available. */
     flpSandboxAvailable: boolean;
     /** Version of the OData service. */
-    odataVersion?: OdataVersion;
+    odataVersion?: ODataVersion;
     /** Indicates if the project is a Fiori Element. */
     isFioriElement?: boolean;
     /** Intent parameter for the migrator mock. */

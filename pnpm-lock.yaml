@@ -1656,15 +1656,9 @@ importers:
 
   packages/launch-config:
     dependencies:
-      '@sap-ux/odata-service-inquirer':
-        specifier: workspace:*
-        version: link:../odata-service-inquirer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
