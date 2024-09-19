@@ -683,4 +683,36 @@ describe('Building Blocks', () => {
             expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
         });
     });
+
+    test('Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false"', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+        const basePath = join(__dirname, 'sample/building-block/webapp-prompts');
+        fs.write(
+            join(basePath, manifestFilePath),
+            JSON.stringify({
+                ...testManifestContent,
+                'sap.ui5': {
+                    dependencies: {
+                        libs: {
+                            'sap.fe.templates': {}
+                        }
+                    }
+                }
+            })
+        );
+        await generateBuildingBlock<FilterBar>(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath: aggregationPath,
+                allowAutoAddDependencyLib: false,
+                buildingBlockData: {
+                    id: 'testFilterBar',
+                    buildingBlockType: BuildingBlockType.FilterBar
+                }
+            },
+            fs
+        );
+        expect(fs.readJSON(join(basePath, manifestFilePath))).toMatchSnapshot();
+    });
 });

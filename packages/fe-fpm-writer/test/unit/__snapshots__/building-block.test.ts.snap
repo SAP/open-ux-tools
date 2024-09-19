@@ -1,5 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Building Blocks Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false" 1`] = `
+Object {
+  "default": Object {
+    "sap.app": Object {
+      "id": "my.test.App",
+    },
+    "sap.ui5": Object {
+      "dependencies": Object {
+        "libs": Object {
+          "sap.fe.core": Object {},
+        },
+        "minUI5Version": "1.127.0",
+      },
+    },
+  },
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+  },
+}
+`;
+
 exports[`Building Blocks Generate with just ID and xml view without macros namespace generate chart building block: generate-chart-with-id-no-macros-ns 1`] = `
 Object {
   "generate-chart-with-id-no-macros-ns/webapp/ext/main/Main.view.xml": Object {

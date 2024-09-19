@@ -40,23 +40,24 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     config: BuildingBlockConfig<T>,
     fs?: Editor
 ): Promise<Editor> {
+    const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
     if (!fs) {
         fs = create(createStorage());
     }
     validateBasePath(basePath, fs, []);
 
-    if (!fs.exists(join(basePath, config.viewOrFragmentPath))) {
-        throw new Error(`Invalid view path ${config.viewOrFragmentPath}.`);
+    if (!fs.exists(join(basePath, viewOrFragmentPath))) {
+        throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
     }
 
     // Read the view xml and template files and update contents of the view xml file
-    const xmlDocument = getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs);
+    const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
     const { content: manifest } = await getManifest(basePath, fs);
-    const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs, manifest);
-    fs = updateViewFile(basePath, config.viewOrFragmentPath, config.aggregationPath, xmlDocument, templateDocument, fs);
+    const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
+    fs = updateViewFile(basePath, viewOrFragmentPath, aggregationPath, xmlDocument, templateDocument, fs);
 
-    if (manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
+    if (allowAutoAddDependencyLib && manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
         // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
         const manifestPath = await getManifestPath(basePath, fs);
         const templatePath = getTemplatePath('/building-block/common/manifest.json');
