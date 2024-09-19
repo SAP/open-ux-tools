@@ -299,8 +299,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections') {
             return 'OBJECT_PAGE_CUSTOM_SECTION';
         } else if (
-            ((currentControlName === 'sap.uxap.ObjectPageLayout' || currentControlName === 'sap.m.FlexBox') &&
-                targetAggregation === 'items') ||
+            (currentControlName === 'sap.m.FlexBox' && targetAggregation === 'items') ||
             (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'headerContent')
         ) {
             return 'ADD_HEADER_FIELD';
