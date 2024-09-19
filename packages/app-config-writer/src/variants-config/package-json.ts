@@ -15,15 +15,17 @@ const PREVIEW_APP_NAME = 'preview-app';
  * @param packageJson - path to package.json
  */
 function getSapClientFromPackageJson(packageJson: Package): any {
-    const scripts = (packageJson.script ||= {});
-    const scriptValues = Object.values(scripts);
-    scriptValues.forEach((scriptValue) => {
-        const match = scriptValue.match(SAP_CLIENT_REGEX);
-        if (match) {
-            return match;
-        }
-        return undefined;
-    });
+    const scripts = packageJson.scripts;
+    if (scripts) {
+        const scriptValues = Object.values(scripts);
+        scriptValues.forEach((scriptValue) => {
+            const match = scriptValue?.match(SAP_CLIENT_REGEX);
+            if (match) {
+                return match;
+            }
+            return undefined;
+        });
+    }
 }
 
 /**

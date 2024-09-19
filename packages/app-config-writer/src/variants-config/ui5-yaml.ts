@@ -16,7 +16,7 @@ import type { FioriToolsPreviewConfig, FioriPreviewConfigOptions } from '../type
  * @returns 'fiori-tools-preview' configuration
  */
 async function getPreviewMiddleware(ui5YamlConfig: UI5Config): Promise<CustomMiddleware<FioriToolsPreviewConfig>> {
-    // ToDO: check for needed flp config
+    // ToDo: check for needed flp config
     const previewMiddlewareConfig = {
         name: 'fiori-tools-preview',
         afterMiddleware: 'compression',
@@ -41,6 +41,7 @@ async function getPreviewMiddleware(ui5YamlConfig: UI5Config): Promise<CustomMid
     if (existingLivereloadMiddleware) {
         previewMiddlewareConfig.afterMiddleware = 'fiori-tools-appreload';
         // ToDo: check for app-reload config and update
+        // existingLivereloadMiddleware.configuration.delay = 300;
         // ui5YamlConfig.addFioriToolsAppReloadMiddleware();
     }
 
