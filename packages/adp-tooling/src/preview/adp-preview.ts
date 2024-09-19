@@ -13,6 +13,12 @@ import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, Opera
 import type { Editor } from 'mem-fs-editor';
 import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
 
+declare global {
+    // false positive, const can't be used here
+    // eslint-disable-next-line no-var
+    var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
+}
+
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
@@ -33,6 +39,7 @@ export class AdpPreview {
     private routesHandler: RoutesHandler;
 
     private lrep: LayeredRepositoryService | undefined;
+    private descriptorVariantId: string | undefined;
 
     /**
      * @returns merged manifest.
@@ -95,6 +102,7 @@ export class AdpPreview {
      * @returns the UI5 flex layer for which editing is enabled
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
+        this.descriptorVariantId = descriptorVariant.id;
         const provider = await createAbapServiceProvider(
             this.config.target,
             { ignoreCertErrors: this.config.ignoreCertErrors },
@@ -105,17 +113,16 @@ export class AdpPreview {
         // fetch a merged descriptor from the backend
         await this.lrep.getCsrfToken();
 
-        await this.sync(descriptorVariant);
+        await this.sync();
         return descriptorVariant.layer;
     }
 
     /**
      * Synchronize local changes with the backend.
      *
-     * @param descriptorVariant descriptor variant from the project
      */
-    async sync(descriptorVariant: DescriptorVariant): Promise<void> {
-        if (!this.lrep) {
+    async sync(): Promise<void> {
+        if (!this.lrep || !this.descriptorVariantId) {
             throw new Error('Not initialized');
         }
         const zip = new ZipFile();
@@ -125,7 +132,7 @@ export class AdpPreview {
         }
         const buffer = zip.toBuffer();
 
-        this.mergedDescriptor = (await this.lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
+        this.mergedDescriptor = (await this.lrep.mergeAppDescriptorVariant(buffer))[this.descriptorVariantId];
     }
 
     /**
@@ -135,8 +142,12 @@ export class AdpPreview {
      * @param res outgoing response object
      * @param next next middleware that is to be called if the request cannot be handled
      */
-    async proxy(req: Request, res: Response, next: NextFunction) {
+    async proxy(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.path === '/manifest.json') {
+            if (global.__SAP_UX_MANIFEST_SYNC_REQUIRED__) {
+                await this.sync();
+                global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            }
             res.status(200);
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {

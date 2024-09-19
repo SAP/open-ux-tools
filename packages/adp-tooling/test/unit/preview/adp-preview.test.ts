@@ -176,7 +176,7 @@ describe('AdaptationProject', () => {
 
             expect(() => adp.descriptor).toThrowError();
             expect(() => adp.resources).toThrowError();
-            await expect(() => adp.sync(JSON.parse(descriptorVariant))).rejects.toEqual(Error('Not initialized'));
+            await expect(() => adp.sync()).rejects.toEqual(Error('Not initialized'));
         });
     });
     describe('sync', () => {
@@ -200,7 +200,7 @@ describe('AdaptationProject', () => {
             ]);
             await adp.init(JSON.parse(descriptorVariant));
             (adp as any).mergedDescriptor = undefined;
-            await adp.sync(JSON.parse(descriptorVariant));
+            await adp.sync();
             expect(adp.descriptor).toBeDefined();
         });
     });
@@ -233,6 +233,18 @@ describe('AdaptationProject', () => {
             app.use((req) => fail(`${req.path} should have been intercepted.`));
 
             server = supertest(app);
+        });
+
+        afterEach(() => {
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+        });
+
+        test('/manifest.json with sync', async () => {
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
+            const syncSpy = jest.spyOn(AdpPreview.prototype, 'sync').mockImplementation(() => Promise.resolve());
+            const response = await server.get('/my/adaptation/manifest.json').expect(200);
+            expect(syncSpy).toHaveBeenCalledTimes(1);
+            expect(JSON.parse(response.text)).toEqual(mockMergedDescriptor.manifest);
         });
 
         test('/manifest.json', async () => {

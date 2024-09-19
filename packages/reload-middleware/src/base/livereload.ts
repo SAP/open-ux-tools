@@ -7,7 +7,12 @@ import { getAvailablePort } from './utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { promises } from 'fs';
+import { extname } from 'path';
 import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from './constants';
+
+declare global {
+    var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
+}
 
 /**
  * Get a livereload server instance.
@@ -54,3 +59,20 @@ export const getConnectLivereload = async (options: ConnectLivereloadOptions): P
 
     return connectLivereload({ ...connectOpts, ...options }) as RequestHandler;
 };
+
+/**
+ * 
+ * @param livereload 
+ */
+export function watchManifestChanges(livereload: LiveReloadServer): void {
+    livereload.watcher.on('all', async (_event, path) => {
+        const fileExtension = extname(path);
+        if (fileExtension === '.appdescr_variant') {
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
+        } else if (fileExtension === '.change') {
+            if (path.endsWith('appdescr_fe_changePageConfiguration.change')) {
+                global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
+            }
+        }
+    });
+}
