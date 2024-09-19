@@ -567,6 +567,9 @@ describe('Building Blocks', () => {
 
                 expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
                 expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+                // Check inline snapshot as content is static
+                expect(codeSnippet.manifest.content).toMatchSnapshot();
+                expect(codeSnippet.manifest.filePathProps?.fileName).toBe('manifest.json');
             }
         );
 
@@ -597,6 +600,29 @@ describe('Building Blocks', () => {
                 expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
             }
         );
+
+        test('getSerializedFileContent - "allowAutoAddDependencyLib=false"', async () => {
+            const basePath = join(testAppPath, `get-snippet-without-manifest-snippet`);
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            const codeSnippet = await getSerializedFileContent(
+                basePath,
+                {
+                    viewOrFragmentPath: '',
+                    aggregationPath,
+                    buildingBlockData: {
+                        buildingBlockType: BuildingBlockType.Table,
+                        id: 'Test'
+                    },
+                    allowAutoAddDependencyLib: false
+                },
+                fs
+            );
+
+            expect(codeSnippet.viewOrFragmentPath.content).toBeDefined();
+            expect(codeSnippet.manifest).toBeUndefined();
+        });
 
         // While runtime does not support approach without contextPath - special test for Chart
         const chartInput = [

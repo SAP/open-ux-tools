@@ -933,6 +933,16 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for chart building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for chart building block 3`] = `
 "<macros:Chart
     id=\\"testChart\\"
     metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
@@ -952,6 +962,16 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for field building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for field building block 3`] = `
 "<macros:Field
     id=\\"testField\\"
     metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
@@ -969,6 +989,16 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for filter-bar building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for filter-bar building block 3`] = `
 "<macros:FilterBar
     id=\\"testFilterBar\\"
     metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
@@ -997,6 +1027,16 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for table building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for table building block 3`] = `
 "<macros:Table
     id=\\"testTable\\"
     metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
