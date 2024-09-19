@@ -2,29 +2,21 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { render } from '../utils';
-import { initI18n } from '../../../src/i18n';
 
 import { UndoRedoSaveActions } from '../../../src/toolbar/UndoRedoSaveActions';
-import { mockResizeObserver } from '../../utils/utils';
-import { initIcons } from '@sap-ux/ui-components';
 import {
     setUndoRedoEnablement,
     setSaveEnablement,
     appLoaded,
     redo,
     save,
-    undo
+    undo,
+    numberOfChangesRequiringReloadChanged,
+    reloadApplication
 } from '@sap-ux-private/control-property-editor-common';
-import { initialState } from '../../../src/slice';
-
-beforeAll(() => {
-    mockResizeObserver();
-    initI18n();
-    initIcons();
-});
 
 test('renders UndoRedoSaveActions', () => {
-    const { dispatch, store } = render(<UndoRedoSaveActions />, { initialState });
+    const { dispatch, store } = render(<UndoRedoSaveActions />);
 
     // update state
     store.dispatch(setUndoRedoEnablement({ canRedo: true, canUndo: true }));
@@ -53,4 +45,28 @@ test('renders UndoRedoSaveActions', () => {
 
     saveBtn.click();
     expect(dispatch).toBeCalledWith(save());
+});
+
+describe('toolbar', () => {
+    test('renders save and reload', () => {
+        const { dispatch, store } = render(<UndoRedoSaveActions />);
+
+        // update state
+        store.dispatch(setUndoRedoEnablement({ canRedo: true, canUndo: true }));
+        store.dispatch(setSaveEnablement(true));
+        store.dispatch(numberOfChangesRequiringReloadChanged(5));
+        store.dispatch(appLoaded());
+
+        dispatch.mockClear();
+
+        const saveBtn = screen.getByRole('button', { name: /save and reload/i });
+        expect(saveBtn).toBeInTheDocument();
+
+        saveBtn.click();
+        expect(dispatch).toBeCalledWith(
+            reloadApplication({
+                save: true
+            })
+        );
+    });
 });

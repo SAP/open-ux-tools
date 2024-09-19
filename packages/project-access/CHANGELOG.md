@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.27.3
+
+### Patch Changes
+
+-   070182d: New public API method 'deleteCapApp', which allow delete application from CAP project
+
 ## 1.27.2
 
 ### Patch Changes
