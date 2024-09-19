@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.2.3
+
+### Patch Changes
+
+-   00e1835: Fixed manifest changes not visible in preview after reload
+
 ## 0.2.2
 
 ### Patch Changes
