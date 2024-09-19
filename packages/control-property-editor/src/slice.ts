@@ -15,6 +15,7 @@ import type {
     ShowMessage
 } from '@sap-ux-private/control-property-editor-common';
 import {
+    numberOfChangesRequiringReloadChanged,
     changeStackModified,
     controlSelected,
     iconsLoaded,
@@ -60,6 +61,7 @@ interface SliceState {
         canRedo: boolean;
     };
     canSave: boolean;
+    pendingChangesRequiresSaveAndReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
 }
@@ -147,6 +149,7 @@ export const initialState: SliceState = {
         canRedo: false
     },
     canSave: false,
+    pendingChangesRequiresSaveAndReload: false,
     isAppLoading: true,
     quickActions: []
 };
@@ -320,6 +323,12 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             .addMatcher(appLoaded.match, (state): void => {
                 state.isAppLoading = false;
             })
+            .addMatcher(
+                numberOfChangesRequiringReloadChanged.match,
+                (state, action: ReturnType<typeof numberOfChangesRequiringReloadChanged>): void => {
+                    state.pendingChangesRequiresSaveAndReload = action.payload > 0;
+                }
+            )
             .addMatcher(
                 quickActionListChanged.match,
                 (state: SliceState, action: ReturnType<typeof quickActionListChanged>): void => {
