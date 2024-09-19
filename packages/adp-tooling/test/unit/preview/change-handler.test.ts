@@ -216,6 +216,40 @@ id="<%- ids.hBox %>"`);
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });
+
+            it('should create Object Page header field fragment', () => {
+                mockFs.exists.mockReturnValue(false);
+                const updatedChange = {
+                    ...change,
+                    content: {
+                        ...change.content,
+                        templateName: `ADD_HEADER_FIELD`
+                    }
+                } as unknown as AddXMLChange;
+                mockFs.read.mockReturnValue(`
+id="<%- ids.vBoxContaier %>"
+id="<%- ids.label %>"`);
+                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+
+                expect(mockFs.read).toHaveBeenCalled();
+                expect(
+                    (mockFs.read.mock.calls[0][0] as string)
+                        .replace(/\\/g, '/')
+                        .endsWith('templates/rta/common/header-field.xml')
+                ).toBe(true);
+
+                expect(mockFs.write).toHaveBeenCalled();
+                expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                    `"project/path/changes/Share.fragment.xml"`
+                );
+                expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+"
+id=\\"vBox-30303030\\"
+id=\\"label-30303030\\""
+`);
+
+                expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
+            });
         });
     });
 });
