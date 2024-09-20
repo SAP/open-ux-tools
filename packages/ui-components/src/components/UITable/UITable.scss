@@ -88,12 +88,13 @@
             .editable-container {
                 margin-left: auto;
             }
+
+            &:focus {
+                outline: none;
+                box-shadow: 0 0 0 3px var(--vscode-focusBorder) inset;
+            }
         }
 
-        &:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px var(--vscode-focusBorder) inset;
-        }
 
         .ms-DetailsHeader-cell,
         .ms-DetailsHeader-cell:hover,
