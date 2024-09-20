@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.8
+
+### Patch Changes
+
+-   e12dd50: Added hover over theme picker and border for Callout
+
 ## 0.5.7
 
 ### Patch Changes

@@ -1,8 +1,7 @@
-import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { basename } from 'path';
 import { getLaunchConfig } from '../launch-config-crud/utils';
 import type { LaunchConfig, LaunchJSON, DebugOptions, LaunchConfigEnv } from '../types';
-import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
+import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID, ProjectDataSourceType } from '../types';
 
 // debug constants
 const testFlpSandboxHtml = 'test/flpSandbox.html';
@@ -27,7 +26,7 @@ function getEnvUrlParams(sapClientParam: string): string {
 }
 
 /**
- * Creates a launch configuration.
+ * Gets launch configuration.
  *
  * @param {string} name - The name of the configuration.
  * @param {string} cwd - The current working directory.
@@ -37,7 +36,7 @@ function getEnvUrlParams(sapClientParam: string): string {
  * @param {string} [runConfig] - The optional run configuration for AppStudio.
  * @returns {LaunchConfig} The launch configuration object.
  */
-function createLaunchConfig(
+function configureLaunchConfig(
     name: string,
     cwd: string,
     runtimeArgs: string[],
@@ -56,13 +55,13 @@ function createLaunchConfig(
 /**
  * Configures the launch.json file based on provided options.
  *
+ * @param rootFolder - The root folder path where the app will be generated.
  * @param {string} cwd - The current working directory.
  * @param {DebugOptions} configOpts - Configuration options for the launch.json file.
  * @returns {LaunchJSON} The configured launch.json object.
  */
-export function configureLaunchJsonFile(cwd: string, configOpts: DebugOptions): LaunchJSON {
+export function configureLaunchJsonFile(rootFolder: string, cwd: string, configOpts: DebugOptions): LaunchJSON {
     const {
-        projectPath,
         isAppStudio,
         datasourceType,
         flpAppId,
@@ -73,14 +72,13 @@ export function configureLaunchJsonFile(cwd: string, configOpts: DebugOptions): 
         isFioriElement,
         migratorMockIntent
     } = configOpts;
-
-    const projectName = basename(projectPath);
+    const projectName = basename(rootFolder);
     const flpAppIdWithHash = flpAppId && !flpAppId.startsWith('#') ? `#${flpAppId}` : flpAppId;
     const startHtmlFile = flpSandboxAvailable ? testFlpSandboxHtml : indexHtml;
     const runConfig = isAppStudio
         ? JSON.stringify({
               handlerId: FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID,
-              runnableId: projectPath
+              runnableId: rootFolder
           })
         : undefined;
     const envUrlParam = getEnvUrlParams(sapClientParam);
@@ -88,9 +86,9 @@ export function configureLaunchJsonFile(cwd: string, configOpts: DebugOptions): 
     const launchFile: LaunchJSON = { version: '0.2.0', configurations: [] };
 
     // Add live configuration if the datasource is not from a metadata file
-    if (datasourceType !== DatasourceType.metadataFile) {
+    if (datasourceType !== ProjectDataSourceType.metadataFile) {
         const startCommand = `${startHtmlFile}${flpAppIdWithHash}`;
-        const liveConfig = createLaunchConfig(
+        const liveConfig = configureLaunchConfig(
             `Start ${projectName}`,
             cwd,
             ['fiori', 'run'],
@@ -102,13 +100,13 @@ export function configureLaunchJsonFile(cwd: string, configOpts: DebugOptions): 
     }
 
     // Add mock configuration for OData V2 or V4
-    if (odataVersion && [OdataVersion.v2, OdataVersion.v4].includes(odataVersion)) {
+    if (odataVersion && ['2.0', '4.0'].includes(odataVersion)) {
         const params = `${flpAppIdWithHash ?? ''}`;
         const mockCmdArgs =
-            isMigrator && odataVersion === OdataVersion.v2
+            isMigrator && odataVersion === '2.0'
                 ? ['--open', `${testFlpSandboxMockServerHtml}${params}`]
                 : ['--config', './ui5-mock.yaml', '--open', `${testFlpSandboxHtml}${params}`];
-        const mockConfig = createLaunchConfig(
+        const mockConfig = configureLaunchConfig(
             `Start ${projectName} Mock`,
             cwd,
             ['fiori', 'run'],
@@ -120,12 +118,12 @@ export function configureLaunchJsonFile(cwd: string, configOpts: DebugOptions): 
     }
 
     // Add local configuration
-    const shouldUseMockServer = isFioriElement && odataVersion === OdataVersion.v2 && isMigrator;
+    const shouldUseMockServer = isFioriElement && odataVersion === '2.0' && isMigrator;
     const localHtmlFile = shouldUseMockServer ? testFlpSandboxMockServerHtml : startHtmlFile;
     const startLocalCommand = `${localHtmlFile}${
         migratorMockIntent ? `#${migratorMockIntent.replace('#', '')}` : flpAppIdWithHash
     }`;
-    const localConfig = createLaunchConfig(
+    const localConfig = configureLaunchConfig(
         `Start ${projectName} Local`,
         cwd,
         ['fiori', 'run'],
