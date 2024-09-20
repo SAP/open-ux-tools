@@ -280,9 +280,12 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.dialogMessage = action.payload;
             })
             .addMatcher(fileChanged.match, (state, action: ReturnType<typeof fileChanged>): void => {
+                const firstFile = action.payload[0] ?? '';
+                const separator = firstFile.indexOf('\\') > -1 ? '\\' : '/';
+
                 const newFileChanges = action.payload.filter((changedFile) => {
                     const idx = state.changes.pendingChangeIds.findIndex((pendingFile) =>
-                        changedFile.includes(pendingFile)
+                        changedFile.includes(pendingFile.replace(/\//g, separator))
                     );
                     if (idx > -1) {
                         state.changes.pendingChangeIds.splice(idx, 1);
