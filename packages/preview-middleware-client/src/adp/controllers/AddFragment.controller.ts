@@ -25,7 +25,7 @@ import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
-import { getResourceModel } from '../../i18n';
+import { getResourceModel, getTextBundle } from '../../i18n';
 import { CommunicationService } from '../../cpe/communication-service';
 
 import ControlUtils from '../control-utils';
@@ -170,9 +170,11 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             targetAggregation
         };
 
-        await this.createFragmentChange(fragmentData);
+        const templateName = await this.createFragmentChange(fragmentData);
 
-        notifyUser(`Note: The '${fragmentName}.fragment.xml' fragment will be created once you save the change.`, 8000);
+        const textKey = templateName ? 'ADP_ADD_FRAGMENT_WITH_TEMPLATE_NOTIFICATION' : 'ADP_ADD_FRAGMENT_NOTIFICATION';
+        const bundle = await getTextBundle();
+        notifyUser(bundle.getText(textKey, [fragmentName]), 8000);
 
         this.handleDialogClose();
     }
@@ -279,7 +281,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      *
      * @param fragmentData Fragment Data
      */
-    private async createFragmentChange(fragmentData: CreateFragmentProps) {
+    private async createFragmentChange(fragmentData: CreateFragmentProps): Promise<string | undefined> {
         const { fragmentName, index, targetAggregation } = fragmentData;
 
         const flexSettings = this.rta.getFlexSettings();
@@ -310,6 +312,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             CommunicationService.sendAction(setApplicationRequiresReload(true));
         }
         await this.commandExecutor.pushAndExecuteCommand(command);
+        return templateName;
     }
 
     private getFragmentTemplateName(targetAggregation: string): string {
