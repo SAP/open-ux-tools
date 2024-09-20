@@ -235,6 +235,23 @@ describe('UI5Config', () => {
             ui5Config.addFioriToolsAppReloadMiddleware();
             expect(() => ui5Config.addBackendToFioriToolsProxydMiddleware({ url, path })).toThrowError();
         });
+
+        test('Should add preview middlewares correctly', () => {
+            ui5Config.addFioriToolsPreviewMiddleware('my.app', 'sap_fiori_3');
+            expect(ui5Config.toString().replace(/\s+/g, ' ').trim()).toBe(
+                `
+                    server:
+                        customMiddleware:
+                            - name: fiori-tools-preview
+                            afterMiddleware: fiori-tools-appreload
+                            configuration:
+                            component: my.app
+                            ui5Theme: sap_fiori_3
+                `
+                    .replace(/\s+/g, ' ')
+                    .trim()
+            );
+        });
     });
 
     describe('addUi5ToFioriToolsProxydMiddleware', () => {

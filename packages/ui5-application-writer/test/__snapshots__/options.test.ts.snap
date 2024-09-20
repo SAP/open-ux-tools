@@ -97,6 +97,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: app.with.namespace
+        ui5Theme: sap_fiori_3
 ",
     "state": "modified",
   },
@@ -124,6 +129,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: app.with.namespace
+        ui5Theme: sap_fiori_3
 ",
     "state": "modified",
   },
@@ -340,6 +350,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: app.with.namespace
+        ui5Theme: sap_fiori_3
 ",
     "state": "modified",
   },
@@ -367,6 +382,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: app.with.namespace
+        ui5Theme: sap_fiori_3
 ",
     "state": "modified",
   },
@@ -580,6 +600,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: app.with.namespace
+        ui5Theme: sap_fiori_3
 ",
     "state": "modified",
   },
@@ -607,6 +632,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: app.with.namespace
+        ui5Theme: sap_fiori_3
 ",
     "state": "modified",
   },
@@ -1199,6 +1229,11 @@ server:
     - name: ui5-tooling-modules-middleware
       afterMiddleware: compression
       configuration: {}
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: app.with.namespace
+        ui5Theme: sap_fiori_3
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -1237,6 +1272,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: app.with.namespace
+        ui5Theme: sap_fiori_3
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
