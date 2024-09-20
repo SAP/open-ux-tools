@@ -271,7 +271,13 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         // in app-migrator, show a warning message for library projects on main migration view
         if (props.item.hideCells && props.column.fieldName === 'moduleName' && !props.item.status) {
             return (
-                <div key={key} {...(cell?.props || {})} data-is-focusable={true} onClick={onClick} tabIndex="0" role="gridcell">
+                <div
+                    key={key}
+                    {...(cell?.props || {})}
+                    data-is-focusable={true}
+                    onClick={onClick}
+                    tabIndex="0"
+                    role="gridcell">
                     {cell?.props?.children || null}
                     <div className="table-item-warning">
                         This is a reuse library and does not require input during migration
@@ -280,7 +286,13 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             );
         } else {
             return (
-                <div key={key} {...(cell?.props || {})} data-is-focusable={true} onClick={onClick} tabIndex="0" role="gridcell">
+                <div
+                    key={key}
+                    {...(cell?.props || {})}
+                    data-is-focusable={true}
+                    onClick={onClick}
+                    tabIndex="0"
+                    role="gridcell">
                     {cell?.props?.children || null}
                 </div>
             );
