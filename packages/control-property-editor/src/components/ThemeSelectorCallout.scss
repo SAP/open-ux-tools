@@ -46,6 +46,11 @@
     background-color: var(--vscode-progressBar-background);
 }
 
+.theme-child:hover:not(.selected) {
+    background-color: var(--vscode-toolbar-hoverBackground, var(--vscode-menubar-selectionBackground));
+    outline: 1px dashed var(--vscode-contrastActiveBorder);
+}
+
 div#theme-light-modern {
     margin-left: 3px;
     margin-bottom: 3px;

@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.18.2
+
+### Patch Changes
+
+-   1fdac94: UITable. Fix for react warning 'Each child in a list should have a unique "key" prop'
+
+## 1.18.1
+
+### Patch Changes
+
+-   15c57bc: fix(ui-c): accessibility updates for uitable
+
 ## 1.18.0
 
 ### Minor Changes
