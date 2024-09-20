@@ -233,7 +233,6 @@ function getClientPrompt(backendTarget?: BackendTarget): Question<AbapDeployConf
         name: abapDeployConfigInternalPromptNames.client,
         message: t('prompts.target.client.message'),
         guiOptions: {
-            mandatory: true,
             breadcrumb: t('prompts.target.client.breadcrumb')
         },
         default: (): string | undefined => backendTarget?.abapTarget?.client,

@@ -12,6 +12,7 @@ import { getJsonSpace } from '../common/file';
 import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
 import type { FilterField } from '../building-block/types';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import { getManifest } from '../common/utils';
 
 /**
  * Enhances the provided custom filter configuration with default data.
@@ -49,14 +50,13 @@ function enhanceConfig(data: CustomFilter, manifestPath: string, manifest: Manif
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export function generateCustomFilter(basePath: string, filterConfig: CustomFilter, fs?: Editor): Editor {
+export async function generateCustomFilter(basePath: string, filterConfig: CustomFilter, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
     validateBasePath(basePath, fs);
 
-    const manifestPath = join(basePath, 'webapp/manifest.json');
-    const manifest = fs.readJSON(manifestPath) as Manifest;
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
     const config = enhanceConfig(filterConfig, manifestPath, manifest);
 
     // Apply event handler

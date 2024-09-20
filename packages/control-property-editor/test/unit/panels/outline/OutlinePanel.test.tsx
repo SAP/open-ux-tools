@@ -1,22 +1,22 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { initIcons } from '@sap-ux/ui-components';
 
-import { render } from '../../utils';
-import { initI18n } from '../../../../src/i18n';
-import { mockResizeObserver } from '../../../utils/utils';
-import { OutlinePanel } from '../../../../src/panels/outline';
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
 import { controlSelected, outlineChanged, SCENARIO } from '@sap-ux-private/control-property-editor-common';
-import type { FilterOptions, default as reducer } from '../../../../src/slice';
+
+import { render } from '../../utils';
+
+import { OutlinePanel } from '../../../../src/panels/outline';
+import type { FilterOptions } from '../../../../src/slice';
 import { FilterName, filterNodes } from '../../../../src/slice';
-import { DeviceType } from '../../../../src/devices';
-import { registerAppIcons } from '../../../../src/icons';
 
-export type State = ReturnType<typeof reducer>;
-
-const getModel = (editable = true, visible = true, toggleParent = false, toggleChildren = false): OutlineNode[] => {
-    const model: OutlineNode[] = [
+const getOutlineNodes = (
+    editable = true,
+    visible = true,
+    toggleParent = false,
+    toggleChildren = false
+): OutlineNode[] => {
+    return [
         {
             name: 'one',
             controlId: '01',
@@ -67,7 +67,6 @@ const getModel = (editable = true, visible = true, toggleParent = false, toggleC
             visible: toggleParent ? !toggleParent : visible
         }
     ];
-    return model;
 };
 
 const filterInitOptions: FilterOptions[] = [
@@ -77,14 +76,6 @@ const filterInitOptions: FilterOptions[] = [
 ];
 
 describe('OutlinePanel', () => {
-    beforeAll(() => {
-        // Note: The tree is already expanded because we are passing isAllGroupsCollapsed: false
-        mockResizeObserver();
-        initI18n();
-        initIcons();
-        registerAppIcons();
-    });
-
     test('initial load', () => {
         const { container } = render(<OutlinePanel />);
         // check search box
@@ -108,25 +99,12 @@ describe('OutlinePanel', () => {
     });
 
     test('tree', () => {
-        const model = getModel(true, false);
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: model,
-            filterQuery: filterInitOptions,
-            scenario: SCENARIO.UiAdaptation,
-            selectedControl: undefined,
-            changes: {
-                pending: [],
-                saved: [],
-                controls: {},
-                pendingChangeIds: []
-            },
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-        render(<OutlinePanel />, { initialState });
+        render(<OutlinePanel />, {
+            initialState: {
+                outline: getOutlineNodes(true, false),
+                filterQuery: filterInitOptions
+            }
+        });
         // check one
         const one = screen.getAllByText(/one/i)[0];
         expect(one).toBeInTheDocument();
@@ -143,25 +121,12 @@ describe('OutlinePanel', () => {
     });
 
     test('query tree', () => {
-        const model = getModel(true, false);
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: model,
-            filterQuery: filterInitOptions,
-            scenario: SCENARIO.UiAdaptation,
-            selectedControl: undefined,
-            changes: {
-                pending: [],
-                saved: [],
-                controls: {},
-                pendingChangeIds: []
-            },
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-        render(<OutlinePanel />, { initialState });
+        render(<OutlinePanel />, {
+            initialState: {
+                outline: getOutlineNodes(true, false),
+                filterQuery: filterInitOptions
+            }
+        });
         const search = screen.getByRole('searchbox');
         // trigger search with query
         fireEvent.change(search, { target: { value: 'second' } });
@@ -179,42 +144,29 @@ describe('OutlinePanel', () => {
     });
 
     test('focus editable controls of tree', () => {
-        const model: OutlineNode[] = [
-            {
-                name: 'one',
-                controlId: '01',
-                children: [],
-                controlType: 'name.space.one',
-                editable: false,
-                visible: false
-            },
-            {
-                name: 'two',
-                controlId: '02',
-                children: [],
-                controlType: 'name.space.two',
-                editable: true,
-                visible: false
+        const { container } = render(<OutlinePanel />, {
+            initialState: {
+                outline: [
+                    {
+                        name: 'one',
+                        controlId: '01',
+                        children: [],
+                        controlType: 'name.space.one',
+                        editable: false,
+                        visible: false
+                    },
+                    {
+                        name: 'two',
+                        controlId: '02',
+                        children: [],
+                        controlType: 'name.space.two',
+                        editable: true,
+                        visible: false
+                    }
+                ],
+                filterQuery: filterInitOptions
             }
-        ];
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: model,
-            filterQuery: filterInitOptions,
-            scenario: SCENARIO.UiAdaptation,
-            selectedControl: undefined,
-            changes: {
-                pending: [],
-                saved: [],
-                controls: {},
-                pendingChangeIds: []
-            },
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-        const { container } = render(<OutlinePanel />, { initialState });
+        });
         let focusEditableRow = container.querySelector('.focusEditable');
 
         // class 'focusEditable' is not set
@@ -234,50 +186,37 @@ describe('OutlinePanel', () => {
     });
 
     test('show only commonly used controls of tree', () => {
-        const model: OutlineNode[] = [
-            {
-                name: 'one',
-                controlId: '01',
-                children: [],
-                controlType: 'name.space.one',
-                editable: true,
-                visible: true
-            },
-            {
-                name: 'two',
-                controlId: '02',
-                children: [],
-                controlType: 'name.space.two',
-                editable: false,
-                visible: false
-            },
-            {
-                name: 'SmartTable',
-                controlId: '03',
-                children: [],
-                controlType: 'sap.ui.comp.smarttable.SmartTable',
-                editable: true,
-                visible: true
+        const { container } = render(<OutlinePanel />, {
+            initialState: {
+                outline: [
+                    {
+                        name: 'one',
+                        controlId: '01',
+                        children: [],
+                        controlType: 'name.space.one',
+                        editable: true,
+                        visible: true
+                    },
+                    {
+                        name: 'two',
+                        controlId: '02',
+                        children: [],
+                        controlType: 'name.space.two',
+                        editable: false,
+                        visible: false
+                    },
+                    {
+                        name: 'SmartTable',
+                        controlId: '03',
+                        children: [],
+                        controlType: 'sap.ui.comp.smarttable.SmartTable',
+                        editable: true,
+                        visible: true
+                    }
+                ],
+                filterQuery: filterInitOptions
             }
-        ];
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: model,
-            filterQuery: filterInitOptions,
-            scenario: SCENARIO.UiAdaptation,
-            selectedControl: undefined,
-            changes: {
-                pending: [],
-                saved: [],
-                controls: {},
-                pendingChangeIds: []
-            },
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-        const { container } = render(<OutlinePanel />, { initialState });
+        });
         const funnelIcon = container.querySelector('[data-icon-name="funnel"]') as Element;
 
         // open callout
@@ -299,38 +238,25 @@ describe('OutlinePanel', () => {
     });
 
     test('handleOpenTooltip should show and hide the tooltip', () => {
-        const model: OutlineNode[] = [
-            {
-                name: 'ExtensionPoint',
-                controlId: '04',
-                children: [],
-                controlType: 'sap.ui.extensionpoint',
-                hasDefaultContent: true,
-                editable: true,
-                visible: true
-            }
-        ];
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: model,
-            filterQuery: filterInitOptions,
-            scenario: SCENARIO.AdaptationProject,
-            selectedControl: undefined,
-            changes: {
-                pending: [],
-                saved: [],
-                controls: {},
-                pendingChangeIds: []
-            },
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-
         const tooltipId = 'tooltip--ExtensionPoint';
 
-        const { container } = render(<OutlinePanel />, { initialState });
+        const { container } = render(<OutlinePanel />, {
+            initialState: {
+                outline: [
+                    {
+                        name: 'ExtensionPoint',
+                        controlId: '04',
+                        children: [],
+                        controlType: 'sap.ui.extensionpoint',
+                        hasDefaultContent: true,
+                        editable: true,
+                        visible: true
+                    }
+                ],
+                filterQuery: filterInitOptions,
+                scenario: SCENARIO.AdaptationProject
+            }
+        });
         const spanElement = screen.getByTestId('tooltip-container');
 
         // Simulate a right-click event
@@ -347,37 +273,24 @@ describe('OutlinePanel', () => {
     });
 
     test('should show and hide tooltip when clicking button to open dialog', () => {
-        const model: OutlineNode[] = [
-            {
-                name: 'ExtensionPoint',
-                controlId: '04',
-                children: [],
-                controlType: 'sap.ui.extensionpoint',
-                editable: true,
-                visible: true
-            }
-        ];
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: model,
-            filterQuery: filterInitOptions,
-            scenario: SCENARIO.AdaptationProject,
-            selectedControl: undefined,
-            changes: {
-                pending: [],
-                saved: [],
-                controls: {},
-                pendingChangeIds: []
-            },
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-
         const tooltipId = 'tooltip--ExtensionPoint';
 
-        const { container } = render(<OutlinePanel />, { initialState });
+        const { container } = render(<OutlinePanel />, {
+            initialState: {
+                outline: [
+                    {
+                        name: 'ExtensionPoint',
+                        controlId: '04',
+                        children: [],
+                        controlType: 'sap.ui.extensionpoint',
+                        editable: true,
+                        visible: true
+                    }
+                ],
+                filterQuery: filterInitOptions,
+                scenario: SCENARIO.AdaptationProject
+            }
+        });
         const spanElement = screen.getByTestId('tooltip-container');
         const buttonElement = screen.getByTestId('tooltip-dialog-button');
 
@@ -395,55 +308,42 @@ describe('OutlinePanel', () => {
     });
 
     test('should hide tooltip if another tooltip is already open', () => {
-        const model: OutlineNode[] = [
-            {
-                name: 'one',
-                controlId: '01',
-                children: [
+        const tooltipId = 'tooltip--ExtensionPoint';
+        const tooltipId2 = 'tooltip--ExtensionPoint2';
+
+        const { container } = render(<OutlinePanel />, {
+            initialState: {
+                outline: [
                     {
-                        name: 'ExtensionPoint',
-                        controlId: '04',
-                        children: [],
-                        controlType: 'sap.ui.extensionpoint',
-                        editable: true,
-                        visible: true
-                    },
-                    {
-                        name: 'ExtensionPoint2',
-                        controlId: '05',
-                        children: [],
-                        controlType: 'sap.ui.extensionpoint',
+                        name: 'one',
+                        controlId: '01',
+                        children: [
+                            {
+                                name: 'ExtensionPoint',
+                                controlId: '04',
+                                children: [],
+                                controlType: 'sap.ui.extensionpoint',
+                                editable: true,
+                                visible: true
+                            },
+                            {
+                                name: 'ExtensionPoint2',
+                                controlId: '05',
+                                children: [],
+                                controlType: 'sap.ui.extensionpoint',
+                                editable: true,
+                                visible: true
+                            }
+                        ],
+                        controlType: 'name.space.one',
                         editable: true,
                         visible: true
                     }
                 ],
-                controlType: 'name.space.one',
-                editable: true,
-                visible: true
+                filterQuery: filterInitOptions,
+                scenario: SCENARIO.AdaptationProject
             }
-        ];
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: model,
-            filterQuery: filterInitOptions,
-            scenario: SCENARIO.AdaptationProject,
-            selectedControl: undefined,
-            changes: {
-                pending: [],
-                saved: [],
-                controls: {},
-                pendingChangeIds: []
-            },
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false
-        };
-
-        const tooltipId = 'tooltip--ExtensionPoint';
-        const tooltipId2 = 'tooltip--ExtensionPoint2';
-
-        const { container } = render(<OutlinePanel />, { initialState });
+        });
         const spanElements = screen.getAllByTestId('tooltip-container'); // Array of three items
 
         // Simulate a right-click event
@@ -465,8 +365,8 @@ describe('OutlinePanel', () => {
             { name: FilterName.focusCommonlyUsed, value: false }
         ]);
         store.dispatch(action);
-        const model = getModel(true, false);
-        store.dispatch(outlineChanged(model));
+        const outlineNodes = getOutlineNodes(true, false);
+        store.dispatch(outlineChanged(outlineNodes));
 
         // select node
         screen.getByText(/second child of one/i).click();
@@ -490,8 +390,8 @@ describe('OutlinePanel', () => {
             { name: FilterName.focusCommonlyUsed, value: false }
         ]);
         store.dispatch(action);
-        const model = getModel(true, false);
-        store.dispatch(outlineChanged(model));
+        const outlineNodes = getOutlineNodes(true, false);
+        store.dispatch(outlineChanged(outlineNodes));
 
         // select child node
         screen.getByText(/second child of one/i).click();
@@ -509,41 +409,31 @@ describe('OutlinePanel', () => {
     });
 
     test('show change indicator', () => {
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: getModel(true, true, true, true),
-            filterQuery: filterInitOptions,
-            scenario: SCENARIO.UiAdaptation,
-            selectedControl: undefined,
-            changes: {
-                pending: [],
-                saved: [],
-                controls: {
-                    '01': {
-                        pending: 0,
-                        saved: 1,
-                        properties: {},
-                        controlName: 'test01'
+        const { container } = render(<OutlinePanel />, {
+            initialState: {
+                filterQuery: filterInitOptions,
+                outline: getOutlineNodes(true, true, true, true),
+                changes: {
+                    pending: [],
+                    saved: [],
+                    controls: {
+                        '01': {
+                            pending: 0,
+                            saved: 1,
+                            properties: {},
+                            controlName: 'test01'
+                        },
+                        '01-01': {
+                            pending: 0,
+                            saved: 1,
+                            properties: {},
+                            controlName: 'test01-01'
+                        }
                     },
-                    '01-01': {
-                        pending: 0,
-                        saved: 1,
-                        properties: {},
-                        controlName: 'test01-01'
-                    }
-                },
-                pendingChangeIds: []
-            },
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false,
-            appMode: 'adaptation',
-            canSave: false,
-            changeStack: { canRedo: false, canUndo: false },
-            isAppLoading: true
-        };
-        const { container } = render(<OutlinePanel />, { initialState });
+                    pendingChangeIds: []
+                }
+            }
+        });
 
         const arrowRight = container.querySelector('[data-icon-name="Chevron"]') as Element;
         expect(arrowRight).toBeInTheDocument();

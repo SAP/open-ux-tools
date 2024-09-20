@@ -6,7 +6,7 @@ import { lt, valid } from 'semver';
 import { getMinUI5VersionAsArray, getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { FCL_ROUTER } from '../common/defaults';
 import { getTemplatePath } from '../templates';
-import { addExtensionTypes } from '../common/utils';
+import { addExtensionTypes, getManifest } from '../common/utils';
 
 /**
  * Configurable options when enabling the Flexible Programming Model in a UI5 application.
@@ -79,16 +79,12 @@ function adaptMinUI5Version(manifest: Manifest, fs: Editor, manifestPath: string
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
-export function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor): Editor {
+export async function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
 
-    const manifestPath = join(basePath, 'webapp/manifest.json');
-    if (!fs.exists(manifestPath)) {
-        throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
-    }
-    const manifest = fs.readJSON(manifestPath) as any as Manifest;
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     // add FE libs is not yet added
     if (!manifest['sap.ui5']?.dependencies?.libs?.['sap.fe.templates']) {

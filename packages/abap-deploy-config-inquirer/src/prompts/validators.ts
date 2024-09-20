@@ -36,7 +36,7 @@ import {
 export function validateDestinationQuestion(destination: string, destinations?: Destinations): boolean {
     PromptState.resetAbapDeployConfig();
     updateDestinationPromptState(destination, destinations);
-    return true;
+    return !!destination?.trim();
 }
 
 /**
@@ -523,7 +523,7 @@ export async function validateTransportChoiceInput(
  */
 export function validateTransportQuestion(input?: string): boolean | string {
     if (PromptState.transportAnswers.transportRequired && !input?.trim()) {
-        return t('prompts.config.transport.provideTransportRequest');
+        return t('prompts.config.transport.common.provideTransportRequest');
     }
     return true;
 }

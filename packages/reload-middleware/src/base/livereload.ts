@@ -7,7 +7,14 @@ import { getAvailablePort } from './utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { promises } from 'fs';
+import { extname } from 'path';
 import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from './constants';
+
+declare global {
+    // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
+    // eslint-disable-next-line no-var
+    var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
+}
 
 /**
  * Get a livereload server instance.
@@ -54,3 +61,21 @@ export const getConnectLivereload = async (options: ConnectLivereloadOptions): P
 
     return connectLivereload({ ...connectOpts, ...options }) as RequestHandler;
 };
+
+/**
+ * Listen to file changes to set a global flag if there are any changes that affect manifest.json.
+ *
+ * @param livereload - Live reload server.
+ */
+export function watchManifestChanges(livereload: LiveReloadServer): void {
+    livereload.watcher.on('all', async (_event, path) => {
+        const fileExtension = extname(path);
+        if (fileExtension === '.appdescr_variant') {
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
+        } else if (fileExtension === '.change') {
+            if (path.endsWith('appdescr_fe_changePageConfiguration.change')) {
+                global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
+            }
+        }
+    });
+}

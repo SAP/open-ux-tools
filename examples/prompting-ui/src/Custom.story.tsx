@@ -9,13 +9,13 @@ export const CustomChart = (): JSX.Element => {
         <BuildingBlockQuestions
             type={PromptsType.Chart}
             visibleQuestions={[
-                'id',
-                'entity',
-                'qualifier',
-                'filterBar',
-                'selectionMode',
-                'selectionChange',
-                'bindingContextType'
+                'buildingBlockData.id',
+                'buildingBlockData.metaPath.entitySet',
+                'buildingBlockData.metaPath.qualifier',
+                'buildingBlockData.filterBar',
+                'buildingBlockData.selectionMode',
+                'buildingBlockData.selectionChange',
+                'buildingBlockData.metaPath.bindingContextType'
             ]}
         />
     );

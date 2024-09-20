@@ -337,4 +337,12 @@ describe('Select', () => {
             });
         });
     });
+
+    it('Auto select single option', () => {
+        const onChangeFn = jest.fn();
+        render(<Select {...props} onChange={onChangeFn} choices={[{ name: 'Dummy', value: 111 }]} />);
+        const input = screen.getByRole('combobox');
+        expect(input).toBeDefined();
+        expect(onChangeFn).toHaveBeenCalledWith('select', 111);
+    });
 });

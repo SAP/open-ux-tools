@@ -1,5 +1,36 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.40
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/telemetry@0.5.29
+
+## 0.5.39
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/telemetry@0.5.28
+
+## 0.5.38
+
+### Patch Changes
+
+-   Updated dependencies [aa72f3c]
+    -   @sap-ux/axios-extension@1.16.6
+
+## 0.5.37
+
+### Patch Changes
+
+-   97f1d2a: Fixes for client issues when running in YUI
+
 ## 0.5.36
 
 ### Patch Changes
