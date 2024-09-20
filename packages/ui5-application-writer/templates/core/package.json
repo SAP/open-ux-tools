@@ -11,4 +11,7 @@
     "dependencies": {},
     "devDependencies": <%- JSON.stringify(package.devDependencies, null, 8) -%>,
     "scripts": <%- JSON.stringify(package.scripts, null, 4) -%>
+    <% if (package.sapuxLayer) { %>
+    ,"sapuxLayer": "<%= package.sapuxLayer %>"
+    <% } %>
 }

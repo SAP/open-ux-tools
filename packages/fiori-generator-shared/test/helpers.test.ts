@@ -1,4 +1,4 @@
-import { getBootstrapResourceUrls } from '../src/index';
+import { getBootstrapResourceUrls, getVariantPreviewAppScript } from '../src/index';
 
 describe('getResourceUrlsForUi5Bootstrap', () => {
     it('should return relative paths for Edmx projects', () => {
@@ -40,5 +40,30 @@ describe('getResourceUrlsForUi5Bootstrap', () => {
             uShellBootstrapResourceUrl: '../test-resources/sap/ushell/bootstrap/sandbox.js',
             uiBootstrapResourceUrl: '../resources/sap-ui-core.js'
         });
+    });
+});
+
+describe('getVariantPreviewAppScript', () => {
+    it('should return the correct command with a given SAP client', () => {
+        const sapClient = '100';
+        const expectedCommand = 'fiori run --open "preview.html?sap-client=100&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
+        expect(getVariantPreviewAppScript(sapClient)).toBe(expectedCommand);
+    });
+
+    it('should return the correct command with an empty SAP client', () => {
+        const sapClient = '';
+        const expectedCommand = 'fiori run --open "preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
+        expect(getVariantPreviewAppScript(sapClient)).toBe(expectedCommand);
+    });
+
+    it('should return the correct command with no SAP client argument', () => {
+        const sapClient = undefined;
+        const expectedCommand = 'fiori run --open "preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
+        expect(getVariantPreviewAppScript(sapClient)).toBe(expectedCommand);
+    });
+
+    it('should handle default parameter value correctly', () => {
+        const expectedCommand = 'fiori run --open "preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
+        expect(getVariantPreviewAppScript()).toBe(expectedCommand);
     });
 });

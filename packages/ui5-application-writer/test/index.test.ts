@@ -5,6 +5,7 @@ import { create } from 'mem-fs-editor';
 import type { Ui5App } from '../src';
 import { generate, isTypescriptEnabled, enableTypescript } from '../src';
 import { updatePackageJSONDependencyToUseLocalPath } from './common';
+import { ApiHubType } from '../src/types';
 
 describe('UI5 templates', () => {
     const fs = create(createStorage());
@@ -150,5 +151,20 @@ describe('UI5 templates', () => {
         expect(fs.exists(join(projectDir, '.gitignore'))).toBe(false);
         // Check if ui5.yaml exist
         expect(fs.exists(join(projectDir, 'ui5.yaml'))).toBe(true);
+    });
+
+    it('Check that .env file is generated when apiHubConfig is provided', async () => {
+        let projectDir = join(outputDir, 'testapp-simple');
+        ui5AppConfig.appOptions = {
+            apiHubConfig: {
+                apiHubKey: 'apiHubKeyTest:abcd1234',
+                apiHubType: ApiHubType.apiHub
+            }
+        }
+        projectDir = join(outputDir, 'testapp-withtoolsid');
+        await generate(projectDir, ui5AppConfig, fs);
+        const envConfig = (fs.read(join(projectDir, '/.env')) as any)
+        expect(envConfig).toContain('API_HUB_API_KEY=apiHubKeyTest:abcd1234')
+        expect(envConfig).toContain('API_HUB_TYPE=API_HUB')
     });
 });

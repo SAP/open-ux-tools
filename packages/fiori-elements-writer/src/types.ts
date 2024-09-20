@@ -126,4 +126,5 @@ export interface PackageJsonScripts {
     'start-noflp'?: string;
     'start-mock'?: string;
     'int-test'?: string;
+    'start-variants-management'?: string;
 }

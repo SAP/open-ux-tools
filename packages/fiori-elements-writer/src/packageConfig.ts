@@ -1,5 +1,6 @@
 import { t } from './i18n';
 import type { PackageJsonScripts } from './types';
+import { getVariantPreviewAppScript } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Get an object reflecting the scripts that need to be added to the package.json.
@@ -75,6 +76,10 @@ export function getPackageJsonTasks({
     if (addTest) {
         scripts['int-test'] = 'fiori run --config ./ui5-mock.yaml --open "test/integration/opaTests.qunit.html"';
     }
+
+    scripts['start-variants-management'] = localOnly
+        ? `echo \\"${t('info.mockOnlyWarning')}\\"`
+        : getVariantPreviewAppScript(sapClient);
 
     return scripts;
 }

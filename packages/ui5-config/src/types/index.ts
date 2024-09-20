@@ -43,6 +43,11 @@ export interface FioriAppReloadConfig {
     delay: number;
 }
 
+export interface FioriPreviewConfig {
+    component: string;
+    ui5Theme: string;
+}
+
 export interface ServeStaticPath {
     path: string;
     src: string;

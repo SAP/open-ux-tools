@@ -18,6 +18,7 @@ import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
+    getPreviewMiddlewareConfig,
     getBackendComments,
     getFioriToolsProxyMiddlewareConfig,
     getMockServerMiddlewareConfig
@@ -227,6 +228,22 @@ export class UI5Config {
     }
 
     /**
+     * Adds the Fiori Tools preview middleware configuration to the UI5 server configuration.
+     * This middleware is used to preview the Fiori application with the specified UI5 theme.
+     *
+     * @param {string} appId - The ID of the application for which the preview middleware is configured.
+     * @param {string} ui5Theme - The UI5 theme to be used.
+     * @returns {UI5Config} The updated UI5 configuration object.
+     */
+    public addFioriToolsPreviewMiddleware(appId: string, ui5Theme: string): UI5Config {
+        this.document.appendTo({
+            path: 'server.customMiddleware',
+            value: getPreviewMiddlewareConfig(appId, ui5Theme)
+        });
+        return this;
+    }
+
+    /**
      * Adds a instance of the Fiori tools proxy middleware to the config.
      *
      * @param proxyConfig proxy configuration containing an optional array of backend and an option UI5 host configuration
@@ -238,7 +255,8 @@ export class UI5Config {
         const { config, comments } = getFioriToolsProxyMiddlewareConfig(
             proxyConfig.backend,
             proxyConfig.ui5,
-            afterMiddleware
+            afterMiddleware,
+            proxyConfig.ignoreCertError
         );
         this.document.appendTo({
             path: 'server.customMiddleware',
@@ -492,6 +510,21 @@ export class UI5Config {
             });
         } else {
             this.addCustomMiddleware([middleware]);
+        }
+        return this;
+    }
+
+    /**
+     * Removes the 'fiori-tools-preview' middleware configuration from the UI5 server configuration if it exists.
+     * @returns middleware - middleware config without 'fiori-tools-preview', ui5-mock.yaml dosent have this middleware
+     * ui5-mock.yaml is generated based on ui5.yaml which may include 'fiori-tools-preview' if edmx project type, so this function removes it if found.
+     */
+    public removeFioriToolsPreviewMiddleware(): UI5Config {
+        if (this.findCustomMiddleware('fiori-tools-preview')) {
+            this.document.deleteAt({
+                path: 'server.customMiddleware',
+                matcher: { key: 'name', value: 'fiori-tools-preview' }
+            });
         }
         return this;
     }

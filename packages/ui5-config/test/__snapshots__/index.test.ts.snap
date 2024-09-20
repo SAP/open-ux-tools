@@ -32,6 +32,28 @@ exports[`UI5Config add/find/update/removeCustomMiddleware addCustomMiddleware 1`
 "
 `;
 
+exports[`UI5Config add/find/update/removeCustomMiddleware removeFioriToolsPreviewMiddleware does not do anything when fiori-tools-preview not available 1`] = `
+"server:
+  customMiddleware:
+    - name: custom-middleware
+      afterMiddleware: ~otherMiddleware
+      configuration:
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: http://ui5.example
+        version: 1.95.1
+        debug: true
+"
+`;
+
+exports[`UI5Config add/find/update/removeCustomMiddleware removeFioriToolsPreviewMiddleware if provided in ui5 config 1`] = `
+"server:
+  customMiddleware: []
+"
+`;
+
 exports[`UI5Config add/find/update/removeCustomMiddleware removeMiddleware 1`] = `
 "server:
   customMiddleware: []
