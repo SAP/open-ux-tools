@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.18.3
+
+### Patch Changes
+
+-   89ec1c3: Uitable a11y fix: The `:focus` style should have been added to the column header cells (not to the header row).
+
 ## 1.18.2
 
 ### Patch Changes
