@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer-ui
 
+## 0.1.4
+
+### Patch Changes
+
+-   a18d4a2: Extend the building block examples with an option to toggle the `allowAutoAddDependencyLib` property, allowing to turning off the automatic addition of the 'sap.fe.macros' library to the 'manifest.json'.
+
 ## 0.1.3
 
 ### Patch Changes
