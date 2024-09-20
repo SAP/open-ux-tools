@@ -1,5 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Building Blocks Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false" 1`] = `
+Object {
+  "default": Object {
+    "sap.app": Object {
+      "id": "my.test.App",
+    },
+    "sap.ui5": Object {
+      "dependencies": Object {
+        "libs": Object {
+          "sap.fe.core": Object {},
+        },
+        "minUI5Version": "1.127.0",
+      },
+    },
+  },
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+  },
+}
+`;
+
 exports[`Building Blocks Generate with just ID and xml view without macros namespace generate chart building block: generate-chart-with-id-no-macros-ns 1`] = `
 Object {
   "generate-chart-with-id-no-macros-ns/webapp/ext/main/Main.view.xml": Object {
@@ -905,6 +933,16 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for chart building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for chart building block 3`] = `
 "<macros:Chart
     id=\\"testChart\\"
     metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
@@ -924,6 +962,16 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for field building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for field building block 3`] = `
 "<macros:Field
     id=\\"testField\\"
     metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
@@ -941,6 +989,16 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for filter-bar building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for filter-bar building block 3`] = `
 "<macros:FilterBar
     id=\\"testFilterBar\\"
     metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
@@ -969,6 +1027,16 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for table building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for table building block 3`] = `
 "<macros:Table
     id=\\"testTable\\"
     metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
