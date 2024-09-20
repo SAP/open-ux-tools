@@ -95,7 +95,7 @@ describe('launchConfig Unit Tests', () => {
     // Test for create launch config outside workspace
     describe('handleAppsNotInWorkspace', () => {
         it('should create a launch config for non-workspace apps', () => {
-            const mockProjectPath = '/mock/project/path';
+            const mockProjectPath = path.join('/mock/project/path');
             const result = handleAppsNotInWorkspace(mockProjectPath, isAppStudio, mockVscode);
             expect(result.cwd).toBe('${workspaceFolder}');
             expect(result.launchJsonPath).toBe(
@@ -107,7 +107,7 @@ describe('launchConfig Unit Tests', () => {
         });
 
         it('should handle cases where vscode.Uri is not available', () => {
-            const mockProjectPath = '/mock/project/path';
+            const mockProjectPath = path.join('/mock/project/path');
             const result = handleAppsNotInWorkspace(mockProjectPath, isAppStudio, {});
             expect(result.cwd).toBe('${workspaceFolder}');
             expect(result.launchJsonPath).toBe(
@@ -117,7 +117,7 @@ describe('launchConfig Unit Tests', () => {
         });
 
         it('should handle cases where isAppStudio is true', () => {
-            const mockProjectPath = '/mock/project/path',
+            const mockProjectPath = path.join('/mock/project/path'),
                 isAppStudio = true;
             const result = handleAppsNotInWorkspace(mockProjectPath, isAppStudio, mockVscode);
             expect(result.cwd).toBe('${workspaceFolder}');

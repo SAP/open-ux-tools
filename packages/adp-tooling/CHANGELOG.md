@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.50
+
+### Patch Changes
+
+-   00e1835: Fixed manifest changes not visible in preview after reload
+
 ## 0.12.49
 
 ### Patch Changes
