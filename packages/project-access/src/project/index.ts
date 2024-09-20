@@ -1,18 +1,19 @@
 export {
+    clearCdsModuleCache,
+    deleteCapApp,
     getCapCustomPaths,
+    getCapEnvironment,
     getCapModelAndServices,
     getCapProjectType,
+    getCapServiceName,
     getCdsFiles,
     getCdsRoots,
     getCdsServices,
     isCapProject,
     isCapJavaProject,
     isCapNodeJsProject,
-    getCapEnvironment,
     readCapServiceMetadataEdmx,
-    getCapServiceName,
-    toReferenceUri,
-    clearCdsModuleCache
+    toReferenceUri
 } from './cap';
 export { filterDataSourcesByType } from './service';
 export { addPackageDevDependency, getNodeModulesPath } from './dependencies';

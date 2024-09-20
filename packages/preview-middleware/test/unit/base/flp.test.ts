@@ -524,6 +524,7 @@ describe('FlpSandbox', () => {
 
 describe('initAdp', () => {
     const url = 'http://sap.example';
+    const syncSpy = jest.fn();
     const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
         return {
             init: () => {
@@ -539,6 +540,7 @@ describe('initAdp', () => {
             },
             resources: [],
             proxy: jest.fn(),
+            sync: syncSpy,
             onChangeRequest: jest.fn(),
             addApis: jest.fn()
         } as unknown as adpTooling.AdpPreview;

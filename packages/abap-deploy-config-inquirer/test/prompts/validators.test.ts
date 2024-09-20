@@ -44,6 +44,13 @@ describe('Test validators', () => {
             expect(PromptState.abapDeployConfig.url).toBe('https://mock.url.dest2.com');
             expect(result).toBe(true);
         });
+
+        it('should return false for invalid destination', async () => {
+            const result = validateDestinationQuestion('', mockDestinations);
+            expect(PromptState.abapDeployConfig.destination).toBe(undefined);
+            expect(PromptState.abapDeployConfig.url).toBe(undefined);
+            expect(result).toBe(false);
+        });
     });
 
     describe('validateTargetSystem', () => {

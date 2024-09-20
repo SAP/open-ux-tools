@@ -1,5 +1,27 @@
 # @sap-ux/preview-middleware
 
+## 0.16.68
+
+### Patch Changes
+
+-   00e1835: Fixed manifest changes not visible in preview after reload
+-   Updated dependencies [00e1835]
+    -   @sap-ux/adp-tooling@0.12.50
+
+## 0.16.67
+
+### Patch Changes
+
+-   1c20352: Added missing notification when manifest change is created
+
+## 0.16.66
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/adp-tooling@0.12.49
+
 ## 0.16.65
 
 ### Patch Changes

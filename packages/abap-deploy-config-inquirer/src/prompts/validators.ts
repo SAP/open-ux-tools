@@ -36,7 +36,7 @@ import {
 export function validateDestinationQuestion(destination: string, destinations?: Destinations): boolean {
     PromptState.resetAbapDeployConfig();
     updateDestinationPromptState(destination, destinations);
-    return true;
+    return !!destination?.trim();
 }
 
 /**
