@@ -11,7 +11,7 @@ import './index.css';
 import App from './App';
 import { store } from './store';
 import { registerAppIcons } from './icons';
-import { initializeLivereload, setProjectScenario } from './slice';
+import { initializeLivereload, setProjectScenario, setFeatureToggles } from './slice';
 
 export interface StartOptions {
     previewUrl: string;
@@ -23,6 +23,7 @@ export interface StartOptions {
     livereloadUrl?: string;
     telemetry?: boolean;
     scenario: Scenario;
+    features?: { feature: string; isEnabled: boolean }[];
 }
 
 /**
@@ -31,7 +32,7 @@ export interface StartOptions {
  * @param options StartOptions
  */
 export function start(options: StartOptions): void {
-    const { previewUrl, rootElementId, telemetry = false, scenario } = options;
+    const { previewUrl, rootElementId, telemetry = false, scenario, features = [] } = options;
     if (telemetry) {
         enableTelemetry();
     }
@@ -39,6 +40,7 @@ export function start(options: StartOptions): void {
     registerAppIcons();
     initIcons();
 
+    store.dispatch(setFeatureToggles(features));
     store.dispatch(setProjectScenario(scenario));
     store.dispatch(initializeLivereload({ port: options.livereloadPort, url: options.livereloadUrl }));
 

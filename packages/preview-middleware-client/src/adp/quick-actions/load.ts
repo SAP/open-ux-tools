@@ -1,15 +1,15 @@
+import { FeatureService } from '../../cpe/feature-service';
 import type { QuickActionDefinitionRegistry } from '../../cpe/quick-actions/registry';
 import type { ApplicationType } from '../../utils/application';
 
 /**
  * Loads the appropriate Quick Action registries for the given application type.
- * 
- * @param appType - Application type. 
+ *
+ * @param appType - Application type.
  * @returns Quick Action registries.
  */
 export async function loadDefinitions(appType: ApplicationType): Promise<QuickActionDefinitionRegistry<string>[]> {
-    // eslint-disable-next-line fiori-custom/sap-no-localstorage
-    if (localStorage.getItem('com.sap.ux.control-property-editor.features.quick-actions') !== 'true') {
+    if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
         return [];
     }
     if (appType === 'fe-v2') {

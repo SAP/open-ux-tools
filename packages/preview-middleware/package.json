@@ -41,6 +41,7 @@
     ],
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/control-property-editor-sources": "workspace:@sap-ux/control-property-editor@*",
