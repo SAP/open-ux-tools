@@ -307,7 +307,7 @@ describe('main redux slice', () => {
         });
         test('no changes require reload', () => {
             expect(
-                reducer({ setApplicationRequiresReload: true } as any, setApplicationRequiresReload(false))
+                reducer({ applicationRequiresReload: true } as any, setApplicationRequiresReload(false))
             ).toStrictEqual({
                 applicationRequiresReload: false
             });
