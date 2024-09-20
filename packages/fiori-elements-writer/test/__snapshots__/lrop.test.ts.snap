@@ -45941,8 +45941,8 @@ appDescription=A Fiori application.",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
     \\"sourceTemplate\\": {
-      \\"id\\": \\"@sap/generator-fiori:lrop\\",
-      \\"version\\": \\"1.13.5\\",
+      \\"id\\": \\"mocked-package-name:lrop\\",
+      \\"version\\": \\"9.9.9-mocked\\",
       \\"toolsId\\": \\"toolsId:1234abcd\\"
     },
     \\"dataSources\\": {
