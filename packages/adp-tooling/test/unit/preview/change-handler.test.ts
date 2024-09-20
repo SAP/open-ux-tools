@@ -223,11 +223,11 @@ id="<%- ids.hBox %>"`);
                     ...change,
                     content: {
                         ...change.content,
-                        templateName: `ADD_HEADER_FIELD`
+                        templateName: `OBJECT_PAGE_HEADER_FIELD`
                     }
                 } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
-id="<%- ids.vBoxContaier %>"
+id="<%- ids.vBoxContainer %>"
 id="<%- ids.label %>"`);
                 addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
 

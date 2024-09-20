@@ -296,13 +296,16 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
     private getFragmentTemplateName(targetAggregation: string): string {
         const currentControlName = this.runtimeControl.getMetadata().getName();
+        const headerContent = this.runtimeControl.getAggregation('headerContent');
         if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections') {
             return 'OBJECT_PAGE_CUSTOM_SECTION';
         } else if (
-            (currentControlName === 'sap.m.FlexBox' && targetAggregation === 'items') ||
-            (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'headerContent')
+            (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'headerContent') ||
+            (currentControlName === 'sap.uxap.ObjectPageLayout' &&
+                headerContent?.toString() === 'sap.m.FlexBox' &&
+                targetAggregation === 'items')
         ) {
-            return 'ADD_HEADER_FIELD';
+            return 'OBJECT_PAGE_HEADER_FIELD';
         } else {
             return '';
         }

@@ -530,6 +530,10 @@ describe('AddFragment', () => {
                     getAllAggregations: jest.fn().mockReturnValue({}),
                     getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
                     getDefaultAggregationName: jest.fn().mockReturnValue('content')
+                }),
+                getAggregation: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.m.FlexBox')
                 })
             } as unknown as ManagedObject);
 
@@ -661,6 +665,10 @@ describe('AddFragment', () => {
                 getMetadata: jest.fn().mockReturnValue({
                     getAllAggregations: jest.fn().mockReturnValue({}),
                     getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout')
+                }),
+                getAggregation: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.m.FlexBox')
                 })
             } as unknown as ManagedObject);
 
@@ -765,6 +773,10 @@ describe('AddFragment', () => {
                 getMetadata: jest.fn().mockReturnValue({
                     getAllAggregations: jest.fn().mockReturnValue({}),
                     getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout')
+                }),
+                getAggregation: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.m.FlexBox')
                 })
             } as unknown as ManagedObject);
 
@@ -792,7 +804,7 @@ describe('AddFragment', () => {
 
             expect(setContentSpy).toHaveBeenCalledWith({
                 ...dummyContent,
-                templateName: 'ADD_HEADER_FIELD'
+                templateName: 'OBJECT_PAGE_HEADER_FIELD'
             });
         });
     });

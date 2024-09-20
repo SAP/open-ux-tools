@@ -31,7 +31,7 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
             };
         }
     },
-    [ADD_HEADER_FIELD]: {
+    [OBJECT_PAGE_HEADER_FIELD]: {
         path: 'common/header-field.xml',
         getData: () => {
             const uuid = randomBytes(4).toString('hex');
