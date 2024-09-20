@@ -7,7 +7,7 @@ import { render } from 'ejs';
 import { randomBytes } from 'crypto';
 
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
-const ADD_HEADER_FIELD = 'ADD_HEADER_FIELD';
+const OBJECT_PAGE_HEADER_FIELD = 'OBJECT_PAGE_HEADER_FIELD';
 
 interface FragmentTemplateConfig<T = { [key: string]: any }> {
     /**
