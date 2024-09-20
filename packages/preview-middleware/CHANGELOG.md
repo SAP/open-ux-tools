@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.16.68
+
+### Patch Changes
+
+-   00e1835: Fixed manifest changes not visible in preview after reload
+-   Updated dependencies [00e1835]
+    -   @sap-ux/adp-tooling@0.12.50
+
 ## 0.16.67
 
 ### Patch Changes
