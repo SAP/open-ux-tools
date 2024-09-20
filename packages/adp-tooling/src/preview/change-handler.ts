@@ -37,7 +37,7 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
             const uuid = randomBytes(4).toString('hex');
             return {
                 ids: {
-                    vBoxContaier: `vBox-${uuid}`,
+                    vBoxContainer: `vBox-${uuid}`,
                     label: `label-${uuid}`
                 }
             };
