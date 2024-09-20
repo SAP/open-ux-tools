@@ -8,6 +8,7 @@ import { addNewModelCommand } from './new-model';
 import { addAnnotationsToOdataCommand } from './annotations-to-odata';
 import { addAddHtmlFilesCmd } from './html';
 import { addComponentUsagesCommand } from './component-usages';
+import { addAddServiceCmd } from './service';
 import { addDeployConfigCommand } from './deploy-config';
 
 /**
@@ -35,6 +36,8 @@ export function getAddCommands(): Command {
     addAddHtmlFilesCmd(addCommands);
     // create-fiori add component-usages
     addComponentUsagesCommand(addCommands);
+    // create-fiori add service
+    addAddServiceCmd(addCommands);
     // create-fiori add deploy-config
     addDeployConfigCommand(addCommands);
     return addCommands;

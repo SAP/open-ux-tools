@@ -37,6 +37,12 @@
       "path": "../mockserver-config-writer"
     },
     {
+      "path": "../odata-service-inquirer"
+    },
+    {
+      "path": "../odata-service-writer"
+    },
+    {
       "path": "../preview-middleware"
     },
     {

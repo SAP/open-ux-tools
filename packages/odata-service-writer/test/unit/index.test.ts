@@ -72,9 +72,9 @@ describe('generate', () => {
         });
 
         it('No package.json or ui5.yaml - only manifest updates', async () => {
-            await generate(root, config, fs);
+            await generate(root, { ...config }, fs);
             const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path + '/');
         });
 
         it('No ui5-local.yaml should be generated if service type is cds', async () => {
@@ -152,16 +152,16 @@ describe('generate', () => {
                     technicalName: 'TEST_ME',
                     xml: '<HELLO WORLD />'
                 }
-            };
-            await generate(testDir, config as OdataService, fs);
+            } satisfies OdataService;
+            await generate(testDir, { ...config }, fs);
 
             // verify updated manifest.json
-            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+            const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as any;
+            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path + '/');
             expect(manifest['sap.app'].dataSources[config.annotations.technicalName]).toBeDefined();
             // verify local copy of metadata
-            expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
-            expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations.technicalName}.xml`))).toBe(
+            expect(fs.read(join(testDir, 'webapp/localService/metadata.xml'))).toBe(config.metadata);
+            expect(fs.read(join(testDir, 'webapp/localService', `${config.annotations.technicalName}.xml`))).toBe(
                 config.annotations.xml
             );
         });
@@ -281,6 +281,7 @@ describe('generate', () => {
             enhanceData(configCopy);
             expect(configCopy).toMatchInlineSnapshot(`
                 Object {
+                  "annotations": Array [],
                   "model": "",
                   "name": "mainService",
                   "path": "/V2/Northwind/Northwind.svc/",
@@ -298,6 +299,7 @@ describe('generate', () => {
             enhanceData(configCopy);
             expect(configCopy).toMatchInlineSnapshot(`
                 Object {
+                  "annotations": Array [],
                   "model": "modelName",
                   "name": "datasourceName",
                   "path": "/V2/Northwind/Northwind.svc/",
@@ -316,6 +318,7 @@ describe('generate', () => {
             enhanceData(configCopy);
             expect(configCopy).toMatchInlineSnapshot(`
                 Object {
+                  "annotations": Array [],
                   "model": "",
                   "name": "mainService",
                   "path": "/",

@@ -68,7 +68,7 @@ describe('ODataService templates', () => {
 
     it('generate: valid project with standard valid input', async () => {
         const testDir = await createTestDir('odata-service-v2');
-        await generate(testDir, validServiceConfig as OdataService, fs);
+        await generate(testDir, { ...validServiceConfig } as OdataService, fs);
         expect(fs.dump(testDir)).toMatchSnapshot();
         const packagePath = join(testDir, 'package.json');
         expect(fs.readJSON(packagePath)).toEqual({

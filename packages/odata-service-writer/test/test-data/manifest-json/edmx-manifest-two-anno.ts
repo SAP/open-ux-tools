@@ -1,4 +1,4 @@
-export const expectedEdmxManifest = {
+export const expectedEdmxManifestTwoAnno = {
     'sap.app': {
         id: 'test.update.manifest',
         dataSources: {
@@ -6,7 +6,7 @@ export const expectedEdmxManifest = {
                 uri: '/a/path',
                 type: 'OData',
                 settings: {
-                    annotations: ['test', 'testlocal'],
+                    annotations: ['test', 'test2', 'testlocal'],
                     odataVersion: '2.0'
                 }
             },
@@ -15,6 +15,13 @@ export const expectedEdmxManifest = {
                 uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='test',Version='0001')/$value/`,
                 settings: {
                     localUri: 'localService/test.xml'
+                }
+            },
+            test2: {
+                type: 'ODataAnnotation',
+                uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='test2',Version='0001')/$value/`,
+                settings: {
+                    localUri: 'localService/test2.xml'
                 }
             },
             testlocal: {

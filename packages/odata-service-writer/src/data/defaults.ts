@@ -34,17 +34,28 @@ function setDefaultServiceModel(service: OdataService): void {
 }
 
 /**
- * Sets the default annotations name for a given service.
- * If the service annotations name is not defined or empty, it creates a default annotations name
+ * Sets the default datasource name for the given annotations.
+ * If the annotations name is not defined or empty, it creates a default annotations name
  * from the technicalName by replacing all '/' characters with '_' and removing the leading '_'.
  *
- * @param {OdataService} service - The service object whose annotations name needs to be set or modified.
+ * @param annotations - the array of Edmx annotation referenced to be enhances.
  */
-function setDefaultAnnotationsName(service: OdataService): void {
-    const annotations = service.annotations as EdmxAnnotationsInfo;
-    if (annotations?.technicalName && !annotations.name) {
-        annotations.name = annotations?.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');
+function setDefaultAnnotationsName(annotations: EdmxAnnotationsInfo[]): void {
+    for (const annotation of annotations) {
+        if (annotation.technicalName && !annotation.name) {
+            annotation.name = annotation.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');
+        }
     }
+}
+
+/**
+ * Typecheck of annotations.
+ *
+ * @param annotations - the annotations object to be checked
+ * @returns true if the annotations object is of type EdmxAnnotationsInfo
+ */
+function isEdmxAnnotationsInfo(annotations: EdmxAnnotationsInfo | unknown): annotations is EdmxAnnotationsInfo {
+    return (annotations as EdmxAnnotationsInfo)?.technicalName !== undefined;
 }
 
 /**
@@ -65,14 +76,17 @@ export function enhanceData(service: OdataService): void {
      * If the service type is EDMX, this function sets the default annotation names to be included in the manifest.json.
      */
     if (service.type === ServiceType.EDMX) {
-        setDefaultAnnotationsName(service);
+        if (isEdmxAnnotationsInfo(service.annotations)) {
+            service.annotations = [service.annotations];
+        }
+        service.annotations ??= [];
+        setDefaultAnnotationsName(service.annotations as EdmxAnnotationsInfo[]);
     }
 
     // enhance preview settings with service configuration
-    service.previewSettings = service.previewSettings || {};
-    service.previewSettings.path =
-        service.previewSettings.path || `/${service.path?.split('/').filter((s: string) => s !== '')[0] ?? ''}`;
-    service.previewSettings.url = service.previewSettings.url || service.url || 'http://localhost';
+    service.previewSettings ??= {};
+    service.previewSettings.path ??= `/${service.path?.split('/').filter((s: string) => s !== '')[0] ?? ''}`;
+    service.previewSettings.url ??= service.url ?? 'http://localhost';
     if (service.client && !service.previewSettings.client) {
         service.previewSettings.client = service.client;
     }

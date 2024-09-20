@@ -10,13 +10,12 @@ import { getMinimumUI5Version, type Manifest, hasUI5CliV3 } from '@sap-ux/projec
 /**
  * Internal function that updates the manifest.json based on the given service configuration.
  *
- * @param basePath - the root path of an existing UI5 application
+ * @param manifestPath - the path to the manifest.json
  * @param service - the OData service instance
  * @param fs - the memfs editor instance
  * @param templateRoot - root folder contain the ejs templates
  */
-export function updateManifest(basePath: string, service: OdataService, fs: Editor, templateRoot: string) {
-    const manifestPath = join(basePath, 'webapp', 'manifest.json');
+export function updateManifest(manifestPath: string, service: OdataService, fs: Editor, templateRoot: string): void {
     // Get component app id
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     const appProp = 'sap.app';
@@ -28,7 +27,7 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
         );
     }
 
-    const manifestJsonExt = fs.read(join(templateRoot, 'extend', `manifest.json`));
+    const manifestJsonExt = fs.read(join(templateRoot, 'extend/manifest.json'));
     const manifestSettings = Object.assign(service, getModelSettings(getMinimumUI5Version(manifest)));
     // If the service object includes ejs options, for example 'client' (see: https://ejs.co/#docs),
     // resulting in unexpected behaviour and problems when webpacking. Passing an empty options object prevents this.
@@ -70,12 +69,14 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
  */
 export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
     // Write annotation xml if annotations are provided and service type is EDMX
-    const annotations = service.annotations as EdmxAnnotationsInfo;
-    if (annotations?.xml) {
-        fs.write(
-            join(basePath, 'webapp', 'localService', `${annotations.technicalName}.xml`),
-            prettifyXml(annotations.xml, { indent: 4 })
-        );
+    const annotations = service.annotations as EdmxAnnotationsInfo[];
+    for (const annotation of annotations) {
+        if (annotation.xml) {
+            fs.write(
+                join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
+                prettifyXml(annotation.xml, { indent: 4 })
+            );
+        }
     }
 }
 
@@ -106,7 +107,7 @@ export async function updateCdsFilesWithAnnotations(annotations: CdsAnnotationsI
  * @param minUI5Version - The minimum UI5 version.
  * @returns updated model settings.
  */
-function getModelSettings(minUI5Version: string | undefined) {
+function getModelSettings(minUI5Version: string | undefined): { includeSynchronizationMode: boolean } {
     let includeSynchronizationMode = false;
     if (minUI5Version) {
         includeSynchronizationMode = semVer.satisfies(minUI5Version, '<=1.110');
@@ -120,7 +121,7 @@ function getModelSettings(minUI5Version: string | undefined) {
  * @param fs - the memfs editor instance
  * @param addMockServer true if the mocksever middleware needs to be added as well
  */
-export function updatePackageJson(path: string, fs: Editor, addMockServer: boolean) {
+export function updatePackageJson(path: string, fs: Editor, addMockServer: boolean): void {
     const packageJson = JSON.parse(fs.read(path));
     packageJson.devDependencies = packageJson.devDependencies ?? {};
     if (!hasUI5CliV3(packageJson.devDependencies)) {

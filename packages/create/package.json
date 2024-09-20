@@ -42,6 +42,8 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/mockserver-config-writer": "workspace:*",
+        "@sap-ux/odata-service-inquirer": "workspace:*",
+        "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/preview-middleware": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
