@@ -53,7 +53,7 @@ export abstract class TableQuickActionDefinitionBase {
             table: UI5Element;
             tableUpdateEventAttachedOnce: boolean;
             iconTabBarFilterKey?: string;
-            changeColumnActionId: string;
+            changeColumnActionId?: string;
             sectionInfo?: {
                 section: ObjectPageSection;
                 subSection: ObjectPageSubSection;
@@ -73,7 +73,8 @@ export abstract class TableQuickActionDefinitionBase {
         public readonly type: string,
         protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
-        protected readonly context: QuickActionContext
+        protected readonly context: QuickActionContext,
+        protected includeServiceAction?: boolean
     ) {}
 
     async initialize(): Promise<void> {
@@ -89,30 +90,36 @@ export abstract class TableQuickActionDefinitionBase {
             this.context.view,
             this.controlTypes
         )) {
-            const actions = await this.context.actionService.get(table.getId());
-            const actionsIds = await getActionId(table);
-            const changeColumnAction = actionsIds.find(
-                (actionId) => actions.findIndex((action) => action.id === actionId) > -1
-            );
             const tabKey = Object.keys(iconTabBarfilterMap).find((key) => table.getId().endsWith(key));
-            if (changeColumnAction) {
-                const section = getParentContainer<ObjectPageSection>(table, 'sap.uxap.ObjectPageSection');
-                if (section) {
-                    this.collectChildrenInSection(section, table, changeColumnAction);
-                } else if (this.iconTabBar && tabKey) {
-                    this.children.push({
-                        label: `'${iconTabBarfilterMap[tabKey]}' table`,
-                        children: []
-                    });
-                    this.tableMap[`${this.children.length - 1}`] = {
-                        table,
-                        iconTabBarFilterKey: tabKey,
-                        changeColumnActionId: changeColumnAction,
-                        tableUpdateEventAttachedOnce: false
-                    };
-                } else {
-                    this.processTable(table, changeColumnAction);
-                }
+            const section = getParentContainer<ObjectPageSection>(table, 'sap.uxap.ObjectPageSection');
+            if (section) {
+                this.collectChildrenInSection(section, table);
+            } else if (this.iconTabBar && tabKey) {
+                this.children.push({
+                    label: `'${iconTabBarfilterMap[tabKey]}' table`,
+                    children: []
+                });
+                this.tableMap[`${this.children.length - 1}`] = {
+                    table,
+                    iconTabBarFilterKey: tabKey,
+                    tableUpdateEventAttachedOnce: false
+                };
+            } else {
+                this.processTable(table);
+            }
+
+            // add action id to the table map, if the service actions are needed.
+            if (this.includeServiceAction) {
+                const actions = await this.context.actionService.get(table.getId());
+                const actionsIds = await getActionId(table);
+
+                const changeColumnAction = actionsIds.find(
+                    (actionId) => actions.findIndex((action) => action.id === actionId) > -1
+                );
+                Object.keys(this.tableMap).forEach((key) => {
+                    // Update the changeColumnActionId for each entry
+                    this.tableMap[key].changeColumnActionId = changeColumnAction;
+                });
             }
         }
         if (this.children.length > 0) {
@@ -159,13 +166,13 @@ export abstract class TableQuickActionDefinitionBase {
         return iconTabBarfilterMap;
     }
 
-    private collectChildrenInSection(section: ObjectPageSection, table: UI5Element, changeColumnAction: string): void {
+    private collectChildrenInSection(section: ObjectPageSection, table: UI5Element): void {
         const layout = getParentContainer<ObjectPageLayout>(table, 'sap.uxap.ObjectPageLayout');
         const subSections = section.getSubSections();
         const subSection = getParentContainer<ObjectPageSubSection>(table, 'sap.uxap.ObjectPageSubSection');
         if (subSection) {
             if (subSections?.length === 1) {
-                this.processTable(table, changeColumnAction, { section, subSection: subSections[0], layout });
+                this.processTable(table, { section, subSection: subSections[0], layout });
             } else if (subSections.length > 1) {
                 const sectionChild = this.children.find((val) => val.label === `${section.getTitle()} section`);
                 let tableMapIndex = `${this.children.length - 1}`;
@@ -190,7 +197,6 @@ export abstract class TableQuickActionDefinitionBase {
 
                 this.tableMap[tableMapIndex] = {
                     table,
-                    changeColumnActionId: changeColumnAction,
                     sectionInfo: { section, subSection, layout },
                     tableUpdateEventAttachedOnce: false
                 };
@@ -200,7 +206,6 @@ export abstract class TableQuickActionDefinitionBase {
 
     private processTable(
         table: UI5Element,
-        changeColumnActionId: string,
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
     ): void {
         if (isA<SmartTable>(SMART_TABLE_TYPE, table) || isA<TreeTable>('sap.ui.table.TreeTable', table)) {
@@ -217,7 +222,6 @@ export abstract class TableQuickActionDefinitionBase {
         }
         this.tableMap[`${this.children.length - 1}`] = {
             table,
-            changeColumnActionId,
             sectionInfo: sectionInfo,
             tableUpdateEventAttachedOnce: false
         };

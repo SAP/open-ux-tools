@@ -1,4 +1,3 @@
-
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type Table from 'sap/m/Table';
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
@@ -19,7 +18,7 @@ export class ChangeTableColumnsQuickAction
     implements NestedQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(CHANGE_TABLE_COLUMNS, CONTROL_TYPES, 'V2_QUICK_ACTION_CHANGE_TABLE_COLUMNS', context);
+        super(CHANGE_TABLE_COLUMNS, CONTROL_TYPES, 'V2_QUICK_ACTION_CHANGE_TABLE_COLUMNS', context, true);
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
@@ -41,17 +40,19 @@ export class ChangeTableColumnsQuickAction
         if (this.iconTabBar && iconTabBarFilterKey) {
             this.iconTabBar.setSelectedKey(iconTabBarFilterKey);
         }
-
-        const executeAction = async () => await this.context.actionService.execute(table.getId(), changeColumnActionId);
-        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
-            await executeAction();
-        } else if (isA<Table>(M_TABLE_TYPE, table)) {
-            // if table is busy, i.e. lazy loading, then we subscribe to 'updateFinished' event and call action service when loading is done
-            // to avoid reopening the dialog after close
-            if (this.isTableLoaded(table)) {
+        if (changeColumnActionId) {
+            const executeAction = async () =>
+                await this.context.actionService.execute(table.getId(), changeColumnActionId);
+            if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
                 await executeAction();
-            } else {
-                table.attachEventOnce('updateFinished', executeAction, this);
+            } else if (isA<Table>(M_TABLE_TYPE, table)) {
+                // if table is busy, i.e. lazy loading, then we subscribe to 'updateFinished' event and call action service when loading is done
+                // to avoid reopening the dialog after close
+                if (this.isTableLoaded(table)) {
+                    await executeAction();
+                } else {
+                    table.attachEventOnce('updateFinished', executeAction, this);
+                }
             }
         }
 
