@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.41
+
+### Patch Changes
+
+-   b4b3ebe: Fix: correctly escapes ' & '
+
 ## 0.5.40
 
 ### Patch Changes

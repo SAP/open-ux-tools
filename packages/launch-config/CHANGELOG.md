@@ -1,5 +1,12 @@
 # @sap-ux/launch-config
 
+## 0.5.0
+
+### Minor Changes
+
+-   463f482: Reverted the use of Node.js `fs` modules and replaced them with `mem-fs` for writing launch config files & Removed `writeApplicationInfoSettings()` from `@sap-ux/launch-config`
+    Refactoring create launch config functionalities.
+
 ## 0.4.4
 
 ### Patch Changes
