@@ -16,7 +16,8 @@ import type { PromptQuestion, ValidationResults, PromptsGroup, AnswerValue, Dyna
 import { PromptsLayoutType } from '../../types';
 
 import './Questions.scss';
-import { TranslateEvent, TranslationProvider } from '../../context/TranslationContext';
+import { TranslationProvider } from '../../context/TranslationContext';
+import type { TranslateEvent } from '../../context/TranslationContext';
 import type { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
 
 // ToDo - move to geneeric types ?

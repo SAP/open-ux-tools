@@ -65,6 +65,7 @@ export interface ListPromptQuestionCreationProps {
 export interface InputGuiOptions extends GuiOptions {
     /**
      * Renders the input field as translatable, allowing the creation of i18n entries with i18n binding.
+     *
      * @default false
      */
     translatable?: boolean;

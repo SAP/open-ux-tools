@@ -1,13 +1,9 @@
 import React, { useCallback } from 'react';
-import {
-    TranslationEntry,
-    TranslationKeyGenerator,
-    TranslationTextPattern,
-    UITranslationInput
-} from '@sap-ux/ui-components';
+import { TranslationKeyGenerator, TranslationTextPattern, UITranslationInput } from '@sap-ux/ui-components';
+import type { TranslationEntry } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer } from '../../../utilities';
 import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE, useTranslation } from '../../../context/TranslationContext';
-import { InputProps } from './Input';
+import type { InputProps } from './Input';
 
 export const TranslationInput = (props: InputProps) => {
     const { entries, triggerEvent } = useTranslation();
