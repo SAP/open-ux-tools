@@ -1,5 +1,16 @@
 # @sap-ux/generator-simple-fe
 
+## 1.0.51
+
+### Patch Changes
+
+-   484195d: Enhancements to FE & FF Configurations: The updates include adding the `start-variants-management` script to `package.json` for FE and FF. The OdataService interface now has an `ignoreCertError` property. UI5 application writer introduces the `sapuxLayer` property to `package.json` templates and adds `fiori-tools-preview middleware` to ui5, ui5-mock, and ui5-local.yaml. Additionally, the `addFioriToolsPreviewMiddleware` function has been added for YAML config integration.
+-   Updated dependencies [484195d]
+    -   @sap-ux/fiori-freestyle-writer@1.1.0
+    -   @sap-ux/fiori-elements-writer@1.2.0
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/system-access@0.5.11
+
 ## 1.0.50
 
 ### Patch Changes
