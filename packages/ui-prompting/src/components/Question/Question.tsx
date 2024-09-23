@@ -5,6 +5,7 @@ import { getAnswer } from '../../utilities';
 import type { PromptQuestion, ValidationResults, AnswerValue, PromptListChoices } from '../../types';
 
 import './Question.scss';
+import { TranslationInput } from '../Inputs/Input/TranslationInput';
 
 export interface QuestionProps {
     id?: string;
@@ -27,9 +28,23 @@ export const Question = (props: QuestionProps) => {
     const inputId = id ? `${id}--input` : undefined;
     switch (question?.type) {
         case 'input': {
-            questionInput = (
-                <Input value={value} {...question} onChange={onChange} errorMessage={errorMessage} id={inputId} />
-            );
+            const { translatable } = question.guiOptions ?? {};
+            if (translatable) {
+                questionInput = (
+                    <TranslationInput
+                        value={value}
+                        {...question}
+                        onChange={onChange}
+                        errorMessage={errorMessage}
+                        id={inputId}
+                    />
+                );
+            } else {
+                questionInput = (
+                    <Input value={value} {...question} onChange={onChange} errorMessage={errorMessage} id={inputId} />
+                );
+            }
+
             break;
         }
         case 'checkbox': {

@@ -60,6 +60,17 @@ export interface ListPromptQuestionCreationProps {
 }
 
 /**
+ * Extended GUI interface for list question.
+ */
+export interface InputGuiOptions extends GuiOptions {
+    /**
+     * Renders the input field as translatable, allowing the creation of i18n entries with i18n binding.
+     * @default false
+     */
+    translatable?: boolean;
+}
+
+/**
  * Represents a question prompt for list question with dropdown visualization.
  * Combines properties of ListQuestion and BasePromptQuestion.
  */
@@ -78,7 +89,7 @@ export interface InputPromptQuestion<T extends Answers = Answers> extends InputQ
     /**
      * Additional properties for ui.
      */
-    guiOptions?: GuiOptions;
+    guiOptions?: InputGuiOptions;
 }
 
 /**

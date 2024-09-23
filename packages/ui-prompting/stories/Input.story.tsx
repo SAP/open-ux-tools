@@ -2,7 +2,8 @@ import React from 'react';
 import { Questions } from '../src/components';
 import type { PromptQuestion } from '../src';
 import { initIcons } from '@sap-ux/ui-components';
-import { useStorage } from './utils';
+import { useI18nBundle, useStorage } from './utils';
+import { TRANSLATE_EVENT_UPDATE } from '../src/context/TranslationContext';
 
 export default { title: 'Basic/Input' };
 
@@ -38,11 +39,29 @@ const questions: PromptQuestion[] = [
             hint: 'Test description',
             placeholder: 'Test placeholder'
         }
+    },
+    {
+        message: 'Translatable empty',
+        name: 'translateEmpty',
+        type: 'input',
+        guiOptions: {
+            translatable: true
+        }
+    },
+    {
+        message: 'Translatable with default',
+        name: 'translateDefault',
+        type: 'input',
+        default: '{i18n>test}',
+        guiOptions: {
+            translatable: true
+        }
     }
 ];
 
 export const input = (): JSX.Element => {
     const [saveValues] = useStorage();
+    const [i1nnBundle, updateBundle] = useI18nBundle();
     return (
         <Questions
             questions={questions}
@@ -57,6 +76,16 @@ export const input = (): JSX.Element => {
                 validation: {
                     isValid: false,
                     errorMessage: 'Invalid entry'
+                }
+            }}
+            translationProps={{
+                bundle: i1nnBundle,
+                onEvent: (event) => {
+                    if (event.name === TRANSLATE_EVENT_UPDATE) {
+                        updateBundle(event.entry);
+                    } else {
+                        alert(`Show entry: key:"${event.entry.key.value}" -> value:"${event.entry.value.value}"`);
+                    }
                 }
             }}
         />

@@ -16,8 +16,16 @@ import type { PromptQuestion, ValidationResults, PromptsGroup, AnswerValue, Dyna
 import { PromptsLayoutType } from '../../types';
 
 import './Questions.scss';
+import { TranslateEvent, TranslationProvider } from '../../context/TranslationContext';
+import type { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
 
-export interface QuestionsProps {
+// ToDo - move to geneeric types ?
+export interface TranslationProps<T extends TranslationEntry = TranslationEntry> {
+    bundle: I18nBundle<T>;
+    onEvent?: (event: TranslateEvent<T>) => void;
+}
+
+export interface QuestionsProps<T extends TranslationEntry = TranslationEntry> {
     id?: string;
     questions: PromptQuestion[];
     answers?: Answers;
@@ -28,6 +36,7 @@ export interface QuestionsProps {
     layoutType?: PromptsLayoutType;
     groups?: Array<PromptsGroup>;
     showDescriptions?: boolean;
+    translationProps?: TranslationProps<T>;
 }
 
 /**
@@ -55,7 +64,8 @@ export const Questions = (props: QuestionsProps) => {
         choices = {},
         layoutType,
         showDescriptions,
-        validation = {}
+        validation = {},
+        translationProps = { bundle: {} }
     } = props;
     const componentId = useId(id);
     const [localAnswers, setLocalAnswers] = useAnswers(questions, answers, (answers: Answers) => {
@@ -133,22 +143,24 @@ export const Questions = (props: QuestionsProps) => {
 
     return (
         <div id={componentId} className={getComponentClasses(layoutType)}>
-            <div className="prompt-entries">
-                {layoutType === PromptsLayoutType.MultiColumn && groups?.length
-                    ? groupsWithQuestions.map((group) => {
-                          return (
-                              <QuestionGroup
-                                  id={`${componentId}--${group.id}`}
-                                  key={group.id}
-                                  title={group.title}
-                                  description={group.description}
-                                  showDescription={showDescriptions}>
-                                  {renderQuestions(group.questions)}
-                              </QuestionGroup>
-                          );
-                      })
-                    : renderQuestions(questions)}
-            </div>
+            <TranslationProvider bundle={translationProps.bundle} onEvent={translationProps.onEvent}>
+                <div className="prompt-entries">
+                    {layoutType === PromptsLayoutType.MultiColumn && groups?.length
+                        ? groupsWithQuestions.map((group) => {
+                              return (
+                                  <QuestionGroup
+                                      id={`${componentId}--${group.id}`}
+                                      key={group.id}
+                                      title={group.title}
+                                      description={group.description}
+                                      showDescription={showDescriptions}>
+                                      {renderQuestions(group.questions)}
+                                  </QuestionGroup>
+                              );
+                          })
+                        : renderQuestions(questions)}
+                </div>
+            </TranslationProvider>
         </div>
     );
 };
