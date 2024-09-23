@@ -896,7 +896,9 @@ describe('FE V2 quick actions', () => {
                     if (type === 'sap.uxap.ObjectPageSection') {
                         // Return a mock object with the getSubSections method
                         return {
-                            getSubSections: () => ['subsection'],
+                            children: [2],
+                            getSubSections: () => [{}, {}],
+                            getTitle: () => 'section 01',
                             setSelectedSubSection: () => {}
                         };
                     }
@@ -995,8 +997,13 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
-                                            children: [],
-                                            label: `'MyTable' table`
+                                            children: [
+                                                {
+                                                    children: [],
+                                                    label: '\'MyTable\' table'
+                                                }
+                                            ],
+                                            label: '\'section 01\' section'
                                         }
                                     ]
                                 }
@@ -1006,7 +1013,7 @@ describe('FE V2 quick actions', () => {
                 );
 
                 await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'objectPage0-create-table-action', kind: 'nested', path: '0' })
+                    executeQuickAction({ id: 'objectPage0-create-table-action', kind: 'nested', path: '-1/0' })
                 );
             });
         });
