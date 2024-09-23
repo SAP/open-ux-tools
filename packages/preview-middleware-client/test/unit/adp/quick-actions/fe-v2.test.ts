@@ -23,10 +23,10 @@ import UIComponentMock from 'mock/sap/ui/core/UIComponent';
 import Component from 'mock/sap/ui/core/Component';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import FlexUtils from 'mock/sap/ui/fl/Utils';
-
+import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import { fetchMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
-
+import ManagedObject from 'mock/sap/ui/base/ManagedObject';
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
@@ -258,7 +258,7 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('change table columns', () => {
-            test('initialize and execute action', async () => {
+            test('initialize and execute', async () => {
                 const pageView = new XMLView();
 
                 const scrollIntoView = jest.fn();
@@ -394,7 +394,7 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('create table action', () => {
-            test('initialize and execute action', async () => {
+            test('initialize and execute', async () => {
                 const pageView = new XMLView();
 
                 const scrollIntoView = jest.fn();
@@ -886,6 +886,128 @@ describe('FE V2 quick actions', () => {
                 );
 
                 expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'sections');
+            });
+        });
+        describe('create table action', () => {
+            test('initialize and execute action', async () => {
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                    if (type === 'sap.uxap.ObjectPageSection') {
+                        // Return a mock object with the getSubSections method
+                        return {
+                            getSubSections: () => ['subsection'],
+                            setSelectedSubSection: () => {}
+                        };
+                    }
+
+                    if (type === 'sap.uxap.ObjectPageSubSection') {
+                        // Return a new instance of ManagedObject
+                        return new ManagedObject() as any;
+                    }
+                    // Return undefined if no match is found
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === 'sap.ui.comp.smarttable.SmartTable',
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+
+                            getAggregation: () => {
+                                return [
+                                    {
+                                        getAggregation: () => 'headerToolbar'
+                                    }
+                                ];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'OBJECT PAGE',
+                            actions: [
+                                {
+                                    'kind': 'nested',
+                                    id: 'objectPage0-create-table-action',
+                                    title: 'Add Custom Table Action',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            label: `'MyTable' table`
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'objectPage0-create-table-action', kind: 'nested', path: '0' })
+                );
             });
         });
     });
