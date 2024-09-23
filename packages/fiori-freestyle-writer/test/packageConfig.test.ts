@@ -16,6 +16,7 @@ describe('Test common utils', () => {
                   "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile\\"",
                   "start-mock": "fiori run --config ./ui5-mock.yaml --open \\"test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile\\"",
                   "start-noflp": "fiori run --open \\"index.html?sap-client=100&sap-ui-xx-viewCache=false\\"",
+                  "start-variants-management": "fiori run --open \\"preview.html?&sap-client=100&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\"",
                 }
             `);
         });
@@ -27,6 +28,7 @@ describe('Test common utils', () => {
                   "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flpSandbox.html?sap-ui-xx-viewCache=false\\"",
                   "start-mock": "fiori run --config ./ui5-mock.yaml --open \\"test/flpSandbox.html?sap-ui-xx-viewCache=false\\"",
                   "start-noflp": "fiori run --open \\"index.html?sap-ui-xx-viewCache=false\\"",
+                  "start-variants-management": "fiori run --open \\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\"",
                 }
             `);
         });
@@ -44,6 +46,7 @@ describe('Test common utils', () => {
                   "start": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
                   "start-local": "fiori run --config ./ui5-local.yaml --open \\"testLocalStart.html?sap-ui-xx-viewCache=false#testApp-tile\\"",
                   "start-noflp": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
+                  "start-variants-management": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
                 }
             `);
         });
