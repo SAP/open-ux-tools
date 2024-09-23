@@ -1,5 +1,23 @@
 # @sap-ux/control-property-editor
 
+## 0.5.8
+
+### Patch Changes
+
+-   e12dd50: Added hover over theme picker and border for Callout
+
+## 0.5.7
+
+### Patch Changes
+
+-   1c20352: Added missing notification when manifest change is created
+
+## 0.5.6
+
+### Patch Changes
+
+-   37851a2: Fixed wrong chevron color for high contrast theme
+
 ## 0.5.5
 
 ### Patch Changes
