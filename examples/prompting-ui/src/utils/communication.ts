@@ -14,7 +14,7 @@ import type {
     ValidateAnswers
 } from '../addons/project/types';
 import type { DynamicChoices, PromptQuestion, ValidationResults, PromptsGroup } from '@sap-ux/ui-prompting';
-import type { Actions, GetChoices, GetQuestions } from './types';
+import type { Actions, GetChoices, GetQuestions, RequestI18n } from './types';
 import {
     APPLY_ANSWERS,
     GET_CHOICES,
@@ -25,9 +25,12 @@ import {
     SET_FILTERBAR_QUESTIONS,
     SET_TABLE_QUESTIONS,
     SET_VALIDATION_RESULTS,
-    PromptsType
+    PromptsType,
+    REQUEST_I18N,
+    RESPONSE_I18N
 } from './types';
 import type { Subset } from '@sap-ux/fe-fpm-writer/src/prompts/types';
+import { I18nBundle } from '@sap-ux/ui-components';
 
 let ws: WebSocket | undefined;
 
@@ -305,4 +308,26 @@ export function getCodeSnippet(buildingBlockType: PromptsType, answers: Answers)
         answers
     };
     sendMessage(action);
+}
+
+/**
+ * Method returns i18n bundle.
+ *
+ * @param type Prompt type
+ * @returns Prompt with questions for passed prompt type.
+ */
+export function getI18nBundle(): Promise<I18nBundle> {
+    return new Promise((resolve, reject) => {
+        const getAction: RequestI18n = {
+            type: REQUEST_I18N
+        };
+        sendMessage(getAction);
+        const handleMessage = (action: Actions) => {
+            if (action.type === RESPONSE_I18N) {
+                onMessageDetach(RESPONSE_I18N, handleMessage);
+                resolve(action.bundle);
+            }
+        };
+        onMessageAttach(RESPONSE_I18N, handleMessage);
+    });
 }

@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { getQuestions, subscribeOnChoicesUpdate, unsubscribeOnChoicesUpdate } from './communication';
+import { getI18nBundle, getQuestions, subscribeOnChoicesUpdate, unsubscribeOnChoicesUpdate } from './communication';
 import type { DynamicChoices, PromptQuestion } from '@sap-ux/ui-prompting';
 import type { PromptsType } from './types';
 import type { PromptsGroup } from '@sap-ux/ui-prompting';
 import type { Answers } from 'inquirer';
+import { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
 
 /**
  * Hook to retrieve dynamic choices.
@@ -76,4 +77,27 @@ export function useQuestions(
     }, []);
 
     return questions;
+}
+
+export function useI18nBundle(): [I18nBundle, (entry: TranslationEntry) => void] {
+    const [i18nBundle, setI18nBundle] = useState({});
+    const updateBundle = (entry: TranslationEntry) => {
+        // if (!i18nBundle[entry.key.value]) {
+        //     i18nBundle[entry.key.value] = [{ ...entry, dummyPath: 'dddd' }];
+        //     updateI18nBundle(i18nBundle);
+        //     setI18nBundle({ ...i18nBundle });
+        // }
+    };
+    useEffect(() => {
+        getI18nBundle()
+            .then((bundle: I18nBundle) => {
+                console.log('Resolved Bundle:');
+                console.log(bundle);
+                setI18nBundle(bundle);
+            })
+            .catch(() => console.log('Error while getting prompt questions'));
+    }, []);
+    // console.log('Bundle:');
+    // console.log(i18nBundle);
+    return [i18nBundle, updateBundle];
 }

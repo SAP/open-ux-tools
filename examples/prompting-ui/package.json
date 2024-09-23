@@ -36,6 +36,8 @@
         "@babel/preset-react": "7.22.15",
         "@babel/preset-typescript": "7.22.15",
         "@sap-ux/fe-fpm-writer": "workspace:*",
+        "@sap-ux/i18n": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
         "@storybook/addons": "7.6.17",
         "@storybook/components": "8.1.11",
         "@storybook/react": "8.1.11",

@@ -61,7 +61,7 @@ const questions: PromptQuestion[] = [
 
 export const input = (): JSX.Element => {
     const [saveValues] = useStorage();
-    const [i1nnBundle, updateBundle] = useI18nBundle();
+    const [i18nBundle, updateBundle] = useI18nBundle();
     return (
         <Questions
             questions={questions}
@@ -79,7 +79,7 @@ export const input = (): JSX.Element => {
                 }
             }}
             translationProps={{
-                bundle: i1nnBundle,
+                bundle: i18nBundle,
                 onEvent: (event) => {
                     if (event.name === TRANSLATE_EVENT_UPDATE) {
                         updateBundle(event.entry);

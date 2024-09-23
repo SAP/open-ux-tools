@@ -18,7 +18,9 @@ import {
     RESET_ANSWERS,
     UPDATE_CODE_SNIPPET,
     SET_VALIDATION_RESULTS,
-    GET_CODE_SNIPPET
+    GET_CODE_SNIPPET,
+    REQUEST_I18N,
+    RESPONSE_I18N
 } from '../../src/utils/types';
 import type {
     Actions,
@@ -26,7 +28,8 @@ import type {
     SetChoices,
     GetChoices,
     UpdateCodeSnippet,
-    SetValidationResults
+    SetValidationResults,
+    ResponseI18n
 } from '../../src/utils/types';
 import type { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
@@ -35,6 +38,7 @@ import { GET_PROJECT_PATH, SET_PROJECT_PATH, VALIDATE_ANSWERS } from '../addons/
 import type { SetProjectPath } from '../addons/project/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
 import { getPromptApi } from './api';
+import { getI18nBundle } from './i18nBundle';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 
@@ -198,6 +202,19 @@ async function handleAction(action: Actions): Promise<void> {
                     validationResults: validationResult
                 };
                 sendMessage(responseAction);
+                break;
+            }
+            case REQUEST_I18N: {
+                if (currentApp?.projectPath) {
+                    const bundle = await getI18nBundle(currentApp?.projectPath, currentApp?.appId);
+                    if (bundle) {
+                        const responseAction: ResponseI18n = {
+                            type: RESPONSE_I18N,
+                            bundle
+                        };
+                        sendMessage(responseAction);
+                    }
+                }
                 break;
             }
         }
