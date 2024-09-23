@@ -27,8 +27,8 @@ export const validateMetadataFile = async (
     }
 
     try {
-        const metadata = await readFile(path, 'utf-8');
-        metadata.replace(/ & /g, ' &amp; ');
+        let metadata = await readFile(path, 'utf-8');
+        metadata = metadata.replace(/ & /g, ' &amp; ');
         const { validationMsg, version } = validateODataVersion(metadata, odataVersion);
         if (validationMsg) {
             return validationMsg;
