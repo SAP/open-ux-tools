@@ -5,7 +5,7 @@ import { createLaunchConfig } from '../../src/launch-config-crud/create';
 import { DirName, FileName } from '@sap-ux/project-access';
 import { TestPaths } from '../test-data/utils';
 import type { DebugOptions } from '../../src/types';
-import { LAUNCH_JSON_FILE, ProjectDataSourceType } from '../../src/types';
+import { LAUNCH_JSON_FILE } from '../../src/types';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../../src/i18n';
 import { isFolderInWorkspace } from '../../src/debug-config/helpers';
@@ -187,7 +187,6 @@ describe('create', () => {
                 name: 'test-projects',
                 projectRoot: projectPath,
                 debugOptions: {
-                    datasourceType: ProjectDataSourceType.odataServiceUrl,
                     vscode: true
                 } as DebugOptions
             },
@@ -246,30 +245,6 @@ describe('create', () => {
         });
     });
 
-    test('launch.json file is missing, will not create config when debug options provided and app source is cap project', async () => {
-        const projectPath = join(TestPaths.tmpDir, 'test-projects');
-        const launchConfigPath = join(projectPath, DirName.VSCode, LAUNCH_JSON_FILE);
-        clearMemFsPaths(launchConfigPath);
-
-        const fs = await createLaunchConfig(
-            TestPaths.tmpDir,
-            {
-                name: 'test-projects',
-                projectRoot: projectPath,
-                debugOptions: {
-                    datasourceType: ProjectDataSourceType.capProject,
-                    vscode: true
-                } as DebugOptions
-            },
-            memFs,
-            mockLog
-        );
-        expect(fs.exists(launchConfigPath)).toBe(false);
-        expect(mockLog.info).toHaveBeenCalledWith(
-            t('startApp', { npmStart: '`npm start`', cdsRun: '`cds run --in-memory`' })
-        );
-    });
-
     test('Should create launch.json or run in Yeoman CLI or if vscode not found', async () => {
         const projectPath = join(TestPaths.tmpDir, 'test-projects');
         const launchConfigPath = join(projectPath, DirName.VSCode, LAUNCH_JSON_FILE);
@@ -280,7 +255,6 @@ describe('create', () => {
                 name: 'test-projects',
                 projectRoot: projectPath,
                 debugOptions: {
-                    datasourceType: ProjectDataSourceType.capProject,
                     vscode: false
                 } as DebugOptions
             },
@@ -309,7 +283,6 @@ describe('create', () => {
                 name: 'test-projects',
                 projectRoot: projectPath,
                 debugOptions: {
-                    datasourceType: ProjectDataSourceType.odataServiceUrl,
                     vscode: {
                         workspace: {
                             workspaceFile: { scheme: 'file' }
@@ -389,7 +362,6 @@ describe('create', () => {
                 name: 'test-projects',
                 projectRoot: projectPath,
                 debugOptions: {
-                    datasourceType: ProjectDataSourceType.odataServiceUrl,
                     vscode: {
                         workspace: {
                             workspaceFile: { scheme: 'file' }
