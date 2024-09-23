@@ -93,7 +93,7 @@ export class Wrapper implements SecureStore {
         try {
             const command = this.getCommandForPlatform('delete', service, key);
             this.executeCommand(command);
-            console.log("------------- Wrapper constructorsuccessfully delete secret: ", command);
+            console.log("------------- Wrapper constructor successfully deleted secret: ", command);
             return true;
         } catch {
             this.log.error(`Error deleting secret. Service: [${service}], key: [${key}]`);

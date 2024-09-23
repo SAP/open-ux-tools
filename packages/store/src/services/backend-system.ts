@@ -49,15 +49,19 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     }
 
     public async read(key: BackendSystemKey): Promise<BackendSystem | undefined> {
+        console.log("------ read backendsystem: ", key);
         return this.dataProvider.read(key);
     }
     public async write(entity: BackendSystem): Promise<BackendSystem | undefined> {
+        console.log("------ write backendsystem: ", entity);
         return this.dataProvider.write(entity);
     }
     public async delete(entity: BackendSystem): Promise<boolean> {
+        console.log("------ delete backendsystem: ", entity);
         return this.dataProvider.delete(entity);
     }
     public async getAll(): Promise<BackendSystem[] | []> {
+        console.log("------ getAll backendsystem: ");
         return this.dataProvider.getAll();
     }
 }
