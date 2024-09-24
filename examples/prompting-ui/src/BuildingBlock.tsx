@@ -38,7 +38,7 @@ export const BuildingBlockQuestions = (props: {
     const [allowAutoAddDependencyLib, setAllowAutoAddDependencyLib] = useState(true);
     const choices = useChoices();
     const { groups, questions, initialAnswers = {} } = useQuestions(type, visibleQuestions);
-    const [i18nBundle, updateBundle] = useI18nBundle();
+    const [i18nBundle, updateBundle, pendingQuestions] = useI18nBundle();
     const [answers, setAnswers] = useState<Answers>(externalAnswers ?? initialAnswers);
     const [validation, setValidation] = useState<ValidationResults>({});
 
@@ -183,16 +183,17 @@ export const BuildingBlockQuestions = (props: {
                         showDescriptions={layoutSettings.showDescriptions}
                         translationProps={{
                             bundle: i18nBundle,
-                            onEvent: (event) => {
+                            onEvent: (name, event) => {
                                 // ToDo
                                 if (event.name === 'update') {
-                                    updateBundle(event.entry);
+                                    updateBundle(name, event.entry);
                                 } else {
                                     alert(
                                         `Show entry: key:"${event.entry.key.value}" -> value:"${event.entry.value.value}"`
                                     );
                                 }
-                            }
+                            },
+                            pendingQuestions
                         }}
                     />
                 </div>

@@ -23,7 +23,11 @@ import type { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
 // ToDo - move to geneeric types ?
 export interface TranslationProps<T extends TranslationEntry = TranslationEntry> {
     bundle: I18nBundle<T>;
-    onEvent?: (event: TranslateEvent<T>) => void;
+    onEvent?: (question: string, event: TranslateEvent<T>) => void;
+    /**
+     * Array of pending question.
+     */
+    pendingQuestions?: string[];
 }
 
 export interface QuestionsProps<T extends TranslationEntry = TranslationEntry> {
@@ -144,7 +148,7 @@ export const Questions = (props: QuestionsProps) => {
 
     return (
         <div id={componentId} className={getComponentClasses(layoutType)}>
-            <TranslationProvider bundle={translationProps.bundle} onEvent={translationProps.onEvent}>
+            <TranslationProvider bundle={translationProps.bundle} onEvent={translationProps.onEvent} pendingQuestions={translationProps.pendingQuestions}>
                 <div className="prompt-entries">
                     {layoutType === PromptsLayoutType.MultiColumn && groups?.length
                         ? groupsWithQuestions.map((group) => {

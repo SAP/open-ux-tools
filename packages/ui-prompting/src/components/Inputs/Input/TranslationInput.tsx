@@ -6,7 +6,7 @@ import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE, useTranslation } from '..
 import type { InputProps } from './Input';
 
 export const TranslationInput = (props: InputProps) => {
-    const { entries, triggerEvent } = useTranslation();
+    const { entries, triggerEvent, pendingQuestions } = useTranslation();
     const { name, onChange, guiOptions = {}, message, errorMessage, id } = props;
     const { mandatory, hint, placeholder } = guiOptions;
     const [value, setValue] = useValue('', props.value);
@@ -16,14 +16,14 @@ export const TranslationInput = (props: InputProps) => {
     };
 
     const onCreateNewEntry = useCallback((entry: TranslationEntry): void => {
-        triggerEvent?.({
+        triggerEvent?.(name, {
             name: TRANSLATE_EVENT_UPDATE,
             entry
         });
     }, []);
 
     const onShowExistingEntry = useCallback((entry: TranslationEntry): void => {
-        triggerEvent?.({
+        triggerEvent?.(name, {
             name: TRANSLATE_EVENT_SHOW,
             entry
         });
@@ -46,6 +46,10 @@ export const TranslationInput = (props: InputProps) => {
             entries={entries}
             onCreateNewEntry={onCreateNewEntry}
             onShowExistingEntry={onShowExistingEntry}
+            busy={{
+                busy: pendingQuestions?.includes(name),
+                useMinWaitingTime: true
+            }}
         />
     );
 };

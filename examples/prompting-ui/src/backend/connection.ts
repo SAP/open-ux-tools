@@ -20,7 +20,8 @@ import {
     SET_VALIDATION_RESULTS,
     GET_CODE_SNIPPET,
     REQUEST_I18N,
-    RESPONSE_I18N
+    RESPONSE_I18N,
+    CREATE_I18N_ENTRY
 } from '../../src/utils/types';
 import type {
     Actions,
@@ -35,10 +36,10 @@ import type { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
 import { testAppPath, getApplication } from '../addons/project';
 import { GET_PROJECT_PATH, SET_PROJECT_PATH, VALIDATE_ANSWERS } from '../addons/project/types';
-import type { SetProjectPath } from '../addons/project/types';
+import type { ApplicationInformation, SetProjectPath } from '../addons/project/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
 import { getPromptApi } from './api';
-import { getI18nBundle } from './i18nBundle';
+import { getI18nBundle, updateI18nBundle } from './i18nBundle';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 
@@ -98,6 +99,24 @@ function sendMessage(action: Actions): void {
     }
     for (const connection of connections) {
         connection.send(JSON.stringify(action));
+    }
+}
+
+/**
+ * Method sends action to UI using WebSocket connection.
+ *
+ * @param action - Action object
+ */
+async function refreshI18nBundle(app?: ApplicationInformation): Promise<void> {
+    if (app?.projectPath) {
+        const bundle = await getI18nBundle(app.projectPath, app.appId);
+        if (bundle) {
+            const responseAction: ResponseI18n = {
+                type: RESPONSE_I18N,
+                bundle
+            };
+            sendMessage(responseAction);
+        }
     }
 }
 
@@ -205,15 +224,17 @@ async function handleAction(action: Actions): Promise<void> {
                 break;
             }
             case REQUEST_I18N: {
+                await refreshI18nBundle(currentApp);
+                break;
+            }
+            case CREATE_I18N_ENTRY: {
                 if (currentApp?.projectPath) {
-                    const bundle = await getI18nBundle(currentApp?.projectPath, currentApp?.appId);
-                    if (bundle) {
-                        const responseAction: ResponseI18n = {
-                            type: RESPONSE_I18N,
-                            bundle
-                        };
-                        sendMessage(responseAction);
-                    }
+                    await updateI18nBundle(
+                        [{ key: action.key, value: action.value }],
+                        currentApp?.projectPath,
+                        currentApp?.appId
+                    );
+                    await refreshI18nBundle(currentApp);
                 }
                 break;
             }

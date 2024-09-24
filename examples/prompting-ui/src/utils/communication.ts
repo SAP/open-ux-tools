@@ -14,7 +14,7 @@ import type {
     ValidateAnswers
 } from '../addons/project/types';
 import type { DynamicChoices, PromptQuestion, ValidationResults, PromptsGroup } from '@sap-ux/ui-prompting';
-import type { Actions, GetChoices, GetQuestions, RequestI18n } from './types';
+import type { Actions, CreateI18n, GetChoices, GetQuestions, RequestI18n } from './types';
 import {
     APPLY_ANSWERS,
     GET_CHOICES,
@@ -27,7 +27,8 @@ import {
     SET_VALIDATION_RESULTS,
     PromptsType,
     REQUEST_I18N,
-    RESPONSE_I18N
+    RESPONSE_I18N,
+    CREATE_I18N_ENTRY
 } from './types';
 import type { Subset } from '@sap-ux/fe-fpm-writer/src/prompts/types';
 import { I18nBundle } from '@sap-ux/ui-components';
@@ -322,6 +323,24 @@ export function getI18nBundle(): Promise<I18nBundle> {
             type: REQUEST_I18N
         };
         sendMessage(getAction);
+        const handleMessage = (action: Actions) => {
+            if (action.type === RESPONSE_I18N) {
+                onMessageDetach(RESPONSE_I18N, handleMessage);
+                resolve(action.bundle);
+            }
+        };
+        onMessageAttach(RESPONSE_I18N, handleMessage);
+    });
+}
+
+export function createI18n(key: string, value: string): Promise<I18nBundle> {
+    return new Promise((resolve, reject) => {
+        const createAction: CreateI18n = {
+            type: CREATE_I18N_ENTRY,
+            key,
+            value
+        };
+        sendMessage(createAction);
         const handleMessage = (action: Actions) => {
             if (action.type === RESPONSE_I18N) {
                 onMessageDetach(RESPONSE_I18N, handleMessage);
