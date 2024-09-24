@@ -1012,10 +1012,10 @@ describe('FE V2 quick actions', () => {
                                             children: [
                                                 {
                                                     children: [],
-                                                    label: "'MyTable' table"
+                                                    label: '\'MyTable\' table'
                                                 }
                                             ],
-                                            label: "'section 01' section"
+                                            label: '\'section 01\' section'
                                         }
                                     ]
                                 }

@@ -1,6 +1,5 @@
 ---
 "@sap-ux/adp-tooling": patch
-"@sap-ux/fe-fpm-writer": patch
 "@sap-ux-private/preview-middleware-client": patch
 "@sap-ux/preview-middleware": patch
 ---
