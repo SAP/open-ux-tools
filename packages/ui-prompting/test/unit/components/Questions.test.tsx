@@ -7,6 +7,8 @@ import type { ListPromptQuestion, PromptQuestion } from '../../../src/types';
 import type { QuestionsProps } from '../../../src';
 import { questions } from '../../mock-data/questions';
 import { getDependantQuestions } from '../../../src/utilities';
+import { acceptI18nCallout, clickI18nButton, isI18nLoading } from '../utils';
+import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE } from '../../../src/context/TranslationContext';
 
 describe('Questions', () => {
     initIcons();
@@ -279,6 +281,84 @@ describe('Questions', () => {
             );
             // Should not trigger change as value was not changed
             expect(onChangeFn).toBeCalledTimes(1);
+        });
+    });
+
+    describe('Translation input', () => {
+        const question: PromptQuestion = {
+            message: 'Translatable empty',
+            name: 'testInput',
+            type: 'input',
+            default: 'dummy value',
+            guiOptions: {
+                translatable: true
+            }
+        };
+
+        it('Trigger creation of i18n entry', async () => {
+            const onTranslateEvent = jest.fn();
+            render(
+                <Questions
+                    {...props}
+                    id="my-prompt"
+                    questions={[question]}
+                    translationProps={{
+                        bundle: {},
+                        onEvent: onTranslateEvent
+                    }}
+                />
+            );
+            // Check that there no loader
+            expect(isI18nLoading()).toEqual(false);
+            // Act
+            clickI18nButton();
+            acceptI18nCallout('my-prompt--testInput--input');
+            // Check result
+            expect(onTranslateEvent).toBeCalledTimes(1);
+            expect(onTranslateEvent).toBeCalledWith('testInput', {
+                entry: { key: { value: 'dummyValue' }, value: { value: 'dummy value' } },
+                name: TRANSLATE_EVENT_UPDATE
+            });
+        });
+
+        it('Trigger show existing i18n entry', async () => {
+            const onTranslateEvent = jest.fn();
+            render(
+                <Questions
+                    {...props}
+                    id="my-prompt"
+                    questions={[{ ...question, default: '{i18n>test}' }]}
+                    translationProps={{
+                        bundle: { test: [{ key: { value: 'test' }, value: { value: 'Test value' } }] },
+                        onEvent: onTranslateEvent
+                    }}
+                />
+            );
+            // Act
+            clickI18nButton(false);
+            // Check result
+            expect(onTranslateEvent).toBeCalledTimes(1);
+            expect(onTranslateEvent).toBeCalledWith('testInput', {
+                entry: { key: { value: 'test' }, value: { value: 'Test value' } },
+                name: TRANSLATE_EVENT_SHOW
+            });
+        });
+
+        it('Mark translation field busy', () => {
+            render(
+                <Questions
+                    {...props}
+                    id="my-prompt"
+                    questions={[{ ...question, default: '{i18n>test}' }]}
+                    translationProps={{
+                        bundle: {},
+                        onEvent: jest.fn(),
+                        pendingQuestions: ['testInput']
+                    }}
+                />
+            );
+            // Check result
+            expect(isI18nLoading()).toEqual(true);
         });
     });
 });
