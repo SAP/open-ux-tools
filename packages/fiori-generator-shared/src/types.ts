@@ -69,6 +69,8 @@ export interface PackageJsonScripts {
     'start-mock'?: string;
     /** Optional command to run tests. */
     'int-test'?: string;
+    /** Optional command to add the variants management script. */
+    'start-variants-management'?: string;
 }
 
 /**
