@@ -7,6 +7,7 @@ import { render } from 'ejs';
 import { randomBytes } from 'crypto';
 
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
+const CUSTOM_ACTION = 'CUSTOM_ACTION';
 
 interface FragmentTemplateConfig<T = { [key: string]: any }> {
     /**
@@ -26,6 +27,17 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
                     objectPageSection: `op-section-${uuid}`,
                     objectPageSubSection: `op-subsection-${uuid}`,
                     hBox: `hbox-${uuid}`
+                }
+            };
+        }
+    },
+    [CUSTOM_ACTION]: {
+        path: 'common/custom-action.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    toolbarActionButton: `btn-${uuid}`
                 }
             };
         }
