@@ -3,9 +3,12 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 import { TranslationInput } from '../../../../src/components';
 import type { InputProps } from '../../../../src/components';
+import * as TranslationContext from '../../../../src/context/TranslationContext';
 
+const id = 'test';
 const props: InputProps = {
-    value: '',
+    id,
+    value: 'dummy',
     name: 'testInput',
     onChange: jest.fn(),
     guiOptions: {
@@ -16,22 +19,71 @@ const props: InputProps = {
     errorMessage: undefined
 };
 
+const selectors = {
+    input: '.ms-TextField',
+    button: '.ms-Button',
+    callout: '.ms-Callout',
+    loader: '.ms-Spinner'
+};
+
 describe('TranslationInput', () => {
     initIcons();
 
-    it('Render translation input', () => {
-        render(<TranslationInput {...props} />);
-        expect(document.getElementsByClassName('ts-Input')).toBeDefined();
+    let useTranslationSpy: jest.SpyInstance;
+    let triggerEventMock: jest.Mock;
+    const clickI18nButton = (expectCallout = true) => {
+        const openBtn = document.querySelector(selectors.button) as HTMLElement;
+        fireEvent.click(openBtn);
+        expect(document.querySelectorAll(selectors.callout).length).toEqual(expectCallout ? 1 : 0);
+    };
+
+    const acceptCallout = (id: string): void => {
+        const acceptBtn = document.querySelector(`#${id}-i18n-button-action-confirm`) as HTMLElement;
+        fireEvent.click(acceptBtn);
+    };
+
+    const rejectCallout = (id: string): void => {
+        const acceptBtn = document.querySelector(`#${id}-i18n-button-action-cancel`) as HTMLElement;
+        fireEvent.click(acceptBtn);
+    };
+    beforeEach(() => {
+        triggerEventMock = jest.fn();
+        useTranslationSpy = jest.spyOn(TranslationContext, 'useTranslation').mockReturnValue({
+            entries: {
+                test: [{ key: { value: 'test' }, value: { value: 'Test value' } }]
+            },
+            pendingQuestions: [],
+            triggerEvent: triggerEventMock
+        });
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('Render translation input without value', () => {
+        const { container } = render(<TranslationInput {...props} value="" />);
+        expect(container.querySelectorAll(selectors.input).length).toEqual(1);
+        expect(container.querySelectorAll(selectors.button).length).toEqual(0);
     });
 
     it('Render translation input with value', () => {
-        render(<TranslationInput {...props} value="testValue" />);
+        const { container } = render(<TranslationInput {...props} value="testValue" />);
         expect(screen.getByDisplayValue('testValue')).toBeDefined();
+        expect(container.querySelectorAll(selectors.input).length).toEqual(1);
+        expect(container.querySelectorAll(selectors.button).length).toEqual(1);
     });
 
     it('Test property "id"', async () => {
         render(<TranslationInput {...props} id="test-id" />);
         expect(document.getElementById('test-id')).not.toBeNull();
+    });
+
+    it('Test property "message" as label', async () => {
+        const label = 'Dummy label';
+        render(<TranslationInput {...props} message={label} />);
+        const element = screen.getByLabelText(label);
+        expect(element).toBeDefined();
     });
 
     it('Test property "onChange"', () => {
@@ -83,5 +135,28 @@ describe('TranslationInput', () => {
             />
         );
         expect(screen.getByPlaceholderText('testPlaceholder')).toBeDefined();
+    });
+
+    it('I18n entry does not exist - trigger i18n creation', () => {
+        const { container } = render(<TranslationInput {...props} />);
+        clickI18nButton();
+
+        acceptCallout(id);
+        expect(triggerEventMock).toBeCalledTimes(1);
+        expect(triggerEventMock).toBeCalledWith('testInput', {
+            entry: { key: { value: 'dummy' }, value: { value: 'dummy' } },
+            name: TranslationContext.TRANSLATE_EVENT_UPDATE
+        });
+    });
+
+    it('I18n entry exists - trigger show', () => {
+        const { container } = render(<TranslationInput {...props} value="{i18n>test}" />);
+        clickI18nButton(false);
+
+        expect(triggerEventMock).toBeCalledTimes(1);
+        expect(triggerEventMock).toBeCalledWith('testInput', {
+            entry: { key: { value: 'test' }, value: { value: 'Test value' } },
+            name: TranslationContext.TRANSLATE_EVENT_SHOW
+        });
     });
 });

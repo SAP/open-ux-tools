@@ -34,6 +34,13 @@ describe('Input', () => {
         expect(document.getElementById('test-id')).not.toBeNull();
     });
 
+    it('Test property "message" as label', async () => {
+        const label = 'Dummy label';
+        render(<Input {...props} message={label} />);
+        const element = screen.getByLabelText(label);
+        expect(element).toBeDefined();
+    });
+
     it('Test property "onChange"', () => {
         const onChangeFn = jest.fn();
         render(<Input {...props} onChange={onChangeFn} />);
