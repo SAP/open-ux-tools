@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import type { Answers } from 'inquirer';
 import { Question } from '../Question/Question';
 import {
+    formatDomId,
     getAnswer,
     getDependantQuestions,
     getDynamicQuestions,
@@ -132,9 +133,10 @@ export const Questions = (props: QuestionsProps) => {
         questions.map((question: PromptQuestion, index: number) => {
             const name = question.name;
             const externalChoices = choices[name];
+            const id = formatDomId(`${componentId}--${question.name}`);
             return (
                 <Question
-                    id={`${componentId}--${question.name}`}
+                    id={id}
                     key={`${name}-${index}`}
                     question={question}
                     validation={validation}

@@ -23,3 +23,12 @@ export const getLabelRenderer = function <P>(title?: string): IRenderFunction<P>
           }
         : undefined;
 };
+
+/**
+ * Method formats passed id into valid selector id for 'querySelector(#{id})'
+ * @param id - Passed id for formatting.
+ * @returns Formatted id.
+ */
+export function formatDomId(id: string): string {
+    return id.replace(/[@.:#<>]/g, '-');
+}

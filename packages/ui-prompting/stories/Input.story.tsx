@@ -43,7 +43,7 @@ const questions: PromptQuestion[] = [
     },
     {
         message: 'Translatable empty',
-        name: 'translateEmpty',
+        name: 'translate.empty',
         type: 'input',
         guiOptions: {
             translatable: true
@@ -51,7 +51,7 @@ const questions: PromptQuestion[] = [
     },
     {
         message: 'Translatable with default',
-        name: 'translateDefault',
+        name: 'translate.default',
         type: 'input',
         default: '{i18n>test}',
         guiOptions: {
