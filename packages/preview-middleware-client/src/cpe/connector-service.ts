@@ -35,13 +35,26 @@ export class WorkspaceConnectorService {
         }
     }
 
-    private onChangeSaved(fileName: string, kind: 'delete' | 'create', changeType?: string) {
+    private onChangeSaved(fileName: string, kind: 'delete' | 'create', change: unknown = {}) {
+        const { changeType, content } = change as {
+            changeType?: string;
+            content?: {
+                templateName?: string;
+                fragmentPath?: string;
+            };
+        };
         if (
             (changeType && changeType !== 'appdescr_fe_changePageConfiguration') ||
             kind === 'delete' ||
             this.isReloadPending
         ) {
             this.sendAction(storageFileChanged(fileName?.replace('sap.ui.fl.', '')));
+        }
+        if (changeType === 'addXML' && content?.templateName !== undefined && content?.fragmentPath !== undefined) {
+            // If there is template available, then we save and reload right away,
+            // so we should ignore the first file change event that comes for the fragment.
+            // (We don't want to show "Reload" button)
+            this.sendAction(storageFileChanged(content.fragmentPath));
         }
     }
 }
