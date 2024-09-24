@@ -61,21 +61,9 @@ export interface LaunchConfigInfo {
 }
 
 /**
- * Enum representing the types of data sources or origins for a project.
- * These types indicate how a project is generated.
- */
-export enum ProjectDataSourceType {
-    capProject = 'capProject',
-    odataServiceUrl = 'odataServiceUrl',
-    metadataFile = 'metadataFile'
-}
-
-/**
  * Configuration options for debugging launch configurations.
  */
 export interface DebugOptions {
-    /** Type of the data source used in the project. */
-    datasourceType: ProjectDataSourceType;
     /** SAP client parameter for the connection. */
     sapClientParam: string;
     /** FLP application ID. */
@@ -96,6 +84,8 @@ export interface DebugOptions {
     writeToAppOnly?: boolean;
     /** Reference to the VS Code instance. */
     vscode?: any;
+    /** skips live script if set to true. */
+    skipLiveScript?: boolean;
 }
 
 /**
