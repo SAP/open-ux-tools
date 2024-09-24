@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.9
+
+### Patch Changes
+
+-   8f442a6: Usability improvements for Quick Actions that add fragments
+
 ## 0.5.8
 
 ### Patch Changes
