@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join, basename } from 'path';
 import { DirName } from '@sap-ux/project-access';
-import { LAUNCH_JSON_FILE, ProjectDataSourceType } from '../types';
+import { LAUNCH_JSON_FILE } from '../types';
 import type { FioriOptions, LaunchJSON, UpdateWorkspaceFolderOptions, DebugOptions, LaunchConfig } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig } from './utils';
@@ -144,7 +144,7 @@ async function handleDebugOptions(
     );
     const configurations = configureLaunchJsonFile(rootFolder, cwd, debugOptions).configurations;
 
-    const npmCommand = debugOptions.datasourceType === ProjectDataSourceType.metadataFile ? 'run start-mock' : 'start';
+    const npmCommand = debugOptions.skipLiveScript ? 'run start-mock' : 'start';
     logger?.info(
         t('startServerMessage', {
             folder: basename(rootFolder),
@@ -194,10 +194,6 @@ export async function createLaunchConfig(
         return await handleNoDebugOptions(rootFolder, fioriOptions, fs);
     }
     if (!debugOptions.vscode) {
-        return fs;
-    }
-    if (debugOptions.datasourceType === ProjectDataSourceType.capProject) {
-        logger?.info(t('startApp', { npmStart: '`npm start`', cdsRun: '`cds run --in-memory`' }));
         return fs;
     }
     return await handleDebugOptions(rootFolder, fs, debugOptions, logger);
