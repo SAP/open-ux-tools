@@ -35,7 +35,6 @@ export class CommunicationService {
      * @param handler - Action handler.
      */
     static subscribe(handler: ActionHandler): void {
-        // console.log(handler)
         this.actionHandlers.push(handler);
     }
 }
