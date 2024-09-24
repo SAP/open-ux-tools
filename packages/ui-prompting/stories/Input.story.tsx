@@ -81,7 +81,7 @@ const updateI18nBundle = (i18nBundle: I18nBundle): void => {
     window.localStorage.setItem(I18N_BUNDLE_KEY, JSON.stringify(i18nBundle));
 };
 
-export function useI18nBundle(): [I18nBundle, (question: string, entry: TranslationEntry) => void, string[]] {
+function useI18nBundle(): [I18nBundle, (question: string, entry: TranslationEntry) => void, string[]] {
     const [i18nBundle, setI18nBundle] = useState(getI18nBundle());
     const [pendingQuestions, setPendingQuestions] = useState<string[]>([]);
     const updateBundle = (question: string, entry: TranslationEntry) => {
