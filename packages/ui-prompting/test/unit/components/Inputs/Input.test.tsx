@@ -29,6 +29,11 @@ describe('Input', () => {
         expect(screen.getByDisplayValue('testValue')).toBeDefined();
     });
 
+    it('Render without guiOptions', () => {
+        render(<Input {...props} value="testValue" guiOptions={undefined} />);
+        expect(screen.getByDisplayValue('testValue')).toBeDefined();
+    });
+
     it('Test property "id"', async () => {
         render(<Input {...props} id="test-id" />);
         expect(document.getElementById('test-id')).not.toBeNull();

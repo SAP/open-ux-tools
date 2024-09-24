@@ -59,9 +59,21 @@ describe('TranslationInput', () => {
         expect(container.querySelectorAll(selectors.button).length).toEqual(1);
     });
 
+    it('Render without guiOptions', () => {
+        const { container } = render(<TranslationInput {...props} value="testValue" guiOptions={undefined} />);
+        expect(container.querySelectorAll(selectors.input).length).toEqual(1);
+        expect(container.querySelectorAll(selectors.button).length).toEqual(1);
+    });
+
     it('Test property "id"', async () => {
         render(<TranslationInput {...props} id="test-id" />);
         expect(document.getElementById('test-id')).not.toBeNull();
+    });
+
+    it('Test without "id"', async () => {
+        const { container } = render(<TranslationInput {...props} id={undefined} value="testValue" />);
+        expect(container.querySelectorAll(selectors.input).length).toEqual(1);
+        expect(container.querySelectorAll(selectors.button).length).toEqual(1);
     });
 
     it('Test property "message" as label', async () => {
