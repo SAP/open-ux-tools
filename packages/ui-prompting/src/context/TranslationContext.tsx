@@ -1,5 +1,5 @@
 import type { TranslationEntry, I18nBundle } from '@sap-ux/ui-components';
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
 
 // Move to generic types?
 export const TRANSLATE_EVENT_UPDATE = 'update';
@@ -37,17 +37,19 @@ export interface TranslationProviderProps<T extends TranslationEntry = Translati
 
 export const TranslationProvider = <T extends TranslationEntry>(props: TranslationProviderProps<T>) => {
     const { onEvent } = props;
-    const handleEvent = (question: string, event: TranslateEvent<TranslationEntry>) => {
-        onEvent?.(question, event as TranslateEvent<T>);
-    };
-    return (
-        <TranslationContext.Provider
-            value={{
-                entries: props.bundle,
-                triggerEvent: handleEvent,
-                pendingQuestions: props.pendingQuestions
-            }}>
-            {props.children}
-        </TranslationContext.Provider>
+    const handleEvent = useCallback(
+        (question: string, event: TranslateEvent<TranslationEntry>): void => {
+            onEvent?.(question, event as TranslateEvent<T>);
+        },
+        [onEvent]
     );
+    const value = useMemo(
+        () => ({
+            entries: props.bundle,
+            triggerEvent: handleEvent,
+            pendingQuestions: props.pendingQuestions
+        }),
+        [props.bundle, handleEvent, props.pendingQuestions]
+    );
+    return <TranslationContext.Provider value={value}>{props.children}</TranslationContext.Provider>;
 };

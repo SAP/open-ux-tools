@@ -15,19 +15,25 @@ export const TranslationInput = (props: InputProps) => {
         onChange?.(name, newValue);
     };
 
-    const onCreateNewEntry = useCallback((entry: TranslationEntry): void => {
-        triggerEvent?.(name, {
-            name: TRANSLATE_EVENT_UPDATE,
-            entry
-        });
-    }, []);
+    const onCreateNewEntry = useCallback(
+        (entry: TranslationEntry): void => {
+            triggerEvent?.(name, {
+                name: TRANSLATE_EVENT_UPDATE,
+                entry
+            });
+        },
+        [name]
+    );
 
-    const onShowExistingEntry = useCallback((entry: TranslationEntry): void => {
-        triggerEvent?.(name, {
-            name: TRANSLATE_EVENT_SHOW,
-            entry
-        });
-    }, []);
+    const onShowExistingEntry = useCallback(
+        (entry: TranslationEntry): void => {
+            triggerEvent?.(name, {
+                name: TRANSLATE_EVENT_SHOW,
+                entry
+            });
+        },
+        [name]
+    );
 
     return (
         <UITranslationInput
