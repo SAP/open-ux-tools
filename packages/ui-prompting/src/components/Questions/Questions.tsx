@@ -148,7 +148,10 @@ export const Questions = (props: QuestionsProps) => {
 
     return (
         <div id={componentId} className={getComponentClasses(layoutType)}>
-            <TranslationProvider bundle={translationProps.bundle} onEvent={translationProps.onEvent} pendingQuestions={translationProps.pendingQuestions}>
+            <TranslationProvider
+                bundle={translationProps.bundle}
+                onEvent={translationProps.onEvent}
+                pendingQuestions={translationProps.pendingQuestions}>
                 <div className="prompt-entries">
                     {layoutType === PromptsLayoutType.MultiColumn && groups?.length
                         ? groupsWithQuestions.map((group) => {

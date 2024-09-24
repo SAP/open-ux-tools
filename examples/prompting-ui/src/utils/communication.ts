@@ -31,7 +31,7 @@ import {
     CREATE_I18N_ENTRY
 } from './types';
 import type { Subset } from '@sap-ux/fe-fpm-writer/src/prompts/types';
-import { I18nBundle } from '@sap-ux/ui-components';
+import type { I18nBundle } from '@sap-ux/ui-components';
 
 let ws: WebSocket | undefined;
 
@@ -314,11 +314,10 @@ export function getCodeSnippet(buildingBlockType: PromptsType, answers: Answers)
 /**
  * Method returns i18n bundle.
  *
- * @param type Prompt type
- * @returns Prompt with questions for passed prompt type.
+ * @returns Returns i18n bundle.
  */
 export function getI18nBundle(): Promise<I18nBundle> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const getAction: RequestI18n = {
             type: REQUEST_I18N
         };
@@ -333,8 +332,15 @@ export function getI18nBundle(): Promise<I18nBundle> {
     });
 }
 
+/**
+ * Method dispatches action to triger creation on new i18n entry.
+ *
+ * @param key Key of new i18n entry
+ * @param value Value of new i18n entry
+ * @returns Returns updated i18n bundle.
+ */
 export function createI18n(key: string, value: string): Promise<I18nBundle> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const createAction: CreateI18n = {
             type: CREATE_I18N_ENTRY,
             key,

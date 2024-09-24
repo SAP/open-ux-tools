@@ -103,9 +103,9 @@ function sendMessage(action: Actions): void {
 }
 
 /**
- * Method sends action to UI using WebSocket connection.
+ * Method resolves current i18n bundle and sends action with latest bundle to ui.
  *
- * @param action - Action object
+ * @param app Application to refresh
  */
 async function refreshI18nBundle(app?: ApplicationInformation): Promise<void> {
     if (app?.projectPath) {

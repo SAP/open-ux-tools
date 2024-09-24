@@ -188,7 +188,7 @@ export const BuildingBlockQuestions = (props: {
                                 if (event.name === 'update') {
                                     updateBundle(name, event.entry);
                                 } else {
-                                    alert(
+                                    console.log(
                                         `Show entry: key:"${event.entry.key.value}" -> value:"${event.entry.value.value}"`
                                     );
                                 }

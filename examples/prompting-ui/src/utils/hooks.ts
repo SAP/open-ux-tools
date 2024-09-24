@@ -10,7 +10,7 @@ import type { DynamicChoices, PromptQuestion } from '@sap-ux/ui-prompting';
 import type { PromptsType } from './types';
 import type { PromptsGroup } from '@sap-ux/ui-prompting';
 import type { Answers } from 'inquirer';
-import { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
+import type { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
 
 /**
  * Hook to retrieve dynamic choices.
