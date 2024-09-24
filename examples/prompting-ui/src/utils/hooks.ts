@@ -85,6 +85,13 @@ export function useQuestions(
     return questions;
 }
 
+/**
+ * Method removes question from array of pending questions.
+ *
+ * @param pendingQuestions Array of pending questions
+ * @param question Question to remove
+ * @returns Updated pending questions.
+ */
 function removePendingQuestions(pendingQuestions: string[], question: string): string[] {
     const index = pendingQuestions.indexOf(question);
     if (index !== -1) {
@@ -93,6 +100,11 @@ function removePendingQuestions(pendingQuestions: string[], question: string): s
     return pendingQuestions;
 }
 
+/**
+ * Hook to retrieve i18n bundle.
+ *
+ * @returns I18n bundle with creation function.
+ */
 export function useI18nBundle(): [I18nBundle, (question: string, entry: TranslationEntry) => void, string[]] {
     const [i18nBundle, setI18nBundle] = useState({});
     const [pendingQuestions, setPendingQuestions] = useState<string[]>([]);

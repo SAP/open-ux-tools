@@ -39,7 +39,7 @@ import { GET_PROJECT_PATH, SET_PROJECT_PATH, VALIDATE_ANSWERS } from '../addons/
 import type { ApplicationInformation, SetProjectPath } from '../addons/project/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
 import { getPromptApi } from './api';
-import { getI18nBundle, updateI18nBundle } from './i18nBundle';
+import { getI18nBundle, createI18nEntry } from './i18nBundle';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 
@@ -229,7 +229,7 @@ async function handleAction(action: Actions): Promise<void> {
             }
             case CREATE_I18N_ENTRY: {
                 if (currentApp?.projectPath) {
-                    await updateI18nBundle(
+                    await createI18nEntry(
                         [{ key: action.key, value: action.value }],
                         currentApp?.projectPath,
                         currentApp?.appId
