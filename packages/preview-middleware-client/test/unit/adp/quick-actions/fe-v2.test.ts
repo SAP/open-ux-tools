@@ -501,7 +501,10 @@ describe('FE V2 quick actions', () => {
                     '../../../../src/adp/init-dialogs'
                 );
 
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'content');
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
+                    aggregation: 'content',
+                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                });
             });
         });
         describe('add page action', () => {
@@ -619,7 +622,10 @@ describe('FE V2 quick actions', () => {
                     '../../../../src/adp/init-dialogs'
                 );
 
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'actions');
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
+                    aggregation: 'actions',
+                    title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
+                });
             });
         });
     });
@@ -753,7 +759,10 @@ describe('FE V2 quick actions', () => {
                     '../../../../src/adp/init-dialogs'
                 );
 
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'items');
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
+                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD',
+                    aggregation: 'items'
+                });
             });
         });
         describe('add custom section', () => {
@@ -885,7 +894,10 @@ describe('FE V2 quick actions', () => {
                     '../../../../src/adp/init-dialogs'
                 );
 
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'sections');
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
+                    title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION',
+                    aggregation: 'sections'
+                });
             });
         });
         describe('create table action', () => {

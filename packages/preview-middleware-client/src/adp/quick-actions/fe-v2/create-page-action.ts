@@ -19,7 +19,10 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
     async execute(): Promise<FlexCommand[]> {
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
-            await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, 'actions');
+            await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
+                aggregation: 'actions',
+                title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
+            });
         }
         return [];
     }
