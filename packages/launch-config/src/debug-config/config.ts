@@ -1,7 +1,7 @@
 import { basename } from 'path';
 import { getLaunchConfig } from '../launch-config-crud/utils';
 import type { LaunchConfig, LaunchJSON, DebugOptions, LaunchConfigEnv } from '../types';
-import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID, ProjectDataSourceType } from '../types';
+import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
 
 // debug constants
 const testFlpSandboxHtml = 'test/flpSandbox.html';
@@ -63,7 +63,7 @@ function configureLaunchConfig(
 export function configureLaunchJsonFile(rootFolder: string, cwd: string, configOpts: DebugOptions): LaunchJSON {
     const {
         isAppStudio,
-        datasourceType,
+        skipLiveScript = false,
         flpAppId,
         flpSandboxAvailable,
         sapClientParam,
@@ -86,7 +86,7 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
     const launchFile: LaunchJSON = { version: '0.2.0', configurations: [] };
 
     // Add live configuration if the datasource is not from a metadata file
-    if (datasourceType !== ProjectDataSourceType.metadataFile) {
+    if (!skipLiveScript) {
         const startCommand = `${startHtmlFile}${flpAppIdWithHash}`;
         const liveConfig = configureLaunchConfig(
             `Start ${projectName}`,

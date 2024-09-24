@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.6.0
+
+### Minor Changes
+
+-   e989a20: Remove ProjectDataSourceType from DebugConfig and Replace with skipLiveScripts Flag
+
 ## 0.5.1
 
 ### Patch Changes

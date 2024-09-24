@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.18.4
+
+### Patch Changes
+
+-   195d758: Applied missing styles for the disabled state of UILink.
+
 ## 1.18.3
 
 ### Patch Changes
