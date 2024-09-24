@@ -75,7 +75,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 overlays as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const openSpy = jest.fn();
@@ -105,7 +108,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const event = {
@@ -163,7 +169,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const closeSpy = jest.fn();
@@ -193,7 +202,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -223,7 +235,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -253,7 +268,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -283,7 +301,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -313,7 +334,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -355,7 +379,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -398,7 +425,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -445,7 +475,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -477,7 +510,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -536,7 +572,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 overlays as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const event = {
@@ -604,7 +643,10 @@ describe('AddFragment', () => {
                 'adp.extension.controllers.AddFragment',
                 overlays as unknown as UI5Element,
                 rtaMock as unknown as RuntimeAuthoring,
-                'sections'
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    aggregation: 'sections'
+                }
             );
 
             const event = {
@@ -708,7 +750,10 @@ describe('AddFragment', () => {
                 'adp.extension.controllers.AddFragment',
                 overlays as unknown as UI5Element,
                 rtaMock as unknown as RuntimeAuthoring,
-                'headerContent'
+                {
+                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD',
+                    aggregation: 'headerContent'
+                }
             );
 
             const event = {
@@ -796,7 +841,6 @@ describe('AddFragment', () => {
             });
         });
 
-
         test('add header field fragment and a change case 2', async () => {
             sapMock.ui.version = '1.71.62';
             const executeSpy = jest.fn();
@@ -813,7 +857,10 @@ describe('AddFragment', () => {
                 'adp.extension.controllers.AddFragment',
                 overlays as unknown as UI5Element,
                 rtaMock as unknown as RuntimeAuthoring,
-                'items'
+                {
+                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD',
+                    aggregation: 'items'
+                }
             );
 
             const event = {
