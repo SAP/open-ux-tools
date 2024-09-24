@@ -403,4 +403,25 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             await projectChecks(testPath, config, debug?.debugFull);
         });
     });
+
+    test('sapuxLayer is added to package json for edmx projects when provided', async () => {
+        const fioriElementsApp: FioriElementsApp<LROPSettings> = {
+            ...Object.assign(feBaseConfig('felrop1'), {
+                template: {
+                    type: TemplateType.ListReportObjectPage,
+                    settings: v4TemplateSettings
+                }
+            }),
+            service: v4Service,
+            package: {
+                ...feBaseConfig('felrop1').package,
+                sapuxLayer: 'CUSTOMER_BASE'
+            }
+        } as FioriElementsApp<LROPSettings>;
+
+        const fs = await generate(curTestOutPath, fioriElementsApp);
+        const packageJsonPath = join(curTestOutPath, 'package.json');
+        const packageJson = fs.readJSON(packageJsonPath);
+        expect((packageJson as any)?.sapuxLayer).toBe('CUSTOMER_BASE');
+    });
 });
