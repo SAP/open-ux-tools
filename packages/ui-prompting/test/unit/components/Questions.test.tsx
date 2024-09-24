@@ -2,13 +2,12 @@ import * as React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 import { Questions } from '../../../src/components';
-import { PromptsLayoutType } from '../../../src/types';
+import { PromptsLayoutType, TRANSLATE_EVENT_UPDATE, TRANSLATE_EVENT_SHOW } from '../../../src/types';
 import type { ListPromptQuestion, PromptQuestion } from '../../../src/types';
 import type { QuestionsProps } from '../../../src';
 import { questions } from '../../mock-data/questions';
 import { getDependantQuestions } from '../../../src/utilities';
 import { acceptI18nCallout, clickI18nButton, isI18nLoading } from '../utils';
-import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE } from '../../../src/context/TranslationContext';
 
 describe('Questions', () => {
     initIcons();

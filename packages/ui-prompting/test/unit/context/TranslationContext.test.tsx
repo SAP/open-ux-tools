@@ -2,13 +2,10 @@ import * as React from 'react';
 import { render } from '@testing-library/react';
 import { TranslationInput } from '../../../src/components';
 import type { InputProps } from '../../../src/components';
-import {
-    TRANSLATE_EVENT_SHOW,
-    TRANSLATE_EVENT_UPDATE,
-    TranslationProvider
-} from '../../../src/context/TranslationContext';
+import { TranslationProvider } from '../../../src/context/TranslationContext';
 import type { TranslationProviderProps } from '../../../src/context/TranslationContext';
 import { acceptI18nCallout, clickI18nButton, isI18nLoading } from '../utils';
+import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE } from '../../../src/types';
 
 const id = 'test';
 const props: InputProps = {

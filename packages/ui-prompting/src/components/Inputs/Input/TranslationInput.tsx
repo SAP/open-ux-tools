@@ -2,15 +2,16 @@ import React, { useCallback } from 'react';
 import { TranslationKeyGenerator, TranslationTextPattern, UITranslationInput } from '@sap-ux/ui-components';
 import type { TranslationEntry } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer } from '../../../utilities';
-import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE, useTranslation } from '../../../context/TranslationContext';
+import { useTranslation } from '../../../context/TranslationContext';
 import type { InputProps } from './Input';
+import { TRANSLATE_EVENT_UPDATE, TRANSLATE_EVENT_SHOW } from '../../../types';
 
 export const TranslationInput = (props: InputProps) => {
-    const { entries, triggerEvent, pendingQuestions } = useTranslation();
+    const { bundle, onEvent: triggerEvent, pendingQuestions } = useTranslation();
     const { name, onChange, guiOptions = {}, message, errorMessage, id } = props;
     const { mandatory, hint, placeholder } = guiOptions;
     const [value, setValue] = useValue('', props.value);
-    const onLiveChange = (event: React.FormEvent, newValue?: string | undefined) => {
+    const onLiveChange = (_event: React.FormEvent, newValue?: string | undefined) => {
         setValue(newValue ?? '');
         onChange?.(name, newValue);
     };
@@ -49,7 +50,7 @@ export const TranslationInput = (props: InputProps) => {
             defaultPattern={TranslationTextPattern.SingleBracketBinding}
             i18nPrefix="i18n"
             namingConvention={TranslationKeyGenerator.CamelCase}
-            entries={entries}
+            entries={bundle}
             onCreateNewEntry={onCreateNewEntry}
             onShowExistingEntry={onShowExistingEntry}
             busy={{

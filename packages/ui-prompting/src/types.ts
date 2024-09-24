@@ -5,6 +5,7 @@ import type {
     ListQuestion,
     GuiOptions as BaseGuiOptions
 } from '@sap-ux/inquirer-common';
+import type { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
 
 export { Answers };
 
@@ -147,4 +148,26 @@ export type AnswerValue = string | number | boolean | undefined;
 export const enum PromptsLayoutType {
     SingleColumn = 'SingleColumn',
     MultiColumn = 'MultiColumn'
+}
+
+export const TRANSLATE_EVENT_UPDATE = 'update';
+export const TRANSLATE_EVENT_SHOW = 'show';
+export interface TranlateUpdateEvent<T extends TranslationEntry> {
+    name: typeof TRANSLATE_EVENT_UPDATE;
+    entry: T;
+}
+export interface TranlateShowEvent<T extends TranslationEntry> {
+    name: typeof TRANSLATE_EVENT_SHOW;
+    entry: T;
+}
+
+export type TranslateEvent<T extends TranslationEntry> = TranlateUpdateEvent<T> | TranlateShowEvent<T>;
+
+export interface TranslationProps<T extends TranslationEntry = TranslationEntry> {
+    bundle: I18nBundle<T>;
+    onEvent?: (question: string, event: TranslateEvent<T>) => void;
+    /**
+     * Array of pending question.
+     */
+    pendingQuestions?: string[];
 }

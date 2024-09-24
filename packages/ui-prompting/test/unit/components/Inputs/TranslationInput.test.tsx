@@ -5,6 +5,7 @@ import { TranslationInput } from '../../../../src/components';
 import type { InputProps } from '../../../../src/components';
 import * as TranslationContext from '../../../../src/context/TranslationContext';
 import { acceptI18nCallout, clickI18nButton, isI18nLoading } from '../../utils';
+import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE } from '../../../../src/types';
 
 const id = 'test';
 const props: InputProps = {
@@ -33,11 +34,11 @@ describe('TranslationInput', () => {
     beforeEach(() => {
         triggerEventMock = jest.fn();
         useTranslationSpy = jest.spyOn(TranslationContext, 'useTranslation').mockReturnValue({
-            entries: {
+            bundle: {
                 test: [{ key: { value: 'test' }, value: { value: 'Test value' } }]
             },
             pendingQuestions: [],
-            triggerEvent: triggerEventMock
+            onEvent: triggerEventMock
         });
     });
 
@@ -142,7 +143,7 @@ describe('TranslationInput', () => {
         expect(triggerEventMock).toBeCalledTimes(1);
         expect(triggerEventMock).toBeCalledWith('testInput', {
             entry: { key: { value: 'dummy' }, value: { value: 'dummy' } },
-            name: TranslationContext.TRANSLATE_EVENT_UPDATE
+            name: TRANSLATE_EVENT_UPDATE
         });
     });
 
@@ -153,15 +154,15 @@ describe('TranslationInput', () => {
         expect(triggerEventMock).toBeCalledTimes(1);
         expect(triggerEventMock).toBeCalledWith('testInput', {
             entry: { key: { value: 'test' }, value: { value: 'Test value' } },
-            name: TranslationContext.TRANSLATE_EVENT_SHOW
+            name: TRANSLATE_EVENT_SHOW
         });
     });
 
     it('Mark translation field busy', () => {
         useTranslationSpy = jest.spyOn(TranslationContext, 'useTranslation').mockReturnValue({
-            entries: {},
+            bundle: {},
             pendingQuestions: ['testInput'],
-            triggerEvent: triggerEventMock
+            onEvent: triggerEventMock
         });
 
         render(<TranslationInput {...props} value="{i18n>test}" />);

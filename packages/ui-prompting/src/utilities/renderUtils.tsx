@@ -25,7 +25,8 @@ export const getLabelRenderer = function <P>(title?: string): IRenderFunction<P>
 };
 
 /**
- * Method formats passed id into valid selector id for 'querySelector(#{id})'
+ * Method formats passed id into valid selector id for 'querySelector(#{id})'.
+ *
  * @param id - Passed id for formatting.
  * @returns Formatted id.
  */

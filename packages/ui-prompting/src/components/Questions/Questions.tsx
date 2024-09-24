@@ -13,23 +13,19 @@ import {
     useRequestedChoices
 } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
-import type { PromptQuestion, ValidationResults, PromptsGroup, AnswerValue, DynamicChoices } from '../../types';
+import type {
+    PromptQuestion,
+    ValidationResults,
+    PromptsGroup,
+    AnswerValue,
+    DynamicChoices,
+    TranslationProps
+} from '../../types';
 import { PromptsLayoutType } from '../../types';
+import { TranslationProvider } from '../../context/TranslationContext';
+import type { TranslationEntry } from '@sap-ux/ui-components';
 
 import './Questions.scss';
-import { TranslationProvider } from '../../context/TranslationContext';
-import type { TranslateEvent } from '../../context/TranslationContext';
-import type { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
-
-// ToDo - move to geneeric types ?
-export interface TranslationProps<T extends TranslationEntry = TranslationEntry> {
-    bundle: I18nBundle<T>;
-    onEvent?: (question: string, event: TranslateEvent<T>) => void;
-    /**
-     * Array of pending question.
-     */
-    pendingQuestions?: string[];
-}
 
 export interface QuestionsProps<T extends TranslationEntry = TranslationEntry> {
     id?: string;
