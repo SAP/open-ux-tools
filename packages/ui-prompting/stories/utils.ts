@@ -16,12 +16,12 @@ interface CustomTranslationEntry extends TranslationEntry {
     dummyPath: string;
 }
 
-const I18N_BUNDLE_KEY = 'ui-components-i18n-bundle';
+const I18N_BUNDLE_KEY = 'ui-prompting-i18n-bundle';
 const getI18nBundle = (): I18nBundle<CustomTranslationEntry> => {
     let i18nBundle: I18nBundle<CustomTranslationEntry> = {};
     try {
         i18nBundle = JSON.parse(
-            window.localStorage.getItem(I18N_BUNDLE_KEY) || ''
+            window.localStorage.getItem(I18N_BUNDLE_KEY) ?? ''
         ) as I18nBundle<CustomTranslationEntry>;
     } catch (e) {
         i18nBundle = {};

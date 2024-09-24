@@ -1,11 +1,10 @@
 import React from 'react';
 import type { Answers } from 'inquirer';
-import { Input, Select, MultiSelect } from '../Inputs';
+import { Input, Select, MultiSelect, TranslationInput } from '../Inputs';
 import { getAnswer } from '../../utilities';
 import type { PromptQuestion, ValidationResults, AnswerValue, PromptListChoices } from '../../types';
 
 import './Question.scss';
-import { TranslationInput } from '../Inputs/Input/TranslationInput';
 
 export interface QuestionProps {
     id?: string;
