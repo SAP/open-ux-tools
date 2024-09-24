@@ -144,7 +144,7 @@ async function handleDebugOptions(
     );
     const configurations = configureLaunchJsonFile(rootFolder, cwd, debugOptions).configurations;
 
-    const npmCommand = debugOptions.skipLiveScript ? 'run start-mock' : 'start';
+    const npmCommand = debugOptions.skipLiveConfig ? 'run start-mock' : 'start';
     logger?.info(
         t('startServerMessage', {
             folder: basename(rootFolder),

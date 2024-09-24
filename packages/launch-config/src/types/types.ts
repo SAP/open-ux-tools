@@ -84,8 +84,11 @@ export interface DebugOptions {
     writeToAppOnly?: boolean;
     /** Reference to the VS Code instance. */
     vscode?: any;
-    /** skips live script if set to true. */
-    skipLiveScript?: boolean;
+    /** 
+     * When set to true, skips the addition of live configuration to launch json. 
+     * Use this flag to prevent live script generation during the configuration process.
+     */
+    skipLiveConfig?: boolean;
 }
 
 /**
