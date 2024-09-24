@@ -54,3 +54,16 @@ export interface ReadMe {
     /** Additional custom entries for the application. */
     additionalEntries?: AdditionalEntries[];
 }
+
+export interface YeomanEnvironment {
+    conflicter: {
+        force: boolean;
+    };
+    adapter: {
+        actualAdapter: unknown;
+    };
+}
+
+export interface VSCodeInstance {
+    commands: { executeCommand: (command: string, ...rest: any[]) => Promise<void> };
+}

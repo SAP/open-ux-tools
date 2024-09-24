@@ -32,6 +32,19 @@ describe('CommandRunner', () => {
         expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
     });
 
+    it('should run a command with arguments and options', async () => {
+        const cmd = 'npm';
+        const args = ['install'];
+        const opts = { cwd: '/some/path' };
+        const expectedResponse = 'npm install';
+        spawnMock.setDefault(spawnMock.simple(0, expectedResponse));
+
+        const response = await commandRunner.run(cmd, args, opts);
+
+        expect(response).toBe(expectedResponse);
+        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, opts);
+    });
+
     it('should handle command errors', async () => {
         const cmd = 'npm';
         const args = ['install'];

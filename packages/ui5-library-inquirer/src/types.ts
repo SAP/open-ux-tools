@@ -1,9 +1,9 @@
 export interface UI5LibraryAnswers {
-    libraryName?: string;
-    namespace?: string;
-    targetFolder?: string;
-    ui5Version?: string;
-    enableTypescript?: boolean;
+    libraryName: string;
+    namespace: string;
+    targetFolder: string;
+    ui5Version: string;
+    enableTypescript: boolean;
 }
 
 export interface UI5LibraryPromptOptions {

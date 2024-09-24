@@ -198,6 +198,9 @@
       "path": "packages/ui5-info"
     },
     {
+      "path": "packages/ui5-library-generator"
+    },
+    {
       "path": "packages/ui5-library-inquirer"
     },
     {

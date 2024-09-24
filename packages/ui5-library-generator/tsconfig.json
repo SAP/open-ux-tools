@@ -1,0 +1,31 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../jest-file-matchers"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../nodejs-utils"
+    },
+    {
+      "path": "../ui5-library-inquirer"
+    },
+    {
+      "path": "../ui5-library-writer"
+    }
+  ]
+}
