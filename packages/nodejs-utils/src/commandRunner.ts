@@ -9,7 +9,7 @@ export class CommandRunner {
      *
      * @param {string} cmd to execute
      * @param {string[]} args to pass to the command
-     * @param {SpawnOptionsWithoutStdio} [opts={}] options to pass to the command
+     * @param {SpawnOptionsWithoutStdio} [opts] options to pass to the command
      * @returns {*}  {(Promise<any | void>)}
      * @memberof CommandRunner
      */

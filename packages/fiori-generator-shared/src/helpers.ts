@@ -54,7 +54,7 @@ export function getVariantPreviewAppScript(sapClient?: string): string {
     return `fiori run --open \"preview.html${urlParam}${previewAppAnchor}\"`;
 }
 
-/**    
+/**
  * Determines the target folder for the project.
  *
  * @param vscode - the vscode instance
