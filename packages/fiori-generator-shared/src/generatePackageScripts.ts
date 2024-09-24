@@ -80,7 +80,7 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
  * @param {string} sapClient - The SAP client parameter to include in the URL. If not provided, the URL will not include the `sap-client` parameter.
  * @returns {string} A variant management script to run the application in preview mode.
  */
-export function getVariantPreviewAppScript(sapClient?: string): string {
+function getVariantPreviewAppScript(sapClient?: string): string {
     const previewAppAnchor = '#preview-app';
     const disableCacheParam = 'sap-ui-xx-viewCache=false';
     const sapClientParam = sapClient ? `&sap-client=${sapClient}` : '';
