@@ -1,12 +1,11 @@
 import Generator from 'yeoman-generator';
-import { AppWizard } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { join } from 'path';
 import ReuseLibGenLogger from '../utils/logger';
-import { t } from '../utils';
+import { t, prompts, initialAnswers, runPostLibGenHook, generatorTitle } from '../utils';
 import { platform } from 'os';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { ToolsLogger } from '@sap-ux/logger';
-import { runPostLibGenHook } from '../utils/eventHook';
 import {
     isCli,
     getDefaultTargetFolder,
@@ -15,24 +14,21 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { generate, type UI5LibConfig } from '@sap-ux/ui5-library-writer';
 import { prompt, type UI5LibraryAnswers, type InquirerAdapter } from '@sap-ux/ui5-library-inquirer';
+import type { Ui5LibGenerator } from './types';
 
 /**
  * Generator for creating a new UI5 library.
  *
  * @extends Generator
  */
-export default class ReuseLibGen extends Generator {
-    answers: UI5LibraryAnswers = {
-        libraryName: '',
-        namespace: '',
-        targetFolder: '',
-        ui5Version: '',
-        enableTypescript: false
-    };
+export default class extends Generator implements Ui5LibGenerator {
+    answers: UI5LibraryAnswers = initialAnswers;
+    prompts: Prompts;
     appWizard: AppWizard;
     targetFolder: string;
     vscode: unknown;
     projectPath: string;
+    setPromptsCallback: (fn: any) => void;
 
     /**
      * Constructor for the generator.
@@ -41,14 +37,20 @@ export default class ReuseLibGen extends Generator {
      * @param opts - options passed to the generator
      */
     constructor(args: string | string[], opts: Generator.GeneratorOptions) {
-        super(args, opts, {
-            unique: 'namespace'
-        });
-        this.appWizard = opts.appWizard || AppWizard.create(opts);
+        super(args, opts);
+
+        this.appWizard = AppWizard.create(opts);
         this.vscode = opts.vscode;
         ReuseLibGenLogger.logger = new ToolsLogger({ logPrefix: '@sap-ux/ui5-library-generator' });
-
         this.targetFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
+
+        this.appWizard.setHeaderTitle(generatorTitle);
+        this.prompts = new Prompts(prompts);
+        this.setPromptsCallback = (fn): void => {
+            if (this.prompts) {
+                this.prompts.setCallback(fn);
+            }
+        };
     }
 
     public async prompting(): Promise<void> {

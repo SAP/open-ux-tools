@@ -11,7 +11,7 @@
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
     },
     "license": "Apache-2.0",
-    "main": "dist/index.js",
+    "main": "generators/app/index.js",
     "scripts": {
         "build": "tsc --build",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
@@ -25,9 +25,9 @@
     },
     "files": [
         "LICENSE",
-        "dist",
-        "!dist/*.map",
-        "!dist/**/*.map"
+        "generators",
+        "!generators/*.map",
+        "!generators/**/*.map"
     ],
     "dependencies": {
         "@sap-devx/yeoman-ui-types": "1.14.4",

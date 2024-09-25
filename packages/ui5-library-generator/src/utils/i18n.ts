@@ -7,7 +7,7 @@ const ui5LibGeneratorNs = 'ui5-lib-generator';
 /**
  * Initialize i18next with the translations for this module.
  */
-export async function initI18n(): Promise<void> {
+async function initI18n(): Promise<void> {
     await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
         i18next.addResourceBundle('en', ui5LibGeneratorNs, translations)
     );
