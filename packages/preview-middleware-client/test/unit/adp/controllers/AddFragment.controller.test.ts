@@ -734,7 +734,7 @@ describe('AddFragment', () => {
             });
         });
 
-        test('add header field fragment and a change case 1', async () => {
+        test('add header field fragment and a change if targetAggregation is headerContent', async () => {
             sapMock.ui.version = '1.71.62';
             const executeSpy = jest.fn();
             rtaMock.getCommandStack.mockReturnValue({
@@ -841,7 +841,7 @@ describe('AddFragment', () => {
             });
         });
 
-        test('add header field fragment and a change case 2', async () => {
+        test('add header field fragment and a change if targetAggregation is items', async () => {
             sapMock.ui.version = '1.71.62';
             const executeSpy = jest.fn();
             rtaMock.getCommandStack.mockReturnValue({
