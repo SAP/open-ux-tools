@@ -15,7 +15,7 @@ import type {
     ShowMessage
 } from '@sap-ux-private/control-property-editor-common';
 import {
-    numberOfChangesRequiringReloadChanged,
+    setApplicationRequiresReload,
     changeStackModified,
     controlSelected,
     iconsLoaded,
@@ -61,7 +61,7 @@ interface SliceState {
         canRedo: boolean;
     };
     canSave: boolean;
-    pendingChangesRequiresSaveAndReload: boolean;
+    applicationRequiresReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
 }
@@ -149,7 +149,7 @@ export const initialState: SliceState = {
         canRedo: false
     },
     canSave: false,
-    pendingChangesRequiresSaveAndReload: false,
+    applicationRequiresReload: false,
     isAppLoading: true,
     quickActions: []
 };
@@ -280,9 +280,12 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.dialogMessage = action.payload;
             })
             .addMatcher(fileChanged.match, (state, action: ReturnType<typeof fileChanged>): void => {
+                const firstFile = action.payload[0] ?? '';
+                const separator = firstFile.indexOf('\\') > -1 ? '\\' : '/';
+
                 const newFileChanges = action.payload.filter((changedFile) => {
                     const idx = state.changes.pendingChangeIds.findIndex((pendingFile) =>
-                        changedFile.includes(pendingFile)
+                        changedFile.includes(pendingFile.replace(/\//g, separator))
                     );
                     if (idx > -1) {
                         state.changes.pendingChangeIds.splice(idx, 1);
@@ -324,9 +327,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.isAppLoading = false;
             })
             .addMatcher(
-                numberOfChangesRequiringReloadChanged.match,
-                (state, action: ReturnType<typeof numberOfChangesRequiringReloadChanged>): void => {
-                    state.pendingChangesRequiresSaveAndReload = action.payload > 0;
+                setApplicationRequiresReload.match,
+                (state, action: ReturnType<typeof setApplicationRequiresReload>): void => {
+                    state.applicationRequiresReload = action.payload;
                 }
             )
             .addMatcher(
