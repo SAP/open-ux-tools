@@ -35,6 +35,7 @@ exports[`getQuestions getQuestions 1`] = `
     "type": "list",
   },
   {
+    "additionalMessages": [Function],
     "choices": [
       {
         "name": "New system",
@@ -58,6 +59,30 @@ exports[`getQuestions getQuestions 1`] = `
     "message": "Select a system configuration",
     "name": "systemSelection",
     "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "mandatory": true,
+    },
+    "message": "Username",
+    "name": "systemSelection:systemUsername",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "mandatory": true,
+    },
+    "guiType": "login",
+    "mask": "*",
+    "message": "Password",
+    "name": "systemSelection:systemPassword",
+    "type": "password",
     "validate": [Function],
     "when": [Function],
   },
@@ -125,7 +150,7 @@ exports[`getQuestions getQuestions 1`] = `
       "mandatory": true,
     },
     "message": "Username",
-    "name": "abapSystemUsername",
+    "name": "abapOnPrem:systemUsername",
     "type": "input",
     "validate": [Function],
     "when": [Function],
@@ -138,7 +163,7 @@ exports[`getQuestions getQuestions 1`] = `
     "guiType": "login",
     "mask": "*",
     "message": "Password",
-    "name": "abapSystemPassword",
+    "name": "abapOnPrem:systemPassword",
     "type": "password",
     "validate": [Function],
     "when": [Function],

@@ -403,8 +403,8 @@ describe('ConnectionValidator', () => {
         expect(getOdataServiceSpy).toHaveBeenCalled();
 
         getOdataServiceSpy.mockClear();
-        // Auth is required even though a 200 since the url initially returned 401
-        expect(await connectValidator.isAuthRequired('https://example.com/serviceA', '999')).toBe(true);
+        // Auth is not required since the connection has been authenticated
+        expect(await connectValidator.isAuthRequired('https://example.com/serviceA', '999')).toBe(false);
         // Should not recheck with the same url and client
         expect(getOdataServiceSpy).not.toHaveBeenCalled();
 

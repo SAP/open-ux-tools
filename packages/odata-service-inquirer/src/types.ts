@@ -130,7 +130,11 @@ export enum promptNames {
     /**
      * Newly created systems can be named for storage
      */
-    userSystemName = 'userSystemName'
+    userSystemName = 'userSystemName',
+    /**
+     * System selection
+     */
+    systemSelection = 'systemSelection'
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
@@ -210,6 +214,44 @@ export type DatasourceTypePromptOptions = {
     choices?: DatasourceType[];
 };
 
+export type DestinationFilters = {
+    /**
+     * 'WebIDEUsage' property is defined and includes the value 'odata_abap' and does not includes the value 'odata_gen'
+     */
+    odata_abap: boolean;
+    /**
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'.
+     */
+    odata_generic: boolean;
+    /**
+     * 'WebIDEAdditionalData' property is defined and includes the value 'full_url' and
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'.
+     */
+    full_service_url: boolean;
+    /**
+     * 'WebIDEAdditionalData' property is defined and does not include the value 'full_url' and
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'.
+     */
+    partial_service_url: boolean;
+    /**
+     * todo: Add implementation
+     * Abap cloud destination
+     */
+    abap_cloud: boolean;
+    /**
+     * Abap on-premise destination
+     */
+    abap_on_premise: boolean;
+};
+
+export type SystemSelectionPromptOptions = {
+    /**
+     * Set the specific filter option(s) to true to include only the destinatons that have matching configuration attributes.
+     * If no filter is set, all destinations will be included. If multiple filters are set, the destination will be included if it matches any of the filters.
+     */
+    destinationFilters: DestinationFilters;
+};
+
 export type MetadataPromptOptions = {
     /**
      * Used to validate the metadata file contains the required odata version edmx
@@ -256,7 +298,8 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
     Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
     Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
-    Record<promptNames.userSystemName, SystemNamePromptOptions>;
+    Record<promptNames.userSystemName, SystemNamePromptOptions> &
+    Record<promptNames.systemSelection, SystemSelectionPromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 

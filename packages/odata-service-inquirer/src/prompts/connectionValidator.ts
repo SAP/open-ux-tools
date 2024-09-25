@@ -627,14 +627,17 @@ export class ConnectionValidator {
             return false;
         }
 
-        // Dont re-request if already validated
-        if (
-            this._validatedUrl === urlString &&
-            this._validatedClient === client &&
-            this.validity.authRequired !== undefined
-        ) {
-            return this.validity.authRequired;
+        // Dont re-request if we have already determined the auth requirement or we are authenticated
+        if (this._validatedUrl === urlString && this._validatedClient === client) {
+            if (this.validity.authenticated) {
+                return false;
+            }
+            if (this.validity.authRequired !== undefined) {
+                return this.validity.authRequired;
+            }
+            // Not determined yet, continue
         }
+
         // New URL or client so we need to re-request
         try {
             const url = new URL(urlString);
