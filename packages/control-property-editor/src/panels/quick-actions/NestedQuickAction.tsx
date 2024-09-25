@@ -90,7 +90,7 @@ export function NestedQuickActionListItem({
                             })
                         );
                     }}>
-                    <span className="link-text">{`${action.title}`}</span>
+                    <span className="link-text">{action.title}</span>
                 </UILink>
             )}
             {action.children.length > 1 && (
