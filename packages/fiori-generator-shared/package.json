@@ -30,6 +30,7 @@
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "i18next": "20.6.1",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0"
     },
