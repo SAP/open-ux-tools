@@ -1,5 +1,29 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.20
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/fiori-generator-shared@0.4.0
+    -   @sap-ux/ui5-config@0.25.0
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/system-access@0.5.11
+
+## 0.0.19
+
+### Patch Changes
+
+-   7b60a4c: update destination validator
+
+## 0.0.18
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/fiori-generator-shared@0.3.21
+-   @sap-ux/system-access@0.5.11
+
 ## 0.0.17
 
 ### Patch Changes

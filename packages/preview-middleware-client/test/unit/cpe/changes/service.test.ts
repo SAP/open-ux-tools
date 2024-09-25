@@ -1,10 +1,7 @@
 import * as flexChange from '../../../../src/cpe/changes/flex-change';
 import { ChangeService } from '../../../../src/cpe/changes/service';
-import {
-    changeProperty,
-    deletePropertyChanges,
-    reloadApplication
-} from '@sap-ux-private/control-property-editor-common';
+import { ActionHandler } from '../../../../src/cpe/types';
+import { changeProperty, deletePropertyChanges, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
@@ -14,13 +11,13 @@ describe('SelectionService', () => {
         return Promise.resolve();
     });
     let sendActionMock: jest.Mock;
-    let subscribeMock: jest.Mock;
+    let subscribeMock: jest.Mock<void, [ActionHandler]>;
     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
     beforeEach(() => {
         rtaMock.attachUndoRedoStackModified = jest.fn() as jest.Mock;
         sendActionMock = jest.fn();
-        subscribeMock = jest.fn();
+        subscribeMock = jest.fn<void, [ActionHandler]>();
         fetchMock.mockClear();
     });
 
@@ -542,6 +539,89 @@ describe('SelectionService', () => {
         });
     });
 
+    test('manifest change', async () => {
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        function createCommand(
+            properties: Map<string, any>,
+            toggle = false
+        ): {
+            getProperty: (name: string) => any;
+            getElement: () => any;
+            getSelector: () => any;
+            getChangeType: () => string;
+            getParent: () => any;
+            getPreparedChange: () => { getDefinition: () => { fileName: string } };
+        } {
+            const cache = new Map(properties);
+            return {
+                getProperty: (name: string): any => {
+                    return cache.get(name);
+                },
+                getElement: jest.fn().mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({ getName: jest.fn().mockReturnValue('sap.m.Button') })
+                }),
+                getSelector: jest.fn().mockReturnValue({
+                    id: !toggle ? 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button' : undefined,
+                    name: 'ExtensionPoint1'
+                }),
+                getChangeType: (): any => {
+                    return cache.get('changeType');
+                },
+                getParent: jest.fn().mockReturnValue({
+                    getElement: jest.fn().mockReturnValue({
+                        getId: () => 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                    })
+                }),
+                getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
+                    return { getDefinition: () => ({ fileName: 'testFileName' }) };
+                }
+            };
+        }
+        const commands = [
+            createCommand(
+                new Map<string, any>([
+                    ['selector', { id: 'control1' }],
+                    ['changeType', 'appdescr_fe_changePageConfiguration'],
+                    ['propertyName', 'text'],
+                    ['newValue', 'abc']
+                ])
+            ),
+        ];
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(commands),
+            getAllExecutedCommands: jest.fn().mockReturnValue(commands)
+        });
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        await service.init(sendActionMock, subscribeMock);
+
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+        expect(sendActionMock).toHaveBeenCalledTimes(5);
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, setApplicationRequiresReload(true))
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: [
+                    {
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        isActive: true,
+                        controlName: 'Button',
+                        fileName: 'testFileName',
+                        type: 'pending',
+                        kind: 'unknown',
+                    },
+                ]
+            }
+        });
+    });
+
     test('delete property', async () => {
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
         fetchMock.mockResolvedValue({
@@ -584,55 +664,6 @@ describe('SelectionService', () => {
             body: '{"fileName":"id_1640106755570_203_propertyChange"}',
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'
-        });
-    });
-
-    test('reload application', async () => {
-        jest.spyOn(Date, 'now').mockReturnValueOnce(123);
-        fetchMock.mockResolvedValue({
-            json: () => Promise.resolve(undefined)
-        });
-
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
-
-        await service.init(sendActionMock, subscribeMock);
-        await subscribeMock.mock.calls[0][0](reloadApplication());
-        expect(rtaMock.stop).toHaveBeenNthCalledWith(1, false, true);
-    });
-
-    test('attach stop callback check', async () => {
-        jest.spyOn(Date, 'now').mockReturnValueOnce(123);
-        fetchMock.mockResolvedValue({
-            json: () => Promise.resolve(undefined)
-        });
-
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
-
-        rtaMock.attachStop.mockClear();
-        const reloadSpy = jest.fn();
-        const location = window.location;
-        Object.defineProperty(window, 'location', {
-            value: {
-                reload: reloadSpy
-            }
-        });
-        await service.init(sendActionMock, subscribeMock);
-        expect(rtaMock.attachStop).toBeCalledTimes(1);
-
-        rtaMock.attachStop.mock.calls[0][0]();
-        expect(reloadSpy).toHaveBeenCalled();
-        Object.defineProperty(window, 'location', {
-            value: location
         });
     });
 });

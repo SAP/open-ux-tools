@@ -1,5 +1,26 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.31.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.27.4
+-   @sap-ux/fiori-annotation-api@0.2.4
+
+## 0.31.2
+
+### Patch Changes
+
+-   a18d4a2: Added property `allowAutoAddDependencyLib` to the building block API. This property allows turning off the automatic addition of the 'sap.fe.macros' library to the 'manifest.json' file under library dependencies (`"sap.ui5"/"dependencies"/"libs"`). The default value is `true`.
+
+## 0.31.1
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/fiori-annotation-api@0.2.3
+
 ## 0.31.0
 
 ### Minor Changes

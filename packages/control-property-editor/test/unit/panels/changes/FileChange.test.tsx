@@ -26,7 +26,9 @@ describe('FileChange', () => {
         saveAndReloadLink.click();
         const hookMock = useDispatch();
         expect(hookMock as jest.Mock).toHaveBeenCalledWith({
-            payload: undefined,
+            payload: {
+                save: true
+            },
             type: reloadApplication.type
         });
     });

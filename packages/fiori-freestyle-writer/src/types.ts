@@ -51,4 +51,5 @@ export interface PackageJsonScripts {
     'start-local': string;
     'start-noflp'?: string;
     'start-mock'?: string;
+    'start-variants-management'?: string;
 }

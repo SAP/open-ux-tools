@@ -10,7 +10,9 @@ import {
     appLoaded,
     redo,
     save,
-    undo
+    undo,
+    setApplicationRequiresReload,
+    reloadApplication
 } from '@sap-ux-private/control-property-editor-common';
 
 test('renders UndoRedoSaveActions', () => {
@@ -43,4 +45,28 @@ test('renders UndoRedoSaveActions', () => {
 
     saveBtn.click();
     expect(dispatch).toBeCalledWith(save());
+});
+
+describe('toolbar', () => {
+    test('renders save and reload', () => {
+        const { dispatch, store } = render(<UndoRedoSaveActions />);
+
+        // update state
+        store.dispatch(setUndoRedoEnablement({ canRedo: true, canUndo: true }));
+        store.dispatch(setSaveEnablement(true));
+        store.dispatch(setApplicationRequiresReload(true));
+        store.dispatch(appLoaded());
+
+        dispatch.mockClear();
+
+        const saveBtn = screen.getByRole('button', { name: /save and reload/i });
+        expect(saveBtn).toBeInTheDocument();
+
+        saveBtn.click();
+        expect(dispatch).toBeCalledWith(
+            reloadApplication({
+                save: true
+            })
+        );
+    });
 });
