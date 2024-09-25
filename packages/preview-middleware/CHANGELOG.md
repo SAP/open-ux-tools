@@ -1,5 +1,32 @@
 # @sap-ux/preview-middleware
 
+## 0.16.71
+
+### Patch Changes
+
+-   b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
+
+## 0.16.70
+
+### Patch Changes
+
+-   8f442a6: Usability improvements for Quick Actions that add fragments
+
+## 0.16.69
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.51
+-   @sap-ux/project-access@1.27.4
+
+## 0.16.68
+
+### Patch Changes
+
+-   00e1835: Fixed manifest changes not visible in preview after reload
+-   Updated dependencies [00e1835]
+    -   @sap-ux/adp-tooling@0.12.50
+
 ## 0.16.67
 
 ### Patch Changes

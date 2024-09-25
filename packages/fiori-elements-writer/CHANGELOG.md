@@ -1,5 +1,28 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.2.0
+
+### Minor Changes
+
+-   484195d: Enhancements to FE & FF Configurations: The updates include adding the `start-variants-management` script to `package.json` for FE and FF. The OdataService interface now has an `ignoreCertError` property. UI5 application writer introduces the `sapuxLayer` property to `package.json` templates and adds `fiori-tools-preview middleware` to ui5, ui5-mock, and ui5-local.yaml. Additionally, the `addFioriToolsPreviewMiddleware` function has been added for YAML config integration.
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/fiori-generator-shared@0.4.0
+    -   @sap-ux/ui5-application-writer@1.2.0
+    -   @sap-ux/odata-service-writer@0.23.0
+    -   @sap-ux/ui5-config@0.25.0
+    -   @sap-ux/fe-fpm-writer@0.31.3
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.1.24
+
+### Patch Changes
+
+-   Updated dependencies [a18d4a2]
+    -   @sap-ux/fe-fpm-writer@0.31.2
+
 ## 1.1.23
 
 ### Patch Changes
