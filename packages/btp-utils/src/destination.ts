@@ -226,9 +226,9 @@ export function isS4HC(destination: Destination): boolean {
 }
 
 /**
- * Checks if the destination attributes WebIDEUsage is configured with odata_abap
+ * Checks if the destination attributes WebIDEUsage is configured with odata_abap.
  *
- * @param destination destination info
+ * @param destination destination configuration properties
  * @returns true, if this destination has the the 'odata_abap' attribute set
  */
 export function isAbapODataDestination(destination: Destination): boolean {
