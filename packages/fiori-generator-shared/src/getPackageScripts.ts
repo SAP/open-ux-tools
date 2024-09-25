@@ -17,6 +17,7 @@ function buildStartNoFLPCommand(localOnly: boolean, searchParams: URLSearchParam
     const searchParamString = searchParams.toString();
     const searchParam = searchParamString ? `?${searchParamString}` : '';
     if (localOnly) {
+        // eslint-disable-next-line no-useless-escape
         return `echo \\"${t('info.mockOnlyWarning')}\\"`;
     }
     return `fiori run --open "index.html${searchParam}"`;
@@ -69,6 +70,7 @@ function buildParams(searchParams: URLSearchParams, flpAppId: string): string {
  */
 function buildStartCommand(localOnly: boolean, params: string, startFile?: string): string {
     if (localOnly) {
+        // eslint-disable-next-line no-useless-escape
         return `echo \\"${t('info.mockOnlyWarning')}\\"`;
     }
     return `fiori run --open "${startFile ?? 'test/flpSandbox.html'}${params}"`;
@@ -92,6 +94,7 @@ function getVariantPreviewAppScript(sapClient?: string): string {
     ]
         .filter(Boolean)
         .join('&')}`;
+    // eslint-disable-next-line no-useless-escape
     return `fiori run --open \"preview.html${urlParam}${previewAppAnchor}\"`;
 }
 
@@ -141,6 +144,7 @@ export function getPackageScripts({
         scripts['int-test'] = 'fiori run --config ./ui5-mock.yaml --open "test/integration/opaTests.qunit.html"';
     }
 
+    // eslint-disable-next-line no-useless-escape
     scripts['start-variants-management'] = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
         : getVariantPreviewAppScript(sapClient);
