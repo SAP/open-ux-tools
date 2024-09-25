@@ -1,17 +1,8 @@
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { MiddlewareConfigs } from '../types';
+import { stringify } from 'querystring';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { FioriPreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
-
-/**
- * Checks if a fiori-tools-preview middleware configuration is decprecated.
- *
- * @param config fiori-tools-preview middleware configuration
- * @returns type conversion if true
- */
-function isDeprecatedConfig(config: FioriPreviewConfigOptions): config is FioriToolsDeprecatedPreviewConfig {
-    return (config as FioriToolsDeprecatedPreviewConfig)?.component !== undefined;
-}
 
 /**
  * Gets the fiori-tools-preview middleware configuration.
@@ -27,16 +18,56 @@ async function getFioriToolsPreviewMiddleware(
 }
 
 /**
- * Gets the the fiori-tools-preview middleware configuration and checks if it's decprecated.
+ * Gets the fiori-tools-preview middleware configuration and checks if it's deprecated.
  *
  * @param basePath - path to project root, where package.json and ui5.yaml is
- * @returns true, if a fiori-tools-previewre middleware configuration is deprecated
+ * @returns true, if a fiori-tools-preview middleware configuration is deprecated
  */
-export async function checkDeprecatedPreviewMiddleware(basePath: string): Promise<boolean> {
+async function checkDeprecatedPreviewMiddleware(basePath: string): Promise<boolean> {
     const existingPreviewMiddleware = await getFioriToolsPreviewMiddleware(basePath);
-    if (existingPreviewMiddleware && isDeprecatedConfig(existingPreviewMiddleware.configuration)) {
-        return true;
-    } else {
-        return false;
+    return (existingPreviewMiddleware?.configuration as FioriToolsDeprecatedPreviewConfig)?.component !== undefined;
+}
+
+/**
+ * Extracts sap client string from existing scripts in package.json.
+ *
+ * @param scripts - script section of the package.json
+ * @returns sap client
+ */
+export function getSapClientFromPackageJson(scripts: Partial<Record<string, string>>): string | undefined {
+    for (const value of Object.values(scripts)) {
+        const match = value?.match(/sap-client=([0-9]{3})/);
+        if (match) {
+            return match[1];
+        }
     }
+    return undefined;
+}
+
+/**
+ * Returns the UI5 url parameters.
+ *
+ * @param overwritingParams - parameters to be overwritten
+ * @returns - UI5 url parameters
+ */
+export function getUi5UrlParameters(overwritingParams: Record<string, string> = {}): string {
+    const parameters: Record<string, string> = {
+        'fiori-tools-rta-mode': 'true',
+        'sap-ui-rta-skip-flex-validation': 'true',
+        'sap-ui-xx-condense-changes': 'true'
+    };
+    return stringify(Object.assign(parameters, overwritingParams));
+}
+
+/**
+ * Returns the preview url parameters.
+ *
+ * @param basePath - path to project root, where package.json and ui5.yaml is
+ * @param query - query to create fragment
+ * @returns - review url parameters
+ */
+export async function getPreviewUrl(basePath: string, query: string): Promise<string> {
+    // checks if a ui5.yaml configuration is deprecated and therefore needs a different hash
+    const previewHash = (await checkDeprecatedPreviewMiddleware(basePath)) ? 'preview-app' : 'app-preview';
+    return `/preview.html?${query}#${previewHash}`;
 }

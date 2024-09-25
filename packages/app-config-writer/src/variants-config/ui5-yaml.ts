@@ -15,7 +15,7 @@ import type { FioriPreviewConfigOptions } from '../types';
  * @returns 'fiori-tools-preview' configuration
  */
 function getFioriToolsPreviewConfig(ui5YamlConfig: UI5Config): CustomMiddleware<FioriPreviewConfigOptions> {
-    let previewMiddlewareConfig = {
+    const previewMiddlewareTemplate = {
         name: 'fiori-tools-preview',
         afterMiddleware: 'compression'
     } as CustomMiddleware<FioriPreviewConfigOptions>;
@@ -28,49 +28,35 @@ function getFioriToolsPreviewConfig(ui5YamlConfig: UI5Config): CustomMiddleware<
     );
 
     if (existingPreviewMiddleware?.configuration) {
-        const config = Object.defineProperty(previewMiddlewareConfig, 'configuration', {
-            writable: true,
-            enumerable: true,
-            configurable: true,
-            value: existingPreviewMiddleware.configuration
-        });
-        previewMiddlewareConfig = config;
+        previewMiddlewareTemplate.configuration = { ...existingPreviewMiddleware.configuration };
     }
 
     if (existingReloadMiddleware) {
-        previewMiddlewareConfig.afterMiddleware = MiddlewareConfigs.FioriToolsAppreload;
-        // ToDo: check if this is needed
-        if (existingReloadMiddleware.configuration) {
-            existingReloadMiddleware.configuration['delay'] = 300;
-
-            ui5YamlConfig.updateCustomMiddleware({
-                name: 'fiori-tools-appreload',
-                afterMiddleware: existingReloadMiddleware.afterMiddleware,
-                configuration: {
-                    ...existingReloadMiddleware.configuration
-                }
-            });
-        }
+        previewMiddlewareTemplate.afterMiddleware = MiddlewareConfigs.FioriToolsAppreload;
     }
 
-    return previewMiddlewareConfig;
+    return previewMiddlewareTemplate;
 }
 
 /**
- * Checks the project for ui5.yaml files and adds the fiori-tools-preview middleware to it.
+ * Checks the project for ui5.yaml files and updates the fiori-tools-preview middleware.
  *
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to project root, where package.json and ui5.yaml is
  * @param logger - logger
  */
-export async function addPreviewMiddlewareToYaml(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+export async function updateFioriToolsPreviewMiddleware(
+    fs: Editor,
+    basePath: string,
+    logger?: ToolsLogger
+): Promise<void> {
     const ui5Yamls = [FileName.Ui5Yaml, FileName.Ui5MockYaml, FileName.Ui5LocalYaml];
     for (const ui5Yaml of ui5Yamls) {
         let existingUi5YamlConfig: UI5Config;
         try {
             existingUi5YamlConfig = await readUi5Yaml(basePath, ui5Yaml);
         } catch (error) {
-            logger?.debug(`Cannot write varinats-config to ${ui5Yaml}. File not existing`);
+            logger?.debug(`Cannot write variants-config to ${ui5Yaml}. File not existing`);
             continue;
         }
 
@@ -80,7 +66,7 @@ export async function addPreviewMiddlewareToYaml(fs: Editor, basePath: string, l
 
         if (previewMiddlewareConfig) {
             fs.write(join(basePath, ui5Yaml), previewMiddlewareConfig.toString());
-            logger?.info(`Updated preview middleware in ${ui5Yaml}.`);
+            logger?.debug(`Updated preview middleware in ${ui5Yaml}.`);
         }
     }
 }

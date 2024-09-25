@@ -1,14 +1,4 @@
 import type { MiddlewareConfig } from '@sap-ux/preview-middleware';
-
-export const FIORI_TOOLS_RTA_MODE_TRUE = 'true';
-export const FIORI_TOOLS_RTA_MODE_VARIANTS = 'forVariants';
-export const FIORI_TOOLS_RTA_MODE_ADAPTATION = 'forAdaptation';
-
-export type FioriToolsRtaMode =
-    | typeof FIORI_TOOLS_RTA_MODE_TRUE
-    | typeof FIORI_TOOLS_RTA_MODE_VARIANTS
-    | typeof FIORI_TOOLS_RTA_MODE_ADAPTATION;
-
 export interface FioriToolsDeprecatedPreviewConfig {
     component: string;
     libs?: boolean;

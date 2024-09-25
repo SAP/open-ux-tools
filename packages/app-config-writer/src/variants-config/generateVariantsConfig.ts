@@ -1,6 +1,6 @@
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { addPreviewMiddlewareToYaml } from './ui5-yaml';
+import { updateFioriToolsPreviewMiddleware } from './ui5-yaml';
 import { addVariantsManagementScript } from './package-json';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -18,6 +18,6 @@ export async function generateVariantsConfig(basePath: string, logger?: ToolsLog
         fs = create(createStorage());
     }
     await addVariantsManagementScript(fs, basePath, logger);
-    await addPreviewMiddlewareToYaml(fs, basePath, logger);
+    await updateFioriToolsPreviewMiddleware(fs, basePath, logger);
     return fs;
 }
