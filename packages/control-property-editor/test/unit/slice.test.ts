@@ -2,7 +2,7 @@ import {
     applicationModeChanged,
     changeStackModified,
     iconsLoaded,
-    numberOfChangesRequiringReloadChanged,
+    setApplicationRequiresReload,
     propertyChanged,
     propertyChangeFailed,
     quickActionListChanged,
@@ -298,19 +298,19 @@ describe('main redux slice', () => {
             deviceType: DeviceType.Desktop
         });
     });
-    describe('numberOfChangesRequiringReloadChanged', () => {
+    describe('setApplicationRequiresReload', () => {
         test('one change requires reload', () => {
             expect(
-                reducer({ pendingChangesRequiresSaveAndReload: false } as any, numberOfChangesRequiringReloadChanged(1))
+                reducer({ applicationRequiresReload: false } as any, setApplicationRequiresReload(true))
             ).toStrictEqual({
-                pendingChangesRequiresSaveAndReload: true
+                applicationRequiresReload: true
             });
         });
         test('no changes require reload', () => {
             expect(
-                reducer({ pendingChangesRequiresSaveAndReload: true } as any, numberOfChangesRequiringReloadChanged(0))
+                reducer({ applicationRequiresReload: true } as any, setApplicationRequiresReload(false))
             ).toStrictEqual({
-                pendingChangesRequiresSaveAndReload: false
+                applicationRequiresReload: false
             });
         });
     });

@@ -29,7 +29,10 @@ export class AddCustomSectionQuickAction
         )[0] as ObjectPageLayout;
 
         const overlay = OverlayRegistry.getOverlay(objectPageLayout) || [];
-        await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, 'sections');
+        await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
+            aggregation: 'sections',
+            title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
+        });
         return [];
     }
 }
