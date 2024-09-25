@@ -502,7 +502,10 @@ describe('FE V2 quick actions', () => {
                     '../../../../src/adp/init-dialogs'
                 );
 
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'items');
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
+                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD',
+                    aggregation: 'items'
+                });
             });
         });
         describe('add custom section', () => {
@@ -634,7 +637,10 @@ describe('FE V2 quick actions', () => {
                     '../../../../src/adp/init-dialogs'
                 );
 
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'sections');
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
+                    title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION',
+                    aggregation: 'sections'
+                });
             });
         });
     });

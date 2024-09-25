@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.70
+
+### Patch Changes
+
+-   8f442a6: Usability improvements for Quick Actions that add fragments
+
 ## 0.16.69
 
 ### Patch Changes
