@@ -167,6 +167,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     };
 
     export type SelectionChangeEvent = Event<SelectionChangeParams>;
+    export type RtaMode = 'adaptation' | 'navigation';
     export interface SelectionChangeParams {
         selection: ElementOverlay[];
     }
@@ -240,7 +241,8 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         } & Component;
         stop: (bSkipSave, bSkipRestart) => Promise<void>;
         attachStop: (handler: (event: Event) => void) => void;
-        setMode: (sNewMode: string) => void;
+        getMode: () => RtaMode;
+        setMode: (mode: RtaMode) => void;
         canUndo: () => boolean;
         canRedo: () => boolean;
         canSave?: () => boolean;
