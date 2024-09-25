@@ -93,7 +93,6 @@ function getVariantPreviewAppScript(sapClient?: string): string {
         .filter(Boolean)
         .join('&')}`;
     // eslint-disable-next-line no-useless-escape
-    // eslint-disable-next-line sonarjs/no-duplicate-string
     return `fiori run --open \"preview.html${urlParam}${previewAppAnchor}\"`;
 }
 
