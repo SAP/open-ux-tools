@@ -8,6 +8,7 @@ import { randomBytes } from 'crypto';
 
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 const CUSTOM_ACTION = 'CUSTOM_ACTION';
+const OBJECT_PAGE_HEADER_FIELD = 'OBJECT_PAGE_HEADER_FIELD';
 
 interface FragmentTemplateConfig<T = { [key: string]: any }> {
     /**
@@ -38,6 +39,18 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
             return {
                 ids: {
                     toolbarActionButton: `btn-${uuid}`
+                }
+            };
+        }
+    },
+    [OBJECT_PAGE_HEADER_FIELD]: {
+        path: 'common/header-field.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    vBoxContainer: `vBox-${uuid}`,
+                    label: `label-${uuid}`
                 }
             };
         }
