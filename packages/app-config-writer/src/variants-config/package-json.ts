@@ -15,12 +15,11 @@ export async function addVariantsManagementScript(fs: Editor, basePath: string, 
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package;
 
-    const scripts = packageJson.scripts ?? {};
     const urlParameters: Record<string, string> = {};
 
     if (!packageJson.scripts) {
         logger?.warn(`File 'package.json' does not contain a script section. Script section added.`);
-        packageJson['scripts'] = scripts;
+        packageJson.scripts = {};
     } else {
         // check if sap-client is needed when starting the app
         const sapClient = getSapClientFromPackageJson(packageJson.scripts);
@@ -32,7 +31,7 @@ export async function addVariantsManagementScript(fs: Editor, basePath: string, 
     const query = getUi5UrlParameters(urlParameters);
     const url = await getPreviewUrl(basePath, query);
 
-    scripts['start-variants-management'] = `fiori run --open "${url.slice(1)}"`;
+    packageJson.scripts['start-variants-management'] = `fiori run --open "${url}"`;
     fs.writeJSON(packageJsonPath, packageJson);
     logger?.info(`Script 'start-variants-management' written to 'package.json'.`);
 }

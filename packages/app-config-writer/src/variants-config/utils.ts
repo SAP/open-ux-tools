@@ -1,4 +1,5 @@
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
+import type { Package } from '@sap-ux/project-access';
 import { MiddlewareConfigs } from '../types';
 import { stringify } from 'querystring';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
@@ -34,8 +35,8 @@ async function checkDeprecatedPreviewMiddleware(basePath: string): Promise<boole
  * @param scripts - script section of the package.json
  * @returns sap client
  */
-export function getSapClientFromPackageJson(scripts: Partial<Record<string, string>>): string | undefined {
-    for (const value of Object.values(scripts)) {
+export function getSapClientFromPackageJson(scripts: Package['scripts']): string | undefined {
+    for (const value of Object.values(scripts!)) {
         const match = value?.match(/sap-client=([0-9]{3})/);
         if (match) {
             return match[1];
@@ -69,5 +70,5 @@ export function getUi5UrlParameters(overwritingParams: Record<string, string> = 
 export async function getPreviewUrl(basePath: string, query: string): Promise<string> {
     // checks if a ui5.yaml configuration is deprecated and therefore needs a different hash
     const previewHash = (await checkDeprecatedPreviewMiddleware(basePath)) ? 'preview-app' : 'app-preview';
-    return `/preview.html?${query}#${previewHash}`;
+    return `preview.html?${query}#${previewHash}`;
 }
