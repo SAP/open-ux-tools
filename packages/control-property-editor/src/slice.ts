@@ -5,14 +5,17 @@ import type {
     Control,
     IconDetails,
     OutlineNode,
+    PendingChange,
     PendingPropertyChange,
     PropertyChange,
     QuickActionGroup,
+    SavedChange,
     SavedPropertyChange,
     Scenario,
     ShowMessage
 } from '@sap-ux-private/control-property-editor-common';
 import {
+    setApplicationRequiresReload,
     changeStackModified,
     controlSelected,
     iconsLoaded,
@@ -28,7 +31,10 @@ import {
     setSaveEnablement,
     appLoaded,
     updateQuickAction,
-    quickActionListChanged
+    quickActionListChanged,
+    UNKNOWN_CHANGE_KIND,
+    SAVED_CHANGE_TYPE,
+    PENDING_CHANGE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -55,14 +61,15 @@ interface SliceState {
         canRedo: boolean;
     };
     canSave: boolean;
+    applicationRequiresReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
 }
 
 export interface ChangesSlice {
     controls: ControlChanges;
-    pending: PendingPropertyChange[];
-    saved: SavedPropertyChange[];
+    pending: PendingChange[];
+    saved: SavedChange[];
     pendingChangeIds: string[];
 }
 export interface ControlChanges {
@@ -142,6 +149,7 @@ export const initialState: SliceState = {
         canRedo: false
     },
     canSave: false,
+    applicationRequiresReload: false,
     isAppLoading: true,
     quickActions: []
 };
@@ -223,6 +231,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.changes.controls = {};
 
                 for (const change of [...action.payload.pending, ...action.payload.saved].reverse()) {
+                    if (change.kind === UNKNOWN_CHANGE_KIND) {
+                        continue;
+                    }
                     const { controlId, propertyName, type, controlName } = change;
                     const key = `${controlId}`;
                     const control = state.changes.controls[key]
@@ -238,9 +249,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                               controlName: controlName ?? '',
                               properties: {}
                           };
-                    if (type === 'pending') {
+                    if (type === PENDING_CHANGE_TYPE) {
                         control.pending++;
-                    } else if (type === 'saved') {
+                    } else if (type === SAVED_CHANGE_TYPE) {
                         control.saved++;
                     }
                     const property = control.properties[propertyName]
@@ -254,10 +265,10 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                               pending: 0,
                               saved: 0
                           };
-                    if (change.type === 'pending') {
+                    if (change.type === PENDING_CHANGE_TYPE) {
                         property.pending++;
                         property.lastChange = change;
-                    } else if (change.type === 'saved') {
+                    } else if (change.type === SAVED_CHANGE_TYPE) {
                         property.lastSavedChange = change;
                         property.saved++;
                     }
@@ -269,9 +280,12 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.dialogMessage = action.payload;
             })
             .addMatcher(fileChanged.match, (state, action: ReturnType<typeof fileChanged>): void => {
+                const firstFile = action.payload[0] ?? '';
+                const separator = firstFile.indexOf('\\') > -1 ? '\\' : '/';
+
                 const newFileChanges = action.payload.filter((changedFile) => {
                     const idx = state.changes.pendingChangeIds.findIndex((pendingFile) =>
-                        changedFile.includes(pendingFile)
+                        changedFile.includes(pendingFile.replace(/\//g, separator))
                     );
                     if (idx > -1) {
                         state.changes.pendingChangeIds.splice(idx, 1);
@@ -312,6 +326,12 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             .addMatcher(appLoaded.match, (state): void => {
                 state.isAppLoading = false;
             })
+            .addMatcher(
+                setApplicationRequiresReload.match,
+                (state, action: ReturnType<typeof setApplicationRequiresReload>): void => {
+                    state.applicationRequiresReload = action.payload;
+                }
+            )
             .addMatcher(
                 quickActionListChanged.match,
                 (state: SliceState, action: ReturnType<typeof quickActionListChanged>): void => {

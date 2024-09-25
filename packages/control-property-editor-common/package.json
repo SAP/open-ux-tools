@@ -3,7 +3,7 @@
     "displayName": "Control Property Editor Common",
     "description": "A common module for Control Property Editor react app and ui5",
     "license": "Apache-2.0",
-    "version": "0.5.0",
+    "version": "0.5.2",
     "main": "dist/index.js",
     "repository": {
         "type": "git",
@@ -14,7 +14,7 @@
     "scripts": {
         "clean": "rimraf --glob dist reports *.tsbuildinfo",
         "build": "npm-run-all -l -s clean -p build:compile",
-        "build:compile": "tsc  --build ./tsconfig.json --pretty",
+        "build:compile": "tsc --build ./tsconfig.json --pretty",
         "watch": "build:compile --watch",
         "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles --config='jest.config.js'",
         "lint": "eslint . --ext .ts,.tsx",

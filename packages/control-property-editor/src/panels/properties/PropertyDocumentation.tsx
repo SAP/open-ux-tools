@@ -6,7 +6,11 @@ import { Text, Stack } from '@fluentui/react';
 
 import { UIIcon, UIIconButton, UiIcons } from '@sap-ux/ui-components';
 
-import type { Control, SavedPropertyChange, PendingChange } from '@sap-ux-private/control-property-editor-common';
+import type {
+    Control,
+    SavedPropertyChange,
+    PendingPropertyChange
+} from '@sap-ux-private/control-property-editor-common';
 import { Separator } from '../../components';
 import type { RootState } from '../../store';
 
@@ -44,7 +48,7 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
               pending: number;
               saved: number;
               lastSavedChange?: SavedPropertyChange;
-              lastChange?: PendingChange;
+              lastChange?: PendingPropertyChange;
           }
         | undefined
     >((state) => state.changes.controls[control?.id ?? '']?.properties[propertyName]);
@@ -100,7 +104,7 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
                                     iconProps={{ iconName: UiIcons.TrashCan }}
                                     title={t('DELETE_ALL_PROPERTY_CHANGES_TOOLTIP')}
                                     onClick={(): void => {
-                                        if (control?.id) {
+                                        if (control?.id && onDelete) {
                                             onDelete(control.id, propertyName);
                                         }
                                     }}
