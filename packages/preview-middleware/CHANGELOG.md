@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.71
+
+### Patch Changes
+
+-   b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
+
 ## 0.16.70
 
 ### Patch Changes
