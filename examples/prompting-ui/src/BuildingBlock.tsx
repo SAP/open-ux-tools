@@ -35,6 +35,7 @@ export const BuildingBlockQuestions = (props: {
         showDescriptions: true
     });
     const [alwaysAbsolutePath, setAlwaysAbsolutePath] = useState(true);
+    const [allowAutoAddDependencyLib, setAllowAutoAddDependencyLib] = useState(true);
     const choices = useChoices();
     const { groups, questions, initialAnswers = {} } = useQuestions(type, visibleQuestions);
     const [answers, setAnswers] = useState<Answers>(externalAnswers ?? initialAnswers);
@@ -135,6 +136,15 @@ export const BuildingBlockQuestions = (props: {
                         );
                         setAnswers(newAnswers);
                         setAlwaysAbsolutePath(!!checked);
+                    }}
+                />
+                <UICheckbox
+                    label="AllowAutoAddDependencyLib"
+                    checked={allowAutoAddDependencyLib}
+                    onChange={(ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean) => {
+                        const newAnswers = setAnswer({ ...answers }, 'allowAutoAddDependencyLib', checked);
+                        setAnswers(newAnswers);
+                        setAllowAutoAddDependencyLib(!!checked);
                     }}
                 />
             </div>

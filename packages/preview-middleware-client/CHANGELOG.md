@@ -1,5 +1,41 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.8
+
+### Patch Changes
+
+-   595bdea: feat: enhance "add-header-field" quick action with the template
+
+## 0.11.7
+
+### Patch Changes
+
+-   b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
+
+## 0.11.6
+
+### Patch Changes
+
+-   8f442a6: Usability improvements for Quick Actions that add fragments
+
+## 0.11.5
+
+### Patch Changes
+
+-   1c20352: Added missing notification when manifest change is created
+
+## 0.11.4
+
+### Patch Changes
+
+-   2fd82b1: Object Page Add Custom Section quick action support
+
+## 0.11.3
+
+### Patch Changes
+
+-   09f91c3: Fix changing index in Add Fragment dialog
+
 ## 0.11.2
 
 ### Patch Changes

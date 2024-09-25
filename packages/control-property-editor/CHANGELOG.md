@@ -1,5 +1,53 @@
 # @sap-ux/control-property-editor
 
+## 0.5.10
+
+### Patch Changes
+
+-   b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
+
+## 0.5.9
+
+### Patch Changes
+
+-   8f442a6: Usability improvements for Quick Actions that add fragments
+
+## 0.5.8
+
+### Patch Changes
+
+-   e12dd50: Added hover over theme picker and border for Callout
+
+## 0.5.7
+
+### Patch Changes
+
+-   1c20352: Added missing notification when manifest change is created
+
+## 0.5.6
+
+### Patch Changes
+
+-   37851a2: Fixed wrong chevron color for high contrast theme
+
+## 0.5.5
+
+### Patch Changes
+
+-   30360e9: Update the CSS variable "--vscode-font-family" with a MacOS-specific font-family to match the VSCode UI when the control property editor is running on MacOS.
+
+## 0.5.4
+
+### Patch Changes
+
+-   9506a73: Uniform funnel checkboxes
+
+## 0.5.3
+
+### Patch Changes
+
+-   2fd82b1: Object Page Add Custom Section quick action support
+
 ## 0.5.2
 
 ### Patch Changes

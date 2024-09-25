@@ -6,13 +6,28 @@ import { useDispatch } from 'react-redux';
 import { Stack, StackItem, Text } from '@fluentui/react';
 import { UIIcon, UIIconButton, UiIcons, UIDialog } from '@sap-ux/ui-components';
 
-import type { PropertyChangeDeletionDetails } from '@sap-ux-private/control-property-editor-common';
-import { convertCamelCaseToPascalCase, deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
+import type {
+    PendingPropertyChange,
+    PropertyChangeDeletionDetails,
+    SavedPropertyChange
+} from '@sap-ux-private/control-property-editor-common';
+import {
+    convertCamelCaseToPascalCase,
+    deletePropertyChanges,
+    SAVED_CHANGE_TYPE
+} from '@sap-ux-private/control-property-editor-common';
 import { IconName } from '../../icons';
 
 import styles from './PropertyChange.module.scss';
 import { getFormattedDateAndTime } from './utils';
-import type { ChangeProps } from './ChangesPanel';
+
+export interface PropertyChangeProps {
+    /**
+     * Class used for showing and hiding actions
+     */
+    actionClassName: string;
+    change: PendingPropertyChange | SavedPropertyChange;
+}
 
 /**
  * React element for property change.
@@ -20,13 +35,13 @@ import type { ChangeProps } from './ChangesPanel';
  * @param propertyChangeProps PropertyChangeProps
  * @returns ReactElement
  */
-export function PropertyChange(propertyChangeProps: Readonly<ChangeProps>): ReactElement {
-    const { controlId, propertyName, value, isActive, timestamp, fileName, actionClassName } = propertyChangeProps;
+export function PropertyChange(propertyChangeProps: Readonly<PropertyChangeProps>): ReactElement {
+    const { change, actionClassName } = propertyChangeProps;
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
 
-    const valueIcon = getValueIcon(value);
+    const valueIcon = getValueIcon(change.value);
 
     function onConfirmDelete(): void {
         if (dialogState) {
@@ -47,7 +62,7 @@ export function PropertyChange(propertyChangeProps: Readonly<ChangeProps>): Reac
                 }}
                 className={styles.container}
                 style={{
-                    opacity: isActive ? 1 : 0.4
+                    opacity: change.type === SAVED_CHANGE_TYPE || change.isActive ? 1 : 0.4
                 }}>
                 <Stack.Item className={styles.property}>
                     <Stack
@@ -57,21 +72,21 @@ export function PropertyChange(propertyChangeProps: Readonly<ChangeProps>): Reac
                             childrenGap: 5
                         }}>
                         <Stack.Item>
-                            <Text className={styles.text}>{convertCamelCaseToPascalCase(propertyName)}</Text>
+                            <Text className={styles.text}>{convertCamelCaseToPascalCase(change.propertyName)}</Text>
                             <UIIcon iconName={IconName.arrow} className={styles.text} />
                             {valueIcon && <UIIcon className={'ui-cpe-icon-light-theme'} iconName={valueIcon} />}
-                            <Text className={styles.text}>{value}</Text>
+                            <Text className={styles.text}>{change.value}</Text>
                         </Stack.Item>
-                        {fileName && (
+                        {change.type === SAVED_CHANGE_TYPE && (
                             <Stack.Item className={actionClassName}>
                                 <UIIconButton
                                     iconProps={{ iconName: UiIcons.TrashCan }}
                                     onClick={(): void => {
-                                        if (controlId) {
+                                        if (change.controlId) {
                                             setDialogState({
-                                                controlId,
-                                                propertyName,
-                                                fileName
+                                                controlId: change.controlId,
+                                                propertyName: change.propertyName,
+                                                fileName: change.fileName
                                             });
                                         }
                                     }}
@@ -81,10 +96,10 @@ export function PropertyChange(propertyChangeProps: Readonly<ChangeProps>): Reac
                     </Stack>
                 </Stack.Item>
 
-                {timestamp && (
+                {change.type === SAVED_CHANGE_TYPE && (
                     <StackItem>
                         <Stack horizontal horizontalAlign="space-between">
-                            <Text className={styles.timestamp}>{getFormattedDateAndTime(timestamp)}</Text>
+                            <Text className={styles.timestamp}>{getFormattedDateAndTime(change.timestamp)}</Text>
                         </Stack>
                     </StackItem>
                 )}

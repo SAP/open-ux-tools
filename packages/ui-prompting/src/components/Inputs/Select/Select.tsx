@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { ChoiceOptions } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxRef, UISelectableOption } from '@sap-ux/ui-components';
@@ -20,6 +20,13 @@ export const Select = (props: SelectProps) => {
     const [value, setValue] = useValue('', props.value ?? '');
     const inputRef = React.createRef<ITextField>();
     const options = useOptions(props, dynamicChoices);
+    const defaultValue = options.length === 1 ? options[0].data?.value : undefined;
+    useEffect(() => {
+        if (defaultValue !== undefined && value !== defaultValue) {
+            setValue(defaultValue);
+            onChange(name, defaultValue);
+        }
+    }, [defaultValue]);
 
     const onChangeSelect = (
         event?: React.FormEvent<HTMLSelectElement | UIComboBoxRef>,
