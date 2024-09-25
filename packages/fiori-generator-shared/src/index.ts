@@ -1,6 +1,7 @@
 export * from './cap';
 export * from './environment';
-export { getBootstrapResourceUrls, getDefaultTargetFolder, getVariantPreviewAppScript } from './helpers';
+export { getPackageScripts } from './getPackageScripts';
+export { getBootstrapResourceUrls, getDefaultTargetFolder } from './helpers';
 export { generateReadMe } from './read-me';
 export * from './system-utils';
-export { YeomanEnvironment, VSCodeInstance } from './types';
+export { PackageJsonScripts, YeomanEnvironment, VSCodeInstance } from './types';

@@ -1,5 +1,16 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.3.0
+
+### Minor Changes
+
+-   04988f1: Refactor shared logic for generating package.json scripts for FF and FE
+
+### Patch Changes
+
+-   Updated dependencies [04988f1]
+    -   @sap-ux/fiori-generator-shared@0.5.0
+
 ## 1.2.0
 
 ### Minor Changes

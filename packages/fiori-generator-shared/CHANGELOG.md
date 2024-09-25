@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.5.0
+
+### Minor Changes
+
+-   04988f1: Refactor shared logic for generating package.json scripts for FF and FE
+
 ## 0.4.0
 
 ### Minor Changes
