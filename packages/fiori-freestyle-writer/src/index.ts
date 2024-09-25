@@ -10,7 +10,7 @@ import { FreestyleApp, TemplateType } from './types';
 import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
-import { getBootstrapResourceUrls, generatePackageScripts } from '@sap-ux/fiori-generator-shared';
+import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -97,7 +97,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         // Add scripts for non-CAP applications
         packageJson.scripts = {
             ...packageJson.scripts,
-            ...generatePackageScripts({
+            ...getPackageScripts({
                 localOnly: !!ffApp.service && !ffApp.service?.url,
                 addMock: !!ffApp.service?.metadata,
                 sapClient: ffApp.service?.client,

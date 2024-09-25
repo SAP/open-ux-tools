@@ -109,7 +109,7 @@ function getVariantPreviewAppScript(sapClient?: string): string {
  * @param options.generateIndex exclude the start-noflp script
  * @returns package.json scripts
  */
-export function generatePackageScripts({
+export function getPackageScripts({
     localOnly,
     addMock = true,
     addTest = false,

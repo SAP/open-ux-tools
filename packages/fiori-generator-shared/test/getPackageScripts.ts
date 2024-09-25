@@ -1,9 +1,9 @@
-import { generatePackageScripts } from '../src';
+import { getPackageScripts } from '../src';
 
 describe('package.json task generation', () => {
     test('sap-client is specified, flpAppId is specified', () => {
         expect(
-            generatePackageScripts({
+            getPackageScripts({
                 localOnly: false,
                 addMock: true,
                 sapClient: '100',
@@ -21,7 +21,7 @@ describe('package.json task generation', () => {
     });
 
     test('addMock: true, sap-client not specified', () => {
-        expect(generatePackageScripts({ localOnly: false, addMock: true })).toMatchInlineSnapshot(`
+        expect(getPackageScripts({ localOnly: false, addMock: true })).toMatchInlineSnapshot(`
             Object {
               "start": "fiori run --open \\"test/flpSandbox.html?sap-ui-xx-viewCache=false\\"",
               "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flpSandbox.html?sap-ui-xx-viewCache=false\\"",
@@ -34,7 +34,7 @@ describe('package.json task generation', () => {
 
     test('addMock: false, correct end-user message generated', () => {
         expect(
-            generatePackageScripts({
+            getPackageScripts({
                 localOnly: true,
                 addMock: false,
                 flpAppId: 'testApp-tile',
@@ -52,7 +52,7 @@ describe('package.json task generation', () => {
 
     test('addTest: true, should include int-test scripts', () => {
         expect(
-            generatePackageScripts({
+            getPackageScripts({
                 localOnly: true,
                 addMock: false,
                 addTest: true,

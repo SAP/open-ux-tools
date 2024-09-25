@@ -1,6 +1,6 @@
 export * from './cap';
 export * from './environment';
-export { generatePackageScripts } from './generatePackageScripts';
+export { getPackageScripts } from './getPackageScripts';
 export { getBootstrapResourceUrls } from './helpers';
 export { generateReadMe } from './read-me';
 export * from './system-utils';

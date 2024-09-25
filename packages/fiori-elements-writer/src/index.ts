@@ -19,7 +19,7 @@ import {
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
-import { getBootstrapResourceUrls, generatePackageScripts } from '@sap-ux/fiori-generator-shared';
+import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
@@ -176,7 +176,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     if (isEdmxProjectType) {
         // Add scripts to package.json only for non-CAP projects
         packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
-            ...generatePackageScripts({
+            ...getPackageScripts({
                 localOnly: !feApp.service?.url,
                 addMock: !!feApp.service?.metadata,
                 addTest,
