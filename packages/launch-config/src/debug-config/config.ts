@@ -63,7 +63,7 @@ function configureLaunchConfig(
 export function configureLaunchJsonFile(rootFolder: string, cwd: string, configOpts: DebugOptions): LaunchJSON {
     const {
         isAppStudio,
-        skipLiveConfig = false,
+        addLiveConfig = true,
         flpAppId,
         flpSandboxAvailable,
         sapClientParam,
@@ -85,8 +85,8 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
 
     const launchFile: LaunchJSON = { version: '0.2.0', configurations: [] };
 
-    // Add live configuration only if skipLiveConfig is false
-    if (!skipLiveConfig) {
+    // Add live configuration only if addLiveConfig is enabled
+    if (addLiveConfig) {
         const startCommand = `${startHtmlFile}${flpAppIdWithHash}`;
         const liveConfig = configureLaunchConfig(
             `Start ${projectName}`,
