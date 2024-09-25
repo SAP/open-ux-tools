@@ -12,6 +12,7 @@ import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
+import yaml from 'yaml';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -114,7 +115,34 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             'deploy-config': 'npx -p @sap/ux-ui5-tooling fiori add deploy-config cf'
         };
     }
+
+    // Add preview middleware
+    packageJson.devDependencies = {
+        ...packageJson.devDependencies,
+        '@sap/ux-preview-middleware': 'latest'
+    };
+
     fs.writeJSON(packagePath, packageJson);
+
+    // add preview middleware config to ui5*.yaml
+    const ui5YamlPaths = [];
+    // todo: where to get all the ui5*.yaml paths from?
+    ui5YamlPaths.push(join(basePath, 'ui5.yaml'));
+    ui5YamlPaths.push(join(basePath, 'ui5-mock.yaml'));
+    ui5YamlPaths.push(join(basePath, 'ui5-local.yaml'));
+    ui5YamlPaths.forEach((ui5YamlPath) => {
+        if (!fs?.exists(ui5YamlPath)) {
+            return;
+        }
+        const ui5Yaml = yaml.parse(fs!.read(ui5YamlPath).toString());
+        ui5Yaml.server = ui5Yaml.server || {};
+        ui5Yaml.server.customMiddleware = ui5Yaml.server.customMiddleware || [];
+        ui5Yaml.server.customMiddleware.push({
+            name: 'preview-middleware',
+            afterMiddleware: 'compression'
+        });
+        fs!.write(ui5YamlPath, yaml.stringify(ui5Yaml));
+    });
 
     // Add service to the project if provided
     if (ffApp.service) {

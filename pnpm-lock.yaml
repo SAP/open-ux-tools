@@ -1416,6 +1416,9 @@ importers:
       semver:
         specifier: 7.5.4
         version: 7.5.4
+      yaml:
+        specifier: 2.5.1
+        version: 2.5.1
     devDependencies:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
@@ -1474,6 +1477,9 @@ importers:
       read-pkg-up:
         specifier: 7.0.1
         version: 7.0.1
+      yaml:
+        specifier: 2.5.1
+        version: 2.5.1
     devDependencies:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
@@ -23198,6 +23204,12 @@ packages:
   /yaml@2.3.3:
     resolution: {integrity: sha512-zw0VAJxgeZ6+++/su5AFoqBbZbrEakwu+X0M5HmcwUiBL7AzcuPKjj5we4xfQLp78LkEMpD0cOnUhmgOVy3KdQ==}
     engines: {node: '>= 14'}
+    dev: false
+
+  /yaml@2.5.1:
+    resolution: {integrity: sha512-bLQOjaX/ADgQ20isPJRvF0iRUHIxVhYvr53Of7wGcWlO2jvtUlH5m87DsmulFVxRpNLOnI4tB6p/oh8D7kpn9Q==}
+    engines: {node: '>= 14'}
+    hasBin: true
     dev: false
 
   /yamljs@0.3.0:

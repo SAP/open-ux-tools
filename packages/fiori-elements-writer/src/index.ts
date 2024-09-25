@@ -22,6 +22,7 @@ import semVer from 'semver';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
+import yaml from 'yaml';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -32,11 +33,9 @@ export const V2_FE_TYPES_AVAILABLE = '1.108.0';
  * @returns ignore pattern
  */
 function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coercedUI5Version: semVer.SemVer): string[] {
-    let ignore = [];
     // isV2FETypesAvailable - Boolean to indicate if V2 Fiori Element types were available in the UI5 version
     const isV2FETypesAvailable = feApp.ui5?.version ? semVer.gte(coercedUI5Version, V2_FE_TYPES_AVAILABLE) : false;
-    const tsIgnoreGlob = ['**/*.js'];
-    ignore = tsIgnoreGlob;
+    const ignore = ['**/*.js'];
     // Add local ui5.d.ts if types are missing in UI5 version for V2 Odata services
     // OR template is OVP
     if (feApp.service.version === OdataVersion.v2) {
@@ -83,9 +82,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     // Add new files from templates e.g.
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
-    const jsIgnoreGlob = ['**/*.ts'];
 
-    let ignore = jsIgnoreGlob;
+    let ignore = ['**/*.ts']; //jsIgnoreGlob
     if (feApp.appOptions?.typescript === true) {
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
@@ -194,7 +192,34 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             'deploy-config': 'npx -p @sap/ux-ui5-tooling fiori add deploy-config cf'
         };
     }
+
+    // Add preview middleware
+    packageJson.devDependencies = {
+        ...packageJson.devDependencies,
+        '@sap/ux-preview-middleware': 'latest'
+    };
+
     fs.writeJSON(packagePath, packageJson);
+
+    // add preview middleware config to ui5*.yaml
+    const ui5YamlPaths = [];
+    // todo: where to get all the ui5*.yaml paths from?
+    ui5YamlPaths.push(join(basePath, 'ui5.yaml'));
+    ui5YamlPaths.push(join(basePath, 'ui5-mock.yaml'));
+    ui5YamlPaths.push(join(basePath, 'ui5-local.yaml'));
+    ui5YamlPaths.forEach((ui5YamlPath) => {
+        if (!fs?.exists(ui5YamlPath)) {
+            return;
+        }
+        const ui5Yaml = yaml.parse(fs!.read(ui5YamlPath).toString());
+        ui5Yaml.server = ui5Yaml.server || {};
+        ui5Yaml.server.customMiddleware = ui5Yaml.server.customMiddleware || [];
+        ui5Yaml.server.customMiddleware.push({
+            name: 'preview-middleware',
+            afterMiddleware: 'compression'
+        });
+        fs!.write(ui5YamlPath, yaml.stringify(ui5Yaml));
+    });
 
     if (addTest) {
         generateOPAFiles(
