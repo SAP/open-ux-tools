@@ -1,6 +1,5 @@
 import type { MiddlewareConfig } from '@sap-ux/preview-middleware';
 
-export const SAP_CLIENT_REGEX = /sap-client=([0-9]{3})/;
 export const FIORI_TOOLS_RTA_MODE_TRUE = 'true';
 export const FIORI_TOOLS_RTA_MODE_VARIANTS = 'forVariants';
 export const FIORI_TOOLS_RTA_MODE_ADAPTATION = 'forAdaptation';
@@ -15,10 +14,14 @@ export interface FioriToolsDeprecatedPreviewConfig {
     libs?: boolean;
     ui5Theme?: string;
 }
+
 export type FioriToolsPreviewConfig = MiddlewareConfig;
 export type FioriPreviewConfigOptions = FioriToolsDeprecatedPreviewConfig | FioriToolsPreviewConfig;
 
 export enum MiddlewareConfigs {
     'FioriToolsPreview' = 'fiori-tools-preview',
+    // ToDo: check for preview-middleware
+    'PreviewMiddleware' = 'preview-middleware',
+    'ReloadMiddleware' = 'reload-middleware',
     'FioriToolsAppreload' = 'fiori-tools-appreload'
 }

@@ -1,4 +1,7 @@
-import type { FioriToolsDeprecatedPreviewConfig, FioriToolsPreviewConfig, FioriPreviewConfigOptions } from '../types';
+import { FileName, readUi5Yaml } from '@sap-ux/project-access';
+import { MiddlewareConfigs } from '../types';
+import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import type { FioriPreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
 
 /**
  * Checks if a fiori-tools-preview middleware configuration is decprecated.
@@ -6,23 +9,34 @@ import type { FioriToolsDeprecatedPreviewConfig, FioriToolsPreviewConfig, FioriP
  * @param config fiori-tools-preview middleware configuration
  * @returns type conversion if true
  */
-export function isDeprecatedConfig(config: FioriPreviewConfigOptions): config is FioriToolsDeprecatedPreviewConfig {
+function isDeprecatedConfig(config: FioriPreviewConfigOptions): config is FioriToolsDeprecatedPreviewConfig {
     return (config as FioriToolsDeprecatedPreviewConfig)?.component !== undefined;
 }
 
 /**
- * Converts a deprecated preview middleware configuration internally to match the configurations provided by the open source @sap-ux/preview-middleware.
+ * Gets the fiori-tools-preview middleware configuration.
  *
- * @param config configuration from the ui5.yaml.
- * @returns {PreviewConfig} configuration for the preview middleware.
+ * @param basePath - path to project root, where package.json and ui5.yaml is
+ * @returns 'fiori-tools-preview' configuration if given
  */
-export function convertDeprecatedConfig(config: FioriToolsDeprecatedPreviewConfig): FioriToolsPreviewConfig {
-    return {
-        flp: {
-            path: '/test/flpSandbox.html',
-            intent: { object: 'preview', action: 'app' },
-            theme: config.ui5Theme,
-            libs: config.libs
-        }
-    };
+async function getFioriToolsPreviewMiddleware(
+    basePath: string
+): Promise<CustomMiddleware<FioriPreviewConfigOptions> | undefined> {
+    const existingUi5YamlConfig = await readUi5Yaml(basePath, FileName.Ui5Yaml);
+    return existingUi5YamlConfig.findCustomMiddleware<FioriPreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview);
+}
+
+/**
+ * Gets the the fiori-tools-preview middleware configuration and checks if it's decprecated.
+ *
+ * @param basePath - path to project root, where package.json and ui5.yaml is
+ * @returns true, if a fiori-tools-previewre middleware configuration is deprecated
+ */
+export async function checkDeprecatedPreviewMiddleware(basePath: string): Promise<boolean> {
+    const existingPreviewMiddleware = await getFioriToolsPreviewMiddleware(basePath);
+    if (existingPreviewMiddleware && isDeprecatedConfig(existingPreviewMiddleware.configuration)) {
+        return true;
+    } else {
+        return false;
+    }
 }

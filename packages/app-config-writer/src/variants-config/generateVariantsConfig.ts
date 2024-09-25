@@ -4,8 +4,9 @@ import { addPreviewMiddlewareToYaml } from './ui5-yaml';
 import { addVariantsManagementScript } from './package-json';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
+
 /**
- * Add variants configuration to a UI5 application.
+ * Add variants configuration to an app or project.
  *
  * @param basePath - the base path where the package.json and ui5.yaml is
  * @param logger - logger
@@ -16,7 +17,7 @@ export async function generateVariantsConfig(basePath: string, logger?: ToolsLog
     if (!fs) {
         fs = create(createStorage());
     }
-    addVariantsManagementScript(fs, basePath);
+    await addVariantsManagementScript(fs, basePath, logger);
     await addPreviewMiddlewareToYaml(fs, basePath, logger);
     return fs;
 }

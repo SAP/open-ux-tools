@@ -6,7 +6,7 @@ import { generateVariantsConfig } from '@sap-ux/app-config-writer';
 /**
  * Add the "add variants config" command to a passed command.
  *
- * @param cmd - commander command for adding  config command
+ * @param cmd - commander command for adding variants config command
  */
 export function addAddVariantsConfigCommand(cmd: Command): void {
     cmd.command('variants-config [path]')
@@ -23,7 +23,7 @@ export function addAddVariantsConfigCommand(cmd: Command): void {
 /**
  * Adds a variants config to an app or project.
  *
- * @param basePath - path to application root
+ * @param basePath - the base path where the package.json and ui5.yaml is
  * @param simulate - if true, do not write but just show what would be change; otherwise write
  */
 async function addVariantsConfig(basePath: string, simulate: boolean): Promise<void> {
@@ -34,7 +34,6 @@ async function addVariantsConfig(basePath: string, simulate: boolean): Promise<v
         const fs = await generateVariantsConfig(basePath, logger);
         await traceChanges(fs);
         if (!simulate) {
-            //ToDo: check if skip install is needed -> mockserver-config.ts
             fs.commit(() => logger.info(`Variants configuration written.`));
         }
     } catch (error) {
