@@ -6,7 +6,8 @@ import {
     redo,
     save,
     ExternalAction,
-    reloadApplication
+    reloadApplication,
+    applicationModeChanged
 } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
@@ -28,6 +29,7 @@ export class RtaService {
      * @param subscribe subscriber function
      */
     public init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void {
+        sendAction(applicationModeChanged(this.rta.getMode()));
         subscribe(async (action): Promise<void> => {
             if (setAppMode.match(action)) {
                 this.rta.setMode(action.payload);
