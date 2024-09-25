@@ -248,7 +248,17 @@ function createMatcher<Y extends { type: string }>(
  * @returns Function
  */
 function createActionFactory(prefix: string) {
-    return function createAction<T>(name: string) {
+    return function createAction<T>(name: string): {
+        (payload: T): PayloadAction<string, T>;
+        type: string;
+        match: (
+            value:
+                | {
+                      type: unknown;
+                  }
+                | undefined
+        ) => value is PayloadAction<string, T>;
+    } {
         const actionType = [prefix, name].join(' ');
         /**
          *
@@ -288,6 +298,7 @@ export const reloadApplication = createExternalAction<{
 }>('reload-application');
 export const storageFileChanged = createExternalAction<string>('storage-file-changed');
 export const setAppMode = createExternalAction<'navigation' | 'adaptation'>('set-app-mode');
+export const applicationModeChanged = createExternalAction<'navigation' | 'adaptation'>('application-mode-changed');
 export const setUndoRedoEnablement = createExternalAction<{ canRedo: boolean; canUndo: boolean }>(
     'set-undo-redo-enablement'
 );
@@ -316,6 +327,7 @@ export type ExternalAction =
     | ReturnType<typeof reloadApplication>
     | ReturnType<typeof storageFileChanged>
     | ReturnType<typeof setAppMode>
+    | ReturnType<typeof applicationModeChanged>
     | ReturnType<typeof setUndoRedoEnablement>
     | ReturnType<typeof setSaveEnablement>
     | ReturnType<typeof undo>
