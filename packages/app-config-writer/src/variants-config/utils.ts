@@ -24,9 +24,9 @@ async function getFioriToolsPreviewMiddleware(
  * @param basePath - path to project root, where package.json and ui5.yaml is
  * @returns true, if a fiori-tools-preview middleware configuration is deprecated
  */
-async function checkDeprecatedPreviewMiddleware(basePath: string): Promise<boolean> {
+async function isDeprecatedPreviewMiddleware(basePath: string): Promise<boolean> {
     const existingPreviewMiddleware = await getFioriToolsPreviewMiddleware(basePath);
-    return (existingPreviewMiddleware?.configuration as FioriToolsDeprecatedPreviewConfig)?.component !== undefined;
+    return !!(existingPreviewMiddleware?.configuration as FioriToolsDeprecatedPreviewConfig)?.component;
 }
 
 /**
@@ -69,6 +69,6 @@ export function getUi5UrlParameters(overwritingParams: Record<string, string> = 
  */
 export async function getPreviewUrl(basePath: string, query: string): Promise<string> {
     // checks if a ui5.yaml configuration is deprecated and therefore needs a different hash
-    const previewHash = (await checkDeprecatedPreviewMiddleware(basePath)) ? 'preview-app' : 'app-preview';
+    const previewHash = (await isDeprecatedPreviewMiddleware(basePath)) ? 'preview-app' : 'app-preview';
     return `preview.html?${query}#${previewHash}`;
 }
