@@ -2,4 +2,4 @@
 '@sap-ux/control-property-editor': patch
 ---
 
-Add border for panels
+Change separator color for panels and toolbar
