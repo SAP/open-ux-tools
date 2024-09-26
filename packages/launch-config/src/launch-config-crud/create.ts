@@ -144,8 +144,8 @@ async function handleDebugOptions(
     );
     const configurations = configureLaunchJsonFile(rootFolder, cwd, debugOptions).configurations;
 
-    // If the `addLiveConfig` option is set to `true`, the `npm start` command is used to start the server.
-    const npmCommand = debugOptions.addLiveConfig ? 'start' : 'run start-mock';
+    // If the `addStartCmd` option is set to `true`, the `npm start` command is used to start the server.
+    const npmCommand = debugOptions.addStartCmd ? 'start' : 'run start-mock';
     logger?.info(
         t('startServerMessage', {
             folder: basename(rootFolder),

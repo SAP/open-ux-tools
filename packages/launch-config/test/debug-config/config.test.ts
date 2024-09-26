@@ -89,7 +89,7 @@ describe('debug config tests', () => {
     });
 
     it('Should return correct configuration for local metadata', () => {
-        configOptions.addLiveConfig = false;
+        configOptions.addStartCmd = false;
         const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         expect(launchFile.configurations.length).toBe(2);
 

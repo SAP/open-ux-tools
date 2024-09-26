@@ -85,13 +85,13 @@ export interface DebugOptions {
     /** Reference to the VS Code instance. */
     vscode?: any;
     /**
-     * Specifies whether live configurations should be added to the `launch.json` file.
+     * Specifies whether start command configurations should be added to the `launch.json` file.
      *
-     * - When `true`, live debugging configurations will be included in the `launch.json`.
-     * - When `false` or undefined, live configurations will not be added.
+     * - When `true`, start command configurations will be included in the `launch.json`.
+     * - When `false` or undefined, start command configurations will not be added.
      * By default this is set to `true`.
      */
-    addLiveConfig?: boolean;
+    addStartCmd?: boolean;
 }
 
 /**
