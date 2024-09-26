@@ -919,7 +919,9 @@ describe('AddFragment', () => {
                     getName: jest.fn().mockReturnValue('sap.m.FlexBox')
                 }),
                 getParent: jest.fn().mockReturnValue({
-                    getHeaderContent: jest.fn().mockReturnValue(['header'])
+                    getMetadata: jest.fn().mockReturnValue({
+                        getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageDynamicHeaderContent')
+                    })
                 })
             } as unknown as ManagedObject);
 

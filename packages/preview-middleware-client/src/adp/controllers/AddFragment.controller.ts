@@ -21,7 +21,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 /** sap.ui.fl */
-import {  type AddFragmentChangeContentType  } from 'sap/ui/fl/Change';
+import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
@@ -33,7 +33,6 @@ import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
-import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -324,7 +323,9 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             return 'OBJECT_PAGE_HEADER_FIELD';
         } else if (currentControlName === 'sap.m.FlexBox' && targetAggregation === 'items') {
             // in case of dynamic header make sure that there is only one flexBox in the header.
-            if ((this.runtimeControl.getParent() as ObjectPageLayout)?.getHeaderContent().length === 1) {
+            if (
+                this.runtimeControl.getParent()?.getMetadata().getName() === 'sap.uxap.ObjectPageDynamicHeaderContent'
+            ) {
                 return 'OBJECT_PAGE_HEADER_FIELD';
             } else {
                 return '';
