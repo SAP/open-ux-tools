@@ -37,11 +37,7 @@ export const DefaultLogger: LogWrapper = {
         console.trace(msg);
     },
     getChildLogger: () => DefaultLogger,
-    getLogLevel: () => 'off',
-    log: function (): Logger | undefined {
-        // Do nothing
-        return undefined;
-    }
+    getLogLevel: () => 'off'
 };
 
 const LOG_LEVEL_KEYS: Record<LogLevel, number> = {
@@ -58,11 +54,11 @@ const LOG_LEVEL_KEYS: Record<LogLevel, number> = {
  * Creates a CLI logger based on the IChildLogger interface. This means we can use the
  * same log functions for extension and cli logging. No files generated for CLI use currently.
  *
- * @param logLevel - defaults to off on cli
  * @param logName - name of the logger
+ * @param logLevel - defaults to off on cli
  * @returns {ILogWrapper} - the logger
  */
-export function createCLILogger(logLevel: LogLevel = 'off', logName: string): ILogWrapper {
+export function createCLILogger(logName: string, logLevel: LogLevel = 'off'): ILogWrapper {
     const extensionLoggerOpts: getExtensionLoggerOpts = {
         extName: logName,
         level: logLevel,
@@ -81,7 +77,7 @@ export class LogWrapper implements ILogWrapper {
     private static _yoLogger: Logger;
     private static _logLevel: LogLevel;
 
-    private static consoleFormat = format.combine(
+    static readonly consoleFormat = format.combine(
         format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
         format.printf((msgJson) => {
             return `[${msgJson.timestamp}] ${msgJson.level.toUpperCase()}: ${msgJson.message}`;
@@ -89,12 +85,13 @@ export class LogWrapper implements ILogWrapper {
     );
 
     /**
+     * Create a new LogWrapper instance.
      *
-     * @param logName
-     * @param logLevel
-     * @param yoLogger
-     * @param extLogger
-     * @param vscode
+     * @param logName - name of the logger
+     * @param logLevel - log level
+     * @param yoLogger - yeoman logger
+     * @param extLogger - vscode extension logger
+     * @param vscode - vscode instance
      */
     constructor(logName: string, logLevel: LogLevel, yoLogger: Logger, extLogger?: IVSCodeExtLogger, vscode?: any) {
         LogWrapper._yoLogger = yoLogger;
@@ -104,13 +101,13 @@ export class LogWrapper implements ILogWrapper {
                 : logLevel ?? 'info';
             LogWrapper._vscodeLogger = extLogger.getChildLogger({ label: logName });
         } else {
-            LogWrapper._vscodeLogger = createCLILogger(logLevel, logName);
+            LogWrapper._vscodeLogger = createCLILogger(logName, logLevel);
             LogWrapper._logLevel = logLevel === 'off' || !logLevel ? 'warn' : logLevel;
         }
         LogWrapper._vscodeLogger.debug(t('DEBUG_LOG_MSG_LOGGING_LEVEL_CONFIGURED', { logLevel: LogWrapper._logLevel }));
     }
 
-    private static logAtLevel = (level: LogLevel, message: string, ...args: any[]) => {
+    static readonly logAtLevel = (level: LogLevel, message: string, ...args: any[]) => {
         if (LogWrapper._vscodeLogger && level !== 'off') {
             LogWrapper._vscodeLogger[level](message, ...args);
         }
@@ -132,77 +129,67 @@ export class LogWrapper implements ILogWrapper {
     };
 
     /**
+     * Log a message at the fatal level.
      *
-     * @param msg
-     * @param {...any} args
+     * @param msg - message to log
+     * @param {...any} args - additional arguments
      */
     fatal(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('fatal', msg, ...args);
     }
     /**
+     * Log a message at the error level.
      *
-     * @param msg
-     * @param {...any} args
+     * @param msg - message to log
+     * @param {...any} args - additional arguments
      */
     error(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('error', msg, ...args);
     }
     /**
+     * Log a message at the warn level.
      *
-     * @param msg
-     * @param {...any} args
+     * @param msg - message to log
+     * @param {...any} args - additional arguments
      */
     warn(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('warn', msg, ...args);
     }
     /**
+     * Log a message at the info level.
      *
-     * @param msg
-     * @param {...any} args
+     * @param msg - message to log
+     * @param {...any} args - additional arguments
      */
     info(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('info', msg, ...args);
     }
     /**
+     * Log a message at the debug level.
      *
-     * @param msg
-     * @param {...any} args
+     * @param msg - message to log
+     * @param {...any} args - additional arguments
      */
     debug(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('debug', msg, ...args);
     }
     /**
+     * Log a message at the trace level.
      *
-     * @param msg
-     * @param {...any} args
+     * @param msg - message to log
+     * @param {...any} args - additional arguments
      */
     trace(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('trace', msg, ...args);
     }
 
     /**
+     * Log a message at the info level.
      *
-     * @param msg
+     * @param msg - message to log
      */
     public static log(msg: string): void {
         LogWrapper.logAtLevel('info', msg);
-    }
-
-    /**
-     * Redefinition of environment log function will log everything at info.
-     * This can be removed once we replace all this.log references in Generators.
-     *
-     * @param msg - message to log
-     * @param args - additional arguments
-     * @returns {Logger | undefined} - the logger
-     */
-    public log(msg: string, ...args: any[]): Logger | void {
-        LogWrapper.logAtLevel('info', msg, ...args);
-        // Not initialized so use DefaultLogger.
-        if (LogWrapper._yoLogger) {
-            return LogWrapper._yoLogger;
-        }
-        DefaultLogger.info(msg);
     }
 
     /**

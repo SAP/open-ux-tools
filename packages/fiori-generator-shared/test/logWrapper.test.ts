@@ -3,17 +3,7 @@ import type { Logger } from 'yeoman-environment';
 
 describe('Test logWrapper', () => {
     test('Test logWrapper functions ', () => {
-        const loggerProps = [
-            'fatal',
-            'error',
-            'warn',
-            'info',
-            'debug',
-            'trace',
-            'getChildLogger',
-            'getLogLevel',
-            'log'
-        ];
+        const loggerProps = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'getChildLogger', 'getLogLevel'];
         expect(Object.keys(DefaultLogger)).toEqual(loggerProps);
 
         expect(Object.keys(DefaultLogger.getChildLogger())).toStrictEqual(loggerProps);
@@ -46,7 +36,7 @@ describe('Test logWrapper', () => {
         let consoleMsg = console.log.mock.calls[0][0];
         expect(consoleMsg).toEqual(expect.stringContaining(`Info message`));
 
-        const testLogger = createCLILogger('info', 'TestLogger');
+        const testLogger = createCLILogger('TestLogger', 'info');
         testLogger.info('Test msg');
 
         const consoleSpy = jest.spyOn(console, 'log');
@@ -73,14 +63,6 @@ describe('Test logWrapper', () => {
 
         expect(LogWrapper.log).toBeDefined();
         LogWrapper.log('A message');
-        expect(consoleLogSpy).toHaveBeenCalled();
-
-        expect(logWrapper.log).toBeDefined();
-        logWrapper.log('A message');
-        expect(consoleLogSpy).toHaveBeenCalled();
-
-        LogWrapper['_yoLogger'] = undefined as any;
-        logWrapper.log('A message');
         expect(consoleLogSpy).toHaveBeenCalled();
 
         try {

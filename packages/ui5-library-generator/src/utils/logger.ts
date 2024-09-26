@@ -6,7 +6,25 @@ import type { IVSCodeExtLogger } from '@vscode-logging/logger';
  * Static logger prevents passing of logger references through all functions, as this is a cross-cutting concern.
  */
 export default class ReuseLibGenLogger {
-    static logger: ILogWrapper = DefaultLogger;
+    private static _logger: ILogWrapper = DefaultLogger;
+
+    /**
+     * Get the logger.
+     *
+     * @returns the logger
+     */
+    public static get logger(): ILogWrapper {
+        return ReuseLibGenLogger._logger;
+    }
+
+    /**
+     * Set the logger.
+     *
+     * @param value the logger to set
+     */
+    public static set logger(value: ILogWrapper) {
+        ReuseLibGenLogger._logger = value;
+    }
 
     /**
      * Configures the vscode logger.
