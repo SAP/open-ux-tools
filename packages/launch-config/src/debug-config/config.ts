@@ -85,7 +85,7 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
 
     const launchFile: LaunchJSON = { version: '0.2.0', configurations: [] };
 
-    // Add live configuration only if addStartCmd is enabled
+    // Add start command confugurations only if addStartCmd is enabled
     if (addStartCmd) {
         const startCommand = `${startHtmlFile}${flpAppIdWithHash}`;
         const liveConfig = configureLaunchConfig(
