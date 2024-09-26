@@ -79,6 +79,7 @@ export function HeaderField(headerFieldProps: Readonly<HeaderFieldProps>): React
                     {label}
                 </Label>
             </UITooltip>
+            {/* <div className="textfield-icon"> */}
             <TextField
                 id={label}
                 value={value}
@@ -88,7 +89,14 @@ export function HeaderField(headerFieldProps: Readonly<HeaderFieldProps>): React
                     field: {
                         color: 'var(--vscode-input-foreground)',
                         fontSize: defaultFontSize,
-                        backgroundColor: 'var(--vscode-sideBar-background)'
+                        backgroundColor: 'var(--vscode-sideBar-background)',
+                        border: '1px solid var(--vscode-input-border)',
+                        selectors: {
+                            ':hover': {
+                                border: '1px solid var(--vscode-focusBorder)'
+                            }
+                        },
+                        padding: 7
                     },
                     fieldGroup: {
                         color: 'var(--vscode-input-foreground)',
@@ -111,7 +119,9 @@ export function HeaderField(headerFieldProps: Readonly<HeaderFieldProps>): React
                 }}
                 onRenderSuffix={onCopy}
             />
+            {/* <UIIconButton iconProps={{ iconName: 'Copy' }} ariaLabel="Copy" onClick={onCopy} /> */}
             {isCopyMessageBoxVisible && <Clipboard label={label} />}
+            {/* </div> */}
         </Stack>
     );
 }
