@@ -79,7 +79,6 @@ export function HeaderField(headerFieldProps: Readonly<HeaderFieldProps>): React
                     {label}
                 </Label>
             </UITooltip>
-            {/* <div className="textfield-icon"> */}
             <TextField
                 id={label}
                 value={value}
@@ -119,9 +118,7 @@ export function HeaderField(headerFieldProps: Readonly<HeaderFieldProps>): React
                 }}
                 onRenderSuffix={onCopy}
             />
-            {/* <UIIconButton iconProps={{ iconName: 'Copy' }} ariaLabel="Copy" onClick={onCopy} /> */}
             {isCopyMessageBoxVisible && <Clipboard label={label} />}
-            {/* </div> */}
         </Stack>
     );
 }
