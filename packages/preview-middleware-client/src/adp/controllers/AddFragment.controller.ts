@@ -320,23 +320,29 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         const currentControlName = this.runtimeControl.getMetadata().getName();
         if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections') {
             return 'OBJECT_PAGE_CUSTOM_SECTION';
-        }
-        if (
-            ((currentControlName === 'sap.f.DynamicPageTitle' || currentControlName === 'sap.uxap.ObjectPageHeader') &&
-                targetAggregation === 'actions') ||
-            (currentControlName === 'sap.m.OverflowToolbar' && targetAggregation === 'content') ||
-            (currentControlName === 'sap.m.Toolbar' && targetAggregation === 'content')
-        ) {
+        } else if (this.isCustomAction(currentControlName, targetAggregation)) {
             return 'CUSTOM_ACTION';
         } else if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'headerContent') {
             return 'OBJECT_PAGE_HEADER_FIELD';
         } else if (currentControlName === 'sap.m.FlexBox' && targetAggregation === 'items') {
-            // in case of dynamic header make sure that there is only one flexBox in the header.
-            if ((this.runtimeControl.getParent() as ObjectPageLayout)?.getHeaderContent().length === 1) {
-                return 'OBJECT_PAGE_HEADER_FIELD';
-            } else {
-                return '';
-            }
+            return this.getObjectPageHeaderFieldOrEmpty();
+        } else {
+            return '';
+        }
+    }
+
+    private isCustomAction(currentControlName: string, targetAggregation: string): boolean {
+        return (
+            ((currentControlName === 'sap.f.DynamicPageTitle' || currentControlName === 'sap.uxap.ObjectPageHeader') &&
+                targetAggregation === 'actions') ||
+            (currentControlName === 'sap.m.OverflowToolbar' && targetAggregation === 'content') ||
+            (currentControlName === 'sap.m.Toolbar' && targetAggregation === 'content')
+        );
+    }
+
+    private getObjectPageHeaderFieldOrEmpty(): string {
+        if ((this.runtimeControl.getParent() as ObjectPageLayout)?.getHeaderContent().length === 1) {
+            return 'OBJECT_PAGE_HEADER_FIELD';
         } else {
             return '';
         }
