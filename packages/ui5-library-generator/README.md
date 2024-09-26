@@ -1,4 +1,4 @@
-# @sap-ux/ui5-library-generator
+# @sap-ux/generator-ui5-library
 
 ```sh
 # install yeoman

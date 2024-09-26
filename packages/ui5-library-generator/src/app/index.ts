@@ -41,7 +41,7 @@ export default class extends Generator implements Ui5LibGenerator {
 
         this.appWizard = AppWizard.create(opts);
         this.vscode = opts.vscode;
-        ReuseLibGenLogger.logger = new ToolsLogger({ logPrefix: '@sap-ux/ui5-library-generator' });
+        ReuseLibGenLogger.logger = new ToolsLogger({ logPrefix: '@sap-ux/generator-ui5-library' });
         this.targetFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
 
         this.appWizard.setHeaderTitle(generatorTitle);
