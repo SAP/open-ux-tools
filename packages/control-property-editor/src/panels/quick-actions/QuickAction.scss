@@ -1,21 +1,20 @@
+.quick-action-group-item-list {
+    margin-bottom: 15px;
+}
+
 .quick-action-item {
     display: flex;
     flex-direction: row;
-    line-height: 24px;
+    margin-bottom: 5px;
     button.ms-Link {
         display: flex;
         align-items: center;
         max-width: 270px;
-        overflow: hidden;
         padding-right: 2px;
         font-size: 13px;
         font-weight: bold;
-        height: 24px;
-        line-height: 24px;
+        line-height: 15px;
         .link-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
             direction: ltr;
         }
         i.ts-icon {

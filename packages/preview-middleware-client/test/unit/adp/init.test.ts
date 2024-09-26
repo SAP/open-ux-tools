@@ -144,7 +144,7 @@ describe('adp', () => {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
-                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                    'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
                 shouldHideIframe: false
             }
         });
@@ -169,7 +169,7 @@ describe('adp', () => {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
-                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                    'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
                 shouldHideIframe: false
             }
         });
