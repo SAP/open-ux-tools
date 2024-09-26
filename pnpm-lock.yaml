@@ -2805,12 +2805,12 @@ importers:
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
-      '@sap-ux/logger':
-        specifier: workspace:*
-        version: link:../logger
       '@sap-ux/nodejs-utils':
         specifier: workspace:*
         version: link:../nodejs-utils
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
       '@sap-ux/ui5-library-inquirer':
         specifier: workspace:*
         version: link:../ui5-library-inquirer

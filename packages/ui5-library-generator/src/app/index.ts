@@ -2,10 +2,10 @@ import Generator from 'yeoman-generator';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { join } from 'path';
 import ReuseLibGenLogger from '../utils/logger';
-import { t, prompts, initialAnswers, runPostLibGenHook, generatorTitle } from '../utils';
+import { t, prompts, runPostLibGenHook, generatorTitle } from '../utils';
 import { platform } from 'os';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { ToolsLogger } from '@sap-ux/logger';
+import { defaultAuthor, defaultFramework, defaultLibraryName, defaultNamespace, defaultUi5Version } from './defaults';
 import {
     isCli,
     getDefaultTargetFolder,
@@ -22,7 +22,7 @@ import type { Ui5LibGenerator } from './types';
  * @extends Generator
  */
 export default class extends Generator implements Ui5LibGenerator {
-    answers: UI5LibraryAnswers = initialAnswers;
+    answers: UI5LibraryAnswers = {};
     prompts: Prompts;
     appWizard: AppWizard;
     targetFolder: string;
@@ -79,16 +79,16 @@ export default class extends Generator implements Ui5LibGenerator {
 
     public async writing(): Promise<void> {
         const ui5Lib = {
-            libraryName: this.answers.libraryName,
-            namespace: this.answers.namespace,
-            framework: 'SAPUI5',
-            frameworkVersion: this.answers.ui5Version,
-            author: 'Fiori tools',
+            libraryName: this.answers.libraryName ?? defaultLibraryName,
+            namespace: this.answers.namespace ?? defaultNamespace,
+            framework: defaultFramework,
+            frameworkVersion: this.answers.ui5Version ?? defaultUi5Version,
+            author: defaultAuthor,
             typescript: this.answers.enableTypescript
         } satisfies UI5LibConfig;
 
         try {
-            await generate(this.answers.targetFolder, ui5Lib, this.fs);
+            await generate(this.answers.targetFolder ?? this.targetFolder, ui5Lib, this.fs);
         } catch (e) {
             ReuseLibGenLogger.logger.error(e);
             throw new Error(t('error.generatingUi5Lib'));
@@ -103,7 +103,7 @@ export default class extends Generator implements Ui5LibGenerator {
 
                 ReuseLibGenLogger.logger.info(t('info.installingDependencies'));
                 this.projectPath = join(
-                    this.answers.targetFolder,
+                    this.answers.targetFolder ?? this.targetFolder,
                     `${this.answers.namespace}.${this.answers.libraryName}`
                 );
                 await runner.run(npm, ['install'], { cwd: this.projectPath });

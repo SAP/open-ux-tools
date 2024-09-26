@@ -7,11 +7,3 @@ export const prompts = [
         description: 'Create a Reusable Library for use in SAP Fiori applications'
     }
 ];
-
-export const initialAnswers = {
-    libraryName: '',
-    namespace: '',
-    targetFolder: '',
-    ui5Version: '',
-    enableTypescript: false
-};

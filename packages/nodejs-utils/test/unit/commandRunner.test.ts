@@ -1,4 +1,4 @@
-import childProcess from 'child_process';
+import childProcess, { type SpawnOptionsWithoutStdio } from 'child_process';
 import { CommandRunner } from '../../src/commandRunner';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -9,11 +9,15 @@ describe('CommandRunner', () => {
     let commandRunner: CommandRunner;
     let spawnMock: typeof mockSpawn;
     let spawnSpy: jest.SpyInstance;
+    const optsLocal: SpawnOptionsWithoutStdio = {};
 
     beforeEach(() => {
         commandRunner = new CommandRunner();
         spawnMock = mockSpawn();
         spawnSpy = jest.spyOn(childProcess, 'spawn').mockImplementation(spawnMock);
+        if (process.platform === 'win32') {
+            optsLocal.shell = true;
+        }
     });
 
     afterEach(() => {
@@ -29,13 +33,13 @@ describe('CommandRunner', () => {
         const response = await commandRunner.run(cmd, args);
 
         expect(response).toBe(expectedResponse);
-        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
+        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, optsLocal);
     });
 
     it('should run a command with arguments and options', async () => {
         const cmd = 'npm';
         const args = ['install'];
-        const opts = { cwd: '/some/path' };
+        const opts = { ...optsLocal, cwd: '/some/path' };
         const expectedResponse = 'npm install';
         spawnMock.setDefault(spawnMock.simple(0, expectedResponse));
 
@@ -52,7 +56,7 @@ describe('CommandRunner', () => {
         spawnMock.setDefault(spawnMock.simple(1, 'npm install'));
 
         await expect(commandRunner.run(cmd, args)).rejects.toContain(expectedError);
-        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
+        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, optsLocal);
     });
 
     it('should handle command failures', async () => {
@@ -62,6 +66,6 @@ describe('CommandRunner', () => {
         spawnMock.setDefault(spawnMock.simple(1, 'npm install', 'npm ERR! missing script: install'));
 
         await expect(commandRunner.run(cmd, args)).rejects.toContain(expectedError);
-        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
+        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, optsLocal);
     });
 });
