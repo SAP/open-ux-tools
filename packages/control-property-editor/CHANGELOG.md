@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.11
+
+### Patch Changes
+
+-   7579b99: UI improvements and bug fix in the Adaptation Editor
+
 ## 0.5.10
 
 ### Patch Changes
