@@ -324,7 +324,8 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         if (
             ((currentControlName === 'sap.f.DynamicPageTitle' || currentControlName === 'sap.uxap.ObjectPageHeader') &&
                 targetAggregation === 'actions') ||
-            (currentControlName === 'sap.m.OverflowToolbar' && targetAggregation === 'content')
+            (currentControlName === 'sap.m.OverflowToolbar' && targetAggregation === 'content') ||
+            (currentControlName === 'sap.m.Toolbar' && targetAggregation === 'content')
         ) {
             return 'CUSTOM_ACTION';
         } else if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'headerContent') {

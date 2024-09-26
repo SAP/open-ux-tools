@@ -50,11 +50,13 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         }
 
         // open dialogBox to add, and content is selected ByDefault
-        const overlay = OverlayRegistry.getOverlay(headerToolbar as UI5Element) || [];
-        await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
-            aggregation: 'content',
-            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-        });
+        if (headerToolbar) {
+            const overlay = OverlayRegistry.getOverlay(headerToolbar as UI5Element) || [];
+            await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
+                aggregation: 'content',
+                title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+            });
+        }
         return [];
     }
 }
