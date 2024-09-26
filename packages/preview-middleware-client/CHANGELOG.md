@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.8
+
+### Patch Changes
+
+-   595bdea: feat: enhance "add-header-field" quick action with the template
+
 ## 0.11.7
 
 ### Patch Changes

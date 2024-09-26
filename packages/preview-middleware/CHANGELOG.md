@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.16.72
+
+### Patch Changes
+
+-   595bdea: feat: enhance "add-header-field" quick action with the template
+-   Updated dependencies [595bdea]
+    -   @sap-ux/adp-tooling@0.12.52
+
 ## 0.16.71
 
 ### Patch Changes
