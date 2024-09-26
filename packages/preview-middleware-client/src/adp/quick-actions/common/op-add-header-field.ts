@@ -32,10 +32,16 @@ export class AddHeaderFieldQuickAction extends SimpleQuickActionDefinitionBase i
         // check if only flex box exist in the headerContent.
         if (headerContent.length === 1 && isA<FlexBox>('sap.m.FlexBox', headerContent[0])) {
             const overlay = OverlayRegistry.getOverlay(headerContent[0]) || [];
-            await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, 'items');
+            await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
+                aggregation: 'items',
+                title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
+            });
         } else if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
-            await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, 'headerContent');
+            await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
+                aggregation: 'headerContent',
+                title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
+            });
         }
         return [];
     }

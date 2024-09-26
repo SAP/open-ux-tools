@@ -1,17 +1,11 @@
 import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import {
-    ExternalAction,
-    showMessage,
-    startPostMessageCommunication,
-    enableTelemetry
-} from '@sap-ux-private/control-property-editor-common';
+import { showMessage, enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 
-import { ActionHandler } from '../cpe/types';
-import { getError } from '../utils/error';
 import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version } from '../utils/version';
 
+import { CommunicationService } from '../cpe/communication-service';
 import init from '../cpe/init';
 import { getApplicationType } from '../utils/application';
 import { getTextBundle } from '../i18n';
@@ -25,27 +19,7 @@ export default async function (rta: RuntimeAuthoring) {
     if (flexSettings.telemetry === true) {
         enableTelemetry();
     }
-    const actionHandlers: ActionHandler[] = [];
-    /**
-     *
-     * @param handler action handler
-     */
-    function subscribe(handler: ActionHandler): void {
-        actionHandlers.push(handler);
-    }
 
-    const { sendAction } = startPostMessageCommunication<ExternalAction>(
-        window.parent,
-        async function onAction(action: ExternalAction) {
-            for (const handler of actionHandlers) {
-                try {
-                    await handler(action);
-                } catch (error) {
-                    log.error('Handler Failed: ', getError(error));
-                }
-            }
-        }
-    );
 
     const ui5VersionInfo = await getUi5Version();
     const syncViewsIds = await getAllSyncViewsIds(ui5VersionInfo);
@@ -54,7 +28,7 @@ export default async function (rta: RuntimeAuthoring) {
     if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 78 })) {
         const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;
         const extPointService = new ExtensionPointService(rta);
-        extPointService.init(subscribe);
+        extPointService.init();
     }
 
     const applicationType = getApplicationType(rta.getRootControlInstance().getManifest());
@@ -63,13 +37,15 @@ export default async function (rta: RuntimeAuthoring) {
     await init(rta, quickActionRegistries);
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
-        sendAction(showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true }));
+        CommunicationService.sendAction(
+            showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true })
+        );
         return;
     }
 
     if (syncViewsIds.length > 0) {
         const bundle = await getTextBundle();
-        sendAction(
+        CommunicationService.sendAction(
             showMessage({
                 message: bundle.getText('ADP_SYNC_VIEWS_MESSAGE'),
                 shouldHideIframe: false

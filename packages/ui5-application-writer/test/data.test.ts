@@ -280,6 +280,7 @@ describe('Setting defaults', () => {
                     devDepB: '9.10.11',
                     '@ui5/cli': '3.0.0'
                 },
+                sapuxLayer: 'CUSTOMER_BASE',
                 scripts: {
                     doTaskA: 'echo "Doing task A"',
                     doTaskB: 'echo "Doing task B"'
@@ -300,6 +301,7 @@ describe('Setting defaults', () => {
                 devDepB: '9.10.11'
             },
             name: 'test-package-name',
+            sapuxLayer: 'CUSTOMER_BASE',
             scripts: {
                 start: 'ui5 serve --config=ui5.yaml --open index.html',
                 'start-local': 'ui5 serve --config=ui5-local.yaml --open index.html',
@@ -332,7 +334,8 @@ describe('Setting defaults', () => {
                 scripts: {
                     doTaskA: 'echo "Doing task A"',
                     doTaskB: 'echo "Doing task B"'
-                }
+                },
+                sapuxLayer: 'CUSTOMER_BASE' // expect sapuxLayer to be undefined for cap projects
             }
         };
 

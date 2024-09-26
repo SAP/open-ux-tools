@@ -1,5 +1,6 @@
 import { UI5_DEFAULT, getEsmTypesVersion, getTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
-import type { App, AppOptions, Package, UI5, UI5Framework } from '../types';
+import type { App, AppOptions, UI5, UI5Framework } from '../types';
+import type { Package } from '@sap-ux/project-access';
 import versionToManifestDescMapping from '@ui5/manifest/mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';

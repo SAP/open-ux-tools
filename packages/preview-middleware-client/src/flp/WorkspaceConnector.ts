@@ -18,7 +18,7 @@ const connector = merge({}, ObjectStorageConnector, {
 
             if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
-                    this.fileChangeRequestNotifier(change.fileName, 'create', change.changeType);
+                    this.fileChangeRequestNotifier(change.fileName, 'create', change);
                 } catch (e) {
                     // exceptions in the listener call are ignored
                 }

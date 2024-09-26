@@ -1,11 +1,13 @@
 import type { ReactElement } from 'react';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { UILink } from '@sap-ux/ui-components';
 
 import type { SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
+
+import type { RootState } from '../../store';
 
 export interface SimpleQuickActionListItemProps {
     action: Readonly<SimpleQuickAction>;
@@ -20,6 +22,7 @@ export interface SimpleQuickActionListItemProps {
  */
 export function SimpleQuickActionListItem({ action }: Readonly<SimpleQuickActionListItemProps>): ReactElement {
     const dispatch = useDispatch();
+    const isDisabled = useSelector<RootState, boolean>((state) => state.appMode === 'navigation');
 
     return (
         <div className={`quick-action-item`}>
@@ -27,6 +30,7 @@ export function SimpleQuickActionListItem({ action }: Readonly<SimpleQuickAction
                 key={action.id}
                 title={action.title}
                 underline={false}
+                disabled={isDisabled}
                 onClick={() => {
                     dispatch(executeQuickAction({ kind: action.kind, id: action.id }));
                 }}>

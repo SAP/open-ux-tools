@@ -99,6 +99,9 @@
       "path": "packages/fiori-generator-shared"
     },
     {
+      "path": "packages/fiori-tools-settings"
+    },
+    {
       "path": "packages/guided-answers-helper"
     },
     {

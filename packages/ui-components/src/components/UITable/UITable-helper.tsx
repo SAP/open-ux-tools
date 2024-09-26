@@ -203,10 +203,13 @@ export const _onHeaderRender: IRenderFunction<IDetailsHeaderProps> = (props, def
             if (item?.column) {
                 const column: UIColumn = item.column;
                 const editable = (column.editable ? '' : 'not-') + 'editable-container';
-                const containerDiv = column.key !== '__row_number__' ? <div className={editable}></div> : null;
+                const isRowNumber = column.key === '__row_number__';
+                const containerDiv = isRowNumber ? <div className={editable}></div> : null;
+                // row number column header is focusable on the parent of this cell
+                const isFocusable = !isRowNumber;
 
                 return (
-                    <div className="data-editor__header-cell">
+                    <div className="data-editor__header-cell" data-is-focusable={isFocusable}>
                         {column.iconName && (
                             <UIIcon className="type-icon" iconName={column.iconName} title={column.iconTooltip || ''} />
                         )}

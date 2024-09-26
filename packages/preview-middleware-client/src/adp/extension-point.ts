@@ -8,7 +8,7 @@ import { ExternalAction, addExtensionPoint } from '@sap-ux-private/control-prope
 
 import { Deferred, createDeferred } from './utils';
 
-import { SubscribeFunction } from '../cpe/types';
+import { CommunicationService } from '../cpe/communication-service';
 import { DialogNames, handler } from './init-dialogs';
 
 type ActionService = {
@@ -50,11 +50,10 @@ export default class ExtensionPointService {
     /**
      * Initializes communication with CPE, and the extension point plugin.
      *
-     * @param subscribe Handles actions from CPE
      */
-    public init(subscribe: SubscribeFunction) {
+    public init() {
         this.initPlugin();
-        subscribe(async (action: ExternalAction): Promise<void> => {
+        CommunicationService.subscribe(async (action: ExternalAction): Promise<void> => {
             if (addExtensionPoint.match(action)) {
                 try {
                     const { controlId, name } = action.payload;

@@ -6,6 +6,7 @@ import * as connectLivereload from 'connect-livereload';
 import portfinder from 'portfinder';
 import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from '../../../src/base/constants';
 import { join } from 'path';
+import { watchManifestChanges } from '../../../src/base/livereload';
 
 jest.mock('connect-livereload', () => ({
     __esModule: true,
@@ -15,7 +16,7 @@ jest.mock('connect-livereload', () => ({
 jest.mock('@sap-ux/btp-utils', () => {
     return {
         __esModule: true,
-        ...jest.requireActual('@sap-ux/btp-utils'),
+        ...jest.requireActual('@sap-ux/btp-utils')
     };
 });
 
@@ -95,7 +96,9 @@ describe('Connect Livereload', () => {
 
         expect(connectLivereloadSpy).toHaveBeenCalledTimes(1);
         expect(exposeSpy).toHaveBeenCalledWith(12345);
-        expect(connectLivereloadSpy).toHaveBeenCalledWith(expect.objectContaining({ port: 12345, src: 'http://example.com/livereload.js?snipver=1&port=443' }));
+        expect(connectLivereloadSpy).toHaveBeenCalledWith(
+            expect.objectContaining({ port: 12345, src: 'http://example.com/livereload.js?snipver=1&port=443' })
+        );
     });
 
     test('connect-livereload with default configuration', () => {
@@ -108,5 +111,53 @@ describe('Connect Livereload', () => {
         getConnectLivereload({ port: 12345 });
         expect(connectLivereloadSpy).toHaveBeenCalledTimes(1);
         expect(connectLivereloadSpy).toHaveBeenCalledWith(expect.objectContaining({ port: 12345 }));
+    });
+});
+
+describe('adp backend sync', () => {
+    const onSpy = jest.fn<void, [string, (event: string, path: string) => void]>();
+
+    beforeEach(() => {
+        jest.spyOn(livereload, 'createServer').mockImplementation((): any => {
+            return {
+                watcher: {
+                    on: onSpy
+                },
+                config: { port: 35729 }
+            };
+        });
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+        global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+    });
+
+    test('ignore property changes', async () => {
+        const server = await getLivereloadServer({});
+
+        watchManifestChanges(server);
+
+        onSpy.mock.calls[0][1]('add', 'property.change');
+
+        expect(global.__SAP_UX_MANIFEST_SYNC_REQUIRED__).toBeFalsy();
+    });
+    test('sync on appdescr_variant changes', async () => {
+        const server = await getLivereloadServer({});
+
+        watchManifestChanges(server);
+
+        onSpy.mock.calls[0][1]('change', 'manifest.appdescr_variant');
+
+        expect(global.__SAP_UX_MANIFEST_SYNC_REQUIRED__).toBe(true);
+    });
+    test('sync on manifest change', async () => {
+        const server = await getLivereloadServer({});
+
+        watchManifestChanges(server);
+
+        onSpy.mock.calls[0][1]('add', '123_appdescr_fe_changePageConfiguration.change');
+
+        expect(global.__SAP_UX_MANIFEST_SYNC_REQUIRED__).toBe(true);
     });
 });

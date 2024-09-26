@@ -41,7 +41,7 @@ describe('flp/WorkspaceConnector', () => {
                     body: JSON.stringify(change, null, 2)
                 })
             );
-            expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith('dummyFile', 'create', 'property');
+            expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith('dummyFile', 'create', change);
         });
 
         test('setItem, generator - tool-variant', async () => {

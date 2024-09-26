@@ -513,7 +513,10 @@ describe('FE V2 quick actions', () => {
                         '../../../../src/adp/init-dialogs'
                     );
 
-                    expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'items');
+                    expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
+                        aggregation: 'items',
+                        title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
+                    });
                 });
             });
         });

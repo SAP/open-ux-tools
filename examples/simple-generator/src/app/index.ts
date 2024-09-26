@@ -145,7 +145,7 @@ export default class extends Generator {
         // configuring the source/template root folder to point to the folder containing the karma templates
         this.sourceRoot(join(__dirname, '..', '..', 'templates', 'karma'));
         // hard-coded output folder just for testing, in a real generator the .tmp prefix is not needed
-        this.destinationRoot(join('.tmp', this.app.package.name));
+        this.destinationRoot(join('.tmp', this.app.package.name ?? 'default-app-name'));
     }
 
     async writing(): Promise<void> {

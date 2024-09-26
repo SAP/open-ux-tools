@@ -11,7 +11,7 @@ import {
     propertyChangeFailed,
     FlexChangesEndPoints,
     reloadApplication,
-    numberOfChangesRequiringReloadChanged,
+    setApplicationRequiresReload,
     save
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
@@ -141,10 +141,10 @@ export class ChangeService {
             } else if (deletePropertyChanges.match(action)) {
                 await this.deleteChange(action.payload.controlId, action.payload.propertyName, action.payload.fileName);
             } else if (reloadApplication.match(action)) {
-                this.sendAction(numberOfChangesRequiringReloadChanged(0));
+                this.sendAction(setApplicationRequiresReload(false));
             } else if (save.match(action)) {
                 this.changesRequiringReload = 0;
-                this.sendAction(numberOfChangesRequiringReloadChanged(0));
+                this.sendAction(setApplicationRequiresReload(false));
             }
         });
 
@@ -298,7 +298,7 @@ export class ChangeService {
                 MessageToast.show(resourceBundle.getText('CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_MESSAGE'), {
                     duration: 8000
                 });
-                this.sendAction(numberOfChangesRequiringReloadChanged(changesRequiringReload));
+                this.sendAction(setApplicationRequiresReload(changesRequiringReload > 0));
             }
             this.changesRequiringReload = changesRequiringReload;
 

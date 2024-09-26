@@ -9,6 +9,7 @@ import type { MiddlewareParameters } from '@ui5/server';
 import type { RequestHandler } from 'express';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import { resolve } from 'path';
+import { watchManifestChanges } from '../base/livereload';
 
 module.exports = async ({ options, middlewareUtil }: MiddlewareParameters<ReloaderConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
@@ -38,6 +39,7 @@ module.exports = async ({ options, middlewareUtil }: MiddlewareParameters<Reload
             logger.info(`Livereload server started on port ${livereloadPort} for path ${watchPath}`);
             livereloadServer.watch(watchPath);
         }
+        watchManifestChanges(livereloadServer);
 
         return await getConnectLivereload({ ...defaultConnectLivereloadOpts, ...connectOptions, port: livereloadPort });
     } else {
@@ -47,6 +49,7 @@ module.exports = async ({ options, middlewareUtil }: MiddlewareParameters<Reload
         const livereloadPort = livereloadServer.config.port;
         logger.info(`Livereload server started on port ${livereloadPort} for path ${sourcePath}`);
         livereloadServer.watch(sourcePath);
+        watchManifestChanges(livereloadServer);
 
         return await getConnectLivereload({ ...defaultConnectLivereloadOpts, port: livereloadPort });
     }

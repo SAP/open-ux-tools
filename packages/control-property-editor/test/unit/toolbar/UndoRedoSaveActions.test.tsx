@@ -11,7 +11,7 @@ import {
     redo,
     save,
     undo,
-    numberOfChangesRequiringReloadChanged,
+    setApplicationRequiresReload,
     reloadApplication
 } from '@sap-ux-private/control-property-editor-common';
 
@@ -54,7 +54,7 @@ describe('toolbar', () => {
         // update state
         store.dispatch(setUndoRedoEnablement({ canRedo: true, canUndo: true }));
         store.dispatch(setSaveEnablement(true));
-        store.dispatch(numberOfChangesRequiringReloadChanged(5));
+        store.dispatch(setApplicationRequiresReload(true));
         store.dispatch(appLoaded());
 
         dispatch.mockClear();

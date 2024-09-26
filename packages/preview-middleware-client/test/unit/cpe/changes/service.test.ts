@@ -1,7 +1,7 @@
 import * as flexChange from '../../../../src/cpe/changes/flex-change';
 import { ChangeService } from '../../../../src/cpe/changes/service';
 import { ActionHandler } from '../../../../src/cpe/types';
-import { changeProperty, deletePropertyChanges, numberOfChangesRequiringReloadChanged } from '@sap-ux-private/control-property-editor-common';
+import { changeProperty, deletePropertyChanges, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
@@ -602,7 +602,7 @@ describe('SelectionService', () => {
 
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
         expect(sendActionMock).toHaveBeenCalledTimes(5);
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, numberOfChangesRequiringReloadChanged(1))
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, setApplicationRequiresReload(true))
         expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] change-stack-modified',
             payload: {

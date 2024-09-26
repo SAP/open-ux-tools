@@ -24,6 +24,7 @@ class RuntimeAuthoringMock {
     public canUndo = jest.fn();
     public canRedo = jest.fn();
     public canSave = jest.fn();
+    public getMode = jest.fn();
     public setMode = jest.fn();
     public undo = jest.fn();
     public redo = jest.fn();

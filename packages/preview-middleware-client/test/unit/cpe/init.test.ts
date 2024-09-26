@@ -1,3 +1,5 @@
+import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+
 import * as common from '@sap-ux-private/control-property-editor-common';
 
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -10,7 +12,7 @@ import * as flexChange from '../../../src/cpe/changes/flex-change';
 import { OutlineService } from '../../../src/cpe/outline/service';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import connector from '../../../src/flp/WorkspaceConnector';
-import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import { CommunicationService } from '../../../src/cpe/communication-service';
 
 describe('main', () => {
     const sendActionMock = jest.fn();
@@ -80,15 +82,14 @@ describe('main', () => {
         return mockIconResult;
     });
 
-    const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
-        return { sendAction: sendActionMock, dispose: jest.fn() };
-    });
+    const spyPostMessage = jest.spyOn(CommunicationService, 'subscribe');
 
     test('init - 1', async () => {
         initOutlineSpy.mockResolvedValue();
         // const rta = new RuntimeAuthoringMock();
         await init(rta);
-        const callBackFn = spyPostMessage.mock.calls[0][1];
+        const callBackFn = spyPostMessage.mock.calls[2][0];
+        (callBackFn as any)('test')
         // apply change without error
         const payload = {
             controlId:
@@ -118,6 +119,6 @@ describe('main', () => {
 
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
-        expect(Log.error).toBeCalledWith('Service Initalization Failed: ', error);
+        expect(Log.error).toBeCalledWith('Service Initialization Failed: ', error);
     });
 });

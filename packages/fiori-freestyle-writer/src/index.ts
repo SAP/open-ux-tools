@@ -4,14 +4,13 @@ import { render } from 'ejs';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
-import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
 import type { BasicAppSettings } from './types';
 import { FreestyleApp, TemplateType } from './types';
 import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
-import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
+import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -98,7 +97,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         // Add scripts for non-CAP applications
         packageJson.scripts = {
             ...packageJson.scripts,
-            ...getPackageJsonTasks({
+            ...getPackageScripts({
                 localOnly: !!ffApp.service && !ffApp.service?.url,
                 addMock: !!ffApp.service?.metadata,
                 sapClient: ffApp.service?.client,

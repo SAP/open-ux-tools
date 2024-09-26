@@ -6,14 +6,17 @@ import type { Actions } from '../../../src/utils';
 
 getWebSocket(false);
 
+type SupportedLanguages = 'html' | 'json';
+
 export const render = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;
-    const [preview, setPreview] = useState<{ codeSnippets: { content: string; fileName: string }[]; answers: unknown }>(
-        {
-            answers: {},
-            codeSnippets: []
-        }
-    );
+    const [preview, setPreview] = useState<{
+        codeSnippets: { content: string; fileName: string; language: SupportedLanguages }[];
+        answers: unknown;
+    }>({
+        answers: {},
+        codeSnippets: []
+    });
 
     useEffect(function () {
         const handleMessage = (responseAction: Actions) => {
@@ -27,7 +30,8 @@ export const render = (props: { active?: boolean }): React.ReactElement => {
                 setPreview({
                     codeSnippets: Object.values(responseAction.codeSnippets).map((snippet) => ({
                         content: snippet.content,
-                        fileName: snippet.filePathProps?.fileName ?? 'Please select a file'
+                        fileName: snippet.filePathProps?.fileName ?? 'Please select a file',
+                        language: snippet.language === 'xml' ? 'html' : (snippet.language as SupportedLanguages)
                     })),
                     answers: answersPreview
                 });
@@ -48,7 +52,7 @@ export const render = (props: { active?: boolean }): React.ReactElement => {
         <AddonPanel key="panel" active={active}>
             {preview.codeSnippets.map((snippet) => (
                 <Form.Field label={snippet.fileName} key={snippet.fileName}>
-                    <SyntaxHighlighter language="html">{snippet.content}</SyntaxHighlighter>
+                    <SyntaxHighlighter language={snippet.language ?? 'html'}>{snippet.content}</SyntaxHighlighter>
                 </Form.Field>
             ))}
             <Form.Field label="Answers">

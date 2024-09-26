@@ -90,7 +90,7 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
         getItem(key: string): unknown;
         getItems(): Promise<unknown[]>;
         fileChangeRequestNotifier:
-            | ((fileName: string, kind: 'create' | 'delete', changeType?: string) => void)
+            | (<T extends object>(fileName: string, kind: 'create' | 'delete', change?: T) => void)
             | undefined;
     }
 
