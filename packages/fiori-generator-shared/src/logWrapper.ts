@@ -88,6 +88,14 @@ export class LogWrapper implements ILogWrapper {
         })
     );
 
+    /**
+     *
+     * @param logName
+     * @param logLevel
+     * @param yoLogger
+     * @param extLogger
+     * @param vscode
+     */
     constructor(logName: string, logLevel: LogLevel, yoLogger: Logger, extLogger?: IVSCodeExtLogger, vscode?: any) {
         LogWrapper._yoLogger = yoLogger;
         if (extLogger) {
@@ -123,25 +131,59 @@ export class LogWrapper implements ILogWrapper {
         }
     };
 
+    /**
+     *
+     * @param msg
+     * @param {...any} args
+     */
     fatal(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('fatal', msg, ...args);
     }
+    /**
+     *
+     * @param msg
+     * @param {...any} args
+     */
     error(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('error', msg, ...args);
     }
+    /**
+     *
+     * @param msg
+     * @param {...any} args
+     */
     warn(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('warn', msg, ...args);
     }
+    /**
+     *
+     * @param msg
+     * @param {...any} args
+     */
     info(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('info', msg, ...args);
     }
+    /**
+     *
+     * @param msg
+     * @param {...any} args
+     */
     debug(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('debug', msg, ...args);
     }
+    /**
+     *
+     * @param msg
+     * @param {...any} args
+     */
     trace(msg: string, ...args: any[]): void {
         LogWrapper.logAtLevel('trace', msg, ...args);
     }
 
+    /**
+     *
+     * @param msg
+     */
     public static log(msg: string): void {
         LogWrapper.logAtLevel('info', msg);
     }
