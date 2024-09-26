@@ -92,7 +92,7 @@ export function HeaderField(headerFieldProps: Readonly<HeaderFieldProps>): React
                         border: '1px solid var(--vscode-input-border)',
                         selectors: {
                             ':hover': {
-                                border: '1px solid var(--vscode-focusBorder)'
+                                borderColor: 'var(--vscode-focusBorder)'
                             }
                         },
                         padding: 7
