@@ -33,5 +33,5 @@ export async function addVariantsManagementScript(fs: Editor, basePath: string, 
 
     packageJson.scripts['start-variants-management'] = `fiori run --open "${url}"`;
     fs.writeJSON(packageJsonPath, packageJson);
-    logger?.info(`Script 'start-variants-management' written to 'package.json'.`);
+    logger?.debug(`Script 'start-variants-management' written to 'package.json'.`);
 }
