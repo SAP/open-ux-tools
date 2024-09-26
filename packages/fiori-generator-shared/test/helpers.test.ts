@@ -1,6 +1,7 @@
 import { join } from 'path';
 import os from 'os';
-import { getBootstrapResourceUrls, getVariantPreviewAppScript } from '../src/index';
+import fs from 'fs';
+import { getBootstrapResourceUrls } from '../src/index';
 import { YEOMANUI_TARGET_FOLDER_CONFIG_PROP } from '../src/constants';
 import { getDefaultTargetFolder } from '../src/helpers';
 
@@ -47,35 +48,6 @@ describe('getResourceUrlsForUi5Bootstrap', () => {
     });
 });
 
-describe('getVariantPreviewAppScript', () => {
-    it('should return the correct command with a given SAP client', () => {
-        const sapClient = '100';
-        const expectedCommand =
-            'fiori run --open "preview.html?&sap-client=100&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
-        expect(getVariantPreviewAppScript(sapClient)).toBe(expectedCommand);
-    });
-
-    it('should return the correct command with an empty SAP client', () => {
-        const sapClient = '';
-        const expectedCommand =
-            'fiori run --open "preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
-        expect(getVariantPreviewAppScript(sapClient)).toBe(expectedCommand);
-    });
-
-    it('should return the correct command with no SAP client argument', () => {
-        const sapClient = undefined;
-        const expectedCommand =
-            'fiori run --open "preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
-        expect(getVariantPreviewAppScript(sapClient)).toBe(expectedCommand);
-    });
-
-    it('should handle default parameter value correctly', () => {
-        const expectedCommand =
-            'fiori run --open "preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
-        expect(getVariantPreviewAppScript()).toBe(expectedCommand);
-    });
-});
-
 describe('getDefaultTargetFolder', () => {
     // rootPath exists only in SBAS
     const vscodeMock = {
@@ -109,6 +81,7 @@ describe('getDefaultTargetFolder', () => {
         expect(getDefaultTargetFolder(vscodeMock)).toBe('/1st/workspace/path');
 
         // No folders added to workspace
+        jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
         Object.assign(vscodeMock.workspace, { workspaceFolders: [] });
         expect(getDefaultTargetFolder(vscodeMock)).toBe(join(os.homedir(), 'projects'));
 
