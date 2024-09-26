@@ -24,7 +24,7 @@ export function addAddVariantsConfigCommand(cmd: Command): void {
  * Adds a variants config to an app or project.
  *
  * @param basePath - the base path where the package.json and ui5.yaml is
- * @param simulate - if true, do not write but just show what would be change; otherwise write
+ * @param simulate - if true, do not write but just show what would be changed; otherwise write
  */
 async function addVariantsConfig(basePath: string, simulate: boolean): Promise<void> {
     const logger = getLogger();
