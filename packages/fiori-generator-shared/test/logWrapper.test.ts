@@ -1,5 +1,5 @@
 import { DefaultLogger, createCLILogger, LogWrapper } from '../src/logWrapper';
-import { Logger } from 'yeoman-environment';
+import type { Logger } from 'yeoman-environment';
 
 describe('Test logWrapper', () => {
     test('Test logWrapper functions ', () => {
@@ -39,17 +39,18 @@ describe('Test logWrapper', () => {
         expect(consoleErrorSpy).toHaveBeenCalledWith('LogWrapper is not initialised');
 
         console.log = jest.fn();
-        //@ts-ignore
+        //@ts-expect-error - private member access
         LogWrapper['_yoLogger'] = DefaultLogger.info;
         LogWrapper['logAtLevel']('info', 'Info message');
-        //@ts-ignore
+        //@ts-expect-error - private member access
         let consoleMsg = console.log.mock.calls[0][0];
         expect(consoleMsg).toEqual(expect.stringContaining(`Info message`));
 
         const testLogger = createCLILogger('info', 'TestLogger');
         testLogger.info('Test msg');
-        //@ts-ignore
-        consoleMsg = console.log.mock.calls[0][0];
+
+        const consoleSpy = jest.spyOn(console, 'log');
+        consoleMsg = consoleSpy.mock.calls[0][0];
         expect(consoleMsg).toEqual(expect.stringContaining(`"label": "TestLogger"`));
 
         logWrapper.fatal('Fatal');

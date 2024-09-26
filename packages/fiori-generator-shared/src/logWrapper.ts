@@ -5,7 +5,7 @@ import type {
     IChildLogger as ILogWrapper
 } from '@vscode-logging/logger';
 import { getExtensionLogger } from '@vscode-logging/logger';
-import { format, TransformableInfo } from 'logform';
+import { format } from 'logform';
 import type { Logger } from 'yeoman-environment';
 import { t } from './i18n';
 import { LOGGING_LEVEL_CONFIG_PROP } from './constants';
@@ -38,7 +38,7 @@ export const DefaultLogger: LogWrapper = {
     },
     getChildLogger: () => DefaultLogger,
     getLogLevel: () => 'off',
-    log: function (msg: string, ...args: any[]): Logger | undefined {
+    log: function (): Logger | undefined {
         // Do nothing
         return undefined;
     }
@@ -57,8 +57,10 @@ const LOG_LEVEL_KEYS: Record<LogLevel, number> = {
 /**
  * Creates a CLI logger based on the IChildLogger interface. This means we can use the
  * same log functions for extension and cli logging. No files generated for CLI use currently.
- * @param {LogLevel} logLevel, defaults to off on cli
- * @param logName
+ *
+ * @param logLevel - defaults to off on cli
+ * @param logName - name of the logger
+ * @returns {ILogWrapper} - the logger
  */
 export function createCLILogger(logLevel: LogLevel = 'off', logName: string): ILogWrapper {
     const extensionLoggerOpts: getExtensionLoggerOpts = {
@@ -144,9 +146,15 @@ export class LogWrapper implements ILogWrapper {
         LogWrapper.logAtLevel('info', msg);
     }
 
-    // Redefinition of environment log function will log everything at info
-    // This can be removed once we replace all this.log references in Generators
-    public log(msg: string, ...args: any[]) {
+    /**
+     * Redefinition of environment log function will log everything at info.
+     * This can be removed once we replace all this.log references in Generators.
+     *
+     * @param msg - message to log
+     * @param args - additional arguments
+     * @returns {Logger | undefined} - the logger
+     */
+    public log(msg: string, ...args: any[]): Logger | void {
         LogWrapper.logAtLevel('info', msg, ...args);
         // Not initialized so use DefaultLogger.
         if (LogWrapper._yoLogger) {
@@ -156,7 +164,9 @@ export class LogWrapper implements ILogWrapper {
     }
 
     /**
-     * Get the currently configured log level
+     * Get the currently configured log level.
+     *
+     * @returns {LogLevel} The current log level.
      */
     public getLogLevel(): LogLevel {
         return LogWrapper._logLevel;
