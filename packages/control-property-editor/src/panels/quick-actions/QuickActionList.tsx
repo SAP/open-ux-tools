@@ -46,14 +46,14 @@ export function QuickActionList(): ReactElement {
                             {...group.actions.map((quickAction, idx) => {
                                 if (quickAction.kind === SIMPLE_QUICK_ACTION_KIND) {
                                     return (
-                                        <Stack.Item key={`${quickAction.id}`}>
+                                        <Stack.Item key={quickAction.id}>
                                             <SimpleQuickActionListItem key={quickAction.id} action={quickAction} />
                                         </Stack.Item>
                                     );
                                 }
                                 if (quickAction.kind === NESTED_QUICK_ACTION_KIND) {
                                     return (
-                                        <Stack.Item key={`${quickAction.id}`}>
+                                        <Stack.Item key={quickAction.id}>
                                             <NestedQuickActionListItem
                                                 key={quickAction.id}
                                                 action={quickAction}
