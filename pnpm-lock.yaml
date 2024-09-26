@@ -1511,6 +1511,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      i18next:
+        specifier: 20.6.1
+        version: 20.6.1
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
