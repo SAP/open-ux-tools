@@ -5,3 +5,4 @@ export { getBootstrapResourceUrls, getDefaultTargetFolder } from './helpers';
 export { generateReadMe } from './read-me';
 export * from './system-utils';
 export { PackageJsonScripts, YeomanEnvironment, VSCodeInstance } from './types';
+export * from './logWrapper';

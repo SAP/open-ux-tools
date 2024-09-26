@@ -1,26 +1,18 @@
-import { ToolsLogger, type Logger } from '@sap-ux/logger';
+import { DefaultLogger, ILogWrapper, LogWrapper } from '@sap-ux/fiori-generator-shared';
+import type { Logger } from 'yeoman-environment';
+import type { IVSCodeExtLogger } from '@vscode-logging/logger';
 
 /**
  * Static logger prevents passing of logger references through all functions, as this is a cross-cutting concern.
  */
 export default class ReuseLibGenLogger {
-    private static _logger: Logger = new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
+    static logger: ILogWrapper = DefaultLogger;
 
     /**
-     * Get the logger.
-     *
-     * @returns the logger
+     * Configures the vscode logger
      */
-    public static get logger(): Logger {
-        return ReuseLibGenLogger._logger;
-    }
-
-    /**
-     * Set the logger.
-     *
-     * @param value the logger to set
-     */
-    public static set logger(value: Logger) {
-        ReuseLibGenLogger._logger = value;
+    static configureLogging(vscLogger: IVSCodeExtLogger, loggerName: string, yoLogger: Logger, vscode?: unknown) {
+        const logWrapper = new LogWrapper(loggerName, 'info', yoLogger, vscLogger, vscode);
+        ReuseLibGenLogger.logger = logWrapper;
     }
 }
