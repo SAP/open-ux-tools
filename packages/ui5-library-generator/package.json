@@ -1,5 +1,5 @@
 {
-    "name": "@sap-ux/ui5-library-generator",
+    "name": "@sap-ux/generator-ui5-library",
     "description": "Generator for creating UI5 libraries",
     "version": "0.0.0",
     "repository": {

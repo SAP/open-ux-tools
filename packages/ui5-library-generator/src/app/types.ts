@@ -1,4 +1,4 @@
-import { Prompts, type AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { Prompts, AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { UI5LibraryAnswers } from '@sap-ux/ui5-library-inquirer';
 
 export interface LibAnswers {
