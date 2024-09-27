@@ -531,19 +531,23 @@ export interface CustomConfig {
         support: ToolsSupport;
     };
 }
-
-export interface CloudCustomTaskConfig {
-    type: string;
-    destination: string | undefined;
-    appName: string | undefined;
-    languages: Language[];
-    connections?: Connection[];
-}
-
-export interface Connection {
+export interface CloudTarget {
     url: string | undefined;
     authenticationType: string | undefined;
     ignoreCertErrors: boolean;
+}
+
+export interface OnPremTarget {
+    destination?: string;
+}
+
+export type CloudCustomTaskConfigTarget = OnPremTarget | CloudTarget;
+
+export interface CloudCustomTaskConfig {
+    type: string;
+    appName: string | undefined;
+    languages: Language[];
+    target: CloudCustomTaskConfigTarget;
 }
 
 export interface InboundChangeContentAddInboundId {

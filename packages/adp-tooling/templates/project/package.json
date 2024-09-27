@@ -22,8 +22,8 @@
         "build": "ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest",
         "start": "<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/flp.html#app-preview",
         "start-editor": "<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/adaptation-editor.html"<%if (locals.deploy) {%>,
-        "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip",
-        "undeploy": "npm run build && fiori undeploy  --config ui5-deploy.yaml",
+        "deploy": "npm run build && <%= locals.options?.fioriTools ? 'fiori deploy' : 'deploy' %> --config ui5-deploy.yaml && rimraf archive.zip",
+        "undeploy": "npm run build && <%= locals.options?.fioriTools ? 'fiori undeploy' : 'undeploy' %> --config ui5-deploy.yaml",
         "deploy-test": "npm run build && fiori deploy --config ui5-deploy.yaml --testMode true"<%}%>
     }
 }

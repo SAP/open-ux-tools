@@ -25,7 +25,7 @@ Object {
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
-        \\"undeploy\\": \\"npm run build && fiori undeploy  --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
 }
@@ -109,9 +109,127 @@ builder:
         languages:
           - sap: testId
             i18n: testKey
-        connections:
-          - url: http://sap.example
-            ignoreCertErrors: false
+        target:
+          url: http://sap.example
+          ignoreCertErrors: false
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ADP writer generate S/4HANA cloud config with target destination 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+    \\"name\\": \\"my-test-app\\",
+    \\"version\\": \\"0.1.0\\",
+    \\"private\\": true,
+    \\"description\\": \\"Adaptation of the.original.app\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"sapui5\\",
+        \\"adaptation-project\\"
+    ],
+    \\"dependencies\\": {},
+    \\"devDependencies\\": {
+        \\"@sap/ux-ui5-tooling\\": \\"1\\",
+        \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
+        \\"@ui5/cli\\": \\"^3.9.2\\",
+        \\"rimraf\\": \\"^5.0.5\\"
+    },
+    \\"scripts\\": {
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
+        \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
+        \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
+        \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.0\\"
+metadata:
+  name: my-test-app
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: UYTCLNT902
+        app:
+          package: $TMP
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.0\\"
+metadata:
+  name: my-test-app
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        adp:
+          target:
+            destination: UYTCLNT902
+          ignoreCertErrors: false
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - destination: UYTCLNT902
+            url: https://REQUIRED_FOR_VSCODE.example
+            path: /sap
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: ''
+builder:
+  customTasks:
+    - name: app-variant-bundler-build
+      beforeTask: escapeNonAsciiCharacters
+      configuration:
+        type: abap
+        appName: bsp.test.app
+        languages:
+          - sap: testId
+            i18n: testKey
+        target:
+          destination: UYTCLNT902
 ",
     "state": "modified",
   },
@@ -143,7 +261,7 @@ Object {
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
-        \\"undeploy\\": \\"npm run build && fiori undeploy  --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
 }
@@ -227,9 +345,9 @@ builder:
         languages:
           - sap: testId
             i18n: testKey
-        connections:
-          - url: http://sap.example
-            ignoreCertErrors: false
+        target:
+          url: http://sap.example
+          ignoreCertErrors: false
 ",
     "state": "modified",
   },
@@ -263,8 +381,8 @@ Object {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
-        \\"undeploy\\": \\"npm run build && fiori undeploy  --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"npm run build && deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"undeploy\\": \\"npm run build && undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
 }
@@ -436,7 +554,7 @@ Object {
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
-        \\"undeploy\\": \\"npm run build && fiori undeploy  --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
 }
@@ -775,8 +893,8 @@ dist/
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
-        \\"undeploy\\": \\"npm run build && fiori undeploy  --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"npm run build && deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"undeploy\\": \\"npm run build && undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
 }
@@ -911,7 +1029,7 @@ dist/
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
-        \\"undeploy\\": \\"npm run build && fiori undeploy  --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
 }
@@ -1154,7 +1272,7 @@ dist/
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
-        \\"undeploy\\": \\"npm run build && fiori undeploy  --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
 }
@@ -1238,9 +1356,9 @@ builder:
         languages:
           - sap: testId
             i18n: testKey
-        connections:
-          - url: http://sap.example
-            ignoreCertErrors: false
+        target:
+          url: http://sap.example
+          ignoreCertErrors: false
 ",
     "state": "modified",
   },
@@ -1260,6 +1378,164 @@ my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=test
     "state": "modified",
   },
   "../s4hana/webapp/manifest.appdescr_variant": Object {
+    "contents": "{
+  \\"fileName\\": \\"manifest\\",
+  \\"layer\\": \\"CUSTOMER_BASE\\",
+  \\"fileType\\": \\"appdescr_variant\\",
+  \\"reference\\": \\"the.original.app\\",
+  \\"id\\": \\"my.test.app\\",
+  \\"namespace\\": \\"apps/the.original.app/appVariants/my.test.app/\\",
+  \\"version\\": \\"0.1.0\\",
+  \\"content\\": [
+    {
+      \\"changeType\\": \\"appdescr_app_setTitle\\",
+      \\"content\\": {},
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
+    }
+  ]
+}
+",
+    "state": "modified",
+  },
+  "../s4hanaDestination/.gitignore": Object {
+    "contents": "node_modules/
+dist/
+.tmp
+.env
+*.zip",
+    "state": "modified",
+  },
+  "../s4hanaDestination/package.json": Object {
+    "contents": "{
+    \\"name\\": \\"my-test-app\\",
+    \\"version\\": \\"0.1.0\\",
+    \\"private\\": true,
+    \\"description\\": \\"Adaptation of the.original.app\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"sapui5\\",
+        \\"adaptation-project\\"
+    ],
+    \\"dependencies\\": {},
+    \\"devDependencies\\": {
+        \\"@sap/ux-ui5-tooling\\": \\"1\\",
+        \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
+        \\"@ui5/cli\\": \\"^3.9.2\\",
+        \\"rimraf\\": \\"^5.0.5\\"
+    },
+    \\"scripts\\": {
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
+        \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
+        \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
+        \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "../s4hanaDestination/ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.0\\"
+metadata:
+  name: my-test-app
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: UYTCLNT902
+        app:
+          package: $TMP
+",
+    "state": "modified",
+  },
+  "../s4hanaDestination/ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.0\\"
+metadata:
+  name: my-test-app
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        adp:
+          target:
+            destination: UYTCLNT902
+          ignoreCertErrors: false
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - destination: UYTCLNT902
+            url: https://REQUIRED_FOR_VSCODE.example
+            path: /sap
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: ''
+builder:
+  customTasks:
+    - name: app-variant-bundler-build
+      beforeTask: escapeNonAsciiCharacters
+      configuration:
+        type: abap
+        appName: bsp.test.app
+        languages:
+          - sap: testId
+            i18n: testKey
+        target:
+          destination: UYTCLNT902
+",
+    "state": "modified",
+  },
+  "../s4hanaDestination/webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for my.test.app
+
+#Texts for manifest.json
+
+#XTIT: Application name
+my.test.app_sap.app.title=Adaptation of the.original.app
+
+# FLP Configuration
+
+my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title=testTitle
+my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=testSubTitle
+",
+    "state": "modified",
+  },
+  "../s4hanaDestination/webapp/manifest.appdescr_variant": Object {
     "contents": "{
   \\"fileName\\": \\"manifest\\",
   \\"layer\\": \\"CUSTOMER_BASE\\",
@@ -1312,7 +1588,7 @@ dist/
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
-        \\"undeploy\\": \\"npm run build && fiori undeploy  --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
 }
@@ -1396,9 +1672,9 @@ builder:
         languages:
           - sap: testId
             i18n: testKey
-        connections:
-          - url: http://sap.example
-            ignoreCertErrors: false
+        target:
+          url: http://sap.example
+          ignoreCertErrors: false
 ",
     "state": "modified",
   },
