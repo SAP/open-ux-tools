@@ -131,7 +131,18 @@ const handleServicesForMiddlewareConfig = (
         };
         return [placeholderService];
     } else {
-        return [...services, serviceData];
+        // check if service with given path already exists
+        let existingServiceIndex: number = -1;
+        services.forEach((service, index: number) => {
+            if (service.urlPath === path) {
+                existingServiceIndex = index;
+            }
+        });
+        if (existingServiceIndex > -1) {
+            services[existingServiceIndex] = serviceData;
+        } else {
+            return [...services, serviceData];
+        }
     }
 };
 
