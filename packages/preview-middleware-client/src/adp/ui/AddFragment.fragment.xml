@@ -2,7 +2,7 @@
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
     xmlns:f="sap.ui.layout.form"  
-    title="Add XML Fragment" 
+    title="{/title}" 
     contentWidth="500px" 
     class="sapUiRTABorder">
     <content>
@@ -12,10 +12,11 @@
             labelSpanS="4"
             singleContainerFullSize="false">
             <f:content>
-                <Label text="Control Type" />
-                <Text text="{/selectedControlName}" />
-                <Label text="Target Aggregation" />
+                <Label visible="{/completeView}"  text="{i18n>ADP_ADD_FRAGMENT_DIALOG_CONTROL_TYPE_LABEL}" />
+                <Text visible="{/completeView}" text="{/selectedControlName}" />
+                <Label visible="{/completeView}" text="{i18n>ADP_ADD_FRAGMENT_DIALOG_AGGREGATION_LABEL}" />
                 <Select
+                    visible="{/completeView}"
                     change="onAggregationChanged"
                     selectedKey="{/selectedAggregation/key}"
                     items="{
@@ -24,7 +25,7 @@
                     }">
                     <core:Item key="{key}" text="{value}" />
                 </Select>
-                <Label text="Index" />
+                <Label text="{i18n>ADP_ADD_FRAGMENT_DIALOG_INDEX_LABEL}" />
                 <HBox alignItems="Center">
                     <Select
                         enabled="{/indexHandlingFlag}"
@@ -42,7 +43,7 @@
                         class= "sapUiTinyMarginBegin" 
                         tooltip="{/iconTooltip}" />
                 </HBox>
-                <Label text="Fragment Name" />
+                <Label text="{i18n>ADP_ADD_FRAGMENT_DIALOG_FRAGMENT_NAME_LABEL}" />
                 <Input 
                     description=".fragment.xml" 
                     value="{/newFragmentName}" 

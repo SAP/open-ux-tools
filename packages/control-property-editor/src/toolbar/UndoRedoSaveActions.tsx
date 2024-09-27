@@ -23,11 +23,9 @@ export function UndoRedoSaveActions(): ReactElement {
     const canSave = useSelector<RootState, boolean>((state) => state.canSave);
     const isLoading = useSelector<RootState, boolean>((state) => state.isAppLoading);
     const fileChanges = useSelector<RootState, string[] | undefined>((state) => state.fileChanges) ?? [];
-    const pendingChangesRequiresSaveAndReload = useSelector<RootState, boolean>(
-        (state) => state.pendingChangesRequiresSaveAndReload
-    );
+    const applicationRequiresReload = useSelector<RootState, boolean>((state) => state.applicationRequiresReload);
     const { pending } = useSelector<RootState, ChangesSlice>((state) => state.changes);
-    const saveAndReload = (fileChanges.length > 0 && pending.length > 0) || pendingChangesRequiresSaveAndReload;
+    const saveAndReload = (fileChanges.length > 0 && pending.length > 0) || applicationRequiresReload;
     return (
         <>
             <UIIconButton

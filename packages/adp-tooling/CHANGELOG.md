@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.52
+
+### Patch Changes
+
+-   595bdea: feat: enhance "add-header-field" quick action with the template
+
 ## 0.12.51
 
 ### Patch Changes
