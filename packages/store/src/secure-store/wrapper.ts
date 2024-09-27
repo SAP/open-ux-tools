@@ -66,9 +66,10 @@ export class Wrapper implements SecureStore {
     }
     private storeSecret(service: string, key: string, value: string): boolean {
         try {
+            console.log("------------- Wrapper store service", service , "key ---->", key, "value----->", value);
             const command = this.getCommandForPlatform('store', service, key, value);
             this.executeCommand(command);
-            console.log("------------- Wrapper constructor successfully store secret: ", command);
+            console.log("------------- Wrapper constructor successfully SAVE secret: ", command);
             return true;
         } catch {
             this.log.error(`Error storing secret. Service: [${service}], key: [${key}]`);
@@ -80,7 +81,7 @@ export class Wrapper implements SecureStore {
         try {
             const command = this.getCommandForPlatform('retrieve', service, key);
             const result = this.executeCommand(command);
-            console.log("------------- Wrapper constructorsuccessfully retrieved secret: ", result.toString().trim());
+            console.log("------------- Wrapper constructorsuccessfully RETRIEVE secret: ", result.toString().trim());
             return result.toString().trim() ?? undefined;
         } catch (err) {
             console.log("------------- Wrapper constructor Error retrieving secret. ", service, key, err);
@@ -93,7 +94,7 @@ export class Wrapper implements SecureStore {
         try {
             const command = this.getCommandForPlatform('delete', service, key);
             this.executeCommand(command);
-            console.log("------------- Wrapper constructor successfully deleted secret: ", command);
+            console.log("------------- Wrapper constructor successfully DELETE secret: ", command);
             return true;
         } catch {
             this.log.error(`Error deleting secret. Service: [${service}], key: [${key}]`);
@@ -102,13 +103,13 @@ export class Wrapper implements SecureStore {
     }
 
     public async save<T>(service: string, key: string, value: T): Promise<boolean> {
-        console.log("------------- Wrapper constructor save: ", service, key, value);
+        console.log("------------- Wrapper constructor SAVE: ", service, key, value);
         const serialized = JSON.stringify(value);
         return this.storeSecret(service, key, serialized);
     }
 
     public async retrieve<T>(service: string, key: string): Promise<T | undefined> {
-        console.log("------------- Wrapper constructor retrieve: ", service, key);
+        console.log("------------- Wrapper constructor RETRIEVE: ", service, key);
         const serializedValue = this.retrieveSecret(service, key);
         return serializedValue ? JSON.parse(serializedValue) : undefined;
     }
