@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Answers } from 'inquirer';
-import { Input, Select, MultiSelect } from '../Inputs';
+import { Input, Select, MultiSelect, TranslationInput } from '../Inputs';
 import { getAnswer } from '../../utilities';
 import type { PromptQuestion, ValidationResults, AnswerValue, PromptListChoices } from '../../types';
 
@@ -27,9 +27,23 @@ export const Question = (props: QuestionProps) => {
     const inputId = id ? `${id}--input` : undefined;
     switch (question?.type) {
         case 'input': {
-            questionInput = (
-                <Input value={value} {...question} onChange={onChange} errorMessage={errorMessage} id={inputId} />
-            );
+            const { translatable } = question.guiOptions ?? {};
+            if (translatable) {
+                questionInput = (
+                    <TranslationInput
+                        value={value}
+                        {...question}
+                        onChange={onChange}
+                        errorMessage={errorMessage}
+                        id={inputId}
+                    />
+                );
+            } else {
+                questionInput = (
+                    <Input value={value} {...question} onChange={onChange} errorMessage={errorMessage} id={inputId} />
+                );
+            }
+
             break;
         }
         case 'checkbox': {

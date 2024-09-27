@@ -25,6 +25,12 @@
       "path": "../../packages/fe-fpm-writer"
     },
     {
+      "path": "../../packages/i18n"
+    },
+    {
+      "path": "../../packages/project-access"
+    },
+    {
       "path": "../../packages/ui-components"
     },
     {
