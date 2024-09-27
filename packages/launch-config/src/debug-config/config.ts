@@ -102,10 +102,12 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
 
     // Add mock configuration for OData V2 or V4
     if (odataVersion && ['2.0', '4.0'].includes(odataVersion)) {
-        const migratorMockIntentWithHash = migratorMockIntent && !migratorMockIntent.startsWith('#') ? `#${migratorMockIntent}` : migratorMockIntent;
-        const params = (targetHtmlFile === testFlpSandboxMockServerHtml && migratorMockIntent) 
-        ? migratorMockIntentWithHash 
-        : (flpAppIdWithHash ?? '');
+        const migratorMockIntentWithHash =
+            migratorMockIntent && !migratorMockIntent.startsWith('#') ? `#${migratorMockIntent}` : migratorMockIntent;
+        const params =
+            targetHtmlFile === testFlpSandboxMockServerHtml && migratorMockIntent
+                ? migratorMockIntentWithHash
+                : flpAppIdWithHash ?? '';
         const mockCmdArgs =
             isMigrator && odataVersion === '2.0'
                 ? ['--open', `${targetHtmlFile}${params}`]
