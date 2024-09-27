@@ -150,11 +150,11 @@ server:
     beforeMiddleware: fiori-tools-proxy
     configuration:
       services:
-        urlBasePath: /some/previous/service/uri
-        name: ''
-        metadataXmlPath: ./webapp/localService/metadata.xml
-        mockdataRootPath: ./webapp/localService/data
-        generateMockData: true
+        -  urlBasePath: /some/previous/service/uri
+           name: ''
+           metadataXmlPath: ./webapp/localService/metadata.xml
+           mockdataRootPath: ./webapp/localService/data
+           generateMockData: true
   - name: middleware-after`,
             [manifestJsonPath]: manifestContent
         });
