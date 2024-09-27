@@ -1,5 +1,11 @@
 # @sap-ux/ui-prompting
 
+## 0.2.0
+
+### Minor Changes
+
+-   05b554d: Support translation input
+
 ## 0.1.14
 
 ### Patch Changes

@@ -21,7 +21,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 /** sap.ui.fl */
-import {  type AddFragmentChangeContentType  } from 'sap/ui/fl/Change';
+import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
@@ -33,7 +33,7 @@ import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
-import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import { getControlById } from '../../utils/core';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -60,7 +60,7 @@ export interface AddFragmentOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, private options: AddFragmentOptions) {
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
@@ -188,7 +188,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
         let controlMetadata: ManagedObjectMetadata;
 
-        const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
+        const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
         if (overlayControl) {
             this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
             controlMetadata = this.runtimeControl.getMetadata();
@@ -324,7 +324,9 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             return 'OBJECT_PAGE_HEADER_FIELD';
         } else if (currentControlName === 'sap.m.FlexBox' && targetAggregation === 'items') {
             // in case of dynamic header make sure that there is only one flexBox in the header.
-            if ((this.runtimeControl.getParent() as ObjectPageLayout)?.getHeaderContent().length === 1) {
+            if (
+                this.runtimeControl.getParent()?.getMetadata().getName() === 'sap.uxap.ObjectPageDynamicHeaderContent'
+            ) {
                 return 'OBJECT_PAGE_HEADER_FIELD';
             } else {
                 return '';

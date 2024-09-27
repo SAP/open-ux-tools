@@ -178,6 +178,12 @@ importers:
       '@sap-ux/fe-fpm-writer':
         specifier: workspace:*
         version: link:../../packages/fe-fpm-writer
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../../packages/project-access
       '@storybook/addons':
         specifier: 7.6.17
         version: 7.6.17(react-dom@16.14.0)(react@16.14.0)

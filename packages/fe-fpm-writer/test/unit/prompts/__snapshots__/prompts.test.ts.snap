@@ -629,6 +629,7 @@ Object {
     Object {
       "guiOptions": Object {
         "groupId": "tableVisualizationProperties",
+        "translatable": true,
       },
       "message": "Table Header Text",
       "name": "buildingBlockData.header",
@@ -1798,6 +1799,7 @@ Object {
     Object {
       "guiOptions": Object {
         "groupId": "tableVisualizationProperties",
+        "translatable": true,
       },
       "message": "Table Header Text",
       "name": "buildingBlockData.header",

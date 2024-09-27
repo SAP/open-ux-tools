@@ -1,5 +1,13 @@
 # @sap-ux/fe-fpm-writer-ui
 
+## 0.1.7
+
+### Patch Changes
+
+-   05b554d: Example to handle i18n bundle for translation input for 'ui-prompting'
+-   Updated dependencies [05b554d]
+    -   @sap-ux/ui-prompting@0.2.0
+
 ## 0.1.6
 
 ### Patch Changes
