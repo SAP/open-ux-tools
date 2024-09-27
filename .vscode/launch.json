@@ -33,12 +33,12 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "examples/prompting-ui: Run Example",
+            "name": "examples/ui-prompting: Run Example",
             "runtimeExecutable": "pnpm",
             "runtimeArgs": ["storybook"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "cwd": "${workspaceFolder}/examples/prompting-ui"
+            "cwd": "${workspaceFolder}/examples/ui-prompting"
         },
         {
             "type": "node",
@@ -88,7 +88,7 @@
             "request": "launch",
             "name": "fe-fpm-writer: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "windows": {
