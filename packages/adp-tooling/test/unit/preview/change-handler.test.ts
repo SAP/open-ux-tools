@@ -216,24 +216,26 @@ id="<%- ids.hBox %>"`);
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });
-            it('should create custom action fragment', () => {
+
+            it('should create Object Page header field fragment', () => {
                 mockFs.exists.mockReturnValue(false);
                 const updatedChange = {
                     ...change,
                     content: {
                         ...change.content,
-                        templateName: `CUSTOM_ACTION`
+                        templateName: `OBJECT_PAGE_HEADER_FIELD`
                     }
                 } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
-id="<%- ids.toolbarActionButton %>`);
+id="<%- ids.vBoxContainer %>"
+id="<%- ids.label %>"`);
                 addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
                     (mockFs.read.mock.calls[0][0] as string)
                         .replace(/\\/g, '/')
-                        .endsWith('templates/rta/common/custom-action.xml')
+                        .endsWith('templates/rta/common/header-field.xml')
                 ).toBe(true);
 
                 expect(mockFs.write).toHaveBeenCalled();
@@ -242,7 +244,8 @@ id="<%- ids.toolbarActionButton %>`);
                 );
                 expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
 "
-id=\\"btn-30303030"
+id=\\"vBox-30303030\\"
+id=\\"label-30303030\\""
 `);
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
