@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" 
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+    <edmx:DataServices m:DataServiceVersion="1.0" m:MaxDataServiceVersion="3.0" 
+        xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+        <Schema Namespace="NorthwindModel" 
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="Category">
+                <Key>
+                    <PropertyRef Name="CategoryID" />
+                </Key>
+                <Property Name="CategoryID" Type="Edm.Int32" Nullable="false" p6:StoreGeneratedPattern="Identity" 
+                    xmlns:p6="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+                <Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+                <Property Name="Description" Type="Edm.String" MaxLength="Max" FixedLength="false" Unicode="true" />
+                <Property Name="Picture" Type="Edm.Binary" MaxLength="Max" FixedLength="false" />
+                <NavigationProperty Name="Products" Relationship="NorthwindModel.FK_Products_Categories" ToRole="Products" FromRole="Categories" />
+            </EntityType>
+            <Annotation Term="UI.Facets">
+               <Collection>
+                  <Record Type="UI.CollectionFacet">
+                     <PropertyValue Property="Label" String="Terms & Conditions" />
+                  </Record>  
+               </Collection>
+            </Annotation>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

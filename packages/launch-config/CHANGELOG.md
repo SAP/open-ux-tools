@@ -1,5 +1,40 @@
 # @sap-ux/launch-config
 
+## 0.6.1
+
+### Patch Changes
+
+-   92dc08e: Renamed the skipLiveScript parameter to addLiveConfig to add live configuration if enabled.
+
+## 0.6.0
+
+### Minor Changes
+
+-   e989a20: Remove ProjectDataSourceType from DebugConfig and Replace with skipLiveScripts Flag
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/ui5-config@0.25.0
+    -   @sap-ux/project-access@1.27.4
+
+## 0.5.0
+
+### Minor Changes
+
+-   463f482: Reverted the use of Node.js `fs` modules and replaced them with `mem-fs` for writing launch config files & Removed `writeApplicationInfoSettings()` from `@sap-ux/launch-config`
+    Refactoring create launch config functionalities.
+
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/odata-service-inquirer@0.5.40
+
 ## 0.4.3
 
 ### Patch Changes

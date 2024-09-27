@@ -14,7 +14,6 @@ import {
     INTEGER_VALUE_TYPE,
     STRING_VALUE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
-import { initI18n } from '../../../../src/i18n';
 import {
     getInputTypeToggleOptions,
     getDefaultInputType,
@@ -26,9 +25,6 @@ import { render } from '../../utils';
 
 describe('InputTypeWrapper', () => {
     const controlId = 'testControlId';
-    beforeAll(() => {
-        initI18n();
-    });
 
     test('getDefaultInputType', () => {
         expect(getDefaultInputType(DROPDOWN_EDITOR_TYPE, STRING_VALUE_TYPE, 'option1')).toMatchInlineSnapshot(

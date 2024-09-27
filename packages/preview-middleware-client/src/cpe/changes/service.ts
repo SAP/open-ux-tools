@@ -10,7 +10,9 @@ import {
     deletePropertyChanges,
     propertyChangeFailed,
     FlexChangesEndPoints,
-    reloadApplication
+    reloadApplication,
+    setApplicationRequiresReload,
+    save
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
 import type { SelectionService } from '../selection';
@@ -21,6 +23,8 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
 import { getError } from '../../utils/error';
+import MessageToast from 'sap/m/MessageToast';
+import { getTextBundle } from '../../i18n';
 
 interface ChangeContent {
     property: string;
@@ -91,6 +95,7 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
  */
 export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
+    private changesRequiringReload = 0;
     private sendAction: (action: ExternalAction) => void;
     /**
      *
@@ -136,16 +141,16 @@ export class ChangeService {
             } else if (deletePropertyChanges.match(action)) {
                 await this.deleteChange(action.payload.controlId, action.payload.propertyName, action.payload.fileName);
             } else if (reloadApplication.match(action)) {
-                await this.options.rta.stop(false, true);
+                this.sendAction(setApplicationRequiresReload(false));
+            } else if (save.match(action)) {
+                this.changesRequiringReload = 0;
+                this.sendAction(setApplicationRequiresReload(false));
             }
         });
 
         await this.fetchSavedChanges();
         this.updateStack();
-        this.options.rta.attachStop(() => {
-            // eslint-disable-next-line fiori-custom/sap-no-location-reload
-            location.reload();
-        });
+
         this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
     }
 
@@ -187,7 +192,7 @@ export class ChangeService {
                         }
                         return {
                             type: 'saved',
-                            kind: 'valid',
+                            kind: 'property',
                             fileName: change.fileName,
                             controlId: change.selector.id,
                             propertyName: change.content.property,
@@ -202,6 +207,7 @@ export class ChangeService {
                             const unknownChange: UnknownSavedChange = {
                                 type: 'saved',
                                 kind: 'unknown',
+                                changeType: change.changeType,
                                 fileName: change.fileName,
                                 controlId: change.selector?.id // some changes may not have selector
                             };
@@ -283,6 +289,18 @@ export class ChangeService {
             });
 
             activeChanges = activeChanges.filter((change): boolean => !!change);
+            const changesRequiringReload = activeChanges.reduce(
+                (sum, change) => (change.changeType === 'appdescr_fe_changePageConfiguration' ? sum + 1 : sum),
+                0
+            );
+            if (changesRequiringReload > this.changesRequiringReload) {
+                const resourceBundle = await getTextBundle();
+                MessageToast.show(resourceBundle.getText('CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_MESSAGE'), {
+                    duration: 8000
+                });
+                this.sendAction(setApplicationRequiresReload(changesRequiringReload > 0));
+            }
+            this.changesRequiringReload = changesRequiringReload;
 
             if (Array.isArray(allCommands) && allCommands.length === 0) {
                 await this.fetchSavedChanges();
@@ -319,6 +337,7 @@ export class ChangeService {
         if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
             result = {
                 type: 'pending',
+                kind: 'property',
                 changeType,
                 controlId: selectorId,
                 propertyName: command.getProperty('propertyName') as string,
@@ -330,6 +349,7 @@ export class ChangeService {
         } else {
             result = {
                 type: 'pending',
+                kind: 'unknown',
                 controlId: selectorId,
                 changeType,
                 isActive: index >= inactiveCommandCount,

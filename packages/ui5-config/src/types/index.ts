@@ -43,6 +43,21 @@ export interface FioriAppReloadConfig {
     delay: number;
 }
 
+/**
+ * Interface representing the configuration for Fiori Preview.
+ */
+export interface FioriPreviewConfig {
+    /**
+     * The name of the component to be previewed.
+     */
+    component: string;
+    /**
+     * The theme to be used for the SAP Fiori preview.
+     * This defines the UI5 theme, such as "sap_fiori_3" or other available themes.
+     */
+    ui5Theme: string;
+}
+
 export interface ServeStaticPath {
     path: string;
     src: string;

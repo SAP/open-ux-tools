@@ -3,16 +3,8 @@ import { screen } from '@testing-library/react';
 import { render } from '../../utils';
 import type { PropertyDocumentationProps } from '../../../../src/panels/properties/PropertyDocumentation';
 import { PropertyDocumentation } from '../../../../src/panels/properties/PropertyDocumentation';
-import { initI18n } from '../../../../src/i18n';
-
-import { mockResizeObserver } from '../../../utils/utils';
 
 describe('PropertyDoc', () => {
-    beforeAll(() => {
-        mockResizeObserver();
-        initI18n();
-    });
-
     test('no changes', () => {
         const props: PropertyDocumentationProps = {
             description: 'testDoc',
@@ -48,9 +40,12 @@ describe('PropertyDoc', () => {
                     id: 'control1'
                 } as any,
                 changes: {
-                    stack: [],
+                    pending: [],
+                    pendingChangeIds: [],
+                    saved: [],
                     controls: {
                         control1: {
+                            controlName: 'controlName1',
                             pending: 0,
                             saved: 1,
                             properties: {
@@ -58,11 +53,15 @@ describe('PropertyDoc', () => {
                                     saved: 0,
                                     pending: 1,
                                     lastChange: {
+                                        kind: 'property',
                                         propertyName: 'testProperty',
                                         value: 'c value',
                                         type: 'pending',
                                         isActive: true,
-                                        controlId: 'control1'
+                                        controlId: 'control1',
+                                        changeType: 'propertyChange',
+                                        fileName: 'testFile1',
+                                        controlName: 'controlName1'
                                     }
                                 }
                             }

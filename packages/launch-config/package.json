@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/launch-config",
-    "version": "0.4.3",
+    "version": "0.6.1",
     "description": "SAP Fiori tools launch config administration",
     "repository": {
         "type": "git",
@@ -34,8 +34,6 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "@sap-ux/odata-service-inquirer": "workspace:*",
-        "@sap-ux/store": "workspace:*",
         "i18next": "23.5.1",
         "jsonc-parser": "3.2.0",
         "mem-fs": "2.1.0",

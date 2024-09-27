@@ -4,7 +4,7 @@ import type { PromptsType } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers } from './utils/communication';
 import { Questions, PromptsLayoutType, setAnswer } from '@sap-ux/ui-prompting';
 import type { ValidationResults, ValidationResult } from '@sap-ux/ui-prompting';
-import { useChoices, useQuestions } from './utils/hooks';
+import { useChoices, useI18nBundle, useQuestions } from './utils/hooks';
 import type { Answers } from 'inquirer';
 
 initIcons();
@@ -35,8 +35,10 @@ export const BuildingBlockQuestions = (props: {
         showDescriptions: true
     });
     const [alwaysAbsolutePath, setAlwaysAbsolutePath] = useState(true);
+    const [allowAutoAddDependencyLib, setAllowAutoAddDependencyLib] = useState(true);
     const choices = useChoices();
     const { groups, questions, initialAnswers = {} } = useQuestions(type, visibleQuestions);
+    const [i18nBundle, updateBundle, pendingQuestions] = useI18nBundle();
     const [answers, setAnswers] = useState<Answers>(externalAnswers ?? initialAnswers);
     const [validation, setValidation] = useState<ValidationResults>({});
 
@@ -137,6 +139,15 @@ export const BuildingBlockQuestions = (props: {
                         setAlwaysAbsolutePath(!!checked);
                     }}
                 />
+                <UICheckbox
+                    label="AllowAutoAddDependencyLib"
+                    checked={allowAutoAddDependencyLib}
+                    onChange={(ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean) => {
+                        const newAnswers = setAnswer({ ...answers }, 'allowAutoAddDependencyLib', checked);
+                        setAnswers(newAnswers);
+                        setAllowAutoAddDependencyLib(!!checked);
+                    }}
+                />
             </div>
             <div
                 style={{
@@ -170,6 +181,20 @@ export const BuildingBlockQuestions = (props: {
                             layoutSettings.multiColumn ? PromptsLayoutType.MultiColumn : PromptsLayoutType.SingleColumn
                         }
                         showDescriptions={layoutSettings.showDescriptions}
+                        translationProps={{
+                            bundle: i18nBundle,
+                            onEvent: (name, event) => {
+                                // ToDo
+                                if (event.name === 'update') {
+                                    updateBundle(name, event.entry);
+                                } else {
+                                    console.log(
+                                        `Show entry: key:"${event.entry.key.value}" -> value:"${event.entry.value.value}"`
+                                    );
+                                }
+                            },
+                            pendingQuestions
+                        }}
                     />
                 </div>
                 {/* Disable the button if there is no answers for the 'required' question */}
