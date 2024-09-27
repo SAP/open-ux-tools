@@ -103,7 +103,7 @@ describe('Test command add mockserver-config', () => {
         expect(logLevelSpy).not.toBeCalled();
         expect(loggerMock.debug).toBeCalled();
         expect(loggerMock.error).not.toBeCalled();
-        expect(promptSpy).toBeCalledWith([{ webappPath: join(appRoot, 'webapp') }]);
+        expect(promptSpy).toBeCalledWith([{ webappPath: join(appRoot, 'webapp'), askForOverwrite: true }]);
         expect(fsMock.commit).toBeCalled();
         expect(spawnSpy).toBeCalled();
     });
@@ -111,6 +111,11 @@ describe('Test command add mockserver-config', () => {
     test('Test create-fiori add mockserver-config <appRoot> --interactive with overwrite option', async () => {
         // Mock setup
         jest.spyOn(mockserverWriter, 'getMockserverConfigQuestions').mockReturnValue([
+            {
+                name: 'path',
+                type: 'text',
+                message: 'Path to mocked service'
+            },
             {
                 type: 'confirm',
                 name: 'overwrite',
@@ -129,6 +134,11 @@ describe('Test command add mockserver-config', () => {
         expect(loggerMock.debug).toBeCalled();
         expect(loggerMock.error).not.toBeCalled();
         expect(promptSpy).toBeCalledWith([
+            {
+                name: 'path',
+                type: 'text',
+                message: 'Path to mocked service'
+            },
             {
                 message: 'Overwrite existing services',
                 name: 'overwrite',

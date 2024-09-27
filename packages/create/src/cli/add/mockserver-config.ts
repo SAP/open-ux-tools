@@ -58,9 +58,9 @@ async function addMockserverConfig(
         if (interactive) {
             const questions = getMockserverConfigQuestions({ webappPath, askForOverwrite: true });
             const responses = await prompt(questions);
-            config.ui5MockYamlConfig = responses.path;
+            config.ui5MockYamlConfig = responses?.path;
             // User response for whether to overwrite existing services in mock-server config
-            overwriteExisting = !!responses.overwrite;
+            overwriteExisting = !!responses?.overwrite;
         }
         const fs = await generateMockserverConfig(basePath, config, undefined, overwriteExisting);
         await traceChanges(fs);
