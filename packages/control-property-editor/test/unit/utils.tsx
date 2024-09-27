@@ -2,23 +2,28 @@ import type { PropsWithChildren, ReactElement } from 'react';
 import React from 'react';
 import '@testing-library/jest-dom';
 import type { Store, Dispatch } from '@reduxjs/toolkit';
-import { createStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import type { RenderOptions, RenderResult } from '@testing-library/react';
 import { render as rtlRender } from '@testing-library/react';
 import { Provider } from 'react-redux';
 
+import { initialState } from '../../src/slice';
 import reducer from '../../src/slice';
 
 export type State = ReturnType<typeof reducer>;
 
 export interface Options<T = State> extends RenderOptions {
-    initialState?: T;
-    store?: Store<State>;
+    initialState?: Partial<T>;
+    store?: Store<T>;
 }
 
-export function render<T = State>(
+export function render(
     ui: ReactElement,
-    { initialState, store = createStore(reducer, initialState as unknown as State), ...renderOptions }: Options<T> = {}
+    {
+        initialState,
+        store = configureStore({ reducer, preloadedState: { ...createInitialState(), ...initialState } }),
+        ...renderOptions
+    }: Options<ReturnType<typeof createInitialState>> = {}
 ): RenderResult & { store: Store; dispatch: jest.SpyInstance<Dispatch> } {
     function Wrapper({ children }: PropsWithChildren<{}>): ReactElement {
         return <Provider store={store}>{children}</Provider>;
@@ -27,6 +32,12 @@ export function render<T = State>(
     const dispatch = jest.fn(origDispatch);
     store.dispatch = dispatch;
     return { ...rtlRender(ui, { wrapper: Wrapper, ...renderOptions }), store, dispatch };
+}
+
+export interface DOMEventListenerMock {
+    simulateEvent: (name: string, value: object) => void;
+    cleanDomEventListeners: () => void;
+    domEventListeners: { [k: string]: Array<Function> };
 }
 
 export const mockDomEventListener = (handler: Document | Window | Element = document): DOMEventListenerMock => {
@@ -65,3 +76,7 @@ export const mockDomEventListener = (handler: Document | Window | Element = docu
         domEventListeners
     };
 };
+
+export function createInitialState(): ReturnType<typeof reducer> {
+    return JSON.parse(JSON.stringify(initialState));
+}

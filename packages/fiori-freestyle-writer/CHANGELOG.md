@@ -1,5 +1,38 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.2.0
+
+### Minor Changes
+
+-   04988f1: Refactor shared logic for generating package.json scripts for FF and FE
+
+### Patch Changes
+
+-   Updated dependencies [04988f1]
+    -   @sap-ux/fiori-generator-shared@0.5.0
+
+## 1.1.0
+
+### Minor Changes
+
+-   484195d: Enhancements to FE & FF Configurations: The updates include adding the `start-variants-management` script to `package.json` for FE and FF. The OdataService interface now has an `ignoreCertError` property. UI5 application writer introduces the `sapuxLayer` property to `package.json` templates and adds `fiori-tools-preview middleware` to ui5, ui5-mock, and ui5-local.yaml. Additionally, the `addFioriToolsPreviewMiddleware` function has been added for YAML config integration.
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/fiori-generator-shared@0.4.0
+    -   @sap-ux/ui5-application-writer@1.2.0
+    -   @sap-ux/odata-service-writer@0.23.0
+    -   @sap-ux/ui5-config@0.25.0
+
+## 1.0.24
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.21
+-   @sap-ux/odata-service-writer@0.22.5
+-   @sap-ux/ui5-application-writer@1.1.6
+
 ## 1.0.23
 
 ### Patch Changes

@@ -1,5 +1,67 @@
 # @sap-ux/preview-middleware
 
+## 0.16.73
+
+### Patch Changes
+
+-   7579b99: UI improvements and bug fix in the Adaptation Editor
+
+## 0.16.72
+
+### Patch Changes
+
+-   595bdea: feat: enhance "add-header-field" quick action with the template
+-   Updated dependencies [595bdea]
+    -   @sap-ux/adp-tooling@0.12.52
+
+## 0.16.71
+
+### Patch Changes
+
+-   b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
+
+## 0.16.70
+
+### Patch Changes
+
+-   8f442a6: Usability improvements for Quick Actions that add fragments
+
+## 0.16.69
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.51
+-   @sap-ux/project-access@1.27.4
+
+## 0.16.68
+
+### Patch Changes
+
+-   00e1835: Fixed manifest changes not visible in preview after reload
+-   Updated dependencies [00e1835]
+    -   @sap-ux/adp-tooling@0.12.50
+
+## 0.16.67
+
+### Patch Changes
+
+-   1c20352: Added missing notification when manifest change is created
+
+## 0.16.66
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/adp-tooling@0.12.49
+
+## 0.16.65
+
+### Patch Changes
+
+-   Updated dependencies [2fd82b1]
+    -   @sap-ux/adp-tooling@0.12.48
+
 ## 0.16.64
 
 ### Patch Changes

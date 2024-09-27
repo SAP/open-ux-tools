@@ -67,6 +67,8 @@ export function InputTypeToggle(inputTypeToggleProps: InputTypeToggleProps): Rea
                     console.error(`Error in reporting telemetry`, error);
                 });
                 const action = changeProperty({
+                    changeType:
+                        inputTypeProps.inputType !== InputType.expression ? 'propertyChange' : 'propertyBindingChange',
                     controlId,
                     propertyName: property.name,
                     value: newValue,

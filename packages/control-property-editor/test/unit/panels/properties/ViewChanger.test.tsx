@@ -2,15 +2,10 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
 import { ViewChanger } from '../../../../src/toolbar/ViewChanger';
-import { initI18n } from '../../../../src/i18n';
 
 import { render } from '../../utils';
 
 describe('ViewChanger', () => {
-    beforeAll(() => {
-        initI18n();
-    });
-
     test('zoom in', () => {
         const { dispatch } = render(<ViewChanger />, {
             initialState: {

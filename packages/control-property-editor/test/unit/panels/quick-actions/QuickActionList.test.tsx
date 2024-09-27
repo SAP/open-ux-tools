@@ -1,36 +1,12 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { initIcons } from '@sap-ux/ui-components';
 
 import { render } from '../../utils';
-import { FilterName } from '../../../../src/slice';
-import type { FilterOptions, ChangesSlice, default as reducer } from '../../../../src/slice';
-import { DeviceType } from '../../../../src/devices';
-import { registerAppIcons } from '../../../../src/icons';
-import { initI18n } from '../../../../src/i18n';
 import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { QuickActionList } from '../../../../src/panels/quick-actions';
 
-export type State = ReturnType<typeof reducer>;
-
-const getEmptyModel = (): ChangesSlice => {
-    const model: ChangesSlice = {
-        controls: {} as any,
-        pending: [],
-        saved: [],
-        pendingChangeIds: []
-    };
-    return model;
-};
-
 describe('QuickActionList', () => {
-    beforeAll(() => {
-        initI18n();
-        initIcons();
-        registerAppIcons();
-    });
-    test('ChangePanel - check if quick action list rendered', () => {
-        const model = getEmptyModel();
+    test('check if quick action list rendered', () => {
         const children = [
             {
                 label: 'submenu1',
@@ -50,45 +26,38 @@ describe('QuickActionList', () => {
                 ]
             }
         ];
-        const initialState: State = {
-            deviceType: DeviceType.Desktop,
-            scale: 1,
-            outline: {} as any,
-            filterQuery: [],
-            selectedControl: undefined,
-            changes: model,
-            icons: [],
-            dialogMessage: undefined,
-            isAdpProject: false,
-            quickActions: [
-                {
-                    title: 'List Report',
-                    actions: [
-                        {
-                            id: 'quick-action-1',
-                            enabled: true,
-                            kind: 'simple',
-                            title: 'Quick Action 1'
-                        },
-                        {
-                            id: 'quick-action-2',
-                            enabled: true,
-                            kind: 'nested',
-                            title: 'Quick Action 2',
-                            children: children
-                        },
-                        {
-                            id: 'quick-action-3',
-                            enabled: true,
-                            kind: 'nested',
-                            title: 'Quick Action 3',
-                            children: [children[0]]
-                        }
-                    ]
-                }
-            ]
-        };
-        const { dispatch } = render(<QuickActionList />, { initialState });
+
+        const { dispatch } = render(<QuickActionList />, {
+            initialState: {
+                quickActions: [
+                    {
+                        title: 'List Report',
+                        actions: [
+                            {
+                                id: 'quick-action-1',
+                                enabled: true,
+                                kind: 'simple',
+                                title: 'Quick Action 1'
+                            },
+                            {
+                                id: 'quick-action-2',
+                                enabled: true,
+                                kind: 'nested',
+                                title: 'Quick Action 2',
+                                children: children
+                            },
+                            {
+                                id: 'quick-action-3',
+                                enabled: true,
+                                kind: 'nested',
+                                title: 'Quick Action 3',
+                                children: [children[0]]
+                            }
+                        ]
+                    }
+                ]
+            }
+        });
 
         // check elements in the document
         const pageTitle = screen.getByText(/list report quick actions/i);
@@ -103,7 +72,7 @@ describe('QuickActionList', () => {
         expect(quickAction2).toBeInTheDocument();
 
         // nested quick action - single child
-        const quickAction3 = screen.getByRole('button', { name: /quick action 3 - submenu1/i });
+        const quickAction3 = screen.getByRole('button', { name: /quick action 3/i });
         expect(quickAction3).toBeInTheDocument();
 
         // simple quick action
@@ -149,5 +118,63 @@ describe('QuickActionList', () => {
                 path: '0'
             })
         );
+    });
+
+    test('disable actions in navigation mode', () => {
+        const children = [
+            {
+                label: 'submenu1',
+                children: []
+            }
+        ];
+
+        const { dispatch } = render(<QuickActionList />, {
+            initialState: {
+                appMode: 'navigation',
+                quickActions: [
+                    {
+                        title: 'List Report',
+                        actions: [
+                            {
+                                id: 'quick-action-1',
+                                enabled: true,
+                                kind: 'simple',
+                                title: 'Quick Action 1'
+                            },
+                            {
+                                id: 'quick-action-2',
+                                enabled: true,
+                                kind: 'nested',
+                                title: 'Quick Action 2',
+                                children: children
+                            },
+                            {
+                                id: 'quick-action-3',
+                                enabled: true,
+                                kind: 'nested',
+                                title: 'Quick Action 3',
+                                children: [children[0]]
+                            }
+                        ]
+                    }
+                ]
+            }
+        });
+
+        // check elements in the document
+        const pageTitle = screen.getByText(/list report quick actions/i);
+        expect(pageTitle).toBeInTheDocument();
+
+        // simple quick action
+        const quickAction1 = screen.getByRole('button', { name: /quick action 1/i });
+        expect(quickAction1).toBeDisabled();
+
+        // nested quick action - multiple children
+        const quickAction2 = screen.getByRole('button', { name: /quick action 2/i });
+        expect(quickAction2).toBeDisabled();
+
+        // nested quick action - single child
+        const quickAction3 = screen.getByRole('button', { name: /quick action 3/i });
+        expect(quickAction3).toBeDisabled();
     });
 });
