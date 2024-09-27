@@ -84,8 +84,14 @@ export interface DebugOptions {
     writeToAppOnly?: boolean;
     /** Reference to the VS Code instance. */
     vscode?: any;
-    /** skips live script if set to true. */
-    skipLiveScript?: boolean;
+    /**
+     * Specifies whether start command configurations should be added to the `launch.json` file.
+     *
+     * - When `true`, start command configurations will be included in the `launch.json`.
+     * - When `false` or undefined, start command configurations will not be added.
+     * By default this is set to `true`.
+     */
+    addStartCmd?: boolean;
 }
 
 /**
