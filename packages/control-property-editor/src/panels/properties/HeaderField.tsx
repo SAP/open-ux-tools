@@ -95,7 +95,7 @@ export function HeaderField(headerFieldProps: Readonly<HeaderFieldProps>): React
                                 borderColor: 'var(--vscode-focusBorder)'
                             }
                         },
-                        padding: 7
+                        padding: 5
                     },
                     fieldGroup: {
                         color: 'var(--vscode-input-foreground)',
