@@ -66,4 +66,43 @@ describe('connector-service', () => {
         });
         expect(sendActionMock).toHaveBeenCalledWith(common.storageFileChanged('testFile'));
     });
+
+    test('addXML', async () => {
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
+        const wsConnector = new WorkspaceConnectorService();
+        const subscribeSpy = jest.fn<void, [ActionHandler]>();
+        await wsConnector.init(sendActionMock, subscribeSpy);
+
+        subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: true }));
+        // call notifier
+        await connector.storage.setItem('sap.ui.fl.testFile', {
+            changeType: 'addXML',
+            fileName: 'sap.ui.fl.testFile',
+            support: {}
+        });
+        expect(sendActionMock).toBeCalledTimes(1);
+        expect(sendActionMock).toHaveBeenCalledWith(common.storageFileChanged('testFile'));
+    });
+
+    test('addXML with template', async () => {
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
+        const wsConnector = new WorkspaceConnectorService();
+        const subscribeSpy = jest.fn<void, [ActionHandler]>();
+        await wsConnector.init(sendActionMock, subscribeSpy);
+
+        subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: true }));
+        // call notifier
+        await connector.storage.setItem('sap.ui.fl.testFile', {
+            changeType: 'addXML',
+            fileName: 'sap.ui.fl.testFile',
+            support: {},
+            content: {
+                templateName: 'my-template',
+                fragmentPath: 'fragments/fragment.xml'
+            }
+        });
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(1, common.storageFileChanged('testFile'));
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, common.storageFileChanged('fragments/fragment.xml'));
+    });
 });
