@@ -126,7 +126,7 @@ describe('Test enhanceYaml()', () => {
             findCustomMiddleware: () => undefined
         } as unknown as UI5Config);
         const fs = getFsWithUi5MockYaml('{}');
-        await expect(enhanceYaml(fs, basePath, webappPath)).rejects.toThrow('mockserver');
+        await expect(enhanceYaml(fs, basePath, webappPath, undefined, true)).rejects.toThrow('mockserver');
     });
 
     function getFs(files: { [path: string]: string }): Editor {

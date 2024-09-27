@@ -44,6 +44,13 @@ exports[`UI5Config add/find/update/removeCustomMiddleware updateMiddleware exist
     - name: custom-middleware
       afterMiddleware: ~newMiddleware
       configuration:
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: http://ui5.example
+        version: 1.95.1
+        debug: true
         newValue:
           should: overwrite existing
 "
@@ -420,7 +427,7 @@ exports[`UI5Config addServeStaticConfig update serve static config 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-servestatic
-      beforeMiddleware: fiori-tools-proxy
+      afterMiddleware: compression
       configuration:
         paths:
           - path: /resources/targetapp
@@ -433,6 +440,7 @@ exports[`UI5Config addServeStaticConfig update serve static config 1`] = `
           - path: /~other
             src: /~otherSrc
             fallthrough: false
+      beforeMiddleware: fiori-tools-proxy
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:

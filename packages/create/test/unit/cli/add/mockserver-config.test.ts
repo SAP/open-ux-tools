@@ -108,6 +108,37 @@ describe('Test command add mockserver-config', () => {
         expect(spawnSpy).toBeCalled();
     });
 
+    test('Test create-fiori add mockserver-config <appRoot> --interactive with overwrite option', async () => {
+        // Mock setup
+        jest.spyOn(mockserverWriter, 'getMockserverConfigQuestions').mockReturnValue([
+            {
+                type: 'confirm',
+                name: 'overwrite',
+                message: 'Overwrite existing services'
+            }
+        ]);
+        const promptSpy = jest.spyOn(prompts, 'prompt');
+
+        // Test execution
+        const command = new Command('add');
+        addAddMockserverConfigCommand(command);
+        await command.parseAsync(getArgv(['mockserver-config', appRoot, '--interactive']));
+
+        // Result check
+        expect(logLevelSpy).not.toBeCalled();
+        expect(loggerMock.debug).toBeCalled();
+        expect(loggerMock.error).not.toBeCalled();
+        expect(promptSpy).toBeCalledWith([
+            {
+                message: 'Overwrite existing services',
+                name: 'overwrite',
+                type: 'confirm'
+            }
+        ]);
+        expect(fsMock.commit).toBeCalled();
+        expect(spawnSpy).toBeCalled();
+    });
+
     test('Test create-fiori add mockserver-config --verbose', async () => {
         // Test execution
         const command = new Command('add');
