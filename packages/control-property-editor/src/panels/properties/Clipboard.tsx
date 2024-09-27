@@ -38,7 +38,7 @@ export function Clipboard(clipBoardProps: ClipboardProps): ReactElement {
             directionalHint={9}
             contentPadding={UICalloutContentPadding.None}>
             <span data-testid="copied-to-clipboard-popup" style={{ display: 'flex', alignItems: 'center' }}>
-                <Icon iconName={UiIcons.Success} style={{ display: 'flex' }}/>
+                <Icon iconName={UiIcons.Success} style={{ display: 'flex' }} />
                 <span data-testid="copied-to-clipboard-message" style={{ marginLeft: '5px' }}>
                     {t('COPIED_TO_CLIPBOARD')}
                 </span>
