@@ -88,7 +88,7 @@
             "request": "launch",
             "name": "fe-fpm-writer: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
-            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false"],
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "windows": {
