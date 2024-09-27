@@ -15,23 +15,27 @@ export async function addVariantsManagementScript(fs: Editor, basePath: string, 
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package;
 
-    const urlParameters: Record<string, string> = {};
+    if (!packageJson.scripts || !packageJson.scripts['start-variants-management']) {
+        const urlParameters: Record<string, string> = {};
 
-    if (!packageJson.scripts) {
-        logger?.warn(`File 'package.json' does not contain a script section. Script section added.`);
-        packageJson.scripts = {};
-    } else {
-        // check if sap-client is needed when starting the app
-        const sapClient = getSapClientFromPackageJson(packageJson.scripts);
-        if (sapClient) {
-            urlParameters['sap-client'] = sapClient;
+        if (!packageJson.scripts) {
+            logger?.warn(`File 'package.json' does not contain a script section. Script section added.`);
+            packageJson.scripts = {};
+        } else {
+            // check if sap-client is needed when starting the app
+            const sapClient = getSapClientFromPackageJson(packageJson.scripts);
+            if (sapClient) {
+                urlParameters['sap-client'] = sapClient;
+            }
         }
+
+        const query = getUi5UrlParameters(urlParameters);
+        const url = await getPreviewUrl(basePath, query);
+        packageJson.scripts['start-variants-management'] = `fiori run --open "${url}"`;
+
+        fs.writeJSON(packageJsonPath, packageJson);
+        logger?.debug(`Script 'start-variants-management' written to 'package.json'.`);
+    } else {
+        logger?.warn(`Script 'start-variants-management' cannot be written to 'package.json. Script already exists'.`);
     }
-
-    const query = getUi5UrlParameters(urlParameters);
-    const url = await getPreviewUrl(basePath, query);
-
-    packageJson.scripts['start-variants-management'] = `fiori run --open "${url}"`;
-    fs.writeJSON(packageJsonPath, packageJson);
-    logger?.debug(`Script 'start-variants-management' written to 'package.json'.`);
 }

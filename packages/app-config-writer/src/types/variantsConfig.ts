@@ -10,7 +10,6 @@ export type FioriPreviewConfigOptions = FioriToolsDeprecatedPreviewConfig | Fior
 
 export enum MiddlewareConfigs {
     FioriToolsPreview = 'fiori-tools-preview',
-    // ToDo: check for preview-middleware
     PreviewMiddleware = 'preview-middleware',
     ReloadMiddleware = 'reload-middleware',
     FioriToolsAppreload = 'fiori-tools-appreload'

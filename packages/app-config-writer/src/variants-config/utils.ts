@@ -1,7 +1,7 @@
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
-import type { Package } from '@sap-ux/project-access';
 import { MiddlewareConfigs } from '../types';
 import { stringify } from 'querystring';
+import type { Package } from '@sap-ux/project-access';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { FioriPreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
 
@@ -15,7 +15,10 @@ async function getFioriToolsPreviewMiddleware(
     basePath: string
 ): Promise<CustomMiddleware<FioriPreviewConfigOptions> | undefined> {
     const existingUi5YamlConfig = await readUi5Yaml(basePath, FileName.Ui5Yaml);
-    return existingUi5YamlConfig.findCustomMiddleware<FioriPreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview);
+    return (
+        existingUi5YamlConfig.findCustomMiddleware<FioriPreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview) ??
+        existingUi5YamlConfig.findCustomMiddleware<FioriPreviewConfigOptions>(MiddlewareConfigs.PreviewMiddleware)
+    );
 }
 
 /**
