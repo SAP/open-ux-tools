@@ -70,7 +70,8 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
         odataVersion,
         isMigrator,
         isFioriElement,
-        migratorMockIntent
+        migratorMockIntent,
+        targetHtmlFile = testFlpSandboxHtml
     } = configOpts;
     const projectName = basename(rootFolder);
     const flpAppIdWithHash = flpAppId && !flpAppId.startsWith('#') ? `#${flpAppId}` : flpAppId;
@@ -101,10 +102,13 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
 
     // Add mock configuration for OData V2 or V4
     if (odataVersion && ['2.0', '4.0'].includes(odataVersion)) {
-        const params = `${flpAppIdWithHash ?? ''}`;
+        const migratorMockIntentWithHash = migratorMockIntent && !migratorMockIntent.startsWith('#') ? `#${migratorMockIntent}` : migratorMockIntent;
+        const params = (targetHtmlFile === testFlpSandboxMockServerHtml && migratorMockIntent) 
+        ? migratorMockIntentWithHash 
+        : (flpAppIdWithHash ?? '');
         const mockCmdArgs =
             isMigrator && odataVersion === '2.0'
-                ? ['--open', `${testFlpSandboxMockServerHtml}${params}`]
+                ? ['--open', `${targetHtmlFile}${params}`]
                 : ['--config', './ui5-mock.yaml', '--open', `${testFlpSandboxHtml}${params}`];
         const mockConfig = configureLaunchConfig(
             `Start ${projectName} Mock`,

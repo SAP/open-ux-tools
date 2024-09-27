@@ -78,6 +78,12 @@ export interface DebugOptions {
     migratorMockIntent?: string;
     /** Indicates if the project is a migrator. */
     isMigrator?: boolean;
+    /**
+     * Determines whether 'test/flpSandbox.html' or 'test/FlpSandboxMockServer.html'
+     * should be used to launch flp sandbox html file.
+     * By default this is set to 'test/flpSandbox.html'.
+     */
+    targetHtmlFile?: string;
     /** Indicates if the environment is SAP App Studio. */
     isAppStudio?: boolean;
     /** If true, write to the app only. */
