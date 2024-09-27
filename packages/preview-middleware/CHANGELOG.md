@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.73
+
+### Patch Changes
+
+-   7579b99: UI improvements and bug fix in the Adaptation Editor
+
 ## 0.16.72
 
 ### Patch Changes

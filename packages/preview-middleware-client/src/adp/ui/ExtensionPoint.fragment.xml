@@ -14,7 +14,7 @@
             singleContainerFullSize="false">
             <f:content>
                 <MessageStrip
-                    text="Have in mind that the selected extension point has a default content and by adding fragment it will no longer be visible."
+                    text="The selected extension point has a default content. It will not be visible after adding the fragment."
                     id="extensionPointDefaultContentMessage"
                     class="sapUiTinyMarginBottom"
                     showIcon="true"
