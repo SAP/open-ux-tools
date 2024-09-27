@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.74
+
+### Patch Changes
+
+-   c1462a9: fix: check if the flexbox is in objectpage and in Dyanmic header.
+
 ## 0.16.73
 
 ### Patch Changes
