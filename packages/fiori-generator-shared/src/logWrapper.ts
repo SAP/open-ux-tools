@@ -104,7 +104,7 @@ export class LogWrapper implements ILogWrapper {
             LogWrapper._vscodeLogger = createCLILogger(logName, logLevel);
             LogWrapper._logLevel = logLevel === 'off' || !logLevel ? 'warn' : logLevel;
         }
-        LogWrapper._vscodeLogger.debug(t('DEBUG_LOG_MSG_LOGGING_LEVEL_CONFIGURED', { logLevel: LogWrapper._logLevel }));
+        LogWrapper._vscodeLogger.debug(t('debug.loggingConfigured', { logLevel: LogWrapper._logLevel }));
     }
 
     static readonly logAtLevel = (level: LogLevel, message: string, ...args: any[]) => {
