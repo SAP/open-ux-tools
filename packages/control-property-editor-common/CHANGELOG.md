@@ -1,5 +1,17 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.5.3
+
+### Patch Changes
+
+-   b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
+
+## 0.5.2
+
+### Patch Changes
+
+-   8f442a6: Usability improvements for Quick Actions that add fragments
+
 ## 0.5.1
 
 ### Patch Changes

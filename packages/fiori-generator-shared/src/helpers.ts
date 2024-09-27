@@ -29,24 +29,3 @@ export function getBootstrapResourceUrls(
 
     return { uShellBootstrapResourceUrl, uiBootstrapResourceUrl };
 }
-
-/**
- * Generates a variant management script in preview mode.
- *
- * @param {string} sapClient - The SAP client parameter to include in the URL. If not provided, the URL will not include the `sap-client` parameter.
- * @returns {string} A variant management script to run the application in preview mode.
- */
-export function getVariantPreviewAppScript(sapClient?: string): string {
-    const previewAppAnchor = '#preview-app';
-    const disableCacheParam = 'sap-ui-xx-viewCache=false';
-    const sapClientParam = sapClient ? `&sap-client=${sapClient}` : '';
-    const urlParam = `?${[
-        sapClientParam,
-        disableCacheParam,
-        'fiori-tools-rta-mode=true',
-        'sap-ui-rta-skip-flex-validation=true'
-    ]
-        .filter(Boolean)
-        .join('&')}`;
-    return `fiori run --open \"preview.html${urlParam}${previewAppAnchor}\"`;
-}

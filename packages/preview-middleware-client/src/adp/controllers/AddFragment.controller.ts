@@ -21,13 +21,19 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 /** sap.ui.fl */
-import {type AddFragmentChangeContentType} from 'sap/ui/fl/Change';
+import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
+
+import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+
+import { getResourceModel, getTextBundle } from '../../i18n';
+import { CommunicationService } from '../../cpe/communication-service';
 
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
+import { getControlById } from '../../utils/core';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -38,20 +44,30 @@ interface CreateFragmentProps {
 const radix = 10;
 
 type AddFragmentModel = JSONModel & {
+    getProperty(sPath: '/title'): string;
+    getProperty(sPath: '/completeView'): boolean;
     getProperty(sPath: '/newFragmentName'): string;
     getProperty(sPath: '/selectedIndex'): number;
     getProperty(sPath: '/selectedAggregation/value'): string;
 };
 
+export interface AddFragmentOptions {
+    title: string;
+    aggregation?: string;
+}
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, private aggregation?: string) {
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
-        this.model = new JSONModel();
+        this.model = new JSONModel({
+            title: options.title,
+            completeView: options.aggregation === undefined
+        });
         this.ui5Version = sap.ui.version;
         this.commandExecutor = new CommandExecutor(this.rta);
     }
@@ -67,7 +83,9 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         this.setEscapeHandler();
 
         await this.buildDialogData();
+        const resourceModel = await getResourceModel('open.ux.preview.client');
 
+        this.dialog.setModel(resourceModel, 'i18n');
         this.dialog.setModel(this.model);
 
         this.dialog.open();
@@ -153,9 +171,11 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             targetAggregation
         };
 
-        await this.createFragmentChange(fragmentData);
+        const templateName = await this.createFragmentChange(fragmentData);
 
-        notifyUser(`Note: The '${fragmentName}.fragment.xml' fragment will be created once you save the change.`, 8000);
+        const textKey = templateName ? 'ADP_ADD_FRAGMENT_WITH_TEMPLATE_NOTIFICATION' : 'ADP_ADD_FRAGMENT_NOTIFICATION';
+        const bundle = await getTextBundle();
+        notifyUser(bundle.getText(textKey, [fragmentName]), 8000);
 
         this.handleDialogClose();
     }
@@ -168,7 +188,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
         let controlMetadata: ManagedObjectMetadata;
 
-        const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
+        const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
         if (overlayControl) {
             this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
             controlMetadata = this.runtimeControl.getMetadata();
@@ -184,7 +204,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             }
             return false;
         });
-        const defaultAggregation = this.aggregation ?? controlMetadata.getDefaultAggregationName();
+        const defaultAggregation = this.options.aggregation ?? controlMetadata.getDefaultAggregationName();
         const selectedControlName = controlMetadata.getName();
 
         let selectedControlChildren: string[] | number[] = Object.keys(
@@ -262,7 +282,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      *
      * @param fragmentData Fragment Data
      */
-    private async createFragmentChange(fragmentData: CreateFragmentProps) {
+    private async createFragmentChange(fragmentData: CreateFragmentProps): Promise<string | undefined> {
         const { fragmentName, index, targetAggregation } = fragmentData;
 
         const flexSettings = this.rta.getFlexSettings();
@@ -290,14 +310,29 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             const preparedChange = command.getPreparedChange();
             const content = preparedChange.getContent();
             preparedChange.setContent({ ...content, templateName });
+            CommunicationService.sendAction(setApplicationRequiresReload(true));
         }
         await this.commandExecutor.pushAndExecuteCommand(command);
+        return templateName;
     }
 
     private getFragmentTemplateName(targetAggregation: string): string {
         const currentControlName = this.runtimeControl.getMetadata().getName();
-        return currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections'
-            ? 'OBJECT_PAGE_CUSTOM_SECTION'
-            : '';
+        if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections') {
+            return 'OBJECT_PAGE_CUSTOM_SECTION';
+        } else if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'headerContent') {
+            return 'OBJECT_PAGE_HEADER_FIELD';
+        } else if (currentControlName === 'sap.m.FlexBox' && targetAggregation === 'items') {
+            // in case of dynamic header make sure that there is only one flexBox in the header.
+            if (
+                this.runtimeControl.getParent()?.getMetadata().getName() === 'sap.uxap.ObjectPageDynamicHeaderContent'
+            ) {
+                return 'OBJECT_PAGE_HEADER_FIELD';
+            } else {
+                return '';
+            }
+        } else {
+            return '';
+        }
     }
 }
