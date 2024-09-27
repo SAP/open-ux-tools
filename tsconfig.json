@@ -231,7 +231,7 @@
       "path": "examples/simple-generator"
     },
     {
-      "path": "examples/ui-prompting"
+      "path": "examples/ui-prompting-examples"
     }
   ]
 }
