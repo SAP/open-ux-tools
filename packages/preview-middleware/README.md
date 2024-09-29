@@ -114,7 +114,7 @@ server:
 ```
 
 ### Runtime Adaptation Support
-If you want to create variants as part of your application, then you can create an additional mount point allowing to created and edit variants.
+If you want to create variants as part of your application, then you can create an additional mount point allowing to create and edit variants.
 ```Yaml
 server:
   customMiddleware:
@@ -125,6 +125,10 @@ server:
         layer: CUSTOMER_BASE
         editors:
           - path: /test/variant-editor.html
+```
+This mount path can be used with a run script that looks as follows.
+```Json
+"start-variants-management": "ui5 serve --open \"test/variant-editor.html.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#app-preview\""
 ```
 
 ### Test Suites
