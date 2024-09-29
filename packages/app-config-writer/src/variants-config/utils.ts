@@ -19,14 +19,15 @@ async function getFioriToolsPreviewMiddleware(
 }
 
 /**
- * Gets the fiori-tools-preview middleware configuration and checks if it's deprecated.
+ * Type guard to check if the given configuration is a deprecated preview middleware configuration.
  *
- * @param basePath - path to project root, where package.json and ui5.yaml is
- * @returns true, if a fiori-tools-preview middleware configuration is deprecated
+ * @param configuration preview middleware configuration
+ * @returns true, if a preview middleware configuration is deprecated
  */
-async function isDeprecatedPreviewMiddleware(basePath: string): Promise<boolean> {
-    const existingPreviewMiddleware = await getFioriToolsPreviewMiddleware(basePath);
-    return !!(existingPreviewMiddleware?.configuration as FioriToolsDeprecatedPreviewConfig)?.component;
+function isFioriToolsDeprecatedPreviewConfig(
+    configuration: FioriPreviewConfigOptions | undefined
+): configuration is FioriToolsDeprecatedPreviewConfig {
+    return (configuration as FioriToolsDeprecatedPreviewConfig)?.component !== undefined;
 }
 
 /**
@@ -61,14 +62,15 @@ export function getUi5UrlParameters(overwritingParams: Record<string, string> = 
 }
 
 /**
- * Returns the preview url parameters.
+ * Returns the preview url.
  *
- * @param basePath - path to project root, where package.json and ui5.yaml is
+ * @param basePath - path to project root, where package.json and ui5.yaml is located
  * @param query - query to create fragment
  * @returns - review url parameters
  */
 export async function getPreviewUrl(basePath: string, query: string): Promise<string> {
-    // checks if a ui5.yaml configuration is deprecated and therefore needs a different hash
-    const previewHash = (await isDeprecatedPreviewMiddleware(basePath)) ? 'preview-app' : 'app-preview';
-    return `preview.html?${query}#${previewHash}`;
+    const existingPreviewMiddleware = await getFioriToolsPreviewMiddleware(basePath);
+    return isFioriToolsDeprecatedPreviewConfig(existingPreviewMiddleware?.configuration)
+        ? `preview.html?${query}#preview-app`
+        : `preview.html?${query}#app-preview`;
 }
