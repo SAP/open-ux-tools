@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.6.1
+
+### Patch Changes
+
+-   92dc08e: Renamed the skipLiveScript parameter to addLiveConfig to add live configuration if enabled.
+
 ## 0.6.0
 
 ### Minor Changes
