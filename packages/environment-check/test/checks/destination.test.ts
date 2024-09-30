@@ -44,7 +44,7 @@ describe('Destination tests, function checkBASDestination()', () => {
 
         // Result check
         expect(result.destinationResults.HTML5DynamicDestination).toEqual(false);
-        expect(result.messages.filter((m) => m.severity === Severity.Error).length).toBe(1);
+        expect(result.messages.filter((m) => m.severity === Severity.Error).length).toBe(2);
     });
 
     test('HTML5.DynamicDestination set to true', async () => {
