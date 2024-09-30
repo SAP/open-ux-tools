@@ -1,5 +1,6 @@
 import { getAnswer, setAnswer, updateAnswers, isDeepEqual } from '../../../src/utilities/utils';
 import type { Answers, PromptQuestion } from '../../../src/types';
+import { formatDomId } from '../../../src/utilities';
 
 describe('utils', () => {
     describe('setAnswer', () => {
@@ -298,6 +299,12 @@ describe('utils', () => {
         ];
         test.each(testCases)('$name', async ({ obj1, obj2, expected }) => {
             expect(isDeepEqual(obj1, obj2)).toEqual(expected);
+        });
+    });
+
+    describe('formatDomId', () => {
+        test('Update answers without dependants', async () => {
+            expect(formatDomId('test.my:dummy@input#id')).toEqual('test-my-dummy-input-id');
         });
     });
 });

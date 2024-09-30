@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import type { UIContextualMenuItem } from '@sap-ux/ui-components';
 import { UIDirectionalHint, UIIcon, UILink, UIContextualMenu, UIContextualMenuLayoutType } from '@sap-ux/ui-components';
@@ -8,9 +8,14 @@ import { UIDirectionalHint, UIIcon, UILink, UIContextualMenu, UIContextualMenuLa
 import type { NestedQuickAction, NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { IconName } from '../../icons';
+import type { RootState } from '../../store';
 
 export interface NestedQuickActionListItemProps {
     action: Readonly<NestedQuickAction>;
+    /**
+     *  Action group index.
+     */
+    groupIndex: number;
     /**
      *  Action line item index.
      */
@@ -22,14 +27,17 @@ export interface NestedQuickActionListItemProps {
  *
  * @param props Component props.
  * @param props.action
+ * @param props.groupIndex
  * @param props.actionIndex
  * @returns ReactElement
  */
 export function NestedQuickActionListItem({
     action,
+    groupIndex,
     actionIndex
 }: Readonly<NestedQuickActionListItemProps>): ReactElement {
     const dispatch = useDispatch();
+    const isDisabled = useSelector<RootState, boolean>((state) => state.appMode === 'navigation');
     const [showContextualMenu, setShowContextualMenu] = useState(false);
     const [target, setTarget] = useState<(EventTarget & (HTMLAnchorElement | HTMLElement | HTMLButtonElement)) | null>(
         null
@@ -72,11 +80,13 @@ export function NestedQuickActionListItem({
         });
     };
 
+    const buttonId = `quick-action-children-button-${groupIndex}-${actionIndex}`;
     return (
         <div className="quick-action-item">
             {action.children.length === 1 && (
                 <UILink
                     underline={false}
+                    disabled={isDisabled}
                     title={`${action.title} - ${action.children[0].label}`}
                     onClick={(): void => {
                         dispatch(
@@ -87,27 +97,28 @@ export function NestedQuickActionListItem({
                             })
                         );
                     }}>
-                    <span className="link-text">{`${action.title} - ${action.children[0].label}`}</span>
+                    <span className="link-text">{action.title}</span>
                 </UILink>
             )}
             {action.children.length > 1 && (
                 <>
                     <UILink
                         title={action.title}
+                        disabled={isDisabled}
                         underline={false}
                         onClick={() => {
                             setShowContextualMenu(true);
-                            setTarget(document.getElementById(`quick-action-children-button${actionIndex}`));
+                            setTarget(document.getElementById(buttonId));
                         }}>
                         <span className={`link-text`}>{action.title}</span>
                         <UIIcon
-                            id={`quick-action-children-button${actionIndex}`}
+                            id={buttonId}
                             iconName={IconName.dropdown}
                             title={action.title}
                             style={{ verticalAlign: 'middle' }}
                             onClick={(): void => {
                                 setShowContextualMenu(true);
-                                setTarget(document.getElementById(`quick-action-children-button${actionIndex}`));
+                                setTarget(document.getElementById(buttonId));
                             }}
                         />
                     </UILink>
