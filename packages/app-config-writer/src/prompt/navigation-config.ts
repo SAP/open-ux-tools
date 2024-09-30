@@ -60,7 +60,7 @@ export function validateText(input: string, inputName: string, maxLength = 0, ap
     }
 
     // Asterisks is supported for the semantic object and action field but not the inbound title
-    if (applyRegex && !/^[\w]+$/.test(input)) {
+    if (applyRegex && !/^\w+$/.test(input)) {
         return t('prompt.validationWarning.supportedFormats', { ns: NAV_CONFIG_NS });
     }
     return true;
