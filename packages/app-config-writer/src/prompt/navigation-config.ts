@@ -44,9 +44,10 @@ export async function promptInboundNavigationConfig(
  * @param input the text input to validate
  * @param inputName the name of the input as seen by the user
  * @param maxLength optional, the maximum length of text to allow
+ * @param applyRegex optional, not all fields need to be validated with regex
  * @returns true, if all validation checks pass or a message explaining the validation failure
  */
-function validateText(input: string, inputName: string, maxLength = 0): boolean | string {
+export function validateText(input: string, inputName: string, maxLength = 0, applyRegex = true): boolean | string {
     if (input?.trim().length === 0) {
         return t('prompt.validationWarning.inputRequired', {
             inputName,
@@ -56,6 +57,11 @@ function validateText(input: string, inputName: string, maxLength = 0): boolean 
 
     if (maxLength && input.length > maxLength) {
         return t('prompt.validationWarning.maxLength', { maxLength, ns: NAV_CONFIG_NS });
+    }
+
+    // Asterisks is supported for the semantic object and action field but not the inbound title
+    if (applyRegex && !/^[\w]+$/.test(input)) {
+        return t('prompt.validationWarning.supportedFormats', { ns: NAV_CONFIG_NS });
     }
     return true;
 }
@@ -98,7 +104,7 @@ function getPrompts(inboundKeys: string[]): PromptObject[] {
             type: (prev, values) => (values.overwrite !== false ? 'text' : false),
             message: titleMsg,
             format: (val) => val?.trim(),
-            validate: (val) => validateText(val, titleMsg)
+            validate: (val) => validateText(val, titleMsg, 0, false)
         },
         {
             name: 'subTitle',
