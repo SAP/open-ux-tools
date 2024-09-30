@@ -95,7 +95,8 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
                 WebIDEEnabled: 'true',
                 WebIDEUsage: 'odata_abap,dev_abap',
                 'sap-client': '111',
-                Host: 'http://two.dest:234'
+                Host: 'http://two.dest:234',
+                'HTML5.Timeout': '60000'
             }
         } as Destinations;
         mockListDestinations.mockResolvedValueOnce(data);
@@ -128,7 +129,8 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
                 WebIDEEnabled: 'true',
                 WebIDEUsage: 'odata_abap,dev_abap',
                 UrlServiceType: 'Catalog Service',
-                Host: 'http://two.dest:234'
+                Host: 'http://two.dest:234',
+                'HTML5.Timeout': '60000'
             }
         ];
 

@@ -24,7 +24,7 @@ const severityMap = {
 const toolsExtensionFields = ['Tools/Extensions', 'Version'];
 
 /**
- * Column sequence of the destination table, first colun id, the column title
+ * Column sequence of the destination table, first column id, the column title
  */
 const destinationTableFields = new Map<string, string>([
     ['Name', 'Name'],
@@ -37,7 +37,8 @@ const destinationTableFields = new Map<string, string>([
     ['Type', 'Type'],
     ['Authentication', 'Authentication'],
     ['ProxyType', 'ProxyType'],
-    ['HTML5.DynamicDestination', 'HTML5.DynamicDestination']
+    ['HTML5.DynamicDestination', 'HTML5.DynamicDestination'],
+    ['HTML5.Timeout', 'HTML5.Timeout']
 ]);
 
 /**
