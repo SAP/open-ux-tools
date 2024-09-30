@@ -15,7 +15,7 @@ describe('debounce', () => {
 
     test('call twice with params', () => {
         const callback = jest.fn();
-        const fn = debounce(callback, 1000);
+        const fn = debounce(callback, 1000) as any;
         fn('test' as any);
         fn('test1' as any);
         jest.advanceTimersByTime(1200);
