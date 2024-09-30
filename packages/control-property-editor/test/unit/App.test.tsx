@@ -170,7 +170,7 @@ test('renders warning dialog for "FE_FROM_SCRATCH" scenario', async () => {
 });
 
 test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
-    render(<App previewUrl="" scenario="ADAPTATION_PROJECT" />, {
+    const { rerender, store } = render(<App previewUrl="" scenario="ADAPTATION_PROJECT" />, {
         initialState: {
             scenario: SCENARIO.AdaptationProject,
             isAdpProject: true,
@@ -189,6 +189,17 @@ test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
     let notFoundException = null;
     try {
         screen.getByText(/Some Text/i);
+    } catch (e) {
+        notFoundException = e;
+    }
+    expect(notFoundException).toBeTruthy();
+
+    notFoundException = undefined;
+    const state = store.getState();
+    state.dialogMessage = { message: 'Other Text', shouldHideIframe: false };
+    rerender(<App previewUrl="" scenario="ADAPTATION_PROJECT" />);
+    try {
+        screen.getByText(/Other Text/i);
     } catch (e) {
         notFoundException = e;
     }
