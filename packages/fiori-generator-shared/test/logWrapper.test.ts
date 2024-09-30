@@ -22,7 +22,7 @@ describe('Test logWrapper', () => {
         DefaultLogger.error('Error');
         expect(consoleErrorSpy).toHaveBeenCalledWith('Error');
 
-        const logWrapper = new LogWrapper('TestLogger', 'info', {} as Logger);
+        const logWrapper = new LogWrapper('TestLogger', {} as Logger, 'info');
 
         LogWrapper['_yoLogger'] = undefined as any;
         LogWrapper['logAtLevel']('info', 'Info message');

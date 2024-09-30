@@ -35,7 +35,7 @@ export default class ReuseLibGenLogger {
      * @param vscode - the vscode instance
      */
     static configureLogging(vscLogger: IVSCodeExtLogger, loggerName: string, yoLogger: Logger, vscode?: unknown): void {
-        const logWrapper = new LogWrapper(loggerName, 'info', yoLogger, vscLogger, vscode);
+        const logWrapper = new LogWrapper(loggerName, yoLogger, undefined, vscLogger, vscode);
         ReuseLibGenLogger.logger = logWrapper;
     }
 }

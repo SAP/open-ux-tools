@@ -88,12 +88,12 @@ export class LogWrapper implements ILogWrapper {
      * Create a new LogWrapper instance.
      *
      * @param logName - name of the logger
-     * @param logLevel - log level
      * @param yoLogger - yeoman logger
+     * @param logLevel - log level
      * @param extLogger - vscode extension logger
      * @param vscode - vscode instance
      */
-    constructor(logName: string, logLevel: LogLevel, yoLogger: Logger, extLogger?: IVSCodeExtLogger, vscode?: any) {
+    constructor(logName: string, yoLogger: Logger, logLevel?: LogLevel, extLogger?: IVSCodeExtLogger, vscode?: any) {
         LogWrapper._yoLogger = yoLogger;
         if (extLogger) {
             LogWrapper._logLevel = vscode
