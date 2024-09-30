@@ -6,7 +6,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import nock from 'nock';
 import type { EnhancedRouter } from '../../../src/base/flp';
-import { ToolsLogger } from "@sap-ux/logger";
+import { ToolsLogger } from '@sap-ux/logger';
 
 jest.mock('@sap-ux/store', () => {
     return {
