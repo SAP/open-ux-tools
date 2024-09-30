@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.10
+
+### Patch Changes
+
+-   c1462a9: fix: check if the flexbox is in objectpage and in Dyanmic header.
+
+## 0.11.9
+
+### Patch Changes
+
+-   7579b99: UI improvements and bug fix in the Adaptation Editor
+
+## 0.11.8
+
+### Patch Changes
+
+-   595bdea: feat: enhance "add-header-field" quick action with the template
+
+## 0.11.7
+
+### Patch Changes
+
+-   b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
+
 ## 0.11.6
 
 ### Patch Changes

@@ -1,9 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
-import { getQuestions, subscribeOnChoicesUpdate, unsubscribeOnChoicesUpdate } from './communication';
+import {
+    createI18n,
+    getI18nBundle,
+    getQuestions,
+    subscribeOnChoicesUpdate,
+    unsubscribeOnChoicesUpdate
+} from './communication';
 import type { DynamicChoices, PromptQuestion } from '@sap-ux/ui-prompting';
 import type { PromptsType } from './types';
 import type { PromptsGroup } from '@sap-ux/ui-prompting';
 import type { Answers } from 'inquirer';
+import type { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
 
 /**
  * Hook to retrieve dynamic choices.
@@ -76,4 +83,52 @@ export function useQuestions(
     }, []);
 
     return questions;
+}
+
+/**
+ * Method removes question from array of pending questions.
+ *
+ * @param pendingQuestions Array of pending questions
+ * @param question Question to remove
+ * @returns Updated pending questions.
+ */
+function removePendingQuestions(pendingQuestions: string[], question: string): string[] {
+    const index = pendingQuestions.indexOf(question);
+    if (index !== -1) {
+        pendingQuestions.splice(index, 1);
+    }
+    return pendingQuestions;
+}
+
+/**
+ * Hook to retrieve i18n bundle.
+ *
+ * @returns I18n bundle with creation function.
+ */
+export function useI18nBundle(): [I18nBundle, (question: string, entry: TranslationEntry) => void, string[]] {
+    const [i18nBundle, setI18nBundle] = useState({});
+    const [pendingQuestions, setPendingQuestions] = useState<string[]>([]);
+    const updateBundle = (question: string, entry: TranslationEntry) => {
+        // Update pending creations
+        pendingQuestions.push(question);
+        setPendingQuestions([...pendingQuestions]);
+        createI18n(entry.key.value, entry.value.value)
+            .then((bundle: I18nBundle) => {
+                setI18nBundle(bundle);
+                const newPendingQuestions = removePendingQuestions(pendingQuestions, question);
+                setPendingQuestions([...newPendingQuestions]);
+            })
+            .catch(() => {
+                const newPendingQuestions = removePendingQuestions(pendingQuestions, question);
+                setPendingQuestions([...newPendingQuestions]);
+            });
+    };
+    useEffect(() => {
+        getI18nBundle()
+            .then((bundle: I18nBundle) => {
+                setI18nBundle(bundle);
+            })
+            .catch(() => console.log('Error while getting i18n'));
+    }, []);
+    return [i18nBundle, updateBundle, pendingQuestions];
 }

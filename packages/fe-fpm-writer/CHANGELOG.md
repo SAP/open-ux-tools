@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.31.4
+
+### Patch Changes
+
+-   05b554d: Bulding block prompts. Mark table header question as translatable input
+
 ## 0.31.3
 
 ### Patch Changes
