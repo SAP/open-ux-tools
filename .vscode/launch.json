@@ -33,12 +33,12 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "examples/prompting-ui: Run Example",
+            "name": "examples/ui-prompting-examples: Run Example",
             "runtimeExecutable": "pnpm",
             "runtimeArgs": ["storybook"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "cwd": "${workspaceFolder}/examples/prompting-ui"
+            "cwd": "${workspaceFolder}/examples/ui-prompting-examples"
         },
         {
             "type": "node",
