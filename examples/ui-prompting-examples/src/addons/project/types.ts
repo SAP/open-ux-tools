@@ -1,5 +1,5 @@
 import type { Answers } from 'inquirer';
-import type { PromptsType } from '../../../src/utils';
+import type { PromptsType } from '../../utils';
 import type { PromptQuestion } from '@sap-ux/ui-prompting';
 
 export type ProjectActions =
