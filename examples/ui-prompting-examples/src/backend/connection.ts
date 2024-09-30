@@ -22,7 +22,7 @@ import {
     REQUEST_I18N,
     RESPONSE_I18N,
     CREATE_I18N_ENTRY
-} from '../../src/utils/types';
+} from '../utils/types';
 import type {
     Actions,
     ResetAnswers,
@@ -31,7 +31,7 @@ import type {
     UpdateCodeSnippet,
     SetValidationResults,
     ResponseI18n
-} from '../../src/utils/types';
+} from '../utils/types';
 import type { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
 import { testAppPath, getApplication } from '../addons/project';
