@@ -1,0 +1,16 @@
+{
+    "name": "v2-lrop-0909",
+    "version": "0.0.1",
+    "description": "An SAP Fiori application.",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "main": "webapp/index.html",
+    "scripts": {
+        "start-variants-management": "fiori run --open \"preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-client=500#app-preview\""
+    },
+    "sapux": true,
+    "sapuxLayer": "VENDOR"
+}

@@ -1,0 +1,26 @@
+specVersion: "3.1"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+# Test variants-config with no fiori-tools-preview middleware config and missing delay for fiori-tools-appreload
