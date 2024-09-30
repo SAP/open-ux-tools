@@ -1,5 +1,7 @@
 export * from './cap';
 export * from './environment';
-export { getBootstrapResourceUrls, getVariantPreviewAppScript } from './helpers';
+export { getPackageScripts } from './getPackageScripts';
+export { getBootstrapResourceUrls } from './helpers';
 export { generateReadMe } from './read-me';
 export * from './system-utils';
+export { PackageJsonScripts } from './types';
