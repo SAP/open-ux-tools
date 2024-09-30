@@ -1,6 +1,6 @@
 import React, { useState, memo } from 'react';
 import { Form, Blockquote, Loader, AddonPanel } from '@storybook/components';
-import { getApplication, getWebSocket, updateProjectPath } from '../../../src/utils';
+import { getApplication, getWebSocket, updateProjectPath } from '../../utils';
 import type { ApplicationInformation } from './types';
 
 getWebSocket();
