@@ -1,5 +1,11 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.2.0
+
+### Minor Changes
+
+-   d91c081: Rename`ui-prompting` examples package name from `@sap-ux/prompting-ui` to `@sap-ux-private/ui-prompting-examples`
+
 ## 0.1.7
 
 ### Patch Changes
