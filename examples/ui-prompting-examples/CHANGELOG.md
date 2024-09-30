@@ -1,4 +1,4 @@
-# @sap-ux/fe-fpm-writer-ui
+# @sap-ux-private/ui-prompting-examples
 
 ## 0.1.7
 
