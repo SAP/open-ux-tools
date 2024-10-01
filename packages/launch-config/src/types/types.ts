@@ -80,7 +80,7 @@ export interface DebugOptions {
     isMigrator?: boolean;
     /**
      * Determines the HTML file to be used,
-     * and is set to `test/flpSandboxMockServer.html` if the project includes `flpSandboxMockServer.html`.
+     * and is set to `test/flpSandboxMockServer.html` if the project includes `test/flpSandboxMockServer.html`.
      * If targetMockHtmlFile is not provided, run time args defaults to use `test/flpSandbox.html` instead.
      */
     targetMockHtmlFile?: string;
