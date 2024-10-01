@@ -63,7 +63,7 @@
         "getTransportRequestsError": "Error checking ability to retrieve available Transport Requests",
         "invalidPkgJson": "Found invalid package.json. Error : {{- error}}",
         "missingDynamicDestProperty": "Additional property 'HTML5.DynamicDestination = true' missing for destination {{- destination}}",
-        "missingTimeoutDestProperty": "Additional property 'HTML5.Timeout = 60000' missing for destination {{- destination}}",
+        "missingTimeoutDestProperty": "Additional property 'HTML5.Timeout' is missing for destination {{- destination}}, suggested minimum value is '60000'",
         "noProjectRoot": "Project root {{- projectRoot}} does not exist",
         "projectRootWorkspace": "Error while trying to find project in workspace root {{- root}}. Error was: {{- error}}",
         "queryFailure": "Could not query v{{odataVersion}} catalog service for {{- system}}",

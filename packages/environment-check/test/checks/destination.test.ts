@@ -44,7 +44,7 @@ describe('Destination tests, function checkBASDestination()', () => {
 
         // Result check
         expect(result.destinationResults.HTML5DynamicDestination).toEqual(false);
-        expect(result.messages.filter((m) => m.severity === Severity.Error).length).toBe(2);
+        expect(result.messages.filter((m) => m.severity === Severity.Error).length).toBe(1);
     });
 
     test('HTML5.DynamicDestination set to true', async () => {
@@ -60,7 +60,7 @@ describe('Destination tests, function checkBASDestination()', () => {
 
         // Result check
         expect(result.destinationResults.HTML5DynamicDestination).toEqual(true);
-        expect(result.messages.filter((m) => m.severity >= Severity.Warning).length).toBe(0);
+        expect(result.messages.filter((m) => m.severity >= Severity.Warning).length).toBe(1); // Missing timeout property
     });
 });
 

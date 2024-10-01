@@ -24,7 +24,7 @@ const severityMap = {
 const toolsExtensionFields = ['Tools/Extensions', 'Version'];
 
 /**
- * Column sequence of the destination table, first column id, the column title
+ * Column sequence of the destination table, first column id, then column title
  */
 const destinationTableFields = new Map<string, string>([
     ['Name', 'Name'],
