@@ -220,8 +220,7 @@ export class FlpSandbox {
                     const params = JSON.parse(JSON.stringify(req.query));
                     params['fiori-tools-rta-mode'] = 'true';
                     params['sap-ui-rta-skip-flex-validation'] = 'true';
-                    const urlParams = new URLSearchParams(params);
-                    res.redirect(302, `${previewUrl}?${urlParams}`);
+                    res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
                     return;
                 }
                 const html = this.generateSandboxForEditor(rta, editor).replace(
