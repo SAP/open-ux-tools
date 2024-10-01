@@ -8,7 +8,7 @@
         "validationWarning": {
             "inputRequired": "{{inputName}} input is required",
             "maxLength": "Maximum length: {{maxLength}} characters",
-            "supportedFormats": "Only alphanumeric and underscore characters are allowed"
+            "supportedFormats": "Only alphanumeric and '{{allowedCharacters}}' characters are allowed"
         },
         "message": {
             "semanticObject": "Semantic Object",

@@ -125,7 +125,7 @@ describe('Test promptInboundNavigationConfig', () => {
                 `"Semantic Object input is required"`
             );
             expect(questionNames['semanticObject'].validate('Test_1234#')).toMatchInlineSnapshot(
-                `"Only alphanumeric and underscore characters are allowed"`
+                `"Only alphanumeric and '_' characters are allowed"`
             );
             expect(questionNames['semanticObject'].validate('x'.repeat(31))).toMatchInlineSnapshot(
                 `"Maximum length: 30 characters"`
@@ -140,7 +140,7 @@ describe('Test promptInboundNavigationConfig', () => {
             );
             expect(questionNames['action'].validate('x'.repeat(60))).toBe(true);
             expect(questionNames['action'].validate('Test_1234*')).toMatchInlineSnapshot(
-                `"Only alphanumeric and underscore characters are allowed"`
+                `"Only alphanumeric and '_' characters are allowed"`
             );
             expect(questionNames['title'].validate('x'.repeat(100))).toBe(true);
         });
