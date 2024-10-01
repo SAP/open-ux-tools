@@ -267,7 +267,8 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ?? await import('sap/ushell/Container');
+    let container = sap?.ushell?.Container ??
+        (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
     let scenario: string = '';
     const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
