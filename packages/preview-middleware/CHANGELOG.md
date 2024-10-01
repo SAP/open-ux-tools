@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.76
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
 ## 0.16.75
 
 ### Patch Changes
