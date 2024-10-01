@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.75
+
+### Patch Changes
+
+-   5a79abd: make rta editors path more resilient
+
 ## 0.16.74
 
 ### Patch Changes
