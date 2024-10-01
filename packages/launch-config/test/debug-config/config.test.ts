@@ -108,9 +108,9 @@ describe('debug config tests', () => {
         expect(findConfiguration(launchFile, `Start ${projectName} Mock`)).toEqual(mockConfigWithMigrator);
     });
 
-    it('Should return correct configuration when project is being migrated and targetHtml is test/flpSandboxMockServer.html', () => {
+    it('Should return correct configuration when project is being migrated and targetMockHtmlFile is test/flpSandboxMockServer.html', () => {
         configOptions.isMigrator = true;
-        configOptions.targetHtmlFile = 'test/flpSandboxMockServer.html';
+        configOptions.targetMockHtmlFile = 'test/flpSandboxMockServer.html';
         const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         const mockConfigWithMigrator = {
             ...mockConfigurationObj,
@@ -119,9 +119,9 @@ describe('debug config tests', () => {
         expect(findConfiguration(launchFile, `Start ${projectName} Mock`)).toEqual(mockConfigWithMigrator);
     });
 
-    it('Should return correct configuration when project is being migrated, targetHtml and migratorMockIntent is provided', () => {
+    it('Should return correct configuration when project is being migrated, targetMockHtmlFile and migratorMockIntent is provided', () => {
         configOptions.isMigrator = true;
-        configOptions.targetHtmlFile = 'test/flpSandboxMockServer.html';
+        configOptions.targetMockHtmlFile = 'test/flpSandboxMockServer.html';
         configOptions.migratorMockIntent = 'flpSandboxMockFlpIntent';
         const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         const mockConfigWithMigrator = {
