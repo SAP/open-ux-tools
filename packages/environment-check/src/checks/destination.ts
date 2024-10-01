@@ -38,8 +38,8 @@ export async function checkBASDestination(
         });
     }
 
-    const html5Timeout = !!destination['HTML5.Timeout'];
-    if (!html5Timeout) {
+    const html5TimeoutDestination = !!destination['HTML5.Timeout'];
+    if (!html5TimeoutDestination) {
         logger.push({
             severity: Severity.Warning,
             text: t('error.missingTimeoutDestProperty', { destination: destination.Name })
@@ -48,7 +48,8 @@ export async function checkBASDestination(
 
     const destinationResults: EndpointResults = {
         catalogService: catalogServiceResult,
-        HTML5DynamicDestination: html5DynamicDestination
+        HTML5DynamicDestination: html5DynamicDestination,
+        HTML5TimeoutDestination: html5TimeoutDestination
     };
 
     return {

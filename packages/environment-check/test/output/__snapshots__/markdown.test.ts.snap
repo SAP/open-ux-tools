@@ -39,6 +39,7 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 ✅ &nbsp; V2 catalog call returned 0 services<br>
 🚫 &nbsp; V4 catalog service not available<br>
 ✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
+✅ &nbsp; Destination property \`HTML5.Timeout\` set and should include a minimum value of \`60000\`<br>
 ✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Full Service URL<br>
 |Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|HTML5.Timeout|
 |--|--|--|--|--|--|--|--|--|--|--|--|
@@ -48,6 +49,7 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 ✅ &nbsp; V2 catalog call returned 0 services<br>
 🚫 &nbsp; V4 catalog service not available<br>
 ✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
+🟡 &nbsp; Please ensure property \`HTML5.Timeout\` is set to a minimum value of \`60000\` in SAP BTP Cockpit -> 'Additional Properties'<br>
 ✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Catalog Service<br>
 |Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|HTML5.Timeout|
 |--|--|--|--|--|--|--|--|--|--|--|--|
@@ -57,6 +59,7 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 ✅ &nbsp; V2 catalog call returned 0 services<br>
 🚫 &nbsp; V4 catalog service not available<br>
 ✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
+🟡 &nbsp; Please ensure property \`HTML5.Timeout\` is set to a minimum value of \`60000\` in SAP BTP Cockpit -> 'Additional Properties'<br>
 🚫 &nbsp; SAP Fiori tools usage: Wrong configuration, Fiori Generator cannot use this destination. Please check properties<br>
 |Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|HTML5.Timeout|
 |--|--|--|--|--|--|--|--|--|--|--|--|
@@ -66,6 +69,7 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 ✅ &nbsp; V2 catalog call returned 2 services<br>
 🚫 &nbsp; V4 catalog service not available<br>
 🚫 &nbsp; Please ensure property \`HTML5.DynamicDestination\` is set to \`true\` in SAP BTP Cockpit -> 'Additional Properties'<br>
+🟡 &nbsp; Please ensure property \`HTML5.Timeout\` is set to a minimum value of \`60000\` in SAP BTP Cockpit -> 'Additional Properties'<br>
 ✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Catalog Service<br>
 |Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|HTML5.Timeout|
 |--|--|--|--|--|--|--|--|--|--|--|--|
@@ -75,6 +79,7 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 ✅ &nbsp; V2 catalog call returned 0 services<br>
 🚫 &nbsp; V4 catalog service not available<br>
 ✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
+🟡 &nbsp; Please ensure property \`HTML5.Timeout\` is set to a minimum value of \`60000\` in SAP BTP Cockpit -> 'Additional Properties'<br>
 ✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Partial URL<br>
 |Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|HTML5.Timeout|
 |--|--|--|--|--|--|--|--|--|--|--|--|
