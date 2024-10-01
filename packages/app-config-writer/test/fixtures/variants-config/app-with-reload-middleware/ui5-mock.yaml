@@ -1,0 +1,10 @@
+specVersion: "2.4"
+metadata:
+  name: app-with-reload-middleware
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: fiori-tools-appreload
+    - name: fiori-tools-preview
+      afterMiddleware: compression

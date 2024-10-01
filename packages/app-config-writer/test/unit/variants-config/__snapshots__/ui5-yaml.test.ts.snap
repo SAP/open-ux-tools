@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test update middleware ui5.yaml - add fiori-tools-preview 1`] = `
+"specVersion: '2.4'
+metadata:
+  name: 'simple-app'
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: https://abc.ondemand.example
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com.example
+          version: 1.91.0 # The UI5 version, for instance, 1.78.1. Empty means latest version
+    - name: fiori-tools-servestatic
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        paths:
+          - path: /appconfig
+            src: appconfig
+            fallthrough: false
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+"
+`;
+
+exports[`Test update middleware ui5.yaml - do nothing when fiori-tools-preview is present 1`] = `
+"specVersion: '2.4'
+metadata:
+  name: 'app-client'
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        paths:
+          - path: /appconfig
+            src: appconfig
+            fallthrough: false
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        ui5Theme: sap_horizon
+"
+`;
+
+exports[`Test update middleware ui5-mock.yaml - add fiori-tools-appreload 1`] = `
+"specVersion: \\"2.4\\"
+metadata:
+  name: app-with-reload-middleware
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+"
+`;

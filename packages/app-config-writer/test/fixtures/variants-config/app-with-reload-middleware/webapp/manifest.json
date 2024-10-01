@@ -1,0 +1,6 @@
+{
+  "sap.app": {
+    "id": "app-with-reload-middleware",
+    "type": "application"
+  }
+}
