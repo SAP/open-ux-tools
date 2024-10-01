@@ -308,12 +308,17 @@ describe('FlpSandbox', () => {
         });
 
         test('rta', async () => {
-            const response = await server.get('/my/rta.html').expect(200);
+            const response = await server.get('/my/rta.html').expect(302);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with url parameters', async () => {
+            const response = await server.get('/my/rta.html?fiori-tools-rta-mode=true').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
         test('rta with editors path without leading "/"', async () => {
-            const response = await server.get('/without/slash/rta.html').expect(200);
+            const response = await server.get('/without/slash/rta.html').expect(302);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -321,7 +326,7 @@ describe('FlpSandbox', () => {
             let response = await server.get('/my/editor.html').expect(200);
             expect(response.text).toMatchSnapshot();
             expect(response.text.includes('livereloadPort: 35729')).toBe(true);
-            response = await server.get('/my/editor.html.inner.html').expect(200);
+            response = await server.get('/my/editor.html.inner.html').expect(302);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -336,7 +341,7 @@ describe('FlpSandbox', () => {
 
         test('rta with developerMode=true and plugin', async () => {
             await server.get('/with/plugin.html').expect(200);
-            const response = await server.get('/with/plugin.html.inner.html').expect(200);
+            const response = await server.get('/with/plugin.html.inner.html').expect(302);
             expect(response.text).toMatchSnapshot();
         });
 
