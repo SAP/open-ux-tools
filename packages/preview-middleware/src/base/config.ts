@@ -7,6 +7,7 @@ import { readFileSync } from 'fs';
 import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 export interface CustomConnector {
     applyConnector: string;
@@ -33,7 +34,7 @@ export interface TemplateConfig {
             additionalInformation: string;
             applicationType: 'URL';
             url: string;
-            applicationDependencies?: { manifest: boolean };
+            applicationDependencies?: MergedAppDescriptor;
         }
     >;
     ui5: {
@@ -203,9 +204,31 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
  * @param manifest manifest of the additional target app
  * @param app configuration for the preview
  * @param logger logger instance
+ * @param descriptor descriptor of the additional target app
  */
-export async function addApp(templateConfig: TemplateConfig, manifest: Partial<Manifest>, app: App, logger: Logger) {
+export async function addApp(
+    templateConfig: TemplateConfig,
+    manifest: Partial<Manifest>,
+    app: App,
+    logger: Logger,
+    descriptor?: MergedAppDescriptor
+) {
     const id = manifest['sap.app']?.id ?? '';
+
+    let applicationDependencies = { manifest: true } as unknown as MergedAppDescriptor;
+    // Setting the descriptor (merged manifest) as applicationDependencies.
+    // If not set, CPE is loading the changes from the backend system and ignores the local changes in the workspace.
+    // This seems to happen only when an adaptation with the same namespace is already deployed in the backend system.
+    if (descriptor) {
+        applicationDependencies = descriptor;
+        if (descriptor.asyncHints?.components?.length > 0 && descriptor.asyncHints.components[0].url) {
+            // The URL in the manifest is set to `/webapp`, but in CPE this causes a 404 error when trying to fetch local changes from the workspace.
+            // URLs like `/webapp/changes/fragments` are not working in CPE it should be changed to `/changes/fragments`.
+            // This issue is not present in Visual Editor.
+            descriptor.asyncHints.components[0].url.url = '/';
+        }
+    }
+
     app.intent ??= {
         object: id.replace(/\./g, ''),
         action: 'preview'
@@ -217,7 +240,7 @@ export async function addApp(templateConfig: TemplateConfig, manifest: Partial<M
         additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
         applicationType: 'URL',
         url: app.target,
-        applicationDependencies: { manifest: true }
+        applicationDependencies
     };
 }
 

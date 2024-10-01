@@ -18,6 +18,7 @@ import {
     type OperationType
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
@@ -104,8 +105,14 @@ export class FlpSandbox {
      * @param manifest application manifest
      * @param componentId optional componentId e.g. for adaptation projects
      * @param resources optional additional resource mappings
+     * @param descriptor optional additional descriptor mappings
      */
-    async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
+    async init(
+        manifest: Manifest,
+        componentId?: string,
+        resources: Record<string, string> = {},
+        descriptor?: MergedAppDescriptor
+    ): Promise<void> {
         this.createFlexHandler();
         this.config.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app'].id;
@@ -120,7 +127,8 @@ export class FlpSandbox {
                 local: '.',
                 intent: this.config.intent
             },
-            this.logger
+            this.logger,
+            descriptor
         );
         this.addStandardRoutes();
         if (this.rta) {
@@ -531,10 +539,14 @@ export async function initAdp(
         }
 
         const descriptor = adp.descriptor;
-        descriptor.asyncHints.requests = [];
+        // TODO: This line is currently commented as it causes issues for SAPUI5 Versions > 1.71.
+        // This needs to be in a condition that checks the SAPUI5 version.
+        // descriptor.asyncHints.requests = [];
         const { name, manifest } = descriptor;
 
-        await flp.init(manifest, name, adp.resources);
+        // Passing the descriptor (merged manifest) from the backend system to the FLP sandbox
+        // to be propagated to be propagated to addApp method the assembles the flp.html to be added as applicationDependencies
+        await flp.init(manifest, name, adp.resources, descriptor);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
         flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         flp.router.use(json());
