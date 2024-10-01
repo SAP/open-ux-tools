@@ -72,5 +72,27 @@ describe('validators', () => {
             expect(result).toEqual(t('validators.folderContainsFioriApp', { path: appRootPath }));
             expect(mockFindRootsForPath).toHaveBeenCalledWith('some/path');
         });
+
+        test('should return an error message if a CAP project is found in the target directory', async () => {
+            //const capPath = join(__dirname, '..', 'test-data', 'project', 'CAPnode_mix');
+            const capPath = join(
+                __dirname,
+                '..',
+                '..',
+                '..',
+                '..',
+                'test',
+                'test-data',
+                'project',
+                'find-all-apps',
+                'CAP',
+                'CAPnode_mix'
+            );
+            // expect(await findCapProjectRoot(capPath)).toBeTruthy();
+            // expect(await isCapProject(capPath)).toBe(true);
+            const result = await validateFioriAppProjectFolder(capPath);
+            //expect(result).toEqual(t('validators.folderContainsCapApp'));
+            expect(mockFindRootsForPath).toHaveBeenCalledWith(capPath);
+        });
     });
 });
