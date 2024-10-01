@@ -14,7 +14,6 @@ export class Wrapper implements SecureStore {
     private readonly platform: SupportedPlatform;
 
     constructor(log: Logger) {
-        console.log(" ------------- Wrapper constructor------------- ");
         this.log = log;
         const currentPlatform = platform();
 
@@ -41,7 +40,9 @@ export class Wrapper implements SecureStore {
     private getCommandForPlatform(commandType: 'store' | 'retrieve' | 'delete', service: string, key: string, value?: string): string {
         const platformCommands: Record<SupportedPlatform, Record<string, string>> = {
             darwin: {
-                store: `security add-generic-password -s ${service} -a ${key} -w ${value}`,
+                store: value 
+                ? `echo -n '${value}' > /tmp/password.txt && chmod 600 /tmp/password.txt && security add-generic-password -s ${service} -a ${key} -w "$(cat /tmp/password.txt)" && rm /tmp/password.txt` 
+                : '',
                 retrieve: `security find-generic-password -s ${service} -a ${key} -w`,
                 delete: `security delete-generic-password -s ${service} -a ${key}`,
             },
@@ -64,15 +65,15 @@ export class Wrapper implements SecureStore {
 
         return commands[commandType];
     }
+
     private storeSecret(service: string, key: string, value: string): boolean {
         try {
-            console.log("------------- Wrapper store service", service , "key ---->", key, "value----->", value);
             const command = this.getCommandForPlatform('store', service, key, value);
             this.executeCommand(command);
             console.log("------------- Wrapper constructor successfully SAVE secret: ", command);
             return true;
-        } catch {
-            this.log.error(`Error storing secret. Service: [${service}], key: [${key}]`);
+        } catch (err) {
+            this.log.error(`Error storing secret. Service: [${service}], key: [${key}]. Error message: ${err}`);
             return false;
         }
     }
@@ -81,11 +82,10 @@ export class Wrapper implements SecureStore {
         try {
             const command = this.getCommandForPlatform('retrieve', service, key);
             const result = this.executeCommand(command);
-            console.log("------------- Wrapper constructorsuccessfully RETRIEVE secret: ", result.toString().trim());
+            console.log("------------- Wrapper constructorsuccessfully RETRIEVE secret and return: ", result.toString().trim());
             return result.toString().trim() ?? undefined;
         } catch (err) {
-            console.log("------------- Wrapper constructor Error retrieving secret. ", service, key, err);
-            this.log.error(`Error retrieving secret. Service: [${service}], key: [${key}]`);
+            this.log.error(`Error retrieving secret. Service: [${service}], key: [${key}]. Error message: ${err}`);
             return undefined;
         }
     }
@@ -96,8 +96,8 @@ export class Wrapper implements SecureStore {
             this.executeCommand(command);
             console.log("------------- Wrapper constructor successfully DELETE secret: ", command);
             return true;
-        } catch {
-            this.log.error(`Error deleting secret. Service: [${service}], key: [${key}]`);
+        } catch (err) {
+            this.log.error(`Error deleting secret. Service: [${service}], key: [${key}]. Error message: ${err}`);
             return false;
         }
     }
@@ -136,7 +136,6 @@ export class Wrapper implements SecureStore {
                     throw new Error('Unsupported platform');
             }
         } catch (err) {
-            console.log("------------- Wrapper constructor rror getting values for service ", service, err);
             this.log.error(`Error getting values for service: [${service}]`);
             this.log.error(errorString(err));
         }
@@ -147,14 +146,14 @@ export class Wrapper implements SecureStore {
     private async handleDarwin(service: string, result: Entities<any>): Promise<void> {
         const command = `security find-generic-password -s ${service} -g 2>&1 | grep 'acct'`;
         const output = this.executeCommand(command).toString();
-        console.log("------------- Wrapper constructor handleDarwin output: ", output);
         const accounts = this.parseDarwinOutput(output);
-        console.log("------------- Wrapper constructor handleDarwin accounts: ", accounts);
+        //console.log("------------- Wrapper constructor handleDarwin accounts: ", accounts);
     
         for (const account of accounts) {
-            const password = this.retrieveSecret(service, account);
+            const password: string | undefined = this.retrieveSecret(service, account);
             if (password) {
-                result[account] = JSON.parse(password);
+                //     result[account] = JSON.parse(password);
+                result[account] = password;
             }
         }
         console.log("------------- Wrapper constructorsuccessfully get All secret: ", result);
