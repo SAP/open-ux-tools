@@ -126,7 +126,7 @@ export class LogWrapper implements ILogWrapper {
                 );
             }
         } else {
-            DefaultLogger.error('LogWrapper is not initialised');
+            DefaultLogger.error(t('error.logWrapperNotInitialised'));
         }
     };
 
@@ -204,6 +204,6 @@ export class LogWrapper implements ILogWrapper {
     }
 
     getChildLogger(/* opts: { label: string } */): ILogWrapper {
-        throw new Error('Method not implemented.');
+        throw new Error(t('error.methodNotImplemented'));
     }
 }
