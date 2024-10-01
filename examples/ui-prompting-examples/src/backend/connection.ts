@@ -18,23 +18,28 @@ import {
     RESET_ANSWERS,
     UPDATE_CODE_SNIPPET,
     SET_VALIDATION_RESULTS,
-    GET_CODE_SNIPPET
-} from '../../src/utils/types';
+    GET_CODE_SNIPPET,
+    REQUEST_I18N,
+    RESPONSE_I18N,
+    CREATE_I18N_ENTRY
+} from '../utils/types';
 import type {
     Actions,
     ResetAnswers,
     SetChoices,
     GetChoices,
     UpdateCodeSnippet,
-    SetValidationResults
-} from '../../src/utils/types';
+    SetValidationResults,
+    ResponseI18n
+} from '../utils/types';
 import type { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
 import { testAppPath, getApplication } from '../addons/project';
 import { GET_PROJECT_PATH, SET_PROJECT_PATH, VALIDATE_ANSWERS } from '../addons/project/types';
-import type { SetProjectPath } from '../addons/project/types';
+import type { ApplicationInformation, SetProjectPath } from '../addons/project/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
 import { getPromptApi } from './api';
+import { getI18nBundle, createI18nEntry } from './i18nBundle';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 
@@ -94,6 +99,24 @@ function sendMessage(action: Actions): void {
     }
     for (const connection of connections) {
         connection.send(JSON.stringify(action));
+    }
+}
+
+/**
+ * Method resolves current i18n bundle and sends action with latest bundle to ui.
+ *
+ * @param app Application to refresh
+ */
+async function refreshI18nBundle(app?: ApplicationInformation): Promise<void> {
+    if (app?.projectPath) {
+        const bundle = await getI18nBundle(app.projectPath, app.appId);
+        if (bundle) {
+            const responseAction: ResponseI18n = {
+                type: RESPONSE_I18N,
+                bundle
+            };
+            sendMessage(responseAction);
+        }
     }
 }
 
@@ -198,6 +221,21 @@ async function handleAction(action: Actions): Promise<void> {
                     validationResults: validationResult
                 };
                 sendMessage(responseAction);
+                break;
+            }
+            case REQUEST_I18N: {
+                await refreshI18nBundle(currentApp);
+                break;
+            }
+            case CREATE_I18N_ENTRY: {
+                if (currentApp?.projectPath) {
+                    await createI18nEntry(
+                        [{ key: action.key, value: action.value }],
+                        currentApp?.projectPath,
+                        currentApp?.appId
+                    );
+                    await refreshI18nBundle(currentApp);
+                }
                 break;
             }
         }
