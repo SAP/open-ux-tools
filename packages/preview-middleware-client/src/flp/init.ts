@@ -278,7 +278,6 @@ export async function init({
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const view = event.getParameter('componentInstance');
-                const flexSettings = JSON.parse(flex) as FlexSettings;
                 const pluginScript = flexSettings.pluginScript ?? '';
 
                 let libs: string[] = [];
@@ -302,6 +301,7 @@ export async function init({
 
                 sap.ui.require(
                     libs,
+                    // eslint-disable-next-line no-shadow
                     async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
                         await startAdaptation(options, pluginScript);
                     }
@@ -317,7 +317,7 @@ export async function init({
 
     // Load custom library paths if configured
     if (appUrls) {
-        await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
+        await registerComponentDependencyPaths(JSON.parse(appUrls) as string[] ?? [], urlParams);
     }
 
     // Load rta connector
