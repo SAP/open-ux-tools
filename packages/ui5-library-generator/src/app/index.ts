@@ -45,7 +45,8 @@ export default class extends Generator implements Ui5LibGenerator {
             this.options.logger,
             this.rootGeneratorName(),
             this.log,
-            this.options.vscode
+            this.options.vscode,
+            this.options.logLevel
         );
         this.targetFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
 

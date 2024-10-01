@@ -41,7 +41,7 @@ describe('Test logWrapper', () => {
 
         const consoleSpy = jest.spyOn(console, 'log');
         consoleMsg = consoleSpy.mock.calls[0][0];
-        expect(consoleMsg).toEqual(expect.stringContaining(`"label": "TestLogger"`));
+        expect(consoleMsg).toEqual(expect.stringContaining(`INFO: Info message`));
 
         logWrapper.fatal('Fatal');
         expect(consoleErrorSpy).toHaveBeenCalled();

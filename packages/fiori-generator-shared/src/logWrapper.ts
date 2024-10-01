@@ -101,10 +101,12 @@ export class LogWrapper implements ILogWrapper {
                 : logLevel ?? 'info';
             LogWrapper._vscodeLogger = extLogger.getChildLogger({ label: logName });
         } else {
-            LogWrapper._vscodeLogger = createCLILogger(logName, logLevel);
-            LogWrapper._logLevel = logLevel === 'off' || !logLevel ? 'warn' : logLevel;
+            if (!yoLogger) {
+                LogWrapper._vscodeLogger = createCLILogger(logName, logLevel);
+            }
+            LogWrapper._logLevel = logLevel === 'off' || !logLevel ? 'info' : logLevel;
         }
-        LogWrapper._vscodeLogger.debug(t('debug.loggingConfigured', { logLevel: LogWrapper._logLevel }));
+        LogWrapper._vscodeLogger?.debug(t('debug.loggingConfigured', { logLevel: LogWrapper._logLevel }));
     }
 
     static readonly logAtLevel = (level: LogLevel, message: string, ...args: any[]) => {
