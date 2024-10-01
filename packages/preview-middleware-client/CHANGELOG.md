@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.11
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
 ## 0.11.10
 
 ### Patch Changes
