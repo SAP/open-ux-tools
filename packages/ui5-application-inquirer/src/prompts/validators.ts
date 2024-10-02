@@ -32,7 +32,7 @@ export function validateAppName(appName: string, targetDir: string): boolean | s
 export async function validateFioriAppProjectFolder(targetDir: string): Promise<string | boolean> {
     const appRoot = await findRootsForPath(targetDir);
     if (appRoot) {
-        return t('validators.folderContainsFioriApp', { path: appRoot?.appRoot });
+        return t('validators.folderContainsFioriApp', { path: appRoot.appRoot });
     } // Check targetDir is in CAP project sub directories && check if targetDir is a CAP project root directory
     const isCapPath = await checkPathForCapApp(targetDir);
     if (isCapPath) {
