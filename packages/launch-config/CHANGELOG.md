@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.7.0
+
+### Minor Changes
+
+-   1069c97: Extend DebugOptions with targetMockHtmlFile and change start mock arguments if targetMockHtmlFile is provided
+
 ## 0.6.1
 
 ### Patch Changes
