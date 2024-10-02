@@ -1060,6 +1060,113 @@ describe('AddFragment', () => {
             });
         });
 
+        test('add header field fragment and a change if targetAggregation is items and not a dynamic header', async () => {
+            sapMock.ui.version = '1.71.62';
+            const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                overlays as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD',
+                    aggregation: 'items'
+                }
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            const testModel = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('0')
+                    .mockReturnValueOnce('items'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+            addFragment.model = testModel;
+
+            const dummyContent: AddFragmentChangeContentType = {
+                fragmentPath: 'dummyPath',
+                index: 1,
+                targetAggregation: 'items'
+            };
+
+            const setContentSpy = jest.fn();
+            const commandForSpy = jest.fn().mockReturnValue({
+                _oPreparedChange: {
+                    _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                    setModuleName: jest.fn()
+                },
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getContent: jest.fn().mockReturnValue(dummyContent),
+                    setContent: setContentSpy
+                })
+            });
+            CommandFactory.getCommandFor = commandForSpy;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    id: 'id',
+                    reference: 'reference',
+                    namespace: 'namespace',
+                    layer: 'layer'
+                }),
+                text: jest.fn().mockReturnValue('XML Fragment was created!'),
+                ok: true
+            });
+
+            jest.spyOn(sap.ui, 'getCore').mockReturnValue({
+                byId: jest.fn().mockReturnValue({})
+            } as unknown as Core);
+
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.m.FlexBox')
+                }),
+                getParent: jest.fn().mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({
+                        getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout')
+                    })
+                })
+            } as unknown as ManagedObject);
+
+            addFragment.handleDialogClose = jest.fn();
+
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await addFragment.onCreateBtnPress(event as unknown as Event);
+
+            expect(executeSpy).toHaveBeenCalledWith({
+                _oPreparedChange: {
+                    _oDefinition: {
+                        moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                    },
+                    setModuleName: expect.any(Function)
+                },
+                getPreparedChange: expect.any(Function)
+            });
+        });
+
         test('creates new custom action fragment and a change', async () => {
             sapMock.ui.version = '1.71.62';
             const executeSpy = jest.fn();

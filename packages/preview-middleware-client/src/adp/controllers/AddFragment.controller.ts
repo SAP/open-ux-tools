@@ -316,35 +316,56 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         return templateName;
     }
 
+    /**
+     * Determines fragment template name based on current control name and provided target aggregation
+     * @param targetAggregation - target aggregation name
+     * @returns fragment template name or empty string
+     */
     private getFragmentTemplateName(targetAggregation: string): string {
         const currentControlName = this.runtimeControl.getMetadata().getName();
         if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections') {
             return 'OBJECT_PAGE_CUSTOM_SECTION';
         } else if (this.isCustomAction(currentControlName, targetAggregation)) {
             return 'CUSTOM_ACTION';
-        } else if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'headerContent') {
+        } else if (this.isObjectPageHeaderField(currentControlName, targetAggregation)) {
             return 'OBJECT_PAGE_HEADER_FIELD';
-        } else if (currentControlName === 'sap.m.FlexBox' && targetAggregation === 'items') {
-            return this.getObjectPageHeaderFieldOrEmpty();
-        } else {
-            return '';
         }
+        return '';
     }
 
+    /**
+     * Determines conditions for custom action fragment creation
+     * @param currentControlName - current control name
+     * @param targetAggregation - target aggregation name
+     * @returns true if control and aggregation combination allows to create custom action fragment
+     */
     private isCustomAction(currentControlName: string, targetAggregation: string): boolean {
-        return (
-            ((currentControlName === 'sap.f.DynamicPageTitle' || currentControlName === 'sap.uxap.ObjectPageHeader') &&
-                targetAggregation === 'actions') ||
-            (currentControlName === 'sap.m.OverflowToolbar' && targetAggregation === 'content') ||
-            (currentControlName === 'sap.m.Toolbar' && targetAggregation === 'content')
-        );
+        if (currentControlName === 'sap.f.DynamicPageTitle' || currentControlName === 'sap.uxap.ObjectPageHeader') {
+            return targetAggregation === 'actions';
+        } else if (currentControlName === 'sap.m.OverflowToolbar' || currentControlName === 'sap.m.Toolbar') {
+            return targetAggregation === 'content';
+        }
+        return false;
     }
 
-    private getObjectPageHeaderFieldOrEmpty(): string {
-        if (this.runtimeControl.getParent()?.getMetadata().getName() === 'sap.uxap.ObjectPageDynamicHeaderContent') {
-            return 'OBJECT_PAGE_HEADER_FIELD';
-        } else {
-            return '';
+    /**
+     * Determines conditions for object page header field fragment creation
+     * @param currentControlName - current control name
+     * @param targetAggregation - target aggregation name
+     * @returns true if conditions allow to create object page header field fragment
+     */
+    private isObjectPageHeaderField(currentControlName: string, targetAggregation: string): boolean {
+        if (currentControlName === 'sap.uxap.ObjectPageLayout') {
+            return targetAggregation === 'headerContent';
+        } else if (currentControlName === 'sap.m.FlexBox') {
+            const parentName = this.runtimeControl.getParent()?.getMetadata().getName();
+            if (
+                parentName === 'sap.uxap.ObjectPageDynamicHeaderContent' ||
+                parentName === 'sap.uxap.ObjectPageLayout'
+            ) {
+                return targetAggregation === 'items';
+            }
         }
+        return false;
     }
 }

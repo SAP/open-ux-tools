@@ -1027,6 +1027,15 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'objectPage0-create-table-action', kind: 'nested', path: '-1/0' })
                 );
+
+                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
+                    '../../../../src/adp/init-dialogs'
+                );
+
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
+                    aggregation: 'content',
+                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                });
             });
         });
     });

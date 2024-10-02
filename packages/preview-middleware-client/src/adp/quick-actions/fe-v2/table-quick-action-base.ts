@@ -77,6 +77,9 @@ export abstract class TableQuickActionDefinitionBase {
         protected includeServiceAction?: boolean
     ) {}
 
+    /**
+     * Initializes action object instance
+     */
     async initialize(): Promise<void> {
         // No action found in control design time for version < 1.96
         const version = await getUi5Version();
@@ -127,6 +130,11 @@ export abstract class TableQuickActionDefinitionBase {
         }
     }
 
+    /**
+     * Determines table label for the given table element
+     * @param table - table element
+     * @returns table label if found or 'Unnamed table'
+     */
     private getTableLabel(table: UI5Element): string {
         if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
             const header = table.getHeader();
@@ -144,8 +152,12 @@ export abstract class TableQuickActionDefinitionBase {
         return 'Unnamed table';
     }
 
+    /**
+     * Builds a map kay/tab_name for ICON_TAB_BAR control of the active page, if such exists
+     * @returns built map
+     */
     private buildIconTabBarFilterMap(): { [key: string]: string } {
-        const iconTabBarfilterMap: { [key: string]: string } = {};
+        const iconTabBarFilterMap: { [key: string]: string } = {};
 
         // Assumption only a tab bar control per page.
         const tabBar = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
@@ -157,15 +169,20 @@ export abstract class TableQuickActionDefinitionBase {
                 this.iconTabBar = control;
                 for (const item of control.getItems()) {
                     if (isManagedObject(item) && isA<IconTabFilter>('sap.m.IconTabFilter', item)) {
-                        iconTabBarfilterMap[item.getKey()] = item.getText();
+                        iconTabBarFilterMap[item.getKey()] = item.getText();
                     }
                 }
             }
         }
 
-        return iconTabBarfilterMap;
+        return iconTabBarFilterMap;
     }
 
+    /**
+     * Collects subsection data in the table map for the given section and table
+     * @param section - object page section
+     * @param table - table element
+     */
     private collectChildrenInSection(section: ObjectPageSection, table: UI5Element): void {
         const layout = getParentContainer<ObjectPageLayout>(table, 'sap.uxap.ObjectPageLayout');
         const subSections = section.getSubSections();
@@ -204,6 +221,11 @@ export abstract class TableQuickActionDefinitionBase {
         }
     }
 
+    /**
+     * Processes table element and pushes table data to the children array
+     * @param table - table element
+     * @param sectionInfo - section info object
+     */
     private processTable(
         table: UI5Element,
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
@@ -227,6 +249,10 @@ export abstract class TableQuickActionDefinitionBase {
         };
     }
 
+    /**
+     * Selects closest overlay for the given table element
+     * @param table - table element
+     */
     protected selectOverlay(table: UI5Element): void {
         const controlOverlay = OverlayUtil.getClosestOverlayFor(table);
         if (controlOverlay) {
@@ -234,6 +260,10 @@ export abstract class TableQuickActionDefinitionBase {
         }
     }
 
+    /**
+     * Prepares nested quick action object
+     * @returns action instance
+     */
     getActionObject(): NestedQuickAction {
         return {
             kind: NESTED_QUICK_ACTION_KIND,
