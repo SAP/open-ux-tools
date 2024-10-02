@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.11
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
+## 0.11.10
+
+### Patch Changes
+
+-   c1462a9: fix: check if the flexbox is in objectpage and in Dyanmic header.
+
 ## 0.11.9
 
 ### Patch Changes
