@@ -3,7 +3,7 @@ import * as promptHelpers from '../../../src/prompts/prompt-helpers';
 import { join } from 'path';
 import { initI18nUi5AppInquirer, t } from '../../../src/i18n';
 import { validateAppName, validateFioriAppProjectFolder } from '../../../src/prompts/validators';
-import { findRootsForPath } from '@sap-ux/project-access';
+import { findRootsForPath, checkPathForCapApp } from '@sap-ux/project-access';
 
 /**
  * Workaround to allow spyOn
@@ -88,10 +88,9 @@ describe('validators', () => {
                 'CAP',
                 'CAPnode_mix'
             );
-            // expect(await findCapProjectRoot(capPath)).toBeTruthy();
-            // expect(await isCapProject(capPath)).toBe(true);
+            expect(await checkPathForCapApp(capPath)).toBe(true);
             const result = await validateFioriAppProjectFolder(capPath);
-            //expect(result).toEqual(t('validators.folderContainsCapApp'));
+            expect(result).toEqual(t('validators.folderContainsCapApp'));
             expect(mockFindRootsForPath).toHaveBeenCalledWith(capPath);
         });
     });

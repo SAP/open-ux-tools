@@ -35,7 +35,8 @@ export {
     findProjectRoot,
     getAppRootFromWebappPath,
     findCapProjectRoot,
-    findRootsForPath
+    findRootsForPath,
+    checkPathForCapApp
 } from './search';
 export { getWebappPath, readUi5Yaml } from './ui5-config';
 export { getMtaPath } from './mta';
