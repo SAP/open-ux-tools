@@ -99,10 +99,7 @@ describe('Test checkPathForCapApp()', () => {
 
     test('Should return true for sub directory CAP path', async () => {
         const result = await checkPathForCapApp(
-            join(
-                __dirname,
-                '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements/app/fiori_elements/app/fiori_elements/webapp/'
-            )
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements/app/fiori_elements/webapp/')
         );
         expect(result).toBe(true);
     });
