@@ -21,7 +21,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 /** sap.ui.fl */
-import {  type AddFragmentChangeContentType  } from 'sap/ui/fl/Change';
+import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
@@ -33,7 +33,7 @@ import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
-import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import { getControlById } from '../../utils/core';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -60,7 +60,7 @@ export interface AddFragmentOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, private options: AddFragmentOptions) {
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
@@ -188,7 +188,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
         let controlMetadata: ManagedObjectMetadata;
 
-        const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
+        const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
         if (overlayControl) {
             this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
             controlMetadata = this.runtimeControl.getMetadata();
@@ -316,21 +316,56 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         return templateName;
     }
 
+    /**
+     * Determines fragment template name based on current control name and provided target aggregation
+     * @param targetAggregation - target aggregation name
+     * @returns fragment template name or empty string
+     */
     private getFragmentTemplateName(targetAggregation: string): string {
         const currentControlName = this.runtimeControl.getMetadata().getName();
         if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections') {
             return 'OBJECT_PAGE_CUSTOM_SECTION';
-        } else if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'headerContent') {
+        } else if (this.isCustomAction(currentControlName, targetAggregation)) {
+            return 'CUSTOM_ACTION';
+        } else if (this.isObjectPageHeaderField(currentControlName, targetAggregation)) {
             return 'OBJECT_PAGE_HEADER_FIELD';
-        } else if (currentControlName === 'sap.m.FlexBox' && targetAggregation === 'items') {
-            // in case of dynamic header make sure that there is only one flexBox in the header.
-            if ((this.runtimeControl.getParent() as ObjectPageLayout)?.getHeaderContent().length === 1) {
-                return 'OBJECT_PAGE_HEADER_FIELD';
-            } else {
-                return '';
-            }
-        } else {
-            return '';
         }
+        return '';
+    }
+
+    /**
+     * Determines conditions for custom action fragment creation
+     * @param currentControlName - current control name
+     * @param targetAggregation - target aggregation name
+     * @returns true if control and aggregation combination allows to create custom action fragment
+     */
+    private isCustomAction(currentControlName: string, targetAggregation: string): boolean {
+        if (currentControlName === 'sap.f.DynamicPageTitle' || currentControlName === 'sap.uxap.ObjectPageHeader') {
+            return targetAggregation === 'actions';
+        } else if (currentControlName === 'sap.m.OverflowToolbar' || currentControlName === 'sap.m.Toolbar') {
+            return targetAggregation === 'content';
+        }
+        return false;
+    }
+
+    /**
+     * Determines conditions for object page header field fragment creation
+     * @param currentControlName - current control name
+     * @param targetAggregation - target aggregation name
+     * @returns true if conditions allow to create object page header field fragment
+     */
+    private isObjectPageHeaderField(currentControlName: string, targetAggregation: string): boolean {
+        if (currentControlName === 'sap.uxap.ObjectPageLayout') {
+            return targetAggregation === 'headerContent';
+        } else if (currentControlName === 'sap.m.FlexBox') {
+            const parentName = this.runtimeControl.getParent()?.getMetadata().getName();
+            if (
+                parentName === 'sap.uxap.ObjectPageDynamicHeaderContent' ||
+                parentName === 'sap.uxap.ObjectPageLayout'
+            ) {
+                return targetAggregation === 'items';
+            }
+        }
+        return false;
     }
 }

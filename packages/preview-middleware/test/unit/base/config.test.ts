@@ -11,6 +11,7 @@ import {
 import { mergeTestConfigDefaults } from '../../../src/base/test';
 import type { MiddlewareConfig } from '../../../src/types';
 import { join } from 'path';
+import { ToolsLogger } from '@sap-ux/logger';
 
 describe('config', () => {
     const manifest = {
@@ -74,6 +75,8 @@ describe('config', () => {
         });
 
         test('tests included and a custom path', async () => {
+            const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
+            const consoleSpyWarning = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
             const config = {
                 flp: {
                     path: '/test/flpSandbox.html',
@@ -81,19 +84,29 @@ describe('config', () => {
                 },
                 rta: {
                     layer: 'CUSTOMER_BASE',
-                    editors: [{ path: '/local/editor.html', developerMode: false }]
+                    editors: [
+                        { path: '/local/editor.html', developerMode: false },
+                        { path: '/local/developerEditor.html', developerMode: true }
+                    ]
                 },
                 test: [{ framework: 'OPA5' }]
             } satisfies MiddlewareConfig;
             const previews = getPreviewPaths(config);
-            expect(previews).toHaveLength(3);
+            expect(previews).toHaveLength(4);
             expect(
                 previews.find(
                     ({ path }) => path === `${config.flp.path}#${config.flp.intent.object}-${config.flp.intent.action}`
                 )
             ).toBeDefined();
             expect(previews.find(({ path }) => path === config.rta.editors[0].path)).toBeDefined();
+            expect(previews.find(({ path }) => path === config.rta.editors[1].path)).toBeDefined();
+            expect(consoleSpyError).toHaveBeenCalledWith(
+                'developerMode is ONLY supported for SAP UI5 adaptation projects.'
+            );
+            expect(consoleSpyWarning).toHaveBeenCalledWith('developerMode for /local/developerEditor.html disabled');
             expect(previews.find(({ path }) => path === '/test/opaTests.qunit.html')).toBeDefined();
+            consoleSpyError.mockRestore();
+            consoleSpyWarning.mockRestore();
         });
     });
 

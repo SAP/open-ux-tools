@@ -27,7 +27,7 @@ export function QuickActionList(): ReactElement {
     return (
         <div className="property-content app-panel-scroller">
             <Stack>
-                {groups.flatMap((group) => {
+                {groups.flatMap((group, gIdx) => {
                     const groupTitle = t('QUICK_ACTIONS', { title: group.title });
                     return [
                         <Label
@@ -42,28 +42,30 @@ export function QuickActionList(): ReactElement {
                             }}>
                             {groupTitle}
                         </Label>,
-
-                        ...group.actions.map((quickAction, idx) => {
-                            if (quickAction.kind === SIMPLE_QUICK_ACTION_KIND) {
-                                return (
-                                    <Stack.Item key={`${quickAction.id}`}>
-                                        <SimpleQuickActionListItem key={quickAction.id} action={quickAction} />
-                                    </Stack.Item>
-                                );
-                            }
-                            if (quickAction.kind === NESTED_QUICK_ACTION_KIND) {
-                                return (
-                                    <Stack.Item key={`${quickAction.id}`}>
-                                        <NestedQuickActionListItem
-                                            key={quickAction.id}
-                                            action={quickAction}
-                                            actionIndex={idx}
-                                        />
-                                    </Stack.Item>
-                                );
-                            }
-                            return <></>;
-                        })
+                        <div className="quick-action-group-item-list" key={group.title + '-items'}>
+                            {...group.actions.map((quickAction, idx) => {
+                                if (quickAction.kind === SIMPLE_QUICK_ACTION_KIND) {
+                                    return (
+                                        <Stack.Item key={quickAction.id}>
+                                            <SimpleQuickActionListItem key={quickAction.id} action={quickAction} />
+                                        </Stack.Item>
+                                    );
+                                }
+                                if (quickAction.kind === NESTED_QUICK_ACTION_KIND) {
+                                    return (
+                                        <Stack.Item key={quickAction.id}>
+                                            <NestedQuickActionListItem
+                                                key={quickAction.id}
+                                                action={quickAction}
+                                                groupIndex={gIdx}
+                                                actionIndex={idx}
+                                            />
+                                        </Stack.Item>
+                                    );
+                                }
+                                return <></>;
+                            })}
+                        </div>
                     ];
                 })}
             </Stack>

@@ -1,5 +1,43 @@
 # @sap-ux/preview-middleware
 
+## 0.16.78
+
+### Patch Changes
+
+-   7479bd3: fix: add page and table quick actions v2 app
+-   Updated dependencies [7479bd3]
+    -   @sap-ux/adp-tooling@0.12.53
+
+## 0.16.77
+
+### Patch Changes
+
+-   9605bb0: fix: ignore developerMode from rta editor config in case of no adp project
+
+## 0.16.76
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
+## 0.16.75
+
+### Patch Changes
+
+-   5a79abd: make rta editors path more resilient
+
+## 0.16.74
+
+### Patch Changes
+
+-   c1462a9: fix: check if the flexbox is in objectpage and in Dyanmic header.
+
+## 0.16.73
+
+### Patch Changes
+
+-   7579b99: UI improvements and bug fix in the Adaptation Editor
+
 ## 0.16.72
 
 ### Patch Changes
