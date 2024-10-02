@@ -74,7 +74,7 @@ export function createCLILogger(logName: string, logLevel: LogLevel = 'off'): IL
  */
 export class LogWrapper implements ILogWrapper {
     private static _vscodeLogger: ILogWrapper;
-    private static _yoLogger: Logger;
+    private static _yoLogger: Logger | undefined;
     private static _logLevel: LogLevel;
 
     static readonly consoleFormat = format.combine(
@@ -93,7 +93,7 @@ export class LogWrapper implements ILogWrapper {
      * @param extLogger - vscode extension logger
      * @param vscode - vscode instance
      */
-    constructor(logName: string, yoLogger: Logger, logLevel?: LogLevel, extLogger?: IVSCodeExtLogger, vscode?: any) {
+    constructor(logName: string, yoLogger?: Logger, logLevel?: LogLevel, extLogger?: IVSCodeExtLogger, vscode?: any) {
         LogWrapper._yoLogger = yoLogger;
         if (extLogger) {
             LogWrapper._logLevel = vscode
@@ -101,7 +101,7 @@ export class LogWrapper implements ILogWrapper {
                 : logLevel ?? 'info';
             LogWrapper._vscodeLogger = extLogger.getChildLogger({ label: logName });
         } else {
-            if (!yoLogger) {
+            if (!LogWrapper._yoLogger) {
                 LogWrapper._vscodeLogger = createCLILogger(logName, logLevel);
             }
             LogWrapper._logLevel = logLevel === 'off' || !logLevel ? 'info' : logLevel;

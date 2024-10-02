@@ -127,10 +127,10 @@ describe('Test generator methods', () => {
             })
             .withOptions({ skipInstall: true, vscode: { workspace: {} } })
             .withPrompts({
-                libraryName: 'tslibrary1',
-                namespace: 'com.sap',
-                targetFolder: testOutputDir,
-                ui5Version: '1.108.0',
+                libraryName: undefined,
+                namespace: undefined,
+                targetFolder: undefined,
+                ui5Version: undefined,
                 enableTypescript: false
             });
 

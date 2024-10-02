@@ -1,5 +1,6 @@
 import { DefaultLogger, createCLILogger, LogWrapper } from '../src/logWrapper';
 import type { Logger } from 'yeoman-environment';
+import type { IVSCodeExtLogger } from '@vscode-logging/logger';
 
 describe('Test logWrapper', () => {
     test('Test logWrapper functions ', () => {
@@ -71,5 +72,17 @@ describe('Test logWrapper', () => {
         } catch (error) {
             expect(error.message).toBeDefined();
         }
+    });
+
+    test('should log with extension logger', () => {
+        const mockLogger = {
+            debug: jest.fn()
+        };
+        const mockExtensionLogger = {
+            getChildLogger: () => mockLogger
+        } as unknown as IVSCodeExtLogger;
+
+        new LogWrapper('ExtensionLogger', {} as Logger, 'info', mockExtensionLogger);
+        expect(mockLogger.debug).toHaveBeenCalledWith('Logging has been configured at log level: info');
     });
 });

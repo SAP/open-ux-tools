@@ -1,33 +1,16 @@
-# @sap-ux/generator-ui5-library
-
-The `@sap-ux/generator-ui5-library` is a Yeoman generator that provides a single entry point to generate a UI5 library.
-It can be used with Yeoman or can also be used with the Yeoman Application Wizard.
-
-Refer to the following packages for more information on the prompting & writing:  
-[@sap-ux/ui5-library-inquirer](https://www.npmjs.com/package/@sap-ux/ui5-library-inquirer)  
-[@sap-ux/ui5-library-writer](https://www.npmjs.com/package/@sap-ux/ui5-library-writer)  
+# @sap-ux/ui5-library-sub-generator
 
 ## Features
 
-- Prompts for the library name, namespace and UI5 version.
-- Supports TypeScript option.
-- Automatically installs dependencies and sets up the project.
-- Generates a ready-to-use UI5 library with SAPUI5 framework support.
+The SAP Reuse Library sub-generator enables users to create a new reusable library that can be referenced in SAP Fiori applications
 
+## Installation
 
-```sh
-# install yeoman
-npm install -g yo
+The SAP Reuse Library sub-generator is installed as part of the [@sap/generator-fiori](https://www.npmjs.com/package/@sap/generator-fiori) generator and cannot be used stand alone. Furthermore, usage requires that the [SAP Fiori Tools Extension](https://marketplace.visualstudio.com/items?itemName=SAPSE.sap-ux-fiori-tools-extension-pack) pack is installed from the VSCode marketplace.
 
-# install this generator
-npm install @sap-ux/generator-ui5-library
+## Launch the SAP Reuse Library sub-generator
 
-# run this generator
-yo @sap-ux/ui5-library
-
-```
+Open the Command Palette in MS Visual Studio Code ( CMD/CTRL + Shift + P ) and execute the Fiori: Open Reusable Library Generator command.
 
 ## Keywords
-SAP Fiori Elements
-Yeoman
-Generator
+SAP Fiori Generator
