@@ -33,10 +33,16 @@ export async function getManifest(appId: string, adpConfig: AdpPreviewConfig, lo
 
         // retrieve localmetadata from base project
         const dataSourceName = Object.keys(manifest?.['sap.app']?.dataSources)?.[0];
-        const metadataUrl = `${appInfo.url}/${manifest?.['sap.app']?.dataSources?.[dataSourceName].settings.localUri}`;
+        const metadataPath = manifest?.['sap.app']?.dataSources?.[dataSourceName];
+        let metadataUrl = '';
+        if (metadataPath?.settings?.localUri) {//v2
+            metadataUrl = `${appInfo.url}/${metadataPath.settings.localUri}`;
+        } else if (metadataPath?.uri) { //v4
+            metadataUrl = `${appInfo.url}/${metadataPath.uri}$metadata`; 
+        }
+       
         const metadata = await provider.get(metadataUrl);
 
-        //otherwise using serviceurl from manifest/$metadata eg: in this format https://services.odata.org/V2/Northwind/Northwind.svc/$metadata
         console.log(metadata.data);
         return manifest;
     } catch (error) {
