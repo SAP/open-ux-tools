@@ -21,6 +21,7 @@ import {
     isCapProject,
     deleteCapApp
 } from '../../src';
+import { checkPathForCapApp } from '../../src/project/search';
 import * as file from '../../src/file';
 import os from 'os';
 import type { Logger } from '@sap-ux/logger';
@@ -86,6 +87,14 @@ describe('Test isCapJavaProject()', () => {
         expect(
             await isCapJavaProject(join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix'))
         ).toBeFalsy();
+    });
+});
+describe('Test checkPathForCapApp()', () => {
+    test('Should return true for CAP path', async () => {
+        const result = await checkPathForCapApp(
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements/app/fiori_elements/')
+        );
+        expect(result).toBe(true);
     });
 });
 

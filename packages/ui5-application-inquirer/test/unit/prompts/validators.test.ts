@@ -3,7 +3,8 @@ import * as promptHelpers from '../../../src/prompts/prompt-helpers';
 import { join } from 'path';
 import { initI18nUi5AppInquirer, t } from '../../../src/i18n';
 import { validateAppName, validateFioriAppProjectFolder } from '../../../src/prompts/validators';
-import { findRootsForPath, checkPathForCapApp } from '@sap-ux/project-access';
+import { findRootsForPath } from '@sap-ux/project-access';
+import * as projectAccess from '@sap-ux/project-access';
 
 /**
  * Workaround to allow spyOn
@@ -18,7 +19,8 @@ jest.mock('@sap-ux/project-input-validator', () => {
 jest.mock('@sap-ux/project-access', () => ({
     findRootsForPath: jest.fn(),
     findCapProjectRoot: jest.fn(),
-    isCapProject: jest.fn()
+    isCapProject: jest.fn(),
+    checkPathForCapApp: jest.fn()
 }));
 
 describe('validators', () => {
@@ -58,7 +60,7 @@ describe('validators', () => {
         });
 
         test('should return true if no Fiori project is found in the target directory', async () => {
-            mockFindRootsForPath.mockResolvedValue(null);
+            mockFindRootsForPath.mockResolvedValueOnce(null);
             const result = await validateFioriAppProjectFolder('/path/to/dir');
             expect(result).toBe(true);
             expect(mockFindRootsForPath).toHaveBeenCalledWith('/path/to/dir');
@@ -67,31 +69,17 @@ describe('validators', () => {
         test('should return an error message if a Fiori project is found in the target directory', async () => {
             const appRootPath = '/path/to/fiori/project';
             const projectRootPath = 'test/path';
-            mockFindRootsForPath.mockResolvedValue({ appRoot: appRootPath, projectRoot: projectRootPath });
+            mockFindRootsForPath.mockResolvedValueOnce({ appRoot: appRootPath, projectRoot: projectRootPath });
             const result = await validateFioriAppProjectFolder('some/path');
             expect(result).toEqual(t('validators.folderContainsFioriApp', { path: appRootPath }));
             expect(mockFindRootsForPath).toHaveBeenCalledWith('some/path');
         });
 
         test('should return an error message if a CAP project is found in the target directory', async () => {
-            //const capPath = join(__dirname, '..', 'test-data', 'project', 'CAPnode_mix');
-            const capPath = join(
-                __dirname,
-                '..',
-                '..',
-                '..',
-                '..',
-                'test',
-                'test-data',
-                'project',
-                'find-all-apps',
-                'CAP',
-                'CAPnode_mix'
-            );
-            expect(await checkPathForCapApp(capPath)).toBe(true);
-            const result = await validateFioriAppProjectFolder(capPath);
+            mockFindRootsForPath.mockResolvedValueOnce(null);
+            jest.spyOn(projectAccess, 'checkPathForCapApp').mockResolvedValue(true);
+            const result = await validateFioriAppProjectFolder('any/path');
             expect(result).toEqual(t('validators.folderContainsCapApp'));
-            expect(mockFindRootsForPath).toHaveBeenCalledWith(capPath);
         });
     });
 });
