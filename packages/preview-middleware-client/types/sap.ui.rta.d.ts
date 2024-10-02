@@ -158,7 +158,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
             id: string;
         };
         'sap.ui5': {
-            [key: string]: string;
+            [key: string]: Record<string, unknown>;
             routing?: {
                 targets?: Record<string, { name?: string }>;
             };

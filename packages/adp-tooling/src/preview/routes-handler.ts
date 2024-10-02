@@ -11,11 +11,19 @@ import type { NextFunction, Request, Response } from 'express';
 
 import { TemplateFileName, HttpStatusCodes } from '../types';
 import { DirName } from '@sap-ux/project-access';
-import type { CodeExtChange } from '../types';
+import { ChangeType, CodeExtChange } from '../types';
+import { generateChange } from '../writer/editors';
 
 interface WriteControllerBody {
     controllerName: string;
     projectId: string;
+}
+
+export interface WriteAnnotationFile {
+    datasource: string;
+    namespaces: { namespace: string; alias: string }[];
+    path: string;
+    odataVersion: '2.0' | '4.0';
 }
 
 /**
@@ -237,6 +245,73 @@ export default class RoutesHandler {
             const message = 'Controller extension created!';
             res.status(HttpStatusCodes.CREATED).send(message);
             this.logger.debug(`Controller extension with name "${controllerExtName}" was created`);
+        } catch (e) {
+            const sanitizedMsg = sanitize(e.message);
+            this.logger.error(sanitizedMsg);
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
+            next(e);
+        }
+    };
+
+    public handleCreateAnnoationFile = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const data = req.body as WriteAnnotationFile;
+
+            const annotationFileName = sanitize('annotation0');
+            // const projectId = data.projectId;
+            const projectPath = this.util.getProject().getRootPath();
+            const sourcePath = this.util.getProject().getSourcePath();
+
+            if (!annotationFileName) {
+                res.status(HttpStatusCodes.BAD_REQUEST).send('Annotation File name was not provided!');
+                this.logger.debug('Bad request. Annotation File name was not provided!');
+                return;
+            }
+
+            const fullPath = path.join(sourcePath, DirName.Annotations);
+            const filePath = path.join(fullPath, `${annotationFileName}.xml`);
+
+            if (!fs.existsSync(fullPath)) {
+                fs.mkdirSync(fullPath, { recursive: true });
+            }
+
+            if (fs.existsSync(filePath)) {
+                res.status(HttpStatusCodes.CONFLICT).send(
+                    `Annotation file with name "${annotationFileName}" already exists`
+                );
+                this.logger.debug(`Annotation file with name name "${annotationFileName}" already exists`);
+                return;
+            }
+
+            const annatationFilePath = path.join(__dirname, '../../templates/changes', TemplateFileName.Annotation);
+
+            // renderFile(annatationFilePath, { ...data }, {}, async (err, str) => {
+            //     if (err) {
+            //         throw new Error('Error rendering template: ' + err.message);
+            //     }
+            const { datasource, namespaces, path: serviceUrl, odataVersion } = data;
+            const fsEditor = await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
+                projectPath,
+                ChangeType.ADD_ANNOTATIONS_TO_ODATA,
+                {
+                    annotation: {
+                        fileName: 'annotation0.xml',
+                        datasource,
+                        namespaces,
+                        serviceUrl,
+                        odataVersion
+                    },
+                    variant: JSON.parse(
+                        fs.readFileSync(path.join(sourcePath, 'manifest.appdescr_variant')).toString('utf-8')
+                    )
+                }
+            );
+            fsEditor.commit((err) => this.logger.error(err));
+            // });
+
+            const message = 'Annotation file created!';
+            res.status(HttpStatusCodes.CREATED).send(message);
+            this.logger.debug(`Annotation file with name "${annotationFileName}" was created`);
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);
             this.logger.error(sanitizedMsg);

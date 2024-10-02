@@ -190,6 +190,27 @@ export interface AddXMLChange extends CommonChangeProperties {
     jsOnly: boolean;
 }
 
+export interface AddAnnotationToOdata extends CommonChangeProperties {
+    changeType: ChangeType.ADD_ANNOTATIONS_TO_ODATA;
+    creation: string;
+    packageName: string;
+    content: {
+        datasourceId: string;
+        annotations: string[];
+        annotationsInsertPosition: 'END';
+        datasource: {
+            [key: string]: {
+                uri: string;
+                type: 'ODataAnntation';
+            };
+        };
+    };
+    selector: {
+        id: string;
+        idIsLocal: boolean;
+    };
+}
+
 export interface CodeExtChange extends CommonChangeProperties {
     changeType: 'codeExt';
     content: {
@@ -302,9 +323,12 @@ export interface AnnotationsData {
         /** Optional name of the annotation file. */
         fileName?: string;
         /** Data source associated with the annotation. */
-        dataSource: string;
+        datasource: string;
         /** Optional path to the annotation file. */
         filePath?: string;
+        namespaces?: { namespace: string; alias: string }[];
+        serviceUrl?: string;
+        odataVersion?: '2.0' | '4.0';
     };
 }
 

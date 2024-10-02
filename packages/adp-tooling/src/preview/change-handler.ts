@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import type { AddXMLChange, CommonChangeProperties, CodeExtChange } from '../types';
+import { type AddXMLChange, type CommonChangeProperties, type CodeExtChange, DescriptorVariant } from '../types';
 import { join } from 'path';
 import { DirName } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';

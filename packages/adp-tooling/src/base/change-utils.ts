@@ -1,5 +1,5 @@
 import type { Dirent } from 'fs';
-import path from 'path';
+import { join, dirname, posix, resolve } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
@@ -13,6 +13,7 @@ import {
     type ManifestChangeProperties,
     type PropertyValueType
 } from '../types';
+import { renderFile } from 'ejs';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
@@ -40,14 +41,14 @@ export function writeAnnotationChange(
 ): void {
     try {
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
-        const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
-        const changeFilePath = path.join(changesFolderPath, DirName.Manifest, changeFileName);
-        const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
+        const changesFolderPath = join(projectPath, DirName.Webapp, DirName.Changes);
+        const changeFilePath = join(changesFolderPath, DirName.Manifest, changeFileName);
+        const annotationsFolderPath = join(changesFolderPath, DirName.Annotations);
 
         writeChangeToFile(changeFilePath, change, fs);
 
         if (!annotation.filePath) {
-            const annotationsTemplate = path.join(
+            const annotationsTemplate = join(
                 __dirname,
                 '..',
                 '..',
@@ -55,11 +56,17 @@ export function writeAnnotationChange(
                 'changes',
                 TemplateFileName.Annotation
             );
-            fs.copy(annotationsTemplate, path.join(annotationsFolderPath, annotation.fileName ?? ''));
+            const { namespaces, serviceUrl: path } = annotation;
+            renderFile(annotationsTemplate, { namespaces: namespaces, path: path }, {}, async (err, str) => {
+                if (err) {
+                    throw new Error('Error rendering template: ' + err.message);
+                }
+                fs.write(join(annotationsFolderPath, annotation.fileName ?? ''), str);
+            });
         } else {
-            const selectedDir = path.dirname(annotation.filePath);
+            const selectedDir = dirname(annotation.filePath);
             if (selectedDir !== annotationsFolderPath) {
-                fs.copy(annotation.filePath, path.join(annotationsFolderPath, annotation.fileName ?? ''));
+                fs.copy(annotation.filePath, join(annotationsFolderPath, annotation.fileName ?? ''));
             }
         }
     } catch (e) {
@@ -86,13 +93,13 @@ export function writeChangeToFolder(
     dir = ''
 ): void {
     try {
-        let targetFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
+        let targetFolderPath = join(projectPath, DirName.Webapp, DirName.Changes);
 
         if (dir) {
-            targetFolderPath = path.join(targetFolderPath, dir);
+            targetFolderPath = join(targetFolderPath, dir);
         }
 
-        const filePath = path.join(targetFolderPath, fileName);
+        const filePath = join(targetFolderPath, fileName);
         writeChangeToFile(filePath, change, fs);
     } catch (e) {
         throw new Error(`Could not write change to folder. Reason: ${e.message}`);
@@ -187,7 +194,7 @@ export function getChangesByType(
 
         const changeFiles: ManifestChangeProperties[] = fileNames
             .map((fileName) => {
-                const filePath = path.resolve(targetDir, fileName);
+                const filePath = resolve(targetDir, fileName);
                 const fileContent = readFileSync(filePath, 'utf-8');
                 const change: ManifestChangeProperties = JSON.parse(fileContent);
                 return change;
@@ -212,7 +219,7 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
     let changeObj: InboundChange | undefined;
     let filePath = '';
 
-    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes, DirName.Manifest);
+    const pathToInboundChangeFiles = join(projectPath, DirName.Webapp, DirName.Changes, DirName.Manifest);
 
     if (!existsSync(pathToInboundChangeFiles)) {
         return {
@@ -227,7 +234,7 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
         );
 
         for (const file of files) {
-            const pathToFile = path.join(pathToInboundChangeFiles, file.name);
+            const pathToFile = join(pathToInboundChangeFiles, file.name);
             const change: InboundChange = JSON.parse(readFileSync(pathToFile, 'utf-8'));
 
             if (change.content?.inboundId === inboundId) {
@@ -263,7 +270,7 @@ export function getChange(
 ): ManifestChangeProperties {
     return {
         fileName: `id_${timestamp}`,
-        namespace: path.posix.join(namespace, DirName.Changes),
+        namespace: posix.join(namespace, DirName.Changes),
         layer,
         fileType: 'change',
         creation: new Date(timestamp).toISOString(),

@@ -24,7 +24,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     private constructContent(data: AnnotationsData): object {
         const {
             variant: { layer },
-            annotation: { dataSource, fileName }
+            annotation: { datasource, fileName }
         } = data;
         const annotationFileNameWithoutExtension = fileName?.toLocaleLowerCase().replace('.xml', '');
         const annotationNameSpace =
@@ -32,7 +32,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
                 ? `customer.annotation.${annotationFileNameWithoutExtension}`
                 : `annotation.${annotationFileNameWithoutExtension}`;
         return {
-            dataSourceId: `${dataSource}`,
+            dataSourceId: `${datasource}`,
             annotations: [annotationNameSpace],
             annotationsInsertPosition: 'END',
             dataSource: {
@@ -71,6 +71,6 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
         const content = this.constructContent(data);
         const timestamp = Date.now();
         const change = getChange(variant, timestamp, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
-        writeAnnotationChange(this.projectPath, timestamp, data.annotation, change, this.fs);
+        writeAnnotationChange(this.projectPath, timestamp, annotation, change, this.fs);
     }
 }
