@@ -215,33 +215,23 @@ export async function addApp(
 ) {
     const id = manifest['sap.app']?.id ?? '';
 
-    let applicationDependencies = { manifest: true } as unknown as MergedAppDescriptor;
-    // Setting the descriptor (merged manifest) as applicationDependencies.
-    // If not set, CPE is loading the changes from the backend system and ignores the local changes in the workspace.
-    // This seems to happen only when an adaptation with the same namespace is already deployed in the backend system.
-    if (descriptor) {
-        applicationDependencies = descriptor;
-        if (descriptor.asyncHints?.components?.length > 0 && descriptor.asyncHints.components[0].url) {
-            // The URL in the manifest is set to `/webapp`, but in CPE this causes a 404 error when trying to fetch local changes from the workspace.
-            // URLs like `/webapp/changes/fragments` are not working in CPE it should be changed to `/changes/fragments`.
-            // This issue is not present in Visual Editor.
-            descriptor.asyncHints.components[0].url.url = '/';
-        }
-    }
-
     app.intent ??= {
         object: id.replace(/\./g, ''),
         action: 'preview'
     };
+
+    const appName = `${app.intent?.object}-${app.intent?.action}`;
     templateConfig.ui5.resources[id] = app.target;
-    templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
+    templateConfig.apps[appName] = {
         title: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.title, logger)) ?? id,
         description: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.description, logger)) ?? '',
         additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
         applicationType: 'URL',
-        url: app.target,
-        applicationDependencies
+        url: app.target
     };
+    if (descriptor) {
+        templateConfig.apps[appName].applicationDependencies = descriptor;
+    }
 }
 
 /**
