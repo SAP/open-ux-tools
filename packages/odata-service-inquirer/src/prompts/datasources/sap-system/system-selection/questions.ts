@@ -281,7 +281,7 @@ export async function getSystemConnectionQuestions(
                 if (connectionValidator.systemAuthType === 'basic' && (await connectionValidator.isAuthRequired())) {
                     return {
                         message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
-                        severity: Severity.warning
+                        severity: Severity.information
                     };
                 }
             }
