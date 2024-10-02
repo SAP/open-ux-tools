@@ -1,5 +1,27 @@
 # @sap-ux/create
 
+## 0.8.31
+
+### Patch Changes
+
+-   Updated dependencies [7479bd3]
+    -   @sap-ux/adp-tooling@0.12.53
+    -   @sap-ux/preview-middleware@0.16.78
+
+## 0.8.30
+
+### Patch Changes
+
+-   Updated dependencies [9605bb0]
+    -   @sap-ux/preview-middleware@0.16.77
+
+## 0.8.29
+
+### Patch Changes
+
+-   Updated dependencies [1da1e7a]
+    -   @sap-ux/preview-middleware@0.16.76
+
 ## 0.8.28
 
 ### Patch Changes

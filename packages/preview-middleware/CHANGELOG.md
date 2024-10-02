@@ -1,5 +1,25 @@
 # @sap-ux/preview-middleware
 
+## 0.16.78
+
+### Patch Changes
+
+-   7479bd3: fix: add page and table quick actions v2 app
+-   Updated dependencies [7479bd3]
+    -   @sap-ux/adp-tooling@0.12.53
+
+## 0.16.77
+
+### Patch Changes
+
+-   9605bb0: fix: ignore developerMode from rta editor config in case of no adp project
+
+## 0.16.76
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
 ## 0.16.75
 
 ### Patch Changes
