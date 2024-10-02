@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.77
+
+### Patch Changes
+
+-   9605bb0: fix: ignore developerMode from rta editor config in case of no adp project
+
 ## 0.16.76
 
 ### Patch Changes
