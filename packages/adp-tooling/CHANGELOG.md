@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.53
+
+### Patch Changes
+
+-   7479bd3: fix: add page and table quick actions v2 app
+
 ## 0.12.52
 
 ### Patch Changes
