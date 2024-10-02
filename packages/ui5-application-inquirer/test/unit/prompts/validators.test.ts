@@ -18,8 +18,6 @@ jest.mock('@sap-ux/project-input-validator', () => {
 
 jest.mock('@sap-ux/project-access', () => ({
     findRootsForPath: jest.fn(),
-    findCapProjectRoot: jest.fn(),
-    isCapProject: jest.fn(),
     checkPathForCapApp: jest.fn()
 }));
 
