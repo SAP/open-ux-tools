@@ -70,7 +70,7 @@ export class Wrapper implements SecureStore {
         try {
             const command = this.getCommandForPlatform('store', service, key, value);
             this.executeCommand(command);
-            console.log("------------- Wrapper constructor successfully SAVE secret: ", command);
+            console.log("------------- Wrapper constructor successfully SAVE secret: service", service, "key", key, "value", value);
             return true;
         } catch (err) {
             this.log.error(`Error storing secret. Service: [${service}], key: [${key}]. Error message: ${err}`);
@@ -103,14 +103,13 @@ export class Wrapper implements SecureStore {
     }
 
     public async save<T>(service: string, key: string, value: T): Promise<boolean> {
-        console.log("------------- Wrapper constructor SAVE: ", service, key, value);
         const serialized = JSON.stringify(value);
         return this.storeSecret(service, key, serialized);
     }
 
     public async retrieve<T>(service: string, key: string): Promise<T | undefined> {
-        console.log("------------- Wrapper constructor RETRIEVE: ", service, key);
         const serializedValue = this.retrieveSecret(service, key);
+        console.log(" -------- serializedValue: ", serializedValue);
         return serializedValue ? JSON.parse(serializedValue) : undefined;
     }
 
@@ -147,7 +146,6 @@ export class Wrapper implements SecureStore {
         const command = `security find-generic-password -s ${service} -g 2>&1 | grep 'acct'`;
         const output = this.executeCommand(command).toString();
         const accounts = this.parseDarwinOutput(output);
-        //console.log("------------- Wrapper constructor handleDarwin accounts: ", accounts);
     
         for (const account of accounts) {
             const password: string | undefined = this.retrieveSecret(service, account);
