@@ -13,6 +13,10 @@ import type { RootState } from '../../store';
 export interface NestedQuickActionListItemProps {
     action: Readonly<NestedQuickAction>;
     /**
+     *  Action group index.
+     */
+    groupIndex: number;
+    /**
      *  Action line item index.
      */
     actionIndex: number;
@@ -23,11 +27,13 @@ export interface NestedQuickActionListItemProps {
  *
  * @param props Component props.
  * @param props.action
+ * @param props.groupIndex
  * @param props.actionIndex
  * @returns ReactElement
  */
 export function NestedQuickActionListItem({
     action,
+    groupIndex,
     actionIndex
 }: Readonly<NestedQuickActionListItemProps>): ReactElement {
     const dispatch = useDispatch();
@@ -74,6 +80,7 @@ export function NestedQuickActionListItem({
         });
     };
 
+    const buttonId = `quick-action-children-button-${groupIndex}-${actionIndex}`;
     return (
         <div className="quick-action-item">
             {action.children.length === 1 && (
@@ -101,17 +108,17 @@ export function NestedQuickActionListItem({
                         underline={false}
                         onClick={() => {
                             setShowContextualMenu(true);
-                            setTarget(document.getElementById(`quick-action-children-button${actionIndex}`));
+                            setTarget(document.getElementById(buttonId));
                         }}>
                         <span className={`link-text`}>{action.title}</span>
                         <UIIcon
-                            id={`quick-action-children-button${actionIndex}`}
+                            id={buttonId}
                             iconName={IconName.dropdown}
                             title={action.title}
                             style={{ verticalAlign: 'middle' }}
                             onClick={(): void => {
                                 setShowContextualMenu(true);
-                                setTarget(document.getElementById(`quick-action-children-button${actionIndex}`));
+                                setTarget(document.getElementById(buttonId));
                             }}
                         />
                     </UILink>

@@ -9,6 +9,43 @@ const indexHtml = 'index.html';
 const testFlpSandboxMockServerHtml = 'test/flpSandboxMockServer.html';
 
 /**
+ * Returns the `migratorMockIntent` with a leading `#` if it doesn't already start with one.
+ * If the input is undefined, it will return undefined.
+ *
+ * @param {string} [migratorMockIntent] - The optional mock intent string to be used in the migrator.
+ * @returns {string | undefined} - The migrator mock intent prefixed with `#` or undefined.
+ */
+export function getMigratorMockIntentWithHash(migratorMockIntent?: string): string | undefined {
+    if (!migratorMockIntent) {
+        return undefined;
+    }
+    return migratorMockIntent.startsWith('#') ? migratorMockIntent : `#${migratorMockIntent}`;
+}
+
+/**
+ * Generates the command-line arguments required to start the mock server based on the OData version and whether it's a migrator.
+ * If the OData version is `2.0` and it's a migrator, it opens the `targetMockHtmlFile`.
+ * Otherwise, it uses `testFlpSandboxHtml`.
+ *
+ * @param {boolean} isMigrator - Indicates whether the application is being migrated.
+ * @param {string} odataVersion - The version of OData being used (`2.0` or `4.0`).
+ * @param {string | undefined} targetMockHtmlFile - The target mock HTML file, can be `undefined`.
+ * @param {string} params - The parameters to append to the mock HTML file.
+ * @returns {string[]} - The command arguments used for starting flp sandbox html.
+ */
+export function getMockCmdArgs(
+    isMigrator: boolean,
+    odataVersion: string,
+    targetMockHtmlFile: string | undefined,
+    params: string
+): string[] {
+    if (isMigrator && odataVersion === '2.0') {
+        return ['--open', `${targetMockHtmlFile ?? testFlpSandboxHtml}${params}`];
+    }
+    return ['--config', './ui5-mock.yaml', '--open', `${testFlpSandboxHtml}${params}`];
+}
+
+/**
  * Generates a URL query string with an optional SAP client parameter and a disable cache parameter.
  *
  * @param {string} sapClientParam - The SAP client parameter to be included in the URL query string.
@@ -63,14 +100,15 @@ function configureLaunchConfig(
 export function configureLaunchJsonFile(rootFolder: string, cwd: string, configOpts: DebugOptions): LaunchJSON {
     const {
         isAppStudio,
-        skipLiveScript = false,
+        addStartCmd = true,
         flpAppId,
         flpSandboxAvailable,
         sapClientParam,
         odataVersion,
-        isMigrator,
+        isMigrator = false,
         isFioriElement,
-        migratorMockIntent
+        migratorMockIntent,
+        targetMockHtmlFile
     } = configOpts;
     const projectName = basename(rootFolder);
     const flpAppIdWithHash = flpAppId && !flpAppId.startsWith('#') ? `#${flpAppId}` : flpAppId;
@@ -85,8 +123,8 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
 
     const launchFile: LaunchJSON = { version: '0.2.0', configurations: [] };
 
-    // Add live configuration if the datasource is not from a metadata file
-    if (!skipLiveScript) {
+    // Add start command confugurations only if addStartCmd is enabled
+    if (addStartCmd) {
         const startCommand = `${startHtmlFile}${flpAppIdWithHash}`;
         const liveConfig = configureLaunchConfig(
             `Start ${projectName}`,
@@ -101,11 +139,9 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
 
     // Add mock configuration for OData V2 or V4
     if (odataVersion && ['2.0', '4.0'].includes(odataVersion)) {
-        const params = `${flpAppIdWithHash ?? ''}`;
-        const mockCmdArgs =
-            isMigrator && odataVersion === '2.0'
-                ? ['--open', `${testFlpSandboxMockServerHtml}${params}`]
-                : ['--config', './ui5-mock.yaml', '--open', `${testFlpSandboxHtml}${params}`];
+        const migratorMockIntentWithHash = getMigratorMockIntentWithHash(migratorMockIntent);
+        const params = migratorMockIntentWithHash ?? flpAppIdWithHash;
+        const mockCmdArgs = getMockCmdArgs(isMigrator, odataVersion, targetMockHtmlFile, params);
         const mockConfig = configureLaunchConfig(
             `Start ${projectName} Mock`,
             cwd,
