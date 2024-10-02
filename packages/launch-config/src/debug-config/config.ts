@@ -21,23 +21,6 @@ export function getMigratorMockIntentWithHash(migratorMockIntent?: string): stri
 }
 
 /**
- * Determines the parameters to use for the mock HTML file based on the given inputs.
- * If the `targetMockHtmlFile` is `testFlpSandboxMockServerHtml` and `migratorMockIntentWithHash` is provided,
- * it will return `migratorMockIntentWithHash`. Otherwise, it defaults to `flpAppIdWithHash` or empty string.
- * 
- * @param {string | undefined} targetMockHtmlFile - The target mock HTML file.
- * @param {string | undefined} [migratorMockIntentWithHash] - The migrator mock intent.
- * @param {string | undefined} [flpAppIdWithHash] - The FLP app ID with a leading `#`.
- * @returns {string} - The parameters to use, either `migratorMockIntentWithHash` or `flpAppIdWithHash`, defaults to an empty string.
- */
-export function getParamsForMockHtml(targetMockHtmlFile: string | undefined, migratorMockIntentWithHash?: string, flpAppIdWithHash?: string): string {
-    if (targetMockHtmlFile === testFlpSandboxMockServerHtml && migratorMockIntentWithHash) {
-        return migratorMockIntentWithHash;
-    }
-    return flpAppIdWithHash ?? '';
-}
-
-/**
  * Generates the command-line arguments required to start the mock server based on the OData version and whether it's a migrator.
  * If the OData version is `2.0` and it's a migrator, it opens the `targetMockHtmlFile`.
  * Otherwise, it uses `testFlpSandboxHtml`.
@@ -150,7 +133,7 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
     // Add mock configuration for OData V2 or V4
     if (odataVersion && ['2.0', '4.0'].includes(odataVersion)) {
         const migratorMockIntentWithHash = getMigratorMockIntentWithHash(migratorMockIntent);
-        const params = getParamsForMockHtml(targetMockHtmlFile, migratorMockIntentWithHash, flpAppIdWithHash);
+        const params = migratorMockIntentWithHash ?? flpAppIdWithHash;
         const mockCmdArgs = getMockCmdArgs(isMigrator, odataVersion, targetMockHtmlFile, params);
         const mockConfig = configureLaunchConfig(
             `Start ${projectName} Mock`,
