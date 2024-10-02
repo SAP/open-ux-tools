@@ -513,8 +513,8 @@ export async function checkPathForCapApp(targetDir: string): Promise<string | bo
     // Check targetDir is a CAP project root directory
     const CapType = await getCapProjectType(targetDir);
     if (isCapPath || CapType === 'CAPJava' || CapType === 'CAPNodejs') {
-        return false;
-    } else {
         return true;
+    } else {
+        return false;
     }
 }
