@@ -18,7 +18,7 @@ jest.mock('@sap-ux/project-input-validator', () => {
 
 jest.mock('@sap-ux/project-access', () => ({
     findRootsForPath: jest.fn(),
-    checkPathForCapApp: jest.fn()
+    isPathForCapApp: jest.fn()
 }));
 
 describe('validators', () => {
@@ -75,7 +75,7 @@ describe('validators', () => {
 
         test('should return an error message if a CAP project is found in the target directory', async () => {
             mockFindRootsForPath.mockResolvedValueOnce(null);
-            jest.spyOn(projectAccess, 'checkPathForCapApp').mockResolvedValue(true);
+            jest.spyOn(projectAccess, 'isPathForCapApp').mockResolvedValue(true);
             const result = await validateFioriAppProjectFolder('any/path');
             expect(result).toEqual(t('validators.folderContainsCapApp'));
         });

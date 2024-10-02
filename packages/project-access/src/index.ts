@@ -5,7 +5,7 @@ export {
     clearCdsModuleCache,
     createApplicationAccess,
     createProjectAccess,
-    checkPathForCapApp,
+    isPathForCapApp,
     deleteCapApp,
     filterDataSourcesByType,
     findAllApps,

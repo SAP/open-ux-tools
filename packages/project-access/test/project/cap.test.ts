@@ -21,7 +21,7 @@ import {
     isCapProject,
     deleteCapApp
 } from '../../src';
-import { checkPathForCapApp } from '../../src/project/search';
+import { isPathForCapApp } from '../../src/project/search';
 import * as file from '../../src/file';
 import os from 'os';
 import type { Logger } from '@sap-ux/logger';
@@ -89,23 +89,23 @@ describe('Test isCapJavaProject()', () => {
         ).toBeFalsy();
     });
 });
-describe('Test checkPathForCapApp()', () => {
+describe('Test isPathForCapApp()', () => {
     test('Should return true for root CAP path', async () => {
-        const result = await checkPathForCapApp(
+        const result = await isPathForCapApp(
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements/app/fiori_elements/')
         );
         expect(result).toBe(true);
     });
 
     test('Should return true for sub directory CAP path', async () => {
-        const result = await checkPathForCapApp(
+        const result = await isPathForCapApp(
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements/app/fiori_elements/webapp/')
         );
         expect(result).toBe(true);
     });
 
     test('Should return false for non CAP path', async () => {
-        const result = await checkPathForCapApp(
+        const result = await isPathForCapApp(
             join(__dirname, '../test-data/project/find-all-apps/find-all-apps/adaptations/valid-adaptation')
         );
         expect(result).toBe(false);

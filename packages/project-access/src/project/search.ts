@@ -507,10 +507,8 @@ export async function findCapProjects(options: {
  * @param targetDir the target directory path.
  * @returns true if CAP Project is in the directory or false if not.
  */
-export async function checkPathForCapApp(targetDir: string): Promise<string | boolean> {
+export async function isPathForCapApp(targetDir: string): Promise<string | boolean> {
     // Check if targetDir is a CAP project
-    const capType = await getCapProjectType(targetDir);
-
     // If not a CAP project root, check if the CAP root is in the subdirectories
-    return !!capType || !!(await findCapProjectRoot(targetDir));
+    return !!(await getCapProjectType(targetDir)) || !!(await findCapProjectRoot(targetDir));
 }
