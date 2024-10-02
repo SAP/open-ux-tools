@@ -501,11 +501,11 @@ export async function findCapProjects(options: {
 }
 
 /**
- * Returns true if the specified target path does not contain a CAP project.
+ * Returns true if the specified target path contains a CAP project.
  * Checks sub and root directories.
  *
  * @param targetDir the target directory path.
- * @returns true if CAP Project directory or false if not.
+ * @returns true if CAP Project is in the directory or false if not.
  */
 export async function checkPathForCapApp(targetDir: string): Promise<string | boolean> {
     // Check targetDir is in CAP project sub directories
