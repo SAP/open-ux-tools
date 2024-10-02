@@ -143,6 +143,7 @@ describe('Test promptInboundNavigationConfig', () => {
                 `"Only alphanumeric and '_' characters are allowed"`
             );
             expect(questionNames['title'].validate('x'.repeat(100))).toBe(true);
+            expect(questionNames['title'].validate('x!#')).toBe(true);
         });
         await promptInboundNavigationConfig(basePath);
     });

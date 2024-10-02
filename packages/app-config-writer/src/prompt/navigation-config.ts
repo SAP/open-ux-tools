@@ -118,7 +118,7 @@ function getPrompts(inboundKeys: string[]): PromptObject[] {
             type: (prev, values) => (values.overwrite !== false ? 'text' : false),
             message: titleMsg,
             format: (val) => val?.trim(),
-            validate: (val) => validateText(val, titleMsg, 0, ['_'])
+            validate: (val) => validateText(val, titleMsg)
         },
         {
             name: 'subTitle',
