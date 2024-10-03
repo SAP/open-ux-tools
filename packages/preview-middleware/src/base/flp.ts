@@ -190,7 +190,7 @@ export class FlpSandbox {
     private addEditorRoutes(rta: RtaConfig) {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
         for (const editor of rta.editors) {
-            let previewUrl = editor.path;
+            let previewUrl = editor.path.startsWith('/') ? editor.path : `/${editor.path}`;
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';

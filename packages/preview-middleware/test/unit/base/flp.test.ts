@@ -271,6 +271,9 @@ describe('FlpSandbox', () => {
                                 path: '/my/rta.html'
                             },
                             {
+                                path: 'without/slash/rta.html'
+                            },
+                            {
                                 path: '/my/editor.html',
                                 developerMode: true
                             },
@@ -306,6 +309,11 @@ describe('FlpSandbox', () => {
 
         test('rta', async () => {
             const response = await server.get('/my/rta.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with editors path without leading "/"', async () => {
+            const response = await server.get('/without/slash/rta.html').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 

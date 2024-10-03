@@ -188,7 +188,8 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 name: 'buildingBlockData.header',
                 message: t('header.message'),
                 guiOptions: {
-                    groupId: groupIds.visualisationProperties
+                    groupId: groupIds.visualisationProperties,
+                    translatable: true
                 }
             },
             {

@@ -8,6 +8,7 @@ import { PromptsType } from '@sap-ux/fe-fpm-writer/dist/prompts/types';
 import type { AddonActions } from '../addons/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
 import type { Answers, CodeSnippet, SupportedGeneratorAnswers } from '@sap-ux/fe-fpm-writer';
+import type { I18nBundle } from '@sap-ux/i18n';
 
 export type Actions =
     | GetQuestions
@@ -21,7 +22,10 @@ export type Actions =
     | AddonActions
     | GetCodeSnippet
     | UpdateCodeSnippet
-    | SetValidationResults;
+    | SetValidationResults
+    | RequestI18n
+    | ResponseI18n
+    | CreateI18n;
 
 export const GET_QUESTIONS = 'GET_QUESTIONS';
 export const SET_TABLE_QUESTIONS = 'SET_TABLE_QUESTIONS';
@@ -32,6 +36,9 @@ export const SET_CHOICES = 'SET_CHOICES';
 export const APPLY_ANSWERS = 'APPLY_ANSWERS';
 export const RESET_ANSWERS = 'RESET_ANSWERS';
 export const SET_VALIDATION_RESULTS = 'SET_VALIDATION_RESULTS';
+export const REQUEST_I18N = 'REQUEST_I18N';
+export const RESPONSE_I18N = 'RESPONSE_I18N';
+export const CREATE_I18N_ENTRY = 'CREATE_I18N_ENTRY';
 
 export { PromptsType };
 
@@ -95,4 +102,19 @@ export interface UpdateCodeSnippetPayload {
 }
 export interface UpdateCodeSnippet extends UpdateCodeSnippetPayload {
     type: typeof UPDATE_CODE_SNIPPET;
+}
+
+export interface RequestI18n {
+    type: typeof REQUEST_I18N;
+}
+
+export interface ResponseI18n {
+    type: typeof RESPONSE_I18N;
+    bundle: I18nBundle;
+}
+
+export interface CreateI18n {
+    type: typeof CREATE_I18N_ENTRY;
+    key: string;
+    value: string;
 }
