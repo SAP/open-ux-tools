@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.12
+
+### Patch Changes
+
+-   7479bd3: fix: add page and table quick actions v2 app
+
+## 0.11.11
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
 ## 0.11.10
 
 ### Patch Changes
