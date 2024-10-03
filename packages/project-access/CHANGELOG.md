@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.27.5
+
+### Patch Changes
+
+-   a64a3a5: Alert and prevent from generating a Fiori application into a CAP project folder
+
 ## 1.27.4
 
 ### Patch Changes
