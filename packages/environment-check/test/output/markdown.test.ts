@@ -19,7 +19,7 @@ const data = {
                 v4: {}
             },
             HTML5DynamicDestination: true,
-            HTML5TimeoutDestination: true
+            html5Timeout: true
         },
         DEF: {
             catalogService: {

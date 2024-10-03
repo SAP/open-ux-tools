@@ -215,7 +215,7 @@ function writeDestinationDetails(
     } else {
         writer.addLine(`🚫 &nbsp; ${t('markdownText.setHtml5DynamicDest')}`);
     }
-    if (destDetails.HTML5TimeoutDestination) {
+    if (destDetails.HTML5Timeout) {
         writer.addLine(`✅ &nbsp; ${t('markdownText.html5TimeoutValue')}`);
     } else {
         writer.addLine(`🟡 &nbsp; ${t('markdownText.setHtml5TimeoutDest')}`);
