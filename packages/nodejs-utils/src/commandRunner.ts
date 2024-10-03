@@ -15,7 +15,9 @@ export class CommandRunner {
     run(cmd: string, args: string[] = []): Promise<string | void> {
         return new Promise((resolve, reject) => {
             const stack: any = [];
-            const spawnedCmd = spawn(cmd, args, {});
+            const spawnOpts = process.platform === 'win32' ? { shell: true } : {};
+
+            const spawnedCmd = spawn(cmd, args, spawnOpts);
             spawnedCmd.stdout.setEncoding('utf8');
             let response: string;
             spawnedCmd.stdout.on('data', (data: Buffer) => {
