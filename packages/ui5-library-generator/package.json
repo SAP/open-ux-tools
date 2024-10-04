@@ -32,11 +32,12 @@
     "dependencies": {
         "@sap-devx/yeoman-ui-types": "1.14.4",
         "@sap-ux/fiori-generator-shared": "workspace:*",
-        "i18next": "23.5.1",
+        "@sap-ux/fiori-tools-settings": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
         "@sap-ux/ui5-library-inquirer": "workspace:*",
         "@sap-ux/ui5-library-writer": "workspace:*",
+        "i18next": "23.5.1",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {

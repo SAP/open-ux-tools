@@ -18,6 +18,10 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     isCli: jest.fn().mockReturnValue(true)
 }));
 
+jest.mock('@sap-ux/fiori-tools-settings', () => ({
+    writeApplicationInfoSettings: jest.fn()
+}));
+
 let yoEnv4 = false;
 
 expect.extend({ toMatchFolder });

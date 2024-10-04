@@ -13,6 +13,9 @@
       "path": "../fiori-generator-shared"
     },
     {
+      "path": "../fiori-tools-settings"
+    },
+    {
       "path": "../jest-file-matchers"
     },
     {

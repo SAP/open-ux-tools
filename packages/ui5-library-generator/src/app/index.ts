@@ -3,6 +3,7 @@ import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { join } from 'path';
 import ReuseLibGenLogger from '../utils/logger';
 import { t, prompts, runPostLibGenHook, generatorTitle } from '../utils';
+import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import { platform } from 'os';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { defaultAuthor, defaultFramework, defaultLibraryName, defaultNamespace, defaultUi5Version } from './defaults';
@@ -88,8 +89,12 @@ export default class extends Generator implements Ui5LibGenerator {
             typescript: this.answers.enableTypescript
         } satisfies UI5LibConfig;
 
+        if (this.answers.targetFolder) {
+            this.targetFolder = this.answers.targetFolder;
+        }
+
         try {
-            await generate(this.answers.targetFolder ?? this.targetFolder, ui5Lib, this.fs);
+            await generate(this.targetFolder, ui5Lib, this.fs);
         } catch (e) {
             ReuseLibGenLogger.logger.error(e);
             throw new Error(t('error.generatingUi5Lib'));
@@ -103,10 +108,7 @@ export default class extends Generator implements Ui5LibGenerator {
                 const npm = platform() === 'win32' ? 'npm.cmd' : 'npm';
 
                 ReuseLibGenLogger.logger.info(t('info.installingDependencies'));
-                this.projectPath = join(
-                    this.answers.targetFolder ?? this.targetFolder,
-                    `${this.answers.namespace}.${this.answers.libraryName}`
-                );
+                this.projectPath = join(this.targetFolder, `${this.answers.namespace}.${this.answers.libraryName}`);
                 await runner.run(npm, ['install'], { cwd: this.projectPath });
                 ReuseLibGenLogger.logger.info(t('info.dependenciesInstalled'));
             } catch (error) {
@@ -116,6 +118,7 @@ export default class extends Generator implements Ui5LibGenerator {
     }
 
     async end(): Promise<void> {
+        writeApplicationInfoSettings(this.targetFolder, this.fs);
         await runPostLibGenHook({
             path: this.projectPath,
             vscodeInstance: this.vscode as VSCodeInstance

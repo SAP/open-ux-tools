@@ -2811,6 +2811,9 @@ importers:
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
+      '@sap-ux/fiori-tools-settings':
+        specifier: workspace:*
+        version: link:../fiori-tools-settings
       '@sap-ux/nodejs-utils':
         specifier: workspace:*
         version: link:../nodejs-utils
