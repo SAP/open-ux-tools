@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.4.37
+
+### Patch Changes
+
+-   4904d67: extra input field validation
+
 ## 0.4.36
 
 ### Patch Changes
