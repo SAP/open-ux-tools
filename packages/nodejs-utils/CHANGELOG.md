@@ -1,5 +1,11 @@
 # @sap-ux/nodejs-utils
 
+## 0.1.0
+
+### Minor Changes
+
+-   d40af34: adds new module @sap-ux/ui5-library-sub-generator
+
 ## 0.0.3
 
 ### Patch Changes
