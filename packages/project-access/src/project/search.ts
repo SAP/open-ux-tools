@@ -1,5 +1,4 @@
 import { basename, dirname, isAbsolute, join, parse, sep } from 'path';
-import path from 'path';
 import type {
     AdaptationResults,
     AllAppResults,
@@ -215,21 +214,21 @@ export async function findRootsForPath(path: string): Promise<{ appRoot: string;
 /**
  * Find CAP project root path.
  *
- * @param dir - path inside CAP project
+ * @param path - path inside CAP project
  * @returns - CAP project root path
  */
-export async function findCapProjectRoot(dir: string): Promise<string | null> {
+export async function findCapProjectRoot(path: string): Promise<string | null> {
     try {
-        if (!isAbsolute(dir)) {
+        if (!isAbsolute(path)) {
             return null;
         }
-        const { root } = parse(dir);
-        let projectRoot = dirname(dir);
+        const { root } = parse(path);
+        let projectRoot = dirname(path);
         while (projectRoot !== root) {
             if (await getCapProjectType(projectRoot)) {
                 // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
                 // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
-                if (join(projectRoot, 'app') !== dir || join(projectRoot, 'app', path.sep) !== dir) {
+                if (join(projectRoot, 'app') !== path || join(projectRoot, 'app', sep) !== path) {
                     return projectRoot;
                 }
             }
