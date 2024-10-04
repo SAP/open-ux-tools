@@ -1,5 +1,11 @@
 # @sap-ux/nodejs-utils
 
+## 0.0.2
+
+### Patch Changes
+
+-   546e02c: Fixes CommandRunner child proc execution on Windows (uses `shell = true`)
+
 ## 0.0.1
 
 ### Patch Changes
