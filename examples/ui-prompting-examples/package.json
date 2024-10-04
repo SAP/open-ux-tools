@@ -1,6 +1,6 @@
 {
-    "name": "@sap-ux/prompting-ui",
-    "version": "0.1.6",
+    "name": "@sap-ux-private/ui-prompting-examples",
+    "version": "0.2.0",
     "description": "This project contains UI storybook stories with exampleS with prompt ui and FPM based building blocks.",
     "license": "Apache-2.0",
     "private": true,
@@ -36,6 +36,8 @@
         "@babel/preset-react": "7.22.15",
         "@babel/preset-typescript": "7.22.15",
         "@sap-ux/fe-fpm-writer": "workspace:*",
+        "@sap-ux/i18n": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
         "@storybook/addons": "7.6.17",
         "@storybook/components": "8.1.11",
         "@storybook/react": "8.1.11",

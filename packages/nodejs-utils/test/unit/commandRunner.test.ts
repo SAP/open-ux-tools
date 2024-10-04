@@ -29,7 +29,12 @@ describe('CommandRunner', () => {
         const response = await commandRunner.run(cmd, args);
 
         expect(response).toBe(expectedResponse);
-        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
+
+        if (process.platform === 'win32') {
+            expect(spawnSpy).toHaveBeenCalledWith(cmd, args, { shell: true });
+        } else {
+            expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
+        }
     });
 
     it('should handle command errors', async () => {
@@ -39,7 +44,12 @@ describe('CommandRunner', () => {
         spawnMock.setDefault(spawnMock.simple(1, 'npm install'));
 
         await expect(commandRunner.run(cmd, args)).rejects.toContain(expectedError);
-        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
+
+        if (process.platform === 'win32') {
+            expect(spawnSpy).toHaveBeenCalledWith(cmd, args, { shell: true });
+        } else {
+            expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
+        }
     });
 
     it('should handle command failures', async () => {
@@ -49,6 +59,11 @@ describe('CommandRunner', () => {
         spawnMock.setDefault(spawnMock.simple(1, 'npm install', 'npm ERR! missing script: install'));
 
         await expect(commandRunner.run(cmd, args)).rejects.toContain(expectedError);
-        expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
+
+        if (process.platform === 'win32') {
+            expect(spawnSpy).toHaveBeenCalledWith(cmd, args, { shell: true });
+        } else {
+            expect(spawnSpy).toHaveBeenCalledWith(cmd, args, {});
+        }
     });
 });

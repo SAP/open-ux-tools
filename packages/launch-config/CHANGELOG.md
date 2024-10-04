@@ -1,5 +1,24 @@
 # @sap-ux/launch-config
 
+## 0.7.1
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+
+## 0.7.0
+
+### Minor Changes
+
+-   1069c97: Extend DebugOptions with targetMockHtmlFile and change start mock arguments if targetMockHtmlFile is provided
+
+## 0.6.1
+
+### Patch Changes
+
+-   92dc08e: Renamed the skipLiveScript parameter to addLiveConfig to add live configuration if enabled.
+
 ## 0.6.0
 
 ### Minor Changes

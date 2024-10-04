@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.12
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
 ## 0.5.11
 
 ### Patch Changes

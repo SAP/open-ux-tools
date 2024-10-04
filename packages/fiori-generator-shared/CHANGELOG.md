@@ -1,5 +1,12 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+
 ## 0.5.0
 
 ### Minor Changes
