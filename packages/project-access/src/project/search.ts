@@ -228,7 +228,7 @@ export async function findCapProjectRoot(path: string): Promise<string | null> {
             if (await getCapProjectType(projectRoot)) {
                 // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
                 // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
-                if (join(projectRoot, 'app') !== path) {
+                if (join(projectRoot, 'app') !== path || join(projectRoot, 'app/') !== path) {
                     return projectRoot;
                 }
             }

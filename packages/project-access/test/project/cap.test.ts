@@ -104,6 +104,13 @@ describe('Test isPathForCapApp()', () => {
         expect(result).toBe(true);
     });
 
+    test('Should return true for sub directory CAP path, specifially app folder', async () => {
+        const result = await isPathForCapApp(
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements/app')
+        );
+        expect(result).toBe(true);
+    });
+
     test('Should return false for non CAP path', async () => {
         const result = await isPathForCapApp(
             join(__dirname, '../test-data/project/find-all-apps/find-all-apps/adaptations/valid-adaptation')
