@@ -26,6 +26,6 @@
     "devDependencies": {
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "npm-run-all2": "6.2.0",
-        "typescript": "5.3.3"
+        "typescript": "5.6.2"
     }
 }
