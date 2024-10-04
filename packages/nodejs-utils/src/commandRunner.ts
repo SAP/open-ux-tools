@@ -1,4 +1,4 @@
-import { spawn, type SpawnOptionsWithoutStdio } from 'child_process';
+import { spawn } from 'child_process';
 
 /**
  *
@@ -9,18 +9,15 @@ export class CommandRunner {
      *
      * @param {string} cmd to execute
      * @param {string[]} args to pass to the command
-     * @param {SpawnOptionsWithoutStdio} [opts] options to pass to the command
      * @returns {*}  {(Promise<any | void>)}
      * @memberof CommandRunner
      */
-    run(cmd: string, args: string[] = [], opts: SpawnOptionsWithoutStdio = {}): Promise<string | void> {
+    run(cmd: string, args: string[] = []): Promise<string | void> {
         return new Promise((resolve, reject) => {
-            const optsLocal = { ...opts };
             const stack: any = [];
-            if (process.platform === 'win32') {
-                optsLocal.shell = true;
-            }
-            const spawnedCmd = spawn(cmd, args, optsLocal);
+            const spawnOpts = process.platform === 'win32' ? { shell: true } : {};
+
+            const spawnedCmd = spawn(cmd, args, spawnOpts);
             spawnedCmd.stdout.setEncoding('utf8');
             let response: string;
             spawnedCmd.stdout.on('data', (data: Buffer) => {

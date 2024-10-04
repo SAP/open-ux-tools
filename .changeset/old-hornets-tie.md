@@ -1,6 +1,5 @@
 ---
 '@sap-ux/fiori-generator-shared': minor
-'@sap-ux/nodejs-utils': minor
 '@sap-ux/generator-ui5-library': patch
 ---
 
