@@ -1,236 +1,240 @@
 {
-    "compilerOptions": {
-        "composite": true,
-        "declaration": true,
-        "declarationMap": true,
-        "esModuleInterop": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "lib": ["ES2022", "dom", "dom.iterable"],
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "noEmit": false,
-        "sourceMap": true,
-        "strict": true,
-        "strictPropertyInitialization": false,
-        "target": "ES2022",
-        "skipLibCheck": true,
-        "resolveJsonModule": true,
-        "useUnknownInCatchVariables": false
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": [
+      "ES2022",
+      "dom",
+      "dom.iterable"
+    ],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "sourceMap": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "target": "ES2022",
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "useUnknownInCatchVariables": false
+  },
+  "references": [
+    {
+      "path": "packages/abap-deploy-config-inquirer"
     },
-    "references": [
-        {
-            "path": "packages/abap-deploy-config-inquirer"
-        },
-        {
-            "path": "packages/abap-deploy-config-writer"
-        },
-        {
-            "path": "packages/adp-tooling"
-        },
-        {
-            "path": "packages/annotation-generator"
-        },
-        {
-            "path": "packages/app-config-writer"
-        },
-        {
-            "path": "packages/axios-extension"
-        },
-        {
-            "path": "packages/backend-proxy-middleware"
-        },
-        {
-            "path": "packages/btp-utils"
-        },
-        {
-            "path": "packages/cap-config-writer"
-        },
-        {
-            "path": "packages/cards-editor-config-writer"
-        },
-        {
-            "path": "packages/cards-editor-middleware"
-        },
-        {
-            "path": "packages/cds-annotation-parser"
-        },
-        {
-            "path": "packages/cds-odata-annotation-converter"
-        },
-        {
-            "path": "packages/control-property-editor-common"
-        },
-        {
-            "path": "packages/control-property-editor"
-        },
-        {
-            "path": "packages/create"
-        },
-        {
-            "path": "packages/deploy-tooling"
-        },
-        {
-            "path": "packages/environment-check"
-        },
-        {
-            "path": "packages/eslint-plugin-fiori-tools"
-        },
-        {
-            "path": "packages/fe-fpm-writer"
-        },
-        {
-            "path": "packages/feature-toggle"
-        },
-        {
-            "path": "packages/fiori-annotation-api"
-        },
-        {
-            "path": "packages/fiori-elements-writer"
-        },
-        {
-            "path": "packages/fiori-freestyle-writer"
-        },
-        {
-            "path": "packages/fiori-generator-shared"
-        },
-        {
-            "path": "packages/fiori-tools-settings"
-        },
-        {
-            "path": "packages/guided-answers-helper"
-        },
-        {
-            "path": "packages/i18n"
-        },
-        {
-            "path": "packages/inquirer-common"
-        },
-        {
-            "path": "packages/jest-file-matchers"
-        },
-        {
-            "path": "packages/jest-runner-puppeteer"
-        },
-        {
-            "path": "packages/launch-config"
-        },
-        {
-            "path": "packages/logger"
-        },
-        {
-            "path": "packages/mockserver-config-writer"
-        },
-        {
-            "path": "packages/nodejs-utils"
-        },
-        {
-            "path": "packages/odata-annotation-core-types"
-        },
-        {
-            "path": "packages/odata-annotation-core"
-        },
-        {
-            "path": "packages/odata-entity-model"
-        },
-        {
-            "path": "packages/odata-service-inquirer"
-        },
-        {
-            "path": "packages/odata-service-writer"
-        },
-        {
-            "path": "packages/odata-vocabularies"
-        },
-        {
-            "path": "packages/playwright"
-        },
-        {
-            "path": "packages/preview-middleware-client"
-        },
-        {
-            "path": "packages/preview-middleware"
-        },
-        {
-            "path": "packages/project-access"
-        },
-        {
-            "path": "packages/project-input-validator"
-        },
-        {
-            "path": "packages/reload-middleware"
-        },
-        {
-            "path": "packages/serve-static-middleware"
-        },
-        {
-            "path": "packages/store"
-        },
-        {
-            "path": "packages/system-access"
-        },
-        {
-            "path": "packages/telemetry"
-        },
-        {
-            "path": "packages/text-document-utils"
-        },
-        {
-            "path": "packages/ui-components"
-        },
-        {
-            "path": "packages/ui-prompting"
-        },
-        {
-            "path": "packages/ui5-application-inquirer"
-        },
-        {
-            "path": "packages/ui5-application-writer"
-        },
-        {
-            "path": "packages/ui5-config"
-        },
-        {
-            "path": "packages/ui5-info"
-        },
-        {
-            "path": "packages/ui5-library-sub-generator"
-        },
-        {
-            "path": "packages/ui5-library-inquirer"
-        },
-        {
-            "path": "packages/ui5-library-reference-inquirer"
-        },
-        {
-            "path": "packages/ui5-library-reference-writer"
-        },
-        {
-            "path": "packages/ui5-library-writer"
-        },
-        {
-            "path": "packages/ui5-proxy-middleware"
-        },
-        {
-            "path": "packages/ui5-test-writer"
-        },
-        {
-            "path": "packages/xml-odata-annotation-converter"
-        },
-        {
-            "path": "packages/yaml"
-        },
-        {
-            "path": "examples/fe-fpm-cli"
-        },
-        {
-            "path": "examples/odata-cli"
-        },
-        {
-            "path": "examples/simple-generator"
-        },
-        {
-            "path": "examples/ui-prompting-examples"
-        }
-    ]
+    {
+      "path": "packages/abap-deploy-config-writer"
+    },
+    {
+      "path": "packages/adp-tooling"
+    },
+    {
+      "path": "packages/annotation-generator"
+    },
+    {
+      "path": "packages/app-config-writer"
+    },
+    {
+      "path": "packages/axios-extension"
+    },
+    {
+      "path": "packages/backend-proxy-middleware"
+    },
+    {
+      "path": "packages/btp-utils"
+    },
+    {
+      "path": "packages/cap-config-writer"
+    },
+    {
+      "path": "packages/cards-editor-config-writer"
+    },
+    {
+      "path": "packages/cards-editor-middleware"
+    },
+    {
+      "path": "packages/cds-annotation-parser"
+    },
+    {
+      "path": "packages/cds-odata-annotation-converter"
+    },
+    {
+      "path": "packages/control-property-editor-common"
+    },
+    {
+      "path": "packages/control-property-editor"
+    },
+    {
+      "path": "packages/create"
+    },
+    {
+      "path": "packages/deploy-tooling"
+    },
+    {
+      "path": "packages/environment-check"
+    },
+    {
+      "path": "packages/eslint-plugin-fiori-tools"
+    },
+    {
+      "path": "packages/fe-fpm-writer"
+    },
+    {
+      "path": "packages/feature-toggle"
+    },
+    {
+      "path": "packages/fiori-annotation-api"
+    },
+    {
+      "path": "packages/fiori-elements-writer"
+    },
+    {
+      "path": "packages/fiori-freestyle-writer"
+    },
+    {
+      "path": "packages/fiori-generator-shared"
+    },
+    {
+      "path": "packages/fiori-tools-settings"
+    },
+    {
+      "path": "packages/guided-answers-helper"
+    },
+    {
+      "path": "packages/i18n"
+    },
+    {
+      "path": "packages/inquirer-common"
+    },
+    {
+      "path": "packages/jest-file-matchers"
+    },
+    {
+      "path": "packages/jest-runner-puppeteer"
+    },
+    {
+      "path": "packages/launch-config"
+    },
+    {
+      "path": "packages/logger"
+    },
+    {
+      "path": "packages/mockserver-config-writer"
+    },
+    {
+      "path": "packages/nodejs-utils"
+    },
+    {
+      "path": "packages/odata-annotation-core-types"
+    },
+    {
+      "path": "packages/odata-annotation-core"
+    },
+    {
+      "path": "packages/odata-entity-model"
+    },
+    {
+      "path": "packages/odata-service-inquirer"
+    },
+    {
+      "path": "packages/odata-service-writer"
+    },
+    {
+      "path": "packages/odata-vocabularies"
+    },
+    {
+      "path": "packages/playwright"
+    },
+    {
+      "path": "packages/preview-middleware-client"
+    },
+    {
+      "path": "packages/preview-middleware"
+    },
+    {
+      "path": "packages/project-access"
+    },
+    {
+      "path": "packages/project-input-validator"
+    },
+    {
+      "path": "packages/reload-middleware"
+    },
+    {
+      "path": "packages/serve-static-middleware"
+    },
+    {
+      "path": "packages/store"
+    },
+    {
+      "path": "packages/system-access"
+    },
+    {
+      "path": "packages/telemetry"
+    },
+    {
+      "path": "packages/text-document-utils"
+    },
+    {
+      "path": "packages/ui-components"
+    },
+    {
+      "path": "packages/ui-prompting"
+    },
+    {
+      "path": "packages/ui5-application-inquirer"
+    },
+    {
+      "path": "packages/ui5-application-writer"
+    },
+    {
+      "path": "packages/ui5-config"
+    },
+    {
+      "path": "packages/ui5-info"
+    },
+    {
+      "path": "packages/ui5-library-inquirer"
+    },
+    {
+      "path": "packages/ui5-library-reference-inquirer"
+    },
+    {
+      "path": "packages/ui5-library-reference-writer"
+    },
+    {
+      "path": "packages/ui5-library-sub-generator"
+    },
+    {
+      "path": "packages/ui5-library-writer"
+    },
+    {
+      "path": "packages/ui5-proxy-middleware"
+    },
+    {
+      "path": "packages/ui5-test-writer"
+    },
+    {
+      "path": "packages/xml-odata-annotation-converter"
+    },
+    {
+      "path": "packages/yaml"
+    },
+    {
+      "path": "examples/fe-fpm-cli"
+    },
+    {
+      "path": "examples/odata-cli"
+    },
+    {
+      "path": "examples/simple-generator"
+    },
+    {
+      "path": "examples/ui-prompting-examples"
+    }
+  ]
 }

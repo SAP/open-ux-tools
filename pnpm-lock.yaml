@@ -2803,73 +2803,6 @@ importers:
         specifier: 13.4.0
         version: 13.4.0
 
-  packages/ui5-library-sub-generator:
-    dependencies:
-      '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
-      '@sap-ux/fiori-generator-shared':
-        specifier: workspace:*
-        version: link:../fiori-generator-shared
-      '@sap-ux/fiori-tools-settings':
-        specifier: workspace:*
-        version: link:../fiori-tools-settings
-      '@sap-ux/nodejs-utils':
-        specifier: workspace:*
-        version: link:../nodejs-utils
-      '@sap-ux/ui5-info':
-        specifier: workspace:*
-        version: link:../ui5-info
-      '@sap-ux/ui5-library-inquirer':
-        specifier: workspace:*
-        version: link:../ui5-library-inquirer
-      '@sap-ux/ui5-library-writer':
-        specifier: workspace:*
-        version: link:../ui5-library-writer
-      i18next:
-        specifier: 23.5.1
-        version: 23.5.1
-      yeoman-generator:
-        specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
-    devDependencies:
-      '@jest/types':
-        specifier: 29.6.3
-        version: 29.6.3
-      '@sap-ux/jest-file-matchers':
-        specifier: workspace:*
-        version: link:../jest-file-matchers
-      '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
-      '@types/yeoman-environment':
-        specifier: 2.10.11
-        version: 2.10.11
-      '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
-      '@types/yeoman-test':
-        specifier: 4.0.6
-        version: 4.0.6
-      '@vscode-logging/logger':
-        specifier: 2.0.0
-        version: 2.0.0
-      jest-extended:
-        specifier: 4.0.2
-        version: 4.0.2(jest@29.7.0)
-      mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
-      rimraf:
-        specifier: 5.0.5
-        version: 5.0.5
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
-      yeoman-test:
-        specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
-
   packages/ui5-library-inquirer:
     dependencies:
       '@sap-ux/inquirer-common':
@@ -2947,6 +2880,73 @@ importers:
       fs-extra:
         specifier: 10.0.0
         version: 10.0.0
+
+  packages/ui5-library-sub-generator:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/fiori-tools-settings':
+        specifier: workspace:*
+        version: link:../fiori-tools-settings
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
+      '@sap-ux/ui5-library-inquirer':
+        specifier: workspace:*
+        version: link:../ui5-library-inquirer
+      '@sap-ux/ui5-library-writer':
+        specifier: workspace:*
+        version: link:../ui5-library-writer
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    devDependencies:
+      '@jest/types':
+        specifier: 29.6.3
+        version: 29.6.3
+      '@sap-ux/jest-file-matchers':
+        specifier: workspace:*
+        version: link:../jest-file-matchers
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/yeoman-environment':
+        specifier: 2.10.11
+        version: 2.10.11
+      '@types/yeoman-generator':
+        specifier: 5.2.11
+        version: 5.2.11
+      '@types/yeoman-test':
+        specifier: 4.0.6
+        version: 4.0.6
+      '@vscode-logging/logger':
+        specifier: 2.0.0
+        version: 2.0.0
+      jest-extended:
+        specifier: 4.0.2
+        version: 4.0.2(jest@29.7.0)
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      yeoman-test:
+        specifier: 6.3.0
+        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/ui5-library-writer:
     dependencies:
