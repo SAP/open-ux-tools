@@ -228,10 +228,10 @@
       "path": "examples/odata-cli"
     },
     {
-      "path": "examples/prompting-ui"
+      "path": "examples/simple-generator"
     },
     {
-      "path": "examples/simple-generator"
+      "path": "examples/ui-prompting-examples"
     }
   ]
 }

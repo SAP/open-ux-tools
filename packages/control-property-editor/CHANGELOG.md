@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.5.13
+
+### Patch Changes
+
+-   a558728: Change separator color for panels and toolbar
+
+## 0.5.12
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
 ## 0.5.11
 
 ### Patch Changes
