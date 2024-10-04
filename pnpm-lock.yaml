@@ -2803,7 +2803,7 @@ importers:
         specifier: 13.4.0
         version: 13.4.0
 
-  packages/ui5-library-generator:
+  packages/ui5-library-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
