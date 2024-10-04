@@ -1,0 +1,14 @@
+{
+    "prompts": {
+        "destinationNameMessage": "Destination name",
+        "addApplicationRouterBreadcrumbMessage": "Add to Router",
+        "generateManagedApplicationToRouterMessage": "Add application to managed application router?",
+        "cfDestinationHintMessage": "Destination name - The app router is configured to use direct service binding"
+    },
+    "errors": {
+        "capDeploymentNoMtaError": "This Fiori application is within a CAP project and deployment should be configured as part of the CAP project.",
+        "emptyDestinationNameError": "You must provide a destination name in order to continue.",
+        "destinationNameError": "The destination name must only contain letters, digits, dashes and underscores.",
+        "destinationNameLengthError": "Destination name cannot contain more than 200 characters"  
+    }
+}
