@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.18.5
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+
 ## 1.18.4
 
 ### Patch Changes
