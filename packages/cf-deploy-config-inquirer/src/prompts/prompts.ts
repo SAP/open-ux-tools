@@ -24,7 +24,6 @@ async function getDestinationNamePrompt(
     promptOptions: CfDeployConfigPromptOptions
 ): Promise<CfDeployConfigQuestions> {
     const {
-        promptType,
         showDestinationHintMessage = false,
         cfDestination,
         isCapProject = false,
@@ -33,6 +32,7 @@ async function getDestinationNamePrompt(
         defaultDestinationOption
     } = promptOptions;
     const isBAS = isAppStudio();
+    const promptType = isBAS ? 'list' : 'input';
     return {
         when: (answers: CfDeployConfigAnswers): boolean => showDestinationQuestion(answers),
         guiOptions: {
@@ -61,14 +61,12 @@ async function getDestinationNamePrompt(
  * This function returns a confirmation question that asks whether to add a managed application router
  * to the Cloud Foundry deployment. The prompt only appears if no mta file is found in the target path
  *
- * @async
- * @function getApplicationRouterPrompt
  * @param {CfDeployConfigPromptOptions} promptOptions - Configuration options used to tailor the prompt questions.
  * @param {string} promptOptions.targetPath - The path where the deployment target resides.
  * @param {boolean} [promptOptions.isCapProject] - Whether the project is a CAP project. Defaults to `false` if not specified.
  * @returns {Promise<ConfirmQuestion<CfDeployConfigAnswers>>} A promise that resolves to a confirmation question object for configuring the application router.
  */
-async function getApplicationRouterPrompt(
+async function getAddManagedRouterPrompt(
     promptOptions: CfDeployConfigPromptOptions
 ): Promise<CfDeployConfigQuestions> {
     const { mtaYamlExists, isCapProject = false } = promptOptions;
@@ -99,7 +97,7 @@ export async function getQuestions(
     // Prepare the prompt questions
     const prompts: Record<promptNames, CfDeployConfigQuestions> = {
         [promptNames.destinationName]: await getDestinationNamePrompt(appRoot, promptOptions),
-        [promptNames.addApplicationRouter]: await getApplicationRouterPrompt(promptOptions)
+        [promptNames.addManagedApprouter]: await getAddManagedRouterPrompt(promptOptions)
     };
 
     // Collect questions into an array
