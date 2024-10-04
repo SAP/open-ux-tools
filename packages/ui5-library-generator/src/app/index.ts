@@ -118,7 +118,7 @@ export default class extends Generator implements Ui5LibGenerator {
     }
 
     async end(): Promise<void> {
-        writeApplicationInfoSettings(this.targetFolder, this.fs);
+        writeApplicationInfoSettings(this.projectPath, this.fs);
         await runPostLibGenHook({
             path: this.projectPath,
             vscodeInstance: this.vscode as VSCodeInstance
