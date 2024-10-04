@@ -81,6 +81,6 @@
         "storybook-addon-turbo-build": "2.0.1",
         "style-loader": "3.3.3",
         "ts-loader": "9.4.4",
-        "typescript": "5.3.3"
+        "typescript": "5.6.2"
     }
 }
