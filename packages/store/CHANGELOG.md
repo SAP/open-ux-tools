@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 0.9.2
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+
 ## 0.9.1
 
 ### Patch Changes
