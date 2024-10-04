@@ -1,5 +1,21 @@
 # @sap-ux/preview-middleware
 
+## 0.16.79
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/adp-tooling@0.12.54
+
+## 0.16.78
+
+### Patch Changes
+
+-   7479bd3: fix: add page and table quick actions v2 app
+-   Updated dependencies [7479bd3]
+    -   @sap-ux/adp-tooling@0.12.53
+
 ## 0.16.77
 
 ### Patch Changes
