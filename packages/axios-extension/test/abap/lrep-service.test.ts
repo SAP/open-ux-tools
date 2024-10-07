@@ -6,7 +6,6 @@ import { LayeredRepositoryService, createForAbap } from '../../src';
 import type { AxiosError } from '../../src';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
-import { describe } from 'node:test';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
