@@ -1,5 +1,13 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.3.2
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/odata-annotation-core@0.2.2
+
 ## 0.3.1
 
 ### Patch Changes

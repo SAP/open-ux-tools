@@ -1,0 +1,11 @@
+{
+    "info": {
+        "installingDependencies": "Installing dependencies...",
+        "dependenciesInstalled": "Library dependencies have been installed."
+    },
+    "error": {
+        "unknown": "Unknown error",
+        "generatingUi5Lib": "Error generating reusable UI5 library",
+        "postLibGenHook": "Failed to run hook after library generation {{- error}}"
+    }
+}

@@ -1,5 +1,19 @@
 # @sap-ux/environment-check
 
+## 0.17.41
+
+### Patch Changes
+
+-   6d0aef1: add html5 timeout property to report
+
+## 0.17.40
+
+### Patch Changes
+
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/store@0.9.2
+    -   @sap-ux/ui5-config@0.25.0
+
 ## 0.17.39
 
 ### Patch Changes
