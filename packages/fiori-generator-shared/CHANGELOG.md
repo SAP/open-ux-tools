@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.6.0
+
+### Minor Changes
+
+-   d40af34: adds new module @sap-ux/ui5-library-sub-generator
+
 ## 0.5.1
 
 ### Patch Changes
