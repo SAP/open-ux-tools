@@ -39,7 +39,7 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
-interface SliceState {
+export interface SliceState {
     deviceType: DeviceType;
     scale: number;
 

@@ -207,6 +207,9 @@
       "path": "packages/ui5-library-reference-writer"
     },
     {
+      "path": "packages/ui5-library-sub-generator"
+    },
+    {
       "path": "packages/ui5-library-writer"
     },
     {

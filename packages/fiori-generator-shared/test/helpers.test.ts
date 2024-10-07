@@ -1,4 +1,9 @@
+import { join } from 'path';
+import os from 'os';
+import fs from 'fs';
 import { getBootstrapResourceUrls } from '../src/index';
+import { YEOMANUI_TARGET_FOLDER_CONFIG_PROP } from '../src/constants';
+import { getDefaultTargetFolder } from '../src/helpers';
 
 describe('getResourceUrlsForUi5Bootstrap', () => {
     it('should return relative paths for Edmx projects', () => {
@@ -40,5 +45,60 @@ describe('getResourceUrlsForUi5Bootstrap', () => {
             uShellBootstrapResourceUrl: '../test-resources/sap/ushell/bootstrap/sandbox.js',
             uiBootstrapResourceUrl: '../resources/sap-ui-core.js'
         });
+    });
+});
+
+describe('getDefaultTargetFolder', () => {
+    // rootPath exists only in SBAS
+    const vscodeMock = {
+        workspace: {
+            workspaceFolders: [
+                { uri: { fsPath: '/1st/workspace/path', scheme: 'file' } },
+                { uri: { fsPath: '/2nd/workspace/path', scheme: 'file' } }
+            ],
+            workspaceFile: undefined,
+            getConfiguration: (id: string): object => {
+                if (id) {
+                    return { configurations: [] };
+                }
+                return {
+                    update: (): void => {
+                        return;
+                    },
+                    get: (): void => {
+                        return undefined;
+                    }
+                };
+            }
+        }
+    };
+
+    test('getDefaultTargetFolder', () => {
+        expect(getDefaultTargetFolder(vscodeMock)).toBe('/1st/workspace/path');
+
+        // Has a saved workspace, the first path is still used
+        Object.assign(vscodeMock.workspace, { workspaceFile: 'workspace-file.json' });
+        expect(getDefaultTargetFolder(vscodeMock)).toBe('/1st/workspace/path');
+
+        // No folders added to workspace
+        jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
+        Object.assign(vscodeMock.workspace, { workspaceFolders: [] });
+        expect(getDefaultTargetFolder(vscodeMock)).toBe(join(os.homedir(), 'projects'));
+
+        vscodeMock.workspace.getConfiguration = (id: string): object => {
+            if (id) {
+                return { configurations: [] };
+            }
+            return {
+                update: (): void => {
+                    return;
+                },
+                get: (val: void): void => {
+                    return val;
+                }
+            };
+        };
+        expect(getDefaultTargetFolder(undefined)).toBeUndefined();
+        expect(getDefaultTargetFolder(vscodeMock)).toBe(YEOMANUI_TARGET_FOLDER_CONFIG_PROP);
     });
 });
