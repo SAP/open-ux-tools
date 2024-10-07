@@ -4,14 +4,14 @@ import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { ToolsLogger } from '@sap-ux/logger';
 import { updateMiddlewares } from '../../../src/variants-config/ui5-yaml';
+import { FileName } from '@sap-ux/project-access';
 
-const middlewareUpdatedMessage = (
-    middleware: 'preview' | 'reload',
-    filename: 'ui5-mock.yaml' | 'ui5-local.yaml' | 'ui5.yaml'
-) => `Updated ${middleware} middleware in ${filename}.`;
+type YamlFileName = typeof FileName.Ui5MockYaml | typeof FileName.Ui5LocalYaml | typeof FileName.Ui5Yaml;
 
-const noFileMessage = (filename: 'ui5-mock.yaml' | 'ui5-local.yaml') =>
-    `Cannot write variants-config to ${filename}. File not existing`;
+const middlewareUpdatedMessage = (middleware: 'preview' | 'reload', filename: YamlFileName) =>
+    `Updated ${middleware} middleware in ${filename}.`;
+
+const noFileMessage = (filename: YamlFileName) => `Cannot write variants-config to ${filename}. File not existing`;
 
 describe('Test update middleware', () => {
     const logger = new ToolsLogger();
@@ -28,9 +28,9 @@ describe('Test update middleware', () => {
         await updateMiddlewares(fs, basePath, logger);
 
         expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
-        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', 'ui5.yaml'));
-        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage('ui5-mock.yaml'));
-        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage('ui5-local.yaml'));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', FileName.Ui5Yaml));
+        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage(FileName.Ui5MockYaml));
+        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage(FileName.Ui5LocalYaml));
     });
 
     test('add preview and reload middleware config to ui5.yaml file', async () => {
@@ -38,10 +38,10 @@ describe('Test update middleware', () => {
         await updateMiddlewares(fs, openSourceConfig, logger);
 
         expect(fs.read(join(openSourceConfig, 'ui5.yaml'))).toMatchSnapshot();
-        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', 'ui5.yaml'));
-        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', 'ui5.yaml'));
-        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage('ui5-mock.yaml'));
-        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage('ui5-local.yaml'));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', FileName.Ui5Yaml));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', FileName.Ui5Yaml));
+        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage(FileName.Ui5MockYaml));
+        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage(FileName.Ui5LocalYaml));
     });
 
     test('add preview and reload middleware to local ui5.yaml files', async () => {
@@ -49,12 +49,12 @@ describe('Test update middleware', () => {
         await updateMiddlewares(fs, fioriToolsConfig, logger);
 
         expect(debugLogMock).toHaveBeenCalledTimes(6);
-        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', 'ui5.yaml'));
-        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', 'ui5-local.yaml'));
-        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', 'ui5-mock.yaml'));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', FileName.Ui5Yaml));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', FileName.Ui5LocalYaml));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', FileName.Ui5MockYaml));
 
-        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', 'ui5.yaml'));
-        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', 'ui5-local.yaml'));
-        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', 'ui5-mock.yaml'));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', FileName.Ui5Yaml));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', FileName.Ui5LocalYaml));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', FileName.Ui5MockYaml));
     });
 });
