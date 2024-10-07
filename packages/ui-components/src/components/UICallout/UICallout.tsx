@@ -18,11 +18,12 @@ export interface UICalloutProps extends ICalloutProps {
 import '../../styles/_shadows.scss';
 
 export const CALLOUT_STYLES = {
-    background: 'var(--vscode-editorSuggestWidget-background)',
+    background: 'var(--vscode-editorWidget-background)',
     boxShadow: 'var(--ui-box-shadow-small)',
-    text: 'var(--vscode-editorSuggestWidget-foreground)',
+    borderColor: 'var(--vscode-editorWidget-border) !important',
+    text: 'var(--vscode-editorWidget-foreground)',
     font: 'var(--vscode-font-family)',
-    borderRadius: 4
+    borderRadius: 2
 };
 
 export enum UICalloutContentPadding {
@@ -56,6 +57,7 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
             boxShadow: CALLOUT_STYLES.boxShadow,
             backgroundColor: 'transparent',
             borderRadius: CALLOUT_STYLES.borderRadius,
+            borderColor: CALLOUT_STYLES.borderColor,
             ...extractRawStyles(props.styles, 'root')
         },
         beak: {
