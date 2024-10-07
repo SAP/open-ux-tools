@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.18.6
+
+### Patch Changes
+
+-   64aacf2: Sass warning about deprecate usage of '/' for division outside of calc
+
 ## 1.18.5
 
 ### Patch Changes
