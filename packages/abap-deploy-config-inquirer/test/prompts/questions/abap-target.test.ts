@@ -338,12 +338,21 @@ describe('getAbapTargetPrompts', () => {
                     scp: true
                 })
             ).toBe(false);
+            expect(PromptState.abapDeployConfig.scp).toBe(true);
             // Lets toggle the question
             expect(
                 (scpSetterPrompt.when as Function)({
                     targetSystem: TargetSystemType.Url,
                     url: 'https://mock.target1.url.com',
                     scp: false
+                })
+            ).toBe(false);
+            expect(PromptState.abapDeployConfig.scp).toBe(false);
+            // When SCP is not answered
+            expect(
+                (scpSetterPrompt.when as Function)({
+                    targetSystem: TargetSystemType.Url,
+                    url: 'https://mock.target1.url.com'
                 })
             ).toBe(false);
             expect(PromptState.abapDeployConfig.scp).toBe(false);
