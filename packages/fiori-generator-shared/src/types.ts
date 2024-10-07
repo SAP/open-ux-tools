@@ -54,6 +54,24 @@ export interface ReadMe {
     /** Additional custom entries for the application. */
     additionalEntries?: AdditionalEntries[];
 }
+/**
+ * Interface for the yeoman environment.
+ */
+export interface YeomanEnvironment {
+    conflicter: {
+        force: boolean;
+    };
+    adapter: {
+        actualAdapter: unknown;
+    };
+}
+
+/**
+ * Interface for the VSCode instance.
+ */
+export interface VSCodeInstance {
+    commands: { executeCommand: (command: string, ...rest: any[]) => Promise<void> };
+}
 
 /**
  * Defines the structure for the `package.json` scripts section.
