@@ -35,7 +35,7 @@ function validateInput(input: string): boolean | string {
 /**
  * Validates the destination name or input string. If `allowEmptyChoice` is true,
  * the validation will pass immediately. Otherwise, the input will be validated
- * against several rules (non-empty, valid characters, length check).
+ * against rules (non-empty, valid characters, length check).
  *
  * @param {string} input - The destination name or input string to validate.
  * @param {boolean} allowEmptyChoice - Whether to allow an empty input as a valid choice.
@@ -43,7 +43,7 @@ function validateInput(input: string): boolean | string {
  */
 export function validateDestinationQuestion(
     input: string /*| SapSystem*/,
-    allowEmptyChoice: boolean
+    allowEmptyChoice: boolean = false
 ): boolean | string {
     return allowEmptyChoice || typeof input !== 'string' ? true : validateInput(input);
 }

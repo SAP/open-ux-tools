@@ -4,7 +4,7 @@ import type { CfDeployConfigPromptOptions, CfDeployConfigQuestions, CfDeployConf
 import { promptNames } from '../types';
 import * as validators from './validators';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { showManagedAppRouterQuestion, showDestinationQuestion } from './conditions';
+import { showManagedAppRouterQuestion, showOverwriteQuestion } from './conditions';
 
 /**
  * Creates a prompt for specifying the destination name during the cf deployment process.
@@ -19,22 +19,21 @@ import { showManagedAppRouterQuestion, showDestinationQuestion } from './conditi
  * @param {boolean} [promptOptions.isCapProject] - Whether the project is a CAP project. Defaults to `false` if not specified.
  * @returns {CfDeployConfigQuestions} An input or list question object for the destination name configuration, depending on the environment.
  */
-async function getDestinationNamePrompt(
+function getDestinationNamePrompt(
     appRoot: string,
     promptOptions: CfDeployConfigPromptOptions
-): Promise<CfDeployConfigQuestions> {
+): CfDeployConfigQuestions {
     const {
         showDestinationHintMessage = false,
         cfDestination,
         isCapProject = false,
-        choices = [],
+        cfChoiceList = [],
         mtaYamlExists,
         defaultDestinationOption
     } = promptOptions;
     const isBAS = isAppStudio();
     const promptType = isBAS ? 'list' : 'input';
     return {
-        when: (answers: CfDeployConfigAnswers): boolean => showDestinationQuestion(answers),
         guiOptions: {
             mandatory: !isBAS ?? !!cfDestination,
             breadcrumb: t('prompts.destinationNameMessage')
@@ -51,7 +50,7 @@ async function getDestinationNamePrompt(
             }
             return validators.validateDestinationQuestion(destination, !cfDestination && isBAS);
         },
-        choices: () => choices
+        choices: () => cfChoiceList
     } as InputQuestion<CfDeployConfigAnswers>;
 }
 
@@ -59,20 +58,17 @@ async function getDestinationNamePrompt(
  * Creates a prompt for managing application router during cf deployment.
  *
  * This function returns a confirmation question that asks whether to add a managed application router
- * to the Cloud Foundry deployment. The prompt only appears if no mta file is found in the target path
+ * to the cf deployment. The prompt only appears if no mta file is found.
  *
  * @param {CfDeployConfigPromptOptions} promptOptions - Configuration options used to tailor the prompt questions.
  * @param {string} promptOptions.targetPath - The path where the deployment target resides.
  * @param {boolean} [promptOptions.isCapProject] - Whether the project is a CAP project. Defaults to `false` if not specified.
- * @returns {Promise<ConfirmQuestion<CfDeployConfigAnswers>>} A promise that resolves to a confirmation question object for configuring the application router.
+ * @returns {<ConfirmQuestion<CfDeployConfigAnswers>>} Returns a confirmation question object for configuring the application router.
  */
-async function getAddManagedRouterPrompt(
-    promptOptions: CfDeployConfigPromptOptions
-): Promise<CfDeployConfigQuestions> {
+function getAddManagedRouterPrompt(promptOptions: CfDeployConfigPromptOptions): CfDeployConfigQuestions {
     const { mtaYamlExists, isCapProject = false } = promptOptions;
     return {
-        when: async (previousAnswers: CfDeployConfigAnswers): Promise<boolean> =>
-            await showManagedAppRouterQuestion(mtaYamlExists, previousAnswers, isCapProject),
+        when: (): boolean => showManagedAppRouterQuestion(mtaYamlExists, isCapProject),
         type: 'confirm',
         name: 'addManagedApprouter',
         guiOptions: {
@@ -84,20 +80,38 @@ async function getAddManagedRouterPrompt(
 }
 
 /**
+ *
+ * @param addOverwriteQuestion Indicates whether the overwrite question should be shown.
+ * @returns A confirmation question object which overwrites destination.
+ */
+function getOverwritePrompt(addOverwriteQuestion: boolean): CfDeployConfigQuestions {
+    return {
+        type: 'confirm',
+        name: 'cfOverwrite',
+        guiOptions: {
+            hint: t('prompts.overwriteHintMessage')
+        },
+        default: () => {
+            return true;
+        },
+        message: (): string => t('prompts.overwriteMessage'),
+        when: (): boolean => showOverwriteQuestion(addOverwriteQuestion)
+    } as ConfirmQuestion<CfDeployConfigAnswers>;
+}
+
+/**
  * Retrieves a list of deployment questions based on the application root and prompt options.
  *
  * @param {string} appRoot - The root directory of the application.
  * @param {CfDeployConfigPromptOptions} promptOptions - The configuration options for prompting during cf target deployment.
- * @returns {Promise<CfDeployConfigQuestions[]>} A promise that resolves to an array of questions related to cf deployment configuration.
+ * @returns {CfDeployConfigQuestions[]} Returns an array of questions related to cf deployment configuration.
  */
-export async function getQuestions(
-    appRoot: string,
-    promptOptions: CfDeployConfigPromptOptions
-): Promise<CfDeployConfigQuestions[]> {
+export function getQuestions(appRoot: string, promptOptions: CfDeployConfigPromptOptions): CfDeployConfigQuestions[] {
     // Prepare the prompt questions
     const prompts: Record<promptNames, CfDeployConfigQuestions> = {
-        [promptNames.destinationName]: await getDestinationNamePrompt(appRoot, promptOptions),
-        [promptNames.addManagedApprouter]: await getAddManagedRouterPrompt(promptOptions)
+        [promptNames.destinationName]: getDestinationNamePrompt(appRoot, promptOptions),
+        [promptNames.addManagedApprouter]: getAddManagedRouterPrompt(promptOptions),
+        [promptNames.overwrite]: getOverwritePrompt(promptOptions.addOverwriteQuestion ?? false)
     };
 
     // Collect questions into an array

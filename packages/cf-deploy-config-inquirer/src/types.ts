@@ -5,7 +5,9 @@ export enum promptNames {
     /** The prompt for the destination name. */
     destinationName = 'destinationName',
     /** The prompt for adding an managed app router. */
-    addManagedApprouter = 'addManagedApprouter'
+    addManagedApprouter = 'addManagedApprouter',
+    /** The prompt for overwriting the destination. */
+    overwrite = 'overwrite'
 }
 
 export interface CfDeployConfigPromptOptions {
@@ -18,9 +20,12 @@ export interface CfDeployConfigPromptOptions {
     /** Indicates if the project is a CAP project. */
     isCapProject?: boolean;
     /** A list of available system choices. */
-    choices?: CfSystemChoice[];
+    cfChoiceList?: CfSystemChoice[];
+    additionalChoiceList?: CfSystemChoice[];
     /** The default value for the destination option in the prompt. */
     defaultDestinationOption?: string;
+    /** Indicates whether the overwrite question should be shown. */
+    addOverwriteQuestion?: boolean;
 }
 
 /**
@@ -35,7 +40,6 @@ export interface CfDeployConfigAnswers {
     cfDestination?: string;
     /* Indicates if the user has opted to include a managed application router in the deployment configuration.*/
     addManagedApprouter?: boolean;
-    targetName?: string; // check if this is necessary?
 }
 
 export interface CfSystemChoice {

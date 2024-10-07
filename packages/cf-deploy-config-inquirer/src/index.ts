@@ -16,7 +16,7 @@ async function getPrompts(
     promptOptions: CfDeployConfigPromptOptions
 ): Promise<CfDeployConfigQuestions[]> {
     await initI18nCfDeployConfigInquirer();
-    return await getQuestions(appRoot, promptOptions);
+    return getQuestions(appRoot, promptOptions);
 }
 
 export { getPrompts, CfDeployConfigPromptOptions };

@@ -10,6 +10,9 @@
   },
   "references": [
     {
+      "path": "../btp-utils"
+    },
+    {
       "path": "../inquirer-common"
     }
   ]
