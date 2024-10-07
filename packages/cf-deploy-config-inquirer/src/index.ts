@@ -1,5 +1,6 @@
 import { getQuestions } from './prompts';
 import type { CfDeployConfigPromptOptions, CfDeployConfigQuestions } from './types';
+import { promptNames } from './types';
 import { initI18nCfDeployConfigInquirer } from './i18n';
 
 /**
@@ -19,4 +20,4 @@ async function getPrompts(
     return getQuestions(appRoot, promptOptions);
 }
 
-export { getPrompts, CfDeployConfigPromptOptions };
+export { getPrompts, CfDeployConfigPromptOptions, promptNames };

@@ -3,7 +3,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import * as validators from '../src/prompts/validators';
 import { t } from '../src/i18n';
 import type { CfDeployConfigPromptOptions } from '../src/types';
-import * as conditions from '../src/prompts/conditions';
+import { promptNames } from '../src/types';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
@@ -17,12 +17,14 @@ describe('Prompt Generation Tests', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         promptOptions = {
-            cfDestination: 'testDestination',
             isCapProject: true,
             mtaYamlExists: false,
-            defaultDestinationOption: 'defaultDestination',
-            showDestinationHintMessage: false,
-            cfChoiceList: [{ name: 'option1', value: 'option2' }]
+            [promptNames.destinationName]: {
+                cfDestination: 'testDestination',
+                defaultValue: 'defaultDestination',
+                showDestinationHintMessage: false,
+                cfChoiceList: [{ name: 'option1', value: 'option2' }]
+            }
         };
     });
 
@@ -68,20 +70,15 @@ describe('Prompt Generation Tests', () => {
     });
 
     describe('getAddManagedRouterPrompt', () => {
-        let mtaYamlExists = true;
-
         beforeEach(() => {
-            mtaYamlExists = true;
             promptOptions = {
                 ...promptOptions,
-                mtaYamlExists,
+                mtaYamlExists: true,
                 isCapProject: true
             };
         });
 
-        it('returns confirm type prompt with the correct configuration when mta yaml file exists in project', async () => {
-            jest.spyOn(conditions, 'showManagedAppRouterQuestion').mockReturnValue(mtaYamlExists);
-
+        it('Hides add managed router prompt with the correct configuration when mta yaml file exists in cap project', async () => {
             const questions = getQuestions(appRoot, promptOptions);
             const managedAppRouterPrompt = questions.find((question) => question.name === 'addManagedApprouter');
             expect(managedAppRouterPrompt?.type).toBe('confirm');
@@ -97,7 +94,7 @@ describe('Prompt Generation Tests', () => {
                 managedAppRouterPrompt &&
                     typeof managedAppRouterPrompt.when === 'function' &&
                     managedAppRouterPrompt.when({})
-            ).toBe(mtaYamlExists);
+            ).toBe(false);
             expect(
                 managedAppRouterPrompt &&
                     typeof managedAppRouterPrompt.default === 'function' &&
@@ -105,9 +102,9 @@ describe('Prompt Generation Tests', () => {
             ).toBe(true);
         });
 
-        it('returns confirm type prompt with the correct configuration when no mta yaml file is provided', async () => {
-            mtaYamlExists = false;
-            jest.spyOn(conditions, 'showManagedAppRouterQuestion').mockReturnValue(mtaYamlExists);
+        it('returns confirm type prompt with the correct configuration when no mta yaml file is provided and is not a cap project', async () => {
+            promptOptions.mtaYamlExists = false;
+            promptOptions.isCapProject = false;
 
             const questions = getQuestions(appRoot, promptOptions);
             const managedAppRouterPrompt = questions.find((question) => question.name === 'addManagedApprouter');
@@ -119,13 +116,18 @@ describe('Prompt Generation Tests', () => {
                 managedAppRouterPrompt &&
                     typeof managedAppRouterPrompt.when === 'function' &&
                     managedAppRouterPrompt.when({})
-            ).toBe(mtaYamlExists);
+            ).toBe(true);
         });
     });
 
     describe('getOverwritePrompt', () => {
         beforeEach(() => {
-            promptOptions.addOverwriteQuestion = true;
+            promptOptions = {
+                ...promptOptions,
+                [promptNames.overwrite]: {
+                    addOverwriteQuestion: true
+                }
+            };
         });
 
         it('returns confirm type prompt with correct name and message', async () => {
@@ -144,7 +146,9 @@ describe('Prompt Generation Tests', () => {
         });
 
         it('uses when condition to determine if prompt should show based on addOverwriteQuestion', async () => {
-            promptOptions.addOverwriteQuestion = false;
+            if (promptOptions[promptNames.overwrite]) {
+                promptOptions[promptNames.overwrite].addOverwriteQuestion = false;
+            }
             const questions = getQuestions(appRoot, promptOptions);
             const overwritePrompt = questions.find((question) => question.name === 'cfOverwrite');
             expect(overwritePrompt?.type).toBe('confirm');

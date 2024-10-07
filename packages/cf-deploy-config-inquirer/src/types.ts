@@ -1,48 +1,86 @@
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
+/**
+ * Enum defining prompt names for Cloud Foundry (CF) deployment configuration.
+ */
 export enum promptNames {
-    /** The prompt for the destination name. */
+    /** The prompt to specify the destination name for CF deployment. */
     destinationName = 'destinationName',
-    /** The prompt for adding an managed app router. */
+    /** The prompt to specify if a managed app router should be added to the deployment. */
     addManagedApprouter = 'addManagedApprouter',
-    /** The prompt for overwriting the destination. */
+    /** The prompt for confirming destination overwrite. */
     overwrite = 'overwrite'
 }
 
-export interface CfDeployConfigPromptOptions {
-    /** Indicates whether the MTA YAML file exists. */
-    mtaYamlExists: boolean;
-    /** Whether to show destination name hint */
-    showDestinationHintMessage?: boolean;
-    /** The Cloud Foundry destination name. */
-    cfDestination: string;
-    /** Indicates if the project is a CAP project. */
-    isCapProject?: boolean;
-    /** A list of available system choices. */
-    cfChoiceList?: CfSystemChoice[];
-    additionalChoiceList?: CfSystemChoice[];
-    /** The default value for the destination option in the prompt. */
-    defaultDestinationOption?: string;
+/**
+ * Options specific to the 'overwrite' prompt.
+ */
+type OverwritePromptOptions = {
     /** Indicates whether the overwrite question should be shown. */
-    addOverwriteQuestion?: boolean;
-}
+    addOverwriteQuestion: boolean;
+};
 
 /**
- * Type representing a question in the CF deployment configuration.
+ * Options specific to the 'destinationName' prompt.
+ */
+export type destinationNamePromptOptions = {
+    /** Default destination value for CF. */
+    defaultValue: string;
+    /** Whether to show a hint for the destination name. */
+    showDestinationHintMessage?: boolean;
+    /** The Cloud Foundry destination name to be used. */
+    cfDestination: string;
+    /** List of available system choices for destination selection. */
+    cfChoiceList?: CfSystemChoice[];
+    /** Additional choices available for the destination. */
+    additionalChoiceList?: CfSystemChoice[];
+};
+
+/**
+ * Defines options for boolean-type prompts in CF deployment configuration.
+ */
+type booleanValuePromptOptions = Record<promptNames.overwrite, OverwritePromptOptions> & {
+    /** Indicates if the MTA YAML file exists in the project. */
+    mtaYamlExists: boolean;
+    /** Specifies if the project is a CAP (Cloud Application Programming) project. */
+    isCapProject?: boolean;
+};
+
+/**
+ * Defines options for string-type prompts in CF deployment configuration.
+ */
+type stringValuePromptOptions = Record<promptNames.destinationName, destinationNamePromptOptions>;
+
+/**
+ * Configuration options for CF deployment prompts.
+ * Combines string and boolean prompt options, allowing partial selection.
+ */
+export type CfDeployConfigPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOptions>;
+
+/**
+ * Represents a question in the CF deployment configuration.
  * Extends `YUIQuestion` with optional autocomplete functionality.
  */
 export type CfDeployConfigQuestions = YUIQuestion<CfDeployConfigAnswers> &
     Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
 
+/**
+ * User responses for CF deployment configuration.
+ */
 export interface CfDeployConfigAnswers {
-    /* The selected Cloud Foundry destination */
+    /** The selected Cloud Foundry destination. */
     cfDestination?: string;
-    /* Indicates if the user has opted to include a managed application router in the deployment configuration.*/
+    /** Indicates whether the user opted to include a managed application router. */
     addManagedApprouter?: boolean;
 }
 
+/**
+ * Interface for selectable system choices within Cloud Foundry prompts.
+ */
 export interface CfSystemChoice {
+    /** Display name of the system choice. */
     name: string;
+    /** Value associated with the system choice. */
     value: string;
 }
