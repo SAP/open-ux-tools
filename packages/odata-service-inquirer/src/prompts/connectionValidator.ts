@@ -14,8 +14,10 @@ import {
     ODataVersion,
     create,
     createForAbap,
-    createForAbapOnCloud
+    createForAbapOnCloud,
+    createForDestination
 } from '@sap-ux/axios-extension';
+import type { Destination } from '@sap-ux/btp-utils';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import https from 'https';
 import { ERROR_TYPE, ErrorHandler } from '../error-handler/error-handler';
@@ -349,22 +351,28 @@ export class ConnectionValidator {
      * @param connectConfig.url the system url
      * @param connectConfig.serviceInfo the service info
      * @param connectConfig.odataVersion the odata version to restrict the catalog requests if only a specific version is required
+     * @param connectConfig.destination
      */
     private async createSystemConnection({
         axiosConfig,
         url,
         serviceInfo,
+        destination,
         odataVersion
     }: {
         axiosConfig?: AxiosExtensionRequestConfig & ProviderConfiguration;
         url?: URL;
         serviceInfo?: ServiceInfo;
+        destination?: Destination;
         odataVersion?: ODataVersion;
     }): Promise<void> {
         this.resetConnectionState();
 
         if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
             this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
+        } else if (destination) {
+            // Unclear why aaxiosConfig is mandatory here, its not mandatory in the the target function implementation
+            this._serviceProvider = createForDestination({}, destination);
         } else if (axiosConfig) {
             this._axiosConfig = axiosConfig;
             this._serviceProvider = createForAbap(axiosConfig);
@@ -461,7 +469,7 @@ export class ConnectionValidator {
      *
      * @param serviceInfo the service info containing the UAA details
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
-     * @returns true if the system is reachable, false if not, or an error message string
+     * @returns true if the system is reachable and authenticated, if required, false if not, or an error message string
      */
     public async validateServiceInfo(serviceInfo: ServiceInfo, odataVersion?: ODataVersion): Promise<ValidationResult> {
         if (!serviceInfo) {
@@ -477,6 +485,28 @@ export class ConnectionValidator {
             return this.getValidationResultFromStatusCode(200);
         } catch (error) {
             LoggerHelper.logger.debug(`ConnectionValidator.validateServiceInfo() - error: ${error.message}`);
+            if (error?.isAxiosError) {
+                this.getValidationResultFromStatusCode(error?.response?.status || error?.code);
+            }
+            return errorHandler.getErrorMsg(error) ?? false;
+        }
+    }
+
+    /**
+     * Validate the specified destination connectivity.
+     *
+     * @param destination the destination to validate
+     * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
+     * @returns @returns true if the system is reachable and authenticated, if required, false if not, or an error message string
+     */
+    public async validateDestination(destination: Destination, odataVersion?: ODataVersion): Promise<ValidationResult> {
+        try {
+            this.systemAuthType = 'unknown';
+            await this.createSystemConnection({ destination, odataVersion });
+            this._validatedUrl = destination.Host; // Host is the full url, configured as destination url property value. Not the origin!
+            return this.getValidationResultFromStatusCode(200);
+        } catch (error) {
+            LoggerHelper.logger.debug(`ConnectionValidator.validateDestination() - error: ${error.message}`);
             if (error?.isAxiosError) {
                 this.getValidationResultFromStatusCode(error?.response?.status || error?.code);
             }

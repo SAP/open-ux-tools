@@ -5,6 +5,7 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { ListChoiceOptions } from 'inquirer';
 import type { BackendSystem } from '@sap-ux/store';
+import type { Destination } from '@sap-ux/btp-utils';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -92,6 +93,11 @@ export interface OdataServiceAnswers {
          * `newOrUpdated` is set to true if the system was newly created or updated during the connection validation process and should be considered for storage.
          */
         backendSystem?: BackendSystem & { newOrUpdated?: boolean };
+
+        /**
+         * The destination information for the connected system
+         */
+        destination?: Destination;
     };
 }
 

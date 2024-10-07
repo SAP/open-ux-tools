@@ -81,6 +81,7 @@ export function getSystemServiceQuestion(
         default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
         // Warning: only executes in YUI not cli
         validate: async (service: ServiceAnswer): Promise<string | boolean | ValidationLink> => {
+            // todo: Can we replace this condition with connectValidator.validity.authenticated ? Validating a url doesnt make sense for BTP systems (destinations?)
             if (!connectValidator.validatedUrl) {
                 return false;
             }

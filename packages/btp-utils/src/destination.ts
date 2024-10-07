@@ -76,6 +76,9 @@ export interface Destination extends Partial<AdditionalDestinationProperties> {
     Authentication: string;
     ProxyType: string;
     Description: string;
+    /**
+     * N.B. Not the host but the full destination URL property!
+     */
     Host: string;
 }
 
