@@ -15,9 +15,23 @@ async function ushellBootstrap(fnCallback) {
         const response = await fetch(`${basePath}/resources/sap-ui-version.json`);
         const json = await response.json();
         const version = json?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version ?? '1.121.0';
-        const majorUi5Version = parseInt(version.split('.')[0], 10);
+        const [major, minor] = version.split('.');
+        const majorUi5Version = parseInt(major, 10);
+        const minorUi5Version = parseInt(minor, 10);
         if (majorUi5Version >= 2) {
             src = `${basePath}/resources/sap/ushell/bootstrap/sandbox2.js`;
+        }
+        if (majorUi5Version === 1 && minorUi5Version < 72) {
+            const getNestedProperty = (obj, target) =>
+                target in obj
+                    ? obj[target]
+                    : Object.values(obj).reduce((acc, val) => {
+                          if (acc !== undefined) return acc;
+                          if (typeof val === 'object') return getNestedProperty(val, target);
+                      }, undefined);
+            
+                const asyncHints = getNestedProperty(window['sap-ushell-config'], 'asyncHints');
+                asyncHints.requests = [];
         }
     } catch (error) {
         console.warn('Failed to fetch sap-ui-version.json. Assuming it is a 1.x version.');

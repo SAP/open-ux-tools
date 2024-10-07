@@ -539,13 +539,7 @@ export async function initAdp(
         }
 
         const descriptor = adp.descriptor;
-        // TODO: This line is currently commented as it causes issues for SAPUI5 Versions > 1.71.
-        // This needs to be in a condition that checks the SAPUI5 version.
-        // descriptor.asyncHints.requests = [];
         const { name, manifest } = descriptor;
-
-        // Passing the descriptor (merged manifest) from the backend system to the FLP sandbox
-        // to be propagated to be propagated to addApp method the assembles the flp.html to be added as applicationDependencies
         await flp.init(manifest, name, adp.resources, descriptor);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
         flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
