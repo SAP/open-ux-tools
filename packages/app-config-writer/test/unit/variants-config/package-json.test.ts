@@ -1,49 +1,32 @@
-import { join } from 'path';
-import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
-import { create, create as createFS } from 'mem-fs-editor';
 import { addVariantsManagementScript } from '../../../src/variants-config/package-json';
+import { join } from 'path';
+import { create as createFS } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
 import { ToolsLogger } from '@sap-ux/logger';
+import type { Editor } from 'mem-fs-editor';
 
-describe('Test for adding start-variants-management script in package.json', () => {
-    const logger = new ToolsLogger();
+describe('addVariantsManagementScript', () => {
     let fs: Editor;
+    const logger = new ToolsLogger();
     const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
     const debugLogMock = jest.spyOn(ToolsLogger.prototype, 'debug').mockImplementation(() => {});
+
+    const basePath = join(__dirname, '../../fixtures/variants-config');
 
     beforeEach(() => {
         jest.clearAllMocks();
         fs = createFS(createStorage());
     });
 
-    test('Add new start-variants-management script to package.json and keep the existing one', async () => {
-        const basePath = join(__dirname, '../../fixtures/variants-config/app-with-client-in-script');
-        await addVariantsManagementScript(fs, basePath, logger);
-        expect(fs.readJSON(join(basePath, 'package.json'))).toEqual({
-            'name': 'app-client',
-            'scripts': {
-                'start': 'fiori run --open "test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#test-tile"',
-                'start-variants-management': `fiori run --open \"preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-client=100#app-preview\"`
-            }
-        });
+    test('add start-variants-management script to package.json', async () => {
+        const fioriToolsConfig = join(basePath, 'fiori-tools-config');
+        await addVariantsManagementScript(fs, fioriToolsConfig, logger);
+
         expect(debugLogMock).toHaveBeenCalledWith(`Script 'start-variants-management' written to 'package.json'.`);
+        expect(fs.readJSON(join(fioriToolsConfig, 'package.json'))).toMatchSnapshot();
     });
 
-    test('No sap client present in script', async () => {
-        const basePath = join(__dirname, '../../fixtures/variants-config/simple-app/');
-        interface PackageJson {
-            scripts?: {
-                [key: string]: string;
-            };
-        }
-        await addVariantsManagementScript(fs, basePath, logger);
-        const script = fs.readJSON(join(basePath, 'package.json')) as PackageJson;
-        expect(script?.scripts?.['start-variants-management']?.includes('sap-client=100')).toEqual(false);
-        expect(debugLogMock).toHaveBeenCalledWith(`Script 'start-variants-management' written to 'package.json'.`);
-    });
-
-    test('Add script to package.json when there is no script', async () => {
-        const basePath = join(__dirname, '../../fixtures/variants-config/simple-app/');
+    test('add script to package.json when there is no script section', async () => {
         await addVariantsManagementScript(fs, basePath, logger);
         expect(warnLogMock).toHaveBeenCalledWith(
             `File 'package.json' does not contain a script section. Script section added.`
@@ -51,11 +34,20 @@ describe('Test for adding start-variants-management script in package.json', () 
         expect(debugLogMock).toHaveBeenCalledWith(`Script 'start-variants-management' written to 'package.json'.`);
     });
 
-    test('No script inserted to package.json when there is already a script', async () => {
-        const basePath = join(__dirname, '../../fixtures/variants-config/deprecated-config/');
-        await addVariantsManagementScript(fs, basePath, logger);
+    test('add no script to package.json when there is already a script', async () => {
+        const deprecatedConfig = join(basePath, 'deprecated-config');
+        await addVariantsManagementScript(fs, deprecatedConfig, logger);
+
         expect(warnLogMock).toHaveBeenCalledWith(
             `Script 'start-variants-management' cannot be written to 'package.json. Script already exists'.`
+        );
+    });
+
+    test('add no script to package.json when there is no RTA editor', async () => {
+        const openSourceConfig = join(basePath, 'open-source-config');
+        await addVariantsManagementScript(fs, openSourceConfig, logger);
+        expect(warnLogMock).toHaveBeenCalledWith(
+            `Script 'start-variants-management' cannot be written to 'package.json. No RTA editor specified in ui5.yaml.`
         );
     });
 });

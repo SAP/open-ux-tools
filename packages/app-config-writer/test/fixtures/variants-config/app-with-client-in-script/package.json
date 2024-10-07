@@ -1,6 +1,0 @@
-{
-  "name": "app-client",
-  "scripts": {
-    "start": "fiori run --open \"test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#test-tile\""
-  }
-}

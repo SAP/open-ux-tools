@@ -4,18 +4,12 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: preview-middleware
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+    - name: preview-middleware
       configuration:
         flp:
           intent:
             object: hello
             action: world
-        rta:
-          layer: VENDOR
-          editors:
-            - path: /editor.html
-              developerMode: true
-            - path: /my-variants.html
-
 

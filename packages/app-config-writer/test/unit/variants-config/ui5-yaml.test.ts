@@ -17,39 +17,44 @@ describe('Test update middleware', () => {
     const logger = new ToolsLogger();
     let fs: Editor;
     const debugLogMock = jest.spyOn(ToolsLogger.prototype, 'debug').mockImplementation(() => {});
+    const basePath = join(__dirname, '../../fixtures/variants-config');
 
     beforeEach(() => {
         jest.clearAllMocks();
         fs = create(createStorage());
     });
 
-    test('ui5.yaml - add fiori-tools-preview', async () => {
-        const basePath = join(__dirname, '../../fixtures/variants-config/simple-app/');
+    test('add preview middleware config to ui5.yaml file', async () => {
         await updateMiddlewares(fs, basePath, logger);
+
         expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
-        expect(debugLogMock).toHaveBeenCalledTimes(3);
         expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', 'ui5.yaml'));
         expect(debugLogMock).toHaveBeenCalledWith(noFileMessage('ui5-mock.yaml'));
         expect(debugLogMock).toHaveBeenCalledWith(noFileMessage('ui5-local.yaml'));
     });
 
-    test('ui5.yaml - do nothing when fiori-tools-preview is present', async () => {
-        const basePath = join(__dirname, '../../fixtures/variants-config/app-with-client-in-script/');
-        await updateMiddlewares(fs, basePath, logger);
-        expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
-        expect(debugLogMock).toHaveBeenCalledTimes(3);
+    test('add preview and reload middleware config to ui5.yaml file', async () => {
+        const openSourceConfig = join(basePath, 'open-source-config');
+        await updateMiddlewares(fs, openSourceConfig, logger);
+
+        expect(fs.read(join(openSourceConfig, 'ui5.yaml'))).toMatchSnapshot();
         expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', 'ui5.yaml'));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', 'ui5.yaml'));
         expect(debugLogMock).toHaveBeenCalledWith(noFileMessage('ui5-mock.yaml'));
         expect(debugLogMock).toHaveBeenCalledWith(noFileMessage('ui5-local.yaml'));
     });
 
-    test('ui5-mock.yaml - add fiori-tools-appreload', async () => {
-        const basePath = join(__dirname, '../../fixtures/variants-config/app-with-reload-middleware/');
-        await updateMiddlewares(fs, basePath, logger);
-        expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toMatchSnapshot();
-        expect(debugLogMock).toHaveBeenCalledTimes(4);
+    test('add preview and reload middleware to local ui5.yaml files', async () => {
+        const fioriToolsConfig = join(basePath, 'fiori-tools-config');
+        await updateMiddlewares(fs, fioriToolsConfig, logger);
+
+        expect(debugLogMock).toHaveBeenCalledTimes(6);
         expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', 'ui5.yaml'));
-        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', 'ui5-mock.yaml'));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', 'ui5-local.yaml'));
         expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', 'ui5-mock.yaml'));
+
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', 'ui5.yaml'));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', 'ui5-local.yaml'));
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('reload', 'ui5-mock.yaml'));
     });
 });
