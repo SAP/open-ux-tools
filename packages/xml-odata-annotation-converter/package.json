@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/xml-odata-annotation-converter",
     "description": "Converter for OData annotations in XML format.",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "publisher": "SAPSE",
     "author": "SAP SE",
     "license": "Apache-2.0",

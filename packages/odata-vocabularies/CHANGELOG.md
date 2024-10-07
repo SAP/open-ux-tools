@@ -1,5 +1,13 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.3
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/odata-annotation-core-types@0.4.2
+
 ## 0.4.2
 
 ### Patch Changes
