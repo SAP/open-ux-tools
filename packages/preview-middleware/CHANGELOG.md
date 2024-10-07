@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.81
+
+### Patch Changes
+
+-   fd215c2: Fixed a bug - Add Custom Page Action is not shown on the Object Page in some cases
+
 ## 0.16.80
 
 ### Patch Changes
