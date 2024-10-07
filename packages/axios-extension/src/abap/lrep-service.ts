@@ -174,18 +174,19 @@ export class LayeredRepositoryService extends Axios implements Service {
         workspacePath?: string
     ): Promise<{ [key: string]: MergedAppDescriptor }> {
         const path = '/appdescr_variant_preview/';
-        const params: { [key: string]: string } = {};
+        const params = new URLSearchParams(this.defaults?.params);
 
         if (workspacePath) {
-            params.workspacePath = workspacePath;
+            params.append('workspacePath', workspacePath);
         }
 
         try {
             const response = await this.put(path, appDescriptorVariant, {
+                paramsSerializer: (params) => decodeURIComponent(params.toString()),
+                params,
                 headers: {
                     'Content-Type': 'application/zip'
-                },
-                params
+                }
             });
             return JSON.parse(response.data);
         } catch (error) {
