@@ -119,7 +119,7 @@ describe('Test isPathForCapApp()', () => {
     });
 
     test('Should return true for sub directory CAP path on Windows, specifially app folder', async () => {
-        let pathSep = sep;
+        const pathSep = sep;
         const result = await isPathForCapApp(
             join(
                 __dirname,
