@@ -1,4 +1,4 @@
-import { join, sep } from 'path';
+import path, { join, sep } from 'path';
 import * as childProcess from 'child_process';
 import { create as createStorage, type Store } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
@@ -116,6 +116,24 @@ describe('Test isPathForCapApp()', () => {
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements/app/')
         );
         expect(result).toBe(true);
+    });
+
+    test('Should return true for sub directory CAP path on Windows, specifially app folder', async () => {
+        let pathSep = sep;
+        const result = await isPathForCapApp(
+            join(
+                __dirname,
+                `..${pathSep}test-data${pathSep}project${pathSep}find-all-apps${pathSep}CAP${pathSep}CAPnode_fiori_elements${pathSep}app`
+            )
+        );
+        expect(result).toBe(true);
+        const result2 = await isPathForCapApp(
+            join(
+                __dirname,
+                `..${pathSep}test-data${pathSep}project${pathSep}find-all-apps${pathSep}CAP${pathSep}CAPnode_fiori_elements${pathSep}app${pathSep}`
+            )
+        );
+        expect(result2).toBe(true);
     });
 
     test('Should return false for non CAP path', async () => {
