@@ -173,16 +173,19 @@ export class LayeredRepositoryService extends Axios implements Service {
         appDescriptorVariant: Buffer,
         workspacePath?: string
     ): Promise<{ [key: string]: MergedAppDescriptor }> {
-        let path = '/appdescr_variant_preview/';
+        const path = '/appdescr_variant_preview/';
+        const params: { [key: string]: string } = {};
+
         if (workspacePath) {
-            path += `?workspacePath=${workspacePath}`;
+            params.workspacePath = workspacePath;
         }
 
         try {
             const response = await this.put(path, appDescriptorVariant, {
                 headers: {
                     'Content-Type': 'application/zip'
-                }
+                },
+                params
             });
             return JSON.parse(response.data);
         } catch (error) {
