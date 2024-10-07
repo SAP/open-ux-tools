@@ -1,5 +1,11 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.0.2
+
+### Patch Changes
+
+-   5684ba8: build & publish update
+
 ## 0.0.1
 
 ### Patch Changes
