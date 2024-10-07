@@ -6,7 +6,7 @@ import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/qu
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ADD_PAGE_ACTION = 'add-page-action';
-const CONTROL_TYPES = ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageHeader'];
+const CONTROL_TYPES = ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageHeader', 'sap.uxap.ObjectPageDynamicHeaderTitle'];
 
 /**
  * Quick Action for adding a custom page action.
