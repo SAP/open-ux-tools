@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/cds-annotation-parser",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "Annotation Parser for CDS",
     "publisher": "SAPSE",
     "author": "SAP SE",
@@ -28,7 +28,7 @@
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
-        "typescript": "5.3.3",
+        "typescript": "5.6.2",
         "npm-run-all2": "6.2.0"
     },
     "files": [
