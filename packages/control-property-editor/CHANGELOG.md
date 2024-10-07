@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.15
+
+### Patch Changes
+
+-   92b9cff: Add border for read only input fields
+
 ## 0.5.14
 
 ### Patch Changes
