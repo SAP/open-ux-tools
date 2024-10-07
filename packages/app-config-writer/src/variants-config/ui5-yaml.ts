@@ -78,7 +78,7 @@ function getReloadMiddlewareConfig(ui5YamlConfig: UI5Config): CustomMiddleware<F
 
 /**
  * Checks the project for ui5.yaml files and reads out the configuration to update the preview and reload middlewares.
- * If a reload middleware exists, then a delay of 300ms will be insterted and the preview middleware will be set afterwards.
+ * If a reload middleware exists, then a delay of 300ms will be inserted and the preview middleware will be set afterward.
  *
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to project root, where package.json and ui5.yaml is
