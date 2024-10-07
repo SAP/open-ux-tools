@@ -1,5 +1,19 @@
 # @sap-ux/ui-prompting
 
+## 0.2.1
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/ui-components@1.18.5
+
+## 0.2.0
+
+### Minor Changes
+
+-   05b554d: Support translation input
+
 ## 0.1.14
 
 ### Patch Changes

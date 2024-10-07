@@ -25,7 +25,9 @@ const objectBasedQuestions: PromptQuestion[] = [
         name: 'test.dummy',
         type: 'list',
         choices,
-        dependantPromptNames: ['test.dummy2', 'test2.dummy', 'test3', 'test4.child.dummy']
+        guiOptions: {
+            dependantPromptNames: ['test.dummy2', 'test2.dummy', 'test3', 'test4.child.dummy']
+        }
     },
     {
         message: 'test -> dummy2',

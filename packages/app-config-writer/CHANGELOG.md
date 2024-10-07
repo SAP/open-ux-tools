@@ -1,5 +1,27 @@
 # @sap-ux/app-config-writer
 
+## 0.4.38
+
+### Patch Changes
+
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/store@0.9.2
+    -   @sap-ux/ui5-config@0.25.0
+
+## 0.4.37
+
+### Patch Changes
+
+-   4904d67: extra input field validation
+
+## 0.4.36
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/axios-extension@1.16.6
+
 ## 0.4.35
 
 ### Patch Changes
