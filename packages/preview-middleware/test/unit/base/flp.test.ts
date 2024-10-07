@@ -341,7 +341,11 @@ describe('FlpSandbox', () => {
 
         test('rta with developerMode=true and plugin', async () => {
             await server.get('/with/plugin.html').expect(200);
-            const response = await server.get('/with/plugin.html.inner.html').expect(302);
+            const response = await server
+                .get(
+                    '/with/plugin.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
