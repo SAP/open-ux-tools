@@ -4,7 +4,7 @@ import type { CfDeployConfigPromptOptions, CfDeployConfigQuestions, CfDeployConf
 import { promptNames } from '../types';
 import * as validators from './validators';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { showManagedAppRouterQuestion, showOverwriteQuestion } from './conditions';
+import { showManagedAppRouterQuestion } from './conditions';
 
 /**
  * Creates a prompt for specifying the destination name during the cf deployment process.
@@ -63,7 +63,7 @@ function getDestinationNamePrompt(
  * @param {CfDeployConfigPromptOptions} promptOptions - Configuration options used to tailor the prompt questions.
  * @param {string} promptOptions.targetPath - The path where the deployment target resides.
  * @param {boolean} [promptOptions.isCapProject] - Whether the project is a CAP project. Defaults to `false` if not specified.
- * @returns {<ConfirmQuestion<CfDeployConfigAnswers>>} Returns a confirmation question object for configuring the application router.
+ * @returns {ConfirmQuestion<CfDeployConfigAnswers>} Returns a confirmation question object for configuring the application router.
  */
 function getAddManagedRouterPrompt(promptOptions: CfDeployConfigPromptOptions): CfDeployConfigQuestions {
     const { mtaYamlExists, isCapProject = false } = promptOptions;
@@ -95,7 +95,7 @@ function getOverwritePrompt(addOverwriteQuestion: boolean): CfDeployConfigQuesti
             return true;
         },
         message: (): string => t('prompts.overwriteMessage'),
-        when: (): boolean => showOverwriteQuestion(addOverwriteQuestion)
+        when: (): boolean => addOverwriteQuestion
     } as ConfirmQuestion<CfDeployConfigAnswers>;
 }
 

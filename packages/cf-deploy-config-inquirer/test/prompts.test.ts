@@ -2,7 +2,7 @@ import { getQuestions } from '../src/prompts/prompts';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import * as validators from '../src/prompts/validators';
 import { t } from '../src/i18n';
-import { CfDeployConfigPromptOptions } from '../src/types';
+import type { CfDeployConfigPromptOptions } from '../src/types';
 import * as conditions from '../src/prompts/conditions';
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -48,7 +48,11 @@ describe('Prompt Generation Tests', () => {
         it('validates destination correctly when isCapProject is true and mtaYaml does not exist', async () => {
             const questions = getQuestions(appRoot, promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === 'cfDestination');
-            expect(destinationNamePrompt && typeof destinationNamePrompt.validate === 'function' && destinationNamePrompt.validate('someDestination')).toBe(t('errors.capDeploymentNoMtaError'));
+            expect(
+                destinationNamePrompt &&
+                    typeof destinationNamePrompt.validate === 'function' &&
+                    destinationNamePrompt.validate('someDestination')
+            ).toBe(t('errors.capDeploymentNoMtaError'));
         });
 
         it('returns list-based prompt when isAppStudio is true and not a cap project', async () => {
@@ -81,26 +85,45 @@ describe('Prompt Generation Tests', () => {
             const questions = getQuestions(appRoot, promptOptions);
             const managedAppRouterPrompt = questions.find((question) => question.name === 'addManagedApprouter');
             expect(managedAppRouterPrompt?.type).toBe('confirm');
-            expect(managedAppRouterPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.addApplicationRouterBreadcrumbMessage'));
-            expect(managedAppRouterPrompt && typeof managedAppRouterPrompt.message === 'function' && managedAppRouterPrompt.message({})).toBe(t('prompts.generateManagedApplicationToRouterMessage'));
-            expect(managedAppRouterPrompt && typeof managedAppRouterPrompt.when === 'function' && managedAppRouterPrompt.when({})).toBe(mtaYamlExists);
-            expect(managedAppRouterPrompt && typeof managedAppRouterPrompt.default === 'function' && managedAppRouterPrompt.default()).toBe(true);
+            expect(managedAppRouterPrompt?.guiOptions?.breadcrumb).toBe(
+                t('prompts.addApplicationRouterBreadcrumbMessage')
+            );
+            expect(
+                managedAppRouterPrompt &&
+                    typeof managedAppRouterPrompt.message === 'function' &&
+                    managedAppRouterPrompt.message({})
+            ).toBe(t('prompts.generateManagedApplicationToRouterMessage'));
+            expect(
+                managedAppRouterPrompt &&
+                    typeof managedAppRouterPrompt.when === 'function' &&
+                    managedAppRouterPrompt.when({})
+            ).toBe(mtaYamlExists);
+            expect(
+                managedAppRouterPrompt &&
+                    typeof managedAppRouterPrompt.default === 'function' &&
+                    managedAppRouterPrompt.default()
+            ).toBe(true);
         });
 
         it('returns confirm type prompt with the correct configuration when no mta yaml file is provided', async () => {
-            mtaYamlExists = false
+            mtaYamlExists = false;
             jest.spyOn(conditions, 'showManagedAppRouterQuestion').mockReturnValue(mtaYamlExists);
 
             const questions = getQuestions(appRoot, promptOptions);
             const managedAppRouterPrompt = questions.find((question) => question.name === 'addManagedApprouter');
             expect(managedAppRouterPrompt?.type).toBe('confirm');
-            expect(managedAppRouterPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.addApplicationRouterBreadcrumbMessage'));
-            expect(managedAppRouterPrompt && typeof managedAppRouterPrompt.when === 'function' && managedAppRouterPrompt.when({})).toBe(mtaYamlExists);
+            expect(managedAppRouterPrompt?.guiOptions?.breadcrumb).toBe(
+                t('prompts.addApplicationRouterBreadcrumbMessage')
+            );
+            expect(
+                managedAppRouterPrompt &&
+                    typeof managedAppRouterPrompt.when === 'function' &&
+                    managedAppRouterPrompt.when({})
+            ).toBe(mtaYamlExists);
         });
     });
 
     describe('getOverwritePrompt', () => {
-
         beforeEach(() => {
             promptOptions.addOverwriteQuestion = true;
         });
@@ -109,18 +132,25 @@ describe('Prompt Generation Tests', () => {
             const questions = getQuestions(appRoot, promptOptions);
             const overwritePrompt = questions.find((question) => question.name === 'cfOverwrite');
             expect(overwritePrompt?.type).toBe('confirm');
-            expect(overwritePrompt && typeof overwritePrompt.default === 'function' && overwritePrompt.default()).toBe(true);
-            expect(overwritePrompt && typeof overwritePrompt.message === 'function' && overwritePrompt.message({})).toBe(t('prompts.overwriteMessage'));
-            expect(overwritePrompt && typeof overwritePrompt.when === 'function' && overwritePrompt.when({})).toBe(true);
+            expect(overwritePrompt && typeof overwritePrompt.default === 'function' && overwritePrompt.default()).toBe(
+                true
+            );
+            expect(
+                overwritePrompt && typeof overwritePrompt.message === 'function' && overwritePrompt.message({})
+            ).toBe(t('prompts.overwriteMessage'));
+            expect(overwritePrompt && typeof overwritePrompt.when === 'function' && overwritePrompt.when({})).toBe(
+                true
+            );
         });
-        
+
         it('uses when condition to determine if prompt should show based on addOverwriteQuestion', async () => {
             promptOptions.addOverwriteQuestion = false;
             const questions = getQuestions(appRoot, promptOptions);
             const overwritePrompt = questions.find((question) => question.name === 'cfOverwrite');
             expect(overwritePrompt?.type).toBe('confirm');
-            expect(overwritePrompt && typeof overwritePrompt.when === 'function' && overwritePrompt.when({})).toBe(false);
+            expect(overwritePrompt && typeof overwritePrompt.when === 'function' && overwritePrompt.when({})).toBe(
+                false
+            );
         });
     });
 });
-     
