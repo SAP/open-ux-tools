@@ -87,6 +87,10 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
+    "name": "systemSelectionCli",
+    "when": [Function],
+  },
+  {
     "additionalMessages": [Function],
     "choices": [Function],
     "default": [Function],
@@ -100,10 +104,6 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "source": [Function],
     "type": "list",
     "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "name": "systemSelection:cliServiceSelection",
     "when": [Function],
   },
   {

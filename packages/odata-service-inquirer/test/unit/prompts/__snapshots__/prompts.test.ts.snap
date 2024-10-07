@@ -87,6 +87,10 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
+    "name": "systemSelectionCli",
+    "when": [Function],
+  },
+  {
     "additionalMessages": [Function],
     "choices": [Function],
     "default": [Function],
