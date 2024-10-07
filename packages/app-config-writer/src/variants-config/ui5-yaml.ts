@@ -6,7 +6,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { FioriAppReloadConfig } from '@sap-ux/ui5-config';
-import type { FioriPreviewConfigOptions } from '../types';
+import type { PreviewConfigOptions } from '../types';
 
 /**
  * Writes the given middleware to a ui5.yaml file.
@@ -27,23 +27,23 @@ export function writeMiddlewareToYaml(
 }
 
 /**
- * Gets the preview middleware configuration.
+ * Gets the preview middleware configuration form the ui5.yaml.
  * The middleware can either be named fiori-tools-preview or preview-middleware.
  * If no preview configuration is given, then one will be created.
  *
  * @param ui5YamlConfig existing ui5.yaml configurations
  * @returns 'fiori-tools-preview' or 'preview-middleware' configuration
  */
-function getPreviewMiddlewareConfig(ui5YamlConfig: UI5Config): CustomMiddleware<FioriPreviewConfigOptions> {
+function getPreviewMiddlewareConfig(ui5YamlConfig: UI5Config): CustomMiddleware<PreviewConfigOptions> {
     const previewMiddlewareTemplate = {
         // ToDo: How to know the default if there is no preview middleware...
         name: 'fiori-tools-preview',
         afterMiddleware: 'compression'
-    } as CustomMiddleware<FioriPreviewConfigOptions>;
+    } as CustomMiddleware<PreviewConfigOptions>;
 
     const existingPreviewMiddleware =
-        ui5YamlConfig.findCustomMiddleware<FioriPreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview) ??
-        ui5YamlConfig.findCustomMiddleware<FioriPreviewConfigOptions>(MiddlewareConfigs.PreviewMiddleware);
+        ui5YamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview) ??
+        ui5YamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.PreviewMiddleware);
 
     if (existingPreviewMiddleware) {
         previewMiddlewareTemplate.name = existingPreviewMiddleware.name;

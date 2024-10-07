@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { getSapClientFromPackageJson, getUi5UrlParameters, getPreviewUrl } from './utils';
+import { getSapClientFromPackageJson, getUI5UrlParameters, getRTAUrl } from './utils';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -29,12 +29,18 @@ export async function addVariantsManagementScript(fs: Editor, basePath: string, 
             }
         }
 
-        const query = getUi5UrlParameters(urlParameters);
-        const url = await getPreviewUrl(basePath, query);
-        packageJson.scripts['start-variants-management'] = `fiori run --open "${url}"`;
+        const query = getUI5UrlParameters(urlParameters);
+        const url = await getRTAUrl(basePath, query, logger);
 
-        fs.writeJSON(packageJsonPath, packageJson);
-        logger?.debug(`Script 'start-variants-management' written to 'package.json'.`);
+        if (url) {
+            packageJson.scripts['start-variants-management'] = `fiori run --open "${url}"`;
+            fs.writeJSON(packageJsonPath, packageJson);
+            logger?.debug(`Script 'start-variants-management' written to 'package.json'.`);
+        } else {
+            logger?.warn(
+                `Script 'start-variants-management' cannot be written to 'package.json. No RTA editor specified in ui5.yaml.`
+            );
+        }
     } else {
         logger?.warn(`Script 'start-variants-management' cannot be written to 'package.json. Script already exists'.`);
     }

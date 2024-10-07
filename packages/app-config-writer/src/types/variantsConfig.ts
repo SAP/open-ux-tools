@@ -1,12 +1,12 @@
-import type { MiddlewareConfig as FioriToolsPreviewConfig } from '@sap-ux/preview-middleware';
+import type { MiddlewareConfig } from '@sap-ux/preview-middleware';
 
 export type FioriToolsDeprecatedPreviewConfig = {
     component: string;
     libs?: boolean;
     ui5Theme?: string;
 };
-
-export type FioriPreviewConfigOptions = FioriToolsDeprecatedPreviewConfig | FioriToolsPreviewConfig;
+export type PreviewConfig = MiddlewareConfig;
+export type PreviewConfigOptions = FioriToolsDeprecatedPreviewConfig | PreviewConfig;
 
 export enum MiddlewareConfigs {
     FioriToolsPreview = 'fiori-tools-preview',
