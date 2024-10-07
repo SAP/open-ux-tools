@@ -1,2 +1,2 @@
 export { getSmartLinksTargetFromPrompt, promptUserPass } from './smartlinks-config';
-export { promptInboundNavigationConfig } from './navigation-config';
+export { promptInboundNavigationConfig, validateText } from './navigation-config';
