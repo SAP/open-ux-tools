@@ -35,7 +35,9 @@ async function ushellBootstrap(fnCallback) {
                       }, undefined);
             
                 const asyncHints = getNestedProperty(window['sap-ushell-config'], 'asyncHints');
-                asyncHints?.requests = [];
+                if (asyncHints && asyncHints.requests) {
+                    asyncHints.requests = [];
+                }
         }
     } catch (error) {
         console.warn('Failed to fetch sap-ui-version.json. Assuming it is a 1.x version.');
