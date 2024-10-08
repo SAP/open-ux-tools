@@ -32,7 +32,7 @@ export type destinationNamePromptOptions = {
     /** Whether to show a hint for the destination name. */
     showDestinationHintMessage?: boolean;
     /** List of available system choices for destination selection. */
-    cfChoiceList?: CfSystemChoice[];
+    cfChoiceList: CfSystemChoice[];
     /** Additional choices available for the destination. */
     additionalChoiceList?: CfSystemChoice[];
 };

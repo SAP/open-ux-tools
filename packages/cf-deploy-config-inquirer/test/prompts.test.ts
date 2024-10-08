@@ -58,7 +58,8 @@ describe('Prompt Generation Tests', () => {
                 ...promptOptions,
                 [promptNames.destinationName]: {
                     cfDestination: 'testDestination',
-                    defaultValue: 'defaultDestination'
+                    defaultValue: 'defaultDestination',
+                    cfChoiceList: []
                 }
             }
 
@@ -85,7 +86,8 @@ describe('Prompt Generation Tests', () => {
                 ...promptOptions[promptNames.destinationName],
                 cfDestination: 'testDestination',
                 defaultValue: 'defaultDestination',
-                showDestinationHintMessage: true
+                showDestinationHintMessage: true,
+                cfChoiceList: []
             };
             const questions = getQuestions(appRoot, promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === 'cfDestination');
