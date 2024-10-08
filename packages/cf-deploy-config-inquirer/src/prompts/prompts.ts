@@ -52,7 +52,7 @@ function getDestinationNamePrompt(
             }
             return validators.validateDestinationQuestion(destination, !cfDestination && isBAS);
         },
-        choices: [...additionalChoiceList, ...cfChoiceList]//cfChoiceList.concat(additionalChoiceList)
+        choices: [...additionalChoiceList, ...cfChoiceList]
     } as InputQuestion<CfDeployConfigAnswers>;
 }
 
