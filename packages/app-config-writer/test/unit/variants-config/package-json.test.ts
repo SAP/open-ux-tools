@@ -37,7 +37,7 @@ describe('addVariantsManagementScript', () => {
     test('add no script to package.json when there is already a script', async () => {
         const deprecatedConfig = join(basePath, 'deprecated-config');
         await expect(addVariantsManagementScript(fs, deprecatedConfig, logger)).rejects.toThrow(
-            new Error('Script already exists')
+            new Error('Script already exists.')
         );
     });
 

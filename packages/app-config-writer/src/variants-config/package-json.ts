@@ -17,7 +17,7 @@ export async function addVariantsManagementScript(fs: Editor, basePath: string, 
     const packageJson = fs.readJSON(packageJsonPath) as Package;
 
     if (packageJson?.scripts?.['start-variants-management']) {
-        return Promise.reject(new Error(`Script already exists`));
+        return Promise.reject(new Error(`Script already exists.`));
     }
 
     const urlParameters: Record<string, string> = {};
