@@ -41,7 +41,7 @@ function isFioriToolsDeprecatedPreviewConfig(
  */
 export function getSapClientFromPackageJson(scripts: Package['scripts']): string | undefined {
     for (const value of Object.values(scripts!)) {
-        const match = value?.match(/sap-client=([0-9]{3})/);
+        const match = value?.match(/sap-client=(\d{3})/);
         if (match) {
             return match[1];
         }

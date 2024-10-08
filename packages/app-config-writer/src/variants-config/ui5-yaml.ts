@@ -3,10 +3,8 @@ import { MiddlewareConfigs } from '../types';
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { UI5Config } from '@sap-ux/ui5-config';
-import type { CustomMiddleware } from '@sap-ux/ui5-config';
-import type { FioriAppReloadConfig } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions } from '../types';
+import type { CustomMiddleware, FioriAppReloadConfig, UI5Config } from '@sap-ux/ui5-config';
 
 /**
  * Writes the given middleware to a ui5.yaml file.
