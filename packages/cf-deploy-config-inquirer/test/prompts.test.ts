@@ -23,7 +23,14 @@ describe('Prompt Generation Tests', () => {
                 cfDestination: 'testDestination',
                 defaultValue: 'defaultDestination',
                 showDestinationHintMessage: false,
-                cfChoiceList: [{ name: 'option1', value: 'option2' }]
+                cfChoiceList: [
+                    { name: 'option1', value: 'option1' },
+                    { name: 'option2', value: 'option2' }
+                ],
+                additionalChoiceList: [
+                    { name: 'capOption1', value: 'capOption1' },
+                    { name: 'capOption2', value: 'capOption2' }
+                ]
             }
         };
     });
@@ -36,6 +43,31 @@ describe('Prompt Generation Tests', () => {
             const destinationNamePrompt = questions.find((question) => question.name === 'cfDestination');
             expect(destinationNamePrompt?.type).toBe('list');
             expect(destinationNamePrompt?.default()).toBe('defaultDestination');
+            // check if the choices are correctly concatenated
+            expect(destinationNamePrompt?.choices).toEqual([
+                { name: 'option1', value: 'option1' },
+                { name: 'option2', value: 'option2' },
+                { name: 'capOption1', value: 'capOption1' },
+                { name: 'capOption2', value: 'capOption2' }
+            ]);
+        });
+
+        it('returns blank list prompt when no choice lists is provided', async () => {
+            mockIsAppStudio.mockReturnValueOnce(true);
+            promptOptions = {
+                ...promptOptions,
+                [promptNames.destinationName]: {
+                    cfDestination: 'testDestination',
+                    defaultValue: 'defaultDestination'
+                }
+            }
+
+            const questions = getQuestions(appRoot, promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === 'cfDestination');
+            expect(destinationNamePrompt?.type).toBe('list');
+            expect(destinationNamePrompt?.default()).toBe('defaultDestination');
+            // check if the choices are correctly concatenated
+            expect(destinationNamePrompt?.choices).toEqual([]);
         });
 
         it('returns input-based prompt when isAppStudio is false', async () => {
@@ -48,6 +80,13 @@ describe('Prompt Generation Tests', () => {
         });
 
         it('validates destination correctly when isCapProject is true and mtaYaml does not exist', async () => {
+            promptOptions.mtaYamlExists = false;
+            promptOptions[promptNames.destinationName] = {
+                ...promptOptions[promptNames.destinationName],
+                cfDestination: 'testDestination',
+                defaultValue: 'defaultDestination',
+                showDestinationHintMessage: true
+            };
             const questions = getQuestions(appRoot, promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === 'cfDestination');
             expect(
@@ -55,6 +94,18 @@ describe('Prompt Generation Tests', () => {
                     typeof destinationNamePrompt.validate === 'function' &&
                     destinationNamePrompt.validate('someDestination')
             ).toBe(t('errors.capDeploymentNoMtaError'));
+            expect(destinationNamePrompt?.message).toBe(t('prompts.cfDestinationHintMessage'));
+        });
+
+        it('validates destination correctly when isCapProject is true and mtaYaml sexist', async () => {
+            promptOptions.mtaYamlExists = true;
+            const questions = getQuestions(appRoot, promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === 'cfDestination');
+            expect(
+                destinationNamePrompt &&
+                    typeof destinationNamePrompt.validate === 'function' &&
+                    destinationNamePrompt.validate('someDestination')
+            ).toBe(true);
         });
 
         it('returns list-based prompt when isAppStudio is true and not a cap project', async () => {

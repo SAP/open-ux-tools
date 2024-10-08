@@ -25,12 +25,12 @@ type OverwritePromptOptions = {
  * Options specific to the 'destinationName' prompt.
  */
 export type destinationNamePromptOptions = {
+    /** The Cloud Foundry destination name to be used. */
+    cfDestination: string;
     /** Default destination value for CF. */
     defaultValue: string;
     /** Whether to show a hint for the destination name. */
     showDestinationHintMessage?: boolean;
-    /** The Cloud Foundry destination name to be used. */
-    cfDestination: string;
     /** List of available system choices for destination selection. */
     cfChoiceList?: CfSystemChoice[];
     /** Additional choices available for the destination. */
@@ -40,12 +40,7 @@ export type destinationNamePromptOptions = {
 /**
  * Defines options for boolean-type prompts in CF deployment configuration.
  */
-type booleanValuePromptOptions = Record<promptNames.overwrite, OverwritePromptOptions> & {
-    /** Indicates if the MTA YAML file exists in the project. */
-    mtaYamlExists: boolean;
-    /** Specifies if the project is a CAP (Cloud Application Programming) project. */
-    isCapProject?: boolean;
-};
+type booleanValuePromptOptions = Record<promptNames.overwrite, OverwritePromptOptions>;
 
 /**
  * Defines options for string-type prompts in CF deployment configuration.
@@ -56,14 +51,20 @@ type stringValuePromptOptions = Record<promptNames.destinationName, destinationN
  * Configuration options for CF deployment prompts.
  * Combines string and boolean prompt options, allowing partial selection.
  */
-export type CfDeployConfigPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOptions>;
+export type CfDeployConfigPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOptions> & {
+    /** Indicates if the MTA YAML file exists in the project. */
+    mtaYamlExists: boolean;
+    /** Specifies if the project is a CAP project. */
+    isCapProject?: boolean;
+};
 
 /**
  * Represents a question in the CF deployment configuration.
  * Extends `YUIQuestion` with optional autocomplete functionality.
  */
-export type CfDeployConfigQuestions = YUIQuestion<CfDeployConfigAnswers> &
-    Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
+export type CfDeployConfigQuestions = YUIQuestion<CfDeployConfigAnswers> & {
+    choices?: CfSystemChoice[];
+} & Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
 
 /**
  * User responses for CF deployment configuration.
@@ -73,10 +74,12 @@ export interface CfDeployConfigAnswers {
     cfDestination?: string;
     /** Indicates whether the user opted to include a managed application router. */
     addManagedApprouter?: boolean;
+    /** Indicates whether the user opted to overwrite the destination. */
+    cfOverwrite?: boolean;
 }
 
 /**
- * Interface for selectable system choices within Cloud Foundry prompts.
+ * Interface for selectable system choices within prompts.
  */
 export interface CfSystemChoice {
     /** Display name of the system choice. */

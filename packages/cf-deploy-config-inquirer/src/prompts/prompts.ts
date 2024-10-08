@@ -20,6 +20,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
  * @param showDestinationHintMessage - Whether to show the destination hint message.
  * @param cfDestination - The configured destination for the Cloud Foundry deployment.
  * @param cfChoiceList - A list of available system choices.
+ * @param additionalChoiceList - Additional choices available for the destination.
  * @param defaultValue - The default value for the destination option in the prompt.
  * @param displayCapError - Whether to display the CAP deployment error.
  * @returns {CfDeployConfigQuestions} An input or list question object for the destination name configuration, depending on the environment.
@@ -28,6 +29,7 @@ function getDestinationNamePrompt(
     showDestinationHintMessage: boolean = false,
     cfDestination: string,
     cfChoiceList: CfSystemChoice[] = [],
+    additionalChoiceList: CfSystemChoice[] = [],
     defaultValue: string,
     displayCapError: boolean = false
 ): CfDeployConfigQuestions {
@@ -50,7 +52,7 @@ function getDestinationNamePrompt(
             }
             return validators.validateDestinationQuestion(destination, !cfDestination && isBAS);
         },
-        choices: () => cfChoiceList
+        choices: cfChoiceList.concat(additionalChoiceList)
     } as InputQuestion<CfDeployConfigAnswers>;
 }
 
@@ -106,7 +108,7 @@ function getOverwritePrompt(addOverwriteQuestion: boolean): CfDeployConfigQuesti
  * @returns {CfDeployConfigQuestions[]} Returns an array of questions related to cf deployment configuration.
  */
 export function getQuestions(appRoot: string, promptOptions: CfDeployConfigPromptOptions): CfDeployConfigQuestions[] {
-    const mtaYamlExists = promptOptions?.mtaYamlExists ?? false;
+    const mtaYamlExists = promptOptions.mtaYamlExists;
     const isCapProject = promptOptions?.isCapProject ?? false;
     const destinationOptions = promptOptions[promptNames.destinationName] as destinationNamePromptOptions;
     const addOverwriteQuestion = promptOptions[promptNames.overwrite]?.addOverwriteQuestion ?? false;
@@ -117,6 +119,7 @@ export function getQuestions(appRoot: string, promptOptions: CfDeployConfigPromp
             destinationOptions?.showDestinationHintMessage,
             destinationOptions?.cfDestination,
             destinationOptions?.cfChoiceList,
+            destinationOptions?.additionalChoiceList,
             destinationOptions?.defaultValue,
             !!(isCapProject && appRoot && !mtaYamlExists)
         ),

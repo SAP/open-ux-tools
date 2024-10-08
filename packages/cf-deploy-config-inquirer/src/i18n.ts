@@ -2,7 +2,7 @@ import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/cf-deploy-config-inquirer.i18n.json';
 
-const ui5AppInquirerNamespace = 'cf-deploy-config-inquirer';
+const cfInquirerNamespace = 'cf-deploy-config-inquirer';
 export const defaultProjectNumber = 1;
 /**
  * Initialize i18next with the translations for this module.
@@ -18,7 +18,7 @@ export async function initI18nCfDeployConfigInquirer(): Promise<void> {
                 }
             }
         },
-        () => i18next.addResourceBundle('en', ui5AppInquirerNamespace, translations)
+        () => i18next.addResourceBundle('en', cfInquirerNamespace, translations)
     );
 }
 
@@ -31,7 +31,7 @@ export async function initI18nCfDeployConfigInquirer(): Promise<void> {
  */
 export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
-        options = Object.assign(options ?? {}, { ns: ui5AppInquirerNamespace });
+        options = Object.assign(options ?? {}, { ns: cfInquirerNamespace });
     }
     return i18next.t(key, options);
 }
