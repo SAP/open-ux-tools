@@ -177,7 +177,7 @@ function getScpPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigA
             const scpChoice = answers[abapDeployConfigInternalPromptNames.scp];
             const targetChoice = answers[abapDeployConfigInternalPromptNames.targetSystem];
             // scpChoice by default is true so only update state if target system is a URL
-            PromptState.abapDeployConfig.scp = scpChoice && targetChoice === TargetSystemType.Url;
+            PromptState.abapDeployConfig.scp = !!(targetChoice === TargetSystemType.Url && scpChoice);
             return false;
         },
         name: abapDeployConfigInternalPromptNames.scpSetter
