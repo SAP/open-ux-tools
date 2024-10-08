@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.16
+
+### Patch Changes
+
+-   ed1c915: Clean up copied to clipboard pop up
+
 ## 0.5.15
 
 ### Patch Changes
