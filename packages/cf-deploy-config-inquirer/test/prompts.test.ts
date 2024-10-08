@@ -45,10 +45,10 @@ describe('Prompt Generation Tests', () => {
             expect(destinationNamePrompt?.default()).toBe('defaultDestination');
             // check if the choices are correctly concatenated
             expect(destinationNamePrompt?.choices).toEqual([
-                { name: 'option1', value: 'option1' },
-                { name: 'option2', value: 'option2' },
                 { name: 'capOption1', value: 'capOption1' },
-                { name: 'capOption2', value: 'capOption2' }
+                { name: 'capOption2', value: 'capOption2' },
+                { name: 'option1', value: 'option1' },
+                { name: 'option2', value: 'option2' }
             ]);
         });
 
