@@ -4,7 +4,6 @@ import { stringify } from 'querystring';
 import type { Package } from '@sap-ux/project-access';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
-import { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Gets the preview middleware form the ui5.yaml file.
@@ -68,60 +67,55 @@ export function getUI5UrlParameters(overwritingParams: Record<string, string> = 
 /**
  * Returns the RTA mount point of the preview middleware configuration from the ui5.yaml file, if given.
  *
- * @param previewMiddleware - configuration of the preview middleware
+ * @param previewMiddlewareConfig - configuration of the preview middleware
  * @returns - RTA mount point or undefined
  */
 function getRTAMountPoint(previewMiddlewareConfig: PreviewConfigOptions | undefined): string | undefined {
     if (!isFioriToolsDeprecatedPreviewConfig(previewMiddlewareConfig) && previewMiddlewareConfig?.rta?.editors) {
         const editors = previewMiddlewareConfig.rta.editors;
         for (const editor of editors) {
-            if ('developerMode' in editor === false) {
+            if (!('developerMode' in editor)) {
                 return editor.path;
             }
         }
-    } else {
-        return undefined;
     }
+    return undefined;
 }
 
 /**
  * Returns the intent of the preview middleware configuration from the ui5.yaml file, if given.
  *
- * @param previewMiddleware - configuration of the preview middleware
+ * @param previewMiddlewareConfig - configuration of the preview middleware
  * @returns - preview intent or undefined
  */
 function getRTAIntent(previewMiddlewareConfig: PreviewConfigOptions | undefined): string | undefined {
     if (isFioriToolsDeprecatedPreviewConfig(previewMiddlewareConfig)) {
         return undefined;
-    } else {
-        const intent = previewMiddlewareConfig?.flp?.intent;
-        return intent ? `#${intent.object}-${intent.action}` : undefined;
     }
+    const intent = previewMiddlewareConfig?.flp?.intent;
+    return intent ? `#${intent.object}-${intent.action}` : undefined;
 }
 
 /**
  * Returns the url for variants management in RTA mode.
- * The url consist of a specified mount point and intent given from the ui5.yaml file as well as parameters for the RTA mode. 
+ * The url consist of a specified mount point and intent given from the ui5.yaml file as well as parameters for the RTA mode.
  *
  * @param basePath - path to project root, where package.json and ui5.yaml is located
  * @param query - query to create fragment
- * @param logger - logger
  * @returns - review url parameters
  */
-export async function getRTAUrl(basePath: string, query: string, logger?: ToolsLogger): Promise<string | undefined> {
+export async function getRTAUrl(basePath: string, query: string): Promise<string | undefined> {
     const existingPreviewMiddleware = await getPreviewMiddleware(basePath);
     if (
         existingPreviewMiddleware?.name === MiddlewareConfigs.PreviewMiddleware &&
         !getRTAMountPoint(existingPreviewMiddleware?.configuration)
     ) {
         return undefined;
-    } else {
-        //ToDo: what about a default mount point for os? Why in tools suite it's preview.html?
-        const mountPoint = getRTAMountPoint(existingPreviewMiddleware?.configuration) ?? '/preview.html';
-        const intent = getRTAIntent(existingPreviewMiddleware?.configuration) ?? '#app-preview';
-
-        return isFioriToolsDeprecatedPreviewConfig(existingPreviewMiddleware?.configuration)
-            ? `${mountPoint}?${query}#preview-app`
-            : `${mountPoint}?${query}${intent}`;
     }
+    const mountPoint = getRTAMountPoint(existingPreviewMiddleware?.configuration) ?? '/preview.html';
+    const intent = getRTAIntent(existingPreviewMiddleware?.configuration) ?? '#app-preview';
+
+    return isFioriToolsDeprecatedPreviewConfig(existingPreviewMiddleware?.configuration)
+        ? `${mountPoint}?${query}#preview-app`
+        : `${mountPoint}?${query}${intent}`;
 }

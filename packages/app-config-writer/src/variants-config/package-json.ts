@@ -30,7 +30,7 @@ export async function addVariantsManagementScript(fs: Editor, basePath: string, 
         }
 
         const query = getUI5UrlParameters(urlParameters);
-        const url = await getRTAUrl(basePath, query, logger);
+        const url = await getRTAUrl(basePath, query);
 
         if (url) {
             packageJson.scripts['start-variants-management'] = `fiori run --open "${url}"`;
