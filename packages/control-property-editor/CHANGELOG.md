@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.5.15
+
+### Patch Changes
+
+-   92b9cff: Add border for read only input fields
+
+## 0.5.14
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+
 ## 0.5.13
 
 ### Patch Changes

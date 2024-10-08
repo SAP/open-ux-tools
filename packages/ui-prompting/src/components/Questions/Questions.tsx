@@ -140,6 +140,7 @@ export const Questions = (props: QuestionsProps) => {
                     onChange={onAnswerChange}
                     choices={externalChoices}
                     pending={pendingRequests[name]}
+                    isI18nInputSupported={!!props.translationProps}
                 />
             );
         });
