@@ -1,4 +1,5 @@
 import { t } from '../i18n';
+import { CfSystemChoice } from '../types';
 
 /**
  *
@@ -42,7 +43,7 @@ function validateInput(input: string): boolean | string {
  * @returns {boolean|string} `true` if the input is valid or empty choices are allowed, otherwise an error message.
  */
 export function validateDestinationQuestion(
-    input: string /*| SapSystem*/,
+    input: string | CfSystemChoice,
     allowEmptyChoice: boolean = false
 ): boolean | string {
     return allowEmptyChoice || typeof input !== 'string' ? true : validateInput(input);
