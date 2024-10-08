@@ -36,7 +36,6 @@ export function writeMiddlewareToYaml(
  */
 function getPreviewMiddlewareConfig(ui5YamlConfig: UI5Config): CustomMiddleware<PreviewConfigOptions> {
     const previewMiddlewareTemplate = {
-        // ToDo: How to know the default if there is no preview middleware...
         name: 'fiori-tools-preview',
         afterMiddleware: 'compression'
     } as CustomMiddleware<PreviewConfigOptions>;
@@ -50,6 +49,9 @@ function getPreviewMiddlewareConfig(ui5YamlConfig: UI5Config): CustomMiddleware<
         if (existingPreviewMiddleware.configuration) {
             previewMiddlewareTemplate.configuration = { ...existingPreviewMiddleware.configuration };
         }
+    } else {
+        //todo: if ux-ui5-tooling dependency does not exists in package.json
+        // previewMiddlewareTemplate.name = MiddlewareConfigs.PreviewMiddleware
     }
 
     return previewMiddlewareTemplate;
@@ -57,10 +59,10 @@ function getPreviewMiddlewareConfig(ui5YamlConfig: UI5Config): CustomMiddleware<
 
 /**
  * Gets the reload middleware configuration and sets a delay of 300ms if not given.
- * The middleware can either be named fiori-tools-appreload or reload-middleware.
+ * The middleware can either be named 'fiori-tools-appreload' or 'reload-middleware'.
  *
  * @param ui5YamlConfig existing ui5.yaml configurations
- * @returns 'fiori-tools-appreload' or reload-middleware configuration
+ * @returns 'fiori-tools-appreload' or 'reload-middleware' configuration
  */
 function getReloadMiddlewareConfig(ui5YamlConfig: UI5Config): CustomMiddleware<FioriAppReloadConfig> | undefined {
     const existingReloadMiddleware =

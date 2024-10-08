@@ -13,6 +13,7 @@ import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '..
  * @returns 'fiori-tools-preview' configuration if given
  */
 async function getPreviewMiddleware(basePath: string): Promise<CustomMiddleware<PreviewConfigOptions> | undefined> {
+    //todo: what to do in case there is not ui5.yaml file? try FileName.Ui5MockYaml or FileName.Ui5LocalYaml as fallback?
     const existingUi5YamlConfig = await readUi5Yaml(basePath, FileName.Ui5Yaml);
     return (
         existingUi5YamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview) ??
