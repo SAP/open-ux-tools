@@ -17,7 +17,10 @@ export async function generateVariantsConfig(basePath: string, logger?: ToolsLog
     if (!fs) {
         fs = create(createStorage());
     }
-    await addVariantsManagementScript(fs, basePath, logger);
+    await addVariantsManagementScript(fs, basePath, logger).catch((error) => {
+        logger?.error(`Script 'start-variants-management' cannot be written to package.json. ${error.message}.`);
+        return fs;
+    });
     await updateMiddlewares(fs, basePath, logger);
     return fs;
 }
