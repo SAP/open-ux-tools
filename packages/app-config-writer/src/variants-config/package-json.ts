@@ -14,7 +14,11 @@ import type { ToolsLogger } from '@sap-ux/logger';
  */
 export async function addVariantsManagementScript(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const packageJsonPath = join(basePath, 'package.json');
-    const packageJson = fs.readJSON(packageJsonPath) as Package;
+    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
+
+    if (!packageJson) {
+        return Promise.reject(new Error(`File 'package.json' not found at ${basePath}`));
+    }
 
     if (packageJson?.scripts?.['start-variants-management']) {
         return Promise.reject(new Error(`Script already exists.`));
