@@ -118,7 +118,7 @@ export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): 
     questions.push(
         await getDestinationNamePrompt(
             destinationOptions?.directBindingDestinationHint,
-            destinationOptions?.cfDestination,
+            destinationOptions?.destination,
             destinationOptions?.additionalChoiceList,
             destinationOptions?.defaultValue,
             destinationOptions?.capRootPath,
