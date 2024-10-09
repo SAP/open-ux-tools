@@ -267,7 +267,7 @@ export class UI5Config {
     }
 
     /**
-     * Adds a backend configuration to an existing fiori-tools-proxy middleware. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     * Adds a backend configuration to an existing fiori-tools-proxy middleware keeping any existing backend configurations. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
      *
      * @param backend config of backend that is to be proxied
      * @returns {UI5Config} the UI5Config instance
@@ -280,12 +280,27 @@ export class UI5Config {
             throw new Error('Could not find fiori-tools-proxy');
         }
         const comments = getBackendComments(backend);
-        const backendNode = this.document.createNode({ value: backend, comments });
-
-        this.document
-            .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
-            .set('backend', [backendNode]);
-
+        let backendNode;
+        const proxyMiddlewareYamlContent = this.findCustomMiddleware(fioriToolsProxy);
+        const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration as FioriToolsProxyConfig;
+        // Avoid adding duplicates by checking existing backend configs
+        if (proxyMiddlewareConfig?.backend) {
+            if (!proxyMiddlewareConfig.backend.find((existingBackend) => existingBackend.url === backend.url)) {
+                // Create new 'backend' node in yaml for middleware config keeping previous backend definitions
+                backendNode = this.document.createNode({
+                    value: [...proxyMiddlewareConfig.backend, backend],
+                    comments
+                });
+            }
+        } else {
+            // Create new 'backend' node in yaml for middleware config
+            backendNode = this.document.createNode({ value: backend, comments });
+        }
+        if (backendNode) {
+            this.document
+                .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
+                .set('backend', [backendNode]);
+        }
         return this;
     }
 
