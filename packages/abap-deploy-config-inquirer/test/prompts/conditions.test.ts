@@ -122,7 +122,8 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should not show ui5 app deploy config questions', () => {
         PromptState.abapDeployConfig.scp = true;
-        expect(showUi5AppDeployConfigQuestion(true)).toBe(false);
+        expect(showUi5AppDeployConfigQuestion({ hide: true, default: 'defaultRepoName' })).toBe(false);
+        expect(PromptState.abapDeployConfig.ui5AbapRepo).toBe('defaultRepoName');
     });
 
     test('should show package input choice question', () => {

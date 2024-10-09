@@ -13,7 +13,7 @@ import type { InputQuestion, Question } from 'inquirer';
  */
 function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (): boolean => showUi5AppDeployConfigQuestion(options?.ui5AbapRepo?.hide, options?.ui5AbapRepo?.default),
+        when: (): boolean => showUi5AppDeployConfigQuestion(options?.ui5AbapRepo),
         type: 'input',
         name: promptNames.ui5AbapRepo,
         message: (): string => {
@@ -44,7 +44,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
  */
 function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (): boolean => showUi5AppDeployConfigQuestion(options?.ui5AbapRepo?.hide),
+        when: (): boolean => showUi5AppDeployConfigQuestion(options?.ui5AbapRepo),
         type: 'input',
         name: promptNames.description,
         message: t('prompts.config.app.description.message'),

@@ -11,6 +11,7 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
+    type UI5AbapRepoPromptOptions,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type BackendTarget,
@@ -151,13 +152,12 @@ export function showPasswordQuestion(): boolean {
 /**
  * Determines if the UI5 app deploy config question should be shown (UI5 Abap Repo name & Description).
  *
- * @param hideUi5AbapRepoPrompt - option to hide the prompt if using a btp system
- * @param defaultUi5AbapRepo - default UI5 Abap Repo name
+ * @param ui5AbapRepoPromptOption - options for the ui5 abap repo prompt
  * @returns boolean
  */
-export function showUi5AppDeployConfigQuestion(hideUi5AbapRepoPrompt?: boolean, defaultUi5AbapRepo?: string): boolean {
-    if (hideUi5AbapRepoPrompt) {
-        PromptState.abapDeployConfig.ui5AbapRepo = defaultUi5AbapRepo;
+export function showUi5AppDeployConfigQuestion(ui5AbapRepoPromptOption?: UI5AbapRepoPromptOptions): boolean {
+    if (ui5AbapRepoPromptOption?.hide) {
+        PromptState.abapDeployConfig.ui5AbapRepo = ui5AbapRepoPromptOption.default;
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
