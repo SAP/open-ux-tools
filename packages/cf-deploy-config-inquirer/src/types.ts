@@ -6,7 +6,7 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
  */
 export enum promptNames {
     /** The prompt to specify the destination name for CF deployment. */
-    destinationName = 'destination',
+    destinationName = 'cfDestination',
     /** The prompt to specify if a managed app router should be added to the deployment. */
     addManagedAppRouter = 'addManagedAppRouter',
     /** The prompt for confirming destination overwrite. */
@@ -38,7 +38,7 @@ type OverwritePromptOptions = {
  */
 export type DestinationNamePromptOptions = {
     /** The Cloud Foundry destination name to be used in the deployment process. */
-    destination: string;
+    cfDestination: string;
     /**
      * Root directory path for CAP applications.
      * This path is used to check for the presence of MTA yaml file.
@@ -94,9 +94,7 @@ export interface CfDeployConfigAnswers {
     /** The selected Cloud Foundry destination. */
     destination?: string;
     /** Indicates whether the user opted to include a managed application router. */
-    addManagedAppRouter?: boolean;
-    /** Indicates whether the user opted to overwrite the destination. */
-    cfOverwrite?: boolean;
+    addManagedRouter?: boolean;
 }
 
 /**
