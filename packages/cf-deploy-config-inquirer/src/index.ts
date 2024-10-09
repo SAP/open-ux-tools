@@ -24,7 +24,7 @@ async function getPrompts(promptOptions: CfDeployConfigPromptOptions): Promise<C
 }
 
 /**
- * Prompt for ui5 application inquirer inputs.
+ * Prompt for cf inquirer inputs.
  *
  * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
  * @param promptOptions - options that can control some of the prompt behavior. See {@link CfDeployConfigPromptOptions} for details
