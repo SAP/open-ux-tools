@@ -1,11 +1,7 @@
 import { showIndexQuestion, showOverwriteQuestion } from '../conditions';
 import { validateConfirmQuestion } from '../validators';
 import { t } from '../../i18n';
-import {
-    abapDeployConfigInternalPromptNames,
-    type AbapDeployConfigPromptOptions,
-    type AbapDeployConfigAnswersInternal
-} from '../../types';
+import { promptNames, type AbapDeployConfigPromptOptions, type AbapDeployConfigAnswersInternal } from '../../types';
 import type { ConfirmQuestion, Question } from 'inquirer';
 
 /**
@@ -17,7 +13,7 @@ import type { ConfirmQuestion, Question } from 'inquirer';
 function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
         when: (): boolean => showIndexQuestion(options),
-        name: abapDeployConfigInternalPromptNames.index,
+        name: promptNames.index,
         type: 'confirm',
         message: t('prompts.confirm.index.message'),
         guiOptions: {
@@ -36,8 +32,7 @@ function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDe
 function getOverwritePrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
         when: (): boolean => showOverwriteQuestion(options),
-
-        name: abapDeployConfigInternalPromptNames.overwrite,
+        name: promptNames.overwrite,
         type: 'confirm',
         message: t('prompts.confirm.overwrite.message'),
         guiOptions: {

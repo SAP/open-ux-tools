@@ -217,7 +217,7 @@ describe('Test abap deploy config inquirer conditions', () => {
         PromptState.abapDeployConfig.index = undefined;
         expect(
             showIndexQuestion({
-                indexGenerationAllowed: true
+                index: { indexGenerationAllowed: true }
             })
         ).toBe(true);
     });
@@ -226,7 +226,9 @@ describe('Test abap deploy config inquirer conditions', () => {
         PromptState.abapDeployConfig.overwrite = undefined;
         expect(
             showOverwriteQuestion({
-                showOverwriteQuestion: true,
+                overwrite: {
+                    show: true
+                },
                 existingDeployTaskConfig: {}
             })
         ).toBe(true);

@@ -9,7 +9,7 @@ import { getPackageChoices, getPackageInputChoices } from '../../helpers';
 import { defaultPackage, defaultPackageChoice } from '../../defaults';
 import { validatePackage, validatePackageChoiceInput, validatePackageChoiceInputForCli } from '../../validators';
 import {
-    abapDeployConfigInternalPromptNames,
+    promptNames,
     type PackageInputChoices,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions
@@ -30,9 +30,9 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
-            when: (): boolean => showPackageInputChoiceQuestion(options.useAutocomplete),
+            when: (): boolean => showPackageInputChoiceQuestion(options?.packageAutocomplete?.useAutocomplete),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.packageInputChoice,
+            name: promptNames.packageInputChoice,
             message: t('prompts.config.package.packageInputChoice.message'),
             guiOptions: {
                 applyDefaultWhenDirty: true
@@ -70,13 +70,16 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 return false;
             },
             type: 'input',
-            name: abapDeployConfigInternalPromptNames.packageCliExecution
+            name: promptNames.packageCliExecution
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowManualPackageQuestion(previousAnswers.packageInputChoice, options.useAutocomplete),
+                defaultOrShowManualPackageQuestion(
+                    previousAnswers.packageInputChoice,
+                    options?.packageAutocomplete?.useAutocomplete
+                ),
             type: 'input',
-            name: abapDeployConfigInternalPromptNames.packageManual,
+            name: promptNames.packageManual,
             message: t('prompts.config.package.packageManual.message'),
             guiOptions: {
                 hint: t('prompts.config.package.packageManual.hint'),
@@ -91,9 +94,12 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 packageInputChoiceValid === true &&
-                defaultOrShowSearchPackageQuestion(previousAnswers.packageInputChoice, options.useAutocomplete),
+                defaultOrShowSearchPackageQuestion(
+                    previousAnswers.packageInputChoice,
+                    options?.packageAutocomplete?.useAutocomplete
+                ),
             type: 'autocomplete',
-            name: abapDeployConfigInternalPromptNames.packageAutocomplete,
+            name: promptNames.packageAutocomplete,
             message: `${t('prompts.config.package.packageAutocomplete.message')}${
                 isCli ? t('prompts.config.package.packageAutocomplete.messageTypeFilter') : ''
             }`,

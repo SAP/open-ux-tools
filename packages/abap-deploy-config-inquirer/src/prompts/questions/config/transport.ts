@@ -12,7 +12,7 @@ import { PromptState } from '../../prompt-state';
 import { transportName } from '../../../service-provider-utils/transport-list';
 import { defaultTransportListChoice, defaultTransportRequestChoice } from '../../defaults';
 import {
-    abapDeployConfigInternalPromptNames,
+    promptNames,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type TransportChoices
@@ -35,7 +35,7 @@ export function getTransportRequestPrompts(
         {
             when: (): boolean => showTransportInputChoice(),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.transportInputChoice,
+            name: promptNames.transportInputChoice,
             message: t('prompts.config.transport.transportInputChoice.message'),
             guiOptions: {
                 applyDefaultWhenDirty: true
@@ -74,12 +74,12 @@ export function getTransportRequestPrompts(
                 return false;
             },
             type: 'input',
-            name: abapDeployConfigInternalPromptNames.transportCliExecution
+            name: promptNames.transportCliExecution
         },
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowTransportCreatedQuestion(previousAnswers.transportInputChoice),
-            name: abapDeployConfigInternalPromptNames.transportCreated,
+            name: promptNames.transportCreated,
             type: 'input',
             default: () => PromptState.transportAnswers.newTransportNumber,
             message: t('prompts.config.transport.transportCreated.message')
@@ -88,7 +88,7 @@ export function getTransportRequestPrompts(
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowTransportListQuestion(previousAnswers.transportInputChoice),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.transportFromList,
+            name: promptNames.transportFromList,
             message: t('prompts.config.transport.common.transportRequest'),
             guiOptions: {
                 hint: t('prompts.config.transport.common.provideTransportRequest'),
@@ -101,7 +101,7 @@ export function getTransportRequestPrompts(
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowManualTransportQuestion(previousAnswers.transportInputChoice),
             type: 'input',
-            name: abapDeployConfigInternalPromptNames.transportManual,
+            name: promptNames.transportManual,
             message: () =>
                 PromptState.transportAnswers.transportRequired
                     ? t('prompts.config.transport.common.transportRequestMandatory')

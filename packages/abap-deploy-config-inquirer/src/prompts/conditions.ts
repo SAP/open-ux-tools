@@ -152,10 +152,12 @@ export function showPasswordQuestion(): boolean {
  * Determines if the UI5 app deploy config question should be shown (UI5 Abap Repo name & Description).
  *
  * @param hideUi5AbapRepoPrompt - option to hide the prompt if using a btp system
+ * @param defaultUi5AbapRepo - default UI5 Abap Repo name
  * @returns boolean
  */
-export function showUi5AppDeployConfigQuestion(hideUi5AbapRepoPrompt?: boolean): boolean {
+export function showUi5AppDeployConfigQuestion(hideUi5AbapRepoPrompt?: boolean, defaultUi5AbapRepo?: string): boolean {
     if (hideUi5AbapRepoPrompt) {
+        PromptState.abapDeployConfig.ui5AbapRepo = defaultUi5AbapRepo;
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
@@ -309,7 +311,7 @@ export function defaultOrShowManualTransportQuestion(transportInputChoice?: stri
  * @returns boolean
  */
 export function showIndexQuestion(options: AbapDeployConfigPromptOptions): boolean {
-    const condition = Boolean(options.indexGenerationAllowed && !PromptState.abapDeployConfig.index);
+    const condition = Boolean(options.index?.indexGenerationAllowed && !PromptState.abapDeployConfig.index);
     return condition && !PromptState.transportAnswers.transportConfigError && options.backendTarget?.type !== 'library';
 }
 
@@ -321,6 +323,6 @@ export function showIndexQuestion(options: AbapDeployConfigPromptOptions): boole
  */
 export function showOverwriteQuestion(options: AbapDeployConfigPromptOptions): boolean {
     return Boolean(
-        options.showOverwriteQuestion && !!options.existingDeployTaskConfig && !PromptState.abapDeployConfig.overwrite
+        options.overwrite?.show && !!options.existingDeployTaskConfig && !PromptState.abapDeployConfig.overwrite
     );
 }

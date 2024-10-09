@@ -17,38 +17,37 @@ export interface Credentials {
     password?: string;
 }
 
+/**
+ * The target system used during generation.
+ */
 export interface BackendTarget {
-    systemName?: string; // name given for backend system
+    /**
+     * The name of the backend system.
+     */
+    systemName?: string;
+    /**
+     * ABAP Target - can be either a URL Abap Target or a destination.
+     */
     abapTarget: AbapTarget;
+    /**
+     * The connected service provider for the backend system. Passing this removes the need for re-authentication.
+     */
     serviceProvider?: ServiceProvider;
+    /**
+     * The type of project that the deployment configuration is for.
+     */
     type?: 'application' | 'library';
 }
 
+/**
+ * The configuration of the deploy task configuration file.
+ */
 export interface DeployTaskConfig {
     name?: string;
     description?: string;
     package?: string;
     transport?: string;
     [key: string]: unknown;
-}
-
-/**
- * AbapDeployConfigPromptOptions
- *
- * @param backendTarget - the backend target which may have been used to generate the application (useful for default values)
- * @param existingDeployTaskConfig - the existing deploy task configuration, will be used to prefill certain prompt answers
- * @param hideUi5AbapRepoPrompt - whether to hide the UI5 ABAP repository prompt
- * @param showOverwriteQuestion - whether to show the overwrite question (this can be determined by the caller)
- * @param indexGenerationAllowed - whether generating an index.html is allowed
- * @param useAutocomplete -  determines if the prompt(s) (currently only package prompt) should use auto completion
- */
-export interface AbapDeployConfigPromptOptions {
-    backendTarget?: BackendTarget;
-    existingDeployTaskConfig?: DeployTaskConfig;
-    hideUi5AbapRepoPrompt?: boolean;
-    showOverwriteQuestion?: boolean;
-    indexGenerationAllowed?: boolean;
-    useAutocomplete?: boolean;
 }
 
 export interface AbapSystemChoice {
@@ -62,9 +61,9 @@ export interface AbapSystemChoice {
 }
 
 /**
- * Enumeration of internal prompt names used internally and not supported for modification using ....
+ * Enumeration of prompt names used by
  */
-export enum abapDeployConfigInternalPromptNames {
+export enum promptNames {
     destination = 'destination',
     destinationCliSetter = 'destinationCliSetter',
     targetSystem = 'targetSystem',
@@ -90,6 +89,62 @@ export enum abapDeployConfigInternalPromptNames {
     index = 'index',
     overwrite = 'overwrite'
 }
+
+/**
+ * Options for the UI5 ABAP repository prompt.
+ * If `hide` is set to `true`, the prompt will not be shown, it is required to add a default value in this case.
+ */
+export type UI5AbapRepoPromptOptions =
+    | {
+          hide?: false;
+          default?: string;
+      }
+    | {
+          hide: true;
+          default: string;
+      };
+
+export type OverwritePromptOptions = {
+    /**
+     * This option allows the prompt to be show.
+     * It should be set to true when the inquirer is ran standalone and existing deployment configuration will be overwritten.
+     */
+    show?: boolean;
+};
+
+export type IndexPromptOptions = {
+    /**
+     * This option indicates if an generating an index.html is allowed.
+     */
+    indexGenerationAllowed?: boolean;
+};
+
+export type PackageAutocompletePromptOptions = {
+    /**
+     * Determines if the package autocomplete prompt should use auto complete prompt for packages.
+     * Note that the auto-complete module must be registered with the inquirer instance to use this feature.
+     */
+    useAutocomplete?: boolean;
+};
+
+type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepoPromptOptions> &
+    Record<promptNames.overwrite, OverwritePromptOptions> &
+    Record<promptNames.index, IndexPromptOptions> &
+    Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions>;
+
+/**
+ * The options which are common for the abap deploy config inquirer.
+ */
+type AbapDeployConfigCommonInquirerOptions = {
+    backendTarget?: BackendTarget;
+    existingDeployTaskConfig?: DeployTaskConfig;
+};
+
+/**
+ * The options for the abap deploy config inquirer & the prompts.
+ */
+export type AbapDeployConfigPromptOptions = Partial<abapDeployConfigPromptOptions> &
+    AbapDeployConfigCommonInquirerOptions;
 
 export interface TransportAnswers {
     transportRequired?: boolean;
