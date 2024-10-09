@@ -28,15 +28,21 @@ See [Inquirer.js](https://www.npmjs.com/package/inquirer) for valid default prop
 ```TypeScript
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import type { CfDeployConfigAnswers, CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-inquirer';
-import { prompt as cfDeployConfigPrompt } from '@sap-ux/cf-deploy-config-inquirer';
+import { prompt as cfDeployConfigPrompt, promptNames } from '@sap-ux/cf-deploy-config-inquirer';
 
 const promptOptions = {
-    cfDestination: {
-        type: 'input',
-        message: 'Enter the destination name',
-        name: 'destination',
-        default: 'my-destination'
+    [promptNames.destinationName]: {
+        cfDestination: 'testDestination',
+        defaultValue: 'defaultDestination',
+        directBindingDestinationHint: false,
+        capRootPath: join('testRoot', 'mta.yaml')
     },
+    [promptNames.addManagedAppRouter]: {
+        addManagedAppRouter: true
+    },
+    [promptNames.overwrite]: {
+        addManagedAppRouter: true
+    }
 };
 
 /**
@@ -46,36 +52,10 @@ const inqAdaptor = {
     prompt: this.prompt.bind(this) // the inquirer prompting function, here we use the generators reference
 };
 
-const abapDeployConfigAnswers: AbapDeployConfigAnswers = await abapDeployConfigPrompt(
+const cfDeployConfigAnswers: CfDeployConfigAnswers = await cfDeployConfigPrompt(
     inqAdaptor as InquirerAdapter,
     promptOpts
 );
-
-const projectDir = join(__dirname, 'testapp');
-await generateAbapDeployConfig(
-        projectDir,
-        {
-            target: {
-                url: abapDeployConfigAnswers.url,
-                client: abapDeployConfigAnswers.client,
-                scp: abapDeployConfigAnswers.scp,
-                destination: abapDeployConfigAnswers.destination
-            },
-            app: {
-                name: abapDeployConfigAnswers.name,
-                description: abapDeployConfigAnswers.description,
-                package: abapDeployConfigAnswers.package,
-                transport: abapDeployConfigAnswers.transport
-            },
-            index: abapDeployConfigAnswers.index
-        },
-        {
-            baseFile: '/path/to/base/config', // e.g ui5.yaml
-            deployFile: '/path/to/deploy/config', // e.g ui5-deploy.yaml
-        },
-        this.fs
-    );
-
 ```
 
 ## License
