@@ -13,28 +13,45 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { getCfSystemChoices, fetchBTPDestinations, mtaFileExists } from './prompt-helpers';
 
 /**
- * Creates a prompt for specifying the destination name during the cf deployment process.
+ * Retrieves the prompt configuration for selecting a Cloud Foundry destination name.
+ * 
+ * This function generates a prompt that allows users to specify a destination name. The prompt can be rendered as a list or 
+ * an input field depending on the provided options. If the environment supports 
+ * autocomplete, it can provide suggestions based on existing destinations.
+ * 
+ * @param {DestinationNamePromptOptions} destinationOptions - The options for configuring 
+ *        the destination name prompt. 
+ * @param {string} destinationOptions.cfDestination - The Cloud Foundry destination name 
+ *        to be used.
+ * @param {string} [destinationOptions.capRootPath=''] - The path to the root directory of 
+ *        the CAP application. This is used to check if the MTA file exists. This parameter 
+ *        is not expected to be used for non-CAP projects.
+ * @param {string} destinationOptions.defaultValue - The default destination value for CF.
+ * @param {boolean} [destinationOptions.addDestinationHintMessage=false] - A flag to indicate 
+ *        whether to show a hint for the destination name.
+ * @param {CfSystemChoice[]} [destinationOptions.additionalChoiceList=[]] - Additional choices 
+ *        available for the destination. For CAP projects, this will include instance-based 
+ *        destinations as well and will be appended to the BTP destination list if the environment 
+ *        is BAS. If additional choices are provided and the environment is VsCode, the prompt 
+ *        type will render as a list instead of an input field.
+ * @param {boolean} [destinationOptions.useAutocomplete=false] - A flag to indicate whether 
+ *        to use an autocomplete feature for the destination name input.
  *
- * Depending on the environment (whether it's BAS or vs code),
- * this function returns either a list-based input if BAS or input-based question if being called from vscode for selecting the destination.
- * If additional choices are provided, the function will return a list-based input question for vscode.
- *
- * @param directBindingDestinationHint - Whether to show direct binding destination hint message.
- * @param cfDestination - The destination name for the cf deployment.
- * @param additionalChoiceList - Additional choices available for the destination.
- * @param defaultValue - The default value for the destination option in the prompt.
- * @param capRootPath - The root path of the CAP project and is Used to check if the mta.yaml file exists. For non CAP projects, this should be undefined.
- * @param useAutocomplete - Whether to use the autocomplete prompt type.
- * @returns {CfDeployConfigQuestions} An input or list question object for the destination name configuration, depending on the environment.
+ * @returns {Promise<CfDeployConfigQuestions>} A promise that resolves to the configuration 
+ *          of the prompt, which includes the question and any related options for rendering 
+ *          the prompt in a user interface.
  */
-async function getDestinationNamePrompt(
-    directBindingDestinationHint: boolean = false,
-    cfDestination: string,
-    additionalChoiceList: CfSystemChoice[] = [],
-    defaultValue: string,
-    capRootPath: string = '',
-    useAutocomplete: boolean = false
-): Promise<CfDeployConfigQuestions> {
+async function getDestinationNamePrompt(destinationOptions: DestinationNamePromptOptions): Promise<CfDeployConfigQuestions> {
+
+    const {
+        directBindingDestinationHint = false,
+        cfDestination,
+        additionalChoiceList=  [],
+        defaultValue,
+        capRootPath= '',
+        useAutocomplete= false
+    } = destinationOptions;
+
     const isBAS = isAppStudio();
     const basePromptType = isBAS || additionalChoiceList.length ? 'list' : 'input';
     const promptType = useAutocomplete ? 'autocomplete' : basePromptType;
@@ -115,12 +132,7 @@ export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): 
     // Collect questions into an array
     questions.push(
         await getDestinationNamePrompt(
-            destinationOptions?.directBindingDestinationHint,
-            destinationOptions?.cfDestination,
-            destinationOptions?.additionalChoiceList,
-            destinationOptions?.defaultValue,
-            destinationOptions?.capRootPath,
-            destinationOptions?.useAutocomplete
+            destinationOptions
         )
     );
 
