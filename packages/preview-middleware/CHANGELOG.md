@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.83
+
+### Patch Changes
+
+-   6cd7e89: version bump to get newest version of preview middleware client
+
 ## 0.16.82
 
 ### Patch Changes
