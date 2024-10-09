@@ -31,7 +31,7 @@ describe('Prompt Generation Tests', () => {
         cfDestination: 'testDestination',
         defaultValue: 'defaultDestination',
         directBindingDestinationHint: false,
-        capRootPath: join('testRoot', 'mta.yaml')
+        projectRootPath: join('testRoot', 'mta.yaml')
     };
     const additionalChoiceList: CfSystemChoice[] = [
         {

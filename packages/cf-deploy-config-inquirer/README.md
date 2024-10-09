@@ -41,7 +41,7 @@ const promptOptions = {
         addManagedAppRouter: true
     },
     [promptNames.overwrite]: {
-        addManagedAppRouter: true
+        addOverwriteQuestion: true
     }
 };
 

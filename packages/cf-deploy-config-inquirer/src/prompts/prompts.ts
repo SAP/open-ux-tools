@@ -23,9 +23,8 @@ import { getCfSystemChoices, fetchBTPDestinations, mtaFileExists } from './promp
  *        the destination name prompt. 
  * @param {string} destinationOptions.cfDestination - The Cloud Foundry destination name 
  *        to be used.
- * @param {string} [destinationOptions.capRootPath=''] - The path to the root directory of 
- *        the CAP application. This is used to check if the MTA file exists. This parameter 
- *        is not expected to be used for non-CAP projects.
+ * @param {string} [destinationOptions.projectRootPath=''] - The path to the root directory of 
+ *        the application. This is used to check if the MTA file exists.
  * @param {string} destinationOptions.defaultValue - The default destination value for CF.
  * @param {boolean} [destinationOptions.addDestinationHintMessage=false] - A flag to indicate 
  *        whether to show a hint for the destination name.
@@ -48,7 +47,7 @@ async function getDestinationNamePrompt(destinationOptions: DestinationNamePromp
         cfDestination,
         additionalChoiceList=  [],
         defaultValue,
-        capRootPath= '',
+        projectRootPath= '',
         useAutocomplete= false
     } = destinationOptions;
 
@@ -69,7 +68,7 @@ async function getDestinationNamePrompt(destinationOptions: DestinationNamePromp
             ? t('prompts.directBindingDestinationHint')
             : t('prompts.destinationNameMessage'),
         validate: (destination: string): string | boolean => {
-            if (capRootPath && !mtaFileExists(capRootPath)) {
+            if (projectRootPath && !mtaFileExists(projectRootPath)) {
                 return t('errors.capDeploymentNoMtaError');
             }
             return validators.validateDestinationQuestion(destination, !cfDestination && isBAS);
@@ -131,9 +130,7 @@ export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): 
     const questions: CfDeployConfigQuestions[] = [];
     // Collect questions into an array
     questions.push(
-        await getDestinationNamePrompt(
-            destinationOptions
-        )
+        await getDestinationNamePrompt(destinationOptions)
     );
 
     if (addManagedAppRouter) {

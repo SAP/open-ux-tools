@@ -40,11 +40,10 @@ export type DestinationNamePromptOptions = {
     /** The Cloud Foundry destination name to be used in the deployment process. */
     cfDestination: string;
     /**
-     * Root directory path for CAP applications.
+     * Root directory path of the applications.
      * This path is used to check for the presence of MTA yaml file.
-     * This path is undefined for non CAP projects.
      */
-    capRootPath?: string;
+    projectRootPath?: string;
     /** Default value to suggest for the destination name. */
     defaultValue: string;
     /** Flag to indicate if a hint message should be shown to indicate the app router is configured to use direct service binding . */
