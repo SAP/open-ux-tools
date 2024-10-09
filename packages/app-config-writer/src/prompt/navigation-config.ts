@@ -6,6 +6,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { readManifest } from '../navigation-config';
+import type { AllowedCharacters } from '../types/';
 
 /**
  * Prompt for inbound navigation configuration values.
@@ -44,9 +45,15 @@ export async function promptInboundNavigationConfig(
  * @param input the text input to validate
  * @param inputName the name of the input as seen by the user
  * @param maxLength optional, the maximum length of text to allow
+ * @param allowedCharacters optional, define a list of special characters that should be allowed in the input field
  * @returns true, if all validation checks pass or a message explaining the validation failure
  */
-function validateText(input: string, inputName: string, maxLength = 0): boolean | string {
+export function validateText(
+    input: string,
+    inputName: string,
+    maxLength = 0,
+    allowedCharacters?: AllowedCharacters[]
+): boolean | string {
     if (input?.trim().length === 0) {
         return t('prompt.validationWarning.inputRequired', {
             inputName,
@@ -57,6 +64,19 @@ function validateText(input: string, inputName: string, maxLength = 0): boolean 
     if (maxLength && input.length > maxLength) {
         return t('prompt.validationWarning.maxLength', { maxLength, ns: NAV_CONFIG_NS });
     }
+
+    // Asterisks is supported for the semantic object and action field but not the inbound title
+    if (allowedCharacters) {
+        const escapedChars = allowedCharacters.map((char) => `\\${char}`).join('');
+        const regex = new RegExp(`^[a-zA-Z0-9${escapedChars}]+$`);
+        if (!regex.test(input)) {
+            return t('prompt.validationWarning.supportedFormats', {
+                ns: NAV_CONFIG_NS,
+                allowedCharacters: allowedCharacters.join('')
+            });
+        }
+    }
+
     return true;
 }
 
@@ -77,14 +97,14 @@ function getPrompts(inboundKeys: string[]): PromptObject[] {
             type: 'text',
             message: semanticObjectInputMsg,
             format: (val) => val?.trim(),
-            validate: (val) => validateText(val, semanticObjectInputMsg, 30)
+            validate: (val) => validateText(val, semanticObjectInputMsg, 30, ['_'])
         },
         {
             name: 'action',
             type: 'text',
             message: actionInputMsg,
             format: (val) => val?.trim(),
-            validate: (val) => validateText(val, actionInputMsg, 60)
+            validate: (val) => validateText(val, actionInputMsg, 60, ['_'])
         },
         {
             type: (prev, values) =>

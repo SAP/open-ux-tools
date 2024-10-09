@@ -1,5 +1,31 @@
 # @sap-ux/preview-middleware
 
+## 0.16.83
+
+### Patch Changes
+
+-   6cd7e89: version bump to get newest version of preview middleware client
+
+## 0.16.82
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/adp-tooling@0.12.56
+
+## 0.16.81
+
+### Patch Changes
+
+-   fd215c2: Fixed a bug - Add Custom Page Action is not shown on the Object Page in some cases
+
+## 0.16.80
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.55
+
 ## 0.16.79
 
 ### Patch Changes

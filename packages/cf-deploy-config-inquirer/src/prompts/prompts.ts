@@ -58,7 +58,7 @@ async function getDestinationNamePrompt(destinationOptions: DestinationNamePromp
     const cfChoiceList: CfSystemChoice[] = await getCfSystemChoices(destinations);
     return {
         guiOptions: {
-            mandatory: !isBAS ?? !!cfDestination,
+            mandatory: !isBAS || !!cfDestination,
             breadcrumb: t('prompts.destinationNameMessage')
         },
         type: promptType,
