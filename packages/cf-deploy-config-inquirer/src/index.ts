@@ -1,5 +1,10 @@
 import { getQuestions } from './prompts';
-import type { CfDeployConfigPromptOptions, CfDeployConfigQuestions, CfSystemChoice, CfDeployConfigAnswers } from './types';
+import type {
+    CfDeployConfigPromptOptions,
+    CfDeployConfigQuestions,
+    CfSystemChoice,
+    CfDeployConfigAnswers
+} from './types';
 import { promptNames } from './types';
 import { initI18nCfDeployConfigInquirer } from './i18n';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';

@@ -35,10 +35,9 @@ async function getDestinationNamePrompt(
     capRootPath: string = '',
     useAutocomplete: boolean = false
 ): Promise<CfDeployConfigQuestions> {
-    console.log(" show destinationNamePrompt", cfDestination);
     const isBAS = isAppStudio();
-    const displayType = isBAS || additionalChoiceList.length ? 'list' : 'input';
-    const promptType =  useAutocomplete ? 'autocomplete' : displayType
+    const basePromptType = isBAS || additionalChoiceList.length ? 'list' : 'input';
+    const promptType = useAutocomplete ? 'autocomplete' : basePromptType;
     const destinations = await fetchBTPDestinations();
     const cfChoiceList: CfSystemChoice[] = await getCfSystemChoices(destinations);
     return {
@@ -134,5 +133,3 @@ export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): 
     }
     return questions;
 }
-
-

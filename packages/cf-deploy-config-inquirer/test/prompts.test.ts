@@ -103,7 +103,7 @@ describe('Prompt Generation Tests', () => {
                     ...destinationPrompts,
                     useAutocomplete: true
                 }
-            }
+            };
 
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
