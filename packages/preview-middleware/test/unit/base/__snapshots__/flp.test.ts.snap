@@ -343,6 +343,74 @@ Object {
 }
 `;
 
+exports[`FlpSandbox init with passed descriptor 1`] = `
+Object {
+  "apps": Object {
+    "app-preview": Object {
+      "additionalInformation": "SAPUI5.Component=myComponent",
+      "applicationDependencies": Object {
+        "asyncHints": Object {
+          "requests": Array [
+            Object {
+              "url": "myRequestUrl",
+            },
+          ],
+        },
+        "components": Array [
+          Object {
+            "name": "myComponent",
+            "url": "myComponentUrl",
+          },
+        ],
+        "libs": Array [
+          Object {
+            "name": "myLib",
+            "url": "myLibUrl",
+          },
+        ],
+      },
+      "applicationType": "URL",
+      "description": "",
+      "title": "my.id",
+      "url": "..",
+    },
+  },
+  "basePath": "..",
+  "init": undefined,
+  "locateReuseLibsScript": false,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "custom.connectors.WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "resources": Object {
+      "my.id": "..",
+      "myResources1": "myResourcesUrl1",
+      "myResources2": "myResourcesUrl2",
+      "open.ux.preview.client": "../preview/client",
+    },
+    "theme": "sap_horizon",
+  },
+}
+`;
+
 exports[`FlpSandbox router GET /preview/api/changes 1`] = `"{\\"sap.ui.fl.myid\\":{\\"id\\":\\"myId\\"}}"`;
 
 exports[`FlpSandbox router custom opa5 path test/integration/opaTests.qunit.html 1`] = `
