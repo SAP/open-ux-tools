@@ -20,7 +20,7 @@ import '../../styles/_shadows.scss';
 export const CALLOUT_STYLES = {
     background: 'var(--vscode-editorWidget-background)',
     boxShadow: 'var(--ui-box-shadow-small)',
-    borderColor: 'var(--vscode-editorWidget-border) !important',
+    borderColor: 'var(--vscode-editorWidget-border)',
     text: 'var(--vscode-editorWidget-foreground)',
     font: 'var(--vscode-font-family)',
     borderRadius: 2
@@ -55,9 +55,9 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
     return {
         root: {
             boxShadow: CALLOUT_STYLES.boxShadow,
-            backgroundColor: 'transparent',
+            backgroundColor: CALLOUT_STYLES.background,
             borderRadius: CALLOUT_STYLES.borderRadius,
-            borderColor: CALLOUT_STYLES.borderColor,
+            border: `1px solid ${CALLOUT_STYLES.borderColor}`,
             ...extractRawStyles(props.styles, 'root')
         },
         beak: {
@@ -71,7 +71,7 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
             ...extractRawStyles(props.styles, 'beakCurtain')
         },
         calloutMain: {
-            backgroundColor: CALLOUT_STYLES.background,
+            backgroundColor: 'transparent',
             color: CALLOUT_STYLES.text,
             fontFamily: CALLOUT_STYLES.font,
             borderRadius: CALLOUT_STYLES.borderRadius,
