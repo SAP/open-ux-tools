@@ -26,18 +26,29 @@ async function ushellBootstrap(fnCallback) {
         // This logic needs to be executed here to have a reliable check for UI5 version and remove the asyncHints.requests before the sandbox is loaded.
         // The sandbox shell modifies the `window['sap-ushell-config']`.
         if (majorUi5Version === 1 && minorUi5Version < 72) {
-            const getNestedProperty = (obj, target) =>
-                target in obj
-                    ? obj[target]
-                    : Object.values(obj).reduce((acc, val) => {
-                          if (acc !== undefined) return acc;
-                          if (typeof val === 'object') return getNestedProperty(val, target);
-                      }, undefined);
-            
-                const asyncHints = getNestedProperty(window['sap-ushell-config'], 'asyncHints');
-                if (asyncHints && asyncHints.requests) {
-                    asyncHints.requests = [];
+            const setNestedProperty = (obj) => {
+                if (!obj || typeof obj !== 'object') return;
+
+                const stack = [obj];
+
+                while (stack.length > 0) {
+                    const current = stack.pop();
+
+                    if (current.asyncHints) {
+                        if (current.asyncHints.requests) {
+                            current.asyncHints.requests = [];
+                        }
+                        return;
+                    }
+
+                    for (const key in current) {
+                        if (typeof current[key] === 'object' && current[key] !== null) {
+                            stack.push(current[key]);
+                        }
+                    }
                 }
+            };
+            setNestedProperty(window['sap-ushell-config']['applications']);
         }
     } catch (error) {
         console.warn('Failed to fetch sap-ui-version.json. Assuming it is a 1.x version.');
