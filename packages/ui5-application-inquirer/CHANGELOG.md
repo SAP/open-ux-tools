@@ -1,5 +1,51 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.7.1
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+
+## 0.7.0
+
+### Minor Changes
+
+-   a64a3a5: Alert and prevent from generating a Fiori application into a CAP project folder
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+
+## 0.6.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.27.4
+
+## 0.6.5
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+
+## 0.6.4
+
+### Patch Changes
+
+-   09522df: Validates provided path does not contain a Fiori project, appropriate validation message displayed.
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+
 ## 0.6.2
 
 ### Patch Changes

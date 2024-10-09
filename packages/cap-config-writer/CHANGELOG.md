@@ -1,5 +1,95 @@
 # @sap-ux/cap-config-writer
 
+## 0.7.46
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/fiori-generator-shared@0.6.1
+
+## 0.7.45
+
+### Patch Changes
+
+-   Updated dependencies [d40af34]
+    -   @sap-ux/fiori-generator-shared@0.6.0
+
+## 0.7.44
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/fiori-generator-shared@0.5.1
+
+## 0.7.43
+
+### Patch Changes
+
+-   Updated dependencies [04988f1]
+    -   @sap-ux/fiori-generator-shared@0.5.0
+
+## 0.7.42
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/fiori-generator-shared@0.4.0
+    -   @sap-ux/project-access@1.27.4
+
+## 0.7.41
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/fiori-generator-shared@0.3.21
+
+## 0.7.40
+
+### Patch Changes
+
+-   614045c: Moves type only dep as dev dep to odata-service-inquirer
+
+## 0.7.39
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/fiori-generator-shared@0.3.20
+    -   @sap-ux/odata-service-inquirer@0.5.39
+
+## 0.7.38
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.38
+
+## 0.7.37
+
+### Patch Changes
+
+-   Updated dependencies [97f1d2a]
+    -   @sap-ux/odata-service-inquirer@0.5.37
+
+## 0.7.36
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/odata-service-inquirer@0.5.36
+    -   @sap-ux/fiori-generator-shared@0.3.19
+
+## 0.7.35
+
+### Patch Changes
+
+-   Updated dependencies [eb958a1]
+    -   @sap-ux/odata-service-inquirer@0.5.35
+
 ## 0.7.34
 
 ### Patch Changes

@@ -19,22 +19,6 @@ import styles from './ChangesPanel.module.scss';
 import { FileChange } from './FileChange';
 import { defaultFontSize } from '../properties/constants';
 
-export interface ChangeProps {
-    controlId: string;
-    controlName: string;
-    changeIndex: number;
-    changeType: string;
-    propertyName: string;
-    value: string | number | boolean;
-    isActive: boolean;
-    timestamp?: number;
-    fileName?: string;
-    /**
-     * Class used for showing and hiding actions
-     */
-    actionClassName: string;
-}
-
 /**
  * React element for ChangePanel.
  *
@@ -70,7 +54,7 @@ export function ChangesPanel(): ReactElement {
                         <Separator />
                         <Icon iconName="Info" title={fileChangesTooltip} className={styles.infoIcon} />
                         <ChangeStackHeader
-                            backgroundColor="var(--vscode-sideBar-background);"
+                            backgroundColor="var(--vscode-sideBar-background)"
                             color="var(--vscode-editor-foreground)"
                             fontSize={defaultFontSize}
                             tooltip={fileChangesTooltip}
@@ -85,7 +69,7 @@ export function ChangesPanel(): ReactElement {
                     <>
                         <Separator />
                         <ChangeStackHeader
-                            backgroundColor="var(--vscode-sideBar-background);"
+                            backgroundColor="var(--vscode-sideBar-background)"
                             color="var(--vscode-editor-foreground)"
                             text={t('CHANGE_SUMMARY_UNSAVED_CHANGES')}
                         />
@@ -97,7 +81,7 @@ export function ChangesPanel(): ReactElement {
                     <>
                         <Separator />
                         <ChangeStackHeader
-                            backgroundColor="var(--vscode-sideBar-background);"
+                            backgroundColor="var(--vscode-sideBar-background)"
                             color="var(--vscode-terminal-ansiGreen)"
                             text={t('CHANGE_SUMMARY_SAVED_CHANGES')}
                         />
@@ -120,7 +104,7 @@ export function ChangesPanel(): ReactElement {
                     onChange={onFilterChange}
                 />
             </div>
-            {renderChanges()}
+            <div className="app-panel-scroller auto-element-scroller">{renderChanges()}</div>
         </>
     );
 }

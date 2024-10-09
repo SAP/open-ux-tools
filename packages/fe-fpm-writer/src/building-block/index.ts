@@ -2,14 +2,19 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import { join, parse } from 'path';
+import { join, parse, relative } from 'path';
 import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
-import { getErrorMessage, validateBasePath } from '../common/validate';
+import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
+import { coerce, lt } from 'semver';
+import type { Manifest } from '../common/types';
+import { getMinimumUI5Version } from '@sap-ux/project-access';
+import { detectTabSpacing, extendJSON } from '../common/file';
+import { getManifest, getManifestPath } from '../common/utils';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -30,24 +35,40 @@ interface MetadataPath {
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Editor} the updated memfs editor instance
  */
-export function generateBuildingBlock<T extends BuildingBlock>(
+export async function generateBuildingBlock<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
     fs?: Editor
-): Editor {
+): Promise<Editor> {
+    const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
     if (!fs) {
         fs = create(createStorage());
     }
-    validateBasePath(basePath, fs, ['sap.fe.templates', 'sap.fe.core']);
-    if (!fs.exists(join(basePath, config.viewOrFragmentPath))) {
-        throw new Error(`Invalid view path ${config.viewOrFragmentPath}.`);
+    validateBasePath(basePath, fs, []);
+
+    if (!fs.exists(join(basePath, viewOrFragmentPath))) {
+        throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
     }
 
     // Read the view xml and template files and update contents of the view xml file
-    const xmlDocument = getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs);
-    const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs);
-    fs = updateViewFile(basePath, config.viewOrFragmentPath, config.aggregationPath, xmlDocument, templateDocument, fs);
+    const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
+    const { content: manifest } = await getManifest(basePath, fs);
+    const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
+    fs = updateViewFile(basePath, viewOrFragmentPath, aggregationPath, xmlDocument, templateDocument, fs);
+
+    if (allowAutoAddDependencyLib && manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
+        // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
+        const manifestPath = await getManifestPath(basePath, fs);
+        const manifestContent = await getManifestContent(fs);
+        const content = fs.read(manifestPath);
+        const tabInfo = detectTabSpacing(content);
+        extendJSON(fs, {
+            filepath: manifestPath,
+            content: manifestContent,
+            tabInfo: tabInfo
+        });
+    }
 
     return fs;
 }
@@ -101,12 +122,12 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
 /**
  * Method returns default values for metadata path.
  *
- * @param {BuildingBlockType} type - building vlock type.
+ * @param {boolean} applyContextPath - whether to apply contextPath.
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
  * @returns {MetadataPath} Default values for metadata path.
  */
-function getDefaultMetaPath(type: BuildingBlockType, usePlaceholders?: boolean): MetadataPath {
-    if (type === BuildingBlockType.Chart) {
+function getDefaultMetaPath(applyContextPath: boolean, usePlaceholders?: boolean): MetadataPath {
+    if (applyContextPath) {
         return {
             metaPath: usePlaceholders ? `/${PLACEHOLDERS.qualifier}` : '',
             contextPath: usePlaceholders ? PLACEHOLDERS.entitySet : ''
@@ -120,25 +141,24 @@ function getDefaultMetaPath(type: BuildingBlockType, usePlaceholders?: boolean):
 /**
  * Method converts object based metaPath to metadata path.
  *
- * @param {BuildingBlockType} type - building vlock type.
+ * @param {boolean} applyContextPath - whether to apply contextPath.
  * @param {BuildingBlockMetaPath} metaPath - object based metaPath.
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
  * @returns {MetadataPath} Resolved metadata path information.
  */
 function getMetaPath(
-    type: BuildingBlockType,
+    applyContextPath: boolean,
     metaPath?: BuildingBlockMetaPath,
     usePlaceholders?: boolean
 ): MetadataPath {
     if (!metaPath) {
-        return getDefaultMetaPath(type, usePlaceholders);
+        return getDefaultMetaPath(applyContextPath, usePlaceholders);
     }
-    const { bindingContextType = 'absolute' } = metaPath;
+    const { bindingContextType = 'absolute', alwaysAbsolutePath = true } = metaPath;
     let { entitySet, qualifier } = metaPath;
     entitySet = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
     const qualifierOrPlaceholder = qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '');
-    if (type === BuildingBlockType.Chart) {
-        // Special handling for chart - while runtime does not support approach without contextPath
+    if (applyContextPath) {
         const qualifierParts: string[] = qualifierOrPlaceholder.split('/');
         qualifier = qualifierParts.pop() as string;
         return {
@@ -147,7 +167,10 @@ function getMetaPath(
         };
     }
     return {
-        metaPath: bindingContextType === 'absolute' ? `/${entitySet}/${qualifierOrPlaceholder}` : qualifierOrPlaceholder
+        metaPath:
+            bindingContextType === 'absolute' || alwaysAbsolutePath
+                ? `/${entitySet}/${qualifierOrPlaceholder}`
+                : qualifierOrPlaceholder
     };
 }
 
@@ -156,6 +179,7 @@ function getMetaPath(
  *
  * @param {BuildingBlock} buildingBlockData - the building block data
  * @param {Document} viewDocument - the view xml file document
+ * @param {Manifest} manifest - the manifest content
  * @param {Editor} fs - the memfs editor instance
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
  * @returns {string} the template xml file content
@@ -163,18 +187,21 @@ function getMetaPath(
 function getTemplateContent<T extends BuildingBlock>(
     buildingBlockData: T,
     viewDocument: Document | undefined,
+    manifest: Manifest | undefined,
     fs: Editor,
     usePlaceholders?: boolean
 ): string {
     const templateFolderName = buildingBlockData.buildingBlockType;
     const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
     if (typeof buildingBlockData.metaPath === 'object' || buildingBlockData.metaPath === undefined) {
+        // Special handling for chart - while runtime does not support approach without contextPath
+        // or for equal or below UI5 v1.96.0 contextPath is applied
+        const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
+        const applyContextPath =
+            buildingBlockData.buildingBlockType === BuildingBlockType.Chart ||
+            !!(minUI5Version && lt(minUI5Version, '1.97.0'));
         // Convert object based metapath to string
-        const metadataPath = getMetaPath(
-            buildingBlockData.buildingBlockType,
-            buildingBlockData.metaPath,
-            usePlaceholders
-        );
+        const metadataPath = getMetaPath(applyContextPath, buildingBlockData.metaPath, usePlaceholders);
         buildingBlockData = { ...buildingBlockData, metaPath: metadataPath.metaPath };
         if (!buildingBlockData.contextPath && metadataPath.contextPath) {
             buildingBlockData.contextPath = metadataPath.contextPath;
@@ -195,19 +222,33 @@ function getTemplateContent<T extends BuildingBlock>(
 }
 
 /**
+ * Method returns the manifest content for the required dependency library.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @returns {Promise<string>} Manifest content for the required dependency library.
+ */
+export async function getManifestContent(fs: Editor): Promise<string> {
+    // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
+    const templatePath = getTemplatePath('/building-block/common/manifest.json');
+    return render(fs.read(templatePath), { libraries: { 'sap.fe.macros': {} } });
+}
+
+/**
  * Returns the template xml file document.
  *
  * @param {BuildingBlock} buildingBlockData - the building block data
  * @param {Document} viewDocument - the view xml file document
  * @param {Editor} fs - the memfs editor instance
+ * @param  {Manifest} manifest - the manifest content
  * @returns {Document} the template xml file document
  */
 function getTemplateDocument<T extends BuildingBlock>(
     buildingBlockData: T,
     viewDocument: Document | undefined,
-    fs: Editor
+    fs: Editor,
+    manifest: Manifest | undefined
 ): Document {
-    const templateContent = getTemplateContent(buildingBlockData, viewDocument, fs);
+    const templateContent = getTemplateContent(buildingBlockData, viewDocument, manifest, fs);
     const errorHandler = (level: string, message: string) => {
         throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
     };
@@ -286,12 +327,14 @@ function getFilePathProps(basePath: string, relativePath?: string): FilePathProp
  * @param {Editor} [fs] - The memfs editor instance
  * @returns {{ [questionName: string]: CodeSnippet }} An object with serialized code snippet content and file props
  */
-export function getSerializedFileContent<T extends BuildingBlock>(
+export async function getSerializedFileContent<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
     fs?: Editor
-): { [questionName: string]: CodeSnippet } {
-    if (!config.buildingBlockData?.buildingBlockType) {
+): Promise<{ [questionName: string]: CodeSnippet }> {
+    const snippets: { [questionName: string]: CodeSnippet } = {};
+    const { buildingBlockData, viewOrFragmentPath, allowAutoAddDependencyLib = true } = config;
+    if (!buildingBlockData?.buildingBlockType) {
         return {};
     }
     // Validate the base and view paths
@@ -299,16 +342,29 @@ export function getSerializedFileContent<T extends BuildingBlock>(
         fs = create(createStorage());
     }
     // Read the view xml and template files and get content of the view xml file
-    const xmlDocument = config.viewOrFragmentPath
-        ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
-        : undefined;
-    const content = getTemplateContent(config.buildingBlockData, xmlDocument, fs, true);
-    const filePathProps = getFilePathProps(basePath, config.viewOrFragmentPath);
-    return {
-        viewOrFragmentPath: {
-            content,
-            language: CodeSnippetLanguage.XML,
-            filePathProps
-        }
+    const xmlDocument = viewOrFragmentPath ? getUI5XmlDocument(basePath, viewOrFragmentPath, fs) : undefined;
+    const { content: manifest, path: manifestPath } = await getManifest(basePath, fs, false);
+    const content = getTemplateContent(buildingBlockData, xmlDocument, manifest, fs, true);
+    const filePathProps = getFilePathProps(basePath, viewOrFragmentPath);
+    // Snippet for fragment xml
+    snippets['viewOrFragmentPath'] = {
+        content,
+        language: CodeSnippetLanguage.XML,
+        filePathProps
     };
+    // Snippet for manifest.json
+    if (allowAutoAddDependencyLib) {
+        const manifestContent = await getManifestContent(fs);
+        snippets['manifest'] = {
+            content: manifestContent,
+            language: CodeSnippetLanguage.JSON,
+            filePathProps: {
+                fileName: parse(manifestPath).base,
+                relativePath: relative(basePath, manifestPath),
+                fullPath: manifestPath
+            }
+        };
+    }
+
+    return snippets;
 }

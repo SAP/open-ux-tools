@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux-private/preview-middleware-client",
-    "version": "0.10.9",
+    "version": "0.11.14",
     "description": "Client-side coding hosted by the preview middleware",
     "repository": {
         "type": "git",
@@ -11,7 +11,9 @@
     "private": true,
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --noEmit && ui5 build --clean-dest --exclude-task minify --exclude-task generateComponentPreload",
+        "build": "npm-run-all -l -p build:type-check build:component",
+        "build:type-check": "tsc --noEmit",
+        "build:component": "ui5 build --clean-dest --exclude-task minify --exclude-task generateComponentPreload",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
@@ -30,7 +32,9 @@
         "ui5-tooling-modules": "3.0.5",
         "@sap-ux-private/control-property-editor-common": "workspace:*",
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
+        "@sap-ux/i18n": "workspace:*",
         "@ui5/cli": "3.8.0",
+        "npm-run-all2": "6.2.0",
         "ui5-tooling-transpile": "3.4.0"
     },
     "browserslist": "defaults"

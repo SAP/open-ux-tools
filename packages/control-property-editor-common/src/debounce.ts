@@ -6,9 +6,9 @@
  * @param delay Idle period in milliseconds after which the callback will be executed
  * @returns A wrapper function that should be called to invoke the callback function after delay
  */
-export function debounce(callback: Function, delay: number): (args?: unknown[]) => void {
+export function debounce<T extends []>(callback: (...args: T) => void, delay: number): (...args: T) => void {
     let timerId: NodeJS.Timeout;
-    return (...args): void => {
+    return (...args: T): void => {
         clearTimeout(timerId);
 
         timerId = setTimeout(() => {

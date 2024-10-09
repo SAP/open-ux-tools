@@ -1,5 +1,122 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 0.0.25
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/fiori-generator-shared@0.6.1
+-   @sap-ux/system-access@0.5.12
+
+## 0.0.24
+
+### Patch Changes
+
+-   Updated dependencies [d40af34]
+    -   @sap-ux/fiori-generator-shared@0.6.0
+
+## 0.0.23
+
+### Patch Changes
+
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/store@0.9.2
+    -   @sap-ux/system-access@0.5.12
+    -   @sap-ux/ui5-config@0.25.0
+
+## 0.0.22
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/fiori-generator-shared@0.5.1
+-   @sap-ux/system-access@0.5.11
+
+## 0.0.21
+
+### Patch Changes
+
+-   Updated dependencies [04988f1]
+    -   @sap-ux/fiori-generator-shared@0.5.0
+
+## 0.0.20
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/fiori-generator-shared@0.4.0
+    -   @sap-ux/ui5-config@0.25.0
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/system-access@0.5.11
+
+## 0.0.19
+
+### Patch Changes
+
+-   7b60a4c: update destination validator
+
+## 0.0.18
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/fiori-generator-shared@0.3.21
+-   @sap-ux/system-access@0.5.11
+
+## 0.0.17
+
+### Patch Changes
+
+-   c538657: handle missing www-auth header
+
+## 0.0.16
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/fiori-generator-shared@0.3.20
+-   @sap-ux/system-access@0.5.11
+
+## 0.0.15
+
+### Patch Changes
+
+-   Updated dependencies [aa72f3c]
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/system-access@0.5.11
+
+## 0.0.14
+
+### Patch Changes
+
+-   515900b: cleanup prompts and translation text
+
+## 0.0.13
+
+### Patch Changes
+
+-   8467c87: cleanup validation around autocomplete
+
+## 0.0.12
+
+### Patch Changes
+
+-   40ce4ca: remove inquirer package
+
+## 0.0.11
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.5
+-   @sap-ux/fiori-generator-shared@0.3.19
+-   @sap-ux/system-access@0.5.10
+
+## 0.0.10
+
+### Patch Changes
+
+-   7926d8c: Add missing dependencies
+
 ## 0.0.9
 
 ### Patch Changes

@@ -56,6 +56,7 @@
   "SAVED_CHANGES": "All changes on this {{type}} are saved",
   "SAVED_VALUE": "Saved value",
   "SAVE_AND_RELOAD": "Save and Reload",
+  "SAVE_AND_RELOAD_REQUIRED": "Changes will be visible after reload.",
   "RELOAD": "Reload",
   "CONFIRM_DELETE": "Delete",
   "CANCEL_DELETE": "Cancel",
@@ -84,5 +85,7 @@
   "UNDO": "Undo",
   "REDO": "Redo",
   "NAVIGATION": "Navigation",
-  "NAVIGATE": "Navigate"
+  "NAVIGATE": "Navigate",
+  "LIST": "list",
+  "QUICK_ACTIONS": "{{title}} QUICK ACTIONS"
 }

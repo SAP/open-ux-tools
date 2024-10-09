@@ -1,5 +1,42 @@
 # @sap-ux/project-access
 
+## 1.27.6
+
+### Patch Changes
+
+-   eb74890: Fix the bug for the app folder within CAP as the target folder for the new project.
+
+## 1.27.5
+
+### Patch Changes
+
+-   a64a3a5: Alert and prevent from generating a Fiori application into a CAP project folder
+
+## 1.27.4
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/ui5-config@0.25.0
+
+## 1.27.3
+
+### Patch Changes
+
+-   070182d: New public API method 'deleteCapApp', which allow delete application from CAP project
+
+## 1.27.2
+
+### Patch Changes
+
+-   09522df: Validates provided path does not contain a Fiori project, appropriate validation message displayed.
+
+## 1.27.1
+
+### Patch Changes
+
+-   d962ce1: Move hasUI5CliV3 to project-access for common re-use
+
 ## 1.27.0
 
 ### Minor Changes

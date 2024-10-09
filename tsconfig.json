@@ -102,6 +102,9 @@
       "path": "packages/fiori-generator-shared"
     },
     {
+      "path": "packages/fiori-tools-settings"
+    },
+    {
       "path": "packages/guided-answers-helper"
     },
     {
@@ -207,6 +210,9 @@
       "path": "packages/ui5-library-reference-writer"
     },
     {
+      "path": "packages/ui5-library-sub-generator"
+    },
+    {
       "path": "packages/ui5-library-writer"
     },
     {
@@ -228,10 +234,10 @@
       "path": "examples/odata-cli"
     },
     {
-      "path": "examples/prompting-ui"
+      "path": "examples/simple-generator"
     },
     {
-      "path": "examples/simple-generator"
+      "path": "examples/ui-prompting-examples"
     }
   ]
 }

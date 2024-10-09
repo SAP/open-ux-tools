@@ -1,12 +1,16 @@
 import {
+    applicationModeChanged,
     changeStackModified,
     iconsLoaded,
+    setApplicationRequiresReload,
     propertyChanged,
     propertyChangeFailed,
+    quickActionListChanged,
     reloadApplication,
     SCENARIO,
     showMessage,
-    storageFileChanged
+    storageFileChanged,
+    updateQuickAction
 } from '@sap-ux-private/control-property-editor-common';
 
 import reducer, {
@@ -15,7 +19,8 @@ import reducer, {
     changeProperty,
     changeDeviceType,
     setProjectScenario,
-    fileChanged
+    fileChanged,
+    initialState
 } from '../../src/slice';
 import { DeviceType } from '../../src/devices';
 
@@ -51,39 +56,6 @@ describe('main redux slice', () => {
                         }
                     ]
                 }
-            });
-        });
-
-        test('filterNodes', () => {
-            expect(
-                reducer(
-                    {
-                        filterQuery: [
-                            { name: FilterName.focusEditable, value: false },
-                            { name: FilterName.focusCommonlyUsed, value: false },
-                            { name: FilterName.query, value: '' }
-                        ]
-                    } as any,
-                    filterNodes([
-                        { name: FilterName.focusEditable, value: false },
-                        { name: FilterName.focusCommonlyUsed, value: false }
-                    ])
-                )
-            ).toStrictEqual({
-                filterQuery: [
-                    {
-                        name: 'focus-editable-controls',
-                        value: false
-                    },
-                    {
-                        name: 'focus-commonly-used-controls',
-                        value: false
-                    },
-                    {
-                        name: 'query',
-                        value: ''
-                    }
-                ]
             });
         });
 
@@ -153,24 +125,6 @@ describe('main redux slice', () => {
             });
         });
 
-        test('changeDeviceType', () => {
-            expect(
-                reducer({ deviceType: DeviceType.Desktop } as any, changeDeviceType(DeviceType.Desktop))
-            ).toStrictEqual({
-                deviceType: DeviceType.Desktop
-            });
-        });
-
-        test('iconsLoaded', () => {
-            expect(reducer({ icons: [] } as any, iconsLoaded([]))).toStrictEqual({ icons: [] });
-        });
-
-        test('setProjectScenario', () => {
-            expect(
-                reducer({ scenario: SCENARIO.UiAdaptation } as any, setProjectScenario(SCENARIO.AdaptationProject))
-            ).toStrictEqual({ scenario: SCENARIO.AdaptationProject, isAdpProject: true });
-        });
-
         test('non existing property', () => {
             expect(
                 reducer(
@@ -217,6 +171,7 @@ describe('main redux slice', () => {
                     changeStackModified({
                         pending: [
                             {
+                                kind: 'property',
                                 type: 'pending',
                                 controlName: 'Button',
                                 controlId: 'control1',
@@ -233,7 +188,7 @@ describe('main redux slice', () => {
                                 controlName: 'Button',
                                 propertyName: 'text',
                                 type: 'saved',
-                                kind: 'valid',
+                                kind: 'property',
                                 fileName: 'file',
                                 timestamp: 123,
                                 value: 'abc',
@@ -252,6 +207,7 @@ describe('main redux slice', () => {
                             properties: {
                                 text: {
                                     lastChange: {
+                                        kind: 'property',
                                         changeType: 'propertyChange',
                                         controlName: 'Button',
                                         controlId: 'control1',
@@ -265,7 +221,7 @@ describe('main redux slice', () => {
                                         changeType: 'propertyChange',
                                         controlId: 'control1',
                                         controlName: 'Button',
-                                        kind: 'valid',
+                                        kind: 'property',
                                         fileName: 'file',
                                         propertyName: 'text',
                                         timestamp: 123,
@@ -280,6 +236,7 @@ describe('main redux slice', () => {
                     },
                     pending: [
                         {
+                            kind: 'property',
                             changeType: 'propertyChange',
                             type: 'pending',
                             controlName: 'Button',
@@ -297,7 +254,7 @@ describe('main redux slice', () => {
                             controlName: 'Button',
                             propertyName: 'text',
                             type: 'saved',
-                            kind: 'valid',
+                            kind: 'property',
                             fileName: 'file',
                             timestamp: 123,
                             value: 'abc'
@@ -306,8 +263,95 @@ describe('main redux slice', () => {
                 }
             });
         });
+    });
 
-        test('fileChanged (UI change)', () => {
+    test('showMessage', () => {
+        expect(reducer({} as any, showMessage({ message: 'testMessage', shouldHideIframe: false }))).toStrictEqual({
+            dialogMessage: { message: 'testMessage', shouldHideIframe: false }
+        });
+    });
+
+    test('storageFileChanged', () => {
+        expect(
+            reducer(
+                {
+                    changes: {
+                        saved: [],
+                        pending: [],
+                        controls: [], // make sure that old value is not reused
+                        pendingChangeIds: ['testFile1']
+                    }
+                } as any,
+                storageFileChanged('testFile2')
+            )
+        ).toStrictEqual({
+            'changes': {
+                'controls': [],
+                'pending': [],
+                'pendingChangeIds': ['testFile1', 'testFile2'],
+                'saved': []
+            }
+        });
+    });
+    test('changeDeviceType', () => {
+        expect(reducer({ deviceType: DeviceType.Desktop } as any, changeDeviceType(DeviceType.Desktop))).toStrictEqual({
+            deviceType: DeviceType.Desktop
+        });
+    });
+    describe('setApplicationRequiresReload', () => {
+        test('one change requires reload', () => {
+            expect(
+                reducer({ applicationRequiresReload: false } as any, setApplicationRequiresReload(true))
+            ).toStrictEqual({
+                applicationRequiresReload: true
+            });
+        });
+        test('no changes require reload', () => {
+            expect(
+                reducer({ applicationRequiresReload: true } as any, setApplicationRequiresReload(false))
+            ).toStrictEqual({
+                applicationRequiresReload: false
+            });
+        });
+    });
+
+    describe('filterNodes', () => {
+        test('disable "focusEditable" and "focusCommonlyUsed"', () => {
+            expect(
+                reducer(
+                    {
+                        filterQuery: [
+                            { name: FilterName.focusEditable, value: true },
+                            { name: FilterName.focusCommonlyUsed, value: true },
+                            { name: FilterName.query, value: '' }
+                        ]
+                    } as any,
+                    filterNodes([
+                        { name: FilterName.focusEditable, value: false },
+                        { name: FilterName.focusCommonlyUsed, value: false }
+                    ])
+                )
+            ).toStrictEqual({
+                filterQuery: [
+                    {
+                        name: 'focus-editable-controls',
+                        value: false
+                    },
+                    {
+                        name: 'focus-commonly-used-controls',
+                        value: false
+                    },
+                    {
+                        name: 'query',
+                        value: ''
+                    }
+                ]
+            });
+        });
+    });
+
+    describe('fileChanged', () => {
+        test('UI change', () => {
             expect(
                 reducer(
                     {
@@ -326,7 +370,7 @@ describe('main redux slice', () => {
             });
         });
 
-        test('fileChanged (external changes (scenario 1))', () => {
+        test('external changes (scenario 1)', () => {
             expect(
                 reducer(
                     {
@@ -345,7 +389,7 @@ describe('main redux slice', () => {
             });
         });
 
-        test('fileChanged (external changes (scenario 2))', () => {
+        test('external changes (scenario 2)', () => {
             expect(
                 reducer(
                     {
@@ -364,47 +408,220 @@ describe('main redux slice', () => {
                 'fileChanges': ['testFile3', 'testFile2']
             });
         });
+    });
 
-        test('storageFileChanged', () => {
+    describe('setProjectScenario', () => {
+        test('AdaptationProject', () => {
             expect(
-                reducer(
+                reducer({ scenario: SCENARIO.UiAdaptation } as any, setProjectScenario(SCENARIO.AdaptationProject))
+            ).toStrictEqual({ scenario: SCENARIO.AdaptationProject, isAdpProject: true });
+        });
+    });
+
+    test('reloadApplication', () => {
+        expect(
+            reducer(
+                {
+                    fileChanges: ['testFile']
+                } as any,
+                reloadApplication({ save: false })
+            )
+        ).toStrictEqual({
+            fileChanges: [],
+            isAppLoading: true
+        });
+    });
+
+    test('applicationModeChanged', () => {
+        expect(
+            reducer(
+                {
+                    appMode: 'adaptation'
+                } as any,
+                applicationModeChanged('navigation')
+            )
+        ).toStrictEqual({
+            appMode: 'navigation'
+        });
+    });
+
+    test('iconsLoaded', () => {
+        expect(reducer({ icons: [] } as any, iconsLoaded([]))).toStrictEqual({ icons: [] });
+    });
+
+    test('quickActionListChanged', () => {
+        expect(
+            reducer(
+                { quickActions: [] } as any,
+                quickActionListChanged([
                     {
-                        changes: {
-                            saved: [],
-                            pending: [],
-                            controls: [], // make sure that old value is not reused
-                            pendingChangeIds: ['testFile1']
+                        actions: [
+                            {
+                                id: 'test id 1',
+                                enabled: true,
+                                kind: 'simple',
+                                title: 'test title'
+                            }
+                        ],
+                        title: 'test title 1'
+                    },
+                    {
+                        actions: [
+                            {
+                                id: 'test id 2',
+                                enabled: true,
+                                kind: 'nested',
+                                children: [
+                                    {
+                                        label: 'test label',
+                                        children: [
+                                            {
+                                                label: 'test label 2',
+                                                children: []
+                                            },
+                                            {
+                                                label: 'test label 3',
+                                                children: []
+                                            }
+                                        ]
+                                    }
+                                ],
+                                title: 'test title'
+                            }
+                        ],
+                        title: 'test title 1'
+                    }
+                ])
+            )
+        ).toStrictEqual({
+            quickActions: [
+                {
+                    actions: [
+                        {
+                            id: 'test id 1',
+                            enabled: true,
+                            kind: 'simple',
+                            title: 'test title'
                         }
-                    } as any,
-                    storageFileChanged('testFile2')
-                )
-            ).toStrictEqual({
-                'changes': {
-                    'controls': [],
-                    'pending': [],
-                    'pendingChangeIds': ['testFile1', 'testFile2'],
-                    'saved': []
+                    ],
+                    title: 'test title 1'
+                },
+                {
+                    actions: [
+                        {
+                            id: 'test id 2',
+                            enabled: true,
+                            kind: 'nested',
+                            children: [
+                                {
+                                    label: 'test label',
+                                    children: [
+                                        {
+                                            label: 'test label 2',
+                                            children: []
+                                        },
+                                        {
+                                            label: 'test label 3',
+                                            children: []
+                                        }
+                                    ]
+                                }
+                            ],
+                            title: 'test title'
+                        }
+                    ],
+                    title: 'test title 1'
                 }
-            });
+            ]
         });
+    });
 
-        test('show message', () => {
-            expect(reducer({} as any, showMessage({ message: 'testMessage', shouldHideIframe: false }))).toStrictEqual({
-                dialogMessage: { message: 'testMessage', shouldHideIframe: false }
-            });
-        });
-        test('reload application', () => {
-            expect(
-                reducer(
-                    {
-                        fileChanges: ['testFile']
-                    } as any,
-                    reloadApplication()
-                )
-            ).toStrictEqual({
-                fileChanges: [],
-                isAppLoading: true
-            });
+    test('updateQuickAction', () => {
+        expect(
+            reducer(
+                {
+                    quickActions: [
+                        {
+                            actions: [
+                                {
+                                    id: 'test id 1',
+                                    enabled: true,
+                                    kind: 'simple',
+                                    title: 'test title'
+                                }
+                            ],
+                            title: 'test title 1'
+                        },
+                        {
+                            actions: [
+                                {
+                                    id: 'test id 2',
+                                    enabled: true,
+                                    kind: 'nested',
+                                    children: [
+                                        {
+                                            label: 'test label',
+                                            children: [
+                                                {
+                                                    label: 'test label 2',
+                                                    children: []
+                                                },
+                                                {
+                                                    label: 'test label 3',
+                                                    children: []
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    title: 'test title 22'
+                                }
+                            ],
+                            title: 'test title 2'
+                        }
+                    ]
+                } as any,
+                updateQuickAction({ id: 'test id 1', enabled: false, kind: 'simple', title: 'new test' })
+            )
+        ).toStrictEqual({
+            quickActions: [
+                {
+                    actions: [
+                        {
+                            id: 'test id 1',
+                            enabled: false,
+                            kind: 'simple',
+                            title: 'new test'
+                        }
+                    ],
+                    title: 'test title 1'
+                },
+                {
+                    actions: [
+                        {
+                            id: 'test id 2',
+                            enabled: true,
+                            kind: 'nested',
+                            children: [
+                                {
+                                    label: 'test label',
+                                    children: [
+                                        {
+                                            label: 'test label 2',
+                                            children: []
+                                        },
+                                        {
+                                            label: 'test label 3',
+                                            children: []
+                                        }
+                                    ]
+                                }
+                            ],
+                            title: 'test title 22'
+                        }
+                    ],
+                    title: 'test title 2'
+                }
+            ]
         });
     });
 });

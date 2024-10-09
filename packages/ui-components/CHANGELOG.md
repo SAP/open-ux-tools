@@ -1,5 +1,47 @@
 # @sap-ux/ui-components
 
+## 1.18.6
+
+### Patch Changes
+
+-   64aacf2: Sass warning about deprecate usage of '/' for division outside of calc
+
+## 1.18.5
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+
+## 1.18.4
+
+### Patch Changes
+
+-   195d758: Applied missing styles for the disabled state of UILink.
+
+## 1.18.3
+
+### Patch Changes
+
+-   89ec1c3: Uitable a11y fix: The `:focus` style should have been added to the column header cells (not to the header row).
+
+## 1.18.2
+
+### Patch Changes
+
+-   1fdac94: UITable. Fix for react warning 'Each child in a list should have a unique "key" prop'
+
+## 1.18.1
+
+### Patch Changes
+
+-   15c57bc: fix(ui-c): accessibility updates for uitable
+
+## 1.18.0
+
+### Minor Changes
+
+-   a492b41: Provide the ability to pass any props to UITreeDropdown input.
+
 ## 1.17.9
 
 ### Patch Changes

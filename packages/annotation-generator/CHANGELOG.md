@@ -1,5 +1,86 @@
 # @sap-ux/annotation-generator
 
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/fiori-annotation-api@0.2.7
+
+## 0.2.6
+
+### Patch Changes
+
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/odata-annotation-core-types@0.4.2
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/fiori-annotation-api@0.2.6
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/fiori-annotation-api@0.2.5
+
+## 0.2.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.27.4
+-   @sap-ux/fiori-annotation-api@0.2.4
+
+## 0.2.3
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/fiori-annotation-api@0.2.3
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/fiori-annotation-api@0.2.2
+
+## 0.2.1
+
+### Patch Changes
+
+-   a0836d0: Fixed writing SAP annotations to a file outside CDS project
+-   Updated dependencies [a0836d0]
+    -   @sap-ux/fiori-annotation-api@0.2.1
+
+## 0.2.0
+
+### Minor Changes
+
+-   6ac4f50: Enable generating SAP annotations for CAP CDS projects
+
+### Patch Changes
+
+-   Updated dependencies [6ac4f50]
+    -   @sap-ux/fiori-annotation-api@0.2.0
+
+## 0.1.31
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.1.41
+
+## 0.1.30
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/fiori-annotation-api@0.1.40
+
 ## 0.1.29
 
 ### Patch Changes

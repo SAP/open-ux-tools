@@ -1,25 +1,29 @@
-import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import Log from 'sap/base/Log';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+
 import {
-    startPostMessageCommunication,
     iconsLoaded,
     enableTelemetry,
     appLoaded
 } from '@sap-ux-private/control-property-editor-common';
-import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import type { ActionHandler, Service } from './types';
-import { initOutline } from './outline/index';
+import { OutlineService } from './outline/service';
 import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
-import Log from 'sap/base/Log';
-import { logger } from './logger';
 import { getIcons } from './ui5-utils';
 import { WorkspaceConnectorService } from './connector-service';
 import { RtaService } from './rta-service';
 import { getError } from '../utils/error';
+import { QuickActionService } from './quick-actions/quick-action-service';
+import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
+import { CommunicationService } from './communication-service';
 
-export default function init(rta: RuntimeAuthoring): Promise<void> {
+export default function init(
+    rta: RuntimeAuthoring,
+    registries: QuickActionDefinitionRegistry<string>[] = []
+): Promise<void> {
     Log.info('Initializing Control Property Editor');
 
     // enable telemetry if requested
@@ -28,13 +32,12 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         enableTelemetry();
     }
 
-    const actionHandlers: ActionHandler[] = [];
     /**
      *
      * @param handler action handler
      */
     function subscribe(handler: ActionHandler): void {
-        actionHandlers.push(handler);
+        CommunicationService.subscribe(handler);
     }
 
     const selectionService = new SelectionService(rta);
@@ -42,35 +45,30 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
     const changesService = new ChangeService({ rta }, selectionService);
     const connectorService = new WorkspaceConnectorService();
     const rtaService = new RtaService(rta);
-    const services: Service[] = [selectionService, changesService, connectorService, rtaService];
+    const outlineService = new OutlineService(rta);
+    const quickActionService = new QuickActionService(rta, outlineService, registries);
+    const services: Service[] = [
+        connectorService,
+        selectionService,
+        changesService,
+        outlineService,
+        rtaService,
+        quickActionService
+    ];
+
     try {
         loadDefaultLibraries();
-        const { sendAction } = startPostMessageCommunication<ExternalAction>(
-            window.parent,
-            async function onAction(action) {
-                for (const handler of actionHandlers) {
-                    try {
-                        await handler(action);
-                    } catch (error) {
-                        Log.error('Handler Failed: ', getError(error));
-                    }
-                }
-            },
-            logger
-        );
 
         for (const service of services) {
-            service.init(sendAction, subscribe);
+            service
+                .init(CommunicationService.sendAction, subscribe)
+                ?.catch((reason) => Log.error('Service Initialization Failed: ', getError(reason)));
         }
-        // For initOutline to complete the RTA needs to already running (to access RTA provided services).
-        // That can only happen if the plugin initialization has completed.
-        initOutline(rta, sendAction).catch((error) =>
-            Log.error('Error during initialization of Control Property Editor', getError(error))
-        );
+
         const icons = getIcons();
 
-        sendAction(iconsLoaded(icons));
-        sendAction(appLoaded());
+        CommunicationService.sendAction(iconsLoaded(icons));
+        CommunicationService.sendAction(appLoaded());
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', getError(error));
     }

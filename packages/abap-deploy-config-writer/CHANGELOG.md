@@ -1,5 +1,68 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.47
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/system-access@0.5.12
+
+## 0.0.46
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+    -   @sap-ux/system-access@0.5.12
+    -   @sap-ux/ui5-config@0.25.0
+
+## 0.0.45
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/system-access@0.5.11
+
+## 0.0.44
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/ui5-config@0.25.0
+    -   @sap-ux/project-access@1.27.4
+    -   @sap-ux/system-access@0.5.11
+
+## 0.0.43
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/system-access@0.5.11
+
+## 0.0.42
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/system-access@0.5.11
+
+## 0.0.41
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.11
+
+## 0.0.40
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/system-access@0.5.10
+
 ## 0.0.39
 
 ### Patch Changes

@@ -2,9 +2,21 @@ import { latestVersionString } from '@sap-ux/ui5-info';
 import { join } from 'path';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import * as promptHelpers from '../../../src/prompts/prompt-helpers';
-import { appPathExists, defaultAppName, hidePrompts, isVersionIncluded } from '../../../src/prompts/prompt-helpers';
+import {
+    appPathExists,
+    defaultAppName,
+    hidePrompts,
+    isVersionIncluded,
+    validateTargetFolder
+} from '../../../src/prompts/prompt-helpers';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../../../src/types';
 import { promptNames } from '../../../src/types';
+import * as projectValidators from '@sap-ux/project-input-validator';
+import * as validators from '../../../src/prompts/validators';
+
+jest.mock('@sap-ux/project-input-validator', () => ({
+    validateProjectFolder: jest.fn()
+}));
 
 describe('prompt-helpers', () => {
     const testTempDir = join(__dirname, './test-tmp');
@@ -131,5 +143,26 @@ describe('prompt-helpers', () => {
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.addDeployConfig }]));
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.skipAnnotations }]));
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.ui5Version }]));
+    });
+    test('validateTargetFolder', async () => {
+        // Test when name length > 2 and both validations pass
+        jest.spyOn(projectValidators, 'validateProjectFolder').mockReturnValue(true);
+        jest.spyOn(validators, 'validateFioriAppProjectFolder').mockResolvedValue(true);
+        const resultForValidCase = await validateTargetFolder('/some/target/path', 'validName', true);
+        expect(resultForValidCase).toBe(true);
+    });
+    test('validateTargetFolder - project folder validation error', async () => {
+        // Test when Project validation fails
+        const projectErrorMessage = 'Project validation error';
+        jest.spyOn(projectValidators, 'validateProjectFolder').mockReturnValue(projectErrorMessage);
+        const resultForProjectError = await validateTargetFolder('/some/target/path', 'validName');
+        expect(resultForProjectError).toBe(projectErrorMessage);
+    });
+    test('validateTargetFolder - fiori app project validation error', async () => {
+        // Test when Fiori validation fails
+        const fioriErrorMessage = 'Fiori validation error';
+        jest.spyOn(validators, 'validateFioriAppProjectFolder').mockResolvedValue(fioriErrorMessage);
+        const resultForFioriError = await validateTargetFolder('/some/target/path', 'validName', true);
+        expect(resultForFioriError).toBe(fioriErrorMessage);
     });
 });

@@ -56,9 +56,9 @@ describe('CustomAction', () => {
             fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
         });
 
-        test.each(testVersions)('only mandatory properties', (minUI5Version) => {
+        test.each(testVersions)('only mandatory properties', async (minUI5Version) => {
             //sut
-            generateCustomColumn(testDir, { ...customColumn, minUI5Version }, fs);
+            await generateCustomColumn(testDir, { ...customColumn, minUI5Version }, fs);
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
                 updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
@@ -68,7 +68,7 @@ describe('CustomAction', () => {
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
-        test('version 1.86, with fragmentFile', () => {
+        test('version 1.86, with fragmentFile', async () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 fragmentFile: 'NewCustomColumnFragment'
@@ -77,7 +77,7 @@ describe('CustomAction', () => {
                 testDir,
                 `webapp/${customColumn.folder}/${testCustomColumn.fragmentFile}.fragment.xml`
             );
-            generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.86' }, fs);
+            await generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.86' }, fs);
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
                 updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
@@ -86,7 +86,7 @@ describe('CustomAction', () => {
 
             expect(fs.read(expectedSectionFragmentPath)).toMatchSnapshot();
         });
-        test('version 1.86, with new handler, all properties', () => {
+        test('version 1.86, with new handler, all properties', async () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 eventHandler: true,
@@ -95,7 +95,7 @@ describe('CustomAction', () => {
                 width: '150px',
                 properties: ['ID', 'TotalNetAmount', '_CustomerPaymentTerms/CustomerPaymentTerms']
             };
-            generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.86' }, fs);
+            await generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.86' }, fs);
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
                 updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
@@ -105,14 +105,14 @@ describe('CustomAction', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
             expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
         });
-        test('version 1.86, with existing handler', () => {
+        test('version 1.86, with existing handler', async () => {
             const controllerPath = 'my.test.App.ext.ExistingHandler.onCustomAction';
             fs.write(controllerPath, 'dummyContent');
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 eventHandler: controllerPath
             };
-            generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.86' }, fs);
+            await generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.86' }, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
@@ -121,7 +121,7 @@ describe('CustomAction', () => {
             expect(fs.exists(controllerPath)).toBe(true);
             expect(fs.read(controllerPath)).toEqual('dummyContent');
         });
-        test('version 1.85, no handler, all properties', () => {
+        test('version 1.85, no handler, all properties', async () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 availability: Availability.Adaptation,
@@ -129,7 +129,7 @@ describe('CustomAction', () => {
                 width: '150px'
             };
 
-            generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.85' }, fs);
+            await generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.85' }, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -139,13 +139,13 @@ describe('CustomAction', () => {
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
-        test('with custom control passed in interface', () => {
+        test('with custom control passed in interface', async () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 control: '<CustomXML text="" />'
             };
 
-            generateCustomColumn(testDir, testCustomColumn, fs);
+            await generateCustomColumn(testDir, testCustomColumn, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -155,7 +155,7 @@ describe('CustomAction', () => {
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
-        test('version 1.85, no handler, no fs, all properties', () => {
+        test('version 1.85, no handler, no fs, all properties', async () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 availability: Availability.Adaptation,
@@ -167,7 +167,7 @@ describe('CustomAction', () => {
                 }
             };
 
-            const testFS = generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.85' });
+            const testFS = await generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.85' });
 
             const updatedManifest = testFS.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -177,14 +177,14 @@ describe('CustomAction', () => {
             expect(testFS.read(expectedFragmentPath)).toMatchSnapshot();
         });
 
-        test('version 1.102, no handler, filename lowercase', () => {
+        test('version 1.102, no handler, filename lowercase', async () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 name: 'newCustomColumn',
                 folder: 'extensions/custom'
             };
 
-            const testFS = generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
+            const testFS = await generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
             const fragmentPath = join(
                 testDir,
                 `webapp`,
@@ -194,14 +194,14 @@ describe('CustomAction', () => {
             expect(testFS.exists(fragmentPath)).toBeTruthy();
         });
 
-        test('version 1.102, no handler, filename lowercase, no folder passed', () => {
+        test('version 1.102, no handler, filename lowercase, no folder passed', async () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 name: 'newCustomColumn',
                 folder: undefined
             };
 
-            const testFS = generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
+            const testFS = await generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
             const fragmentPath = join(
                 testDir,
                 `webapp`,
@@ -212,14 +212,14 @@ describe('CustomAction', () => {
             expect(testFS.exists(fragmentPath)).toBeTruthy();
         });
 
-        test('version 1.102, no handler, filename lowercase, folder uppercase', () => {
+        test('version 1.102, no handler, filename lowercase, folder uppercase', async () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 name: 'newCustomColumn',
                 folder: 'extensions/Custom'
             };
 
-            const testFS = generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
+            const testFS = await generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
             const fragmentPath = join(
                 testDir,
                 `webapp`,
@@ -230,41 +230,41 @@ describe('CustomAction', () => {
         });
 
         describe('Test property "eventHandler"', () => {
-            const generateCustomColumnWithEventHandler = (
+            const generateCustomColumnWithEventHandler = async (
                 columnId: string,
                 eventHandler: string | EventHandlerConfiguration,
                 folder?: string
             ) => {
-                generateCustomColumn(testDir, { ...customColumn, name: columnId, folder, eventHandler }, fs);
+                await generateCustomColumn(testDir, { ...customColumn, name: columnId, folder, eventHandler }, fs);
             };
 
-            test('"eventHandler" is empty "object" - create new file with default function name', () => {
+            test('"eventHandler" is empty "object" - create new file with default function name', async () => {
                 const id = customColumn.name;
-                generateCustomColumnWithEventHandler(id, {}, customColumn.folder);
+                await generateCustomColumnWithEventHandler(id, {}, customColumn.folder);
                 const xmlPath = join(testDir, `webapp/${customColumn.folder}/${id}.fragment.xml`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
             });
 
-            test('"eventHandler" is "object" - create new file with custom file and function names', () => {
+            test('"eventHandler" is "object" - create new file with custom file and function names', async () => {
                 const extension = {
                     fnName: 'DummyOnAction',
                     fileName: 'dummyAction'
                 };
                 const id = customColumn.name;
-                generateCustomColumnWithEventHandler(id, extension, customColumn.folder);
+                await generateCustomColumnWithEventHandler(id, extension, customColumn.folder);
                 const fragmentName = `${id}.fragment.xml`;
                 const xmlPath = join(testDir, `webapp/${customColumn.folder}/${fragmentName}`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace(fragmentName, `${extension.fileName}.js`))).toMatchSnapshot();
             });
 
-            test('"eventHandler" is "object" - create new file with custom function name', () => {
+            test('"eventHandler" is "object" - create new file with custom function name', async () => {
                 const extension = {
                     fnName: 'DummyOnAction'
                 };
                 const id = customColumn.name;
-                generateCustomColumnWithEventHandler(id, extension, customColumn.folder);
+                await generateCustomColumnWithEventHandler(id, extension, customColumn.folder);
                 const xmlPath = join(testDir, `webapp/${customColumn.folder}/${id}.fragment.xml`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
@@ -282,7 +282,7 @@ describe('CustomAction', () => {
                 ['absolute position', 196, 8]
             ])(
                 '"eventHandler" is object. Append new function to existing js file with %s',
-                (_desc: string, position: number | FileContentPosition, appendLines?: number) => {
+                async (_desc: string, position: number | FileContentPosition, appendLines?: number) => {
                     const fileName = 'MyExistingAction';
                     // Create existing file with existing actions
                     const folder = join('extensions', 'custom');
@@ -307,7 +307,7 @@ describe('CustomAction', () => {
                     };
 
                     const id = customColumn.name;
-                    generateCustomColumnWithEventHandler(id, extension, folder);
+                    await generateCustomColumnWithEventHandler(id, extension, folder);
                     const xmlPath = join(testDir, 'webapp', folder, `${id}.fragment.xml`);
                     expect(fs.read(xmlPath)).toMatchSnapshot();
                     // Check update js file content
@@ -317,8 +317,8 @@ describe('CustomAction', () => {
         });
 
         describe('Test property custom "tabSizing"', () => {
-            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
-                generateCustomColumn(
+            test.each(tabSizingTestCases)('$name', async ({ tabInfo, expectedAfterSave }) => {
+                await generateCustomColumn(
                     testDir,
                     {
                         ...customColumn,
@@ -330,7 +330,7 @@ describe('CustomAction', () => {
                 let result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
                 // Generate another columns and check if new tab sizing recalculated correctly without passing tab size info
-                generateCustomColumn(
+                await generateCustomColumn(
                     testDir,
                     {
                         ...customColumn,

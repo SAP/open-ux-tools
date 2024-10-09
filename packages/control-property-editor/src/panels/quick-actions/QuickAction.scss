@@ -1,0 +1,30 @@
+.quick-action-group-item-list {
+    margin-bottom: 15px;
+}
+
+.quick-action-item {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+    button.ms-Link {
+        display: flex;
+        align-items: center;
+        max-width: 270px;
+        padding-right: 2px;
+        font-size: 13px;
+        font-weight: bold;
+        line-height: 15px;
+        .link-text {
+            direction: ltr;
+        }
+        i.ts-icon {
+            display: flex; 
+            svg {
+                align-self: center;
+                path {
+                    fill: var(--vscode-textLink-foreground);
+                }
+            }
+        }
+    }
+}

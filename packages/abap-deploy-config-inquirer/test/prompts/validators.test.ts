@@ -45,6 +45,13 @@ describe('Test validators', () => {
             expect(PromptState.abapDeployConfig.url).toBe('https://mock.url.dest2.com');
             expect(result).toBe(true);
         });
+
+        it('should return false for invalid destination', async () => {
+            const result = validateDestinationQuestion('', mockDestinations);
+            expect(PromptState.abapDeployConfig.destination).toBe(undefined);
+            expect(PromptState.abapDeployConfig.url).toBe(undefined);
+            expect(result).toBe(false);
+        });
     });
 
     describe('validateTargetSystem', () => {
@@ -90,7 +97,7 @@ describe('Test validators', () => {
     });
 
     describe('validateUrl', () => {
-        it('should return true for valid URL', () => {
+        it('should return true for valid URL found in backend', () => {
             jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue({
                 name: 'Target1',
                 url: 'https://mock.url.target1.com',
@@ -100,9 +107,28 @@ describe('Test validators', () => {
             });
             let result = validateUrl('https://mock.url.target1.com');
             expect(result).toBe(true);
+            expect(PromptState.abapDeployConfig).toStrictEqual({
+                url: 'https://mock.url.target1.com',
+                client: '001',
+                destination: undefined,
+                isS4HC: true,
+                scp: true,
+                targetSystem: undefined
+            });
+        });
 
-            result = validateUrl('https://mock.url.target1.com');
+        it('should return true for valid URL not found in backend', () => {
+            jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue(undefined);
+            const result = validateUrl('https://mock.notfound.url.target1.com');
             expect(result).toBe(true);
+            expect(PromptState.abapDeployConfig).toStrictEqual({
+                url: 'https://mock.notfound.url.target1.com',
+                client: undefined,
+                destination: undefined,
+                isS4HC: false,
+                scp: false,
+                targetSystem: undefined
+            });
         });
 
         it('should return false empty URL', () => {
@@ -417,7 +443,7 @@ describe('Test validators', () => {
         it('should return true for valid transport', async () => {
             PromptState.transportAnswers.transportRequired = true;
             const result = validateTransportQuestion('');
-            expect(result).toBe(t('prompts.config.transport.provideTransportRequest'));
+            expect(result).toBe(t('prompts.config.transport.common.provideTransportRequest'));
         });
 
         it('should return true when transport is not required', async () => {

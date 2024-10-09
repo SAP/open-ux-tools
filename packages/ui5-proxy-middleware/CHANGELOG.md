@@ -1,5 +1,18 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.4.7
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/ui5-config@0.25.0
+
+## 1.4.6
+
+### Patch Changes
+
+-   8aa367a: Fix: directLoad: true does not work and fails with Error: EISDIR: illegal operation on a directory, read
+
 ## 1.4.5
 
 ### Patch Changes

@@ -1,5 +1,165 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.3.5
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.7
+-   @sap-ux/fiori-generator-shared@0.6.1
+-   @sap-ux/odata-service-writer@0.23.0
+-   @sap-ux/ui5-application-writer@1.2.0
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.4
+
+### Patch Changes
+
+-   Updated dependencies [d40af34]
+    -   @sap-ux/fiori-generator-shared@0.6.0
+
+## 1.3.3
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.25.0
+-   @sap-ux/fe-fpm-writer@0.31.6
+
+## 1.3.2
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.5
+-   @sap-ux/fiori-generator-shared@0.5.1
+-   @sap-ux/odata-service-writer@0.23.0
+-   @sap-ux/ui5-application-writer@1.2.0
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.1
+
+### Patch Changes
+
+-   Updated dependencies [05b554d]
+    -   @sap-ux/fe-fpm-writer@0.31.4
+
+## 1.3.0
+
+### Minor Changes
+
+-   04988f1: Refactor shared logic for generating package.json scripts for FF and FE
+
+### Patch Changes
+
+-   Updated dependencies [04988f1]
+    -   @sap-ux/fiori-generator-shared@0.5.0
+
+## 1.2.0
+
+### Minor Changes
+
+-   484195d: Enhancements to FE & FF Configurations: The updates include adding the `start-variants-management` script to `package.json` for FE and FF. The OdataService interface now has an `ignoreCertError` property. UI5 application writer introduces the `sapuxLayer` property to `package.json` templates and adds `fiori-tools-preview middleware` to ui5, ui5-mock, and ui5-local.yaml. Additionally, the `addFioriToolsPreviewMiddleware` function has been added for YAML config integration.
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/fiori-generator-shared@0.4.0
+    -   @sap-ux/ui5-application-writer@1.2.0
+    -   @sap-ux/odata-service-writer@0.23.0
+    -   @sap-ux/ui5-config@0.25.0
+    -   @sap-ux/fe-fpm-writer@0.31.3
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.1.24
+
+### Patch Changes
+
+-   Updated dependencies [a18d4a2]
+    -   @sap-ux/fe-fpm-writer@0.31.2
+
+## 1.1.23
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.1
+-   @sap-ux/fiori-generator-shared@0.3.21
+-   @sap-ux/odata-service-writer@0.22.5
+-   @sap-ux/ui5-application-writer@1.1.6
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.1.22
+
+### Patch Changes
+
+-   Updated dependencies [327ebec]
+    -   @sap-ux/fe-fpm-writer@0.31.0
+
+## 1.1.21
+
+### Patch Changes
+
+-   ddc2d84: call 'generateCustomPage' from 'fe-fpm-writer' as async function
+-   Updated dependencies [ddc2d84]
+    -   @sap-ux/fe-fpm-writer@0.30.0
+
+## 1.1.20
+
+### Patch Changes
+
+-   Updated dependencies [86bcf45]
+    -   @sap-ux/fe-fpm-writer@0.29.6
+
+## 1.1.19
+
+### Patch Changes
+
+-   Updated dependencies [19e3b0e]
+    -   @sap-ux/fe-fpm-writer@0.29.5
+
+## 1.1.18
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.29.4
+-   @sap-ux/fiori-generator-shared@0.3.20
+-   @sap-ux/odata-service-writer@0.22.5
+-   @sap-ux/ui5-application-writer@1.1.6
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.1.17
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.29.3
+
+## 1.1.16
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.29.2
+
+## 1.1.15
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.29.1
+
+## 1.1.14
+
+### Patch Changes
+
+-   Updated dependencies [177cdc8]
+    -   @sap-ux/fe-fpm-writer@0.29.0
+
+## 1.1.13
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/odata-service-writer@0.22.5
+    -   @sap-ux/fe-fpm-writer@0.28.3
+    -   @sap-ux/fiori-generator-shared@0.3.19
+    -   @sap-ux/ui5-application-writer@1.1.6
+    -   @sap-ux/ui5-test-writer@0.4.1
+
 ## 1.1.12
 
 ### Patch Changes

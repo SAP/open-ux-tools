@@ -2,6 +2,13 @@ import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type Control from 'sap/ui/core/Control';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import DataType from 'sap/ui/base/DataType';
+import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import ComponentContainer from 'sap/ui/core/ComponentContainer';
+import XMLView from 'sap/ui/core/mvc/XMLView';
+import UIComponent from 'sap/ui/core/UIComponent';
+
+import { getComponent } from '../utils/core';
+import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 
 export interface PropertiesInfo {
     defaultValue: string;
@@ -59,4 +66,49 @@ export async function getLibrary(controlName: string): Promise<string> {
             }
         });
     });
+}
+
+/**
+ * Function that checks if control is reuse component
+ *
+ * @param controlId id control
+ * @param ui5VersionInfo UI5 version information
+ * @returns boolean if control is from reused component view
+ */
+export function isReuseComponent(controlId: string, ui5VersionInfo: Ui5VersionInfo): boolean {
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 115 })) {
+        return false;
+    }
+
+    const component = getComponent(controlId);
+    if (!component) {
+        return false;
+    }
+
+    const manifest = component.getManifest() as Manifest;
+    if (!manifest) {
+        return false;
+    }
+
+    return manifest['sap.app']?.type === 'component';
+}
+
+/**
+ * Gets the root view of component for the provided ComponentContainer control.
+ *
+ * @param container ComponentContainer control.
+ * @returns XMLView which is the root control of the component if it exists.
+ */
+export function getRootControlFromComponentContainer(container?: ComponentContainer): XMLView | undefined {
+    if (container) {
+        const componentId = container.getComponent();
+        const component = getComponent(componentId);
+        if (component instanceof UIComponent) {
+            const rootControl = component.getRootControl();
+            if (rootControl instanceof XMLView) {
+                return rootControl;
+            }
+        }
+    }
+    return undefined;
 }

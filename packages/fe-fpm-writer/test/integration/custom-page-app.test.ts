@@ -18,7 +18,7 @@ describe('Test FPM features using a pre-generated Fiori Custom Page app', () => 
         return writeFilesForDebugging(fs);
     });
 
-    describe('generate building blocks', () => {
+    describe('generate building blocks', async () => {
         const basicConfig = {
             path: join(testOutput, 'js')
         };
@@ -32,8 +32,8 @@ describe('Test FPM features using a pre-generated Fiori Custom Page app', () => 
             fs.copy(join(testInput, 'ts'), tsConfig.path, { globOptions: { dot: true } });
         });
 
-        test.each(configs)('generateBuildingBlock:FilterBar in custom page', (config) => {
-            generateBuildingBlock<FilterBar>(
+        test.each(configs)('generateBuildingBlock:FilterBar in custom page', async (config) => {
+            await generateBuildingBlock<FilterBar>(
                 config.path,
                 {
                     viewOrFragmentPath: join('webapp/ext/main/Main.view.xml'),
@@ -48,8 +48,8 @@ describe('Test FPM features using a pre-generated Fiori Custom Page app', () => 
             );
         });
 
-        test.each(configs)('generateBuildingBlock:Chart in custom page', (config) => {
-            generateBuildingBlock<Chart>(
+        test.each(configs)('generateBuildingBlock:Chart in custom page', async (config) => {
+            await generateBuildingBlock<Chart>(
                 config.path,
                 {
                     viewOrFragmentPath: join('webapp/ext/main/Main.view.xml'),
@@ -67,8 +67,8 @@ describe('Test FPM features using a pre-generated Fiori Custom Page app', () => 
             );
         });
 
-        test.each(configs)('generateBuildingBlock:Table in custom page', (config) => {
-            generateBuildingBlock<Table>(
+        test.each(configs)('generateBuildingBlock:Table in custom page', async (config) => {
+            await generateBuildingBlock<Table>(
                 config.path,
                 {
                     viewOrFragmentPath: join('webapp/ext/main/Main.view.xml'),

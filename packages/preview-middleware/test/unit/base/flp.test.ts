@@ -271,6 +271,9 @@ describe('FlpSandbox', () => {
                                 path: '/my/rta.html'
                             },
                             {
+                                path: 'without/slash/rta.html'
+                            },
+                            {
                                 path: '/my/editor.html',
                                 developerMode: true
                             },
@@ -306,6 +309,11 @@ describe('FlpSandbox', () => {
 
         test('rta', async () => {
             const response = await server.get('/my/rta.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with editors path without leading "/"', async () => {
+            const response = await server.get('/without/slash/rta.html').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -524,6 +532,7 @@ describe('FlpSandbox', () => {
 
 describe('initAdp', () => {
     const url = 'http://sap.example';
+    const syncSpy = jest.fn();
     const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
         return {
             init: () => {
@@ -539,6 +548,7 @@ describe('initAdp', () => {
             },
             resources: [],
             proxy: jest.fn(),
+            sync: syncSpy,
             onChangeRequest: jest.fn(),
             addApis: jest.fn()
         } as unknown as adpTooling.AdpPreview;

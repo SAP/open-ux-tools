@@ -1,5 +1,152 @@
 # @sap-ux/generator-simple-fe
 
+## 1.0.57
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/system-access@0.5.12
+-   @sap-ux/fiori-elements-writer@1.3.5
+-   @sap-ux/fiori-freestyle-writer@1.2.3
+
+## 1.0.56
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.3.4
+-   @sap-ux/fiori-freestyle-writer@1.2.2
+
+## 1.0.55
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.12
+-   @sap-ux/fiori-elements-writer@1.3.3
+
+## 1.0.54
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/system-access@0.5.11
+-   @sap-ux/fiori-elements-writer@1.3.2
+-   @sap-ux/fiori-freestyle-writer@1.2.1
+
+## 1.0.53
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.3.1
+
+## 1.0.52
+
+### Patch Changes
+
+-   Updated dependencies [04988f1]
+    -   @sap-ux/fiori-freestyle-writer@1.2.0
+    -   @sap-ux/fiori-elements-writer@1.3.0
+
+## 1.0.51
+
+### Patch Changes
+
+-   484195d: Enhancements to FE & FF Configurations: The updates include adding the `start-variants-management` script to `package.json` for FE and FF. The OdataService interface now has an `ignoreCertError` property. UI5 application writer introduces the `sapuxLayer` property to `package.json` templates and adds `fiori-tools-preview middleware` to ui5, ui5-mock, and ui5-local.yaml. Additionally, the `addFioriToolsPreviewMiddleware` function has been added for YAML config integration.
+-   Updated dependencies [484195d]
+    -   @sap-ux/fiori-freestyle-writer@1.1.0
+    -   @sap-ux/fiori-elements-writer@1.2.0
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/system-access@0.5.11
+
+## 1.0.50
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.1.24
+
+## 1.0.49
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/system-access@0.5.11
+-   @sap-ux/fiori-elements-writer@1.1.23
+-   @sap-ux/fiori-freestyle-writer@1.0.24
+
+## 1.0.48
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.1.22
+
+## 1.0.47
+
+### Patch Changes
+
+-   Updated dependencies [ddc2d84]
+    -   @sap-ux/fiori-elements-writer@1.1.21
+
+## 1.0.46
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.1.20
+
+## 1.0.45
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.1.19
+
+## 1.0.44
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/system-access@0.5.11
+-   @sap-ux/fiori-elements-writer@1.1.18
+-   @sap-ux/fiori-freestyle-writer@1.0.23
+
+## 1.0.43
+
+### Patch Changes
+
+-   Updated dependencies [aa72f3c]
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/system-access@0.5.11
+
+## 1.0.42
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.1.17
+
+## 1.0.41
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.1.16
+
+## 1.0.40
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.1.15
+
+## 1.0.39
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.1.14
+
+## 1.0.38
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.1.13
+-   @sap-ux/fiori-freestyle-writer@1.0.22
+-   @sap-ux/axios-extension@1.16.5
+-   @sap-ux/system-access@0.5.10
+
 ## 1.0.37
 
 ### Patch Changes

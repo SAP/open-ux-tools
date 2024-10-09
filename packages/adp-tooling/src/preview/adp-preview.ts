@@ -6,12 +6,18 @@ import type { NextFunction, Request, Response, Router, RequestHandler } from 'ex
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import type { LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
 import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
+
+declare global {
+    // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
+    // eslint-disable-next-line no-var
+    var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
+}
 
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
@@ -32,10 +38,13 @@ export class AdpPreview {
      */
     private routesHandler: RoutesHandler;
 
+    private lrep: LayeredRepositoryService | undefined;
+    private descriptorVariantId: string | undefined;
+
     /**
      * @returns merged manifest.
      */
-    get descriptor() {
+    get descriptor(): MergedAppDescriptor {
         if (this.mergedDescriptor) {
             return this.mergedDescriptor;
         } else {
@@ -46,14 +55,21 @@ export class AdpPreview {
     /**
      * @returns a list of resources required to the adaptation project as well as the original app.
      */
-    get resources() {
+    get resources(): {
+        [name: string]: string;
+    } {
         if (this.mergedDescriptor) {
             const resources = {
                 [this.mergedDescriptor.name]: this.mergedDescriptor.url
             };
-            this.mergedDescriptor.asyncHints.libs.forEach((lib) => {
+            this.mergedDescriptor.asyncHints.libs?.forEach((lib) => {
                 if (lib.url?.url) {
                     resources[lib.name] = lib.url.url;
+                }
+            });
+            this.mergedDescriptor.asyncHints.components?.forEach((comp) => {
+                if (comp.url?.url) {
+                    resources[comp.name] = comp.url.url;
                 }
             });
             return resources;
@@ -86,14 +102,29 @@ export class AdpPreview {
      * @returns the UI5 flex layer for which editing is enabled
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
+        this.descriptorVariantId = descriptorVariant.id;
         const provider = await createAbapServiceProvider(
             this.config.target,
             { ignoreCertErrors: this.config.ignoreCertErrors },
             true,
             this.logger
         );
-        const lrep = provider.getLayeredRepository();
+        this.lrep = provider.getLayeredRepository();
+        // fetch a merged descriptor from the backend
+        await this.lrep.getCsrfToken();
 
+        await this.sync();
+        return descriptorVariant.layer;
+    }
+
+    /**
+     * Synchronize local changes with the backend.
+     *
+     */
+    async sync(): Promise<void> {
+        if (!this.lrep || !this.descriptorVariantId) {
+            throw new Error('Not initialized');
+        }
         const zip = new ZipFile();
         const files = await this.project.byGlob('**/*.*');
         for (const file of files) {
@@ -101,11 +132,7 @@ export class AdpPreview {
         }
         const buffer = zip.toBuffer();
 
-        // fetch a merged descriptor from the backend
-        await lrep.getCsrfToken();
-        this.mergedDescriptor = (await lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
-
-        return descriptorVariant.layer;
+        this.mergedDescriptor = (await this.lrep.mergeAppDescriptorVariant(buffer))[this.descriptorVariantId];
     }
 
     /**
@@ -115,8 +142,12 @@ export class AdpPreview {
      * @param res outgoing response object
      * @param next next middleware that is to be called if the request cannot be handled
      */
-    async proxy(req: Request, res: Response, next: NextFunction) {
+    async proxy(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.path === '/manifest.json') {
+            if (global.__SAP_UX_MANIFEST_SYNC_REQUIRED__) {
+                await this.sync();
+                global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            }
             res.status(200);
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {

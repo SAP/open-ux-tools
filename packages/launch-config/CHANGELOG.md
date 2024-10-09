@@ -1,5 +1,100 @@
 # @sap-ux/launch-config
 
+## 0.7.2
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+
+## 0.7.1
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+
+## 0.7.0
+
+### Minor Changes
+
+-   1069c97: Extend DebugOptions with targetMockHtmlFile and change start mock arguments if targetMockHtmlFile is provided
+
+## 0.6.1
+
+### Patch Changes
+
+-   92dc08e: Renamed the skipLiveScript parameter to addLiveConfig to add live configuration if enabled.
+
+## 0.6.0
+
+### Minor Changes
+
+-   e989a20: Remove ProjectDataSourceType from DebugConfig and Replace with skipLiveScripts Flag
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/ui5-config@0.25.0
+    -   @sap-ux/project-access@1.27.4
+
+## 0.5.0
+
+### Minor Changes
+
+-   463f482: Reverted the use of Node.js `fs` modules and replaced them with `mem-fs` for writing launch config files & Removed `writeApplicationInfoSettings()` from `@sap-ux/launch-config`
+    Refactoring create launch config functionalities.
+
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/odata-service-inquirer@0.5.40
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/odata-service-inquirer@0.5.39
+
+## 0.4.2
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.38
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [97f1d2a]
+    -   @sap-ux/odata-service-inquirer@0.5.37
+
+## 0.4.0
+
+### Minor Changes
+
+-   8e41abf: Dont Update launch.json if App is Not in Workspace but launch Config Exists
+
+## 0.3.0
+
+### Minor Changes
+
+-   73fcd05: Add Launch Configuration Logic for debugging generated apps
+
+## 0.2.20
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+
 ## 0.2.19
 
 ### Patch Changes

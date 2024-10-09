@@ -1,5 +1,122 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.31.7
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/fiori-annotation-api@0.2.7
+
+## 0.31.6
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.2.6
+
+## 0.31.5
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/fiori-annotation-api@0.2.5
+
+## 0.31.4
+
+### Patch Changes
+
+-   05b554d: Bulding block prompts. Mark table header question as translatable input
+
+## 0.31.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.27.4
+-   @sap-ux/fiori-annotation-api@0.2.4
+
+## 0.31.2
+
+### Patch Changes
+
+-   a18d4a2: Added property `allowAutoAddDependencyLib` to the building block API. This property allows turning off the automatic addition of the 'sap.fe.macros' library to the 'manifest.json' file under library dependencies (`"sap.ui5"/"dependencies"/"libs"`). The default value is `true`.
+
+## 0.31.1
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/fiori-annotation-api@0.2.3
+
+## 0.31.0
+
+### Minor Changes
+
+-   327ebec: Divide chart, filter bar and table building block prompts questions into groups, add Manifest Change group.
+    Update custom chart example in prompting-ui.
+
+## 0.30.0
+
+### Minor Changes
+
+-   ddc2d84: The API methods `generateCustomAction`, `generateCustomColumn`, `generateControllerExtension`, `generateCustomFilter`, `generateCustomHeaderSection`, `generateCustomSection`, `generateCustomSubSection`, `generateCustomPage`, `generateObjectPage`, `generateListReport`, `enableFPM` changed from synchronous to asynchronous.
+
+## 0.29.6
+
+### Patch Changes
+
+-   86bcf45: - During building block creation, add the 'sap.fe.macros' library to the 'manifest.json' if it is not already listed
+    -   The API methods `generateBuildingBlock`, `getSerializedFileContent`, `PromptsAPI.submitAnswers`, and `PromptsAPI.getCodeSnippets` changed from synchronous to asynchronous.
+
+## 0.29.5
+
+### Patch Changes
+
+-   19e3b0e: Extend the building block generation by adding the `alwaysAbsolutePath` property to `BuildingBlockMetaPath`, allowing the generation of either relative or absolute paths
+
+## 0.29.4
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/fiori-annotation-api@0.2.2
+
+## 0.29.3
+
+### Patch Changes
+
+-   Updated dependencies [a0836d0]
+    -   @sap-ux/fiori-annotation-api@0.2.1
+
+## 0.29.2
+
+### Patch Changes
+
+-   Updated dependencies [6ac4f50]
+    -   @sap-ux/fiori-annotation-api@0.2.0
+
+## 0.29.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.1.41
+
+## 0.29.0
+
+### Minor Changes
+
+-   177cdc8: Apply the "contextPath" attribute in building blocks when the application has a minimum UI5 version equal to or below 1.96.
+
+## 0.28.3
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/fiori-annotation-api@0.1.40
+
 ## 0.28.2
 
 ### Patch Changes

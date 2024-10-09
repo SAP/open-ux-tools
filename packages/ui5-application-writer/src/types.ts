@@ -1,15 +1,4 @@
-import type { ProjectType } from '@sap-ux/project-access';
-export interface Package {
-    name: string;
-    version?: string;
-    description?: string;
-    scripts?: Record<string, string>;
-    dependencies?: Record<string, string>;
-    devDependencies?: Record<string, string>;
-    ui5?: {
-        dependencies?: string[];
-    };
-}
+import type { ProjectType, Package } from '@sap-ux/project-access';
 
 export interface App {
     id: string;

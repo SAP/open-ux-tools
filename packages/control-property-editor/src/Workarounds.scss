@@ -90,7 +90,9 @@
     }
 }
 
-// Callout
-.ms-Callout-main {
-    border: 1px solid var(--vscode-contrastBorder);
+.ms-Callout {
+    border: 1px solid var(--vscode-widget-border);
+    .ms-Callout-beak {
+        display: none;
+    }
 }

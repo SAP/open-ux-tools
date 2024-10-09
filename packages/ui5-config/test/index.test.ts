@@ -191,9 +191,10 @@ describe('UI5Config', () => {
             expect(backendConfigs).toEqual(backend);
         });
 
-        test('add backend with flexible parameters (and UI5 defaults)', () => {
+        test('add backend with flexible parameters (and UI5 defaults) & writes ignoreCertError true if enabled', () => {
             ui5Config.addFioriToolsProxydMiddleware({
                 backend: [{ url, path, pathPrefix: '/~prefix', scp: true }],
+                ignoreCertError: true,
                 ui5: {}
             });
             expect(ui5Config.toString()).toMatchSnapshot();
@@ -233,6 +234,23 @@ describe('UI5Config', () => {
         test('try adding backend without a proxy middleware added before', () => {
             ui5Config.addFioriToolsAppReloadMiddleware();
             expect(() => ui5Config.addBackendToFioriToolsProxydMiddleware({ url, path })).toThrowError();
+        });
+
+        test('Should add preview middlewares correctly', () => {
+            ui5Config.addFioriToolsPreviewMiddleware('my.app', 'sap_fiori_3');
+            expect(ui5Config.toString().replace(/\s+/g, ' ').trim()).toBe(
+                `
+                    server:
+                        customMiddleware:
+                            - name: fiori-tools-preview
+                            afterMiddleware: fiori-tools-appreload
+                            configuration:
+                            component: my.app
+                            ui5Theme: sap_fiori_3
+                `
+                    .replace(/\s+/g, ' ')
+                    .trim()
+            );
         });
     });
 

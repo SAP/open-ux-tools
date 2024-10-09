@@ -1,0 +1,9 @@
+{
+    "info": {
+        "startServerMessage": "To start the server, launch a terminal and browse to the {{folder}} folder and type npm {{npmCommand}}"
+    },
+    "error": {
+        "errorLaunchFile": "Error in generating debug launch.json: {{error}}",
+        "appInfoFilePath": "Error in generating appInfo.json: {{error}}"
+    }
+}
