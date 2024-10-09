@@ -6,12 +6,24 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
  */
 export enum promptNames {
     /** The prompt to specify the destination name for CF deployment. */
-    destinationName = 'destinationName',
+    destinationName = 'cfDestination',
     /** The prompt to specify if a managed app router should be added to the deployment. */
-    addManagedApprouter = 'addManagedApprouter',
+    addManagedAppRouter = 'addManagedAppRouter',
     /** The prompt for confirming destination overwrite. */
-    overwrite = 'overwrite'
+    overwrite = 'cfOverwrite'
 }
+
+/**
+ * Options specific to the 'addManagedAppRouter' prompt.
+ */
+type AddManagedAppRouterPromptOptions = {
+    /**
+     * Indicates whether the managed app router question should be shown.
+     * This prompt is only displayed if no MTA file is found.
+     * Default is false.
+     */
+    addManagedAppRouter: boolean;
+};
 
 /**
  * Options specific to the 'overwrite' prompt.
@@ -22,41 +34,50 @@ type OverwritePromptOptions = {
 };
 
 /**
- * Options specific to the 'destinationName' prompt.
+ * Configuration options for the 'destinationName' prompt used in deployment settings.
  */
-export type destinationNamePromptOptions = {
-    /** The Cloud Foundry destination name to be used. */
+export type DestinationNamePromptOptions = {
+    /** The Cloud Foundry destination name to be used in the deployment process. */
     cfDestination: string;
-    /** Default destination value for CF. */
+    /**
+     * Root directory path for CAP applications.
+     * This path is used to check for the presence of MTA yaml file.
+     * This path is undefined for non CAP projects.
+     */
+    capRootPath?: string;
+    /** Default value to suggest for the destination name. */
     defaultValue: string;
-    /** Whether to show a hint for the destination name. */
-    showDestinationHintMessage?: boolean;
-    /** List of available system choices for destination selection. */
-    cfChoiceList: CfSystemChoice[];
-    /** Additional choices available for the destination. */
+    /** Flag to indicate if a hint message should be shown to indicate the app router is configured to use direct service binding . */
+    directBindingDestinationHint?: boolean;
+    /**
+     * List of additional destination choices available for the prompt.
+     * - For CAP projects, this includes destinations or instance-based destinations and will be appended to BTP destination options.
+     * - In BAS environments, this list will be appended to BTP destination options.
+     * - If `additionalChoiceList` is provided and the environment is VS Code,
+     *   the prompt will render as a list, allowing users to select from the provided choices instead of input.
+     */
     additionalChoiceList?: CfSystemChoice[];
+    /**
+     * Flag to indicate if the destination prompt should use auto completion
+     */
+    useAutocomplete?: boolean;
 };
 
 /**
  * Defines options for boolean-type prompts in CF deployment configuration.
  */
-type booleanValuePromptOptions = Record<promptNames.overwrite, OverwritePromptOptions>;
+type booleanValuePromptOptions = Record<promptNames.overwrite, OverwritePromptOptions> &
+    Record<promptNames.addManagedAppRouter, AddManagedAppRouterPromptOptions>;
 
 /**
  * Defines options for string-type prompts in CF deployment configuration.
  */
-type stringValuePromptOptions = Record<promptNames.destinationName, destinationNamePromptOptions>;
+type stringValuePromptOptions = Record<promptNames.destinationName, DestinationNamePromptOptions>;
 
 /**
  * Configuration options for CF deployment prompts.
- * Combines string and boolean prompt options, allowing partial selection.
  */
-export type CfDeployConfigPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOptions> & {
-    /** Indicates if the MTA YAML file exists in the project. */
-    mtaYamlExists: boolean;
-    /** Specifies if the project is a CAP project. */
-    isCapProject?: boolean;
-};
+export type CfDeployConfigPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOptions>;
 
 /**
  * Represents a question in the CF deployment configuration.
@@ -73,7 +94,7 @@ export interface CfDeployConfigAnswers {
     /** The selected Cloud Foundry destination. */
     cfDestination?: string;
     /** Indicates whether the user opted to include a managed application router. */
-    addManagedApprouter?: boolean;
+    addManagedAppRouter?: boolean;
     /** Indicates whether the user opted to overwrite the destination. */
     cfOverwrite?: boolean;
 }
@@ -86,4 +107,8 @@ export interface CfSystemChoice {
     name: string;
     /** Value associated with the system choice. */
     value: string;
+    /** Flag indicating if the system choice is an scp destination. */
+    scp: boolean;
+    /** URL associated with the system choice. */
+    url: string;
 }

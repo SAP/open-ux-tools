@@ -1,9 +1,9 @@
 {
     "prompts": {
-        "destinationNameMessage": "Destination name",
+        "destinationNameMessage": "Destination name kk",
         "addApplicationRouterBreadcrumbMessage": "Add to Router",
         "generateManagedApplicationToRouterMessage": "Add application to managed application router?",
-        "cfDestinationHintMessage": "Destination name - The app router is configured to use direct service binding",
+        "directBindingDestinationHint": "Destination name - The app router is configured to use direct service binding",
         "overwriteMessage": "Editing the deployment configuration will overwrite existing configuration, are you sure you want to continue?",
         "overwriteHintMessage": "Deployment config will abort if you choose no. Click Finish to abort."
     },

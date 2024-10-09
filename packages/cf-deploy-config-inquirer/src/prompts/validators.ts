@@ -1,5 +1,5 @@
 import { t } from '../i18n';
-import { CfSystemChoice } from '../types';
+import type { CfSystemChoice } from '../types';
 
 /**
  *
