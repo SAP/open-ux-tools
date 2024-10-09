@@ -24,17 +24,15 @@ export async function addVariantsManagementScript(fs: Editor, basePath: string, 
         return Promise.reject(new Error(`Script already exists.`));
     }
 
-    const urlParameters: Record<string, string> = {};
-
     if (!packageJson.scripts) {
         logger?.warn(`File 'package.json' does not contain a script section. Script section added.`);
         packageJson.scripts = {};
-    } else {
-        // check if sap-client is needed when starting the app
-        const sapClient = getSapClientFromPackageJson(packageJson.scripts);
-        if (sapClient) {
-            urlParameters['sap-client'] = sapClient;
-        }
+    }
+
+    const urlParameters: Record<string, string> = {};
+    const sapClient = getSapClientFromPackageJson(packageJson.scripts);
+    if (sapClient) {
+        urlParameters['sap-client'] = sapClient;
     }
 
     const url = await getRTAUrl(basePath, getUI5UrlParameters(urlParameters));
