@@ -2,7 +2,7 @@ import { initI18n, t } from '../../../src/i18n';
 import { getConfirmPrompts } from '../../../src/prompts/questions';
 import * as conditions from '../../../src/prompts/conditions';
 import * as validators from '../../../src/prompts/validators';
-import { abapDeployConfigInternalPromptNames } from '../../../src/types';
+import { promptNames } from '../../../src/types';
 
 describe('getConfirmPrompts', () => {
     beforeAll(async () => {
@@ -31,7 +31,6 @@ describe('getConfirmPrompts', () => {
                 "name": "overwrite",
                 "type": "confirm",
                 "validate": [Function],
-                "when": [Function],
               },
             ]
         `);
@@ -41,7 +40,7 @@ describe('getConfirmPrompts', () => {
         jest.spyOn(conditions, 'showIndexQuestion').mockReturnValueOnce(true);
 
         const confirmPrompts = getConfirmPrompts({});
-        const indexPrompt = confirmPrompts.find((prompt) => prompt.name === abapDeployConfigInternalPromptNames.index);
+        const indexPrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.index);
 
         if (indexPrompt) {
             expect((indexPrompt.when as Function)()).toBe(true);
@@ -51,16 +50,12 @@ describe('getConfirmPrompts', () => {
     });
 
     test('should return expected values from overwrite prompt methods', async () => {
-        jest.spyOn(conditions, 'showOverwriteQuestion').mockReturnValue(true);
         jest.spyOn(validators, 'validateConfirmQuestion').mockReturnValue(true);
 
         const confirmPrompts = getConfirmPrompts({});
-        const overwritePrompt = confirmPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.overwrite
-        );
+        const overwritePrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.overwrite);
 
         if (overwritePrompt) {
-            expect((overwritePrompt.when as Function)()).toBe(true);
             expect(overwritePrompt.message).toBe(t('prompts.confirm.overwrite.message'));
             expect(overwritePrompt.default).toBe(true);
             expect((overwritePrompt.validate as Function)()).toBe(true);

@@ -10,7 +10,6 @@ import type {
     AbapDeployConfigAnswersInternal,
     BackendTarget,
     Credentials,
-    DeployTaskConfig,
     InitTransportConfigResult,
     SystemConfig
 } from './types';
@@ -197,14 +196,13 @@ function getTransportAnswer(previousAnswers?: AbapDeployConfigAnswersInternal): 
 }
 
 /**
- * If a deploy config already exists in the project, check if the config
- * uses option to create transport request number during actual deploy process.
+ * Check if the transport matches placeholder used to create transport request number during actual deploy process.
  *
- * @param existingDeployTaskConfig - existing deploy task config
+ * @param transport - existing transport
  * @returns true if transport setting is set to 'CreateDuringDeployChoice'.
  */
-export function useCreateTrDuringDeploy(existingDeployTaskConfig?: DeployTaskConfig): boolean {
-    return existingDeployTaskConfig?.transport === CREATE_TR_DURING_DEPLOY;
+export function useCreateTrDuringDeploy(transport?: string): boolean {
+    return transport === CREATE_TR_DURING_DEPLOY;
 }
 
 /**

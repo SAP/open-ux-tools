@@ -21,19 +21,17 @@ export async function getAbapDeployConfigQuestions(
 
     const targetPrompts = await getAbapTargetPrompts(options);
     const authPrompts = getAuthPrompts(options);
-    const appConfigPrompts = getAppConfigPrompts(options);
+    const questions = [...targetPrompts, ...authPrompts];
+
+    if (options.ui5AbapRepo?.hide !== true) {
+        questions.push(getAppConfigPrompts(options));
+    }
+
     const packagePrompts = getPackagePrompts(options);
     const transportRequestPrompts = getTransportRequestPrompts(options);
     const confirmPrompts = getConfirmPrompts(options);
 
-    const questions = [
-        ...targetPrompts,
-        ...authPrompts,
-        ...appConfigPrompts,
-        ...packagePrompts,
-        ...transportRequestPrompts,
-        ...confirmPrompts
-    ];
+    questions.push(...packagePrompts, ...transportRequestPrompts, ...confirmPrompts);
 
     return questions as AbapDeployConfigQuestion[];
 }

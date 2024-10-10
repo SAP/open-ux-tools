@@ -2,7 +2,7 @@ import * as conditions from '../../../src/prompts/conditions';
 import * as validators from '../../../src/prompts/validators';
 import { initI18n, t } from '../../../src/i18n';
 import { getAuthPrompts } from '../../../src/prompts/questions';
-import { abapDeployConfigInternalPromptNames } from '../../../src/types';
+import { promptNames } from '../../../src/types';
 
 describe('getAuthPrompts', () => {
     beforeAll(async () => {
@@ -41,9 +41,7 @@ describe('getAuthPrompts', () => {
         jest.spyOn(conditions, 'showUsernameQuestion').mockResolvedValueOnce(true);
 
         const authPrompts = getAuthPrompts({});
-        const usernamePrompt = authPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.username
-        );
+        const usernamePrompt = authPrompts.find((prompt) => prompt.name === promptNames.username);
 
         if (usernamePrompt) {
             expect(await (usernamePrompt.when as Function)()).toBe(true);
@@ -56,9 +54,7 @@ describe('getAuthPrompts', () => {
         jest.spyOn(validators, 'validateCredentials').mockResolvedValueOnce(true);
 
         const authPrompts = getAuthPrompts({});
-        const passwordPrompt = authPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.password
-        );
+        const passwordPrompt = authPrompts.find((prompt) => prompt.name === promptNames.password);
 
         if (passwordPrompt) {
             expect((passwordPrompt.when as Function)()).toBe(true);

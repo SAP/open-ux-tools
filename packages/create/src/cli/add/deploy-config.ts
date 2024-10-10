@@ -93,7 +93,7 @@ async function addDeployConfig(
             await validateBasePath(basePath);
 
             const { prompts: abapPrompts, answers: abapAnswers } = await getAbapDeployConfigPrompts(
-                { useAutocomplete: true },
+                { packageAutocomplete: { useAutocomplete: true } },
                 logger,
                 false
             );
