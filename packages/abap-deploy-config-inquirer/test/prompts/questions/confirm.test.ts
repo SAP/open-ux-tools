@@ -31,7 +31,6 @@ describe('getConfirmPrompts', () => {
                 "name": "overwrite",
                 "type": "confirm",
                 "validate": [Function],
-                "when": [Function],
               },
             ]
         `);
@@ -51,14 +50,12 @@ describe('getConfirmPrompts', () => {
     });
 
     test('should return expected values from overwrite prompt methods', async () => {
-        jest.spyOn(conditions, 'showOverwriteQuestion').mockReturnValue(true);
         jest.spyOn(validators, 'validateConfirmQuestion').mockReturnValue(true);
 
         const confirmPrompts = getConfirmPrompts({});
         const overwritePrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.overwrite);
 
         if (overwritePrompt) {
-            expect((overwritePrompt.when as Function)()).toBe(true);
             expect(overwritePrompt.message).toBe(t('prompts.confirm.overwrite.message'));
             expect(overwritePrompt.default).toBe(true);
             expect((overwritePrompt.validate as Function)()).toBe(true);

@@ -11,7 +11,6 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
-    type UI5AbapRepoPromptOptions,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type BackendTarget,
@@ -152,14 +151,9 @@ export function showPasswordQuestion(): boolean {
 /**
  * Determines if the UI5 app deploy config question should be shown (UI5 Abap Repo name & Description).
  *
- * @param ui5AbapRepoPromptOption - options for the ui5 abap repo prompt
  * @returns boolean
  */
-export function showUi5AppDeployConfigQuestion(ui5AbapRepoPromptOption?: UI5AbapRepoPromptOptions): boolean {
-    if (ui5AbapRepoPromptOption?.hide) {
-        PromptState.abapDeployConfig.ui5AbapRepo = ui5AbapRepoPromptOption.default;
-        return false;
-    }
+export function showUi5AppDeployConfigQuestion(): boolean {
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
 }
 
@@ -313,14 +307,4 @@ export function defaultOrShowManualTransportQuestion(transportInputChoice?: stri
 export function showIndexQuestion(options: AbapDeployConfigPromptOptions): boolean {
     const condition = Boolean(options.index?.indexGenerationAllowed && !PromptState.abapDeployConfig.index);
     return condition && !PromptState.transportAnswers.transportConfigError && options.backendTarget?.type !== 'library';
-}
-
-/**
- * Determines if the overwrite prompt should be shown.
- *
- * @param hideOverwrite - hide from overwrite prompt option, default is true
- * @returns boolean
- */
-export function showOverwriteQuestion(hideOverwrite = true): boolean {
-    return Boolean(!hideOverwrite && !PromptState.abapDeployConfig.overwrite);
 }

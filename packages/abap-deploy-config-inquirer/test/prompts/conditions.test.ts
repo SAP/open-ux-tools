@@ -9,7 +9,6 @@ import {
     showClientChoiceQuestion,
     showClientQuestion,
     showIndexQuestion,
-    showOverwriteQuestion,
     showPackageInputChoiceQuestion,
     showPasswordQuestion,
     showScpQuestion,
@@ -117,13 +116,7 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should show ui5 app deploy config questions', () => {
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
-        expect(showUi5AppDeployConfigQuestion(undefined)).toBe(true);
-    });
-
-    test('should not show ui5 app deploy config questions', () => {
-        PromptState.abapDeployConfig.scp = true;
-        expect(showUi5AppDeployConfigQuestion({ hide: true, default: 'defaultRepoName' })).toBe(false);
-        expect(PromptState.abapDeployConfig.ui5AbapRepo).toBe('defaultRepoName');
+        expect(showUi5AppDeployConfigQuestion()).toBe(true);
     });
 
     test('should show package input choice question', () => {
@@ -221,11 +214,6 @@ describe('Test abap deploy config inquirer conditions', () => {
                 index: { indexGenerationAllowed: true }
             })
         ).toBe(true);
-    });
-
-    test('should show overwrite question', () => {
-        PromptState.abapDeployConfig.overwrite = undefined;
-        expect(showOverwriteQuestion(false)).toBe(true);
     });
 
     test('Validate different state changes i.e. YUI | CLI', () => {
