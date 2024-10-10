@@ -26,7 +26,7 @@ export async function getPreviewMiddleware(
     try {
         yamlConfig = yamlConfig ?? (await readUi5Yaml(basePath!, filename));
     } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error as Error);
     }
     return (
         yamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview) ??
