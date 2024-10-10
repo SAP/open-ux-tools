@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.18.7
+
+### Patch Changes
+
+-   e65bb7f: Update style for UICallout
+
 ## 1.18.6
 
 ### Patch Changes
