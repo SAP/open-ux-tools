@@ -15,7 +15,8 @@ import { ChangeTableColumnsQuickAction } from './change-table-columns';
 import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
 import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
 import { AddTableActionQuickAction } from '../fe-v2/create-table-action';
-import { AddPageActionQuickAction } from '../fe-v2/create-page-action';
+import { AddPageActionQuickAction } from '../fe-v2/create-page-action';import { AddNewAnnotationFile } from '../common/add-new-annotation-file';
+
 type PageName = 'listReport' | 'objectPage';
 
 const OBJECT_PAGE_TYPE = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
@@ -42,6 +43,7 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                         ToggleClearFilterBarQuickAction,
                         AddControllerToPageQuickAction,
                         ChangeTableColumnsQuickAction,
+                        AddNewAnnotationFile,
                         AddTableActionQuickAction,
                         AddPageActionQuickAction
                     ],
@@ -56,6 +58,7 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                         ChangeTableColumnsQuickAction,
                         AddHeaderFieldQuickAction,
                         AddCustomSectionQuickAction,
+                        AddNewAnnotationFile,
                         AddTableActionQuickAction,
                         AddPageActionQuickAction
                     ],
