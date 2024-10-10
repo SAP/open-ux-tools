@@ -35,7 +35,7 @@
     "dependencies": {
         "@fluentui/react": "8.120.5",
         "react-movable": "2.5.4",
-        "react-select": "5.8.0",
+        "react-select": "5.8.1",
         "react-virtualized": "9.22.5",
         "sanitize-html": "2.12.1",
         "uuid": "3.4.0"
@@ -56,9 +56,9 @@
         "@testing-library/react": "12.1.5",
         "@types/enzyme": "3.10.13",
         "@types/enzyme-adapter-react-16": "1.0.6",
-        "@types/react": "16.14.55",
+        "@types/react": "16.14.62",
         "@types/react-dom": "16.9.24",
-        "@types/react-virtualized": "9.21.29",
+        "@types/react-virtualized": "9.21.30",
         "@types/sanitize-html": "2.11.0",
         "@types/uuid": "3.4.11",
         "babel-jest": "29.7.0",
