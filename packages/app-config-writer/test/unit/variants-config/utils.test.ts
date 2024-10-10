@@ -72,4 +72,12 @@ describe('utils', () => {
             expect(url).toBe(undefined);
         });
     });
+
+    describe('getPreviewMiddleware', () => {
+        test('exception handling', async () => {
+            await expect(utils.getPreviewMiddleware()).rejects.toThrowError(
+                'Either base path or yaml config must be provided'
+            );
+        });
+    });
 });

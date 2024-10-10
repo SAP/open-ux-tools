@@ -12,9 +12,8 @@ import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '..
  * @param yamlConfig - the yaml configuration to use; if not provided, the file will be read with the provided basePath and filename
  * @param basePath - path to project root, where ui5.yaml is located
  * @param filename - name of the ui5 yaml file to read from basePath; default is 'ui5.yaml'
- * @returns preview middleware configuration if found or undefined
- * @throws {Error} if filename is not found at basePath
- * @throws {Error} if basePath and yamlConfig are undefined
+ * @returns preview middleware configuration if found<br>
+ * Rejects if neither yamlConfig nor basePath is provided or if the file can't be read
  */
 export async function getPreviewMiddleware(
     yamlConfig?: UI5Config,
@@ -22,9 +21,13 @@ export async function getPreviewMiddleware(
     filename: string = FileName.Ui5Yaml
 ): Promise<CustomMiddleware<PreviewConfigOptions> | undefined> {
     if (!basePath && !yamlConfig) {
-        throw new Error('Either base path or yaml config must be provided');
+        return Promise.reject(new Error('Either base path or yaml config must be provided'));
     }
-    yamlConfig = yamlConfig ?? (await readUi5Yaml(basePath!, filename));
+    try {
+        yamlConfig = yamlConfig ?? (await readUi5Yaml(basePath!, filename));
+    } catch (error) {
+        return Promise.reject(error);
+    }
     return (
         yamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview) ??
         yamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.PreviewMiddleware)

@@ -36,15 +36,15 @@ describe('addVariantsManagementScript', () => {
 
     test('add no script to package.json when there is already a script', async () => {
         const deprecatedConfig = join(basePath, 'deprecated-config');
-        await expect(addVariantsManagementScript(fs, deprecatedConfig, logger)).rejects.toThrow(
-            new Error('Script already exists.')
+        await expect(addVariantsManagementScript(fs, deprecatedConfig, logger)).rejects.toThrowError(
+            'Script already exists.'
         );
     });
 
     test('add no script to package.json when there is no RTA editor', async () => {
         const openSourceConfig = join(basePath, 'open-source-config');
-        await expect(addVariantsManagementScript(fs, openSourceConfig, logger)).rejects.toThrow(
-            new Error('No RTA editor specified in ui5.yaml.')
+        await expect(addVariantsManagementScript(fs, openSourceConfig, logger)).rejects.toThrowError(
+            'No RTA editor specified in ui5.yaml.'
         );
     });
 });
