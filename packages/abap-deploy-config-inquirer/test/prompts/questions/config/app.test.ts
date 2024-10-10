@@ -79,9 +79,7 @@ describe('getConfirmPrompts', () => {
         jest.spyOn(conditions, 'showUi5AppDeployConfigQuestion').mockReturnValue(true);
         jest.spyOn(validators, 'validateAppDescription').mockReturnValue(true);
 
-        const appConfigPrompts = getAppConfigPrompts({
-            existingDeployTaskConfig: { description: 'Mock description' }
-        });
+        const appConfigPrompts = getAppConfigPrompts({ description: { default: 'Mock description' } });
         const descriptionPrompt = appConfigPrompts.find((prompt) => prompt.name === promptNames.description);
 
         if (descriptionPrompt) {

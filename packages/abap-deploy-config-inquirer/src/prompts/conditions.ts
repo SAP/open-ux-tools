@@ -318,11 +318,9 @@ export function showIndexQuestion(options: AbapDeployConfigPromptOptions): boole
 /**
  * Determines if the overwrite prompt should be shown.
  *
- * @param options - abap deploy config prompt options
+ * @param hideOverwrite - hide from overwrite prompt option
  * @returns boolean
  */
-export function showOverwriteQuestion(options: AbapDeployConfigPromptOptions): boolean {
-    return Boolean(
-        options.overwrite?.show && !!options.existingDeployTaskConfig && !PromptState.abapDeployConfig.overwrite
-    );
+export function showOverwriteQuestion(hideOverwrite?: boolean): boolean {
+    return Boolean(!hideOverwrite && !PromptState.abapDeployConfig.overwrite);
 }

@@ -31,7 +31,7 @@ function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDe
  */
 function getOverwritePrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (): boolean => showOverwriteQuestion(options),
+        when: (): boolean => showOverwriteQuestion(options?.overwrite?.hide),
         name: promptNames.overwrite,
         type: 'confirm',
         message: t('prompts.confirm.overwrite.message'),

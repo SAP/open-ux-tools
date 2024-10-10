@@ -39,17 +39,6 @@ export interface BackendTarget {
     type?: 'application' | 'library';
 }
 
-/**
- * The configuration of the deploy task configuration file.
- */
-export interface DeployTaskConfig {
-    name?: string;
-    description?: string;
-    package?: string;
-    transport?: string;
-    [key: string]: unknown;
-}
-
 export interface AbapSystemChoice {
     name: string;
     value: string;
@@ -104,12 +93,33 @@ export type UI5AbapRepoPromptOptions =
           default: string;
       };
 
+export type DescriptionPromptOptions = {
+    /**
+     * Default description value.
+     */
+    default?: string;
+};
+
+export type PackageManualPromptOptions = {
+    /**
+     * Default package value.
+     */
+    default?: string;
+};
+
+export type TransportManualPromptOptions = {
+    /**
+     * Default transport value.
+     */
+    default?: string;
+};
+
 export type OverwritePromptOptions = {
     /**
-     * This option allows the prompt to be show.
-     * It should be set to true when the inquirer is ran standalone and existing deployment configuration will be overwritten.
+     * This option allows the prompt to be hidden. It should be used when the overwrite prompt should not be shown.
+     * Overwrite prompt should only be shown when existing deployment configuration is found and could be overwritten.
      */
-    show?: boolean;
+    hide?: boolean;
 };
 
 export type IndexPromptOptions = {
@@ -128,6 +138,9 @@ export type PackageAutocompletePromptOptions = {
 };
 
 type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepoPromptOptions> &
+    Record<promptNames.description, DescriptionPromptOptions> &
+    Record<promptNames.packageManual, PackageManualPromptOptions> &
+    Record<promptNames.transportManual, TransportManualPromptOptions> &
     Record<promptNames.overwrite, OverwritePromptOptions> &
     Record<promptNames.index, IndexPromptOptions> &
     Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions>;
@@ -137,7 +150,6 @@ type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepo
  */
 type AbapDeployConfigCommonInquirerOptions = {
     backendTarget?: BackendTarget;
-    existingDeployTaskConfig?: DeployTaskConfig;
 };
 
 /**

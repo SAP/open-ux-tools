@@ -87,7 +87,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 breadcrumb: true
             },
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
-                defaultPackage(previousAnswers.packageManual || options.existingDeployTaskConfig?.package),
+                defaultPackage(previousAnswers.packageManual || options.packageManual?.default),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
                 await validatePackage(input, answers, options.backendTarget)
         } as InputQuestion<AbapDeployConfigAnswersInternal>,

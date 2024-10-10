@@ -44,7 +44,7 @@ export function getTransportRequestPrompts(
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultTransportRequestChoice(
                     previousAnswers.transportInputChoice,
-                    useCreateTrDuringDeploy(options.existingDeployTaskConfig)
+                    useCreateTrDuringDeploy(options.transportManual?.default)
                 ),
             validate: async (
                 input: TransportChoices,
@@ -111,7 +111,7 @@ export function getTransportRequestPrompts(
                 breadcrumb: t('prompts.config.transport.common.transportRequest')
             },
             default: (previousAnswers: AbapDeployConfigAnswersInternal) =>
-                previousAnswers.transportManual || options.existingDeployTaskConfig?.transport,
+                previousAnswers.transportManual || options.transportManual?.default,
             validate: (input: string): boolean | string => validateTransportQuestion(input),
             filter: (input: string): string => input?.trim()?.toUpperCase()
         } as InputQuestion<AbapDeployConfigAnswersInternal>

@@ -225,14 +225,7 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should show overwrite question', () => {
         PromptState.abapDeployConfig.overwrite = undefined;
-        expect(
-            showOverwriteQuestion({
-                overwrite: {
-                    show: true
-                },
-                existingDeployTaskConfig: {}
-            })
-        ).toBe(true);
+        expect(showOverwriteQuestion(false)).toBe(true);
     });
 
     test('Validate different state changes i.e. YUI | CLI', () => {

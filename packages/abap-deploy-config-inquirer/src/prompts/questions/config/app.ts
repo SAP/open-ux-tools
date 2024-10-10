@@ -29,7 +29,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
             breadcrumb: t('prompts.config.app.ui5AbapRepo.message')
         },
         default: (previousAnswers: AbapDeployConfigAnswersInternal) =>
-            previousAnswers.ui5AbapRepo || options.existingDeployTaskConfig?.name,
+            previousAnswers.ui5AbapRepo || options.ui5AbapRepo?.default,
         validate: (input: string): string | boolean => validateUi5AbapRepoName(input),
         filter: (input: string): string | undefined =>
             !PromptState.isYUI ? input?.trim()?.toUpperCase() : input?.trim()
@@ -53,7 +53,7 @@ function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<
             breadcrumb: true
         },
         default: (previousAnswers: AbapDeployConfigAnswersInternal): string | undefined =>
-            previousAnswers.description || options.existingDeployTaskConfig?.description,
+            previousAnswers.description || options.description?.default,
         filter: (input: string): string | undefined => input?.trim(),
         validate: (input: string): boolean | string => validateAppDescription(input)
     } as InputQuestion<AbapDeployConfigAnswersInternal>;
