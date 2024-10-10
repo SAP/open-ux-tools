@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.18.7
+
+### Patch Changes
+
+-   e65bb7f: Update style for UICallout
+
+## 1.18.6
+
+### Patch Changes
+
+-   64aacf2: Sass warning about deprecate usage of '/' for division outside of calc
+
+## 1.18.5
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+
 ## 1.18.4
 
 ### Patch Changes
