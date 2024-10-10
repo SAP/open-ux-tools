@@ -32,10 +32,9 @@ import { prompt as cfDeployConfigPrompt, promptNames } from '@sap-ux/cf-deploy-c
 
 const promptOptions = {
     [promptNames.destinationName]: {
-        cfDestination: 'testDestination',
+        destination: 'testDestination',
         defaultValue: 'defaultDestination',
-        directBindingDestinationHint: false,
-        capRootPath: join('testRoot', 'mta.yaml')
+        directBindingDestinationHint: false
     },
     [promptNames.addManagedAppRouter]: {
         addManagedAppRouter: true

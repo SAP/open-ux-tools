@@ -45,7 +45,6 @@ export type DestinationNamePromptOptions = {
     directBindingDestinationHint?: boolean;
     /**
      * List of additional destination choices available for the prompt.
-     * - For CAP projects, this includes destinations or instance-based destinations and will be appended to BTP destination options.
      * - In BAS environments, this list will be appended to BTP destination options.
      * - If `additionalChoiceList` is provided and the environment is VS Code,
      *   the prompt will render as a list, allowing users to select from the provided choices instead of input.

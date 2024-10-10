@@ -27,9 +27,7 @@ import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers';
  * @param {boolean} [destinationOptions.addDestinationHintMessage] - A flag to indicate
  *        whether to show a hint for the destination name.
  * @param {CfSystemChoice[]} [destinationOptions.additionalChoiceList] - Additional choices
- *        available for the destination. For CAP projects, this will include instance-based
- *        destinations as well and will be appended to the BTP destination list if the environment
- *        is BAS. If additional choices are provided and the environment is VsCode, the prompt
+ *        available for the destination. If additional choices are provided and the environment is VsCode, the prompt
  *        type will render as a list instead of an input field.
  * @param {boolean} [destinationOptions.useAutocomplete] - A flag to indicate whether
  *        to use an autocomplete feature for the destination name input.
