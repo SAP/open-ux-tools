@@ -54,9 +54,7 @@
         "@types/inquirer-autocomplete-prompt": "2.0.1",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202",
-        "jest-extended": "3.2.4",
-        "lodash": "4.17.21"
-    },
+        "jest-extended": "3.2.4"    },
     "engines": {
         "node": ">=18.x"
     }

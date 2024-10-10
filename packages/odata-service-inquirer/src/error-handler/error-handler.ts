@@ -124,7 +124,7 @@ export class ErrorHandler {
         [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: t('errors.urlCertValidationError', {
             certErrorReason: t('texts.anUntrustedRootCert')
         }),
-        [ERROR_TYPE.AUTH]: t('errors.authenticationFailed', { error }),
+        [ERROR_TYPE.AUTH]: t('errors.authenticationFailed', { error: (error as Error)?.message || error }),
         [ERROR_TYPE.AUTH_TIMEOUT]: t('errors.authenticationTimeout'),
         [ERROR_TYPE.TIMEOUT]: t('errors.timeout, { error }'),
         [ERROR_TYPE.INVALID_URL]: t('errors.invalidUrl'),

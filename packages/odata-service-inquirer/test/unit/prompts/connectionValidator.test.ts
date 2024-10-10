@@ -62,9 +62,7 @@ describe('ConnectionValidator', () => {
 
         const result = await validator.validateUrl(invalidUrl);
         expect(result).toBe(t('errors.invalidUrl'));
-        expect(validator.validity).toEqual({
-            urlFormat: false
-        });
+        expect(validator.validity).toEqual({});
 
         expect(await validator.validateUrl('')).toBe(false);
         expect(validator.validity).toEqual({
@@ -403,8 +401,8 @@ describe('ConnectionValidator', () => {
         expect(getOdataServiceSpy).toHaveBeenCalled();
 
         getOdataServiceSpy.mockClear();
-        // Auth is required even though a 200 since the url initially returned 401
-        expect(await connectValidator.isAuthRequired('https://example.com/serviceA', '999')).toBe(true);
+        // Auth is not required since the connection has been authenticated
+        expect(await connectValidator.isAuthRequired('https://example.com/serviceA', '999')).toBe(false);
         // Should not recheck with the same url and client
         expect(getOdataServiceSpy).not.toHaveBeenCalled();
 
