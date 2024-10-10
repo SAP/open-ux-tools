@@ -136,7 +136,7 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
      * @param {(props?: IDropdownOption) => JSX.Element | null} [defaultRender] Default option renderer.
      * @returns {JSX.Element | null} Returns dropdown option element.
      */
-    private readonly onRenderOption = (
+    private readonly _onRenderOption = (
         props?: IDropdownOption,
         defaultRender?: (props?: IDropdownOption) => JSX.Element | null
     ): JSX.Element | null => {
@@ -155,6 +155,24 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
     };
 
     /**
+     * Render dropdown menu option.
+     *
+     * @param {IDropdownOption} [props] Dropdown props.
+     * @param {(props?: IDropdownOption) => JSX.Element | null} [defaultRender] Default option renderer.
+     * @returns {JSX.Element | null} Returns dropdown option element.
+     */
+    private readonly onRenderOption = (
+        props?: IDropdownOption,
+        defaultRender?: (props?: IDropdownOption) => JSX.Element | null
+    ): JSX.Element | null => {
+        const { onRenderOption = this._onRenderOption } = this.props;
+        return onRenderOption(
+            props,
+            this.props.onRenderOption ? this._onRenderOption.bind(this, props, defaultRender) : defaultRender
+        );
+    };
+
+    /**
      * Method called on combobox item render.
      * We should pass query to it and avoid rendering if it is hidden.
      *
@@ -162,7 +180,7 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
      * @param {Function} defaultRender Combobox item default renderer.
      * @returns {JSX.Element | null} Element to render.
      */
-    private onRenderItem = (
+    private _onRenderItem = (
         props?: IDropdownOption,
         defaultRender?: (props?: IDropdownOption) => JSX.Element | null
     ): JSX.Element | null => {
@@ -175,6 +193,24 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
             return defaultRender(props);
         }
         return null;
+    };
+
+    /**
+     * Render dropdown menu item.
+     *
+     * @param {IComboBoxOption} props Combobox item props.
+     * @param {Function} defaultRender Combobox item default renderer.
+     * @returns {JSX.Element | null} Element to render.
+     */
+    private onRenderItem = (
+        props?: IDropdownOption,
+        defaultRender?: (props?: IDropdownOption) => JSX.Element | null
+    ): JSX.Element | null => {
+        const { onRenderItem = this._onRenderItem } = this.props;
+        return onRenderItem(
+            props,
+            this.props.onRenderItem ? this._onRenderItem.bind(this, props, defaultRender) : defaultRender
+        );
     };
 
     /**
@@ -296,13 +332,13 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                 onClick={this.onClick}
                 onChange={this.onChange}
                 onRenderTitle={this.onRenderTitle}
-                onRenderOption={this.onRenderOption.bind(this)}
-                onRenderItem={this.onRenderItem.bind(this)}
                 // Use default responsiveMode as xxxLarge, which does not enter mobile mode.
                 responsiveMode={ResponsiveMode.xxxLarge}
                 disabled={this.props.readOnly}
                 {...additionalProps}
                 {...this.props}
+                onRenderOption={this.onRenderOption.bind(this)}
+                onRenderItem={this.onRenderItem.bind(this)}
                 styles={dropdownStyles}
                 className={this.getClassNames(messageInfo)}
                 errorMessage={messageInfo.message}

@@ -3,11 +3,17 @@ import React, { useState } from 'react';
 import { Stack } from '@fluentui/react';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 
-import { UIComboBox, UIComboBoxLoaderType, UISelectableOptionMenuItemType } from '../src/components/UIComboBox';
+import {
+    UIComboBox,
+    UIComboBoxLoaderType,
+    UIComboBoxOption,
+    UISelectableOptionMenuItemType
+} from '../src/components/UIComboBox';
 import { UICheckbox } from '../src/components/UICheckbox';
 import { data, groupsData } from '../test/__mock__/select-data';
 
 import { initIcons } from '../src/components/Icons';
+import { UITextInput } from '../src/components';
 
 initIcons();
 
@@ -370,5 +376,57 @@ export const groupsAndSeparators = () => {
                 label="Menu items with dividers and headers - multi select"
             />
         </div>
+    );
+};
+
+const editableEntries = ['AR', 'BR', 'DK'];
+
+const tempData = data.map((item) => {
+    if (editableEntries.includes(item.key)) {
+        return {
+            ...item,
+            editable: true
+        };
+    }
+    return item;
+});
+
+export const customRender = () => {
+    return (
+        <UIComboBox
+            options={tempData}
+            highlight={true}
+            allowFreeform={true}
+            useComboBoxAsMenuMinWidth={true}
+            autoComplete="on"
+            onRenderOption={(
+                props?: UIComboBoxOption,
+                defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
+            ) => {
+                if ('editable' in (props ?? {})) {
+                    return (
+                        <UITextInput
+                            onMouseDown={(event) => {
+                                const target = event.target as HTMLElement;
+                                target.focus();
+                            }}
+                            onClick={(event) => {
+                                event.nativeEvent.preventDefault();
+                                event.nativeEvent.stopPropagation();
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }}
+                        />
+                    );
+                }
+                return defaultRender?.(props) ?? null;
+            }}
+            onRenderItem={(
+                props?: UIComboBoxOption,
+                defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
+            ) => {
+                return defaultRender?.(props) ?? null;
+            }}
+        />
     );
 };
