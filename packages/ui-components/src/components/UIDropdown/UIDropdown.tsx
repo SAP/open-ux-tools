@@ -165,11 +165,10 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
         props?: IDropdownOption,
         defaultRender?: (props?: IDropdownOption) => JSX.Element | null
     ): JSX.Element | null => {
-        const { onRenderOption = this._onRenderOption } = this.props;
-        return onRenderOption(
-            props,
-            this.props.onRenderOption ? this._onRenderOption.bind(this, props, defaultRender) : defaultRender
-        );
+        if (this.props.onRenderOption) {
+            return this.props.onRenderOption(props, this._onRenderOption.bind(this, props, defaultRender));
+        }
+        return this._onRenderOption(props, defaultRender);
     };
 
     /**
@@ -206,11 +205,10 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
         props?: IDropdownOption,
         defaultRender?: (props?: IDropdownOption) => JSX.Element | null
     ): JSX.Element | null => {
-        const { onRenderItem = this._onRenderItem } = this.props;
-        return onRenderItem(
-            props,
-            this.props.onRenderItem ? this._onRenderItem.bind(this, props, defaultRender) : defaultRender
-        );
+        if (this.props.onRenderItem) {
+            return this.props.onRenderItem(props, this._onRenderItem.bind(this, props, defaultRender));
+        }
+        return this._onRenderItem(props, defaultRender);
     };
 
     /**
