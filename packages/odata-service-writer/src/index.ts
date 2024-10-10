@@ -139,9 +139,9 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
                 ui5MockYamlConfig: { path: service.path }
             };
             await generateMockserverConfig(basePath, config, fs);
-            // add mockserver middleware to ui5-local.yaml
+            // add or update mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {
-                ui5LocalConfig.addMockServerMiddleware(service.path);
+                ui5LocalConfig.updateMockServerMiddleware(service.path);
             }
         }
 
