@@ -1,6 +1,7 @@
 import { AuthenticationType } from '@sap-ux/store';
 import type { BspApp, UI5ProxyConfig } from '../src';
 import { UI5Config } from '../src';
+import type { MockserverConfig } from '../src/types';
 
 describe('UI5Config', () => {
     // values for testing
@@ -212,8 +213,29 @@ describe('UI5Config', () => {
     });
 
     describe('addBackendToFioriToolsProxydMiddleware', () => {
-        test('add proxy without out backend first and then call add backend', () => {
+        test('add proxy without backend first and then call add backend', () => {
             ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
+            ui5Config.addBackendToFioriToolsProxydMiddleware({
+                url,
+                path
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add proxy with backend first and then call add backend for existing backend', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
+            ui5Config.addBackendToFioriToolsProxydMiddleware({
+                url,
+                path
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add proxy with backend first and then call add backend for unexisting backend', () => {
+            ui5Config.addFioriToolsProxydMiddleware({
+                ui5: {},
+                backend: [{ url: 'http://different.host:8080', path }]
+            });
             ui5Config.addBackendToFioriToolsProxydMiddleware({
                 url,
                 path
@@ -277,6 +299,50 @@ describe('UI5Config', () => {
         });
         test('add with path and annotationsConfig', () => {
             ui5Config.addMockServerMiddleware(path, annotationsConfig);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
+    describe('updateMockServerMiddleware', () => {
+        const MOCKSERVER_MIDDLEWARE_NAME = 'sap-fe-mockserver';
+        const mockserverMiddlewareConfig: MockserverConfig = {
+            mountPath: '/',
+            services: [
+                {
+                    urlPath: '/~different-testpath~',
+                    metadataPath: 'different-metadataPath',
+                    generateMockData: true
+                }
+            ]
+        };
+        const customMockserverMiddleware = {
+            name: MOCKSERVER_MIDDLEWARE_NAME,
+            beforeMiddleware: 'csp',
+            configuration: mockserverMiddlewareConfig
+        };
+
+        beforeEach(() => {
+            ui5Config.addCustomMiddleware([customMockserverMiddleware]);
+        });
+
+        test('update with given path (no existing services)', () => {
+            ui5Config.removeCustomMiddleware(MOCKSERVER_MIDDLEWARE_NAME);
+            ui5Config.updateMockServerMiddleware(path);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('update with given path (existing services)', () => {
+            ui5Config.updateMockServerMiddleware(path);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('update without path (existing services)', () => {
+            ui5Config.updateMockServerMiddleware();
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('update with given path and annotationsConfig (existing services)', () => {
+            ui5Config.updateMockServerMiddleware(path, annotationsConfig);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });

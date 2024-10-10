@@ -267,7 +267,7 @@ export class UI5Config {
     }
 
     /**
-     * Adds a backend configuration to an existing fiori-tools-proxy middleware. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     * Adds a backend configuration to an existing fiori-tools-proxy middleware keeping any existing backend configurations. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
      *
      * @param backend config of backend that is to be proxied
      * @returns {UI5Config} the UI5Config instance
@@ -280,12 +280,31 @@ export class UI5Config {
             throw new Error('Could not find fiori-tools-proxy');
         }
         const comments = getBackendComments(backend);
-        const backendNode = this.document.createNode({ value: backend, comments });
-
-        this.document
-            .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
-            .set('backend', [backendNode]);
-
+        let backendNode;
+        const proxyMiddlewareYamlContent = this.findCustomMiddleware(fioriToolsProxy);
+        const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration as FioriToolsProxyConfig;
+        // Add new entry to existing backend configurations in yaml
+        if (proxyMiddlewareConfig?.backend) {
+            // Avoid adding duplicates by checking existing backend configs
+            if (!proxyMiddlewareConfig.backend.find((existingBackend) => existingBackend.url === backend.url)) {
+                backendNode = this.document.createNode({
+                    value: backend,
+                    comments
+                });
+                const configuration = this.document.getMap({
+                    start: proxyMiddleware as YAMLMap,
+                    path: 'configuration'
+                });
+                const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
+                backendConfigs.add(backendNode);
+            }
+        } else {
+            // Create a new 'backend' node in yaml for middleware config
+            backendNode = this.document.createNode({ value: backend, comments });
+            this.document
+                .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
+                .set('backend', [backendNode]);
+        }
         return this;
     }
 
@@ -340,10 +359,31 @@ export class UI5Config {
      * @memberof UI5Config
      */
     public addMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
+        const middleware = getMockServerMiddlewareConfig(undefined, path, annotationsConfig, true);
         this.document.appendTo({
             path: 'server.customMiddleware',
-            value: getMockServerMiddlewareConfig(path, annotationsConfig)
+            value: middleware
         });
+        return this;
+    }
+
+    /**
+     * Updates a instance of the mockserver middleware of the config.
+     *
+     * @param path option path that is to be mocked
+     * @param annotationsConfig optional, annotations config that is to be mocked
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public updateMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
+        const customMockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver');
+        const customMockserverMiddlewareConfig = customMockserverMiddleware?.configuration as MockserverConfig;
+        const middleware = getMockServerMiddlewareConfig(
+            customMockserverMiddlewareConfig?.services,
+            path,
+            annotationsConfig
+        );
+        this.updateCustomMiddleware(middleware);
         return this;
     }
 
@@ -506,7 +546,7 @@ export class UI5Config {
                 path: 'server.customMiddleware',
                 matcher: { key: 'name', value: name },
                 value: middleware,
-                mode: 'overwrite'
+                mode: 'merge'
             });
         } else {
             this.addCustomMiddleware([middleware]);

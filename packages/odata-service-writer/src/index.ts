@@ -109,10 +109,22 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
         if (fs.exists(ui5LocalConfigPath)) {
             ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-            ui5LocalConfig.addFioriToolsProxydMiddleware({
-                backend: [service.previewSettings as ProxyBackend],
-                ignoreCertError: service.ignoreCertError
-            });
+            try {
+                ui5LocalConfig.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+            } catch (error: any) {
+                // If error informs about missing fiori-tools-proxy then create it
+                if (
+                    (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) ||
+                    error.message === 'Could not find fiori-tools-proxy'
+                ) {
+                    ui5LocalConfig.addFioriToolsProxydMiddleware({
+                        backend: [service.previewSettings as ProxyBackend],
+                        ignoreCertError: service.ignoreCertError
+                    });
+                } else {
+                    throw error;
+                }
+            }
         }
     }
 
@@ -127,9 +139,9 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
                 ui5MockYamlConfig: { path: service.path }
             };
             await generateMockserverConfig(basePath, config, fs);
-            // add mockserver middleware to ui5-local.yaml
+            // add or update mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {
-                ui5LocalConfig.addMockServerMiddleware(service.path);
+                ui5LocalConfig.updateMockServerMiddleware(service.path);
             }
         }
 
