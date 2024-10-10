@@ -180,7 +180,7 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
      * @param {Function} defaultRender Combobox item default renderer.
      * @returns {JSX.Element | null} Element to render.
      */
-    private _onRenderItem = (
+    private readonly _onRenderItem = (
         props?: IDropdownOption,
         defaultRender?: (props?: IDropdownOption) => JSX.Element | null
     ): JSX.Element | null => {

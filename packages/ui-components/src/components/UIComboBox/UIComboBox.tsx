@@ -294,7 +294,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * @param {Function} defaultRender Combobox item default renderer.
      * @returns {JSX.Element | null} Element to render.
      */
-    private _onRenderItem = (
+    private readonly _onRenderItem = (
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
