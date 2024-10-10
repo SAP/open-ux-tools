@@ -30,7 +30,12 @@
     "targetDefaults": {
         "build": {
             "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/lib", "{projectRoot}/storybook"]
+            "outputs": [
+                "{projectRoot}/dist",
+                "{projectRoot}/generators",
+                "{projectRoot}/lib",
+                "{projectRoot}/storybook"
+            ]
         },
         "test": {
             "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],

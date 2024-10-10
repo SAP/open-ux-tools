@@ -1,5 +1,25 @@
 # @sap-ux/ui-prompting
 
+## 0.2.4
+
+### Patch Changes
+
+-   Updated dependencies [e65bb7f]
+    -   @sap-ux/ui-components@1.18.7
+
+## 0.2.3
+
+### Patch Changes
+
+-   0b8a374: Do not show the translation input if the translation props are not provided (i.e., no I18N bundle and no translation event handler).
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [64aacf2]
+    -   @sap-ux/ui-components@1.18.6
+
 ## 0.2.1
 
 ### Patch Changes

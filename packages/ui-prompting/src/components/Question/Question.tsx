@@ -14,10 +14,11 @@ export interface QuestionProps {
     choices?: PromptListChoices;
     pending?: boolean;
     validation: ValidationResults;
+    isI18nInputSupported?: boolean;
 }
 
 export const Question = (props: QuestionProps) => {
-    const { question, onChange, answers, choices, pending, validation = {}, id } = props;
+    const { question, onChange, answers, choices, pending, validation = {}, id, isI18nInputSupported } = props;
     let questionInput: JSX.Element;
     let errorMessage = '';
     const value: AnswerValue = getAnswer(answers, question.name) as AnswerValue;
@@ -28,7 +29,7 @@ export const Question = (props: QuestionProps) => {
     switch (question?.type) {
         case 'input': {
             const { translatable } = question.guiOptions ?? {};
-            if (translatable) {
+            if (isI18nInputSupported && translatable) {
                 questionInput = (
                     <TranslationInput
                         value={value}
