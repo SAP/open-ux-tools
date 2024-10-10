@@ -65,7 +65,7 @@ async function getDestinationNamePrompt(
         validate: (destination: string): string | boolean => {
             return validators.validateDestinationQuestion(destination, !destination && isBAS);
         },
-        source: (input: string) => searchChoices(input, destinationList),
+        source: (prevAnswers: CfDeployConfigAnswers, input: string) => searchChoices(input, destinationList),
         choices: destinationList
     } as InputQuestion<CfDeployConfigAnswers>;
 }

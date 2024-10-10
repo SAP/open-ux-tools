@@ -164,7 +164,7 @@ describe('Prompt Generation Tests', () => {
                     ...destinationPrompts,
                     useAutocomplete: true,
                     additionalChoiceList,
-                    defaultValue: 'testValue'
+                    defaultValue: 'testChoice'
                 }
             };
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
@@ -175,7 +175,7 @@ describe('Prompt Generation Tests', () => {
             expect((destinationNamePrompt as ListQuestion)?.choices as Function).toEqual(additionalChoiceList);
             expect((destinationNamePrompt?.source as Function)()).toEqual(additionalChoiceList);
             // Default should be used
-            expect((destinationNamePrompt?.default as Function)()).toEqual(additionalChoiceList[0].value);
+            expect((destinationNamePrompt?.default as Function)()).toEqual(additionalChoiceList[0].name);
         });
     });
 
