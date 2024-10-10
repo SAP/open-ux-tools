@@ -2,22 +2,32 @@ import { FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { MiddlewareConfigs } from '../types';
 import { stringify } from 'querystring';
 import type { Package } from '@sap-ux/project-access';
-import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
 
 /**
- * Gets the preview middleware form the ui5.yaml file.
- * The middleware can either be named fiori-tools-preview or preview-middleware.
+ * Gets the preview middleware form the yamlConfig or provided path.
+ * The middleware can either be named 'fiori-tools-preview' or 'preview-middleware'.
  *
- * @param basePath - path to project root, where package.json and ui5.yaml is
- * @returns 'fiori-tools-preview' configuration if given
+ * @param yamlConfig - the yaml configuration to use; if not provided, the file will be read with the provided basePath and filename
+ * @param basePath - path to project root, where ui5.yaml is located
+ * @param filename - name of the ui5 yaml file to read from basePath; default is 'ui5.yaml'
+ * @returns preview middleware configuration if found or undefined
+ * @throws {Error} if filename is not found at basePath
+ * @throws {Error} if basePath and yamlConfig are undefined
  */
-async function getPreviewMiddleware(basePath: string): Promise<CustomMiddleware<PreviewConfigOptions> | undefined> {
-    //todo: what to do in case there is not ui5.yaml file? try FileName.Ui5MockYaml or FileName.Ui5LocalYaml as fallback?
-    const existingUi5YamlConfig = await readUi5Yaml(basePath, FileName.Ui5Yaml);
+export async function getPreviewMiddleware(
+    yamlConfig?: UI5Config,
+    basePath?: string,
+    filename: string = FileName.Ui5Yaml
+): Promise<CustomMiddleware<PreviewConfigOptions> | undefined> {
+    if (!basePath && !yamlConfig) {
+        throw new Error('Either base path or yaml config must be provided');
+    }
+    yamlConfig = yamlConfig ?? (await readUi5Yaml(basePath!, filename));
     return (
-        existingUi5YamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview) ??
-        existingUi5YamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.PreviewMiddleware)
+        yamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview) ??
+        yamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.PreviewMiddleware)
     );
 }
 
@@ -106,17 +116,24 @@ function getRTAIntent(previewMiddlewareConfig: PreviewConfigOptions | undefined)
  * @returns - review url parameters
  */
 export async function getRTAUrl(basePath: string, query: string): Promise<string | undefined> {
-    const existingPreviewMiddleware = await getPreviewMiddleware(basePath);
+    let previewMiddleware: CustomMiddleware<PreviewConfigOptions> | undefined;
+    try {
+        previewMiddleware = await getPreviewMiddleware(undefined, basePath);
+    } catch (error) {
+        //todo: what to do in case there is no ui5.yaml file? try FileName.Ui5MockYaml or FileName.Ui5LocalYaml as fallback?
+        return undefined;
+    }
+
     if (
-        existingPreviewMiddleware?.name === MiddlewareConfigs.PreviewMiddleware &&
-        !getRTAMountPoint(existingPreviewMiddleware?.configuration)
+        previewMiddleware?.name === MiddlewareConfigs.PreviewMiddleware &&
+        !getRTAMountPoint(previewMiddleware?.configuration)
     ) {
         return undefined;
     }
-    const mountPoint = getRTAMountPoint(existingPreviewMiddleware?.configuration) ?? '/preview.html';
-    const intent = getRTAIntent(existingPreviewMiddleware?.configuration) ?? '#app-preview';
+    const mountPoint = getRTAMountPoint(previewMiddleware?.configuration) ?? '/preview.html';
+    const intent = getRTAIntent(previewMiddleware?.configuration) ?? '#app-preview';
 
-    return isFioriToolsDeprecatedPreviewConfig(existingPreviewMiddleware?.configuration)
+    return isFioriToolsDeprecatedPreviewConfig(previewMiddleware?.configuration)
         ? `${mountPoint}?${query}#preview-app`
         : `${mountPoint}?${query}${intent}`;
 }
