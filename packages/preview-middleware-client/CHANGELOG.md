@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.14
+
+### Patch Changes
+
+-   e3c3927: fix: no longer load sap.ushell.Container syncronously
+
 ## 0.11.13
 
 ### Patch Changes
