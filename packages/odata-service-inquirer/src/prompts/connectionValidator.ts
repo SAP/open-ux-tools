@@ -17,8 +17,7 @@ import {
     createForAbapOnCloud,
     createForDestination
 } from '@sap-ux/axios-extension';
-import type { Destination } from '@sap-ux/btp-utils';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { Authentication, type Destination, getDestinationUrlForAppStudio, isAppStudio } from '@sap-ux/btp-utils';
 import https from 'https';
 import { ERROR_TYPE, ErrorHandler } from '../error-handler/error-handler';
 import { t } from '../i18n';
@@ -366,12 +365,18 @@ export class ConnectionValidator {
         destination?: Destination;
         odataVersion?: ODataVersion;
     }): Promise<void> {
+        // todo: Would it be better to return a boolean or string, calling getValidationResultFromStatusCode() and returning the result?
         this.resetConnectionState();
+        this.resetValidity();
 
         if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
             this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
         } else if (destination) {
-            // Unclear why aaxiosConfig is mandatory here, its not mandatory in the the target function implementation
+            // Assumption: the destination configured URL is a valid URL, will be needed later for basic auth error handling
+            this._validatedUrl = getDestinationUrlForAppStudio(
+                destination.Name,
+                destination.Host ? new URL(destination.Host).pathname : undefined
+            );
             this._serviceProvider = createForDestination({}, destination);
         } else if (axiosConfig) {
             this._axiosConfig = axiosConfig;
@@ -499,18 +504,27 @@ export class ConnectionValidator {
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
      * @returns @returns true if the system is reachable and authenticated, if required, false if not, or an error message string
      */
-    public async validateDestination(destination: Destination, odataVersion?: ODataVersion): Promise<ValidationResult> {
+    public async validateDestination(
+        destination: Destination,
+        odataVersion?: ODataVersion
+    ): Promise<{ valResult: ValidationResult; errorType?: ERROR_TYPE }> {
         try {
-            this.systemAuthType = 'unknown';
+            // The only supported authentication mechanism for destinations set to Authentication 'NO_AUTHENTICATION' is basic (i.e. to the target Abap system)
+            // So while we actually dont know we assume its basic for now since thats the only supported mechanism
+            this.systemAuthType = destination.Authentication === Authentication.NO_AUTHENTICATION ? 'basic' : 'unknown';
             await this.createSystemConnection({ destination, odataVersion });
-            this._validatedUrl = destination.Host; // Host is the full url, configured as destination url property value. Not the origin!
-            return this.getValidationResultFromStatusCode(200);
+            return {
+                valResult: this.getValidationResultFromStatusCode(200)
+            };
         } catch (error) {
-            LoggerHelper.logger.debug(`ConnectionValidator.validateDestination() - error: ${error.message}`);
+            //LoggerHelper.logger.debug(`ConnectionValidator.validateDestination() - error: ${error.message}`);
             if (error?.isAxiosError) {
                 this.getValidationResultFromStatusCode(error?.response?.status || error?.code);
             }
-            return errorHandler.getErrorMsg(error) ?? false;
+            return {
+                valResult: errorHandler.logErrorMsgs(error) ?? false,
+                errorType: errorHandler.getCurrentErrorType() ?? ERROR_TYPE.CONNECTION
+            };
         }
     }
 
@@ -545,6 +559,7 @@ export class ConnectionValidator {
     ): Promise<ValidationResult> {
         if (this.isEmptyString(serviceUrl)) {
             this.resetValidity();
+            this.validity.urlFormat = false;
             return false;
         }
         if (systemAuthType) {
@@ -740,6 +755,7 @@ export class ConnectionValidator {
             // Since an exception was not thrown, this is a valid url
             this.validity.urlFormat = true;
             this._validatedUrl = url;
+
             const valResult = this.getValidationResultFromStatusCode(status);
 
             if (valResult === true) {
@@ -751,6 +767,7 @@ export class ConnectionValidator {
             }
             return valResult;
         } catch (error) {
+            this.resetValidity();
             return errorHandler.getErrorMsg(error) ?? false;
         }
     }
@@ -759,7 +776,7 @@ export class ConnectionValidator {
      * Reset the validity state.
      */
     private resetValidity(): void {
-        this.validity.urlFormat = false;
+        delete this.validity.urlFormat;
         delete this.validity.reachable;
         delete this.validity.authRequired;
         delete this.validity.authenticated;

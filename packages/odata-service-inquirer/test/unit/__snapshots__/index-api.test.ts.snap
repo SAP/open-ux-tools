@@ -39,20 +39,29 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "choices": [
       {
         "name": "New system",
-        "value": "!@£*&937newSystem*X~qy^",
+        "value": {
+          "system": "!@£*&937newSystem*X~qy^",
+          "type": "newSystemChoice",
+        },
       },
       {
         "name": "storedSystem1",
         "value": {
-          "name": "storedSystem1",
-          "url": "http://url1",
+          "system": {
+            "name": "storedSystem1",
+            "url": "http://url1",
+          },
+          "type": "backendSystem",
         },
       },
       {
         "name": "storedSystem2",
         "value": {
-          "name": "storedSystem2",
-          "url": "http://url2",
+          "system": {
+            "name": "storedSystem2",
+            "url": "http://url2",
+          },
+          "type": "backendSystem",
         },
       },
     ],

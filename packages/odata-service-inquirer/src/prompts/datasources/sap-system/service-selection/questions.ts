@@ -44,7 +44,7 @@ export function getSystemServiceQuestion(
     let previousService: ServiceAnswer | undefined;
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
 
-    const newSystemServiceQuestion = {
+    const systemServiceQuestion = {
         when: (): boolean =>
             connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
         name: `${promptNamespace}:${promptNames.serviceSelection}`,
@@ -98,7 +98,7 @@ export function getSystemServiceQuestion(
         }
     } as ListQuestion<ServiceAnswer>;
 
-    const questions: Question<ServiceAnswer>[] = [newSystemServiceQuestion];
+    const questions: Question<ServiceAnswer>[] = [systemServiceQuestion];
 
     // Only for CLI use as `list` prompt validation does not run on CLI
     if (getHostEnvironment() === hostEnvironment.cli) {

@@ -1,5 +1,5 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
-import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
+import type { Destination } from '@sap-ux/btp-utils';
 import { isAppStudio, isFullUrlDestination, isPartialUrlDestination, listDestinations } from '@sap-ux/btp-utils';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { withCondition } from '@sap-ux/inquirer-common';
@@ -14,15 +14,20 @@ import {
     type OdataServicePromptOptions,
     type SapSystemType
 } from '../../../../types';
-import { convertODataVersionType, getHostEnvironment, PromptState } from '../../../../utils';
+import { getHostEnvironment, PromptState } from '../../../../utils';
 import type { ValidationResult } from '../../../connectionValidator';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
-import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../abap-on-prem/questions';
+import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions';
 import { getNewSystemQuestions } from '../new-system/questions';
 import type { ServiceAnswer } from '../service-selection';
 import { getSystemServiceQuestion } from '../service-selection/questions';
-import { isAbapODataDestination } from './destination-helpers';
+import {
+    connectWithBackendSystem,
+    connectWithDestination,
+    getSystemDisplayName,
+    isAbapODataDestination
+} from './prompt-helpers';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -39,7 +44,10 @@ const systemSelectionPromptNames = {
     systemSelectionCli: 'systemSelectionCli'
 } as const;
 
-type systemSelectionAnswerType = Destination | BackendSystem | NewSystemChoice;
+export type SystemSelectionAnswerType = {
+    type: 'destination' | 'backendSystem' | 'newSystemChoice';
+    system: Destination | BackendSystem | NewSystemChoice;
+};
 
 interface SystemSelectionCredentialsAnswers {
     [usernamePromptName]?: string;
@@ -47,23 +55,7 @@ interface SystemSelectionCredentialsAnswers {
 }
 
 export interface SystemSelectionAnswer extends SystemSelectionCredentialsAnswers {
-    [systemSelectionPromptNames.systemSelection]?: Destination | BackendSystem | NewSystemChoice;
-}
-
-/**
- * Creates and returns a display name for the system, appending the system type and user display name if available.
- *
- * @param system the backend system to create a display name for
- * @returns the display name for the system
- */
-export function getSystemDisplayName(system: BackendSystem): string {
-    const userDisplayName = system.userDisplayName ? ` [${system.userDisplayName}]` : '';
-    const systemTypeName =
-        system.authenticationType === 'reentranceTicket' || system.authenticationType === 'oauth2'
-            ? ` (${t('texts.systemTypeBTP')})`
-            : '';
-
-    return `${system.name}${systemTypeName}${userDisplayName}`;
+    [systemSelectionPromptNames.systemSelection]?: SystemSelectionAnswerType;
 }
 
 /**
@@ -120,19 +112,28 @@ async function createSystemChoices(
             .map((destination) => {
                 return {
                     name: destination.Name,
-                    value: destination
+                    value: {
+                        type: 'destination',
+                        system: destination
+                    } as SystemSelectionAnswerType
                 };
             });
-        newSystemChoice = { name: t('prompts.newSystemType.choiceAbapOnBtp'), value: 'abapOnBtp' as SapSystemType };
+        newSystemChoice = { name: t('prompts.newSystemType.choiceAbapOnBtp'), value: 'abapOnBtp' as SapSystemType }; // TODO: add new system choice for destinations
     } else {
         const backendSystems = await new SystemService(LoggerHelper.logger).getAll();
         systemChoices = backendSystems.map((system) => {
             return {
                 name: getSystemDisplayName(system),
-                value: system
+                value: {
+                    system,
+                    type: 'backendSystem'
+                } as SystemSelectionAnswerType
             };
         });
-        newSystemChoice = { name: t('prompts.systemSelection.newSystemChoiceLabel'), value: newSystemChoiceValue };
+        newSystemChoice = {
+            name: t('prompts.systemSelection.newSystemChoiceLabel'),
+            value: { system: newSystemChoiceValue, type: 'newSystemChoice' }
+        };
     }
     systemChoices.sort(({ name: nameA }, { name: nameB }) =>
         nameA!.localeCompare(nameB!, undefined, { numeric: true, caseFirst: 'lower' })
@@ -142,126 +143,41 @@ async function createSystemChoices(
 }
 
 /**
- * Connects to the specified backend system and validates the connection.
- * Note this will return true in the case of basic auth validation failure to defer validation to the credentials prompt.
- *
- * @param backendSystem the backend system to connect to
- * @param connectionValidator the connection validator to use for the connection
- * @param requiredOdataVersion the required OData version for the service, this will be used to narrow the catalog service connections
- * @returns the validation result of the backend system connection
- */
-async function connectWithBackendSystem(
-    backendSystem: BackendSystem,
-    connectionValidator: ConnectionValidator,
-    requiredOdataVersion?: OdataVersion
-): Promise<ValidationResult> {
-    // Create a new connection with the selected system
-    let connectValResult: ValidationResult = false;
-    if (!isAppStudio() && backendSystem) {
-        // Assumption: non-BAS systems are BackendSystems
-        if (backendSystem.authenticationType === 'reentranceTicket') {
-            connectValResult = await connectionValidator.validateUrl(backendSystem.url, {
-                isSystem: true,
-                odataVersion: convertODataVersionType(requiredOdataVersion),
-                systemAuthType: 'reentranceTicket'
-            });
-        } else if (backendSystem.serviceKeys) {
-            connectValResult = await connectionValidator.validateServiceInfo(backendSystem.serviceKeys as ServiceInfo);
-        } else if (
-            (backendSystem.authenticationType === 'basic' || !backendSystem.authenticationType) &&
-            backendSystem.username &&
-            backendSystem.password
-        ) {
-            connectValResult = await connectionValidator.validateAuth(
-                backendSystem.url,
-                backendSystem.username,
-                backendSystem.password,
-                {
-                    isSystem: true,
-                    odataVersion: convertODataVersionType(requiredOdataVersion),
-                    sapClient: backendSystem.client
-                }
-            );
-            // If authentication failed with existing credentials the user will be prompted to enter new credentials.
-            // Returning true will effectively defer validation to the credentials prompt.
-            if (connectValResult !== true) {
-                return true;
-            }
-        }
-        // If the connection is successful, we will return the connected system from the inquirer
-        if (connectValResult === true && connectionValidator.serviceProvider) {
-            PromptState.odataService.connectedSystem = {
-                serviceProvider: connectionValidator.serviceProvider,
-                backendSystem
-            };
-        }
-    }
-    return connectValResult;
-}
-
-/**
- * Connects to the specified destination and validates the connection.
- *
- * @param destination the destination specifying the connection details
- * @param connectionValidator the connection validator to use for the connection
- * @param requiredOdataVersion the required OData version for the service, this will be used to narrow the catalog service connections
- * @returns the validation result of the destination connection attempt
- */
-async function connectWithDestination(
-    destination: Destination,
-    connectionValidator: ConnectionValidator,
-    requiredOdataVersion?: OdataVersion
-): Promise<ValidationResult> {
-    const connectValResult = await connectionValidator.validateDestination(
-        destination,
-        convertODataVersionType(requiredOdataVersion)
-    );
-
-    // If the connection is successful, we will return the connected system from the inquirer
-    if (connectValResult === true && connectionValidator.serviceProvider) {
-        PromptState.odataService.connectedSystem = {
-            serviceProvider: connectionValidator.serviceProvider,
-            destination
-        };
-    }
-
-    return connectValResult;
-}
-
-/**
  * Validates the system selection, connecting to the selected system and validating the connection.
  *
  * @param systemSelection
  * @param connectionValidator
- * @param backendSystemRef
- * @param backendSystemRef.backendSystem
  * @param requiredOdataVersion
  * @returns the validation result of the selected system connection attempt
  */
 async function validateSystemSelection(
-    systemSelection: systemSelectionAnswerType,
+    systemSelection: SystemSelectionAnswerType,
     connectionValidator: ConnectionValidator,
-    backendSystemRef?: { backendSystem: BackendSystem | undefined },
     requiredOdataVersion?: OdataVersion
 ): Promise<ValidationResult> {
-    if (systemSelection === newSystemChoiceValue) {
+    if (systemSelection?.type === 'newSystemChoice') {
         return true;
     }
     let connectValResult: ValidationResult = false;
     // Assumption: non-BAS systems are BackendSystems
     if (systemSelection && !isAppStudio()) {
         connectValResult = await connectWithBackendSystem(
-            systemSelection as BackendSystem,
+            systemSelection.system as BackendSystem,
             connectionValidator,
             requiredOdataVersion
         );
-        if (backendSystemRef) {
+        /* if (backendSystemRef) {
             backendSystemRef.backendSystem = systemSelection as BackendSystem;
-        }
+        } */
     } else if (systemSelection && isAppStudio()) {
         // Assumption: BAS systems are Destinations
+        // Partial URL destinations will require additional service path prompt input, so we skip the connection validation here by returning true
+        // The service URL connection will need to be validated by the service path prompt
+        if (isPartialUrlDestination(systemSelection.system as Destination)) {
+            return true;
+        }
         connectValResult = await connectWithDestination(
-            systemSelection as Destination,
+            systemSelection.system as Destination,
             connectionValidator,
             requiredOdataVersion
         );
@@ -286,11 +202,13 @@ export async function getSystemSelectionQuestions(
         promptOptions
     );
 
-    // Existing system (BackendSystem or Destination) selected, todo: make the service prompt optional
+    // If the selected system was in fact not a system but a partial url destination and requires furthur service path input we need to add additional service path prompt
+
+    // Existing system (BackendSystem or Destination) selected, TODO: make the service prompt optional
     questions.push(
         ...(withCondition(
             getSystemServiceQuestion(connectValidator, systemSelectionPromptNamespace, promptOptions) as Question[],
-            (answers: Answers) => (answers as SystemSelectionAnswer).systemSelection !== newSystemChoiceValue
+            (answers: Answers) => (answers as SystemSelectionAnswer).systemSelection?.type !== 'newSystemChoice'
         ) as Question[])
     );
 
@@ -298,7 +216,7 @@ export async function getSystemSelectionQuestions(
     questions.push(
         ...(withCondition(
             getNewSystemQuestions(promptOptions) as Question[],
-            (answers: Answers) => (answers as SystemSelectionAnswer).systemSelection === newSystemChoiceValue
+            (answers: Answers) => (answers as SystemSelectionAnswer).systemSelection?.type === 'newSystemChoice'
         ) as Question[])
     );
 
@@ -321,7 +239,7 @@ export async function getSystemConnectionQuestions(
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
     const systemChoices = await createSystemChoices(destinationFilters);
-    const backendSystemRef: { backendSystem: BackendSystem | undefined } = { backendSystem: undefined };
+    //const systemRef: { system: BackendSystem | Destination | undefined } = { system: undefined };
 
     const questions: Question[] = [
         {
@@ -330,12 +248,12 @@ export async function getSystemConnectionQuestions(
             message: t('prompts.systemSelection.message'),
             // source: (preAnswers, input) => searchChoices(input, getSapSystemChoices(systems)),
             choices: systemChoices,
-            validate: async (systemSelection: systemSelectionAnswerType): Promise<ValidationResult> => {
+            validate: async (systemSelection: SystemSelectionAnswerType): Promise<ValidationResult> => {
                 return (
                     validateSystemSelection(
                         systemSelection,
                         connectionValidator,
-                        backendSystemRef,
+                        //systemRef,
                         requiredOdataVersion
                     ) ?? false
                 );
@@ -359,11 +277,22 @@ export async function getSystemConnectionQuestions(
         )
     );
      */
+    // TODO: we need to set the Prompt State connected system once validated credentials for destinaton?
+    // Use withCondition and add :
+    /**
+     * // If the connection is successful, we will return the connected system from the inquirer
+    if (connectionValidator.validity.authorized === true && connectionValidator.serviceProvider) {
+        PromptState.odataService.connectedSystem = {
+            serviceProvider: connectionValidator.serviceProvider,
+            destination
+        };
+    }
+     */
     const credentialsPrompts = getCredentialsPrompts(
         connectionValidator,
         systemSelectionPromptNamespace,
-        undefined,
-        backendSystemRef
+        undefined // todo pass client from destination and backend config...also check if the sap-client is requried or added from the dets config
+        //systemRef
     ) as Question[];
     questions.push(...credentialsPrompts);
 
@@ -375,7 +304,7 @@ export async function getSystemConnectionQuestions(
                 const connectValResult = await validateSystemSelection(
                     systemSelection,
                     connectionValidator,
-                    backendSystemRef,
+                    //systemRef,
                     requiredOdataVersion
                 );
                 // An issue occurred with the selected system, there is no need to continue on the CLI, log and exit
@@ -389,5 +318,4 @@ export async function getSystemConnectionQuestions(
         } as Question);
     }
     return questions;
-    // ** TODO ** CLI prompt for system selection
 }
