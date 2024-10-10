@@ -463,4 +463,21 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
+
+    describe('addCloudFoundryDeployTask', () => {
+        test('minimal settings required', () => {
+            ui5Config.addCloudFoundryDeployTask('myTestAppId');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add modules task', () => {
+            ui5Config.addCloudFoundryDeployTask('myTestAppId', true);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add transpile task', () => {
+            ui5Config.addCloudFoundryDeployTask('myTestAppId', true, true);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
 });
