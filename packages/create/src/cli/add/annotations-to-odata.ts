@@ -4,9 +4,10 @@ import {
     ChangeType,
     getPromptsForAddAnnotationsToOData,
     getAdpConfig,
-    getManifestDataSources,
+    ManifestService,
     getVariant
 } from '@sap-ux/adp-tooling';
+import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
 import { validateAdpProject } from '../../validation/validation';
@@ -43,8 +44,11 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         await validateAdpProject(basePath);
         const variant = getVariant(basePath);
         const adpConfig = await getAdpConfig(basePath, yamlPath);
-        const dataSources = await getManifestDataSources(variant.reference, adpConfig, logger);
+        const manifestService = await ManifestService.init(variant.reference, adpConfig, logger);
+        const dataSources = manifestService.getManifestDataSources();
         const answers = await promptYUIQuestions(getPromptsForAddAnnotationsToOData(basePath, dataSources), false);
+        const metadata = await manifestService.getDataSourceMetadata(answers.id);
+        const namespaces = getAnnotationNamespaces({ metadata });
 
         const fs = await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
             basePath,
@@ -53,7 +57,9 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
                 variant,
                 annotation: {
                     dataSource: answers.id,
-                    filePath: answers.filePath
+                    filePath: answers.filePath,
+                    namespaces,
+                    serviceUrl: dataSources[answers.id].uri
                 }
             }
         );

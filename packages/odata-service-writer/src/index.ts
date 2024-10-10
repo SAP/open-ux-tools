@@ -169,3 +169,4 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 }
 
 export { generate, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
+export { getAnnotationNamespaces };
