@@ -132,7 +132,7 @@ export class AdpPreview {
         }
         const buffer = zip.toBuffer();
 
-        this.mergedDescriptor = (await this.lrep.mergeAppDescriptorVariant(buffer))[this.descriptorVariantId];
+        this.mergedDescriptor = (await this.lrep.mergeAppDescriptorVariant(buffer, '//'))[this.descriptorVariantId];
     }
 
     /**
