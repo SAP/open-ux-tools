@@ -76,9 +76,8 @@ export type CfDeployConfigPromptOptions = Partial<stringValuePromptOptions & boo
  * Represents a question in the CF deployment configuration.
  * Extends `YUIQuestion` with optional autocomplete functionality.
  */
-export type CfDeployConfigQuestions = YUIQuestion<CfDeployConfigAnswers> & {
-    choices?: CfSystemChoice[];
-} & Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
+export type CfDeployConfigQuestions = YUIQuestion<CfDeployConfigAnswers> &
+    Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
 
 /**
  * User responses for CF deployment configuration.

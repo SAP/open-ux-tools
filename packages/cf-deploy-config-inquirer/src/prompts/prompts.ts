@@ -1,4 +1,4 @@
-import { type ConfirmQuestion, type InputQuestion } from '@sap-ux/inquirer-common';
+import { type ConfirmQuestion, type InputQuestion, searchChoices } from '@sap-ux/inquirer-common';
 import { t } from '../i18n';
 import type {
     CfDeployConfigPromptOptions,
@@ -50,7 +50,7 @@ async function getDestinationNamePrompt(
     const basePromptType = isBAS || additionalChoiceList.length ? 'list' : 'input';
     const promptType = useAutocomplete ? 'autocomplete' : basePromptType;
     const destinations = await fetchBTPDestinations();
-    const cfChoiceList: CfSystemChoice[] = await getCfSystemChoices(destinations);
+    const destinationList: CfSystemChoice[] = [...additionalChoiceList, ...(await getCfSystemChoices(destinations))];
     return {
         guiOptions: {
             mandatory: !isBAS || !!destination,
@@ -65,7 +65,8 @@ async function getDestinationNamePrompt(
         validate: (destination: string): string | boolean => {
             return validators.validateDestinationQuestion(destination, !destination && isBAS);
         },
-        choices: [...additionalChoiceList, ...cfChoiceList]
+        source: (input: string) => searchChoices(input, destinationList),
+        choices: destinationList
     } as InputQuestion<CfDeployConfigAnswers>;
 }
 

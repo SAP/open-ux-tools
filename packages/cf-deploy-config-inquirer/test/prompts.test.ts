@@ -9,6 +9,7 @@ import type {
 } from '../src/types';
 import { promptNames } from '../src/types';
 import { fetchBTPDestinations } from '../src/prompts/prompt-helpers';
+import { type ListQuestion } from '@sap-ux/inquirer-common';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -86,7 +87,7 @@ describe('Prompt Generation Tests', () => {
             expect(destinationNamePrompt?.type).toBe('list');
             expect(destinationNamePrompt?.default()).toBe('defaultDestination');
             // ensure additional choice is added to the BTP destination list
-            expect(destinationNamePrompt?.choices).toStrictEqual([
+            expect((destinationNamePrompt as ListQuestion)?.choices as Function).toStrictEqual([
                 ...additionalChoiceList,
                 { name: 'btpTestDest - btpTestDest', value: 'btpTestDest', scp: false, url: 'btpTestDest' }
             ]);
@@ -113,7 +114,7 @@ describe('Prompt Generation Tests', () => {
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('input');
             expect(destinationNamePrompt?.message).toBe(t('prompts.destinationNameMessage'));
-            expect(destinationNamePrompt?.choices).toStrictEqual([]);
+            expect((destinationNamePrompt as ListQuestion)?.choices as Function).toStrictEqual([]);
         });
 
         it('returns list-based prompt when environment is vscode and additionalChoiceList is provided', async () => {
@@ -128,7 +129,7 @@ describe('Prompt Generation Tests', () => {
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('list');
             expect(destinationNamePrompt?.message).toBe(t('prompts.destinationNameMessage'));
-            expect(destinationNamePrompt?.choices).toStrictEqual(additionalChoiceList);
+            expect((destinationNamePrompt as ListQuestion)?.choices as Function).toStrictEqual(additionalChoiceList);
         });
 
         it('validates destination correctly and shows hint when directBindingDestinationHint is enabled', async () => {
@@ -140,11 +141,7 @@ describe('Prompt Generation Tests', () => {
             };
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
-            expect(
-                destinationNamePrompt &&
-                    typeof destinationNamePrompt.validate === 'function' &&
-                    destinationNamePrompt.validate('someDestination')
-            ).toBe(true);
+            expect((destinationNamePrompt?.validate as Function)()).toBe(true);
             expect(destinationNamePrompt?.message).toBe(t('prompts.directBindingDestinationHint'));
         });
 
@@ -158,6 +155,27 @@ describe('Prompt Generation Tests', () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.message).toBe(t('prompts.destinationNameMessage'));
+        });
+
+        test('Destination name when autocomplete is specified', async () => {
+            // Option `useAutocomplete` specified
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    useAutocomplete: true,
+                    additionalChoiceList,
+                    defaultValue: 'testValue'
+                }
+            };
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const destinationNamePrompt = questions.find(
+                (question: CfDeployConfigQuestions) => question.name === promptNames.destinationName
+            );
+            expect(destinationNamePrompt?.type).toEqual('autocomplete');
+            expect((destinationNamePrompt as ListQuestion)?.choices as Function).toEqual(additionalChoiceList);
+            expect((destinationNamePrompt?.source as Function)()).toEqual(additionalChoiceList);
+            // Default should be used
+            expect((destinationNamePrompt?.default as Function)()).toEqual(additionalChoiceList[0].value);
         });
     });
 
@@ -180,16 +198,10 @@ describe('Prompt Generation Tests', () => {
             expect(managedAppRouterPrompt?.guiOptions?.breadcrumb).toBe(
                 t('prompts.addApplicationRouterBreadcrumbMessage')
             );
-            expect(
-                managedAppRouterPrompt &&
-                    typeof managedAppRouterPrompt.message === 'function' &&
-                    managedAppRouterPrompt.message({})
-            ).toBe(t('prompts.generateManagedApplicationToRouterMessage'));
-            expect(
-                managedAppRouterPrompt &&
-                    typeof managedAppRouterPrompt.default === 'function' &&
-                    managedAppRouterPrompt.default()
-            ).toBe(true);
+            expect((managedAppRouterPrompt?.message as Function)()).toBe(
+                t('prompts.generateManagedApplicationToRouterMessage')
+            );
+            expect((managedAppRouterPrompt?.default as Function)()).toBe(true);
         });
 
         it('Displays managed router prompt when disabled', async () => {
@@ -217,12 +229,8 @@ describe('Prompt Generation Tests', () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const overwritePrompt = questions.find((question) => question.name === promptNames.overwrite);
             expect(overwritePrompt?.type).toBe('confirm');
-            expect(overwritePrompt && typeof overwritePrompt.default === 'function' && overwritePrompt.default()).toBe(
-                true
-            );
-            expect(
-                overwritePrompt && typeof overwritePrompt.message === 'function' && overwritePrompt.message({})
-            ).toBe(t('prompts.overwriteMessage'));
+            expect((overwritePrompt?.default as Function)()).toBe(true);
+            expect((overwritePrompt?.message as Function)()).toBe(t('prompts.overwriteMessage'));
         });
 
         it('Displays get overwrite prompt when disabled', async () => {
