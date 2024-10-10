@@ -81,8 +81,10 @@ export function HeaderField(headerFieldProps: Readonly<HeaderFieldProps>): React
             </UITooltip>
             <TextField
                 id={label}
+                data-testid={label}
                 value={value}
                 readOnly={true}
+                title={value}
                 borderless
                 styles={{
                     field: {
