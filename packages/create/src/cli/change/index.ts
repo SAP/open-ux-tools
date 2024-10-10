@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { addChangeDataSourceCommand } from './change-data-source';
+// import { addChangeDataSourceCommand } from './change-data-source';
 import { addChangeInboundCommand } from './change-inbound';
 
 /**
@@ -10,7 +10,7 @@ import { addChangeInboundCommand } from './change-inbound';
 export function getChangeCommands(): Command {
     const addCommands = new Command('change');
     // create-fiori change data-source
-    addChangeDataSourceCommand(addCommands);
+    // addChangeDataSourceCommand(addCommands);
     addChangeInboundCommand(addCommands);
     return addCommands;
 }
