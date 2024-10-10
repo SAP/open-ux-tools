@@ -17,6 +17,7 @@ describe('Test update middleware', () => {
     const logger = new ToolsLogger();
     let fs: Editor;
     const debugLogMock = jest.spyOn(ToolsLogger.prototype, 'debug').mockImplementation(() => {});
+    const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
     const basePath = join(__dirname, '../../fixtures/variants-config');
 
     beforeEach(() => {
@@ -31,6 +32,19 @@ describe('Test update middleware', () => {
         expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', FileName.Ui5Yaml));
         expect(debugLogMock).toHaveBeenCalledWith(noFileMessage(FileName.Ui5MockYaml, basePath));
         expect(debugLogMock).toHaveBeenCalledWith(noFileMessage(FileName.Ui5LocalYaml, basePath));
+    });
+
+    test('add preview middleware config to ui5.yaml file w/o middlewares', async () => {
+        const missingMiddlewareConfigPath = join(basePath, 'no-middleware-config');
+        await updateMiddlewares(fs, missingMiddlewareConfigPath, logger);
+
+        expect(fs.read(join(missingMiddlewareConfigPath, 'ui5.yaml'))).toMatchSnapshot();
+        expect(warnLogMock).toHaveBeenCalledWith(
+            `No preview middleware found in ${FileName.Ui5Yaml}. Preview middleware will be added.`
+        );
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', FileName.Ui5Yaml));
+        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage(FileName.Ui5MockYaml, missingMiddlewareConfigPath));
+        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage(FileName.Ui5LocalYaml, missingMiddlewareConfigPath));
     });
 
     test('add preview and reload middleware config to ui5.yaml file', async () => {

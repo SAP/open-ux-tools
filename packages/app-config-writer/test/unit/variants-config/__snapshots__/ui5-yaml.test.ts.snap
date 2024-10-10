@@ -43,3 +43,15 @@ server:
             - path: /my-variants.html
 "
 `;
+
+exports[`Test update middleware add preview middleware config to ui5.yaml file w/o middlewares 1`] = `
+"specVersion: \\"3.0\\"
+metadata:
+  name: fe_lrop_v2
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+"
+`;
