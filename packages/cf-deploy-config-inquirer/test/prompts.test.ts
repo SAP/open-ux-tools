@@ -8,8 +8,7 @@ import type {
     DestinationNamePromptOptions
 } from '../src/types';
 import { promptNames } from '../src/types';
-import { join } from 'path';
-import { mtaFileExists, fetchBTPDestinations } from '../src/prompts/prompt-helpers';
+import { fetchBTPDestinations } from '../src/prompts/prompt-helpers';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -19,19 +18,16 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 
 jest.mock('../src/prompts/prompt-helpers', () => ({
     ...jest.requireActual('../src/prompts/prompt-helpers'),
-    mtaFileExists: jest.fn(),
     fetchBTPDestinations: jest.fn()
 }));
-const mockMtaFileExists = mtaFileExists as jest.Mock;
 const mockFetchBTPDestinations = fetchBTPDestinations as jest.Mock;
 
 describe('Prompt Generation Tests', () => {
     let promptOptions: CfDeployConfigPromptOptions;
     const destinationPrompts: DestinationNamePromptOptions = {
-        cfDestination: 'testDestination',
+        destination: 'testDestination',
         defaultValue: 'defaultDestination',
-        directBindingDestinationHint: false,
-        projectRootPath: join('testRoot', 'mta.yaml')
+        directBindingDestinationHint: false
     };
     const additionalChoiceList: CfSystemChoice[] = [
         {
@@ -135,24 +131,13 @@ describe('Prompt Generation Tests', () => {
             expect(destinationNamePrompt?.choices).toStrictEqual(additionalChoiceList);
         });
 
-        it('validates destination correctly for cap project with no mta file and directBindingDestinationHint enabled', async () => {
-            promptOptions[promptNames.destinationName] = {
-                ...destinationPrompts,
-                directBindingDestinationHint: true
+        it('validates destination correctly and shows hint when directBindingDestinationHint is enabled', async () => {
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    directBindingDestinationHint: true
+                }
             };
-            mockMtaFileExists.mockReturnValueOnce(false);
-            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
-            const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
-            expect(
-                destinationNamePrompt &&
-                    typeof destinationNamePrompt.validate === 'function' &&
-                    destinationNamePrompt.validate('someDestination')
-            ).toBe(t('errors.capDeploymentNoMtaError'));
-            expect(destinationNamePrompt?.message).toBe(t('prompts.directBindingDestinationHint'));
-        });
-
-        it('validates destination correctly for cap project with mta file', async () => {
-            mockMtaFileExists.mockReturnValueOnce(true);
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(
@@ -160,6 +145,19 @@ describe('Prompt Generation Tests', () => {
                     typeof destinationNamePrompt.validate === 'function' &&
                     destinationNamePrompt.validate('someDestination')
             ).toBe(true);
+            expect(destinationNamePrompt?.message).toBe(t('prompts.directBindingDestinationHint'));
+        });
+
+        it('Shows default hint when directBindingDestinationHint is not provided', async () => {
+            promptOptions = {
+                [promptNames.destinationName]: {
+                    ...destinationPrompts,
+                    directBindingDestinationHint: undefined
+                }
+            };
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
+            expect(destinationNamePrompt?.message).toBe(t('prompts.destinationNameMessage'));
         });
     });
 

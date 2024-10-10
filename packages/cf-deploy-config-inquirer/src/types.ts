@@ -38,12 +38,7 @@ type OverwritePromptOptions = {
  */
 export type DestinationNamePromptOptions = {
     /** The Cloud Foundry destination name to be used in the deployment process. */
-    cfDestination: string;
-    /**
-     * Root directory path of the applications.
-     * This path is used to check for the presence of MTA yaml file.
-     */
-    projectRootPath?: string;
+    destination: string;
     /** Default value to suggest for the destination name. */
     defaultValue: string;
     /** Flag to indicate if a hint message should be shown to indicate the app router is configured to use direct service binding . */

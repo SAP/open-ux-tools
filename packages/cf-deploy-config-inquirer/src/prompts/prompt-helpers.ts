@@ -1,6 +1,4 @@
 import type { CfSystemChoice } from '../types';
-import { existsSync } from 'fs';
-import { join } from 'path';
 import {
     isAppStudio,
     listDestinations,
@@ -34,16 +32,6 @@ function createDestinationChoices(destinations: Destinations = {}): CfSystemChoi
  */
 export async function getCfSystemChoices(destinations?: Destinations): Promise<CfSystemChoice[]> {
     return destinations ? createDestinationChoices(destinations) : [];
-}
-
-/**
- * Checks for the presence of an MTA configuration file in specified path.
- *
- * @param {string} projectPath - project path to check for the MTA file.
- * @returns {boolean} - `true` if the MTA file exists, otherwise `false`.
- */
-export function mtaFileExists(projectPath: string): boolean {
-    return existsSync(join(projectPath, 'mta.yaml'));
 }
 
 /**

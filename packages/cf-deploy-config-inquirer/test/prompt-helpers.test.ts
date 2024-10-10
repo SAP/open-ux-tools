@@ -7,7 +7,7 @@ import {
     isAbapEnvironmentOnBtp,
     type Destinations
 } from '@sap-ux/btp-utils';
-import { getCfSystemChoices, mtaFileExists, fetchBTPDestinations } from '../src/prompts/prompt-helpers';
+import { getCfSystemChoices, fetchBTPDestinations } from '../src/prompts/prompt-helpers';
 import type { CfSystemChoice } from '../src/types';
 
 jest.mock('fs', () => ({
@@ -75,29 +75,6 @@ describe('Utility Functions', () => {
                 { name: 'Dest1 - host1', value: 'Dest1', scp: false, url: 'host1' },
                 { name: 'Dest2 - host2', value: 'Dest2', scp: false, url: 'host2' }
             ]);
-        });
-    });
-
-    describe('mtaFileExists', () => {
-        const testPath = join('/some/directory');
-        const mtaYamlPath = join('/path/to/mta.yaml');
-        it('should return true if mta.yaml file exists', () => {
-            (existsSync as jest.Mock).mockReturnValue(true);
-            (join as jest.Mock).mockReturnValue(mtaYamlPath);
-
-            const result = mtaFileExists(testPath);
-
-            expect(result).toBe(true);
-            expect(join).toHaveBeenCalledWith(testPath, 'mta.yaml');
-            expect(existsSync).toHaveBeenCalledWith(mtaYamlPath);
-        });
-
-        it('should return false if mta.yaml file does not exist', () => {
-            (existsSync as jest.Mock).mockReturnValue(false);
-
-            const result = mtaFileExists(testPath);
-
-            expect(result).toBe(false);
         });
     });
 

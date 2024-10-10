@@ -10,45 +10,42 @@ import type {
 import { promptNames } from '../types';
 import * as validators from './validators';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { getCfSystemChoices, fetchBTPDestinations, mtaFileExists } from './prompt-helpers';
+import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers';
 
 /**
  * Retrieves the prompt configuration for selecting a Cloud Foundry destination name.
- * 
- * This function generates a prompt that allows users to specify a destination name. The prompt can be rendered as a list or 
- * an input field depending on the provided options. If the environment supports 
- * autocomplete, it can provide suggestions based on existing destinations.
- * 
- * @param {DestinationNamePromptOptions} destinationOptions - The options for configuring 
- *        the destination name prompt. 
- * @param {string} destinationOptions.cfDestination - The Cloud Foundry destination name 
- *        to be used.
- * @param {string} [destinationOptions.projectRootPath=''] - The path to the root directory of 
- *        the application. This is used to check if the MTA file exists.
- * @param {string} destinationOptions.defaultValue - The default destination value for CF.
- * @param {boolean} [destinationOptions.addDestinationHintMessage=false] - A flag to indicate 
- *        whether to show a hint for the destination name.
- * @param {CfSystemChoice[]} [destinationOptions.additionalChoiceList=[]] - Additional choices 
- *        available for the destination. For CAP projects, this will include instance-based 
- *        destinations as well and will be appended to the BTP destination list if the environment 
- *        is BAS. If additional choices are provided and the environment is VsCode, the prompt 
- *        type will render as a list instead of an input field.
- * @param {boolean} [destinationOptions.useAutocomplete=false] - A flag to indicate whether 
- *        to use an autocomplete feature for the destination name input.
  *
- * @returns {Promise<CfDeployConfigQuestions>} A promise that resolves to the configuration 
- *          of the prompt, which includes the question and any related options for rendering 
+ * This function generates a prompt that allows users to specify a destination name. The prompt can be rendered as a list or
+ * an input field depending on the provided options. If the environment supports
+ * autocomplete, it can provide suggestions based on existing destinations.
+ *
+ * @param {DestinationNamePromptOptions} destinationOptions - The options for configuring
+ *        the destination name prompt.
+ * @param {string} destinationOptions.destination - The Cloud Foundry destination name
+ *        to be used.
+ * @param {string} destinationOptions.defaultValue - The default destination value for CF.
+ * @param {boolean} [destinationOptions.addDestinationHintMessage] - A flag to indicate
+ *        whether to show a hint for the destination name.
+ * @param {CfSystemChoice[]} [destinationOptions.additionalChoiceList] - Additional choices
+ *        available for the destination. For CAP projects, this will include instance-based
+ *        destinations as well and will be appended to the BTP destination list if the environment
+ *        is BAS. If additional choices are provided and the environment is VsCode, the prompt
+ *        type will render as a list instead of an input field.
+ * @param {boolean} [destinationOptions.useAutocomplete] - A flag to indicate whether
+ *        to use an autocomplete feature for the destination name input.
+ * @returns {Promise<CfDeployConfigQuestions>} A promise that resolves to the configuration
+ *          of the prompt, which includes the question and any related options for rendering
  *          the prompt in a user interface.
  */
-async function getDestinationNamePrompt(destinationOptions: DestinationNamePromptOptions): Promise<CfDeployConfigQuestions> {
-
+async function getDestinationNamePrompt(
+    destinationOptions: DestinationNamePromptOptions
+): Promise<CfDeployConfigQuestions> {
     const {
         directBindingDestinationHint = false,
-        cfDestination,
-        additionalChoiceList=  [],
+        destination,
+        additionalChoiceList = [],
         defaultValue,
-        projectRootPath= '',
-        useAutocomplete= false
+        useAutocomplete = false
     } = destinationOptions;
 
     const isBAS = isAppStudio();
@@ -58,7 +55,7 @@ async function getDestinationNamePrompt(destinationOptions: DestinationNamePromp
     const cfChoiceList: CfSystemChoice[] = await getCfSystemChoices(destinations);
     return {
         guiOptions: {
-            mandatory: !isBAS || !!cfDestination,
+            mandatory: !isBAS || !!destination,
             breadcrumb: t('prompts.destinationNameMessage')
         },
         type: promptType,
@@ -68,10 +65,7 @@ async function getDestinationNamePrompt(destinationOptions: DestinationNamePromp
             ? t('prompts.directBindingDestinationHint')
             : t('prompts.destinationNameMessage'),
         validate: (destination: string): string | boolean => {
-            if (projectRootPath && !mtaFileExists(projectRootPath)) {
-                return t('errors.capDeploymentNoMtaError');
-            }
-            return validators.validateDestinationQuestion(destination, !cfDestination && isBAS);
+            return validators.validateDestinationQuestion(destination, !destination && isBAS);
         },
         choices: [...additionalChoiceList, ...cfChoiceList]
     } as InputQuestion<CfDeployConfigAnswers>;
@@ -129,9 +123,7 @@ export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): 
 
     const questions: CfDeployConfigQuestions[] = [];
     // Collect questions into an array
-    questions.push(
-        await getDestinationNamePrompt(destinationOptions)
-    );
+    questions.push(await getDestinationNamePrompt(destinationOptions));
 
     if (addManagedAppRouter) {
         questions.push(getAddManagedRouterPrompt());
