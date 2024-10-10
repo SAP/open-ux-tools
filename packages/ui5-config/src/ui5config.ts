@@ -294,12 +294,12 @@ export class UI5Config {
             }
         } else {
             // Create new 'backend' node in yaml for middleware config
-            backendNode = this.document.createNode({ value: backend, comments });
+            backendNode = this.document.createNode({ value: [backend], comments });
         }
         if (backendNode) {
             this.document
                 .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
-                .set('backend', [backendNode]);
+                .set('backend', backendNode);
         }
         return this;
     }

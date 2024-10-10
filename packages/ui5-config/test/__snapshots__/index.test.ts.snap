@@ -182,10 +182,10 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy with backend
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - - url: http://different.host:8080
-              path: /~testpath~
-            - url: http://localhost:8080
-              path: /~testpath~
+          - url: http://different.host:8080
+            path: /~testpath~
+          - url: http://localhost:8080
+            path: /~testpath~
         ui5:
           path:
             - /resources
