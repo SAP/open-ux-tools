@@ -283,23 +283,27 @@ export class UI5Config {
         let backendNode;
         const proxyMiddlewareYamlContent = this.findCustomMiddleware(fioriToolsProxy);
         const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration as FioriToolsProxyConfig;
-        // Avoid adding duplicates by checking existing backend configs
+        // Add new entry to existing backend configurations in yaml
         if (proxyMiddlewareConfig?.backend) {
+            // Avoid adding duplicates by checking existing backend configs
             if (!proxyMiddlewareConfig.backend.find((existingBackend) => existingBackend.url === backend.url)) {
-                // Create new 'backend' node in yaml for middleware config keeping previous backend definitions
                 backendNode = this.document.createNode({
-                    value: [...proxyMiddlewareConfig.backend, backend],
+                    value: backend,
                     comments
                 });
+                const configuration = this.document.getMap({
+                    start: proxyMiddleware as YAMLMap,
+                    path: 'configuration'
+                });
+                const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
+                backendConfigs.add(backendNode);
             }
         } else {
-            // Create new 'backend' node in yaml for middleware config
-            backendNode = this.document.createNode({ value: [backend], comments });
-        }
-        if (backendNode) {
+            // Create a new 'backend' node in yaml for middleware config
+            backendNode = this.document.createNode({ value: backend, comments });
             this.document
                 .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
-                .set('backend', backendNode);
+                .set('backend', [backendNode]);
         }
         return this;
     }
