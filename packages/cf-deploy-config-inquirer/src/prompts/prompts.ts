@@ -49,7 +49,11 @@ async function getDestinationNamePrompt(
     const isBAS = isAppStudio();
     const destinations = await fetchBTPDestinations();
     const destinationList: CfSystemChoice[] = [...additionalChoiceList, ...(await getCfSystemChoices(destinations))];
+    // If BAS is used or additional choices are provided, the prompt should be a list
+    // If VsCode is used and additional choices are not provided, the prompt should be an input field
+    // If VsCode is used and additional choices are provided, the prompt should be a list
     const basePromptType = isBAS || additionalChoiceList.length ? 'list' : 'input';
+    // If autocomplete is enabled and there are destination choices, the prompt should be an autocomplete
     const promptType = useAutocomplete && destinationList.length ? 'autocomplete' : basePromptType;
     return {
         guiOptions: {
@@ -127,9 +131,10 @@ export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): 
     if (addManagedAppRouter) {
         questions.push(getAddManagedRouterPrompt());
     }
-   
+    console.log(" -- addOverwriteQuestion: ", addOverwriteQuestion);
     if (addOverwriteQuestion) {
         questions.push(getOverwritePrompt());
     }
+    console.log("--- questions: ", questions);
     return questions;
 }
