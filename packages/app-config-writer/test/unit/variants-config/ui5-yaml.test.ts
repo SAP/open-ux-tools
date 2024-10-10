@@ -34,7 +34,20 @@ describe('Test update middleware', () => {
         expect(debugLogMock).toHaveBeenCalledWith(noFileMessage(FileName.Ui5LocalYaml, basePath));
     });
 
-    test('add preview middleware config to ui5.yaml file w/o middlewares', async () => {
+    test('add preview-middleware to ui5.yaml file w/o middlewares', async () => {
+        const missingMiddlewareConfigPath = join(basePath, 'no-middleware-config-os');
+        await updateMiddlewares(fs, missingMiddlewareConfigPath, logger);
+
+        expect(fs.read(join(missingMiddlewareConfigPath, 'ui5.yaml'))).toMatchSnapshot();
+        expect(warnLogMock).toHaveBeenCalledWith(
+            `No preview middleware found in ${FileName.Ui5Yaml}. Preview middleware will be added.`
+        );
+        expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', FileName.Ui5Yaml));
+        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage(FileName.Ui5MockYaml, missingMiddlewareConfigPath));
+        expect(debugLogMock).toHaveBeenCalledWith(noFileMessage(FileName.Ui5LocalYaml, missingMiddlewareConfigPath));
+    });
+
+    test('add fiori-tools-preview to ui5.yaml file w/o middlewares', async () => {
         const missingMiddlewareConfigPath = join(basePath, 'no-middleware-config');
         await updateMiddlewares(fs, missingMiddlewareConfigPath, logger);
 
