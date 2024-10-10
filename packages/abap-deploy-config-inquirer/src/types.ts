@@ -116,8 +116,8 @@ export type TransportManualPromptOptions = {
 
 export type OverwritePromptOptions = {
     /**
-     * This option allows the prompt to be hidden. It should be used when the overwrite prompt should not be shown.
-     * Overwrite prompt should only be shown when existing deployment configuration is found and could be overwritten.
+     * This option allows the prompt to be hidden and should be used when the overwrite prompt should not be shown.
+     * Hide should be set to false when existing configuration will be overwritten.
      */
     hide?: boolean;
 };
