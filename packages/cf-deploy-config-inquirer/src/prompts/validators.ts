@@ -46,5 +46,8 @@ export function validateDestinationQuestion(
     input: string | CfSystemChoice,
     allowEmptyChoice: boolean = false
 ): boolean | string {
-    return allowEmptyChoice || typeof input !== 'string' ? true : validateInput(input);
+    if (allowEmptyChoice) {
+        return true;
+    }
+    return typeof input === 'string' ? validateInput(input) : true;
 }
