@@ -99,7 +99,7 @@ describe('Prompt Generation Tests', () => {
             promptOptions = {
                 [promptNames.destinationName]: {
                     ...destinationPrompts,
-                    useAutocomplete: true, 
+                    useAutocomplete: true,
                     additionalChoiceList
                 }
             };

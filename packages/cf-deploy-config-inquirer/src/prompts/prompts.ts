@@ -127,7 +127,7 @@ export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): 
     if (addManagedAppRouter) {
         questions.push(getAddManagedRouterPrompt());
     }
-   
+
     if (addOverwriteQuestion) {
         questions.push(getOverwritePrompt());
     }
