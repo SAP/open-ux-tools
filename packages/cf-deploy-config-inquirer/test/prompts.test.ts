@@ -59,7 +59,7 @@ describe('Prompt Generation Tests', () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('list');
-            expect(destinationNamePrompt?.default()).toBe('defaultDestination');
+            expect(destinationNamePrompt?.default()).toBe('testDestination');
         });
 
         it('returns list-based prompt for cap project when environment is BAS', async () => {
@@ -78,6 +78,7 @@ describe('Prompt Generation Tests', () => {
             promptOptions = {
                 [promptNames.destinationName]: {
                     ...destinationPrompts,
+                    destination: undefined,
                     additionalChoiceList
                 }
             };
@@ -93,12 +94,13 @@ describe('Prompt Generation Tests', () => {
             ]);
         });
 
-        it('enables autocomplete when enabled', async () => {
+        it('enables autocomplete when enabled and additionalChoiceList is provided', async () => {
             mockIsAppStudio.mockReturnValueOnce(false);
             promptOptions = {
                 [promptNames.destinationName]: {
                     ...destinationPrompts,
-                    useAutocomplete: true
+                    useAutocomplete: true, 
+                    additionalChoiceList
                 }
             };
 
@@ -162,6 +164,7 @@ describe('Prompt Generation Tests', () => {
             promptOptions = {
                 [promptNames.destinationName]: {
                     ...destinationPrompts,
+                    destination: undefined,
                     useAutocomplete: true,
                     additionalChoiceList,
                     defaultValue: 'testChoice'

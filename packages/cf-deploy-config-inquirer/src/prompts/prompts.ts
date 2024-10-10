@@ -47,17 +47,17 @@ async function getDestinationNamePrompt(
     } = destinationOptions;
 
     const isBAS = isAppStudio();
-    const basePromptType = isBAS || additionalChoiceList.length ? 'list' : 'input';
-    const promptType = useAutocomplete ? 'autocomplete' : basePromptType;
     const destinations = await fetchBTPDestinations();
     const destinationList: CfSystemChoice[] = [...additionalChoiceList, ...(await getCfSystemChoices(destinations))];
+    const basePromptType = isBAS || additionalChoiceList.length ? 'list' : 'input';
+    const promptType = useAutocomplete && destinationList.length ? 'autocomplete' : basePromptType;
     return {
         guiOptions: {
             mandatory: !isBAS || !!destination,
             breadcrumb: t('prompts.destinationNameMessage')
         },
         type: promptType,
-        default: () => defaultValue,
+        default: () => destination ?? defaultValue,
         name: promptNames.destinationName,
         message: directBindingDestinationHint
             ? t('prompts.directBindingDestinationHint')
@@ -127,7 +127,7 @@ export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): 
     if (addManagedAppRouter) {
         questions.push(getAddManagedRouterPrompt());
     }
-
+   
     if (addOverwriteQuestion) {
         questions.push(getOverwritePrompt());
     }

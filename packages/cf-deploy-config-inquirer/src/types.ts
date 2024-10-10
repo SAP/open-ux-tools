@@ -6,7 +6,7 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
  */
 export enum promptNames {
     /** The prompt to specify the destination name for CF deployment. */
-    destinationName = 'cfDestination',
+    destinationName = 'destinationName',
     /** The prompt to specify if a managed app router should be added to the deployment. */
     addManagedAppRouter = 'addManagedAppRouter',
     /** The prompt for confirming destination overwrite. */
@@ -38,7 +38,7 @@ type OverwritePromptOptions = {
  */
 export type DestinationNamePromptOptions = {
     /** The Cloud Foundry destination name to be used in the deployment process. */
-    destination: string;
+    destination?: string;
     /** Default value to suggest for the destination name. */
     defaultValue: string;
     /** Flag to indicate if a hint message should be shown to indicate the app router is configured to use direct service binding . */
@@ -87,6 +87,8 @@ export interface CfDeployConfigAnswers {
     destination?: string;
     /** Indicates whether the user opted to include a managed application router. */
     addManagedRouter?: boolean;
+    /* Indicates whether the user opted to overwrite the destination. */
+    overwrite?: boolean;
 }
 
 /**
