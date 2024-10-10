@@ -128,7 +128,7 @@ server:
 ```
 This mount path can be used with a run script that looks as follows.
 ```Json
-"start-variants-management": "ui5 serve --open \"test/variant-editor.html.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\""
+"start-variants-management": "ui5 serve --open \"test/variant-editor.html.html#app-preview\""
 ```
 
 ### Test Suites
