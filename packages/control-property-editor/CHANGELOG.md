@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.17
+
+### Patch Changes
+
+-   e65bb7f: Update popup styling and add more space between labels and icons
+
 ## 0.5.16
 
 ### Patch Changes
