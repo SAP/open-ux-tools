@@ -135,6 +135,6 @@ export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): 
     if (addOverwriteQuestion) {
         questions.push(getOverwritePrompt());
     }
-    
+
     return questions;
 }
