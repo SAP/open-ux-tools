@@ -287,14 +287,14 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     };
 
     /**
-     * Method called on combobox item render.
-     * We should pass query to it and avoid rendering if it is hidden.
+     * Default renderer for combobox item when highlight mode is enabled.
+     * We should pass highlight query within props and avoid rendering if it is hidden.
      *
      * @param {IComboBoxOption} props Combobox item props.
      * @param {Function} defaultRender Combobox item default renderer.
      * @returns {JSX.Element | null} Element to render.
      */
-    private onRenderItem = (
+    private readonly _onRenderItem = (
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
@@ -317,6 +317,24 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             ) : null;
         }
         return null;
+    };
+
+    /**
+     * Method called on combobox item render.
+     * We should pass query to it and avoid rendering if it is hidden.
+     *
+     * @param {IComboBoxOption} props Combobox item props.
+     * @param {Function} defaultRender Combobox item default renderer.
+     * @returns {JSX.Element | null} Element to render.
+     */
+    private onRenderItem = (
+        props?: IComboBoxOption,
+        defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
+    ): JSX.Element | null => {
+        if (this.props.onRenderItem) {
+            return this.props.onRenderItem(props, this._onRenderItem.bind(this, props, defaultRender));
+        }
+        return this._onRenderItem(props, defaultRender);
     };
 
     /**
@@ -350,6 +368,24 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     };
 
     /**
+     * Default renderer for combobox item's option/label when highlight mode is enabled.
+     * We should use different componenet which support highlighting - 'ComboboxSearchOption'.
+     *
+     * @param {IComboBoxOption} props Combobox item props.
+     * @param {Function} defaultRender Combobox item default renderer.
+     * @returns {JSX.Element | null} Element to render.
+     */
+    private readonly _onRenderOption = (
+        props?: IComboBoxOption,
+        defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
+    ): JSX.Element | null => {
+        if (props && props.itemType !== SelectableOptionMenuItemType.Header) {
+            return <UIHighlightMenuOption text={props.text} query={this.query} />;
+        }
+        return defaultRender ? defaultRender(props) : null;
+    };
+
+    /**
      * Method called on combobox item's option/label render.
      * We should use different componenet which support highlighting - 'ComboboxSearchOption'.
      *
@@ -361,10 +397,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
-        if (props && props.itemType !== SelectableOptionMenuItemType.Header) {
-            return <UIHighlightMenuOption text={props.text} query={this.query} />;
+        if (this.props.onRenderOption) {
+            return this.props.onRenderOption(props, this._onRenderOption.bind(this, props, defaultRender));
         }
-        return defaultRender ? defaultRender(props) : null;
+        return this._onRenderOption(props, defaultRender);
     };
 
     /**
