@@ -212,8 +212,29 @@ describe('UI5Config', () => {
     });
 
     describe('addBackendToFioriToolsProxydMiddleware', () => {
-        test('add proxy without out backend first and then call add backend', () => {
+        test('add proxy without backend first and then call add backend', () => {
             ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
+            ui5Config.addBackendToFioriToolsProxydMiddleware({
+                url,
+                path
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add proxy with backend first and then call add backend for existing backend', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
+            ui5Config.addBackendToFioriToolsProxydMiddleware({
+                url,
+                path
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add proxy with backend first and then call add backend for unexisting backend', () => {
+            ui5Config.addFioriToolsProxydMiddleware({
+                ui5: {},
+                backend: [{ url: 'http://different.host:8080', path }]
+            });
             ui5Config.addBackendToFioriToolsProxydMiddleware({
                 url,
                 path
