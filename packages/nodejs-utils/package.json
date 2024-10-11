@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/nodejs-utils",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "Nodejs utility wrappers",
     "repository": {
         "type": "git",
@@ -35,7 +35,7 @@
         "@types/semver": "7.5.2",
         "@types/vscode": "1.73.1",
         "mock-spawn": "0.2.6",
-        "typescript": "5.3.3"
+        "typescript": "5.6.2"
     },
     "files": [
         "dist",

@@ -1,5 +1,28 @@
 # @sap-ux/telemetry
 
+## 0.5.33
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+
+## 0.5.32
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/store@0.9.2
+    -   @sap-ux/ui5-config@0.25.0
+
+## 0.5.31
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+
 ## 0.5.30
 
 ### Patch Changes

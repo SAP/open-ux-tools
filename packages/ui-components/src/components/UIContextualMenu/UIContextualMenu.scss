@@ -1,3 +1,4 @@
+@use "sass:math";
 @import './_variables.scss';
 
 $layout-dropdown-menu-border-color: $menu-border-color;
@@ -136,8 +137,8 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
 
         > .ms-ContextualMenu-link {
             &.is-checked  .ms-ContextualMenu-checkmarkIcon {
-                margin-right: $menu-item-horizontal-padding/2;
-                margin-left: -$menu-item-horizontal-padding/2;
+                margin-right: math.div($menu-item-horizontal-padding, 2);
+                margin-left: math.div(-$menu-item-horizontal-padding, 2);
             }
         }
 

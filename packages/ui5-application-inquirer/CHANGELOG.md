@@ -1,5 +1,23 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.7.1
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+
+## 0.7.0
+
+### Minor Changes
+
+-   a64a3a5: Alert and prevent from generating a Fiori application into a CAP project folder
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+
 ## 0.6.6
 
 ### Patch Changes

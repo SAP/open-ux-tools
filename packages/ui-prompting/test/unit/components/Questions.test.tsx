@@ -7,7 +7,7 @@ import type { ListPromptQuestion, PromptQuestion } from '../../../src/types';
 import type { QuestionsProps } from '../../../src';
 import { questions } from '../../mock-data/questions';
 import { getDependantQuestions } from '../../../src/utilities';
-import { acceptI18nCallout, clickI18nButton, isI18nLoading } from '../utils';
+import { acceptI18nCallout, clickI18nButton, isI18nLoading, translationInputSelectors } from '../utils';
 
 describe('Questions', () => {
     initIcons();
@@ -358,6 +358,12 @@ describe('Questions', () => {
             );
             // Check result
             expect(isI18nLoading()).toEqual(true);
+        });
+
+        it('Do not show translation input when no translation props passed', async () => {
+            render(<Questions {...props} id="my-prompt" questions={[question]} translationProps={undefined} />);
+            // Check that there no translation input rendered
+            expect(document.querySelectorAll(translationInputSelectors.button).length).toEqual(0);
         });
     });
 });
