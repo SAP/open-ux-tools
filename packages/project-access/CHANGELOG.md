@@ -1,5 +1,17 @@
 # @sap-ux/project-access
 
+## 1.27.6
+
+### Patch Changes
+
+-   eb74890: Fix the bug for the app folder within CAP as the target folder for the new project.
+
+## 1.27.5
+
+### Patch Changes
+
+-   a64a3a5: Alert and prevent from generating a Fiori application into a CAP project folder
+
 ## 1.27.4
 
 ### Patch Changes

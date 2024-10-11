@@ -1,5 +1,31 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+
+## 0.6.0
+
+### Minor Changes
+
+-   d40af34: adds new module @sap-ux/ui5-library-sub-generator
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+
+## 0.5.0
+
+### Minor Changes
+
+-   04988f1: Refactor shared logic for generating package.json scripts for FF and FE
+
 ## 0.4.0
 
 ### Minor Changes

@@ -91,5 +91,7 @@
 }
 
 .ms-Callout {
-    border: 1px solid var(--vscode-widget-border);
+    .ms-Callout-beak {
+        display: none;
+    }
 }

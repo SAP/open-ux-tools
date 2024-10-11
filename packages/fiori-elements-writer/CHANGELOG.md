@@ -1,5 +1,57 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.3.5
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.7
+-   @sap-ux/fiori-generator-shared@0.6.1
+-   @sap-ux/odata-service-writer@0.23.0
+-   @sap-ux/ui5-application-writer@1.2.0
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.4
+
+### Patch Changes
+
+-   Updated dependencies [d40af34]
+    -   @sap-ux/fiori-generator-shared@0.6.0
+
+## 1.3.3
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.25.0
+-   @sap-ux/fe-fpm-writer@0.31.6
+
+## 1.3.2
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.5
+-   @sap-ux/fiori-generator-shared@0.5.1
+-   @sap-ux/odata-service-writer@0.23.0
+-   @sap-ux/ui5-application-writer@1.2.0
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.1
+
+### Patch Changes
+
+-   Updated dependencies [05b554d]
+    -   @sap-ux/fe-fpm-writer@0.31.4
+
+## 1.3.0
+
+### Minor Changes
+
+-   04988f1: Refactor shared logic for generating package.json scripts for FF and FE
+
+### Patch Changes
+
+-   Updated dependencies [04988f1]
+    -   @sap-ux/fiori-generator-shared@0.5.0
+
 ## 1.2.0
 
 ### Minor Changes

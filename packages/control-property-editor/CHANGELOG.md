@@ -1,5 +1,53 @@
 # @sap-ux/control-property-editor
 
+## 0.5.17
+
+### Patch Changes
+
+-   e65bb7f: Update popup styling and add more space between labels and icons
+
+## 0.5.16
+
+### Patch Changes
+
+-   ed1c915: Clean up copied to clipboard pop up
+
+## 0.5.15
+
+### Patch Changes
+
+-   92b9cff: Add border for read only input fields
+
+## 0.5.14
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+
+## 0.5.13
+
+### Patch Changes
+
+-   a558728: Change separator color for panels and toolbar
+
+## 0.5.12
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
+## 0.5.11
+
+### Patch Changes
+
+-   7579b99: UI improvements and bug fix in the Adaptation Editor
+
+## 0.5.10
+
+### Patch Changes
+
+-   b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
+
 ## 0.5.9
 
 ### Patch Changes

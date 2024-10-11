@@ -1,5 +1,39 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.2.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.6.1
+-   @sap-ux/odata-service-writer@0.23.0
+-   @sap-ux/ui5-application-writer@1.2.0
+
+## 1.2.2
+
+### Patch Changes
+
+-   Updated dependencies [d40af34]
+    -   @sap-ux/fiori-generator-shared@0.6.0
+
+## 1.2.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.5.1
+-   @sap-ux/odata-service-writer@0.23.0
+-   @sap-ux/ui5-application-writer@1.2.0
+
+## 1.2.0
+
+### Minor Changes
+
+-   04988f1: Refactor shared logic for generating package.json scripts for FF and FE
+
+### Patch Changes
+
+-   Updated dependencies [04988f1]
+    -   @sap-ux/fiori-generator-shared@0.5.0
+
 ## 1.1.0
 
 ### Minor Changes

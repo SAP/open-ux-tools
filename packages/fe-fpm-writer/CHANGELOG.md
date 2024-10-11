@@ -1,5 +1,33 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.31.7
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/fiori-annotation-api@0.2.7
+
+## 0.31.6
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.2.6
+
+## 0.31.5
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/fiori-annotation-api@0.2.5
+
+## 0.31.4
+
+### Patch Changes
+
+-   05b554d: Bulding block prompts. Mark table header question as translatable input
+
 ## 0.31.3
 
 ### Patch Changes

@@ -94,17 +94,17 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] icons-loaded',
             payload: []
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] app-loaded',
             payload: undefined
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
@@ -130,21 +130,21 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] icons-loaded',
             payload: []
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] app-loaded',
             payload: undefined
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(5, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
-                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                    'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
                 shouldHideIframe: false
             }
         });
@@ -165,11 +165,11 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(5, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
-                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                    'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
                 shouldHideIframe: false
             }
         });

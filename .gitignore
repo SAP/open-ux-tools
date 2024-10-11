@@ -118,6 +118,7 @@ out
 
 .nuxt
 dist
+generators
 
 # Gatsby files
 

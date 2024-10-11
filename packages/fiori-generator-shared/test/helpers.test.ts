@@ -1,4 +1,9 @@
-import { getBootstrapResourceUrls, getVariantPreviewAppScript } from '../src/index';
+import { join } from 'path';
+import os from 'os';
+import fs from 'fs';
+import { getBootstrapResourceUrls } from '../src/index';
+import { YEOMANUI_TARGET_FOLDER_CONFIG_PROP } from '../src/constants';
+import { getDefaultTargetFolder } from '../src/helpers';
 
 describe('getResourceUrlsForUi5Bootstrap', () => {
     it('should return relative paths for Edmx projects', () => {
@@ -43,31 +48,57 @@ describe('getResourceUrlsForUi5Bootstrap', () => {
     });
 });
 
-describe('getVariantPreviewAppScript', () => {
-    it('should return the correct command with a given SAP client', () => {
-        const sapClient = '100';
-        const expectedCommand =
-            'fiori run --open "preview.html?&sap-client=100&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
-        expect(getVariantPreviewAppScript(sapClient)).toBe(expectedCommand);
-    });
+describe('getDefaultTargetFolder', () => {
+    // rootPath exists only in SBAS
+    const vscodeMock = {
+        workspace: {
+            workspaceFolders: [
+                { uri: { fsPath: '/1st/workspace/path', scheme: 'file' } },
+                { uri: { fsPath: '/2nd/workspace/path', scheme: 'file' } }
+            ],
+            workspaceFile: undefined,
+            getConfiguration: (id: string): object => {
+                if (id) {
+                    return { configurations: [] };
+                }
+                return {
+                    update: (): void => {
+                        return;
+                    },
+                    get: (): void => {
+                        return undefined;
+                    }
+                };
+            }
+        }
+    };
 
-    it('should return the correct command with an empty SAP client', () => {
-        const sapClient = '';
-        const expectedCommand =
-            'fiori run --open "preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
-        expect(getVariantPreviewAppScript(sapClient)).toBe(expectedCommand);
-    });
+    test('getDefaultTargetFolder', () => {
+        expect(getDefaultTargetFolder(vscodeMock)).toBe('/1st/workspace/path');
 
-    it('should return the correct command with no SAP client argument', () => {
-        const sapClient = undefined;
-        const expectedCommand =
-            'fiori run --open "preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
-        expect(getVariantPreviewAppScript(sapClient)).toBe(expectedCommand);
-    });
+        // Has a saved workspace, the first path is still used
+        Object.assign(vscodeMock.workspace, { workspaceFile: 'workspace-file.json' });
+        expect(getDefaultTargetFolder(vscodeMock)).toBe('/1st/workspace/path');
 
-    it('should handle default parameter value correctly', () => {
-        const expectedCommand =
-            'fiori run --open "preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app"';
-        expect(getVariantPreviewAppScript()).toBe(expectedCommand);
+        // No folders added to workspace
+        jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
+        Object.assign(vscodeMock.workspace, { workspaceFolders: [] });
+        expect(getDefaultTargetFolder(vscodeMock)).toBe(join(os.homedir(), 'projects'));
+
+        vscodeMock.workspace.getConfiguration = (id: string): object => {
+            if (id) {
+                return { configurations: [] };
+            }
+            return {
+                update: (): void => {
+                    return;
+                },
+                get: (val: void): void => {
+                    return val;
+                }
+            };
+        };
+        expect(getDefaultTargetFolder(undefined)).toBeUndefined();
+        expect(getDefaultTargetFolder(vscodeMock)).toBe(YEOMANUI_TARGET_FOLDER_CONFIG_PROP);
     });
 });

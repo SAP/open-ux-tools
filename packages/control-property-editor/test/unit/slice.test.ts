@@ -1,4 +1,5 @@
 import {
+    applicationModeChanged,
     changeStackModified,
     iconsLoaded,
     setApplicationRequiresReload,
@@ -428,6 +429,19 @@ describe('main redux slice', () => {
         ).toStrictEqual({
             fileChanges: [],
             isAppLoading: true
+        });
+    });
+
+    test('applicationModeChanged', () => {
+        expect(
+            reducer(
+                {
+                    appMode: 'adaptation'
+                } as any,
+                applicationModeChanged('navigation')
+            )
+        ).toStrictEqual({
+            appMode: 'navigation'
         });
     });
 

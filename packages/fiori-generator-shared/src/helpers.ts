@@ -1,3 +1,6 @@
+import { existsSync } from 'fs';
+import { DEFAULT_PROJECTS_FOLDER, YEOMANUI_TARGET_FOLDER_CONFIG_PROP } from './constants';
+
 /**
  * Get the resource URLs for the UShell bootstrap and UI5 bootstrap based on project type and UI5 framework details.
  *
@@ -31,22 +34,27 @@ export function getBootstrapResourceUrls(
 }
 
 /**
- * Generates a variant management script in preview mode.
+ * Determines the target folder for the project.
  *
- * @param {string} sapClient - The SAP client parameter to include in the URL. If not provided, the URL will not include the `sap-client` parameter.
- * @returns {string} A variant management script to run the application in preview mode.
+ * @param vscode - the vscode instance
+ * @returns The default path, if it can be determined otherwise undefined.
  */
-export function getVariantPreviewAppScript(sapClient?: string): string {
-    const previewAppAnchor = '#preview-app';
-    const disableCacheParam = 'sap-ui-xx-viewCache=false';
-    const sapClientParam = sapClient ? `&sap-client=${sapClient}` : '';
-    const urlParam = `?${[
-        sapClientParam,
-        disableCacheParam,
-        'fiori-tools-rta-mode=true',
-        'sap-ui-rta-skip-flex-validation=true'
-    ]
-        .filter(Boolean)
-        .join('&')}`;
-    return `fiori run --open \"preview.html${urlParam}${previewAppAnchor}\"`;
+export function getDefaultTargetFolder(vscode: any): string | undefined {
+    // CLI use will not define vscode
+    if (!vscode) {
+        return undefined;
+    }
+    const targetFolder = vscode.workspace?.getConfiguration().get(YEOMANUI_TARGET_FOLDER_CONFIG_PROP);
+
+    if (targetFolder) {
+        return targetFolder;
+    }
+    const workspace = vscode.workspace;
+
+    // If this is not a workspace default to the first folder (`rootPath` is deprecated)
+    if (workspace.workspaceFolders?.length > 0 && workspace.workspaceFolders[0].uri.scheme === 'file') {
+        return workspace.workspaceFolders[0].uri.fsPath;
+    }
+    // Otherwise use <home-dir>/projects,
+    return existsSync(DEFAULT_PROJECTS_FOLDER) ? DEFAULT_PROJECTS_FOLDER : undefined;
 }
