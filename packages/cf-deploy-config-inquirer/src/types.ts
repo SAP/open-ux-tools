@@ -6,11 +6,11 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
  */
 export enum promptNames {
     /** The prompt to specify the destination name for CF deployment. */
-    destinationName = 'cfDestination',
+    destinationName = 'destinationName',
     /** The prompt to specify if a managed app router should be added to the deployment. */
-    addManagedAppRouter = 'cfAddManagedAppRouter',
+    addManagedAppRouter = 'addManagedAppRouter',
     /** The prompt for confirming destination overwrite. */
-    overwrite = 'cfOverwrite'
+    overwrite = 'overwriteDestinationName'
 }
 
 /**
