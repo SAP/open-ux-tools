@@ -352,7 +352,7 @@ export class UI5Config {
     }
 
     /**
-     * Enhances existing instance of the mockserver middleware by updating config existing config or creates a new config.
+     * Enhances existing instance of the mockserver middleware by updating existing config or creates a new config.
      *
      * @param path option path that is to be mocked
      * @param annotationsConfig optional annotations config that is to be mocked
@@ -374,8 +374,7 @@ export class UI5Config {
             const middleware = getMockServerMiddlewareConfig(
                 customMockserverMiddlewareConfig?.services,
                 path,
-                annotationsConfig,
-                undefined
+                annotationsConfig
             );
             this.updateCustomMiddleware(middleware);
         }
