@@ -50,7 +50,8 @@ describe('Test findAllApps()', () => {
             'CAPnode_freestyle-freestyle',
             'CAPnode_mix-fiori_elements',
             'CAPnode_mix-fiori_elements_no_package_json',
-            'CAPnode_mix-freestyle'
+            'CAPnode_mix-freestyle',
+            'CAPJava_fiori_elements_approuter-fiori_elements'
         ];
         const foundApps = findResults.map((m) => m.manifest['sap.app'].id);
         const foundRoots = findResults.map((m) =>
@@ -313,6 +314,7 @@ describe('Test findCapProjects()', () => {
             join(__dirname, '../test-data/project/cap-root/valid-cap-root'),
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_fiori_elements'),
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_freestyle'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_fiori_elements_approuter'),
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_mix'),
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix'),
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_freestyle'),
