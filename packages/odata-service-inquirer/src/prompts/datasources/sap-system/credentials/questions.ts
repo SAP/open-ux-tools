@@ -5,7 +5,7 @@ import { promptNames } from '../../../../types';
 import { PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import type { SystemSelectionAnswerType } from '../system-selection';
-import type { Destination } from '@sap-ux/btp-utils';
+import { isFullUrlDestination, isPartialUrlDestination, type Destination } from '@sap-ux/btp-utils';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',
@@ -67,13 +67,27 @@ export function getCredentialsPrompts<T extends Answers>(
                 ) {
                     return false;
                 }
+                // We may have a previously selected system
+                const selectedSytem = answers?.[promptNames.systemSelection] as SystemSelectionAnswerType;
+                let selectedSystemClient;
+                let isSystem = true;
+                if (selectedSytem?.type === 'backendSystem') {
+                    selectedSystemClient = (selectedSytem.system as BackendSystem)?.client;
+                } else if (selectedSytem?.type === 'destination') {
+                    const destination = selectedSytem.system as Destination;
+                    selectedSystemClient = destination['sap-client'];
+                    if (isFullUrlDestination(destination) || isPartialUrlDestination(destination)) {
+                        isSystem = false;
+                    }
+                }
+
                 const valResult = await connectionValidator.validateAuth(
                     connectionValidator.validatedUrl,
                     answers?.[usernamePromptName],
                     password,
                     {
-                        sapClient: sapClient?.sapClient || answers?.[promptNames.systemSelection]?.client, // todo: remove the reference and pass the client directly
-                        isSystem: true
+                        sapClient: sapClient?.sapClient || selectedSystemClient,
+                        isSystem
                     }
                 );
                 if (valResult === true && connectionValidator.serviceProvider) {
@@ -82,10 +96,9 @@ export function getCredentialsPrompts<T extends Answers>(
                     };
                     // If the connection is successful and an existing backend system was selected,
                     // update the existing backend system with the new credentials that may be used to update in the store.
-                    const selectedSytem = answers?.[promptNames.systemSelection] as SystemSelectionAnswerType;
                     if (selectedSytem?.type === 'backendSystem') {
                         const backendSystem = selectedSytem.system as BackendSystem;
-                        // Have the credetials changed..
+                        // Have the credentials changed..
                         if (
                             backendSystem.username !== answers?.[usernamePromptName] ||
                             backendSystem.password !== password

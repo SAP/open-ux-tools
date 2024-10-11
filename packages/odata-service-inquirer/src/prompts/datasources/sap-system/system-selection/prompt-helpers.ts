@@ -73,6 +73,7 @@ export async function connectWithBackendSystem(
 
 /**
  * Connects to the specified destination and validates the connection.
+ * Note that a destination may be a system or a service connection.
  *
  * @param destination the destination specifying the connection details
  * @param connectionValidator the connection validator to use for the connection

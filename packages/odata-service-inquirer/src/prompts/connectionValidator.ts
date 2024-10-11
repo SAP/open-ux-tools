@@ -17,7 +17,13 @@ import {
     createForAbapOnCloud,
     createForDestination
 } from '@sap-ux/axios-extension';
-import { Authentication, type Destination, getDestinationUrlForAppStudio, isAppStudio } from '@sap-ux/btp-utils';
+import {
+    Authentication,
+    type Destination,
+    getDestinationUrlForAppStudio,
+    isAppStudio,
+    isFullUrlDestination
+} from '@sap-ux/btp-utils';
 import https from 'https';
 import { ERROR_TYPE, ErrorHandler } from '../error-handler/error-handler';
 import { t } from '../i18n';
@@ -62,8 +68,10 @@ export type SystemAuthType = 'serviceKey' | 'reentranceTicket' | 'basic' | 'unkn
  */
 export class ConnectionValidator {
     public readonly validity: Validity = {};
-    // The current valid url (not necessarily authenticated but the url is in a valid format)
+    // The current valid url (not necessarily authenticated but the url is in a valid format), for destination connections this will be in the form: <protocol>://<destinationName>.dest
     private _validatedUrl: string | undefined;
+    // Only in the case of destination connections does this store the destination `url` value
+    private _destinationUrl: string | undefined;
     // The current client code used for requests, the client code has been validated by a successful request
     private _validatedClient: string | undefined;
 
@@ -186,6 +194,15 @@ export class ConnectionValidator {
      */
     public get refreshToken(): string | undefined {
         return this._refreshToken;
+    }
+
+    /**
+     * Get the full destination url as defined in the destination configuration. This should not be used to connect from App Studio.
+     *
+     * @returns the connected destination 'URL' attribute value
+     */
+    public get destinationUrl(): string | undefined {
+        return this._destinationUrl;
     }
 
     /**
@@ -323,7 +340,7 @@ export class ConnectionValidator {
     private async createOdataServiceConnection(
         axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration,
         servicePath: string
-    ) {
+    ): Promise<void> {
         this._axiosConfig = axiosConfig;
         this._serviceProvider = create(this._axiosConfig);
         this._odataService = this._serviceProvider.service<ODataService>(servicePath);
@@ -373,10 +390,8 @@ export class ConnectionValidator {
             this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
         } else if (destination) {
             // Assumption: the destination configured URL is a valid URL, will be needed later for basic auth error handling
-            this._validatedUrl = getDestinationUrlForAppStudio(
-                destination.Name,
-                destination.Host ? new URL(destination.Host).pathname : undefined
-            );
+            this._validatedUrl = getDestinationUrlForAppStudio(destination.Name);
+            this._destinationUrl = destination.Host;
             this._serviceProvider = createForDestination({}, destination);
         } else if (axiosConfig) {
             this._axiosConfig = axiosConfig;
@@ -512,7 +527,20 @@ export class ConnectionValidator {
             // The only supported authentication mechanism for destinations set to Authentication 'NO_AUTHENTICATION' is basic (i.e. to the target Abap system)
             // So while we actually dont know we assume its basic for now since thats the only supported mechanism
             this.systemAuthType = destination.Authentication === Authentication.NO_AUTHENTICATION ? 'basic' : 'unknown';
-            await this.createSystemConnection({ destination, odataVersion });
+            // Since a destination may be a system or a service connection, we need to determine the connection request (catalog or service)
+            if (isFullUrlDestination(destination)) {
+                this.resetConnectionState();
+                this.resetValidity();
+                const destUrl = getDestinationUrlForAppStudio(destination.Name);
+                this._destinationUrl = destination.Host;
+                const authRequired = await this.isAuthRequired(destUrl, destination['sap-client']);
+                return {
+                    valResult: authRequired ? ErrorHandler.getErrorMsgFromType(ERROR_TYPE.AUTH) ?? false : true,
+                    errorType: authRequired ? ERROR_TYPE.AUTH : undefined
+                };
+            } else {
+                await this.createSystemConnection({ destination, odataVersion });
+            }
             return {
                 valResult: this.getValidationResultFromStatusCode(200)
             };
@@ -625,6 +653,9 @@ export class ConnectionValidator {
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.CONNECTION) {
             this.validity.reachable = false;
             return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CONNECTION, `http code: ${status}`) ?? false;
+        } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.BAD_REQUEST) {
+            this.validity.reachable = true;
+            return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.BAD_REQUEST, `http code: ${status}`) ?? false;
         }
         this.validity.reachable = true;
         return true;
@@ -656,7 +687,7 @@ export class ConnectionValidator {
 
     /**
      * Check whether basic auth is required for the given url, or for the previously validated url if none specified.
-     * This will also set the validity state for the url. This will not validate the URL.
+     * This will also set the validity state for the url.
      *
      * @param urlString the url to validate, if not provided the previously validated url will be used
      * @param client optional, sap client code, if not provided the previously validated client will be used
@@ -699,7 +730,9 @@ export class ConnectionValidator {
                 this.validity.authRequired = true;
                 this.validity.reachable = true;
             }
-            // Returning undefined if we cannot determine if auth is required
+            // Since an exception was not thrown, this is a valid url (todo: retest all flows that use this since these 2 loc were added)
+            this.validity.urlFormat = true;
+            this._validatedUrl = urlString;
             return this.validity.authRequired;
         } catch (error) {
             errorHandler.logErrorMsgs(error);
@@ -782,6 +815,7 @@ export class ConnectionValidator {
         delete this.validity.authenticated;
         delete this.validity.canSkipCertError;
         this._validatedUrl = undefined;
+        this._destinationUrl = undefined;
     }
 
     /**

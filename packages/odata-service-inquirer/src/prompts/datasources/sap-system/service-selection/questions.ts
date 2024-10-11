@@ -20,6 +20,7 @@ import {
     getServiceDetails
 } from '../service-selection/service-helper';
 import { type ServiceAnswer } from './types';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 
 const cliServicePromptName = 'cliServiceSelection';
 
@@ -62,17 +63,34 @@ export function getSystemServiceQuestion(
                 previousSystemUrl !== connectValidator.validatedUrl ||
                 previousClient !== connectValidator.validatedClient
             ) {
-                let catalogs: CatalogService[] = [];
-                if (requiredOdataVersion && connectValidator.catalogs[requiredOdataVersion]) {
-                    catalogs.push(connectValidator.catalogs[requiredOdataVersion]!);
+                // if we have a catalog, use it to list services
+                if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
+                    let catalogs: CatalogService[] = [];
+                    if (requiredOdataVersion && connectValidator.catalogs[requiredOdataVersion]) {
+                        catalogs.push(connectValidator.catalogs[requiredOdataVersion]!);
+                    } else {
+                        catalogs = Object.values(connectValidator.catalogs).filter(
+                            (cat) => cat !== undefined
+                        ) as CatalogService[];
+                    }
+                    previousSystemUrl = connectValidator.validatedUrl;
+                    previousClient = connectValidator.validatedClient;
+                    serviceChoices = await getServiceChoices(catalogs);
+                } else if (connectValidator.odataService && connectValidator.validatedUrl) {
+                    // We have connected to a service endpoint, use this service as the only choice
+                    const servicePath = new URL(connectValidator.destinationUrl ?? connectValidator.validatedUrl)
+                        .pathname;
+                    serviceChoices = [
+                        {
+                            name: servicePath,
+                            value: {
+                                servicePath
+                            } as ServiceAnswer
+                        }
+                    ];
                 } else {
-                    catalogs = Object.values(connectValidator.catalogs).filter(
-                        (cat) => cat !== undefined
-                    ) as CatalogService[];
+                    LoggerHelper.logger.error(t('error.noCatalogOrServiceAvailable'));
                 }
-                previousSystemUrl = connectValidator.validatedUrl;
-                previousClient = connectValidator.validatedClient;
-                serviceChoices = await getServiceChoices(catalogs);
             }
             return serviceChoices;
         },
@@ -81,7 +99,6 @@ export function getSystemServiceQuestion(
         default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
         // Warning: only executes in YUI not cli
         validate: async (service: ServiceAnswer): Promise<string | boolean | ValidationLink> => {
-            // todo: Can we replace this condition with connectValidator.validity.authenticated ? Validating a url doesnt make sense for BTP systems (destinations?)
             if (!connectValidator.validatedUrl) {
                 return false;
             }
@@ -92,7 +109,7 @@ export function getSystemServiceQuestion(
             // Dont re-request the same service details
             if (service && previousService?.servicePath !== service.servicePath) {
                 previousService = service;
-                return getServiceDetails(service, connectValidator);
+                return getServiceDetails(service, connectValidator, requiredOdataVersion);
             }
             return true;
         }

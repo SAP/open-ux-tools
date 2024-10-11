@@ -45,7 +45,8 @@ export enum ERROR_TYPE {
     DESTINATION_NOT_FOUND = 'DESTINATION_NOT_FOUND',
     DESTINATION_MISCONFIGURED = 'DESTINATION_MISCONFIGURED',
     NO_V2_SERVICES = 'NO_V2_SERVICES',
-    NO_V4_SERVICES = 'NO_V4_SERVICES'
+    NO_V4_SERVICES = 'NO_V4_SERVICES',
+    BAD_REQUEST = 'BAD_REQUEST'
 }
 
 // Used to match regex expressions to error messages, etc. providing a way to return a consistent
@@ -90,7 +91,8 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.DESTINATION_NOT_FOUND]: [],
     [ERROR_TYPE.DESTINATION_MISCONFIGURED]: [],
     [ERROR_TYPE.NO_V2_SERVICES]: [],
-    [ERROR_TYPE.NO_V4_SERVICES]: []
+    [ERROR_TYPE.NO_V4_SERVICES]: [],
+    [ERROR_TYPE.BAD_REQUEST]: [/400/]
 };
 
 type ValidationLinkOrString = string | ValidationLink;
@@ -149,7 +151,8 @@ export class ErrorHandler {
         [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: t('errors.destinationUnavailable'),
         [ERROR_TYPE.REDIRECT]: t('errors.redirectError'),
         [ERROR_TYPE.NO_SUCH_HOST]: t('errors.noSuchHostError'),
-        [ERROR_TYPE.NO_ABAP_ENVS]: t('errors.abapEnvsUnavailable')
+        [ERROR_TYPE.NO_ABAP_ENVS]: t('errors.abapEnvsUnavailable'),
+        [ERROR_TYPE.BAD_REQUEST]: t('errors.badRequest')
     });
 
     /**
@@ -188,7 +191,8 @@ export class ErrorHandler {
             [ERROR_TYPE.ODATA_URL_NOT_FOUND]: undefined,
             [ERROR_TYPE.INTERNAL_SERVER_ERROR]: undefined,
             [ERROR_TYPE.NO_V2_SERVICES]: undefined,
-            [ERROR_TYPE.TIMEOUT]: undefined
+            [ERROR_TYPE.TIMEOUT]: undefined,
+            [ERROR_TYPE.BAD_REQUEST]: undefined
         };
         return errorToHelp[errorType];
     };

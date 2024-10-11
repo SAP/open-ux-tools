@@ -155,22 +155,18 @@ async function validateSystemSelection(
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion
 ): Promise<ValidationResult> {
-    if (systemSelection?.type === 'newSystemChoice') {
+    if (systemSelection.type === 'newSystemChoice') {
         return true;
     }
     let connectValResult: ValidationResult = false;
-    // Assumption: non-BAS systems are BackendSystems
-    if (systemSelection && !isAppStudio()) {
+
+    if (systemSelection.type === 'backendSystem') {
         connectValResult = await connectWithBackendSystem(
             systemSelection.system as BackendSystem,
             connectionValidator,
             requiredOdataVersion
         );
-        /* if (backendSystemRef) {
-            backendSystemRef.backendSystem = systemSelection as BackendSystem;
-        } */
-    } else if (systemSelection && isAppStudio()) {
-        // Assumption: BAS systems are Destinations
+    } else if (systemSelection.type === 'destination') {
         // Partial URL destinations will require additional service path prompt input, so we skip the connection validation here by returning true
         // The service URL connection will need to be validated by the service path prompt
         if (isPartialUrlDestination(systemSelection.system as Destination)) {
@@ -239,7 +235,6 @@ export async function getSystemConnectionQuestions(
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
     const systemChoices = await createSystemChoices(destinationFilters);
-    //const systemRef: { system: BackendSystem | Destination | undefined } = { system: undefined };
 
     const questions: Question[] = [
         {
@@ -249,14 +244,10 @@ export async function getSystemConnectionQuestions(
             // source: (preAnswers, input) => searchChoices(input, getSapSystemChoices(systems)),
             choices: systemChoices,
             validate: async (systemSelection: SystemSelectionAnswerType): Promise<ValidationResult> => {
-                return (
-                    validateSystemSelection(
-                        systemSelection,
-                        connectionValidator,
-                        //systemRef,
-                        requiredOdataVersion
-                    ) ?? false
-                );
+                if (!systemSelection) {
+                    return false;
+                }
+                return validateSystemSelection(systemSelection, connectionValidator, requiredOdataVersion) ?? false;
             },
             additionalMessages: async () => {
                 if (connectionValidator.systemAuthType === 'basic' && (await connectionValidator.isAuthRequired())) {
@@ -288,12 +279,7 @@ export async function getSystemConnectionQuestions(
         };
     }
      */
-    const credentialsPrompts = getCredentialsPrompts(
-        connectionValidator,
-        systemSelectionPromptNamespace,
-        undefined // todo pass client from destination and backend config...also check if the sap-client is requried or added from the dets config
-        //systemRef
-    ) as Question[];
+    const credentialsPrompts = getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace) as Question[];
     questions.push(...credentialsPrompts);
 
     // Only for CLI use as `list` prompt validation does not run on CLI
@@ -304,7 +290,6 @@ export async function getSystemConnectionQuestions(
                 const connectValResult = await validateSystemSelection(
                     systemSelection,
                     connectionValidator,
-                    //systemRef,
                     requiredOdataVersion
                 );
                 // An issue occurred with the selected system, there is no need to continue on the CLI, log and exit
