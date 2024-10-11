@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.18.9
+
+### Patch Changes
+
+-   4c6f92c: feat(ui-c): add UIsetIconOptions and UIunregisterIcons
+
 ## 1.18.8
 
 ### Patch Changes
