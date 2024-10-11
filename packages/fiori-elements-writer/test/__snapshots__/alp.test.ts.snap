@@ -2338,6 +2338,10 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
 </edmx:Edmx>",
     "state": "modified",
   },
+  "webapp/localService/data/keep": Object {
+    "contents": "",
+    "state": "modified",
+  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>
 <edmx:Edmx xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\" Version=\\"1.0\\">
@@ -6244,6 +6248,10 @@ appDescription=A Fiori application.",
     ></div>
 </body>
 </html>",
+    "state": "modified",
+  },
+  "webapp/localService/data/keep": Object {
+    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
