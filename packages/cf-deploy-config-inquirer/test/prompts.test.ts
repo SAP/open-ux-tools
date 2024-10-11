@@ -88,7 +88,7 @@ describe('Prompt Generation Tests', () => {
             expect(destinationNamePrompt?.type).toBe('list');
             expect(destinationNamePrompt?.default()).toBe('defaultDestination');
             // ensure additional choice is added to the BTP destination list
-            expect((destinationNamePrompt as ListQuestion)?.choices as Function).toStrictEqual([
+            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toStrictEqual([
                 ...additionalChoiceList,
                 { name: 'btpTestDest - btpTestDest', value: 'btpTestDest', scp: false, url: 'btpTestDest' }
             ]);
@@ -115,8 +115,8 @@ describe('Prompt Generation Tests', () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('input');
-            expect(destinationNamePrompt?.message).toBe(t('prompts.destinationNameMessage'));
-            expect((destinationNamePrompt as ListQuestion)?.choices as Function).toStrictEqual([]);
+            expect((destinationNamePrompt?.message as Function)()).toBe(t('prompts.destinationNameMessage'));
+            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toStrictEqual([]);
         });
 
         it('returns list-based prompt when environment is vscode and additionalChoiceList is provided', async () => {
@@ -130,8 +130,10 @@ describe('Prompt Generation Tests', () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('list');
-            expect(destinationNamePrompt?.message).toBe(t('prompts.destinationNameMessage'));
-            expect((destinationNamePrompt as ListQuestion)?.choices as Function).toStrictEqual(additionalChoiceList);
+            expect((destinationNamePrompt?.message as Function)()).toBe(t('prompts.destinationNameMessage'));
+            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toStrictEqual(
+                additionalChoiceList
+            );
         });
 
         it('validates destination correctly and shows hint when directBindingDestinationHint is enabled', async () => {
@@ -144,7 +146,7 @@ describe('Prompt Generation Tests', () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect((destinationNamePrompt?.validate as Function)()).toBe(true);
-            expect(destinationNamePrompt?.message).toBe(t('prompts.directBindingDestinationHint'));
+            expect((destinationNamePrompt?.message as Function)()).toBe(t('prompts.directBindingDestinationHint'));
         });
 
         it('Shows default hint when directBindingDestinationHint is not provided', async () => {
@@ -156,7 +158,7 @@ describe('Prompt Generation Tests', () => {
             };
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
-            expect(destinationNamePrompt?.message).toBe(t('prompts.destinationNameMessage'));
+            expect((destinationNamePrompt?.message as Function)()).toBe(t('prompts.destinationNameMessage'));
         });
 
         test('Destination name when autocomplete is specified', async () => {
@@ -175,7 +177,7 @@ describe('Prompt Generation Tests', () => {
                 (question: CfDeployConfigQuestions) => question.name === promptNames.destinationName
             );
             expect(destinationNamePrompt?.type).toEqual('autocomplete');
-            expect((destinationNamePrompt as ListQuestion)?.choices as Function).toEqual(additionalChoiceList);
+            expect(((destinationNamePrompt as ListQuestion)?.choices as Function)()).toEqual(additionalChoiceList);
             expect((destinationNamePrompt?.source as Function)()).toEqual(additionalChoiceList);
             // Default should be used
             expect((destinationNamePrompt?.default as Function)()).toEqual(additionalChoiceList[0].name);

@@ -63,14 +63,15 @@ async function getDestinationNamePrompt(
         type: promptType,
         default: () => destination ?? defaultValue,
         name: promptNames.destinationName,
-        message: directBindingDestinationHint
-            ? t('prompts.directBindingDestinationHint')
-            : t('prompts.destinationNameMessage'),
+        message: () =>
+            directBindingDestinationHint
+                ? t('prompts.directBindingDestinationHint')
+                : t('prompts.destinationNameMessage'),
         validate: (destination: string): string | boolean => {
             return validators.validateDestinationQuestion(destination, !destination && isBAS);
         },
         source: (prevAnswers: CfDeployConfigAnswers, input: string) => searchChoices(input, destinationList),
-        choices: destinationList
+        choices: () => destinationList
     } as InputQuestion<CfDeployConfigAnswers>;
 }
 
@@ -90,8 +91,8 @@ function getAddManagedRouterPrompt(): CfDeployConfigQuestions {
         guiOptions: {
             breadcrumb: t('prompts.addApplicationRouterBreadcrumbMessage')
         },
-        message: (): string => t('prompts.generateManagedApplicationToRouterMessage'),
-        default: (): boolean => true
+        message: () => t('prompts.generateManagedApplicationToRouterMessage'),
+        default: () => true
     } as ConfirmQuestion<CfDeployConfigAnswers>;
 }
 
@@ -109,7 +110,7 @@ function getOverwritePrompt(): CfDeployConfigQuestions {
         default: () => {
             return true;
         },
-        message: (): string => t('prompts.overwriteMessage')
+        message: () => t('prompts.overwriteMessage')
     } as ConfirmQuestion<CfDeployConfigAnswers>;
 }
 
@@ -135,6 +136,6 @@ export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): 
     if (addOverwriteQuestion) {
         questions.push(getOverwritePrompt());
     }
-    
+
     return questions;
 }
