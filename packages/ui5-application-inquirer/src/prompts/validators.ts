@@ -2,7 +2,6 @@ import { validateModuleName } from '@sap-ux/project-input-validator';
 import { appPathExists } from './prompt-helpers';
 import { t } from '../i18n';
 import { findRootsForPath, isPathForCapApp } from '@sap-ux/project-access';
-import { join, sep } from 'path';
 /**
  * Returns true (valid) if the specified projectName is a valid module name
  * and if an application folder (directory) at the specified path does not exist.
