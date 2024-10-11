@@ -122,7 +122,7 @@ describe('Test enhanceYaml()', () => {
 
     test(`Should throw error in case new added middleware can't be found by name 'sap-fe-mockserver'`, async () => {
         jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
-            addMockServerMiddleware: jest.fn(),
+            enhanceMockServerMiddleware: jest.fn(),
             findCustomMiddleware: () => undefined
         } as unknown as UI5Config);
         const fs = getFsWithUi5MockYaml('{}');

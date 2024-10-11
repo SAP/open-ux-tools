@@ -351,39 +351,32 @@ export class UI5Config {
     }
 
     /**
-     * Adds a instance of the mockserver middleware to the config.
+     * Enhances mockserver middleware by adding a new instance of the mockserver middleware to the config or updating existing one.
      *
      * @param path option path that is to be mocked
      * @param annotationsConfig optional annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
-        const middleware = getMockServerMiddlewareConfig(undefined, path, annotationsConfig, true);
-        this.document.appendTo({
-            path: 'server.customMiddleware',
-            value: middleware
-        });
-        return this;
-    }
-
-    /**
-     * Updates a instance of the mockserver middleware of the config.
-     *
-     * @param path option path that is to be mocked
-     * @param annotationsConfig optional, annotations config that is to be mocked
-     * @returns {UI5Config} the UI5Config instance
-     * @memberof UI5Config
-     */
-    public updateMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
+    public enhanceMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
         const customMockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver');
-        const customMockserverMiddlewareConfig = customMockserverMiddleware?.configuration as MockserverConfig;
-        const middleware = getMockServerMiddlewareConfig(
-            customMockserverMiddlewareConfig?.services,
-            path,
-            annotationsConfig
-        );
-        this.updateCustomMiddleware(middleware);
+        // Update existing
+        if (customMockserverMiddleware) {
+            const customMockserverMiddlewareConfig = customMockserverMiddleware?.configuration as MockserverConfig;
+            const middleware = getMockServerMiddlewareConfig(
+                customMockserverMiddlewareConfig?.services,
+                path,
+                annotationsConfig
+            );
+            this.updateCustomMiddleware(middleware);
+        } else {
+            // Create a new middleware instance
+            const middleware = getMockServerMiddlewareConfig([], path, annotationsConfig, true);
+            this.document.appendTo({
+                path: 'server.customMiddleware',
+                value: middleware
+            });
+        }
         return this;
     }
 

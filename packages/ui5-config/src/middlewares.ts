@@ -168,7 +168,7 @@ const handleServicesForMiddlewareConfig = (
 };
 
 export const getMockServerMiddlewareConfig = (
-    services: MockserverConfig['services'],
+    services: MockserverConfig['services'] = [],
     path?: string,
     annotationsConfig: MockserverConfig['annotations'] = [],
     forceAddService = false

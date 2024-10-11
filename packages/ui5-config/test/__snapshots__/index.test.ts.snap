@@ -355,56 +355,6 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but all 
 "
 `;
 
-exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
-"server:
-  customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations: []
-"
-`;
-
-exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1`] = `
-"server:
-  customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotations.xml
-            urlPath: annotations.xml
-"
-`;
-
-exports[`UI5Config addMockServerMiddleware add without path 1`] = `
-"server:
-  customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: ''
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations: []
-"
-`;
-
 exports[`UI5Config addServeStaticConfig add with multiple paths (existing config) 1`] = `
 "server:
   customMiddleware:
@@ -563,6 +513,131 @@ exports[`UI5Config addUi5ToFioriToolsProxydMiddleware add ui5 config to empty to
 "
 `;
 
+exports[`UI5Config enhanceMockServerMiddleware add add with given path 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware add add with path and annotationsConfig 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/annotations/annotations.xml
+            urlPath: annotations.xml
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware add add without path 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: ''
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware update update with given path (existing services) 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~different-testpath~
+            metadataPath: different-metadataPath
+            generateMockData: true
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware update update with given path (no existing services) 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware update update with given path and annotationsConfig (existing services) 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~different-testpath~
+            metadataPath: different-metadataPath
+            generateMockData: true
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/annotations/annotations.xml
+            urlPath: annotations.xml
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware update update without path (existing services) 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~different-testpath~
+            metadataPath: different-metadataPath
+            generateMockData: true
+          - urlPath: ''
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
 exports[`UI5Config getAppReloadMiddlewareConfig 1`] = `
 "server:
   customMiddleware:
@@ -595,80 +670,5 @@ exports[`UI5Config setMetadata set name and copyright 1`] = `
 "metadata:
   name: test.name
   copyright: ©
-"
-`;
-
-exports[`UI5Config updateMockServerMiddleware update with given path (existing services) 1`] = `
-"server:
-  customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /~different-testpath~
-            metadataPath: different-metadataPath
-            generateMockData: true
-          - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations: []
-"
-`;
-
-exports[`UI5Config updateMockServerMiddleware update with given path (no existing services) 1`] = `
-"server:
-  customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /~testpath~
-            metadataPath: metadataPath
-            mockdataPath: mockdataPath
-            generateMockData: true
-        annotations: []
-"
-`;
-
-exports[`UI5Config updateMockServerMiddleware update with given path and annotationsConfig (existing services) 1`] = `
-"server:
-  customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /~different-testpath~
-            metadataPath: different-metadataPath
-            generateMockData: true
-          - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotations.xml
-            urlPath: annotations.xml
-"
-`;
-
-exports[`UI5Config updateMockServerMiddleware update without path (existing services) 1`] = `
-"server:
-  customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /~different-testpath~
-            metadataPath: different-metadataPath
-            generateMockData: true
-          - urlPath: ''
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations: []
 "
 `;

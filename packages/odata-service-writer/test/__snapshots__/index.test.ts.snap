@@ -37,8 +37,8 @@ Object {
         mountPath: /
         services:
           - urlPath: /sap/odata/testme
-            metadataPath: metadataPath
-            mockdataPath: mockdataPath
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
 ",
@@ -2817,8 +2817,8 @@ Object {
         mountPath: /
         services:
           - urlPath: /sap/odata/testme
-            metadataPath: metadataPath
-            mockdataPath: mockdataPath
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
 ",
