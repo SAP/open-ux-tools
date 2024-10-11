@@ -188,9 +188,7 @@ describe('Prompt Generation Tests', () => {
         beforeEach(() => {
             promptOptions = {
                 ...promptOptions,
-                [promptNames.addManagedAppRouter]: {
-                    addManagedAppRouter: true
-                }
+                [promptNames.addManagedAppRouter]: true
             };
         });
 
@@ -210,7 +208,7 @@ describe('Prompt Generation Tests', () => {
         });
 
         it('Displays managed router prompt when disabled', async () => {
-            promptOptions[promptNames.addManagedAppRouter] = { addManagedAppRouter: false };
+            promptOptions[promptNames.addManagedAppRouter] = false;
 
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const managedAppRouterPrompt = questions.find(
@@ -224,9 +222,7 @@ describe('Prompt Generation Tests', () => {
         beforeEach(() => {
             promptOptions = {
                 ...promptOptions,
-                [promptNames.overwrite]: {
-                    addOverwriteQuestion: true
-                }
+                [promptNames.overwrite]: true
             };
         });
 
@@ -240,7 +236,7 @@ describe('Prompt Generation Tests', () => {
 
         it('Displays get overwrite prompt when disabled', async () => {
             if (promptOptions[promptNames.overwrite]) {
-                promptOptions[promptNames.overwrite].addOverwriteQuestion = false;
+                promptOptions[promptNames.overwrite] = false;
             }
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const overwritePrompt = questions.find((question) => question.name === promptNames.overwrite);

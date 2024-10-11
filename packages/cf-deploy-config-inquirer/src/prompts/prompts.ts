@@ -122,8 +122,8 @@ function getOverwritePrompt(): CfDeployConfigQuestions {
  */
 export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): Promise<CfDeployConfigQuestions[]> {
     const destinationOptions = promptOptions[promptNames.destinationName] as DestinationNamePromptOptions;
-    const addOverwriteQuestion = promptOptions[promptNames.overwrite]?.addOverwriteQuestion ?? false;
-    const addManagedAppRouter = promptOptions[promptNames.addManagedAppRouter]?.addManagedAppRouter ?? false;
+    const addOverwriteQuestion = promptOptions[promptNames.overwrite] ?? false;
+    const addManagedAppRouter = promptOptions[promptNames.addManagedAppRouter] ?? false;
 
     const questions: CfDeployConfigQuestions[] = [];
     // Collect questions into an array

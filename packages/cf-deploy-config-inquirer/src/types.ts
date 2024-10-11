@@ -14,26 +14,6 @@ export enum promptNames {
 }
 
 /**
- * Options specific to the 'addManagedAppRouter' prompt.
- */
-type AddManagedAppRouterPromptOptions = {
-    /**
-     * Indicates whether the managed app router question should be shown.
-     * This prompt is only displayed if no MTA file is found.
-     * Default is false.
-     */
-    addManagedAppRouter: boolean;
-};
-
-/**
- * Options specific to the 'overwrite' prompt.
- */
-type OverwritePromptOptions = {
-    /** Indicates whether the overwrite question should be shown. */
-    addOverwriteQuestion: boolean;
-};
-
-/**
  * Configuration options for the 'destinationName' prompt used in deployment settings.
  */
 export type DestinationNamePromptOptions = {
@@ -59,8 +39,8 @@ export type DestinationNamePromptOptions = {
 /**
  * Defines options for boolean-type prompts in CF deployment configuration.
  */
-type booleanValuePromptOptions = Record<promptNames.overwrite, OverwritePromptOptions> &
-    Record<promptNames.addManagedAppRouter, AddManagedAppRouterPromptOptions>;
+type booleanValuePromptOptions = Record<promptNames.overwrite, boolean> &
+    Record<promptNames.addManagedAppRouter, boolean>;
 
 /**
  * Defines options for string-type prompts in CF deployment configuration.
