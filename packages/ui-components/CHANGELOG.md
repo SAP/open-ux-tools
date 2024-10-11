@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.18.8
+
+### Patch Changes
+
+-   b669796: UIComboBox and UIDropdown support custom renderers for dropdown items via the `onRenderOption` and `onRenderItem` properties
+
 ## 1.18.7
 
 ### Patch Changes
