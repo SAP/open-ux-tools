@@ -17,6 +17,15 @@ describe('Test generateMockserverConfig()', () => {
         });
         expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toMatchSnapshot();
     });
+
+    test('Add config to project with existing ui5-mock.yaml', async () => {
+        const basePath = join(__dirname, '../../fixtures/ui5-mock-config');
+        const webappPath = join(basePath, 'webapp');
+
+        const fs = await generateMockserverConfig(basePath, { webappPath });
+        const ui5MockYaml = join(basePath, 'ui5-mock.yaml');
+        expect(fs.read(ui5MockYaml)).toMatchSnapshot();
+    });
 });
 
 describe('Test removeMockserverConfig()', () => {

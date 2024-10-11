@@ -352,18 +352,33 @@ export class UI5Config {
     }
 
     /**
-     * Adds a instance of the mockserver middleware to the config.
+     * Enhances existing instance of the mockserver middleware by updating config existing config or creates a new config.
      *
      * @param path option path that is to be mocked
      * @param annotationsConfig optional annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
-        this.document.appendTo({
-            path: 'server.customMiddleware',
-            value: getMockServerMiddlewareConfig(path, annotationsConfig)
-        });
+    public enhanceMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
+        const customMockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver');
+        if (!customMockserverMiddleware) {
+            // Create a new middleware instance
+            const middleware = getMockServerMiddlewareConfig([], path, annotationsConfig, true);
+            this.document.appendTo({
+                path: 'server.customMiddleware',
+                value: middleware
+            });
+        } else {
+            // Update existing
+            const customMockserverMiddlewareConfig = customMockserverMiddleware?.configuration as MockserverConfig;
+            const middleware = getMockServerMiddlewareConfig(
+                customMockserverMiddlewareConfig?.services,
+                path,
+                annotationsConfig,
+                undefined
+            );
+            this.updateCustomMiddleware(middleware);
+        }
         return this;
     }
 

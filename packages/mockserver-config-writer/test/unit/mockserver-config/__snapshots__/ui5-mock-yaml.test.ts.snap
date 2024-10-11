@@ -155,6 +155,11 @@ server:
       configuration:
         mountPath: /
         services:
+          - urlBasePath: /some/previous/service/uri
+            name: ''
+            metadataXmlPath: ./webapp/localService/metadata.xml
+            mockdataRootPath: ./webapp/localService/data
+            generateMockData: true
           - urlPath: path/to/service
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
@@ -177,6 +182,11 @@ server:
       configuration:
         mountPath: /
         services:
+          - urlBasePath: /some/previous/service/uri
+            name: ''
+            metadataXmlPath: ./webapp/localService/metadata.xml
+            mockdataRootPath: ./webapp/localService/data
+            generateMockData: true
           - urlPath: ds/uri
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
@@ -198,11 +208,6 @@ server:
       beforeMiddleware: csp
       configuration:
         mountPath: /
-        services:
-          - urlPath: ''
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
