@@ -113,7 +113,7 @@ describe('Test isPathForCapApp()', () => {
 
     test('Should return true for sub directory CAP Java path, specifially app folder with package.json', async () => {
         const result = await isPathForCapApp(
-            join(__dirname, 'test-data/project/find-all-apps/CAP/CAPJava_fiori_elements_approuter/app')
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_fiori_elements_approuter/app')
         );
         expect(result).toBe(true);
     });
