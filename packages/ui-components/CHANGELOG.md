@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.18.9
+
+### Patch Changes
+
+-   4c6f92c: feat(ui-c): add UIsetIconOptions and UIunregisterIcons
+
+## 1.18.8
+
+### Patch Changes
+
+-   b669796: UIComboBox and UIDropdown support custom renderers for dropdown items via the `onRenderOption` and `onRenderItem` properties
+
+## 1.18.7
+
+### Patch Changes
+
+-   e65bb7f: Update style for UICallout
+
 ## 1.18.6
 
 ### Patch Changes

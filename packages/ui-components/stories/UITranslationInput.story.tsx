@@ -28,7 +28,7 @@ interface CustomTranslationEntry extends TranslationEntry {
 
 initIcons();
 
-const stackTokens: IStackTokens = { childrenGap: 40 };
+const stackTokens: IStackTokens = { childrenGap: 60 };
 
 const I18N_BUNDLE_KEY = 'ui-components-i18n-bundle';
 const getI18nBundle = (): I18nBundle<CustomTranslationEntry> => {

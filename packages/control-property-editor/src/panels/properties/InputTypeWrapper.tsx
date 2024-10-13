@@ -230,7 +230,8 @@ export function InputTypeWrapper(props: InputTypeWrapperProps): ReactElement {
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     overflowX: 'hidden',
-                                    marginTop: 2
+                                    marginTop: 2,
+                                    marginBottom: 3
                                 }}>
                                 {property.readableName}
                             </Label>
