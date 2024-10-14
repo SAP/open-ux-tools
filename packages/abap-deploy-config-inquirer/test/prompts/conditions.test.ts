@@ -15,7 +15,6 @@ import {
     showClientChoiceQuestion,
     showClientQuestion,
     showIndexQuestion,
-    showOverwriteQuestion,
     showPackageInputChoiceQuestion,
     showPasswordQuestion,
     showScpQuestion,
@@ -191,12 +190,7 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should show ui5 app deploy config questions', () => {
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
-        expect(showUi5AppDeployConfigQuestion(undefined)).toBe(true);
-    });
-
-    test('should not show ui5 app deploy config questions', () => {
-        PromptState.abapDeployConfig.scp = true;
-        expect(showUi5AppDeployConfigQuestion(true)).toBe(false);
+        expect(showUi5AppDeployConfigQuestion()).toBe(true);
     });
 
     test('should show package input choice question', () => {
@@ -291,17 +285,7 @@ describe('Test abap deploy config inquirer conditions', () => {
         PromptState.abapDeployConfig.index = undefined;
         expect(
             showIndexQuestion({
-                indexGenerationAllowed: true
-            })
-        ).toBe(true);
-    });
-
-    test('should show overwrite question', () => {
-        PromptState.abapDeployConfig.overwrite = undefined;
-        expect(
-            showOverwriteQuestion({
-                showOverwriteQuestion: true,
-                existingDeployTaskConfig: {}
+                index: { indexGenerationAllowed: true }
             })
         ).toBe(true);
     });
