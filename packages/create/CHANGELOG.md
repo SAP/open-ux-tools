@@ -1,5 +1,20 @@
 # @sap-ux/create
 
+## 0.8.40
+
+### Patch Changes
+
+-   Updated dependencies [43988ca]
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.1
+
+## 0.8.39
+
+### Patch Changes
+
+-   b3b1082: update prompt options for abap deploy config inquirer
+-   Updated dependencies [b3b1082]
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.0
+
 ## 0.8.38
 
 ### Patch Changes
