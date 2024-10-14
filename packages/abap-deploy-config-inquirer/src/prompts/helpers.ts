@@ -94,7 +94,9 @@ async function getBackendTargetChoices(
         .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, caseFirst: 'lower' }))
         .map((system) => {
             if (!targetExists) {
-                targetExists = system.url === target?.url && (system.client ?? '') === (target?.client ?? '');
+                targetExists =
+                    system.url.replace(/\/$/, '') === target?.url.replace(/\/$/, '') &&
+                    (system.client ?? '') === (target?.client ?? '');
             }
             return {
                 name: targetExists
