@@ -215,9 +215,10 @@ export async function findRootsForPath(path: string): Promise<{ appRoot: string;
  * Find CAP project root path.
  *
  * @param path - path inside CAP project
+ * @param checkForAppRouter - if true, checks for app router in CAP project app folder
  * @returns - CAP project root path
  */
-export async function findCapProjectRoot(path: string): Promise<string | null> {
+export async function findCapProjectRoot(path: string, checkForAppRouter = true): Promise<string | null> {
     try {
         if (!isAbsolute(path)) {
             return null;
@@ -228,7 +229,9 @@ export async function findCapProjectRoot(path: string): Promise<string | null> {
             if (await getCapProjectType(projectRoot)) {
                 // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
                 // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
-                if (join(projectRoot, 'app') !== path || join(projectRoot, 'app', sep) !== path) {
+                if (checkForAppRouter && join(projectRoot, 'app') !== path) {
+                    return projectRoot;
+                } else if (!checkForAppRouter) {
                     return projectRoot;
                 }
             }
@@ -498,17 +501,4 @@ export async function findCapProjects(options: {
         }
     }
     return Array.from(result);
-}
-
-/**
- * Returns true if the specified target path contains a CAP project.
- * Checks sub and root directories.
- *
- * @param targetDir the target directory path.
- * @returns true if CAP Project is in the directory or false if not.
- */
-export async function isPathForCapApp(targetDir: string): Promise<string | boolean> {
-    // Check if targetDir is a CAP project
-    // If not a CAP project root, check if the CAP root is in the subdirectories
-    return !!(await getCapProjectType(targetDir)) || !!(await findCapProjectRoot(targetDir));
 }

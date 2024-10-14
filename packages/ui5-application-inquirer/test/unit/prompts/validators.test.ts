@@ -3,7 +3,7 @@ import * as promptHelpers from '../../../src/prompts/prompt-helpers';
 import { join } from 'path';
 import { initI18nUi5AppInquirer, t } from '../../../src/i18n';
 import { validateAppName, validateFioriAppProjectFolder } from '../../../src/prompts/validators';
-import { findRootsForPath } from '@sap-ux/project-access';
+import { findRootsForPath, findCapProjectRoot } from '@sap-ux/project-access';
 import * as projectAccess from '@sap-ux/project-access';
 
 /**
@@ -18,7 +18,7 @@ jest.mock('@sap-ux/project-input-validator', () => {
 
 jest.mock('@sap-ux/project-access', () => ({
     findRootsForPath: jest.fn(),
-    isPathForCapApp: jest.fn()
+    findCapProjectRoot: jest.fn()
 }));
 
 describe('validators', () => {
@@ -51,9 +51,11 @@ describe('validators', () => {
     });
     describe('validateFioriAppProjectFolder', () => {
         const mockFindRootsForPath = jest.fn();
+        const mockFindCapProjectRoot = jest.fn();
 
         beforeEach(() => {
             (findRootsForPath as jest.Mock) = mockFindRootsForPath;
+            (findCapProjectRoot as jest.Mock) = mockFindCapProjectRoot;
             jest.clearAllMocks();
         });
 
@@ -75,7 +77,7 @@ describe('validators', () => {
 
         test('should return an error message if a CAP project is found in the target directory', async () => {
             mockFindRootsForPath.mockResolvedValueOnce(null);
-            jest.spyOn(projectAccess, 'isPathForCapApp').mockResolvedValue(true);
+            mockFindCapProjectRoot.mockResolvedValueOnce('CAPJava');
             const result = await validateFioriAppProjectFolder('any/path');
             expect(result).toEqual(t('validators.folderContainsCapApp'));
         });
