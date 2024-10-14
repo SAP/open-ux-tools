@@ -354,6 +354,41 @@ describe('Test getCapModelAndServices()', () => {
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
     });
 
+    test('Get model and services filtered by db, but services are empty', async () => {
+        // Mock setup
+        const cdsMock = {
+            env: {
+                'for': () => ({
+                    folders: {
+                        app: 'APP',
+                        db: 'DB',
+                        srv: 'SRV'
+                    }
+                })
+            },
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL_NO_SERVICES')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => null)
+                }
+            }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        // Test execution
+        const capMS = await getCapModelAndServices('ROOT_PATH');
+
+        // Check results
+        expect(capMS.model).toEqual('MODEL_NO_SERVICES');
+        expect(capMS.services).toEqual([]);
+        expect(capMS.cdsVersionInfo).toEqual({
+            home: undefined,
+            version: undefined,
+            root: undefined
+        });
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
+    });
+
     test('Get model and service', async () => {
         // Mock setup
         const cdsMock = {
