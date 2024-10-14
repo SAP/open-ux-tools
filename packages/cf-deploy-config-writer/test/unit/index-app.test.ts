@@ -26,7 +26,7 @@ let isAppStudioMock: jest.SpyInstance;
 let listDestinationsMock: jest.SpyInstance;
 let unitTestFs: Editor;
 
-describe('CF Writer', () => {
+describe('CF Writer App', () => {
     jest.setTimeout(10000);
 
     const destinationsMock = {

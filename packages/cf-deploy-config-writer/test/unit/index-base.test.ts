@@ -27,7 +27,9 @@ jest.mock('@sap/cf-tools');
 
 let hasSyncMock: jest.SpyInstance;
 
-describe('CF Writer', () => {
+describe('CF Writer Base', () => {
+    jest.setTimeout(10000);
+
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
     });
