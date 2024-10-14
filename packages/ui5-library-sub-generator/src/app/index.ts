@@ -91,10 +91,12 @@ export default class extends Generator implements Ui5LibGenerator {
 
         if (this.answers.targetFolder) {
             this.targetFolder = this.answers.targetFolder;
+            this.projectPath = join(this.targetFolder, `${this.answers.namespace}.${this.answers.libraryName}`);
         }
 
         try {
             await generate(this.targetFolder, ui5Lib, this.fs);
+            writeApplicationInfoSettings(this.projectPath);
         } catch (e) {
             ReuseLibGenLogger.logger.error(e);
             throw new Error(t('error.generatingUi5Lib'));
@@ -108,7 +110,7 @@ export default class extends Generator implements Ui5LibGenerator {
                 const npm = platform() === 'win32' ? 'npm.cmd' : 'npm';
 
                 ReuseLibGenLogger.logger.info(t('info.installingDependencies'));
-                this.projectPath = join(this.targetFolder, `${this.answers.namespace}.${this.answers.libraryName}`);
+
                 await runner.run(npm, ['install'], { cwd: this.projectPath });
                 ReuseLibGenLogger.logger.info(t('info.dependenciesInstalled'));
             } catch (error) {
@@ -118,7 +120,6 @@ export default class extends Generator implements Ui5LibGenerator {
     }
 
     async end(): Promise<void> {
-        writeApplicationInfoSettings(this.projectPath, this.fs);
         await runPostLibGenHook({
             path: this.projectPath,
             vscodeInstance: this.vscode as VSCodeInstance
