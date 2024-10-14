@@ -3,7 +3,7 @@ import { getPackagePrompts } from '../../../../src/prompts/questions';
 import * as helpers from '../../../../src/prompts/helpers';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
-import { abapDeployConfigInternalPromptNames, PackageInputChoices } from '../../../../src/types';
+import { promptNames, PackageInputChoices } from '../../../../src/types';
 import { ListQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { PromptState } from '../../../../src/prompts/prompt-state';
@@ -69,7 +69,7 @@ describe('getPackagePrompts', () => {
 
         const packagePrompts = getPackagePrompts({});
         const packageInputChoicePrompt = packagePrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageInputChoice
+            (prompt) => prompt.name === promptNames.packageInputChoice
         );
 
         if (packageInputChoicePrompt) {
@@ -104,7 +104,7 @@ describe('getPackagePrompts', () => {
         PromptState.isYUI = false;
         const packagePromptsCli = getPackagePrompts({});
         const packageCliExecutionPromptCli = packagePromptsCli.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageCliExecution
+            (prompt) => prompt.name === promptNames.packageCliExecution
         );
 
         if (packageCliExecutionPromptCli) {
@@ -116,7 +116,7 @@ describe('getPackagePrompts', () => {
 
         const packagePrompts = getPackagePrompts({});
         const packageCliExecutionPrompt = packagePrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageCliExecution
+            (prompt) => prompt.name === promptNames.packageCliExecution
         );
 
         if (packageCliExecutionPrompt) {
@@ -131,9 +131,7 @@ describe('getPackagePrompts', () => {
         jest.spyOn(validators, 'validatePackage').mockResolvedValueOnce(true);
 
         const packagePrompts = getPackagePrompts({});
-        const packageManualPrompt = packagePrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageManual
-        );
+        const packageManualPrompt = packagePrompts.find((prompt) => prompt.name === promptNames.packageManual);
 
         if (packageManualPrompt) {
             expect((packageManualPrompt.when as Function)({ packageInputChoice: 'EnterManualChoice' })).toBe(true);
@@ -159,14 +157,14 @@ describe('getPackagePrompts', () => {
 
         const packagePrompts = getPackagePrompts({});
         const packageInputChoicePrompt = packagePrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageInputChoice
+            (prompt) => prompt.name === promptNames.packageInputChoice
         );
         if (packageInputChoicePrompt) {
             await (packageInputChoicePrompt.validate as Function)();
         }
 
         const packageAutocompletePrompt = packagePrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageAutocomplete
+            (prompt) => prompt.name === promptNames.packageAutocomplete
         );
 
         if (packageAutocompletePrompt) {
