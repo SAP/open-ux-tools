@@ -1,11 +1,7 @@
-import { showIndexQuestion, showOverwriteQuestion } from '../conditions';
+import { showIndexQuestion } from '../conditions';
 import { validateConfirmQuestion } from '../validators';
 import { t } from '../../i18n';
-import {
-    abapDeployConfigInternalPromptNames,
-    type AbapDeployConfigPromptOptions,
-    type AbapDeployConfigAnswersInternal
-} from '../../types';
+import { promptNames, type AbapDeployConfigPromptOptions, type AbapDeployConfigAnswersInternal } from '../../types';
 import type { ConfirmQuestion, Question } from 'inquirer';
 
 /**
@@ -17,7 +13,7 @@ import type { ConfirmQuestion, Question } from 'inquirer';
 function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
         when: (): boolean => showIndexQuestion(options),
-        name: abapDeployConfigInternalPromptNames.index,
+        name: promptNames.index,
         type: 'confirm',
         message: t('prompts.confirm.index.message'),
         guiOptions: {
@@ -30,14 +26,11 @@ function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDe
 /**
  * Returns the overwrite prompt.
  *
- * @param options - abap deploy config prompt options
  * @returns confirm question for overwriting the files
  */
-function getOverwritePrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
+function getOverwritePrompt(): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (): boolean => showOverwriteQuestion(options),
-
-        name: abapDeployConfigInternalPromptNames.overwrite,
+        name: promptNames.overwrite,
         type: 'confirm',
         message: t('prompts.confirm.overwrite.message'),
         guiOptions: {
@@ -55,5 +48,9 @@ function getOverwritePrompt(options: AbapDeployConfigPromptOptions): Question<Ab
  * @returns list of questions for confirm prompting
  */
 export function getConfirmPrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
-    return [getIndexPrompt(options), getOverwritePrompt(options)];
+    const questions = [getIndexPrompt(options)];
+    if (options.overwrite?.hide !== true) {
+        questions.push(getOverwritePrompt());
+    }
+    return questions;
 }
