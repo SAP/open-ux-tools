@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.28.0
+
+### Minor Changes
+
+-   15e6959: TBI - refactor validation on target folder in app inquirer
+
 ## 1.27.6
 
 ### Patch Changes
