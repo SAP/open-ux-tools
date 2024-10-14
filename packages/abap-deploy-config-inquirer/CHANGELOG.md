@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.0.0
+
+### Major Changes
+
+-   b3b1082: update prompt options for abap deploy config inquirer
+
 ## 0.0.25
 
 ### Patch Changes
