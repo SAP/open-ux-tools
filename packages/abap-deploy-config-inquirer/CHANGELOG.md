@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.0.1
+
+### Patch Changes
+
+-   43988ca: bug fix
+
 ## 1.0.0
 
 ### Major Changes
