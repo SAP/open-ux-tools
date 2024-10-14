@@ -68,8 +68,8 @@ describe('CF Writer', () => {
             await generateAppConfig(
                 {
                     appPath: join(capPath, 'app/lrop'),
-                    destination: DefaultMTADestination,
-                    addManagedRouter: true
+                    destinationName: DefaultMTADestination,
+                    addManagedAppRouter: true
                 },
                 unitTestFs
             );
@@ -96,8 +96,8 @@ describe('CF Writer', () => {
                 generateAppConfig(
                     {
                         appPath: join(capPath, 'app/lrop'),
-                        destination: DefaultMTADestination,
-                        addManagedRouter: true
+                        destinationName: DefaultMTADestination,
+                        addManagedAppRouter: true
                     },
                     unitTestFs
                 )

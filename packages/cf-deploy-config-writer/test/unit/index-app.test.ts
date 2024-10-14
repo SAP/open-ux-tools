@@ -96,7 +96,7 @@ describe('CF Writer', () => {
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(appPath);
             fsExtra.copySync(join(__dirname, `../sample/lrop`), appPath);
-            await generateAppConfig({ appPath, addManagedRouter: true }, unitTestFs, logger);
+            await generateAppConfig({ appPath, addManagedAppRouter: true }, unitTestFs, logger);
             expect(listDestinationsMock).toBeCalledTimes(0);
             expect(unitTestFs.dump(appPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
@@ -111,7 +111,7 @@ describe('CF Writer', () => {
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(appPath);
             fsExtra.copySync(join(__dirname, `../sample/multi`), appPath);
-            await generateAppConfig({ appPath, addManagedRouter: true }, unitTestFs);
+            await generateAppConfig({ appPath, addManagedAppRouter: true }, unitTestFs);
             expect(unitTestFs.dump(appPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
             expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();

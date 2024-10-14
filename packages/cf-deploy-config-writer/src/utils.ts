@@ -1,6 +1,7 @@
 import { join, normalize, posix } from 'path';
-import { isAppStudio, listDestinations, isFullUrlDestination, Authentication } from '@sap-ux/btp-utils';
 import { coerce, satisfies } from 'semver';
+import { isAppStudio, listDestinations, isFullUrlDestination, Authentication } from '@sap-ux/btp-utils';
+import { addPackageDevDependency, type Manifest } from '@sap-ux/project-access';
 import {
     MbtPackage,
     MbtPackageVersion,
@@ -13,8 +14,7 @@ import {
     UI5TaskZipperPackageVersion,
     XSSecurityFile
 } from './constants';
-import { addPackageDevDependency, type Manifest } from '@sap-ux/project-access';
-import { type Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import type { Destinations } from '@sap-ux/btp-utils';
 import type { MTABaseConfig } from './types';
 

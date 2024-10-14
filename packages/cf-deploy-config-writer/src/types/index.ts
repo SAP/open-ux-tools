@@ -48,8 +48,8 @@ export interface CFBaseConfig extends MTABaseConfig {
 }
 export interface CFAppConfig {
     appPath: string;
-    addManagedRouter?: boolean; // Enabled by default
-    destination?: string;
+    addManagedAppRouter?: boolean; // Enabled by default
+    destinationName?: string;
     apiHubConfig?: ApiHubConfig;
     serviceHost?: string; // Data service host
     lcapMode?: boolean;
@@ -57,7 +57,7 @@ export interface CFAppConfig {
 export interface CFConfig extends CFAppConfig, CFBaseConfig {
     appId: string;
     rootPath: string;
-    serviceBase: string;
+    serviceHost: string;
     capRoot?: string;
     isCap?: boolean;
     servicePath?: string;

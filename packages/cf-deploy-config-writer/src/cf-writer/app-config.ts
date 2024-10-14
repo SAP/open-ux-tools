@@ -77,7 +77,7 @@ function validateMtaConfig(): void {
 }
 
 /**
- * Returns the updated configuration for the given app, after reading all the required files.
+ * Returns the updated configuration for the given HTML5 app, after reading all the required files.
  *
  * @param cfAppConfig writer configuration
  * @param fs reference to a mem-fs editor
@@ -87,19 +87,20 @@ function validateMtaConfig(): void {
 async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor, logger?: Logger): Promise<CFConfig> {
     const isLCAP = cfAppConfig.lcapMode ?? false;
     const { rootPath, isCap, mtaId, mtaPath, hasRoot, capRoot } = await getProjectProperties(cfAppConfig);
-    const { serviceBase, destination } = await processUI5Config(cfAppConfig.appPath, fs, logger);
+    const { serviceHost, destination } = await processUI5Config(cfAppConfig.appPath, fs, logger);
     const { servicePath, firstServicePathSegment, appId } = await processManifest(cfAppConfig.appPath, fs);
     const { isFullUrlDest, destinationAuthType } = await getDestinationProperties(
-        cfAppConfig.destination ?? destination
+        cfAppConfig.destinationName ?? destination
     );
 
     const config = {
         appPath: cfAppConfig.appPath.replace(/\/$/, ''),
-        destination: cfAppConfig.destination ?? destination,
-        addManagedRouter: cfAppConfig.addManagedRouter ?? true,
-        lcapMode: !isCap ? false : isLCAP,
+        destinationName: cfAppConfig.destinationName ?? destination,
+        addManagedAppRouter: cfAppConfig.addManagedAppRouter ?? true,
+        lcapMode: !isCap ? false : isLCAP, // Restricting local changes is only applicable for CAP flows
         isMtaRoot: hasRoot ?? false,
-        serviceBase: cfAppConfig.serviceHost ?? serviceBase,
+        serviceHost: cfAppConfig.serviceHost ?? serviceHost,
+        rootPath: rootPath.replace(/\/$/, ''),
         mtaId,
         mtaPath,
         destinationAuthType,
@@ -107,11 +108,10 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor, logger?: L
         servicePath,
         firstServicePathSegment,
         appId,
-        rootPath: rootPath.replace(/\/$/, ''),
         capRoot,
         isFullUrlDest
     } as CFConfig;
-    logger?.debug(`CF Config completed: ${JSON.stringify(config, null, 2)}`);
+    logger?.debug(`CF Config loaded: ${JSON.stringify(config, null, 2)}`);
     return config;
 }
 
@@ -166,25 +166,25 @@ async function processUI5Config(
     fs: Editor,
     logger?: Logger
 ): Promise<{
-    serviceBase: string | undefined;
+    serviceHost: string | undefined;
     destination: string | undefined;
     firstServicePathSegment: string | undefined;
 }> {
     let destination;
-    let serviceBase;
+    let serviceHost;
     let firstServicePathSegment;
     try {
         const ui5YamlConfig: UI5Config = await readUi5Yaml(appPath, FileName.Ui5Yaml, fs);
         const toolsConfig = ui5YamlConfig.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
         if (toolsConfig?.configuration?.backend?.length === 1) {
             destination = toolsConfig?.configuration?.backend[0].destination;
-            serviceBase = toolsConfig?.configuration?.backend[0].url;
+            serviceHost = toolsConfig?.configuration?.backend[0].url;
             firstServicePathSegment = toolsConfig?.configuration?.backend[0].path;
         }
     } catch (error) {
         logger?.debug(t('debug.ui5YamlDoesNotExist'));
     }
-    return { destination, serviceBase, firstServicePathSegment };
+    return { destination, serviceHost, firstServicePathSegment };
 }
 
 /**
@@ -265,10 +265,10 @@ async function generateSupportingConfig(config: CFConfig, fs: Editor): Promise<v
     if (mtaId && !fs.exists(join(config.rootPath, 'package.json'))) {
         addRootPackage(mtaConfig, fs);
     }
-    if (config.addManagedRouter && !fs.exists(join(config.rootPath, XSSecurityFile))) {
+    if (config.addManagedAppRouter && !fs.exists(join(config.rootPath, XSSecurityFile))) {
         addXSSecurity(mtaConfig, fs);
     }
-    // Be a good developer and add a gitignore if missing from the existing project root
+    // Be a good developer and add a .gitignore if missing from the existing project root
     if (!fs.exists(join(config.rootPath, '.gitignore'))) {
         addGitIgnore(config.rootPath, fs);
     }
@@ -283,18 +283,18 @@ async function generateSupportingConfig(config: CFConfig, fs: Editor): Promise<v
 async function updateMtaConfig(cfConfig: CFConfig, logger?: Logger): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
     if (mtaInstance) {
-        await mtaInstance.addRoutingModules(cfConfig.addManagedRouter);
+        await mtaInstance.addRoutingModules(cfConfig.addManagedAppRouter);
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');
         await addParameters(mtaInstance);
-        if ((cfConfig.destination && cfConfig.isCap) || cfConfig.destination === DefaultMTADestination) {
+        if ((cfConfig.destinationName && cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination) {
             // If the destination instance identifier is passed, create a destination instance
-            cfConfig.destination =
-                cfConfig.destination === DefaultMTADestination
+            cfConfig.destinationName =
+                cfConfig.destinationName === DefaultMTADestination
                     ? mtaInstance.getFormattedPrefix(ResourceMTADestination)
-                    : cfConfig.destination;
-            await mtaInstance.appendInstanceBasedDestination(cfConfig.destination);
+                    : cfConfig.destinationName;
+            await mtaInstance.appendInstanceBasedDestination(cfConfig.destinationName);
             // This is required where a managed or standalone router hasnt been added yet to mta.yaml
             if (!mtaInstance.hasManagedXsuaaResource()) {
                 cfConfig.destinationAuthType = Authentication.NO_AUTHENTICATION;
@@ -317,7 +317,7 @@ async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig, logger?: Logg
         // Add mtaext if required for API Hub Enterprise connectivity
         if (cfConfig.apiHubConfig?.apiHubType === ApiHubType.apiHubEnterprise) {
             try {
-                await mtaInstance.addMtaExtensionConfig(cfConfig.destination, cfConfig.serviceBase, {
+                await mtaInstance.addMtaExtensionConfig(cfConfig.destinationName, cfConfig.serviceHost, {
                     key: 'ApiKey',
                     value: cfConfig.apiHubConfig.apiHubKey
                 });
@@ -336,9 +336,9 @@ async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig, logger?: Logg
  */
 async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor): Promise<void> {
     // When data source is none in app generator, it is not required to provide destination
-    if (cfConfig.destination && cfConfig.destination !== EmptyDestination) {
+    if (cfConfig.destinationName && cfConfig.destinationName !== EmptyDestination) {
         fs.copyTpl(getTemplatePath('app/xs-app-destination.json'), join(cfConfig.appPath, XSAppFile), {
-            destination: cfConfig.destination,
+            destination: cfConfig.destinationName,
             servicePathSegment: `${cfConfig.firstServicePathSegment}${cfConfig.isFullUrlDest ? '/.*' : ''}`, // For service URL's, pull out everything after the last slash
             targetPath: `${cfConfig.isFullUrlDest ? '' : cfConfig.firstServicePathSegment}/$1`, // Pull group 1 from the regex
             authentication: cfConfig.destinationAuthType === NoAuthType ? 'none' : 'xsuaa'
