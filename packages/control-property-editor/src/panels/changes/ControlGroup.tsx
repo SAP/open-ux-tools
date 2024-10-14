@@ -4,7 +4,11 @@ import { Link, Stack } from '@fluentui/react';
 
 import { useAppDispatch } from '../../store';
 import type { Change } from '@sap-ux-private/control-property-editor-common';
-import { PROPERTY_CHANGE_KIND, SAVED_CHANGE_TYPE, selectControl } from '@sap-ux-private/control-property-editor-common';
+import {
+    PROPERTY_CHANGE_KIND,
+    SAVED_CHANGE_TYPE,
+    selectControl
+} from '@sap-ux-private/control-property-editor-common';
 
 import { PropertyChange } from './PropertyChange';
 import { OtherChange } from './OtherChange';

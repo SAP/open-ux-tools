@@ -112,3 +112,32 @@ export function getRootControlFromComponentContainer(container?: ComponentContai
     }
     return undefined;
 }
+
+export function getManifestProperties(control: ManagedObject, controlOverlay?: ElementOverlay): any {
+    const overlayData = controlOverlay?.getDesignTimeMetadata().getData();
+    if (!controlOverlay || !overlayData?.manifestSettings) {
+        return {};
+    }
+    const manifestPropertiesValue = overlayData?.manifestSettingsValues(
+        overlayData?.manifestSettings(control),
+        control
+    );
+    const manifestProperties = (overlayData?.manifestSettings(control) as any[]).reduce((acc, item) => {
+        const propertyId = item.id;
+        if (!acc[propertyId]) {
+            acc[propertyId] = { ...item };
+            acc[propertyId].defaultValue = item.value;
+            acc[propertyId].manifest = true;
+            const readableName = item.name;
+            acc[propertyId].name = item.id;
+            acc[propertyId].readableName = readableName;
+            acc[propertyId].manifestPropertyPath = `${overlayData?.manifestPropertyPath(control)}/${propertyId}`;
+            if (acc[propertyId].type === 'number') {
+                acc[propertyId].type = 'int';
+            }
+            acc[propertyId].value = manifestPropertiesValue[propertyId];
+        }
+        return acc;
+    }, {});
+    return manifestProperties;
+}

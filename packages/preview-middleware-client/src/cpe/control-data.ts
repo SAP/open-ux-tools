@@ -13,9 +13,10 @@ import {
 import Utils from 'sap/ui/fl/Utils';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
-import type { ManagedObjectMetadataProperties } from './utils';
+import { getManifestProperties, type ManagedObjectMetadataProperties } from './utils';
 import { UI5ControlProperty } from './types';
 import DataType from 'sap/ui/base/DataType';
+import { getV4PageType } from '../utils/application';
 
 type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5Type' | 'enumValues'>;
 
@@ -124,6 +125,46 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
     return analyzedType;
 }
 
+function analyzeManifestProperty(property: {
+    manifest: boolean;
+    name: string;
+    description: string;
+    id: string;
+    type: string;
+    defaultValue: int | float | string | boolean;
+    enums: {
+        id: string;
+        name: string;
+    }[];
+}): AnalyzedType | undefined {
+    const analyzedType: AnalyzedType = {
+        primitiveType: 'any',
+        ui5Type: null,
+        enumValues: undefined,
+        isArray: false
+    };
+
+    const propertyType = property.type;
+
+    if (!propertyType) {
+        return undefined;
+    }
+
+    if (['boolean', 'string', 'int', 'float'].includes(propertyType)) {
+        analyzedType.primitiveType = propertyType;
+    }
+
+    if (property.enums) {
+        analyzedType.primitiveType = 'enum';
+        analyzedType.enumValues = property.enums.reduce<Record<string, string>>((acc, item) => {
+            acc[item.id] = item.name;
+            return acc;
+        }, {});
+    }
+
+    return analyzedType;
+}
+
 /**
  * If rawValue is anything except an object like {} or a function, return it as-is,
  * If it is an object, stringify it.
@@ -178,51 +219,70 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
     const controlMetadata = control.getMetadata();
     const selectedControlName = controlMetadata.getName();
     const hasStableId = Utils.checkControlId(control);
-    const controlProperties = controlOverlay ? controlOverlay.getDesignTimeMetadata().getData().properties : undefined;
+    const overlayData = controlOverlay?.getDesignTimeMetadata().getData();
 
-    // Add the control's properties
-    const allProperties = controlMetadata.getAllProperties() as unknown as {
-        [name: string]: ManagedObjectMetadataProperties;
+    const controlProperties = controlOverlay ? overlayData?.properties : undefined;
+    const manifestProperties = getManifestProperties(control, controlOverlay);
+    // Add the control's properties/manifest(appDescriptor) properties
+    const allProperties = {
+        ...(controlMetadata.getAllProperties() as unknown as {
+            [name: string]: ManagedObjectMetadataProperties;
+        }),
+        ...manifestProperties
     };
     const propertyNames = Object.keys(allProperties);
     const properties: ControlProperty[] = [];
     for (const propertyName of propertyNames) {
         const property = allProperties[propertyName];
+        let analyzedType;
+        let isEnabled = false;
+        let value: unknown;
+        if (property?.['manifest']) {
+            analyzedType = analyzeManifestProperty(property);
+            if (
+                !analyzedType ||
+                (property?.restrictedTo?.length && !property?.restrictedTo?.includes(getV4PageType(control)))
+            ) {
+                continue;
+            }
+            isEnabled = true;
+            value = property.value || property.defaultValue;
+        } else {
+            // the default behavior is that the property is enabled
+            // meaning it's not ignored during design time
+            analyzedType = analyzePropertyType(property);
+            if (!analyzedType) {
+                continue;
+            }
+            let ignore = false;
+            if (controlProperties?.[property.name]) {
+                // check whether the property should be ignored in design time or not
+                // if it's 'undefined' then it's not considered when building isEnabled because it's 'true'
+                ignore = controlProperties[property.name].ignore;
+            }
 
-        const analyzedType = analyzePropertyType(property);
-        if (!analyzedType) {
-            continue;
+            //updating i18n text for the control if bindingInfo has bindingString
+            const controlNewData: NewControlData = {
+                id: control.getId(),
+                name: property.name,
+                newValue: control.getProperty(property.name)
+            };
+            const bindingInfo: { bindingString?: string } = control.getBindingInfo(controlNewData.name) as {
+                bindingString?: string;
+            };
+            if (bindingInfo?.bindingString !== undefined) {
+                controlNewData.newValue = bindingInfo.bindingString;
+            }
+
+            // A property is enabled if:
+            // 1. The property supports changes
+            // 2. The control has stable ID
+            // 3. It is not configured to be ignored in design time
+            // 4. And control overlay is selectable
+            isEnabled = isControlEnabled(analyzedType, hasStableId, ignore, controlOverlay);
+
+            value = normalizeObjectPropertyValue(controlNewData.newValue);
         }
-        // the default behavior is that the property is enabled
-        // meaning it's not ignored during design time
-        let ignore = false;
-        if (controlProperties?.[property.name]) {
-            // check whether the property should be ignored in design time or not
-            // if it's 'undefined' then it's not considered when building isEnabled because it's 'true'
-            ignore = controlProperties[property.name].ignore;
-        }
-
-        //updating i18n text for the control if bindingInfo has bindingString
-        const controlNewData: NewControlData = {
-            id: control.getId(),
-            name: property.name,
-            newValue: control.getProperty(property.name)
-        };
-        const bindingInfo: { bindingString?: string } = control.getBindingInfo(controlNewData.name) as {
-            bindingString?: string;
-        };
-        if (bindingInfo?.bindingString !== undefined) {
-            controlNewData.newValue = bindingInfo.bindingString;
-        }
-
-        // A property is enabled if:
-        // 1. The property supports changes
-        // 2. The control has stable ID
-        // 3. It is not configured to be ignored in design time
-        // 4. And control overlay is selectable
-        const isEnabled = isControlEnabled(analyzedType, hasStableId, ignore, controlOverlay);
-
-        const value = normalizeObjectPropertyValue(controlNewData.newValue);
         const isIcon =
             testIconPattern(property.name) &&
             selectedControlName !== 'sap.m.Image' &&

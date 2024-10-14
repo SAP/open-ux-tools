@@ -15,7 +15,7 @@ export interface Control {
     properties: ControlProperty[];
 }
 export type PropertyValue = string | boolean | number;
-export type PropertyChangeType = 'propertyChange' | 'propertyBindingChange';
+export type PropertyChangeType = 'propertyChange' | 'propertyBindingChange' | 'appdescr_fe_changePageConfiguration';
 export interface PropertyChange<T extends PropertyValue = PropertyValue> {
     controlId: string;
     controlName: string;

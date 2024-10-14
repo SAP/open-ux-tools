@@ -11,6 +11,16 @@ declare module 'sap/ui/dt/DesignTimeMetadata' {
 
     interface DesignTimeMetadata extends ManagedObject {
         getData: () => {
+            //TODO Improve Types
+            manifestPropertyPath: (control: ManagedObject) => string;
+            manifestPropertyChange: (propertyChanges: any, propertyPath: string, control: ManagedObject) => any;
+            manifestSettings: (control: ManagedObject) => {
+                value: string | number | boolean;
+                description: string;
+                id: string;
+                name: string;
+            }[];
+            manifestSettingsValues: (designtimeSettings, control) => any;
             properties: { [name: string]: DesignTimeMetadataData };
             aggregations: { [name: string]: DesignTimeMetadataData };
         };
