@@ -229,9 +229,8 @@ export async function findCapProjectRoot(path: string, checkForAppRouter = true)
             if (await getCapProjectType(projectRoot)) {
                 // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
                 // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
-                if (checkForAppRouter && join(projectRoot, 'app') !== path) {
-                    return projectRoot;
-                } else if (!checkForAppRouter) {
+                // or skip app router check if checkForAppRouter is false and return the project root.
+                if ((checkForAppRouter && join(projectRoot, 'app') !== path) || !checkForAppRouter) {
                     return projectRoot;
                 }
             }
