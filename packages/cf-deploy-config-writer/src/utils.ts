@@ -32,13 +32,14 @@ export async function readManifest(manifestPath: string, fs: Editor): Promise<Ma
 }
 
 /**
- *  Get the path to the template file.
+ * Locates template files relative to the dist folder.
+ * This helps to locate templates when this module is bundled and the dir structure is flattened, maintaining the relative paths.
  *
- * @param relativePath Path to the specific template file
- * @returns Path to the template file
+ * @param relativeTemplatePath - optional, the path of the required template relative to the ./templates folder. If not specified the root templates folder is returned.
+ * @returns the path of the template specified or templates root folder
  */
-export function getTemplatePath(relativePath: string = ''): string {
-    return join(__dirname, '../templates', relativePath);
+export function getTemplatePath(relativeTemplatePath: string = ''): string {
+    return join(__dirname, '../templates', relativeTemplatePath);
 }
 
 /**

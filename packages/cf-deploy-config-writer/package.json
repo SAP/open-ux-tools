@@ -25,6 +25,7 @@
   "files": [
     "LICENSE",
     "dist",
+    "templates",
     "!dist/*.map",
     "!dist/**/*.map"
   ],

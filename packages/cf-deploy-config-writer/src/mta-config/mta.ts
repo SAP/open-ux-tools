@@ -3,7 +3,7 @@ import { dirname, join } from 'path';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { render } from 'ejs';
 import { Mta, type mta } from '@sap/mta-lib';
-import { WebIDEUsage as WebIDEUsageType } from '@sap-ux/btp-utils';
+import { WebIDEUsage, Destination, isGenericODataDestination, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
 import { YamlDocument } from '@sap-ux/yaml';
 import { getMtaPath } from '@sap-ux/project-access';
 import {
@@ -328,20 +328,11 @@ export class MtaConfig {
     /**
      * Verify if the destination is valid and if WebIDEUsage is set to ODATA_GENERIC or ODATA_ABAP.
      *
-     * @param {boolean} checkWebIDEUsage - boolean flag to check WebIDEUsage
      * @param {MTADestinationType} destination - destination object
      * @returns {boolean} - true if the destination is valid, false otherwise
      */
-    private verifyDestination(checkWebIDEUsage: boolean, destination: MTADestinationType): boolean {
-        if (checkWebIDEUsage) {
-            const webIdeUsage = destination['WebIDEUsage'];
-            return !!(
-                webIdeUsage &&
-                (webIdeUsage === WebIDEUsageType.ODATA_GENERIC || webIdeUsage === WebIDEUsageType.ODATA_ABAP)
-            );
-        } else {
-            return true;
-        }
+    private isODataDestination(destination: Destination): boolean {
+        return isGenericODataDestination(destination) || isAbapEnvironmentOnBtp(destination);
     }
 
     /**
@@ -906,13 +897,13 @@ export class MtaConfig {
         if (destinationResources) {
             // instance
             destinationResources.parameters?.config?.init_data?.instance?.destinations?.forEach(
-                (dest: MTADestinationType) =>
-                    this.verifyDestination(checkWebIDEUsage, dest) && exposedDestinations.push(dest.Name)
+                (dest: Destination) =>
+                    (checkWebIDEUsage ? this.isODataDestination(dest) : true) && exposedDestinations.push(dest.Name)
             );
             // subaccount
             destinationResources.parameters?.config?.init_data?.subaccount?.destinations?.forEach(
-                (dest: MTADestinationType) =>
-                    this.verifyDestination(checkWebIDEUsage, dest) && exposedDestinations.push(dest.Name)
+                (dest: Destination) =>
+                    (checkWebIDEUsage ? this.isODataDestination(dest) : true) && exposedDestinations.push(dest.Name)
             );
         }
 
@@ -920,8 +911,8 @@ export class MtaConfig {
         const destinationModules = this.modules.get('com.sap.application.content:destination');
         if (destinationModules) {
             destinationModules.parameters?.content?.instance?.destinations?.map(
-                (dest: MTADestinationType) =>
-                    this.verifyDestination(checkWebIDEUsage, dest) && exposedDestinations.push(dest.Name)
+                (dest: Destination) =>
+                    (checkWebIDEUsage ? this.isODataDestination(dest) : true) && exposedDestinations.push(dest.Name)
             );
         }
         return exposedDestinations;
