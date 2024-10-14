@@ -16,7 +16,7 @@ describe('index', () => {
         });
         const prompts = await getPrompts({}, undefined, false);
         expect(prompts.answers).toBeDefined();
-        expect(prompts.prompts.length).toBe(23);
+        expect(prompts.prompts.length).toBe(22);
     });
 
     it('should prompt with inquirer adapter', async () => {
