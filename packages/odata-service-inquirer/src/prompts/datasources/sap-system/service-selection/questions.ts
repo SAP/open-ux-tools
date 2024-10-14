@@ -25,7 +25,7 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 const cliServicePromptName = 'cliServiceSelection';
 
 /**
- * Get the service selection prompt for a system connection. The service selection prompt is used to select a service from the system catalog.
+ * Get the service selection prompt for an Abap system connection (on-prem or on-btp). The service selection prompt is used to select a service from the system catalog.
  *
  * @param connectValidator A reference to the active connection validator, used to validate the service selection and retrieve service details.
  * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.

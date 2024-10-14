@@ -33,9 +33,15 @@ export function getCredentialsPrompts<T extends Answers>(
         BasicCredentialsPromptNames.systemPassword
     }`;
 
+    // Optimization to prevent re-checking of auth
+    let authRequired: boolean | undefined;
+
     return [
         {
-            when: () => connectionValidator.systemAuthType === 'basic' && connectionValidator.isAuthRequired(),
+            when: async () => {
+                authRequired = await connectionValidator.isAuthRequired();
+                return connectionValidator.systemAuthType === 'basic' && authRequired;
+            },
             type: 'input',
             name: usernamePromptName,
             message: t('prompts.systemUsername.message'),
@@ -46,7 +52,7 @@ export function getCredentialsPrompts<T extends Answers>(
             validate: (user: string) => user?.length > 0
         } as InputQuestion<T>,
         {
-            when: () => connectionValidator.systemAuthType === 'basic' && connectionValidator.isAuthRequired(),
+            when: () => connectionValidator.systemAuthType === 'basic' && authRequired,
             type: 'password',
             guiOptions: {
                 mandatory: true

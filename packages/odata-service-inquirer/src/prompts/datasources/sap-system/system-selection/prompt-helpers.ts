@@ -1,13 +1,22 @@
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
-import { isAppStudio, WebIDEUsage } from '@sap-ux/btp-utils';
+import {
+    isAppStudio,
+    isFullUrlDestination,
+    isPartialUrlDestination,
+    listDestinations,
+    WebIDEUsage
+} from '@sap-ux/btp-utils';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
-import { convertODataVersionType, PromptState } from '../../../../utils';
-import type { ValidationResult } from '../../../connectionValidator';
-import type { ConnectionValidator } from '../../../connectionValidator';
-import { t } from '../../../../i18n';
-import LoggerHelper from '../../../logger-helper';
+import { SystemService } from '@sap-ux/store';
+import type { ListChoiceOptions } from 'inquirer';
 import { ERROR_TYPE } from '../../../../error-handler/error-handler';
+import { t } from '../../../../i18n';
+import { type DestinationFilters, type SapSystemType } from '../../../../types';
+import { convertODataVersionType, PromptState } from '../../../../utils';
+import type { ConnectionValidator, ValidationResult } from '../../../connectionValidator';
+import LoggerHelper from '../../../logger-helper';
+import { newSystemChoiceValue, type SystemSelectionAnswers, type SystemSelectionAnswerType } from './questions';
 
 /**
  * Connects to the specified backend system and validates the connection.
@@ -78,16 +87,19 @@ export async function connectWithBackendSystem(
  * @param destination the destination specifying the connection details
  * @param connectionValidator the connection validator to use for the connection
  * @param requiredOdataVersion the required OData version for the service, this will be used to narrow the catalog service connections
+ * @param addServicePath the service path to add to the destination URL
  * @returns the validation result of the destination connection attempt
  */
 export async function connectWithDestination(
     destination: Destination,
     connectionValidator: ConnectionValidator,
-    requiredOdataVersion?: OdataVersion
+    requiredOdataVersion?: OdataVersion,
+    addServicePath?: string
 ): Promise<ValidationResult> {
     const { valResult: connectValResult, errorType } = await connectionValidator.validateDestination(
         destination,
-        convertODataVersionType(requiredOdataVersion)
+        convertODataVersionType(requiredOdataVersion),
+        addServicePath
     );
 
     // If authentication failed with an auth error, and the system connection auth type is basic, we will defer validation to the credentials prompt.
@@ -136,4 +148,88 @@ export function isAbapODataDestination(destination: Destination): boolean {
         !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) &&
         !destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_GENERIC)
     );
+}
+
+/**
+ * Matches the destination against the provided filters. Returns true if the destination matches any filters, false otherwise.
+ *
+ * @param destination
+ * @param filters
+ * @returns true if the destination matches any filters, false otherwise
+ */
+function matchesFilters(destination: Destination, filters?: DestinationFilters): boolean {
+    if (!filters) {
+        return true;
+    }
+    if (filters.odata_abap && isAbapODataDestination(destination)) {
+        return true;
+    }
+
+    if (filters.full_service_url && isFullUrlDestination(destination)) {
+        return true;
+    }
+
+    if (filters.partial_service_url && isPartialUrlDestination(destination)) {
+        return true;
+    }
+    LoggerHelper.logger.debug(
+        `Destination: ${
+            destination.Name
+        } does not match any filters and will be excluded as a prompt choice. Destination configuration: ${JSON.stringify(
+            destination
+        )}`
+    );
+    return false;
+}
+
+/**
+ * Creates a list of choices for the system selection prompt using destinations or stored backend systems, depending on the environment.
+ *
+ * @param destinationFilters
+ * @returns a list of choices for the system selection prompt
+ */
+export async function createSystemChoices(
+    destinationFilters?: DestinationFilters
+): Promise<ListChoiceOptions<SystemSelectionAnswers>[]> {
+    let systemChoices: ListChoiceOptions<SystemSelectionAnswers>[] = [];
+    let newSystemChoice: ListChoiceOptions<SystemSelectionAnswers>;
+
+    // If this is BAS, return destinations, otherwise return stored backend systems
+    if (isAppStudio()) {
+        const destinations = await listDestinations();
+        systemChoices = Object.values(destinations)
+            .filter((destination) => {
+                return matchesFilters(destination, destinationFilters);
+            })
+            .map((destination) => {
+                return {
+                    name: destination.Name,
+                    value: {
+                        type: 'destination',
+                        system: destination
+                    } as SystemSelectionAnswerType
+                };
+            });
+        newSystemChoice = { name: t('prompts.newSystemType.choiceAbapOnBtp'), value: 'abapOnBtp' as SapSystemType }; // TODO: add new system choice for destinations
+    } else {
+        const backendSystems = await new SystemService(LoggerHelper.logger).getAll();
+        systemChoices = backendSystems.map((system) => {
+            return {
+                name: getSystemDisplayName(system),
+                value: {
+                    system,
+                    type: 'backendSystem'
+                } as SystemSelectionAnswerType
+            };
+        });
+        newSystemChoice = {
+            name: t('prompts.systemSelection.newSystemChoiceLabel'),
+            value: { system: newSystemChoiceValue, type: 'newSystemChoice' }
+        };
+    }
+    systemChoices.sort(({ name: nameA }, { name: nameB }) =>
+        nameA!.localeCompare(nameB!, undefined, { numeric: true, caseFirst: 'lower' })
+    );
+    systemChoices.unshift(newSystemChoice);
+    return systemChoices;
 }

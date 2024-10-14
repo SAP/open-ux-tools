@@ -118,6 +118,11 @@
         "cloudFoundryAbapSystem": {
             "message": "ABAP environment",
             "hint": "Enter the name of the Cloud Foundry service that contains the ABAP Environment instance"
+        },
+        "destinationServicePath": {
+            "message": "Service path",
+            "hint": "Enter the path to the odata service, relative to the selected destination URL",
+            "invalidServicePathWarning": "Please enter a valid service path"
         }
     },
     "errors": {

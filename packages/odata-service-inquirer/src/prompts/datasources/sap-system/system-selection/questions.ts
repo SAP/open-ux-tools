@@ -1,19 +1,13 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Destination } from '@sap-ux/btp-utils';
-import { isAppStudio, isFullUrlDestination, isPartialUrlDestination, listDestinations } from '@sap-ux/btp-utils';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import { isAppStudio, isPartialUrlDestination } from '@sap-ux/btp-utils';
+import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { withCondition } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
-import { SystemService } from '@sap-ux/store';
-import type { Answers, ListChoiceOptions, Question } from 'inquirer';
+import type { Answers, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import {
-    hostEnvironment,
-    type DestinationFilters,
-    type OdataServicePromptOptions,
-    type SapSystemType
-} from '../../../../types';
+import { hostEnvironment, type OdataServicePromptOptions } from '../../../../types';
 import { getHostEnvironment, PromptState } from '../../../../utils';
 import type { ValidationResult } from '../../../connectionValidator';
 import { ConnectionValidator } from '../../../connectionValidator';
@@ -22,16 +16,12 @@ import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentia
 import { getNewSystemQuestions } from '../new-system/questions';
 import type { ServiceAnswer } from '../service-selection';
 import { getSystemServiceQuestion } from '../service-selection/questions';
-import {
-    connectWithBackendSystem,
-    connectWithDestination,
-    getSystemDisplayName,
-    isAbapODataDestination
-} from './prompt-helpers';
+import { connectWithBackendSystem, connectWithDestination, createSystemChoices } from './prompt-helpers';
+import { validateUrl } from '@sap-ux/project-input-validator';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
-export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^';
+export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^' as const;
 type NewSystemChoice = typeof newSystemChoiceValue;
 
 const systemSelectionPromptNamespace = 'systemSelection';
@@ -41,7 +31,8 @@ const passwordPromptName = `${systemSelectionPromptNamespace}:${BasicCredentials
 
 const systemSelectionPromptNames = {
     systemSelection: 'systemSelection',
-    systemSelectionCli: 'systemSelectionCli'
+    systemSelectionCli: 'systemSelectionCli',
+    destinationServicePath: 'destinationServicePath'
 } as const;
 
 export type SystemSelectionAnswerType = {
@@ -54,92 +45,8 @@ interface SystemSelectionCredentialsAnswers {
     [passwordPromptName]?: string;
 }
 
-export interface SystemSelectionAnswer extends SystemSelectionCredentialsAnswers {
+export interface SystemSelectionAnswers extends SystemSelectionCredentialsAnswers {
     [systemSelectionPromptNames.systemSelection]?: SystemSelectionAnswerType;
-}
-
-/**
- * Matches the destination against the provided filters. Returns true if the destination matches any filters, false otherwise.
- *
- * @param destination
- * @param filters
- * @returns true if the destination matches any filters, false otherwise
- */
-function matchesFilters(destination: Destination, filters?: DestinationFilters): boolean {
-    if (!filters) {
-        return true;
-    }
-    if (filters.odata_abap && isAbapODataDestination(destination)) {
-        return true;
-    }
-
-    if (filters.full_service_url && isFullUrlDestination(destination)) {
-        return true;
-    }
-
-    if (filters.partial_service_url && isPartialUrlDestination(destination)) {
-        return true;
-    }
-    LoggerHelper.logger.debug(
-        `Destination: ${
-            destination.Name
-        } does not match any filters and will be excluded as a prompt choice. Destination configuration: ${JSON.stringify(
-            destination
-        )}`
-    );
-    return false;
-}
-
-/**
- * Creates a list of choices for the system selection prompt using destinations or stored backend systems, depending on the environment.
- *
- * @param destinationFilters
- * @returns a list of choices for the system selection prompt
- */
-async function createSystemChoices(
-    destinationFilters?: DestinationFilters
-): Promise<ListChoiceOptions<SystemSelectionAnswer>[]> {
-    let systemChoices: ListChoiceOptions<SystemSelectionAnswer>[] = [];
-    let newSystemChoice: ListChoiceOptions<SystemSelectionAnswer>;
-
-    // If this is BAS, return destinations, otherwise return stored backend systems
-    if (isAppStudio()) {
-        const destinations = await listDestinations();
-        systemChoices = Object.values(destinations)
-            .filter((destination) => {
-                return matchesFilters(destination, destinationFilters);
-            })
-            .map((destination) => {
-                return {
-                    name: destination.Name,
-                    value: {
-                        type: 'destination',
-                        system: destination
-                    } as SystemSelectionAnswerType
-                };
-            });
-        newSystemChoice = { name: t('prompts.newSystemType.choiceAbapOnBtp'), value: 'abapOnBtp' as SapSystemType }; // TODO: add new system choice for destinations
-    } else {
-        const backendSystems = await new SystemService(LoggerHelper.logger).getAll();
-        systemChoices = backendSystems.map((system) => {
-            return {
-                name: getSystemDisplayName(system),
-                value: {
-                    system,
-                    type: 'backendSystem'
-                } as SystemSelectionAnswerType
-            };
-        });
-        newSystemChoice = {
-            name: t('prompts.systemSelection.newSystemChoiceLabel'),
-            value: { system: newSystemChoiceValue, type: 'newSystemChoice' }
-        };
-    }
-    systemChoices.sort(({ name: nameA }, { name: nameB }) =>
-        nameA!.localeCompare(nameB!, undefined, { numeric: true, caseFirst: 'lower' })
-    );
-    systemChoices.unshift(newSystemChoice);
-    return systemChoices;
 }
 
 /**
@@ -189,22 +96,22 @@ async function validateSystemSelection(
  */
 export async function getSystemSelectionQuestions(
     promptOptions?: OdataServicePromptOptions
-): Promise<Question<SystemSelectionAnswer & ServiceAnswer>> {
+): Promise<Question<SystemSelectionAnswers & ServiceAnswer>> {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
 
-    const questions: Question<SystemSelectionAnswer & ServiceAnswer>[] = await getSystemConnectionQuestions(
+    const questions: Question<SystemSelectionAnswers & ServiceAnswer>[] = await getSystemConnectionQuestions(
         connectValidator,
         promptOptions
     );
 
-    // If the selected system was in fact not a system but a partial url destination and requires furthur service path input we need to add additional service path prompt
+    // If the selected system was in fact not a system or a full service url but a partial url destination we require furthur service path input we need to add additional service path prompt
 
-    // Existing system (BackendSystem or Destination) selected, TODO: make the service prompt optional
+    // Existing system (BackendSystem or Destination) selected, TODO: make the service prompt optional by wrapping in condition `[promptOptions?.serviceSelection?.hide]`
     questions.push(
         ...(withCondition(
             getSystemServiceQuestion(connectValidator, systemSelectionPromptNamespace, promptOptions) as Question[],
-            (answers: Answers) => (answers as SystemSelectionAnswer).systemSelection?.type !== 'newSystemChoice'
+            (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
         ) as Question[])
     );
 
@@ -212,7 +119,7 @@ export async function getSystemSelectionQuestions(
     questions.push(
         ...(withCondition(
             getNewSystemQuestions(promptOptions) as Question[],
-            (answers: Answers) => (answers as SystemSelectionAnswer).systemSelection?.type === 'newSystemChoice'
+            (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
         ) as Question[])
     );
 
@@ -231,7 +138,7 @@ export async function getSystemSelectionQuestions(
 export async function getSystemConnectionQuestions(
     connectionValidator: ConnectionValidator,
     promptOptions?: OdataServicePromptOptions
-): Promise<Question<SystemSelectionAnswer>[]> {
+): Promise<Question<SystemSelectionAnswers>[]> {
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
     const systemChoices = await createSystemChoices(destinationFilters);
@@ -243,44 +150,68 @@ export async function getSystemConnectionQuestions(
             message: t('prompts.systemSelection.message'),
             // source: (preAnswers, input) => searchChoices(input, getSapSystemChoices(systems)),
             choices: systemChoices,
-            validate: async (systemSelection: SystemSelectionAnswerType): Promise<ValidationResult> => {
-                if (!systemSelection) {
+            validate: async (selectedSystem: SystemSelectionAnswerType): Promise<ValidationResult> => {
+                if (!selectedSystem) {
                     return false;
                 }
-                return validateSystemSelection(systemSelection, connectionValidator, requiredOdataVersion) ?? false;
+                return validateSystemSelection(selectedSystem, connectionValidator, requiredOdataVersion) ?? false;
             },
-            additionalMessages: async () => {
-                if (connectionValidator.systemAuthType === 'basic' && (await connectionValidator.isAuthRequired())) {
+            additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
+                // Backend systems credentials may need to be updated
+                if (
+                    selectedSystem.type === 'backendSystem' &&
+                    connectionValidator.systemAuthType === 'basic' &&
+                    (await connectionValidator.isAuthRequired())
+                ) {
                     return {
                         message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
                         severity: Severity.information
                     };
                 }
             }
-        } as ListQuestion<SystemSelectionAnswer>
+        } as ListQuestion<SystemSelectionAnswers>
     ];
 
-    /**
-     * questions.push(
-        ...withCondition(
-            getAbapOnPremQuestions(promptOptions) as Question[],
-            (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
-        )
-    );
-     */
-    // TODO: we need to set the Prompt State connected system once validated credentials for destinaton?
-    // Use withCondition and add :
-    /**
-     * // If the connection is successful, we will return the connected system from the inquirer
-    if (connectionValidator.validity.authorized === true && connectionValidator.serviceProvider) {
-        PromptState.odataService.connectedSystem = {
-            serviceProvider: connectionValidator.serviceProvider,
-            destination
-        };
+    if (isAppStudio()) {
+        const servicePathPrompt = {
+            when: (answers: SystemSelectionAnswers): boolean => {
+                const systemSelection = answers?.[systemSelectionPromptNames.systemSelection];
+                if (systemSelection?.type === 'destination') {
+                    return isPartialUrlDestination(systemSelection.system as Destination);
+                }
+                return false;
+            },
+            type: 'input',
+            name: systemSelectionPromptNames.destinationServicePath,
+            message: t('prompts.destinationServicePath.message'),
+            guiOptions: {
+                hint: t('prompts.destinationServicePath.hint'),
+                mandatory: true,
+                breadcrumb: true
+            },
+            validate: async (servicePath: string, answers: SystemSelectionAnswers) => {
+                if (!servicePath) {
+                    return t('prompts.destinationServicePath.invalidServicePathWarning');
+                }
+                // Validate format of the service path, note this relies on the assumption that the destination is correctly configured with a valid URL
+                const selectedDestination = answers?.[systemSelectionPromptNames.systemSelection]
+                    ?.system as Destination;
+                const valUrlResult = validateUrl(selectedDestination.Host + servicePath);
+                if (valUrlResult !== true) {
+                    return valUrlResult;
+                }
+
+                const connectValResult = await connectWithDestination(
+                    selectedDestination,
+                    connectionValidator,
+                    requiredOdataVersion,
+                    servicePath
+                );
+                return connectValResult;
+            }
+        } as InputQuestion<SystemSelectionAnswers>;
+        questions.push(servicePathPrompt);
     }
-     */
-    const credentialsPrompts = getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace) as Question[];
-    questions.push(...credentialsPrompts);
 
     // Only for CLI use as `list` prompt validation does not run on CLI
     if (getHostEnvironment() === hostEnvironment.cli) {
@@ -302,5 +233,8 @@ export async function getSystemConnectionQuestions(
             name: `${systemSelectionPromptNames.systemSelectionCli}`
         } as Question);
     }
+    const credentialsPrompts = getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace) as Question[];
+    questions.push(...credentialsPrompts);
+
     return questions;
 }

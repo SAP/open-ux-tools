@@ -22,7 +22,8 @@ import {
     type Destination,
     getDestinationUrlForAppStudio,
     isAppStudio,
-    isFullUrlDestination
+    isFullUrlDestination,
+    isPartialUrlDestination
 } from '@sap-ux/btp-utils';
 import https from 'https';
 import { ERROR_TYPE, ErrorHandler } from '../error-handler/error-handler';
@@ -517,22 +518,28 @@ export class ConnectionValidator {
      *
      * @param destination the destination to validate
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
+     * @param servicePath the service path to validate, if specified will be appended to the destination URL for validation, if not specified the destination url will be used
      * @returns @returns true if the system is reachable and authenticated, if required, false if not, or an error message string
      */
     public async validateDestination(
         destination: Destination,
-        odataVersion?: ODataVersion
+        odataVersion?: ODataVersion,
+        servicePath?: string
     ): Promise<{ valResult: ValidationResult; errorType?: ERROR_TYPE }> {
         try {
             // The only supported authentication mechanism for destinations set to Authentication 'NO_AUTHENTICATION' is basic (i.e. to the target Abap system)
             // So while we actually dont know we assume its basic for now since thats the only supported mechanism
             this.systemAuthType = destination.Authentication === Authentication.NO_AUTHENTICATION ? 'basic' : 'unknown';
             // Since a destination may be a system or a service connection, we need to determine the connection request (catalog or service)
-            if (isFullUrlDestination(destination)) {
+            if (isFullUrlDestination(destination) || isPartialUrlDestination(destination)) {
                 this.resetConnectionState();
                 this.resetValidity();
-                const destUrl = getDestinationUrlForAppStudio(destination.Name);
-                this._destinationUrl = destination.Host;
+                // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest
+                const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath);
+                // Get the destination URL in the portable form <protocol>://<host>:<port>
+                this._destinationUrl = servicePath
+                    ? new URL(servicePath, destination.Host).toString()
+                    : destination.Host;
                 const authRequired = await this.isAuthRequired(destUrl, destination['sap-client']);
                 return {
                     valResult: authRequired ? ErrorHandler.getErrorMsgFromType(ERROR_TYPE.AUTH) ?? false : true,
