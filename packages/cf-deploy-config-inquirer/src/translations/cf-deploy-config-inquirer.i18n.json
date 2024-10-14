@@ -1,6 +1,6 @@
 {
     "prompts": {
-        "destinationNameMessage": "Destination name KK",
+        "destinationNameMessage": "Destination name",
         "addApplicationRouterBreadcrumbMessage": "Add to Router",
         "generateManagedApplicationToRouterMessage": "Add application to managed application router?",
         "directBindingDestinationHint": "Destination name - The app router is configured to use direct service binding",
