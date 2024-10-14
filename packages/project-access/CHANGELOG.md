@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.28.1
+
+### Patch Changes
+
+-   64e037d: TBI - Optionally allow filtering CAP folder(s) to compile CAP model from
+
 ## 1.28.0
 
 ### Minor Changes
