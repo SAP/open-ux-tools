@@ -15,11 +15,15 @@ import {
  */
 function createDestinationChoices(destinations: Destinations = {}): CfSystemChoice[] {
     return Object.values(destinations)
+        .filter(
+            (destination): destination is Destinations[keyof Destinations] =>
+                destination && typeof destination.Name === 'string' && typeof destination.Host === 'string'
+        )
         .sort((a, b) => a.Name.localeCompare(b.Name, undefined, { numeric: true, caseFirst: 'lower' }))
         .map((destination) => ({
-            name: `${getDisplayName(destination)} - ${destination.Host}`,
+            name: `${getDisplayName(destination) ?? 'Unknown'} - ${destination.Host}`,
             value: destination.Name,
-            scp: isAbapEnvironmentOnBtp(destination),
+            scp: isAbapEnvironmentOnBtp(destination) || false,
             url: destination.Host
         }));
 }

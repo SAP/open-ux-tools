@@ -31,6 +31,7 @@ import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers';
  *        type will render as a list instead of an input field.
  * @param {boolean} [destinationOptions.useAutocomplete] - A flag to indicate whether
  *        to use an autocomplete feature for the destination name input.
+ * @param {boolean} [destinationOptions.addBTPDestinationList] - A flag to indicate whether to include BTP destination choices.
  * @returns {Promise<CfDeployConfigQuestions>} A promise that resolves to the configuration
  *          of the prompt, which includes the question and any related options for rendering
  *          the prompt in a user interface.
@@ -39,15 +40,15 @@ async function getDestinationNamePrompt(
     destinationOptions: DestinationNamePromptOptions
 ): Promise<CfDeployConfigQuestions> {
     const {
-        directBindingDestinationHint = false,
-        destination,
+        hint = false,
         additionalChoiceList = [],
         defaultValue,
-        useAutocomplete = false
+        useAutocomplete = false,
+        addBTPDestinationList = true
     } = destinationOptions;
 
     const isBAS = isAppStudio();
-    const destinations = await fetchBTPDestinations();
+    const destinations = addBTPDestinationList ? await fetchBTPDestinations() : {};
     const destinationList: CfSystemChoice[] = [...additionalChoiceList, ...(await getCfSystemChoices(destinations))];
     // If BAS is used or additional choices are provided, the prompt should be a list
     // If VsCode is used and additional choices are not provided, the prompt should be an input field
@@ -57,16 +58,13 @@ async function getDestinationNamePrompt(
     const promptType = useAutocomplete && destinationList.length ? 'autocomplete' : basePromptType;
     return {
         guiOptions: {
-            mandatory: !isBAS || !!destination,
+            mandatory: !isBAS,
             breadcrumb: t('prompts.destinationNameMessage')
         },
         type: promptType,
-        default: () => destination ?? defaultValue,
+        default: () => defaultValue,
         name: promptNames.destinationName,
-        message: () =>
-            directBindingDestinationHint
-                ? t('prompts.directBindingDestinationHint')
-                : t('prompts.destinationNameMessage'),
+        message: () => (hint ? t('prompts.directBindingDestinationHint') : t('prompts.destinationNameMessage')),
         validate: (destination: string): string | boolean => {
             return validators.validateDestinationQuestion(destination, !destination && isBAS);
         },

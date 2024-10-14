@@ -17,12 +17,10 @@ export enum promptNames {
  * Configuration options for the 'destinationName' prompt used in deployment settings.
  */
 export type DestinationNamePromptOptions = {
-    /** The Cloud Foundry destination name to be used in the deployment process. */
-    destination?: string;
     /** Default value to suggest for the destination name. */
     defaultValue: string;
-    /** Flag to indicate if a hint message should be shown to indicate the app router is configured to use direct service binding . */
-    directBindingDestinationHint?: boolean;
+    /** Flag to indicate if a hint message should be shown to indicate the app router is configured.*/
+    hint?: boolean;
     /**
      * List of additional destination choices available for the prompt.
      * - In BAS environments, this list will be appended to BTP destination options.
@@ -30,6 +28,12 @@ export type DestinationNamePromptOptions = {
      *   the prompt will render as a list, allowing users to select from the provided choices instead of input.
      */
     additionalChoiceList?: CfSystemChoice[];
+    /**
+     * Indicates BTP destination list choices should be available for the prompt.
+     * If `addBTPDestinationList` is set to true, the prompt will include BTP destination choices else it will not.
+     * By default, this is set to true.
+     */
+    addBTPDestinationList?: boolean;
     /**
      * Flag to indicate if the destination prompt should use auto completion
      */
@@ -64,7 +68,7 @@ export type CfDeployConfigQuestions = YUIQuestion<CfDeployConfigAnswers> &
  */
 export interface CfDeployConfigAnswers {
     /** The selected Cloud Foundry destination. */
-    destination?: string;
+    destinationName?: string;
     /** Indicates whether the user opted to include a managed application router. */
     addManagedRouter?: boolean;
     /* Indicates whether the user opted to overwrite the destination. */

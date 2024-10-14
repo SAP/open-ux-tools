@@ -26,9 +26,8 @@ const mockFetchBTPDestinations = fetchBTPDestinations as jest.Mock;
 describe('Prompt Generation Tests', () => {
     let promptOptions: CfDeployConfigPromptOptions;
     const destinationPrompts: DestinationNamePromptOptions = {
-        destination: 'testDestination',
         defaultValue: 'defaultDestination',
-        directBindingDestinationHint: false
+        hint: false
     };
     const additionalChoiceList: CfSystemChoice[] = [
         {
@@ -59,7 +58,7 @@ describe('Prompt Generation Tests', () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('list');
-            expect(destinationNamePrompt?.default()).toBe('testDestination');
+            expect(destinationNamePrompt?.default()).toBe('defaultDestination');
         });
 
         it('returns list-based prompt for cap project when environment is BAS', async () => {
@@ -78,7 +77,6 @@ describe('Prompt Generation Tests', () => {
             promptOptions = {
                 [promptNames.destinationName]: {
                     ...destinationPrompts,
-                    destination: undefined,
                     additionalChoiceList
                 }
             };
@@ -99,6 +97,7 @@ describe('Prompt Generation Tests', () => {
             promptOptions = {
                 [promptNames.destinationName]: {
                     ...destinationPrompts,
+                    addBTPDestinationList: false,
                     useAutocomplete: true,
                     additionalChoiceList
                 }
@@ -140,7 +139,7 @@ describe('Prompt Generation Tests', () => {
             promptOptions = {
                 [promptNames.destinationName]: {
                     ...destinationPrompts,
-                    directBindingDestinationHint: true
+                    hint: true
                 }
             };
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
@@ -153,7 +152,7 @@ describe('Prompt Generation Tests', () => {
             promptOptions = {
                 [promptNames.destinationName]: {
                     ...destinationPrompts,
-                    directBindingDestinationHint: undefined
+                    hint: undefined
                 }
             };
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
@@ -166,7 +165,6 @@ describe('Prompt Generation Tests', () => {
             promptOptions = {
                 [promptNames.destinationName]: {
                     ...destinationPrompts,
-                    destination: undefined,
                     useAutocomplete: true,
                     additionalChoiceList,
                     defaultValue: 'testChoice'
