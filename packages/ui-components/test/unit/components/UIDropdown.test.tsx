@@ -7,6 +7,7 @@ import { Dropdown, ResponsiveMode } from '@fluentui/react';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import { CalloutCollisionTransform } from '../../../src/components';
+import type { UISelectableOption } from '../../../src/components';
 
 const data = JSON.parse(JSON.stringify(originalData));
 const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
@@ -366,6 +367,33 @@ describe('<UIDropdown />', () => {
                 }
             });
         }
+    });
+
+    it('Custom renderers for "onRenderOption"', () => {
+        wrapper.setProps({
+            onRenderOption: (
+                props?: UISelectableOption,
+                defaultRender?: (props?: UISelectableOption) => JSX.Element | null
+            ) => {
+                return <div className="custom-render-option">{defaultRender?.(props)}</div>;
+            }
+        });
+        openDropdown();
+        expect(wrapper.find('.custom-render-option').length).toBeGreaterThan(0);
+        expect(wrapper.find('.ts-dropdown-item-blocker').length).toBeGreaterThan(0);
+    });
+
+    it('Custom renderers for "onRenderItem"', () => {
+        wrapper.setProps({
+            onRenderItem: (
+                props?: UISelectableOption,
+                defaultRender?: (props?: UISelectableOption) => JSX.Element | null
+            ) => {
+                return <div className="custom-render-item">{defaultRender?.(props)}</div>;
+            }
+        });
+        openDropdown();
+        expect(wrapper.find('.custom-render-item').length).toBeGreaterThan(0);
     });
 });
 
