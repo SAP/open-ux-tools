@@ -42,12 +42,12 @@ import {
  */
 export class MtaConfig {
     private readonly mta: Mta;
-    private apps: Map<string, mta.Module> = new Map();
-    private modules: Map<string, mta.Module> = new Map();
-    private resources: Map<string, mta.Resource> = new Map();
+    private readonly apps: Map<string, mta.Module> = new Map();
+    private readonly modules: Map<string, mta.Module> = new Map();
+    private readonly resources: Map<string, mta.Resource> = new Map();
+    private readonly log: Logger | undefined;
     private dirty = false;
     private mtaId: string;
-    private log: Logger | undefined;
 
     /**
      * Returns a new instance of MtaConfig.
