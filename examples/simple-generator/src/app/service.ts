@@ -164,10 +164,12 @@ export async function getMetadata(
         metadata,
         annotations:
             annotations?.length > 0
-                ? [{
-                      technicalName: annotations[0].TechnicalName,
-                      xml: annotations[0].Definitions
-                  }]
+                ? [
+                      {
+                          technicalName: annotations[0].TechnicalName,
+                          xml: annotations[0].Definitions
+                      }
+                  ]
                 : undefined
     };
 }
