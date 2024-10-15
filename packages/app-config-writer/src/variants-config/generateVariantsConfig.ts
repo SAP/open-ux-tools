@@ -9,18 +9,21 @@ import type { ToolsLogger } from '@sap-ux/logger';
  * Add variants configuration to an app or project.
  *
  * @param basePath - the base path where the package.json and ui5.yaml is
+ * @param yamlPath - the path where the ui5.yaml is
  * @param logger - logger
  * @param fs - the memfs editor instance
  * @returns Promise<Editor> - memfs editor instance with updated files
  */
-export async function generateVariantsConfig(basePath: string, logger?: ToolsLogger, fs?: Editor): Promise<Editor> {
+export async function generateVariantsConfig(
+    basePath: string,
+    yamlPath?: string,
+    logger?: ToolsLogger,
+    fs?: Editor
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
-    await addVariantsManagementScript(fs, basePath, logger).catch((error) => {
-        logger?.error(`Script 'start-variants-management' cannot be written to package.json. ${error.message}.`);
-        return fs;
-    });
-    await updateMiddlewares(fs, basePath, logger);
+    await addVariantsManagementScript(fs, basePath, yamlPath, logger);
+    await updateMiddlewares(fs, basePath, yamlPath, logger);
     return fs;
 }

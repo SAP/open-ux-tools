@@ -4,6 +4,7 @@ import { stringify } from 'querystring';
 import type { Package } from '@sap-ux/project-access';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
+import { basename } from 'path';
 
 /**
  * Gets the preview middleware form the yamlConfig or provided path.
@@ -116,12 +117,14 @@ function getRTAIntent(previewMiddlewareConfig: PreviewConfigOptions | undefined)
  *
  * @param basePath - path to project root, where package.json and ui5.yaml is located
  * @param query - query to create fragment
+ * @param yamlPath - path of the ui5 yaml file provided by cli'
  * @returns - review url parameters
  */
-export async function getRTAUrl(basePath: string, query: string): Promise<string | undefined> {
+export async function getRTAUrl(basePath: string, query: string, yamlPath?: string): Promise<string | undefined> {
     let previewMiddleware: CustomMiddleware<PreviewConfigOptions> | undefined;
     try {
-        previewMiddleware = await getPreviewMiddleware(undefined, basePath);
+        const fileName = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
+        previewMiddleware = await getPreviewMiddleware(undefined, basePath, fileName);
     } catch (error) {
         //todo: what to do in case there is no ui5.yaml file? try FileName.Ui5MockYaml or FileName.Ui5LocalYaml as fallback?
         return undefined;

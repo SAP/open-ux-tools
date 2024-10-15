@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { basename, join } from 'path';
 import { MiddlewareConfigs } from '../types';
 import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
@@ -54,13 +54,21 @@ export function createPreviewMiddlewareConfig(fs: Editor, basePath: string): Cus
  *
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to project root, where package.json and ui5.yaml is
+ * @param yamlPath - the path where the ui5.yaml is
  * @param logger - logger
  */
-export async function updateMiddlewares(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const ui5Yamls = [FileName.Ui5Yaml, FileName.Ui5MockYaml, FileName.Ui5LocalYaml];
+export async function updateMiddlewares(
+    fs: Editor,
+    basePath: string,
+    yamlPath?: string,
+    logger?: ToolsLogger
+): Promise<void> {
+    const ui5Yamls: string[] = [FileName.Ui5Yaml, FileName.Ui5MockYaml, FileName.Ui5LocalYaml];
+    if (yamlPath) {
+        ui5Yamls.unshift(basename(yamlPath));
+    }
     for (const ui5Yaml of ui5Yamls) {
         let ui5YamlConfig: UI5Config;
-
         try {
             ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml);
         } catch (error) {
