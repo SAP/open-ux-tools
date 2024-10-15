@@ -21,7 +21,6 @@ import {
     isCapProject,
     deleteCapApp
 } from '../../src';
-import { isPathForCapApp } from '../../src/project/search';
 import * as file from '../../src/file';
 import os from 'os';
 import type { Logger } from '@sap-ux/logger';
@@ -87,60 +86,6 @@ describe('Test isCapJavaProject()', () => {
         expect(
             await isCapJavaProject(join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix'))
         ).toBeFalsy();
-    });
-});
-describe('Test isPathForCapApp()', () => {
-    test('Should return true for root CAP path', async () => {
-        const result = await isPathForCapApp(
-            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements/app/fiori_elements/')
-        );
-        expect(result).toBe(true);
-    });
-
-    test('Should return true for sub directory CAP path', async () => {
-        const result = await isPathForCapApp(
-            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements/app/fiori_elements/webapp/')
-        );
-        expect(result).toBe(true);
-    });
-
-    test('Should return true for sub directory CAP path, specifially app folder', async () => {
-        const result = await isPathForCapApp(
-            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements/app')
-        );
-        expect(result).toBe(true);
-    });
-
-    test('Should return true for sub directory CAP path, specifially app/ folder', async () => {
-        const result = await isPathForCapApp(
-            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements/app/')
-        );
-        expect(result).toBe(true);
-    });
-
-    test('Should return true for sub directory CAP path on Windows, specifially app folder', async () => {
-        const pathSep = sep;
-        const result = await isPathForCapApp(
-            join(
-                __dirname,
-                `..${pathSep}test-data${pathSep}project${pathSep}find-all-apps${pathSep}CAP${pathSep}CAPnode_fiori_elements${pathSep}app`
-            )
-        );
-        expect(result).toBe(true);
-        const result2 = await isPathForCapApp(
-            join(
-                __dirname,
-                `..${pathSep}test-data${pathSep}project${pathSep}find-all-apps${pathSep}CAP${pathSep}CAPnode_fiori_elements${pathSep}app${pathSep}`
-            )
-        );
-        expect(result2).toBe(true);
-    });
-
-    test('Should return false for non CAP path', async () => {
-        const result = await isPathForCapApp(
-            join(__dirname, '../test-data/project/find-all-apps/find-all-apps/adaptations/valid-adaptation')
-        );
-        expect(result).toBe(false);
     });
 });
 
@@ -400,6 +345,41 @@ describe('Test getCapModelAndServices()', () => {
         const capMS = await getCapModelAndServices('ROOT_PATH');
 
         // Check results
+        expect(capMS.services).toEqual([]);
+        expect(capMS.cdsVersionInfo).toEqual({
+            home: undefined,
+            version: undefined,
+            root: undefined
+        });
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
+    });
+
+    test('Get model and services filtered by db, but services are empty', async () => {
+        // Mock setup
+        const cdsMock = {
+            env: {
+                'for': () => ({
+                    folders: {
+                        app: 'APP',
+                        db: 'DB',
+                        srv: 'SRV'
+                    }
+                })
+            },
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL_NO_SERVICES')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => null)
+                }
+            }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        // Test execution
+        const capMS = await getCapModelAndServices('ROOT_PATH');
+
+        // Check results
+        expect(capMS.model).toEqual('MODEL_NO_SERVICES');
         expect(capMS.services).toEqual([]);
         expect(capMS.cdsVersionInfo).toEqual({
             home: undefined,
