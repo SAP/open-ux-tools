@@ -98,17 +98,17 @@ describe('Utility Functions', () => {
             expect(result).toEqual(mockDestinations);
             expect(isAppStudio).toHaveBeenCalled();
             expect(listDestinations).toHaveBeenCalled();
-            expect(mockLog.warn).toHaveBeenCalledWith(t('warning.btpDestinationListWarning'));
         });
 
         it('should return undefined if not running in App Studio', async () => {
             (isAppStudio as jest.Mock).mockReturnValue(false);
 
-            const result = await fetchBTPDestinations();
+            const result = await fetchBTPDestinations(mockLog);
 
             expect(result).toBeUndefined();
             expect(isAppStudio).toHaveBeenCalled();
             expect(listDestinations).not.toHaveBeenCalled();
+            expect(mockLog.warn).toHaveBeenCalledWith(t('warning.btpDestinationListWarning'));
         });
     });
 });
