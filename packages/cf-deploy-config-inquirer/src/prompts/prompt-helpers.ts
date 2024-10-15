@@ -6,7 +6,7 @@ import {
     isAbapEnvironmentOnBtp,
     type Destinations
 } from '@sap-ux/btp-utils';
-import LoggerHelper from '../logger-helper';
+import type { Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
 
 /**
@@ -43,12 +43,13 @@ export async function getCfSystemChoices(destinations?: Destinations): Promise<C
 /**
  * Retrieves and caches the list of available BTP destinations if running in BAS.
  *
+ * @param {Logger} [log] - The logger instance to use for logging.
  * @returns {Promise<Destinations | undefined>} - A promise resolving to a list of destinations or undefined if not in BAS.
  */
-export async function fetchBTPDestinations(): Promise<Destinations | undefined> {
+export async function fetchBTPDestinations(log?: Logger): Promise<Destinations | undefined> {
     if (isAppStudio()) {
         const destinations = await listDestinations();
-        LoggerHelper.logger.warn(t('warning.btpDestinationListWarning'));
+        log?.warn(t('warning.btpDestinationListWarning'));
         return destinations;
     }
     return undefined;

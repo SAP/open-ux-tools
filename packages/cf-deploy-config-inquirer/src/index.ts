@@ -27,7 +27,7 @@ async function getPrompts(
 ): Promise<CfDeployConfigQuestions[]> {
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
     await initI18nCfDeployConfigInquirer();
-    return getQuestions(promptOptions);
+    return getQuestions(promptOptions, LoggerHelper.logger);
 }
 
 /**

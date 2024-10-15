@@ -14,5 +14,9 @@
     },
     "warning": {
         "btpDestinationListWarning": "BTP destinations are only retrieved on BAS"
+    },
+    "info": {
+        "addManagedAppRouter": "Add managed application router is enabled",
+        "overwriteDestination": "Overwriting destination is enabled"
     }
 }

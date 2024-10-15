@@ -10,6 +10,7 @@ import type {
 import { promptNames } from '../src/types';
 import { fetchBTPDestinations } from '../src/prompts/prompt-helpers';
 import { type ListQuestion } from '@sap-ux/inquirer-common';
+import type { Logger } from '@sap-ux/logger';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -22,6 +23,10 @@ jest.mock('../src/prompts/prompt-helpers', () => ({
     fetchBTPDestinations: jest.fn()
 }));
 const mockFetchBTPDestinations = fetchBTPDestinations as jest.Mock;
+const mockLog = {
+    info: jest.fn(),
+    warn: jest.fn()
+} as unknown as Logger;
 
 describe('Prompt Generation Tests', () => {
     let promptOptions: CfDeployConfigPromptOptions;
@@ -191,7 +196,7 @@ describe('Prompt Generation Tests', () => {
         });
 
         it('Displays managed router prompt when enabled', async () => {
-            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions, mockLog);
             const managedAppRouterPrompt = questions.find(
                 (question) => question.name === promptNames.addManagedAppRouter
             );
@@ -203,16 +208,18 @@ describe('Prompt Generation Tests', () => {
                 t('prompts.generateManagedApplicationToRouterMessage')
             );
             expect((managedAppRouterPrompt?.default as Function)()).toBe(true);
+            expect(mockLog.info).toHaveBeenCalledWith(t('info.addManagedAppRouter'));
         });
 
         it('Displays managed router prompt when disabled', async () => {
             promptOptions[promptNames.addManagedAppRouter] = false;
 
-            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions, mockLog);
             const managedAppRouterPrompt = questions.find(
                 (question) => question.name === promptNames.addManagedAppRouter
             );
             expect(managedAppRouterPrompt).toBeUndefined();
+            expect(mockLog.info).not.toHaveBeenCalled();
         });
     });
 
@@ -225,20 +232,22 @@ describe('Prompt Generation Tests', () => {
         });
 
         it('Displays get overwrite prompt when enabled', async () => {
-            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions, mockLog);
             const overwritePrompt = questions.find((question) => question.name === promptNames.overwrite);
             expect(overwritePrompt?.type).toBe('confirm');
             expect((overwritePrompt?.default as Function)()).toBe(true);
             expect((overwritePrompt?.message as Function)()).toBe(t('prompts.overwriteMessage'));
+            expect(mockLog.info).toHaveBeenCalledWith(t('info.overwriteDestination'));
         });
 
         it('Displays get overwrite prompt when disabled', async () => {
             if (promptOptions[promptNames.overwrite]) {
                 promptOptions[promptNames.overwrite] = false;
             }
-            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions, mockLog);
             const overwritePrompt = questions.find((question) => question.name === promptNames.overwrite);
             expect(overwritePrompt?.type).toBeUndefined();
+            expect(mockLog.info).not.toHaveBeenCalled();
         });
     });
 });

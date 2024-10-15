@@ -23,16 +23,9 @@ describe('index', () => {
 
     it('should return prompts from getPrompts', async () => {
         const getQuestionsSpy = jest.spyOn(cfPrompts, 'getQuestions');
-        const prompts = await getPrompts(promptOptions);
-        expect(prompts.length).toBe(3);
-        expect(getQuestionsSpy).toHaveBeenCalledWith(promptOptions);
-    });
-
-    it('should return prompts from getPrompts along with logger', async () => {
-        const getQuestionsSpy = jest.spyOn(cfPrompts, 'getQuestions');
         const prompts = await getPrompts(promptOptions, mockLog);
         expect(prompts.length).toBe(3);
-        expect(getQuestionsSpy).toHaveBeenCalledWith(promptOptions);
+        expect(getQuestionsSpy).toHaveBeenCalledWith(promptOptions, mockLog);
     });
 
     it('should prompt with inquirer adapter', async () => {

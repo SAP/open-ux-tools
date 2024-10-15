@@ -11,6 +11,7 @@ import { promptNames } from '../types';
 import * as validators from './validators';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Retrieves the prompt configuration for selecting a Cloud Foundry destination name.
@@ -32,12 +33,14 @@ import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers';
  * @param {boolean} [destinationOptions.useAutocomplete] - A flag to indicate whether
  *        to use an autocomplete feature for the destination name input.
  * @param {boolean} [destinationOptions.addBTPDestinationList] - A flag to indicate whether to include BTP destination choices.
+ * @param {Logger} [log] - The logger instance to use for logging.
  * @returns {Promise<CfDeployConfigQuestions>} A promise that resolves to the configuration
  *          of the prompt, which includes the question and any related options for rendering
  *          the prompt in a user interface.
  */
 async function getDestinationNamePrompt(
-    destinationOptions: DestinationNamePromptOptions
+    destinationOptions: DestinationNamePromptOptions,
+    log?: Logger
 ): Promise<CfDeployConfigQuestions> {
     const {
         hint = false,
@@ -48,7 +51,7 @@ async function getDestinationNamePrompt(
     } = destinationOptions;
 
     const isBAS = isAppStudio();
-    const destinations = addBTPDestinationList ? await fetchBTPDestinations() : {};
+    const destinations = addBTPDestinationList ? await fetchBTPDestinations(log) : {};
     const destinationList: CfSystemChoice[] = [...additionalChoiceList, ...(await getCfSystemChoices(destinations))];
     // If BAS is used or additional choices are provided, the prompt should be a list
     // If VsCode is used and additional choices are not provided, the prompt should be an input field
@@ -116,22 +119,28 @@ function getOverwritePrompt(): CfDeployConfigQuestions {
  * Retrieves a list of deployment questions based on the application root and prompt options.
  *
  * @param {CfDeployConfigPromptOptions} promptOptions - The configuration options for prompting during cf target deployment.
+ * @param {Logger} [log] - The logger instance to use for logging.
  * @returns {CfDeployConfigQuestions[]} Returns an array of questions related to cf deployment configuration.
  */
-export async function getQuestions(promptOptions: CfDeployConfigPromptOptions): Promise<CfDeployConfigQuestions[]> {
+export async function getQuestions(
+    promptOptions: CfDeployConfigPromptOptions,
+    log?: Logger
+): Promise<CfDeployConfigQuestions[]> {
     const destinationOptions = promptOptions[promptNames.destinationName] as DestinationNamePromptOptions;
     const addOverwriteQuestion = promptOptions[promptNames.overwrite] ?? false;
     const addManagedAppRouter = promptOptions[promptNames.addManagedAppRouter] ?? false;
 
     const questions: CfDeployConfigQuestions[] = [];
     // Collect questions into an array
-    questions.push(await getDestinationNamePrompt(destinationOptions));
+    questions.push(await getDestinationNamePrompt(destinationOptions, log));
 
     if (addManagedAppRouter) {
+        log?.info(t('info.addManagedAppRouter'));
         questions.push(getAddManagedRouterPrompt());
     }
 
     if (addOverwriteQuestion) {
+        log?.info(t('info.overwriteDestination'));
         questions.push(getOverwritePrompt());
     }
 
