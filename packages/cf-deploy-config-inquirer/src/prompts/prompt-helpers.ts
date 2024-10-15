@@ -49,8 +49,8 @@ export async function getCfSystemChoices(destinations?: Destinations): Promise<C
 export async function fetchBTPDestinations(log?: Logger): Promise<Destinations | undefined> {
     if (isAppStudio()) {
         const destinations = await listDestinations();
-        log?.warn(t('warning.btpDestinationListWarning'));
         return destinations;
     }
+    log?.warn(t('warning.btpDestinationListWarning'));
     return undefined;
 }
