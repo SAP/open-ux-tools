@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.18.10
+
+### Patch Changes
+
+-   9e9daa4: UIComboBox, UIDropdown: Allow extending 'calloutProps' instead of overwriting.
+
 ## 1.18.9
 
 ### Patch Changes
