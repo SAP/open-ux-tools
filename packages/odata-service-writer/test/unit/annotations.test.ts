@@ -24,28 +24,34 @@ describe('metadata parsing', () => {
 
     it('getAnnotationNamespaces: metadata parsing', () => {
         expect(() => {
-            getAnnotationNamespaces(invalidEdmx);
+            getAnnotationNamespaces({ metadata: invalidEdmx });
         }).toThrow(t('error.unparseableXML'));
-        expect(getAnnotationNamespaces(missingSchema)).toEqual([]);
+        expect(getAnnotationNamespaces({ metadata: missingSchema })).toEqual([]);
 
-        expect(getAnnotationNamespaces(multischemaMetadata)).toEqual([
+        expect(getAnnotationNamespaces({ metadata: multischemaMetadata })).toEqual([
             { namespace: 'SEPMRA_PROD_MAN', alias: '' },
             { namespace: 'SEPMRA_PROD_MAN_1', alias: '' }
         ]);
-        expect(getAnnotationNamespaces(metadata)).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: '' }]);
+        expect(getAnnotationNamespaces({ metadata })).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: '' }]);
     });
 
     it('getAnnotationNamespaces: annotations alias parsing', () => {
         expect(
-            getAnnotationNamespaces(metadata, { technicalName: 'TEST_ANNOTATIONS', xml: annotationsMultipleRef })
+            getAnnotationNamespaces({
+                metadata: metadata,
+                annotations: [{ technicalName: 'TEST_ANNOTATIONS', xml: annotationsMultipleRef }]
+            })
         ).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' }]);
         expect(
-            getAnnotationNamespaces(metadata, { technicalName: 'TEST_ANNOTATIONS', xml: annotationSingleRef })
+            getAnnotationNamespaces({
+                metadata: metadata,
+                annotations: [{ technicalName: 'TEST_ANNOTATIONS', xml: annotationSingleRef }]
+            })
         ).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: 'SAP_Products' }]);
         expect(
-            getAnnotationNamespaces(multischemaMetadata, {
-                technicalName: 'TEST_ANNOTATIONS',
-                xml: annotationsMultipleRef
+            getAnnotationNamespaces({
+                metadata: multischemaMetadata,
+                annotations: [{ technicalName: 'TEST_ANNOTATIONS', xml: annotationsMultipleRef }]
             })
         ).toEqual([
             { namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' },

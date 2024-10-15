@@ -27,10 +27,12 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         url: 'http://example.ovp.v2',
         version: OdataVersion.v2,
         metadata: getTestData('gwsample_basic_v2', 'metadata'),
-        annotations: {
-            technicalName: 'GWSAMPLE_BASIC',
-            xml: getTestData('gwsample_basic_v2', 'annotations')
-        }
+        annotations: [
+            {
+                technicalName: 'GWSAMPLE_BASIC',
+                xml: getTestData('gwsample_basic_v2', 'annotations')
+            }
+        ]
     };
 
     const v4Service: OdataService = {

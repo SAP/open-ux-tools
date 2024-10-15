@@ -152,16 +152,12 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 
         // Adds local annotations to datasources section of manifest.json and writes the annotations file
         if (service.localAnnotationsName) {
-            const annotations = service.annotations || [];
-            for (const i in annotations) {
-                const annotation = annotations[i];
-                const namespaces = getAnnotationNamespaces(service.metadata, annotation);
-                fs.copyTpl(
-                    join(templateRoot, 'add', 'annotation.xml'),
-                    join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
-                    { ...service, namespaces }
-                );
-            }
+            const namespaces = getAnnotationNamespaces(service);
+            fs.copyTpl(
+                join(templateRoot, 'add', 'annotation.xml'),
+                join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
+                { ...service, namespaces }
+            );
         }
     }
 

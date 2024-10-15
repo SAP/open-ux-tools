@@ -1,36 +1,36 @@
 import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n';
-import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo, CdsAnnotationsInfo } from '../types';
+import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo } from '../types';
 
 /**
  * Returns the namespaces parsed from the specified metadata and annotations.
  *
- * @param {string} metadata - OData service metadata xml
- * @param {string} annotations - OData service annotations xml
+ * @param {Partial<OdataService>} service - an odata service where at least metadata and annotations properties are defined
+ * @param {string} service.metadata - OData service metadata xml
+ * @param {string} service.annotations - OData service annotations xml
  * @returns A reference to the namspaces array
  */
-export function getAnnotationNamespaces(
-    metadata: OdataService['metadata'],
-    annotations?: EdmxAnnotationsInfo | CdsAnnotationsInfo
-): NamespaceAlias[] {
+export function getAnnotationNamespaces({ metadata, annotations }: Partial<OdataService>): NamespaceAlias[] {
     // Enhance service with annotations namespaces
     const schemaNamespaces = metadata ? getNamespaces(metadata) : [];
-    const edmxAnnotations = annotations as EdmxAnnotationsInfo;
-    if (edmxAnnotations?.xml) {
-        // Parse once
-        const annotationsJson: Object = xmlToJson(edmxAnnotations.xml);
-
-        return schemaNamespaces.map((schema: NamespaceAlias) => {
-            // Check if alias exists in backend annotation file, if so use it
-            const annotationAlias =
-                edmxAnnotations.xml && schema.namespace
-                    ? getAliasFromAnnotation(annotationsJson, schema.namespace)
-                    : '';
-            if (annotationAlias) {
-                schema.alias = annotationAlias;
-            }
-            return schema;
-        });
+    const edmxAnnotations = annotations as EdmxAnnotationsInfo[];
+    for (const i in edmxAnnotations) {
+        const edmxAnnotation = edmxAnnotations[i];
+        if (edmxAnnotation?.xml) {
+            // Parse once
+            const annotationsJson: Object = xmlToJson(edmxAnnotation.xml);
+            return schemaNamespaces.map((schema: NamespaceAlias) => {
+                // Check if alias exists in backend annotation file, if so use it
+                const annotationAlias =
+                    edmxAnnotation.xml && schema.namespace
+                        ? getAliasFromAnnotation(annotationsJson, schema.namespace)
+                        : '';
+                if (annotationAlias) {
+                    schema.alias = annotationAlias;
+                }
+                return schema;
+            });
+        }
     }
     return schemaNamespaces;
 }
