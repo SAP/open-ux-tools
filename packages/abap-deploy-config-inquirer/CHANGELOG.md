@@ -1,5 +1,33 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.0.3
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/fiori-generator-shared@0.6.3
+-   @sap-ux/system-access@0.5.12
+
+## 1.0.2
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.6
+-   @sap-ux/fiori-generator-shared@0.6.2
+-   @sap-ux/system-access@0.5.12
+
+## 1.0.1
+
+### Patch Changes
+
+-   43988ca: bug fix
+
+## 1.0.0
+
+### Major Changes
+
+-   b3b1082: update prompt options for abap deploy config inquirer
+
 ## 0.0.25
 
 ### Patch Changes
