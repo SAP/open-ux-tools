@@ -24,7 +24,7 @@ export async function getAbapDeployConfigQuestions(
     const questions = [...targetPrompts, ...authPrompts];
 
     if (options.ui5AbapRepo?.hide !== true) {
-        questions.push(getAppConfigPrompts(options));
+        questions.push(...getAppConfigPrompts(options));
     }
 
     const packagePrompts = getPackagePrompts(options);
