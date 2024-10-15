@@ -66,17 +66,26 @@ describe('utils', () => {
 
         test('open-source preview-middleware config with no rta mount point', async () => {
             const openSourceConfig = join(basePath, 'open-source-config');
-            const url = await utils.getRTAUrl(openSourceConfig, query);
-
             //check for fiori-tools default mount point provided over the ux-ui5-tooling
-            expect(url).toBe(undefined);
+            expect(await utils.getRTAUrl(openSourceConfig, query)).toBe(undefined);
+        });
+
+        test('exception handling - file not found', async () => {
+            expect(await utils.getRTAUrl('', '')).toBeUndefined();
         });
     });
 
     describe('getPreviewMiddleware', () => {
-        test('exception handling', async () => {
+        test('exception handling - parameters not provided', async () => {
             await expect(utils.getPreviewMiddleware()).rejects.toThrowError(
                 'Either base path or yaml config must be provided'
+            );
+        });
+
+        test('exception handling - file not found', async () => {
+            const basePath = join(__dirname, '../../fixtures/a-folder-that-does-not-exist');
+            await expect(utils.getPreviewMiddleware(undefined, basePath, 'chicken.html')).rejects.toThrowError(
+                `File 'chicken.html' not found in project '${basePath}'`
             );
         });
     });
