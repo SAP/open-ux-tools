@@ -110,7 +110,6 @@ export default class extends Generator implements Ui5LibGenerator {
                 const npm = platform() === 'win32' ? 'npm.cmd' : 'npm';
 
                 ReuseLibGenLogger.logger.info(t('info.installingDependencies'));
-
                 await runner.run(npm, ['install'], { cwd: this.projectPath });
                 ReuseLibGenLogger.logger.info(t('info.dependenciesInstalled'));
             } catch (error) {
@@ -120,6 +119,7 @@ export default class extends Generator implements Ui5LibGenerator {
     }
 
     async end(): Promise<void> {
+        ReuseLibGenLogger.logger.info(t('info.openingAppInfo'));
         await runPostLibGenHook({
             path: this.projectPath,
             vscodeInstance: this.vscode as VSCodeInstance
