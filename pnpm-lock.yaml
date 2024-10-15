@@ -894,6 +894,9 @@ importers:
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       i18next:
         specifier: 23.5.1
         version: 23.5.1

@@ -6,6 +6,8 @@ import {
     isAbapEnvironmentOnBtp,
     type Destinations
 } from '@sap-ux/btp-utils';
+import LoggerHelper from '../logger-helper';
+import { t } from '../i18n';
 
 /**
  * Generates a sorted list of Cloud Foundry system destination choices from provided destinations.
@@ -46,6 +48,7 @@ export async function getCfSystemChoices(destinations?: Destinations): Promise<C
 export async function fetchBTPDestinations(): Promise<Destinations | undefined> {
     if (isAppStudio()) {
         const destinations = await listDestinations();
+        LoggerHelper.logger.warn(t('warning.btpDestinationListWarning'));
         return destinations;
     }
     return undefined;

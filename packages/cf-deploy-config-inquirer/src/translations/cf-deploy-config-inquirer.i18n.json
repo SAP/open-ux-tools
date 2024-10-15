@@ -11,5 +11,8 @@
         "emptyDestinationNameError": "You must provide a destination name in order to continue.",
         "destinationNameError": "The destination name must only contain letters, digits, dashes and underscores.",
         "destinationNameLengthError": "Destination name cannot contain more than 200 characters"  
+    },
+    "warning": {
+        "btpDestinationListWarning": "BTP destinations are only retrieved on BAS"
     }
 }

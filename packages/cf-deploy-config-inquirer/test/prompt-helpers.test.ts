@@ -1,5 +1,3 @@
-import { existsSync } from 'fs';
-import { join } from 'path';
 import {
     isAppStudio,
     listDestinations,
@@ -9,13 +7,9 @@ import {
 } from '@sap-ux/btp-utils';
 import { getCfSystemChoices, fetchBTPDestinations } from '../src/prompts/prompt-helpers';
 import type { CfSystemChoice } from '../src/types';
+import LoggerHelper from '../src/logger-helper';
+import { t } from '../src/i18n';
 
-jest.mock('fs', () => ({
-    existsSync: jest.fn()
-}));
-jest.mock('path', () => ({
-    join: jest.fn()
-}));
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn(),
     listDestinations: jest.fn(),
@@ -31,7 +25,15 @@ describe('Utility Functions', () => {
             Authentication: 'NoAuthentication',
             ProxyType: 'Internet',
             Description: 'Test Destination',
-            Host: 'host1'
+            Host: 'host'
+        },
+        dest2: {
+            Name: '',
+            Type: 'HTTP',
+            Authentication: 'NoAuthentication',
+            ProxyType: 'Internet',
+            Description: 'Test Destination ',
+            Host: 'host'
         }
     };
     beforeEach(() => {
@@ -40,7 +42,10 @@ describe('Utility Functions', () => {
 
     describe('getCfSystemChoices', () => {
         it('should return destination choices when destinations are provided', async () => {
-            const choices: CfSystemChoice[] = [{ name: 'Dest1 - host1', value: 'Dest1', scp: false, url: 'host1' }];
+            const choices: CfSystemChoice[] = [
+                { name: 'Dest1 - host', value: '', scp: false, url: 'host' },
+                { name: 'Unknown - host', value: 'Dest1', scp: false, url: 'host' }
+            ];
             (getDisplayName as jest.Mock).mockReturnValueOnce('Dest1');
             (isAbapEnvironmentOnBtp as jest.Mock).mockReturnValueOnce(false);
 
@@ -72,7 +77,7 @@ describe('Utility Functions', () => {
             const result = await getCfSystemChoices(destinations);
 
             expect(result).toEqual([
-                { name: 'Dest1 - host1', value: 'Dest1', scp: false, url: 'host1' },
+                { name: 'Dest1 - host', value: 'Dest1', scp: false, url: 'host' },
                 { name: 'Dest2 - host2', value: 'Dest2', scp: false, url: 'host2' }
             ]);
         });
@@ -82,12 +87,14 @@ describe('Utility Functions', () => {
         it('should return destinations if running in App Studio', async () => {
             (isAppStudio as jest.Mock).mockReturnValue(true);
             (listDestinations as jest.Mock).mockResolvedValue(mockDestinations);
+            const loggerSpy = jest.spyOn(LoggerHelper.logger, 'warn');
 
             const result = await fetchBTPDestinations();
 
             expect(result).toEqual(mockDestinations);
             expect(isAppStudio).toHaveBeenCalled();
             expect(listDestinations).toHaveBeenCalled();
+            expect(loggerSpy).toHaveBeenCalledWith(t('warning.btpDestinationListWarning'));
         });
 
         it('should return undefined if not running in App Studio', async () => {

@@ -1,6 +1,6 @@
 # @sap-ux/cf-deploy-config-inquirer
 
-Provides Inquirer based end-user prompting to retrieve the cf deployment configuration for an application. 
+Prompts module that can provide prompts for Cloud Foundry deployment config writer.
 
 ## Installation
 Npm
@@ -32,16 +32,11 @@ import { prompt as cfDeployConfigPrompt, promptNames } from '@sap-ux/cf-deploy-c
 
 const promptOptions = {
     [promptNames.destinationName]: {
-        destination: 'testDestination',
         defaultValue: 'defaultDestination',
-        directBindingDestinationHint: false
+        hint: false
     },
-    [promptNames.addManagedAppRouter]: {
-        addManagedAppRouter: true
-    },
-    [promptNames.overwrite]: {
-        addOverwriteQuestion: true
-    }
+    [promptNames.addManagedAppRouter]: true,
+    [promptNames.overwrite]: true
 };
 
 /**
