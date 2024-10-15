@@ -7,6 +7,7 @@ import type { OdataService, CdsAnnotationsInfo } from '../../src';
 import { OdataVersion, ServiceType } from '../../src';
 import * as ejs from 'ejs';
 import { expectedEdmxManifest } from '../test-data/manifest-json/edmx-manifest';
+import { expectedEdmxManifestMultipleAnnotations } from '../test-data/manifest-json/edmx-manifest-multiple-annotations';
 import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest';
 import type { Package } from '@sap-ux/project-access';
 
@@ -96,11 +97,13 @@ describe('updates', () => {
                 name: 'aname',
                 path: '/a/path',
                 type: ServiceType.EDMX,
-                annotations: {
-                    technicalName: 'test',
-                    xml: 'test',
-                    name: 'test'
-                },
+                annotations: [
+                    {
+                        technicalName: 'test',
+                        xml: 'test',
+                        name: 'test'
+                    }
+                ],
                 localAnnotationsName: 'test'
             };
 
@@ -109,6 +112,41 @@ describe('updates', () => {
             updateManifest('./', service, fs, join(__dirname, '../../templates'));
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedEdmxManifest);
+        });
+
+        test('Ensure manifest updates are updated as expected as in edmx projects with multiple annotations', () => {
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest'
+                }
+            };
+            const service: OdataService = {
+                version: OdataVersion.v2,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path',
+                type: ServiceType.EDMX,
+                annotations: [
+                    {
+                        technicalName: 'annotation1Technical',
+                        xml: 'annotation1xml',
+                        name: 'annotation1'
+                    },
+                    {
+                        technicalName: 'annotation2Technical',
+                        xml: 'annotation2xml',
+                        name: 'annotation2'
+                    }
+                ],
+                localAnnotationsName: 'localTest'
+            };
+
+            fs.writeJSON('./webapp/manifest.json', testManifest);
+            // Call updateManifest
+            updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            const manifestJson = fs.readJSON('./webapp/manifest.json');
+            expect(manifestJson).toEqual(expectedEdmxManifestMultipleAnnotations);
         });
 
         test('Ensure manifest updates are updated as expected as in cds projects', () => {
@@ -124,12 +162,14 @@ describe('updates', () => {
                 name: 'aname',
                 path: '/a/path',
                 type: ServiceType.CDS,
-                annotations: {
-                    cdsFileContents: `using AdminService as service from \'../../srv/admin-service\'`,
-                    projectPath: 'projectPath',
-                    appPath: 'appPath',
-                    projectName: 'projectName'
-                }
+                annotations: [
+                    {
+                        cdsFileContents: `using AdminService as service from \'../../srv/admin-service\'`,
+                        projectPath: 'projectPath',
+                        appPath: 'appPath',
+                        projectName: 'projectName'
+                    }
+                ]
             };
             fs.writeJSON('./webapp/manifest.json', testManifest);
             // Call updateManifest
@@ -170,16 +210,18 @@ describe('updates', () => {
 
     describe('updates cds files correctly', () => {
         it('writes annotation cds files correctly', async () => {
-            const annotationsInfo: CdsAnnotationsInfo = {
-                cdsFileContents: '"using AdminService as service from \'../../srv/admin-service\';"',
-                projectPath: 'testProject',
-                appPath: 'webapp',
-                projectName: 'annotations'
-            };
+            const annotationsInfo: CdsAnnotationsInfo[] = [
+                {
+                    cdsFileContents: '"using AdminService as service from \'../../srv/admin-service\';"',
+                    projectPath: 'testProject',
+                    appPath: 'webapp',
+                    projectName: 'annotations'
+                }
+            ];
             const annotationPath = join('./testProject/webapp/annotations', 'annotations.cds');
             await updateCdsFilesWithAnnotations(annotationsInfo, fs);
             const annotationCds = fs.read(annotationPath);
-            expect(annotationCds).toEqual(annotationsInfo.cdsFileContents);
+            expect(annotationCds).toEqual(annotationsInfo[0].cdsFileContents);
             // Convert the annotation path to the services path
             const serviceCdsPath = path.join(path.dirname(annotationPath).replace('annotations', ''), 'services.cds');
             const serviceCds = fs.read(serviceCdsPath);

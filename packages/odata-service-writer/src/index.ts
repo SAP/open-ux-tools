@@ -78,7 +78,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 
     // update cds files with annotations only if service type is CDS and annotations are provided
     if (!isServiceTypeEdmx && service.annotations) {
-        await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
+        await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo[], fs);
     }
     // manifest.json
     updateManifest(basePath, service, fs, templateRoot);
@@ -152,12 +152,16 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 
         // Adds local annotations to datasources section of manifest.json and writes the annotations file
         if (service.localAnnotationsName) {
-            const namespaces = getAnnotationNamespaces(service);
-            fs.copyTpl(
-                join(templateRoot, 'add', 'annotation.xml'),
-                join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
-                { ...service, namespaces }
-            );
+            const annotations = service.annotations || [];
+            for (const i in annotations) {
+                const annotation = annotations[i];
+                const namespaces = getAnnotationNamespaces(service.metadata, annotation);
+                fs.copyTpl(
+                    join(templateRoot, 'add', 'annotation.xml'),
+                    join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
+                    { ...service, namespaces }
+                );
+            }
         }
     }
 

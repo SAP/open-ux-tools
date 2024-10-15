@@ -30,9 +30,10 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
 
     const manifestJsonExt = fs.read(join(templateRoot, 'extend', `manifest.json`));
     const manifestSettings = Object.assign(service, getModelSettings(getMinimumUI5Version(manifest)));
+    const updatedManifestString = render(manifestJsonExt, manifestSettings, {});
     // If the service object includes ejs options, for example 'client' (see: https://ejs.co/#docs),
     // resulting in unexpected behaviour and problems when webpacking. Passing an empty options object prevents this.
-    fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, manifestSettings, {})));
+    fs.extendJSON(manifestPath, JSON.parse(updatedManifestString));
 }
 
 /**
@@ -70,12 +71,15 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
  */
 export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
     // Write annotation xml if annotations are provided and service type is EDMX
-    const annotations = service.annotations as EdmxAnnotationsInfo;
-    if (annotations?.xml) {
-        fs.write(
-            join(basePath, 'webapp', 'localService', `${annotations.technicalName}.xml`),
-            prettifyXml(annotations.xml, { indent: 4 })
-        );
+    const annotations = service.annotations as EdmxAnnotationsInfo[];
+    for (const i in annotations) {
+        const annotation = annotations[i];
+        if (annotation?.xml) {
+            fs.write(
+                join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
+                prettifyXml(annotation.xml, { indent: 4 })
+            );
+        }
     }
 }
 
@@ -88,16 +92,19 @@ export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: O
  * @param {Editor} fs - The memfs editor instance
  * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
  */
-export async function updateCdsFilesWithAnnotations(annotations: CdsAnnotationsInfo, fs: Editor): Promise<void> {
-    const annotationCdsPath = join(
-        annotations.projectPath,
-        annotations.appPath ?? '',
-        annotations.projectName,
-        'annotations.cds'
-    );
-    // write into annotations.cds file
-    fs.write(annotationCdsPath, annotations.cdsFileContents);
-    await updateCdsIndexOrServiceFile(fs, annotations);
+export async function updateCdsFilesWithAnnotations(annotations: CdsAnnotationsInfo[], fs: Editor): Promise<void> {
+    for (const i in annotations) {
+        const annotation = annotations[i];
+        const annotationCdsPath = join(
+            annotation.projectPath,
+            annotation.appPath ?? '',
+            annotation.projectName,
+            'annotations.cds'
+        );
+        // write into annotations.cds file
+        fs.write(annotationCdsPath, annotation.cdsFileContents);
+        await updateCdsIndexOrServiceFile(fs, annotation);
+    }
 }
 
 /**

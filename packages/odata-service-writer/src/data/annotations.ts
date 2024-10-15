@@ -1,16 +1,18 @@
 import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n';
-import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo } from '../types';
+import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo, CdsAnnotationsInfo } from '../types';
 
 /**
  * Returns the namespaces parsed from the specified metadata and annotations.
  *
- * @param {Partial<OdataService>} service - an odata service where at least metadata and annotations properties are defined
- * @param {string} service.metadata - OData service metadata xml
- * @param {string} service.annotations - OData service annotations xml
+ * @param {string} metadata - OData service metadata xml
+ * @param {string} annotations - OData service annotations xml
  * @returns A reference to the namspaces array
  */
-export function getAnnotationNamespaces({ metadata, annotations }: Partial<OdataService>): NamespaceAlias[] {
+export function getAnnotationNamespaces(
+    metadata: OdataService['metadata'],
+    annotations?: EdmxAnnotationsInfo | CdsAnnotationsInfo
+): NamespaceAlias[] {
     // Enhance service with annotations namespaces
     const schemaNamespaces = metadata ? getNamespaces(metadata) : [];
     const edmxAnnotations = annotations as EdmxAnnotationsInfo;
