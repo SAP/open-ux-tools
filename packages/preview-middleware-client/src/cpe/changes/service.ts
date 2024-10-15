@@ -10,7 +10,9 @@ import {
     deletePropertyChanges,
     propertyChangeFailed,
     FlexChangesEndPoints,
-    reloadApplication
+    reloadApplication,
+    setApplicationRequiresReload,
+    save
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
 import type { SelectionService } from '../selection';
@@ -23,6 +25,8 @@ import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModi
 import FlexChange from 'sap/ui/fl/Change';
 import { getError } from '../../utils/error';
 import { isLowerThanMinimalUi5Version, getUi5Version } from '../../utils/version';
+import MessageToast from 'sap/m/MessageToast';
+import { getTextBundle } from '../../i18n';
 
 interface ChangeContent {
     property: string;
@@ -93,6 +97,7 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
  */
 export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
+    private changesRequiringReload = 0;
     private sendAction: (action: ExternalAction) => void;
     private pendingChanges: PendingChange[] = [];
     private changedFiles: Record<string, object> = {};
@@ -140,16 +145,16 @@ export class ChangeService {
             } else if (deletePropertyChanges.match(action)) {
                 await this.deleteChange(action.payload.controlId, action.payload.propertyName, action.payload.fileName);
             } else if (reloadApplication.match(action)) {
-                await this.options.rta.stop(false, true);
+                this.sendAction(setApplicationRequiresReload(false));
+            } else if (save.match(action)) {
+                this.changesRequiringReload = 0;
+                this.sendAction(setApplicationRequiresReload(false));
             }
         });
 
         await this.fetchSavedChanges();
         this.updateStack();
-        this.options.rta.attachStop(() => {
-            // eslint-disable-next-line fiori-custom/sap-no-location-reload
-            location.reload();
-        });
+
         this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
     }
 
@@ -201,7 +206,7 @@ export class ChangeService {
                                 this.changedFiles[change.fileName] = change;
                                 return {
                                     type: 'saved',
-                                    kind: 'valid',
+                                    kind: 'property',
                                     fileName: change.fileName,
                                     controlId: selectorId,
                                     propertyName: change.content.property,
@@ -219,6 +224,7 @@ export class ChangeService {
                                     const unknownChange: UnknownSavedChange = {
                                         type: 'saved',
                                         kind: 'unknown',
+                                        changeType: change.changeType,
                                         fileName: change.fileName,
                                         controlId: selectorId // some changes may not have selector
                                     };
@@ -295,6 +301,20 @@ export class ChangeService {
                 }
             }
 
+            this.pendingChanges = this.pendingChanges.filter((change): boolean => !!change);
+            const changesRequiringReload = this.pendingChanges.reduce(
+                (sum, change) => (change.changeType === 'appdescr_fe_changePageConfiguration' ? sum + 1 : sum),
+                0
+            );
+            if (changesRequiringReload > this.changesRequiringReload) {
+                const resourceBundle = await getTextBundle();
+                MessageToast.show(resourceBundle.getText('CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_MESSAGE'), {
+                    duration: 8000
+                });
+                this.sendAction(setApplicationRequiresReload(changesRequiringReload > 0));
+            }
+            this.changesRequiringReload = changesRequiringReload;
+
             if (Array.isArray(allCommands) && allCommands.length === 0) {
                 this.pendingChanges = [];
                 await this.fetchSavedChanges();
@@ -321,7 +341,10 @@ export class ChangeService {
 
         const change = command.getPreparedChange();
 
-        const selectorId = await this.getControlIdByChange(change);
+        const selectorId = typeof change.getSelector === 'function'
+            ? await this.getControlIdByChange(change)
+            : this.getCommandSelectorId(command);
+
         const changeType = this.getCommandChangeType(command);
 
         if (!selectorId || !changeType) {
@@ -341,6 +364,7 @@ export class ChangeService {
         if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
             result = {
                 type: 'pending',
+                kind: 'property',
                 changeType,
                 controlId: selectorId,
                 propertyName: command.getProperty('propertyName') as string,
@@ -352,6 +376,7 @@ export class ChangeService {
         } else {
             result = {
                 type: 'pending',
+                kind: 'unknown',
                 controlId: selectorId,
                 changeType,
                 isActive: index >= inactiveCommandCount,
@@ -402,12 +427,28 @@ export class ChangeService {
     }
 
     /**
+     * Get command selector id.
+     *
+     * @param command to be executed for creating change
+     * @returns command selector id or undefined
+     */
+    private getCommandSelectorId(command: FlexCommand): string | undefined {
+        return this.retryOperations([
+            () => command.getSelector().id,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            () => command.getElement().getProperty('persistencyKey'),
+            () => command.getElement().getId(),
+            () => command.getParent()?.getElement().getId()
+        ]) as string | undefined;
+    }
+
+    /**
      * Get element id by change.
      *
      * @param change to be executed for creating change
      * @returns element id or empty string
      */
-    private async getControlIdByChange(change: FlexChange): Promise<string> {
+    private async getControlIdByChange(change: FlexChange<ChangeContent>): Promise<string> {
         const appComponent = this.options.rta.getRootControlInstance();
         const selector = change.getSelector();
         const changeType = change.getChangeType();
@@ -465,13 +506,13 @@ export class ChangeService {
      * @param change change object
      * @returns FlexChange
      */
-    private async getFlexObject(change: object): Promise<FlexChange> {
+    private async getFlexObject(change: object): Promise<FlexChange<ChangeContent>> {
         if (isLowerThanMinimalUi5Version(await getUi5Version(), { major: 1, minor: 109 })) {
             const Change = (await import('sap/ui/fl/Change')).default;
             return new Change(change);
         }
 
         const FlexObjectFactory = (await import('sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory')).default;
-        return FlexObjectFactory.createFromFileContent(change) as FlexChange;
+        return FlexObjectFactory.createFromFileContent(change) as FlexChange<ChangeContent>;
     }
 }

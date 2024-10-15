@@ -1,5 +1,77 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.14
+
+### Patch Changes
+
+-   e3c3927: fix: no longer load sap.ushell.Container syncronously
+
+## 0.11.13
+
+### Patch Changes
+
+-   fd215c2: Fixed a bug - Add Custom Page Action is not shown on the Object Page in some cases
+
+## 0.11.12
+
+### Patch Changes
+
+-   7479bd3: fix: add page and table quick actions v2 app
+
+## 0.11.11
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
+## 0.11.10
+
+### Patch Changes
+
+-   c1462a9: fix: check if the flexbox is in objectpage and in Dyanmic header.
+
+## 0.11.9
+
+### Patch Changes
+
+-   7579b99: UI improvements and bug fix in the Adaptation Editor
+
+## 0.11.8
+
+### Patch Changes
+
+-   595bdea: feat: enhance "add-header-field" quick action with the template
+
+## 0.11.7
+
+### Patch Changes
+
+-   b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
+
+## 0.11.6
+
+### Patch Changes
+
+-   8f442a6: Usability improvements for Quick Actions that add fragments
+
+## 0.11.5
+
+### Patch Changes
+
+-   1c20352: Added missing notification when manifest change is created
+
+## 0.11.4
+
+### Patch Changes
+
+-   2fd82b1: Object Page Add Custom Section quick action support
+
+## 0.11.3
+
+### Patch Changes
+
+-   09f91c3: Fix changing index in Add Fragment dialog
+
 ## 0.11.2
 
 ### Patch Changes

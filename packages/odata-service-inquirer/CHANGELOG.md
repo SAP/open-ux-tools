@@ -1,5 +1,72 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.47
+
+### Patch Changes
+
+-   Updated dependencies [64e037d]
+    -   @sap-ux/project-access@1.28.1
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/telemetry@0.5.35
+
+## 0.5.46
+
+### Patch Changes
+
+-   Updated dependencies [15e6959]
+    -   @sap-ux/project-access@1.28.0
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/telemetry@0.5.34
+
+## 0.5.45
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/telemetry@0.5.33
+
+## 0.5.44
+
+### Patch Changes
+
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/store@0.9.2
+    -   @sap-ux/telemetry@0.5.32
+
+## 0.5.43
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/telemetry@0.5.31
+
+## 0.5.42
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.27.4
+-   @sap-ux/telemetry@0.5.30
+-   @sap-ux/axios-extension@1.16.6
+
+## 0.5.41
+
+### Patch Changes
+
+-   b4b3ebe: Fix: correctly escapes ' & '
+
+## 0.5.40
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/telemetry@0.5.29
+
 ## 0.5.39
 
 ### Patch Changes

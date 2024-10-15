@@ -1,9 +1,61 @@
 import type { Editor } from 'mem-fs-editor';
-import { TemplateFileName } from '../types';
 import type { AddXMLChange, CommonChangeProperties, CodeExtChange } from '../types';
 import { join } from 'path';
 import { DirName } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
+import { render } from 'ejs';
+import { randomBytes } from 'crypto';
+
+const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
+const CUSTOM_ACTION = 'CUSTOM_ACTION';
+const OBJECT_PAGE_HEADER_FIELD = 'OBJECT_PAGE_HEADER_FIELD';
+
+interface FragmentTemplateConfig<T = { [key: string]: any }> {
+    /**
+     * Relative path to ../../templates/rta, includes template file name
+     */
+    path: string;
+    getData: () => T;
+}
+
+const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
+    [OBJECT_PAGE_CUSTOM_SECTION]: {
+        path: 'common/op-custom-section.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    objectPageSection: `op-section-${uuid}`,
+                    objectPageSubSection: `op-subsection-${uuid}`,
+                    hBox: `hbox-${uuid}`
+                }
+            };
+        }
+    },
+    [CUSTOM_ACTION]: {
+        path: 'common/custom-action.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    toolbarActionButton: `btn-${uuid}`
+                }
+            };
+        }
+    },
+    [OBJECT_PAGE_HEADER_FIELD]: {
+        path: 'common/header-field.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    vBoxContainer: `vBox-${uuid}`,
+                    label: `label-${uuid}`
+                }
+            };
+        }
+    }
+};
 
 /**
  * A mapping object that defines how to extract change content data from changes based on their type.
@@ -58,10 +110,19 @@ export function isAddXMLChange(change: CommonChangeProperties): change is AddXML
 export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Editor, logger: Logger): void {
     const { fragmentPath } = change.content;
     const fullPath = join(basePath, DirName.Changes, fragmentPath);
-
+    const templateConfig = fragmentTemplateDefinitions[change.content?.templateName ?? ''];
     try {
-        const fragmentTemplatePath = join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
-        fs.copy(fragmentTemplatePath, fullPath);
+        if (templateConfig) {
+            const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
+            const text = fs.read(fragmentTemplatePath);
+            const template = render(text, templateConfig.getData());
+            fs.write(fullPath, template);
+        } else {
+            // copy default fragment template
+            const templateName = 'fragment.xml'; /* TemplateFileName.Fragment */
+            const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateName);
+            fs.copy(fragmentTemplatePath, fullPath);
+        }
         logger.info(`XML Fragment "${fragmentPath}" was created`);
     } catch (error) {
         logger.error(`Failed to create XML Fragment "${fragmentPath}": ${error}`);

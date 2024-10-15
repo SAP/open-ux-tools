@@ -43,14 +43,14 @@ declare module 'sap/ui/rta/command/FlexCommand' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
     import type Change from 'sap/ui/fl/Change';
 
-    interface FlexCommand extends Omit<BaseCommand, 'getCommands'> {
+    interface FlexCommand<ChangeContentType = any> extends Omit<BaseCommand, 'getCommands'> {
         _oPreparedChange?: {
             _oDefinition: {
                 moduleName: string;
             };
             setModuleName(moduleName: string): void;
         };
-        getPreparedChange(): Change;
+        getPreparedChange(): Change<ChangeContentType>;
         getCommands(): FlexCommand[];
     }
 
@@ -130,7 +130,7 @@ declare module 'sap/ui/rta/command/OutlineService' {
 
 declare module 'sap/ui/fl/FakeLrepConnector' {
     export default class FakeLrepConnector {
-        static fileChangeRequestNotifier?: (fileName: string, kind: 'delete' | 'create', changeType?: string) => void;
+        static fileChangeRequestNotifier?: <T extends object>(fileName: string, kind: 'delete' | 'create', change?: T) => void;
         static enableFakeConnector: () => void;
     }
 }
@@ -167,6 +167,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     };
 
     export type SelectionChangeEvent = Event<SelectionChangeParams>;
+    export type RtaMode = 'adaptation' | 'navigation';
     export interface SelectionChangeParams {
         selection: ElementOverlay[];
     }
@@ -240,14 +241,15 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         } & Component;
         stop: (bSkipSave, bSkipRestart) => Promise<void>;
         attachStop: (handler: (event: Event) => void) => void;
-        setMode: (sNewMode: string) => void;
+        getMode: () => RtaMode;
+        setMode: (mode: RtaMode) => void;
         canUndo: () => boolean;
         canRedo: () => boolean;
         canSave?: () => boolean;
         undo: () => void;
         redo: () => void;
-        save?: () => void;
-        _serializeToLrep: () => void;
+        save?: () => Promise<void>;
+        _serializeToLrep: () => Promise<void>;
     }
 }
 

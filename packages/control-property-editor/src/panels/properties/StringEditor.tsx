@@ -41,7 +41,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
             <IconValueHelp
                 disabled={!isEnabled}
                 icons={icons ?? []}
-                isIcon={isIcon}
+                controlName={controlName}
                 value={value as string}
                 controlId={controlId}
                 propertyName={name}
@@ -50,8 +50,12 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
     };
     const dispatch = useDispatch();
 
-    const handlеChange = (e: React.FocusEvent | React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        if (value?.toString() === e.target.value) {
+    const handlеChange = (
+        e:
+            | React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+            | React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+    ): void => {
+        if (value?.toString() === e.currentTarget.value) {
             return;
         }
         reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
@@ -59,24 +63,36 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
         });
 
         if (type === FLOAT_VALUE_TYPE && !isExpression(val)) {
-            let newValue: string | number = String(e.target.value);
+            let newValue: string | number = String(e.currentTarget.value);
             if (type === FLOAT_VALUE_TYPE && !isExpression(newValue)) {
                 newValue = parseFloat(String(newValue?.trim()));
             }
             setCachedValue(controlId, name, InputType.number, newValue);
-            const action = changeProperty({ controlId, propertyName: name, value: newValue, controlName });
+            const action = changeProperty({
+                changeType: 'propertyBindingChange',
+                controlId,
+                propertyName: name,
+                value: newValue,
+                controlName
+            });
             dispatch(action);
             setValue(newValue);
         } else {
-            const action = changeProperty({ controlId, propertyName: name, value: val, controlName });
+            const action = changeProperty({
+                changeType: 'propertyChange',
+                controlId,
+                propertyName: name,
+                value: val,
+                controlName
+            });
             dispatch(action);
         }
     };
 
     const inputProps: UITextInputProps = {};
-    inputProps.onBlur = (e) => handlеChange(e);
+    inputProps.onBlur = (e): void => handlеChange(e);
 
-    inputProps.onKeyPress = (e) => {
+    inputProps.onKeyUp = (e): void => {
         if (e.key === 'Enter') {
             handlеChange(e);
         }

@@ -31,12 +31,21 @@ declare module 'sap/ui/fl/Change' {
         };
         fileName: string;
     }
-    class Change {
+    export interface AddFragmentChangeContentType {
+        fragmentPath: string;
+        index: number;
+        targetAggregation: string;
+        templateName?: string;
+    }
+
+    class Change<ContentType> {
         constructor(oFile: object): void;
         getDefinition: () => ChangeDefinition;
         getSelector: () => Selector;
         getChangeType: () => string;
         getLayer: () => Layer;
+        getContent: () => ContentType;
+        setContent: (newContent: ContentType) => void;
     }
     const Change: Change;
     export default Change;
@@ -95,7 +104,7 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
         getItem(key: string): unknown;
         getItems(): Promise<unknown[]>;
         fileChangeRequestNotifier:
-            | ((fileName: string, kind: 'create' | 'delete', changeType?: string) => void)
+            | (<T extends object>(fileName: string, kind: 'create' | 'delete', change?: T) => void)
             | undefined;
     }
 

@@ -431,7 +431,7 @@ describe('FE V2 quick actions', () => {
                                 getDomRef: () => ({}),
                                 getParent: () => pageView,
                                 getHeaderContent: () => {
-                                    return [new FlexBox()]
+                                    return [new FlexBox()];
                                 }
                             };
                         }
@@ -463,12 +463,12 @@ describe('FE V2 quick actions', () => {
                             return container;
                         }
                     });
-    
+
                     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                     const registry = new FEV4QuickActionRegistry();
                     const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                     await service.init(sendActionMock, subscribeMock);
-    
+
                     await service.reloadQuickActions({
                         'sap.uxap.ObjectPageLayout': [
                             {
@@ -481,7 +481,7 @@ describe('FE V2 quick actions', () => {
                             } as any
                         ]
                     });
-    
+
                     expect(sendActionMock).toHaveBeenCalledWith(
                         quickActionListChanged([
                             {
@@ -498,20 +498,29 @@ describe('FE V2 quick actions', () => {
                                         id: 'objectPage0-op-add-header-field',
                                         title: 'Add Header Field',
                                         enabled: true
+                                    },
+                                    {
+                                        enabled: true,
+                                        id: 'objectPage0-op-add-custom-section',
+                                        kind: 'simple',
+                                        title: 'Add Custom Section'
                                     }
                                 ]
                             }
                         ])
                     );
-    
+
                     await subscribeMock.mock.calls[0][0](
                         executeQuickAction({ id: 'objectPage0-op-add-header-field', kind: 'simple' })
                     );
                     const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
                         '../../../../src/adp/init-dialogs'
                     );
-    
-                    expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, 'items');
+
+                    expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
+                        aggregation: 'items',
+                        title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
+                    });
                 });
             });
         });

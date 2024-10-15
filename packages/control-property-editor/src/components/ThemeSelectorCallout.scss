@@ -1,18 +1,18 @@
-#theme-light {
+#theme-light-modern {
     border-radius: 50%;
     width: 14px;
     height: 14px;
     background: #ffffff;
 }
 
-#theme-dark {
+#theme-dark-modern {
     border-radius: 50%;
     width: 14px;
     height: 14px;
     background-color: #3c3c3c;
 }
 
-#theme-high-contrast {
+#theme-high-contrast-black {
     border-radius: 50%;
     width: 14px;
     height: 14px;
@@ -46,16 +46,21 @@
     background-color: var(--vscode-progressBar-background);
 }
 
-div#theme-light {
+.theme-child:hover:not(.selected) {
+    background-color: var(--vscode-toolbar-hoverBackground, var(--vscode-menubar-selectionBackground));
+    outline: 1px dashed var(--vscode-contrastActiveBorder);
+}
+
+div#theme-light-modern {
     margin-left: 3px;
     margin-bottom: 3px;
     margin-top: 3px;
 }
-div#theme-dark {
+div#theme-dark-modern {
     margin-left: 3px;
     margin-top: 3px;
 }
-div#theme-high-contrast {
+div#theme-high-contrast-black {
     margin-left: 3px;
     margin-top: 3px;
 }

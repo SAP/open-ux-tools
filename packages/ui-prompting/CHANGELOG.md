@@ -1,5 +1,88 @@
 # @sap-ux/ui-prompting
 
+## 0.2.6
+
+### Patch Changes
+
+-   Updated dependencies [4c6f92c]
+    -   @sap-ux/ui-components@1.18.9
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [b669796]
+    -   @sap-ux/ui-components@1.18.8
+
+## 0.2.4
+
+### Patch Changes
+
+-   Updated dependencies [e65bb7f]
+    -   @sap-ux/ui-components@1.18.7
+
+## 0.2.3
+
+### Patch Changes
+
+-   0b8a374: Do not show the translation input if the translation props are not provided (i.e., no I18N bundle and no translation event handler).
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [64aacf2]
+    -   @sap-ux/ui-components@1.18.6
+
+## 0.2.1
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/ui-components@1.18.5
+
+## 0.2.0
+
+### Minor Changes
+
+-   05b554d: Support translation input
+
+## 0.1.14
+
+### Patch Changes
+
+-   Updated dependencies [195d758]
+    -   @sap-ux/ui-components@1.18.4
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [89ec1c3]
+    -   @sap-ux/ui-components@1.18.3
+
+## 0.1.12
+
+### Patch Changes
+
+-   Updated dependencies [1fdac94]
+    -   @sap-ux/ui-components@1.18.2
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [15c57bc]
+    -   @sap-ux/ui-components@1.18.1
+
+## 0.1.10
+
+### Patch Changes
+
+-   3174ebc: - List/dropdown question - automatically select the option when only one item is available in a dropdown list.
+    -   Updated README.md to remove the mention of `ui-components`.
+
 ## 0.1.9
 
 ### Patch Changes

@@ -1,6 +1,5 @@
 import type { ODataVersion } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { OdataVersion, DatasourceType } from '@sap-ux/odata-service-inquirer';
 
 export enum Arguments {
     FrameworkVersion = '--framework-version',
@@ -21,6 +20,7 @@ export interface FioriOptions {
     backendConfigs?: FioriToolsProxyConfigBackend[];
     urlParameters?: string;
     visible?: boolean;
+    debugOptions?: DebugOptions;
 }
 
 export interface LaunchJSON {
@@ -64,10 +64,6 @@ export interface LaunchConfigInfo {
  * Configuration options for debugging launch configurations.
  */
 export interface DebugOptions {
-    /** Path to the project directory. */
-    projectPath: string;
-    /** Type of the data source used in the project. */
-    datasourceType: DatasourceType;
     /** SAP client parameter for the connection. */
     sapClientParam: string;
     /** FLP application ID. */
@@ -75,19 +71,33 @@ export interface DebugOptions {
     /** Indicates if the FLP sandbox environment is available. */
     flpSandboxAvailable: boolean;
     /** Version of the OData service. */
-    odataVersion?: OdataVersion;
+    odataVersion?: ODataVersion;
     /** Indicates if the project is a Fiori Element. */
     isFioriElement?: boolean;
     /** Intent parameter for the migrator mock. */
     migratorMockIntent?: string;
     /** Indicates if the project is a migrator. */
     isMigrator?: boolean;
+    /**
+     * Determines the HTML file to be used,
+     * and is set to `test/flpSandboxMockServer.html` if the project includes `test/flpSandboxMockServer.html`.
+     * If targetMockHtmlFile is not provided, run time args defaults to use `test/flpSandbox.html` instead.
+     */
+    targetMockHtmlFile?: string;
     /** Indicates if the environment is SAP App Studio. */
     isAppStudio?: boolean;
     /** If true, write to the app only. */
     writeToAppOnly?: boolean;
     /** Reference to the VS Code instance. */
     vscode?: any;
+    /**
+     * Specifies whether start command configurations should be added to the `launch.json` file.
+     *
+     * - When `true`, start command configurations will be included in the `launch.json`.
+     * - When `false` or undefined, start command configurations will not be added.
+     * By default this is set to `true`.
+     */
+    addStartCmd?: boolean;
 }
 
 /**

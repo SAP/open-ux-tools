@@ -65,6 +65,34 @@ describe('helpers', () => {
                 ]
             `);
         });
+
+        it('should return backend target choices (no backend target / default)', async () => {
+            const systemChoices = await getAbapSystemChoices(undefined, undefined, mockTargetSystems);
+            expect(systemChoices).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "name": "Enter Target System URL",
+                    "value": "Url",
+                  },
+                  Object {
+                    "client": "000",
+                    "isDefault": false,
+                    "isS4HC": false,
+                    "name": "target1 [mockUser]",
+                    "scp": false,
+                    "value": "https://mock.url.target1.com",
+                  },
+                  Object {
+                    "client": "001",
+                    "isDefault": false,
+                    "isS4HC": true,
+                    "name": "target2 (S4HC) [mockUser2]",
+                    "scp": false,
+                    "value": "https://mock.url.target2.com",
+                  },
+                ]
+            `);
+        });
     });
 
     describe('updatePromptStateUrl', () => {

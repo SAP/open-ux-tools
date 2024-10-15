@@ -1,9 +1,7 @@
 import Log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
-    startPostMessageCommunication,
     iconsLoaded,
     enableTelemetry,
     appLoaded
@@ -14,13 +12,13 @@ import { OutlineService } from './outline/service';
 import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
-import { logger } from './logger';
 import { getIcons } from './ui5-utils';
 import { WorkspaceConnectorService } from './connector-service';
 import { RtaService } from './rta-service';
 import { getError } from '../utils/error';
 import { QuickActionService } from './quick-actions/quick-action-service';
 import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
+import { CommunicationService } from './communication-service';
 
 export default function init(
     rta: RuntimeAuthoring,
@@ -34,13 +32,12 @@ export default function init(
         enableTelemetry();
     }
 
-    const actionHandlers: ActionHandler[] = [];
     /**
      *
      * @param handler action handler
      */
     function subscribe(handler: ActionHandler): void {
-        actionHandlers.push(handler);
+        CommunicationService.subscribe(handler);
     }
 
     const selectionService = new SelectionService(rta);
@@ -51,9 +48,9 @@ export default function init(
     const outlineService = new OutlineService(rta, changesService);
     const quickActionService = new QuickActionService(rta, outlineService, registries);
     const services: Service[] = [
+        connectorService,
         selectionService,
         changesService,
-        connectorService,
         outlineService,
         rtaService,
         quickActionService
@@ -61,30 +58,17 @@ export default function init(
 
     try {
         loadDefaultLibraries();
-        const { sendAction } = startPostMessageCommunication<ExternalAction>(
-            window.parent,
-            async function onAction(action) {
-                for (const handler of actionHandlers) {
-                    try {
-                        await handler(action);
-                    } catch (error) {
-                        Log.error('Handler Failed: ', getError(error));
-                    }
-                }
-            },
-            logger
-        );
 
         for (const service of services) {
             service
-                .init(sendAction, subscribe)
-                ?.catch((reason) => Log.error('Service Initalization Failed: ', getError(reason)));
+                .init(CommunicationService.sendAction, subscribe)
+                ?.catch((reason) => Log.error('Service Initialization Failed: ', getError(reason)));
         }
 
         const icons = getIcons();
 
-        sendAction(iconsLoaded(icons));
-        sendAction(appLoaded());
+        CommunicationService.sendAction(iconsLoaded(icons));
+        CommunicationService.sendAction(appLoaded());
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', getError(error));
     }
