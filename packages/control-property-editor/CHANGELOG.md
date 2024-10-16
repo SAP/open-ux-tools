@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.19
+
+### Patch Changes
+
+-   0135cea: Update filter bars.
+
 ## 0.5.18
 
 ### Patch Changes
