@@ -1,12 +1,7 @@
-import { isFeatureEnabled, isInternalFeaturesSettingEnabled, FeatureToggleAccess } from '../src';
+import { isFeatureEnabled, isInternalFeaturesSettingEnabled } from '../src';
 
 describe('Feature Toggle Tests - ENV', () => {
     const originalEnv = { ...process.env };
-    const originalVSCode = FeatureToggleAccess.vscode;
-
-    beforeAll(() => {
-        Object.defineProperty(FeatureToggleAccess, 'vscode', { value: undefined });
-    });
 
     beforeEach(() => {
         jest.resetModules();
@@ -15,10 +10,6 @@ describe('Feature Toggle Tests - ENV', () => {
 
     afterEach(() => {
         process.env = originalEnv;
-    });
-
-    afterAll(() => {
-        Object.defineProperty(FeatureToggleAccess, 'vscode', { value: originalVSCode });
     });
 
     test('Feature Toggle Tests - getFeatureToggle - enabled', () => {
@@ -37,8 +28,9 @@ describe('Feature Toggle Tests - ENV', () => {
         const isInternal = isInternalFeaturesSettingEnabled();
         expect(isInternal).toBeTruthy();
     });
-    test('Feature Toggle Tests - getAllFeatureToggles', () => {
+    test('Feature Toggle Tests - getAllFeatureToggles', async () => {
         process.env.TOOLSUITE_FEATURES = 'dummy.testToggle,otherToggle';
+        const { FeatureToggleAccess } = await import('../src');
         const featureToggles = FeatureToggleAccess.getAllFeatureToggles();
         expect(featureToggles).toStrictEqual([
             {
