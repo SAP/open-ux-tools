@@ -1,5 +1,23 @@
 # @sap-ux/control-property-editor
 
+## 0.5.18
+
+### Patch Changes
+
+-   0acf383: Added tooltip for value of control id and type and removed controlid popup
+
+## 1.0.0
+
+### Major Changes
+
+-   efea4c1: Added tooltip for value of control id and type and removed controlid popup
+
+## 0.5.17
+
+### Patch Changes
+
+-   e65bb7f: Update popup styling and add more space between labels and icons
+
 ## 0.5.16
 
 ### Patch Changes

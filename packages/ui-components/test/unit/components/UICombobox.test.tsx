@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
-import type { UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
+import type { UIComboBoxOption, UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
 import { UIComboBox, UIComboBoxLoaderType } from '../../../src/components/UIComboBox';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
@@ -830,5 +830,47 @@ describe('<UIComboBox />', () => {
             expect(wrapper.find('.ms-Callout UILoader').length).toEqual(expectLoaderInMenu ? 1 : 0);
             expect(wrapper.find('.ms-ComboBox UILoader').length).toEqual(expectLoaderInInput ? 1 : 0);
         });
+    });
+
+    it('Custom renderers for "onRenderOption"', () => {
+        wrapper.setProps({
+            highlight: true,
+            onRenderOption: (
+                props?: UIComboBoxOption,
+                defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
+            ) => {
+                return <div className="custom-render-option">{defaultRender?.(props)}</div>;
+            }
+        });
+        openDropdown();
+        expect(wrapper.find('.custom-render-option').length).toBeGreaterThan(0);
+        expect(wrapper.find(highlightItemSelector).length).toBeGreaterThan(0);
+    });
+
+    it('Custom renderers for "onRenderItem"', () => {
+        wrapper.setProps({
+            options: JSON.parse(JSON.stringify(originalData)),
+            highlight: true,
+            selectedKey: 'AR',
+            onRenderItem: (
+                props?: UIComboBoxOption,
+                defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
+            ) => {
+                return <div className="custom-render-item">{defaultRender?.(props)}</div>;
+            }
+        });
+        openDropdown();
+        expect(wrapper.find('.custom-render-item').length).toBeGreaterThan(0);
+        expect(wrapper.find('.ts-ComboBox--selected').length).toBeGreaterThan(0);
+    });
+
+    it('Test "calloutProps"', () => {
+        wrapper.setProps({
+            calloutProps: {
+                className: 'dummy'
+            }
+        });
+        openDropdown();
+        expect(wrapper.find('div.dummy').length).toEqual(1);
     });
 });
