@@ -55,7 +55,7 @@
     },
     "devDependencies": {
         "@types/diff": "5.0.9",
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "8.2.10",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4",
