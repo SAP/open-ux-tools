@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.28.2
+
+### Patch Changes
+
+-   eb38e5b: refactor: Update variable declarations in getCapModelAndServices function
+
 ## 1.28.1
 
 ### Patch Changes
