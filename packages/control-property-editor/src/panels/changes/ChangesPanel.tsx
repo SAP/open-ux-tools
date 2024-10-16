@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Text, Icon } from '@fluentui/react';
+import { Icon } from '@fluentui/react';
 import { UISearchBox } from '@sap-ux/ui-components';
 
 import type { ChangesSlice } from '../../slice';
