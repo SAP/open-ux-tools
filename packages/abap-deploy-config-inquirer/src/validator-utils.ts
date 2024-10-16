@@ -44,16 +44,6 @@ export function isValidClient(client: string): boolean {
 }
 
 /**
- * Returns true if the input does not exist, or if it exists but it is invalid.
- *
- * @param client - input string
- * @returns boolean
- */
-export function clientDoesNotExistOrInvalid(client?: string): boolean {
-    return Boolean(!client || (client && !isValidClient(client)));
-}
-
-/**
  * Returns the list of packages for the given input.
  *
  * @param input - input string
