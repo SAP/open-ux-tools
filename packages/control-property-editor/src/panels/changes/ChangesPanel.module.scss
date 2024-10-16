@@ -23,3 +23,25 @@
     margin-left: 15px;
     margin-top: 5px;
 }
+
+.noChangesFound {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+    color: var(--vscode-foreground);
+}
+
+.modifyChanges {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: center;
+    color: var(--vscode-foreground);
+}
+
+.historyGlockIcon {
+    text-align: center;
+}
