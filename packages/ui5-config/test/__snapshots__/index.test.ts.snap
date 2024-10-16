@@ -44,6 +44,13 @@ exports[`UI5Config add/find/update/removeCustomMiddleware updateMiddleware exist
     - name: custom-middleware
       afterMiddleware: ~newMiddleware
       configuration:
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: http://ui5.example
+        version: 1.95.1
+        debug: true
         newValue:
           should: overwrite existing
 "
@@ -149,7 +156,45 @@ exports[`UI5Config addAbapDeployTask use open source task 1`] = `
 "
 `;
 
-exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out backend first and then call add backend 1`] = `
+exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy with backend first and then call add backend for existing backend 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+"
+`;
+
+exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy with backend first and then call add backend for unexisting backend 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://different.host:8080
+            path: /~testpath~
+          - url: http://localhost:8080
+            path: /~testpath~
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+"
+`;
+
+exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without backend first and then call add backend 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -310,56 +355,6 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but all 
 "
 `;
 
-exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
-"server:
-  customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations: []
-"
-`;
-
-exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1`] = `
-"server:
-  customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotations.xml
-            urlPath: annotations.xml
-"
-`;
-
-exports[`UI5Config addMockServerMiddleware add without path 1`] = `
-"server:
-  customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: ''
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations: []
-"
-`;
-
 exports[`UI5Config addServeStaticConfig add with multiple paths (existing config) 1`] = `
 "server:
   customMiddleware:
@@ -420,7 +415,7 @@ exports[`UI5Config addServeStaticConfig update serve static config 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-servestatic
-      beforeMiddleware: fiori-tools-proxy
+      afterMiddleware: compression
       configuration:
         paths:
           - path: /resources/targetapp
@@ -433,6 +428,7 @@ exports[`UI5Config addServeStaticConfig update serve static config 1`] = `
           - path: /~other
             src: /~otherSrc
             fallthrough: false
+      beforeMiddleware: fiori-tools-proxy
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -514,6 +510,131 @@ exports[`UI5Config addUi5ToFioriToolsProxydMiddleware add ui5 config to empty to
               - /~customResources
               - /~other
             url: http://~url
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware add add with given path 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware add add with path and annotationsConfig 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/annotations/annotations.xml
+            urlPath: annotations.xml
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware add add without path 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: ''
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware update update with given path (existing services) 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~different-testpath~
+            metadataPath: different-metadataPath
+            generateMockData: true
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware update update with given path (no existing services) 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware update update with given path and annotationsConfig (existing services) 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~different-testpath~
+            metadataPath: different-metadataPath
+            generateMockData: true
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/annotations/annotations.xml
+            urlPath: annotations.xml
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware update update without path (existing services) 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~different-testpath~
+            metadataPath: different-metadataPath
+            generateMockData: true
+          - urlPath: ''
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 "
 `;
 

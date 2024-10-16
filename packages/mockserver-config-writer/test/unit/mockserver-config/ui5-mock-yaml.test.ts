@@ -122,11 +122,11 @@ describe('Test enhanceYaml()', () => {
 
     test(`Should throw error in case new added middleware can't be found by name 'sap-fe-mockserver'`, async () => {
         jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
-            addMockServerMiddleware: jest.fn(),
+            enhanceMockServerMiddleware: jest.fn(),
             findCustomMiddleware: () => undefined
         } as unknown as UI5Config);
         const fs = getFsWithUi5MockYaml('{}');
-        await expect(enhanceYaml(fs, basePath, webappPath)).rejects.toThrow('mockserver');
+        await expect(enhanceYaml(fs, basePath, webappPath, undefined, true)).rejects.toThrow('mockserver');
     });
 
     function getFs(files: { [path: string]: string }): Editor {
@@ -149,12 +149,12 @@ server:
   - name: sap-fe-mockserver
     beforeMiddleware: fiori-tools-proxy
     configuration:
-      service:
-        urlBasePath: /some/previous/service/uri
-        name: ''
-        metadataXmlPath: ./webapp/localService/metadata.xml
-        mockdataRootPath: ./webapp/localService/data
-        generateMockData: true
+      services:
+        -  urlBasePath: /some/previous/service/uri
+           name: ''
+           metadataXmlPath: ./webapp/localService/metadata.xml
+           mockdataRootPath: ./webapp/localService/data
+           generateMockData: true
   - name: middleware-after`,
             [manifestJsonPath]: manifestContent
         });
