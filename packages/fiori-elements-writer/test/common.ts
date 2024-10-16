@@ -166,7 +166,7 @@ export const projectChecks = async (
     debugFull = false
 ): Promise<void> => {
     if (debugFull && (config.appOptions?.typescript ?? config.appOptions?.eslint)) {
-        // Do additonal checks on generated projects
+        // Do additional checks on generated projects
         const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
         let npmResult;
         try {
@@ -192,6 +192,10 @@ export const projectChecks = async (
                 console.log('stdout:', npmResult.stdout);
                 console.log('stderr:', npmResult.stderr);
             }
+            // Check UI5 Linter
+            npmResult = await exec(`npx @ui5/linter`, { cwd: rootPath });
+            console.log('stdout:', npmResult.stdout);
+            console.log('stderr:', npmResult.stderr);
         } catch (error) {
             console.log('stdout:', error?.stdout);
             console.log('stderr:', error?.stderr);
