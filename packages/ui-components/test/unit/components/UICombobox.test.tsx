@@ -863,4 +863,14 @@ describe('<UIComboBox />', () => {
         expect(wrapper.find('.custom-render-item').length).toBeGreaterThan(0);
         expect(wrapper.find('.ts-ComboBox--selected').length).toBeGreaterThan(0);
     });
+
+    it('Test "calloutProps"', () => {
+        wrapper.setProps({
+            calloutProps: {
+                className: 'dummy'
+            }
+        });
+        openDropdown();
+        expect(wrapper.find('div.dummy').length).toEqual(1);
+    });
 });

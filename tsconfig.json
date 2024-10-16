@@ -63,6 +63,9 @@
       "path": "packages/cds-odata-annotation-converter"
     },
     {
+      "path": "packages/cf-deploy-config-inquirer"
+    },
+    {
       "path": "packages/cf-deploy-config-writer"
     },
     {
