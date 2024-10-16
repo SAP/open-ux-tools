@@ -1,10 +1,26 @@
-import { isFeatureEnabled, isInternalFeaturesSettingEnabled } from '../src';
+import { isFeatureEnabled, isInternalFeaturesSettingEnabled, FeatureToggleAccess } from '../src';
 
 describe('Feature Toggle Tests - ENV', () => {
+    const originalEnv = { ...process.env };
+    const originalVSCode = FeatureToggleAccess.vscode;
+
+    beforeAll(() => {
+        Object.defineProperty(FeatureToggleAccess, 'vscode', { value: undefined });
+    });
+
     beforeEach(() => {
         jest.resetModules();
         jest.doMock('vscode', () => undefined);
     });
+
+    afterEach(() => {
+        process.env = originalEnv;
+    });
+
+    afterAll(() => {
+        Object.defineProperty(FeatureToggleAccess, 'vscode', { value: originalVSCode });
+    });
+
     test('Feature Toggle Tests - getFeatureToggle - enabled', () => {
         process.env.TOOLSUITE_FEATURES = 'dummy.testToggle,otherToggle';
         const featureToggle = isFeatureEnabled(`otherToggle`);
@@ -20,6 +36,20 @@ describe('Feature Toggle Tests - ENV', () => {
         process.env.TOOLSUITE_INTERNAL = 'true';
         const isInternal = isInternalFeaturesSettingEnabled();
         expect(isInternal).toBeTruthy();
+    });
+    test('Feature Toggle Tests - getAllFeatureToggles', () => {
+        process.env.TOOLSUITE_FEATURES = 'dummy.testToggle,otherToggle';
+        const featureToggles = FeatureToggleAccess.getAllFeatureToggles();
+        expect(featureToggles).toStrictEqual([
+            {
+                feature: 'dummy.testToggle',
+                isEnabled: true
+            },
+            {
+                feature: 'otherToggle',
+                isEnabled: true
+            }
+        ]);
     });
 });
 
