@@ -2074,6 +2074,9 @@ importers:
       '@sap-ux/control-property-editor-sources':
         specifier: workspace:@sap-ux/control-property-editor@*
         version: link:../control-property-editor
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
