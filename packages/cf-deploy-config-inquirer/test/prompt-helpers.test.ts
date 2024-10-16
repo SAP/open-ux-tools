@@ -7,7 +7,7 @@ import {
 } from '@sap-ux/btp-utils';
 import { getCfSystemChoices, fetchBTPDestinations } from '../src/prompts/prompt-helpers';
 import type { CfSystemChoice } from '../src/types';
-import type { Logger } from '@sap-ux/logger';
+import LoggerHelper from '../src/logger-helper';
 import { t } from '../src/i18n';
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -17,10 +17,11 @@ jest.mock('@sap-ux/btp-utils', () => ({
     isAbapEnvironmentOnBtp: jest.fn()
 }));
 
-const mockLog = {
-    info: jest.fn(),
-    warn: jest.fn()
-} as unknown as Logger;
+jest.mock('../src/logger-helper', () => ({
+    logger: {
+        warn: jest.fn()
+    }
+}));
 
 describe('Utility Functions', () => {
     const mockDestinations: Destinations = {
@@ -93,7 +94,7 @@ describe('Utility Functions', () => {
             (isAppStudio as jest.Mock).mockReturnValue(true);
             (listDestinations as jest.Mock).mockResolvedValue(mockDestinations);
 
-            const result = await fetchBTPDestinations(mockLog);
+            const result = await fetchBTPDestinations();
 
             expect(result).toEqual(mockDestinations);
             expect(isAppStudio).toHaveBeenCalled();
@@ -103,12 +104,12 @@ describe('Utility Functions', () => {
         it('should return undefined if not running in App Studio', async () => {
             (isAppStudio as jest.Mock).mockReturnValue(false);
 
-            const result = await fetchBTPDestinations(mockLog);
+            const result = await fetchBTPDestinations();
 
             expect(result).toBeUndefined();
             expect(isAppStudio).toHaveBeenCalled();
             expect(listDestinations).not.toHaveBeenCalled();
-            expect(mockLog.warn).toHaveBeenCalledWith(t('warning.btpDestinationListWarning'));
+            expect(LoggerHelper.logger.warn).toHaveBeenCalledWith(t('warning.btpDestinationListWarning'));
         });
     });
 });

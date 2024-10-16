@@ -33,14 +33,12 @@ import type { Logger } from '@sap-ux/logger';
  * @param {boolean} [destinationOptions.useAutocomplete] - A flag to indicate whether
  *        to use an autocomplete feature for the destination name input.
  * @param {boolean} [destinationOptions.addBTPDestinationList] - A flag to indicate whether to include BTP destination choices.
- * @param {Logger} [log] - The logger instance to use for logging.
  * @returns {Promise<CfDeployConfigQuestions>} A promise that resolves to the configuration
  *          of the prompt, which includes the question and any related options for rendering
  *          the prompt in a user interface.
  */
 async function getDestinationNamePrompt(
-    destinationOptions: DestinationNamePromptOptions,
-    log?: Logger
+    destinationOptions: DestinationNamePromptOptions
 ): Promise<CfDeployConfigQuestions> {
     const {
         hint = false,
@@ -51,7 +49,7 @@ async function getDestinationNamePrompt(
     } = destinationOptions;
 
     const isBAS = isAppStudio();
-    const destinations = addBTPDestinationList ? await fetchBTPDestinations(log) : {};
+    const destinations = addBTPDestinationList ? await fetchBTPDestinations() : {};
     const destinationList: CfSystemChoice[] = [...additionalChoiceList, ...(await getCfSystemChoices(destinations))];
     // If BAS is used or additional choices are provided, the prompt should be a list
     // If VsCode is used and additional choices are not provided, the prompt should be an input field
@@ -132,7 +130,7 @@ export async function getQuestions(
 
     const questions: CfDeployConfigQuestions[] = [];
     // Collect questions into an array
-    questions.push(await getDestinationNamePrompt(destinationOptions, log));
+    questions.push(await getDestinationNamePrompt(destinationOptions));
 
     if (addManagedAppRouter) {
         log?.info(t('info.addManagedAppRouter'));

@@ -9,7 +9,7 @@ import { promptNames } from './types';
 import { initI18nCfDeployConfigInquirer } from './i18n';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import autocomplete from 'inquirer-autocomplete-prompt';
-import { ToolsLogger, type Logger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 import LoggerHelper from './logger-helper';
 
 /**
@@ -25,7 +25,9 @@ async function getPrompts(
     promptOptions: CfDeployConfigPromptOptions,
     logger?: Logger
 ): Promise<CfDeployConfigQuestions[]> {
-    LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
+    if (logger) {
+        LoggerHelper.logger = logger;
+    }
     await initI18nCfDeployConfigInquirer();
     return getQuestions(promptOptions, LoggerHelper.logger);
 }
