@@ -7,6 +7,7 @@ import { PromptState, originToRelative, parseOdataVersion } from '../../../utils
 import { ConnectionValidator } from '../../connectionValidator';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
+// TODO: Much of this code is replicated in service-selection/questions.ts. Consider refactoring to a shared location.
 
 /**
  * Validates that a service specified by the service url is accessible, has the required version and returns valid metadata.
@@ -30,6 +31,7 @@ export async function validateService(
         if (ignoreCertError === true) {
             ConnectionValidator.setGlobalRejectUnauthorized(!ignoreCertError);
         }
+        // todo: Replace with `validateODataVersion`
         const metadata = await odataService.metadata();
         const serviceOdataVersion = parseOdataVersion(metadata);
 

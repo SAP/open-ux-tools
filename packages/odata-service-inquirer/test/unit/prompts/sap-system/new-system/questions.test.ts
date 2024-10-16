@@ -82,7 +82,8 @@ describe('Test new system prompt', () => {
             serviceKeys: undefined,
             url: 'http://abap.on.prem:1234',
             userDisplayName: undefined,
-            username: 'user01'
+            username: 'user01',
+            newOrUpdated: true
         });
     });
 
@@ -128,7 +129,8 @@ describe('Test new system prompt', () => {
             serviceKeys: undefined,
             url: 'http://mock.abap.on.prem:4300',
             userDisplayName: undefined,
-            username: 'testUser'
+            username: 'testUser',
+            newOrUpdated: true
         });
     });
 });

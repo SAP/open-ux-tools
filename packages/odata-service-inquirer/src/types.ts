@@ -5,6 +5,7 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { ListChoiceOptions } from 'inquirer';
 import type { BackendSystem } from '@sap-ux/store';
+import type { Destination } from '@sap-ux/btp-utils';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -89,8 +90,14 @@ export interface OdataServiceAnswers {
 
         /**
          * The persistable backend system representation of the connected service provider
+         * `newOrUpdated` is set to true if the system was newly created or updated during the connection validation process and should be considered for storage.
          */
-        backendSystem?: BackendSystem;
+        backendSystem?: BackendSystem & { newOrUpdated?: boolean };
+
+        /**
+         * The destination information for the connected system
+         */
+        destination?: Destination;
     };
 }
 
@@ -129,7 +136,11 @@ export enum promptNames {
     /**
      * Newly created systems can be named for storage
      */
-    userSystemName = 'userSystemName'
+    userSystemName = 'userSystemName',
+    /**
+     * System selection
+     */
+    systemSelection = 'systemSelection'
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
@@ -209,6 +220,44 @@ export type DatasourceTypePromptOptions = {
     choices?: DatasourceType[];
 };
 
+export type DestinationFilters = {
+    /**
+     * 'WebIDEUsage' property is defined and includes the value 'odata_abap' and does not includes the value 'odata_gen'
+     */
+    odata_abap: boolean;
+    /**
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'.
+     */
+    odata_generic: boolean;
+    /**
+     * 'WebIDEAdditionalData' property is defined and includes the value 'full_url' and
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'.
+     */
+    full_service_url: boolean;
+    /**
+     * 'WebIDEAdditionalData' property is defined and does not include the value 'full_url' and
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'.
+     */
+    partial_service_url: boolean;
+    /**
+     * todo: Add implementation
+     * Abap cloud destination
+     */
+    abap_cloud: boolean;
+    /**
+     * Abap on-premise destination
+     */
+    abap_on_premise: boolean;
+};
+
+export type SystemSelectionPromptOptions = {
+    /**
+     * Set the specific filter option(s) to true to include only the destinatons that have matching configuration attributes.
+     * If no filter is set, all destinations will be included. If multiple filters are set, the destination will be included if it matches any of the filters.
+     */
+    destinationFilters: DestinationFilters;
+};
+
 export type MetadataPromptOptions = {
     /**
      * Used to validate the metadata file contains the required odata version edmx
@@ -255,7 +304,8 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
     Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
     Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
-    Record<promptNames.userSystemName, SystemNamePromptOptions>;
+    Record<promptNames.userSystemName, SystemNamePromptOptions> &
+    Record<promptNames.systemSelection, SystemSelectionPromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 

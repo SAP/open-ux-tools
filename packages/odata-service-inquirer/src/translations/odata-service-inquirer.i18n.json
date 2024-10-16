@@ -81,7 +81,7 @@
             "message": "Password"
         },
         "systemService": {
-            "message": "Service name",
+            "message": "Service",
             "breadcrumb": "Service",
             "noServicesWarning": "No services available for the selected system, see logs for further details."
         },
@@ -99,7 +99,9 @@
             "emptySystemNameWarning": "System name cannot be empty."
         },
         "systemSelection": {
-            "newSystemChoiceLabel": "New system"
+            "newSystemChoiceLabel": "New system",
+            "message": "Select a system configuration",
+            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
@@ -116,6 +118,11 @@
         "cloudFoundryAbapSystem": {
             "message": "ABAP environment",
             "hint": "Enter the name of the Cloud Foundry service that contains the ABAP Environment instance"
+        },
+        "destinationServicePath": {
+            "message": "Service path",
+            "hint": "Enter the path to the odata service, relative to the selected destination URL",
+            "invalidServicePathWarning": "Please enter a valid service path"
         }
     },
     "errors": {
@@ -126,11 +133,12 @@
         "servicesUnavailable": "An error occurred retrieving service(s) for SAP System.",
         "certificateError": "A certificate error has occurred: {{- error}}",
         "urlCertValidationError": "The system URL is using {{certErrorReason}} security certificate.",
-        "authenticationFailed": "Authentication incorrect {{error}}",
+        "authenticationFailed": "Authentication incorrect. {{error}}",
         "authenticationTimeout": "Authorization was not verified within the allowed time. Please ensure you have authenticated using the associated browser window.",
         "invalidUrl": "Not a valid URL",
         "connectionError": "A connection error occurred, please ensure the target host is available on the network: {{- error}}",
         "timeout": "A connection timeout error occurred: {{- error}}",
+        "badRequest": "The server returned an error: bad request, please check the URL and try again.",
         "serviceUnavailable": "Selected service is returning an error.",
         "catalogServiceNotActive": "Catalog service is not active",
         "internalServerError": "The URL you have provided cannot be accessed and is returning: '{{- error}}'. Please ensure that the URL is accessible externally.",
@@ -145,7 +153,7 @@
         "abapEnvsUnavailable": "ABAP environments unavailable",
         "noSuchHostError": "No such host is known",
         "odataServiceVersionMismatch": "The template you have chosen supports V{{requiredVersion}} OData services only. The provided version is V{{serviceVersion}}.",
-        "destinationAuthError": "The selected system is returning an authentication error. Please verify the destination configuration",
+        "destinationAuthError": "The selected system is returning an authentication error. System name: {{systemName}}, error: {{- error}}",
         "systemOrServiceUrlNotFound": "Please verify the url: {{- url}}, target system configuration and network connectivity",
         "urlRedirect": "The service URL is redirecting",
         "certValidationRequired": "Certificate validation is required to continue.",
@@ -157,7 +165,9 @@
         "noAbapEnvsInCFSpace": "No ABAP environments in CF space found.",
         "abapEnvsCFDiscoveryFailed": "Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry (see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login).",
         "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed.",
-        "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}. {{error}}"
+        "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}. {{error}}",
+        "storedSystemConnectionError": "An error occurred while validating the stored system connection info. System name: {{systemName}}, error: {{- error}}",
+        "noCatalogOrServiceAvailable": "No active system or odata service endpoint connection available to retrieve service(s)."
     },
     "texts": {
         "anExpiredCert": "an expired",
@@ -166,7 +176,9 @@
         "anUntrustedRootCert": "an untrusted root",
         "suggestedSystemNameClient": ", client {{client}}",
         "seeLogForDetails": "See log for more details.",
-        "forUserName": "(for user [{{username}}])"
+        "forUserName": "(for user [{{username}}])",
+        "systemTypeBTP": "BTP",
+        "systemTypeS4HC": "S4HC"
     },
     "guidedAnswers": {
         "validationErrorHelpText": "Need help with this error?"

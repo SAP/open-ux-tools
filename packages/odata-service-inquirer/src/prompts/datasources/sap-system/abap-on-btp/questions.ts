@@ -11,10 +11,11 @@ import { PromptState, getDefaultChoiceIndex, getHostEnvironment } from '../../..
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
-import { getSystemServiceQuestion, getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
+import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
 import { newSystemPromptNames } from '../new-system/types';
 import { validateServiceKey } from '../validators';
 import { getABAPInstanceChoices } from './cf-helper';
+import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
@@ -41,10 +42,12 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
  * @param promptOptions The prompt options which control the service selection and system name]
  * @returns The list of questions for the ABAP on BTP system
  */
-export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOptions): Question<AbapOnBtpAnswers>[] {
+export function getAbapOnBTPSystemQuestions(
+    promptOptions?: OdataServicePromptOptions
+): Question<AbapOnBtpAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
-    const questions: Question[] = [];
+    const questions: Question<AbapOnBtpAnswers & ServiceAnswer>[] = [];
     questions.push({
         type: 'list',
         name: abapOnBtpPromptNames.abapOnBtpAuthType,
@@ -117,6 +120,7 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
 
 /**
  * Validate the service info for the ABAP on BTP system. This function will validate the service key file and the connection to the ABAP system.
+ * Updates the prompt state with the connected system.
  *
  * @param abapService the abap service as provided by CF tools
  * @param connectionValidator connection validator instance
