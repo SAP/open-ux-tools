@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.16.87
+
+### Patch Changes
+
+-   93ffe8d: Use feature toggles in the control property editor
+-   Updated dependencies [93ffe8d]
+    -   @sap-ux/feature-toggle@0.2.2
+
 ## 0.16.86
 
 ### Patch Changes
