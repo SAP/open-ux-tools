@@ -363,7 +363,7 @@ export class UI5Config {
         const customMockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver');
         if (!customMockserverMiddleware) {
             // Create a new middleware instance
-            const middleware = getMockServerMiddlewareConfig([], path, annotationsConfig, true);
+            const middleware = getMockServerMiddlewareConfig([], path, annotationsConfig);
             this.document.appendTo({
                 path: 'server.customMiddleware',
                 value: middleware
