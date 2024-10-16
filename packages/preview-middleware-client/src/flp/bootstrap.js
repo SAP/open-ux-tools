@@ -22,33 +22,8 @@ async function ushellBootstrap(fnCallback) {
             src = `${basePath}/resources/sap/ushell/bootstrap/sandbox2.js`;
         }
 
-        // For UI5 version 1.71 and below, we need to remove the asyncHints.requests to load the changes in an Adaptation project.
-        // This logic needs to be executed here to have a reliable check for UI5 version and remove the asyncHints.requests before the sandbox is loaded.
-        // The sandbox shell modifies the `window['sap-ushell-config']`.
         if (majorUi5Version === 1 && minorUi5Version < 72) {
-            const setNestedProperty = (obj) => {
-                if (!obj || typeof obj !== 'object') return;
-
-                const stack = [obj];
-
-                while (stack.length > 0) {
-                    const current = stack.pop();
-
-                    if (current.asyncHints) {
-                        if (current.asyncHints.requests) {
-                            current.asyncHints.requests = [];
-                        }
-                        return;
-                    }
-
-                    for (const key in current) {
-                        if (typeof current[key] === 'object' && current[key] !== null) {
-                            stack.push(current[key]);
-                        }
-                    }
-                }
-            };
-            setNestedProperty(window['sap-ushell-config']['applications']);
+            removeAsyncHintsRequests();
         }
     } catch (error) {
         console.warn('Failed to fetch sap-ui-version.json. Assuming it is a 1.x version.');
@@ -61,6 +36,38 @@ async function ushellBootstrap(fnCallback) {
             window['sap-ui-config']['xx-bootTask'](fnCallback);
         };
         shellBootstrap.setAttribute('src', src);
+    }
+}
+
+/**
+ * For UI5 version 1.71 and below, we need to remove the asyncHints.requests
+ * to load the changes in an Adaptation project.
+ * This logic needs to be executed here to have a reliable check for
+ * UI5 version and remove the asyncHints.requests before the sandbox is loaded.
+ * The sandbox shell modifies the `window['sap-ushell-config']`.
+ */
+function removeAsyncHintsRequests() {
+    const obj = window['sap-ushell-config']['applications'];
+
+    if (!obj || typeof obj !== 'object') return;
+
+    const stack = [obj];
+
+    while (stack.length > 0) {
+        const current = stack.pop();
+
+        if (current.asyncHints) {
+            if (current.asyncHints.requests) {
+                current.asyncHints.requests = [];
+            }
+            return;
+        }
+
+        for (const key in current) {
+            if (typeof current[key] === 'object' && current[key] !== null) {
+                stack.push(current[key]);
+            }
+        }
     }
 }
 
