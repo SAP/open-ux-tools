@@ -2,11 +2,7 @@ import { showUi5AppDeployConfigQuestion } from '../../conditions';
 import { validateAppDescription, validateUi5AbapRepoName } from '../../validators';
 import { PromptState } from '../../prompt-state';
 import { t } from '../../../i18n';
-import {
-    abapDeployConfigInternalPromptNames,
-    type AbapDeployConfigAnswersInternal,
-    type AbapDeployConfigPromptOptions
-} from '../../../types';
+import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../../types';
 import type { InputQuestion, Question } from 'inquirer';
 
 /**
@@ -17,9 +13,9 @@ import type { InputQuestion, Question } from 'inquirer';
  */
 function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (): boolean => showUi5AppDeployConfigQuestion(options.hideUi5AbapRepoPrompt),
+        when: (): boolean => showUi5AppDeployConfigQuestion(),
         type: 'input',
-        name: abapDeployConfigInternalPromptNames.ui5AbapRepo,
+        name: promptNames.ui5AbapRepo,
         message: (): string => {
             return PromptState.transportAnswers.transportConfig?.getApplicationPrefix()
                 ? t('prompts.config.app.ui5AbapRepo.messageMaxLength', {
@@ -33,7 +29,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
             breadcrumb: t('prompts.config.app.ui5AbapRepo.message')
         },
         default: (previousAnswers: AbapDeployConfigAnswersInternal) =>
-            previousAnswers.ui5AbapRepo || options.existingDeployTaskConfig?.name,
+            previousAnswers.ui5AbapRepo || options.ui5AbapRepo?.default,
         validate: (input: string): string | boolean => validateUi5AbapRepoName(input),
         filter: (input: string): string | undefined =>
             !PromptState.isYUI ? input?.trim()?.toUpperCase() : input?.trim()
@@ -48,16 +44,16 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
  */
 function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (): boolean => showUi5AppDeployConfigQuestion(options.hideUi5AbapRepoPrompt),
+        when: (): boolean => showUi5AppDeployConfigQuestion(),
         type: 'input',
-        name: abapDeployConfigInternalPromptNames.description,
+        name: promptNames.description,
         message: t('prompts.config.app.description.message'),
         guiOptions: {
             hint: t('prompts.config.app.description.hint'),
             breadcrumb: true
         },
         default: (previousAnswers: AbapDeployConfigAnswersInternal): string | undefined =>
-            previousAnswers.description || options.existingDeployTaskConfig?.description,
+            previousAnswers.description || options.description?.default,
         filter: (input: string): string | undefined => input?.trim(),
         validate: (input: string): boolean | string => validateAppDescription(input)
     } as InputQuestion<AbapDeployConfigAnswersInternal>;

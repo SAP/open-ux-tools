@@ -1,5 +1,23 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.15
+
+### Patch Changes
+
+-   93ffe8d: Use feature toggles in the control property editor
+
+## 0.11.14
+
+### Patch Changes
+
+-   e3c3927: fix: no longer load sap.ushell.Container syncronously
+
+## 0.11.13
+
+### Patch Changes
+
+-   fd215c2: Fixed a bug - Add Custom Page Action is not shown on the Object Page in some cases
+
 ## 0.11.12
 
 ### Patch Changes

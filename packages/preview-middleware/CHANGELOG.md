@@ -1,5 +1,63 @@
 # @sap-ux/preview-middleware
 
+## 0.16.87
+
+### Patch Changes
+
+-   93ffe8d: Use feature toggles in the control property editor
+-   Updated dependencies [93ffe8d]
+    -   @sap-ux/feature-toggle@0.2.2
+
+## 0.16.86
+
+### Patch Changes
+
+-   Updated dependencies [eb38e5b]
+    -   @sap-ux/project-access@1.28.2
+    -   @sap-ux/adp-tooling@0.12.59
+
+## 0.16.85
+
+### Patch Changes
+
+-   Updated dependencies [64e037d]
+    -   @sap-ux/project-access@1.28.1
+    -   @sap-ux/adp-tooling@0.12.58
+
+## 0.16.84
+
+### Patch Changes
+
+-   Updated dependencies [15e6959]
+    -   @sap-ux/project-access@1.28.0
+    -   @sap-ux/adp-tooling@0.12.57
+
+## 0.16.83
+
+### Patch Changes
+
+-   6cd7e89: version bump to get newest version of preview middleware client
+
+## 0.16.82
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/adp-tooling@0.12.56
+
+## 0.16.81
+
+### Patch Changes
+
+-   fd215c2: Fixed a bug - Add Custom Page Action is not shown on the Object Page in some cases
+
+## 0.16.80
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.55
+
 ## 0.16.79
 
 ### Patch Changes

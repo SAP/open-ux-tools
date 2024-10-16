@@ -1,5 +1,51 @@
 # @sap-ux/environment-check
 
+## 0.17.45
+
+### Patch Changes
+
+-   Updated dependencies [eb38e5b]
+    -   @sap-ux/project-access@1.28.2
+    -   @sap-ux/axios-extension@1.16.6
+
+## 0.17.44
+
+### Patch Changes
+
+-   Updated dependencies [64e037d]
+    -   @sap-ux/project-access@1.28.1
+    -   @sap-ux/axios-extension@1.16.6
+
+## 0.17.43
+
+### Patch Changes
+
+-   Updated dependencies [15e6959]
+    -   @sap-ux/project-access@1.28.0
+    -   @sap-ux/axios-extension@1.16.6
+
+## 0.17.42
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/axios-extension@1.16.6
+
+## 0.17.41
+
+### Patch Changes
+
+-   6d0aef1: add html5 timeout property to report
+
+## 0.17.40
+
+### Patch Changes
+
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/store@0.9.2
+    -   @sap-ux/ui5-config@0.25.0
+
 ## 0.17.39
 
 ### Patch Changes
