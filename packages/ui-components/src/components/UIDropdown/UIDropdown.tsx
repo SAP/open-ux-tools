@@ -313,6 +313,15 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
         return (
             <Dropdown
                 ref={this.dropdownDomRef}
+                onRenderCaretDown={this.onRenderCaretDown}
+                onClick={this.onClick}
+                onChange={this.onChange}
+                onRenderTitle={this.onRenderTitle}
+                // Use default responsiveMode as xxxLarge, which does not enter mobile mode.
+                responsiveMode={ResponsiveMode.xxxLarge}
+                disabled={this.props.readOnly}
+                {...additionalProps}
+                {...this.props}
                 calloutProps={{
                     calloutMaxHeight: 200,
                     styles: this.props.useDropdownAsMenuMinWidth ? this.getCalloutStylesForUseAsMinWidth : undefined,
@@ -324,17 +333,9 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                         this.calloutCollisionTransform,
                         this.props.multiSelect,
                         this.props.calloutCollisionTransformation
-                    )
+                    ),
+                    ...this.props.calloutProps
                 }}
-                onRenderCaretDown={this.onRenderCaretDown}
-                onClick={this.onClick}
-                onChange={this.onChange}
-                onRenderTitle={this.onRenderTitle}
-                // Use default responsiveMode as xxxLarge, which does not enter mobile mode.
-                responsiveMode={ResponsiveMode.xxxLarge}
-                disabled={this.props.readOnly}
-                {...additionalProps}
-                {...this.props}
                 onRenderOption={this.onRenderOption.bind(this)}
                 onRenderItem={this.onRenderItem.bind(this)}
                 styles={dropdownStyles}
