@@ -32,24 +32,46 @@ interface ChangeContent {
     newBinding: string;
 }
 
+interface ManifestChangeContent {
+    page: string;
+    entityPropertyChange: {
+        propertyPath: string;
+        operation: 'UPSERT' | 'DELETE' | 'INSERT' | 'UPDATE';
+        propertyValue: string;
+    };
+}
+
 interface ChangeSelector {
     id: string;
     type: string;
 }
 
-interface Change {
+interface BaseChange {
     fileName: string;
-    controlId: string;
-    propertyName: string;
-    value: string;
     timestamp: string;
-    selector: ChangeSelector;
-    content: ChangeContent;
     creation: string;
-    changeType: string;
+    value: string;
+    selector: ChangeSelector;
 }
 
-type SavedChangesResponse = Record<string, Change>;
+const PROPRTY_CHANGE = 'propertyChange';
+const PROPRTY_BINDING_CHANGE = 'propertyBindingChange';
+const MANIFEST_V4_CHANGE = 'appdescr_fe_changePageConfiguration';
+
+interface Change extends BaseChange {
+    changeType: typeof PROPRTY_CHANGE | typeof PROPRTY_BINDING_CHANGE;
+    controlId: string;
+    propertyName: string;
+    content: ChangeContent;
+}
+
+interface ManifestChange extends BaseChange {
+    changeType: typeof MANIFEST_V4_CHANGE;
+    propertyName: string;
+    content: ManifestChangeContent;
+}
+
+type SavedChangesResponse = Record<string, Change | ManifestChange>;
 
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
 /**
@@ -76,6 +98,17 @@ function assertChange(change: Change): void {
     assertProperties(['fileName', 'selector', 'content', 'creation'], change);
     assertProperties(['id'], change.selector);
     assertProperties(['property'], change.content);
+}
+
+/**
+ * Assert v4 manifest change for its validity. Throws error if no value found in saved changes.
+ *
+ * @param change Change object
+ */
+function assertManifestChange(change: ManifestChange): void {
+    assertProperties(['fileName', 'content', 'creation'], change);
+    assertProperties(['page', 'entityPropertyChange'], change.content);
+    assertProperties(['propertyPath', 'operation', 'propertyValue'], change.content.entityPropertyChange);
 }
 
 /**
@@ -177,30 +210,63 @@ export class ChangeService {
         const changes = (
             Object.keys(savedChanges ?? {})
                 .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {
-                    const change: Change = savedChanges[key];
+                    const change: Change | ManifestChange = savedChanges[key];
                     try {
-                        assertChange(change);
-                        if (
-                            [change.content.newValue, change.content.newBinding].every(
-                                (item) => item === undefined || item === null
-                            )
-                        ) {
-                            throw new Error('Invalid change, missing new value in the change file');
+                        if (change.changeType === 'appdescr_fe_changePageConfiguration') {
+                            assertManifestChange(change);
+                            if (
+                                [
+                                    change.content.page,
+                                    change.content.entityPropertyChange,
+                                    change.content.entityPropertyChange.operation,
+                                    change.content.entityPropertyChange.propertyPath,
+                                    change.content.entityPropertyChange.propertyValue
+                                ].every((item) => item === undefined || item === null)
+                            ) {
+                                throw new Error('Invalid change, missing property path or property value on change file');
+                            }
+                            return {
+                                type: 'saved',
+                                kind: 'property',
+                                fileName: change.fileName,
+                                controlId: change.selector.id,
+                                propertyName: change.content.entityPropertyChange.propertyPath.split('/').pop() ?? '',
+                                value: change.content.entityPropertyChange.propertyValue,
+                                timestamp: new Date(change.creation).getTime(),
+                                controlName: change.selector.type
+                                    ? (change.selector.type.split('.').pop() as string)
+                                    : '',
+                                changeType: change.changeType
+                            };
+                        } else {
+                            assertChange(change);
+                            if (
+                                [change.content.newValue, change.content.newBinding].every(
+                                    (item) => item === undefined || item === null
+                                )
+                            ) {
+                                throw new Error('Invalid change, missing new value in the change file');
+                            }
+                            if (
+                                change.changeType !== 'propertyChange' &&
+                                change.changeType !== 'propertyBindingChange'
+                            ) {
+                                throw new Error('Unknown Change Type');
+                            }
+                            return {
+                                type: 'saved',
+                                kind: 'property',
+                                fileName: change.fileName,
+                                controlId: change.selector.id,
+                                propertyName: change.content.property,
+                                value: change.content.newValue ?? change.content.newBinding,
+                                timestamp: new Date(change.creation).getTime(),
+                                controlName: change.selector.type
+                                    ? (change.selector.type.split('.').pop() as string)
+                                    : '',
+                                changeType: change.changeType
+                            };
                         }
-                        if (change.changeType !== 'propertyChange' && change.changeType !== 'propertyBindingChange') {
-                            throw new Error('Unknown Change Type');
-                        }
-                        return {
-                            type: 'saved',
-                            kind: 'property',
-                            fileName: change.fileName,
-                            controlId: change.selector.id,
-                            propertyName: change.content.property,
-                            value: change.content.newValue ?? change.content.newBinding,
-                            timestamp: new Date(change.creation).getTime(),
-                            controlName: change.selector.type ? (change.selector.type.split('.').pop() as string) : '',
-                            changeType: change.changeType
-                        };
                     } catch (error) {
                         // Gracefully handle change files with invalid content
                         if (change.fileName) {
@@ -209,7 +275,7 @@ export class ChangeService {
                                 kind: 'unknown',
                                 changeType: change.changeType,
                                 fileName: change.fileName,
-                                controlId: change.selector?.id // some changes may not have selector
+                                controlId: change?.selector?.id // some changes may not have selector
                             };
                             if (change.creation) {
                                 unknownChange.timestamp = new Date(change.creation).getTime();
@@ -332,6 +398,9 @@ export class ChangeService {
             case 'propertyBindingChange':
                 value = command.getProperty('newBinding') as string;
                 break;
+            case 'appdescr_fe_changePageConfiguration':
+                value = command.getProperty('parameters').entityPropertyChange.propertyValue as string; //entityPropertyChange.propertyValue  as string;
+                break;
         }
         const { fileName } = command.getPreparedChange().getDefinition();
         if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
@@ -341,6 +410,18 @@ export class ChangeService {
                 changeType,
                 controlId: selectorId,
                 propertyName: command.getProperty('propertyName') as string,
+                isActive: index >= inactiveCommandCount,
+                value,
+                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? '',
+                fileName
+            };
+        } else if (changeType === 'appdescr_fe_changePageConfiguration') {
+            result = {
+                type: 'pending',
+                kind: 'property',
+                controlId: selectorId,
+                changeType,
+                propertyName: command.getProperty('parameters').entityPropertyChange.propertyPath.split('/').pop(),
                 isActive: index >= inactiveCommandCount,
                 value,
                 controlName: command.getElement().getMetadata().getName().split('.').pop() ?? '',
