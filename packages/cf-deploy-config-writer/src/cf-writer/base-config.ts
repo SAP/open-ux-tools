@@ -10,10 +10,11 @@ import {
     validateVersion,
     addGitIgnore,
     addRootPackage,
-    addXSSecurity
+    addXSSecurityConfig
 } from '../utils';
+import LoggerHelper from '../logger-helper';
 import { t } from '../i18n';
-import { MtaConfig, createMTA, addParameters, addBuildParams } from '../mta-config';
+import { MtaConfig, createMTA, addMtaDeployParameters, addMtaBuildParams } from '../mta-config';
 import { type Logger } from '@sap-ux/logger';
 import { type CFBaseConfig, RouterModuleType, type MTABaseConfig } from '../types';
 
@@ -29,12 +30,15 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
     if (!fs) {
         fs = create(createStorage());
     }
+    if (logger) {
+        LoggerHelper.logger = logger;
+    }
     validateMtaConfig(config, fs);
     updateBaseConfig(config);
     createMTA(config as MTABaseConfig);
     await addRoutingConfig(config, fs);
     addSupportingConfig(config, fs);
-    logger?.debug(`CF Config ${JSON.stringify(config, null, 2)}`);
+    LoggerHelper.logger?.debug(`CF Config ${JSON.stringify(config, null, 2)}`);
     return fs;
 }
 
@@ -43,17 +47,16 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
  *
  * @param config writer configuration
  * @param fs reference to a mem-fs editor
- * @param logger optional logger instance
  */
-async function addRoutingConfig(config: CFBaseConfig, fs: Editor, logger?: Logger): Promise<void> {
+async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void> {
     const mtaConfigInstance = await MtaConfig.newInstance(config.mtaPath);
     if (config.routerType === RouterModuleType.Standard) {
-        await addStandaloneRouter(config, mtaConfigInstance, fs, logger);
+        await addStandaloneRouter(config, mtaConfigInstance, fs);
     } else {
         await mtaConfigInstance.addRoutingModules(true);
     }
-    await addParameters(mtaConfigInstance);
-    await addBuildParams(mtaConfigInstance);
+    await addMtaDeployParameters(mtaConfigInstance);
+    await addMtaBuildParams(mtaConfigInstance);
     await mtaConfigInstance.save();
 }
 
@@ -74,14 +77,8 @@ function updateBaseConfig(config: CFBaseConfig): void {
  * @param cfConfig writer configuration
  * @param mtaInstance MTA configuration instance
  * @param fs reference to a mem-fs editor
- * @param logger optional logger instance
  */
-async function addStandaloneRouter(
-    cfConfig: CFBaseConfig,
-    mtaInstance: MtaConfig,
-    fs: Editor,
-    logger?: Logger
-): Promise<void> {
+async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfig, fs: Editor): Promise<void> {
     await mtaInstance.addStandaloneRouter(true);
     if (cfConfig.addConnectivityService) {
         await mtaInstance.addConnectivityResource();
@@ -99,7 +96,7 @@ async function addStandaloneRouter(
             const instanceCredentials = await apiGetInstanceCredentials(abapServiceName);
             serviceKey = instanceCredentials?.credentials;
         } catch {
-            logger?.error(t('error.serviceKeyFailed'));
+            LoggerHelper.logger?.error(t('error.serviceKeyFailed'));
         }
         const endpoints = serviceKey?.endpoints ? Object.keys(serviceKey.endpoints) : [''];
         const service = serviceKey ? serviceKey['sap.cloud.service'] : '';
@@ -125,7 +122,7 @@ async function addStandaloneRouter(
 function addSupportingConfig(config: CFBaseConfig, fs: Editor): void {
     addRootPackage(config, fs);
     addGitIgnore(config.mtaPath, fs);
-    addXSSecurity(config, fs);
+    addXSSecurityConfig(config, fs);
 }
 
 /**
@@ -141,13 +138,13 @@ function validateMtaConfig(config: CFBaseConfig, fs: Editor): void {
     }
 
     if (!config.routerType || !config.mtaId || !config.mtaPath) {
-        throw new Error('Missing required parameters, MTA path, MTA ID or router type');
+        throw new Error(t('error.missingMtaParameters'));
     }
     if (config.mtaId.length > 128 || !/^[a-zA-Z_]/.test(config.mtaId)) {
-        throw new Error('The MTA ID must start with a letter or underscore and be less than 128 characters long');
+        throw new Error(t('error.invalidMtaId'));
     }
     if (!/^[\w\-.]*$/.test(config.mtaId)) {
-        throw new Error('The MTA ID can only contain letters, numbers, dashes, periods, underscores');
+        throw new Error(t('error.invalidMtaIdWithChars'));
     }
 
     validateVersion(config.mtaVersion);
@@ -156,10 +153,10 @@ function validateMtaConfig(config: CFBaseConfig, fs: Editor): void {
         config.abapServiceProvider &&
         (!config.abapServiceProvider.abapService || !config.abapServiceProvider.abapServiceName)
     ) {
-        throw new Error('Missing ABAP service details for direct service binding');
+        throw new Error(t('error.missingABAPServiceBindingDetails'));
     }
 
     if (fs.exists(join(config.mtaPath, config.mtaId))) {
-        throw new Error('A folder with same name already exists in the target directory');
+        throw new Error(t('error.mtaAlreadyExists'));
     }
 }

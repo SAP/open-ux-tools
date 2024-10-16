@@ -9,7 +9,12 @@
         "updatingMTAExtensionFailed": "Unable to add mta extension configuration to file: {{mtaExtFilePath}}",
         "cannotFindBinary": "Cannot find the \"{{bin}}\" executable. Please add it to the path or use \"npm i -g {{pkg}}\" to install it.",
         "mtaExtensionFailed": "Unable to create or update the mta extension file for Api Hub Enterprise destination configuration: {{error}}",
-        "serviceKeyFailed": "Failed to fetch service key"
+        "serviceKeyFailed": "Failed to fetch service key",
+        "missingMtaParameters": "Missing required parameters, MTA path, MTA ID or router type is missing",
+        "invalidMtaIdWithChars": "The MTA ID can only contain letters, numbers, dashes, periods, underscores",
+        "invalidMtaId": "The MTA ID must start with a letter or underscore and be less than 128 characters long",
+        "missingABAPServiceBindingDetails": "Missing ABAP service details for direct service binding",
+        "mtaAlreadyExists": "A folder with same name already exists in the target directory"
     },
     "info":{
         "existingMTAExtensionNotFound": "Cannot find a valid existing mta extension file, a new one will be created",

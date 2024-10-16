@@ -6,6 +6,7 @@ import { getTemplatePath } from '../utils';
 import { MTAYamlFile, MTAVersion, MTADescription, deployMode, enableParallelDeployments } from '../constants';
 import type { mta } from '@sap/mta-lib';
 import type { MTABaseConfig } from '../types';
+import LoggerHelper from '../logger-helper';
 
 /**
  * Get the MTA ID, read from the root path specified.
@@ -24,7 +25,7 @@ export async function getMtaId(rootPath: string): Promise<string | undefined> {
  * @returns MtaConfig instance if found
  */
 export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefined> {
-    return await MtaConfig.newInstance(rootPath);
+    return await MtaConfig.newInstance(rootPath, LoggerHelper.logger);
 }
 
 /**
@@ -49,7 +50,7 @@ export function createMTA(config: MTABaseConfig): void {
         mtaDescription: config.mtaDescription ?? MTADescription,
         mtaVersion: config.mtaVersion ?? MTAVersion
     });
-    // Written to disk immediately
+    // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
     writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
 }
 
@@ -58,7 +59,7 @@ export function createMTA(config: MTABaseConfig): void {
  *
  * @param mtaInstance MTA instance
  */
-export async function addBuildParams(mtaInstance: MtaConfig): Promise<void> {
+export async function addMtaBuildParams(mtaInstance: MtaConfig): Promise<void> {
     let params = await mtaInstance.getBuildParameters();
     params = { ...(params || {}), ...{} } as mta.ProjectBuildParameters;
     params['before-all'] ||= [];
@@ -72,7 +73,7 @@ export async function addBuildParams(mtaInstance: MtaConfig): Promise<void> {
  *
  * @param mtaInstance MTA instance
  */
-export async function addParameters(mtaInstance: MtaConfig): Promise<void> {
+export async function addMtaDeployParameters(mtaInstance: MtaConfig): Promise<void> {
     let params = await mtaInstance.getParameters();
     params = { ...(params || {}), ...{} } as mta.Parameters;
     params[deployMode] = 'html5-repo';

@@ -2,7 +2,7 @@ import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/cf-deploy-config-writer.i18n.json';
 
-const NS = 'ui5-application-writer';
+const NS = 'cf-deploy-config-writer';
 
 /**
  * Initialize i18next with the translations for this module.

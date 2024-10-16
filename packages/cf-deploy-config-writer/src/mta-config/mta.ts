@@ -3,7 +3,7 @@ import { dirname, join } from 'path';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { render } from 'ejs';
 import { Mta, type mta } from '@sap/mta-lib';
-import { WebIDEUsage, Destination, isGenericODataDestination, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
+import { type Destination, isGenericODataDestination, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
 import { YamlDocument } from '@sap-ux/yaml';
 import { getMtaPath } from '@sap-ux/project-access';
 import {

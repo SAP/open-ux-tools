@@ -39,10 +39,18 @@ import {
     getDestinationProperties,
     addGitIgnore,
     addRootPackage,
-    addXSSecurity,
-    addCommonDependencies
+    addXSSecurityConfig,
+    addCommonPackageDependencies
 } from '../utils';
-import { type MtaConfig, getMtaConfig, getMtaId, toMtaModuleName, createMTA, addParameters } from '../mta-config';
+import {
+    type MtaConfig,
+    getMtaConfig,
+    getMtaId,
+    toMtaModuleName,
+    createMTA,
+    addMtaDeployParameters
+} from '../mta-config';
+import LoggerHelper from '../logger-helper';
 import { t } from '../i18n';
 import { type Logger } from '@sap-ux/logger';
 import { type UI5Config, type FioriToolsProxyConfig } from '@sap-ux/ui5-config';
@@ -60,8 +68,11 @@ export async function generateAppConfig(cfAppConfig: CFAppConfig, fs?: Editor, l
     if (!fs) {
         fs = create(createStorage());
     }
+    if (logger) {
+        LoggerHelper.logger = logger;
+    }
     validateMtaConfig();
-    await generateDeployConfig(cfAppConfig, fs, logger);
+    await generateDeployConfig(cfAppConfig, fs);
     return fs;
 }
 
@@ -81,13 +92,12 @@ function validateMtaConfig(): void {
  *
  * @param cfAppConfig writer configuration
  * @param fs reference to a mem-fs editor
- * @param logger optional logger instance
  * @returns updated writer configuration
  */
-async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor, logger?: Logger): Promise<CFConfig> {
+async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<CFConfig> {
     const isLCAP = cfAppConfig.lcapMode ?? false;
     const { rootPath, isCap, mtaId, mtaPath, hasRoot, capRoot } = await getProjectProperties(cfAppConfig);
-    const { serviceHost, destination } = await processUI5Config(cfAppConfig.appPath, fs, logger);
+    const { serviceHost, destination } = await processUI5Config(cfAppConfig.appPath, fs);
     const { servicePath, firstServicePathSegment, appId } = await processManifest(cfAppConfig.appPath, fs);
     const { isFullUrlDest, destinationAuthType } = await getDestinationProperties(
         cfAppConfig.destinationName ?? destination
@@ -111,7 +121,7 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor, logger?: L
         capRoot,
         isFullUrlDest
     } as CFConfig;
-    logger?.debug(`CF Config loaded: ${JSON.stringify(config, null, 2)}`);
+    LoggerHelper.logger?.debug(`CF Config loaded: ${JSON.stringify(config, null, 2)}`);
     return config;
 }
 
@@ -158,13 +168,11 @@ async function getProjectProperties(config: CFAppConfig): Promise<{
  *
  * @param appPath path to the application
  * @param fs reference to a mem-fs editor
- * @param logger optional logger instance
  * @returns serviceBase, firstServicePathSegment and destination properties
  */
 async function processUI5Config(
     appPath: string,
-    fs: Editor,
-    logger?: Logger
+    fs: Editor
 ): Promise<{
     serviceHost: string | undefined;
     destination: string | undefined;
@@ -182,7 +190,7 @@ async function processUI5Config(
             firstServicePathSegment = toolsConfig?.configuration?.backend[0].path;
         }
     } catch (error) {
-        logger?.debug(t('debug.ui5YamlDoesNotExist'));
+        LoggerHelper.logger?.debug(t('debug.ui5YamlDoesNotExist'));
     }
     return { destination, serviceHost, firstServicePathSegment };
 }
@@ -213,15 +221,14 @@ async function processManifest(
  *
  * @param cfAppConfig writer configuration
  * @param fs reference to a mem-fs editor
- * @param logger optional logger instance
  */
-async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor, logger?: Logger): Promise<void> {
+async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<void> {
     const cfConfig = await getUpdatedConfig(cfAppConfig, fs);
     // Generate MTA Config, LCAP will generate the mta.yaml on the fly so we dont care about it!
     if (!cfConfig.lcapMode) {
         createMTAConfig(cfConfig);
         await generateSupportingConfig(cfConfig, fs);
-        await updateMtaConfig(cfConfig, logger);
+        await updateMtaConfig(cfConfig);
     }
     // Generate HTML5 config
     await appendCloudFoundryConfigurations(cfConfig, fs);
@@ -266,7 +273,7 @@ async function generateSupportingConfig(config: CFConfig, fs: Editor): Promise<v
         addRootPackage(mtaConfig, fs);
     }
     if (config.addManagedAppRouter && !fs.exists(join(config.rootPath, XSSecurityFile))) {
-        addXSSecurity(mtaConfig, fs);
+        addXSSecurityConfig(mtaConfig, fs);
     }
     // Be a good developer and add a .gitignore if missing from the existing project root
     if (!fs.exists(join(config.rootPath, '.gitignore'))) {
@@ -278,16 +285,15 @@ async function generateSupportingConfig(config: CFConfig, fs: Editor): Promise<v
  * Updates the MTA configuration file.
  *
  * @param cfConfig writer configuration
- * @param logger optional logger instance
  */
-async function updateMtaConfig(cfConfig: CFConfig, logger?: Logger): Promise<void> {
+async function updateMtaConfig(cfConfig: CFConfig): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
     if (mtaInstance) {
         await mtaInstance.addRoutingModules(cfConfig.addManagedAppRouter);
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');
-        await addParameters(mtaInstance);
+        await addMtaDeployParameters(mtaInstance);
         if ((cfConfig.destinationName && cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination) {
             // If the destination instance identifier is passed, create a destination instance
             cfConfig.destinationName =
@@ -300,7 +306,7 @@ async function updateMtaConfig(cfConfig: CFConfig, logger?: Logger): Promise<voi
                 cfConfig.destinationAuthType = Authentication.NO_AUTHENTICATION;
             }
         }
-        await saveMta(cfConfig, mtaInstance, logger);
+        await saveMta(cfConfig, mtaInstance);
         cfConfig.cloudServiceName = mtaInstance.cloudServiceName;
     }
 }
@@ -310,9 +316,8 @@ async function updateMtaConfig(cfConfig: CFConfig, logger?: Logger): Promise<voi
  *
  * @param cfConfig writer configuration
  * @param mtaInstance MTA configuration instance
- * @param logger optional logger instance
  */
-async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig, logger?: Logger): Promise<void> {
+async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig): Promise<void> {
     if (await mtaInstance.save()) {
         // Add mtaext if required for API Hub Enterprise connectivity
         if (cfConfig.apiHubConfig?.apiHubType === ApiHubType.apiHubEnterprise) {
@@ -322,7 +327,7 @@ async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig, logger?: Logg
                     value: cfConfig.apiHubConfig.apiHubKey
                 });
             } catch (error) {
-                logger?.error(t('error.mtaExtensionFailed', { error }));
+                LoggerHelper.logger?.error(t('error.mtaExtensionFailed', { error }));
             }
         }
     }
@@ -384,7 +389,7 @@ async function updateHTML5AppPackage(cfConfig: CFConfig, fs: Editor): Promise<vo
     await updatePackageScript(cfConfig.appPath, 'build:mta', MTABuildScript, fs);
     await updatePackageScript(cfConfig.appPath, 'deploy', appDeployMTAScript(deployArgs), fs);
     await updatePackageScript(cfConfig.appPath, 'undeploy', undeployMTAScript(cfConfig.mtaId ?? cfConfig.appId), fs);
-    await addCommonDependencies(cfConfig.appPath, fs);
+    await addCommonPackageDependencies(cfConfig.appPath, fs);
 }
 
 /**
@@ -408,7 +413,7 @@ async function updateRootPackage(cfConfig: CFConfig, fs: Editor): Promise<void> 
         ].forEach(async (script) => {
             await updatePackageScript(cfConfig.rootPath, script.name, script.run, fs);
         });
-        await addCommonDependencies(cfConfig.rootPath, fs);
+        await addCommonPackageDependencies(cfConfig.rootPath, fs);
     }
 }
 /**

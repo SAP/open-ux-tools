@@ -119,7 +119,7 @@ export function validateVersion(mtaVersion?: string): boolean {
  * @param root0.mtaId MTA ID
  * @param fs reference to a mem-fs editor
  */
-export function addXSSecurity({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): void {
+export function addXSSecurityConfig({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): void {
     fs.copyTpl(getTemplatePath(`common/${XSSecurityFile}`), join(mtaPath, XSSecurityFile), {
         id: mtaId.slice(0, 100)
     });
@@ -155,7 +155,7 @@ export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): v
  * @param targetPath Path to the package.json file
  * @param fs reference to a mem-fs editor
  */
-export async function addCommonDependencies(targetPath: string, fs: Editor): Promise<void> {
+export async function addCommonPackageDependencies(targetPath: string, fs: Editor): Promise<void> {
     await addPackageDevDependency(targetPath, Rimraf, RimrafVersion, fs);
     await addPackageDevDependency(targetPath, MbtPackage, MbtPackageVersion, fs);
     await addPackageDevDependency(targetPath, UI5BuilderWebIdePackage, UI5BuilderWebIdePackageVersion, fs);
