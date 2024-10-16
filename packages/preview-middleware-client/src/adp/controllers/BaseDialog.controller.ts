@@ -13,6 +13,10 @@ import CommandExecutor from '../command-executor';
 import { matchesFragmentName } from '../utils';
 import type { Fragments } from '../api-handler';
 import { getError } from '../../utils/error';
+import ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
+import { getControlById } from '../../utils/core';
+import ControlUtils from '../control-utils';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 type BaseDialogModel = JSONModel & {
     getProperty(sPath: '/fragmentList'): Fragments;
@@ -56,6 +60,57 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
     abstract onCreateBtnPress(event: Event): Promise<void> | void;
 
     abstract buildDialogData(): Promise<void>;
+
+    /**
+     * Method is used in add fragment dialog controllers to get current control metadata which are needed on the dialog
+     * @returns control metadata and target aggregations
+     */
+    protected getControlMetadata(): { controlMetadata: ManagedObjectMetadata; targetAggregation: string[] } {
+        const selectorId = this.overlays.getId();
+
+        let controlMetadata: ManagedObjectMetadata;
+
+        const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
+        if (overlayControl) {
+            this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
+            controlMetadata = this.runtimeControl.getMetadata();
+        } else {
+            throw new Error('Cannot get overlay control');
+        }
+
+        const allAggregations = Object.keys(controlMetadata.getAllAggregations());
+        const hiddenAggregations = ['customData', 'layoutData', 'dependents'];
+        const targetAggregation = allAggregations.filter((item) => {
+            if (hiddenAggregations.indexOf(item) === -1) {
+                return item;
+            }
+            return false;
+        });
+        return { controlMetadata, targetAggregation };
+    }
+
+    /**
+     * Fills indexArray from selected control children
+     *
+     * @param selectedControlChildren Array of numbers
+     * @returns Array of key value pairs
+     */
+    protected fillIndexArray(selectedControlChildren: number[]) {
+        let indexArray: { key: number; value: number }[] = [];
+        if (selectedControlChildren.length === 0) {
+            indexArray.push({ key: 0, value: 0 });
+        } else {
+            indexArray = selectedControlChildren.map((elem, index) => {
+                return { key: index + 1, value: elem + 1 };
+            });
+            indexArray.unshift({ key: 0, value: 0 });
+            indexArray.push({
+                key: selectedControlChildren.length + 1,
+                value: selectedControlChildren.length + 1
+            });
+        }
+        return indexArray;
+    }
 
     /**
      * Handles fragment name input change

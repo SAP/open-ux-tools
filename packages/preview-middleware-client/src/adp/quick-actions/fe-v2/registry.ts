@@ -16,18 +16,20 @@ import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
 import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
 import { AddTableActionQuickAction } from '../fe-v2/create-table-action';
 import { AddPageActionQuickAction } from '../fe-v2/create-page-action';
-type PageName = 'listReport' | 'objectPage';
+import { AddTableCustomColumnQuickAction } from './create-table-custom-column';
+type PageName = 'listReport' | 'objectPage' | 'analyticalListPage';
 
 const OBJECT_PAGE_TYPE = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
 const LIST_REPORT_TYPE = 'sap.suite.ui.generic.template.ListReport.view.ListReport';
-
+const ANALYTICAL_LIST_PAGE_TYPE = 'sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage';
 /**
  * Quick Action provider for SAP Fiori Elements V2 applications.
  */
 export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegistry<PageName> {
     PAGE_NAME_MAP: Record<string, PageName> = {
         [LIST_REPORT_TYPE]: 'listReport',
-        [OBJECT_PAGE_TYPE]: 'objectPage'
+        [OBJECT_PAGE_TYPE]: 'objectPage',
+        [ANALYTICAL_LIST_PAGE_TYPE]: 'analyticalListPage'
     };
     getDefinitions(context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         const activePages = this.getActivePageContent(context.controlIndex);
@@ -43,6 +45,7 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                         AddControllerToPageQuickAction,
                         ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
+                        AddTableCustomColumnQuickAction,
                         AddPageActionQuickAction
                     ],
                     view,
@@ -57,7 +60,18 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                         AddHeaderFieldQuickAction,
                         AddCustomSectionQuickAction,
                         AddTableActionQuickAction,
-                        AddPageActionQuickAction
+                        AddTableCustomColumnQuickAction
+                    ],
+                    view,
+                    key: name + index
+                });
+            } else if (name === 'analyticalListPage') {
+                definitionGroups.push({
+                    title: 'ANALYTICAL LIST PAGE',
+                    definitions: [
+                        AddControllerToPageQuickAction,
+                        ChangeTableColumnsQuickAction,
+                        AddTableCustomColumnQuickAction
                     ],
                     view,
                     key: name + index
