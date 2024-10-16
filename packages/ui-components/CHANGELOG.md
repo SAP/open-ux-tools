@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.18.11
+
+### Patch Changes
+
+-   b403459: fix(ui-components): #2140 - fix dropdown vertical align input field
+
+## 1.18.10
+
+### Patch Changes
+
+-   9e9daa4: UIComboBox, UIDropdown: Allow extending 'calloutProps' instead of overwriting.
+
 ## 1.18.9
 
 ### Patch Changes
