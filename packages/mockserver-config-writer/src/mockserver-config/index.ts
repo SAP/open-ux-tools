@@ -12,16 +12,10 @@ import { DirName } from '@sap-ux/project-access';
  *
  * @param basePath - the base path where the package.json and ui5.yaml is
  * @param data - configuration of the mockserver
- * @param overwriteServices - optional, whether to overwrite existing services in mock-server config
  * @param fs - the memfs editor instance
  * @returns Promise<Editor> - memfs editor instance with updated files
  */
-export async function generateMockserverConfig(
-    basePath: string,
-    data: MockserverConfig,
-    overwriteServices = false,
-    fs?: Editor
-): Promise<Editor> {
+export async function generateMockserverConfig(basePath: string, data: MockserverConfig, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -33,7 +27,7 @@ export async function generateMockserverConfig(
         fs.write(tempFilePath, '');
     }
     enhancePackageJson(fs, basePath, data.packageJsonConfig);
-    await enhanceYaml(fs, basePath, data.webappPath, data.ui5MockYamlConfig, overwriteServices);
+    await enhanceYaml(fs, basePath, data.webappPath, data.ui5MockYamlConfig);
     return fs;
 }
 

@@ -26,14 +26,12 @@ import { getMainServiceDataSource, getODataSources } from '../app-info';
  * @param basePath - path to project root, where package.json and ui5.yaml is
  * @param webappPath - path to webapp folder, where manifest.json is
  * @param config - optional config passed in by consumer
- * @param overwriteServices - optional, whether to overwrite existing services in mockserver config
  */
 export async function enhanceYaml(
     fs: Editor,
     basePath: string,
     webappPath: string,
-    config?: Ui5MockYamlConfig,
-    overwriteServices?: boolean
+    config?: Ui5MockYamlConfig
 ): Promise<void> {
     const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
     let mockConfig;
@@ -51,7 +49,7 @@ export async function enhanceYaml(
             ui5MockYamlPath,
             mockserverPath,
             annotationsConfig,
-            overwriteServices
+            config?.overwriteServices
         );
     } else {
         mockConfig = fs.exists(join(basePath, 'ui5.yaml'))
