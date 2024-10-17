@@ -2,7 +2,8 @@ import type {
     ExternalAction,
     PendingChange,
     SavedPropertyChange,
-    UnknownSavedChange
+    UnknownSavedChange,
+    ControlSavedChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
@@ -16,13 +17,15 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
 import type { SelectionService } from '../selection';
-
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
 import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
+import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
+import FlexChange from 'sap/ui/fl/Change';
 import { getError } from '../../utils/error';
+import { isLowerThanMinimalUi5Version, getUi5Version } from '../../utils/version';
 import MessageToast from 'sap/m/MessageToast';
 import { getTextBundle } from '../../i18n';
 
@@ -97,6 +100,8 @@ export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
     private changesRequiringReload = 0;
     private sendAction: (action: ExternalAction) => void;
+    private pendingChanges: PendingChange[] = [];
+    private changedFiles: Record<string, object> = {};
     /**
      *
      * @param options ui5 adaptation options.
@@ -159,11 +164,11 @@ export class ChangeService {
      *
      * @param pendingChanges Changes that are waiting to be saved
      */
-    private updateStack(pendingChanges: PendingChange[] = []) {
+    private updateStack() {
         this.sendAction(
             changeStackModified({
-                saved: this.savedChanges,
-                pending: pendingChanges
+                saved: this.savedChanges ?? [],
+                pending: this.pendingChanges ?? []
             })
         );
     }
@@ -172,54 +177,80 @@ export class ChangeService {
      * Fetches saved changes from the workspace and sorts them.
      */
     private async fetchSavedChanges(): Promise<void> {
+        this.changedFiles = {};
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
         const savedChanges = (await savedChangesResponse.json()) as SavedChangesResponse;
         const changes = (
-            Object.keys(savedChanges ?? {})
-                .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {
-                    const change: Change = savedChanges[key];
-                    try {
-                        assertChange(change);
-                        if (
-                            [change.content.newValue, change.content.newBinding].every(
-                                (item) => item === undefined || item === null
-                            )
-                        ) {
-                            throw new Error('Invalid change, missing new value in the change file');
-                        }
-                        if (change.changeType !== 'propertyChange' && change.changeType !== 'propertyBindingChange') {
-                            throw new Error('Unknown Change Type');
-                        }
-                        return {
-                            type: 'saved',
-                            kind: 'property',
-                            fileName: change.fileName,
-                            controlId: change.selector.id,
-                            propertyName: change.content.property,
-                            value: change.content.newValue ?? change.content.newBinding,
-                            timestamp: new Date(change.creation).getTime(),
-                            controlName: change.selector.type ? (change.selector.type.split('.').pop() as string) : '',
-                            changeType: change.changeType
-                        };
-                    } catch (error) {
-                        // Gracefully handle change files with invalid content
-                        if (change.fileName) {
-                            const unknownChange: UnknownSavedChange = {
-                                type: 'saved',
-                                kind: 'unknown',
-                                changeType: change.changeType,
-                                fileName: change.fileName,
-                                controlId: change.selector?.id // some changes may not have selector
-                            };
-                            if (change.creation) {
-                                unknownChange.timestamp = new Date(change.creation).getTime();
+            (
+                await Promise.all(
+                    Object.keys(savedChanges ?? {}).map(
+                        async (
+                            key
+                        ): Promise<SavedPropertyChange | UnknownSavedChange | ControlSavedChange | undefined> => {
+                            const change: Change = savedChanges[key];
+                            let selectorId;
+                            try {
+                                const flexObject = await this.getFlexObject(change);
+                                selectorId = await this.getControlIdByChange(flexObject);
+                                assertChange(change);
+                                if (
+                                    [change.content.newValue, change.content.newBinding].every(
+                                        (item) => item === undefined || item === null
+                                    )
+                                ) {
+                                    throw new Error('Invalid change, missing new value in the change file');
+                                }
+                                if (
+                                    change.changeType !== 'propertyChange' &&
+                                    change.changeType !== 'propertyBindingChange'
+                                ) {
+                                    throw new Error('Unknown Change Type');
+                                }
+                                this.changedFiles[change.fileName] = change;
+                                return {
+                                    type: 'saved',
+                                    kind: 'property',
+                                    fileName: change.fileName,
+                                    controlId: selectorId,
+                                    propertyName: change.content.property,
+                                    value: change.content.newValue ?? change.content.newBinding,
+                                    timestamp: new Date(change.creation).getTime(),
+                                    controlName: change.selector.type
+                                        ? (change.selector.type.split('.').pop() as string)
+                                        : '',
+                                    changeType: change.changeType
+                                };
+                            } catch (error) {
+                                // Gracefully handle change files with invalid content
+                                if (change.fileName) {
+                                    this.changedFiles[change.fileName] = change;
+                                    const unknownChange: UnknownSavedChange = {
+                                        type: 'saved',
+                                        kind: 'unknown',
+                                        changeType: change.changeType,
+                                        fileName: change.fileName,
+                                        timestamp: new Date(change.creation).getTime()
+                                    };
+                                    if (change.creation) {
+                                        unknownChange.timestamp = new Date(change.creation).getTime();
+                                    }
+                                    if (selectorId) {
+                                        const controlChange: ControlSavedChange = {
+                                            ...unknownChange,
+                                            kind: 'control',
+                                            controlId: selectorId ?? ''
+                                        };
+
+                                        return controlChange;
+                                    }
+                                    return unknownChange;
+                                }
+                                return undefined;
                             }
-                            return unknownChange;
                         }
-                        return undefined;
-                    }
-                })
-                .filter((change) => !!change) as SavedPropertyChange[]
+                    )
+                )
+            ).filter((change) => !!change) as SavedPropertyChange[]
         ).sort((a, b) => b.timestamp - a.timestamp);
         this.savedChanges = changes;
     }
@@ -266,30 +297,24 @@ export class ChangeService {
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
             const inactiveCommandCount = allCommands.length - executedCommands.length;
-            let activeChanges: PendingChange[] = [];
-            allCommands.forEach((command: FlexCommand, i): void => {
+            let i: number, command: FlexCommand;
+            for ([i, command] of allCommands.entries()) {
                 try {
                     if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();
-                        subCommands.forEach((subCommand) => {
-                            const pendingChange = this.prepareChangeType(subCommand, inactiveCommandCount, i);
-                            if (pendingChange) {
-                                activeChanges.push(pendingChange);
-                            }
-                        });
-                    } else {
-                        const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
-                        if (pendingChange) {
-                            activeChanges.push(pendingChange);
+                        for (const subCommand of subCommands) {
+                            await this.handleCommand(subCommand, inactiveCommandCount, i);
                         }
+                    } else {
+                        await this.handleCommand(command, inactiveCommandCount, i);
                     }
                 } catch (error) {
                     Log.error('CPE: Change creation Failed', getError(error));
                 }
-            });
+            }
 
-            activeChanges = activeChanges.filter((change): boolean => !!change);
-            const changesRequiringReload = activeChanges.reduce(
+            this.pendingChanges = this.pendingChanges.filter((change): boolean => !!change);
+            const changesRequiringReload = this.pendingChanges.reduce(
                 (sum, change) => (change.changeType === 'appdescr_fe_changePageConfiguration' ? sum + 1 : sum),
                 0
             );
@@ -303,25 +328,39 @@ export class ChangeService {
             this.changesRequiringReload = changesRequiringReload;
 
             if (Array.isArray(allCommands) && allCommands.length === 0) {
+                this.pendingChanges = [];
                 await this.fetchSavedChanges();
             }
-
-            this.updateStack(activeChanges);
+            this.updateStack();
             handleStackChange();
         };
     }
 
-    private prepareChangeType(
+    private async handleCommand(command: FlexCommand, inactiveCommandCount: number, index: number): Promise<void> {
+        const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, index);
+        if (pendingChange) {
+            this.pendingChanges.push(pendingChange);
+        }
+    }
+
+    private async prepareChangeType(
         command: FlexCommand,
         inactiveCommandCount: number,
         index: number
-    ): PendingChange | undefined {
+    ): Promise<PendingChange | undefined> {
         let result: PendingChange;
         let value = '';
-        const selectorId = this.getCommandSelectorId(command);
+
+        const change = command.getPreparedChange();
+
+        const selectorId =
+            typeof change.getSelector === 'function'
+                ? await this.getControlIdByChange(change)
+                : this.getCommandSelectorId(command);
+
         const changeType = this.getCommandChangeType(command);
 
-        if (!selectorId || !changeType) {
+        if (!changeType) {
             return undefined;
         }
 
@@ -333,8 +372,9 @@ export class ChangeService {
                 value = command.getProperty('newBinding') as string;
                 break;
         }
-        const { fileName } = command.getPreparedChange().getDefinition();
-        if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
+
+        const { fileName } = change.getDefinition();
+        if ((changeType === 'propertyChange' || changeType === 'propertyBindingChange') && selectorId) {
             result = {
                 type: 'pending',
                 kind: 'property',
@@ -350,15 +390,18 @@ export class ChangeService {
             result = {
                 type: 'pending',
                 kind: 'unknown',
-                controlId: selectorId,
                 changeType,
                 isActive: index >= inactiveCommandCount,
-                controlName:
-                    changeType === 'addXMLAtExtensionPoint'
-                        ? command.getSelector().name ?? ''
-                        : command.getElement().getMetadata().getName().split('.').pop() ?? '',
                 fileName
             };
+
+            if (selectorId) {
+                result = {
+                    ...result,
+                    kind: 'control',
+                    controlId: selectorId
+                };
+            }
         }
 
         return result;
@@ -413,5 +456,79 @@ export class ChangeService {
             () => command.getElement().getId(),
             () => command.getParent()?.getElement().getId()
         ]) as string | undefined;
+    }
+
+    /**
+     * Get element id by change.
+     *
+     * @param change to be executed for creating change
+     * @returns element id or empty string
+     */
+    private async getControlIdByChange(change: FlexChange<ChangeContent>): Promise<string> {
+        const appComponent = this.options.rta.getRootControlInstance();
+        const selector = change.getSelector();
+        const changeType = change.getChangeType();
+        const layer = change.getLayer();
+
+        try {
+            let control = JsControlTreeModifier.bySelector(selector, appComponent);
+            if (!control) {
+                return selector.id;
+            }
+
+            const changeHandlerAPI = (await import('sap/ui/fl/write/api/ChangesWriteAPI')).default;
+
+            const changeHandler = await changeHandlerAPI.getChangeHandler({
+                changeType,
+                element: control,
+                modifier: JsControlTreeModifier,
+                layer
+            });
+
+            if (changeHandler && typeof changeHandler.getChangeVisualizationInfo === 'function') {
+                const result: { affectedControls?: [string] } = await changeHandler.getChangeVisualizationInfo(
+                    change,
+                    appComponent
+                );
+                return JsControlTreeModifier.getControlIdBySelector(
+                    result?.affectedControls?.[0] ?? selector,
+                    appComponent
+                );
+            }
+
+            return JsControlTreeModifier.getControlIdBySelector(selector, appComponent);
+        } catch (error) {
+            Log.error('Getting element ID from change has failed:', getError(error));
+            return selector.id;
+        }
+    }
+
+    /**
+     * Sync outline changes to place modification markers when outline is changed.
+     *
+     * @returns void
+     */
+    public async syncOutlineChanges(): Promise<void> {
+        for (const change of this.savedChanges) {
+            const flexObject = await this.getFlexObject(this.changedFiles[change.fileName]);
+            change.controlId = await this.getControlIdByChange(flexObject);
+        }
+        this.updateStack();
+    }
+
+    /**
+     * Get FlexObject from change object based on UI5 version.
+     *
+     * @param change change object
+     * @returns FlexChange
+     */
+    private async getFlexObject(change: object): Promise<FlexChange<ChangeContent>> {
+        if (isLowerThanMinimalUi5Version(await getUi5Version(), { major: 1, minor: 109 })) {
+            const Change = (await import('sap/ui/fl/Change')).default;
+            return new Change(change);
+        }
+
+        const FlexObjectFactory = (await import('sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory')).default;
+        return FlexObjectFactory.createFromFileContent(change) as FlexChange<ChangeContent>;
     }
 }

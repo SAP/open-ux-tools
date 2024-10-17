@@ -3,6 +3,7 @@ import React from 'react';
 import { Stack } from '@fluentui/react';
 import type { Change } from '@sap-ux-private/control-property-editor-common';
 import {
+    CONTROL_CHANGE_KIND,
     convertCamelCaseToPascalCase,
     PENDING_CHANGE_TYPE,
     PROPERTY_CHANGE_KIND,
@@ -93,22 +94,34 @@ function convertChanges(changes: Change[]): Item[] {
     while (i < changes.length) {
         const change: Change = changes[i];
         let group: ControlGroupProps;
-        if (change.kind === UNKNOWN_CHANGE_KIND && change.type === SAVED_CHANGE_TYPE) {
-            items.push({
+        if (change.kind === UNKNOWN_CHANGE_KIND) {
+            const item = {
                 fileName: change.fileName,
-                timestamp: change.timestamp,
                 header: true,
-                controlId: change.controlId ?? ''
-            });
+                timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined
+            };
+            items.push(item);
             i++;
         } else {
-            group = {
-                controlId: change.controlId,
-                controlName: change.controlName,
-                text: convertCamelCaseToPascalCase(change.controlName),
-                index: i,
-                changes: [change]
-            };
+            if (change.kind === CONTROL_CHANGE_KIND) {
+                group = {
+                    controlId: change.controlId,
+                    controlName: '',
+                    text: '',
+                    index: i,
+                    changes: [change],
+                    timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined
+                };
+            } else {
+                group = {
+                    controlId: change.controlId,
+                    controlName: change.controlName,
+                    text: convertCamelCaseToPascalCase(change.controlName),
+                    index: i,
+                    changes: [change],
+                    timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined
+                };
+            }
             items.push(group);
             i++;
             while (i < changes.length) {
