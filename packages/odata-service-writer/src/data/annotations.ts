@@ -13,22 +13,24 @@ import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo } from '../types
 export function getAnnotationNamespaces({ metadata, annotations }: Partial<OdataService>): NamespaceAlias[] {
     // Enhance service with annotations namespaces
     const schemaNamespaces = metadata ? getNamespaces(metadata) : [];
-    const edmxAnnotations = annotations as EdmxAnnotationsInfo;
-    if (edmxAnnotations?.xml) {
-        // Parse once
-        const annotationsJson: Object = xmlToJson(edmxAnnotations.xml);
-
-        return schemaNamespaces.map((schema: NamespaceAlias) => {
-            // Check if alias exists in backend annotation file, if so use it
-            const annotationAlias =
-                edmxAnnotations.xml && schema.namespace
-                    ? getAliasFromAnnotation(annotationsJson, schema.namespace)
-                    : '';
-            if (annotationAlias) {
-                schema.alias = annotationAlias;
-            }
-            return schema;
-        });
+    const edmxAnnotations = annotations as EdmxAnnotationsInfo[];
+    for (const i in edmxAnnotations) {
+        const edmxAnnotation = edmxAnnotations[i];
+        if (edmxAnnotation?.xml) {
+            // Parse once
+            const annotationsJson: Object = xmlToJson(edmxAnnotation.xml);
+            return schemaNamespaces.map((schema: NamespaceAlias) => {
+                // Check if alias exists in backend annotation file, if so use it
+                const annotationAlias =
+                    edmxAnnotation.xml && schema.namespace
+                        ? getAliasFromAnnotation(annotationsJson, schema.namespace)
+                        : '';
+                if (annotationAlias) {
+                    schema.alias = annotationAlias;
+                }
+                return schema;
+            });
+        }
     }
     return schemaNamespaces;
 }

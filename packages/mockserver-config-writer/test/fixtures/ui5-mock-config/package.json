@@ -1,0 +1,38 @@
+{
+	"name": "fe_lrop_v4_odata_none",
+	"version": "0.0.1",
+	"private": true,
+	"sapux": true,
+	"description": "My LROP V4 Application",
+	"keywords": [
+		"ui5",
+		"openui5",
+		"sapui5"
+	],
+	"main": "webapp/index.html",
+	"scripts": {
+		"start": "fiori run --open 'test/flpSandbox.html#felropv4odatanone-tile'",
+		"start-local": "fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#felropv4odatanone-tile'",
+		"start-noflp": "fiori run --open 'index.html'",
+		"build": "ui5 build -a --clean-dest --include-task=generateManifestBundle generateCachebusterInfo",
+		"deploy": "fiori verify",
+		"deploy-config": "fiori add deploy-config",
+		"int-tests": "fiori run --config ./ui5-mock.yaml --open 'test/integration/opaTests.qunit.html'",
+		"start-mock": "fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html#felropv4odatanone-tile'"
+	},
+	"devDependencies": {
+		"@ui5/cli": "^2.11.1",
+		"@ui5/fs": "^2.0.6",
+		"@ui5/logger": "^2.0.1",
+		"@sap/ux-ui5-tooling": "1",
+		"rimraf": "5.0.5",
+		"@sap/ux-specification": "UI5-1.91",
+		"@sap/ux-ui5-fe-mockserver-middleware": "1"
+	},
+	"ui5": {
+		"dependencies": [
+			"@sap/ux-ui5-tooling",
+			"@sap/ux-ui5-fe-mockserver-middleware"
+		]
+	}
+}

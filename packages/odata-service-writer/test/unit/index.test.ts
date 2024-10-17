@@ -148,21 +148,23 @@ describe('generate', () => {
             const config = {
                 ...commonConfig,
                 version: OdataVersion.v2,
-                annotations: {
-                    technicalName: 'TEST_ME',
-                    xml: '<HELLO WORLD />'
-                }
+                annotations: [
+                    {
+                        technicalName: 'TEST_ME',
+                        xml: '<HELLO WORLD />'
+                    }
+                ]
             };
             await generate(testDir, config as OdataService, fs);
 
             // verify updated manifest.json
             const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
-            expect(manifest['sap.app'].dataSources[config.annotations.technicalName]).toBeDefined();
+            expect(manifest['sap.app'].dataSources[config.annotations[0].technicalName]).toBeDefined();
             // verify local copy of metadata
             expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
-            expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations.technicalName}.xml`))).toBe(
-                config.annotations.xml
+            expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations[0].technicalName}.xml`))).toBe(
+                config.annotations[0].xml
             );
         });
 

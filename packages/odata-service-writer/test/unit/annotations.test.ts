@@ -39,19 +39,19 @@ describe('metadata parsing', () => {
         expect(
             getAnnotationNamespaces({
                 metadata: metadata,
-                annotations: { technicalName: 'TEST_ANNOTATIONS', xml: annotationsMultipleRef }
+                annotations: [{ technicalName: 'TEST_ANNOTATIONS', xml: annotationsMultipleRef }]
             })
         ).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' }]);
         expect(
             getAnnotationNamespaces({
                 metadata: metadata,
-                annotations: { technicalName: 'TEST_ANNOTATIONS', xml: annotationSingleRef }
+                annotations: [{ technicalName: 'TEST_ANNOTATIONS', xml: annotationSingleRef }]
             })
         ).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: 'SAP_Products' }]);
         expect(
             getAnnotationNamespaces({
                 metadata: multischemaMetadata,
-                annotations: { technicalName: 'TEST_ANNOTATIONS', xml: annotationsMultipleRef }
+                annotations: [{ technicalName: 'TEST_ANNOTATIONS', xml: annotationsMultipleRef }]
             })
         ).toEqual([
             { namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' },
