@@ -119,6 +119,7 @@ export const PENDING_CHANGE_TYPE = 'pending';
 export const SAVED_CHANGE_TYPE = 'saved';
 export const PROPERTY_CHANGE_KIND = 'property';
 export const UNKNOWN_CHANGE_KIND = 'unknown';
+export const CONTROL_CHANGE_KIND = 'control';
 export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
     type: typeof PENDING_CHANGE_TYPE;
     kind: typeof PROPERTY_CHANGE_KIND;
@@ -134,13 +135,21 @@ export interface PendingOtherChange {
     kind: typeof UNKNOWN_CHANGE_KIND;
     isActive: boolean;
     changeType: string;
+    fileName: string;
+}
+
+export interface PendingControlChange {
+    type: typeof PENDING_CHANGE_TYPE;
+    kind: typeof CONTROL_CHANGE_KIND;
+    isActive: boolean;
+    changeType: string;
     controlId: string;
     controlName: string;
     fileName: string;
 }
 
-export type PendingChange = PendingPropertyChange | PendingOtherChange;
-export type SavedChange = SavedPropertyChange | UnknownSavedChange;
+export type PendingChange = PendingPropertyChange | PendingOtherChange | PendingControlChange;
+export type SavedChange = SavedPropertyChange | UnknownSavedChange | ControlSavedChange;
 
 export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
     type: typeof SAVED_CHANGE_TYPE;
@@ -154,7 +163,16 @@ export interface UnknownSavedChange {
     kind: typeof UNKNOWN_CHANGE_KIND;
     fileName: string;
     changeType: string;
-    controlId?: string;
+    timestamp?: number;
+}
+
+export interface ControlSavedChange {
+    type: typeof SAVED_CHANGE_TYPE;
+    kind: typeof CONTROL_CHANGE_KIND;
+    controlId: string;
+    controlName: string;
+    fileName: string;
+    changeType: string;
     timestamp?: number;
 }
 

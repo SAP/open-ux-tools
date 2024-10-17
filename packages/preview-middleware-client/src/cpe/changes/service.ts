@@ -2,7 +2,8 @@ import type {
     ExternalAction,
     PendingChange,
     SavedPropertyChange,
-    UnknownSavedChange
+    UnknownSavedChange,
+    ControlSavedChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
@@ -183,7 +184,7 @@ export class ChangeService {
             (
                 await Promise.all(
                     Object.keys(savedChanges ?? {}).map(
-                        async (key): Promise<SavedPropertyChange | UnknownSavedChange | undefined> => {
+                        async (key): Promise<SavedPropertyChange | UnknownSavedChange | ControlSavedChange | undefined> => {
                             const change: Change = savedChanges[key];
                             let selectorId;
                             try {
@@ -226,10 +227,22 @@ export class ChangeService {
                                         kind: 'unknown',
                                         changeType: change.changeType,
                                         fileName: change.fileName,
-                                        controlId: selectorId // some changes may not have selector
+                                        timestamp: new Date(change.creation).getTime(),
                                     };
                                     if (change.creation) {
                                         unknownChange.timestamp = new Date(change.creation).getTime();
+                                    }
+                                    if (selectorId) {
+                                        const controlChange: ControlSavedChange = {
+                                            ...unknownChange,
+                                            kind: 'control',
+                                            controlId: selectorId,
+                                            controlName: change.selector.type
+                                                ? (change.selector.type.split('.').pop() as string)
+                                                : ''
+                                        }
+
+                                        return controlChange;
                                     }
                                     return unknownChange;
                                 }
@@ -347,7 +360,7 @@ export class ChangeService {
 
         const changeType = this.getCommandChangeType(command);
 
-        if (!selectorId || !changeType) {
+        if (!changeType) {
             return undefined;
         }
 
@@ -361,7 +374,7 @@ export class ChangeService {
         }
 
         const { fileName } = change.getDefinition();
-        if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
+        if ((changeType === 'propertyChange' || changeType === 'propertyBindingChange') && selectorId) {
             result = {
                 type: 'pending',
                 kind: 'property',
@@ -377,15 +390,22 @@ export class ChangeService {
             result = {
                 type: 'pending',
                 kind: 'unknown',
-                controlId: selectorId,
                 changeType,
                 isActive: index >= inactiveCommandCount,
-                controlName:
+                fileName
+            };
+
+            if (selectorId) {
+                result = {
+                    ...result,
+                    kind: 'control',
+                    controlId: selectorId,
+                    controlName:
                     changeType === 'addXMLAtExtensionPoint'
                         ? command.getSelector().name ?? ''
                         : command.getElement().getMetadata().getName().split('.').pop() ?? '',
-                fileName
-            };
+                };
+            }
         }
 
         return result;

@@ -17,6 +17,7 @@ export interface ControlGroupProps {
     controlName: string;
     index: number;
     changes: Change[];
+    timestamp?: number;
 }
 
 /**

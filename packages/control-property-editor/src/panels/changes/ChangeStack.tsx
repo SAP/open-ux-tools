@@ -93,13 +93,13 @@ function convertChanges(changes: Change[]): Item[] {
     while (i < changes.length) {
         const change: Change = changes[i];
         let group: ControlGroupProps;
-        if (change.kind === UNKNOWN_CHANGE_KIND && change.type === SAVED_CHANGE_TYPE) {
-            items.push({
+        if (change.kind === UNKNOWN_CHANGE_KIND) {
+            const item = {
                 fileName: change.fileName,
-                timestamp: change.timestamp,
                 header: true,
-                controlId: change.controlId ?? ''
-            });
+                timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined
+            };
+            items.push(item);
             i++;
         } else {
             group = {
@@ -107,7 +107,8 @@ function convertChanges(changes: Change[]): Item[] {
                 controlName: change.controlName,
                 text: convertCamelCaseToPascalCase(change.controlName),
                 index: i,
-                changes: [change]
+                changes: [change],
+                timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined
             };
             items.push(group);
             i++;
