@@ -15,9 +15,15 @@ async function ushellBootstrap(fnCallback) {
         const response = await fetch(`${basePath}/resources/sap-ui-version.json`);
         const json = await response.json();
         const version = json?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version ?? '1.121.0';
-        const majorUi5Version = parseInt(version.split('.')[0], 10);
+        const [major, minor] = version.split('.');
+        const majorUi5Version = parseInt(major, 10);
+        const minorUi5Version = parseInt(minor, 10);
         if (majorUi5Version >= 2) {
             src = `${basePath}/resources/sap/ushell/bootstrap/sandbox2.js`;
+        }
+
+        if (majorUi5Version === 1 && minorUi5Version < 72) {
+            removeAsyncHintsRequests();
         }
     } catch (error) {
         console.warn('Failed to fetch sap-ui-version.json. Assuming it is a 1.x version.');
@@ -30,6 +36,38 @@ async function ushellBootstrap(fnCallback) {
             window['sap-ui-config']['xx-bootTask'](fnCallback);
         };
         shellBootstrap.setAttribute('src', src);
+    }
+}
+
+/**
+ * For UI5 version 1.71 and below, we need to remove the asyncHints.requests
+ * to load the changes in an Adaptation project.
+ * This logic needs to be executed here to have a reliable check for
+ * UI5 version and remove the asyncHints.requests before the sandbox is loaded.
+ * The sandbox shell modifies the `window['sap-ushell-config']`.
+ */
+function removeAsyncHintsRequests() {
+    const obj = window['sap-ushell-config']['applications'];
+
+    if (!obj || typeof obj !== 'object') return;
+
+    const stack = [obj];
+
+    while (stack.length > 0) {
+        const current = stack.pop();
+
+        if (current.asyncHints) {
+            if (current.asyncHints.requests) {
+                current.asyncHints.requests = [];
+            }
+            return;
+        }
+
+        for (const key in current) {
+            if (typeof current[key] === 'object' && current[key] !== null) {
+                stack.push(current[key]);
+            }
+        }
     }
 }
 
