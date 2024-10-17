@@ -23,7 +23,7 @@ interface OutlineNodeItem extends OutlineNode {
 
 export const Tree = (): ReactElement => {
     // padding + height of `Search` bar
-    const SEARCH_HEIGHT = 56;
+    const SEARCH_HEIGHT = 57;
 
     // height of the tree row in a outline
     const TREE_ROW_HEIGHT = 28;
