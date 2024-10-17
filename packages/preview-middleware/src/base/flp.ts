@@ -218,6 +218,7 @@ export class FlpSandbox {
                 if (!req.query['fiori-tools-rta-mode']) {
                     // Redirect to the same URL but add the necessary parameter
                     const params = JSON.parse(JSON.stringify(req.query));
+                    params['sap-ui-xx-viewCache'] = 'false';
                     params['fiori-tools-rta-mode'] = 'true';
                     params['sap-ui-rta-skip-flex-validation'] = 'true';
                     res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
