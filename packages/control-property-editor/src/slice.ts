@@ -53,6 +53,7 @@ export interface SliceState {
     scenario: Scenario;
     isAdpProject: boolean;
     icons: IconDetails[];
+    features: Record<string, boolean>;
     changes: ChangesSlice;
     dialogMessage: ShowMessage | undefined;
     fileChanges?: string[];
@@ -119,6 +120,7 @@ export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-
 export const changeDeviceType = createAction<DeviceType>('app/change-device-type');
 export const filterNodes = createAction<FilterOptions[]>('app/filter-nodes');
 export const fileChanged = createAction<string[]>('app/file-changed');
+export const setFeatureToggles = createAction<{ feature: string; isEnabled: boolean }[]>('app/set-feature-toggles');
 interface LivereloadOptions {
     port: number;
 
@@ -137,6 +139,7 @@ export const initialState: SliceState = {
     scenario: SCENARIO.UiAdaptation,
     isAdpProject: false,
     icons: [],
+    features: {},
     changes: {
         controls: {},
         pending: [],
@@ -330,6 +333,11 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             )
             .addMatcher(setSaveEnablement.match, (state, action: ReturnType<typeof setSaveEnablement>): void => {
                 state.canSave = action.payload;
+            })
+            .addMatcher(setFeatureToggles.match, (state, action: ReturnType<typeof setFeatureToggles>): void => {
+                for (const { feature, isEnabled } of action.payload) {
+                    state.features[feature] = isEnabled;
+                }
             })
             .addMatcher(appLoaded.match, (state): void => {
                 state.isAppLoading = false;
