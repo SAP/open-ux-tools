@@ -143,7 +143,6 @@ export async function getCapModelAndServices(
     let _projectRoot: string;
     let _logger: Logger | undefined;
     let _pathSelection: Set<string> | undefined;
-
     const defaultPathSelection = new Set(['app', 'srv', 'db']);
     if (typeof projectRoot === 'object') {
         _projectRoot = projectRoot.projectRoot;
