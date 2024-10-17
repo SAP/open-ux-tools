@@ -21,10 +21,16 @@ npx sap-ux
 ## add
 Calling `sap-ux add` allows adding a feature to a project.
 
+### variants-config
+Calling `sap-ux add variants-config` will add the necessary configuration to existing yaml files and the script to package.json for variants management. It will use the configuration from the `ui5.yaml` as default, as provided by the `fiori-tools-preview` or `preview-middleware` e.g.:
+```sh
+sap-ux add variants-config ui5-test.yaml
+```
+
 ### html
 Calling `sap-ux add html` will add html files for local preview and testing to the project. It will use the configuration from the `ui5.yaml` as default, as provided by the `fiori-tools-preview` or `preview-middleware` e.g.:
 ```sh
-sap-ux change add html ui5-test.yaml
+sap-ux add html ui5-test.yaml
 ```
 ### annotations
 Calling `sap-ux add annotations` allows adding an annotation to the OData Source of the base application in an adaptation project.

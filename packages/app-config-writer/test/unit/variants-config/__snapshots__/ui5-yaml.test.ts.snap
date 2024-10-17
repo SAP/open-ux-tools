@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test update middleware add fiori-tools-preview to ui5.yaml file w/o middlewares 1`] = `
+"specVersion: \\"3.0\\"
+metadata:
+  name: fe_lrop_v2
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+"
+`;
+
+exports[`Test update middleware add preview and reload middleware config to ui5.yaml file 1`] = `
+"specVersion: \\"3.0\\"
+metadata:
+  name: fe_lrop_v2
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        delay: 300
+    - name: preview-middleware
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          intent:
+            object: hello
+            action: world
+"
+`;
+
+exports[`Test update middleware add preview middleware config to ui5.yaml file 1`] = `
+"specVersion: \\"3.0\\"
+metadata:
+  name: fe_lrop_v2
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          intent:
+            object: hello
+            action: world
+        rta:
+          layer: VENDOR
+          editors:
+            - path: /editor.html
+              developerMode: true
+            - path: /my-variants.html
+"
+`;
+
+exports[`Test update middleware add preview-middleware to ui5.yaml file w/o middlewares 1`] = `
+"specVersion: \\"3.0\\"
+metadata:
+  name: fe_lrop_v2
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+"
+`;
