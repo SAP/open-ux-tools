@@ -395,6 +395,16 @@ describe('<UIDropdown />', () => {
         openDropdown();
         expect(wrapper.find('.custom-render-item').length).toBeGreaterThan(0);
     });
+
+    it('Test "calloutProps"', () => {
+        wrapper.setProps({
+            calloutProps: {
+                className: 'dummy'
+            }
+        });
+        openDropdown();
+        expect(wrapper.find('div.dummy').length).toEqual(1);
+    });
 });
 
 describe('Utils/getCalloutCollisionTransformationProps', () => {

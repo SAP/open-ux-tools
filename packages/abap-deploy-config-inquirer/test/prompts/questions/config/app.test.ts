@@ -2,7 +2,7 @@ import { initI18n, t } from '../../../../src/i18n';
 import { getAppConfigPrompts } from '../../../../src/prompts/questions';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
-import { abapDeployConfigInternalPromptNames, TransportConfig } from '../../../../src/types';
+import { promptNames, TransportConfig } from '../../../../src/types';
 import { PromptState } from '../../../../src/prompts/prompt-state';
 
 describe('getConfirmPrompts', () => {
@@ -54,9 +54,7 @@ describe('getConfirmPrompts', () => {
             } as unknown as TransportConfig
         };
         const appConfigPrompts = getAppConfigPrompts({});
-        const ui5AbapRepoPrompt = appConfigPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.ui5AbapRepo
-        );
+        const ui5AbapRepoPrompt = appConfigPrompts.find((prompt) => prompt.name === promptNames.ui5AbapRepo);
 
         if (ui5AbapRepoPrompt) {
             expect((ui5AbapRepoPrompt.when as Function)()).toBe(true);
@@ -81,12 +79,8 @@ describe('getConfirmPrompts', () => {
         jest.spyOn(conditions, 'showUi5AppDeployConfigQuestion').mockReturnValue(true);
         jest.spyOn(validators, 'validateAppDescription').mockReturnValue(true);
 
-        const appConfigPrompts = getAppConfigPrompts({
-            existingDeployTaskConfig: { description: 'Mock description' }
-        });
-        const descriptionPrompt = appConfigPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.description
-        );
+        const appConfigPrompts = getAppConfigPrompts({ description: { default: 'Mock description' } });
+        const descriptionPrompt = appConfigPrompts.find((prompt) => prompt.name === promptNames.description);
 
         if (descriptionPrompt) {
             expect((descriptionPrompt.when as Function)()).toBe(true);

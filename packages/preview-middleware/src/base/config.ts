@@ -50,6 +50,7 @@ export interface TemplateConfig {
         developerMode: boolean;
         pluginScript?: string;
     };
+    features?: { feature: string; isEnabled: boolean }[];
     locateReuseLibsScript?: boolean;
 }
 
