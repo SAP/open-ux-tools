@@ -186,6 +186,82 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware should add comments wi
 "
 `;
 
+exports[`UI5Config addCloudFoundryDeployTask add modules task 1`] = `
+"builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: webide-extension-task-updateManifestJson
+      afterTask: replaceVersion
+      configuration:
+        appFolder: webapp
+        destDir: dist
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: myTestAppId
+        additionalFiles:
+          - xs-app.json
+    - name: ui5-tooling-modules-task
+      afterTask: replaceVersion
+      configuration: {}
+"
+`;
+
+exports[`UI5Config addCloudFoundryDeployTask add transpile task 1`] = `
+"builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: webide-extension-task-updateManifestJson
+      afterTask: replaceVersion
+      configuration:
+        appFolder: webapp
+        destDir: dist
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: myTestAppId
+        additionalFiles:
+          - xs-app.json
+    - name: ui5-tooling-modules-task
+      afterTask: replaceVersion
+      configuration: {}
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        removeConsoleStatements: true
+        transpileAsync: true
+        transpileTypeScript: true
+"
+`;
+
+exports[`UI5Config addCloudFoundryDeployTask minimal settings required 1`] = `
+"builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: webide-extension-task-updateManifestJson
+      afterTask: replaceVersion
+      configuration:
+        appFolder: webapp
+        destDir: dist
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: myTestAppId
+        additionalFiles:
+          - xs-app.json
+"
+`;
+
 exports[`UI5Config addFioriToolsProxydMiddleware add / get commonly configured backend (and UI5 defaults) 1`] = `
 "server:
   customMiddleware:

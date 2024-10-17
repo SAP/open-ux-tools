@@ -1,0 +1,29 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/mem-fs-editor.d.ts",
+    "src/**/*.json",
+    "src"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../ui5-config"
+    },
+    {
+      "path": "../yaml"
+    }
+  ]
+}

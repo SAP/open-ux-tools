@@ -1,0 +1,20 @@
+## SAP UX Tools generated mtaext file
+_schema-version: "3.2"
+ID: test-mta-ext
+extends: test-mta
+version: 1.0.0
+
+resources:
+- name: qa-destination-service
+  parameters:
+    config:
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ABHE_NorthwindProduct_theme
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://api.hana.on.demand
+            URL.headers.ApiKey: 1234567890abcdefg
+          existing_destinations_policy: update
