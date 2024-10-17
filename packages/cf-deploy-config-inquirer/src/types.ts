@@ -14,6 +14,20 @@ export enum promptNames {
 }
 
 /**
+ * Enum defining prompt names for Application Router configuration.
+ */
+export enum appRouterPromptNames {
+    mtaPath = 'mtaPath', // inputDestinationRoot
+    mtaId = 'mtaID', // prefix
+    mtaDescription = 'mtaDescription',// description
+    mtaVersion = 'mtaVersion',// mtaVersion
+    routerType = 'routerType', // routerType
+    addConnectivityService = 'addConnectivityService', // addConnectivityService
+    addDestinationService = 'addDestinationService', // useABAPServiceBinding
+    abapServiceProvider = 'abapServiceProvider' // selectedABAPService
+}
+
+/**
  * Configuration options for the 'destinationName' prompt used in deployment settings.
  */
 export type DestinationNamePromptOptions = {
@@ -40,6 +54,10 @@ export type DestinationNamePromptOptions = {
     useAutocomplete?: boolean;
 };
 
+export type MtaPathPromptOptions = {
+    defaultValue: string;
+};
+
 /**
  * Defines options for boolean-type prompts in CF deployment configuration.
  */
@@ -49,7 +67,8 @@ type booleanValuePromptOptions = Record<promptNames.overwrite, boolean> &
 /**
  * Defines options for string-type prompts in CF deployment configuration.
  */
-type stringValuePromptOptions = Record<promptNames.destinationName, DestinationNamePromptOptions>;
+type stringValuePromptOptions = Record<promptNames.destinationName, DestinationNamePromptOptions> &
+    Record<appRouterPromptNames.mtaPath, MtaPathPromptOptions>;
 
 /**
  * Configuration options for CF deployment prompts.
@@ -57,11 +76,18 @@ type stringValuePromptOptions = Record<promptNames.destinationName, DestinationN
 export type CfDeployConfigPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOptions>;
 
 /**
+ * Configuration options for CF App Router deployment prompts.
+ */
+export type CfAppRouterDeployConfigPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOptions>;
+
+/**
  * Represents a question in the CF deployment configuration.
  * Extends `YUIQuestion` with optional autocomplete functionality.
  */
 export type CfDeployConfigQuestions = YUIQuestion<CfDeployConfigAnswers> &
     Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
+
+export type CfAppRouterDeployConfigQuestions = YUIQuestion<CfAppRouterDeployConfigAnswers>;
 
 /**
  * User responses for CF deployment configuration.
@@ -75,6 +101,24 @@ export interface CfDeployConfigAnswers {
     overwrite?: boolean;
 }
 
+enum RouterModuleType {
+    Standard = 'standard',
+    Managed = 'managed'
+}
+
+export interface CfAppRouterDeployConfigAnswers {
+    mtaId: string;
+    mtaPath: string;
+    mtaDescription?: string;
+    mtaVersion?: string;
+    routerType: RouterModuleType;
+    addConnectivityService?: boolean;
+    addDestinationService?: boolean;
+    abapServiceProvider?: {
+        abapServiceName?: string;
+        abapService?: string;
+    };
+}
 /**
  * Interface for selectable system choices within prompts.
  */
