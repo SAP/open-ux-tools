@@ -1,5 +1,13 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.0.6
+
+### Patch Changes
+
+-   eb38e5b: move app info file writing to writing phase
+    -   @sap-ux/fiori-generator-shared@0.6.4
+    -   @sap-ux/ui5-library-writer@0.5.26
+
 ## 0.0.5
 
 ### Patch Changes

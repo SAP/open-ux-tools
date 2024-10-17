@@ -886,6 +886,37 @@ importers:
         specifier: 5.6.2
         version: 5.6.2
 
+  packages/cf-deploy-config-inquirer:
+    dependencies:
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      inquirer-autocomplete-prompt:
+        specifier: 2.0.1
+        version: 2.0.1(inquirer@8.2.6)
+    devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/inquirer-autocomplete-prompt':
+        specifier: 2.0.1
+        version: 2.0.1
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
+
   packages/control-property-editor:
     devDependencies:
       '@esbuild-plugins/node-modules-polyfill':
@@ -2043,6 +2074,9 @@ importers:
       '@sap-ux/control-property-editor-sources':
         specifier: workspace:@sap-ux/control-property-editor@*
         version: link:../control-property-editor
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -6570,7 +6604,7 @@ packages:
     dependencies:
       '@formatjs/ts-transformer': 2.13.0(ts-jest@29.1.2)
       '@types/json-stable-stringify': 1.0.36
-      '@types/lodash': 4.17.7
+      '@types/lodash': 4.14.202
       '@types/loud-rejection': 2.0.0
       '@types/node': 14.18.63
       '@vue/compiler-core': 3.4.37
@@ -9349,10 +9383,6 @@ packages:
 
   /@types/lodash@4.14.202:
     resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
-    dev: true
-
-  /@types/lodash@4.17.7:
-    resolution: {integrity: sha512-8wTvZawATi/lsmNu10/j2hk1KEP0IvjubqPE3cu1Xz7xfXXt5oCq3SNUz4fMIP4XGF9Ky+Ue2tBA3hcS7LSBlA==}
     dev: true
 
   /@types/loud-rejection@2.0.0:
@@ -21015,6 +21045,7 @@ packages:
   /semver@7.6.3:
     resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
     engines: {node: '>=10'}
+    hasBin: true
     dev: true
 
   /send@0.19.0:
