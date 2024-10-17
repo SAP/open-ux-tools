@@ -151,6 +151,7 @@ server:
     configuration:
       services:
         -  urlBasePath: /some/previous/service/uri
+           urlPath: /some/previous/service/uri
            name: ''
            metadataXmlPath: ./webapp/localService/metadata.xml
            mockdataRootPath: ./webapp/localService/data

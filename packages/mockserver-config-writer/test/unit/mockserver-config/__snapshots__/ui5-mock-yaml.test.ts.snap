@@ -156,6 +156,7 @@ server:
         mountPath: /
         services:
           - urlBasePath: /some/previous/service/uri
+            urlPath: /some/previous/service/uri
             name: ''
             metadataXmlPath: ./webapp/localService/metadata.xml
             mockdataRootPath: ./webapp/localService/data
@@ -183,6 +184,7 @@ server:
         mountPath: /
         services:
           - urlBasePath: /some/previous/service/uri
+            urlPath: /some/previous/service/uri
             name: ''
             metadataXmlPath: ./webapp/localService/metadata.xml
             mockdataRootPath: ./webapp/localService/data
@@ -209,6 +211,12 @@ server:
       configuration:
         mountPath: /
         services:
+          - urlBasePath: /some/previous/service/uri
+            urlPath: /some/previous/service/uri
+            name: ''
+            metadataXmlPath: ./webapp/localService/metadata.xml
+            mockdataRootPath: ./webapp/localService/data
+            generateMockData: true
           - urlPath: ''
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data

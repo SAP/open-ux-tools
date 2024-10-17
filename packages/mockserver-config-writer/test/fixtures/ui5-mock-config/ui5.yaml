@@ -10,7 +10,7 @@ server:
       ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
       backend:
       - path: /sap
-        url: https://sap-ux-mock-services-v4-lrop.cfapps.us10.hana.ondemand.com
+        url: dummy
       ui5:
         path: 
         - /resources

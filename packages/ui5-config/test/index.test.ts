@@ -7,6 +7,7 @@ describe('UI5Config', () => {
     // values for testing
     const path = '/~testpath~',
         url = 'http://localhost:8080',
+        name = 'some-service',
         destination = '~destination~',
         destinationInstance = '~destinationInstance~',
         client = '012';
@@ -290,15 +291,15 @@ describe('UI5Config', () => {
     describe('enhanceMockServerMiddleware', () => {
         describe('add', () => {
             test('with given path', () => {
-                ui5Config.enhanceMockServerMiddleware(path);
+                ui5Config.enhanceMockServerMiddleware(name, path);
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
             test('without path', () => {
-                ui5Config.enhanceMockServerMiddleware();
+                ui5Config.enhanceMockServerMiddleware(name);
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
             test('with path and annotationsConfig', () => {
-                ui5Config.enhanceMockServerMiddleware(path, annotationsConfig);
+                ui5Config.enhanceMockServerMiddleware(name, path, annotationsConfig);
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
         });
@@ -310,7 +311,7 @@ describe('UI5Config', () => {
                 services: [
                     {
                         urlPath: '/~different-testpath~',
-                        metadataPath: 'different-metadataPath',
+                        metadataPath: `./webapp/localService/${name}/metadata.xml`,
                         generateMockData: true
                     }
                 ]
@@ -328,28 +329,28 @@ describe('UI5Config', () => {
 
             test('with given path (no existing services in middleware)', () => {
                 ui5Config.removeCustomMiddleware(MOCKSERVER_MIDDLEWARE_NAME);
-                ui5Config.enhanceMockServerMiddleware(path);
+                ui5Config.enhanceMockServerMiddleware(name, path);
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
 
             test('with given path (existing services in middleware)', () => {
-                ui5Config.enhanceMockServerMiddleware(path);
+                ui5Config.enhanceMockServerMiddleware('some-other-service', path);
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
 
             test('with given path (existing services in middleware and service already exists)', () => {
                 // use same path to trigger matching service update
-                ui5Config.enhanceMockServerMiddleware('/~different-testpath~');
+                ui5Config.enhanceMockServerMiddleware(name, '/~different-testpath~');
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
 
             test('without path (existing services in middleware)', () => {
-                ui5Config.enhanceMockServerMiddleware();
+                ui5Config.enhanceMockServerMiddleware(name);
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
 
             test('with given path and annotationsConfig (existing services in middleware)', () => {
-                ui5Config.enhanceMockServerMiddleware(path, annotationsConfig);
+                ui5Config.enhanceMockServerMiddleware(name, path, annotationsConfig);
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
         });

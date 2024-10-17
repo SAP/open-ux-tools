@@ -128,18 +128,24 @@ export function getFioriToolsProxyMiddlewareConfig(
 }
 
 const handleServicesForMiddlewareConfig = (
-    services: MockserverConfig['services'] = [],
-    path?: string
+    serviceName?: string,
+    servicePath?: string,
+    services: MockserverConfig['services'] = []
 ): MockserverConfig['services'] => {
+    const metadataPath = serviceName
+        ? `./webapp/localService/${serviceName}/metadata.xml`
+        : `./webapp/localService/metadata.xml`;
+    const mockdataPath = serviceName ? `./webapp/localService/${serviceName}/data` : `./webapp/localService/data`;
     const serviceData = {
-        urlPath: path ?? '',
-        metadataPath: './webapp/localService/metadata.xml',
-        mockdataPath: './webapp/localService/data',
+        urlPath: servicePath ?? '',
+        metadataPath,
+        mockdataPath,
         generateMockData: true
     };
-    // check if service with given path already exists or placeholder service exists
+    // Check if service with given paths already exists or placeholder service exists
     const existingServiceIndex: number = services.findIndex(
-        (service) => service.urlPath === path || service.urlPath === ''
+        (service) =>
+            (service.urlPath === servicePath && service.metadataPath === metadataPath) || service.urlPath === ''
     );
     if (existingServiceIndex > -1) {
         services[existingServiceIndex] = serviceData;
@@ -150,17 +156,18 @@ const handleServicesForMiddlewareConfig = (
 };
 
 export const getMockServerMiddlewareConfig = (
-    services: MockserverConfig['services'] = [],
-    path?: string,
+    serviceName?: string,
+    servicePath?: string,
+    existingServices: MockserverConfig['services'] = [],
     annotationsConfig: MockserverConfig['annotations'] = []
 ): CustomMiddleware<MockserverConfig> => {
-    path = path?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
+    servicePath = servicePath?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
     return {
         name: 'sap-fe-mockserver',
         beforeMiddleware: 'csp',
         configuration: {
             mountPath: '/',
-            services: handleServicesForMiddlewareConfig(services, path),
+            services: handleServicesForMiddlewareConfig(serviceName, servicePath, existingServices),
             annotations: annotationsConfig
         }
     };

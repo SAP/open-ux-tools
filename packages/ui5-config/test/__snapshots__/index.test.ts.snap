@@ -514,8 +514,8 @@ exports[`UI5Config enhanceMockServerMiddleware add with given path 1`] = `
         mountPath: /
         services:
           - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/some-service/metadata.xml
+            mockdataPath: ./webapp/localService/some-service/data
             generateMockData: true
         annotations: []
 "
@@ -530,8 +530,8 @@ exports[`UI5Config enhanceMockServerMiddleware add with path and annotationsConf
         mountPath: /
         services:
           - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/some-service/metadata.xml
+            mockdataPath: ./webapp/localService/some-service/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/annotations/annotations.xml
@@ -548,8 +548,8 @@ exports[`UI5Config enhanceMockServerMiddleware add without path 1`] = `
         mountPath: /
         services:
           - urlPath: ''
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/some-service/metadata.xml
+            mockdataPath: ./webapp/localService/some-service/data
             generateMockData: true
         annotations: []
 "
@@ -564,8 +564,8 @@ exports[`UI5Config enhanceMockServerMiddleware update with given path (existing 
         mountPath: /
         services:
           - urlPath: /~different-testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/some-service/metadata.xml
+            mockdataPath: ./webapp/localService/some-service/data
             generateMockData: true
         annotations: []
 "
@@ -580,11 +580,11 @@ exports[`UI5Config enhanceMockServerMiddleware update with given path (existing 
         mountPath: /
         services:
           - urlPath: /~different-testpath~
-            metadataPath: different-metadataPath
+            metadataPath: ./webapp/localService/some-service/metadata.xml
             generateMockData: true
           - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/some-other-service/metadata.xml
+            mockdataPath: ./webapp/localService/some-other-service/data
             generateMockData: true
         annotations: []
 "
@@ -599,8 +599,8 @@ exports[`UI5Config enhanceMockServerMiddleware update with given path (no existi
         mountPath: /
         services:
           - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/some-service/metadata.xml
+            mockdataPath: ./webapp/localService/some-service/data
             generateMockData: true
         annotations: []
 "
@@ -615,11 +615,11 @@ exports[`UI5Config enhanceMockServerMiddleware update with given path and annota
         mountPath: /
         services:
           - urlPath: /~different-testpath~
-            metadataPath: different-metadataPath
+            metadataPath: ./webapp/localService/some-service/metadata.xml
             generateMockData: true
           - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/some-service/metadata.xml
+            mockdataPath: ./webapp/localService/some-service/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/annotations/annotations.xml
@@ -636,11 +636,11 @@ exports[`UI5Config enhanceMockServerMiddleware update without path (existing ser
         mountPath: /
         services:
           - urlPath: /~different-testpath~
-            metadataPath: different-metadataPath
+            metadataPath: ./webapp/localService/some-service/metadata.xml
             generateMockData: true
           - urlPath: ''
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/some-service/metadata.xml
+            mockdataPath: ./webapp/localService/some-service/data
             generateMockData: true
         annotations: []
 "

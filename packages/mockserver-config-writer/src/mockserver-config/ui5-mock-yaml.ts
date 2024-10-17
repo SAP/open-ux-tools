@@ -25,7 +25,7 @@ import { getMainServiceDataSource, getODataSources } from '../app-info';
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to project root, where package.json and ui5.yaml is
  * @param webappPath - path to webapp folder, where manifest.json is
- * @param config - optional config passed in by consumer
+ * @param config - optional, config passed in by consumer
  */
 export async function enhanceYaml(
     fs: Editor,
@@ -35,6 +35,8 @@ export async function enhanceYaml(
 ): Promise<void> {
     const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
     let mockConfig;
+    const serviceName = config?.serviceName;
+    const overwriteServices = config?.overwriteServices;
     const manifest = fs.readJSON(join(webappPath, 'manifest.json')) as Partial<Manifest> as Manifest;
     const mockserverPath = config?.path || getMainServiceDataSource(manifest)?.uri;
     const annotationSource = Object.values(getODataSources(manifest, 'ODataAnnotation'));
@@ -47,14 +49,20 @@ export async function enhanceYaml(
         mockConfig = await updateUi5MockYamlConfig(
             fs,
             ui5MockYamlPath,
+            serviceName,
             mockserverPath,
             annotationsConfig,
-            config?.overwriteServices
+            overwriteServices
         );
     } else {
         mockConfig = fs.exists(join(basePath, 'ui5.yaml'))
-            ? await generateUi5MockYamlBasedOnUi5Yaml(fs, basePath, mockserverPath, annotationsConfig)
-            : await generateNewUi5MockYamlConfig(manifest['sap.app']?.id || '', mockserverPath, annotationsConfig);
+            ? await generateUi5MockYamlBasedOnUi5Yaml(fs, basePath, serviceName, mockserverPath, annotationsConfig)
+            : await generateNewUi5MockYamlConfig(
+                  manifest['sap.app']?.id || '',
+                  serviceName,
+                  mockserverPath,
+                  annotationsConfig
+              );
     }
     const yaml = mockConfig.toString();
     fs.write(ui5MockYamlPath, yaml);
@@ -66,7 +74,8 @@ export async function enhanceYaml(
  *
  * @param fs - Editor instance to read existing information
  * @param ui5MockYamlPath - path to ui5-mock.yaml file
- * @param [path] - optional url path the mockserver listens to
+ * @param serviceName optional, name of the service the mockserver listens to
+ * @param path - optional, url path the mockserver listens to
  * @param annotationsConfig - optional annotations config to add to mockserver middleware
  * @param overwriteServices - optional, whether to overwrite existing services in mockserver config
  * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
@@ -74,16 +83,17 @@ export async function enhanceYaml(
 async function updateUi5MockYamlConfig(
     fs: Editor,
     ui5MockYamlPath: string,
+    serviceName?: string,
     path?: string,
     annotationsConfig?: MockserverConfig['annotations'],
     overwriteServices?: boolean
 ): Promise<UI5Config> {
     const existingUi5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
     if (overwriteServices) {
-        const newMockServerMiddleware = await getNewMockserverMiddleware(path, annotationsConfig);
+        const newMockServerMiddleware = await getNewMockserverMiddleware(serviceName, path, annotationsConfig);
         existingUi5MockYamlConfig.updateCustomMiddleware(newMockServerMiddleware);
     } else {
-        existingUi5MockYamlConfig.enhanceMockServerMiddleware(path, annotationsConfig);
+        existingUi5MockYamlConfig.enhanceMockServerMiddleware(serviceName, path, annotationsConfig);
     }
     return existingUi5MockYamlConfig;
 }
@@ -92,7 +102,8 @@ async function updateUi5MockYamlConfig(
  * Create a new ui5-mock.yaml based on existing ui5.yaml.
  *
  * @param fs - Editor instance to read existing information
- * @param basePath -
+ * @param basePath - base path
+ * @param serviceName optional, name of the service that is to be mocked
  * @param [path] - optional path for mockserver config
  * @param annotationsConfig - optional annotations config to add to mockserver middleware
  * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
@@ -100,11 +111,12 @@ async function updateUi5MockYamlConfig(
 async function generateUi5MockYamlBasedOnUi5Yaml(
     fs: Editor,
     basePath: string,
+    serviceName?: string,
     path?: string,
     annotationsConfig?: MockserverConfig['annotations']
 ): Promise<UI5Config> {
     const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(join(basePath, 'ui5.yaml')));
-    ui5MockYamlConfig.updateCustomMiddleware(await getNewMockserverMiddleware(path, annotationsConfig));
+    ui5MockYamlConfig.updateCustomMiddleware(await getNewMockserverMiddleware(serviceName, path, annotationsConfig));
     return ui5MockYamlConfig;
 }
 
@@ -112,12 +124,14 @@ async function generateUi5MockYamlBasedOnUi5Yaml(
  * Create fresh ui5-mock.yaml configuration which can be stringified and written.
  *
  * @param appId - application id
+ * @param serviceName optional, name of the service that is to be mocked
  * @param [path] - optional url path the mockserver listens to
  * @param annotationsConfig - optional annotations config to add to mockserver middleware
  * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
  */
 async function generateNewUi5MockYamlConfig(
     appId: string,
+    serviceName?: string,
     path?: string,
     annotationsConfig?: MockserverConfig['annotations']
 ): Promise<UI5Config> {
@@ -128,23 +142,25 @@ async function generateNewUi5MockYamlConfig(
     ui5MockYaml.setType('application');
     ui5MockYaml.addFioriToolsProxydMiddleware({ ui5: {} });
     ui5MockYaml.addFioriToolsAppReloadMiddleware();
-    ui5MockYaml.enhanceMockServerMiddleware(path, annotationsConfig);
+    ui5MockYaml.enhanceMockServerMiddleware(serviceName, path, annotationsConfig);
     return ui5MockYaml;
 }
 
 /**
  * Return new mockserver middleware.
  *
- * @param [path] - optional path for mockserver config
+ * @param serviceName optional, name of the service the mockserver listens to
+ * @param path - optional, path for mockserver config
  * @param annotationsConfig - optional annotations config to add to mockserver middleware
  * @returns - mockserver middleware
  */
 async function getNewMockserverMiddleware(
+    serviceName?: string,
     path?: string,
     annotationsConfig?: MockserverConfig['annotations']
 ): Promise<CustomMiddleware<MockserverConfig>> {
     const ui5MockYaml = await UI5Config.newInstance('');
-    ui5MockYaml.enhanceMockServerMiddleware(path, annotationsConfig);
+    ui5MockYaml.enhanceMockServerMiddleware(serviceName, path, annotationsConfig);
     const mockserverMiddleware = ui5MockYaml.findCustomMiddleware('sap-fe-mockserver');
     if (!mockserverMiddleware) {
         throw Error('Could not create new mockserver config');
