@@ -555,7 +555,23 @@ exports[`UI5Config enhanceMockServerMiddleware add without path 1`] = `
 "
 `;
 
-exports[`UI5Config enhanceMockServerMiddleware update with given path (existing services) 1`] = `
+exports[`UI5Config enhanceMockServerMiddleware update with given path (existing services in middleware and service already exists) 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~different-testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config enhanceMockServerMiddleware update with given path (existing services in middleware) 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
@@ -574,7 +590,7 @@ exports[`UI5Config enhanceMockServerMiddleware update with given path (existing 
 "
 `;
 
-exports[`UI5Config enhanceMockServerMiddleware update with given path (no existing services) 1`] = `
+exports[`UI5Config enhanceMockServerMiddleware update with given path (no existing services in middleware) 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
@@ -590,7 +606,7 @@ exports[`UI5Config enhanceMockServerMiddleware update with given path (no existi
 "
 `;
 
-exports[`UI5Config enhanceMockServerMiddleware update with given path and annotationsConfig (existing services) 1`] = `
+exports[`UI5Config enhanceMockServerMiddleware update with given path and annotationsConfig (existing services in middleware) 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
@@ -611,7 +627,7 @@ exports[`UI5Config enhanceMockServerMiddleware update with given path and annota
 "
 `;
 
-exports[`UI5Config enhanceMockServerMiddleware update without path (existing services) 1`] = `
+exports[`UI5Config enhanceMockServerMiddleware update without path (existing services in middleware) 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
