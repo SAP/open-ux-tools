@@ -138,14 +138,12 @@ const handleServicesForMiddlewareConfig = (
         generateMockData: true
     };
     // check if service with given path already exists or placeholder service exists
-    let existingServiceIndex: number = -1;
-    services.forEach((service, index: number) => {
-        if (service.urlPath === path || service.urlPath === '') {
-            existingServiceIndex = index;
-        }
-    });
+    const existingServiceIndex: number = services.findIndex(
+        (service) => service.urlPath === path || service.urlPath === ''
+    );
     if (existingServiceIndex > -1) {
         services[existingServiceIndex] = serviceData;
+        return services;
     } else {
         return [...services, serviceData];
     }

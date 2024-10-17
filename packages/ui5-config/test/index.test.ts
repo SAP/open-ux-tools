@@ -326,23 +326,29 @@ describe('UI5Config', () => {
                 ui5Config.addCustomMiddleware([customMockserverMiddleware]);
             });
 
-            test('with given path (no existing services)', () => {
+            test('with given path (no existing services in middleware)', () => {
                 ui5Config.removeCustomMiddleware(MOCKSERVER_MIDDLEWARE_NAME);
                 ui5Config.enhanceMockServerMiddleware(path);
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
 
-            test('with given path (existing services)', () => {
+            test('with given path (existing services in middleware)', () => {
                 ui5Config.enhanceMockServerMiddleware(path);
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
 
-            test('without path (existing services)', () => {
+            test('with given path (existing services in middleware and service already exists)', () => {
+                // use same path to trigger matching service update
+                ui5Config.enhanceMockServerMiddleware('/~different-testpath~');
+                expect(ui5Config.toString()).toMatchSnapshot();
+            });
+
+            test('without path (existing services in middleware)', () => {
                 ui5Config.enhanceMockServerMiddleware();
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
 
-            test('with given path and annotationsConfig (existing services)', () => {
+            test('with given path and annotationsConfig (existing services in middleware)', () => {
                 ui5Config.enhanceMockServerMiddleware(path, annotationsConfig);
                 expect(ui5Config.toString()).toMatchSnapshot();
             });
