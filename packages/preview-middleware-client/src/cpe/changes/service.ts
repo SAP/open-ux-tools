@@ -184,7 +184,9 @@ export class ChangeService {
             (
                 await Promise.all(
                     Object.keys(savedChanges ?? {}).map(
-                        async (key): Promise<SavedPropertyChange | UnknownSavedChange | ControlSavedChange | undefined> => {
+                        async (
+                            key
+                        ): Promise<SavedPropertyChange | UnknownSavedChange | ControlSavedChange | undefined> => {
                             const change: Change = savedChanges[key];
                             let selectorId;
                             try {
@@ -227,7 +229,7 @@ export class ChangeService {
                                         kind: 'unknown',
                                         changeType: change.changeType,
                                         fileName: change.fileName,
-                                        timestamp: new Date(change.creation).getTime(),
+                                        timestamp: new Date(change.creation).getTime()
                                     };
                                     if (change.creation) {
                                         unknownChange.timestamp = new Date(change.creation).getTime();
@@ -236,11 +238,8 @@ export class ChangeService {
                                         const controlChange: ControlSavedChange = {
                                             ...unknownChange,
                                             kind: 'control',
-                                            controlId: selectorId,
-                                            controlName: change.selector.type
-                                                ? (change.selector.type.split('.').pop() as string)
-                                                : ''
-                                        }
+                                            controlId: selectorId ?? ''
+                                        };
 
                                         return controlChange;
                                     }
@@ -354,9 +353,10 @@ export class ChangeService {
 
         const change = command.getPreparedChange();
 
-        const selectorId = typeof change.getSelector === 'function'
-            ? await this.getControlIdByChange(change)
-            : this.getCommandSelectorId(command);
+        const selectorId =
+            typeof change.getSelector === 'function'
+                ? await this.getControlIdByChange(change)
+                : this.getCommandSelectorId(command);
 
         const changeType = this.getCommandChangeType(command);
 
@@ -399,11 +399,7 @@ export class ChangeService {
                 result = {
                     ...result,
                     kind: 'control',
-                    controlId: selectorId,
-                    controlName:
-                    changeType === 'addXMLAtExtensionPoint'
-                        ? command.getSelector().name ?? ''
-                        : command.getElement().getMetadata().getName().split('.').pop() ?? '',
+                    controlId: selectorId
                 };
             }
         }

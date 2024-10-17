@@ -144,7 +144,6 @@ export interface PendingControlChange {
     isActive: boolean;
     changeType: string;
     controlId: string;
-    controlName: string;
     fileName: string;
 }
 
@@ -170,7 +169,6 @@ export interface ControlSavedChange {
     type: typeof SAVED_CHANGE_TYPE;
     kind: typeof CONTROL_CHANGE_KIND;
     controlId: string;
-    controlName: string;
     fileName: string;
     changeType: string;
     timestamp?: number;

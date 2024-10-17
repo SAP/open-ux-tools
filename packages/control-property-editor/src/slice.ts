@@ -236,7 +236,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     if (change.kind === UNKNOWN_CHANGE_KIND) {
                         continue;
                     }
-                    const { controlId, type, controlName } = change;
+                    const { controlId, type } = change;
                     const key = `${controlId}`;
                     const control = state.changes.controls[key]
                         ? {
@@ -248,7 +248,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                         : {
                               pending: 0,
                               saved: 0,
-                              controlName: controlName ?? '',
+                              controlName: change.kind === PROPERTY_CHANGE_KIND ? change.controlName : '',
                               properties: {}
                           };
                     if (type === PENDING_CHANGE_TYPE) {
