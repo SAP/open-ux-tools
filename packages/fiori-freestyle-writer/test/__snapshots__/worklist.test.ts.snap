@@ -92,8 +92,8 @@ server:
         mountPath: /
         services:
           - urlPath: /here/goes/your/serviceurl
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -137,8 +137,8 @@ server:
         mountPath: /
         services:
           - urlPath: /here/goes/your/serviceurl
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -6858,8 +6858,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -6906,8 +6906,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -10228,8 +10228,8 @@ server:
         mountPath: /
         services:
           - urlPath: /catalog-admin-noauth
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -10273,8 +10273,8 @@ server:
         mountPath: /
         services:
           - urlPath: /catalog-admin-noauth
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -13230,8 +13230,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -13294,8 +13294,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -16625,8 +16625,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -16689,8 +16689,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
