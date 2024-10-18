@@ -9,13 +9,17 @@ import { randomBytes } from 'crypto';
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 const CUSTOM_ACTION = 'CUSTOM_ACTION';
 const OBJECT_PAGE_HEADER_FIELD = 'OBJECT_PAGE_HEADER_FIELD';
+const V2_SMART_TABLE_COLUMN = 'V2_SMART_TABLE_COLUMN';
+const V2_SMART_TABLE_CELL = 'V2_SMART_TABLE_CELL';
+const V4_MDC_TABLE_COLUMN = 'V4_MDC_TABLE_COLUMN';
+const ANALYTICAL_TABLE_COLUMN = 'ANALYTICAL_TABLE_COLUMN';
 
 interface FragmentTemplateConfig<T = { [key: string]: any }> {
     /**
      * Relative path to ../../templates/rta, includes template file name
      */
     path: string;
-    getData: () => T;
+    getData: (change: AddXMLChange) => T;
 }
 
 const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
@@ -51,6 +55,57 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
                 ids: {
                     vBoxContainer: `vBox-${uuid}`,
                     label: `label-${uuid}`
+                }
+            };
+        }
+    },
+    [V2_SMART_TABLE_COLUMN]: {
+        path: 'v2/m-table-custom-column.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    column: `column-${uuid}`,
+                    columnTitle: `column-title-${uuid}`
+                }
+            };
+        }
+    },
+    [V2_SMART_TABLE_CELL]: {
+        path: 'v2/m-table-custom-column-cell.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    text: `cell-text-${uuid}`
+                }
+            };
+        }
+    },
+    [V4_MDC_TABLE_COLUMN]: {
+        path: 'v4/mdc-custom-column.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    column: `column-${uuid}`,
+                    text: `text-${uuid}`
+                }
+            };
+        }
+    },
+    [ANALYTICAL_TABLE_COLUMN]: {
+        path: 'common/analytical-custom-column.xml',
+        getData: (change: AddXMLChange) => {
+            const uuid = randomBytes(4).toString('hex');
+            const columnIndex = change.content.index;
+            return {
+                ids: {
+                    column: `column-${uuid}`,
+                    label: `label-${uuid}`,
+                    text: `text-${uuid}`,
+                    customData: `custom-data-${uuid}`,
+                    index: columnIndex.toFixed(0)
                 }
             };
         }
@@ -115,7 +170,7 @@ export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Edito
         if (templateConfig) {
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
             const text = fs.read(fragmentTemplatePath);
-            const template = render(text, templateConfig.getData());
+            const template = render(text, templateConfig.getData(change));
             fs.write(fullPath, template);
         } else {
             // copy default fragment template

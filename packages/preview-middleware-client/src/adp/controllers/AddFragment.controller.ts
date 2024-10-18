@@ -8,7 +8,6 @@ import type UI5Element from 'sap/ui/core/Element';
 
 /** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
-import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
 /** sap.ui.model */
 import JSONModel from 'sap/ui/model/json/JSONModel';
@@ -18,7 +17,6 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 /** sap.ui.dt */
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 /** sap.ui.fl */
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
@@ -33,7 +31,11 @@ import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
-import { getControlById } from '../../utils/core';
+import {
+    ANALYTICAL_TABLE_TYPE,
+    GRID_TABLE_TYPE,
+    TREE_TABLE_TYPE
+} from '../quick-actions/fe-v2/table-quick-action-base';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -43,7 +45,7 @@ interface CreateFragmentProps {
 
 const radix = 10;
 
-type AddFragmentModel = JSONModel & {
+export type AddFragmentModel = JSONModel & {
     getProperty(sPath: '/title'): string;
     getProperty(sPath: '/completeView'): boolean;
     getProperty(sPath: '/newFragmentName'): string;
@@ -184,26 +186,8 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      * Builds data that is used in the dialog
      */
     async buildDialogData(): Promise<void> {
-        const selectorId = this.overlays.getId();
-
-        let controlMetadata: ManagedObjectMetadata;
-
-        const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
-        if (overlayControl) {
-            this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
-            controlMetadata = this.runtimeControl.getMetadata();
-        } else {
-            throw new Error('Cannot get overlay control');
-        }
-
-        const allAggregations = Object.keys(controlMetadata.getAllAggregations());
-        const hiddenAggregations = ['customData', 'layoutData', 'dependents'];
-        const targetAggregation = allAggregations.filter((item) => {
-            if (hiddenAggregations.indexOf(item) === -1) {
-                return item;
-            }
-            return false;
-        });
+        const metadata = this.getControlMetadata();
+        const { controlMetadata, targetAggregation } = metadata;
         const defaultAggregation = this.options.aggregation ?? controlMetadata.getDefaultAggregationName();
         const selectedControlName = controlMetadata.getName();
 
@@ -252,29 +236,6 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         this.model.setProperty('/selectedIndex', indexArray.length - 1);
         this.model.setProperty('/targetAggregation', controlAggregation);
         this.model.setProperty('/index', indexArray);
-    }
-
-    /**
-     * Fills indexArray from selected control children
-     *
-     * @param selectedControlChildren Array of numbers
-     * @returns Array of key value pairs
-     */
-    private fillIndexArray(selectedControlChildren: number[]) {
-        let indexArray: { key: number; value: number }[] = [];
-        if (selectedControlChildren.length === 0) {
-            indexArray.push({ key: 0, value: 0 });
-        } else {
-            indexArray = selectedControlChildren.map((elem, index) => {
-                return { key: index + 1, value: elem + 1 };
-            });
-            indexArray.unshift({ key: 0, value: 0 });
-            indexArray.push({
-                key: selectedControlChildren.length + 1,
-                value: selectedControlChildren.length + 1
-            });
-        }
-        return indexArray;
     }
 
     /**
@@ -329,6 +290,13 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             return 'CUSTOM_ACTION';
         } else if (this.isObjectPageHeaderField(currentControlName, targetAggregation)) {
             return 'OBJECT_PAGE_HEADER_FIELD';
+        } else if (currentControlName === 'sap.ui.mdc.Table' && targetAggregation === 'columns') {
+            return 'V4_MDC_TABLE_COLUMN';
+        } else if (
+            [TREE_TABLE_TYPE, GRID_TABLE_TYPE, ANALYTICAL_TABLE_TYPE].includes(currentControlName) &&
+            targetAggregation === 'columns'
+        ) {
+            return 'ANALYTICAL_TABLE_COLUMN';
         }
         return '';
     }

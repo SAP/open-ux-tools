@@ -3,6 +3,7 @@ import { NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/con
 import type IconTabBar from 'sap/m/IconTabBar';
 import type IconTabFilter from 'sap/m/IconTabFilter';
 import type Table from 'sap/m/Table';
+import type MdcTable from 'sap/ui/mdc/Table';
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
@@ -19,11 +20,9 @@ const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
 const SETTINGS_ID = 'CTX_SETTINGS';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
-export const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
-export const M_TABLE_TYPE = 'sap.m.Table';
-export const TREE_TABLE_TYPE = 'sap.ui.table.TreeTable';
-export const GRID_TABLE_TYPE = 'sap.ui.table.Table';
-export const ANALYTICAL_TABLE_TYPE = 'sap.ui.table.AnalyticalTable';
+const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
+const M_TABLE_TYPE = 'sap.m.Table';
+const MDC_TABLE_TYPE = 'sap.ui.mdc.Table';
 
 async function getActionId(table: UI5Element): Promise<string[]> {
     const { major, minor } = await getUi5Version();
@@ -145,11 +144,15 @@ export abstract class TableQuickActionDefinitionBase {
             if (header) {
                 return `'${header}' table`;
             }
-        }
-        if (isA<Table>(M_TABLE_TYPE, table)) {
+        } else if (isA<Table>(M_TABLE_TYPE, table)) {
             const tilte = table?.getHeaderToolbar()?.getTitleControl()?.getText();
             if (tilte) {
                 return `'${tilte}' table`;
+            }
+        } else if (isA<MdcTable>(MDC_TABLE_TYPE, table)) {
+            const header = table?.getHeader();
+            if (header) {
+                return `'${header}' table`;
             }
         }
 
@@ -241,6 +244,12 @@ export abstract class TableQuickActionDefinitionBase {
             });
         }
         if (isA<Table>(M_TABLE_TYPE, table)) {
+            this.children.push({
+                label: this.getTableLabel(table),
+                children: []
+            });
+        }
+        if (isA<Table>(MDC_TABLE_TYPE, table)) {
             this.children.push({
                 label: this.getTableLabel(table),
                 children: []
