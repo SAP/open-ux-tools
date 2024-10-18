@@ -1,4 +1,3 @@
-import { FeatureService } from '../../cpe/feature-service';
 import type { QuickActionDefinitionRegistry } from '../../cpe/quick-actions/registry';
 import type { ApplicationType } from '../../utils/application';
 
@@ -9,9 +8,6 @@ import type { ApplicationType } from '../../utils/application';
  * @returns Quick Action registries.
  */
 export async function loadDefinitions(appType: ApplicationType): Promise<QuickActionDefinitionRegistry<string>[]> {
-    if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
-        return [];
-    }
     if (appType === 'fe-v2') {
         const FEV2QuickActionRegistry = (await import('open/ux/preview/client/adp/quick-actions/fe-v2/registry'))
             .default;
