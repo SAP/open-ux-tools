@@ -31,6 +31,37 @@ describe('Test function getMockserverConfigQuestions()', () => {
         ]);
     });
 
+    test('Question for overwrite, no mem-fs passed', () => {
+        expect(getMockserverConfigQuestions({ askForOverwrite: true })).toEqual([
+            {
+                name: 'path',
+                type: 'text',
+                message: t('questions.pathToMock')
+            },
+            {
+                name: 'overwrite',
+                type: 'confirm',
+                message: t('questions.overwrite')
+            }
+        ]);
+    });
+
+    test('Question for overwrite, mem-fs passed', () => {
+        const fs = create(createStorage());
+        expect(getMockserverConfigQuestions({ fs, askForOverwrite: true })).toEqual([
+            {
+                name: 'path',
+                type: 'text',
+                message: t('questions.pathToMock')
+            },
+            {
+                name: 'overwrite',
+                type: 'confirm',
+                message: t('questions.overwrite')
+            }
+        ]);
+    });
+
     test('Question with one choice, mem-fs passed, no odata version', () => {
         const fs = create(createStorage());
         fs.writeJSON(join('/webapp/manifest.json'), {
