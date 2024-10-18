@@ -1,0 +1,16 @@
+specVersion: "3.0"
+metadata:
+  name: fe_lrop_v2
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          intent:
+            object: hello
+            action: world
+
