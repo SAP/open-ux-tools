@@ -4,11 +4,8 @@ import { Text, Stack, Separator } from '@fluentui/react';
 
 import { UITextInput } from '../src/components/UIInput';
 import { UICheckbox } from '../src/components/UICheckbox';
-import { initIcons } from '../src/components/Icons';
 
 export default { title: 'Basic Inputs/Input' };
-
-initIcons();
 
 const stackTokens: IStackTokens = { childrenGap: 40 };
 const iconFolderProps = { iconName: 'FolderOpened' };
