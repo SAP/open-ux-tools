@@ -4,6 +4,8 @@ import type { Editor } from 'mem-fs-editor';
 import type { MockserverConfig } from '../types';
 import { enhancePackageJson, removeFromPackageJson } from './package-json';
 import { enhanceYaml, removeUi5MockYaml } from './ui5-mock-yaml';
+import { join } from 'path';
+import { DirName } from '@sap-ux/project-access';
 
 /**
  *  Add mockserver configuration to a UI5 application.
@@ -16,6 +18,21 @@ import { enhanceYaml, removeUi5MockYaml } from './ui5-mock-yaml';
 export async function generateMockserverConfig(basePath: string, data: MockserverConfig, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
+    }
+    // Check and generate folder for mockserver data only for real services
+    if (data.ui5MockYamlConfig?.serviceName) {
+        const mockdataPath = join(
+            basePath,
+            DirName.Webapp,
+            DirName.LocalService,
+            data.ui5MockYamlConfig?.serviceName,
+            DirName.Data
+        );
+        if (!fs.exists(mockdataPath)) {
+            // Create temporary file to make sure mockdataPath is generated
+            const tempFilePath = join(mockdataPath, 'keep');
+            fs.write(tempFilePath, '');
+        }
     }
     enhancePackageJson(fs, basePath, data.packageJsonConfig);
     await enhanceYaml(fs, basePath, data.webappPath, data.ui5MockYamlConfig);

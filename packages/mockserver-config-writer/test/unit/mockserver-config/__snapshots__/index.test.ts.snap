@@ -36,3 +36,23 @@ server:
         annotations: []
 "
 `;
+
+exports[`Test generateMockserverConfig() Add config with one service to project with existing ui5-mock.yaml 1`] = `
+"metadata:
+  name: 'app'
+type: application
+server:
+  customMiddleware:
+    - name: middleware-before
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /path/to/odata/service
+            metadataPath: ./webapp/localService/some-service/metadata.xml
+            mockdataPath: ./webapp/localService/some-service/data
+            generateMockData: true
+        annotations: []
+"
+`;

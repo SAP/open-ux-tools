@@ -78,7 +78,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 
     // update cds files with annotations only if service type is CDS and annotations are provided
     if (!isServiceTypeEdmx && service.annotations) {
-        await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
+        await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo | CdsAnnotationsInfo[], fs);
     }
     // manifest.json
     updateManifest(basePath, service, fs, templateRoot);
@@ -109,10 +109,21 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
         if (fs.exists(ui5LocalConfigPath)) {
             ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-            ui5LocalConfig.addFioriToolsProxydMiddleware({
-                backend: [service.previewSettings as ProxyBackend],
-                ignoreCertError: service.ignoreCertError
-            });
+            try {
+                ui5LocalConfig.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+            } catch (error: any) {
+                if (
+                    (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) ||
+                    error.message === 'Could not find fiori-tools-proxy'
+                ) {
+                    ui5LocalConfig.addFioriToolsProxydMiddleware({
+                        backend: [service.previewSettings as ProxyBackend],
+                        ignoreCertError: service.ignoreCertError
+                    });
+                } else {
+                    throw error;
+                }
+            }
         }
     }
 
@@ -122,14 +133,16 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
             const webappPath = await getWebappPath(basePath, fs);
+            // Name of the service or default name assigned in enhanceData(service)
+            const serviceName = service.name;
             const config = {
                 webappPath: webappPath,
-                ui5MockYamlConfig: { path: service.path }
+                ui5MockYamlConfig: { serviceName, path: service.path }
             };
             await generateMockserverConfig(basePath, config, fs);
-            // add mockserver middleware to ui5-local.yaml
+            // add or update mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {
-                ui5LocalConfig.addMockServerMiddleware(service.path);
+                ui5LocalConfig.enhanceMockServerMiddleware(serviceName, service.path);
             }
         }
 

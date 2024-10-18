@@ -1,0 +1,10 @@
+metadata:
+  name: 'app'
+type: application
+server:
+  customMiddleware:
+  - name: middleware-before
+  - name: sap-fe-mockserver
+    beforeMiddleware: fiori-tools-proxy
+    configuration:
+      services: []

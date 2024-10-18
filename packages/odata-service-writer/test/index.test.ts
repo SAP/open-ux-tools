@@ -88,10 +88,12 @@ describe('ODataService templates', () => {
             ...validServiceConfig,
             version: OdataVersion.v4,
             metadata: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `metadata.xml`), 'utf-8'),
-            annotations: {
-                technicalName: 'sepmra_annotations_tech_name',
-                xml: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `annotations.xml`), 'utf-8')
-            },
+            annotations: [
+                {
+                    technicalName: 'sepmra_annotations_tech_name',
+                    xml: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `annotations.xml`), 'utf-8')
+                }
+            ],
             localAnnotationsName: 'annotations_test'
         };
 

@@ -37,8 +37,8 @@ Object {
         mountPath: /
         services:
           - urlPath: /sap/odata/testme
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -65,8 +65,8 @@ Object {
         mountPath: /
         services:
           - urlPath: /sap/odata/testme
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/localService/sepmra_annotations_tech_name.xml
@@ -113,6 +113,10 @@ Object {
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>",
+    "state": "modified",
+  },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -2817,8 +2821,8 @@ Object {
         mountPath: /
         services:
           - urlPath: /sap/odata/testme
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -2845,8 +2849,8 @@ Object {
         mountPath: /
         services:
           - urlPath: /sap/odata/testme
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/localService//SEPM_XYZ/SERVICE.xml
@@ -2878,6 +2882,10 @@ Object {
     </ANNOTATION>
 </WORLD>
 </HELLO>",
+    "state": "modified",
+  },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {

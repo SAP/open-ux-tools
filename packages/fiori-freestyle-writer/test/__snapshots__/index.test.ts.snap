@@ -87,8 +87,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -132,8 +132,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -299,6 +299,10 @@ title=My Test App",
     ></div>
 </body>
 </html>",
+    "state": "modified",
+  },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -1443,8 +1447,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -1488,8 +1492,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -2649,6 +2653,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     ></div>
 </body>
 </html>",
+    "state": "modified",
+  },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -4115,8 +4123,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -4160,8 +4168,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -4861,6 +4869,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     ></div>
 </body>
 </html>",
+    "state": "modified",
+  },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
