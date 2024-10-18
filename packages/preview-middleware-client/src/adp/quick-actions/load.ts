@@ -1,4 +1,3 @@
-import { FeatureService } from '../../cpe/feature-service';
 import type { QuickActionDefinitionRegistry } from '../../cpe/quick-actions/registry';
 import type { ApplicationType } from '../../utils/application';
 
