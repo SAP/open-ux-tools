@@ -1,4 +1,4 @@
-import { initTheme } from '../../../src/theme';
+import { initTheme } from '../../../src';
 import * as fluentUI from '@fluentui/react';
 
 describe('initTheme', () => {
