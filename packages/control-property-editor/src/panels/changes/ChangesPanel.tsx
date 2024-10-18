@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Text, Icon } from '@fluentui/react';
+import { Icon } from '@fluentui/react';
 import { UISearchBox } from '@sap-ux/ui-components';
 
 import type { ChangesSlice } from '../../slice';
@@ -18,6 +18,7 @@ import { ChangeStackHeader } from './ChangeStackHeader';
 import styles from './ChangesPanel.module.scss';
 import { FileChange } from './FileChange';
 import { defaultFontSize } from '../properties/constants';
+import { NoChangesFound } from './NoChangesFound';
 
 /**
  * React element for ChangePanel.
@@ -44,7 +45,7 @@ export function ChangesPanel(): ReactElement {
      */
     function renderChanges(): ReactElement {
         if (pending.length + saved.length + fileChanges.length === 0) {
-            return <Text className={styles.noData}>{t('NO_CONTROL_CHANGES_FOUND')}</Text>;
+            return <NoChangesFound />;
         }
         const fileChangesTooltip = t('CHANGES_IN_FILES') + '\n' + fileChanges.join('\n');
         return (
