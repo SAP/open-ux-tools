@@ -44,7 +44,7 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         await validateAdpProject(basePath);
         const variant = getVariant(basePath);
         const adpConfig = await getAdpConfig(basePath, yamlPath);
-        const manifestService = await ManifestService.init(variant.reference, adpConfig, logger);
+        const manifestService = await ManifestService.initMergedManifest(basePath, variant, adpConfig, logger);
         const dataSources = manifestService.getManifestDataSources();
         const answers = await promptYUIQuestions(getPromptsForAddAnnotationsToOData(basePath, dataSources), false);
         const metadata = await manifestService.getDataSourceMetadata(answers.id);

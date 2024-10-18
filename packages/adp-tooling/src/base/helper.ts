@@ -1,5 +1,5 @@
-import { readFileSync } from 'fs';
-import { join, isAbsolute } from 'path';
+import { readdirSync, readFileSync } from 'fs';
+import { join, isAbsolute, relative } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 
@@ -31,4 +31,26 @@ export async function getAdpConfig(basePath: string, yamlPath: string): Promise<
         throw new Error('No system configuration found in ui5.yaml');
     }
     return adp;
+}
+
+export function getWebappFiles(basePath: string): { relativePath: string; content: string }[] {
+    const dir = join(basePath, 'webapp');
+    const files: { relativePath: string; content: string }[] = [];
+
+    const getFilesRecursivelySync = (directory: string): void => {
+        const dirents = readdirSync(directory, { withFileTypes: true });
+        for (const dirent of dirents) {
+            const fullPath = join(directory, dirent.name);
+            if (dirent.isFile()) {
+                const content = readFileSync(fullPath, 'utf-8');
+                const relativePath = relative(dir, fullPath);
+                files.push({ relativePath, content });
+            } else if (dirent.isDirectory()) {
+                getFilesRecursivelySync(fullPath);
+            }
+        }
+    };
+
+    getFilesRecursivelySync(dir);
+    return files;
 }
