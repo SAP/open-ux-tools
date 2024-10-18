@@ -6,7 +6,6 @@ describe('Test generateMockserverConfig()', () => {
     test('Add config to bare minimum project', async () => {
         const basePath = join(__dirname, '../../fixtures/bare-minimum');
         const webappPath = join(basePath, 'webapp');
-        const mockDataPath = join(webappPath, 'localService', 'data', 'keep');
 
         const fs = await generateMockserverConfig(basePath, { webappPath });
 
@@ -17,15 +16,15 @@ describe('Test generateMockserverConfig()', () => {
             'scripts': { 'start-mock': 'fiori run --config ./ui5-mock.yaml --open "/"' }
         });
         expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toMatchSnapshot();
-        expect(fs.exists(mockDataPath)).toBeTruthy();
     });
 
-    test('Add config to project with existing ui5-mock.yaml', async () => {
+    test('Add config with one service to project with existing ui5-mock.yaml', async () => {
+        const serviceName = 'some-service';
         const basePath = join(__dirname, '../../fixtures/ui5-mock-config');
         const webappPath = join(basePath, 'webapp');
-        const mockDataPath = join(webappPath, 'localService', 'data', 'keep');
+        const mockDataPath = join(webappPath, 'localService', serviceName, 'data', 'keep');
 
-        const fs = await generateMockserverConfig(basePath, { webappPath });
+        const fs = await generateMockserverConfig(basePath, { webappPath, ui5MockYamlConfig: { serviceName } });
         const ui5MockYaml = join(basePath, 'ui5-mock.yaml');
         expect(fs.read(ui5MockYaml)).toMatchSnapshot();
         expect(fs.exists(mockDataPath)).toBeTruthy();

@@ -2338,7 +2338,7 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -6250,7 +6250,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },

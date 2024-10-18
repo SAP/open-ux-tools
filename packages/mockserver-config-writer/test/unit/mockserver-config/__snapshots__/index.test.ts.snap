@@ -37,7 +37,7 @@ server:
 "
 `;
 
-exports[`Test generateMockserverConfig() Add config to project with existing ui5-mock.yaml 1`] = `
+exports[`Test generateMockserverConfig() Add config with one service to project with existing ui5-mock.yaml 1`] = `
 "metadata:
   name: 'app'
 type: application
@@ -49,13 +49,9 @@ server:
       configuration:
         mountPath: /
         services:
-          - urlPath: /some/previous/service/uri
-            metadataXmlPath: ./webapp/localService/metadata.xml
-            mockdataRootPath: ./webapp/localService/data
-            generateMockData: true
           - urlPath: /path/to/odata/service
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/some-service/metadata.xml
+            mockdataPath: ./webapp/localService/some-service/data
             generateMockData: true
         annotations: []
 "

@@ -19,12 +19,20 @@ export async function generateMockserverConfig(basePath: string, data: Mockserve
     if (!fs) {
         fs = create(createStorage());
     }
-    // Check and generate folder for mockserver data
-    const mockdataPath = join(basePath, DirName.Webapp, DirName.LocalService, DirName.Data);
-    if (!fs.exists(mockdataPath)) {
-        // Create temporary file and immediately delete it just to leave the data folder
-        const tempFilePath = join(mockdataPath, 'keep');
-        fs.write(tempFilePath, '');
+    // Check and generate folder for mockserver data only for real services
+    if (data.ui5MockYamlConfig?.serviceName) {
+        const mockdataPath = join(
+            basePath,
+            DirName.Webapp,
+            DirName.LocalService,
+            data.ui5MockYamlConfig?.serviceName,
+            DirName.Data
+        );
+        if (!fs.exists(mockdataPath)) {
+            // Create temporary file to make sure mockdataPath is generated
+            const tempFilePath = join(mockdataPath, 'keep');
+            fs.write(tempFilePath, '');
+        }
     }
     enhancePackageJson(fs, basePath, data.packageJsonConfig);
     await enhanceYaml(fs, basePath, data.webappPath, data.ui5MockYamlConfig);

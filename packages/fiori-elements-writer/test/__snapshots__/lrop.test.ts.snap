@@ -1074,7 +1074,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -4702,7 +4702,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -8433,7 +8433,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -11027,7 +11027,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -14714,7 +14714,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -18402,7 +18402,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -23982,7 +23982,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -25332,7 +25332,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -29019,7 +29019,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -33516,7 +33516,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -37146,7 +37146,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -40535,7 +40535,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -44164,7 +44164,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -47896,7 +47896,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -51391,7 +51391,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -54886,7 +54886,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -58692,7 +58692,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },

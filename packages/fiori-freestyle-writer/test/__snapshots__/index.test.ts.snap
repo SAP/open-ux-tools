@@ -301,7 +301,7 @@ title=My Test App",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -2655,7 +2655,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -4871,7 +4871,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },

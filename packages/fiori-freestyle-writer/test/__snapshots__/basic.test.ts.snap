@@ -2512,7 +2512,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -3154,7 +3154,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -3790,7 +3790,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -4346,7 +4346,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -5160,7 +5160,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -5974,7 +5974,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -6789,7 +6789,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -7323,7 +7323,7 @@ appDescription=A Fiori application.
 title=App Title",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },

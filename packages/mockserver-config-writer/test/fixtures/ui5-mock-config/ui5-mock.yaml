@@ -7,8 +7,4 @@ server:
   - name: sap-fe-mockserver
     beforeMiddleware: fiori-tools-proxy
     configuration:
-      services:
-        - urlPath: /some/previous/service/uri
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+      services: []
