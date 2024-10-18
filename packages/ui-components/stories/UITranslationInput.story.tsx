@@ -4,7 +4,7 @@ import type { IStackTokens } from '@fluentui/react';
 import { Stack } from '@fluentui/react';
 import type { I18nBundle, TranslationEntry } from '../src/components/UITranslationInput';
 import { TranslationTextPattern, UITranslationInput } from '../src/components/UITranslationInput';
-import { initIcons, UiIcons } from '../src/components/Icons';
+import { UiIcons } from '../src/components/Icons';
 import { UITable } from '../src/components/UITable';
 import type { UIColumn } from '../src/components/UITable';
 import { UIIconButton } from '../src/components/UIButton';
@@ -25,8 +25,6 @@ interface I18nTableProps {
 interface CustomTranslationEntry extends TranslationEntry {
     dummyPath: string;
 }
-
-initIcons();
 
 const stackTokens: IStackTokens = { childrenGap: 60 };
 
