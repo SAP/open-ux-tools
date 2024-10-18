@@ -27,9 +27,14 @@ import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import { fetchMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
 import ManagedObject from 'mock/sap/ui/base/ManagedObject';
+import type { ChangeService } from '../../../../src/cpe/changes/service';
+
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
+    const mockChangeService = {
+        syncOutlineChanges: jest.fn()
+    } as unknown as ChangeService;
 
     beforeEach(() => {
         sendActionMock = jest.fn();
@@ -93,7 +98,9 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
+                    registry
+                ]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -214,7 +221,7 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -332,7 +339,7 @@ describe('FE V2 quick actions', () => {
                     }
                 });
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -455,7 +462,7 @@ describe('FE V2 quick actions', () => {
                 });
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -583,7 +590,7 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -708,7 +715,7 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -843,7 +850,7 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -981,7 +988,7 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
 
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({

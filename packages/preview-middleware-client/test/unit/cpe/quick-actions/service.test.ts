@@ -8,6 +8,7 @@ import {
     executeQuickAction
 } from '@sap-ux-private/control-property-editor-common';
 
+import type { ChangeService } from '../../../../src/cpe/changes/service';
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
 import {
@@ -60,6 +61,10 @@ class MockRegistry extends QuickActionDefinitionRegistry<string> {
     }
 }
 
+const mockChangeService = {
+    syncOutlineChanges: jest.fn()
+} as unknown as ChangeService;
+
 describe('quick action service', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
@@ -72,7 +77,7 @@ describe('quick action service', () => {
     test('initialize simple action definition', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
         const registry = new MockRegistry();
-        const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+        const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
         await service.init(sendActionMock, subscribeMock);
 
         await service.reloadQuickActions({});

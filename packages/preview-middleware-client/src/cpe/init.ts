@@ -45,7 +45,7 @@ export default function init(
     const changesService = new ChangeService({ rta }, selectionService);
     const connectorService = new WorkspaceConnectorService();
     const rtaService = new RtaService(rta);
-    const outlineService = new OutlineService(rta);
+    const outlineService = new OutlineService(rta, changesService);
     const quickActionService = new QuickActionService(rta, outlineService, registries);
     const services: Service[] = [
         connectorService,
