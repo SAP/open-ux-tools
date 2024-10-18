@@ -3,7 +3,7 @@ import type {
     PendingChange,
     SavedPropertyChange,
     UnknownSavedChange,
-    ControlSavedChange
+    SavedControlChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
@@ -186,7 +186,7 @@ export class ChangeService {
                     Object.keys(savedChanges ?? {}).map(
                         async (
                             key
-                        ): Promise<SavedPropertyChange | UnknownSavedChange | ControlSavedChange | undefined> => {
+                        ): Promise<SavedPropertyChange | UnknownSavedChange | SavedControlChange | undefined> => {
                             const change: Change = savedChanges[key];
                             let selectorId;
                             try {
@@ -235,10 +235,10 @@ export class ChangeService {
                                         unknownChange.timestamp = new Date(change.creation).getTime();
                                     }
                                     if (selectorId) {
-                                        const controlChange: ControlSavedChange = {
+                                        const controlChange: SavedControlChange = {
                                             ...unknownChange,
                                             kind: 'control',
-                                            controlId: selectorId ?? ''
+                                            controlId: selectorId
                                         };
 
                                         return controlChange;

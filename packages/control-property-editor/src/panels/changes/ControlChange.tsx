@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import styles from './ControlChange.module.scss';
 import { UIIconButton, UiIcons, UIDialog } from '@sap-ux/ui-components';
 import type {
-    ControlSavedChange,
+    SavedControlChange,
     PendingControlChange,
     PropertyChangeDeletionDetails
 } from '@sap-ux-private/control-property-editor-common';
@@ -23,7 +23,7 @@ export interface ControlChangeProps {
      * Class used for showing and hiding actions
      */
     actionClassName: string;
-    change: PendingControlChange | ControlSavedChange;
+    change: PendingControlChange | SavedControlChange;
 }
 
 /**

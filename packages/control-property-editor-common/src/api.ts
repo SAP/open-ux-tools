@@ -148,7 +148,7 @@ export interface PendingControlChange {
 }
 
 export type PendingChange = PendingPropertyChange | PendingOtherChange | PendingControlChange;
-export type SavedChange = SavedPropertyChange | UnknownSavedChange | ControlSavedChange;
+export type SavedChange = SavedPropertyChange | UnknownSavedChange | SavedControlChange;
 
 export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
     type: typeof SAVED_CHANGE_TYPE;
@@ -165,7 +165,7 @@ export interface UnknownSavedChange {
     timestamp?: number;
 }
 
-export interface ControlSavedChange {
+export interface SavedControlChange {
     type: typeof SAVED_CHANGE_TYPE;
     kind: typeof CONTROL_CHANGE_KIND;
     controlId: string;
