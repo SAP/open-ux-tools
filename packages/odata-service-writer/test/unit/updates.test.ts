@@ -97,13 +97,11 @@ describe('updates', () => {
                 name: 'aname',
                 path: '/a/path',
                 type: ServiceType.EDMX,
-                annotations: [
-                    {
-                        technicalName: 'test',
-                        xml: 'test',
-                        name: 'test'
-                    }
-                ],
+                annotations: {
+                    technicalName: 'test',
+                    xml: 'test',
+                    name: 'test'
+                },
                 localAnnotationsName: 'test'
             };
 
@@ -162,14 +160,12 @@ describe('updates', () => {
                 name: 'aname',
                 path: '/a/path',
                 type: ServiceType.CDS,
-                annotations: [
-                    {
-                        cdsFileContents: `using AdminService as service from \'../../srv/admin-service\'`,
-                        projectPath: 'projectPath',
-                        appPath: 'appPath',
-                        projectName: 'projectName'
-                    }
-                ]
+                annotations: {
+                    cdsFileContents: `using AdminService as service from \'../../srv/admin-service\'`,
+                    projectPath: 'projectPath',
+                    appPath: 'appPath',
+                    projectName: 'projectName'
+                }
             };
             fs.writeJSON('./webapp/manifest.json', testManifest);
             // Call updateManifest
@@ -210,6 +206,23 @@ describe('updates', () => {
 
     describe('updates cds files correctly', () => {
         it('writes annotation cds files correctly', async () => {
+            const annotationsInfo: CdsAnnotationsInfo = {
+                cdsFileContents: '"using AdminService as service from \'../../srv/admin-service\';"',
+                projectPath: 'testProject',
+                appPath: 'webapp',
+                projectName: 'annotations'
+            };
+            const annotationPath = join('./testProject/webapp/annotations', 'annotations.cds');
+            await updateCdsFilesWithAnnotations(annotationsInfo, fs);
+            const annotationCds = fs.read(annotationPath);
+            expect(annotationCds).toEqual(annotationsInfo.cdsFileContents);
+            // Convert the annotation path to the services path
+            const serviceCdsPath = path.join(path.dirname(annotationPath).replace('annotations', ''), 'services.cds');
+            const serviceCds = fs.read(serviceCdsPath);
+            expect(serviceCds).toContain(`using from './annotations/annotations';`);
+        });
+
+        it('writes annotation cds files correctly, multiple annotations', async () => {
             const annotationsInfo: CdsAnnotationsInfo[] = [
                 {
                     cdsFileContents: '"using AdminService as service from \'../../srv/admin-service\';"',

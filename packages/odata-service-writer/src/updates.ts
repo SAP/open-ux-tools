@@ -71,9 +71,19 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
  */
 export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
     // Write annotation xml if annotations are provided and service type is EDMX
-    const annotations = service.annotations as EdmxAnnotationsInfo[];
-    for (const i in annotations) {
-        const annotation = annotations[i];
+    if (service.annotations && Array.isArray(service.annotations)) {
+        const annotations = service.annotations as EdmxAnnotationsInfo[];
+        for (const i in annotations) {
+            const annotation = annotations[i];
+            if (annotation?.xml) {
+                fs.write(
+                    join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
+                    prettifyXml(annotation.xml, { indent: 4 })
+                );
+            }
+        }
+    } else {
+        const annotation = service.annotations as EdmxAnnotationsInfo;
         if (annotation?.xml) {
             fs.write(
                 join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
@@ -92,18 +102,33 @@ export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: O
  * @param {Editor} fs - The memfs editor instance
  * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
  */
-export async function updateCdsFilesWithAnnotations(annotations: CdsAnnotationsInfo[], fs: Editor): Promise<void> {
-    for (const i in annotations) {
-        const annotation = annotations[i];
+export async function updateCdsFilesWithAnnotations(
+    annotations: CdsAnnotationsInfo | CdsAnnotationsInfo[],
+    fs: Editor
+): Promise<void> {
+    if (Array.isArray(annotations)) {
+        for (const i in annotations) {
+            const annotation = annotations[i];
+            const annotationCdsPath = join(
+                annotation.projectPath,
+                annotation.appPath ?? '',
+                annotation.projectName,
+                'annotations.cds'
+            );
+            // write into annotations.cds file
+            fs.write(annotationCdsPath, annotation.cdsFileContents);
+            await updateCdsIndexOrServiceFile(fs, annotation);
+        }
+    } else {
         const annotationCdsPath = join(
-            annotation.projectPath,
-            annotation.appPath ?? '',
-            annotation.projectName,
+            annotations.projectPath,
+            annotations.appPath ?? '',
+            annotations.projectName,
             'annotations.cds'
         );
         // write into annotations.cds file
-        fs.write(annotationCdsPath, annotation.cdsFileContents);
-        await updateCdsIndexOrServiceFile(fs, annotation);
+        fs.write(annotationCdsPath, annotations.cdsFileContents);
+        await updateCdsIndexOrServiceFile(fs, annotations);
     }
 }
 

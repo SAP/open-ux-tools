@@ -111,12 +111,10 @@ export const v2Service: OdataService = {
     url: 'http://example.lrop.v2',
     version: OdataVersion.v2,
     metadata: getTestData('sepmra_prod_man_v2', 'metadata'),
-    annotations: [
-        {
-            technicalName: 'SEPMRA_PROD_MAN_ANNO_MDL',
-            xml: getTestData('sepmra_prod_man_v2', 'annotations')
-        }
-    ],
+    annotations: {
+        technicalName: 'SEPMRA_PROD_MAN_ANNO_MDL',
+        xml: getTestData('sepmra_prod_man_v2', 'annotations')
+    },
     client: '012'
 };
 

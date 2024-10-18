@@ -19,12 +19,10 @@ describe('ODataService templates', () => {
         type: ServiceType.EDMX,
         version: OdataVersion.v2,
         metadata: '<HELLO><WORLD><METADATA></METADATA></WORLD></HELLO>',
-        annotations: [
-            {
-                technicalName: '/SEPM_XYZ/SERVICE',
-                xml: '<HELLO><ANNOTATION></ANNOTATION></WORLD></HELLO>'
-            }
-        ]
+        annotations: {
+            technicalName: '/SEPM_XYZ/SERVICE',
+            xml: '<HELLO><ANNOTATION></ANNOTATION></WORLD></HELLO>'
+        }
     };
 
     beforeAll(() => {
