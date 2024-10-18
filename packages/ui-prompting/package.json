@@ -34,7 +34,7 @@
     },
     "dependencies": {
         "@sap-ux/ui-components": "workspace:*",
-        "react-markdown": "5.0.2"
+        "react-markdown": "5.0.3"
     },
     "peerDependencies": {
         "react": ">=16.14.0",
@@ -54,7 +54,7 @@
         "@testing-library/jest-dom": "5.17.0",
         "@testing-library/react": "12.1.5",
         "@types/inquirer": "8.2.6",
-        "@types/react": "16.14.55",
+        "@types/react": "16.14.62",
         "@types/react-dom": "16.9.24",
         "babel-jest": "29.7.0",
         "babel-loader": "9.1.3",
