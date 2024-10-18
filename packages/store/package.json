@@ -36,7 +36,7 @@
         "keytar": "7.9.0"
     },
     "devDependencies": {
-        "@types/i18next-fs-backend": "1.1.2",
+        "@types/i18next-fs-backend": "1.1.5",
         "@types/pluralize": "0.0.30",
         "@types/qs": "6.9.1",
         "fast-check": "2.19.0",
