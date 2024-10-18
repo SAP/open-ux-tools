@@ -29,7 +29,22 @@ export async function getManifest(appId: string, adpConfig: AdpPreviewConfig, lo
     }
     try {
         const response = await provider.get(manifestUrl);
-        return JSON.parse(response.data);
+        const manifest = JSON.parse(response.data);
+
+        // retrieve localmetadata from base project
+        const dataSourceName = Object.keys(manifest?.['sap.app']?.dataSources)?.[0];
+        const metadataPath = manifest?.['sap.app']?.dataSources?.[dataSourceName];
+        let metadataUrl = '';
+        if (metadataPath?.settings?.localUri) {//v2
+            metadataUrl = `${appInfo.url}/${metadataPath.settings.localUri}`;
+        } else if (metadataPath?.uri) { //v4
+            metadataUrl = `${appInfo.url}/${metadataPath.uri}$metadata`; 
+        }
+       
+        const metadata = await provider.get(metadataUrl);
+
+        console.log(metadata.data);
+        return manifest;
     } catch (error) {
         if (isAxiosError(error)) {
             logger.error('Manifest fetching failed');

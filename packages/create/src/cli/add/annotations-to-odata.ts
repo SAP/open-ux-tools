@@ -52,7 +52,7 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
             {
                 variant,
                 annotation: {
-                    dataSource: answers.id,
+                    datasource: answers.id,
                     filePath: answers.filePath
                 }
             }
