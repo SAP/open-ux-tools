@@ -1,20 +1,22 @@
+import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
+import type { ODataService } from '@sap-ux/axios-extension';
 import {
-    type CatalogService,
-    ServiceType,
-    V2CatalogService,
     type Annotations,
+    type CatalogService,
     type ODataServiceInfo,
-    type ServiceProvider,
-    ODataVersion
+    ODataVersion,
+    ServiceType,
+    V2CatalogService
 } from '@sap-ux/axios-extension';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
-import LoggerHelper from '../../../logger-helper';
-import type { ServiceAnswer } from './types';
-import type { ConnectionValidator } from '../../../connectionValidator';
 import { PromptState } from '../../../../utils';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { ConnectionValidator } from '../../../connectionValidator';
+import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
+import type { ServiceAnswer } from './types';
+import { validateODataVersion } from '../../../validators';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON/'];
@@ -112,29 +114,29 @@ export async function getServiceChoices(catalogs: CatalogService[]): Promise<Lis
  * Gets the service metadata and annotations for the specified service path.
  *
  * @param servicePath service path
+ * @param odataService the odata service used to get the metadata for the specified service path
  * @param catalog the catalog service used to get the annotations for the specified service path
- * @param serviceProvider the service provider for the connected system
  * @returns Promise<string | boolean>, string error message or true if successful
  */
-export async function getServiceMetadata(
+async function getServiceMetadata(
     servicePath: string,
-    catalog: CatalogService,
-    serviceProvider: ServiceProvider
-): Promise<{ annotations: Annotations[]; metadata: string; serviceProvider: ServiceProvider } | string> {
+    odataService: ODataService,
+    catalog?: CatalogService
+): Promise<{ annotations: Annotations[]; metadata: string } | string> {
     let annotations: Annotations[] = [];
     try {
-        try {
-            annotations = await catalog.getAnnotations({ path: servicePath });
-        } catch {
-            LoggerHelper.logger.info(t('prompts.validationMessages.noAnnotations'));
+        if (catalog) {
+            try {
+                annotations = await catalog.getAnnotations({ path: servicePath });
+            } catch {
+                LoggerHelper.logger.info(t('prompts.validationMessages.noAnnotations'));
+            }
         }
 
-        const odataService = serviceProvider.service(servicePath);
         const metadata = await odataService.metadata();
         return {
             annotations,
-            metadata,
-            serviceProvider
+            metadata
         };
     } catch (error) {
         LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, error }));
@@ -172,32 +174,111 @@ export async function getServiceType(
  *
  * @param service the specific service to get details for
  * @param connectionValidator a reference to the connection validator which has an active connection to the backend
+ * @param requiredOdataVersion
  * @returns true if successful, setting the PromptState.odataService properties, or an error message indicating why the service details could not be retrieved.
  */
 export async function getServiceDetails(
     service: ServiceAnswer,
-    connectionValidator: ConnectionValidator
+    connectionValidator: ConnectionValidator,
+    requiredOdataVersion?: OdataVersion
 ): Promise<string | boolean> {
-    const serviceCatalog = connectionValidator.catalogs[service.serviceODataVersion];
+    const serviceCatalog = connectionValidator.catalogs?.[service.serviceODataVersion];
 
-    if (!serviceCatalog || !connectionValidator.serviceProvider) {
-        LoggerHelper.logger.error('ConenctionValidator is not initialized');
+    if (!connectionValidator.serviceProvider) {
+        LoggerHelper.logger.error('ConnectionValidator connection is not initialized');
         return false;
     }
+    // We may already have an odata service endpoint connection
+    let odataService = connectionValidator.odataService;
+    if (!odataService) {
+        odataService = connectionValidator.serviceProvider.service<ODataService>(service.servicePath);
+    }
 
-    const serviceResult = await getServiceMetadata(
-        service.servicePath,
-        serviceCatalog,
-        connectionValidator.serviceProvider
-    );
+    const serviceResult = await getServiceMetadata(service.servicePath, odataService, serviceCatalog);
     if (typeof serviceResult === 'string') {
         return serviceResult;
+    }
+
+    const { validationMsg, version } = validateODataVersion(serviceResult.metadata, requiredOdataVersion);
+    if (validationMsg) {
+        return validationMsg;
+    }
+
+    // If destinationUrl is available, use it, as validatedUrl may be in the form <protocal>:<destinationName>.dest
+    const url = connectionValidator.destinationUrl ?? connectionValidator.validatedUrl;
+    let origin;
+    if (url) {
+        origin = new URL(url).origin;
     }
     PromptState.odataService.annotations = serviceResult?.annotations;
     PromptState.odataService.metadata = serviceResult?.metadata;
     PromptState.odataService.odataVersion =
-        service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4;
+        version ?? service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4;
     PromptState.odataService.servicePath = service.servicePath;
-    PromptState.odataService.origin = connectionValidator.validatedUrl;
+    PromptState.odataService.origin = origin;
+    PromptState.odataService.sapClient = connectionValidator.validatedClient;
     return true;
+}
+
+/**
+ * Create a value for the service selection prompt message, which may include thge active connected user name.
+ *
+ * @param username The connected user name
+ * @returns The service selection prompt message
+ */
+export function getSelectedServiceLabel(username: string | undefined): string {
+    let message = t('prompts.systemService.message');
+    if (username) {
+        message = message.concat(` ${t('texts.forUserName', { username })}`);
+    }
+    return message;
+}
+
+/**
+ * Get the service selection prompt additional message. This prompt will make an additional call to the system backend
+ * to retrieve the service type and display a warning message if the service type is not UI.
+ *
+ * @param serviceChoices a list of service choices
+ * @param selectedService the selected service
+ * @param connectValidator the connection validator
+ * @param requiredOdataVersion the required OData version for the service
+ * @returns the service selection prompt additional message
+ */
+export async function getSelectedServiceMessage(
+    serviceChoices: ListChoiceOptions<ServiceAnswer>[],
+    selectedService: ServiceAnswer,
+    connectValidator: ConnectionValidator,
+    requiredOdataVersion?: OdataVersion
+): Promise<IMessageSeverity | undefined> {
+    if (serviceChoices?.length === 0) {
+        if (requiredOdataVersion) {
+            return {
+                message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
+                    odataVersion: requiredOdataVersion
+                }),
+                severity: Severity.warning
+            };
+        } else {
+            return {
+                message: t('prompts.warnings.noServicesAvailable'),
+                severity: Severity.warning
+            };
+        }
+    }
+    if (selectedService) {
+        let serviceType = selectedService.serviceType;
+        if (selectedService.serviceODataVersion === ODataVersion.v2) {
+            serviceType = await getServiceType(
+                selectedService.servicePath,
+                selectedService.serviceType,
+                connectValidator.catalogs[ODataVersion.v2] as V2CatalogService
+            );
+        }
+        if (serviceType && serviceType !== ServiceType.UI) {
+            return {
+                message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+                severity: Severity.warning
+            };
+        }
+    }
 }
