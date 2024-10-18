@@ -115,7 +115,7 @@ Object {
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
@@ -2884,7 +2884,7 @@ Object {
 </HELLO>",
     "state": "modified",
   },
-  "webapp/localService/data/keep": Object {
+  "webapp/localService/mainService/data/keep": Object {
     "contents": "",
     "state": "modified",
   },
