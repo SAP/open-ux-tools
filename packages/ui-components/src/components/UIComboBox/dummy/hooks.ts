@@ -61,15 +61,19 @@ function findOptionByValue<T extends string | number | string[] | number[] | nul
 
 //     return [options];
 // }
-export function useOptions<T extends string | number | string[] | number[] | null | undefined>(
-    externalSelectedKey: T,
-    originalOptions: UISelectableOption[]
-): [T, (selectedKey: T) => void, UISelectableOptionWithSubValues[]] {
+
+type OptionKey = string | number | string[] | number[] | null | undefined;
+
+export function useOptions(
+    externalSelectedKey: OptionKey,
+    originalOptions: UISelectableOption[],
+    multiSelect?: boolean
+): [OptionKey, (selectedKey: OptionKey, checked?: boolean) => void, UISelectableOptionWithSubValues[]] {
     const [options, setOptions] = useState(convertToEditableOptions(originalOptions));
-    const [selectedKey, setSelectedKey] = useState<T>(externalSelectedKey);
+    const [selectedKey, setSelectedKey] = useState<OptionKey>(externalSelectedKey);
     useEffect(() => {
         const optionKey = findOptionByValue(options, externalSelectedKey);
-        setSelectedKey((optionKey?.key as T) ?? externalSelectedKey);
+        setSelectedKey((optionKey?.key as OptionKey) ?? externalSelectedKey);
     }, [externalSelectedKey]);
 
     useEffect(() => {
@@ -77,7 +81,25 @@ export function useOptions<T extends string | number | string[] | number[] | nul
         setOptions(convertedOptions);
     }, [originalOptions]);
 
-    return [selectedKey, setSelectedKey, options];
+    const updateSelection = (key: OptionKey, selected = true) => {
+        // console.log(`updateSelection -> ${JSON.stringify(selectedKey)}`)
+        // console.log('updateSelection multiselect=' + multiSelect + ';checked=' + selected);
+        if (multiSelect) {
+            let selectedKeys: string[] | number[] = [];
+            if (selectedKey) {
+                selectedKeys = Array.isArray(selectedKey) ? selectedKey : ([selectedKey] as string[] | number[]);
+            }
+            // setSelectedKey([...selectedKeys, key] as string[] | number[]);
+            const newKeys = [...(selectedKeys ?? []), key].filter((k) => (selected ? true : k !== key));
+            // console.log('setSelectedKey ' + JSON.stringify(newKeys));
+            setSelectedKey(newKeys as string[]);
+        } else {
+            // console.log('setSelectedKey ' + key);
+            setSelectedKey(key);
+        }
+    };
+
+    return [selectedKey, updateSelection, options];
 }
 
 export function useSelectedKey<T extends string | number | string[] | number[] | null | undefined>(

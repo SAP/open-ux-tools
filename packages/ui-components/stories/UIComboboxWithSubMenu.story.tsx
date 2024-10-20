@@ -15,45 +15,98 @@ import { data, groupsData } from '../test/__mock__/select-data';
 
 import { initIcons } from '../src/components/Icons';
 import { UITextInput } from '../src/components';
+import { UISelectableOptionWithSubValues } from '../src/components/UIComboBox/dummy/types';
 
 initIcons();
 
 export default { title: 'Dropdowns/Combobox SubMenu' };
 
-const editableEntries = ['AR', 'BR', 'DK'];
+const replacedFn = (key, value) => {
+    return ['styles', 'options', 'submenuIconProps'].includes(key) ? undefined : value;
+};
 
-const tempData = data.map((item) => {
-    if (editableEntries.includes(item.key)) {
-        return {
-            ...item,
-            editable: true
-        };
-    }
-    return item;
-});
+interface EditableComboboxExampleProps {
+    options: UISelectableOptionWithSubValues[];
+}
 
-export const generic = (): JSX.Element => (
-    <div style={{ width: '300px' }}>
-        <UIComboBoxDummy
-            options={tempData}
-            highlight={true}
-            allowFreeform={true}
-            useComboBoxAsMenuMinWidth={true}
-            autoComplete="on"
-        />
-        <UIComboBoxDummy
-            options={tempData}
-            highlight={true}
-            allowFreeform={true}
-            useComboBoxAsMenuMinWidth={true}
-            autoComplete="on"
-            multiSelect={true}
-        />
-        <div style={{ marginTop: 500 }}>
-            <UITextInput />
+const VALUE_PREVIEW_STYLE: React.CSSProperties = {
+    border: '1px solid red',
+    margin: '10px 0',
+    padding: '10px',
+    minHeight: 50,
+    fontSize: 11,
+    wordBreak: 'break-word'
+    // position: 'absolute',
+    // left: '100px',
+    // right: '100px'
+};
+
+const EditableComboboxExample = (props: EditableComboboxExampleProps) => {
+    const { options } = props;
+    const [selectedOption, setSelectedOption] = useState<UIComboBoxOption | undefined>();
+    const [selectedOptions, setSelectedOptions] = useState<UIComboBoxOption[] | undefined>([]);
+    const [selectedKey, setSelectedKey] = useState<string | number | undefined>();
+    const [selectedKeys, setSelectedKeys] = useState<string[] | number[] | undefined>();
+    return (
+        <div>
+            <div style={{ position: 'relative' }}>
+                <div style={VALUE_PREVIEW_STYLE}>
+                    <div>{selectedKey}</div>
+                    <div>{JSON.stringify(selectedOption, replacedFn)}</div>
+                </div>
+            </div>
+            <div style={{ width: '300px' }}>
+                <UIComboBoxDummy
+                    options={options}
+                    highlight={true}
+                    allowFreeform={true}
+                    useComboBoxAsMenuMinWidth={true}
+                    autoComplete="on"
+                    selectedKey={selectedKey}
+                    onChange={(event, option) => {
+                        setSelectedOption(option);
+                        setSelectedKey(option?.key);
+                    }}
+                />
+            </div>
+
+            <div style={VALUE_PREVIEW_STYLE}>
+                <div>{selectedKeys?.join(', ')}</div>
+                <div>{JSON.stringify(selectedOptions, replacedFn)}</div>
+            </div>
+            <div style={{ width: '300px' }}>
+                <UIComboBoxDummy
+                    options={options}
+                    multiSelect={true}
+                    highlight={true}
+                    allowFreeform={true}
+                    useComboBoxAsMenuMinWidth={true}
+                    autoComplete="on"
+                    // selectedKey={selectedKeys}
+                    onChange={(event, option?: UIComboBoxOption | undefined) => {
+                        console.log('ochange!!! -> ' + option?.key);
+                        if (option) {
+                            const newKeys = [...(selectedKeys ?? []), option.key].filter((k) =>
+                                option.selected ? true : k !== option.key
+                            );
+                            setSelectedKeys(newKeys as string[]);
+
+                            const newOptions = [...(selectedOptions ?? []), option].filter((checkOption) =>
+                                option.selected ? true : checkOption.key !== option.key
+                            );
+                            setSelectedOptions(newOptions);
+                        }
+                    }}
+                />
+            </div>
+            <div style={{ marginTop: 500 }}>
+                <UITextInput />
+            </div>
         </div>
-    </div>
-);
+    );
+};
+
+export const generic = (): JSX.Element => <EditableComboboxExample options={data} />;
 
 const editableSingleData = [
     { key: 'tripName', text: 'tripName' },
@@ -64,28 +117,7 @@ const editableSingleData = [
     { key: 'zz_newString', text: 'zz_newString' }
 ];
 
-export const editableSingle = (): JSX.Element => (
-    <div style={{ width: '300px' }}>
-        <UIComboBoxDummy
-            options={editableSingleData}
-            highlight={true}
-            allowFreeform={true}
-            useComboBoxAsMenuMinWidth={true}
-            autoComplete="on"
-        />
-        <UIComboBoxDummy
-            options={editableSingleData}
-            highlight={true}
-            allowFreeform={true}
-            useComboBoxAsMenuMinWidth={true}
-            autoComplete="on"
-            multiSelect={true}
-        />
-        <div style={{ marginTop: 500 }}>
-            <UITextInput />
-        </div>
-    </div>
-);
+export const editableSingle = (): JSX.Element => <EditableComboboxExample options={editableSingleData} />;
 
 const editableMultipleData = [
     { key: 'tripName', text: 'tripName' },
@@ -100,42 +132,4 @@ const editableMultipleData = [
     { key: 'zz_newDate', text: 'zz_newDate' }
 ];
 
-export const editableMultiple = (): JSX.Element => {
-    const [option, setOption] = useState<UIComboBoxOption | undefined>();
-    const [selectedKey, setSelectedKey] = useState<string | number | undefined>();
-    console.log(`editableMultiple -> ${selectedKey}`);
-    return (
-        <div style={{ width: '300px' }}>
-            <UIComboBoxDummy
-                options={editableMultipleData}
-                highlight={true}
-                allowFreeform={true}
-                useComboBoxAsMenuMinWidth={true}
-                autoComplete="on"
-                selectedKey={selectedKey}
-                onChange={(event, option) => {
-                    setOption(option);
-                    setSelectedKey(option?.key);
-                }}
-            />
-            <UIComboBoxDummy
-                options={editableMultipleData}
-                highlight={true}
-                allowFreeform={true}
-                useComboBoxAsMenuMinWidth={true}
-                autoComplete="on"
-                multiSelect={true}
-            />
-            <div>
-                {JSON.stringify(option, (key, value) => {
-                    if (['styles', 'options', 'submenuIconProps'].includes(key)) return undefined;
-
-                    return value;
-                })}
-            </div>
-            <div style={{ marginTop: 500 }}>
-                <UITextInput />
-            </div>
-        </div>
-    );
-};
+export const editableMultiple = (): JSX.Element => <EditableComboboxExample options={editableMultipleData} />;

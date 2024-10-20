@@ -24,7 +24,7 @@ function getSubValueText(option?: UISelectableOptionWithSubValues): string | und
 
 function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemInputRef>): React.ReactElement {
     const { option, renamedEntry, ...inputProps } = props;
-    const { value, onChange, onClick } = inputProps;
+    const { value, onChange, onClick, onMouseDown } = inputProps;
     const [subValue, setSubValue] = useState<string | undefined>(getSubValueText(option));
     const [localValue, placeholder, setLocalValue] = useEditValue('', value, renamedEntry);
 
@@ -47,14 +47,15 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
         <div style={{ display: 'flex', width: '100%' }}>
             <UITextInput
                 className="dropdown-item-input"
+                {...inputProps}
                 onMouseDown={(event) => {
                     console.log('mouse down!!');
                     const target = event.target as HTMLElement;
                     (document.activeElement as HTMLElement)?.blur();
                     target.focus();
                     event.stopPropagation();
+                    onMouseDown?.(event);
                 }}
-                {...inputProps}
                 onClick={(event) => {
                     event.preventDefault();
                     event.stopPropagation();

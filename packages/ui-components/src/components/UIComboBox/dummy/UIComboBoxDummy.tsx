@@ -7,7 +7,7 @@ import { UIContextualMenu, UIContextualMenuItem } from '../../UIContextualMenu';
 import { useOptions, useSelectedKey } from './hooks';
 import { UISelectableOptionWithSubValues } from './types';
 import { ItemInput, ItemInputRef } from './ItemInput';
-import { isValueValid, RenamedEntries, resolveValue, resolveValueForOption, updateEditableEntry } from './utils';
+import { isValueValid, RenamedEntries, resolveValueForOption, updateEditableEntry } from './utils';
 
 export interface UIComboboxTestProps extends UIComboBoxProps {
     /**
@@ -30,12 +30,12 @@ function getOption(
 
 export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
     const { options, onChange } = props;
-    const [selectedKey, setSelectedKey, convertedOptions] = useOptions(props.selectedKey, options);
+    const [selectedKey, setSelectedKey, convertedOptions] = useOptions(props.selectedKey, options, props.multiSelect);
     const [subMenu, setSubMenu] = useState<SubMenuData | null>(null);
     const { target, option: activeOption } = subMenu ?? {};
     const inputItemRefs = useRef<{ [key: string]: ItemInputRef | null }>({});
     const [_pendingText, setPendingText] = useState<string | undefined>(undefined);
-    // console.log('UIComboBoxDummy -> ' + selectedKey);
+    console.log('UIComboBoxDummy -> ' + JSON.stringify(selectedKey));
 
     const triggerChange = (
         event: React.FormEvent<UIComboBoxRef>,
@@ -43,17 +43,19 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
         index?: number,
         value?: string
     ) => {
+        // console.log(selectedKey);
+        const x = selectedKey;
         if (selectedOption) {
-            setSelectedKey(selectedOption.key);
+            setSelectedKey(selectedOption.key, selectedOption.selected);
         }
         const option = getOption(convertedOptions, selectedOption?.key);
         const resolveValue = option ? resolveValueForOption(option) : selectedOption?.key.toString();
         // console.log(resolveValue);
         if (selectedOption?.editable && option && !isValueValid(option)) {
-            console.log('Invalid!!!');
+            // console.log('Invalid!!!');
             onChange?.(event, undefined, undefined, '');
         } else {
-            console.log('valid!!!');
+            // console.log('valid!!!');
             onChange?.(
                 event,
                 selectedOption ? { ...selectedOption, key: resolveValue ?? selectedOption.key } : undefined,
@@ -92,15 +94,15 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                 selectedKey={selectedKey}
                 options={convertedOptions}
                 onMenuOpen={() => {
-                    console.log('onMenuOpen');
+                    // console.log('onMenuOpen');
                 }}
                 onMenuDismiss={() => {
-                    console.log('onMenuDismiss');
+                    // console.log('onMenuDismiss');
                     setSubMenu(null);
                 }}
                 calloutProps={{
                     preventDismissOnEvent(event) {
-                        console.log('preventDismissOnEvent ' + event.type);
+                        // console.log('preventDismissOnEvent ' + event.type);
                         let prevent = false;
                         if (event.type === 'focus' || event.type === 'click') {
                             const target = event.target as HTMLElement;
@@ -108,7 +110,7 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                                 target.closest('.dropdown-submenu') || target.querySelector('.dropdown-submenu')
                             );
                         }
-                        console.log('preventDismissOnEvent ' + prevent);
+                        // console.log('preventDismissOnEvent ' + prevent);
                         return prevent;
                     }
                 }}
@@ -124,10 +126,14 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                                 if (element) {
                                     const index = element.getAttribute('data-index');
                                     if (index !== null) {
-                                        setSubMenu({
-                                            target: element,
-                                            option: convertedOptions[parseInt(index)]
-                                        });
+                                        const option = convertedOptions[parseInt(index)];
+                                        const optionsCount = option?.options?.length ?? 0;
+                                        if (optionsCount > 1) {
+                                            setSubMenu({
+                                                target: element,
+                                                option: convertedOptions[parseInt(index)]
+                                            });
+                                        }
                                     }
                                 }
                             }}>
@@ -139,7 +145,7 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                     props?: UISelectableOptionWithSubValues,
                     defaultRender?: (props?: UISelectableOptionWithSubValues) => JSX.Element | null
                 ) => {
-                    console.log(props);
+                    console.log('onRenderOption ' + props?.key);
                     if (props?.editable) {
                         const { subValue } = props;
                         const option = getOption(convertedOptions, props?.key);
@@ -158,8 +164,24 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                                     }
                                     setPendingText(value);
                                 }}
+                                // onMouseDown={(
+                                //     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+                                //     value?: string
+                                // ) => {
+                                //     console.log('onMouseDown');
+                                //     if (option) {
+                                //         option.selected = true;
+                                //         // option.text = 'xxx';
+                                //         option.text = 'xxx';
+                                //     }
+                                //     setPendingText('xxx');
+                                // }}
                                 onClick={() => {
-                                    setSelectedKey(props.key);
+                                    // console.log('Item click');
+                                    // console.log(selectedKey);
+                                    // console.log(_pendingText);
+                                    // //triggerChange({} as any, { ...props, selected: true }, 0, props.key.toString());
+                                    setSelectedKey(props.key, true);
                                 }}
                                 option={props}
                             />

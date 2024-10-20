@@ -3,44 +3,6 @@ import { EDITABLE_ENTRY_PREFIXES, type RenamedEntries } from './types';
 import { UIContextualMenuItem } from '../../../UIContextualMenu';
 import { UISelectableOptionWithSubValues } from '../types';
 
-export const useRenames = (): [RenamedEntries, (updatedEntries?: RenamedEntries) => void] => {
-    const renames = useRef<RenamedEntries>({});
-    const updateEntries = useCallback(
-        (updatedEntries?: RenamedEntries) => {
-            renames.current = updatedEntries ?? {};
-        },
-        [renames.current]
-    );
-    return [renames.current, updateEntries];
-};
-
-export const isValueEmpty = (value: string, renamedEntries: RenamedEntries): boolean => {
-    if (isEditableValue(value)) {
-        const renamedValue = renamedEntries[value];
-        return !renamedValue?.displayValue;
-    }
-    return !value;
-};
-
-export const resolveValues = (values: string[], renamedEntries: RenamedEntries): string[] => {
-    const valuesAfterRename = [...values];
-    for (let i = 0; i < valuesAfterRename.length; i++) {
-        valuesAfterRename[i] = resolveValue(valuesAfterRename[i], renamedEntries);
-    }
-    return valuesAfterRename;
-};
-
-export const resolveValue = (value: string | number, renamedEntries: RenamedEntries): string => {
-    const renamedValue = renamedEntries[value];
-    if (renamedValue?.displayValue !== undefined) {
-        if (renamedValue.subValue) {
-            value = renamedValue.subValue.key;
-        }
-        return `${value}-${renamedValue.displayValue.replace(/\s/g, '')}`;
-    }
-    return value.toString();
-};
-
 export function isEditableValue(value?: string | number): boolean {
     if (!value) {
         return false;
