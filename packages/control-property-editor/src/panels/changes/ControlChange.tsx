@@ -3,27 +3,23 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, Stack, Link } from '@fluentui/react';
 import { useDispatch } from 'react-redux';
-import styles from './ControlChange.module.scss';
+import styles from './UnknownChange.module.scss';
 import { UIIconButton, UiIcons, UIDialog } from '@sap-ux/ui-components';
-import type {
-    SavedControlChange,
-    PendingControlChange,
-    PropertyChangeDeletionDetails
-} from '@sap-ux-private/control-property-editor-common';
+import type { PropertyChangeDeletionDetails } from '@sap-ux-private/control-property-editor-common';
 import {
     SAVED_CHANGE_TYPE,
+    PENDING_CHANGE_TYPE,
     convertCamelCaseToPascalCase,
     deletePropertyChanges,
     selectControl
 } from '@sap-ux-private/control-property-editor-common';
 import { getFormattedDateAndTime } from './utils';
 
-export interface ControlChangeProps {
-    /**
-     * Class used for showing and hiding actions
-     */
-    actionClassName: string;
-    change: PendingControlChange | SavedControlChange;
+export interface ControlItemProps {
+    fileName: string;
+    timestamp?: number;
+    controlId: string;
+    type: typeof SAVED_CHANGE_TYPE | typeof PENDING_CHANGE_TYPE;
 }
 
 /**
@@ -31,8 +27,7 @@ export interface ControlChangeProps {
  *
  * @returns ReactElement
  */
-export function ControlChange({ change }: ControlChangeProps): ReactElement {
-    const { changeType, controlId, fileName, type } = change;
+export function ControlChange({ controlId, fileName, timestamp, type }: ControlItemProps): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
@@ -54,10 +49,10 @@ export function ControlChange({ change }: ControlChangeProps): ReactElement {
 
     return (
         <>
-            <Stack.Item className={styles.property}>
-                <Stack horizontal>
-                    <Stack.Item>
-                        {changeType === 'renameLabel' ? (
+            <Stack className={styles.item}>
+                <Stack.Item className={styles.property}>
+                    <Stack horizontal>
+                        <Stack.Item>
                             <Link
                                 className={styles.textHeader}
                                 onClick={(): void => {
@@ -75,51 +70,48 @@ export function ControlChange({ change }: ControlChangeProps): ReactElement {
                                 }}>
                                 {name} {t('CHANGE')}
                             </Link>
-                        ) : (
-                            <Text className={styles.textHeader}>
-                                {name} {t('CHANGE')}
-                            </Text>
-                        )}
 
-                        <Stack horizontal>
-                            <Stack.Item className={styles.fileLabel}>{t('FILE')}</Stack.Item>
-                            <Stack.Item className={styles.fileText} title={fileName}>
-                                {fileName}
-                            </Stack.Item>
-                        </Stack>
-                        {controlId && (
                             <Stack horizontal>
-                                <Stack.Item className={styles.controlLabel}>{t('CONTROL')}</Stack.Item>
-                                <Stack.Item className={styles.controlText} title={controlId}>
-                                    {controlId}
+                                <Stack.Item className={styles.fileLabel}>{t('FILE')}</Stack.Item>
+                                <Stack.Item className={styles.fileText} title={fileName}>
+                                    {fileName}
                                 </Stack.Item>
                             </Stack>
-                        )}
-                    </Stack.Item>
-
-                    {type === SAVED_CHANGE_TYPE && (
-                        <Stack.Item className={styles.actions}>
-                            <UIIconButton
-                                iconProps={{ iconName: UiIcons.TrashCan }}
-                                onClick={(): void => {
-                                    setDialogState({
-                                        controlId: '',
-                                        propertyName: '',
-                                        fileName
-                                    });
-                                }}
-                            />
+                            {controlId && (
+                                <Stack horizontal>
+                                    <Stack.Item className={styles.controlLabel}>{t('CONTROL')}</Stack.Item>
+                                    <Stack.Item className={styles.controlText} title={controlId}>
+                                        {controlId}
+                                    </Stack.Item>
+                                </Stack>
+                            )}
                         </Stack.Item>
-                    )}
-                </Stack>
-            </Stack.Item>
-            {type === SAVED_CHANGE_TYPE && (
-                <Stack.Item>
-                    <Stack horizontal horizontalAlign="space-between">
-                        <Text className={styles.timestamp}>{getFormattedDateAndTime(change.timestamp ?? 0)}</Text>
+
+                        {type === SAVED_CHANGE_TYPE && (
+                            <Stack.Item className={styles.actions}>
+                                <UIIconButton
+                                    iconProps={{ iconName: UiIcons.TrashCan }}
+                                    onClick={(): void => {
+                                        setDialogState({
+                                            controlId: '',
+                                            propertyName: '',
+                                            fileName
+                                        });
+                                    }}
+                                />
+                            </Stack.Item>
+                        )}
                     </Stack>
                 </Stack.Item>
-            )}
+                {timestamp && (
+                    <Stack.Item>
+                        <Stack horizontal horizontalAlign="space-between">
+                            <Text className={styles.timestamp}>{getFormattedDateAndTime(timestamp ?? 0)}</Text>
+                        </Stack>
+                    </Stack.Item>
+                )}
+            </Stack>
+
             {dialogState && (
                 <UIDialog
                     hidden={dialogState === undefined}
