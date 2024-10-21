@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Apreview-middleware"
     },
-    "version": "0.16.79",
+    "version": "0.16.87",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -41,6 +41,7 @@
     ],
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/control-property-editor-sources": "workspace:@sap-ux/control-property-editor@*",

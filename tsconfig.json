@@ -63,6 +63,9 @@
       "path": "packages/cds-odata-annotation-converter"
     },
     {
+      "path": "packages/cf-deploy-config-inquirer"
+    },
+    {
       "path": "packages/control-property-editor-common"
     },
     {
@@ -205,6 +208,9 @@
     },
     {
       "path": "packages/ui5-library-reference-writer"
+    },
+    {
+      "path": "packages/ui5-library-sub-generator"
     },
     {
       "path": "packages/ui5-library-writer"

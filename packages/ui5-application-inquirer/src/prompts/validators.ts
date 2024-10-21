@@ -1,7 +1,7 @@
 import { validateModuleName } from '@sap-ux/project-input-validator';
 import { appPathExists } from './prompt-helpers';
 import { t } from '../i18n';
-import { findRootsForPath, isPathForCapApp } from '@sap-ux/project-access';
+import { findRootsForPath, findCapProjectRoot, getCapProjectType } from '@sap-ux/project-access';
 /**
  * Returns true (valid) if the specified projectName is a valid module name
  * and if an application folder (directory) at the specified path does not exist.
@@ -30,12 +30,14 @@ export function validateAppName(appName: string, targetDir: string): boolean | s
  * @returns true, if not Fiori Project, or string message indicating that the path contains a Fiori project.
  */
 export async function validateFioriAppProjectFolder(targetDir: string): Promise<string | boolean> {
+    // Check if the target directory contains a CAP project
+    if (!!(await findCapProjectRoot(targetDir, false)) || !!(await getCapProjectType(targetDir))) {
+        return t('validators.folderContainsCapApp');
+    }
+    // Check if the target directory contains a Fiori project
     const appRoot = await findRootsForPath(targetDir);
     if (appRoot) {
         return t('validators.folderContainsFioriApp', { path: appRoot.appRoot });
-    }
-    if (await isPathForCapApp(targetDir)) {
-        return t('validators.folderContainsCapApp');
     } else {
         return true;
     }

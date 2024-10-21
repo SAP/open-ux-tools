@@ -138,24 +138,28 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  * @returns {Promise<{ model: csn; services: ServiceInfo[]; cdsVersionInfo: CdsVersionInfo }>} - CAP Model and Services
  */
 export async function getCapModelAndServices(
-    projectRoot: string | { projectRoot: string; logger?: Logger }
+    projectRoot: string | { projectRoot: string; logger?: Logger; pathSelection?: Set<'app' | 'srv' | 'db'> }
 ): Promise<{ model: csn; services: ServiceInfo[]; cdsVersionInfo: CdsVersionInfo }> {
-    let _projectRoot;
-    let _logger;
+    let _projectRoot: string;
+    let _logger: Logger | undefined;
+    let _pathSelection: Set<string> | undefined;
+    const defaultPathSelection = new Set(['app', 'srv', 'db']);
     if (typeof projectRoot === 'object') {
         _projectRoot = projectRoot.projectRoot;
         _logger = projectRoot.logger;
+        _pathSelection = projectRoot.pathSelection ? projectRoot.pathSelection : defaultPathSelection;
     } else {
+        _pathSelection = defaultPathSelection;
         _projectRoot = projectRoot;
     }
 
     const cds = await loadCdsModuleFromProject(_projectRoot, true);
     const capProjectPaths = await getCapCustomPaths(_projectRoot);
-    const modelPaths = [
-        join(_projectRoot, capProjectPaths.app),
-        join(_projectRoot, capProjectPaths.srv),
-        join(_projectRoot, capProjectPaths.db)
-    ];
+    const modelPaths: string[] = [];
+    _pathSelection?.forEach((path: string) => {
+        modelPaths.push(join(_projectRoot, capProjectPaths[path as keyof CapCustomPaths]));
+    });
+
     const model = await cds.load(modelPaths, { root: _projectRoot });
 
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.home': ${cds.home}`);

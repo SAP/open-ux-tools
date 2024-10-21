@@ -308,7 +308,11 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      * @returns true if control and aggregation combination allows to create custom action fragment
      */
     private isCustomAction(currentControlName: string, targetAggregation: string): boolean {
-        if (currentControlName === 'sap.f.DynamicPageTitle' || currentControlName === 'sap.uxap.ObjectPageHeader') {
+        if (
+            ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageHeader', 'sap.uxap.ObjectPageDynamicHeaderTitle'].includes(
+                currentControlName
+            )
+        ) {
             return targetAggregation === 'actions';
         } else if (currentControlName === 'sap.m.OverflowToolbar' || currentControlName === 'sap.m.Toolbar') {
             return targetAggregation === 'content';

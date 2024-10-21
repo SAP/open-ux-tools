@@ -1,5 +1,53 @@
 # @sap-ux/ui-components
 
+## 1.19.0
+
+### Minor Changes
+
+-   ea18bcb: Added new API method `initTheme` to override default Fluent UI styles, removing `-webkit-font-smoothing: antialiased`.
+
+## 1.18.11
+
+### Patch Changes
+
+-   b403459: fix(ui-components): #2140 - fix dropdown vertical align input field
+
+## 1.18.10
+
+### Patch Changes
+
+-   9e9daa4: UIComboBox, UIDropdown: Allow extending 'calloutProps' instead of overwriting.
+
+## 1.18.9
+
+### Patch Changes
+
+-   4c6f92c: feat(ui-c): add UIsetIconOptions and UIunregisterIcons
+
+## 1.18.8
+
+### Patch Changes
+
+-   b669796: UIComboBox and UIDropdown support custom renderers for dropdown items via the `onRenderOption` and `onRenderItem` properties
+
+## 1.18.7
+
+### Patch Changes
+
+-   e65bb7f: Update style for UICallout
+
+## 1.18.6
+
+### Patch Changes
+
+-   64aacf2: Sass warning about deprecate usage of '/' for division outside of calc
+
+## 1.18.5
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+
 ## 1.18.4
 
 ### Patch Changes

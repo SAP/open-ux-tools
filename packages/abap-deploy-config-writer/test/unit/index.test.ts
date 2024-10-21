@@ -12,7 +12,7 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('generate', () => {
     const outputDir = join(__dirname, '../test-output');
-    const debug = true ?? !!process.env['UX_DEBUG'];
+    const debug = !!process.env['UX_DEBUG'];
 
     beforeAll(async () => {
         fsExtra.removeSync(outputDir);
