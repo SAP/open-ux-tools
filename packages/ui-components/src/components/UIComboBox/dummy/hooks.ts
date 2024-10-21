@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { UISelectableOption } from '../UIComboBox';
-import { isEditableValue, getTypeFromEditableItem, RenamedEntry, resolveValueForOption } from './utils';
-import { UISelectableOptionWithSubValues } from './types';
+import {
+    isEditableValue,
+    getTypeFromEditableItem,
+    RenamedEntry,
+    resolveValueForOption,
+    getOption,
+    isValueValid
+} from './utils';
+import type { OptionKey, SelectionUpdate, UISelectableOptionWithSubValues } from './types';
 import { UIContextualMenuItem } from '../../UIContextualMenu';
 
 function convertToEditableOptions(data: UISelectableOption[]): UISelectableOptionWithSubValues[] {
@@ -62,18 +69,18 @@ function findOptionByValue<T extends string | number | string[] | number[] | nul
 //     return [options];
 // }
 
-type OptionKey = string | number | string[] | number[] | null | undefined;
-
 export function useOptions(
     externalSelectedKey: OptionKey,
     originalOptions: UISelectableOption[],
     multiSelect?: boolean
-): [OptionKey, (selectedKey: OptionKey, checked?: boolean) => void, UISelectableOptionWithSubValues[]] {
+): [OptionKey, (selectedKey: OptionKey, checked?: boolean) => SelectionUpdate, UISelectableOptionWithSubValues[]] {
     const [options, setOptions] = useState(convertToEditableOptions(originalOptions));
-    const [selectedKey, setSelectedKey] = useState<OptionKey>(externalSelectedKey);
+    const [_selectedKey, setSelectedKey] = useState<OptionKey>(externalSelectedKey);
+    const selection = useRef<OptionKey>(externalSelectedKey);
     useEffect(() => {
         const optionKey = findOptionByValue(options, externalSelectedKey);
-        setSelectedKey((optionKey?.key as OptionKey) ?? externalSelectedKey);
+        selection.current = (optionKey?.key as OptionKey) ?? externalSelectedKey;
+        setSelectedKey(selection.current);
     }, [externalSelectedKey]);
 
     useEffect(() => {
@@ -81,25 +88,51 @@ export function useOptions(
         setOptions(convertedOptions);
     }, [originalOptions]);
 
-    const updateSelection = (key: OptionKey, selected = true) => {
-        // console.log(`updateSelection -> ${JSON.stringify(selectedKey)}`)
-        // console.log('updateSelection multiselect=' + multiSelect + ';checked=' + selected);
+    const updateSelection = (key: OptionKey, selected = true): SelectionUpdate => {
+        const result: SelectionUpdate = {};
         if (multiSelect) {
             let selectedKeys: string[] | number[] = [];
-            if (selectedKey) {
-                selectedKeys = Array.isArray(selectedKey) ? selectedKey : ([selectedKey] as string[] | number[]);
+            if (selection.current) {
+                selectedKeys = Array.isArray(selection.current)
+                    ? selection.current
+                    : ([selection.current] as string[] | number[]);
             }
-            // setSelectedKey([...selectedKeys, key] as string[] | number[]);
-            const newKeys = [...(selectedKeys ?? []), key].filter((k) => (selected ? true : k !== key));
-            // console.log('setSelectedKey ' + JSON.stringify(newKeys));
-            setSelectedKey(newKeys as string[]);
+            // const newKeys = [...new Set([...(selectedKeys ?? []), key].filter((k) => (selected ? true : k !== key)))];
+            // Avoid duplicates
+            const newKeys = selected
+                ? [...new Set([...(selectedKeys ?? []), key])]
+                : selectedKeys?.filter((k) => k !== key) ?? [];
+            selection.current = newKeys as string[];
         } else {
-            // console.log('setSelectedKey ' + key);
-            setSelectedKey(key);
+            selection.current = key;
         }
+        result.localSelection = selection.current;
+        // Resolve values for save
+        if (Array.isArray(result.localSelection)) {
+            result.selection = [];
+            for (const key of result.localSelection) {
+                const option = getOption(options, key);
+                const resolveValue = option ? resolveValueForOption(option) : key.toString();
+                if (!option?.editable || isValueValid(option)) {
+                    result.selection.push(resolveValue as never);
+                }
+            }
+        }
+        // Resolve latest/changed value
+        if (!Array.isArray(key) && key) {
+            const option = getOption(options, key);
+            if (!option?.editable || isValueValid(option)) {
+                const resolveValue = option ? resolveValueForOption(option) : key?.toString();
+                result.value = resolveValue;
+            }
+        }
+
+        setSelectedKey(selection.current);
+
+        return result;
     };
 
-    return [selectedKey, updateSelection, options];
+    return [selection.current, updateSelection, options];
 }
 
 export function useSelectedKey<T extends string | number | string[] | number[] | null | undefined>(

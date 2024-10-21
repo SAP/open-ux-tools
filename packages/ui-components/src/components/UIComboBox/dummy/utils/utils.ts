@@ -64,3 +64,11 @@ export const isValueValid = (option: UISelectableOptionWithSubValues | UIContext
     }
     return true;
 };
+
+// ToDo - remove duplicate
+export function getOption(
+    options: UISelectableOptionWithSubValues[],
+    key?: string | number | null
+): UISelectableOptionWithSubValues | undefined {
+    return options.find((option) => option.key === key);
+}

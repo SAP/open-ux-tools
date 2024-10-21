@@ -5,7 +5,7 @@ import type { IComboBoxOption, ISelectableOption } from '@fluentui/react';
 import { UITextInput } from '../../UIInput';
 import { UIContextualMenu, UIContextualMenuItem } from '../../UIContextualMenu';
 import { useOptions, useSelectedKey } from './hooks';
-import { UISelectableOptionWithSubValues } from './types';
+import { OptionKey, UISelectableOptionWithSubValues } from './types';
 import { ItemInput, ItemInputRef } from './ItemInput';
 import { isValueValid, RenamedEntries, resolveValueForOption, updateEditableEntry } from './utils';
 
@@ -14,6 +14,14 @@ export interface UIComboboxTestProps extends UIComboBoxProps {
      * Collection of options for this ComboBox.
      */
     options: UISelectableOptionWithSubValues[];
+    // ToDo
+    onChange?: (
+        event: React.FormEvent<UIComboBoxRef>,
+        option?: IComboBoxOption,
+        index?: number,
+        value?: string,
+        selection?: OptionKey
+    ) => void;
 }
 
 interface SubMenuData {
@@ -29,39 +37,41 @@ function getOption(
 }
 
 export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
-    const { options, onChange } = props;
-    const [selectedKey, setSelectedKey, convertedOptions] = useOptions(props.selectedKey, options, props.multiSelect);
+    const { options, onChange, multiSelect } = props;
+    const [selectedKey, updateSelection, convertedOptions] = useOptions(props.selectedKey, options, props.multiSelect);
     const [subMenu, setSubMenu] = useState<SubMenuData | null>(null);
     const { target, option: activeOption } = subMenu ?? {};
     const inputItemRefs = useRef<{ [key: string]: ItemInputRef | null }>({});
     const [_pendingText, setPendingText] = useState<string | undefined>(undefined);
     console.log('UIComboBoxDummy -> ' + JSON.stringify(selectedKey));
+    // Set local ref in component context
+    const selectedKeyRef = useRef<OptionKey>();
+    selectedKeyRef.current = selectedKey;
 
-    const triggerChange = (
+    const handleChange = (
         event: React.FormEvent<UIComboBoxRef>,
         selectedOption?: UISelectableOptionWithSubValues,
         index?: number,
-        value?: string
+        triggerChange?: boolean
     ) => {
-        // console.log(selectedKey);
-        const x = selectedKey;
-        if (selectedOption) {
-            setSelectedKey(selectedOption.key, selectedOption.selected);
+        if (!selectedOption) {
+            return;
         }
-        const option = getOption(convertedOptions, selectedOption?.key);
-        const resolveValue = option ? resolveValueForOption(option) : selectedOption?.key.toString();
-        // console.log(resolveValue);
-        if (selectedOption?.editable && option && !isValueValid(option)) {
-            // console.log('Invalid!!!');
-            onChange?.(event, undefined, undefined, '');
-        } else {
-            // console.log('valid!!!');
-            onChange?.(
-                event,
-                selectedOption ? { ...selectedOption, key: resolveValue ?? selectedOption.key } : undefined,
-                index,
-                resolveValue ?? value
-            );
+        // Update local selection
+        const result = updateSelection(selectedOption.key, selectedOption.selected);
+        // Trigger change to outside
+        if (triggerChange) {
+            if (result.value) {
+                onChange?.(
+                    event,
+                    selectedOption ? { ...selectedOption, key: result.value ?? selectedOption.key } : undefined,
+                    index,
+                    result.value,
+                    result.selection
+                );
+            } else {
+                onChange?.(event, undefined, undefined, '', undefined);
+            }
         }
 
         // Close submenu
@@ -75,34 +85,28 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                 onChange={(
                     event: React.FormEvent<UIComboBoxRef>,
                     selectedOption?: UISelectableOptionWithSubValues,
-                    index?: number,
-                    value?: string
+                    index?: number
                 ) => {
-                    console.log('onchange!!!');
-
-                    triggerChange(event, selectedOption, index, value);
+                    const triggerChange = multiSelect || !selectedOption?.editable;
+                    handleChange(event, selectedOption, index, triggerChange);
                 }}
                 onItemClick={(
                     event: React.FormEvent<UIComboBoxRef>,
                     selectedOption?: UISelectableOptionWithSubValues,
                     index?: number
                 ) => {
-                    console.log('onItemClick!!! ' + index);
-
-                    triggerChange(event, selectedOption, index);
+                    if (!multiSelect) {
+                        handleChange(event, selectedOption, index, true);
+                    }
                 }}
                 selectedKey={selectedKey}
                 options={convertedOptions}
-                onMenuOpen={() => {
-                    // console.log('onMenuOpen');
-                }}
+                onMenuOpen={() => {}}
                 onMenuDismiss={() => {
-                    // console.log('onMenuDismiss');
                     setSubMenu(null);
                 }}
                 calloutProps={{
                     preventDismissOnEvent(event) {
-                        // console.log('preventDismissOnEvent ' + event.type);
                         let prevent = false;
                         if (event.type === 'focus' || event.type === 'click') {
                             const target = event.target as HTMLElement;
@@ -110,7 +114,6 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                                 target.closest('.dropdown-submenu') || target.querySelector('.dropdown-submenu')
                             );
                         }
-                        // console.log('preventDismissOnEvent ' + prevent);
                         return prevent;
                     }
                 }}
@@ -122,7 +125,12 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                         <div
                             onMouseOver={(event) => {
                                 const target = event.target as HTMLElement;
-                                const element = target.closest('[data-index]') as HTMLElement;
+                                let element = target.closest('[data-index]') as HTMLElement;
+                                if (!element) {
+                                    element = target
+                                        .closest('.ms-Checkbox')
+                                        ?.querySelector('[data-index]') as HTMLElement;
+                                }
                                 if (element) {
                                     const index = element.getAttribute('data-index');
                                     if (index !== null) {
@@ -130,7 +138,7 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                                         const optionsCount = option?.options?.length ?? 0;
                                         if (optionsCount > 1) {
                                             setSubMenu({
-                                                target: element,
+                                                target: element.parentElement,
                                                 option: convertedOptions[parseInt(index)]
                                             });
                                         }
@@ -145,7 +153,6 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                     props?: UISelectableOptionWithSubValues,
                     defaultRender?: (props?: UISelectableOptionWithSubValues) => JSX.Element | null
                 ) => {
-                    console.log('onRenderOption ' + props?.key);
                     if (props?.editable) {
                         const { subValue } = props;
                         const option = getOption(convertedOptions, props?.key);
@@ -163,25 +170,12 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                                         option.text = value ?? option.text;
                                     }
                                     setPendingText(value);
+                                    if (multiSelect) {
+                                        handleChange({} as React.FormEvent<UIComboBoxRef>, option, undefined, true);
+                                    }
                                 }}
-                                // onMouseDown={(
-                                //     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-                                //     value?: string
-                                // ) => {
-                                //     console.log('onMouseDown');
-                                //     if (option) {
-                                //         option.selected = true;
-                                //         // option.text = 'xxx';
-                                //         option.text = 'xxx';
-                                //     }
-                                //     setPendingText('xxx');
-                                // }}
                                 onClick={() => {
-                                    // console.log('Item click');
-                                    // console.log(selectedKey);
-                                    // console.log(_pendingText);
-                                    // //triggerChange({} as any, { ...props, selected: true }, 0, props.key.toString());
-                                    setSelectedKey(props.key, true);
+                                    updateSelection(props.key, true);
                                 }}
                                 option={props}
                             />
@@ -189,16 +183,6 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                     }
                     return defaultRender?.(props);
                 }}
-                // onRenderItem={(
-                //     props?: IComboBoxExtendsOption,
-                //     defaultRender?: (props?: IComboBoxExtendsOption) => JSX.Element | null
-                // ) => {
-                //     console.log('external onRenderItem');
-                //     return defaultRender?.(props);
-                // }}
-                // onChange={() => {
-                //     console.log('change');
-                // }}
             />
             {target && activeOption?.options && (
                 <UIContextualMenu
@@ -208,16 +192,9 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                         // No focus restore
                     }}
                     calloutProps={{
-                        // popupProps: {
-                        //     ref: calloutRef
-                        // },
                         onMouseLeave: (event) => {
                             setSubMenu(null);
                         }
-                        // onPositioned: (positions) => {
-                        //     calloutPosition.current =
-                        //         positions?.elementPosition.left ?? positions?.elementPosition.right;
-                        // }
                     }}
                     onItemClick={(ev, item?: UIContextualMenuItem) => {
                         if (activeOption && item) {

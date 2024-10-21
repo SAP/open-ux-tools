@@ -15,7 +15,7 @@ import { data, groupsData } from '../test/__mock__/select-data';
 
 import { initIcons } from '../src/components/Icons';
 import { UITextInput } from '../src/components';
-import { UISelectableOptionWithSubValues } from '../src/components/UIComboBox/dummy/types';
+import { OptionKey, UISelectableOptionWithSubValues } from '../src/components/UIComboBox/dummy/types';
 
 initIcons();
 
@@ -83,19 +83,29 @@ const EditableComboboxExample = (props: EditableComboboxExampleProps) => {
                     useComboBoxAsMenuMinWidth={true}
                     autoComplete="on"
                     // selectedKey={selectedKeys}
-                    onChange={(event, option?: UIComboBoxOption | undefined) => {
-                        console.log('ochange!!! -> ' + option?.key);
-                        if (option) {
-                            const newKeys = [...(selectedKeys ?? []), option.key].filter((k) =>
-                                option.selected ? true : k !== option.key
-                            );
-                            setSelectedKeys(newKeys as string[]);
-
-                            const newOptions = [...(selectedOptions ?? []), option].filter((checkOption) =>
-                                option.selected ? true : checkOption.key !== option.key
-                            );
-                            setSelectedOptions(newOptions);
+                    onChange={(
+                        event,
+                        option?: UIComboBoxOption | undefined,
+                        index?: number,
+                        value?: string,
+                        selection?: OptionKey
+                    ) => {
+                        console.log('ochange!!! -> value ' + value + '; selection' + JSON.stringify(selection));
+                        if (selection) {
+                            setSelectedKeys(selection as string[]);
                         }
+                        // if (option) {
+                        //     console.log('ochange!!!');
+                        //     const newKeys = [...(selectedKeys ?? []), option.key].filter((k) =>
+                        //         option.selected ? true : k !== option.key
+                        //     );
+                        //     setSelectedKeys(newKeys as string[]);
+
+                        //     const newOptions = [...(selectedOptions ?? []), option].filter((checkOption) =>
+                        //         option.selected ? true : checkOption.key !== option.key
+                        //     );
+                        //     setSelectedOptions(newOptions);
+                        // }
                     }}
                 />
             </div>
