@@ -103,25 +103,31 @@ export class ManifestService {
     }
 
     public async getDataSourceMetadata(dataSourceId: string): Promise<any> {
-        const metadataPath = this.manifest?.['sap.app']?.dataSources?.[dataSourceId];
+        const dataSource = this.manifest?.['sap.app']?.dataSources?.[dataSourceId];
 
-        if (!metadataPath) {
+        if (!dataSource) {
             throw new Error('No metadata path found in the manifest');
         }
-
+        const baseUrl = new URL(this.appInfo.url, this.provider.defaults.baseURL as string);
+        const metadataUrl = new URL(`${dataSource.uri}$metadata`, baseUrl.toString());
         try {
-            const response = await this.provider.get(`${metadataPath.uri}$metadata`);
+            const response = await this.provider.get(metadataUrl.toString());
             return response.data;
         } catch (error) {
-            if (metadataPath?.settings?.localUri) {
+            this.logger.error('Metadata fetching failed');
+            if (dataSource?.settings?.localUri) {
                 try {
-                    const response = await this.provider.get(`${this.appInfo.url}/${metadataPath?.settings?.localUri}`);
+                    const fallbackUrl = new URL(
+                        dataSource?.settings.localUri,
+                        `${baseUrl.toString().slice(-1) === '/' ? baseUrl.toString() : baseUrl.toString() + '/'}`
+                    );
+                    const response = await this.provider.get(fallbackUrl.toString());
                     return response.data;
                 } catch (fallbackError) {
-                    this.logger.error('Metadata fetching failed');
+                    this.logger.error('Metadata fallback fetching failed');
+                    throw fallbackError;
                 }
             }
-            this.logger.error('Metadata fetching failed');
             throw error;
         }
     }
