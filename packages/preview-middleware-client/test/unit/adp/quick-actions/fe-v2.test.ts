@@ -27,6 +27,14 @@ import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import { fetchMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
 import ManagedObject from 'mock/sap/ui/base/ManagedObject';
+import {
+    ANALYTICAL_TABLE_TYPE,
+    GRID_TABLE_TYPE,
+    M_TABLE_TYPE,
+    SMART_TABLE_TYPE,
+    TREE_TABLE_TYPE
+} from 'open/ux/preview/client/adp/quick-actions/fe-v2/table-quick-action-base';
+import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
@@ -376,6 +384,18 @@ describe('FE V2 quick actions', () => {
                                             label: `'MyTable' table`
                                         }
                                     ]
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Column'
                                 }
                             ]
                         }
@@ -487,6 +507,18 @@ describe('FE V2 quick actions', () => {
                                             label: `'MyTable' table`
                                         }
                                     ]
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Column'
                                 }
                             ]
                         }
@@ -507,6 +539,7 @@ describe('FE V2 quick actions', () => {
                 });
             });
         });
+
         describe('add page action', () => {
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
@@ -625,6 +658,155 @@ describe('FE V2 quick actions', () => {
                 expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
                     aggregation: 'actions',
                     title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
+                });
+            });
+        });
+
+        describe('create table custom column', () => {
+            const testCases = [
+                {
+                    tableType: M_TABLE_TYPE,
+                    dialog: DialogNames.ADD_TABLE_COLUMN_FRAGMENTS,
+                    toString: () => M_TABLE_TYPE
+                },
+                { tableType: TREE_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => TREE_TABLE_TYPE },
+                {
+                    tableType: ANALYTICAL_TABLE_TYPE,
+                    dialog: DialogNames.ADD_FRAGMENT,
+                    toString: () => ANALYTICAL_TABLE_TYPE
+                },
+                { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+
+                            getAggregation: () => {
+                                return [
+                                    {
+                                        isA: (type: string) => type === testCase.tableType,
+                                        getAggregation: () => 'columns'
+                                    }
+                                ];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            'actions': [
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create-table-action',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Action'
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+
+                                    'enabled': true,
+
+                                    'id': 'listReport0-create-table-custom-column',
+                                    'kind': 'nested',
+
+                                    'title': 'Add Custom Table Column'
+                                }
+                            ],
+                            'title': 'LIST REPORT'
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
+                );
+
+                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
+                    '../../../../src/adp/init-dialogs'
+                );
+
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, testCase.dialog, undefined, {
+                    aggregation: 'columns',
+                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                 });
             });
         });
@@ -1012,12 +1194,29 @@ describe('FE V2 quick actions', () => {
                                             children: [
                                                 {
                                                     children: [],
-                                                    label: '\'MyTable\' table'
+                                                    label: `'MyTable' table`
                                                 }
                                             ],
-                                            label: '\'section 01\' section'
+                                            label: `'section 01' section`
                                         }
                                     ]
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [
+                                                {
+                                                    'children': [],
+                                                    'label': `'MyTable' table`
+                                                }
+                                            ],
+                                            'label': `'section 01' section`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'objectPage0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Column'
                                 }
                             ]
                         }
@@ -1035,6 +1234,182 @@ describe('FE V2 quick actions', () => {
                 expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
                     aggregation: 'content',
                     title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                });
+            });
+        });
+
+        describe('create table custom column', () => {
+            const testCases = [
+                {
+                    tableType: M_TABLE_TYPE,
+                    dialog: DialogNames.ADD_TABLE_COLUMN_FRAGMENTS,
+                    toString: () => M_TABLE_TYPE
+                },
+                { tableType: TREE_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => TREE_TABLE_TYPE },
+                {
+                    tableType: ANALYTICAL_TABLE_TYPE,
+                    dialog: DialogNames.ADD_FRAGMENT,
+                    toString: () => ANALYTICAL_TABLE_TYPE
+                },
+                { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                    if (type === 'sap.uxap.ObjectPageSection') {
+                        // Return a mock object with the getSubSections method
+                        return {
+                            children: [2],
+                            getSubSections: () => [{}, {}],
+                            getTitle: () => 'section 01',
+                            setSelectedSubSection: () => {}
+                        };
+                    }
+
+                    if (type === 'sap.uxap.ObjectPageSubSection') {
+                        // Return a new instance of ManagedObject
+                        return new ManagedObject() as any;
+                    }
+
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+
+                            getAggregation: () => {
+                                return [
+                                    {
+                                        isA: (type: string) => type === testCase.tableType,
+                                        getAggregation: () => 'columns'
+                                    }
+                                ];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            'title': 'OBJECT PAGE',
+                            'actions': [
+                                {
+                                    'children': [
+                                        {
+                                            'children': [
+                                                {
+                                                    'children': [],
+                                                    'label': `'MyTable' table`
+                                                }
+                                            ],
+                                            'label': `'section 01' section`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'objectPage0-create-table-action',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Action'
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [
+                                                {
+                                                    'children': [],
+                                                    'label': `'MyTable' table`
+                                                }
+                                            ],
+                                            'label': `'section 01' section`
+                                        }
+                                    ],
+                                    'enabled': true,
+
+                                    'id': 'objectPage0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Column'
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({
+                        id: 'objectPage0-create-table-custom-column',
+                        kind: 'nested',
+                        path: '-1/0'
+                    })
+                );
+
+                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
+                    '../../../../src/adp/init-dialogs'
+                );
+
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, testCase.dialog, undefined, {
+                    aggregation: 'columns',
+                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                 });
             });
         });

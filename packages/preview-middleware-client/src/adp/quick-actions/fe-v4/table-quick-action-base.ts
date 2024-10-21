@@ -22,7 +22,7 @@ const SETTINGS_ID = 'CTX_SETTINGS';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
 const M_TABLE_TYPE = 'sap.m.Table';
-const MDC_TABLE_TYPE = 'sap.ui.mdc.Table';
+export const MDC_TABLE_TYPE = 'sap.ui.mdc.Table';
 
 async function getActionId(table: UI5Element): Promise<string[]> {
     const { major, minor } = await getUi5Version();

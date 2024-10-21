@@ -52,7 +52,9 @@ export class AddTableCustomColumnQuickAction
         if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
             const itemsAggregation = table.getAggregation('items') as ManagedObject[];
             tableInternal = itemsAggregation.find((item) => {
-                return isA(TREE_TABLE_TYPE, item) || isA(GRID_TABLE_TYPE, item) || isA(M_TABLE_TYPE, item);
+                return [M_TABLE_TYPE, TREE_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE].some((tType) =>
+                    isA(tType, item)
+                );
             });
             if (!tableInternal) {
                 return [];
