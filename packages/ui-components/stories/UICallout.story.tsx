@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { UIDefaultButton, UIIconButton } from '../src/components/UIButton';
 import { UICallout, UICalloutContentPadding } from '../src/components/UICallout';
 import { UIFocusZone } from '../src/components/UIFocusZone';
-import { initIcons, UiIcons } from '../src/components/Icons';
-
-initIcons();
+import { UiIcons } from '../src/components/Icons';
 
 export default { title: 'Dropdowns/Callout' };
 
