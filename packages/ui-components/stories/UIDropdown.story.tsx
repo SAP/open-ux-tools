@@ -5,13 +5,10 @@ import {
     UISelectableOptionMenuItemType,
     UICheckbox,
     UIDropdown,
-    initIcons,
     UISelectableOption,
     UITextInput
 } from '../src/components';
 import { data, shortData, groupsData } from '../test/__mock__/select-data';
-
-initIcons();
 
 export default { title: 'Dropdowns/Dropdown' };
 

@@ -10,9 +10,6 @@ import {
     UICreateSelectInstance
 } from '../src/components/UICreateSelect';
 import { UILabel } from '../src/components/UILabel';
-import { initIcons } from '../src/components/Icons';
-
-initIcons();
 
 export default { title: 'Dropdowns/CreateSelect' };
 const stackTokens: IStackTokens = { childrenGap: 40 };
