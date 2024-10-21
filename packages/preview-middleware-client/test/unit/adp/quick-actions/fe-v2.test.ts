@@ -1414,4 +1414,130 @@ describe('FE V2 quick actions', () => {
             });
         });
     });
+    describe('AnalyticalListPage', () => {
+        describe('create table custom column', () => {
+            test('initialize and execute action (%s)', async () => {
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+
+                            getAggregation: () => {
+                                return [
+                                    {
+                                        isA: (type: string) => type === ANALYTICAL_TABLE_TYPE,
+                                        getAggregation: () => 'columns'
+                                    }
+                                ];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            'actions': [
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'analyticalListPage0-create-table-custom-column',
+                                    'kind': 'nested',
+
+                                    'title': 'Add Custom Table Column'
+                                }
+                            ],
+                            'title': 'ANALYTICAL LIST PAGE'
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({
+                        id: 'analyticalListPage0-create-table-custom-column',
+                        kind: 'nested',
+                        path: '0'
+                    })
+                );
+
+                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
+                    '../../../../src/adp/init-dialogs'
+                );
+
+                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, DialogNames.ADD_FRAGMENT, undefined, {
+                    aggregation: 'columns',
+                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                });
+            });
+        });
+    });
 });
