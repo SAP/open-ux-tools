@@ -27,7 +27,7 @@ async function convertPreview(basePath: string, simulate: boolean): Promise<void
             basePath = process.cwd();
         }
 
-        const fs = await convertToVirtualPreview(basePath);
+        const fs = await convertToVirtualPreview(basePath, logger);
 
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));
