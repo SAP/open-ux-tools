@@ -32,7 +32,7 @@ export interface ControlChangeProps {
  * @returns ReactElement
  */
 export function ControlChange({ change }: ControlChangeProps): ReactElement {
-    const { changeType, controlId, fileName, type, kind } = change;
+    const { changeType, controlId, fileName, type } = change;
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
@@ -97,7 +97,7 @@ export function ControlChange({ change }: ControlChangeProps): ReactElement {
                         )}
                     </Stack.Item>
 
-                    {fileName && (
+                    {type === SAVED_CHANGE_TYPE && (
                         <Stack.Item className={styles.actions}>
                             <UIIconButton
                                 iconProps={{ iconName: UiIcons.TrashCan }}
