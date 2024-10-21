@@ -293,6 +293,7 @@ export class ChangeService {
     private createOnStackChangeHandler(): (event: Event) => Promise<void> {
         const handleStackChange = modeAndStackChangeHandler(this.sendAction, this.options.rta);
         return async (): Promise<void> => {
+            this.pendingChanges = [];
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
