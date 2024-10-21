@@ -22,9 +22,7 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
         return Promise.reject(new Error('Prerequisites not met'));
     }
 
-    const approval = await getExplicitApprovalToAdjustFiles();
-
-    if (!approval) {
+    if (!(await getExplicitApprovalToAdjustFiles())) {
         return Promise.reject(new Error('Approval not given'));
     }
 
@@ -33,7 +31,15 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     return fs;
 }
 
-async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLogger) {
+/**
+ * Check if the prerequisites for the conversion are met.
+ *
+ * @param basePath - base path to be used for the conversion
+ * @param fs - file system reference
+ * @param logger logger to report info to the user
+ * @returns indicator if prerequisites are met
+ */
+async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<boolean> {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
 
