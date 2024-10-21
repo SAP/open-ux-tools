@@ -229,12 +229,20 @@ describe('updates', () => {
                     projectPath: 'testProject',
                     appPath: 'webapp',
                     projectName: 'annotations'
+                },
+                {
+                    cdsFileContents: '"using IncidentService as service from \'../../srv/incidentservice\';"',
+                    projectPath: 'testProject',
+                    appPath: 'webapp',
+                    projectName: 'annotations'
                 }
             ];
             const annotationPath = join('./testProject/webapp/annotations', 'annotations.cds');
             await updateCdsFilesWithAnnotations(annotationsInfo, fs);
             const annotationCds = fs.read(annotationPath);
-            expect(annotationCds).toEqual(annotationsInfo[0].cdsFileContents);
+            expect(annotationCds).toEqual(
+                `${annotationsInfo[0].cdsFileContents}\r\n${annotationsInfo[1].cdsFileContents}`
+            );
             // Convert the annotation path to the services path
             const serviceCdsPath = path.join(path.dirname(annotationPath).replace('annotations', ''), 'services.cds');
             const serviceCds = fs.read(serviceCdsPath);

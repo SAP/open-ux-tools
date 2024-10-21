@@ -116,7 +116,11 @@ export async function updateCdsFilesWithAnnotations(
                 'annotations.cds'
             );
             // write into annotations.cds file
-            fs.write(annotationCdsPath, annotation.cdsFileContents);
+            if (fs.exists(annotationCdsPath)) {
+                fs.append(annotationCdsPath, annotation.cdsFileContents);
+            } else {
+                fs.write(annotationCdsPath, annotation.cdsFileContents);
+            }
             await updateCdsIndexOrServiceFile(fs, annotation);
         }
     } else {
