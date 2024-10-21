@@ -109,21 +109,19 @@ export class ManifestService {
             throw new Error('No metadata path found in the manifest');
         }
 
-        let metadataUrl = '';
-        if (metadataPath?.settings?.localUri) {
-            metadataUrl = `${this.appInfo.url}/${metadataPath.settings.localUri}`;
-        } else if (metadataPath?.uri) {
-            metadataUrl = `${this.appInfo.url}${metadataPath.uri}$metadata`;
-        }
-
         try {
-            const response = await this.provider.get(metadataUrl);
+            const response = await this.provider.get(`${metadataPath.uri}$metadata`);
             return response.data;
         } catch (error) {
-            if (isAxiosError(error)) {
-                this.logger.error('Metadata fetching failed');
+            if (metadataPath?.settings?.localUri) {
+                try {
+                    const response = await this.provider.get(`${this.appInfo.url}/${metadataPath?.settings?.localUri}`);
+                    return response.data;
+                } catch (fallbackError) {
+                    this.logger.error('Metadata fetching failed');
+                }
             }
-            this.logger.debug(error);
+            this.logger.error('Metadata fetching failed');
             throw error;
         }
     }
