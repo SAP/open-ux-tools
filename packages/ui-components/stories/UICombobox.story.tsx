@@ -12,10 +12,7 @@ import {
 import { UICheckbox } from '../src/components/UICheckbox';
 import { data, groupsData } from '../test/__mock__/select-data';
 
-import { initIcons } from '../src/components/Icons';
 import { UITextInput } from '../src/components';
-
-initIcons();
 
 export default { title: 'Dropdowns/Combobox' };
 
