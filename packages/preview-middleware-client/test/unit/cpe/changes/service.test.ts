@@ -1,7 +1,11 @@
 import * as flexChange from '../../../../src/cpe/changes/flex-change';
 import { ChangeService } from '../../../../src/cpe/changes/service';
 import { ActionHandler } from '../../../../src/cpe/types';
-import { changeProperty, deletePropertyChanges, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+import {
+    changeProperty,
+    deletePropertyChanges,
+    setApplicationRequiresReload
+} from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
@@ -58,6 +62,11 @@ describe('SelectionService', () => {
                         creation: '2021-12-21T17:12:37.301Z'
                     },
                     change2: {
+                        changeType: 'codeExt',
+                        fileName: 'id_1640106755570_204_propertyChange',
+                        creation: '2021-12-21T17:13:37.301Z'
+                    },
+                    change3: {
                         changeType: 'propertyChange',
                         fileName: 'id_1640106755570_204_propertyChange',
                         content: {
@@ -70,12 +79,14 @@ describe('SelectionService', () => {
                         },
                         creation: '2021-12-21T17:13:37.301Z'
                     },
-                    change3: {
-                        changeType: 'propertyChange',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        content: {
-                            property: 'enabled',
-                            newBindings: '{i18n>CREATE_OBJECT2}'
+                    change4: {
+                        changeType: 'renameLabel',
+                        fileName: 'id_1640106755570_205_propertyChange',
+                        texts: {
+                            formText: {
+                                value: 'Test123',
+                                type: 'XFLD'
+                            }
                         },
                         selector: {
                             id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
@@ -83,7 +94,7 @@ describe('SelectionService', () => {
                         },
                         creation: '2021-12-21T17:13:37.301Z'
                     },
-                    change4: {}
+                    change5: {}
                 })
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
@@ -105,6 +116,13 @@ describe('SelectionService', () => {
                 pending: [],
                 saved: [
                     {
+                        changeType: 'codeExt',
+                        type: 'saved',
+                        kind: 'unknown',
+                        fileName: 'id_1640106755570_204_propertyChange',
+                        timestamp: 1640106817301
+                    },
+                    {
                         changeType: 'propertyChange',
                         type: 'saved',
                         kind: 'property',
@@ -117,13 +135,13 @@ describe('SelectionService', () => {
                         timestamp: 1640106817301
                     },
                     {
-                        changeType: 'propertyChange',
-                        type: 'saved',
-                        kind: 'unknown',
+                        changeType: 'renameLabel',
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        timestamp: 1640106817301
+                        fileName: 'id_1640106755570_205_propertyChange',
+                        kind: 'control',
+                        timestamp: 1640106817301,
+                        type: 'saved'
                     },
                     {
                         changeType: 'propertyChange',
@@ -160,6 +178,11 @@ describe('SelectionService', () => {
                         creation: '2021-12-21T17:12:37.301Z'
                     },
                     change2: {
+                        changeType: 'codeExt',
+                        fileName: 'id_1640106755570_204_propertyChange',
+                        creation: '2021-12-21T17:13:37.301Z'
+                    },
+                    change3: {
                         changeType: 'propertyChange',
                         fileName: 'id_1640106755570_204_propertyChange',
                         content: {
@@ -172,12 +195,14 @@ describe('SelectionService', () => {
                         },
                         creation: '2021-12-21T17:13:37.301Z'
                     },
-                    change3: {
-                        changeType: 'propertyChange',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        content: {
-                            property: 'enabled',
-                            newBindings: '{i18n>CREATE_OBJECT2}'
+                    change4: {
+                        changeType: 'renameLabel',
+                        fileName: 'id_1640106755570_205_propertyChange',
+                        texts: {
+                            formText: {
+                                value: 'Test123',
+                                type: 'XFLD'
+                            }
                         },
                         selector: {
                             id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
@@ -185,7 +210,7 @@ describe('SelectionService', () => {
                         },
                         creation: '2021-12-21T17:13:37.301Z'
                     },
-                    change4: {}
+                    change5: {}
                 })
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
@@ -205,6 +230,13 @@ describe('SelectionService', () => {
                 pending: [],
                 saved: [
                     {
+                        changeType: 'codeExt',
+                        type: 'saved',
+                        kind: 'unknown',
+                        fileName: 'id_1640106755570_204_propertyChange',
+                        timestamp: 1640106817301
+                    },
+                    {
                         changeType: 'propertyChange',
                         type: 'saved',
                         kind: 'property',
@@ -217,13 +249,13 @@ describe('SelectionService', () => {
                         timestamp: 1640106817301
                     },
                     {
-                        changeType: 'propertyChange',
-                        type: 'saved',
-                        kind: 'unknown',
+                        changeType: 'renameLabel',
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        timestamp: 1640106817301
+                        fileName: 'id_1640106755570_205_propertyChange',
+                        kind: 'control',
+                        timestamp: 1640106817301,
+                        type: 'saved'
                     },
                     {
                         changeType: 'propertyChange',
@@ -263,6 +295,13 @@ describe('SelectionService', () => {
                 pending: [],
                 saved: [
                     {
+                        changeType: 'codeExt',
+                        type: 'saved',
+                        kind: 'unknown',
+                        fileName: 'id_1640106755570_204_propertyChange',
+                        timestamp: 1640106817301
+                    },
+                    {
                         changeType: 'propertyChange',
                         type: 'saved',
                         kind: 'property',
@@ -275,13 +314,13 @@ describe('SelectionService', () => {
                         timestamp: 1640106817301
                     },
                     {
-                        changeType: 'propertyChange',
-                        type: 'saved',
-                        kind: 'unknown',
+                        changeType: 'renameLabel',
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        timestamp: 1640106817301
+                        fileName: 'id_1640106755570_205_propertyChange',
+                        kind: 'control',
+                        timestamp: 1640106817301,
+                        type: 'saved'
                     },
                     {
                         changeType: 'propertyChange',
@@ -298,7 +337,7 @@ describe('SelectionService', () => {
                 ]
             }
         });
-    })
+    });
 
     test('unknown change with timestamp', async () => {
         fetchMock.mockResolvedValue({
@@ -346,7 +385,7 @@ describe('SelectionService', () => {
                 saved: [
                     {
                         type: 'saved',
-                        kind: 'unknown',
+                        kind: 'control',
                         fileName: 'unknown',
                         changeType: 'addXML',
                         timestamp: 1640106877301,
@@ -446,18 +485,16 @@ describe('SelectionService', () => {
                         changeType: 'addSimpleFormField',
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         isActive: true,
-                        controlName: 'SimpleForm',
                         fileName: 'testFileName',
-                        kind: 'unknown',
+                        kind: 'control',
                         type: 'pending'
                     },
                     {
                         changeType: 'addSimpleFormField',
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         isActive: true,
-                        controlName: 'SimpleForm',
                         fileName: 'testFileName',
-                        kind: 'unknown',
+                        kind: 'control',
                         type: 'pending'
                     }
                 ]
@@ -518,8 +555,7 @@ describe('SelectionService', () => {
                         changeType: 'page',
                         controlId: '_ST_SmartVariantManagement',
                         isActive: true,
-                        controlName: 'SimpleForm',
-                        kind: 'unknown',
+                        kind: 'control',
                         fileName: 'fileName',
                         type: 'pending'
                     },
@@ -527,8 +563,7 @@ describe('SelectionService', () => {
                         changeType: 'page',
                         controlId: '_ST_SmartVariantManagement',
                         isActive: true,
-                        controlName: 'SimpleForm',
-                        kind: 'unknown',
+                        kind: 'control',
                         fileName: 'fileName',
                         type: 'pending'
                     }
@@ -571,11 +606,11 @@ describe('SelectionService', () => {
     });
 
     test('get control ID from ChangeHandler API', async () => {
-        jest.spyOn(JsControlTreeModifier, 'getControlIdBySelector').mockImplementation(( selector ): string => {
-            return selector
-        }); 
+        jest.spyOn(JsControlTreeModifier, 'getControlIdBySelector').mockImplementation((selector): string => {
+            return selector;
+        });
         jest.spyOn(JsControlTreeModifier, 'bySelector').mockReturnValue(mockControl);
-        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({major: 1, minor: 120});
+        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 120 });
         jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(false);
 
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
@@ -629,19 +664,17 @@ describe('SelectionService', () => {
                         changeType: 'page',
                         controlId: 'appComponent_ST_SmartVariantManagement',
                         isActive: true,
-                        controlName: 'SimpleForm',
                         type: 'pending',
                         fileName: 'testFileName',
-                        kind: 'unknown'
+                        kind: 'control'
                     },
                     {
                         changeType: 'page',
                         controlId: 'appComponent_ST_SmartVariantManagement',
                         isActive: true,
-                        controlName: 'SimpleForm',
                         type: 'pending',
                         fileName: 'testFileName',
-                        kind: 'unknown'
+                        kind: 'control'
                     }
                 ]
             }
@@ -650,14 +683,14 @@ describe('SelectionService', () => {
 
     test('get control ID from ChangeHandler API - SAPUI5 version below 1.109.x', async () => {
         jest.spyOn(JsControlTreeModifier, 'getControlIdBySelector')
-        .mockImplementationOnce(( selector ): string => {
-            return selector
-        })
-        .mockImplementationOnce(( selector ): string => {
-            return selector
-        }); 
+            .mockImplementationOnce((selector): string => {
+                return selector;
+            })
+            .mockImplementationOnce((selector): string => {
+                return selector;
+            });
         jest.spyOn(JsControlTreeModifier, 'bySelector').mockReturnValueOnce(mockControl);
-        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({major: 1, minor: 108});
+        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
         jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(true);
 
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
@@ -702,7 +735,7 @@ describe('SelectionService', () => {
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
 
-       const expectedResult = {
+        const expectedResult = {
             type: '[ext] change-stack-modified',
             payload: {
                 saved: [],
@@ -711,19 +744,17 @@ describe('SelectionService', () => {
                         changeType: 'page',
                         controlId: 'appComponent_ST_SmartVariantManagement',
                         isActive: true,
-                        controlName: 'SimpleForm',
                         type: 'pending',
                         fileName: 'testFileName',
-                        kind: 'unknown'
+                        kind: 'control'
                     },
                     {
                         changeType: 'page',
                         controlId: 'appComponent_ST_SmartVariantManagement',
                         isActive: true,
-                        controlName: 'SimpleForm',
                         type: 'pending',
                         fileName: 'testFileName',
-                        kind: 'unknown'
+                        kind: 'control'
                     }
                 ]
             }
@@ -734,19 +765,19 @@ describe('SelectionService', () => {
 
     test('get control ID from ChangeHandler API - no getChangeVisualizationInfo available', async () => {
         jest.spyOn(JsControlTreeModifier, 'getControlIdBySelector')
-        .mockImplementationOnce(( selector ): string => {
-            return selector.id
-        })
-        .mockImplementationOnce(( selector ): string => {
-            return selector.id
-        });
+            .mockImplementationOnce((selector): string => {
+                return selector.id;
+            })
+            .mockImplementationOnce((selector): string => {
+                return selector.id;
+            });
         jest.spyOn(JsControlTreeModifier, 'bySelector').mockReturnValue(mockControl);
         jest.doMock('sap/ui/fl/write/api/ChangesWriteAPI', () => {
             return {
                 getChangeHandler: jest.fn().mockReturnValue({})
             };
         });
-        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({major: 1, minor: 120});
+        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 120 });
         jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(false);
 
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
@@ -800,19 +831,18 @@ describe('SelectionService', () => {
                         changeType: 'page',
                         controlId: '_ST_SmartVariantManagement',
                         isActive: true,
-                        controlName: 'SimpleForm',
                         type: 'pending',
                         fileName: 'testFileName',
-                        kind: 'unknown'                        
+                        kind: 'control'
                     },
                     {
                         changeType: 'page',
                         controlId: '_ST_SmartVariantManagement',
                         isActive: true,
-                        controlName: 'SimpleForm',
+
                         type: 'pending',
                         fileName: 'testFileName',
-                        kind: 'unknown'                        
+                        kind: 'control'
                     }
                 ]
             }
@@ -855,7 +885,7 @@ describe('SelectionService', () => {
                 }),
                 getPreparedChange: jest.fn().mockReturnValue({
                     getSelector: jest.fn().mockReturnValue({
-                        id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                        id: !toggle ? 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button' : undefined
                     }),
                     getChangeType: jest.fn().mockReturnValue(cache.get('changeType')),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
@@ -884,7 +914,7 @@ describe('SelectionService', () => {
             ),
             createCommand(
                 new Map<string, any>([
-                    ['selector', { id: 'control2' }],
+                    ['selector', { name: 'ExtensionPointName' }],
                     ['changeType', 'addXMLAtExtensionPoint']
                 ]),
                 true
@@ -934,8 +964,6 @@ describe('SelectionService', () => {
                     },
                     {
                         changeType: 'addXMLAtExtensionPoint',
-                        controlId: 'appComponentListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
-                        controlName: 'ExtensionPoint1',
                         fileName: 'testFileName',
                         isActive: true,
                         kind: 'unknown',
@@ -1025,7 +1053,7 @@ describe('SelectionService', () => {
                     ['propertyName', 'text'],
                     ['newValue', 'abc']
                 ])
-            ),
+            )
         ];
         rtaMock.getCommandStack.mockReturnValue({
             getCommands: jest.fn().mockReturnValue(commands),
@@ -1042,7 +1070,7 @@ describe('SelectionService', () => {
 
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
         expect(sendActionMock).toHaveBeenCalledTimes(5);
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, setApplicationRequiresReload(true))
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, setApplicationRequiresReload(true));
         expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] change-stack-modified',
             payload: {
@@ -1052,11 +1080,10 @@ describe('SelectionService', () => {
                         changeType: 'appdescr_fe_changePageConfiguration',
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         isActive: true,
-                        controlName: 'Button',
                         fileName: 'testFileName',
                         type: 'pending',
-                        kind: 'unknown',
-                    },
+                        kind: 'control'
+                    }
                 ]
             }
         });
