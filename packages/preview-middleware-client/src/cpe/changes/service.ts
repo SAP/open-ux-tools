@@ -97,7 +97,7 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
  * A Class of ChangeService
  */
 export class ChangeService {
-    private savedChanges: SavedPropertyChange[] = [];
+    private savedChanges: SavedPropertyChange[] | UnknownSavedChange[] | SavedControlChange[] = [];
     private changesRequiringReload = 0;
     private sendAction: (action: ExternalAction) => void;
     private pendingChanges: PendingChange[] = [];
@@ -219,7 +219,7 @@ export class ChangeService {
                                         ? (change.selector.type.split('.').pop() as string)
                                         : '',
                                     changeType: change.changeType
-                                };
+                                } as SavedPropertyChange;
                             } catch (error) {
                                 // Gracefully handle change files with invalid content
                                 if (change.fileName) {
@@ -263,11 +263,19 @@ export class ChangeService {
      */
     public async deleteChange(controlId: string, propertyName: string, fileName?: string): Promise<void> {
         const filesToDelete = this.savedChanges
-            .filter((change) =>
-                fileName
-                    ? fileName === change.fileName
-                    : change.controlId === controlId && change.propertyName === propertyName
-            )
+            .filter((change) => {
+                if (fileName) {
+                    return fileName === change.fileName;
+                }
+
+                if (change.kind === 'property') {
+                    return change.controlId === controlId && change.propertyName === propertyName;
+                }
+
+                if (change.kind === 'control') {
+                    return change.controlId === controlId;
+                }
+            })
             .map((change) =>
                 fetch(FlexChangesEndPoints.changes, {
                     method: 'DELETE',
@@ -465,11 +473,15 @@ export class ChangeService {
      * @param change to be executed for creating change
      * @returns element id or empty string
      */
-    private async getControlIdByChange(change: FlexChange<ChangeContent>): Promise<string> {
+    private async getControlIdByChange(change: FlexChange<ChangeContent>): Promise<string | undefined> {
         const appComponent = this.options.rta.getRootControlInstance();
-        const selector = change.getSelector();
+        const selector = typeof change.getSelector === 'function' ? change.getSelector() : undefined;
         const changeType = change.getChangeType();
         const layer = change.getLayer();
+
+        if (!selector?.id) {
+            return;
+        }
 
         try {
             let control = JsControlTreeModifier.bySelector(selector, appComponent);
@@ -511,8 +523,10 @@ export class ChangeService {
      */
     public async syncOutlineChanges(): Promise<void> {
         for (const change of this.savedChanges) {
-            const flexObject = await this.getFlexObject(this.changedFiles[change.fileName]);
-            change.controlId = await this.getControlIdByChange(flexObject);
+            if (change.kind !== 'unknown') {
+                const flexObject = await this.getFlexObject(this.changedFiles[change.fileName]);
+                change.controlId = (await this.getControlIdByChange(flexObject)) ?? '';
+            }
         }
         this.updateStack();
     }
