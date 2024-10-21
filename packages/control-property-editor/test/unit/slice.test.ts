@@ -20,9 +20,11 @@ import reducer, {
     changeDeviceType,
     setProjectScenario,
     fileChanged,
-    initialState
+    initialState,
+    setFeatureToggles
 } from '../../src/slice';
 import { DeviceType } from '../../src/devices';
+import { features } from 'process';
 
 describe('main redux slice', () => {
     describe('property changed', () => {
@@ -622,6 +624,26 @@ describe('main redux slice', () => {
                     title: 'test title 2'
                 }
             ]
+        });
+    });
+
+    describe('setFeatureToggles', () => {
+        test('add feature toggles', () => {
+            expect(
+                reducer(
+                    { features: {} } as any,
+                    setFeatureToggles([
+                        {
+                            feature: 'test.feature',
+                            isEnabled: true
+                        }
+                    ])
+                )
+            ).toStrictEqual({
+                features: {
+                    'test.feature': true
+                }
+            });
         });
     });
 });

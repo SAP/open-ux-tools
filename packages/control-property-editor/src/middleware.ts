@@ -1,5 +1,5 @@
 import type { Dispatch } from 'redux';
-import type { Middleware, MiddlewareAPI } from '@reduxjs/toolkit';
+import type { AnyAction, Middleware, MiddlewareAPI } from '@reduxjs/toolkit';
 
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
@@ -16,6 +16,7 @@ import {
     executeQuickAction
 } from '@sap-ux-private/control-property-editor-common';
 
+import type reducer from './slice';
 import { changeProperty } from './slice';
 
 type Action = ReturnType<typeof changeProperty>;
@@ -26,7 +27,9 @@ type Action = ReturnType<typeof changeProperty>;
  * @param store - redux store
  * @returns Function
  */
-export const communicationMiddleware: Middleware<Dispatch<ExternalAction>> = (store: MiddlewareAPI) => {
+export const communicationMiddleware: Middleware<Dispatch<ExternalAction>, ReturnType<typeof reducer>> = (
+    store: MiddlewareAPI<Dispatch<AnyAction>, ReturnType<typeof reducer>>
+) => {
     const { sendAction } = startPostMessageCommunication<ExternalAction>(
         function getTarget(): Window | undefined {
             let result;

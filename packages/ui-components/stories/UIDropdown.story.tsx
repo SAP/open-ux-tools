@@ -1,10 +1,14 @@
 import React from 'react';
 import { Stack } from '@fluentui/react';
 import type { IDropdownOption } from '@fluentui/react';
-import { UISelectableOptionMenuItemType, UICheckbox, UIDropdown, initIcons } from '../src/components';
+import {
+    UISelectableOptionMenuItemType,
+    UICheckbox,
+    UIDropdown,
+    UISelectableOption,
+    UITextInput
+} from '../src/components';
 import { data, shortData, groupsData } from '../test/__mock__/select-data';
-
-initIcons();
 
 export default { title: 'Dropdowns/Dropdown' };
 
@@ -208,5 +212,53 @@ export const groupsAndSeparators = () => {
                 label="Menu items with dividers and headers - multi select"
             />
         </div>
+    );
+};
+
+const editableEntries = ['AR', 'BR', 'DK'];
+
+const tempData = data.map((item) => {
+    if (editableEntries.includes(item.key)) {
+        return {
+            ...item,
+            editable: true
+        };
+    }
+    return item;
+});
+
+export const customRender = () => {
+    return (
+        <UIDropdown
+            options={tempData}
+            onRenderOption={(
+                props?: UISelectableOption,
+                defaultRender?: (props?: UISelectableOption) => JSX.Element | null
+            ) => {
+                if ('editable' in (props ?? {})) {
+                    return (
+                        <UITextInput
+                            onMouseDown={(event) => {
+                                const target = event.target as HTMLElement;
+                                target.focus();
+                            }}
+                            onClick={(event) => {
+                                event.nativeEvent.preventDefault();
+                                event.nativeEvent.stopPropagation();
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }}
+                        />
+                    );
+                }
+                return defaultRender?.(props) ?? null;
+            }}
+            onRenderItem={(
+                props?: UISelectableOption,
+                defaultRender?: (props?: UISelectableOption) => JSX.Element | null
+            ) => {
+                return defaultRender?.(props) ?? null;
+            }}
+        />
     );
 };

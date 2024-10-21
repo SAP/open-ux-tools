@@ -17,7 +17,7 @@ import { PromptState } from '../prompt-state';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio, isOnPremiseDestination, type Destinations } from '@sap-ux/btp-utils';
 import {
-    abapDeployConfigInternalPromptNames,
+    promptNames,
     ClientChoiceValue,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
@@ -44,7 +44,7 @@ function getDestinationPrompt(
         {
             when: (): boolean => isAppStudio(),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.destination,
+            name: promptNames.destination,
             message: t('prompts.target.destination.message'),
             guiOptions: {
                 mandatory: true,
@@ -70,13 +70,13 @@ function getDestinationPrompt(
     if (isAppStudio() && !PromptState.isYUI) {
         prompts.push({
             when: (answers: AbapDeployConfigAnswersInternal): boolean => {
-                const destination = answers[abapDeployConfigInternalPromptNames.destination];
+                const destination = answers[promptNames.destination];
                 if (destination) {
                     updateDestinationPromptState(destination, destinations);
                 }
                 return false;
             },
-            name: abapDeployConfigInternalPromptNames.destinationCliSetter
+            name: promptNames.destinationCliSetter
         } as Question);
     }
     return prompts;
@@ -95,7 +95,7 @@ function getTargetSystemPrompt(
         {
             when: (): boolean => !isAppStudio(),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.targetSystem,
+            name: promptNames.targetSystem,
             message: t('prompts.target.targetSystem.message'),
             guiOptions: {
                 mandatory: true,
@@ -110,13 +110,13 @@ function getTargetSystemPrompt(
     if (!isAppStudio() && !PromptState.isYUI) {
         prompts.push({
             when: (answers: AbapDeployConfigAnswersInternal): boolean => {
-                const target = answers[abapDeployConfigInternalPromptNames.targetSystem];
+                const target = answers[promptNames.targetSystem];
                 if (target) {
                     validateTargetSystemUrlCli(target, choices);
                 }
                 return false;
             },
-            name: abapDeployConfigInternalPromptNames.targetSystemCliSetter
+            name: promptNames.targetSystemCliSetter
         } as Question);
     }
     return prompts;
@@ -140,7 +140,7 @@ function getUrlPrompt(
             return isValid;
         },
         type: 'input',
-        name: abapDeployConfigInternalPromptNames.url,
+        name: promptNames.url,
         message: t('prompts.target.url.message'),
         guiOptions: {
             mandatory: true,
@@ -162,7 +162,7 @@ function getScpPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigA
     return {
         when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => showScpQuestion(previousAnswers),
         type: 'confirm',
-        name: abapDeployConfigInternalPromptNames.scp,
+        name: promptNames.scp,
         message: t('prompts.target.scp.message'),
         guiOptions: {
             breadcrumb: t('prompts.target.scp.breadcrumb')
@@ -186,7 +186,7 @@ function getClientChoicePrompt(
             when: (): boolean =>
                 showClientChoiceQuestion(backendTarget?.abapTarget?.client, PromptState.abapDeployConfig?.isS4HC),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.clientChoice,
+            name: promptNames.clientChoice,
             message: t('prompts.target.clientChoice.message'),
             guiOptions: {
                 applyDefaultWhenDirty: true
@@ -202,13 +202,13 @@ function getClientChoicePrompt(
     if (!PromptState.isYUI) {
         prompts.push({
             when: (answers: AbapDeployConfigAnswersInternal): boolean => {
-                const clientChoice = answers[abapDeployConfigInternalPromptNames.clientChoice];
+                const clientChoice = answers[promptNames.clientChoice];
                 if (clientChoice) {
                     validateClientChoiceQuestion(clientChoice as ClientChoiceValue, backendTarget?.abapTarget?.client);
                 }
                 return false;
             },
-            name: abapDeployConfigInternalPromptNames.clientChoiceCliSetter
+            name: promptNames.clientChoiceCliSetter
         } as Question);
     }
     return prompts;
@@ -230,7 +230,7 @@ function getClientPrompt(backendTarget?: BackendTarget): Question<AbapDeployConf
             );
         },
         type: 'input',
-        name: abapDeployConfigInternalPromptNames.client,
+        name: promptNames.client,
         message: t('prompts.target.client.message'),
         guiOptions: {
             breadcrumb: t('prompts.target.client.breadcrumb')
