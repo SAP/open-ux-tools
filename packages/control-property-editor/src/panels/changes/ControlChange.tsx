@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, Stack, Link } from '@fluentui/react';
 import { useDispatch } from 'react-redux';
@@ -32,20 +32,22 @@ export function ControlChange({ controlId, fileName, timestamp, type }: ControlI
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
 
-    function onConfirmDelete(): void {
+    const name = useMemo(() => {
+        const parts = fileName.split('_');
+        const changeName = parts[parts.length - 1];
+        return convertCamelCaseToPascalCase(changeName);
+    }, [fileName]);
+
+    const onConfirmDelete = (): void => {
         if (dialogState) {
             dispatch(deletePropertyChanges(dialogState));
             setDialogState(undefined);
         }
-    }
+    };
 
-    function onCancelDelete(): void {
+    const onCancelDelete = (): void => {
         setDialogState(undefined);
-    }
-
-    const parts = fileName.split('_');
-    const changeName = parts[parts.length - 1];
-    const name = convertCamelCaseToPascalCase(changeName);
+    };
 
     return (
         <>
