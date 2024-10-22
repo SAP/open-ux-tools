@@ -36,7 +36,7 @@
         "@sap-ux/store": "workspace:*",
         "chalk": "4.1.2",
         "dotenv": "16.3.1",
-        "http-proxy-middleware": "2.0.6",
+        "http-proxy-middleware": "2.0.7",
         "https-proxy-agent": "5.0.1",
         "i18next": "20.6.1",
         "prompts": "2.4.2",
