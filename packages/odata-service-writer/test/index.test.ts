@@ -1,6 +1,6 @@
 import type { OdataService } from '../src/types';
 import { OdataVersion, ServiceType } from '../src/types';
-import { generate, regenerate } from '../src';
+import { generate, deleteService } from '../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -115,10 +115,10 @@ describe('ODataService templates', () => {
         expect(fs.readJSON(packagePath)).toEqual({});
     });
 
-    it('regenerate: generate valid project with standard valid input and then regenerate by passing existing service data', async () => {
+    it('deleteService: generate valid project with standard valid input and then call delete for service', async () => {
         const testDir = await createTestDir('odata-service-v2');
         await generate(testDir, validServiceConfig as OdataService, fs);
-        await regenerate(testDir, 'mainService', 'http://localhost', ServiceType.EDMX, fs);
+        await deleteService(testDir, 'mainService', 'http://localhost', '/sap/odata/testme', ServiceType.EDMX, fs);
         expect(fs.dump(testDir)).toMatchSnapshot();
         // const packagePath = join(testDir, 'package.json');
         // expect(fs.readJSON(packagePath)).toEqual({
@@ -133,7 +133,7 @@ describe('ODataService templates', () => {
         // });
     });
 
-    it('regenerate: generate project with local annotations and then regenerate by passing existing service data', async () => {
+    it('deleteService: generate project with local annotations and then call delete for service', async () => {
         const serviceConfigWithAnnotations: OdataService = {
             ...validServiceConfig,
             version: OdataVersion.v4,
@@ -149,7 +149,7 @@ describe('ODataService templates', () => {
 
         const testDir = await createTestDir('local-annotations');
         await generate(testDir, serviceConfigWithAnnotations, fs);
-        await regenerate(testDir, 'mainService', 'http://localhost', ServiceType.EDMX, fs);
+        await deleteService(testDir, 'mainService', 'http://localhost', '/sap/odata/testme', ServiceType.EDMX, fs);
         expect(fs.dump(testDir)).toMatchSnapshot();
     });
 });

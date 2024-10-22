@@ -317,9 +317,12 @@ export class UI5Config {
      * @memberof UI5Config
      */
     public removeBackendFromFioriToolsProxydMiddleware(backendUrl: string): UI5Config {
-        const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
-        const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
-        if (!proxyMiddleware) {
+        const middlewareListYaml = this.document.getSequence({ path: 'server.customMiddleware' });
+        const proxyMiddlewareYaml = this.document.findItem(
+            middlewareListYaml,
+            (item: any) => item.name === fioriToolsProxy
+        ) as YAMLMap;
+        if (!proxyMiddlewareYaml) {
             throw new Error('Could not find fiori-tools-proxy');
         }
         const proxyMiddlewareYamlContent = this.findCustomMiddleware(fioriToolsProxy);
@@ -330,7 +333,7 @@ export class UI5Config {
                 (existingBackend) => existingBackend.url === backendUrl
             );
             const configuration = this.document.getMap({
-                start: proxyMiddleware as YAMLMap,
+                start: proxyMiddlewareYaml,
                 path: 'configuration'
             });
             const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
@@ -413,6 +416,40 @@ export class UI5Config {
                 annotationsConfig
             );
             this.updateCustomMiddleware(middleware);
+        }
+        return this;
+    }
+
+    /**
+     * Removes a service from the mockserver middleware.
+     *
+     * @param servicePath path of the service that is to be deleted
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public deleteServiceFromMockServerMiddleware(servicePath: string): this {
+        const middlewareListYaml = this.document.getSequence({ path: 'server.customMiddleware' });
+        const mockserverMiddlewareYaml = this.document.findItem(
+            middlewareListYaml,
+            (item: any) => item.name === 'sap-fe-mockserver'
+        ) as YAMLMap;
+        if (!mockserverMiddlewareYaml) {
+            throw new Error('Could not find sap-fe-mockserver');
+        } else {
+            const mockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver');
+            const mockserverMiddlewareConfig = mockserverMiddleware?.configuration as MockserverConfig;
+            // Remove service from middleware configurations in yaml
+            if (mockserverMiddlewareConfig.services) {
+                const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
+                    (existingService) => existingService.urlPath === servicePath
+                );
+                const configuration = this.document.getMap({
+                    start: mockserverMiddlewareYaml,
+                    path: 'configuration'
+                });
+                const services = this.document.getSequence({ start: configuration, path: 'services' });
+                services.delete(serviceIndex);
+            }
         }
         return this;
     }
