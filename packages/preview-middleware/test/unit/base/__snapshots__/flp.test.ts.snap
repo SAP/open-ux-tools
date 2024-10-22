@@ -7,9 +7,6 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
-      "applicationDependencies": Object {
-        "manifest": true,
-      },
       "applicationType": "URL",
       "description": "",
       "title": "my.id",
@@ -17,9 +14,6 @@ Object {
     },
     "myObject-action": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.other",
-      "applicationDependencies": Object {
-        "manifest": true,
-      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Other App",
@@ -27,9 +21,6 @@ Object {
     },
     "myRemoteObject-action": Object {
       "additionalInformation": "SAPUI5.Component=myRemoteComponent",
-      "applicationDependencies": Object {
-        "manifest": true,
-      },
       "applicationType": "URL",
       "description": "",
       "title": "myRemoteObject-action",
@@ -37,9 +28,6 @@ Object {
     },
     "testfev2app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
-      "applicationDependencies": Object {
-        "manifest": true,
-      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Simple App",
@@ -88,9 +76,6 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
-      "applicationDependencies": Object {
-        "manifest": true,
-      },
       "applicationType": "URL",
       "description": "My App Description",
       "title": "My App",
@@ -136,9 +121,6 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
-      "applicationDependencies": Object {
-        "manifest": true,
-      },
       "applicationType": "URL",
       "description": "myDifferentDescription",
       "title": "myDifferentTitle",
@@ -184,9 +166,6 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
-      "applicationDependencies": Object {
-        "manifest": true,
-      },
       "applicationType": "URL",
       "description": "myOtherDescription",
       "title": "myOtherTitle",
@@ -232,9 +211,6 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
-      "applicationDependencies": Object {
-        "manifest": true,
-      },
       "applicationType": "URL",
       "description": "",
       "title": "my.id",
@@ -280,9 +256,6 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
-      "applicationDependencies": Object {
-        "manifest": true,
-      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Simple App",
@@ -330,9 +303,6 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
-      "applicationDependencies": Object {
-        "manifest": true,
-      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Simple App",
@@ -369,6 +339,74 @@ Object {
       "test.fe.v2.app": "..",
     },
     "theme": "sap_fiori_3",
+  },
+}
+`;
+
+exports[`FlpSandbox init with passed descriptor 1`] = `
+Object {
+  "apps": Object {
+    "app-preview": Object {
+      "additionalInformation": "SAPUI5.Component=myComponent",
+      "applicationDependencies": Object {
+        "asyncHints": Object {
+          "requests": Array [
+            Object {
+              "url": "myRequestUrl",
+            },
+          ],
+        },
+        "components": Array [
+          Object {
+            "name": "myComponent",
+            "url": "myComponentUrl",
+          },
+        ],
+        "libs": Array [
+          Object {
+            "name": "myLib",
+            "url": "myLibUrl",
+          },
+        ],
+      },
+      "applicationType": "URL",
+      "description": "",
+      "title": "my.id",
+      "url": "..",
+    },
+  },
+  "basePath": "..",
+  "init": undefined,
+  "locateReuseLibsScript": false,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "custom.connectors.WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "resources": Object {
+      "my.id": "..",
+      "myResources1": "myResourcesUrl1",
+      "myResources2": "myResourcesUrl2",
+      "open.ux.preview.client": "../preview/client",
+    },
+    "theme": "sap_horizon",
   },
 }
 `;
@@ -504,7 +542,7 @@ exports[`FlpSandbox router editor with config 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
@@ -583,7 +621,7 @@ exports[`FlpSandbox router rta 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
@@ -694,7 +732,7 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
@@ -789,7 +827,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
@@ -884,7 +922,7 @@ exports[`FlpSandbox router rta with editors path without leading "/" 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
@@ -963,7 +1001,7 @@ exports[`FlpSandbox router test/flp.html 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
