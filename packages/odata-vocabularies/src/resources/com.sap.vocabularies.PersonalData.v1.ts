@@ -1,4 +1,4 @@
-// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
+// Last content update: Mon Oct 21 2024 11:45:53 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -147,11 +147,16 @@ export default {
                         'Examples:\n\n                - Sales Contract ID\n\n                - Purchase Contract ID\n\n                - Service Contract ID\n                '
                 },
                 {
-                    '@com.sap.vocabularies.Common.v1.Experimental': true,
                     'Value': 'LegalEntityID',
                     '@Org.OData.Core.V1.Description': 'The unique identifier of a legal entity',
                     '@Org.OData.Core.V1.LongDescription':
-                        'A legal entity is a corporation, an association, or any other organization of legal capacity, which has statutory rights and responsibilities.'
+                        'A legal entity is a corporation, an association, or any other organization of legal capacity, which has statutory rights and responsibilities.',
+                    '@Org.OData.Core.V1.Revisions': [
+                        {
+                            'Kind': 'Deprecated',
+                            'Description': 'Deprecated in favor of [`DataControllerID`](#DataControllerID)'
+                        }
+                    ]
                 },
                 {
                     '@com.sap.vocabularies.Common.v1.Experimental': true,
@@ -167,6 +172,28 @@ export default {
                         'Defines the end of active business and the start of residence time and retention period',
                     '@Org.OData.Core.V1.LongDescription':
                         'End of business is the point in time when the processing of a set of personal data is no longer required for the active business,\n                for example, when a contract is fulfilled. After this has been reached and a customer-defined residence period has passed, the data is blocked and can only be accessed\n                by users with special authorizations (for example, tax auditors).\n                All fields of type `Edm.Date` or `Edm.DateTimeOffset` on which the end of business determination depends should be annotated.'
+                },
+                {
+                    '@com.sap.vocabularies.Common.v1.Experimental': true,
+                    'Value': 'DataControllerID',
+                    '@Org.OData.Core.V1.Description': 'The unique identifier of a data controller',
+                    '@Org.OData.Core.V1.LongDescription':
+                        'The unique identifier of a legal entity which alone or jointly with others determines the purposes and means of the processing of personal data. \n                The Data Controller is fully responsible (and accountable) that data protection and privacy principles (such as purpose limitation or data minimization), defined in the European General Data Protection Regulation (GDPR) or any other data protection legislation, are adhered to when processing personal data. The DataControllerID succeeds the LegalEntityID.'
+                },
+                {
+                    '@com.sap.vocabularies.Common.v1.Experimental': true,
+                    'Value': 'BlockingDate',
+                    '@Org.OData.Core.V1.Description':
+                        'Defines a date that marks when the provider of the data will block these',
+                    '@Org.OData.Core.V1.LongDescription':
+                        'Defines a date that marks when the provider of the data will block these. This is the point in time when the processing of a set of personal data is no longer required for the active business, for example, when a contract is fulfilled. After it has been reached, the data is blocked in the source and can only be displayed by users with special authorizations (for example, tax auditors); however, it is not allowed to create/change/copy/follow-up blocked data. Consumers of the data should consider if there is an additional purpose to process the data beyond the defined blocking date.'
+                },
+                {
+                    '@com.sap.vocabularies.Common.v1.Experimental': true,
+                    'Value': 'EndOfRetentionDate',
+                    '@Org.OData.Core.V1.Description': 'Defines the date when the provider destroys the data',
+                    '@Org.OData.Core.V1.LongDescription':
+                        'Defines a date that marks when the provider of the data can destroy these. Consumers of the data should consider if there is an additional purpose (or a legal hold) to process the data beyond the defined destruction date.'
                 }
             ]
         },
