@@ -11,6 +11,7 @@ import { t } from './i18n';
 import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
+import { deleteServiceFromManifest } from './delete';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -56,6 +57,86 @@ export async function findProjectFiles(
 }
 
 /**
+ * Writes the odata service related file deletions to an existing UI5 project specified by the base path.
+ *
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {string} serviceName - name of the OData service instance
+ * @param {string} serviceUri - Uri of the OData service instance
+ * @param {ServiceType} serviceType - type of the OData service instance
+ * @param {Editor} [fs] - the memfs editor instance
+ * @throws {Error} - if required UI5 project files are not found
+ * @returns {Promise<Editor>} the updated memfs editor instance
+ */
+async function regenerate(
+    basePath: string,
+    serviceName: string,
+    serviceUri: string,
+    serviceType: ServiceType,
+    fs?: Editor
+): Promise<Editor> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    const paths = await findProjectFiles(basePath, fs);
+    ensureExists(basePath, ['webapp/manifest.json'], fs);
+    const isServiceTypeEdmx = serviceType === ServiceType.EDMX;
+    // update cds files with annotations only if service type is CDS and annotations are provided
+    if (!isServiceTypeEdmx) {
+        // await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo | CdsAnnotationsInfo[], fs);
+    }
+    // Handle changes after deletion in manifest.json
+    await deleteServiceFromManifest(basePath, serviceName, fs);
+
+    // Delete service from ui5.yaml if it exists
+    let ui5Config: UI5Config | undefined;
+    let ui5LocalConfig: UI5Config | undefined;
+    let ui5LocalConfigPath: string | undefined;
+    if (isServiceTypeEdmx && paths.ui5Yaml) {
+        // Don't extend backend middlewares if service type is CDS.
+        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+        try {
+            ui5Config.removeBackendFromFioriToolsProxydMiddleware(serviceUri);
+        } catch (error: any) {
+            throw error;
+        }
+
+        fs.write(paths.ui5Yaml, ui5Config.toString());
+
+        // ui5-local.yaml
+        ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
+        if (fs.exists(ui5LocalConfigPath)) {
+            ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+            try {
+                ui5LocalConfig.removeBackendFromFioriToolsProxydMiddleware(serviceUri);
+            } catch (error: any) {
+                throw error;
+            }
+        }
+    }
+
+    // Remove mockserver entries
+    // if (isServiceTypeEdmx) {
+    //     // mockserver entries are not required if service type is CDS
+    //     // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
+    //     if (paths.ui5Yaml && ui5Config) {
+    //         const webappPath = await getWebappPath(basePath, fs);
+    //         // Name of the service or default name assigned in enhanceData(service)
+    //         const config = {
+    //             webappPath: webappPath,
+    //             ui5MockYamlConfig: { serviceName }
+    //         };
+    //         await generateMockserverConfig(basePath, config, fs);
+    //         // add or update mockserver middleware to ui5-local.yaml
+    //         if (ui5LocalConfig) {
+    //             ui5LocalConfig.enhanceMockServerMiddleware(serviceName);
+    //         }
+    //     }
+    // }
+
+    return fs;
+}
+
+/**
  * Writes the odata service related file updates to an existing UI5 project specified by the base path.
  *
  * @param {string} basePath - the root path of an existing UI5 application
@@ -88,7 +169,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     let ui5LocalConfig: UI5Config | undefined;
     let ui5LocalConfigPath: string | undefined;
     if (isServiceTypeEdmx && paths.ui5Yaml) {
-        // Dont extend backend middlewares if service type is CDS.
+        // Don't extend backend middlewares if service type is CDS.
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
         try {
             ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
@@ -181,4 +262,4 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     return fs;
 }
 
-export { generate, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
+export { generate, regenerate, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };

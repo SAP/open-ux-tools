@@ -310,6 +310,36 @@ export class UI5Config {
     }
 
     /**
+     * Removes a backend configuration from an existing fiori-tools-proxy middleware backend configurations. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     *
+     * @param backendUrl url of the backend to delete.
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public removeBackendFromFioriToolsProxydMiddleware(backendUrl: string): UI5Config {
+        const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
+        const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
+        if (!proxyMiddleware) {
+            throw new Error('Could not find fiori-tools-proxy');
+        }
+        const proxyMiddlewareYamlContent = this.findCustomMiddleware(fioriToolsProxy);
+        const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration as FioriToolsProxyConfig;
+        // Remove backend from middleware configurations in yaml
+        if (proxyMiddlewareConfig?.backend) {
+            const backendIndex = proxyMiddlewareConfig.backend.findIndex(
+                (existingBackend) => existingBackend.url === backendUrl
+            );
+            const configuration = this.document.getMap({
+                start: proxyMiddleware as YAMLMap,
+                path: 'configuration'
+            });
+            const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
+            backendConfigs.delete(backendIndex);
+        }
+        return this;
+    }
+
+    /**
      * Returns the backend configurations from the fiori-tools-proxy middleware.
      *
      * @returns {FioriToolsProxyConfigBackend[]} the backend configurations

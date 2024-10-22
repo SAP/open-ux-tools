@@ -1,6 +1,6 @@
 import type { OdataService } from '../src/types';
 import { OdataVersion, ServiceType } from '../src/types';
-import { generate } from '../src';
+import { generate, regenerate } from '../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -113,5 +113,43 @@ describe('ODataService templates', () => {
         await generate(testDir, config, fs);
         const packagePath = join(testDir, 'package.json');
         expect(fs.readJSON(packagePath)).toEqual({});
+    });
+
+    it('regenerate: generate valid project with standard valid input and then regenerate by passing existing service data', async () => {
+        const testDir = await createTestDir('odata-service-v2');
+        await generate(testDir, validServiceConfig as OdataService, fs);
+        await regenerate(testDir, 'mainService', 'http://localhost', ServiceType.EDMX, fs);
+        expect(fs.dump(testDir)).toMatchSnapshot();
+        // const packagePath = join(testDir, 'package.json');
+        // expect(fs.readJSON(packagePath)).toEqual({
+        //     ui5: {
+        //         dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
+        //     },
+        //     devDependencies: {
+        //         '@sap-ux/ui5-middleware-fe-mockserver': '2',
+        //         '@sap/ux-ui5-tooling': '1'
+        //     },
+        //     scripts: { 'start-mock': 'fiori run --config ./ui5-mock.yaml --open "/"' }
+        // });
+    });
+
+    it('regenerate: generate project with local annotations and then regenerate by passing existing service data', async () => {
+        const serviceConfigWithAnnotations: OdataService = {
+            ...validServiceConfig,
+            version: OdataVersion.v4,
+            metadata: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `metadata.xml`), 'utf-8'),
+            annotations: [
+                {
+                    technicalName: 'sepmra_annotations_tech_name',
+                    xml: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `annotations.xml`), 'utf-8')
+                }
+            ],
+            localAnnotationsName: 'annotations_test'
+        };
+
+        const testDir = await createTestDir('local-annotations');
+        await generate(testDir, serviceConfigWithAnnotations, fs);
+        await regenerate(testDir, 'mainService', 'http://localhost', ServiceType.EDMX, fs);
+        expect(fs.dump(testDir)).toMatchSnapshot();
     });
 });

@@ -668,6 +668,40 @@ exports[`UI5Config getType / setType set type 1`] = `
 "
 `;
 
+exports[`UI5Config removeBackendFromFioriToolsProxydMiddleware add proxy with backend first and then call remove backend for existing backend 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend: []
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+"
+`;
+
+exports[`UI5Config removeBackendFromFioriToolsProxydMiddleware add proxy with backend first and then call remove backend for unexisting backend 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+"
+`;
+
 exports[`UI5Config setMetadata replace metadata 1`] = `
 "metadata:
   name: the.replaced.name
