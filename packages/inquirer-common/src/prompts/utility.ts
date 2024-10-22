@@ -95,9 +95,9 @@ export function ui5VersionsGrouped(
 
     const versionChoices = [...maintChoices, ...notMaintChoices];
     if (defaultChoice) {
-        // adds or moves default choice to the top of the list
         const index = versionChoices.findIndex((choice) => choice.value === defaultChoice.value);
         if (index === -1) {
+            // adds default choice to the top of the list
             versionChoices.unshift(defaultChoice);
         }
     }
@@ -112,7 +112,7 @@ export function ui5VersionsGrouped(
  * @param defaultChoiceVersion - default version chosen
  * @returns - ui5 version to be used as default
  */
-function getUI5Version(
+function findDefaultUI5Version(
     ui5Versions: UI5Version[],
     useClosestVersion: boolean,
     defaultChoiceVersion: SemVer
@@ -143,12 +143,12 @@ export function getDefaultUI5VersionChoice(
 ): UI5VersionChoice | undefined {
     let useClosestVersion = false;
     if (defaultChoice) {
-        if (defaultChoice.value.endsWith('SNAPSHOT')) {
+        if (defaultChoice.value.toLowerCase().endsWith('snapshot')) {
             useClosestVersion = true;
         }
         const defaultChoiceVersion = coerce(defaultChoice.value);
         if (defaultChoiceVersion !== null) {
-            const version = getUI5Version(ui5Versions, useClosestVersion, defaultChoiceVersion);
+            const version = findDefaultUI5Version(ui5Versions, useClosestVersion, defaultChoiceVersion);
             if (version) {
                 // if the versions are an exact match use the name (UI label) from the default choice as this may use a custom name
                 return {
