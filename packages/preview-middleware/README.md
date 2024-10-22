@@ -32,7 +32,7 @@ When this middleware is used together with the `reload-middleware`, then the ord
 | `test`                 | `array`   | `undefined`      | Optional list of configurations for automated testing.                                                                                                                                                                                                    |
 | `debug`                | `boolean` | `false`          | Enables debug output                                                                                                                                                                                                                                      |
 
-### `flp.apps`
+### [`flp.apps`](#configuration-option-flpapps)
 Array of additional application configurations:
 | Option                   | Type     | Default Value  | Description                                                                                                   |
 | ------------------------ | -------- | -------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -42,7 +42,7 @@ Array of additional application configurations:
 | `intent.object`          | `string` | `(calculated)` | Optional intent object, if it is not provided then it will be calculated based on the application id          |
 | `intent.action`          | `string` | `preview`      | Optional intent action                                                                                        |
 
-### `adp.target`
+### [`adp.target`](#configuration-option-adptarget)
 | Option        | Type                           | Description                                                                                                                                     |
 | ------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `url`         | `string` mandatory (local)     | Mandatory URL pointing to the backend system. *Not required if destination is provided and the proxy is running SAP Business Application Studio |
@@ -50,13 +50,13 @@ Array of additional application configurations:
 | `client`      | `string` optional              | sap-client parameter                                                                                                                            |
 | `scp`         | `boolean` optional             | If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP                                            |
 
-### `rta.editors`
+### [`rta.editors`](#configuration-option-rtaeditors)
 | Option          | Type               | Description                                                                                    |
 | --------------- | -------------------| -----------------------------------------------------------------------------------------------|
 | `path`          | `string` mandatory | The mount point to be used for the editor.                                                     |
 | `developerMode` | `boolean` optional | Enables/disables the runtime adaptation developer mode (only supported for adaptation projects) |
 
-### `test`
+### [`test`](#configuration-option-test)
 | Option          | Type               | Description                                                                                                                                                                                                                                                                                                             |
 | --------------- | -------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `framework`     | `string` mandatory | Currently `OPA5`, `QUnit` (only QUnit 2.3.2 provided as third-party module via [OpenUI5](https://github.com/SAP/openui5/blob/master/THIRDPARTY.txt)/SAPUI5) and `Testsuite` are supported. `Testsuite` will generate a testsuite for all configured frameworks that can be be used with a test runner (like e.g. karma) |
