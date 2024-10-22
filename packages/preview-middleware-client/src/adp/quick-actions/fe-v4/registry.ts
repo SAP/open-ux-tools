@@ -9,6 +9,8 @@ import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
 import { ChangeTableColumnsQuickAction } from './change-table-columns';
 import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
 import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
+import { AddPageActionQuickAction } from '../common/create-page-action';
+import { AddTableActionQuickAction } from './create-table-action';
 
 type PageName = 'listReport' | 'objectPage';
 
@@ -36,7 +38,9 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                     definitions: [
                         ToggleClearFilterBarQuickAction,
                         AddControllerToPageQuickAction,
-                        ChangeTableColumnsQuickAction
+                        ChangeTableColumnsQuickAction,
+                        AddPageActionQuickAction,
+                        AddTableActionQuickAction
                     ],
                     view,
                     key: name + index
@@ -48,7 +52,9 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         AddControllerToPageQuickAction,
                         ChangeTableColumnsQuickAction,
                         AddHeaderFieldQuickAction,
-                        AddCustomSectionQuickAction
+                        AddCustomSectionQuickAction,
+                        AddPageActionQuickAction,
+                        AddTableActionQuickAction
                     ],
                     view,
                     key: name + index

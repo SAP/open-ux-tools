@@ -369,6 +369,18 @@ describe('FE V2 quick actions', () => {
                                             label: `'MyTable' table`
                                         }
                                     ]
+                                },
+                                {
+                                    'kind': 'nested',
+                                    id: 'listReport0-create_table_action',
+                                    title: 'Add Custom Table Action',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            label: `'MyTable' table`
+                                        }
+                                    ]
                                 }
                             ]
                         }
