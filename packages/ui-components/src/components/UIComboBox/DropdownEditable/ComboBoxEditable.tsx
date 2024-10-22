@@ -9,7 +9,7 @@ import { OptionKey, UISelectableOptionWithSubValues } from './types';
 import { ItemInput, ItemInputRef } from './ItemInput';
 import { isValueValid, RenamedEntries, resolveValueForOption, updateEditableEntry } from './utils';
 
-import './UIComboBoxEditable.scss';
+import './ComboBoxEditable.scss';
 
 export interface UIComboboxTestProps extends UIComboBoxProps {
     /**
@@ -38,7 +38,7 @@ function getOption(
     return options.find((option) => option.key === key);
 }
 
-export const UIComboBoxEditable = (props: UIComboboxTestProps) => {
+export const ComboBoxEditable = (props: UIComboboxTestProps) => {
     const { options, onChange, multiSelect } = props;
     const [selectedKey, updateSelection, convertedOptions] = useOptions(props.selectedKey, options, props.multiSelect);
     const [subMenu, setSubMenu] = useState<SubMenuData | null>(null);

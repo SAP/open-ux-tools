@@ -7,7 +7,7 @@ import {
     UIComboBox,
     UIComboBoxLoaderType,
     UISelectableOptionMenuItemType,
-    UIComboBoxEditable,
+    ComboBoxEditable,
     UIComboBoxOption
 } from '../src/components/UIComboBox';
 import { UICheckbox } from '../src/components/UICheckbox';
@@ -56,7 +56,7 @@ const EditableComboboxExample = (props: EditableComboboxExampleProps) => {
                 </div>
             </div>
             <div style={{ width: '300px' }}>
-                <UIComboBoxEditable
+                <ComboBoxEditable
                     options={options}
                     highlight={true}
                     allowFreeform={true}
@@ -75,7 +75,7 @@ const EditableComboboxExample = (props: EditableComboboxExampleProps) => {
                 <div>{JSON.stringify(selectedOptions, replacedFn)}</div>
             </div>
             <div style={{ width: '300px' }}>
-                <UIComboBoxEditable
+                <ComboBoxEditable
                     options={options}
                     multiSelect={true}
                     highlight={true}
