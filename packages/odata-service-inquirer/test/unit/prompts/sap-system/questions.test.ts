@@ -62,6 +62,7 @@ describe('questions', () => {
               {
                 "default": "",
                 "guiOptions": {
+                  "applyDefaultWhenDirty": true,
                   "mandatory": true,
                 },
                 "guiType": "login",

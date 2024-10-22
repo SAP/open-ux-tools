@@ -228,7 +228,7 @@ function getPasswordPrompt(
             if (!serviceUrl || !username || !password) {
                 return false;
             }
-            const validAuth = await connectValidator.validateAuth(serviceUrl, username, password, {
+            const { valResult: validAuth } = await connectValidator.validateAuth(serviceUrl, username, password, {
                 ignoreCertError,
                 sapClient
             });

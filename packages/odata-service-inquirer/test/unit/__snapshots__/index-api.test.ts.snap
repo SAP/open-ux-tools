@@ -72,6 +72,10 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
+    "name": "systemSelectionCli",
+    "when": [Function],
+  },
+  {
     "default": "",
     "guiOptions": {
       "mandatory": true,
@@ -85,6 +89,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
   {
     "default": "",
     "guiOptions": {
+      "applyDefaultWhenDirty": true,
       "mandatory": true,
     },
     "guiType": "login",
@@ -93,10 +98,6 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "name": "systemSelection:systemPassword",
     "type": "password",
     "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "name": "systemSelectionCli",
     "when": [Function],
   },
   {
@@ -167,6 +168,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
   {
     "default": "",
     "guiOptions": {
+      "applyDefaultWhenDirty": true,
       "mandatory": true,
     },
     "guiType": "login",

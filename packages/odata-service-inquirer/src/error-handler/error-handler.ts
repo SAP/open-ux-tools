@@ -1,9 +1,13 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { ToolsLogger, type Logger } from '@sap-ux/logger';
-import { t } from '../i18n';
-import { ValidationLink } from '../types';
-import { sendTelemetryEvent } from '../utils';
+import type { Destination } from '@sap-ux/btp-utils';
+import {
+    isAbapODataDestination,
+    isAppStudio,
+    isFullUrlDestination,
+    isHTML5DynamicConfigured,
+    isOnPremiseDestination,
+    isPartialUrlDestination
+} from '@sap-ux/btp-utils';
 import {
     GUIDED_ANSWERS_ICON,
     GUIDED_ANSWERS_LAUNCH_CMD_ID,
@@ -11,8 +15,20 @@ import {
     HELP_TREE,
     getHelpUrl
 } from '@sap-ux/guided-answers-helper';
+import { ToolsLogger, type Logger } from '@sap-ux/logger';
+import { t } from '../i18n';
+import { ValidationLink } from '../types';
+import { sendTelemetryEvent } from '../utils';
 
-const teleEventGALinkCreated = 'GA_LINK_CREATED';
+// todo: Update to use event names from the telemetry package
+const telemEventGALinkCreated = 'GA_LINK_CREATED';
+const telemBasError = 'SERVICE_INQUIRER_BAS_ERROR';
+type TelemPropertyDestinationType =
+    | 'AbapODataCatalogDest'
+    | 'GenericODataFullUrlDest'
+    | 'GenericODataPartialUrlDest'
+    | 'S4HCDest'
+    | 'Unknown';
 
 /**
  * Constants specific to error handling
@@ -32,7 +48,7 @@ export enum ERROR_TYPE {
     TIMEOUT = 'TIMEOUT',
     CONNECTION = 'CONNECTION',
     SERVICES_UNAVAILABLE = 'SERVICES_UNAVAILABLE', // All services
-    SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE', // Specific service
+    SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE', // HTTP 503 Not related to odata services
     NO_ABAP_ENVS = 'NO_ABAP_ENVS',
     CATALOG_SERVICE_NOT_ACTIVE = 'CATALOG_SERVICE_NOT_ACTIVE',
     NO_SUCH_HOST = 'NO_SUCH_HOST',
@@ -46,7 +62,9 @@ export enum ERROR_TYPE {
     DESTINATION_MISCONFIGURED = 'DESTINATION_MISCONFIGURED',
     NO_V2_SERVICES = 'NO_V2_SERVICES',
     NO_V4_SERVICES = 'NO_V4_SERVICES',
-    BAD_REQUEST = 'BAD_REQUEST'
+    BAD_REQUEST = 'BAD_REQUEST',
+    DESTINATION_CONNECTION_ERROR = 'DESTINATION_CONNECTION_ERROR', // General destination connection error where a specific root cause cannot be determined e.g. In the case of an internal server error
+    SERVER_HTTP_ERROR = 'SERVER_HTTP_ERROR'
 }
 
 // Used to match regex expressions to error messages, etc. providing a way to return a consistent
@@ -92,10 +110,33 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.DESTINATION_MISCONFIGURED]: [],
     [ERROR_TYPE.NO_V2_SERVICES]: [],
     [ERROR_TYPE.NO_V4_SERVICES]: [],
-    [ERROR_TYPE.BAD_REQUEST]: [/400/]
+    [ERROR_TYPE.BAD_REQUEST]: [/400/],
+    [ERROR_TYPE.DESTINATION_CONNECTION_ERROR]: [],
+    [ERROR_TYPE.SERVER_HTTP_ERROR]: [/5[0-9][0-9]/] // catch all for 5xx server errors
 };
 
 type ValidationLinkOrString = string | ValidationLink;
+
+/**
+ * Used only to generate telemetry events in the case of destination errors.
+ *
+ * @param destination
+ * @returns the telemetry property destination type
+ */
+function getTelemPropertyDestinationType(destination: Destination): TelemPropertyDestinationType {
+    if (isAbapODataDestination(destination)) {
+        return 'AbapODataCatalogDest';
+    } else if (isFullUrlDestination(destination)) {
+        return 'GenericODataFullUrlDest';
+    } else if (isPartialUrlDestination(destination)) {
+        return 'GenericODataPartialUrlDest';
+    } else {
+        return 'Unknown';
+    }
+}
+// Best effort to get a useful error message from an error of unknown type
+const getErrorMessage = (error: unknown): string =>
+    (error as Error)?.message ?? (typeof error === 'string' ? error : JSON.stringify(error));
 
 /**
  * Maps errors to end-user messages using some basic root cause analysis based on regex matching.
@@ -111,49 +152,91 @@ export class ErrorHandler {
 
     private static _logger: Logger;
 
-    // Get the required localized parameterized error message
-    // Note that these are general fallback end-user error messages.
-    // More specific error messages can be used at the point of error generation.
-    private static readonly _errorMsg = (error?: Error | object): Record<ERROR_TYPE, string> => ({
-        [ERROR_TYPE.CERT]: t('errors.certificateError', { error }),
-        [ERROR_TYPE.CERT_EXPIRED]: t('errors.urlCertValidationError', { certErrorReason: t('texts.anExpiredCert') }),
-        [ERROR_TYPE.CERT_SELF_SIGNED]: t('errors.urlCertValidationError', {
-            certErrorReason: t('texts.aSelfSignedCert')
-        }),
-        [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: t('errors.urlCertValidationError', {
-            certErrorReason: t('texts.anUnknownOrInvalidCert')
-        }),
-        [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: t('errors.urlCertValidationError', {
-            certErrorReason: t('texts.anUntrustedRootCert')
-        }),
-        [ERROR_TYPE.AUTH]: t('errors.authenticationFailed', { error: (error as Error)?.message || error }),
-        [ERROR_TYPE.AUTH_TIMEOUT]: t('errors.authenticationTimeout'),
-        [ERROR_TYPE.TIMEOUT]: t('errors.timeout, { error }'),
-        [ERROR_TYPE.INVALID_URL]: t('errors.invalidUrl'),
-        [ERROR_TYPE.CONNECTION]: t('errors.connectionError', {
-            error: (error as Error)?.message || JSON.stringify(error)
-        }),
-        [ERROR_TYPE.UNKNOWN]: t('errors.unknownError', {
-            error: (error as Error)?.message || JSON.stringify(error)
-        }),
-        [ERROR_TYPE.SERVICES_UNAVAILABLE]: t('errors.servicesUnavailable'),
-        [ERROR_TYPE.SERVICE_UNAVAILABLE]: t('errors.serviceUnavailable'),
-        [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: t('errors.catalogServiceNotActive'),
-        [ERROR_TYPE.INTERNAL_SERVER_ERROR]: t('errors.internalServerError', { error: (error as Error)?.message }),
-        [ERROR_TYPE.NOT_FOUND]: t('errors.urlNotFound'),
-        [ERROR_TYPE.ODATA_URL_NOT_FOUND]: t('errors.odataServiceUrlNotFound'),
-        [ERROR_TYPE.BAD_GATEWAY]: t('errors.badGateway'),
-        [ERROR_TYPE.DESTINATION_UNAVAILABLE]: t('errors.destinationUnavailable'),
-        [ERROR_TYPE.DESTINATION_NOT_FOUND]: t('errors.destinationNotFound'),
-        [ERROR_TYPE.DESTINATION_MISCONFIGURED]: t('errors.destinationMisconfigured'),
-        [ERROR_TYPE.NO_V2_SERVICES]: t('errors.noServicesAvailable', { version: '2' }),
-        [ERROR_TYPE.NO_V4_SERVICES]: t('errors.noServicesAvailable', { version: '4' }),
-        [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: t('errors.destinationUnavailable'),
-        [ERROR_TYPE.REDIRECT]: t('errors.redirectError'),
-        [ERROR_TYPE.NO_SUCH_HOST]: t('errors.noSuchHostError'),
-        [ERROR_TYPE.NO_ABAP_ENVS]: t('errors.abapEnvsUnavailable'),
-        [ERROR_TYPE.BAD_REQUEST]: t('errors.badRequest')
-    });
+    // Get the localized parameterized error message for the specified error type
+    // TODO: remove the repition of the error message string/object conversion
+    private static readonly _errorTypeToMsg: Record<ERROR_TYPE, (error?: Error | object | string) => string> = {
+        [ERROR_TYPE.CERT]: (error) =>
+            t('errors.certificateError', { error: typeof error === 'string' ? error : JSON.stringify(error) }),
+        [ERROR_TYPE.CERT_EXPIRED]: () =>
+            t('errors.urlCertValidationError', { certErrorReason: t('texts.anExpiredCert') }),
+        [ERROR_TYPE.CERT_SELF_SIGNED]: () =>
+            t('errors.urlCertValidationError', {
+                certErrorReason: t('texts.aSelfSignedCert')
+            }),
+        [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: () =>
+            t('errors.urlCertValidationError', {
+                certErrorReason: t('texts.anUnknownOrInvalidCert')
+            }),
+        [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: () =>
+            t('errors.urlCertValidationError', {
+                certErrorReason: t('texts.anUntrustedRootCert')
+            }),
+        [ERROR_TYPE.AUTH]: (error) =>
+            t('errors.authenticationFailed', {
+                error: (error as Error)?.message || typeof error === 'string' ? error : JSON.stringify(error)
+            }),
+        [ERROR_TYPE.AUTH_TIMEOUT]: () => t('errors.authenticationTimeout'),
+        [ERROR_TYPE.TIMEOUT]: (error) =>
+            t('errors.timeout', { error: typeof error === 'string' ? error : JSON.stringify(error) }),
+        [ERROR_TYPE.INVALID_URL]: () => t('errors.invalidUrl'),
+        [ERROR_TYPE.CONNECTION]: (error) =>
+            t('errors.connectionError', {
+                error: (error as Error)?.message || typeof error === 'string' ? error : JSON.stringify(error)
+            }),
+        [ERROR_TYPE.UNKNOWN]: (error) =>
+            t('errors.unknownError', {
+                error: getErrorMessage(error)
+            }),
+        [ERROR_TYPE.SERVICES_UNAVAILABLE]: () => t('errors.servicesUnavailable'),
+        [ERROR_TYPE.SERVICE_UNAVAILABLE]: (error) =>
+            t('errors.serverReturnedAnError', {
+                errorMsg: getErrorMessage(error)
+            }),
+        [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: () => t('errors.catalogServiceNotActive'),
+        [ERROR_TYPE.INTERNAL_SERVER_ERROR]: (error) =>
+            t('errors.serverReturnedAnError', {
+                errorDesc: 'Internal server error:',
+                errorMsg: getErrorMessage(error)
+            }),
+        [ERROR_TYPE.NOT_FOUND]: () => t('errors.urlNotFound'),
+        [ERROR_TYPE.ODATA_URL_NOT_FOUND]: () => t('errors.odataServiceUrlNotFound'),
+        [ERROR_TYPE.BAD_GATEWAY]: (error) =>
+            t('errors.serverReturnedAnError', {
+                errorDesc: 'Bad gateway:',
+                errorMsg: getErrorMessage(error)
+            }),
+        [ERROR_TYPE.DESTINATION_UNAVAILABLE]: () => t('errors.destination.unavailable'),
+        [ERROR_TYPE.DESTINATION_NOT_FOUND]: () => t('errors.destination.notFound'),
+        [ERROR_TYPE.DESTINATION_MISCONFIGURED]: (error) =>
+            t('errors.destination.misconfigured', {
+                destinationProperty: typeof error === 'string' ? error : JSON.stringify(error)
+            }),
+        [ERROR_TYPE.NO_V2_SERVICES]: () => t('errors.noServicesAvailable', { version: '2' }),
+        [ERROR_TYPE.NO_V4_SERVICES]: () => t('errors.noServicesAvailable', { version: '4' }),
+        [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: () => t('errors.destination.unavailable'),
+        [ERROR_TYPE.REDIRECT]: () => t('errors.redirectError'),
+        [ERROR_TYPE.NO_SUCH_HOST]: () => t('errors.noSuchHostError'),
+        [ERROR_TYPE.NO_ABAP_ENVS]: () => t('errors.abapEnvsUnavailable'),
+        [ERROR_TYPE.BAD_REQUEST]: (error) =>
+            t('errors.serverReturnedAnError', {
+                errorDesc: 'Bad request:',
+                errorMsg: getErrorMessage(error)
+            }),
+        [ERROR_TYPE.DESTINATION_CONNECTION_ERROR]: () => t('errors.systemConnectionValidationFailed'),
+        [ERROR_TYPE.SERVER_HTTP_ERROR]: (error) =>
+            t('errors.serverReturnedAnError', {
+                errorMsg: getErrorMessage(error)
+            })
+    };
+    /**
+     *
+     * @param errorType
+     * @param error can be any object that will get stringified and passed to the specific error message for the error type entry, e.g. where the error message is parameterized
+     * @returns an error message for the specified error type
+     */
+    private static readonly _errorMsg = (errorType: ERROR_TYPE, error?: Error | object | string): string => {
+        return ErrorHandler._errorTypeToMsg[errorType](error);
+    };
 
     /**
      * Get the Guided Answers (help) node for the specified error type.
@@ -192,7 +275,9 @@ export class ErrorHandler {
             [ERROR_TYPE.INTERNAL_SERVER_ERROR]: undefined,
             [ERROR_TYPE.NO_V2_SERVICES]: undefined,
             [ERROR_TYPE.TIMEOUT]: undefined,
-            [ERROR_TYPE.BAD_REQUEST]: undefined
+            [ERROR_TYPE.BAD_REQUEST]: undefined,
+            [ERROR_TYPE.DESTINATION_CONNECTION_ERROR]: HELP_NODES.BAS_CATALOG_SERVICES_REQUEST_FAILED, // HELP_NODES.SYSTEM_CONNECTION_ERRORS TODO: Change the GA page and link name to be less catalog specific
+            [ERROR_TYPE.SERVER_HTTP_ERROR]: undefined
         };
         return errorToHelp[errorType];
     };
@@ -338,7 +423,7 @@ export class ErrorHandler {
         }
 
         return {
-            errorMsg: ErrorHandler._errorMsg(error)[errorType],
+            errorMsg: ErrorHandler._errorMsg(errorType, error),
             errorType
         };
     }
@@ -374,23 +459,44 @@ export class ErrorHandler {
      * Used by validate functions to report in-line user friendly errors messages with help links.
      * If the error type is unknown, this will find a mapped error type and return the help (ValidationLink) if it exists.
      * If an error is not provided the current error state will be used. This does not log the message to the console.
+     * If a system is provided, the error type may be refined to provide a more specific error message for the system which generatd the error.
      *
      * @param error optional, if provided get the help link message that it maps to, otherwise get the previously logged error message help link
      * @param reset optional, resets the previous error state if true
+     * @param destination optional, if provided the destination may be used to determine a more relevant error message, specific to the system properties
      * @returns An instance of @see {ValidationLink}
      */
-    public getValidationErrorHelp(error?: any, reset = false): ValidationLinkOrString | undefined {
+    public getValidationErrorHelp(
+        error?: any,
+        reset = false,
+        destination?: Destination
+    ): ValidationLinkOrString | undefined {
         let errorHelp: ValidationLinkOrString | undefined;
-        let errorMsg: string | undefined;
+        let resolvedErrorMsg: string | undefined;
+        let resolvedErrorType: ERROR_TYPE | undefined;
+
         if (error) {
-            const resolvedError = ErrorHandler.mapErrorToMsg(error);
-            if (resolvedError.errorType !== ERROR_TYPE.UNKNOWN) {
-                errorHelp = ErrorHandler.getHelpForError(resolvedError.errorType, resolvedError.errorMsg);
-            }
-        } else if (!error) {
-            errorMsg = this.currentErrorMsg ?? '';
+            ({ errorMsg: resolvedErrorMsg, errorType: resolvedErrorType } = ErrorHandler.mapErrorToMsg(error));
+        } else {
+            // User the existing error if we have it
+            resolvedErrorMsg = this.currentErrorMsg ?? undefined;
             if (this.currentErrorType) {
-                errorHelp = ErrorHandler.getHelpForError(this.currentErrorType, errorMsg);
+                resolvedErrorType = this.currentErrorType;
+            }
+        }
+
+        if (resolvedErrorType) {
+            // If the destination is provided, we can refine the error type and therefore the generated help message, to be more specific
+            if (destination) {
+                const { errorType: destErrorType, errorMsg: destErrorMsg } = ErrorHandler.getDestinationSpecificError(
+                    resolvedErrorType,
+                    destination
+                );
+                resolvedErrorMsg = destErrorMsg ?? resolvedErrorMsg;
+                resolvedErrorType = destErrorType ?? resolvedErrorType;
+            }
+            if (resolvedErrorType) {
+                errorHelp = ErrorHandler.getHelpForError(resolvedErrorType, resolvedErrorMsg);
             }
         }
 
@@ -398,7 +504,47 @@ export class ErrorHandler {
             this.currentErrorMsg = null;
             this.currentErrorType = null;
         }
-        return errorHelp ?? errorMsg;
+        return errorHelp ?? resolvedErrorMsg; // We mau not have a help link, so return the resolvedend user message
+    }
+
+    /**
+     * Get a more specific error type for the specified destination.
+     *
+     * @param errorType
+     * @param destination
+     * @returns
+     */
+    private static getDestinationSpecificError(
+        errorType: ERROR_TYPE,
+        destination: Destination
+    ): { errorType?: ERROR_TYPE; errorMsg?: string } {
+        let destErrorType: ERROR_TYPE | undefined;
+        let destErrorMsg: string | undefined;
+        // Add more specific error types for destinations here
+        if (!isHTML5DynamicConfigured(destination)) {
+            destErrorType = ERROR_TYPE.DESTINATION_MISCONFIGURED;
+            destErrorMsg = this.getErrorMsgFromType(destErrorType, 'HTML5.DynamicDestination');
+        } else if (errorType === ERROR_TYPE.SERVICE_UNAVAILABLE) {
+            if (isOnPremiseDestination(destination)) {
+                destErrorType = ERROR_TYPE.DESTINATION_BAD_GATEWAY_503; // Remap to specific gateway to allow GA link to be associated
+            } else {
+                destErrorType = ERROR_TYPE.DESTINATION_CONNECTION_ERROR; // General destination connection error, GA link to connection page
+            }
+        } else if (errorType === ERROR_TYPE.NOT_FOUND) {
+            destErrorType = ERROR_TYPE.DESTINATION_NOT_FOUND;
+        } else if (ERROR_TYPE.INTERNAL_SERVER_ERROR === errorType || ERROR_TYPE.SERVER_HTTP_ERROR === errorType) {
+            // We cannot tell in BAS what this means, so we will just say the connection failed
+            destErrorType = ERROR_TYPE.DESTINATION_CONNECTION_ERROR;
+        }
+        // Always raise a telemetry event for destination related errors
+        sendTelemetryEvent(telemBasError, {
+            basErrorType: destErrorType ?? errorType,
+            destODataType: getTelemPropertyDestinationType(destination)
+        });
+        return {
+            errorType: destErrorType ?? errorType,
+            errorMsg: destErrorMsg
+        };
     }
 
     /**
@@ -410,7 +556,7 @@ export class ErrorHandler {
      */
     public static getErrorMsgFromType(errorType: ERROR_TYPE, error?: any): string | undefined {
         if (ERROR_TYPE[errorType]) {
-            return ErrorHandler._errorMsg(error)[ERROR_TYPE[errorType]];
+            return ErrorHandler._errorMsg(ERROR_TYPE[errorType], error);
         }
         return undefined;
     }
@@ -437,7 +583,7 @@ export class ErrorHandler {
      * @param error - the original error, if any
      */
     public setCurrentError(errorType: ERROR_TYPE, error?: any): void {
-        this.currentErrorMsg = ErrorHandler._errorMsg(error)[ERROR_TYPE[errorType]];
+        this.currentErrorMsg = ErrorHandler._errorMsg(ERROR_TYPE[errorType], error);
         this.currentErrorType = errorType;
     }
 
@@ -490,7 +636,7 @@ export class ErrorHandler {
                 };
             }
             // Report the GA link created event
-            sendTelemetryEvent(teleEventGALinkCreated, {
+            sendTelemetryEvent(telemEventGALinkCreated, {
                 errorType,
                 isGuidedAnswersEnabled: this.guidedAnswersEnabled,
                 nodeIdPath: `${helpNode}`

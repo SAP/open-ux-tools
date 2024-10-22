@@ -55,7 +55,8 @@ export function getCredentialsPrompts<T extends Answers>(
             when: () => connectionValidator.systemAuthType === 'basic' && authRequired,
             type: 'password',
             guiOptions: {
-                mandatory: true
+                mandatory: true,
+                applyDefaultWhenDirty: true // Reset when the system changes, this avoids automatic reauth with the existing creds if the user changes the system selection
             },
             guiType: 'login',
             name: passwordPromptName,
@@ -80,14 +81,14 @@ export function getCredentialsPrompts<T extends Answers>(
                 if (selectedSytem?.type === 'backendSystem') {
                     selectedSystemClient = (selectedSytem.system as BackendSystem)?.client;
                 } else if (selectedSytem?.type === 'destination') {
+                    // Note no need to set the client as its specified by the destination itself
                     const destination = selectedSytem.system as Destination;
-                    selectedSystemClient = destination['sap-client'];
                     if (isFullUrlDestination(destination) || isPartialUrlDestination(destination)) {
                         isSystem = false;
                     }
                 }
 
-                const valResult = await connectionValidator.validateAuth(
+                const { valResult } = await connectionValidator.validateAuth(
                     connectionValidator.validatedUrl,
                     answers?.[usernamePromptName],
                     password,

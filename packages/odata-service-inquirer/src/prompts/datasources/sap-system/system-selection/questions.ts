@@ -77,6 +77,8 @@ async function validateSystemSelection(
         // Partial URL destinations will require additional service path prompt input, so we skip the connection validation here by returning true
         // The service URL connection will need to be validated by the service path prompt
         if (isPartialUrlDestination(systemSelection.system as Destination)) {
+            // Reset the connection state as we are deferring the connection validation to the service path prompt, any existing selection state should be cleared
+            connectionValidator.resetConnectionState(true);
             return true;
         }
         connectValResult = await connectWithDestination(
@@ -154,6 +156,7 @@ export async function getSystemConnectionQuestions(
                 if (!selectedSystem) {
                     return false;
                 }
+                // connectionValidator.resetValidity();
                 return validateSystemSelection(selectedSystem, connectionValidator, requiredOdataVersion) ?? false;
             },
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
@@ -173,6 +176,7 @@ export async function getSystemConnectionQuestions(
     ];
 
     if (isAppStudio()) {
+        // Additional service path prompt for partial URL destinations
         const servicePathPrompt = {
             when: (answers: SystemSelectionAnswers): boolean => {
                 const systemSelection = answers?.[systemSelectionPromptNames.systemSelection];

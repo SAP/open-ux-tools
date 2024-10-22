@@ -128,7 +128,7 @@ describe('ConnectionValidator', () => {
 
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
 
-        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toBe(true);
+        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({ valResult: true });
         const params = (createProviderSpy.mock.calls[0][0] as AxiosRequestConfig).params;
         expect(params['sap-client']).toBe('010');
         expect(createProviderSpy).toHaveBeenCalledWith(
@@ -141,12 +141,15 @@ describe('ConnectionValidator', () => {
 
         // Username/pword are invalid
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(403));
-        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toBe(t('errors.authenticationFailed'));
+        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({
+            valResult: t('errors.authenticationFailed'),
+            errorType: 'AUTH'
+        });
 
         // Dont authenticate if the url is empty
         getODataServiceSpy.mockReset();
         getODataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(404));
-        expect(await validator.validateAuth('', 'user1', 'password1')).toBe(false);
+        expect(await validator.validateAuth('', 'user1', 'password1')).toEqual({ valResult: false });
         expect(getODataServiceSpy).not.toHaveBeenCalled();
 
         // Dont authenticate if the url was previously validated as unreachable
@@ -155,7 +158,7 @@ describe('ConnectionValidator', () => {
         getODataServiceSpy.mockClear();
 
         getODataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(404));
-        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toBe('URL not found');
+        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({ valResult: 'URL not found' });
         expect(validator.validity).toEqual({ urlFormat: true, reachable: false });
         expect(getODataServiceSpy).toHaveBeenCalled();
     });
@@ -194,7 +197,12 @@ describe('ConnectionValidator', () => {
                 toString: expect.any(Function)
             })
         );
-        expect(validator.validity).toEqual({ canSkipCertError: true, reachable: true, urlFormat: true });
+        expect(validator.validity).toEqual({
+            authenticated: false,
+            canSkipCertError: true,
+            reachable: true,
+            urlFormat: true
+        });
     });
 
     test('should ignore cert errors if specified', async () => {
@@ -290,7 +298,6 @@ describe('ConnectionValidator', () => {
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(200));
         await validator.validateUrl('https://example.com/service', { forceReValidation: true });
         expect(validator.validity).toEqual({
-            authRequired: true,
             authenticated: true,
             reachable: true,
             urlFormat: true

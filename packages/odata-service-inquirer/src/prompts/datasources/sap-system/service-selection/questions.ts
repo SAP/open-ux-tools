@@ -78,13 +78,12 @@ export function getSystemServiceQuestion(
                     serviceChoices = await getServiceChoices(catalogs);
                 } else if (connectValidator.odataService && connectValidator.validatedUrl) {
                     // We have connected to a service endpoint, use this service as the only choice
-                    const servicePath = new URL(connectValidator.destinationUrl ?? connectValidator.validatedUrl)
-                        .pathname;
+                    const serviceUrl = new URL(connectValidator.destinationUrl ?? connectValidator.validatedUrl);
                     serviceChoices = [
                         {
-                            name: servicePath,
+                            name: serviceUrl.toString(),
                             value: {
-                                servicePath
+                                servicePath: serviceUrl.pathname
                             } as ServiceAnswer
                         }
                     ];

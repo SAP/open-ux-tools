@@ -113,7 +113,7 @@ export function getAbapOnPremSystemQuestions(
                 (answers: AbapOnPremAnswers) =>
                     !!answers?.[systemUrlPromptName] &&
                     connectValidator.validity.reachable === true &&
-                    (connectValidator.validity.authenticated || connectValidator.validity.authRequired !== true)
+                    (connectValidator.validity.authenticated || connectValidator.validity.authRequired === false)
             )[0]
         );
     }

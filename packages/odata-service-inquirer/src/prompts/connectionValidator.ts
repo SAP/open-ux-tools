@@ -17,12 +17,14 @@ import {
     createForAbapOnCloud,
     createForDestination
 } from '@sap-ux/axios-extension';
+import type { DestinationProperty } from '@sap-ux/btp-utils';
 import {
     Authentication,
     type Destination,
     getDestinationUrlForAppStudio,
     isAppStudio,
     isFullUrlDestination,
+    isHTML5DynamicConfigured,
     isPartialUrlDestination
 } from '@sap-ux/btp-utils';
 import https from 'https';
@@ -71,8 +73,10 @@ export class ConnectionValidator {
     public readonly validity: Validity = {};
     // The current valid url (not necessarily authenticated but the url is in a valid format), for destination connections this will be in the form: <protocol>://<destinationName>.dest
     private _validatedUrl: string | undefined;
-    // Only in the case of destination connections does this store the destination `url` value
+    // Only in the case of destination connections does this store the destination `url` value, this is the fully expanded destination url and any user specified service paths
     private _destinationUrl: string | undefined;
+    // The full destination object
+    private _destination: Destination | undefined;
     // The current client code used for requests, the client code has been validated by a successful request
     private _validatedClient: string | undefined;
 
@@ -198,12 +202,21 @@ export class ConnectionValidator {
     }
 
     /**
-     * Get the full destination url as defined in the destination configuration. This should not be used to connect from App Studio.
+     * Get the full expanded destination url as defined in the destination configuration. This should not be used to connect from App Studio (use the .dest form).
      *
      * @returns the connected destination 'URL' attribute value
      */
     public get destinationUrl(): string | undefined {
         return this._destinationUrl;
+    }
+
+    /**
+     * Get the  destination.
+     *
+     * @returns the connected destination 'URL' attribute value
+     */
+    public get destination(): Destination | undefined {
+        return this._destination;
     }
 
     /**
@@ -241,6 +254,7 @@ export class ConnectionValidator {
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
      * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
      * @returns the status code or error returned by the connection attempt
+     * @throws an error if the connection attempt fails and the error is a 500 on App Studio or a non-axios error is caught
      */
     private async checkSapServiceUrl(
         url: URL,
@@ -349,7 +363,11 @@ export class ConnectionValidator {
         await this._odataService.get('');
     }
 
-    public resetConnectionState(): void {
+    /**
+     *
+     * @param resetValidity
+     */
+    public resetConnectionState(resetValidity = false): void {
         this._serviceProvider = undefined;
         this._odataService = undefined;
         this._catalogV2 = undefined;
@@ -358,6 +376,9 @@ export class ConnectionValidator {
         this._connectedUserName = undefined;
         this._refreshToken = undefined;
         this._connectedSystemName = undefined;
+        if (resetValidity) {
+            this.resetValidity();
+        }
     }
 
     /**
@@ -428,6 +449,8 @@ export class ConnectionValidator {
             ) {
                 await this._catalogV4.listServices();
             } else {
+                // Either the v2 or v4 catalog request failed for a specific odata version, or both failed where no odata verison was specified
+                // Do some root cause analysis to determine the end user help message
                 throw error;
             }
         }
@@ -514,7 +537,7 @@ export class ConnectionValidator {
     }
 
     /**
-     * Validate the specified destination connectivity.
+     * Validate the specified destination connectivity, determining if authentication is required or if the destination is misconfigured.
      *
      * @param destination the destination to validate
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
@@ -540,10 +563,39 @@ export class ConnectionValidator {
                 this._destinationUrl = servicePath
                     ? new URL(servicePath, destination.Host).toString()
                     : destination.Host;
-                const authRequired = await this.isAuthRequired(destUrl, destination['sap-client']);
+                this._destination = destination;
+                // No need to apply sap-client as this happens automatically (from destination config) when going through the BAS proxy
+                //const validationResult = await this.validateUrl(destUrl);
+                const status = await this.checkSapServiceUrl(new URL(destUrl), undefined, undefined, { odataVersion });
+                this._validatedUrl = destUrl;
+                const validationResult = this.getValidationResultFromStatusCode(status);
+
+                // todo: Is this condition necessary, 500s on BAS are thrown as errors
+                if (!this.validity.reachable) {
+                    if (!isHTML5DynamicConfigured(destination)) {
+                        const destinationProperty: DestinationProperty = 'HTML5.DynamicDestination';
+                        return {
+                            valResult: ErrorHandler.getHelpForError(
+                                ERROR_TYPE.DESTINATION_MISCONFIGURED,
+                                t('errors.destination.misconfigured', { destinationProperty })
+                            )!
+                        };
+                    } else {
+                        return {
+                            valResult:
+                                errorHandler.getErrorMsg(status) ??
+                                t('errors.destination.notReachable', { systemName: destination.Name })
+                        };
+                    }
+                }
+                if (this.validity.authRequired) {
+                    return {
+                        valResult: ErrorHandler.getErrorMsgFromType(ERROR_TYPE.AUTH)!,
+                        errorType: ERROR_TYPE.AUTH
+                    };
+                }
                 return {
-                    valResult: authRequired ? ErrorHandler.getErrorMsgFromType(ERROR_TYPE.AUTH) ?? false : true,
-                    errorType: authRequired ? ERROR_TYPE.AUTH : undefined
+                    valResult: validationResult
                 };
             } else {
                 await this.createSystemConnection({ destination, odataVersion });
@@ -556,15 +608,19 @@ export class ConnectionValidator {
             if (error?.isAxiosError) {
                 this.getValidationResultFromStatusCode(error?.response?.status || error?.code);
             }
+            // Log the network error
+            const errorLog = errorHandler.logErrorMsgs(error);
+            // Return a more helpful error message
             return {
-                valResult: errorHandler.logErrorMsgs(error) ?? false,
-                errorType: errorHandler.getCurrentErrorType() ?? ERROR_TYPE.CONNECTION
+                valResult: errorHandler.getValidationErrorHelp(error, false, destination) ?? errorLog,
+                errorType: errorHandler.getCurrentErrorType() ?? ERROR_TYPE.DESTINATION_CONNECTION_ERROR
             };
         }
     }
 
     /**
-     * Validates the system or service url format as well as its reachability.
+     * Validates an odata service url format as well as its reachability. Note if this function returns true, this is only an indication that the system is reachable
+     * not that a connection has been established. The connection may require separate authentication or other steps (it may be reachable but a cert error was returned).
      *
      * @param serviceUrl the url to validate, may be a system or service url.
      *     Note that if systemAuthType is specified, the url will be treated as a system url (only the origin will be considered)
@@ -604,6 +660,9 @@ export class ConnectionValidator {
             const url = new URL(serviceUrl);
             if (!forceReValidation && this.isUrlValidated(serviceUrl)) {
                 return this.validity.reachable ?? false;
+            } else {
+                // New URL so reset the validity
+                this.resetValidity();
             }
 
             if (url.origin === 'null') {
@@ -615,18 +674,20 @@ export class ConnectionValidator {
                 isSystem,
                 odataVersion
             });
-            LoggerHelper.logger.debug(`ConnectionValidator.validateUrl() - status: ${status}; url: ${serviceUrl}`);
+            LoggerHelper.logger.debug(
+                `ConnectionValidator.checkSapServiceUrl() - status: ${status}; url: ${serviceUrl}`
+            );
             this.validity.urlFormat = true;
             this._validatedUrl = serviceUrl;
 
             return this.getValidationResultFromStatusCode(status);
         } catch (error) {
+            this.resetValidity();
             // More helpful context specific error
             if (ErrorHandler.getErrorType(error) === ERROR_TYPE.CONNECTION) {
                 this.validity.reachable = false;
                 return errorHandler.logErrorMsgs(t('errors.systemOrServiceUrlNotFound', { url: serviceUrl }));
             }
-            this.resetValidity();
             const errorMsg = errorHandler.getErrorMsg(error);
             return errorMsg ?? t('errors.invalidUrl');
         }
@@ -643,29 +704,55 @@ export class ConnectionValidator {
         if (status === 200) {
             this.validity.reachable = true;
             this.validity.authenticated = true;
+            return true;
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.NOT_FOUND) {
             this.validity.reachable = false;
             return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NOT_FOUND) ?? false;
         } else if (ErrorHandler.isCertError(status)) {
             this.validity.reachable = true;
             this.validity.canSkipCertError = ignorableCertErrors.includes(ErrorHandler.getErrorType(status));
+            this.validity.authenticated = false;
             return errorHandler.getValidationErrorHelp(status, false) ?? false;
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.AUTH) {
             this.validity.reachable = true;
             this.validity.authRequired = true;
             this.validity.authenticated = false;
+            return true;
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.REDIRECT) {
             this.validity.reachable = true;
             return t('errors.urlRedirect');
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.CONNECTION) {
             this.validity.reachable = false;
-            return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CONNECTION, `http code: ${status}`) ?? false;
+            return (
+                ErrorHandler.getErrorMsgFromType(
+                    ERROR_TYPE.CONNECTION,
+                    t('texts.httpStatus', { httpStatus: status })
+                ) ?? false
+            );
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.BAD_REQUEST) {
             this.validity.reachable = true;
-            return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.BAD_REQUEST, `http code: ${status}`) ?? false;
+            return (
+                ErrorHandler.getErrorMsgFromType(
+                    ERROR_TYPE.BAD_REQUEST,
+                    t('texts.httpStatus', { httpStatus: status })
+                ) ?? false
+            );
+        } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.BAD_GATEWAY) {
+            this.validity.reachable = false;
+            return (
+                ErrorHandler.getErrorMsgFromType(
+                    ERROR_TYPE.BAD_GATEWAY,
+                    t('texts.httpStatus', { httpStatus: status })
+                ) ?? false
+            );
         }
         this.validity.reachable = true;
-        return true;
+        return (
+            ErrorHandler.getErrorMsgFromType(
+                ErrorHandler.getErrorType(status),
+                t('texts.httpStatus', { httpStatus: status })
+            ) ?? true
+        );
     }
 
     /**
@@ -688,7 +775,6 @@ export class ConnectionValidator {
         if (this._validatedUrl === url) {
             return true;
         }
-        this.resetValidity();
         return false;
     }
 
@@ -762,8 +848,8 @@ export class ConnectionValidator {
      */
     public async validateAuth(
         url: string,
-        username: string,
-        password: string,
+        username?: string,
+        password?: string,
         {
             ignoreCertError = false,
             sapClient,
@@ -775,9 +861,9 @@ export class ConnectionValidator {
             sapClient?: string;
             isSystem?: boolean;
         } = {}
-    ): Promise<ValidationResult> {
+    ): Promise<{ valResult: ValidationResult; errorType?: ERROR_TYPE }> {
         if (!url) {
-            return false;
+            return { valResult: false };
         }
         try {
             const urlObject = new URL(url);
@@ -791,7 +877,7 @@ export class ConnectionValidator {
                 isSystem,
                 odataVersion
             });
-            LoggerHelper.logger.debug(`ConnectionValidator.validateUrl() - status: ${status}; url: ${url}`);
+            LoggerHelper.logger.debug(`ConnectionValidator.checkSapServiceUrl() - status: ${status}; url: ${url}`);
             // Since an exception was not thrown, this is a valid url
             this.validity.urlFormat = true;
             this._validatedUrl = url;
@@ -800,15 +886,20 @@ export class ConnectionValidator {
 
             if (valResult === true) {
                 if (this.validity.authenticated === true) {
-                    return true;
+                    return { valResult: true };
                 } else if (this.validity.authenticated === false) {
-                    return t('errors.authenticationFailed');
+                    return { valResult: t('errors.authenticationFailed'), errorType: ERROR_TYPE.AUTH };
                 }
             }
-            return valResult;
+            return { valResult };
         } catch (error) {
-            this.resetValidity();
-            return errorHandler.getErrorMsg(error) ?? false;
+            return {
+                valResult:
+                    errorHandler.getValidationErrorHelp(error, false, this.destination) ??
+                    errorHandler.getErrorMsg(error) ?? // not sure this condition is needed todo
+                    false,
+                errorType: errorHandler.getCurrentErrorType() ?? undefined
+            };
         }
     }
 
@@ -823,6 +914,7 @@ export class ConnectionValidator {
         delete this.validity.canSkipCertError;
         this._validatedUrl = undefined;
         this._destinationUrl = undefined;
+        this._destination = undefined;
     }
 
     /**

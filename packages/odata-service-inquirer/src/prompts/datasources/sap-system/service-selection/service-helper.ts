@@ -15,8 +15,9 @@ import { PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
-import type { ServiceAnswer } from './types';
 import { validateODataVersion } from '../../../validators';
+import type { ServiceAnswer } from './types';
+import type { integer } from '../../../../../../text-document-utils/src';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON/'];
@@ -62,17 +63,39 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
 };
 
 /**
- * Logs the catalog reuest errors.
+ * Logs the catalog request errors using the error handler.
  *
  * @param requestErrors catalog request errors
+ * @param numOfRequests
  */
-function logErrorsForHelp(requestErrors: Record<ODataVersion, unknown> | {}): void {
-    // Log the first error only
-    const catalogErrors = Object.values(requestErrors);
-    if (catalogErrors.length > 0) {
-        catalogErrors.forEach((error) => errorHandler.logErrorMsgs(error));
+function logServiceCatalogErrorsForHelp(
+    requestErrors: Record<ODataVersion, Error | number | string> | {},
+    numOfRequests: integer
+): void {
+    const catalogRequesErrors = Object.values(requestErrors);
+    catalogRequesErrors.forEach((error) => {
+        errorHandler.logErrorMsgs(error); // Log and process the error -> error type
+    });
+    // If all requests failed, log a generic message, this will be stored in the error handler
+    if (numOfRequests === catalogRequesErrors.length) {
+        errorHandler.logErrorMsgs(
+            t('errors.allCatalogRequestsFailed', { version: Object.keys(requestErrors).join(', ') })
+        );
     }
 }
+
+/**
+ * Refines the error type and logs based on the specified options. This should log more precise error messages based on inputs
+ * and the platform making the call i.e. VSC | SBAS. Errors are mapped to GA links if the platform is SBAS.
+ *
+ * @param options Options
+ * @param options.system - sap system used
+ * @param options.catRequestErrorTypes - all catalog service request error types, used to do further root cause analysis
+ * @param options.rootCauseErrorType - the error type as determined by the caller, will be used if a more precise error type cannot be determined by rca
+ * @param options.logMsg - the log message that will be used if a better root cause is not determined
+ * @param options.error - the original error, used to determine the error log message if otherwise not determined
+ * @param option.reqVersion - specific odata version that is required by the template
+ */
 
 /**
  * Get the service choices from the specified catalogs.
@@ -104,7 +127,7 @@ export async function getServiceChoices(catalogs: CatalogService[]): Promise<Lis
     const flatServices = serviceInfos?.flat() ?? [];
     LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
     if (flatServices.length === 0) {
-        logErrorsForHelp(requestErrors);
+        logServiceCatalogErrorsForHelp(requestErrors, catalogs.length);
     }
 
     return createServiceChoices(flatServices);

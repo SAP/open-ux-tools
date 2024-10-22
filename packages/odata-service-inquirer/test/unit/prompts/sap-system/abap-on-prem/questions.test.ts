@@ -31,7 +31,7 @@ const v2Annotations = `<?xml version="1.0" encoding="utf-8"?>
             </edmx:Reference>
         </edmx:Edmx>`;
 const validateUrlMock = jest.fn().mockResolvedValue(true);
-const validateAuthMock = jest.fn().mockResolvedValue(true);
+const validateAuthMock = jest.fn().mockResolvedValue({ valResult: true });
 const isAuthRequiredMock = jest.fn().mockResolvedValue(false);
 const serviceProviderMock = {} as Partial<ServiceProvider>;
 
@@ -132,6 +132,7 @@ describe('questions', () => {
               {
                 "default": "",
                 "guiOptions": {
+                  "applyDefaultWhenDirty": true,
                   "mandatory": true,
                 },
                 "guiType": "login",
@@ -257,7 +258,7 @@ describe('questions', () => {
         const abapOnPremSystemUsername = 'abapOnPrem:systemUsername';
         const abapOnPremSystemPassword = 'abapOnPrem:systemPassword';
 
-        connectionValidatorMock.validateAuth = jest.fn().mockResolvedValue(true);
+        connectionValidatorMock.validateAuth = jest.fn().mockResolvedValue({ valResult: true });
         const newSystemQuestions = getAbapOnPremQuestions();
         const userNamePrompt = newSystemQuestions.find((question) => question.name === abapOnPremSystemUsername);
         const passwordPrompt = newSystemQuestions.find((question) => question.name === abapOnPremSystemPassword);

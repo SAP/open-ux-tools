@@ -72,6 +72,10 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
+    "name": "systemSelectionCli",
+    "when": [Function],
+  },
+  {
     "default": "",
     "guiOptions": {
       "mandatory": true,
@@ -85,6 +89,7 @@ exports[`getQuestions getQuestions 1`] = `
   {
     "default": "",
     "guiOptions": {
+      "applyDefaultWhenDirty": true,
       "mandatory": true,
     },
     "guiType": "login",
@@ -93,10 +98,6 @@ exports[`getQuestions getQuestions 1`] = `
     "name": "systemSelection:systemPassword",
     "type": "password",
     "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "name": "systemSelectionCli",
     "when": [Function],
   },
   {
@@ -171,6 +172,7 @@ exports[`getQuestions getQuestions 1`] = `
   {
     "default": "",
     "guiOptions": {
+      "applyDefaultWhenDirty": true,
       "mandatory": true,
     },
     "guiType": "login",

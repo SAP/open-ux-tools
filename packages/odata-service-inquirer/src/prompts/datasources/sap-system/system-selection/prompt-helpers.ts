@@ -4,7 +4,8 @@ import {
     isFullUrlDestination,
     isPartialUrlDestination,
     listDestinations,
-    WebIDEUsage
+    WebIDEUsage,
+    getDisplayName
 } from '@sap-ux/btp-utils';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
@@ -44,12 +45,9 @@ export async function connectWithBackendSystem(
             });
         } else if (backendSystem.serviceKeys) {
             connectValResult = await connectionValidator.validateServiceInfo(backendSystem.serviceKeys as ServiceInfo);
-        } else if (
-            (backendSystem.authenticationType === 'basic' || !backendSystem.authenticationType) &&
-            backendSystem.username &&
-            backendSystem.password
-        ) {
-            connectValResult = await connectionValidator.validateAuth(
+        } else if (backendSystem.authenticationType === 'basic' || !backendSystem.authenticationType) {
+            let errorType;
+            ({ valResult: connectValResult, errorType } = await connectionValidator.validateAuth(
                 backendSystem.url,
                 backendSystem.username,
                 backendSystem.password,
@@ -58,11 +56,10 @@ export async function connectWithBackendSystem(
                     odataVersion: convertODataVersionType(requiredOdataVersion),
                     sapClient: backendSystem.client
                 }
-            );
+            ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.
-            // Returning true will effectively defer validation to the credentials prompt.
             // We log the error in case there is another issue (unresolveable) with the stored backend configuration.
-            if (connectValResult !== true) {
+            if (errorType === ERROR_TYPE.AUTH && backendSystem.username && backendSystem.password) {
                 LoggerHelper.logger.error(
                     t('errors.storedSystemConnectionError', { systemName: backendSystem.name, error: connectValResult })
                 );
@@ -105,7 +102,7 @@ export async function connectWithDestination(
     // If authentication failed with an auth error, and the system connection auth type is basic, we will defer validation to the credentials prompt.
     if (errorType === ERROR_TYPE.AUTH && connectionValidator.systemAuthType === 'basic') {
         LoggerHelper.logger.error(
-            t('errors.destinationAuthError', { systemName: destination.Name, error: connectValResult })
+            t('errors.destination.authError', { systemName: destination.Name, error: connectValResult })
         );
         return true;
     }
@@ -118,6 +115,7 @@ export async function connectWithDestination(
         };
     }
 
+    // Deal with all destination errors here
     return connectValResult;
 }
 
@@ -127,13 +125,15 @@ export async function connectWithDestination(
  * @param system the backend system to create a display name for
  * @returns the display name for the system
  */
-export function getSystemDisplayName(system: BackendSystem): string {
+export function getBackendSystemDisplayName(system: BackendSystem): string {
     const userDisplayName = system.userDisplayName ? ` [${system.userDisplayName}]` : '';
-    const systemTypeName =
-        system.authenticationType === 'reentranceTicket' || system.authenticationType === 'oauth2'
-            ? ` (${t('texts.systemTypeBTP')})`
-            : '';
-
+    let systemTypeName = '';
+    if (system.authenticationType === 'reentranceTicket') {
+        systemTypeName = ` (${t('texts.systemTypeS4HC')})`;
+    }
+    if (system.authenticationType === 'oauth2') {
+        systemTypeName = ` (${t('texts.systemTypeBTP')})`;
+    }
     return `${system.name}${systemTypeName}${userDisplayName}`;
 }
 
@@ -203,7 +203,7 @@ export async function createSystemChoices(
             })
             .map((destination) => {
                 return {
-                    name: destination.Name,
+                    name: getDisplayName(destination),
                     value: {
                         type: 'destination',
                         system: destination
@@ -215,7 +215,7 @@ export async function createSystemChoices(
         const backendSystems = await new SystemService(LoggerHelper.logger).getAll();
         systemChoices = backendSystems.map((system) => {
             return {
-                name: getSystemDisplayName(system),
+                name: getBackendSystemDisplayName(system),
                 value: {
                     system,
                     type: 'backendSystem'
