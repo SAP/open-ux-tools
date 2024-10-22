@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.7.6
+
+### Patch Changes
+
+-   81a15ab: Fix type error for empty launch.json file.
+
 ## 0.7.5
 
 ### Patch Changes
