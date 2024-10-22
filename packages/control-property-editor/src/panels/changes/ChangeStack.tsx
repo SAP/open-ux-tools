@@ -148,13 +148,19 @@ function convertChanges(changes: Change[]): Item[] {
 /**
  * Checks if item is of type {@link ControlGroupProps}.
  *
- * @param item ControlGroupProps | UnknownChangeProps
+ * @param item ControlGroupProps | UnknownChangeProps | ControlItemProps
  * @returns boolean
  */
 function isPropertyGroup(item: ControlGroupProps | UnknownChangeProps | ControlItemProps): item is ControlGroupProps {
     return (item as ControlGroupProps).controlName !== undefined;
 }
 
+/**
+ * Checks if item is of type {@link ControlItemProps}.
+ *
+ * @param item UnknownChangeProps | ControlItemProps
+ * @returns boolean
+ */
 function isControlItem(item: UnknownChangeProps | ControlItemProps): item is ControlItemProps {
     return item?.controlId !== undefined;
 }
