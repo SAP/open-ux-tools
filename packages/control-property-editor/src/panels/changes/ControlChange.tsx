@@ -5,10 +5,12 @@ import { Text, Stack, Link } from '@fluentui/react';
 import { useDispatch } from 'react-redux';
 import styles from './UnknownChange.module.scss';
 import { UIIconButton, UiIcons, UIDialog } from '@sap-ux/ui-components';
-import type { PropertyChangeDeletionDetails } from '@sap-ux-private/control-property-editor-common';
+import type {
+    PropertyChangeDeletionDetails,
+    PENDING_CHANGE_TYPE
+} from '@sap-ux-private/control-property-editor-common';
 import {
     SAVED_CHANGE_TYPE,
-    PENDING_CHANGE_TYPE,
     convertCamelCaseToPascalCase,
     deletePropertyChanges,
     selectControl
@@ -25,6 +27,11 @@ export interface ControlItemProps {
 /**
  * React element for control change in change stack.
  *
+ * @param root0
+ * @param root0.controlId
+ * @param root0.fileName
+ * @param root0.timestamp
+ * @param root0.type
  * @returns ReactElement
  */
 export function ControlChange({ controlId, fileName, timestamp, type }: Readonly<ControlItemProps>): ReactElement {

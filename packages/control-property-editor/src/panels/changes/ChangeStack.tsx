@@ -23,7 +23,8 @@ import type { FilterOptions } from '../../slice';
 import { FilterName } from '../../slice';
 import type { RootState } from '../../store';
 import { getFormattedDateAndTime } from './utils';
-import { ControlChange, ControlItemProps } from './ControlChange';
+import type { ControlItemProps } from './ControlChange';
+import { ControlChange } from './ControlChange';
 
 export interface ChangeStackProps {
     changes: Change[];
