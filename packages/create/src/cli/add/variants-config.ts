@@ -36,9 +36,10 @@ async function addVariantsConfig(basePath: string, simulate: boolean, yamlPath: 
         const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
         await validateBasePath(basePath, ui5ConfigPath);
         const fs = await generateVariantsConfig(basePath, ui5ConfigPath, logger);
-        await traceChanges(fs);
         if (!simulate) {
             fs.commit(() => logger.info(`Variants configuration written.`));
+        } else {
+            await traceChanges(fs);
         }
     } catch (error) {
         logger.error(`Error while executing add variants-config: ${(error as Error).message}`);
