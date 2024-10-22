@@ -3,6 +3,7 @@ import { getDestinationUrlForAppStudio, WebIDEUsage, BAS_DEST_INSTANCE_CRED_HEAD
 import axios from 'axios';
 import nock from 'nock';
 import { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } from '../src';
+import * as ProxyFromEnv from 'proxy-from-env';
 
 const server = 'https://sap.example';
 const servicePath = '/ns/myservice';
@@ -21,6 +22,8 @@ jest.mock('@sap-ux/btp-utils', () => {
     };
 });
 
+jest.mock('proxy-from-env');
+
 beforeAll(() => {
     nock.disableNetConnect();
     nock(server).get(`${servicePath}${metadataPath}?sap-client=${client}`).reply(200, expectedMetadata).persist(true);
@@ -31,6 +34,7 @@ afterAll(() => {
     nock.enableNetConnect();
 });
 test('create', async () => {
+    const getProxyForUrlSpy = jest.spyOn(ProxyFromEnv, 'getProxyForUrl').mockReturnValue(undefined);
     const response = await axios.get(`${server}${servicePath}${metadataPath}`, {
         params: { 'sap-client': client }
     });
@@ -53,6 +57,8 @@ test('create', async () => {
     const metadata = await service.metadata();
     expect(metadata).toBeDefined();
     expect(metadata).toBe(expectedMetadata);
+    expect(getProxyForUrlSpy).toHaveBeenNthCalledWith(1, `${server}${servicePath}${metadataPath}?sap-client=${client}`);
+    getProxyForUrlSpy.mockRestore();
 });
 
 test('createForServiceUrl', async () => {

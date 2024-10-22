@@ -7,7 +7,7 @@ import {
     isAbapSystem,
     BAS_DEST_INSTANCE_CRED_HEADER
 } from '@sap-ux/btp-utils';
-import { Agent as HttpsAgent } from 'https';
+import { Agent as HttpsAgent, AgentOptions } from 'https';
 import type { ServiceInfo, RefreshTokenChanged } from './auth';
 import {
     attachConnectionHandler,
@@ -21,8 +21,28 @@ import type { ODataService } from './base/odata-service';
 import { AbapServiceProvider } from './abap';
 import { inspect } from 'util';
 import { TlsPatch } from './base/patchTls';
+import { getProxyForUrl } from 'proxy-from-env';
+import { type HttpsProxyAgentOptions, HttpsProxyAgent } from 'https-proxy-agent';
+import { type HttpProxyAgentOptions, HttpProxyAgent } from 'http-proxy-agent';
 
 type Class<T> = new (...args: any[]) => T;
+
+/**
+ * PatchedHttpsProxyAgent is a custom implementation of HttpsProxyAgent that allows to pass additional options, currently not supported by the original implementation when calling tls.connect
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export class PatchedHttpsProxyAgent<Uri extends string> extends HttpsProxyAgent<Uri> {
+    private readonly extraOptions: any;
+
+    constructor(proxy: Uri | URL, opts?: HttpsProxyAgentOptions<Uri>) {
+        super(proxy, opts);
+        this.extraOptions = opts;
+    }
+
+    async connect(req: any, opts: any) {
+        return super.connect(req, Object.assign({}, this.extraOptions, opts));
+    }
+}
 
 /**
  * Create a new instance of given type and set default configuration merged with the given config.
@@ -36,9 +56,24 @@ function createInstance<T extends ServiceProvider>(
     config: AxiosRequestConfig & Partial<ProviderConfiguration>
 ): T {
     const providerConfig: AxiosRequestConfig & Partial<ProviderConfiguration> = cloneDeep(config);
-    providerConfig.httpsAgent = new HttpsAgent({
+    const agentOptions = {
         rejectUnauthorized: !providerConfig.ignoreCertErrors
-    });
+    };
+    const localProxy = getProxyForUrl(config.baseURL);
+    if (localProxy) {
+        // axios doesn't handle proxies correctly, instead use a custom agent with axios proxy disabled
+        providerConfig.httpsAgent = new PatchedHttpsProxyAgent(
+            localProxy,
+            agentOptions as HttpsProxyAgentOptions<string>
+        );
+        // Support additional options i.e. ignoreCertErrors, without needing to modify the agent
+        providerConfig.httpAgent = new HttpProxyAgent(localProxy, agentOptions as HttpProxyAgentOptions<string>);
+        providerConfig.proxy = false;
+    }
+    // Default httpAgent with optional parameters passed to the agent
+    if (!providerConfig.httpsAgent) {
+        providerConfig.httpsAgent = new HttpsAgent(agentOptions as AgentOptions);
+    }
     delete providerConfig.ignoreCertErrors;
     providerConfig.withCredentials = providerConfig?.auth && Object.keys(providerConfig.auth).length > 0;
 

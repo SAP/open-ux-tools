@@ -35,13 +35,17 @@
         "open": "7.0.3",
         "qs": "6.11.0",
         "xpath": "0.0.33",
-        "@xmldom/xmldom": "0.8.10"
+        "@xmldom/xmldom": "0.8.10",
+        "https-proxy-agent": "7.0.5",
+        "http-proxy-agent": "7.0.2",
+        "proxy-from-env": "1.1.0"
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
         "@types/lodash": "4.14.202",
         "nock": "13.4.0",
-        "supertest": "6.3.3"
+        "supertest": "6.3.3",
+        "@types/proxy-from-env": "1.0.1"
     },
     "files": [
         "dist",
