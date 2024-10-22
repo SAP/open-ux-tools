@@ -10,6 +10,7 @@ import yeomanTest from 'yeoman-test';
 import ReuseLibGen from '../../src/app';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import type { Editor } from 'mem-fs-editor';
+import * as fioriToolsSettings from '@sap-ux/fiori-tools-settings';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     // eslint-disable-next-line
@@ -74,6 +75,7 @@ describe('Test reuse lib generator', () => {
     it('should run the generator', async () => {
         fs.mkdirSync(testOutputDir, { recursive: true });
         jest.spyOn(ui5LibraryInquirer, 'getPrompts').mockResolvedValue(mockPrompts);
+        const writeApplicationInfoSettingsSpy = jest.spyOn(fioriToolsSettings, 'writeApplicationInfoSettings');
 
         await yeomanTest
             .run(ReuseLibGen, {
@@ -89,6 +91,7 @@ describe('Test reuse lib generator', () => {
             });
 
         expect(join(testOutputDir, 'com.sap.library1')).toMatchFolder(join(expectedOutputPath, 'library1'));
+        expect(writeApplicationInfoSettingsSpy).toHaveBeenCalledWith(join(testOutputDir, 'com.sap.library1'));
     });
 
     it('should run the generator (typescript)', async () => {

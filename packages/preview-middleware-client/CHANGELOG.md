@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.15
+
+### Patch Changes
+
+-   93ffe8d: Use feature toggles in the control property editor
+
 ## 0.11.14
 
 ### Patch Changes

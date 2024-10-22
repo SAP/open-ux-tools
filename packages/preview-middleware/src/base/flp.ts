@@ -18,6 +18,7 @@ import {
     type OperationType
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
+import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
@@ -167,6 +168,8 @@ export class FlpSandbox {
             developerMode: editor.developerMode === true,
             pluginScript: editor.pluginScript
         };
+        config.features = FeatureToggleAccess.getAllFeatureToggles();
+
         if (editor.developerMode === true) {
             config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
         }
@@ -193,6 +196,7 @@ export class FlpSandbox {
                         templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
                     }
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
+                    const features = FeatureToggleAccess.getAllFeatureToggles();
                     const envPort = process.env.FIORI_TOOLS_LIVERELOAD_PORT;
                     let livereloadPort: number = envPort ? parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
                     livereloadPort = isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
@@ -203,7 +207,8 @@ export class FlpSandbox {
                         appName: rta.options?.appName,
                         scenario,
                         livereloadPort,
-                        livereloadUrl: envLivereloadUrl
+                        livereloadUrl: envLivereloadUrl,
+                        features: JSON.stringify(features)
                     });
                     this.sendResponse(res, 'text/html', 200, html);
                 });

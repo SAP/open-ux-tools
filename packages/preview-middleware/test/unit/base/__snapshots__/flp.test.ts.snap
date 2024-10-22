@@ -569,6 +569,7 @@ exports[`FlpSandbox router rta with developerMode=true 1`] = `
                 scenario: '',
                 livereloadPort: 35729,
                 livereloadUrl: '',
+                features: []
             });
         </script>
     </body>
@@ -646,6 +647,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-features='[]'
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
     </script>
 
@@ -739,6 +741,7 @@ exports[`FlpSandbox router rta with url parameters 1`] = `
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-features='[]'
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
     </script>
 

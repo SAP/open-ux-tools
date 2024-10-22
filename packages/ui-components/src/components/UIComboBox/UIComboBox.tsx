@@ -717,26 +717,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         },
                         onRenderIcon: this.onRenderIcon
                     }}
-                    calloutProps={{
-                        calloutMaxHeight: 200,
-                        popupProps: {
-                            ref: this.menuDomRef
-                        },
-                        className: 'ts-Callout ts-Callout-Dropdown',
-                        styles: {
-                            ...(this.props.useComboBoxAsMenuMinWidth && {
-                                calloutMain: {
-                                    minWidth: this.state.minWidth,
-                                    display: this.state.isListHidden ? 'none' : undefined
-                                }
-                            })
-                        },
-                        ...getCalloutCollisionTransformationProps(
-                            this.calloutCollisionTransform,
-                            this.props.multiSelect,
-                            this.props.calloutCollisionTransformation
-                        )
-                    }}
                     styles={{
                         label: {
                             ...labelGlobalStyle,
@@ -757,6 +737,27 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         errorMessage: [messageInfo.style]
                     }}
                     {...this.props}
+                    calloutProps={{
+                        calloutMaxHeight: 200,
+                        popupProps: {
+                            ref: this.menuDomRef
+                        },
+                        className: 'ts-Callout ts-Callout-Dropdown',
+                        styles: {
+                            ...(this.props.useComboBoxAsMenuMinWidth && {
+                                calloutMain: {
+                                    minWidth: this.state.minWidth,
+                                    display: this.state.isListHidden ? 'none' : undefined
+                                }
+                            })
+                        },
+                        ...getCalloutCollisionTransformationProps(
+                            this.calloutCollisionTransform,
+                            this.props.multiSelect,
+                            this.props.calloutCollisionTransformation
+                        ),
+                        ...this.props.calloutProps
+                    }}
                     {...(this.props.highlight && {
                         onInput: this.onInput,
                         onMenuDismissed: this.reserQuery,

@@ -25,10 +25,6 @@ import {
 
 import { arrayMove } from 'react-movable';
 
-import { initIcons } from '../src/components/Icons';
-
-initIcons();
-
 export default { title: 'Tables/UIFlexibleTable' };
 const tableIds = ['table1', 'table2'];
 
