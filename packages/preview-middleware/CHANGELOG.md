@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.89
+
+### Patch Changes
+
+-   3e9cab4: make rta editor url params optional
+
 ## 0.16.88
 
 ### Patch Changes
