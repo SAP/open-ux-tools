@@ -50,7 +50,7 @@ async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogge
     const flpSandboxPath = join(await getWebappPath(basePath), 'test', 'flpSandbox.html');
     if (fs.exists(flpSandboxPath)) {
         fs.move(flpSandboxPath, flpSandboxPath.replace('.html', '_old.html'));
-        //todo: add link to migration guide to custom init script
+        //todo: add link to migration guide for custom init script
         logger?.info(
             'Renamed webapp/test/flpSandbox.html to webapp/test/flpSandbox_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content e.g. to a custom init script of the preview middleware.'
         );
@@ -58,7 +58,7 @@ async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogge
     const flpSandboxMockserverPath = join(await getWebappPath(basePath), 'test', 'flpSandboxMockserver.html');
     if (fs.exists(flpSandboxMockserverPath)) {
         fs.move(flpSandboxMockserverPath, flpSandboxMockserverPath.replace('.html', '_old.html'));
-        //todo: add link to migration guide to custom init script
+        //todo: add link to migration guide for custom init script
         logger?.info(
             'Renamed webapp/test/flpSandboxMockserver.html to webapp/test/flpSandboxMockserver_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content e.g. to a custom init script of the preview middleware.'
         );
