@@ -7,7 +7,6 @@ import type { Change } from '@sap-ux-private/control-property-editor-common';
 
 import { PropertyChange } from './PropertyChange';
 import { useAppDispatch } from '../../store';
-import { OtherChange } from './OtherChange';
 
 import styles from './ControlGroup.module.scss';
 
@@ -60,9 +59,7 @@ export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement
                         className={styles.item}>
                         {change.kind === PROPERTY_CHANGE_KIND ? (
                             <PropertyChange change={change} actionClassName={styles.actions} />
-                        ) : (
-                            <OtherChange change={change} actionClassName={styles.actions} />
-                        )}
+                        ) : null}
                     </Stack.Item>
                 );
             })}
