@@ -1,7 +1,7 @@
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
-import type { Package } from '@sap-ux/project-access';
+import { getWebappPath, type Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { prompt, type PromptObject } from 'prompts';
 
@@ -26,12 +26,54 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
         return Promise.reject(new Error('Approval not given'));
     }
 
+    await renameSandboxes(fs, basePath);
+    await deleteLocateReuseLibs(fs, basePath);
+
     //todo: implement the function logic
-    // - rename html files
-    // - delete webapp/test/locate-reuse-libs.js
     // - re-use from variants management script
 
     return fs;
+}
+
+/**
+ * Add '_old' to webapp/test/flpSandbox.html and webapp/test/flpSandboxMockserver.html to indicate that they will no longer be used.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used for the conversion
+ * @param logger logger to report info to the user
+ */
+async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+    const flpSandboxPath = join(await getWebappPath(basePath), 'test', 'flpSandbox.html');
+    if (fs.exists(flpSandboxPath)) {
+        fs.move(flpSandboxPath, flpSandboxPath.replace('.html', '_old.html'));
+        //todo: add link to migration guide to custom init script
+        logger?.info(
+            'Renamed webapp/test/flpSandbox.html to webapp/test/flpSandbox_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content e.g. to a custom init script of the preview middleware.'
+        );
+    }
+    const flpSandboxMockserverPath = join(await getWebappPath(basePath), 'test', 'flpSandboxMockserver.html');
+    if (fs.exists(flpSandboxMockserverPath)) {
+        fs.move(flpSandboxMockserverPath, flpSandboxMockserverPath.replace('.html', '_old.html'));
+        //todo: add link to migration guide to custom init script
+        logger?.info(
+            'Renamed webapp/test/flpSandboxMockserver.html to webapp/test/flpSandboxMockserver_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content e.g. to a custom init script of the preview middleware.'
+        );
+    }
+}
+
+/**
+ * Delete webapp/test/locate-reuse-libs.js.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used for the conversion
+ * @param logger logger to report info to the user
+ */
+async function deleteLocateReuseLibs(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+    const locateReuseLibsPath = join(await getWebappPath(basePath), 'test', 'locate-reuse-libs.js');
+    if (fs.exists(locateReuseLibsPath)) {
+        fs.delete(locateReuseLibsPath);
+        logger?.info('Deleted webapp/test/locate-reuse-libs.js. This file is no longer needed for the preview.');
+    }
 }
 
 /**
@@ -74,10 +116,10 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
     const cdsPluginUi5Exists =
         !!packageJson?.devDependencies?.['cds-plugin-ui5'] || !!packageJson?.dependencies?.['cds-plugin-ui5'];
     if (!ui5MiddlewareMockserverExists && !cdsPluginUi5Exists) {
+        //todo: add link to migration guide
         logger?.error(
             "A conversion from 'sap/ui/core/util/MockServer' is not supported. Please migrate to '@sap-ux/ui5-middleware-fe-mockserver' first."
         );
-        //todo: link to migration guide
         return false;
     }
 
