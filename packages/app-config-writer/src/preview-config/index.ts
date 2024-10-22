@@ -29,8 +29,12 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     await renameSandboxes(fs, basePath);
     await deleteLocateReuseLibs(fs, basePath);
 
-    //todo: implement the function logic
-    // - re-use from variants management script
+    //todo: implement the function logic (re-use from variants management script)
+    // - read from the script (start-variants-management) in the package.json which configuration should be used
+    // - update the scrip in the package.json if required (e.g. variants script needs an update of the intent).
+    // - add/update the configuration of the fiori-tools-preview (if no devDependency to ux-tooling: use preview-middleware)
+    // - remove url parameters for RTA editor run scripts depending on preview-middleware/fiori-tools-preview version
+    // - adjust all *.yaml files in webapp (not just ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
 
     return fs;
 }
