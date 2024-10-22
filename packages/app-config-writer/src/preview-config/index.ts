@@ -27,6 +27,9 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     }
 
     //todo: implement the function logic
+    // - rename html files
+    // - delete webapp/test/locate-reuse-libs.js
+    // - re-use from variants management script
 
     return fs;
 }
