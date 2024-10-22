@@ -82,11 +82,14 @@ async function deleteLocateReuseLibs(fs: Editor, basePath: string, logger?: Tool
 
 /**
  * Check if the prerequisites for the conversion are met.
+ * - UI5 CLI version 3.0.0 or higher is being used.
+ * - '@sap/grunt-sapui5-bestpractice-build' is not being used.
+ * - '@sap-ux/ui5-middleware-fe-mockserver' or 'cds-plugin-ui5' is being used.
  *
  * @param basePath - base path to be used for the conversion
  * @param fs - file system reference
  * @param logger logger to report info to the user
- * @returns indicator if prerequisites are met
+ * @returns indicator if the prerequisites are met
  */
 async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<boolean> {
     const packageJsonPath = join(basePath, 'package.json');
