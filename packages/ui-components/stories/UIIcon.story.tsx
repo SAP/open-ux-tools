@@ -2,11 +2,8 @@ import React from 'react';
 import type { IColumn } from '@fluentui/react';
 import { DetailsList, SelectionMode } from '@fluentui/react';
 import { UIIcon } from '../src/components/UIIcon';
-import { initIcons, UiIcons } from '../src/components/Icons';
 
 export default { title: 'Utilities/Icons' };
-
-initIcons();
 
 const items: any = [];
 for (const icon in UiIcons) {
