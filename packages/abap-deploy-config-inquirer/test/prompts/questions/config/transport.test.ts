@@ -2,7 +2,7 @@ import { initI18n, t } from '../../../../src/i18n';
 import { getTransportRequestPrompts } from '../../../../src/prompts/questions';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
-import { abapDeployConfigInternalPromptNames, TransportChoices } from '../../../../src/types';
+import { promptNames, TransportChoices } from '../../../../src/types';
 import { ListQuestion } from '@sap-ux/inquirer-common';
 import { PromptState } from '../../../../src/prompts/prompt-state';
 
@@ -78,7 +78,7 @@ describe('getTransportRequestPrompts', () => {
 
         const transportPrompts = getTransportRequestPrompts({});
         const transportInputChoicePrompt = transportPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.transportInputChoice
+            (prompt) => prompt.name === promptNames.transportInputChoice
         );
 
         if (transportInputChoicePrompt) {
@@ -116,7 +116,7 @@ describe('getTransportRequestPrompts', () => {
         PromptState.isYUI = false;
         const transportPrompts = getTransportRequestPrompts({});
         const transportCliExecutionPrompt = transportPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.transportCliExecution
+            (prompt) => prompt.name === promptNames.transportCliExecution
         );
 
         if (transportCliExecutionPrompt) {
@@ -141,9 +141,7 @@ describe('getTransportRequestPrompts', () => {
         PromptState.transportAnswers.newTransportNumber = 'TR1234';
 
         const transportPrompts = getTransportRequestPrompts({});
-        const transportCreatedPrompt = transportPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.transportCreated
-        );
+        const transportCreatedPrompt = transportPrompts.find((prompt) => prompt.name === promptNames.transportCreated);
 
         if (transportCreatedPrompt) {
             expect(
@@ -164,7 +162,7 @@ describe('getTransportRequestPrompts', () => {
 
         const transportPrompts = getTransportRequestPrompts({});
         const transportFromListPrompt = transportPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.transportFromList
+            (prompt) => prompt.name === promptNames.transportFromList
         );
 
         if (transportFromListPrompt) {
@@ -195,9 +193,7 @@ describe('getTransportRequestPrompts', () => {
         jest.spyOn(validators, 'validateTransportQuestion').mockReturnValueOnce(true);
 
         const transportPrompts = getTransportRequestPrompts({});
-        const transportManualPrompt = transportPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.transportManual
-        );
+        const transportManualPrompt = transportPrompts.find((prompt) => prompt.name === promptNames.transportManual);
 
         if (transportManualPrompt) {
             expect(
