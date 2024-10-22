@@ -22,7 +22,7 @@ export async function getPreviewMiddleware(
     filename: string = FileName.Ui5Yaml
 ): Promise<CustomMiddleware<PreviewConfigOptions> | undefined> {
     if (!basePath && !yamlConfig) {
-        return Promise.reject(new Error('Either base path or yaml config must be provided'));
+        return Promise.reject(new Error('Either base path or yaml config must be provided.'));
     }
     try {
         yamlConfig = yamlConfig ?? (await readUi5Yaml(basePath!, filename));
@@ -122,12 +122,12 @@ function getRTAIntent(previewMiddlewareConfig: PreviewConfigOptions | undefined)
  */
 export async function getRTAUrl(basePath: string, query: string, yamlPath?: string): Promise<string | undefined> {
     let previewMiddleware: CustomMiddleware<PreviewConfigOptions> | undefined;
+    let fileName: string = '';
     try {
-        const fileName = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
+        fileName = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
         previewMiddleware = await getPreviewMiddleware(undefined, basePath, fileName);
     } catch (error) {
-        //todo: what to do in case there is no ui5.yaml file? try FileName.Ui5MockYaml or FileName.Ui5LocalYaml as fallback?
-        return undefined;
+        return Promise.reject(new Error(`No ${fileName} file found. ${error}`));
     }
 
     if (
