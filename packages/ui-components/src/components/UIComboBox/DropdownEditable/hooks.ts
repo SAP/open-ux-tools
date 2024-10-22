@@ -79,12 +79,25 @@ export function useOptions(
     const selection = useRef<OptionKey>(externalSelectedKey);
     useEffect(() => {
         const optionKey = findOptionByValue(options, externalSelectedKey);
-        selection.current = (optionKey?.key as OptionKey) ?? externalSelectedKey;
-        setSelectedKey(selection.current);
+        selection.current = (optionKey?.key as OptionKey);
+        if (selection.current) {
+            setSelectedKey(selection.current);
+        }
     }, [externalSelectedKey]);
 
     useEffect(() => {
+        let editableOptions: UISelectableOptionWithSubValues[] = [];
+        if (options.length) {
+            editableOptions = options.filter((option) => option.editable);
+        }
         const convertedOptions = convertToEditableOptions(originalOptions);
+        for (const editableOption of editableOptions) {
+            const option = convertedOptions.find((convertedOption) => convertedOption.key === editableOption.key);
+            if (option) {
+                option.text = editableOption.text;
+                option.subValue = editableOption.subValue;
+            }
+        }
         setOptions(convertedOptions);
     }, [originalOptions]);
 

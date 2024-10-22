@@ -72,7 +72,14 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
                     result.selection
                 );
             } else {
-                onChange?.(event, undefined, undefined, '', undefined);
+                onChange?.(
+                    event,
+                    // Simulate empty item selection
+                    selectedOption ? { ...selectedOption, key: '' } : undefined,
+                    undefined,
+                    '',
+                    undefined
+                );
             }
         }
 
@@ -84,6 +91,9 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
         <>
             <UIComboBox
                 {...(props as any)}
+                className='editable-combobox'
+                // ToDo - recheck if text is passed from outside
+                text={undefined}
                 onChange={(
                     event: React.FormEvent<UIComboBoxRef>,
                     selectedOption?: UISelectableOptionWithSubValues,
@@ -125,7 +135,7 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
                 ) => {
                     return (
                         <div
-                            className='dropdown-menu-editable'
+                            className="dropdown-menu-editable"
                             onMouseOver={(event) => {
                                 const target = event.target as HTMLElement;
                                 let element = target.closest('[data-index]') as HTMLElement;
