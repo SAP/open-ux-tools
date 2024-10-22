@@ -27,7 +27,7 @@ export interface ControlItemProps {
  *
  * @returns ReactElement
  */
-export function ControlChange({ controlId, fileName, timestamp, type }: ControlItemProps): ReactElement {
+export function ControlChange({ controlId, fileName, timestamp, type }: Readonly<ControlItemProps>): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
