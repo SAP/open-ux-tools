@@ -3,7 +3,7 @@ import type { FilterOptions, ChangesSlice } from '../../../../src/slice';
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
-import { useDispatch } from 'react-redux';
+import * as reactRedux from 'react-redux';
 import { render } from '../../utils';
 import { FilterName } from '../../../../src/slice';
 import { ChangesPanel } from '../../../../src/panels/changes';
@@ -14,11 +14,6 @@ jest.mock('@sap-ux-private/control-property-editor-common', () => {
         ...jest.requireActual('@sap-ux-private/control-property-editor-common')
     };
 });
-
-jest.mock('react-redux', () => ({
-    ...jest.requireActual('react-redux'),
-    useDispatch: jest.fn().mockReturnValue(jest.fn())
-}));
 
 const getChanges = (generateSavedChanges = false): ChangesSlice => {
     const pending: PendingChange[] = !generateSavedChanges
@@ -255,7 +250,7 @@ describe('ChangePanel', () => {
         fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'yyyyy' } });
 
         expect(screen.queryByText(/Test Property Name1/i)).toStrictEqual(null);
-        // expect(screen.queryByText(/Test Property Name2/i)).toStrictEqual(null);
+        expect(screen.queryByText(/Test Property Name2/i)).toStrictEqual(null);
     });
 
     test('saved changes - Unknown change', () => {
@@ -364,6 +359,7 @@ describe('ChangePanel', () => {
 
     test('saved control change - link', () => {
         jest.spyOn(cpeCommon, 'selectControl').mockImplementationOnce(jest.fn());
+        jest.spyOn(reactRedux, 'useDispatch').mockReturnValue(jest.fn());
 
         render(<ChangesPanel />, {
             initialState: {
@@ -401,8 +397,7 @@ describe('ChangePanel', () => {
         expect(link).toBeInTheDocument();
 
         link.click();
-        const hookMock = useDispatch();
-        expect(hookMock as jest.Mock).toBeCalled();
+        expect(reactRedux.useDispatch).toBeCalled();
         expect(cpeCommon.selectControl).toBeCalledWith('testId1');
     });
 
