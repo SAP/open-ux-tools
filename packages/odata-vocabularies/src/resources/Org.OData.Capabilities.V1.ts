@@ -1,4 +1,4 @@
-// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
+// Last content update: Mon Oct 21 2024 11:45:53 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -588,14 +588,16 @@ export default {
                 {
                     'Value': 'SingleRange',
                     '@Org.OData.Core.V1.Description':
-                        'Property can be used in at most one `ge` and/or one `le` clause, separated by `and`'
+                        'Property can be compared to a single closed, half-open, or open interval',
+                    '@Org.OData.Core.V1.LongDescription':
+                        'The filter expression for this property consists of a single interval expression, which is either a single comparison of the property and a literal value with `eq`, `le`, `lt`, `ge`, or `gt`, or a pair of boundaries combined by `and`. The lower boundary is either `ge` or `gt`, the upper boundary either `le` or `lt`.'
                 },
                 {
                     'Value': 'MultiRange',
                     '@Org.OData.Core.V1.Description':
                         'Property can be compared to a union of one or more closed, half-open, or open intervals',
                     '@Org.OData.Core.V1.LongDescription':
-                        'The filter expression for this property consists of one or more interval expressions combined by `or`. A single interval expression is either a single comparison of the property and a literal value with `eq`, `le`, `lt`, `ge`, or `gt`, or pair of boundaries combined by `and` and enclosed in parentheses. The lower boundary is either `ge` or `gt`, the upper boundary either `le` or `lt`.'
+                        'The filter expression for this property consists of one or more interval expressions, combined by `or`. See SingleRange for the definition of an interval expression.\n\n                Alternatively the filter expression can consist of one or more `ne` expressions combined by `and`, which is roughly equivalent to the union of the complementing open intervals. Roughly equivalent because `null` is allowed as a right-side operand of an `ne` expression.'
                 },
                 {
                     'Value': 'SearchExpression',
@@ -607,7 +609,7 @@ export default {
                     '@Org.OData.Core.V1.Description':
                         'Property can be compared to a union of zero or more closed, half-open, or open intervals plus zero or more simple string patterns',
                     '@Org.OData.Core.V1.LongDescription':
-                        'The filter expression for this property consists of one or more interval expressions or string comparison functions combined by `or`. See MultiRange for a definition of an interval expression. See SearchExpression for the allowed string comparison functions.'
+                        'The filter expression for this property consists of one or more interval expressions or string comparison functions combined by `or`. See SingleRange for the definition of an interval expression. See SearchExpression for the allowed string comparison functions.'
                 }
             ]
         },
