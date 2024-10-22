@@ -15,6 +15,7 @@ import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -147,6 +148,42 @@ describe('FlpSandbox', () => {
                 'sap.app': { id: 'my.id', title: '{i18n>myOtherTitle}', description: '{{i18n>myOtherDescription}}' }
             } as Manifest;
             await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+        });
+
+        test('with passed descriptor', async () => {
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const descriptor = {
+                components: [
+                    {
+                        name: 'myComponent',
+                        url: 'myComponentUrl'
+                    }
+                ],
+                libs: [
+                    {
+                        name: 'myLib',
+                        url: 'myLibUrl'
+                    }
+                ],
+                asyncHints: {
+                    requests: [
+                        {
+                            url: 'myRequestUrl'
+                        }
+                    ]
+                }
+            };
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1',
+                'myResources2': 'myResourcesUrl2'
+            };
+
+            await flp.init(manifest, componendId, resources, descriptor as unknown as MergedAppDescriptor);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
