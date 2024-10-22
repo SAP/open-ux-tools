@@ -47,7 +47,7 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
     };
 
     return (
-        <div className="editable-item">
+        <div className={`editable-item ${subOptionsCount > 1 ? 'editable-item-expandable' : ''}`}>
             <UITextInput
                 className="editable-item-input"
                 {...inputProps}

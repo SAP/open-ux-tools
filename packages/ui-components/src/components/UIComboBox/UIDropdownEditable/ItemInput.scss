@@ -14,6 +14,7 @@ $menu-item-selection-color: var(
     font-size: var(--vscode-font-size);
     font-family: var(--vscode-font-family);
     font-weight: var(--vscode-font-weight);
+    overflow: hidden;
     &-input {
         flex-grow: 1;
         .ms-TextField-wrapper {
@@ -35,12 +36,19 @@ $menu-item-selection-color: var(
         font-size: 11px;
         font-weight: 400;
         font-style: italic;
+        padding: 0 10px;
     }
     &-sub-menu-icon {
         margin-top: 1px;
         align-self: center;
         height: 16px;
         width: 16px;
+    }
+    // Expandable item
+    &-expandable {
+        .editable-item-sub-value {
+            padding-right: 0px;
+        }
     }
 }
 

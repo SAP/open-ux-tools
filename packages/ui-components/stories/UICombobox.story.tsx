@@ -27,6 +27,17 @@ export const SearchHighlight = (): JSX.Element => (
             allowFreeform={true}
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
+            onChange={(
+                event: React.FormEvent<IComboBox>,
+                option?: IComboBoxOption | undefined,
+                index?: number | undefined,
+                value?: string | undefined
+            ) => {
+                console.log('onCbChange');
+                console.log(option);
+                console.log(index);
+                console.log(value);
+            }}
         />
         <UIComboBox
             options={data}
@@ -135,6 +146,10 @@ export const MultiSelectSearchHighlight = (): JSX.Element => {
         index?: number | undefined,
         value?: string | undefined
     ) {
+        console.log('onCbChange');
+        console.log(option);
+        console.log(index);
+        console.log(value);
         if (option) {
             const newKeys = [...keys, option.key].filter((k) => (option.selected ? true : k !== option.key));
             setKeys(newKeys as SetStateAction<any[]>);
