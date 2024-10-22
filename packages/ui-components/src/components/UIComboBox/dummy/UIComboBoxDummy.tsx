@@ -9,6 +9,8 @@ import { OptionKey, UISelectableOptionWithSubValues } from './types';
 import { ItemInput, ItemInputRef } from './ItemInput';
 import { isValueValid, RenamedEntries, resolveValueForOption, updateEditableEntry } from './utils';
 
+import './UIComboBoxDummy.scss';
+
 export interface UIComboboxTestProps extends UIComboBoxProps {
     /**
      * Collection of options for this ComboBox.
@@ -123,6 +125,7 @@ export const UIComboBoxDummy = (props: UIComboboxTestProps) => {
                 ) => {
                     return (
                         <div
+                            className='dropdown-menu-editable'
                             onMouseOver={(event) => {
                                 const target = event.target as HTMLElement;
                                 let element = target.closest('[data-index]') as HTMLElement;

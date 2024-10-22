@@ -1,5 +1,51 @@
-.dropdown-item-input {
-    input {
-        display: block !important;
+$menu-item-selection-color: var(
+    --vscode-editorSuggestWidget-selectedForeground,
+    var(--vscode-quickInputList-focusForeground, var(--vscode-editorSuggestWidget-foreground))
+);
+
+.editable-item {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    line-height: 18px;
+    height: 100%;
+    font-size: var(--vscode-font-size);
+    font-family: var(--vscode-font-family);
+    font-weight: var(--vscode-font-weight);
+    &-input {
+        flex-grow: 1;
+        .ms-TextField-wrapper {
+            width: 100%;
+            max-width: 200px;
+        }
+        .ms-TextField-fieldGroup {
+            height: 18px;
+            max-height: 18px;
+            min-height: 18px;
+            margin-left: -4px;
+        }
+        input {
+            display: block !important;
+            padding-left: 3px;
+        }
+    }
+    &-sub-value {
+        font-size: 11px;
+        font-weight: 400;
+        font-style: italic;
+    }
+    &-sub-menu-icon {
+        margin-top: 1px;
+        align-self: center;
+        height: 16px;
+        width: 16px;
+    }
+}
+
+.ts-ComboBox--selected {
+    .editable-item-sub-menu-icon svg > path {
+        fill: $menu-item-selection-color;
     }
 }

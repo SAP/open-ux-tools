@@ -8,6 +8,8 @@ import { RenamedEntry } from './utils';
 import { useEditValue } from './hooks';
 
 import './ItemInput.scss';
+import { UIIcon } from '../../UIIcon';
+import { UiIcons } from '../../Icons';
 
 export interface ItemInputProps extends UITextInputProps {
     option?: UISelectableOptionWithSubValues;
@@ -27,6 +29,7 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
     const { value, onChange, onClick, onMouseDown } = inputProps;
     const [subValue, setSubValue] = useState<string | undefined>(getSubValueText(option));
     const [localValue, placeholder, setLocalValue] = useEditValue('', value, renamedEntry);
+    const subOptionsCount = option?.options?.length ?? 0;
 
     useImperativeHandle<ItemInputRef, ItemInputRef>(ref, () => ({
         setOption: (option: UISelectableOptionWithSubValues) => {
@@ -44,9 +47,9 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
     };
 
     return (
-        <div style={{ display: 'flex', width: '100%' }}>
+        <div className="editable-item">
             <UITextInput
-                className="dropdown-item-input"
+                className="editable-item-input"
                 {...inputProps}
                 onMouseDown={(event) => {
                     console.log('mouse down!!');
@@ -65,7 +68,8 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
                 placeholder={placeholder}
                 value={!placeholder ? localValue : ''}
             />
-            {subValue}
+            <div className="editable-item-sub-value">{subValue}</div>
+            {subOptionsCount > 1 && <UIIcon iconName={UiIcons.Chevron} className="editable-item-sub-menu-icon" />}
         </div>
     );
 }
