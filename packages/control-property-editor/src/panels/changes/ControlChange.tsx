@@ -25,14 +25,14 @@ export interface ControlItemProps {
 }
 
 /**
- * React element for control change in change stack.
+ * React element for control change in the change stack.
  *
- * @param root0
- * @param root0.controlId
- * @param root0.fileName
- * @param root0.timestamp
- * @param root0.type
- * @returns ReactElement
+ * @param {Readonly<ControlItemProps>} props - The props object.
+ * @param {string} props.controlId - The ID of the control being changed.
+ * @param {string} props.fileName - The name of the file associated with the change.
+ * @param {number} [props.timestamp] - The timestamp of the change, optional.
+ * @param {string} props.type - The type of the change (e.g., 'saved' | 'pending').
+ * @returns {ReactElement} A React element that renders the control change UI.
  */
 export function ControlChange({ controlId, fileName, timestamp, type }: Readonly<ControlItemProps>): ReactElement {
     const { t } = useTranslation();

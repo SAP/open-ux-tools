@@ -1,5 +1,19 @@
 # @sap-ux/preview-middleware
 
+## 0.16.89
+
+### Patch Changes
+
+-   3e9cab4: make rta editor url params optional
+
+## 0.16.88
+
+### Patch Changes
+
+-   9bda640: CPE loading changes from backend and not from workspace
+-   Updated dependencies [9bda640]
+    -   @sap-ux/adp-tooling@0.12.60
+
 ## 0.16.87
 
 ### Patch Changes
