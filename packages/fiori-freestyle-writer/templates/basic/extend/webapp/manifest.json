@@ -3,7 +3,6 @@
         "rootView": {
             "viewName": "<%- app.id %>.view.App",
             "type": "XML",
-            "async": true,
             "id": "App"
         },
         "resources": {
@@ -16,12 +15,12 @@
         "routing": {
             "config": {
                 "routerClass": "sap.m.routing.Router",
-                "viewType": "XML",
-                "async": true,
-                "viewPath": "<%- app.id %>.view",
                 "controlAggregation": "pages",
                 "controlId": "app",
-                "clearControlAggregation": false
+                "transition": "slide",
+                "type": "View",
+                "viewType": "XML",
+                "path": "<%- app.id %>.view"
             },
             "routes": [
                 {
@@ -34,11 +33,8 @@
             ],
             "targets": {
                 "Target<%- template.settings.viewName %>": {
-                    "viewType": "XML",
-                    "transition": "slide",
-                    "clearControlAggregation": false,
-                    "viewId": "<%- template.settings.viewName %>",
-                    "viewName": "<%- template.settings.viewName %>"
+                    "id": "<%- template.settings.viewName %>",
+                    "name": "<%- template.settings.viewName %>"
                 }
             }
         }
