@@ -1,43 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { UISelectableOption } from '../UIComboBox';
+import { UISelectableOption, UISelectableOptionMenuItemType } from '../UIComboBox';
 import {
     isEditableValue,
     getTypeFromEditableItem,
     RenamedEntry,
     resolveValueForOption,
     getOption,
-    isValueValid
+    isValueValid,
+    getBaseKey
 } from './utils';
 import type { OptionKey, SelectionUpdate, UISelectableOptionWithSubValues } from './types';
 import { UIContextualMenuItem } from '../../UIContextualMenu';
-
-function convertToEditableOptions(data: UISelectableOption[]): UISelectableOptionWithSubValues[] {
-    const regularOptions = data.filter((item) => !isEditableValue(item.key));
-    const editableOptions: UIContextualMenuItem[] = data
-        .filter((item) => isEditableValue(item.key))
-        .map((option) => ({
-            key: option.key.toString(),
-            text: getTypeFromEditableItem(option.key)
-        }));
-
-    if (editableOptions.length > 0) {
-        const defaultOption =
-            editableOptions.find((options) => {
-                return getTypeFromEditableItem(options.key) === 'String';
-            }) ?? editableOptions[0];
-        const editableOption = {
-            ...defaultOption,
-            // ToDo - calculate editable option text
-            text: '',
-            options: editableOptions,
-            editable: true,
-            subValue: defaultOption
-        } as UISelectableOptionWithSubValues;
-        regularOptions.push(editableOption);
-    }
-
-    return regularOptions;
-}
 
 function findOptionByValue<T extends string | number | string[] | number[] | null | undefined>(
     options: UISelectableOptionWithSubValues[],
@@ -54,20 +27,114 @@ function findOptionByValue<T extends string | number | string[] | number[] | nul
     return undefined;
 }
 
-/**
- * Hook for editable combobox options.
- *
- */
-// export function useOptions(originalOptions: UISelectableOption[]): [UISelectableOptionWithSubValues[]] {
-//     const [options, setOptions] = useState(convertToEditableOptions(originalOptions));
+function getTextFromFullPath(text: string): string {
+    if (!text || !text.includes('/')) {
+        return text;
+    }
+    const parts = text.split('/');
+    return parts[parts.length - 1];
+}
 
-//     useEffect(() => {
-//         const convertedOptions = convertToEditableOptions(originalOptions);
-//         setOptions(convertedOptions);
-//     }, [originalOptions]);
+function getGroupKey(key: string | number): string {
+    key = key.toString();
+    return key.includes('/') ? key.split('/')[0] : '';
+}
 
-//     return [options];
-// }
+function findIndices(data: UISelectableOption[], checkGroupKey: string): { first: number; last: number } {
+    const indexes = {
+        last: -1,
+        first: data.findIndex((item) => {
+            return checkGroupKey === getGroupKey(item.key);
+        })
+    };
+    for (let i = data.length - 1; i >= 0; i--) {
+        const item = data[i];
+        if (checkGroupKey === getGroupKey(item.key)) {
+            indexes.last = i;
+            break;
+        }
+    }
+
+    return indexes;
+}
+
+function convertToEditableOptions(data: UISelectableOption[]): UISelectableOptionWithSubValues[] {
+    // Filter out non-editable options (not starting with zz_ or similar patterns)
+    const regularOptions = data.filter((item) => !isEditableValue(item.key));
+
+    // Group editable options by base key (e.g., "zz_newBoolean", "bookings/zz_newBoolean3")
+    const groupedEditableOptions: { [baseKey: string]: UISelectableOptionWithSubValues } = {};
+
+    data.filter((item) => isEditableValue(item.key)).forEach((item) => {
+        const type = getTypeFromEditableItem(item.key);
+
+        // Group by base key, default to the first occurrence of a base key as subValue
+        const key = item.key.toString();
+        const baseKey = key.includes('/') ? key.split('/')[0] : '';
+        let groupOption = groupedEditableOptions[baseKey];
+        if (!groupOption) {
+            groupOption = groupedEditableOptions[baseKey] = {
+                key: item.key,
+                text: '',
+                options: [],
+                editable: true,
+                subValue: { key: item.key.toString(), text: type },
+                placeholder: convertToPlaceholderText(key)
+            };
+        }
+        if (groupOption.options && !groupOption.options.some((option) => option.text === type)) {
+            groupOption.options.push({
+                key: item.key.toString(),
+                text: type
+            });
+        }
+    });
+    if (Object.keys(groupedEditableOptions).length) {
+        // Remove header prefix from regular non-editoable option
+        for (const option of regularOptions) {
+            option.text = getTextFromFullPath(option.text);
+        }
+    }
+    // Combine regular options with the grouped editable ones
+    for (const groupId in groupedEditableOptions) {
+        const { first, last } = findIndices(regularOptions, groupId);
+        let diff = 1;
+        // Insert header item
+        if (groupId && first !== -1) {
+            regularOptions.splice(first, 0, {
+                key: groupId,
+                text: groupId,
+                itemType: UISelectableOptionMenuItemType.Divider
+            });
+            regularOptions.splice(first + 1, 0, {
+                key: groupId,
+                text: groupId,
+                itemType: UISelectableOptionMenuItemType.Header
+            });
+            diff += 2;
+        }
+        // Insert edit item
+        if (last !== -1) {
+            regularOptions.splice(last + diff, 0, groupedEditableOptions[groupId]);
+        } else {
+            regularOptions.push(groupedEditableOptions[groupId]);
+        }
+    }
+    return regularOptions;
+}
+
+function areArraysEqualByKeyAndText(array1: UISelectableOption[], array2: UISelectableOption[]): boolean {
+    // First, check if both arrays are the same length
+    if (array1.length !== array2.length) {
+        return false;
+    }
+
+    // Then, compare each element's `text` and `key` properties
+    return array1.every((option1, index) => {
+        const option2 = array2[index];
+        return option1.key === option2.key && option1.text === option2.text;
+    });
+}
 
 export function useOptions(
     externalSelectedKey: OptionKey,
@@ -77,15 +144,33 @@ export function useOptions(
     const [options, setOptions] = useState(convertToEditableOptions(originalOptions));
     const [_selectedKey, setSelectedKey] = useState<OptionKey>(externalSelectedKey);
     const selection = useRef<OptionKey>(externalSelectedKey);
+    const previousOptions = useRef<UISelectableOptionWithSubValues[]>(originalOptions);
     useEffect(() => {
-        const optionKey = findOptionByValue(options, externalSelectedKey);
-        selection.current = (optionKey?.key as OptionKey);
+        if (Array.isArray(externalSelectedKey)) {
+            const newKey: Array<string | number> = [];
+            for (const key of externalSelectedKey) {
+                const optionKey = findOptionByValue(options, key);
+                if (optionKey?.key) {
+                    newKey.push(optionKey.key);
+                }
+            }
+            selection.current = newKey as OptionKey;
+        } else {
+            const optionKey = findOptionByValue(options, externalSelectedKey);
+            selection.current = optionKey?.key as OptionKey;
+        }
         if (selection.current) {
             setSelectedKey(selection.current);
         }
     }, [externalSelectedKey]);
 
     useEffect(() => {
+        // Check if original options was changed
+        if (areArraysEqualByKeyAndText(originalOptions, previousOptions.current)) {
+            return;
+        }
+        previousOptions.current = originalOptions;
+        // Original options changes - recalculate
         let editableOptions: UISelectableOptionWithSubValues[] = [];
         if (options.length) {
             editableOptions = options.filter((option) => option.editable);
@@ -161,14 +246,17 @@ export function useSelectedKey<T extends string | number | string[] | number[] |
 }
 
 // DUPLICATE!!!!
-export function convertToPlaceholderText(placeholder: string): string {
-    const type = getTypeFromEditableItem(placeholder);
+export function convertToPlaceholderText(value: string): string {
+    const baseKey = getBaseKey(value);
+    const type = getTypeFromEditableItem(value);
     if (type) {
-        // return `Enter new ${type} property`;
+        if (baseKey.includes('Entity')) {
+            return `Enter new entity`;
+        }
         return `Enter new property`;
     }
 
-    return placeholder;
+    return '';
 }
 
 /**
@@ -182,7 +270,7 @@ export function useEditValue(
     initialValue?: string,
     propValue?: string,
     editedValue?: string | undefined
-): [string | undefined, string | undefined, (value: string | undefined) => void] {
+): [string | undefined, (value: string | undefined) => void] {
     const [value, setValue] = useState(editedValue ?? propValue ?? initialValue);
     const edited = useRef<boolean>(!!editedValue);
 
@@ -202,6 +290,5 @@ export function useEditValue(
         setValue(newValue);
         edited.current = true;
     };
-    const placeholder = propValue && (!edited.current || !value) ? convertToPlaceholderText(propValue) : undefined;
-    return [value, placeholder, updateValue];
+    return [value, updateValue];
 }

@@ -11,6 +11,8 @@ import './ItemInput.scss';
 import { UIIcon } from '../../UIIcon';
 import { UiIcons } from '../../Icons';
 
+import './ItemInput.scss';
+
 export interface ItemInputProps extends UITextInputProps {
     option?: UISelectableOptionWithSubValues;
     renamedEntry?: string;
@@ -28,7 +30,7 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
     const { option, renamedEntry, ...inputProps } = props;
     const { value, onChange, onClick, onMouseDown } = inputProps;
     const [subValue, setSubValue] = useState<string | undefined>(getSubValueText(option));
-    const [localValue, placeholder, setLocalValue] = useEditValue('', value, renamedEntry);
+    const [localValue, setLocalValue] = useEditValue('', value, renamedEntry);
     const subOptionsCount = option?.options?.length ?? 0;
 
     useImperativeHandle<ItemInputRef, ItemInputRef>(ref, () => ({
@@ -65,8 +67,7 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
                     onClick?.(event);
                 }}
                 onChange={onLocalChange}
-                placeholder={placeholder}
-                value={!placeholder ? localValue : ''}
+                value={localValue}
             />
             <div className="editable-item-sub-value">{subValue}</div>
             {subOptionsCount > 1 && <UIIcon iconName={UiIcons.Chevron} className="editable-item-sub-menu-icon" />}

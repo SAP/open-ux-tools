@@ -6,6 +6,7 @@ export interface UISelectableOptionWithSubValues extends UISelectableOption {
     subValue?: UIContextualMenuItem;
     editable?: boolean;
     // editedValue?: string;
+    placeholder?: string;
 }
 
 export type OptionKey = string | number | string[] | number[] | null | undefined;

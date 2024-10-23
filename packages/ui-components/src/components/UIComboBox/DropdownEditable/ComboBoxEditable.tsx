@@ -1,6 +1,6 @@
 import React, { Ref, useEffect, useRef, useState } from 'react';
 import { UIComboBox } from '../UIComboBox';
-import type { UIComboBoxProps, UIComboBoxRef, UISelectableOption } from '../UIComboBox';
+import type { UIComboBoxOption, UIComboBoxProps, UIComboBoxRef, UISelectableOption } from '../UIComboBox';
 import type { IComboBoxOption, ISelectableOption } from '@fluentui/react';
 import { UITextInput } from '../../UIInput';
 import { UIContextualMenu, UIContextualMenuItem } from '../../UIContextualMenu';
@@ -19,7 +19,7 @@ export interface UIComboboxTestProps extends UIComboBoxProps {
     // ToDo
     onChange?: (
         event: React.FormEvent<UIComboBoxRef>,
-        option?: IComboBoxOption,
+        option?: UIComboBoxOption,
         index?: number,
         value?: string,
         selection?: OptionKey
@@ -45,7 +45,6 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
     const { target, option: activeOption } = subMenu ?? {};
     const inputItemRefs = useRef<{ [key: string]: ItemInputRef | null }>({});
     const [_pendingText, setPendingText] = useState<string | undefined>(undefined);
-    console.log('UIComboBoxDummy -> ' + JSON.stringify(selectedKey));
     // Set local ref in component context
     const selectedKeyRef = useRef<OptionKey>();
     selectedKeyRef.current = selectedKey;
@@ -91,7 +90,7 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
         <>
             <UIComboBox
                 {...(props as any)}
-                className='editable-combobox'
+                className="editable-combobox"
                 // ToDo - recheck if text is passed from outside
                 text={undefined}
                 onChange={(
@@ -174,17 +173,24 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
                                 ref={(ref) => {
                                     inputItemRefs.current[props.key.toString()] = ref;
                                 }}
+                                placeholder={option?.placeholder}
                                 renamedEntry={option?.text}
                                 onChange={(
                                     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
                                     value?: string
                                 ) => {
-                                    if (option) {
-                                        option.text = value ?? option.text;
+                                    const changedOption = getOption(convertedOptions, props?.key);
+                                    if (changedOption) {
+                                        changedOption.text = value ?? changedOption.text;
                                     }
                                     setPendingText(value);
                                     if (multiSelect) {
-                                        handleChange({} as React.FormEvent<UIComboBoxRef>, option, undefined, true);
+                                        handleChange(
+                                            {} as React.FormEvent<UIComboBoxRef>,
+                                            changedOption,
+                                            undefined,
+                                            true
+                                        );
                                     }
                                 }}
                                 onClick={() => {

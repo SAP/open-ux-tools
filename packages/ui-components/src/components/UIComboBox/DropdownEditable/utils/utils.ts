@@ -12,17 +12,26 @@ export function isEditableValue(value?: string | number): boolean {
     return EDITABLE_ENTRY_PREFIXES.some((prefix) => editValue.startsWith(prefix));
 }
 
+export function getBaseKey(value: string | number): string {
+    let baseKey = value.toString();
+    if (baseKey.includes('/')) {
+        const parts = baseKey.split('/');
+        baseKey = parts[parts.length - 1];
+    }
+    return baseKey;
+}
+
 export function getTypeFromEditableItem(value: string | number): string | undefined {
-    const valueStr = value.toString();
+    const baseKey = getBaseKey(value);
     for (const prefix of EDITABLE_ENTRY_PREFIXES) {
-        if (!valueStr.toLocaleLowerCase().startsWith(prefix)) {
+        if (!baseKey.toLocaleLowerCase().startsWith(prefix)) {
             continue;
         }
         // Text meets prefix requirement - extract data type (after prefix, before first digit character)
-        const firstNumberIndex = valueStr.search(/\d/);
+        const firstNumberIndex = baseKey.search(/\d/);
         return firstNumberIndex > prefix.length
-            ? valueStr.substring(prefix.length, firstNumberIndex)
-            : valueStr.substring(prefix.length);
+            ? baseKey.substring(prefix.length, firstNumberIndex)
+            : baseKey.substring(prefix.length);
     }
 }
 
@@ -51,7 +60,7 @@ export const resolveValueForOption = (option: UISelectableOptionWithSubValues | 
         return option.key.toString();
     }
     const { text, subValue } = option;
-    let value = subValue ? subValue.key : option.key;
+    const value = subValue ? subValue.key : option.key;
     if (text !== undefined) {
         return `${value}-${text.replace(/\s/g, '')}`;
     }
@@ -59,10 +68,7 @@ export const resolveValueForOption = (option: UISelectableOptionWithSubValues | 
 };
 
 export const isValueValid = (option: UISelectableOptionWithSubValues | UIContextualMenuItem): boolean => {
-    if (option.editable && !option.text) {
-        return false;
-    }
-    return true;
+    return !option.editable || !!option.text;
 };
 
 // ToDo - remove duplicate
