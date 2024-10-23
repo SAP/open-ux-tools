@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.4.7
+
+### Patch Changes
+
+-   d29b1a3: update ui5 default version logic
+
 ## 0.4.6
 
 ### Patch Changes
