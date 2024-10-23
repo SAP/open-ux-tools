@@ -102,6 +102,7 @@ export class ChangeService {
     private sendAction: (action: ExternalAction) => void;
     private pendingChanges: PendingChange[] = [];
     private changedFiles: Record<string, object> = {};
+    private readonly eventStack: object[] = [];
     /**
      *
      * @param options ui5 adaptation options.
@@ -300,8 +301,9 @@ export class ChangeService {
      */
     private createOnStackChangeHandler(): (event: Event) => Promise<void> {
         const handleStackChange = modeAndStackChangeHandler(this.sendAction, this.options.rta);
-        return async (): Promise<void> => {
-            this.pendingChanges = [];
+        return async (event): Promise<void> => {
+            const pendingChanges: PendingChange[]    = [];
+            this.eventStack.push(event);
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
@@ -312,30 +314,32 @@ export class ChangeService {
                     if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();
                         for (const subCommand of subCommands) {
-                            await this.handleCommand(subCommand, inactiveCommandCount, i);
+                            await this.handleCommand(subCommand, inactiveCommandCount, i, pendingChanges);
                         }
                     } else {
-                        await this.handleCommand(command, inactiveCommandCount, i);
+                        await this.handleCommand(command, inactiveCommandCount, i, pendingChanges);
                     }
                 } catch (error) {
                     Log.error('CPE: Change creation Failed', getError(error));
                 }
             }
-
-            this.pendingChanges = this.pendingChanges.filter((change): boolean => !!change);
-            const changesRequiringReload = this.pendingChanges.reduce(
-                (sum, change) => (change.changeType === 'appdescr_fe_changePageConfiguration' ? sum + 1 : sum),
-                0
-            );
-            if (changesRequiringReload > this.changesRequiringReload) {
-                const resourceBundle = await getTextBundle();
-                MessageToast.show(resourceBundle.getText('CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_MESSAGE'), {
-                    duration: 8000
-                });
-                this.sendAction(setApplicationRequiresReload(changesRequiringReload > 0));
+            const resourceBundle = await getTextBundle();
+            const eventIndex = this.eventStack.indexOf(event);
+            if (this.eventStack.length - 1 === eventIndex) {
+                this.pendingChanges = pendingChanges.filter((change): boolean => !!change);
+                const changesRequiringReload = this.pendingChanges.reduce(
+                    (sum, change) => (change.changeType === 'appdescr_fe_changePageConfiguration' ? sum + 1 : sum),
+                    0
+                );
+                if (changesRequiringReload > this.changesRequiringReload) {
+                    MessageToast.show(resourceBundle.getText('CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_MESSAGE'), {
+                        duration: 8000
+                    });
+                    this.sendAction(setApplicationRequiresReload(changesRequiringReload > 0));
+                }
+                this.changesRequiringReload = changesRequiringReload;
             }
-            this.changesRequiringReload = changesRequiringReload;
-
+            this.eventStack.splice(eventIndex, 1);
             if (Array.isArray(allCommands) && allCommands.length === 0) {
                 this.pendingChanges = [];
                 await this.fetchSavedChanges();
@@ -345,10 +349,10 @@ export class ChangeService {
         };
     }
 
-    private async handleCommand(command: FlexCommand, inactiveCommandCount: number, index: number): Promise<void> {
+    private async handleCommand(command: FlexCommand, inactiveCommandCount: number, index: number, pendingChanges: PendingChange[]): Promise<void> {
         const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, index);
         if (pendingChange) {
-            this.pendingChanges.push(pendingChange);
+            pendingChanges.push(pendingChange);
         }
     }
 
