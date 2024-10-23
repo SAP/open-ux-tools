@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
 import type { UIComboBoxOption, UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
-import { UIComboBox, UIComboBoxLoaderType } from '../../../src/components/UIComboBox';
+import { UIComboBox, UIComboBoxLoaderType, UISelectableOptionMenuItemType } from '../../../src/components/UIComboBox';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
@@ -872,5 +872,64 @@ describe('<UIComboBox />', () => {
         });
         openDropdown();
         expect(wrapper.find('div.dummy').length).toEqual(1);
+    });
+
+    describe('Test "searchByKeyEnabled" property', () => {
+        const searchKeysData = [
+            { 'key': 'test1', 'text': 'test1' },
+            { 'key': 'dummy', 'text': 'dummy' },
+            { 'key': 'customer', 'text': 'customer' },
+            { 'key': 'name', 'text': 'name' },
+            { 'key': 'employee', 'text': 'employee' },
+            { 'key': 'ID', 'text': 'ID' },
+            { 'key': 'tripEndDate', 'text': 'tripEndDate' },
+            { 'key': 'bookings', 'text': 'bookings', 'itemType': UISelectableOptionMenuItemType.Divider },
+            { 'key': 'bookings', 'text': 'bookings', 'itemType': UISelectableOptionMenuItemType.Header },
+            { 'key': 'bookings/airlines', 'text': 'airlines' },
+            { 'key': 'bookings/bookingDate', 'text': 'bookingDate' },
+            { 'key': 'bookings/DateOnBookings', 'text': 'DateOnBookings' },
+            { 'key': 'bookings/employee', 'text': 'employee' },
+            { 'key': 'bookings/flightDate', 'text': 'flightDate' },
+            { 'key': 'bookings/ID', 'text': 'ID' },
+            { 'key': 'bookings/priceUSD', 'text': 'priceUSD' },
+            { 'key': 'bookings/travel_ID', 'text': 'travel_ID' },
+            { 'key': 'bookings/usedString5', 'text': 'usedString5' },
+            { 'key': 'notes', 'text': 'notes', 'itemType': UISelectableOptionMenuItemType.Divider },
+            { 'key': 'notes', 'text': 'notes', 'itemType': UISelectableOptionMenuItemType.Header },
+            { 'key': 'notes/comment', 'text': 'comment' },
+            { 'key': 'notes/description', 'text': 'description' }
+        ];
+        const testCases = [
+            {
+                name: '"searchByKeyEnabled" is undefined',
+                searchByKeyEnabled: undefined,
+                expectedCount: 2
+            },
+            {
+                name: '"searchByKeyEnabled" is false',
+                searchByKeyEnabled: false,
+                expectedCount: 2
+            },
+            {
+                name: '"searchByKeyEnabled" is true',
+                searchByKeyEnabled: true,
+                expectedCount: 10
+            }
+        ];
+        for (const testCase of testCases) {
+            const { name, searchByKeyEnabled, expectedCount } = testCase;
+            it(name, () => {
+                const query = 'bookings';
+                wrapper.setProps({
+                    highlight: true,
+                    options: searchKeysData,
+                    searchByKeyEnabled
+                });
+                openDropdown();
+                wrapper.find('input').simulate('keyDown', {});
+                triggerSearch(query);
+                expect(wrapper.find('.ms-Button').length).toEqual(expectedCount);
+            });
+        }
     });
 });
