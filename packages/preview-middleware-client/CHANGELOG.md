@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.16
+
+### Patch Changes
+
+-   9bda640: CPE loading changes from backend and not from workspace
+
 ## 0.11.15
 
 ### Patch Changes
