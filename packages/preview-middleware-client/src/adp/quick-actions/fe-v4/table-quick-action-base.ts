@@ -16,27 +16,9 @@ import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import TreeTable from 'sap/ui/table/TreeTable';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 
-const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
-const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
-const SETTINGS_ID = 'CTX_SETTINGS';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
-const M_TABLE_TYPE = 'sap.m.Table';
 export const MDC_TABLE_TYPE = 'sap.ui.mdc.Table';
-
-async function getActionId(table: UI5Element): Promise<string[]> {
-    const { major, minor } = await getUi5Version();
-
-    if (isA(SMART_TABLE_TYPE, table)) {
-        if (major === 1 && minor === 96) {
-            return [SETTINGS_ID];
-        } else {
-            return [SMART_TABLE_ACTION_ID];
-        }
-    }
-
-    return [M_TABLE_ACTION_ID, SETTINGS_ID];
-}
 
 /**
  * Base class for table quick actions.
@@ -76,8 +58,7 @@ export abstract class TableQuickActionDefinitionBase {
         public readonly type: string,
         protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
-        protected readonly context: QuickActionContext,
-        protected includeServiceAction?: boolean
+        protected readonly context: QuickActionContext
     ) {}
 
     /**
@@ -113,20 +94,6 @@ export abstract class TableQuickActionDefinitionBase {
             } else {
                 this.processTable(table);
             }
-
-            // add action id to the table map, if the service actions are needed.
-            if (this.includeServiceAction) {
-                const actions = await this.context.actionService.get(table.getId());
-                const actionsIds = await getActionId(table);
-
-                const changeColumnAction = actionsIds.find(
-                    (actionId) => actions.findIndex((action) => action.id === actionId) > -1
-                );
-                Object.keys(this.tableMap).forEach((key) => {
-                    // Update the changeColumnActionId for each entry
-                    this.tableMap[key].changeColumnActionId = changeColumnAction;
-                });
-            }
         }
         if (this.children.length > 0) {
             this.isActive = true;
@@ -143,11 +110,6 @@ export abstract class TableQuickActionDefinitionBase {
             const header = table.getHeader();
             if (header) {
                 return `'${header}' table`;
-            }
-        } else if (isA<Table>(M_TABLE_TYPE, table)) {
-            const tilte = table?.getHeaderToolbar()?.getTitleControl()?.getText();
-            if (tilte) {
-                return `'${tilte}' table`;
             }
         } else if (isA<MdcTable>(MDC_TABLE_TYPE, table)) {
             const header = table?.getHeader();
@@ -238,12 +200,6 @@ export abstract class TableQuickActionDefinitionBase {
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
     ): void {
         if (isA<SmartTable>(SMART_TABLE_TYPE, table) || isA<TreeTable>('sap.ui.table.TreeTable', table)) {
-            this.children.push({
-                label: this.getTableLabel(table),
-                children: []
-            });
-        }
-        if (isA<Table>(M_TABLE_TYPE, table)) {
             this.children.push({
                 label: this.getTableLabel(table),
                 children: []
