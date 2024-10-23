@@ -1,3 +1,6 @@
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { hostEnvironment } from './types';
+
 /**
  * Determine if the current prompting environment is cli .
  *
@@ -8,5 +11,18 @@ export function isCli(): boolean {
         return true;
     } else {
         return false;
+    }
+}
+
+/**
+ * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
+ *
+ * @returns the platform name and technical name
+ */
+export function getHostEnvironment(): { name: string; technical: string } {
+    if (isCli()) {
+        return hostEnvironment.cli;
+    } else {
+        return isAppStudio() ? hostEnvironment.bas : hostEnvironment.vscode;
     }
 }
