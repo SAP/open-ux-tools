@@ -349,6 +349,15 @@ export class ChangeService {
         };
     }
 
+    /**
+     * Handles a command by preparing a pending change and adding it to the list of pending changes.
+     *
+     * @param {FlexCommand} command - The command to process.
+     * @param {number} inactiveCommandCount - The number of inactive commands.
+     * @param {number} index - The index of the current command being processed.
+     * @param {PendingChange[]} pendingChanges - The list of pending changes to update.
+     * @returns {Promise<void>} A promise that resolves when the command is handled.
+     */
     private async handleCommand(
         command: FlexCommand,
         inactiveCommandCount: number,
@@ -361,6 +370,14 @@ export class ChangeService {
         }
     }
 
+    /**
+     * Prepares the type of change based on the command and other parameters.
+     *
+     * @param {FlexCommand} command - The command to process.
+     * @param {number} inactiveCommandCount - The number of inactive commands.
+     * @param {number} index - The index of the current command being processed.
+     * @returns {Promise<PendingChange | undefined>} - A promise that resolves to a `PendingChange` or `undefined`.
+     */
     private async prepareChangeType(
         command: FlexCommand,
         inactiveCommandCount: number,
