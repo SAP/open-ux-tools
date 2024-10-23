@@ -316,6 +316,7 @@ describe('ChangePanel', () => {
                             changeType: 'renameLable',
                             controlId: 'testId1',
                             fileName: 'id_1691659414768_328_renameLable',
+                            timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
                             type: 'saved',
                             kind: 'control'
                         }
