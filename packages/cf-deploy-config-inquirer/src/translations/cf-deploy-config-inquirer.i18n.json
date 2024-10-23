@@ -8,14 +8,28 @@
         "overwriteHintMessage": "Deployment config will abort if you choose no. Click Finish to abort.",
         "mtaPathBreadcrumbMessage": "App Router Path",
         "mtaPathMessage": "Application router project path",
-        "mtaIdMessage": "MTA ID"
+        "mtaIdMessage": "MTA ID",
+        "mtaDescriptionMessage": "MTA description",
+        "addConnectivityServiceBreadcrumbMessage": "Add Connectivity Service",
+        "addConnectivityMessage": "Add connectivity service (required for connections to on-prem systems)?",
+        "serviceAdvancedOptionMessage": "Configure advanced options",
+        "abapEnvBindingBreadcrumbMessage": "ABAP Env. Binding",
+        "selectServiceMessage": "ABAP Environment for direct service binding",
+        "routerTypeMessage": "Add router module"
+    },
+    "routerType": {
+        "standaloneAppRouter": "Standalone Approuter",
+        "managedAppRouter": "Managed Approuter"
     },
     "errors": {
         "emptyDestinationNameError": "You must provide a destination name in order to continue.",
         "destinationNameError": "The destination name must only contain letters, digits, dashes and underscores.",
         "destinationNameLengthError": "Destination name cannot contain more than 200 characters",
         "folderDoesNotExistError": "Folder path does not exist: {{filePath}}",
-        "ERROR_NO_MTA_ID": "MTA ID cannot be empty",
+        "noMtaIdError": "MTA ID cannot be empty",
+        "invalidMtaIdError": "The ID can only contain letters, numbers, dashes, periods and underscores (but no spaces).",
+        "mtaIdAlreadyExistError": "A folder with same name already exist at {{mtaPath}}",
+        "abapEnvsUnavailable": "ABAP environments unavailable"
     },
     "warning": {
         "btpDestinationListWarning": "BTP destinations are only retrieved on BAS"

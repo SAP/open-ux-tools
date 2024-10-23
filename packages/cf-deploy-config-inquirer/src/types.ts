@@ -17,14 +17,22 @@ export enum promptNames {
  * Enum defining prompt names for Application Router configuration.
  */
 export enum appRouterPromptNames {
-    mtaPath = 'mtaPath', // inputDestinationRoot
-    mtaId = 'mtaID', // prefix
-    mtaDescription = 'mtaDescription',// description
-    mtaVersion = 'mtaVersion',// mtaVersion
-    routerType = 'routerType', // routerType
-    addConnectivityService = 'addConnectivityService', // addConnectivityService
-    addDestinationService = 'addDestinationService', // useABAPServiceBinding
-    abapServiceProvider = 'abapServiceProvider' // selectedABAPService
+    /* The prompt to specify the MTA path to the MTA folder. */
+    mtaPath = 'mtaPath',
+    /* The prompt to specify the MTA ID. */
+    mtaId = 'mtaId',
+    /* The prompt to specify the MTA description. */
+    mtaDescription = 'mtaDescription',
+    /* The prompt to specify the MTA version. */
+    mtaVersion = 'mtaVersion',
+    /* Prompt for selecting the type of Application Router (standard or managed) */
+    routerType = 'routerType',
+    /* Prompt for selecting the Connectivity service */
+    connectivityService = 'connectivityService',
+    /* Prompt for selecting the Destination service */
+    destinationService = 'destinationService',
+    /* Prompt for selecting the ABAP environments */
+    serviceProvider = 'serviceProvider'
 }
 
 /**
@@ -54,6 +62,16 @@ export type DestinationNamePromptOptions = {
     useAutocomplete?: boolean;
 };
 
+export type ServiceProviderPromptOptions = {
+    addService?: boolean;
+    // can reuse getCFDiscoverPrompts
+    // choiceList?: ListChoiceOptions[]
+};
+
+/**
+ * Type definition for the options used in the MTA path prompt.
+ * This type defines the configuration for the MTA path input, with default values.
+ */
 export type MtaPathPromptOptions = {
     defaultValue: string;
 };
@@ -62,13 +80,20 @@ export type MtaPathPromptOptions = {
  * Defines options for boolean-type prompts in CF deployment configuration.
  */
 type booleanValuePromptOptions = Record<promptNames.overwrite, boolean> &
-    Record<promptNames.addManagedAppRouter, boolean>;
+    Record<promptNames.addManagedAppRouter, boolean> &
+    Record<appRouterPromptNames.mtaId, boolean> &
+    Record<appRouterPromptNames.mtaDescription, boolean> &
+    Record<appRouterPromptNames.mtaVersion, boolean> &
+    Record<appRouterPromptNames.routerType, boolean> &
+    Record<appRouterPromptNames.destinationService, boolean> &
+    Record<appRouterPromptNames.connectivityService, boolean>;
 
 /**
  * Defines options for string-type prompts in CF deployment configuration.
  */
 type stringValuePromptOptions = Record<promptNames.destinationName, DestinationNamePromptOptions> &
-    Record<appRouterPromptNames.mtaPath, MtaPathPromptOptions>;
+    Record<appRouterPromptNames.mtaPath, MtaPathPromptOptions> &
+    Record<appRouterPromptNames.serviceProvider, ServiceProviderPromptOptions>;
 
 /**
  * Configuration options for CF deployment prompts.
@@ -101,24 +126,48 @@ export interface CfDeployConfigAnswers {
     overwrite?: boolean;
 }
 
-enum RouterModuleType {
+/**
+ * Enum defining the types of router modules for the Application Router configuration.
+ * Specifies whether the application uses a standard or managed App Router.
+ */
+export enum RouterModuleType {
     Standard = 'standard',
     Managed = 'managed'
 }
 
-export interface CfAppRouterDeployConfigAnswers {
+/**
+ * Interface representing the configuration for MTA.
+ * This configuration includes essential properties for identifying and describing the MTA.
+ */
+export interface MTAConfig {
+    /* The MTA ID. */
     mtaId: string;
+    /* The path to the MTA project. */
     mtaPath: string;
+    /* The MTA description. */
     mtaDescription?: string;
+    /* The MTA version. */
     mtaVersion?: string;
+}
+
+/* Interface representing the answers provided during the application router deployment configuration.*/
+export interface CfAppRouterDeployConfigAnswers extends MTAConfig {
+    /**
+     * The type of router to be used for the application.
+     * This specifies whether to use a standard or managed router.
+     */
     routerType: RouterModuleType;
+    /* The selected connectivity service for the application router. */
     addConnectivityService?: boolean;
+    /* The selected destination service for the application router. */
     addDestinationService?: boolean;
+    /* The selected ABAP environment for the application router. */
     abapServiceProvider?: {
         abapServiceName?: string;
         abapService?: string;
     };
 }
+
 /**
  * Interface for selectable system choices within prompts.
  */
