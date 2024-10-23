@@ -302,7 +302,7 @@ export class ChangeService {
     private createOnStackChangeHandler(): (event: Event) => Promise<void> {
         const handleStackChange = modeAndStackChangeHandler(this.sendAction, this.options.rta);
         return async (event): Promise<void> => {
-            const pendingChanges: PendingChange[]    = [];
+            const pendingChanges: PendingChange[] = [];
             this.eventStack.push(event);
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
@@ -349,7 +349,12 @@ export class ChangeService {
         };
     }
 
-    private async handleCommand(command: FlexCommand, inactiveCommandCount: number, index: number, pendingChanges: PendingChange[]): Promise<void> {
+    private async handleCommand(
+        command: FlexCommand,
+        inactiveCommandCount: number,
+        index: number,
+        pendingChanges: PendingChange[]
+    ): Promise<void> {
         const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, index);
         if (pendingChange) {
             pendingChanges.push(pendingChange);
