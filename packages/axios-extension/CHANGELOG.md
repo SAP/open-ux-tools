@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.16.7
+
+### Patch Changes
+
+-   9bda640: CPE loading changes from backend and not from workspace
+
 ## 1.16.6
 
 ### Patch Changes

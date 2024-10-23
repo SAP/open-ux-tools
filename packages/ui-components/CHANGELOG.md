@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.19.0
+
+### Minor Changes
+
+-   ea18bcb: Added new API method `initTheme` to override default Fluent UI styles, removing `-webkit-font-smoothing: antialiased`.
+
 ## 1.18.11
 
 ### Patch Changes
