@@ -39,7 +39,7 @@ declare module 'sap/ui/fl/Change' {
     }
 
     class Change<ContentType> {
-        constructor(oFile: object): void;
+        constructor(file: object): void;
         getDefinition: () => ChangeDefinition;
         getSelector: () => Selector;
         getChangeType: () => string;
@@ -129,10 +129,10 @@ declare module 'sap/ui/fl/apply/api/FlexRuntimeInfoAPI' {
 
 declare module 'sap/ui/fl/write/api/ChangesWriteAPI' {
     interface ChangeHander {
-        getChangeVisualizationInfo(oChange, oAppComponent): Promise<object>;
+        getChangeVisualizationInfo(change, appComponent): Promise<object>;
     }
     interface ChangesWriteAPI {
-        getChangeHandler(mPropertyBag: object): Promise<ChangeHander>;
+        getChangeHandler(propertyBag: object): Promise<ChangeHander>;
     }
 
     const ChangesWriteAPI: ChangesWriteAPI;
@@ -141,7 +141,7 @@ declare module 'sap/ui/fl/write/api/ChangesWriteAPI' {
 
 declare module 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory' {
     interface FlexObjectFactory {
-        createFromFileContent(oFileContent: object, ObjectClass?: class, bPersisted?: boolean): object;
+        createFromFileContent(fileContent: object, ObjectClass?: class, isPersisted?: boolean): object;
     }
 
     const FlexObjectFactory: FlexObjectFactory;
