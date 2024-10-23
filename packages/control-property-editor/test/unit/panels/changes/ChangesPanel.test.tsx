@@ -313,9 +313,9 @@ describe('ChangePanel', () => {
                     pending: [],
                     saved: [
                         {
-                            changeType: 'renameLable',
+                            changeType: 'renameLabel',
                             controlId: 'testId1',
-                            fileName: 'id_1691659414768_328_renameLable',
+                            fileName: 'id_1691659414768_328_renameLabel',
                             type: 'saved',
                             kind: 'control'
                         }
@@ -329,13 +329,13 @@ describe('ChangePanel', () => {
         const savedChangesTitle = screen.getByText(/saved changes/i);
         expect(savedChangesTitle).toBeInTheDocument();
 
-        const title = screen.getByText(/Rename Lable/i);
+        const title = screen.getByText(/Rename Label/i);
         expect(title).toBeInTheDocument();
 
         const fileLabel = screen.getByText(/file:/i);
         expect(fileLabel).toBeInTheDocument();
 
-        const fileName = screen.getByText(/id_1691659414768_328_renameLable/i);
+        const fileName = screen.getByText(/id_1691659414768_328_renameLabel/i);
         expect(fileName).toBeInTheDocument();
 
         const deleteButton = screen.getAllByRole('button')[1];
@@ -368,9 +368,9 @@ describe('ChangePanel', () => {
                     pending: [],
                     saved: [
                         {
-                            changeType: 'renameLable',
+                            changeType: 'renameLabel',
                             controlId: 'testId1',
-                            fileName: 'id_1691659414768_328_renameLable',
+                            fileName: 'id_1691659414768_328_renameLabel',
                             type: 'saved',
                             kind: 'control'
                         }
@@ -384,16 +384,16 @@ describe('ChangePanel', () => {
         const savedChangesTitle = screen.getByText(/saved changes/i);
         expect(savedChangesTitle).toBeInTheDocument();
 
-        const title = screen.getByText(/Rename Lable/i);
+        const title = screen.getByText(/Rename Label/i);
         expect(title).toBeInTheDocument();
 
         const fileLabel = screen.getByText(/file:/i);
         expect(fileLabel).toBeInTheDocument();
 
-        const fileName = screen.getByText(/id_1691659414768_328_renameLable/i);
+        const fileName = screen.getByText(/id_1691659414768_328_renameLabel/i);
         expect(fileName).toBeInTheDocument();
 
-        const link = screen.getByRole('button', { name: /Rename Lable Change/i });
+        const link = screen.getByRole('button', { name: /Rename Label Change/i });
         expect(link).toBeInTheDocument();
 
         link.click();
