@@ -29,7 +29,6 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/preview-middleware": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
@@ -44,6 +43,7 @@
         "prompts": "2.4.2"
     },
     "devDependencies": {
+        "@sap-ux/preview-middleware": "workspace:*",
         "@types/ejs": "3.1.2",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
