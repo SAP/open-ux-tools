@@ -15,6 +15,7 @@ import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -147,6 +148,42 @@ describe('FlpSandbox', () => {
                 'sap.app': { id: 'my.id', title: '{i18n>myOtherTitle}', description: '{{i18n>myOtherDescription}}' }
             } as Manifest;
             await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+        });
+
+        test('with passed descriptor', async () => {
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const descriptor = {
+                components: [
+                    {
+                        name: 'myComponent',
+                        url: 'myComponentUrl'
+                    }
+                ],
+                libs: [
+                    {
+                        name: 'myLib',
+                        url: 'myLibUrl'
+                    }
+                ],
+                asyncHints: {
+                    requests: [
+                        {
+                            url: 'myRequestUrl'
+                        }
+                    ]
+                }
+            };
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1',
+                'myResources2': 'myResourcesUrl2'
+            };
+
+            await flp.init(manifest, componendId, resources, descriptor as unknown as MergedAppDescriptor);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
@@ -308,12 +345,17 @@ describe('FlpSandbox', () => {
         });
 
         test('rta', async () => {
-            const response = await server.get('/my/rta.html').expect(200);
+            const response = await server.get('/my/rta.html').expect(302);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with url parameters', async () => {
+            const response = await server.get('/my/rta.html?fiori-tools-rta-mode=true').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
         test('rta with editors path without leading "/"', async () => {
-            const response = await server.get('/without/slash/rta.html').expect(200);
+            const response = await server.get('/without/slash/rta.html').expect(302);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -321,7 +363,7 @@ describe('FlpSandbox', () => {
             let response = await server.get('/my/editor.html').expect(200);
             expect(response.text).toMatchSnapshot();
             expect(response.text.includes('livereloadPort: 35729')).toBe(true);
-            response = await server.get('/my/editor.html.inner.html').expect(200);
+            response = await server.get('/my/editor.html.inner.html').expect(302);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -336,7 +378,11 @@ describe('FlpSandbox', () => {
 
         test('rta with developerMode=true and plugin', async () => {
             await server.get('/with/plugin.html').expect(200);
-            const response = await server.get('/with/plugin.html.inner.html').expect(200);
+            const response = await server
+                .get(
+                    '/with/plugin.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
