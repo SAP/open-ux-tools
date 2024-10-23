@@ -95,13 +95,3 @@ declare module 'sap/ui/dt/Element' {
 
     export default ElementExtended;
 }
-
-declare module 'sap/ui/dt/ElementUtil' {
-    import type Element from 'sap/ui/core/Element';
-    interface ElementUtil {
-        getElementInstance(vElement: string): Element;
-    }
-
-    const ElementUtil: ElementUtil;
-    export default ElementUtil;
-}
