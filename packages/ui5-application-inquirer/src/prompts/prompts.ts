@@ -319,8 +319,8 @@ function getUI5VersionPrompt(
     const defaultChoice = getDefaultUI5VersionChoice(ui5Versions, ui5VersionPromptOptions?.defaultChoice);
     const ui5VersionChoices = ui5VersionsGrouped(
         ui5Versions,
-        ui5VersionPromptOptions?.includeSeparators
-        // defaultChoice - this is added to support systemn versions however currently the middleware preview does not support this
+        ui5VersionPromptOptions?.includeSeparators,
+        defaultChoice
     );
     return {
         when: () => !!ui5VersionChoices,
