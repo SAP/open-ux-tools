@@ -211,7 +211,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
 
         const value1 = inputs[0].getValue();
         const value2 = inputs[1].getValue();
-        // check duplicating fragment names 
+        // check duplicating fragment names
         if (value1 === value2 && value1.length) {
             inputs.forEach((input) => {
                 if (input.getValueState() === ValueState.Success) {
@@ -286,6 +286,8 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
 
         const result: string[] = [];
 
+        const compositeCommand = await this.commandExecutor.createCompositeCommand(this.runtimeControl);
+
         for (const fragment of fragments) {
             const modifiedValue = {
                 fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
@@ -311,10 +313,11 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
             const content = { ...preparedChange.getContent() };
             content.templateName = templateName;
             preparedChange.setContent(content);
-
-            await this.commandExecutor.pushAndExecuteCommand(command);
+            compositeCommand.addCommand(command, false);
             result.push(templateName);
         }
+
+        await this.commandExecutor.pushAndExecuteCommand(compositeCommand);
         CommunicationService.sendAction(setApplicationRequiresReload(true));
 
         return result;

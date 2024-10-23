@@ -5,10 +5,11 @@ import { getControlById } from '../../../utils/core';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { DialogNames, handler } from '../../init-dialogs';
 import { MDC_TABLE_TYPE, TableQuickActionDefinitionBase } from './table-quick-action-base';
+import { SMART_TABLE_TYPE } from '../fe-v2/table-quick-action-base';
 
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
 
-export const CONTROL_TYPES = [MDC_TABLE_TYPE];
+export const CONTROL_TYPES = [SMART_TABLE_TYPE, MDC_TABLE_TYPE];
 
 export class AddTableCustomColumnQuickAction
     extends TableQuickActionDefinitionBase

@@ -614,7 +614,19 @@ describe('AddTableColumnsFragments controller', () => {
                 index: 0,
                 targetAggregation: 'items'
             };
+            type CommandBase = {
+                _oPreparedChange: {
+                    _oDefinition: { moduleName: string };
+                };
+            };
+            const commandStack: CommandBase[] = [];
+            const addCommandMock = jest.fn().mockImplementation((cmd: CommandBase) => {
+                commandStack.push(cmd);
+            });
             CommandFactory.getCommandFor = nCallsMock([
+                {
+                    addCommand: addCommandMock
+                },
                 {
                     _oPreparedChange: {
                         _oDefinition: { moduleName: 'adp/app/changes/fragments/Name1.fragment.xml' },
@@ -665,23 +677,25 @@ describe('AddTableColumnsFragments controller', () => {
             } as unknown as Event;
             await addFragment.onCreateBtnPress(event);
 
-            expect(executeSpy.mock.calls[0][0]._oPreparedChange._oDefinition.moduleName).toBe(
+            expect(commandStack[0]._oPreparedChange._oDefinition.moduleName).toBe(
                 'adp/app/changes/fragments/Name1.fragment.xml'
             );
             expect(setContentMock.mock.calls[0][0]).toStrictEqual({
                 ...content1,
                 templateName: 'V2_SMART_TABLE_COLUMN'
             });
-            expect(executeSpy.mock.calls[1][0]._oPreparedChange._oDefinition.moduleName).toBe(
+            expect(commandStack[1]._oPreparedChange._oDefinition.moduleName).toBe(
                 'adp/app/changes/fragments/Name2.fragment.xml'
             );
             expect(setContentMock.mock.calls[1][0]).toStrictEqual({ ...content2, templateName: 'V2_SMART_TABLE_CELL' });
-            expect(CommandFactory.getCommandFor.mock.calls[0][0].dummyAggregation).toBeUndefined();
+            expect(CommandFactory.getCommandFor.mock.calls[0][1]).toBe('composite');
 
-            expect(CommandFactory.getCommandFor.mock.calls[0][1]).toBe('addXML');
-            expect(CommandFactory.getCommandFor.mock.calls[0][2].targetAggregation).toBe('columns');
-            expect(CommandFactory.getCommandFor.mock.calls[1][0].dummyAggregation).toBe(true);
-            expect(CommandFactory.getCommandFor.mock.calls[1][2].targetAggregation).toBe('cells');
+            expect(CommandFactory.getCommandFor.mock.calls[1][0].dummyAggregation).toBeUndefined();
+            expect(CommandFactory.getCommandFor.mock.calls[1][1]).toBe('addXML');
+            expect(CommandFactory.getCommandFor.mock.calls[1][2].targetAggregation).toBe('columns');
+
+            expect(CommandFactory.getCommandFor.mock.calls[2][0].dummyAggregation).toBe(true);
+            expect(CommandFactory.getCommandFor.mock.calls[2][2].targetAggregation).toBe('cells');
         });
     });
 });
