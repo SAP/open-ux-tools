@@ -13,6 +13,7 @@ export {
     findFioriArtifacts,
     findProjectRoot,
     findRootsForPath,
+    getAllUi5YamlFileNames,
     getAppRootFromWebappPath,
     getAppProgrammingLanguage,
     getAppType,
