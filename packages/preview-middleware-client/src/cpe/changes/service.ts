@@ -102,7 +102,7 @@ export class ChangeService {
     private sendAction: (action: ExternalAction) => void;
     private pendingChanges: PendingChange[] = [];
     private changedFiles: Record<string, object> = {};
-    private eventStack: object[] = [];
+    private readonly eventStack: object[] = [];
     /**
      *
      * @param options ui5 adaptation options.

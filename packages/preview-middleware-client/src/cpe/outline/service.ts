@@ -20,7 +20,7 @@ export interface OutlineChangedEventDetail {
  * A Class of WorkspaceConnectorService
  */
 export class OutlineService extends EventTarget {
-    constructor(private rta: RuntimeAuthoring, private changeService: ChangeService) {
+    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {
         super();
     }
 
