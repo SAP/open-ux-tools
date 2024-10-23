@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.21
+
+### Patch Changes
+
+-   bc75111: Upgrade http-proxy-middleware
+
 ## 0.5.20
 
 ### Patch Changes
