@@ -114,7 +114,7 @@ export class ManifestService {
             const response = await this.provider.get(metadataUrl.toString());
             return response.data;
         } catch (error) {
-            this.logger.error('Metadata fetching failed');
+            this.logger.warn('Metadata fetching failed. Fallback to local metadata');
             if (dataSource?.settings?.localUri) {
                 try {
                     const fallbackUrl = new URL(
