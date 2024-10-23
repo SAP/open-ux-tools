@@ -22,13 +22,9 @@ export async function getPreviewMiddleware(
     filename: string = FileName.Ui5Yaml
 ): Promise<CustomMiddleware<PreviewConfigOptions> | undefined> {
     if (!basePath && !yamlConfig) {
-        return Promise.reject(new Error('Either base path or yaml config must be provided.'));
+        throw new Error('Either base path or yaml config must be provided.');
     }
-    try {
-        yamlConfig = yamlConfig ?? (await readUi5Yaml(basePath!, filename));
-    } catch (error) {
-        return Promise.reject(error as Error);
-    }
+    yamlConfig = yamlConfig ?? (await readUi5Yaml(basePath!, filename));
     return (
         yamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview) ??
         yamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.PreviewMiddleware)
@@ -127,7 +123,7 @@ export async function getRTAUrl(basePath: string, query: string, yamlPath?: stri
         fileName = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
         previewMiddleware = await getPreviewMiddleware(undefined, basePath, fileName);
     } catch (error) {
-        return Promise.reject(new Error(`No ${fileName} file found. ${error}`));
+        throw new Error(`No ${fileName} file found. ${error}`);
     }
 
     if (
