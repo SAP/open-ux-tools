@@ -9,12 +9,32 @@ import { getWebappFiles } from '../helper';
 
 type DataSources = Record<string, ManifestNamespace.DataSource>;
 
+/**
+ * Service class for handling operations related to the manifest of a UI5 application.
+ * The class supports operations for both base and merged manifests.
+ * It provides methods to fetch the manifest, data sources and metadata of a data source.
+ *
+ */
 export class ManifestService {
     private manifest: Manifest;
     private appInfo: Ui5AppInfoContent;
 
+    /**
+     * Private constructor to initialize the ManifestService.
+     *
+     * @param provider - The ABAP service provider.
+     * @param logger - The logger instance.
+     */
     private constructor(private provider: AbapServiceProvider, private logger: ToolsLogger) {}
 
+    /**
+     * Creates an instance of the ManifestService and fetches the base manifest of the application.
+     *
+     * @param appId - The application ID.
+     * @param adpConfig - The ADP preview configuration.
+     * @param logger - The logger instance.
+     * @returns A promise that resolves to an instance of ManifestService.
+     */
     public static async initBaseManifest(
         appId: string,
         adpConfig: AdpPreviewConfig,
@@ -33,6 +53,15 @@ export class ManifestService {
         return manifestService;
     }
 
+    /**
+     * Creates an instance of the ManifestService and fetches the merged manifest of the application.
+     *
+     * @param basePath - The base path of the application.
+     * @param variant - The descriptor variant.
+     * @param adpConfig - The ADP preview configuration.
+     * @param logger - The logger instance.
+     * @returns A promise that resolves to an instance of ManifestService.
+     */
     public static async initMergedManifest(
         basePath: string,
         variant: DescriptorVariant,
@@ -53,6 +82,13 @@ export class ManifestService {
         return manifestService;
     }
 
+    /**
+     * Fetches the base manifest for a given application ID.
+     *
+     * @param appId - The application ID.
+     * @returns A promise that resolves when the base manifest is fetched.
+     * @throws Error if the manifest URL is not found or fetching/parsing fails.
+     */
     private async fetchBaseManifest(appId: string): Promise<void> {
         await this.fetchAppInfo(appId);
         const manifestUrl = this.appInfo.manifestUrl ?? this.appInfo.manifest;
@@ -73,14 +109,32 @@ export class ManifestService {
         }
     }
 
+    /**
+     * Fetches the application information for a given application ID.
+     *
+     * @param appId - The application ID.
+     * @returns A promise that resolves when the application information is fetched.
+     */
     private async fetchAppInfo(appId: string): Promise<void> {
         this.appInfo = (await this.provider.getAppIndex().getAppInfo(appId))[appId];
     }
 
+    /**
+     * Returns the manifest fetched by the service during initialization.
+     *
+     * @returns The current manifest.
+     */
     public getManifest(): Manifest {
         return this.manifest;
     }
 
+    /**
+     * Fetches the merged manifest for a given application.
+     *
+     * @param basePath - The base path of the application.
+     * @param descriptorVariantId - The descriptor variant ID.
+     * @returns A promise that resolves to the merged manifest.
+     */
     private async fetchMergedManifest(basePath: string, descriptorVariantId: string): Promise<Manifest> {
         const zip = new ZipFile();
         const files = getWebappFiles(basePath);
@@ -94,6 +148,12 @@ export class ManifestService {
         return response[descriptorVariantId].manifest;
     }
 
+    /**
+     * Returns the data sources from the manifest.
+     *
+     * @returns The data sources from the manifest.
+     * @throws Error if no data sources are found in the manifest.
+     */
     public getManifestDataSources(): DataSources {
         const dataSources = this.manifest['sap.app'].dataSources;
         if (!dataSources) {
@@ -102,6 +162,13 @@ export class ManifestService {
         return dataSources;
     }
 
+    /**
+     * Returns the metadata of a data source.
+     *
+     * @param dataSourceId - The ID of the data source.
+     * @returns A promise that resolves to the metadata of the data source.
+     * @throws Error if no metadata path is found in the manifest or fetching fails.
+     */
     public async getDataSourceMetadata(dataSourceId: string): Promise<any> {
         const dataSource = this.manifest?.['sap.app']?.dataSources?.[dataSourceId];
 
@@ -124,7 +191,7 @@ export class ManifestService {
                     const response = await this.provider.get(fallbackUrl.toString());
                     return response.data;
                 } catch (fallbackError) {
-                    this.logger.error('Local metadata fetching failed');
+                    this.logger.error('Local metadata fallback fetching failed');
                     throw fallbackError;
                 }
             }
