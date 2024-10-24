@@ -1,6 +1,13 @@
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
 import { getNewSystemQuestions } from '../../../../src/prompts/datasources/sap-system/new-system/questions';
+import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
+}));
+
+const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 describe('questions', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
@@ -8,6 +15,7 @@ describe('questions', () => {
     });
 
     test('should return expected questions', () => {
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const newSystemQuestions = getNewSystemQuestions();
         expect(newSystemQuestions).toMatchInlineSnapshot(`
             [
