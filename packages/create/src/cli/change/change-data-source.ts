@@ -4,7 +4,7 @@ import {
     ChangeType,
     getPromptsForChangeDataSource,
     getAdpConfig,
-    getManifestDataSources,
+    ManifestService,
     getVariant
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
@@ -43,7 +43,8 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         await validateAdpProject(basePath);
         const variant = getVariant(basePath);
         const adpConfig = await getAdpConfig(basePath, yamlPath);
-        const dataSources = await getManifestDataSources(variant.reference, adpConfig, logger);
+        const manifestService = await ManifestService.initBaseManifest(variant.reference, adpConfig, logger);
+        const dataSources = manifestService.getManifestDataSources();
         const answers = await promptYUIQuestions(getPromptsForChangeDataSource(dataSources), false);
 
         const fs = await generateChange<ChangeType.CHANGE_DATA_SOURCE>(basePath, ChangeType.CHANGE_DATA_SOURCE, {
