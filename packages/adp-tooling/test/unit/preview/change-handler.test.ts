@@ -243,10 +243,10 @@ id="<%- ids.label %>"`);
                     `"project/path/changes/Share.fragment.xml"`
                 );
                 expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
-"
-id=\\"vBox-30303030\\"
-id=\\"label-30303030\\""
-`);
+                    "
+                    id=\\"vBox-30303030\\"
+                    id=\\"label-30303030\\""
+                `);
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });
@@ -276,9 +276,158 @@ id="<%- ids.toolbarActionButton %>`);
                     `"project/path/changes/Share.fragment.xml"`
                 );
                 expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
-"
-id=\\"btn-30303030"
+                    "
+                    id=\\"btn-30303030"
+                `);
+
+                expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
+            });
+
+            it('should create custom table column fragment (V2 smart table)', () => {
+                mockFs.exists.mockReturnValue(false);
+                const updatedChange = {
+                    ...change,
+                    content: {
+                        ...change.content,
+                        templateName: `V2_SMART_TABLE_COLUMN`
+                    }
+                } as unknown as AddXMLChange;
+                mockFs.read.mockReturnValue(`
+id="<%- ids.column %>
+id="<%- ids.columnTitle %>
 `);
+                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+
+                expect(mockFs.read).toHaveBeenCalled();
+                expect(
+                    (mockFs.read.mock.calls[0][0] as string)
+                        .replace(/\\/g, '/')
+                        .endsWith('templates/rta/v2/m-table-custom-column.xml')
+                ).toBe(true);
+
+                expect(mockFs.write).toHaveBeenCalled();
+                expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                    `"project/path/changes/Share.fragment.xml"`
+                );
+                expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+                    "
+                    id=\\"column-30303030
+                    id=\\"column-title-30303030
+                    "
+                `);
+
+                expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
+            });
+
+            it('should create custom table cell fragment (V2 smart table)', () => {
+                mockFs.exists.mockReturnValue(false);
+                const updatedChange = {
+                    ...change,
+                    content: {
+                        ...change.content,
+                        templateName: `V2_SMART_TABLE_CELL`
+                    }
+                } as unknown as AddXMLChange;
+                mockFs.read.mockReturnValue(`
+id="<%- ids.text %>
+`);
+                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+
+                expect(mockFs.read).toHaveBeenCalled();
+                expect(
+                    (mockFs.read.mock.calls[0][0] as string)
+                        .replace(/\\/g, '/')
+                        .endsWith('templates/rta/v2/m-table-custom-column-cell.xml')
+                ).toBe(true);
+
+                expect(mockFs.write).toHaveBeenCalled();
+                expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                    `"project/path/changes/Share.fragment.xml"`
+                );
+                expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+                    "
+                    id=\\"cell-text-30303030
+                    "
+                `);
+
+                expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
+            });
+
+            it('should create custom table column fragment (V4 smart table)', () => {
+                mockFs.exists.mockReturnValue(false);
+                const updatedChange = {
+                    ...change,
+                    content: {
+                        ...change.content,
+                        templateName: `V4_MDC_TABLE_COLUMN`
+                    }
+                } as unknown as AddXMLChange;
+                mockFs.read.mockReturnValue(`
+id="<%- ids.column %>
+id="<%- ids.text %>
+`);
+                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+
+                expect(mockFs.read).toHaveBeenCalled();
+                expect(
+                    (mockFs.read.mock.calls[0][0] as string)
+                        .replace(/\\/g, '/')
+                        .endsWith('templates/rta/v4/mdc-custom-column.xml')
+                ).toBe(true);
+
+                expect(mockFs.write).toHaveBeenCalled();
+                expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                    `"project/path/changes/Share.fragment.xml"`
+                );
+                expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+                    "
+                    id=\\"column-30303030
+                    id=\\"text-30303030
+                    "
+                `);
+
+                expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
+            });
+
+            it('should create custom table column fragment (analytical table)', () => {
+                mockFs.exists.mockReturnValue(false);
+                const updatedChange = {
+                    ...change,
+                    content: {
+                        ...change.content,
+                        templateName: `ANALYTICAL_TABLE_COLUMN`,
+                        index: 1
+                    }
+                } as unknown as AddXMLChange;
+                mockFs.read.mockReturnValue(`
+id="<%- ids.column %>
+id="<%- ids.label %>
+id="<%- ids.text %>
+id="<%- ids.customData %>
+id="<%- ids.index %>
+`);
+                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+
+                expect(mockFs.read).toHaveBeenCalled();
+                expect(
+                    (mockFs.read.mock.calls[0][0] as string)
+                        .replace(/\\/g, '/')
+                        .endsWith('templates/rta/common/analytical-custom-column.xml')
+                ).toBe(true);
+
+                expect(mockFs.write).toHaveBeenCalled();
+                expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                    `"project/path/changes/Share.fragment.xml"`
+                );
+                expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+                    "
+                    id=\\"column-30303030
+                    id=\\"label-30303030
+                    id=\\"text-30303030
+                    id=\\"custom-data-30303030
+                    id=\\"1
+                    "
+                `);
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });

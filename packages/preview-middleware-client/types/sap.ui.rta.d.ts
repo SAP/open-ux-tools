@@ -27,11 +27,21 @@ declare module 'sap/ui/rta/command/BaseCommand' {
     export default BaseCommand;
 }
 
+declare module 'sap/ui/rta/command/CompositeCommand' {
+    interface CompositeCommand extends BaseCommand {
+        addCommand(command: BaseCommand, suppressInvalidate: boolean): CompositeCommand;
+        insertCommand(command: BaseCommand, index: int, suppressInvalidate: boolean): CompositeCommand;
+    }
+
+    export default CompositeCommand;
+}
+
 declare module 'sap/ui/rta/command/Stack' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
+    import type CompositeCommand from 'sap/ui/rta/command/CompositeCommand';
 
     interface Stack {
-        pushAndExecute(command: BaseCommand): Promise<void>;
+        pushAndExecute(command: BaseCommand | CompositeCommand): Promise<void>;
         getCommands(): FlexCommand[];
         getAllExecutedCommands(): FlexCommand[];
     }
@@ -72,6 +82,7 @@ declare module 'sap/ui/rta/plugin/AddXMLAtExtensionPoint' {
 
 declare module 'sap/ui/rta/command/CommandFactory' {
     import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+    import type CompositeCommand from 'sap/ui/rta/command/CompositeCommand';
     import type ManagedObject from 'sap/ui/base/ManagedObject';
     import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
     import type Element from 'sap/ui/core/Element';
@@ -84,10 +95,10 @@ declare module 'sap/ui/rta/command/CommandFactory' {
     export default class CommandFactory {
         constructor(_: Arguments) {}
 
-        static async getCommandFor<T extends FlexCommand = FlexCommand>(
+        static async getCommandFor<T extends FlexCommand | CompositeCommand = FlexCommand>(
             control: Element | ManagedObject | string,
             commandType: string, // type of
-            settings: object,
+            settings?: object,
             designTimeMetadata?: DesignTimeMetadata | null,
             flexSettings?: FlexSettings
         ): Promise<T>;
@@ -130,7 +141,11 @@ declare module 'sap/ui/rta/command/OutlineService' {
 
 declare module 'sap/ui/fl/FakeLrepConnector' {
     export default class FakeLrepConnector {
-        static fileChangeRequestNotifier?: <T extends object>(fileName: string, kind: 'delete' | 'create', change?: T) => void;
+        static fileChangeRequestNotifier?: <T extends object>(
+            fileName: string,
+            kind: 'delete' | 'create',
+            change?: T
+        ) => void;
         static enableFakeConnector: () => void;
     }
 }

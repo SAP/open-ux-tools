@@ -3,6 +3,7 @@ import { NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/con
 import type IconTabBar from 'sap/m/IconTabBar';
 import type IconTabFilter from 'sap/m/IconTabFilter';
 import type Table from 'sap/m/Table';
+import type MdcTable from 'sap/ui/mdc/Table';
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
@@ -15,29 +16,9 @@ import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import TreeTable from 'sap/ui/table/TreeTable';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 
-const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
-const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
-const SETTINGS_ID = 'CTX_SETTINGS';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
-export const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
-export const M_TABLE_TYPE = 'sap.m.Table';
-export const TREE_TABLE_TYPE = 'sap.ui.table.TreeTable';
-export const GRID_TABLE_TYPE = 'sap.ui.table.Table';
-export const ANALYTICAL_TABLE_TYPE = 'sap.ui.table.AnalyticalTable';
-
-async function getActionId(table: UI5Element): Promise<string[]> {
-    const { major, minor } = await getUi5Version();
-
-    if (isA(SMART_TABLE_TYPE, table)) {
-        if (major === 1 && minor === 96) {
-            return [SETTINGS_ID];
-        } else {
-            return [SMART_TABLE_ACTION_ID];
-        }
-    }
-
-    return [M_TABLE_ACTION_ID, SETTINGS_ID];
-}
+const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
+export const MDC_TABLE_TYPE = 'sap.ui.mdc.Table';
 
 /**
  * Base class for table quick actions.
@@ -77,8 +58,7 @@ export abstract class TableQuickActionDefinitionBase {
         public readonly type: string,
         protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
-        protected readonly context: QuickActionContext,
-        protected includeServiceAction?: boolean
+        protected readonly context: QuickActionContext
     ) {}
 
     /**
@@ -114,20 +94,6 @@ export abstract class TableQuickActionDefinitionBase {
             } else {
                 this.processTable(table);
             }
-
-            // add action id to the table map, if the service actions are needed.
-            if (this.includeServiceAction) {
-                const actions = await this.context.actionService.get(table.getId());
-                const actionsIds = await getActionId(table);
-
-                const changeColumnAction = actionsIds.find(
-                    (actionId) => actions.findIndex((action) => action.id === actionId) > -1
-                );
-                Object.keys(this.tableMap).forEach((key) => {
-                    // Update the changeColumnActionId for each entry
-                    this.tableMap[key].changeColumnActionId = changeColumnAction;
-                });
-            }
         }
         if (this.children.length > 0) {
             this.isActive = true;
@@ -145,11 +111,10 @@ export abstract class TableQuickActionDefinitionBase {
             if (header) {
                 return `'${header}' table`;
             }
-        }
-        if (isA<Table>(M_TABLE_TYPE, table)) {
-            const tilte = table?.getHeaderToolbar()?.getTitleControl()?.getText();
-            if (tilte) {
-                return `'${tilte}' table`;
+        } else if (isA<MdcTable>(MDC_TABLE_TYPE, table)) {
+            const header = table?.getHeader();
+            if (header) {
+                return `'${header}' table`;
             }
         }
 
@@ -240,7 +205,7 @@ export abstract class TableQuickActionDefinitionBase {
                 children: []
             });
         }
-        if (isA<Table>(M_TABLE_TYPE, table)) {
+        if (isA<Table>(MDC_TABLE_TYPE, table)) {
             this.children.push({
                 label: this.getTableLabel(table),
                 children: []

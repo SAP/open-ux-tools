@@ -22,6 +22,7 @@ import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
 import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
 import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
 import * as cpeUtils from '../../../src/cpe/utils';
+import AddTableColumnFragments from 'open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller';
 
 describe('Dialogs', () => {
     describe('initDialogs', () => {
@@ -47,6 +48,7 @@ describe('Dialogs', () => {
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
             AddFragment.prototype.setup = jest.fn();
+            AddTableColumnFragments.prototype.setup = jest.fn();
             ControllerExtension.prototype.setup = jest.fn();
             ExtensionPoint.prototype.setup = jest.fn();
 
@@ -65,8 +67,13 @@ describe('Dialogs', () => {
                 rtaMock as unknown as RuntimeAuthoring,
                 DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT
             );
+            await handler(
+                {} as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                DialogNames.ADD_TABLE_COLUMN_FRAGMENTS
+            );
 
-            expect(Fragment.load).toHaveBeenCalledTimes(3);
+            expect(Fragment.load).toHaveBeenCalledTimes(4);
         });
     });
 
