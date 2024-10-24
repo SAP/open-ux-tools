@@ -6,11 +6,11 @@ import { TelemetryHelper } from './telemetryHelper';
 /**
  * Prepares the telemetry event to be sent to the telemetry client.
  *
- * @param generationEvent - the event name to be reported
+ * @param telemetryEventName - the event name to be reported
  * @param telemetryData - the telemetry data
  * @returns - the telemetry event
  */
-function prepareTelemetryEvent(generationEvent: string, telemetryData: TelemetryData): TelemetryEvent {
+function prepareTelemetryEvent(telemetryEventName: string, telemetryData: TelemetryData): TelemetryEvent {
     // Make sure performance measurement end is called
     TelemetryHelper.markAppGenEndTime();
     const generationTime = telemetryData.markName
@@ -18,7 +18,7 @@ function prepareTelemetryEvent(generationEvent: string, telemetryData: Telemetry
         : undefined;
 
     return {
-        eventName: generationEvent,
+        eventName: telemetryEventName,
         properties: telemetryData,
         measurements: generationTime ? { GenerationTime: generationTime } : {}
     };
@@ -27,17 +27,17 @@ function prepareTelemetryEvent(generationEvent: string, telemetryData: Telemetry
 /**
  * Sends the telemetry event to the telemetry client.
  *
- * @param generationEvent - the event name to be reported
+ * @param telemetryEventName - the event name to be reported
  * @param telemetryData - the telemetry data
  * @param appPath - the path of the application
  * @returns - a promise that resolves when the event is sent
  */
 export async function sendTelemetry(
-    generationEvent: string,
+    telemetryEventName: string,
     telemetryData: TelemetryData,
     appPath?: string
 ): Promise<void> {
-    const telemetryEvent = prepareTelemetryEvent(generationEvent, telemetryData);
+    const telemetryEvent = prepareTelemetryEvent(telemetryEventName, telemetryData);
     return ClientFactory.getTelemetryClient().reportEvent(
         telemetryEvent,
         SampleRate.NoSampling,
@@ -48,17 +48,17 @@ export async function sendTelemetry(
 /**
  * Sends the telemetry event to the telemetry client and blocks the execution until the event is sent.
  *
- * @param generationEvent - the event name to be reported
+ * @param telemetryEventName - the event name to be reported
  * @param telemetryData - the telemetry data
  * @param appPath - the path of the application
  * @returns - a promise that resolves when the event is sent
  */
 export async function sendTelemetryBlocking(
-    generationEvent: string,
+    telemetryEventName: string,
     telemetryData: TelemetryData,
     appPath?: string
 ): Promise<void> {
-    const telemetryEvent = prepareTelemetryEvent(generationEvent, telemetryData);
+    const telemetryEvent = prepareTelemetryEvent(telemetryEventName, telemetryData);
     return ClientFactory.getTelemetryClient().reportEventBlocking(
         telemetryEvent,
         SampleRate.NoSampling,
