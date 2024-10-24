@@ -7,5 +7,5 @@ export { getPackageScripts } from './getPackageScripts';
 export { getBootstrapResourceUrls, getDefaultTargetFolder } from './helpers';
 export { generateReadMe } from './read-me';
 export { getHostEnvironment } from './environment';
-export {isExtensionInstalled} from './installedCheck';
+export { isExtensionInstalled } from './installedCheck';
 export { PackageJsonScripts, YeomanEnvironment, VSCodeInstance, hostEnvironment } from './types';
