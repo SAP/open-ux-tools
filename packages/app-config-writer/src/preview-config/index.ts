@@ -73,27 +73,18 @@ async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogge
  * @param logger logger to report info to the user
  */
 async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const webappPath = await getWebappPath(basePath);
+    const webappTestPath = join(await getWebappPath(basePath), 'test');
     // todo: check if the list of files is complete
-    const locateReuseLibsPath = join(webappPath, 'test', 'locate-reuse-libs.js');
-    const changesLoaderJsPath = join(webappPath, 'test', 'changes_loader.js');
-    const changesLoaderTsPath = join(webappPath, 'test', 'changes_loader.ts');
-    const changesPreviewJsPath = join(webappPath, 'test', 'changes_preview.js');
-    const changesPreviewTsPath = join(webappPath, 'test', 'changes_preview.ts');
-    const flpSandboxJsPath = join(webappPath, 'test', 'flpSandbox.js');
-    const flpSandboxTsPath = join(webappPath, 'test', 'flpSandbox.ts');
-    const initFlpSandboxJsPath = join(webappPath, 'test', 'initFlpSandbox.js');
-    const initFlpSandboxTsPath = join(webappPath, 'test', 'initFlpSandbox.ts');
     [
-        locateReuseLibsPath,
-        changesLoaderJsPath,
-        changesLoaderTsPath,
-        changesPreviewJsPath,
-        changesPreviewTsPath,
-        flpSandboxJsPath,
-        flpSandboxTsPath,
-        initFlpSandboxJsPath,
-        initFlpSandboxTsPath
+        join(webappTestPath, 'locate-reuse-libs.js'),
+        join(webappTestPath, 'changes_loader.js'),
+        join(webappTestPath, 'changes_loader.ts'),
+        join(webappTestPath, 'changes_preview.js'),
+        join(webappTestPath, 'changes_preview.ts'),
+        join(webappTestPath, 'flpSandbox.js'),
+        join(webappTestPath, 'flpSandbox.ts'),
+        join(webappTestPath, 'initFlpSandbox.js'),
+        join(webappTestPath, 'initFlpSandbox.ts')
     ].forEach((path: string): void => {
         if (fs.exists(path)) {
             fs.delete(path);
