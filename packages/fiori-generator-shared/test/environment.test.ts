@@ -11,12 +11,11 @@ jest.mock('@sap-ux/btp-utils', () => {
 
 function mockCli(isCli: boolean) {
     process.argv[1] = isCli ? 'path/to/yo' : 'path/to/mock';
-    Object.defineProperty(process.stdin, 'isTTY', { value: isCli ? true : false });
+    process.stdin.isTTY = isCli ? true : false;
 }
 
 describe('environment utils', () => {
     const originalArgv = process.argv;
-    // const originalIsTTY = process.stdin.isTTY;
 
     beforeEach(() => {
         jest.resetAllMocks();
