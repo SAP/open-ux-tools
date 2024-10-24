@@ -15,7 +15,7 @@ import { getMinimumUI5Version, type Manifest, hasUI5CliV3 } from '@sap-ux/projec
  * @param fs - the memfs editor instance
  * @param templateRoot - root folder contain the ejs templates
  */
-export function updateManifest(basePath: string, service: OdataService, fs: Editor, templateRoot: string) {
+export function updateManifest(basePath: string, service: OdataService, fs: Editor, templateRoot: string): void {
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     // Get component app id
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
@@ -70,12 +70,25 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
  */
 export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
     // Write annotation xml if annotations are provided and service type is EDMX
-    const annotations = service.annotations as EdmxAnnotationsInfo;
-    if (annotations?.xml) {
-        fs.write(
-            join(basePath, 'webapp', 'localService', `${annotations.technicalName}.xml`),
-            prettifyXml(annotations.xml, { indent: 4 })
-        );
+    if (service.annotations && Array.isArray(service.annotations)) {
+        const annotations = service.annotations as EdmxAnnotationsInfo[];
+        for (const i in annotations) {
+            const annotation = annotations[i];
+            if (annotation?.xml) {
+                fs.write(
+                    join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
+                    prettifyXml(annotation.xml, { indent: 4 })
+                );
+            }
+        }
+    } else {
+        const annotation = service.annotations as EdmxAnnotationsInfo;
+        if (annotation?.xml) {
+            fs.write(
+                join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
+                prettifyXml(annotation.xml, { indent: 4 })
+            );
+        }
     }
 }
 
@@ -88,16 +101,38 @@ export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: O
  * @param {Editor} fs - The memfs editor instance
  * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
  */
-export async function updateCdsFilesWithAnnotations(annotations: CdsAnnotationsInfo, fs: Editor): Promise<void> {
-    const annotationCdsPath = join(
-        annotations.projectPath,
-        annotations.appPath ?? '',
-        annotations.projectName,
-        'annotations.cds'
-    );
-    // write into annotations.cds file
-    fs.write(annotationCdsPath, annotations.cdsFileContents);
-    await updateCdsIndexOrServiceFile(fs, annotations);
+export async function updateCdsFilesWithAnnotations(
+    annotations: CdsAnnotationsInfo | CdsAnnotationsInfo[],
+    fs: Editor
+): Promise<void> {
+    if (Array.isArray(annotations)) {
+        for (const i in annotations) {
+            const annotation = annotations[i];
+            const annotationCdsPath = join(
+                annotation.projectPath,
+                annotation.appPath ?? '',
+                annotation.projectName,
+                'annotations.cds'
+            );
+            // write into annotations.cds file
+            if (fs.exists(annotationCdsPath)) {
+                fs.append(annotationCdsPath, annotation.cdsFileContents);
+            } else {
+                fs.write(annotationCdsPath, annotation.cdsFileContents);
+            }
+            await updateCdsIndexOrServiceFile(fs, annotation);
+        }
+    } else {
+        const annotationCdsPath = join(
+            annotations.projectPath,
+            annotations.appPath ?? '',
+            annotations.projectName,
+            'annotations.cds'
+        );
+        // write into annotations.cds file
+        fs.write(annotationCdsPath, annotations.cdsFileContents);
+        await updateCdsIndexOrServiceFile(fs, annotations);
+    }
 }
 
 /**

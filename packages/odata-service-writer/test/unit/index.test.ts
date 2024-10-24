@@ -166,6 +166,38 @@ describe('generate', () => {
             );
         });
 
+        it('Valid OData V2 service with multiple annotations', async () => {
+            const config = {
+                ...commonConfig,
+                version: OdataVersion.v2,
+                annotations: [
+                    {
+                        technicalName: 'TEST_ME',
+                        xml: '<HELLO WORLD />'
+                    },
+                    {
+                        technicalName: 'TEST_ME_TWO',
+                        xml: '<HELLO WORLD TWO />'
+                    }
+                ]
+            };
+            await generate(testDir, config as OdataService, fs);
+
+            // verify updated manifest.json
+            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
+            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+            expect(manifest['sap.app'].dataSources[config.annotations[0].technicalName]).toBeDefined();
+            expect(manifest['sap.app'].dataSources[config.annotations[1].technicalName]).toBeDefined();
+            // verify local copy of metadata
+            expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
+            expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations[0].technicalName}.xml`))).toBe(
+                config.annotations[0].xml
+            );
+            expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations[1].technicalName}.xml`))).toBe(
+                config.annotations[1].xml
+            );
+        });
+
         it('Valid OData V4 service', async () => {
             const config = {
                 ...commonConfig,
