@@ -24,8 +24,7 @@ export abstract class TableQuickActionDefinitionBase {
     constructor(
         public readonly type: string,
         protected readonly defaultTextKey: string,
-        protected readonly context: QuickActionContext,
-        protected includeServiceAction?: boolean
+        protected readonly context: QuickActionContext
     ) {}
 
     async initialize(): Promise<void> {
@@ -38,18 +37,15 @@ export abstract class TableQuickActionDefinitionBase {
                 continue;
             }
 
-            // add action id to the table map, if the service actions are needed.
-            if (this.includeServiceAction) {
-                const actions = await this.context.actionService.get(smartTable.getId());
-                const changeColumnAction = actions.find((action) => action.id === ACTION_ID);
-                if (changeColumnAction) {
-                    this.children.push({
-                        label: `'${(smartTable as Table).getHeader()}' table`,
-                        children: []
-                    });
-                    this.tableMap[`${this.children.length - 1}`] = index;
-                    index++;
-                }
+            const actions = await this.context.actionService.get(smartTable.getId());
+            const changeColumnAction = actions.find((action) => action.id === ACTION_ID);
+            if (changeColumnAction) {
+                this.children.push({
+                    label: `'${(smartTable as Table).getHeader()}' table`,
+                    children: []
+                });
+                this.tableMap[`${this.children.length - 1}`] = index;
+                index++;
             }
         }
 

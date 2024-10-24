@@ -15,7 +15,7 @@ const TOOLBAR_ACTION = 'sap.ui.mdc.ActionToolbar';
  */
 export class AddTableActionQuickAction extends TableQuickActionDefinitionBase implements NestedQuickActionDefinition {
     constructor(context: QuickActionContext) {
-        super(CREATE_TABLE_ACTION, 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context, true);
+        super(CREATE_TABLE_ACTION, 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context);
     }
 
     async execute(path: string): Promise<FlexCommand[]> {

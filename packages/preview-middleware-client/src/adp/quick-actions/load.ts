@@ -21,7 +21,9 @@ export async function loadDefinitions(appType: ApplicationType): Promise<QuickAc
     if (appType === 'fe-v4') {
         const FEV4QuickActionRegistry = (await import('open/ux/preview/client/adp/quick-actions/fe-v4/registry'))
             .default;
-        return [new FEV4QuickActionRegistry()];
+        const ObjFEV4QuickActionRegistry = new FEV4QuickActionRegistry();
+        await ObjFEV4QuickActionRegistry.initialize();
+        return [ObjFEV4QuickActionRegistry];
     }
     return [];
 }

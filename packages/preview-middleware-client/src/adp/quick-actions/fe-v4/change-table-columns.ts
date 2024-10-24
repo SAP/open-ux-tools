@@ -10,13 +10,15 @@ export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const ACTION_ID = 'CTX_SETTINGS0';
 const CONTROL_TYPE = 'sap.ui.mdc.Table';
 
-
 /**
  * Quick Action for changing table columns.
  */
-export class ChangeTableColumnsQuickAction extends TableQuickActionDefinitionBase implements NestedQuickActionDefinition {
+export class ChangeTableColumnsQuickAction
+    extends TableQuickActionDefinitionBase
+    implements NestedQuickActionDefinition
+{
     constructor(context: QuickActionContext) {
-        super(CHANGE_TABLE_COLUMNS, 'V4_QUICK_ACTION_CHANGE_TABLE_COLUMNS', context, true);
+        super(CHANGE_TABLE_COLUMNS, 'V4_QUICK_ACTION_CHANGE_TABLE_COLUMNS', context);
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
