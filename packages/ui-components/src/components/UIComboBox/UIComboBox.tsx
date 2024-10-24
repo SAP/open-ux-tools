@@ -66,6 +66,13 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     isForceEnabled?: boolean;
     readOnly?: boolean;
     calloutCollisionTransformation?: boolean;
+    /**
+     * Determines whether the `key` property should be considered during search.
+     * By default, only the `text` property of an option is considered.
+     *
+     * @default false
+     */
+    searchByKeyEnabled?: boolean;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -174,7 +181,11 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 isGroupVisible = false;
             } else {
                 // Handle selectable item
-                const isHidden = option.text.toLowerCase().indexOf(this.query) === -1;
+                let isHidden = !option.text.toLowerCase().includes(this.query);
+                // Consider 'key' of option if property 'searchByKeyEnabled' is enabled
+                if (this.props.searchByKeyEnabled && isHidden) {
+                    isHidden = !option.key.toString().toLowerCase().includes(this.query);
+                }
                 option.hidden = isHidden;
                 if (this.isListHidden && !option.hidden) {
                     this.isListHidden = false;
@@ -717,26 +728,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         },
                         onRenderIcon: this.onRenderIcon
                     }}
-                    calloutProps={{
-                        calloutMaxHeight: 200,
-                        popupProps: {
-                            ref: this.menuDomRef
-                        },
-                        className: 'ts-Callout ts-Callout-Dropdown',
-                        styles: {
-                            ...(this.props.useComboBoxAsMenuMinWidth && {
-                                calloutMain: {
-                                    minWidth: this.state.minWidth,
-                                    display: this.state.isListHidden ? 'none' : undefined
-                                }
-                            })
-                        },
-                        ...getCalloutCollisionTransformationProps(
-                            this.calloutCollisionTransform,
-                            this.props.multiSelect,
-                            this.props.calloutCollisionTransformation
-                        )
-                    }}
                     styles={{
                         label: {
                             ...labelGlobalStyle,
@@ -757,6 +748,27 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         errorMessage: [messageInfo.style]
                     }}
                     {...this.props}
+                    calloutProps={{
+                        calloutMaxHeight: 200,
+                        popupProps: {
+                            ref: this.menuDomRef
+                        },
+                        className: 'ts-Callout ts-Callout-Dropdown',
+                        styles: {
+                            ...(this.props.useComboBoxAsMenuMinWidth && {
+                                calloutMain: {
+                                    minWidth: this.state.minWidth,
+                                    display: this.state.isListHidden ? 'none' : undefined
+                                }
+                            })
+                        },
+                        ...getCalloutCollisionTransformationProps(
+                            this.calloutCollisionTransform,
+                            this.props.multiSelect,
+                            this.props.calloutCollisionTransformation
+                        ),
+                        ...this.props.calloutProps
+                    }}
                     {...(this.props.highlight && {
                         onInput: this.onInput,
                         onMenuDismissed: this.reserQuery,

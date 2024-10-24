@@ -1,4 +1,4 @@
-// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
+// Last content update: Mon Oct 21 2024 11:45:53 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -25,6 +25,14 @@ export default {
                 {
                     '$Namespace': 'com.sap.vocabularies.Common.v1',
                     '$Alias': 'Common'
+                }
+            ]
+        },
+        'https://sap.github.io/odata-vocabularies/vocabularies/UI.json': {
+            '$Include': [
+                {
+                    '$Namespace': 'com.sap.vocabularies.UI.v1',
+                    '$Alias': 'UI'
                 }
             ]
         }
@@ -98,6 +106,18 @@ export default {
                     '@Org.OData.Core.V1.Description': 'Open link in the top browsing context'
                 }
             ]
+        },
+        'RowSpanForDuplicateValues': {
+            '$Kind': 'Term',
+            '$Type': 'Org.OData.Core.V1.Tag',
+            '$DefaultValue': true,
+            '$AppliesTo': ['Record'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.RequiresType': 'com.sap.vocabularies.UI.v1.DataFieldAbstract',
+            '@Org.OData.Core.V1.Description':
+                'The annotated data field might use a rowSpan for adjacent duplicate values if used in a table.',
+            '@Org.OData.Core.V1.LongDescription':
+                'In order to achieve a good user experience the respective columns should be sorted.\n            Applicability of this term is governed by [`Validation.ApplicableTerms`](https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Validation.V1.html#ApplicableTerms) annotations.\n          '
         }
     }
 } as CSDL;

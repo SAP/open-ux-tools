@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.2.1
+
+### Patch Changes
+
+-   f626d47: remove @sap/ux-specification from generated apps
+
 ## 1.2.0
 
 ### Minor Changes

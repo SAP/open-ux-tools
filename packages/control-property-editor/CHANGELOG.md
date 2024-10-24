@@ -1,5 +1,35 @@
 # @sap-ux/control-property-editor
 
+## 0.5.21
+
+### Patch Changes
+
+-   bc75111: Upgrade http-proxy-middleware
+
+## 0.5.20
+
+### Patch Changes
+
+-   93ffe8d: Use feature toggles in the control property editor
+
+## 0.5.19
+
+### Patch Changes
+
+-   0135cea: Update filter bars.
+
+## 0.5.18
+
+### Patch Changes
+
+-   0acf383: Added tooltip for value of control id and type and removed controlid popup
+
+## 1.0.0
+
+### Major Changes
+
+-   efea4c1: Added tooltip for value of control id and type and removed controlid popup
+
 ## 0.5.17
 
 ### Patch Changes
