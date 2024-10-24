@@ -1,0 +1,6 @@
+_schema-version: "3.1"
+ID: multiproject
+description: Fiori elements app
+version: 0.0.1
+modules: []
+resources: []
