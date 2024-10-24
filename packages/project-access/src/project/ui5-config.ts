@@ -4,6 +4,9 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '../constants';
 import { fileExists, readFile } from '../file';
 import { readdir } from 'fs';
+import axios from 'axios';
+import yaml from 'js-yaml';
+import Ajv from 'ajv';
 
 /**
  * Get path to webapp.
@@ -54,7 +57,7 @@ export async function readUi5Yaml(projectRoot: string, fileName: string, memFs?:
 export async function getAllUi5YamlFileNames(memFs: Editor, projectRoot: string): Promise<string[]> {
     return new Promise((resolve) => {
         //use 'fs' here directly because we only create a list of file names without any i/o operations
-        readdir(projectRoot, (error, files) => {
+        readdir(projectRoot, async (error, files) => {
             if (error) {
                 throw new Error(`Error reading files from directory '${projectRoot}': ${error}`);
             }
@@ -65,7 +68,10 @@ export async function getAllUi5YamlFileNames(memFs: Editor, projectRoot: string)
                     yamlFileNames.add(file);
                 });
             //add not yet saved .y*ml files from mem-fs as well
-            const memYamlFiles = memFs.dump(projectRoot, '*.yaml|*.yml');
+            const memYamlFiles = memFs.dump(
+                projectRoot,
+                (file) => file.basename.endsWith('.yaml') || file.basename.endsWith('.yml')
+            );
             for (const file in memYamlFiles) {
                 if (memYamlFiles[file].state === 'deleted') {
                     yamlFileNames.delete(file);
@@ -73,8 +79,38 @@ export async function getAllUi5YamlFileNames(memFs: Editor, projectRoot: string)
                 }
                 yamlFileNames.add(file);
             }
-            //todo: schema validation to verify if a yaml file is a valid ui5 configuration yaml
-            resolve(Array.from(yamlFileNames));
+            resolve(await excludeFilesViolatingSchema(memFs, yamlFileNames, projectRoot));
         });
     });
+}
+
+/**
+ * Validates the schema of the yaml files and removes invalid files from the list.
+ *
+ * @param memFs - mem-fs editor instance
+ * @param yamlFileNames - list of yaml file names to be validated
+ * @param projectRoot - path to project root, where ui5 configuration y*ml files are located
+ * @returns {Promise<string[]>} list of valid UI5 configuration yaml file names
+ */
+export async function excludeFilesViolatingSchema(
+    memFs: Editor,
+    yamlFileNames: Set<string>,
+    projectRoot: string
+): Promise<string[]> {
+    const schemaURL = 'https://raw.githubusercontent.com/SAP/ui5-tooling/gh-pages/schema/ui5.yaml.json';
+    const schema = await axios.get(schemaURL).then((response) => response.data);
+    if (!schema) {
+        //todo: log warning / offline scenario
+        return Array.from(yamlFileNames);
+    }
+    const ajv = new Ajv({ strict: false });
+    const validate = ajv.compile(schema);
+    yamlFileNames.forEach((fileName) => {
+        const document = yaml.load(memFs.read(join(projectRoot, fileName)), { filename: fileName });
+        if (!validate(document)) {
+            //todo: log validate.errors
+            yamlFileNames.delete(fileName);
+        }
+    });
+    return Array.from(yamlFileNames);
 }

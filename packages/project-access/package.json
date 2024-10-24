@@ -39,7 +39,10 @@
         "json-parse-even-better-errors": "3.0.2",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "semver": "7.5.4"
+        "semver": "7.5.4",
+        "axios": "1.7.4",
+        "js-yaml": "4.1.0",
+        "ajv": "8.17.1"
     },
     "devDependencies": {
         "@sap-ux/logger": "workspace:*",
@@ -47,6 +50,7 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.5.2",
         "@ui5/manifest": "1.66.0",
-        "vscode-uri": "3.0.7"
+        "vscode-uri": "3.0.7",
+        "@types/js-yaml": "4.0.9"
     }
 }

@@ -1,8 +1,77 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml } from '../../src';
+import axios from 'axios';
+import * as schemaMock from '../test-data/json/schema/ui5.yaml.json';
 
-import { FileName, getWebappPath, readUi5Yaml } from '../../src';
+describe('Test getAllUi5YamlFileNames()', () => {
+    const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');
+
+    test('Read list of only invalid Ui5 yaml files', async () => {
+        const memFs = create(createStorage());
+
+        jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: schemaMock });
+
+        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'custom-webapp-path'))).toMatchInlineSnapshot(
+            `Array []`
+        );
+    });
+
+    test('Read list of Ui5 yaml files, filter out invalid ones', async () => {
+        const memFs = create(createStorage());
+
+        jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: schemaMock });
+
+        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
+            Array [
+              "ui5-custom.yaml",
+            ]
+        `);
+    });
+
+    test('Read list of Ui5 yaml files, filter out invalid ones also from mem-fs', async () => {
+        const memFs = create(createStorage());
+        memFs.write(
+            join(samplesRoot, 'default-with-ui5-yaml', 'ui5-something.yaml'),
+            'resources:\n  configuration:\n    paths:\n      webapp: src/webapp'
+        );
+
+        jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: schemaMock });
+
+        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
+            Array [
+              "ui5-custom.yaml",
+            ]
+        `);
+    });
+
+    test('Read list of Ui5 yaml files, filter out invalid ones but include from mem-fs', async () => {
+        const memFs = create(createStorage());
+
+        const yamlString = `
+            specVersion: '4.0'
+            metadata:
+              name: com.sap.cap.fe.ts.sample
+              allowSapInternal: true
+            type: application
+            framework:
+              name: SAPUI5
+              version: 1.124.0
+            `;
+
+        memFs.write(join(samplesRoot, 'default-with-ui5-yaml', 'ui5-something.yaml'), yamlString);
+
+        jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: schemaMock });
+
+        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
+            Array [
+              "ui5-custom.yaml",
+              "ui5-something.yaml",
+            ]
+        `);
+    });
+});
 
 describe('Test getWebappPath()', () => {
     const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');
