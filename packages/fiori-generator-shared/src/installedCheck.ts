@@ -7,9 +7,9 @@ import { coerce, lt } from 'semver';
  * @param vscode - vscode instance
  * @param extensionId - the id of the extension to find
  * @param minVersion - the minimum version of the specified extension, lower versions will not be returned. Must be a valid SemVer string.
- * @returns
+ * @returns true if the extension is installed and the version is >= minVersion (if provided), false otherwise
  */
-export function isExtensionInstalled(vscode: any, extensionId: string, minVersion?: string) {
+export function isExtensionInstalled(vscode: any, extensionId: string, minVersion?: string): boolean {
     const foundExt = vscode?.extensions?.getExtension(extensionId);
     if (foundExt) {
         const extVersion = coerce(foundExt.packageJSON.version);

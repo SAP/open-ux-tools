@@ -9,6 +9,9 @@ import { getHostEnvironment } from '../environment';
 import osName from 'os-name';
 import { t } from '../i18n';
 
+/**
+ * Helper class for intialising and preparing event data for telemetry.
+ */
 export abstract class TelemetryHelper {
     private static _telemetryData: TelemetryData;
     private static _previousEventTimestamp: number;
