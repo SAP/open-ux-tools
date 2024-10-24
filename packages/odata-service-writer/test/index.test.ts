@@ -1,6 +1,6 @@
 import type { OdataService } from '../src/types';
 import { OdataVersion, ServiceType } from '../src/types';
-import { generate } from '../src';
+import { generate, deleteService } from '../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -88,10 +88,12 @@ describe('ODataService templates', () => {
             ...validServiceConfig,
             version: OdataVersion.v4,
             metadata: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `metadata.xml`), 'utf-8'),
-            annotations: {
-                technicalName: 'sepmra_annotations_tech_name',
-                xml: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `annotations.xml`), 'utf-8')
-            },
+            annotations: [
+                {
+                    technicalName: 'sepmra_annotations_tech_name',
+                    xml: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `annotations.xml`), 'utf-8')
+                }
+            ],
             localAnnotationsName: 'annotations_test'
         };
 
@@ -111,5 +113,43 @@ describe('ODataService templates', () => {
         await generate(testDir, config, fs);
         const packagePath = join(testDir, 'package.json');
         expect(fs.readJSON(packagePath)).toEqual({});
+    });
+
+    it('deleteService: generate valid project with standard valid input and then call delete for service', async () => {
+        const testDir = await createTestDir('odata-service-v2');
+        await generate(testDir, validServiceConfig as OdataService, fs);
+        await deleteService(testDir, 'mainService', 'http://localhost', '/sap/odata/testme', ServiceType.EDMX, fs);
+        expect(fs.dump(testDir)).toMatchSnapshot();
+        // const packagePath = join(testDir, 'package.json');
+        // expect(fs.readJSON(packagePath)).toEqual({
+        //     ui5: {
+        //         dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
+        //     },
+        //     devDependencies: {
+        //         '@sap-ux/ui5-middleware-fe-mockserver': '2',
+        //         '@sap/ux-ui5-tooling': '1'
+        //     },
+        //     scripts: { 'start-mock': 'fiori run --config ./ui5-mock.yaml --open "/"' }
+        // });
+    });
+
+    it('deleteService: generate project with local annotations and then call delete for service', async () => {
+        const serviceConfigWithAnnotations: OdataService = {
+            ...validServiceConfig,
+            version: OdataVersion.v4,
+            metadata: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `metadata.xml`), 'utf-8'),
+            annotations: [
+                {
+                    technicalName: 'sepmra_annotations_tech_name',
+                    xml: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `annotations.xml`), 'utf-8')
+                }
+            ],
+            localAnnotationsName: 'annotations_test'
+        };
+
+        const testDir = await createTestDir('local-annotations');
+        await generate(testDir, serviceConfigWithAnnotations, fs);
+        await deleteService(testDir, 'mainService', 'http://localhost', '/sap/odata/testme', ServiceType.EDMX, fs);
+        expect(fs.dump(testDir)).toMatchSnapshot();
     });
 });

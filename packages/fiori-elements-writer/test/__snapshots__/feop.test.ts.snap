@@ -89,8 +89,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -134,8 +134,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/annotations/annotation.xml
@@ -273,6 +273,10 @@ appDescription=A Fiori application.",
     ></div>
 </body>
 </html>",
+    "state": "modified",
+  },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -3813,8 +3817,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -3874,8 +3878,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/annotations/annotation.xml
@@ -4036,6 +4040,10 @@ appDescription=A Fiori application.",
     ></div>
 </body>
 </html>",
+    "state": "modified",
+  },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {

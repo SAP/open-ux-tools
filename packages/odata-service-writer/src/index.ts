@@ -11,6 +11,7 @@ import { t } from './i18n';
 import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
+import { deleteServiceFromManifest } from './delete';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -19,7 +20,7 @@ import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
  * @param files - list of files that need to exist
  * @param fs - the memfs editor instance
  */
-function ensureExists(basePath: string, files: string[], fs: Editor) {
+function ensureExists(basePath: string, files: string[], fs: Editor): void {
     files.forEach((path) => {
         if (!fs.exists(join(basePath, path))) {
             throw new Error(t('error.requiredProjectFileNotFound', { path }));
@@ -37,8 +38,8 @@ function ensureExists(basePath: string, files: string[], fs: Editor) {
 export async function findProjectFiles(
     basePath: string,
     fs: Editor
-): Promise<{ packageJson?: string; ui5Yaml?: string }> {
-    const files: { packageJson?: string; ui5Yaml?: string } = {};
+): Promise<{ packageJson?: string; ui5Yaml?: string; ui5LocalYaml?: string; ui5MockYaml?: string }> {
+    const files: { packageJson?: string; ui5Yaml?: string; ui5LocalYaml?: string; ui5MockYaml?: string } = {};
     const parts = basePath.split(sep);
 
     while (parts.length > 0 && (!files.packageJson || !files.ui5Yaml)) {
@@ -49,10 +50,98 @@ export async function findProjectFiles(
         if (!files.ui5Yaml && fs.exists(join(path, 'ui5.yaml'))) {
             files.ui5Yaml = join(path, 'ui5.yaml');
         }
+        if (!files.ui5LocalYaml && fs.exists(join(path, 'ui5-local.yaml'))) {
+            files.ui5LocalYaml = join(path, 'ui5-local.yaml');
+        }
+        if (!files.ui5MockYaml && fs.exists(join(path, 'ui5-mock.yaml'))) {
+            files.ui5MockYaml = join(path, 'ui5-mock.yaml');
+        }
         parts.pop();
     }
 
     return files;
+}
+
+/**
+ * Deletes everything from the project related to the service.
+ *
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {string} serviceName - name of the OData service instance
+ * @param {string} serviceUri - Uri of the OData service instance
+ * @param {string} servicePath - path of the OData service instance
+ * @param {ServiceType} serviceType - type of the OData service instance
+ * @param {Editor} [fs] - the memfs editor instance
+ * @throws {Error} - if required UI5 project files are not found
+ * @returns {Promise<Editor>} the updated memfs editor instance
+ */
+async function deleteService(
+    basePath: string,
+    serviceName: string,
+    serviceUri: string,
+    servicePath: string,
+    serviceType: ServiceType,
+    fs?: Editor
+): Promise<Editor> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    const paths = await findProjectFiles(basePath, fs);
+    ensureExists(basePath, ['webapp/manifest.json'], fs);
+    const isServiceTypeEdmx = serviceType === ServiceType.EDMX;
+    // update cds files with annotations only if service type is CDS and annotations are provided
+    if (!isServiceTypeEdmx) {
+        // await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo | CdsAnnotationsInfo[], fs);
+    }
+    // Handle changes after deletion in manifest.json
+    await deleteServiceFromManifest(basePath, serviceName, fs);
+
+    // Delete service from ui5.yaml if it exists
+    let ui5Config: UI5Config | undefined;
+    let ui5MockConfig: UI5Config | undefined;
+    let ui5MockConfigPath: string | undefined;
+    let ui5LocalConfig: UI5Config | undefined;
+    let ui5LocalConfigPath: string | undefined;
+    // Delete entries only for EDMX type services
+    if (isServiceTypeEdmx && paths.ui5Yaml) {
+        // ui5.yaml
+        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+        try {
+            ui5Config.removeBackendFromFioriToolsProxydMiddleware(serviceUri);
+        } catch (error: any) {
+            throw error;
+        }
+        fs.write(paths.ui5Yaml, ui5Config.toString());
+
+        // ui5-local.yaml
+        ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
+        if (fs.exists(ui5LocalConfigPath)) {
+            ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+            try {
+                ui5LocalConfig.removeBackendFromFioriToolsProxydMiddleware(serviceUri);
+            } catch (error: any) {
+                throw error;
+            }
+        }
+
+        // ui5-mock.yaml
+        ui5MockConfigPath = join(dirname(paths.ui5Yaml), 'ui5-mock.yaml');
+        if (fs.exists(ui5MockConfigPath)) {
+            ui5MockConfig = await UI5Config.newInstance(fs.read(ui5MockConfigPath));
+            try {
+                // delete service from mockserver middleware from ui5-mock.yaml
+                ui5MockConfig.deleteServiceFromMockServerMiddleware(servicePath);
+            } catch (error: any) {
+                throw error;
+            }
+            fs.write(ui5MockConfigPath, ui5MockConfig.toString());
+        }
+        // delete service from mockserver middleware from ui5-local.yaml
+        if (ui5LocalConfig) {
+            ui5LocalConfig.deleteServiceFromMockServerMiddleware(servicePath);
+            fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+        }
+    }
+    return fs;
 }
 
 /**
@@ -78,7 +167,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 
     // update cds files with annotations only if service type is CDS and annotations are provided
     if (!isServiceTypeEdmx && service.annotations) {
-        await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
+        await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo | CdsAnnotationsInfo[], fs);
     }
     // manifest.json
     updateManifest(basePath, service, fs, templateRoot);
@@ -88,7 +177,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     let ui5LocalConfig: UI5Config | undefined;
     let ui5LocalConfigPath: string | undefined;
     if (isServiceTypeEdmx && paths.ui5Yaml) {
-        // Dont extend backend middlewares if service type is CDS.
+        // Don't extend backend middlewares if service type is CDS.
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
         try {
             ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
@@ -109,10 +198,21 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
         if (fs.exists(ui5LocalConfigPath)) {
             ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-            ui5LocalConfig.addFioriToolsProxydMiddleware({
-                backend: [service.previewSettings as ProxyBackend],
-                ignoreCertError: service.ignoreCertError
-            });
+            try {
+                ui5LocalConfig.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+            } catch (error: any) {
+                if (
+                    (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) ||
+                    error.message === 'Could not find fiori-tools-proxy'
+                ) {
+                    ui5LocalConfig.addFioriToolsProxydMiddleware({
+                        backend: [service.previewSettings as ProxyBackend],
+                        ignoreCertError: service.ignoreCertError
+                    });
+                } else {
+                    throw error;
+                }
+            }
         }
     }
 
@@ -122,14 +222,16 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
             const webappPath = await getWebappPath(basePath, fs);
+            // Name of the service or default name assigned in enhanceData(service)
+            const serviceName = service.name;
             const config = {
                 webappPath: webappPath,
-                ui5MockYamlConfig: { path: service.path }
+                ui5MockYamlConfig: { serviceName, path: service.path }
             };
             await generateMockserverConfig(basePath, config, fs);
-            // add mockserver middleware to ui5-local.yaml
+            // add or update mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {
-                ui5LocalConfig.addMockServerMiddleware(service.path);
+                ui5LocalConfig.enhanceMockServerMiddleware(serviceName, service.path);
             }
         }
 
@@ -168,4 +270,4 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     return fs;
 }
 
-export { generate, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
+export { generate, deleteService, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };

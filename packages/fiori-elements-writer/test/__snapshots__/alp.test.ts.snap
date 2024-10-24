@@ -92,8 +92,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -137,8 +137,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
@@ -2335,6 +2335,10 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
 </Schema>
 </edmx:DataServices>
 </edmx:Edmx>",
+    "state": "modified",
+  },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -6069,8 +6073,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -6114,8 +6118,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/annotations/annotation.xml
@@ -6242,6 +6246,10 @@ appDescription=A Fiori application.",
     ></div>
 </body>
 </html>",
+    "state": "modified",
+  },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {

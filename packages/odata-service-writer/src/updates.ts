@@ -1,11 +1,12 @@
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import path, { join } from 'path';
+import { join, normalize, posix } from 'path';
 import { t } from './i18n';
 import type { OdataService, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import semVer from 'semver';
 import prettifyXml from 'prettify-xml';
-import { getMinimumUI5Version, type Manifest, hasUI5CliV3 } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
+import { getMinimumUI5Version, hasUI5CliV3 } from '@sap-ux/project-access';
 
 /**
  * Internal function that updates the manifest.json based on the given service configuration.
@@ -15,7 +16,7 @@ import { getMinimumUI5Version, type Manifest, hasUI5CliV3 } from '@sap-ux/projec
  * @param fs - the memfs editor instance
  * @param templateRoot - root folder contain the ejs templates
  */
-export function updateManifest(basePath: string, service: OdataService, fs: Editor, templateRoot: string) {
+export function updateManifest(basePath: string, service: OdataService, fs: Editor, templateRoot: string): void {
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     // Get component app id
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
@@ -30,9 +31,10 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
 
     const manifestJsonExt = fs.read(join(templateRoot, 'extend', `manifest.json`));
     const manifestSettings = Object.assign(service, getModelSettings(getMinimumUI5Version(manifest)));
+    const updatedManifestString = render(manifestJsonExt, manifestSettings, {});
     // If the service object includes ejs options, for example 'client' (see: https://ejs.co/#docs),
     // resulting in unexpected behaviour and problems when webpacking. Passing an empty options object prevents this.
-    fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, manifestSettings, {})));
+    fs.extendJSON(manifestPath, JSON.parse(updatedManifestString));
 }
 
 /**
@@ -46,7 +48,7 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
  */
 async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotationsInfo): Promise<void> {
     const dirPath = join(annotations.projectName, 'annotations');
-    const annotationPath = path.normalize(dirPath).split(/[\\/]/g).join(path.posix.sep);
+    const annotationPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
     const annotationConfig = `\nusing from './${annotationPath}';`;
     // get index and service file paths
     const indexFilePath = join(annotations.projectPath, annotations.appPath ?? '', 'index.cds');
@@ -70,12 +72,25 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
  */
 export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
     // Write annotation xml if annotations are provided and service type is EDMX
-    const annotations = service.annotations as EdmxAnnotationsInfo;
-    if (annotations?.xml) {
-        fs.write(
-            join(basePath, 'webapp', 'localService', `${annotations.technicalName}.xml`),
-            prettifyXml(annotations.xml, { indent: 4 })
-        );
+    if (service.annotations && Array.isArray(service.annotations)) {
+        const annotations = service.annotations as EdmxAnnotationsInfo[];
+        for (const i in annotations) {
+            const annotation = annotations[i];
+            if (annotation?.xml) {
+                fs.write(
+                    join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
+                    prettifyXml(annotation.xml, { indent: 4 })
+                );
+            }
+        }
+    } else {
+        const annotation = service.annotations as EdmxAnnotationsInfo;
+        if (annotation?.xml) {
+            fs.write(
+                join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
+                prettifyXml(annotation.xml, { indent: 4 })
+            );
+        }
     }
 }
 
@@ -88,16 +103,38 @@ export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: O
  * @param {Editor} fs - The memfs editor instance
  * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
  */
-export async function updateCdsFilesWithAnnotations(annotations: CdsAnnotationsInfo, fs: Editor): Promise<void> {
-    const annotationCdsPath = join(
-        annotations.projectPath,
-        annotations.appPath ?? '',
-        annotations.projectName,
-        'annotations.cds'
-    );
-    // write into annotations.cds file
-    fs.write(annotationCdsPath, annotations.cdsFileContents);
-    await updateCdsIndexOrServiceFile(fs, annotations);
+export async function updateCdsFilesWithAnnotations(
+    annotations: CdsAnnotationsInfo | CdsAnnotationsInfo[],
+    fs: Editor
+): Promise<void> {
+    if (Array.isArray(annotations)) {
+        for (const i in annotations) {
+            const annotation = annotations[i];
+            const annotationCdsPath = join(
+                annotation.projectPath,
+                annotation.appPath ?? '',
+                annotation.projectName,
+                'annotations.cds'
+            );
+            // write into annotations.cds file
+            if (fs.exists(annotationCdsPath)) {
+                fs.append(annotationCdsPath, annotation.cdsFileContents);
+            } else {
+                fs.write(annotationCdsPath, annotation.cdsFileContents);
+            }
+            await updateCdsIndexOrServiceFile(fs, annotation);
+        }
+    } else {
+        const annotationCdsPath = join(
+            annotations.projectPath,
+            annotations.appPath ?? '',
+            annotations.projectName,
+            'annotations.cds'
+        );
+        // write into annotations.cds file
+        fs.write(annotationCdsPath, annotations.cdsFileContents);
+        await updateCdsIndexOrServiceFile(fs, annotations);
+    }
 }
 
 /**
@@ -106,7 +143,7 @@ export async function updateCdsFilesWithAnnotations(annotations: CdsAnnotationsI
  * @param minUI5Version - The minimum UI5 version.
  * @returns updated model settings.
  */
-function getModelSettings(minUI5Version: string | undefined) {
+function getModelSettings(minUI5Version: string | undefined): { includeSynchronizationMode: boolean } {
     let includeSynchronizationMode = false;
     if (minUI5Version) {
         includeSynchronizationMode = semVer.satisfies(minUI5Version, '<=1.110');
@@ -120,7 +157,7 @@ function getModelSettings(minUI5Version: string | undefined) {
  * @param fs - the memfs editor instance
  * @param addMockServer true if the mocksever middleware needs to be added as well
  */
-export function updatePackageJson(path: string, fs: Editor, addMockServer: boolean) {
+export function updatePackageJson(path: string, fs: Editor, addMockServer: boolean): void {
     const packageJson = JSON.parse(fs.read(path));
     packageJson.devDependencies = packageJson.devDependencies ?? {};
     if (!hasUI5CliV3(packageJson.devDependencies)) {

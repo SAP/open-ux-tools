@@ -36,10 +36,12 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         url: 'http://example.alp.v2',
         version: OdataVersion.v2,
         metadata: getTestData('sepmra_so_ana_alp_v2', 'metadata'),
-        annotations: {
-            technicalName: 'SEPMRA_PROD_MAN_ANNO_MDL',
-            xml: getTestData('sepmra_so_ana_alp_v2', 'annotations')
-        }
+        annotations: [
+            {
+                technicalName: 'SEPMRA_PROD_MAN_ANNO_MDL',
+                xml: getTestData('sepmra_so_ana_alp_v2', 'annotations')
+            }
+        ]
     };
 
     const alpConfigs: Array<{ name: string; config: FioriElementsApp<ALPSettings> }> = [

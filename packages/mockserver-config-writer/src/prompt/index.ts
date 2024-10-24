@@ -12,11 +12,17 @@ import { t } from '..';
  *
  * @param params - optional parameters used to fill default values
  * @param params.webappPath - optional path to webapp folder, where manifest is
+ * @param params.askForOverwrite - optional, whether to overwrite existing services in mockserver config
  * @param params.fs - optional memfs editor instance
  * @returns - array of questions that serves as input for prompt module
  */
-export function getMockserverConfigQuestions(params?: { webappPath?: string; fs?: Editor }): PromptObject[] {
-    const question: Partial<PromptObject> = {
+export function getMockserverConfigQuestions(params?: {
+    webappPath?: string;
+    askForOverwrite?: boolean;
+    fs?: Editor;
+}): PromptObject[] {
+    const prompts: PromptObject[] = [];
+    const questionPath: Partial<PromptObject> = {
         name: 'path',
         message: t('questions.pathToMock')
     };
@@ -34,11 +40,20 @@ export function getMockserverConfigQuestions(params?: { webappPath?: string; fs?
             });
         }
         if (choices.length > 0) {
-            question.type = 'select';
-            question.choices = choices;
-            question.initial = choices.findIndex((c) => c.value === mainDataSourceUri);
+            questionPath.type = 'select';
+            questionPath.choices = choices;
+            questionPath.initial = choices.findIndex((c) => c.value === mainDataSourceUri);
         }
     }
-    question.type ||= 'text';
-    return [question as PromptObject];
+    questionPath.type ||= 'text';
+    prompts.push(questionPath as PromptObject);
+    if (params?.askForOverwrite) {
+        const questionOverwrite: Partial<PromptObject> = {
+            type: 'confirm',
+            name: 'overwrite',
+            message: t('questions.overwrite')
+        };
+        prompts.push(questionOverwrite as PromptObject);
+    }
+    return prompts;
 }
