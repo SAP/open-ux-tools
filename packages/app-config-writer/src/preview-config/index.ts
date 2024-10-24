@@ -47,21 +47,17 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
  * @param logger logger to report info to the user
  */
 async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+    const message = (filename: string): string =>
+        `Renamed ${filename} to ${filename}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content e.g. to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`;
     const flpSandboxPath = join(await getWebappPath(basePath), 'test', 'flpSandbox.html');
     if (fs.exists(flpSandboxPath)) {
         fs.move(flpSandboxPath, flpSandboxPath.replace('.html', '_old.html'));
-        //todo: add link to migration guide for custom init script
-        logger?.info(
-            'Renamed webapp/test/flpSandbox.html to webapp/test/flpSandbox_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content e.g. to a custom init script of the preview middleware.'
-        );
+        logger?.info(message('webapp/test/flpSandbox.html'));
     }
     const flpSandboxMockserverPath = join(await getWebappPath(basePath), 'test', 'flpSandboxMockserver.html');
     if (fs.exists(flpSandboxMockserverPath)) {
         fs.move(flpSandboxMockserverPath, flpSandboxMockserverPath.replace('.html', '_old.html'));
-        //todo: add link to migration guide for custom init script
-        logger?.info(
-            'Renamed webapp/test/flpSandboxMockserver.html to webapp/test/flpSandboxMockserver_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content e.g. to a custom init script of the preview middleware.'
-        );
+        logger?.info(message('webapp/test/flpSandboxMockserver.html'));
     }
 }
 
