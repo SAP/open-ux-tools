@@ -17,7 +17,6 @@ export function isCli(): boolean {
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
  *
- * @param isYUI - optional property to indicate if the environment is a hosted extension
  * @returns the platform name and technical name
  */
 export function getHostEnvironment(): { name: string; technical: string } {
