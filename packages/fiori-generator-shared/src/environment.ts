@@ -20,8 +20,8 @@ export function isCli(): boolean {
  * @param isYUI - optional property to indicate if the environment is a hosted extension
  * @returns the platform name and technical name
  */
-export function getHostEnvironment(isYUI?: boolean): { name: string; technical: string } {
-    if (isYUI === false || (isYUI === undefined && isCli())) {
+export function getHostEnvironment(): { name: string; technical: string } {
+    if (isCli()) {
         return hostEnvironment.cli;
     }
     return isAppStudio() ? hostEnvironment.bas : hostEnvironment.vscode;

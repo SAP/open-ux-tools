@@ -289,4 +289,19 @@ export class ValidationLink implements IValidationLink {
     }
 }
 
+export const hostEnvironment = {
+    vscode: {
+        name: 'Visual Studio Code',
+        technical: 'VSCode'
+    },
+    bas: {
+        name: 'SAP Business Application Studio',
+        technical: 'SBAS'
+    },
+    cli: {
+        name: 'CLI',
+        technical: 'CLI'
+    }
+};
+
 export const SAP_CLIENT_KEY = 'sap-client';

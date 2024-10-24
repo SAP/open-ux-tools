@@ -3,12 +3,11 @@ import type { FileBrowserQuestion, ListQuestion } from '@sap-ux/inquirer-common'
 import { withCondition } from '@sap-ux/inquirer-common';
 import type { ServiceInstanceInfo } from '@sap/cf-tools';
 import { apiGetInstanceCredentials, cfGetTarget } from '@sap/cf-tools';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { ERROR_TYPE } from '../../../../error-handler/error-handler';
 import { t } from '../../../../i18n';
-import { type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
-import { PromptState, getDefaultChoiceIndex } from '../../../../utils';
+import { hostEnvironment, type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
+import { PromptState, getDefaultChoiceIndex, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';

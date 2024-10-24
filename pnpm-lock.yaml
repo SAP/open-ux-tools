@@ -1900,9 +1900,6 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
-      '@sap-ux/fiori-generator-shared':
-        specifier: workspace:*
-        version: link:../fiori-generator-shared
       '@sap-ux/guided-answers-helper':
         specifier: workspace:*
         version: link:../guided-answers-helper

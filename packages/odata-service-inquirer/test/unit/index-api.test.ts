@@ -1,21 +1,15 @@
 import { ErrorHandler } from '../../src/error-handler/error-handler';
 import { getPrompts } from '../../src/index';
 import * as prompts from '../../src/prompts';
+import * as utils from '../../src/utils';
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
-import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { hostEnvironment } from '../../src/types';
 
 jest.mock('../../src/prompts', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('../../src/prompts')
 }));
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
-}));
-
-const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 
 describe('API tests', () => {
     beforeEach(() => {
@@ -45,7 +39,7 @@ describe('API tests', () => {
     });
 
     test('getPrompts, i18n is loaded', async () => {
-        mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
+        jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         const { prompts: questions } = await getPrompts(undefined, undefined, true, undefined, true);
 
         expect(questions).toMatchInlineSnapshot(`

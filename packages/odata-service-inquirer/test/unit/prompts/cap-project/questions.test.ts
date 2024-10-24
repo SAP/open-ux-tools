@@ -2,9 +2,9 @@ import type { ListQuestion } from 'inquirer';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { getLocalCapProjectPrompts } from '../../../../src/prompts/datasources/cap-project/questions';
 import type { CapService } from '../../../../src/types';
-import { promptNames, type CapServiceChoice } from '../../../../src/types';
+import { promptNames, hostEnvironment, type CapServiceChoice } from '../../../../src/types';
 import { type CapProjectChoice, capInternalPromptNames } from '../../../../src/prompts/datasources/cap-project/types';
-import { PromptState } from '../../../../src/utils';
+import { PromptState, getHostEnvironment } from '../../../../src/utils';
 import {
     enterCapPathChoiceValue,
     getCapServiceChoices as getCapServiceChoicesMock
@@ -13,7 +13,11 @@ import * as capValidators from '../../../../src/prompts/datasources/cap-project/
 import type { CapCustomPaths } from '@sap-ux/project-access';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import { type CdsVersionInfo } from '@sap-ux/project-access';
-import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+
+jest.mock('../../../../src/utils', () => ({
+    ...jest.requireActual('../../../../src/utils'),
+    getHostEnvironment: jest.fn()
+}));
 
 jest.mock('../../../../src/error-handler/error-handler', () => ({
     ...jest.requireActual('../../../../src/error-handler/error-handler'),
@@ -21,13 +25,6 @@ jest.mock('../../../../src/error-handler/error-handler', () => ({
         return 'Any error message';
     })
 }));
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
-}));
-
-const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 
 const mockCapCustomPaths: CapCustomPaths = {
     app: 'app',
@@ -86,7 +83,7 @@ jest.mock('../../../../src/prompts/datasources/cap-project/cap-helpers', () => (
 
 describe('getLocalCapProjectPrompts', () => {
     beforeAll(async () => {
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
     });

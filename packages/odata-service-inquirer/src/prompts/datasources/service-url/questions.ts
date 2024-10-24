@@ -1,12 +1,11 @@
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import { extendWithOptions } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ConfirmQuestion, InputQuestion, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../types';
-import { promptNames } from '../../../types';
-import { PromptState } from '../../../utils';
+import { hostEnvironment, promptNames } from '../../../types';
+import { PromptState, getHostEnvironment } from '../../../utils';
 import { ConnectionValidator } from '../../connectionValidator';
 import LoggerHelper from '../../logger-helper';
 import { serviceUrlInternalPromptNames } from './types';

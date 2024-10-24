@@ -16,11 +16,11 @@ import type { ConnectionValidator } from '../../../../../src/prompts/connectionV
 import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { PromptState } from '../../../../../src/utils';
-import { promptNames } from '../../../../../src/types';
+import * as utils from '../../../../../src/utils';
+import { hostEnvironment, promptNames } from '../../../../../src/types';
 import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import type { ChoiceOptions } from 'inquirer';
-import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 const v2Metadata =
     '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
@@ -58,13 +58,6 @@ jest.mock('../../../../../src/prompts/connectionValidator', () => {
     };
 });
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
-}));
-
-const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
-
 const serviceV4a = {
     id: '/DMO/FLIGHT',
     serviceVersion: '0001',
@@ -101,7 +94,6 @@ describe('questions', () => {
     });
 
     test('should return expected questions', () => {
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const newSystemQuestions = getAbapOnPremQuestions();
         expect(newSystemQuestions).toMatchInlineSnapshot(`
             [
@@ -615,7 +607,7 @@ describe('questions', () => {
     });
 
     test('Should get the service details on CLI using `when` condition(list validators dont run on CLI)', async () => {
-        mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
+        const getHostEnvSpy = jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         const annotations = [
             {
                 Definitions: v2Annotations,
@@ -641,7 +633,7 @@ describe('questions', () => {
         connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
 
         const newSystemQuestions = getAbapOnPremQuestions();
-        expect(mockGetHostEnvironment).toHaveBeenCalled();
+        expect(getHostEnvSpy).toHaveBeenCalled();
         const cliServicePromptName = newSystemQuestions.find(
             (question) => question.name === `abapOnPrem:cliServiceSelection`
         );

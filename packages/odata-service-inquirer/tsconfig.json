@@ -1,49 +1,43 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "src",
-    "src/**/*.json"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist"
-  },
-  "references": [
-    {
-      "path": "../axios-extension"
+    "extends": "../../tsconfig.json",
+    "include": ["src", "src/**/*.json"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    {
-      "path": "../btp-utils"
-    },
-    {
-      "path": "../feature-toggle"
-    },
-    {
-      "path": "../fiori-generator-shared"
-    },
-    {
-      "path": "../guided-answers-helper"
-    },
-    {
-      "path": "../inquirer-common"
-    },
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../odata-service-writer"
-    },
-    {
-      "path": "../project-access"
-    },
-    {
-      "path": "../project-input-validator"
-    },
-    {
-      "path": "../store"
-    },
-    {
-      "path": "../telemetry"
-    }
-  ]
+    "references": [
+        {
+            "path": "../axios-extension"
+        },
+        {
+            "path": "../btp-utils"
+        },
+        {
+            "path": "../feature-toggle"
+        },
+        {
+            "path": "../guided-answers-helper"
+        },
+        {
+            "path": "../inquirer-common"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../odata-service-writer"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../project-input-validator"
+        },
+        {
+            "path": "../store"
+        },
+        {
+            "path": "../telemetry"
+        }
+    ]
 }
