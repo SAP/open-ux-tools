@@ -112,3 +112,23 @@ export interface PackageScriptsOptions {
     /** If true, a script for starting the app without flp will be generated. Defaults to true. */
     generateIndex?: boolean;
 }
+
+export const hostEnvironment = {
+    vscode: {
+        name: 'Visual Studio Code',
+        technical: 'VSCode'
+    },
+    bas: {
+        name: 'SAP Business Application Studio',
+        technical: 'SBAS'
+    },
+    cli: {
+        name: 'CLI',
+        technical: 'CLI'
+    }
+};
+
+export enum ApiHubType {
+    apiHub = 'API_HUB',
+    apiHubEnterprise = 'API_HUB_ENTERPRISE'
+}

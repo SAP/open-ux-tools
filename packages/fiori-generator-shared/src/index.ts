@@ -1,8 +1,11 @@
 export * from './cap';
 export * from './environment';
+export * from './logWrapper';
+export * from './system-utils';
+export * from './telemetry';
 export { getPackageScripts } from './getPackageScripts';
 export { getBootstrapResourceUrls, getDefaultTargetFolder } from './helpers';
 export { generateReadMe } from './read-me';
-export * from './system-utils';
-export { PackageJsonScripts, YeomanEnvironment, VSCodeInstance } from './types';
-export * from './logWrapper';
+export { getHostEnvironment } from './environment';
+export { isExtensionInstalled } from './installedCheck';
+export { PackageJsonScripts, YeomanEnvironment, VSCodeInstance, hostEnvironment } from './types';
