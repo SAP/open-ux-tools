@@ -4,9 +4,8 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '../constants';
 import { fileExists, readFile } from '../file';
 import { readdir } from 'fs';
-import axios from 'axios';
 import yaml from 'js-yaml';
-import Ajv from 'ajv';
+import Ajv, { type Schema } from 'ajv';
 
 /**
  * Get path to webapp.
@@ -97,10 +96,9 @@ export async function excludeFilesViolatingSchema(
     yamlFileNames: Set<string>,
     projectRoot: string
 ): Promise<string[]> {
-    const schemaURL = 'https://raw.githubusercontent.com/SAP/ui5-tooling/gh-pages/schema/ui5.yaml.json';
-    const schema = await axios.get(schemaURL).then((response) => response.data);
+    const schema: Schema = JSON.parse(memFs.read(join(__dirname, '..', '..', 'dist', 'schema', 'ui5.yaml.json')));
     if (!schema) {
-        //todo: log warning / offline scenario
+        //todo: throw error or continue without schema validation?
         return Array.from(yamlFileNames);
     }
     const ajv = new Ajv({ strict: false });

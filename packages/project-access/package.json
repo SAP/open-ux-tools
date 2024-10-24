@@ -14,7 +14,7 @@
     "private": false,
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --build",
+        "build": "tsc --build && node src/utils/download-ui5yaml-schema.js",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",

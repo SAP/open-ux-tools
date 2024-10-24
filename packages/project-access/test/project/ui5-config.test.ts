@@ -2,16 +2,12 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml } from '../../src';
-import axios from 'axios';
-import * as schemaMock from '../test-data/json/schema/ui5.yaml.json';
 
 describe('Test getAllUi5YamlFileNames()', () => {
     const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');
 
     test('Read list of only invalid Ui5 yaml files', async () => {
         const memFs = create(createStorage());
-
-        jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: schemaMock });
 
         expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'custom-webapp-path'))).toMatchInlineSnapshot(
             `Array []`
@@ -20,8 +16,6 @@ describe('Test getAllUi5YamlFileNames()', () => {
 
     test('Read list of Ui5 yaml files, filter out invalid ones', async () => {
         const memFs = create(createStorage());
-
-        jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: schemaMock });
 
         expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
             Array [
@@ -36,8 +30,6 @@ describe('Test getAllUi5YamlFileNames()', () => {
             join(samplesRoot, 'default-with-ui5-yaml', 'ui5-something.yaml'),
             'resources:\n  configuration:\n    paths:\n      webapp: src/webapp'
         );
-
-        jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: schemaMock });
 
         expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
             Array [
@@ -61,8 +53,6 @@ describe('Test getAllUi5YamlFileNames()', () => {
             `;
 
         memFs.write(join(samplesRoot, 'default-with-ui5-yaml', 'ui5-something.yaml'), yamlString);
-
-        jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: schemaMock });
 
         expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
             Array [
