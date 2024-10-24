@@ -41,7 +41,7 @@
         "lodash": "4.17.21",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "read-pkg-up": "7.0.1"
+        "read-package-up": "11.0.0"
     },
     "devDependencies": {
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
