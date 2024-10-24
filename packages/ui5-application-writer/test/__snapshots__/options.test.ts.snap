@@ -41,7 +41,6 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"latest\\",
     \\"eslint\\": \\"8.57.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
     \\"@sapui5/ts-types\\": \\"~1.76.0\\",
@@ -315,8 +314,7 @@ archive.zip
   \\"dependencies\\": {},
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
-    \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\"
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
@@ -1048,7 +1046,6 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
@@ -1144,7 +1141,6 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
