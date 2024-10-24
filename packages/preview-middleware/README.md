@@ -12,7 +12,7 @@ When this middleware is used together with the `reload-middleware`, then the ord
   afterMiddleware: reload-middleware
 ```
 
-## Configuration Options
+## [Configuration Options](#configuration-options)
 | Option                 | Type      | Default Value    | Description                                                                                                                                                                                                                                               |
 | ---------------------- | --------- | ---------------- |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `flp`                  |           |                  | Optional configuration object for the local Fiori launchpad                                                                                                                                                                                               |
@@ -32,7 +32,7 @@ When this middleware is used together with the `reload-middleware`, then the ord
 | `test`                 | `array`   | `undefined`      | Optional list of configurations for automated testing.                                                                                                                                                                                                    |
 | `debug`                | `boolean` | `false`          | Enables debug output                                                                                                                                                                                                                                      |
 
-### `flp.apps`
+### [`flp.apps`](#configuration-option-flpapps)
 Array of additional application configurations:
 | Option                   | Type     | Default Value  | Description                                                                                                   |
 | ------------------------ | -------- | -------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -42,7 +42,7 @@ Array of additional application configurations:
 | `intent.object`          | `string` | `(calculated)` | Optional intent object, if it is not provided then it will be calculated based on the application id          |
 | `intent.action`          | `string` | `preview`      | Optional intent action                                                                                        |
 
-### `adp.target`
+### [`adp.target`](#configuration-option-adptarget)
 | Option        | Type                           | Description                                                                                                                                     |
 | ------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `url`         | `string` mandatory (local)     | Mandatory URL pointing to the backend system. *Not required if destination is provided and the proxy is running SAP Business Application Studio |
@@ -50,13 +50,13 @@ Array of additional application configurations:
 | `client`      | `string` optional              | sap-client parameter                                                                                                                            |
 | `scp`         | `boolean` optional             | If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP                                            |
 
-### `rta.editors`
+### [`rta.editors`](#configuration-option-rtaeditors)
 | Option          | Type               | Description                                                                                    |
 | --------------- | -------------------| -----------------------------------------------------------------------------------------------|
 | `path`          | `string` mandatory | The mount point to be used for the editor.                                                     |
 | `developerMode` | `boolean` optional | Enables/disables the runtime adaptation developer mode (only supported for adaptation projects) |
 
-### `test`
+### [`test`](#configuration-option-test)
 | Option          | Type               | Description                                                                                                                                                                                                                                                                                                             |
 | --------------- | -------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `framework`     | `string` mandatory | Currently `OPA5`, `QUnit` (only QUnit 2.3.2 provided as third-party module via [OpenUI5](https://github.com/SAP/openui5/blob/master/THIRDPARTY.txt)/SAPUI5) and `Testsuite` are supported. `Testsuite` will generate a testsuite for all configured frameworks that can be be used with a test runner (like e.g. karma) |
@@ -65,11 +65,11 @@ Array of additional application configurations:
 | `pattern`       | `string` optional  | Optional glob pattern to find the tests. By default `/test/**/*Journey.*` is used for `OPA5` and `/test/**/*Test.*` is used for `QUnit` (n.a. for `Testsuite`)                                                                                                                                                          |
 
 
-## Usage
+## [Usage](#usage)
 The middleware can be used without configuration. However, since the middleware intercepts a few requests that might otherwise be handled by a different middleware, it is strongly recommended to run other file serving middlewares after the `preview-middleware` e.g. `backend-proxy-middleware` and `ui5-proxy-middleware` (and the corresponding middlewares in the `@sap/ux-ui5-tooling`).
 Example: [./test/fixtures/simple-app/ui5.yaml](./test/fixtures/simple-app/ui5.yaml) 
 
-### Minimal Configuration
+### [Minimal Configuration](#minimal-configuration)
 With no configuration provided, the local FLP will be available at `/test/flp.html` and the log level is `info`.
 ```Yaml
 server:
@@ -78,7 +78,7 @@ server:
     afterMiddleware: compression
 ```
 
-### Different Path and Debugging enabled
+### [Different Path and Debugging enabled](#different-path-and-debugging-enabled)
 With this configuration, the local FLP will be available at `/test/myFLP.html` and the log level is `debug`.
 ```Yaml
 server:
@@ -91,7 +91,7 @@ server:
       debug: true
 ```
 
-### Additional Applications
+### [Additional Applications](#additional-applications)
 If you want to test cross application navigation, then you can add additional applications into the local FLP.
 With this configuration, an application that is locally available in `../local-folder` will be available at `/apps/other-app` and will also be added as tile to the local FLP as well as one of the UI5 sample apps will be bound to the intent `TheOther-preview`.
 ```Yaml
@@ -113,7 +113,7 @@ server:
             action: preview
 ```
 
-### Runtime Adaptation Support
+### [Runtime Adaptation Support](#runtime-adaptation-support)
 If you want to create variants as part of your application, then you can create an additional mount point allowing to create and edit variants.
 ```Yaml
 server:
@@ -131,7 +131,7 @@ This mount path can be used with a run script that looks as follows.
 "start-variants-management": "ui5 serve --open \"test/variant-editor.html.html#app-preview\""
 ```
 
-### Test Suites
+### [Test Suites](#test-suites)
 If you want to also generate generic test suites and test runners for QUnit or OPA5 tests then you can use the following minimum configurations
 ```Yaml
 server:
@@ -145,7 +145,7 @@ server:
         - framework: OPA5
 ```
 
-### Adaptation Project
+### [Adaptation Project](#adaptation-project)
 If you want to use the middleware in an adaption project, the additional `adp` object needs to be configured. This example would preview a local adaptation project merged with its reference application from the target system at `http://sap.example` and it will ignore certification validation errors. For adaptation projects, it is also recommended to add the `rta` configuration allowing to edit the project.
 ```Yaml
 server:
@@ -170,7 +170,7 @@ When the middleware is used in an adaptation project together with a middleware 
   afterMiddleware: preview-middleware
 ```
 
-### Programmatic Usage
+### [Programmatic Usage](#programmatic-usage)
 Alternatively you can use the underlying middleware fuction programmatically, e.g. for the case when you want to incorporate the `preview-middleware` functionality in your own middleware.
 
 ```typescript
