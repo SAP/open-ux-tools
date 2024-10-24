@@ -40,6 +40,10 @@ describe('environment utils', () => {
         expect(isCli()).toBe(false);
     });
 
+    it('should return correct host environment - cli (YUI is false)', () => {
+        expect(getHostEnvironment(false)).toEqual(hostEnvironment.cli);
+    });
+
     it('should return correct host environment - cli', () => {
         mockCli(true);
         expect(getHostEnvironment()).toEqual(hostEnvironment.cli);
@@ -55,5 +59,10 @@ describe('environment utils', () => {
         mockCli(false);
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValueOnce(false);
         expect(getHostEnvironment()).toEqual(hostEnvironment.vscode);
+    });
+
+    it('should return correct host environment - vscode (YUI is true)', () => {
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValueOnce(false);
+        expect(getHostEnvironment(true)).toEqual(hostEnvironment.vscode);
     });
 });
