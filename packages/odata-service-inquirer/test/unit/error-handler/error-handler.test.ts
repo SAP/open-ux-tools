@@ -93,9 +93,17 @@ describe('Test ErrorHandler', () => {
         expect(errorHandler.getErrorMsg({ response: { data: { error: { code: '' } }, status: '404' } })).toEqual(
             t('errors.urlNotFound')
         );
-        // code: 502
-        expect(errorHandler.getErrorMsg({ response: { data: { error: { code: '502' } } } })).toContain(
-            t('errors.badGateway')
+        // status: 502
+        expect(
+            errorHandler.getErrorMsg({
+                message: 'Request failed with status code 502',
+                response: { data: { error: { code: '502' } } }
+            })
+        ).toContain(
+            t('errors.serverReturnedAnError', {
+                errorDesc: 'Bad gateway:',
+                errorMsg: 'Request failed with status code 502'
+            })
         );
 
         // code: 500
@@ -104,7 +112,9 @@ describe('Test ErrorHandler', () => {
             response: { data: '' },
             code: '500'
         };
-        expect(errorHandler.getErrorMsg(err)).toContain(t('errors.internalServerError', { error: err?.message }));
+        expect(errorHandler.getErrorMsg(err)).toContain(
+            t('errors.serverReturnedAnError', { errorDesc: 'Internal server error:', errorMsg: err?.message })
+        );
 
         // TypeError
         expect(errorHandler.getErrorMsg({ name: 'TypeError', message: 'TypeError found' })).toEqual(
@@ -119,7 +129,7 @@ describe('Test ErrorHandler', () => {
         } as Partial<ToolsSuiteTelemetryClient> as ToolsSuiteTelemetryClient;
         utils.setTelemetryClient(mockTelemClient);
 
-        expect(errorHandler.getValidationErrorHelp()).toEqual('');
+        expect(errorHandler.getValidationErrorHelp()).toEqual(undefined); // No error provided and no previous error state to use
         expect(errorHandler.getValidationErrorHelp(ERROR_TYPE.SERVICES_UNAVAILABLE)).toEqual(
             t('errors.servicesUnavailable')
         );

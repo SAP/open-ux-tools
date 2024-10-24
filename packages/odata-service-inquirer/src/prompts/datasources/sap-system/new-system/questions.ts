@@ -1,47 +1,27 @@
 /**
  * New system prompting questions for re-use in multiple sap-system datasource prompt sets.
  */
-import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import { Severity } from '@sap-devx/yeoman-ui-types';
-import type { CatalogService, V2CatalogService } from '@sap-ux/axios-extension';
-import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
-import { searchChoices, withCondition, type ListQuestion, type InputQuestion } from '@sap-ux/inquirer-common';
+import { withCondition, type InputQuestion, type ListQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
-import type { Answers, ListChoiceOptions, Question } from 'inquirer';
+import type { Answers, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { OdataServiceAnswers, OdataServicePromptOptions, SapSystemType, ValidationLink } from '../../../../types';
-import { hostEnvironment, promptNames } from '../../../../types';
-import { PromptState, convertODataVersionType, getDefaultChoiceIndex, getHostEnvironment } from '../../../../utils';
+import type { OdataServicePromptOptions, SapSystemType } from '../../../../types';
+import { promptNames } from '../../../../types';
+import { PromptState, convertODataVersionType } from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
+import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions';
+import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
 import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
-import { getServiceChoices, getServiceDetails, getServiceType } from './service-helper';
-import { type ServiceAnswer, newSystemPromptNames } from './types';
-import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
-import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions';
-import LoggerHelper from '../../../logger-helper';
-import { errorHandler } from '../../../prompt-helpers';
-import { ERROR_TYPE, ErrorHandler } from '../../../../error-handler/error-handler';
+import { newSystemPromptNames } from './types';
 
-// New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
-// since it will be used as a new system value in the system selection prompt.
-export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^';
-const cliServicePromptName = 'cliServiceSelection';
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
  */
 export interface NewSystemAnswers {
     [newSystemPromptNames.newSystemType]?: SapSystemType;
     [promptNames.userSystemName]?: string;
-}
-
-const systemSelectionPromptNames = {
-    system: 'system'
-} as const;
-
-export interface SystemSelectionAnswer extends OdataServiceAnswers {
-    [systemSelectionPromptNames.system]?: string;
 }
 
 /**
@@ -127,11 +107,15 @@ export function getSystemUrlQuestion<T extends Answers>(
                 isSystem: true,
                 odataVersion: convertODataVersionType(requiredOdataVersion)
             });
-            // If basic auth not required we should have an active connection
-            if (valResult === true && !connectValidator.validity.authRequired && connectValidator.serviceProvider) {
-                PromptState.odataService.connectedSystem = {
-                    serviceProvider: connectValidator.serviceProvider
-                };
+            // If basic auth not required we should have an active connection (could be a re-entrance ticket supported system url)
+            if (valResult === true) {
+                if (!connectValidator.validity.authRequired && connectValidator.serviceProvider) {
+                    PromptState.odataService.connectedSystem = {
+                        serviceProvider: connectValidator.serviceProvider
+                    };
+                } else {
+                    connectValidator.systemAuthType = 'basic';
+                }
             }
             return valResult;
         }
@@ -205,6 +189,7 @@ export function getUserSystemNameQuestion(
                         refreshToken: connectValidator.refreshToken
                     });
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
+                    PromptState.odataService.connectedSystem.backendSystem.newOrUpdated = true;
                 }
             }
             return isValid;
@@ -212,167 +197,4 @@ export function getUserSystemNameQuestion(
     } as InputQuestion<Partial<NewSystemAnswers>>;
 
     return newSystemNamePrompt;
-}
-
-/**
- * Create a value for the service selection prompt message, which may include thge active connected user name.
- *
- * @param username The connected user name
- * @returns The service selection prompt message
- */
-export function getSelectedServiceLabel(username: string | undefined): string {
-    let message = t('prompts.systemService.message');
-    if (username) {
-        message = message.concat(` ${t('texts.forUserName', { username })}`);
-    }
-    return message;
-}
-
-/**
- * Get the service selection prompt for a system connection. The service selection prompt is used to select a service from the system catalog.
- *
- * @param connectValidator A reference to the active connection validator, used to validate the service selection and retrieve service details.
- * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
- *     This is used to avoid conflicts with other prompts of the same types.
- * @param promptOptions Options for the service selection prompt see {@link OdataServicePromptOptions}
- * @returns the service selection prompt
- */
-export function getSystemServiceQuestion<T extends Answers>(
-    connectValidator: ConnectionValidator,
-    promptNamespace: string,
-    promptOptions?: OdataServicePromptOptions
-): Question<T>[] {
-    let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
-    // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
-    let previousSystemUrl: string | undefined;
-    let previousClient: string | undefined;
-    let previousService: ServiceAnswer | undefined;
-    const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
-
-    const newSystemServiceQuestion = {
-        when: (): boolean =>
-            connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
-        name: `${promptNamespace}:${promptNames.serviceSelection}`,
-        type: promptOptions?.serviceSelection?.useAutoComplete ? 'autocomplete' : 'list',
-        message: () => getSelectedServiceLabel(connectValidator.connectedUserName),
-        guiOptions: {
-            breadcrumb: t('prompts.systemService.breadcrumb'),
-            mandatory: true,
-            applyDefaultWhenDirty: true
-        },
-        source: (prevAnswers: T, input: string) => searchChoices(input, serviceChoices as ListChoiceOptions[]),
-        choices: async () => {
-            if (
-                serviceChoices.length === 0 ||
-                previousSystemUrl !== connectValidator.validatedUrl ||
-                previousClient !== connectValidator.validatedClient
-            ) {
-                let catalogs: CatalogService[] = [];
-                if (requiredOdataVersion && connectValidator.catalogs[requiredOdataVersion]) {
-                    catalogs.push(connectValidator.catalogs[requiredOdataVersion]!);
-                } else {
-                    catalogs = Object.values(connectValidator.catalogs).filter(
-                        (cat) => cat !== undefined
-                    ) as CatalogService[];
-                }
-                previousSystemUrl = connectValidator.validatedUrl;
-                previousClient = connectValidator.validatedClient;
-                serviceChoices = await getServiceChoices(catalogs);
-            }
-            return serviceChoices;
-        },
-        additionalMessages: (selectedService: ServiceAnswer) =>
-            getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, requiredOdataVersion),
-        default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
-        // Warning: only executes in YUI not cli
-        validate: async (service: ServiceAnswer): Promise<string | boolean | ValidationLink> => {
-            if (!connectValidator.validatedUrl) {
-                return false;
-            }
-            // if no choices are available and an error is present, return the error message
-            if (serviceChoices.length === 0 && errorHandler.hasError()) {
-                return ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE) ?? false;
-            }
-            // Dont re-request the same service details
-            if (service && previousService?.servicePath !== service.servicePath) {
-                previousService = service;
-                return getServiceDetails(service, connectValidator);
-            }
-            return true;
-        }
-    } as ListQuestion<T>;
-
-    const questions: Question<T>[] = [newSystemServiceQuestion];
-
-    // Only for CLI use as `list` prompt validation does not run on CLI
-    if (getHostEnvironment() === hostEnvironment.cli) {
-        questions.push({
-            when: async (answers: Answers): Promise<boolean> => {
-                const selectedService = answers?.[`${promptNamespace}:${promptNames.serviceSelection}`];
-                if (selectedService && connectValidator.validatedUrl) {
-                    const result = await getServiceDetails(selectedService, connectValidator);
-                    if (typeof result === 'string') {
-                        LoggerHelper.logger.error(result);
-                        throw new Error(result);
-                    }
-                }
-                if (serviceChoices.length === 0 && errorHandler.hasError()) {
-                    const noServicesError = ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE)!.toString();
-                    throw new Error(noServicesError);
-                }
-                return false;
-            },
-            name: `${promptNamespace}:${cliServicePromptName}`
-        } as Question);
-    }
-    return questions;
-}
-
-/**
- * Get the service selection prompt additional message. This prompt will make an additional call to the system backend
- * to retrieve the service type and display a warning message if the service type is not UI.
- *
- * @param serviceChoices a list of service choices
- * @param selectedService the selected service
- * @param connectValidator the connection validator
- * @param requiredOdataVersion the required OData version for the service
- * @returns the service selection prompt additional message
- */
-async function getSelectedServiceMessage(
-    serviceChoices: ListChoiceOptions<ServiceAnswer>[],
-    selectedService: ServiceAnswer,
-    connectValidator: ConnectionValidator,
-    requiredOdataVersion?: OdataVersion
-): Promise<IMessageSeverity | undefined> {
-    if (serviceChoices?.length === 0) {
-        if (requiredOdataVersion) {
-            return {
-                message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
-                    odataVersion: requiredOdataVersion
-                }),
-                severity: Severity.warning
-            };
-        } else {
-            return {
-                message: t('prompts.warnings.noServicesAvailable'),
-                severity: Severity.warning
-            };
-        }
-    }
-    if (selectedService) {
-        let serviceType = selectedService.serviceType;
-        if (selectedService.serviceODataVersion === ODataVersion.v2) {
-            serviceType = await getServiceType(
-                selectedService.servicePath,
-                selectedService.serviceType,
-                connectValidator.catalogs[ODataVersion.v2] as V2CatalogService
-            );
-        }
-        if (serviceType && serviceType !== ServiceType.UI) {
-            return {
-                message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
-                severity: Severity.warning
-            };
-        }
-    }
 }

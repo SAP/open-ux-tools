@@ -18,9 +18,9 @@ import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { PromptState } from '../../../../../src/utils';
 import * as utils from '../../../../../src/utils';
 import { hostEnvironment, promptNames } from '../../../../../src/types';
-import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import type { ChoiceOptions } from 'inquirer';
+import { type ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection/types';
 
 const v2Metadata =
     '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
@@ -31,7 +31,7 @@ const v2Annotations = `<?xml version="1.0" encoding="utf-8"?>
             </edmx:Reference>
         </edmx:Edmx>`;
 const validateUrlMock = jest.fn().mockResolvedValue(true);
-const validateAuthMock = jest.fn().mockResolvedValue(true);
+const validateAuthMock = jest.fn().mockResolvedValue({ valResult: true });
 const isAuthRequiredMock = jest.fn().mockResolvedValue(false);
 const serviceProviderMock = {} as Partial<ServiceProvider>;
 
@@ -50,7 +50,8 @@ const connectionValidatorMock = {
     validateAuth: validateAuthMock,
     isAuthRequired: isAuthRequiredMock,
     serviceProvider: serviceProviderMock,
-    catalogs
+    catalogs,
+    systemAuthType: 'basic'
 };
 jest.mock('../../../../../src/prompts/connectionValidator', () => {
     return {
@@ -123,7 +124,7 @@ describe('questions', () => {
                   "mandatory": true,
                 },
                 "message": "Username",
-                "name": "abapSystemUsername",
+                "name": "abapOnPrem:systemUsername",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
@@ -131,12 +132,13 @@ describe('questions', () => {
               {
                 "default": "",
                 "guiOptions": {
+                  "applyDefaultWhenDirty": true,
                   "mandatory": true,
                 },
                 "guiType": "login",
                 "mask": "*",
                 "message": "Password",
-                "name": "abapSystemPassword",
+                "name": "abapOnPrem:systemPassword",
                 "type": "password",
                 "validate": [Function],
                 "when": [Function],
@@ -215,10 +217,11 @@ describe('questions', () => {
             authRequired: true,
             reachable: true
         };
+        connectionValidatorMock.systemAuthType = 'basic';
         connectionValidatorMock.isAuthRequired = jest.fn().mockResolvedValue(true);
         const newSystemQuestions = getAbapOnPremQuestions();
-        const userNamePrompt = newSystemQuestions.find((question) => question.name === 'abapSystemUsername');
-        const passwordPrompt = newSystemQuestions.find((question) => question.name === 'abapSystemPassword');
+        const userNamePrompt = newSystemQuestions.find((question) => question.name === 'abapOnPrem:systemUsername');
+        const passwordPrompt = newSystemQuestions.find((question) => question.name === 'abapOnPrem:systemPassword');
 
         expect(await (userNamePrompt?.when as Function)()).toBe(true);
         expect(await (passwordPrompt?.when as Function)()).toBe(true);
@@ -252,11 +255,13 @@ describe('questions', () => {
             authRequired: true,
             reachable: true
         };
+        const abapOnPremSystemUsername = 'abapOnPrem:systemUsername';
+        const abapOnPremSystemPassword = 'abapOnPrem:systemPassword';
 
-        connectionValidatorMock.validateAuth = jest.fn().mockResolvedValue(true);
+        connectionValidatorMock.validateAuth = jest.fn().mockResolvedValue({ valResult: true });
         const newSystemQuestions = getAbapOnPremQuestions();
-        const userNamePrompt = newSystemQuestions.find((question) => question.name === 'abapSystemUsername');
-        const passwordPrompt = newSystemQuestions.find((question) => question.name === 'abapSystemPassword');
+        const userNamePrompt = newSystemQuestions.find((question) => question.name === abapOnPremSystemUsername);
+        const passwordPrompt = newSystemQuestions.find((question) => question.name === abapOnPremSystemPassword);
 
         // Prompt state should not be updated with the connected system until the connection is validated
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBe(undefined);
@@ -271,13 +276,19 @@ describe('questions', () => {
         const abapSystemUsername = 'user01';
         const password = 'pword01';
 
-        expect(await (passwordPrompt?.validate as Function)('', { abapSystemUsername })).toBe(false);
-        expect(await (passwordPrompt?.validate as Function)(password, { abapSystemUsername: '' })).toBe(false);
-        expect(await (passwordPrompt?.validate as Function)(password, { abapSystemUsername })).toBe(true);
+        expect(
+            await (passwordPrompt?.validate as Function)('', { [abapOnPremSystemUsername]: abapSystemUsername })
+        ).toBe(false);
+        expect(await (passwordPrompt?.validate as Function)(password, { [abapOnPremSystemUsername]: '' })).toBe(false);
+        expect(
+            await (passwordPrompt?.validate as Function)(password, { [abapOnPremSystemUsername]: abapSystemUsername })
+        ).toBe(true);
         // Should have attempted to validate since required above conditions are met
         expect(connectionValidatorMock.validateAuth).toHaveBeenCalled();
 
-        expect(await (passwordPrompt?.validate as Function)('pword01', { systemUrl, abapSystemUsername })).toBe(true);
+        expect(
+            await (passwordPrompt?.validate as Function)('pword01', { [abapOnPremSystemUsername]: abapSystemUsername })
+        ).toBe(true);
         expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(systemUrl, abapSystemUsername, password, {
             isSystem: true,
             sapClient: undefined

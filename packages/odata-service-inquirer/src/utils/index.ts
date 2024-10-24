@@ -1,15 +1,15 @@
+import { ODataVersion } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { TelemetryEvent, TelemetryProperties, ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { SampleRate } from '@sap-ux/telemetry';
+import { XMLParser } from 'fast-xml-parser';
+import type { ListChoiceOptions } from 'inquirer';
 import osName from 'os-name';
+import { t } from '../i18n';
+import LoggerHelper from '../prompts/logger-helper';
 import { hostEnvironment } from '../types';
 import { PromptState } from './prompt-state';
-import { XMLParser } from 'fast-xml-parser';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
-import LoggerHelper from '../prompts/logger-helper';
-import { t } from '../i18n';
-import { ODataVersion } from '@sap-ux/axios-extension';
-import type { ListChoiceOptions } from 'inquirer';
 
 const osVersionName = osName();
 
