@@ -185,3 +185,36 @@ return flp.router
 - `rootProject` - [Reader](https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_AbstractReader.html) to access resources of the root project
 - `middlewareUtil` - [MiddlewareUtil](https://sap.github.io/ui5-tooling/v3/api/@ui5_server_middleware_MiddlewareUtil.html) of the UI5 server
 - `logger` - Logger instance for use in the middleware.
+
+
+## [Migration](#migration)
+In case you have no custom modifications in the local fiori launchpad sandbox files (`webapp/test/flpSandbox.html` or `webapp/test/flpSandboxMockserver.html`) you're already good to go.
+
+If you have custom modifications in the local fiori launchpad sandbox files,
+you need to migrate them into a custom .js or .ts file (depending on your setup) and integrate this file as custom `init` script into the configuration options of the middleware.
+
+Sample:
+
+from custom modification in flpSandbox.html:
+```HTML
+<script type="text/javascript">
+    sap.ui.getCore().attachInit(function () {
+        console.log('my custom code');
+    });
+</script>
+```
+to custom `test/init.ts`:
+```ts 
+console.log('my custom code');
+```
+integrated via `ui5.yaml`:
+
+```Yaml
+server:
+  customMiddleware:
+  - name: preview-middleware
+    afterMiddleware: compression
+    configuration:
+      flp:
+        init: /test/init # <-- path to your custom init script
+```
