@@ -30,7 +30,6 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -1732,7 +1731,6 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
@@ -3294,7 +3292,6 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.97\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -9233,7 +9230,6 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.97\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.97.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
