@@ -3,7 +3,6 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import FlexRuntimeInfoAPI from 'sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import { FeatureService } from '../../../cpe/feature-service';
 import { getControlById } from '../../../utils/core';
 import { TableQuickActionDefinitionBase } from './table-quick-action-base';
 
