@@ -290,7 +290,12 @@ export class ChangeService {
 
             activeChanges = activeChanges.filter((change): boolean => !!change);
             const changesRequiringReload = activeChanges.reduce(
-                (sum, change) => (change.changeType === 'appdescr_fe_changePageConfiguration' ? sum + 1 : sum),
+                (sum, change) =>
+                    ['appdescr_fe_changePageConfiguration', 'appdescr_ui_generic_app_changePageConfiguration'].includes(
+                        change.changeType
+                    )
+                        ? sum + 1
+                        : sum,
                 0
             );
             if (changesRequiringReload > this.changesRequiringReload) {
