@@ -40,7 +40,7 @@
     "devDependencies": {
         "inquirer": "8.2.6",
         "@types/inquirer-autocomplete-prompt": "2.0.1",
-        "@types/inquirer": "8.2.6"
+        "@types/inquirer": "8.2.10"
     },
     "engines": {
         "node": ">=18.x"

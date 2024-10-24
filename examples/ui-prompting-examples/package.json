@@ -42,7 +42,7 @@
         "@storybook/components": "8.1.11",
         "@storybook/react": "8.1.11",
         "@storybook/react-webpack5": "8.1.11",
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "8.2.10",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/react": "16.14.55",
