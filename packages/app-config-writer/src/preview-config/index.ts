@@ -19,15 +19,15 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     }
 
     if (!(await checkPrerequisites(basePath, fs, logger))) {
-        return Promise.reject(new Error('Prerequisites not met'));
+        throw Error('Prerequisites not met. See above log messages for details.');
     }
 
     if (!(await getExplicitApprovalToAdjustFiles())) {
-        return Promise.reject(new Error('Approval not given'));
+        throw Error('Approval not given');
     }
 
     await renameSandboxes(fs, basePath);
-    await deleteLocateReuseLibs(fs, basePath);
+    await deleteNoLongerUsedFiles(fs, basePath);
 
     //todo: implement the function logic (re-use from variants management script)
     // - read from the script (start-variants-management) in the package.json which configuration should be used
@@ -72,12 +72,14 @@ async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogge
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
-async function deleteLocateReuseLibs(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const locateReuseLibsPath = join(await getWebappPath(basePath), 'test', 'locate-reuse-libs.js');
     if (fs.exists(locateReuseLibsPath)) {
         fs.delete(locateReuseLibsPath);
         logger?.info('Deleted webapp/test/locate-reuse-libs.js. This file is no longer needed for the preview.');
     }
+
+    //todo: delete test/changes_loader.(j|t)s, test/changes_preview.(j|t)s, test/flpSandbox.js, test/initFlpSandbox.js
 }
 
 /**
@@ -94,9 +96,10 @@ async function deleteLocateReuseLibs(fs: Editor, basePath: string, logger?: Tool
 async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<boolean> {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
+    let prerequisitesMet = true;
 
     if (!packageJson) {
-        return Promise.reject(new Error(`File 'package.json' not found at ${basePath}`));
+        throw Error(`File 'package.json' not found at ${basePath}`);
     }
 
     const sapui5BestpracticeBuildExists =
@@ -106,7 +109,7 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
         logger?.error(
             "A conversion from '@sap/grunt-sapui5-bestpractice-build' is not supported. Please migrate to UI5 CLI version 3.0.0 or higher first. See https://sap.github.io/ui5-tooling/v3/updates/migrate-v3/ for more information."
         );
-        return false;
+        prerequisitesMet = false;
     }
 
     const ui5CliVersion = packageJson?.devDependencies?.['@ui5/cli'] ?? packageJson?.dependencies?.['@ui5/cli'] ?? '0';
@@ -114,7 +117,7 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
         logger?.error(
             'UI5 CLI version 3.0.0 or higher is required to convert the preview to virtual files. See https://sap.github.io/ui5-tooling/v3/updates/migrate-v3/ for more information.'
         );
-        return false;
+        prerequisitesMet = false;
     }
 
     const ui5MiddlewareMockserverExists =
@@ -127,10 +130,10 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
         logger?.error(
             "A conversion from 'sap/ui/core/util/MockServer' is not supported. Please migrate to '@sap-ux/ui5-middleware-fe-mockserver' first."
         );
-        return false;
+        prerequisitesMet = false;
     }
 
-    return false;
+    return prerequisitesMet;
 }
 
 /**
