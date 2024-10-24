@@ -20,11 +20,23 @@ describe('<UIDropdown />', () => {
         wrapper.find('.ms-Dropdown .ms-Dropdown-caretDownWrapper').simulate('click', document.createEvent('Events'));
     };
 
+    let CalloutCollisionTransformSpy: {
+        preventDismissOnEvent: jest.SpyInstance;
+        applyTransformation: jest.SpyInstance;
+        resetTransformation: jest.SpyInstance;
+    };
+
     beforeEach(() => {
+        CalloutCollisionTransformSpy = {
+            preventDismissOnEvent: jest.spyOn(CalloutCollisionTransform.prototype, 'preventDismissOnEvent'),
+            applyTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'applyTransformation'),
+            resetTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'resetTransformation')
+        };
         wrapper = Enzyme.mount(<UIDropdown options={data} selectedKey="EE" />);
     });
 
     afterEach(() => {
+        jest.clearAllMocks();
         wrapper.unmount();
     });
 
@@ -356,10 +368,18 @@ describe('<UIDropdown />', () => {
                 const dropdown = wrapper.find(Dropdown);
                 expect(dropdown.length).toEqual(1);
                 const calloutProps = dropdown.prop('calloutProps');
+
                 if (expected) {
                     expect(calloutProps?.preventDismissOnEvent).toBeDefined();
                     expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
                     expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+
+                    calloutProps?.preventDismissOnEvent?.({} as Event);
+                    calloutProps?.layerProps?.onLayerDidMount?.();
+                    calloutProps?.layerProps?.onLayerWillUnmount?.();
+                    expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(1);
+                    expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(1);
+                    expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(1);
                 } else {
                     expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
                     expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
@@ -367,6 +387,39 @@ describe('<UIDropdown />', () => {
                 }
             });
         }
+
+        it(`Pass external listeners`, () => {
+            const externalListeners = {
+                calloutProps: {
+                    preventDismissOnEvent: jest.fn(),
+                    layerProps: {
+                        onLayerDidMount: jest.fn(),
+                        onLayerWillUnmount: jest.fn()
+                    }
+                }
+            };
+            wrapper.setProps({
+                multiSelect: true,
+                calloutCollisionTransformation: true,
+                ...externalListeners
+            });
+            const dropdown = wrapper.find(Dropdown);
+            expect(dropdown.length).toEqual(1);
+            const calloutProps = dropdown.prop('calloutProps');
+            expect(calloutProps?.preventDismissOnEvent).toBeDefined();
+            expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
+            expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+
+            calloutProps?.preventDismissOnEvent?.({} as Event);
+            calloutProps?.layerProps?.onLayerDidMount?.();
+            calloutProps?.layerProps?.onLayerWillUnmount?.();
+            expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.preventDismissOnEvent).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerDidMount).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerWillUnmount).toBeCalledTimes(1);
+        });
     });
 
     it('Custom renderers for "onRenderOption"', () => {

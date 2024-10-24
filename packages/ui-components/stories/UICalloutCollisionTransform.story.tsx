@@ -10,7 +10,9 @@ import {
     UITextInput,
     UICallout,
     UICheckbox,
-    CalloutCollisionTransform
+    CalloutCollisionTransform,
+    UIComboBoxProps,
+    UIDropdownProps
 } from '../src/components';
 import { data } from '../test/__mock__/select-data';
 
@@ -61,7 +63,57 @@ const CustomCallout = (props: { id: string }) => {
     );
 };
 
-const getContent = (controlType: ControlTypes, enabled: boolean) => {
+const ComboBoxOverwritter = (props: UIComboBoxProps) => {
+    return (
+        <UIComboBox
+            {...props}
+            ref={undefined}
+            calloutProps={{
+                preventDismissOnEvent: () => {
+                    console.log('custom preventDismissOnEvent');
+                    return false;
+                },
+                layerProps: {
+                    onLayerDidMount: () => {
+                        console.log('custom onLayerDidMount');
+                        return false;
+                    },
+                    onLayerWillUnmount: () => {
+                        console.log('custom onLayerWillUnmount');
+                        return false;
+                    }
+                }
+            }}
+        />
+    );
+};
+
+const DropdownOverwritter = (props: UIDropdownProps) => {
+    return (
+        <UIDropdown
+            {...props}
+            ref={undefined}
+            calloutProps={{
+                preventDismissOnEvent: () => {
+                    console.log('custom preventDismissOnEvent');
+                    return false;
+                },
+                layerProps: {
+                    onLayerDidMount: () => {
+                        console.log('custom onLayerDidMount');
+                        return false;
+                    },
+                    onLayerWillUnmount: () => {
+                        console.log('custom onLayerWillUnmount');
+                        return false;
+                    }
+                }
+            }}
+        />
+    );
+};
+
+const getContent = (controlType: ControlTypes, enabled: boolean, overwrittenComponent = false) => {
     const content: React.ReactElement[] = [];
 
     for (let i = 0; i < 6; i++) {
@@ -69,7 +121,16 @@ const getContent = (controlType: ControlTypes, enabled: boolean) => {
         if (controlType === ControlTypes.Callout) {
             element = <CustomCallout key={i} id={`Dummy-${i}`} />;
         } else {
-            const Control = controlType === ControlTypes.ComboBox ? UIComboBox : UIDropdown;
+            let Control:
+                | typeof UIComboBox
+                | typeof UIDropdown
+                | typeof ComboBoxOverwritter
+                | typeof DropdownOverwritter;
+            if (!overwrittenComponent) {
+                Control = controlType === ControlTypes.ComboBox ? UIComboBox : UIDropdown;
+            } else {
+                Control = controlType === ControlTypes.ComboBox ? ComboBoxOverwritter : DropdownOverwritter;
+            }
             element = (
                 <Control
                     key={i}
@@ -91,6 +152,7 @@ export const collisionTransformInDialog = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [enabled, setEnabled] = useState(true);
     const [selectedType, setSelectedType] = useState<string>(ControlTypes.ComboBox);
+    const [overwrittenComponents, setOverwrittenComponents] = useState<boolean>(false);
     const onToggle = () => {
         setIsOpen(!isOpen);
     };
@@ -129,6 +191,18 @@ export const collisionTransformInDialog = () => {
                         }
                     }}
                 />
+                <UICheckbox
+                    label={'Use overwritten components'}
+                    checked={overwrittenComponents}
+                    onChange={() => {
+                        setOverwrittenComponents(!overwrittenComponents);
+                    }}
+                    styles={{
+                        label: {
+                            alignItems: 'center'
+                        }
+                    }}
+                />
             </div>
             <UIDefaultButton onClick={onToggle} primary>
                 Open Dialog
@@ -150,7 +224,7 @@ export const collisionTransformInDialog = () => {
                 }}
                 onCancel={onToggle}
                 onDismiss={onToggle}>
-                {getContent(ControlTypes[selectedType], enabled)}
+                {getContent(ControlTypes[selectedType], enabled, overwrittenComponents)}
             </UIDialog>
         </>
     );
