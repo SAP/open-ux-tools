@@ -63,7 +63,7 @@ const ERROR_BORDER_COLOR = 'var(--vscode-inputValidation-errorBorder)';
 export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState> {
     private dropdownDomRef = React.createRef<HTMLDivElement>();
     private menuDomRef = React.createRef<HTMLDivElement>();
-    public readonly calloutCollisionTransform = new CalloutCollisionTransform(this.dropdownDomRef, this.menuDomRef);
+    private calloutCollisionTransform = new CalloutCollisionTransform(this.dropdownDomRef, this.menuDomRef);
 
     /**
      * Initializes component properties.
@@ -330,7 +330,7 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                         ref: this.menuDomRef
                     },
                     ...this.props.calloutProps,
-                    ...getCalloutCollisionTransformationPropsForDropdown(this)
+                    ...getCalloutCollisionTransformationPropsForDropdown(this, this.calloutCollisionTransform)
                 }}
                 onRenderOption={this.onRenderOption.bind(this)}
                 onRenderItem={this.onRenderItem.bind(this)}

@@ -51,13 +51,17 @@ export function getCalloutCollisionTransformationProps(
  * Method returns callback function to 'onLayerDidMount' property of dropdown 'callout'.
  *
  * @param dropdown Instance of dropdown.
+ * @param calloutCollisionTransform of callout collision transformation.
  * @returns Returns callback function to 'onLayerDidMount' property of dropdown 'callout'.
  */
-function getOnLayerDidMount(dropdown: UIDropdown | UIComboBox): () => void {
+function getOnLayerDidMount(
+    dropdown: UIDropdown | UIComboBox,
+    calloutCollisionTransform: CalloutCollisionTransform
+): () => void {
     return () => {
         const { layerProps } =
             getCalloutCollisionTransformationProps(
-                dropdown.calloutCollisionTransform,
+                calloutCollisionTransform,
                 dropdown.props.multiSelect,
                 dropdown.props.calloutCollisionTransformation
             ) ?? {};
@@ -74,13 +78,17 @@ function getOnLayerDidMount(dropdown: UIDropdown | UIComboBox): () => void {
  * Method returns callback function to 'onLayerWillUnmount' property of dropdown 'callout'.
  *
  * @param dropdown Instance of dropdown.
+ * @param calloutCollisionTransform of callout collision transformation.
  * @returns Returns callback function to 'onLayerWillUnmount' property of dropdown 'callout'.
  */
-function getOnLayerWillUnmount(dropdown: UIDropdown | UIComboBox): () => void {
+function getOnLayerWillUnmount(
+    dropdown: UIDropdown | UIComboBox,
+    calloutCollisionTransform: CalloutCollisionTransform
+): () => void {
     return () => {
         const { layerProps } =
             getCalloutCollisionTransformationProps(
-                dropdown.calloutCollisionTransform,
+                calloutCollisionTransform,
                 dropdown.props.multiSelect,
                 dropdown.props.calloutCollisionTransformation
             ) ?? {};
@@ -97,10 +105,12 @@ function getOnLayerWillUnmount(dropdown: UIDropdown | UIComboBox): () => void {
  * Method returns callback function to 'preventDismissOnEvent' property of dropdown 'callout', which prevents callout dismiss/close if focus/click on target elements.
  *
  * @param dropdown Instance of dropdown.
+ * @param calloutCollisionTransform of callout collision transformation.
  * @returns Returns callback function to 'preventDismissOnEvent' property of dropdown 'callout'.
  */
 function getPreventDismissOnEvent(
-    dropdown: UIDropdown | UIComboBox
+    dropdown: UIDropdown | UIComboBox,
+    calloutCollisionTransform: CalloutCollisionTransform
 ): (
     event: Event | React.FocusEvent<Element> | React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>
 ) => boolean {
@@ -112,7 +122,7 @@ function getPreventDismissOnEvent(
         if (!preventDismiss) {
             const { preventDismissOnEvent } =
                 getCalloutCollisionTransformationProps(
-                    dropdown.calloutCollisionTransform,
+                    calloutCollisionTransform,
                     dropdown.props.multiSelect,
                     dropdown.props.calloutCollisionTransformation
                 ) ?? {};
@@ -130,17 +140,19 @@ function getPreventDismissOnEvent(
  *  and if overlap happens, then additional offset is applied to make action buttons visible.
  *
  * @param dropdown Instance of dropdown.
+ * @param calloutCollisionTransform of callout collision transformation.
  * @returns Callout props to enable callout collision transformation.
  */
 export function getCalloutCollisionTransformationPropsForDropdown(
-    dropdown: UIDropdown | UIComboBox
+    dropdown: UIDropdown | UIComboBox,
+    calloutCollisionTransform: CalloutCollisionTransform
 ): ICalloutProps | undefined {
     if (dropdown.props.multiSelect && dropdown.props.calloutCollisionTransformation) {
         return {
-            preventDismissOnEvent: getPreventDismissOnEvent(dropdown),
+            preventDismissOnEvent: getPreventDismissOnEvent(dropdown, calloutCollisionTransform),
             layerProps: {
-                onLayerDidMount: getOnLayerDidMount(dropdown),
-                onLayerWillUnmount: getOnLayerWillUnmount(dropdown)
+                onLayerDidMount: getOnLayerDidMount(dropdown, calloutCollisionTransform),
+                onLayerWillUnmount: getOnLayerWillUnmount(dropdown, calloutCollisionTransform)
             }
         };
     }

@@ -116,7 +116,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private query = '';
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
-    public readonly calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
+    private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
 
     /**
      * Initializes component properties.
@@ -764,7 +764,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         },
 
                         ...this.props.calloutProps,
-                        ...getCalloutCollisionTransformationPropsForDropdown(this)
+                        ...getCalloutCollisionTransformationPropsForDropdown(this, this.calloutCollisionTransform)
                     }}
                     {...(this.props.highlight && {
                         onInput: this.onInput,
