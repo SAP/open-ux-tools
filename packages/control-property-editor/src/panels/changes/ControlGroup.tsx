@@ -1,13 +1,12 @@
-import type { ReactElement } from 'react';
 import React from 'react';
+import type { ReactElement } from 'react';
 import { Link, Stack } from '@fluentui/react';
 
-import { useAppDispatch } from '../../store';
-import type { Change } from '@sap-ux-private/control-property-editor-common';
 import { PROPERTY_CHANGE_KIND, SAVED_CHANGE_TYPE, selectControl } from '@sap-ux-private/control-property-editor-common';
+import type { Change } from '@sap-ux-private/control-property-editor-common';
 
 import { PropertyChange } from './PropertyChange';
-import { OtherChange } from './OtherChange';
+import { useAppDispatch } from '../../store';
 
 import styles from './ControlGroup.module.scss';
 
@@ -17,6 +16,7 @@ export interface ControlGroupProps {
     controlName: string;
     index: number;
     changes: Change[];
+    timestamp?: number;
 }
 
 /**
@@ -59,9 +59,7 @@ export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement
                         className={styles.item}>
                         {change.kind === PROPERTY_CHANGE_KIND ? (
                             <PropertyChange change={change} actionClassName={styles.actions} />
-                        ) : (
-                            <OtherChange change={change} actionClassName={styles.actions} />
-                        )}
+                        ) : null}
                     </Stack.Item>
                 );
             })}

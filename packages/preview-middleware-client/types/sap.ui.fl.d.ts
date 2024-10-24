@@ -2,6 +2,12 @@ declare module 'sap/ui/fl' {
     export type Layer = 'USER' | 'PUBLIC' | 'CUSTOMER' | 'CUSTOMER_BASE' | 'PARTNER' | 'VENDOR' | 'BASE';
 }
 
+declare module 'sap/ui/fl/Selector' {
+    export default interface Selector {
+        id: string;
+        idIsLocal: boolean;
+    }
+}
 declare module 'sap/ui/fl/Layer' {
     const Layer = {
         CUSTOMER_BASE: 'CUSTOMER_BASE',
@@ -12,8 +18,12 @@ declare module 'sap/ui/fl/Layer' {
 }
 
 declare module 'sap/ui/fl/Change' {
+    import type { Layer } from 'sap/ui/fl';
+    import type Selector from 'sap/ui/fl/Selector';
     export interface ChangeDefinition {
         service: string;
+        selector: Selector;
+        layer: Layer;
         changeType: string;
         packageName: string;
         support: {
@@ -28,12 +38,16 @@ declare module 'sap/ui/fl/Change' {
         templateName?: string;
     }
 
-    interface Change<ContentType> {
+    class Change<ContentType> {
+        constructor(file: object): void;
         getDefinition: () => ChangeDefinition;
+        getSelector: () => Selector;
+        getChangeType: () => string;
+        getLayer: () => Layer;
         getContent: () => ContentType;
         setContent: (newContent: ContentType) => void;
     }
-
+    const Change: Change;
     export default Change;
 }
 /**
@@ -111,4 +125,25 @@ declare module 'sap/ui/fl/apply/api/FlexRuntimeInfoAPI' {
     }
 
     export default FlexRuntimeInfoAPI;
+}
+
+declare module 'sap/ui/fl/write/api/ChangesWriteAPI' {
+    interface ChangeHander {
+        getChangeVisualizationInfo(change, appComponent): Promise<object>;
+    }
+    interface ChangesWriteAPI {
+        getChangeHandler(propertyBag: object): Promise<ChangeHander>;
+    }
+
+    const ChangesWriteAPI: ChangesWriteAPI;
+    export default ChangesWriteAPI;
+}
+
+declare module 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory' {
+    interface FlexObjectFactory {
+        createFromFileContent(fileContent: object, ObjectClass?: class, isPersisted?: boolean): object;
+    }
+
+    const FlexObjectFactory: FlexObjectFactory;
+    export default FlexObjectFactory;
 }
