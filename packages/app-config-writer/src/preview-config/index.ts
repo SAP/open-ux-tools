@@ -73,12 +73,6 @@ async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogge
  * @param logger logger to report info to the user
  */
 async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const checkAndDelete = (path: string): void => {
-        if (fs.exists(path)) {
-            fs.delete(path);
-            logger?.info(`Deleted ${path}. This file is no longer needed for the preview.`);
-        }
-    };
     const webappPath = await getWebappPath(basePath);
     // todo: check if the list of files is complete
     const locateReuseLibsPath = join(webappPath, 'test', 'locate-reuse-libs.js');
@@ -90,7 +84,7 @@ async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: To
     const flpSandboxTsPath = join(webappPath, 'test', 'flpSandbox.ts');
     const initFlpSandboxJsPath = join(webappPath, 'test', 'initFlpSandbox.js');
     const initFlpSandboxTsPath = join(webappPath, 'test', 'initFlpSandbox.ts');
-    const paths = [
+    [
         locateReuseLibsPath,
         changesLoaderJsPath,
         changesLoaderTsPath,
@@ -100,8 +94,12 @@ async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: To
         flpSandboxTsPath,
         initFlpSandboxJsPath,
         initFlpSandboxTsPath
-    ];
-    paths.forEach(checkAndDelete);
+    ].forEach((path: string): void => {
+        if (fs.exists(path)) {
+            fs.delete(path);
+            logger?.info(`Deleted ${path}. This file is no longer needed for the preview.`);
+        }
+    });
 }
 
 /**
