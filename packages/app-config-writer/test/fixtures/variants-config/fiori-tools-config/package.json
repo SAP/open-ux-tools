@@ -1,0 +1,9 @@
+{
+    "name": "test-app",
+    "description": "An SAP Fiori application.",
+    "scripts": {
+        "start": "fiori run --open \"test/flpSandbox.html?sap-client=500#test-app\""
+    },
+    "sapux": true,
+    "sapuxLayer": "VENDOR"
+}
