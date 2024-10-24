@@ -9,7 +9,7 @@ import { randomBytes } from 'crypto';
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 const CUSTOM_ACTION = 'CUSTOM_ACTION';
 const OBJECT_PAGE_HEADER_FIELD = 'OBJECT_PAGE_HEADER_FIELD';
-
+const TABLE_ACTION = 'TABLE_ACTION';
 interface FragmentTemplateConfig<T = { [key: string]: any }> {
     /**
      * Relative path to ../../templates/rta, includes template file name
@@ -39,6 +39,18 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
             return {
                 ids: {
                     toolbarActionButton: `btn-${uuid}`
+                }
+            };
+        }
+    },
+    [TABLE_ACTION]: {
+        path: 'common/v4-table-action.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    customToolbarAction: `toolbarAction-${uuid}`,
+                    customActionButton: `btn-${uuid}`
                 }
             };
         }

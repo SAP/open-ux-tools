@@ -15,7 +15,7 @@ import { ChangeTableColumnsQuickAction } from './change-table-columns';
 import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
 import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
 import { AddTableActionQuickAction } from '../fe-v2/create-table-action';
-import { AddPageActionQuickAction } from '../fe-v2/create-page-action';
+import { AddPageActionQuickAction } from '../common/create-page-action';
 type PageName = 'listReport' | 'objectPage';
 
 const OBJECT_PAGE_TYPE = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
