@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState, IAutofillProps, IButtonProps, ICalloutProps } from '@fluentui/react';
+import type { IComboBoxProps, IComboBoxState, IAutofillProps, IButtonProps } from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
@@ -18,7 +18,7 @@ import { UiIcons } from '../Icons';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty, getCalloutCollisionTransformationProps } from '../UIDropdown';
+import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from '../UIDropdown';
 import { CalloutCollisionTransform } from '../UICallout';
 import { isHTMLInputElement } from '../../utilities';
 
@@ -116,7 +116,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private query = '';
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
-    private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
+    public readonly calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
 
     /**
      * Initializes component properties.
@@ -139,9 +139,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onScrollToItem = this.onScrollToItem.bind(this);
         this.setFocus = this.setFocus.bind(this);
         this.onRenderIcon = this.onRenderIcon.bind(this);
-        this.preventDismissOnEvent = this.preventDismissOnEvent.bind(this);
-        this.onLayerDidMount = this.onLayerDidMount.bind(this);
-        this.onLayerWillUnmount = this.onLayerWillUnmount.bind(this);
 
         initializeComponentRef(this);
 
@@ -711,69 +708,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
-     * Method returns additional callout props for callout collision transformation if feature is enabled.
-     *
-     * @returns Callout props to enable callout collision transformation.
-     */
-    private getCalloutCollisionTransformationProps(): ICalloutProps {
-        return (
-            getCalloutCollisionTransformationProps(
-                this.calloutCollisionTransform,
-                this.props.multiSelect,
-                this.props.calloutCollisionTransformation
-            ) ?? {}
-        );
-    }
-
-    /**
-     * Method prevents callout dismiss/close if focus/click on target elements.
-     *
-     * @param event Triggered event to check.
-     * @returns Returns true if callout should not be closed.
-     */
-    private preventDismissOnEvent(
-        event: Event | React.FocusEvent<Element> | React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>
-    ): boolean {
-        let preventDismiss = false;
-        if (this.props.calloutProps?.preventDismissOnEvent) {
-            preventDismiss = this.props.calloutProps.preventDismissOnEvent(event);
-        }
-        if (!preventDismiss) {
-            const { preventDismissOnEvent } = this.getCalloutCollisionTransformationProps();
-            if (preventDismissOnEvent) {
-                return preventDismissOnEvent(event);
-            }
-        }
-        return preventDismiss;
-    }
-
-    /**
-     * Callback for when the callout layer is mounted.
-     */
-    private onLayerDidMount(): void {
-        const { layerProps } = this.getCalloutCollisionTransformationProps();
-        if (this.props.calloutProps?.layerProps?.onLayerDidMount) {
-            this.props.calloutProps?.layerProps?.onLayerDidMount();
-        }
-        if (layerProps?.onLayerDidMount) {
-            layerProps.onLayerDidMount();
-        }
-    }
-
-    /**
-     * Callback for when the callout layer is unmounted.
-     */
-    private onLayerWillUnmount(): void {
-        const { layerProps } = this.getCalloutCollisionTransformationProps();
-        if (this.props.calloutProps?.layerProps?.onLayerWillUnmount) {
-            this.props.calloutProps?.layerProps?.onLayerWillUnmount();
-        }
-        if (layerProps?.onLayerWillUnmount) {
-            layerProps.onLayerWillUnmount();
-        }
-    }
-
-    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
@@ -830,12 +764,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         },
 
                         ...this.props.calloutProps,
-                        preventDismissOnEvent: this.preventDismissOnEvent,
-                        layerProps: {
-                            ...this.props.calloutProps?.layerProps,
-                            onLayerDidMount: this.onLayerDidMount,
-                            onLayerWillUnmount: this.onLayerWillUnmount
-                        }
+                        ...getCalloutCollisionTransformationPropsForDropdown(this)
                     }}
                     {...(this.props.highlight && {
                         onInput: this.onInput,

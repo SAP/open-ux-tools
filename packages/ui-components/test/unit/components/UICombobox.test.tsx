@@ -792,16 +792,22 @@ describe('<UIComboBox />', () => {
                 const dropdown = wrapper.find(ComboBox);
                 expect(dropdown.length).toEqual(1);
                 const calloutProps = dropdown.prop('calloutProps');
-                expect(calloutProps?.preventDismissOnEvent).toBeDefined();
-                expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
-                expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+                if (expected) {
+                    expect(calloutProps?.preventDismissOnEvent).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
 
-                calloutProps?.preventDismissOnEvent?.({} as Event);
-                calloutProps?.layerProps?.onLayerDidMount?.();
-                calloutProps?.layerProps?.onLayerWillUnmount?.();
-                expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(expected ? 1 : 0);
-                expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(expected ? 1 : 0);
-                expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(expected ? 1 : 0);
+                    calloutProps?.preventDismissOnEvent?.({} as Event);
+                    calloutProps?.layerProps?.onLayerDidMount?.();
+                    calloutProps?.layerProps?.onLayerWillUnmount?.();
+                    expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(expected ? 1 : 0);
+                    expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(expected ? 1 : 0);
+                    expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(expected ? 1 : 0);
+                } else {
+                    expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeUndefined();
+                }
             });
         }
 
@@ -823,10 +829,6 @@ describe('<UIComboBox />', () => {
             const dropdown = wrapper.find(ComboBox);
             expect(dropdown.length).toEqual(1);
             const calloutProps = dropdown.prop('calloutProps');
-            // if (expected) {
-            expect(calloutProps?.preventDismissOnEvent).toBeDefined();
-            expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
-            expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
 
             calloutProps?.preventDismissOnEvent?.({} as Event);
             calloutProps?.layerProps?.onLayerDidMount?.();

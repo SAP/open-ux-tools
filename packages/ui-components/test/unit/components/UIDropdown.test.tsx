@@ -368,16 +368,23 @@ describe('<UIDropdown />', () => {
                 const dropdown = wrapper.find(Dropdown);
                 expect(dropdown.length).toEqual(1);
                 const calloutProps = dropdown.prop('calloutProps');
-                expect(calloutProps?.preventDismissOnEvent).toBeDefined();
-                expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
-                expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
 
-                calloutProps?.preventDismissOnEvent?.({} as Event);
-                calloutProps?.layerProps?.onLayerDidMount?.();
-                calloutProps?.layerProps?.onLayerWillUnmount?.();
-                expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(expected ? 1 : 0);
-                expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(expected ? 1 : 0);
-                expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(expected ? 1 : 0);
+                if (expected) {
+                    expect(calloutProps?.preventDismissOnEvent).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+
+                    calloutProps?.preventDismissOnEvent?.({} as Event);
+                    calloutProps?.layerProps?.onLayerDidMount?.();
+                    calloutProps?.layerProps?.onLayerWillUnmount?.();
+                    expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(1);
+                    expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(1);
+                    expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(1);
+                } else {
+                    expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeUndefined();
+                }
             });
         }
 
