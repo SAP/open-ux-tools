@@ -33,6 +33,7 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
+        "@sap-ux/odata-service-inquirer": "workspace:*",
         "i18next": "23.5.1",
         "inquirer-autocomplete-prompt": "2.0.1"
     },

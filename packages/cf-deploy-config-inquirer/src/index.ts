@@ -1,11 +1,13 @@
-import { getQuestions } from './prompts';
+import { getQuestions, getAppRouterQuestions } from './prompts';
 import type {
     CfDeployConfigPromptOptions,
     CfDeployConfigQuestions,
     CfSystemChoice,
-    CfDeployConfigAnswers
+    CfDeployConfigAnswers,
+    CfAppRouterDeployConfigPromptOptions,
+    CfAppRouterDeployConfigQuestions
 } from './types';
-import { promptNames } from './types';
+import { promptNames, appRouterPromptNames } from './types';
 import { initI18nCfDeployConfigInquirer } from './i18n';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import autocomplete from 'inquirer-autocomplete-prompt';
@@ -33,6 +35,26 @@ async function getPrompts(
 }
 
 /**
+ * Retrieves the application router configuration prompts.
+ *
+ * @param {CfDeployConfigPromptOptions} promptOptions - The options for configuring application router prompts.
+ * @param {Logger} [logger] - An optional logger instance for logging purposes. If provided, it will be used
+ *                            for any logging during the prompt retrieval process.
+ * @returns {Promise<CfAppRouterDeployConfigQuestions[]>} A promise that resolves to an array of
+ *                                                       application router deployment configuration questions.
+ */
+async function getAppRouterPrompts(
+    promptOptions: CfDeployConfigPromptOptions,
+    logger?: Logger
+): Promise<CfAppRouterDeployConfigQuestions[]> {
+    if (logger) {
+        LoggerHelper.logger = logger;
+    }
+    await initI18nCfDeployConfigInquirer();
+    return getAppRouterQuestions(promptOptions, LoggerHelper.logger);
+}
+
+/**
  * Prompt for cf inquirer inputs.
  *
  * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
@@ -54,4 +76,13 @@ async function prompt(
     return answers;
 }
 
-export { getPrompts, CfDeployConfigPromptOptions, CfSystemChoice, promptNames, prompt };
+export {
+    getPrompts,
+    type CfDeployConfigPromptOptions,
+    type CfSystemChoice,
+    promptNames,
+    prompt,
+    appRouterPromptNames,
+    getAppRouterPrompts,
+    type CfAppRouterDeployConfigPromptOptions
+};
