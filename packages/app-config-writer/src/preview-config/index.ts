@@ -66,20 +66,42 @@ async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogge
 }
 
 /**
- * Delete webapp/test/locate-reuse-libs.js.
+ * Delete files that are no longer used for the virtual preview.
  *
  * @param fs - file system reference
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
 async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const locateReuseLibsPath = join(await getWebappPath(basePath), 'test', 'locate-reuse-libs.js');
-    if (fs.exists(locateReuseLibsPath)) {
-        fs.delete(locateReuseLibsPath);
-        logger?.info('Deleted webapp/test/locate-reuse-libs.js. This file is no longer needed for the preview.');
-    }
-
-    //todo: delete test/changes_loader.(j|t)s, test/changes_preview.(j|t)s, test/flpSandbox.js, test/initFlpSandbox.js
+    const checkAndDelete = (path: string): void => {
+        if (fs.exists(path)) {
+            fs.delete(path);
+            logger?.info(`Deleted ${path}. This file is no longer needed for the preview.`);
+        }
+    };
+    const webappPath = await getWebappPath(basePath);
+    // todo: check if the list of files is complete
+    const locateReuseLibsPath = join(webappPath, 'test', 'locate-reuse-libs.js');
+    const changesLoaderJsPath = join(webappPath, 'test', 'changes_loader.js');
+    const changesLoaderTsPath = join(webappPath, 'test', 'changes_loader.ts');
+    const changesPreviewJsPath = join(webappPath, 'test', 'changes_preview.js');
+    const changesPreviewTsPath = join(webappPath, 'test', 'changes_preview.ts');
+    const flpSandboxJsPath = join(webappPath, 'test', 'flpSandbox.js');
+    const flpSandboxTsPath = join(webappPath, 'test', 'flpSandbox.ts');
+    const initFlpSandboxJsPath = join(webappPath, 'test', 'initFlpSandbox.js');
+    const initFlpSandboxTsPath = join(webappPath, 'test', 'initFlpSandbox.ts');
+    const paths = [
+        locateReuseLibsPath,
+        changesLoaderJsPath,
+        changesLoaderTsPath,
+        changesPreviewJsPath,
+        changesPreviewTsPath,
+        flpSandboxJsPath,
+        flpSandboxTsPath,
+        initFlpSandboxJsPath,
+        initFlpSandboxTsPath
+    ];
+    paths.forEach(checkAndDelete);
 }
 
 /**
