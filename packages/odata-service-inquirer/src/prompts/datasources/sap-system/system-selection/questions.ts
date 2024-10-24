@@ -2,10 +2,10 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Destination } from '@sap-ux/btp-utils';
 import { isAppStudio, isPartialUrlDestination } from '@sap-ux/btp-utils';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { withCondition } from '@sap-ux/inquirer-common';
+import { searchChoices, withCondition } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
-import type { Answers, Question } from 'inquirer';
+import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import { hostEnvironment, type OdataServicePromptOptions } from '../../../../types';
 import { getHostEnvironment, PromptState } from '../../../../utils';
@@ -36,8 +36,8 @@ const systemSelectionPromptNames = {
 } as const;
 
 export type SystemSelectionAnswerType = {
-    type: 'destination' | 'backendSystem' | 'newSystemChoice';
-    system: Destination | BackendSystem | NewSystemChoice;
+    type: 'destination' | 'backendSystem' | 'newSystemChoice' | 'cfAbapEnvService';
+    system: Destination | BackendSystem | NewSystemChoice | 'cfAbapEnvService';
 };
 
 interface SystemSelectionCredentialsAnswers {
@@ -77,8 +77,8 @@ async function validateSystemSelection(
         // Partial URL destinations will require additional service path prompt input, so we skip the connection validation here by returning true
         // The service URL connection will need to be validated by the service path prompt
         if (isPartialUrlDestination(systemSelection.system as Destination)) {
-            // Reset the connection state as we are deferring the connection validation to the service path prompt, any existing selection state should be cleared
-            connectionValidator.resetConnectionState(true);
+            // Reset the connection state as we are deferring the connection validation to the service path prompt, any existing connection state should be cleared
+            // connectionValidator.resetConnectionState(true);
             return true;
         }
         connectValResult = await connectWithDestination(
@@ -98,7 +98,7 @@ async function validateSystemSelection(
  */
 export async function getSystemSelectionQuestions(
     promptOptions?: OdataServicePromptOptions
-): Promise<Question<SystemSelectionAnswers & ServiceAnswer>> {
+): Promise<Question<SystemSelectionAnswers & ServiceAnswer>[]> {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
 
@@ -106,8 +106,6 @@ export async function getSystemSelectionQuestions(
         connectValidator,
         promptOptions
     );
-
-    // If the selected system was in fact not a system or a full service url but a partial url destination we require furthur service path input we need to add additional service path prompt
 
     // Existing system (BackendSystem or Destination) selected, TODO: make the service prompt optional by wrapping in condition `[promptOptions?.serviceSelection?.hide]`
     questions.push(
@@ -117,13 +115,15 @@ export async function getSystemSelectionQuestions(
         ) as Question[])
     );
 
-    // Create new system selected
-    questions.push(
-        ...(withCondition(
-            getNewSystemQuestions(promptOptions) as Question[],
-            (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
-        ) as Question[])
-    );
+    // Create new system connection for storage only supported on non-App Studio environments
+    if (!isAppStudio()) {
+        questions.push(
+            ...(withCondition(
+                getNewSystemQuestions(promptOptions) as Question[],
+                (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
+            ) as Question[])
+        );
+    }
 
     return questions;
 }
@@ -143,14 +143,17 @@ export async function getSystemConnectionQuestions(
 ): Promise<Question<SystemSelectionAnswers>[]> {
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
-    const systemChoices = await createSystemChoices(destinationFilters);
+    const systemChoices = await createSystemChoices(
+        destinationFilters,
+        promptOptions?.systemSelection?.includeCloudFoundryAbapEnvChoice
+    );
 
     const questions: Question[] = [
         {
-            type: 'list',
+            type: promptOptions?.serviceSelection?.useAutoComplete ? 'autocomplete' : 'list',
             name: systemSelectionPromptNames.systemSelection,
             message: t('prompts.systemSelection.message'),
-            // source: (preAnswers, input) => searchChoices(input, getSapSystemChoices(systems)),
+            source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
             choices: systemChoices,
             validate: async (selectedSystem: SystemSelectionAnswerType): Promise<ValidationResult> => {
                 if (!selectedSystem) {

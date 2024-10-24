@@ -255,7 +255,18 @@ export type SystemSelectionPromptOptions = {
      * Set the specific filter option(s) to true to include only the destinatons that have matching configuration attributes.
      * If no filter is set, all destinations will be included. If multiple filters are set, the destination will be included if it matches any of the filters.
      */
-    destinationFilters: DestinationFilters;
+    destinationFilters?: Partial<DestinationFilters>;
+    /**
+     * Determines if the system selection prompt should use auto complete prompt for system names.
+     * Note that the auto-complete module must be registered with the inquirer instance to use this feature.
+     */
+    useAutoComplete?: boolean;
+    /**
+     * Include the Cloud Foundry Abap environments service in the system selection prompt, note this option is only supported on Business Application Studio.
+     * Even if this option is set to true, the choice will only be included if the prompts are executed in the Business Application Studio.
+     * Note that there is no implementation for this option in this module and handling of the prompt optin and subsequent prompting must be implemented by the consumer.
+     */
+    includeCloudFoundryAbapEnvChoice?: boolean;
 };
 
 export type MetadataPromptOptions = {

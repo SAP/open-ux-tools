@@ -1,67 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getQuestions getQuestions 1`] = `
+exports[`Test system selection prompts should return system selection prompts and choices based on development environment, BAS or non-BAS 1`] = `
 [
   {
     "additionalMessages": [Function],
     "choices": [
       {
-        "name": "Connect to a SAP System",
-        "value": "sapSystem",
-      },
-      {
-        "name": "Connect to an OData Service Url",
-        "value": "odataServiceUrl",
-      },
-      {
-        "name": "Connect to SAP Business Accelerator Hub",
-        "value": "businessHub",
-      },
-      {
-        "name": "Use a Local CAP Project",
-        "value": "capProject",
-      },
-      {
-        "name": "Upload a Metadata File",
-        "value": "metadataFile",
-      },
-    ],
-    "default": -1,
-    "guiOptions": {
-      "breadcrumb": true,
-    },
-    "message": "Data source",
-    "name": "datasourceType",
-    "type": "list",
-  },
-  {
-    "additionalMessages": [Function],
-    "choices": [
-      {
-        "name": "New system",
-        "value": {
-          "system": "!@£*&937newSystem*X~qy^",
-          "type": "newSystemChoice",
-        },
-      },
-      {
-        "name": "storedSystem1",
+        "name": "dest1",
         "value": {
           "system": {
-            "name": "storedSystem1",
-            "url": "http://url1",
+            "Host": "http://dest1.com",
+            "Name": "dest1",
           },
-          "type": "backendSystem",
-        },
-      },
-      {
-        "name": "storedSystem2",
-        "value": {
-          "system": {
-            "name": "storedSystem2",
-            "url": "http://url2",
-          },
-          "type": "backendSystem",
+          "type": "destination",
         },
       },
     ],
@@ -70,10 +21,17 @@ exports[`getQuestions getQuestions 1`] = `
     "source": [Function],
     "type": "list",
     "validate": [Function],
-    "when": [Function],
   },
   {
-    "name": "systemSelectionCli",
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "Enter the path to the odata service, relative to the selected destination URL",
+      "mandatory": true,
+    },
+    "message": "Service path",
+    "name": "destinationServicePath",
+    "type": "input",
+    "validate": [Function],
     "when": [Function],
   },
   {
@@ -117,8 +75,77 @@ exports[`getQuestions getQuestions 1`] = `
     "validate": [Function],
     "when": [Function],
   },
+]
+`;
+
+exports[`Test system selection prompts should return system selection prompts and choices based on development environment, BAS or non-BAS 2`] = `
+[
   {
-    "name": "systemSelection:cliServiceSelection",
+    "additionalMessages": [Function],
+    "choices": [
+      {
+        "name": "New system",
+        "value": {
+          "system": "!@£*&937newSystem*X~qy^",
+          "type": "newSystemChoice",
+        },
+      },
+      {
+        "name": "http://abap.on.prem:1234",
+        "value": {
+          "system": {
+            "name": "http://abap.on.prem:1234",
+            "url": "http://abap.on.prem:1234",
+          },
+          "type": "backendSystem",
+        },
+      },
+    ],
+    "message": "Select a system configuration",
+    "name": "systemSelection",
+    "source": [Function],
+    "type": "list",
+    "validate": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "mandatory": true,
+    },
+    "message": "Username",
+    "name": "systemSelection:systemUsername",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "mandatory": true,
+    },
+    "guiType": "login",
+    "mask": "*",
+    "message": "Password",
+    "name": "systemSelection:systemPassword",
+    "type": "password",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "additionalMessages": [Function],
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": "Service",
+      "mandatory": true,
+    },
+    "message": [Function],
+    "name": "systemSelection:serviceSelection",
+    "source": [Function],
+    "type": "list",
+    "validate": [Function],
     "when": [Function],
   },
   {
@@ -215,10 +242,6 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
-    "name": "abapOnPrem:cliServiceSelection",
-    "when": [Function],
-  },
-  {
     "choices": [
       {
         "name": "Discover a Cloud Foundry Service",
@@ -277,10 +300,6 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
-    "name": "cliCfAbapService",
-    "when": [Function],
-  },
-  {
     "default": [Function],
     "guiOptions": {
       "applyDefaultWhenDirty": true,
@@ -307,113 +326,6 @@ exports[`getQuestions getQuestions 1`] = `
     "name": "abapOnBtp:serviceSelection",
     "source": [Function],
     "type": "list",
-    "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "name": "abapOnBtp:cliServiceSelection",
-    "when": [Function],
-  },
-  {
-    "guiOptions": {
-      "breadcrumb": true,
-      "mandatory": true,
-    },
-    "guiType": "file-browser",
-    "message": "Metadata file path",
-    "name": "metadataFilePath",
-    "type": "input",
-    "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "choices": [Function],
-    "default": [Function],
-    "guiOptions": {
-      "applyDefaultWhenDirty": true,
-      "breadcrumb": "CAP Project",
-      "mandatory": true,
-    },
-    "message": "Choose your CAP project",
-    "name": "capProject",
-    "type": "list",
-    "when": [Function],
-  },
-  {
-    "default": [Function],
-    "guiOptions": {
-      "breadcrumb": "CAP Project",
-      "mandatory": true,
-    },
-    "guiType": "folder-browser",
-    "message": "CAP project folder path",
-    "name": "capProjectPath",
-    "type": "input",
-    "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "choices": [Function],
-    "default": [Function],
-    "guiOptions": {
-      "applyDefaultWhenDirty": true,
-      "breadcrumb": true,
-      "mandatory": true,
-    },
-    "message": "OData service",
-    "name": "capService",
-    "type": "list",
-    "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "name": "capCliStateSetter",
-    "when": [Function],
-  },
-  {
-    "guiOptions": {
-      "breadcrumb": true,
-      "hint": "https://<hostname>:<port>/path/to/odata/service/",
-      "mandatory": true,
-    },
-    "message": "OData service URL",
-    "name": "serviceUrl",
-    "type": "input",
-    "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "default": false,
-    "message": "Do you want to continue generation with the untrusted certificate?",
-    "name": "ignoreCertError",
-    "type": "confirm",
-    "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "name": "cliIgnoreCertValidate",
-    "when": [Function],
-  },
-  {
-    "guiOptions": {
-      "mandatory": true,
-    },
-    "message": "Service username",
-    "name": "username",
-    "type": "input",
-    "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "guiOptions": {
-      "applyDefaultWhenDirty": true,
-      "mandatory": true,
-    },
-    "guiType": "login",
-    "mask": "*",
-    "message": "Service password",
-    "name": "serviceUrlPassword",
-    "type": "password",
     "validate": [Function],
     "when": [Function],
   },

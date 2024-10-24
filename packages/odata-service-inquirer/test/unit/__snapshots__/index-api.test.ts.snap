@@ -67,6 +67,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     ],
     "message": "Select a system configuration",
     "name": "systemSelection",
+    "source": [Function],
     "type": "list",
     "validate": [Function],
     "when": [Function],

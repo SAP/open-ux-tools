@@ -88,6 +88,7 @@
         "newSystemType": {
             "choiceAbapOnPrem": "ABAP On Premise",
             "choiceAbapOnBtp": "ABAP Environment on SAP Business Technology Platform",
+            "choiceCFAbapEnvServiceOnBtp": "Cloud Foundry ABAP environment on SAP Business Technology Platform",
             "message": "System type",
             "notYetImplementedWarningMessage": "The selected system type: {{ systemType }} is not yet implemented."
         },

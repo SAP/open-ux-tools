@@ -6,7 +6,7 @@ import autocomplete from 'inquirer-autocomplete-prompt';
 import { ERROR_TYPE, ErrorHandler } from './error-handler/error-handler';
 import { initI18nOdataServiceInquirer } from './i18n';
 import { getQuestions } from './prompts';
-import { newSystemChoiceValue } from './prompts/datasources/sap-system/system-selection';
+import { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection';
 import LoggerHelper from './prompts/logger-helper';
 import {
     DatasourceType,
@@ -92,18 +92,18 @@ export {
     ERROR_TYPE,
     // @deprecated - temp export to support to support open source migration
     ErrorHandler,
+    getPrompts,
     // @deprecated - temp export to support to support open source migration
     OdataVersion,
-    // @deprecated - temp export to support to support open source migration
-    newSystemChoiceValue,
-    // @deprecated - temp export to support to support open source migration
-    type SapSystemType,
-    getPrompts,
     prompt,
     promptNames,
+    // @deprecated - temp export to support to support open source migration
+    SystemSelectionAnswerType,
     type CapRuntime,
     type CapService,
     type InquirerAdapter,
     type OdataServiceAnswers,
-    type OdataServicePromptOptions
+    type OdataServicePromptOptions,
+    // @deprecated - temp export to support to support open source migration
+    type SapSystemType
 };

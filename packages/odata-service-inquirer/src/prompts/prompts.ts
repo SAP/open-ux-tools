@@ -51,12 +51,9 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
         choices,
         additionalMessages: (source: DatasourceType) => {
             if (
-                [
-                    DatasourceType.businessHub,
-                    DatasourceType.none,
-                    DatasourceType.projectSpecificDestination
-                    // DatasourceType.sapSystem
-                ].includes(source)
+                [DatasourceType.businessHub, DatasourceType.none, DatasourceType.projectSpecificDestination].includes(
+                    source
+                )
             ) {
                 LoggerHelper.logger?.warn(
                     t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType: source })

@@ -1,11 +1,11 @@
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
 import {
+    getDisplayName,
     isAppStudio,
     isFullUrlDestination,
     isPartialUrlDestination,
     listDestinations,
-    WebIDEUsage,
-    getDisplayName
+    WebIDEUsage
 } from '@sap-ux/btp-utils';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
@@ -13,7 +13,7 @@ import { SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { ERROR_TYPE } from '../../../../error-handler/error-handler';
 import { t } from '../../../../i18n';
-import { type DestinationFilters, type SapSystemType } from '../../../../types';
+import { type DestinationFilters } from '../../../../types';
 import { convertODataVersionType, PromptState } from '../../../../utils';
 import type { ConnectionValidator, ValidationResult } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
@@ -157,7 +157,7 @@ export function isAbapODataDestination(destination: Destination): boolean {
  * @param filters
  * @returns true if the destination matches any filters, false otherwise
  */
-function matchesFilters(destination: Destination, filters?: DestinationFilters): boolean {
+function matchesFilters(destination: Destination, filters?: Partial<DestinationFilters>): boolean {
     if (!filters) {
         return true;
     }
@@ -186,13 +186,15 @@ function matchesFilters(destination: Destination, filters?: DestinationFilters):
  * Creates a list of choices for the system selection prompt using destinations or stored backend systems, depending on the environment.
  *
  * @param destinationFilters
+ * @param includeCloudFoundryAbapEnvChoice
  * @returns a list of choices for the system selection prompt
  */
 export async function createSystemChoices(
-    destinationFilters?: DestinationFilters
+    destinationFilters?: Partial<DestinationFilters>,
+    includeCloudFoundryAbapEnvChoice = false
 ): Promise<ListChoiceOptions<SystemSelectionAnswers>[]> {
     let systemChoices: ListChoiceOptions<SystemSelectionAnswers>[] = [];
-    let newSystemChoice: ListChoiceOptions<SystemSelectionAnswers>;
+    let newSystemChoice: ListChoiceOptions<SystemSelectionAnswers> | undefined;
 
     // If this is BAS, return destinations, otherwise return stored backend systems
     if (isAppStudio()) {
@@ -210,7 +212,12 @@ export async function createSystemChoices(
                     } as SystemSelectionAnswerType
                 };
             });
-        newSystemChoice = { name: t('prompts.newSystemType.choiceAbapOnBtp'), value: 'abapOnBtp' as SapSystemType }; // TODO: add new system choice for destinations
+        if (includeCloudFoundryAbapEnvChoice) {
+            newSystemChoice = {
+                name: t('prompts.newSystemType.choiceCFAbapEnvServiceOnBtp'),
+                value: { type: 'cfAbapEnvService', system: 'cfAbapEnvService' } as SystemSelectionAnswerType
+            };
+        }
     } else {
         const backendSystems = await new SystemService(LoggerHelper.logger).getAll();
         systemChoices = backendSystems.map((system) => {
@@ -230,6 +237,8 @@ export async function createSystemChoices(
     systemChoices.sort(({ name: nameA }, { name: nameB }) =>
         nameA!.localeCompare(nameB!, undefined, { numeric: true, caseFirst: 'lower' })
     );
-    systemChoices.unshift(newSystemChoice);
+    if (newSystemChoice) {
+        systemChoices.unshift(newSystemChoice);
+    }
     return systemChoices;
 }

@@ -27,7 +27,6 @@ type TelemPropertyDestinationType =
     | 'AbapODataCatalogDest'
     | 'GenericODataFullUrlDest'
     | 'GenericODataPartialUrlDest'
-    | 'S4HCDest'
     | 'Unknown';
 
 /**

@@ -128,6 +128,11 @@ export async function getServiceChoices(catalogs: CatalogService[]): Promise<Lis
     LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
     if (flatServices.length === 0) {
         logServiceCatalogErrorsForHelp(requestErrors, catalogs.length);
+    } else {
+        // todo : send telemetry that we successfullly queried the catalog services from a destination
+        /**
+         * const telemBasSucess = 'SERVICE_INQUIRER_BAS_SUCCESS';
+         */
     }
 
     return createServiceChoices(flatServices);

@@ -87,6 +87,10 @@ export function getSystemServiceQuestion(
                             } as ServiceAnswer
                         }
                     ];
+                    // todo : send telemetry that we successfullly queried the services from a destination, this covers full/part url dests
+                    /**
+                     * const telemBasSucess = 'SERVICE_INQUIRER_BAS_SUCCESS';
+                     */
                 } else {
                     LoggerHelper.logger.error(t('error.noCatalogOrServiceAvailable'));
                 }
