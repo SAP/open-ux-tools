@@ -1,7 +1,7 @@
 import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
 import { getQuestions } from '../../../src/prompts';
-import { DatasourceType, hostEnvironment } from '../../../src/types';
-import * as utils from '../../../src/utils';
+import { DatasourceType } from '../../../src/types';
+import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import * as btpUtils from '@sap-ux/btp-utils';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { ToolsLogger } from '@sap-ux/logger';
@@ -16,6 +16,13 @@ jest.mock('@sap-ux/btp-utils', () => {
     };
 });
 
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
+}));
+
+const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
+
 describe('getQuestions', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
@@ -27,7 +34,7 @@ describe('getQuestions', () => {
         jest.restoreAllMocks();
     });
     test('getQuestions', async () => {
-        jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         // Tests all declaritive values
         expect(await getQuestions()).toMatchInlineSnapshot(`
             [

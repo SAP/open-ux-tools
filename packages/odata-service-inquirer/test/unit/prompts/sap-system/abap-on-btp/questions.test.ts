@@ -7,6 +7,7 @@ import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getAbapOnBTPSystemQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
 import { PromptState } from '../../../../../src/utils';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue(true);
@@ -32,6 +33,13 @@ jest.mock('../../../../../src/prompts/connectionValidator', () => {
         ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
     };
 });
+
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
+}));
+
+const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 
 let cfDiscoveredAbapEnvsMock: ServiceInstanceInfo[] = [];
 const uaaCredsMock = {
@@ -63,6 +71,7 @@ describe('questions', () => {
     });
 
     test('should return Abap on BTP questions', () => {
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const newSystemQuestions = getAbapOnBTPSystemQuestions();
         expect(newSystemQuestions).toMatchInlineSnapshot(`
             [
@@ -225,7 +234,7 @@ describe('questions', () => {
 
         // YUI returns empty list and shows validation error message if no ABAP environments error occurs
         const errorHandlerSpy = jest.spyOn(ErrorHandler.prototype, 'logErrorMsgs');
-        PromptState.isYUI = true;
+        mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.bas);
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
         expect(errorHandlerSpy).toHaveBeenCalledWith(ERROR_TYPE.NO_ABAP_ENVS, t('errors.noAbapEnvsInCFSpace'));
         expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
@@ -233,12 +242,12 @@ describe('questions', () => {
         );
 
         // CLI throws to exit, as you cannot continue
-        PromptState.isYUI = false;
+        mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
         await expect(((cfDiscoPrompt as ListQuestion).choices as Function)()).rejects.toThrowError(
             t('errors.abapEnvsUnavailable')
         );
 
-        PromptState.isYUI = true;
+        mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.bas);
         // If user is not logged in to CF, a warning message is logged and shown
         (getServicesFromCF as jest.Mock).mockRejectedValueOnce(new Error('Not logged in'));
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
@@ -284,7 +293,7 @@ describe('questions', () => {
     });
 
     test('Cloud Foundry discovery prompt should connect to the choosen Abap environment (cli)', async () => {
-        PromptState.isYUI = false;
+        mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
         const newSystemQuestions = getAbapOnBTPSystemQuestions();
         const cfDiscoPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
         const cliCfServicePrompt = newSystemQuestions.find((q) => q.name === 'cliCfAbapService');

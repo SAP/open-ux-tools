@@ -34,6 +34,7 @@
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
+        "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",

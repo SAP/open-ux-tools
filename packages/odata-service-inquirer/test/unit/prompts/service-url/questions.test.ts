@@ -1,11 +1,10 @@
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { OdataVersion, promptNames } from '../../../../src/index';
 import * as serviceUrlValidators from '../../../../src/prompts/datasources/service-url/validators';
-import * as utils from '../../../../src/utils';
 import { getServiceUrlQuestions } from '../../../../src/prompts/datasources/service-url/questions';
 import { serviceUrlInternalPromptNames } from '../../../../src/prompts/datasources/service-url/types';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
-import { hostEnvironment } from '../../../../src/types';
+import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 
 const validateUrlMockTrue = jest.fn().mockResolvedValue(true);
@@ -27,6 +26,13 @@ jest.mock('../../../../src/prompts/connectionValidator', () => {
     };
 });
 
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
+}));
+
+const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
+
 describe('Service URL prompts', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
@@ -41,6 +47,7 @@ describe('Service URL prompts', () => {
         connectionValidatorMock.validateAuth = validateAuthTrue;
     });
     test('getQuestions', async () => {
+        mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
         let questions = getServiceUrlQuestions();
         expect(questions).toMatchInlineSnapshot(`
             [
@@ -283,7 +290,7 @@ describe('Service URL prompts', () => {
     });
 
     test('Test prompt: cliIgnoreCertValidate', async () => {
-        jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
+        mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
         connectionValidatorMock.validity = {
             urlFormat: true,
             reachable: true,
