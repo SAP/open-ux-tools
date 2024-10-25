@@ -28,10 +28,6 @@ export async function addVariantsManagementScript(
         throw new Error(`${ERROR_MSG} File 'package.json' not found at ${basePath}`);
     }
 
-    if (packageJson?.scripts?.['start-variants-management']) {
-        throw new Error(`${ERROR_MSG} Script already exists.`);
-    }
-
     if (!packageJson.scripts) {
         logger?.warn(`File 'package.json' does not contain a script section. Script section added.`);
         packageJson.scripts = {};
@@ -49,7 +45,19 @@ export async function addVariantsManagementScript(
         throw new Error(`${ERROR_MSG} No RTA editor specified in ui5.yaml.`);
     }
 
-    packageJson.scripts['start-variants-management'] = `fiori run --open "${url}"`;
+    const startVariantsManagementScriptOld = packageJson.scripts['start-variants-management'] ?? undefined;
+    const startVariantsManagementScriptNew = `fiori run --open "${url}"`;
+
+    if (!startVariantsManagementScriptOld) {
+        logger?.debug(`Script 'start-variants-management' not found. Script will be added.`);
+    } else if (startVariantsManagementScriptOld !== startVariantsManagementScriptNew) {
+        logger?.warn(`Script 'start-variants-management' already exists but is outdated. Script will be updated.`);
+    } else {
+        logger?.info(`Script 'start-variants-management' is already up-to-date.`);
+        return Promise.resolve();
+    }
+
+    packageJson.scripts['start-variants-management'] = startVariantsManagementScriptNew;
     fs.writeJSON(packageJsonPath, packageJson);
     logger?.debug(`Script 'start-variants-management' written to 'package.json'.`);
     return Promise.resolve();

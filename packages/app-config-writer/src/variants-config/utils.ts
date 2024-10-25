@@ -113,7 +113,7 @@ function getRTAIntent(previewMiddlewareConfig: PreviewConfigOptions | undefined)
  *
  * @param basePath - path to project root, where package.json and ui5.yaml is located
  * @param query - query to create fragment
- * @param yamlPath - path of the ui5 yaml file provided by cli'
+ * @param yamlPath - path of the ui5 yaml file
  * @returns - review url parameters
  */
 export async function getRTAUrl(basePath: string, query: string, yamlPath?: string): Promise<string | undefined> {
