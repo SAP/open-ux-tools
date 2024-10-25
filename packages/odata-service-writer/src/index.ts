@@ -78,17 +78,17 @@ async function extendMockserverMiddleware(
     ui5ConfigPath: string
 ): Promise<Editor> {
     try {
-        // Service name and path are always defined - see enhanceData()
-        if (service.path) {
-            ui5Config.addServiceToMockserverMiddleware(service.path);
+        // Service name and path are defined after enhanceData()
+        if (service.name && service.path) {
+            ui5Config.addServiceToMockserverMiddleware(service.name, service.path);
         }
     } catch (error: any) {
         if (
             (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) ||
             error.message === 'Could not find sap-fe-mockserver'
         ) {
-            if (service.path) {
-                ui5Config.addMockServerMiddleware(service.path);
+            if (service.name && service.path) {
+                ui5Config.addMockServerMiddleware(service.name, service.path);
             }
         } else {
             throw error;
@@ -117,7 +117,10 @@ async function extendBackendMiddleware(
     try {
         ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
     } catch (error: any) {
-        if (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) {
+        if (
+            (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) ||
+            error.message === 'Could not find fiori-tools-proxy'
+        ) {
             ui5Config.addFioriToolsProxydMiddleware({
                 backend: [service.previewSettings as ProxyBackend],
                 ignoreCertError: service.ignoreCertError

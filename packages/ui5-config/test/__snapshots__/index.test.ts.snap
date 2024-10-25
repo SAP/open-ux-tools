@@ -310,23 +310,19 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but all 
 "
 `;
 
-exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
+exports[`UI5Config addMockServerMiddleware add mockserver middleware without any services 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
         mountPath: /
-        services:
-          - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
+        services: []
         annotations: []
 "
 `;
 
-exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1`] = `
+exports[`UI5Config addMockServerMiddleware add with dataSource config 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
@@ -334,9 +330,9 @@ exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1
       configuration:
         mountPath: /
         services:
-          - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+          - urlPath: /path/to/service
+            metadataPath: ./webapp/localService/data-source-service/metadata.xml
+            mockdataPath: ./webapp/localService/data-source-service/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/annotations/annotations.xml
@@ -344,7 +340,7 @@ exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1
 "
 `;
 
-exports[`UI5Config addMockServerMiddleware add without path 1`] = `
+exports[`UI5Config addMockServerMiddleware add with given name and path 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
@@ -352,11 +348,29 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
       configuration:
         mountPath: /
         services:
-          - urlPath: ''
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+"
+`;
+
+exports[`UI5Config addMockServerMiddleware add with name, path and annotationsConfig 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/annotations/annotations.xml
+            urlPath: annotations.xml
 "
 `;
 
@@ -440,6 +454,40 @@ exports[`UI5Config addServeStaticConfig update serve static config 1`] = `
         backend:
           - path: /sap
             url: http://test.url.com:50017
+"
+`;
+
+exports[`UI5Config addServiceToMockserverMiddleware add new service 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap
+            metadataPath: ./webapp/localService/new-service/metadata.xml
+            mockdataPath: ./webapp/localService/new-service/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config addServiceToMockserverMiddleware add new service with annotationsConfig 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap
+            metadataPath: ./webapp/localService/new-service/metadata.xml
+            mockdataPath: ./webapp/localService/new-service/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/annotations/annotations.xml
+            urlPath: annotations.xml
 "
 `;
 

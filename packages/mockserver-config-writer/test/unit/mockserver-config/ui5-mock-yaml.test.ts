@@ -11,13 +11,14 @@ describe('Test enhanceYaml()', () => {
     const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
     const webappPath = join('/webapp');
     const manifestJsonPath = join(webappPath, 'manifest.json');
-    const manifestWithMainService = `{"sap.ui5": { "models": { "": { "dataSource": "ds" } } },"sap.app": { "dataSources": { "ds": { "uri": "ds/uri/" } } }}`;
+    const manifestWithMainService = `{"sap.ui5": { "models": { "": { "dataSource": "ds" } } },"sap.app": { "dataSources": { "ds": { "uri": "ds/uri/", "type": "OData" } } }}`;
     const mockManifestJson = `{
         "sap.app": {
             "id": "mockserverv2",
             "dataSources": {
                 "mainService": {
-                    "uri": "/sap/opu/odata/sap/SEPMRA_PROD_MAN/"
+                    "uri": "/sap/opu/odata/sap/SEPMRA_PROD_MAN/",
+                    "type": "OData"
                 },
                 "SEPMRA_PROD_MAN": {
                     "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/",
@@ -34,6 +35,13 @@ describe('Test enhanceYaml()', () => {
                     }
                 }
             }
+        },
+        "sap.ui5": {
+            "models": {
+                "": {
+                    "dataSource": "mainService"
+                }
+            }
         }
     }`;
     beforeEach(() => {
@@ -42,7 +50,7 @@ describe('Test enhanceYaml()', () => {
 
     test('Create new ui5-mock.yaml with annotations from mock manifest.json', async () => {
         const fs = getFs({ [manifestJsonPath]: mockManifestJson });
-        await enhanceYaml(fs, basePath, webappPath, { path: '/path/for/new/config' });
+        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService', path: '/path/for/new/config' });
 
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
 
@@ -61,25 +69,31 @@ describe('Test enhanceYaml()', () => {
 
     test('Update ui5-mock.yaml, path from manifest', async () => {
         const fs = getFsWithUi5MockYaml(manifestWithMainService);
-        await enhanceYaml(fs, basePath, webappPath);
+        await enhanceYaml(fs, basePath, webappPath, { name: 'ds' });
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
     });
 
     test('Update ui5-mock.yaml, path from manifest with annotations', async () => {
         const fs = getFsWithUi5MockYaml(mockManifestJson);
-        await enhanceYaml(fs, basePath, webappPath);
+        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService' });
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
     });
 
-    test('Update old ui5-mock.yaml with given path', async () => {
+    test('Update old ui5-mock.yaml with given name and path', async () => {
         const fs = getFsWithUi5MockYaml('{}');
-        await enhanceYaml(fs, basePath, webappPath, { path: 'path/to/service' });
+        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService', path: 'path/to/service' });
+        expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
+    });
+
+    test('Update old ui5-mock.yaml with service overwrite', async () => {
+        const fs = getFsWithUi5MockYaml(mockManifestJson);
+        await enhanceYaml(fs, basePath, webappPath, { overwrite: true });
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
     });
 
     test('Create new ui5-mock.yaml based on ui5.yaml, updated with annotations', async () => {
         const fs = getFsWithUi5Yaml(mockManifestJson);
-        await enhanceYaml(fs, basePath, webappPath, { path: 'new/path/to/service' });
+        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService', path: 'new/path/to/service' });
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
         // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
         const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
@@ -100,7 +114,7 @@ describe('Test enhanceYaml()', () => {
 
     test('Create new ui5-mock.yaml based on ui5.yaml', async () => {
         const fs = getFsWithUi5Yaml('{}');
-        await enhanceYaml(fs, basePath, webappPath, { path: 'new/path/to/service' });
+        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService', path: 'new/path/to/service' });
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
         // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
         const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
@@ -111,7 +125,7 @@ describe('Test enhanceYaml()', () => {
 
     test('Create new ui5-mock.yaml without app name in manifest.json', async () => {
         const fs = getFs({ [manifestJsonPath]: '{}' });
-        await enhanceYaml(fs, basePath, webappPath, { path: '/path/for/new/config' });
+        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService', path: '/path/for/new/config' });
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
         // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
         const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
@@ -126,7 +140,7 @@ describe('Test enhanceYaml()', () => {
             findCustomMiddleware: () => undefined
         } as unknown as UI5Config);
         const fs = getFsWithUi5MockYaml('{}');
-        await expect(enhanceYaml(fs, basePath, webappPath)).rejects.toThrow('mockserver');
+        await expect(enhanceYaml(fs, basePath, webappPath, { overwrite: true })).rejects.toThrow('mockserver');
     });
 
     function getFs(files: { [path: string]: string }): Editor {
@@ -149,12 +163,12 @@ server:
   - name: sap-fe-mockserver
     beforeMiddleware: fiori-tools-proxy
     configuration:
-      service:
-        urlBasePath: /some/previous/service/uri
-        name: ''
-        metadataXmlPath: ./webapp/localService/metadata.xml
-        mockdataRootPath: ./webapp/localService/data
-        generateMockData: true
+      services:
+        - urlPath: /some/previous/service/uri
+          metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
+          mockdataRootPath: ./webapp/localService/previous-service/data
+          generateMockData: true
+      annotations: []
   - name: middleware-after`,
             [manifestJsonPath]: manifestContent
         });

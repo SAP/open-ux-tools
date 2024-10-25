@@ -23,8 +23,8 @@ server:
         mountPath: /
         services:
           - urlPath: new/path/to/service
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 "
@@ -53,8 +53,8 @@ server:
         mountPath: /
         services:
           - urlPath: new/path/to/service
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
@@ -94,8 +94,8 @@ server:
         mountPath: /
         services:
           - urlPath: /path/for/new/config
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
@@ -135,14 +135,39 @@ server:
         mountPath: /
         services:
           - urlPath: /path/for/new/config
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 "
 `;
 
-exports[`Test enhanceYaml() Update old ui5-mock.yaml with given path 1`] = `
+exports[`Test enhanceYaml() Update old ui5-mock.yaml with given name and path 1`] = `
+"specVersion: '2.0'
+metadata:
+  name: 'app'
+type: application
+server:
+  customMiddleware:
+    - name: middleware-before
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        services:
+          - urlPath: /some/previous/service/uri
+            metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
+            mockdataRootPath: ./webapp/localService/previous-service/data
+            generateMockData: true
+          - urlPath: path/to/service
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
+            generateMockData: true
+        annotations: []
+    - name: middleware-after
+"
+`;
+
+exports[`Test enhanceYaml() Update old ui5-mock.yaml with service overwrite 1`] = `
 "specVersion: '2.0'
 metadata:
   name: 'app'
@@ -155,11 +180,15 @@ server:
       configuration:
         mountPath: /
         services:
-          - urlPath: path/to/service
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN/
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+          - localPath: ./webapp/annotations/annotation.xml
+            urlPath: annotations/annotation.xml
     - name: middleware-after
 "
 `;
@@ -173,13 +202,16 @@ server:
   customMiddleware:
     - name: middleware-before
     - name: sap-fe-mockserver
-      beforeMiddleware: csp
+      beforeMiddleware: fiori-tools-proxy
       configuration:
-        mountPath: /
         services:
+          - urlPath: /some/previous/service/uri
+            metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
+            mockdataRootPath: ./webapp/localService/previous-service/data
+            generateMockData: true
           - urlPath: ds/uri
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/ds/metadata.xml
+            mockdataPath: ./webapp/localService/ds/data
             generateMockData: true
         annotations: []
     - name: middleware-after
@@ -195,13 +227,16 @@ server:
   customMiddleware:
     - name: middleware-before
     - name: sap-fe-mockserver
-      beforeMiddleware: csp
+      beforeMiddleware: fiori-tools-proxy
       configuration:
-        mountPath: /
         services:
-          - urlPath: ''
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+          - urlPath: /some/previous/service/uri
+            metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
+            mockdataRootPath: ./webapp/localService/previous-service/data
+            generateMockData: true
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml

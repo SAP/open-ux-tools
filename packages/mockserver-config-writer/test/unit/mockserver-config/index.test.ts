@@ -3,11 +3,29 @@ import { join } from 'path';
 import { generateMockserverConfig, removeMockserverConfig } from '../../../src';
 
 describe('Test generateMockserverConfig()', () => {
-    test('Add config to bare minimum project', async () => {
+    test('Add config without any services to bare minimum project', async () => {
         const basePath = join(__dirname, '../../fixtures/bare-minimum');
         const webappPath = join(basePath, 'webapp');
 
         const fs = await generateMockserverConfig(basePath, { webappPath });
+
+        expect(fs.readJSON(join(basePath, 'package.json'))).toEqual({
+            'name': 'bare-minimum',
+            'devDependencies': { '@sap-ux/ui5-middleware-fe-mockserver': '2' },
+            'ui5': { 'dependencies': ['@sap-ux/ui5-middleware-fe-mockserver'] },
+            'scripts': { 'start-mock': 'fiori run --config ./ui5-mock.yaml --open "/"' }
+        });
+        expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toMatchSnapshot();
+    });
+
+    test('Add config with service to bare minimum project', async () => {
+        const basePath = join(__dirname, '../../fixtures/bare-minimum');
+        const webappPath = join(basePath, 'webapp');
+
+        const fs = await generateMockserverConfig(basePath, {
+            webappPath,
+            ui5MockYamlConfig: { name: 'mainService', path: '/path/to/service' }
+        });
 
         expect(fs.readJSON(join(basePath, 'package.json'))).toEqual({
             'name': 'bare-minimum',

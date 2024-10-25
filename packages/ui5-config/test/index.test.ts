@@ -5,6 +5,7 @@ import { UI5Config } from '../src';
 describe('UI5Config', () => {
     // values for testing
     const path = '/~testpath~',
+        name = 'mainService',
         url = 'http://localhost:8080',
         destination = '~destination~',
         destinationInstance = '~destinationInstance~',
@@ -266,17 +267,37 @@ describe('UI5Config', () => {
     });
 
     describe('addMockServerMiddleware', () => {
-        test('add with given path', () => {
-            ui5Config.addMockServerMiddleware(path);
+        test('add with given name and path', () => {
+            ui5Config.addMockServerMiddleware(name, path);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('add without path', () => {
+        test('add mockserver middleware without any services', () => {
             ui5Config.addMockServerMiddleware();
             expect(ui5Config.toString()).toMatchSnapshot();
         });
-        test('add with path and annotationsConfig', () => {
-            ui5Config.addMockServerMiddleware(path, annotationsConfig);
+        test('add with name, path and annotationsConfig', () => {
+            ui5Config.addMockServerMiddleware(name, path, annotationsConfig);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+        test('add with dataSource config', () => {
+            ui5Config.addMockServerMiddleware(undefined, undefined, annotationsConfig, [
+                { serviceName: 'data-source-service', serviceUri: '/path/to/service' }
+            ]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
+    describe('addServiceToMockserverMiddleware', () => {
+        test('add new service', () => {
+            ui5Config.addMockServerMiddleware(undefined, undefined, undefined, undefined);
+            ui5Config.addServiceToMockserverMiddleware('new-service', '/sap');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add new service with annotationsConfig', () => {
+            ui5Config.addMockServerMiddleware(undefined, undefined, undefined, undefined);
+            ui5Config.addServiceToMockserverMiddleware('new-service', '/sap', annotationsConfig);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });

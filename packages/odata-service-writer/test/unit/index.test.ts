@@ -364,14 +364,22 @@ describe('generate', () => {
     });
 });
 
-describe.skip('clean', () => {
+describe('clean', () => {
     let fs: Editor;
     beforeEach(async () => {
-        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
+        const ui5Yaml = (await UI5Config.newInstance(''))
+            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+            .toString();
+        const ui5LocalYaml = (await UI5Config.newInstance(''))
+            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+            .addMockServerMiddleware('mainService', '/sap')
+            .toString();
+        const ui5MockYaml = (await UI5Config.newInstance('')).addMockServerMiddleware('mainService', '/sap').toString();
         // generate required files
         fs = create(createStorage());
         fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
-        fs.write(join(testDir, 'ui5-local.yaml'), '');
+        fs.write(join(testDir, 'ui5-local.yaml'), ui5LocalYaml);
+        fs.write(join(testDir, 'ui5-mock.yaml'), ui5MockYaml);
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
         fs.write(
             join(testDir, 'webapp', 'manifest.json'),
@@ -382,47 +390,20 @@ describe.skip('clean', () => {
             })
         );
     });
-    it('Try to remove an unexisting service', () => {
-        expect(true).toBe(true);
+    it('Try to remove an unexisting service', async () => {
+        await clean(testDir, { name: 'dummyService', url: 'https://dummyUrl', path: '/dummyPath' }, fs);
+        // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain(
+            'backend:\n          - path: /sap\n            url: https://localhost\n'
+        );
+        expect(fs.read(join(testDir, 'ui5-local.yaml'))).toContain(
+            'backend:\n          - path: /sap\n            url: https://localhost\n'
+        );
+        const a = fs.read(join(testDir, 'ui5-mock.yaml'));
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain('services:\n          - urlPath: /sap\n');
     });
     it('Remove an existing service', async () => {
-        const serviceData = {
-            ...commonConfig,
-            version: OdataVersion.v2,
-            annotations: {
-                technicalName: 'TEST_ME',
-                xml: '<HELLO WORLD />'
-            }
-        };
-        await generate(testDir, serviceData as OdataService, fs);
-
-        // verify updated manifest.json
-        let manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-        expect(manifest['sap.app'].dataSources.mainService.uri).toBe(serviceData.path);
-        expect(manifest['sap.app'].dataSources[serviceData.annotations.technicalName]).toBeDefined();
-        // verify local copy of metadata
-        expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(serviceData.metadata);
-        expect(fs.read(join(testDir, 'webapp', 'localService', `${serviceData.annotations.technicalName}.xml`))).toBe(
-            serviceData.annotations.xml
-        );
-        // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
-        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
-        expect(fs.read(join(testDir, 'ui5-local.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
-        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain(
-            'services:\n          - urlPath: /sap/odata/testme\n '
-        );
-
-        await clean(testDir, { name: 'mainService', url: serviceData.url, path: serviceData.path }, fs);
-
-        // verify updated manifest.json
-        manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-        expect(manifest['sap.app'].dataSources.mainService.uri).toBe(serviceData.path);
-        expect(manifest['sap.app'].dataSources[serviceData.annotations.technicalName]).toBeDefined();
-        // verify local copy of metadata
-        expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(serviceData.metadata);
-        expect(fs.read(join(testDir, 'webapp', 'localService', `${serviceData.annotations.technicalName}.xml`))).toBe(
-            serviceData.annotations.xml
-        );
+        await clean(testDir, { name: 'mainService', url: 'https://localhost', path: '/sap' }, fs);
         // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
         expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('- path: /sap\n            url: http://localhost\n');
         expect(fs.read(join(testDir, 'ui5-local.yaml'))).not.toContain(
