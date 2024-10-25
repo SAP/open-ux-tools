@@ -305,8 +305,8 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                         }
                     })
                 },
-
-                errorMessage: [messageInfo.style]
+                root: messageInfo.style.container,
+                errorMessage: [messageInfo.style.message]
             }
         });
 
