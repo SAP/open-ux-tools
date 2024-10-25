@@ -105,6 +105,34 @@ describe('utility.ts', () => {
               },
             ]
         `);
+
+        // If version already exists in the list, it should be remain in place
+        const defaultExistingChoice = { name: ui5Vers[1].version, value: ui5Vers[1].version };
+        const ui5VersWithExistingChoice = ui5VersionsGrouped(ui5Vers, true, defaultExistingChoice);
+        expect(ui5VersWithExistingChoice).toMatchInlineSnapshot(`
+            [
+              Separator {
+                "line": "[2mMaintained versions[22m",
+                "type": "separator",
+              },
+              {
+                "name": "1.118.0",
+                "value": "1.118.0",
+              },
+              {
+                "name": "1.117.0",
+                "value": "1.117.0",
+              },
+              Separator {
+                "line": "[2mOut of maintenance versions[22m",
+                "type": "separator",
+              },
+              {
+                "name": "1.116.0",
+                "value": "1.116.0",
+              },
+            ]
+        `);
     });
 
     it('searchChoices', async () => {
@@ -261,11 +289,11 @@ describe('utility.ts', () => {
             'value': '1.117.1'
         });
 
-        // Closest maintained version
+        // Version not in the the list
         testUI5Version = '1.119.1';
         expect(getDefaultUI5VersionChoice(mockUI5Versions, { name: testUI5Version, value: testUI5Version })).toEqual({
-            'name': '1.118.0',
-            'value': '1.118.0'
+            'name': '1.119.1',
+            'value': '1.119.1'
         });
 
         // Not valid semver

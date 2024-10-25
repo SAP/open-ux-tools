@@ -1,6 +1,7 @@
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/ui5-application-inquirer.i18n.json';
+import { addi18nResourceBundle as addInquirerCommoni18nResourceBundle } from '@sap-ux/inquirer-common';
 
 const ui5AppInquirerNamespace = 'ui5-application-inquirer';
 export const defaultProjectNumber = 1;
@@ -8,18 +9,18 @@ export const defaultProjectNumber = 1;
  * Initialize i18next with the translations for this module.
  */
 export async function initI18nUi5AppInquirer(): Promise<void> {
-    await i18next.init(
-        {
-            lng: 'en',
-            fallbackLng: 'en',
-            interpolation: {
-                defaultVariables: {
-                    defaultProjectNumber
-                }
+    await i18next.init({
+        lng: 'en',
+        fallbackLng: 'en',
+        interpolation: {
+            defaultVariables: {
+                defaultProjectNumber
             }
-        },
-        () => i18next.addResourceBundle('en', ui5AppInquirerNamespace, translations)
-    );
+        }
+    });
+    i18next.addResourceBundle('en', ui5AppInquirerNamespace, translations);
+    // add the inquirer common i18n resource bundle to ensure all translations are available
+    addInquirerCommoni18nResourceBundle();
 }
 
 /**

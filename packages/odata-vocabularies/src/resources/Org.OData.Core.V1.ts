@@ -1,4 +1,4 @@
-// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
+// Last content update: Mon Oct 21 2024 11:45:53 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -588,6 +588,7 @@ export default {
                     'A path expression resolving to a primitive property of the entity type itself or to a primitive property of a complex or navigation property (recursively) of the entity type. The names of the properties in the path are joined together by forward slashes.'
             },
             'Alias': {
+                '$Nullable': true,
                 '@Org.OData.Core.V1.Description':
                     'A SimpleIdentifier that MUST be unique within the set of aliases, structural and navigation properties of the containing entity type that MUST be used in the key predicate of URLs'
             }
@@ -700,6 +701,16 @@ export default {
                 'Instances of a type are annotated with this tag if they have no common structure in a given response payload',
             '@Org.OData.Core.V1.LongDescription':
                 'The select-list of a context URL MUST be `(@Core.AnyStructure)` if it would otherwise be empty,\n          but this instance annotation SHOULD be omitted from the response value.'
+        },
+        'IsDelta': {
+            '$Kind': 'Term',
+            '$Type': 'Org.OData.Core.V1.Tag',
+            '$DefaultValue': true,
+            '$AppliesTo': ['ReturnType', 'Parameter'],
+            '@Org.OData.Core.V1.Description':
+                'The annotated Action or Function Parameter or Return Type is represented as a Delta payload',
+            '@Org.OData.Core.V1.LongDescription':
+                'The parameter or result is represented as a delta payload, which may include deleted entries as well as changes to related \n          entities and relationships, according to the format-specific delta representation.'
         }
     }
 } as CSDL;
