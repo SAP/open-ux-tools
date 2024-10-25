@@ -4,3 +4,4 @@
     xmlns="sap.m">
     <App id="app">
     </App>
+</mvc:View>

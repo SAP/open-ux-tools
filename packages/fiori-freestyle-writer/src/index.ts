@@ -11,7 +11,7 @@ import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { coerce, gte} from 'semver';
+import { coerce, gte } from 'semver';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -111,7 +111,15 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // Add template specific manifest settings
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
-    const extRoot = join(__dirname, '..', 'templates', ffApp.template.type, 'extend', 'webapp');
+    const extRoot = join(
+        __dirname,
+        '..',
+        'templates',
+        ffApp.template.type,
+        'extend',
+        ffApp.template.type === TemplateType.Basic ? templateVersionPath : '',
+        'webapp'
+    );
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, 'manifest.json')), ffApp, {})));
 
     // i18n.properties

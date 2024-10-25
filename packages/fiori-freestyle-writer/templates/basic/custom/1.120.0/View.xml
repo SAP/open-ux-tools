@@ -1,42 +1,6 @@
-{
-    "sap.ui5": {
-        "rootView": {
-            "viewName": "<%- app.id %>.view.App",
-            "type": "XML",
-            "id": "App"
-        },
-        "resources": {
-            "css": [
-                {
-                    "uri": "css/style.css"
-                }
-            ]
-        },
-        "routing": {
-            "config": {
-                "routerClass": "sap.m.routing.Router",
-                "controlAggregation": "pages",
-                "controlId": "app",
-                "transition": "slide",
-                "type": "View",
-                "viewType": "XML",
-                "viewPath": "<%- app.id %>.view"
-            },
-            "routes": [
-                {
-                    "name": "Route<%- template.settings.viewName %>",
-                    "pattern": ":?query:",
-                    "target": [
-                        "Target<%- template.settings.viewName %>"
-                    ]
-                }
-            ],
-            "targets": {
-                "Target<%- template.settings.viewName %>": {
-                    "id": "<%- template.settings.viewName %>",
-                    "name": "<%- template.settings.viewName %>"
-                }
-            }
-        }
-    }
-}
+<mvc:View controllerName="<%- app.id %>.controller.<%- template.settings.viewName %>"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+    </Page>
+</mvc:View>
