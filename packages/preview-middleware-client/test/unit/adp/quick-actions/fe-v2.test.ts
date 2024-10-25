@@ -13,6 +13,7 @@ jest.mock('../../../../src/adp/init-dialogs', () => {
 
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
+import { FeatureService } from '../../../../src/cpe/feature-service';
 
 import FEV2QuickActionRegistry from '../../../../src/adp/quick-actions/fe-v2/registry';
 import { sapCoreMock } from 'mock/window';
@@ -265,6 +266,15 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('change table columns', () => {
+            beforeEach(() => {
+                jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature: string) => {
+                    if (feature === 'cpe.beta.quick-actions') {
+                        return true;
+                    }
+                    return false;
+                });
+                FeatureService.isFeatureEnabled;
+            });
             test('initialize and execute', async () => {
                 const pageView = new XMLView();
 
@@ -401,6 +411,15 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('create table action', () => {
+            beforeEach(() => {
+                jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature: string) => {
+                    if (feature === 'cpe.beta.quick-actions') {
+                        return true;
+                    }
+                    return false;
+                });
+                FeatureService.isFeatureEnabled;
+            });
             test('initialize and execute', async () => {
                 const pageView = new XMLView();
 
@@ -515,6 +534,15 @@ describe('FE V2 quick actions', () => {
             });
         });
         describe('add page action', () => {
+            beforeEach(() => {
+                jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature: string) => {
+                    if (feature === 'cpe.beta.quick-actions') {
+                        return true;
+                    }
+                    return false;
+                });
+                FeatureService.isFeatureEnabled;
+            });
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -773,6 +801,15 @@ describe('FE V2 quick actions', () => {
             });
         });
         describe('add custom section', () => {
+            beforeEach(() => {
+                jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature: string) => {
+                    if (feature === 'cpe.beta.quick-actions') {
+                        return true;
+                    }
+                    return false;
+                });
+                FeatureService.isFeatureEnabled;
+            });
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {

@@ -8,6 +8,7 @@ import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-edito
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import { FeatureService } from '../../../cpe/feature-service';
 import { getControlById } from '../../../utils/core';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
@@ -31,6 +32,9 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     constructor(private context: QuickActionContext) {}
 
     async initialize(): Promise<void> {
+        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
+            return;
+        }
         let index = 0;
         for (const smartTable of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
             CONTROL_TYPE
