@@ -409,7 +409,7 @@ describe('FE V2 quick actions', () => {
             });
         });
 
-        describe('create table table', () => {
+        describe('create table action', () => {
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
@@ -491,7 +491,7 @@ describe('FE V2 quick actions', () => {
                     }
                 });
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
