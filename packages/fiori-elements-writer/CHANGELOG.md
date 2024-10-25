@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.3.10
+
+### Patch Changes
+
+-   f626d47: remove @sap/ux-specification from generated apps
+-   Updated dependencies [f626d47]
+    -   @sap-ux/ui5-application-writer@1.2.1
+
 ## 1.3.9
 
 ### Patch Changes

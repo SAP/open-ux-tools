@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/app-config-writer",
     "description": "Add or update configuration for SAP Fiori tools application",
-    "version": "0.4.43",
+    "version": "0.4.44",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -43,6 +43,7 @@
         "prompts": "2.4.2"
     },
     "devDependencies": {
+        "@sap-ux/preview-middleware": "workspace:*",
         "@types/ejs": "3.1.2",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
