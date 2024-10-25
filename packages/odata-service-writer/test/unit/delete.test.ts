@@ -40,7 +40,7 @@ describe('delete', () => {
             fs.writeJSON('./webapp/manifest.json', testManifest);
             fs.writeJSON(metadaPath, '');
             // Call deleteServiceFromManifest
-            await deleteServiceFromManifest('./', 'mainService', fs);
+            deleteServiceFromManifest('./', 'mainService', fs);
             const manifestJson = fs.readJSON('./webapp/manifest.json') as any;
             expect(manifestJson?.['sap.app']?.dataSources).toEqual({});
             expect(manifestJson?.['sap.ui5']?.models).toEqual({});
@@ -93,7 +93,7 @@ describe('delete', () => {
             fs.writeJSON('./webapp/manifest.json', testManifest);
             fs.writeJSON(metadaPath, '');
             // Call deleteServiceFromManifest
-            await deleteServiceFromManifest('./', 'mainService', fs);
+            deleteServiceFromManifest('./', 'mainService', fs);
             const manifestJson = fs.readJSON('./webapp/manifest.json') as any;
             expect(manifestJson?.['sap.app']?.dataSources).toEqual({
                 annotation: {
@@ -140,7 +140,7 @@ describe('delete', () => {
             fs.writeJSON('./webapp/manifest.json', testManifest);
             fs.writeJSON(metadaPath, '');
             // Call deleteServiceFromManifest
-            await deleteServiceFromManifest('./', 'dummyService', fs);
+            deleteServiceFromManifest('./', 'dummyService', fs);
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(testManifest);
             // Metadata files for other services should not be deleted as well

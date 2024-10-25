@@ -419,7 +419,7 @@ export class UI5Config {
         name: string,
         servicePath: string,
         annotationsConfig: MockserverConfig['annotations'] = []
-    ): UI5Config {
+    ): this {
         const mockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver') as CustomMiddleware;
         if (!mockserverMiddleware) {
             throw new Error('Could not find sap-fe-mockserver');

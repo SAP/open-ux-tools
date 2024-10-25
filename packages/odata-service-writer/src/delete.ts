@@ -1,8 +1,7 @@
 import { dirname, join } from 'path';
 import { t } from './i18n';
 import type { Editor } from 'mem-fs-editor';
-import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { Manifest } from '@sap-ux/project-access';
+import type { ManifestNamespace, Manifest } from '@sap-ux/project-access';
 
 /**
  * Internal function that deletes EDMX annotation file for given dataSource.
@@ -11,17 +10,13 @@ import type { Manifest } from '@sap-ux/project-access';
  * @param manifestPath - the root path of an existing UI5 application
  * @param dataSource - name of the OData service instance
  */
-async function deleteEDMXFileForDataSource(
-    fs: Editor,
-    manifestPath: string,
-    dataSource: ManifestNamespace.DataSource
-): Promise<void> {
+function deleteFileForDataSource(fs: Editor, manifestPath: string, dataSource: ManifestNamespace.DataSource): void {
     const serviceSettings = dataSource.settings || {};
     if (serviceSettings?.localUri) {
         const localUriPath = join(dirname(manifestPath), serviceSettings?.localUri);
         if (fs.exists(localUriPath)) {
             // delete the local data source file
-            await fs.delete(localUriPath);
+            fs.delete(localUriPath);
         }
     }
 }
@@ -33,7 +28,7 @@ async function deleteEDMXFileForDataSource(
  * @param serviceName - name of the OData service instance
  * @param fs - the memfs editor instance
  */
-export async function deleteServiceFromManifest(basePath: string, serviceName: string, fs: Editor): Promise<void> {
+export function deleteServiceFromManifest(basePath: string, serviceName: string, fs: Editor): void {
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     // Get component app id
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
@@ -47,7 +42,7 @@ export async function deleteServiceFromManifest(basePath: string, serviceName: s
     }
     const dataSources = manifest?.[appProp]?.dataSources;
     if (dataSources?.[serviceName]) {
-        await deleteEDMXFileForDataSource(fs, manifestPath, dataSources?.[serviceName]);
+        deleteFileForDataSource(fs, manifestPath, dataSources?.[serviceName]);
     }
     const serviceSettings = dataSources?.[serviceName]?.settings;
 
@@ -59,7 +54,7 @@ export async function deleteServiceFromManifest(basePath: string, serviceName: s
                 if (annotationDatasource.uri === annotationDatasource?.settings?.localUri) {
                     // This is localAnnotaton file. Do not delete it.
                 } else if (annotationDatasource) {
-                    await deleteEDMXFileForDataSource(fs, manifestPath, annotationDatasource);
+                    deleteFileForDataSource(fs, manifestPath, annotationDatasource);
                     // delete dataSource from manifest
                     delete dataSources?.[datasourceKey];
                 }
@@ -75,7 +70,7 @@ export async function deleteServiceFromManifest(basePath: string, serviceName: s
     const models = manifest?.[modelsProp]?.models;
     if (models) {
         for (const modelKey of Object.keys(models)) {
-            const modelObj = models[modelKey] as ManifestNamespace.Model;
+            const modelObj = models[modelKey];
             if (modelObj?.dataSource === serviceName) {
                 delete models[modelKey];
             }
