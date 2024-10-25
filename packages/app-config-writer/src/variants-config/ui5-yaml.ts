@@ -49,7 +49,7 @@ export function createPreviewMiddlewareConfig(fs: Editor, basePath: string): Cus
 }
 
 /**
- * Checks the project for ui5.yaml files and reads out the configuration to update the preview and reload middlewares.
+ * Checks the project for ui5 configuration yaml files and reads the configuration to update the preview and reload middlewares.
  * If a reload middleware exists, then a delay of 300ms will be inserted and the preview middleware will be set afterward.
  *
  * @param fs - mem-fs reference to be used for file access
@@ -70,6 +70,9 @@ export async function updateMiddlewares(fs: Editor, basePath: string, logger?: T
         let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
 
         if (!previewMiddleware) {
+            //todo: do we need excludes to not mess up custom u5i yaml configuration files?
+            // - in case of builder but no server in config (e.g. because configs have been split)
+            // or request for approval for each of those files?
             logger?.warn(`No preview middleware found in ${ui5Yaml}. Preview middleware will be added.`);
             previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
         }
