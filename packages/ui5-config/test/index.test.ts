@@ -255,6 +255,25 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('removeBackendFromFioriToolsProxydMiddleware', () => {
+        test('add proxy with backend first and then call remove backend for existing backend', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
+            ui5Config.removeBackendFromFioriToolsProxydMiddleware(url);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add proxy with backend first and then call remove backend for unexisting backend', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
+            ui5Config.removeBackendFromFioriToolsProxydMiddleware('dummy');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('try removing backend without a proxy middleware added before', () => {
+            ui5Config.addFioriToolsAppReloadMiddleware();
+            expect(() => ui5Config.removeBackendFromFioriToolsProxydMiddleware(url)).toThrowError();
+        });
+    });
+
     describe('addUi5ToFioriToolsProxydMiddleware', () => {
         test('add ui5 config to empty tools middleware config', () => {
             ui5Config.addFioriToolsProxydMiddleware({});

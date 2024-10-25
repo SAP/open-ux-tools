@@ -15,7 +15,7 @@ import type {
     ServeStaticPath
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
-import { YamlDocument, YAMLError } from '@sap-ux/yaml';
+import { YamlDocument } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
     getBackendComments,
@@ -24,7 +24,6 @@ import {
     getPreviewMiddlewareConfig
 } from './middlewares';
 import { fioriToolsProxy, serveStatic } from './constants';
-import { yamlErrorCode } from '.';
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.
