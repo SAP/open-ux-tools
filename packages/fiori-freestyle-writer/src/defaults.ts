@@ -1,7 +1,8 @@
 import readPkgUp from 'read-pkg-up';
 import type { BasicAppSettings, FioriApp, FreestyleApp } from './types';
 import { TemplateType } from './types';
-import { coerce, gte, lt, type SemVer } from 'semver';
+import { compareUI5VersionGte, ui5LtsVersion_1_120 } from './utils';
+
 /**
  * Set defaults for missing parameters on the given Fiori/UI5 app instance.
  *
@@ -45,7 +46,10 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
     }
     // All fiori-freestyle apps should use load reuse libs for ui5 below 1.120.0 , unless explicitly overridden
     let loadReuseLibs = true;
-    if (ffApp.ui5?.version && ffApp.ui5?.version?.length > 0 && gte(ffApp.ui5.version, '1.120.0')) {
+    if (
+        compareUI5VersionGte(ffApp.ui5?.version ?? '', ui5LtsVersion_1_120) &&
+        ffApp.template.type === TemplateType.Basic
+    ) {
         loadReuseLibs = false;
     }
     ffApp.appOptions = Object.assign(

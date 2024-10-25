@@ -11,7 +11,7 @@ import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { coerce, gte } from 'semver';
+import { getTemplateVersionPath, processDestinationPath } from './utils';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -36,12 +36,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
-    let templateVersionPath = '/1.71.0';
-    const ui5Version = ffApp.ui5?.minUI5Version ?? ffApp.ui5?.version ?? '';
-    const minUI5Version = coerce(ui5Version);
-    if (!minUI5Version || (gte(minUI5Version, '1.120.0') && ffApp.template.type === TemplateType.Basic)) {
-        templateVersionPath = '/1.120.0';
-    }
     // Determine if the project type is 'EDMXBackend'.
     const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
     // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
@@ -55,6 +49,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         uShellBootstrapResourceUrl,
         uiBootstrapResourceUrl
     };
+    const templateVersionPath = getTemplateVersionPath(ffApp);
+
     fs.copyTpl(
         join(tmplPath, 'common', 'add', templateVersionPath),
         basePath,
@@ -65,7 +61,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         undefined,
         {
             globOptions: { ignore, dot: true },
-            processDestinationPath: (filePath: string) => filePath.replace('/1.120.0', '').replace('/1.71.0', '')
+            processDestinationPath: processDestinationPath
         }
     );
     fs.copyTpl(
@@ -80,7 +76,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         undefined,
         {
             globOptions: { ignore, dot: true },
-            processDestinationPath: (filePath: string) => filePath.replace('/2.0.0', '').replace('/1.0.0', '')
+            processDestinationPath: processDestinationPath
         }
     );
 
@@ -93,7 +89,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             ffApp,
             undefined,
             {
-                processDestinationPath: (filePath: string) => filePath.replace('/2.0.0', '').replace('/1.0.0', '')
+                processDestinationPath: processDestinationPath
             }
         );
         const ext = isTypeScriptEnabled ? 'ts' : 'js';
@@ -104,7 +100,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             ffApp,
             undefined,
             {
-                processDestinationPath: (filePath: string) => filePath.replace('/2.0.0', '').replace('/1.0.0', '')
+                processDestinationPath: processDestinationPath
             }
         );
     }
