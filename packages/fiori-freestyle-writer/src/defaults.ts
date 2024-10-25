@@ -26,9 +26,8 @@ function setBasicTemplateDefaults(settings: BasicAppSettings): void {
  * Adds source template info.
  *
  * @param ffApp full config object used by the generate method
- * @param minUI5Version minimum UI5
  */
-export function setDefaults(ffApp: FreestyleApp<unknown>, minUI5Version: SemVer | null): void {
+export function setDefaults(ffApp: FreestyleApp<unknown>): void {
     setAppDefaults(ffApp.app);
 
     // Add template information
@@ -44,15 +43,14 @@ export function setDefaults(ffApp: FreestyleApp<unknown>, minUI5Version: SemVer 
     if (ffApp.template.type === TemplateType.Basic) {
         setBasicTemplateDefaults(ffApp.template.settings as BasicAppSettings);
     }
-    // All fiori-freestyle apps should use load reuse libs, unless explicitly overridden
+    // All fiori-freestyle apps should use load reuse libs for ui5 below 1.120.0 , unless explicitly overridden
+    let loadReuseLibs = true;
+    if (ffApp.ui5?.version && ffApp.ui5?.version?.length > 0 && gte(ffApp.ui5.version, '1.120.0')) {
+        loadReuseLibs = false;
+    }
     ffApp.appOptions = Object.assign(
         {
-            loadReuseLibs: gte(
-                (ffApp.ui5?.version && ffApp.ui5?.version.length > 0 ? ffApp.ui5?.version : undefined) ?? '1.38.0',
-                '1.120.0'
-            )
-                ? false
-                : true
+            loadReuseLibs: loadReuseLibs
         },
         ffApp.appOptions
     );
