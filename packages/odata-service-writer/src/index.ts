@@ -11,6 +11,7 @@ import { t } from './i18n';
 import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
+import { deleteServiceFromManifest } from './delete';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -237,6 +238,7 @@ async function clean(
     let ui5LocalConfig: UI5Config | undefined;
     let ui5MockConfig: UI5Config | undefined;
     const paths = await findProjectFiles(basePath, fs);
+    await deleteServiceFromManifest(basePath, service.name, fs);
     // Delete service data from manifest.json
     if (paths.ui5Yaml) {
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));

@@ -385,13 +385,39 @@ describe('clean', () => {
             join(testDir, 'webapp', 'manifest.json'),
             JSON.stringify({
                 'sap.app': {
-                    id: 'testappid'
+                    id: 'testappid',
+                    dataSources: {
+                        mainService: {
+                            uri: '/sap',
+                            type: 'OData'
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    models: {
+                        '': {
+                            dataSource: 'mainService'
+                        }
+                    }
                 }
             })
         );
     });
     it('Try to remove an unexisting service', async () => {
         await clean(testDir, { name: 'dummyService', url: 'https://dummyUrl', path: '/dummyPath' }, fs);
+        // verify updated manifest.json
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
+        expect(manifest['sap.app'].dataSources).toStrictEqual({
+            mainService: {
+                type: 'OData',
+                uri: '/sap'
+            }
+        });
+        expect(manifest['sap.ui5'].models).toStrictEqual({
+            '': {
+                dataSource: 'mainService'
+            }
+        });
         // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
         expect(fs.read(join(testDir, 'ui5.yaml'))).toContain(
             'backend:\n          - path: /sap\n            url: https://localhost\n'
@@ -399,11 +425,14 @@ describe('clean', () => {
         expect(fs.read(join(testDir, 'ui5-local.yaml'))).toContain(
             'backend:\n          - path: /sap\n            url: https://localhost\n'
         );
-        const a = fs.read(join(testDir, 'ui5-mock.yaml'));
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain('services:\n          - urlPath: /sap\n');
     });
     it('Remove an existing service', async () => {
         await clean(testDir, { name: 'mainService', url: 'https://localhost', path: '/sap' }, fs);
+        // verify updated manifest.json
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
+        expect(manifest['sap.app'].dataSources).toStrictEqual({});
+        expect(manifest['sap.ui5'].models).toStrictEqual({});
         // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
         expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('- path: /sap\n            url: http://localhost\n');
         expect(fs.read(join(testDir, 'ui5-local.yaml'))).not.toContain(
