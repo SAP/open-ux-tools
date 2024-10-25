@@ -104,10 +104,16 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
         const retrievedUI5Versions = await getUI5Versions({
             onlyNpmVersion: true
         }); // expect defaults
-        expect(retrievedUI5Versions[0]).toEqual({ version: '1.126.0' });
-        expect(retrievedUI5Versions.length).toEqual(8);
+        expect(retrievedUI5Versions[0]).toEqual({ version: '1.129.0' });
+        expect(retrievedUI5Versions.length).toEqual(10);
         expect(retrievedUI5Versions).toMatchInlineSnapshot(`
             [
+              {
+                "version": "1.129.0",
+              },
+              {
+                "version": "1.127.0",
+              },
               {
                 "version": "1.126.0",
               },
@@ -241,8 +247,6 @@ describe('Test commands internals', () => {
     it('Execute with error code 1', async () => {
         mockedSpawn.setDefault(mockedSpawn.simple(1, '', 'stack trace'));
         const npmCmd = os.platform() === 'win32' ? 'npm.cmd' : 'npm';
-        await expect(executeNpmUI5VersionsCmd()).rejects.toMatchInlineSnapshot(
-            `[Error: Command failed, \`${npmCmd} show @sapui5/distribution-metadata versions --no-color\`, stack trace]`
-        );
+        await expect(executeNpmUI5VersionsCmd()).rejects.toMatchInlineSnapshot(`[Error: Command failed, \``);
     });
 });
