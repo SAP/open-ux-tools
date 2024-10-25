@@ -4,7 +4,7 @@ import { join } from 'path';
 import { getWebappPath, type Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { prompt, type PromptObject } from 'prompts';
-
+import { updateMiddlewares } from '../variants-config/ui5-yaml';
 /**
  * Converts the local preview files of a project to virtual files.
  *
@@ -30,11 +30,18 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     await deleteNoLongerUsedFiles(fs, basePath);
 
     //todo: implement the function logic (re-use from variants management script)
-    // - read from the script (start-variants-management) in the package.json which configuration should be used
-    // - update the scrip in the package.json if required (e.g. variants script needs an update of the intent).
-    // - add/update the configuration of the fiori-tools-preview (if no devDependency to ux-tooling: use preview-middleware)
+    // ❔ read from the script (start-variants-management) in the package.json which configuration should be used
+    /*
+    const packageJsonPath = join(basePath, 'package.json');
+    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
+    const ui5ConfigYaml = packageJson?.scripts?.['start-variants-management']?.search(/--config (\S*)/) ?? 'ui5.yaml';
+    */
+    // ✔️ adjust all *.yaml files in webapp (not just ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
+    // ✔️ update the scrip in the package.json if required (e.g. variants script needs an update of the intent).
+    // ✔️ add/update the configuration of the fiori-tools-preview (if no devDependency to ux-tooling: use preview-middleware)
     // - remove url parameters for RTA editor run scripts depending on preview-middleware/fiori-tools-preview version
-    // - adjust all *.yaml files in webapp (not just ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
+
+    await updateMiddlewares(fs, basePath, logger);
 
     return fs;
 }
