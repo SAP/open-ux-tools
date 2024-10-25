@@ -11,6 +11,7 @@ import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
+import { coerce, gte } from 'semver';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -34,7 +35,12 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
-
+    const ui5Version = ffApp.ui5?.minUI5Version ?? ffApp.ui5?.version ?? '';
+    const minVersion = coerce(ui5Version);
+    let templateVersionPath = '/1.0.0';
+    if (!minVersion || (gte(minVersion, '2.0.0') && ffApp.template.type === TemplateType.Basic)) {
+        templateVersionPath = '/2.0.0';
+    }
     // Determine if the project type is 'EDMXBackend'.
     const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
     // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
@@ -49,7 +55,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         uiBootstrapResourceUrl
     };
     fs.copyTpl(
-        join(tmplPath, 'common', 'add'),
+        join(tmplPath, 'common', 'add', templateVersionPath),
         basePath,
         {
             ...appConfig,
@@ -57,20 +63,49 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         },
         undefined,
         {
-            globOptions: { ignore, dot: true }
+            globOptions: { ignore, dot: true },
+            processDestinationPath: (filePath: string) => filePath.replace('/2.0.0', '').replace('/1.0.0', '')
         }
     );
-    fs.copyTpl(join(tmplPath, ffApp.template.type, 'add'), basePath, ffApp, undefined, {
-        globOptions: { ignore, dot: true }
-    });
+    fs.copyTpl(
+        join(
+            tmplPath,
+            ffApp.template.type,
+            'add',
+            ffApp.template.type === TemplateType.Basic ? templateVersionPath : ''
+        ),
+        basePath,
+        ffApp,
+        undefined,
+        {
+            globOptions: { ignore, dot: true },
+            processDestinationPath: (filePath: string) => filePath.replace('/2.0.0', '').replace('/1.0.0', '')
+        }
+    );
 
     if (ffApp.template.type === TemplateType.Basic) {
         const viewName = (ffApp.template.settings as BasicAppSettings).viewName;
         const viewTarget = join(basePath, 'webapp', 'view', `${viewName}.view.xml`);
-        fs.copyTpl(join(tmplPath, ffApp.template.type, 'custom/View.xml'), viewTarget, ffApp);
+        fs.copyTpl(
+            join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/View.xml`),
+            viewTarget,
+            ffApp,
+            undefined,
+            {
+                processDestinationPath: (filePath: string) => filePath.replace('/2.0.0', '').replace('/1.0.0', '')
+            }
+        );
         const ext = isTypeScriptEnabled ? 'ts' : 'js';
         const controllerTarget = join(basePath, `webapp/controller/${viewName}.controller.${ext}`);
-        fs.copyTpl(join(tmplPath, ffApp.template.type, `custom/Controller.${ext}`), controllerTarget, ffApp);
+        fs.copyTpl(
+            join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/Controller.${ext}`),
+            controllerTarget,
+            ffApp,
+            undefined,
+            {
+                processDestinationPath: (filePath: string) => filePath.replace('/2.0.0', '').replace('/1.0.0', '')
+            }
+        );
     }
 
     // Add template specific manifest settings
