@@ -491,6 +491,22 @@ exports[`UI5Config addServiceToMockserverMiddleware add new service with annotat
 "
 `;
 
+exports[`UI5Config addServiceToMockserverMiddleware add service duplicate, should overwrite 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap
+            metadataPath: ./webapp/localService/new-service/metadata.xml
+            mockdataPath: ./webapp/localService/new-service/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
 exports[`UI5Config addUI5Framework Add with specific theme and additional library 1`] = `
 "framework:
   name: SAPUI5

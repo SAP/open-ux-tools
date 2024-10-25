@@ -426,7 +426,7 @@ export class UI5Config {
         } else {
             const mockserverConfig = mockserverMiddleware.configuration as MockserverConfig;
             if (mockserverConfig) {
-                const service: {
+                const newServiceData: {
                     urlPath: string;
                     metadataPath: string;
                     mockdataPath?: string;
@@ -438,9 +438,20 @@ export class UI5Config {
                     generateMockData: true
                 };
                 if (mockserverConfig.services) {
-                    mockserverConfig.services.push(service);
+                    // Check if service with given paths already exists or placeholder service exists
+                    const existingServiceIndex: number = mockserverConfig.services.findIndex(
+                        (existingService) =>
+                            (existingService.urlPath === newServiceData.urlPath &&
+                                existingService.metadataPath === newServiceData.metadataPath) ||
+                            existingService.urlPath === ''
+                    );
+                    if (existingServiceIndex > -1) {
+                        mockserverConfig.services[existingServiceIndex] = newServiceData;
+                    } else {
+                        mockserverConfig.services = [...mockserverConfig.services, newServiceData];
+                    }
                 } else {
-                    mockserverConfig.services = [service];
+                    mockserverConfig.services = [newServiceData];
                 }
                 if (mockserverConfig.annotations) {
                     const mockserverAnnotations = mockserverConfig.annotations;

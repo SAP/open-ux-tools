@@ -309,13 +309,20 @@ describe('UI5Config', () => {
 
     describe('addServiceToMockserverMiddleware', () => {
         test('add new service', () => {
-            ui5Config.addMockServerMiddleware(undefined, undefined, undefined, undefined);
+            ui5Config.addMockServerMiddleware();
+            ui5Config.addServiceToMockserverMiddleware('new-service', '/sap');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add service duplicate, should overwrite', () => {
+            ui5Config.addMockServerMiddleware();
+            ui5Config.addServiceToMockserverMiddleware('new-service', '/sap');
             ui5Config.addServiceToMockserverMiddleware('new-service', '/sap');
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add new service with annotationsConfig', () => {
-            ui5Config.addMockServerMiddleware(undefined, undefined, undefined, undefined);
+            ui5Config.addMockServerMiddleware();
             ui5Config.addServiceToMockserverMiddleware('new-service', '/sap', annotationsConfig);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
