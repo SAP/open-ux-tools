@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.4.44
+
+### Patch Changes
+
+-   c3a8ebe: Introduce create command to add Configuration for Variants Creation.
+
 ## 0.4.43
 
 ### Patch Changes
