@@ -11,7 +11,7 @@ import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { coerce, gte } from 'semver';
+import { coerce, gte, type SemVer} from 'semver';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -27,18 +27,19 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     await initI18n();
     // Clone rather than modifying callers refs
     const ffApp = cloneDeep(data);
+    const ui5Version = ffApp.ui5?.minUI5Version ?? ffApp.ui5?.version ?? '';
+    const minUI5Version: SemVer | null = coerce(ui5Version);
     // set defaults
-    setDefaults(ffApp);
+    setDefaults(ffApp, minUI5Version);
     const isTypeScriptEnabled = ffApp.appOptions?.typescript;
+
     fs = await generateUi5Project(basePath, ffApp, fs);
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
-    const ui5Version = ffApp.ui5?.minUI5Version ?? ffApp.ui5?.version ?? '';
-    const minVersion = coerce(ui5Version);
     let templateVersionPath = '/1.71.0';
-    if (!minVersion || (gte(minVersion, '1.120.0') && ffApp.template.type === TemplateType.Basic)) {
+    if (!minUI5Version || (gte(minUI5Version, '1.120.0') && ffApp.template.type === TemplateType.Basic)) {
         templateVersionPath = '/1.120.0';
     }
     // Determine if the project type is 'EDMXBackend'.

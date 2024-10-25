@@ -175,74 +175,58 @@ server:
     "state": "modified",
   },
   "webapp/Component.js": Object {
-    "contents": "/**
- * eslint-disable @sap/ui5-jsdocs/no-jsdoc
- */
+    "contents": "sap.ui.define([
+    \\"sap/ui/core/UIComponent\\",
+    \\"test/me/model/models\\"
+], (UIComponent, models) => {
+    \\"use strict\\";
 
-sap.ui.define([
-        \\"sap/ui/core/UIComponent\\",
-        \\"sap/ui/Device\\",
-        \\"test/me/model/models\\"
-    ],
-    function (UIComponent, Device, models) {
-        \\"use strict\\";
+    return UIComponent.extend(\\"test.me.Component\\", {
+        metadata: {
+            manifest: \\"json\\",
+            interfaces: [
+                \\"sap.ui.core.IAsyncContentCreation\\"
+            ]
+        },
 
-        return UIComponent.extend(\\"test.me.Component\\", {
-            metadata: {
-                manifest: \\"json\\"
-            },
+        init() {
+            // call the base component's init function
+            UIComponent.prototype.init.apply(this, arguments);
 
-            /**
-             * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-             * @public
-             * @override
-             */
-            init: function () {
-                // call the base component's init function
-                UIComponent.prototype.init.apply(this, arguments);
+            // set the device model
+            this.setModel(models.createDeviceModel(), \\"device\\");
 
-                // enable routing
-                this.getRouter().initialize();
-
-                // set the device model
-                this.setModel(models.createDeviceModel(), \\"device\\");
-            }
-        });
-    }
-);",
+            // enable routing
+            this.getRouter().initialize();
+        }
+    });
+});",
     "state": "modified",
   },
   "webapp/controller/App.controller.js": Object {
-    "contents": "sap.ui.define(
-    [
-        \\"sap/ui/core/mvc/Controller\\"
-    ],
-    function(BaseController) {
-      \\"use strict\\";
-  
-      return BaseController.extend(\\"test.me.controller.App\\", {
-        onInit: function() {
-        }
-      });
-    }
-  );
-  ",
+    "contents": "sap.ui.define([
+  \\"sap/ui/core/mvc/Controller\\"
+], (Controller) => {
+  \\"use strict\\";
+
+  return Controller.extend(\\"test.me.controller.View1\\", {
+      onInit() {
+      }
+  });
+});",
     "state": "modified",
   },
   "webapp/controller/View1.controller.js": Object {
     "contents": "sap.ui.define([
     \\"sap/ui/core/mvc/Controller\\"
-],
-function (Controller) {
+], (Controller) => {
     \\"use strict\\";
 
     return Controller.extend(\\"test.me.controller.View1\\", {
-        onInit: function () {
-
+        onInit() {
         }
     });
-});
-",
+});",
     "state": "modified",
   },
   "webapp/css/style.css": Object {
@@ -1002,91 +986,6 @@ function (JSONModel, Device) {
 });",
     "state": "modified",
   },
-  "webapp/test/flpSandbox.html": Object {
-    "contents": "<!DOCTYPE HTML>
-<html lang=\\"en\\">
-<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
-<head>
-    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
-    <meta charset=\\"UTF-8\\">
-    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <title>{{appTitle}}</title>
-
-    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
-
-         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
-
-         The fiori2 renderer will render the shell header allowing, for instance,
-         testing of additional application setting buttons.
-
-         The navigation target resolution service is configured in a way that the empty URL hash is
-         resolved to our own application.
-
-         This example uses relative path references for the SAPUI5 resources and test-resources;
-         it might be necessary to adapt them depending on the target runtime platform.
-         The sandbox platform is restricted to development or demo use cases and must NOT be used
-         for productive scenarios.
-    -->
-    <script type=\\"text/javascript\\">
-        window[\\"sap-ushell-config\\"] = {
-            defaultRenderer: \\"fiori2\\",
-            bootstrapPlugins: {
-                \\"RuntimeAuthoringPlugin\\": {
-                    component: \\"sap.ushell.plugins.rta\\",
-                    config: {
-                        validateAppVersion: false
-                    }
-                }
-            },
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: \\"hidden\\",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications: {
-                \\"testme-app\\": {
-                    title: \\"My Test App\\",
-                    description: \\"Test App Description\\",
-                    additionalInformation: \\"SAPUI5.Component=test.me\\",
-                    applicationType: \\"URL\\",
-                    url: \\"../\\"
-                }
-            }
-        };
-    </script>
-
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
-    <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell\\"
-        data-sap-ui-async=\\"true\\"
-        data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_fiori_3\\"
-        data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
-    </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-    </script>
-</head>
-
-<!-- UI Content -->
-
-<body class=\\"sapUiBody\\" id=\\"content\\">
-</body>
-
-</html>
-",
-    "state": "modified",
-  },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
     var fioriToolsGetManifestLibs = function (manifestPath) {
@@ -1333,24 +1232,56 @@ sap.registerComponentDependencyPaths(manifestUri)
   },
   "webapp/view/App.view.xml": Object {
     "contents": "<mvc:View controllerName=\\"test.me.controller.App\\"
-    xmlns:html=\\"http://www.w3.org/1999/xhtml\\"
-    xmlns:mvc=\\"sap.ui.core.mvc\\" displayBlock=\\"true\\"
+    displayBlock=\\"true\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\"
     xmlns=\\"sap.m\\">
     <App id=\\"app\\">
-    </App>
-</mvc:View>
-",
+    </App>",
     "state": "modified",
   },
   "webapp/view/View1.view.xml": Object {
-    "contents": "<mvc:View controllerName=\\"test.me.controller.View1\\"
-    xmlns:mvc=\\"sap.ui.core.mvc\\" displayBlock=\\"true\\"
-    xmlns=\\"sap.m\\">
-    <Page id=\\"page\\" title=\\"{i18n>title}\\">
-        <content />
-    </Page>
-</mvc:View>
-",
+    "contents": "{
+    \\"sap.ui5\\": {
+        \\"rootView\\": {
+            \\"viewName\\": \\"test.me.view.App\\",
+            \\"type\\": \\"XML\\",
+            \\"id\\": \\"App\\"
+        },
+        \\"resources\\": {
+            \\"css\\": [
+                {
+                    \\"uri\\": \\"css/style.css\\"
+                }
+            ]
+        },
+        \\"routing\\": {
+            \\"config\\": {
+                \\"routerClass\\": \\"sap.m.routing.Router\\",
+                \\"controlAggregation\\": \\"pages\\",
+                \\"controlId\\": \\"app\\",
+                \\"transition\\": \\"slide\\",
+                \\"type\\": \\"View\\",
+                \\"viewType\\": \\"XML\\",
+                \\"viewPath\\": \\"test.me.view\\"
+            },
+            \\"routes\\": [
+                {
+                    \\"name\\": \\"RouteView1\\",
+                    \\"pattern\\": \\":?query:\\",
+                    \\"target\\": [
+                        \\"TargetView1\\"
+                    ]
+                }
+            ],
+            \\"targets\\": {
+                \\"TargetView1\\": {
+                    \\"id\\": \\"View1\\",
+                    \\"name\\": \\"View1\\"
+                }
+            }
+        }
+    }
+}",
     "state": "modified",
   },
 }
@@ -3393,91 +3324,6 @@ function (JSONModel, Device) {
     };
 
 });",
-    "state": "modified",
-  },
-  "webapp/test/flpSandbox.html": Object {
-    "contents": "<!DOCTYPE HTML>
-<html lang=\\"en\\">
-<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
-<head>
-    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
-    <meta charset=\\"UTF-8\\">
-    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <title>{{appTitle}}</title>
-
-    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
-
-         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
-
-         The fiori2 renderer will render the shell header allowing, for instance,
-         testing of additional application setting buttons.
-
-         The navigation target resolution service is configured in a way that the empty URL hash is
-         resolved to our own application.
-
-         This example uses relative path references for the SAPUI5 resources and test-resources;
-         it might be necessary to adapt them depending on the target runtime platform.
-         The sandbox platform is restricted to development or demo use cases and must NOT be used
-         for productive scenarios.
-    -->
-    <script type=\\"text/javascript\\">
-        window[\\"sap-ushell-config\\"] = {
-            defaultRenderer: \\"fiori2\\",
-            bootstrapPlugins: {
-                \\"RuntimeAuthoringPlugin\\": {
-                    component: \\"sap.ushell.plugins.rta\\",
-                    config: {
-                        validateAppVersion: false
-                    }
-                }
-            },
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: \\"hidden\\",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications: {
-                \\"testme-app\\": {
-                    title: \\"My Test App\\",
-                    description: \\"Test App Description\\",
-                    additionalInformation: \\"SAPUI5.Component=test.me\\",
-                    applicationType: \\"URL\\",
-                    url: \\"../\\"
-                }
-            }
-        };
-    </script>
-
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
-    <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell\\"
-        data-sap-ui-async=\\"true\\"
-        data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_fiori_3\\"
-        data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
-    </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-    </script>
-</head>
-
-<!-- UI Content -->
-
-<body class=\\"sapUiBody\\" id=\\"content\\">
-</body>
-
-</html>
-",
     "state": "modified",
   },
   "webapp/test/locate-reuse-libs.js": Object {
@@ -5607,91 +5453,6 @@ function (JSONModel, Device) {
     };
 
 });",
-    "state": "modified",
-  },
-  "webapp/test/flpSandbox.html": Object {
-    "contents": "<!DOCTYPE HTML>
-<html lang=\\"en\\">
-<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
-<head>
-    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
-    <meta charset=\\"UTF-8\\">
-    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <title>{{appTitle}}</title>
-
-    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
-
-         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
-
-         The fiori2 renderer will render the shell header allowing, for instance,
-         testing of additional application setting buttons.
-
-         The navigation target resolution service is configured in a way that the empty URL hash is
-         resolved to our own application.
-
-         This example uses relative path references for the SAPUI5 resources and test-resources;
-         it might be necessary to adapt them depending on the target runtime platform.
-         The sandbox platform is restricted to development or demo use cases and must NOT be used
-         for productive scenarios.
-    -->
-    <script type=\\"text/javascript\\">
-        window[\\"sap-ushell-config\\"] = {
-            defaultRenderer: \\"fiori2\\",
-            bootstrapPlugins: {
-                \\"RuntimeAuthoringPlugin\\": {
-                    component: \\"sap.ushell.plugins.rta\\",
-                    config: {
-                        validateAppVersion: false
-                    }
-                }
-            },
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: \\"hidden\\",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications: {
-                \\"testme-app\\": {
-                    title: \\"My Test App\\",
-                    description: \\"Test App Description\\",
-                    additionalInformation: \\"SAPUI5.Component=test.me\\",
-                    applicationType: \\"URL\\",
-                    url: \\"../\\"
-                }
-            }
-        };
-    </script>
-
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
-    <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell\\"
-        data-sap-ui-async=\\"true\\"
-        data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_fiori_3\\"
-        data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
-    </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-    </script>
-</head>
-
-<!-- UI Content -->
-
-<body class=\\"sapUiBody\\" id=\\"content\\">
-</body>
-
-</html>
-",
     "state": "modified",
   },
   "webapp/test/locate-reuse-libs.js": Object {
