@@ -328,6 +328,22 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('removeServiceFromMockServerMiddleware', () => {
+        test('remove exisisting service', () => {
+            // create middleware with one service
+            ui5Config.addMockServerMiddleware('new-service', '/sap');
+            ui5Config.removeServiceFromMockServerMiddleware('/sap');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('remove unexisting service', () => {
+            // create middleware without any services
+            ui5Config.addMockServerMiddleware();
+            ui5Config.removeServiceFromMockServerMiddleware('/sap');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
     test('getAppReloadMiddlewareConfig', () => {
         ui5Config.addFioriToolsAppReloadMiddleware();
         expect(ui5Config.toString()).toMatchSnapshot();

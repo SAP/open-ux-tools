@@ -476,7 +476,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public deleteServiceFromMockServerMiddleware(servicePath: string): this {
+    public removeServiceFromMockServerMiddleware(servicePath: string): this {
         const middlewareListYaml = this.document.getSequence({ path: 'server.customMiddleware' });
         const mockserverMiddlewareYaml = this.document.findItem(
             middlewareListYaml,

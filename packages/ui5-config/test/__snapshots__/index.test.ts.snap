@@ -637,6 +637,30 @@ exports[`UI5Config removeBackendFromFioriToolsProxydMiddleware add proxy with ba
 "
 `;
 
+exports[`UI5Config removeServiceFromMockServerMiddleware remove exisisting service 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services: []
+        annotations: []
+"
+`;
+
+exports[`UI5Config removeServiceFromMockServerMiddleware remove unexisting service 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services: []
+        annotations: []
+"
+`;
+
 exports[`UI5Config setMetadata replace metadata 1`] = `
 "metadata:
   name: the.replaced.name

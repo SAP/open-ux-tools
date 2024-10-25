@@ -251,13 +251,13 @@ async function clean(
         // Delete service backend from fiori-tools-proxy middleware config
         ui5LocalConfig.removeBackendFromFioriToolsProxydMiddleware(service.url);
         // Delete service from mockserver middleware config
-        ui5LocalConfig.deleteServiceFromMockServerMiddleware(service.path);
+        ui5LocalConfig.removeServiceFromMockServerMiddleware(service.path);
         fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
     }
     if (paths.ui5MockYaml) {
         ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
         // Delete service from mockserver config
-        ui5MockConfig.deleteServiceFromMockServerMiddleware(service.path);
+        ui5MockConfig.removeServiceFromMockServerMiddleware(service.path);
         fs.write(paths.ui5MockYaml, ui5MockConfig.toString());
     }
     return fs;
