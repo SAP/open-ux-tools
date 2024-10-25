@@ -128,10 +128,10 @@ export function getFioriToolsProxyMiddlewareConfig(
 }
 
 export const getMockServerMiddlewareConfig = (
-    path?: string,
+    servicePath?: string,
     annotationsConfig: MockserverConfig['annotations'] = []
 ): CustomMiddleware<MockserverConfig> => {
-    path = path?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
+    servicePath = servicePath?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
     return {
         name: 'sap-fe-mockserver',
         beforeMiddleware: 'csp',
@@ -139,9 +139,9 @@ export const getMockServerMiddlewareConfig = (
             mountPath: '/',
             services: [
                 {
-                    urlPath: path ?? '',
-                    metadataPath: './webapp/localService/metadata.xml',
-                    mockdataPath: './webapp/localService/data',
+                    urlPath: servicePath ?? '',
+                    metadataPath: `./webapp/localService/metadata.xml`,
+                    mockdataPath: `./webapp/localService/data`,
                     generateMockData: true
                 }
             ],

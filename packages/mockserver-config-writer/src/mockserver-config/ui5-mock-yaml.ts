@@ -36,7 +36,7 @@ export async function enhanceYaml(
     const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
     let mockConfig;
     const manifest = fs.readJSON(join(webappPath, 'manifest.json')) as Partial<Manifest> as Manifest;
-    const mockserverPath = config?.path || getMainServiceDataSource(manifest)?.uri;
+    const mockserverPath = config?.path ?? getMainServiceDataSource(manifest)?.uri;
     const annotationSource = Object.values(getODataSources(manifest, 'ODataAnnotation'));
     const annotationsConfig = annotationSource.map((annotation) => ({
         localPath: `./webapp/${annotation.settings?.localUri}`,

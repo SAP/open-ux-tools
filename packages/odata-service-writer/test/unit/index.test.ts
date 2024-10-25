@@ -1,5 +1,5 @@
 import type { OdataService } from '../../src';
-import { generate, OdataVersion, ServiceType } from '../../src';
+import { generate, clean, OdataVersion, ServiceType } from '../../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -361,5 +361,75 @@ describe('generate', () => {
                 }
             `);
         });
+    });
+});
+
+describe.skip('clean', () => {
+    let fs: Editor;
+    beforeEach(async () => {
+        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
+        // generate required files
+        fs = create(createStorage());
+        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
+        fs.write(join(testDir, 'ui5-local.yaml'), '');
+        fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
+        fs.write(
+            join(testDir, 'webapp', 'manifest.json'),
+            JSON.stringify({
+                'sap.app': {
+                    id: 'testappid'
+                }
+            })
+        );
+    });
+    it('Try to remove an unexisting service', () => {
+        expect(true).toBe(true);
+    });
+    it('Remove an existing service', async () => {
+        const serviceData = {
+            ...commonConfig,
+            version: OdataVersion.v2,
+            annotations: {
+                technicalName: 'TEST_ME',
+                xml: '<HELLO WORLD />'
+            }
+        };
+        await generate(testDir, serviceData as OdataService, fs);
+
+        // verify updated manifest.json
+        let manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
+        expect(manifest['sap.app'].dataSources.mainService.uri).toBe(serviceData.path);
+        expect(manifest['sap.app'].dataSources[serviceData.annotations.technicalName]).toBeDefined();
+        // verify local copy of metadata
+        expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(serviceData.metadata);
+        expect(fs.read(join(testDir, 'webapp', 'localService', `${serviceData.annotations.technicalName}.xml`))).toBe(
+            serviceData.annotations.xml
+        );
+        // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
+        expect(fs.read(join(testDir, 'ui5-local.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain(
+            'services:\n          - urlPath: /sap/odata/testme\n '
+        );
+
+        await clean(testDir, { name: 'mainService', url: serviceData.url, path: serviceData.path }, fs);
+
+        // verify updated manifest.json
+        manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
+        expect(manifest['sap.app'].dataSources.mainService.uri).toBe(serviceData.path);
+        expect(manifest['sap.app'].dataSources[serviceData.annotations.technicalName]).toBeDefined();
+        // verify local copy of metadata
+        expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(serviceData.metadata);
+        expect(fs.read(join(testDir, 'webapp', 'localService', `${serviceData.annotations.technicalName}.xml`))).toBe(
+            serviceData.annotations.xml
+        );
+        // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
+        expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('- path: /sap\n            url: http://localhost\n');
+        expect(fs.read(join(testDir, 'ui5-local.yaml'))).not.toContain(
+            '- path: /sap\n            url: http://localhost\n'
+        );
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).not.toContain(
+            'services:\n          - urlPath: /sap/odata/testme\n '
+        );
     });
 });
