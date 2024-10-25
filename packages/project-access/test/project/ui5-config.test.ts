@@ -14,6 +14,17 @@ describe('Test getAllUi5YamlFileNames()', () => {
         );
     });
 
+    test('Read list of only invalid Ui5 yaml files w/o schema validation', async () => {
+        const memFs = create(createStorage());
+
+        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'custom-webapp-path'), false))
+            .toMatchInlineSnapshot(`
+            Array [
+              "ui5.yaml",
+            ]
+        `);
+    });
+
     test('Read list of Ui5 yaml files, filter out invalid ones', async () => {
         const memFs = create(createStorage());
 

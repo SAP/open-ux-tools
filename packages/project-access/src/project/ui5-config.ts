@@ -51,10 +51,15 @@ export async function readUi5Yaml(projectRoot: string, fileName: string, memFs?:
  *
  * @param memFs - mem-fs editor instance
  * @param projectRoot - path to project root, where ui5 configuration y*ml files are located
+ * @param validateSchema - (default: true) indicator to return only ui5 configuration files with a valid schema
  * @returns {Promise<string[]>} list of UI5 configuration yaml file names
  * @throws {Error} if an error occurs while reading files from projectRoot
  */
-export async function getAllUi5YamlFileNames(memFs: Editor, projectRoot: string): Promise<string[]> {
+export async function getAllUi5YamlFileNames(
+    memFs: Editor,
+    projectRoot: string,
+    validateSchema = true
+): Promise<string[]> {
     return new Promise((resolve) => {
         //use 'fs' here directly because we only create a list of file names without any i/o operations
         readdir(projectRoot, async (error, files) => {
@@ -79,7 +84,11 @@ export async function getAllUi5YamlFileNames(memFs: Editor, projectRoot: string)
                 }
                 yamlFileNames.add(file);
             }
-            resolve(await excludeFilesViolatingSchema(memFs, yamlFileNames, projectRoot));
+            resolve(
+                validateSchema
+                    ? await excludeFilesViolatingSchema(memFs, yamlFileNames, projectRoot)
+                    : Array.from(yamlFileNames)
+            );
         });
     });
 }
