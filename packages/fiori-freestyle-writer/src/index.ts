@@ -37,9 +37,9 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
     const ui5Version = ffApp.ui5?.minUI5Version ?? ffApp.ui5?.version ?? '';
     const minVersion = coerce(ui5Version);
-    let templateVersionPath = '/1.0.0';
-    if (!minVersion || (gte(minVersion, '2.0.0') && ffApp.template.type === TemplateType.Basic)) {
-        templateVersionPath = '/2.0.0';
+    let templateVersionPath = '/1.71.0';
+    if (!minVersion || (gte(minVersion, '1.120.0') && ffApp.template.type === TemplateType.Basic)) {
+        templateVersionPath = '/1.120.0';
     }
     // Determine if the project type is 'EDMXBackend'.
     const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
@@ -64,7 +64,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         undefined,
         {
             globOptions: { ignore, dot: true },
-            processDestinationPath: (filePath: string) => filePath.replace('/2.0.0', '').replace('/1.0.0', '')
+            processDestinationPath: (filePath: string) => filePath.replace('/1.120.0', '').replace('/1.71.0', '')
         }
     );
     fs.copyTpl(
