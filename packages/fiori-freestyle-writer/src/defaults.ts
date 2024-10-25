@@ -47,7 +47,7 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
     // All fiori-freestyle apps should use load reuse libs for ui5 below 1.120.0 , unless explicitly overridden
     let loadReuseLibs = true;
     if (
-        compareUI5VersionGte(ffApp.ui5?.version ?? '', ui5LtsVersion_1_120) &&
+        compareUI5VersionGte(ffApp.ui5?.minUI5Version ?? ffApp.ui5?.version ?? '', ui5LtsVersion_1_120) &&
         ffApp.template.type === TemplateType.Basic
     ) {
         loadReuseLibs = false;
