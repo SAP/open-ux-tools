@@ -22,10 +22,10 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
     async initialize(): Promise<void> {
         const appType = getApplicationType(this.context.rta.getRootControlInstance().getManifest());
         const version = await getUi5Version();
-        if (appType === 'fe-v4' && isLowerThanMinimalUi5Version(version, { major: 1, minor: 130 })) {
-            return;
-        }
-        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
+        if (
+            FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false ||
+            (appType === 'fe-v4' && isLowerThanMinimalUi5Version(version, { major: 1, minor: 130 }))
+        ) {
             return;
         }
         return super.initialize();
