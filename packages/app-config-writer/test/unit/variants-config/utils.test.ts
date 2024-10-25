@@ -18,13 +18,15 @@ describe('utils', () => {
 
     describe('getUI5UrlParameters', () => {
         test('defaults', () => {
-            expect(utils.getUI5UrlParameters()).toStrictEqual(
+            const packageJson = { devDependencies: { '@sap/ux-ui5-tooling': '1.15.3' } };
+            expect(utils.enhanceUrlParametersWithRta(packageJson)).toStrictEqual(
                 'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true'
             );
         });
 
         test('parameters overwrite with sap-client', () => {
-            expect(utils.getUI5UrlParameters({ 'sap-client': '500' })).toStrictEqual(
+            const packageJson = { devDependencies: { '@sap-ux/preview-middleware': '0.16.88' } };
+            expect(utils.enhanceUrlParametersWithRta(packageJson, { 'sap-client': '500' })).toStrictEqual(
                 'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-client=500'
             );
         });

@@ -60,19 +60,54 @@ export function getSapClientFromPackageJson(scripts: Package['scripts']): string
 }
 
 /**
- * Returns the UI5 url parameters.
- * This is needed for the UI5 run time adaptation.
+ * Extracts the version of the given dependency from the given package.json file.
  *
- * @param overwritingParams - parameters to be overwritten
- * @returns - UI5 url parameters
+ * @param packageJson - package.json file
+ * @param dependencyName - name of the (dev-)dependency
+ * @returns version of the dependency as an array of numbers
  */
-export function getUI5UrlParameters(overwritingParams: Record<string, string> = {}): string {
-    const parameters: Record<string, string> = {
-        'fiori-tools-rta-mode': 'true',
-        'sap-ui-rta-skip-flex-validation': 'true',
-        'sap-ui-xx-condense-changes': 'true'
-    };
-    return stringify(Object.assign(parameters, overwritingParams));
+export function getDependencyVersion(packageJson: Package, dependencyName: string): number[] {
+    return (
+        packageJson?.devDependencies?.[dependencyName]?.split('.').map((versionPart) => parseInt(versionPart, 10)) ??
+        packageJson?.dependencies?.[dependencyName]?.split('.').map((versionPart) => parseInt(versionPart, 10)) ??
+        []
+    );
+}
+
+/**
+ * Checks if the given version is less than the given major, minor and patch version.
+ *
+ * @param version - version to be checked
+ * @param major - major version to be compared with
+ * @param minor - minor version to be compared with
+ * @param patch - patch version to be compared with
+ * @returns true, if the given version is less than the given major, minor and patch version
+ */
+function isVersionLessThan(version: number[], major: number, minor: number, patch: number): boolean {
+    const [vMajor, vMinor, vPatch] = version;
+    return vMajor < major || (vMajor === major && (vMinor < minor || (vMinor === minor && vPatch < patch)));
+}
+
+/**
+ * Enhances the given url parameters with the ones needed for the UI5 run time adaptation.
+ *
+ @param packageJson - package.json file
+ * @param existingParams - parameters to be enhanced
+ * @returns enhanced url parameters
+ */
+export function enhanceUrlParametersWithRta(packageJson: Package, existingParams: Record<string, string> = {}): string {
+    const parameters: Record<string, string> = {};
+
+    if (
+        isVersionLessThan(getDependencyVersion(packageJson, '@sap-ux/preview-middleware'), 0, 16, 89) ||
+        isVersionLessThan(getDependencyVersion(packageJson, '@sap/ux-ui5-tooling'), 1, 15, 4)
+        // todo: adjust ux ui5 tooling version
+    ) {
+        parameters['fiori-tools-rta-mode'] = 'true';
+        parameters['sap-ui-rta-skip-flex-validation'] = 'true';
+        parameters['sap-ui-xx-condense-changes'] = 'true';
+    }
+    return stringify(Object.assign(parameters, existingParams));
 }
 
 /**

@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { getSapClientFromPackageJson, getUI5UrlParameters, getRTAUrl } from './utils';
+import { getSapClientFromPackageJson, enhanceUrlParametersWithRta, getRTAUrl } from './utils';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -39,7 +39,7 @@ export async function addVariantsManagementScript(
         urlParameters['sap-client'] = sapClient;
     }
 
-    const url = await getRTAUrl(basePath, getUI5UrlParameters(urlParameters), yamlPath);
+    const url = await getRTAUrl(basePath, enhanceUrlParametersWithRta(packageJson, urlParameters), yamlPath);
 
     if (!url) {
         throw new Error(`${ERROR_MSG} No RTA editor specified in ui5.yaml.`);
