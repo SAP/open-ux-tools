@@ -589,6 +589,9 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
     devDependencies:
+      '@sap-ux/preview-middleware':
+        specifier: workspace:*
+        version: link:../preview-middleware
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
