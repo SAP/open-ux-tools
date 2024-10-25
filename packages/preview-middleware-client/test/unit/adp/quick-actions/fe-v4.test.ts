@@ -39,7 +39,6 @@ describe('FE V2 quick actions', () => {
         sendActionMock = jest.fn();
         subscribeMock = jest.fn();
         jest.clearAllMocks();
-        jest.spyOn(require('../../../../src/utils/version'), 'isLowerThanMinimalUi5Version').mockReturnValue(true);
     });
 
     afterEach(() => {

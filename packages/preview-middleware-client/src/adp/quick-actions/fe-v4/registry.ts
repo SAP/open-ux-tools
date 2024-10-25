@@ -11,7 +11,6 @@ import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
 import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
 import { AddPageActionQuickAction } from '../common/create-page-action';
 import { AddTableActionQuickAction } from './create-table-action';
-import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../../../utils/version';
 
 type PageName = 'listReport' | 'objectPage';
 
@@ -27,10 +26,6 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
         [OBJECT_PAGE_TYPE]: 'objectPage'
     };
 
-    ui5VersionInfo: Ui5VersionInfo;
-    async initialize() {
-        this.ui5VersionInfo = await getUi5Version();
-    }
     getDefinitions(context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         const activePages = this.getActivePageContent(context.controlIndex);
         const definitionGroups: QuickActionDefinitionGroup[] = [];
@@ -43,14 +38,12 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         ToggleClearFilterBarQuickAction,
                         AddControllerToPageQuickAction,
                         ChangeTableColumnsQuickAction,
+                        AddPageActionQuickAction,
                         AddTableActionQuickAction
                     ],
                     view,
                     key: name + index
                 });
-                if (!isLowerThanMinimalUi5Version(this.ui5VersionInfo, { major: 1, minor: 129 })) {
-                    definitionGroups[index].definitions.push(AddPageActionQuickAction);
-                }
             } else if (name === 'objectPage') {
                 definitionGroups.push({
                     title: 'OBJECT PAGE',
@@ -59,14 +52,12 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         ChangeTableColumnsQuickAction,
                         AddHeaderFieldQuickAction,
                         AddCustomSectionQuickAction,
+                        AddPageActionQuickAction,
                         AddTableActionQuickAction
                     ],
                     view,
                     key: name + index
                 });
-                if (!isLowerThanMinimalUi5Version(this.ui5VersionInfo, { major: 1, minor: 129 })) {
-                    definitionGroups[index].definitions.push(AddPageActionQuickAction);
-                }
             }
         }
         return definitionGroups;
