@@ -57,8 +57,11 @@ export function createPreviewMiddlewareConfig(fs: Editor, basePath: string): Cus
  * @param logger - logger
  */
 export async function updateMiddlewares(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const ui5Yamls = await getAllUi5YamlFileNames(fs, basePath);
-    for (const ui5Yaml of ui5Yamls) {
+    const validatedUi5YamlFileNames = await getAllUi5YamlFileNames(fs, basePath);
+    for (const ui5Yaml of validatedUi5YamlFileNames.invalid ?? []) {
+        logger?.warn(`Skipping UI5 yaml configuration file ${ui5Yaml} because it does not comply with the schema.`);
+    }
+    for (const ui5Yaml of validatedUi5YamlFileNames.valid) {
         let ui5YamlConfig: UI5Config;
         try {
             ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml);
@@ -70,7 +73,7 @@ export async function updateMiddlewares(fs: Editor, basePath: string, logger?: T
         let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
 
         if (!previewMiddleware) {
-            //todo: do we need excludes to not mess up custom u5i yaml configuration files?
+            //todo: do we need excludes to not mess up custom UI5 yaml configuration files?
             // - in case of builder but no server in config (e.g. because configs have been split)
             // or request for approval for each of those files?
             logger?.warn(`No preview middleware found in ${ui5Yaml}. Preview middleware will be added.`);

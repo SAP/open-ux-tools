@@ -9,9 +9,14 @@ describe('Test getAllUi5YamlFileNames()', () => {
     test('Read list of only invalid Ui5 yaml files', async () => {
         const memFs = create(createStorage());
 
-        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'custom-webapp-path'))).toMatchInlineSnapshot(
-            `Array []`
-        );
+        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'custom-webapp-path'))).toMatchInlineSnapshot(`
+            Object {
+              "invalid": Array [
+                "ui5.yaml",
+              ],
+              "valid": Array [],
+            }
+        `);
     });
 
     test('Read list of only invalid Ui5 yaml files w/o schema validation', async () => {
@@ -19,9 +24,11 @@ describe('Test getAllUi5YamlFileNames()', () => {
 
         expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'custom-webapp-path'), false))
             .toMatchInlineSnapshot(`
-            Array [
-              "ui5.yaml",
-            ]
+            Object {
+              "valid": Array [
+                "ui5.yaml",
+              ],
+            }
         `);
     });
 
@@ -29,9 +36,14 @@ describe('Test getAllUi5YamlFileNames()', () => {
         const memFs = create(createStorage());
 
         expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
-            Array [
-              "ui5-custom.yaml",
-            ]
+            Object {
+              "invalid": Array [
+                "ui5.yaml",
+              ],
+              "valid": Array [
+                "ui5-custom.yaml",
+              ],
+            }
         `);
     });
 
@@ -43,9 +55,15 @@ describe('Test getAllUi5YamlFileNames()', () => {
         );
 
         expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
-            Array [
-              "ui5-custom.yaml",
-            ]
+            Object {
+              "invalid": Array [
+                "ui5.yaml",
+                "ui5-something.yaml",
+              ],
+              "valid": Array [
+                "ui5-custom.yaml",
+              ],
+            }
         `);
     });
 
@@ -66,10 +84,15 @@ describe('Test getAllUi5YamlFileNames()', () => {
         memFs.write(join(samplesRoot, 'default-with-ui5-yaml', 'ui5-something.yaml'), yamlString);
 
         expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
-            Array [
-              "ui5-custom.yaml",
-              "ui5-something.yaml",
-            ]
+            Object {
+              "invalid": Array [
+                "ui5.yaml",
+              ],
+              "valid": Array [
+                "ui5-custom.yaml",
+                "ui5-something.yaml",
+              ],
+            }
         `);
     });
 });

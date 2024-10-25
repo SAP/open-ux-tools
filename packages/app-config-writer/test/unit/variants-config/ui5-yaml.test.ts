@@ -21,7 +21,7 @@ describe('Test update middleware', () => {
     const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
     const basePath = join(__dirname, '../../fixtures/variants-config');
     jest.spyOn(projectAccess, 'getAllUi5YamlFileNames').mockReturnValue(
-        Promise.resolve([FileName.Ui5Yaml, FileName.Ui5LocalYaml, FileName.Ui5MockYaml])
+        Promise.resolve({ valid: [FileName.Ui5Yaml, FileName.Ui5LocalYaml, FileName.Ui5MockYaml] })
     );
 
     beforeEach(() => {

@@ -7,6 +7,11 @@ import { readdir } from 'fs';
 import yaml from 'js-yaml';
 import Ajv, { type Schema } from 'ajv';
 
+type ValidatedUi5ConfigFileNames = {
+    valid: string[];
+    invalid?: string[];
+};
+
 /**
  * Get path to webapp.
  *
@@ -51,15 +56,15 @@ export async function readUi5Yaml(projectRoot: string, fileName: string, memFs?:
  *
  * @param memFs - mem-fs editor instance
  * @param projectRoot - path to project root, where ui5 configuration y*ml files are located
- * @param validateSchema - (default: true) indicator to return only ui5 configuration files with a valid schema
- * @returns {Promise<string[]>} list of UI5 configuration yaml file names
+ * @param validateSchema - (default: true) indicator to split list of file names into valid and invalid ones based on the ui5 configuration schema
+ * @returns list of valid and invalid UI5 configuration yaml file names
  * @throws {Error} if an error occurs while reading files from projectRoot
  */
 export async function getAllUi5YamlFileNames(
     memFs: Editor,
     projectRoot: string,
     validateSchema = true
-): Promise<string[]> {
+): Promise<ValidatedUi5ConfigFileNames> {
     return new Promise((resolve) => {
         //use 'fs' here directly because we only create a list of file names without any i/o operations
         readdir(projectRoot, async (error, files) => {
@@ -86,39 +91,45 @@ export async function getAllUi5YamlFileNames(
             }
             resolve(
                 validateSchema
-                    ? await excludeFilesViolatingSchema(memFs, yamlFileNames, projectRoot)
-                    : Array.from(yamlFileNames)
+                    ? await validateUi5ConfigSchema(memFs, yamlFileNames, projectRoot)
+                    : ({
+                          valid: Array.from(yamlFileNames)
+                      } satisfies ValidatedUi5ConfigFileNames)
             );
         });
     });
 }
 
 /**
- * Validates the schema of the yaml files and removes invalid files from the list.
+ * Validates the schema of the given yaml files.
  *
  * @param memFs - mem-fs editor instance
  * @param yamlFileNames - list of yaml file names to be validated
  * @param projectRoot - path to project root, where ui5 configuration y*ml files are located
- * @returns {Promise<string[]>} list of valid UI5 configuration yaml file names
+ * @returns list of valid and invalid UI5 configuration yaml file names
+ * @throws {Error} if the schema for the validation cannot be read
  */
-export async function excludeFilesViolatingSchema(
+export async function validateUi5ConfigSchema(
     memFs: Editor,
     yamlFileNames: Set<string>,
     projectRoot: string
-): Promise<string[]> {
+): Promise<ValidatedUi5ConfigFileNames> {
+    const invalidFileNames: string[] = [];
     const schema: Schema = JSON.parse(memFs.read(join(__dirname, '..', '..', 'dist', 'schema', 'ui5.yaml.json')));
     if (!schema) {
-        //todo: throw error or continue without schema validation?
-        return Array.from(yamlFileNames);
+        throw Error('Schema not found. No validation possible.');
     }
     const ajv = new Ajv({ strict: false });
     const validate = ajv.compile(schema);
     yamlFileNames.forEach((fileName) => {
         const document = yaml.load(memFs.read(join(projectRoot, fileName)), { filename: fileName });
         if (!validate(document)) {
-            //todo: log validate.errors
             yamlFileNames.delete(fileName);
+            invalidFileNames.push(fileName);
         }
     });
-    return Array.from(yamlFileNames);
+    return {
+        valid: Array.from(yamlFileNames),
+        invalid: invalidFileNames
+    };
 }
