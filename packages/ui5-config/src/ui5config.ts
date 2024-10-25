@@ -315,7 +315,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public removeBackendFromFioriToolsProxydMiddleware(backendUrl: string): UI5Config {
+    public removeBackendFromFioriToolsProxydMiddleware(backendUrl: string): this {
         const middlewareListYaml = this.document.getSequence({ path: 'server.customMiddleware' });
         const proxyMiddlewareYaml = this.document.findItem(
             middlewareListYaml,

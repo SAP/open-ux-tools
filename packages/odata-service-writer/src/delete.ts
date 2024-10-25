@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { ManifestNamespace, Manifest } from '@sap-ux/project-access';
 
 /**
- * Internal function that deletes EDMX annotation file for given dataSource.
+ * Internal function that deletes files related to dataSource.
  *
  * @param fs - the memfs editor instance
  * @param manifestPath - the root path of an existing UI5 application
@@ -17,6 +17,34 @@ function deleteFileForDataSource(fs: Editor, manifestPath: string, dataSource: M
         if (fs.exists(localUriPath)) {
             // delete the local data source file
             fs.delete(localUriPath);
+        }
+    }
+}
+
+/**
+ * Internal function that deletes annotation files related to service.
+ *
+ * @param fs - the memfs editor instance
+ * @param manifestPath - the root path of an existing UI5 application
+ * @param annotations - annotations list
+ * @param dataSources - list of dataSources from manifest.json
+ */
+function deleteAnnotations(
+    fs: Editor,
+    manifestPath: string,
+    annotations: string[],
+    dataSources?: { [k: string]: ManifestNamespace.DataSource }
+): void {
+    for (const datasourceKey of annotations) {
+        const annotationDatasource = dataSources?.[datasourceKey];
+        if (annotationDatasource?.type === 'ODataAnnotation') {
+            if (annotationDatasource.uri === annotationDatasource?.settings?.localUri) {
+                // This is localAnnotaton file. Do not delete it.
+            } else if (annotationDatasource) {
+                deleteFileForDataSource(fs, manifestPath, annotationDatasource);
+                // delete dataSource from manifest
+                delete dataSources?.[datasourceKey];
+            }
         }
     }
 }
@@ -48,18 +76,7 @@ export function deleteServiceFromManifest(basePath: string, serviceName: string,
 
     // Check for linked backend annotations and delete if found.
     if (serviceSettings?.annotations && serviceSettings.annotations.length > 0) {
-        for (const datasourceKey of serviceSettings.annotations) {
-            const annotationDatasource = dataSources?.[datasourceKey];
-            if (annotationDatasource?.type === 'ODataAnnotation') {
-                if (annotationDatasource.uri === annotationDatasource?.settings?.localUri) {
-                    // This is localAnnotaton file. Do not delete it.
-                } else if (annotationDatasource) {
-                    deleteFileForDataSource(fs, manifestPath, annotationDatasource);
-                    // delete dataSource from manifest
-                    delete dataSources?.[datasourceKey];
-                }
-            }
-        }
+        deleteAnnotations(fs, manifestPath, serviceSettings.annotations, dataSources);
     }
     // delete dataSource from manifest
     if (dataSources?.[serviceName]) {
