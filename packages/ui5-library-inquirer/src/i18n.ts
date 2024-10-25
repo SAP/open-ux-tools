@@ -1,15 +1,17 @@
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/ui5-library-inquirer.i18n.json';
+import { addi18nResourceBundle as addInquirerCommoni18nResourceBundle } from '@sap-ux/inquirer-common';
 
 const ui5LibI18nNamespace = 'ui5-library-inquirer';
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', ui5LibI18nNamespace, translations)
-    );
+    await i18next.init({ lng: 'en', fallbackLng: 'en' });
+    i18next.addResourceBundle('en', ui5LibI18nNamespace, translations);
+    // add the inquirer common i18n resource bundle to ensure all translations are available
+    addInquirerCommoni18nResourceBundle();
 }
 
 /**

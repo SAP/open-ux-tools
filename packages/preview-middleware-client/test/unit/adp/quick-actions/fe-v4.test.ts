@@ -12,6 +12,7 @@ jest.mock('../../../../src/adp/init-dialogs', () => {
 });
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
+import { FeatureService } from '../../../../src/cpe/feature-service';
 
 import FEV4QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe-v4/registry';
 import { sapCoreMock } from 'mock/window';
@@ -270,6 +271,15 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('change table columns', () => {
+            beforeEach(() => {
+                jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature: string) => {
+                    if (feature === 'cpe.beta.quick-actions') {
+                        return true;
+                    }
+                    return false;
+                });
+                FeatureService.isFeatureEnabled;
+            });
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
