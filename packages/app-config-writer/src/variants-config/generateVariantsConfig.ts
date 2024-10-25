@@ -24,6 +24,6 @@ export async function generateVariantsConfig(
         fs = create(createStorage());
     }
     await addVariantsManagementScript(fs, basePath, yamlPath, logger);
-    await updateMiddlewares(fs, basePath, yamlPath, logger);
+    await updateMiddlewares(fs, basePath, logger);
     return fs;
 }
