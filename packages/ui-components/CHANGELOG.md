@@ -1,5 +1,21 @@
 # @sap-ux/ui-components
 
+## 1.20.1
+
+### Patch Changes
+
+-   f7c606c: UIComboBox/UIDropdown:
+    Fixed an issue where `calloutCollisionTransformation` gets overwritten when external listeners are passed for the following props:
+    -   calloutProps.preventDismissOnEvent
+    -   calloutProps.layerProps.onLayerDidMount
+    -   calloutProps.layerProps.onLayerWillUnmount
+
+## 1.20.0
+
+### Minor Changes
+
+-   ae2a993: UICombobox: Added new property 'searchByKeyEnabled' to allow searching by the option's "key" in addition to "text".
+
 ## 1.19.0
 
 ### Minor Changes

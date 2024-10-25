@@ -207,21 +207,3 @@ function getLocalVersion({
         return minVersion;
     }
 }
-
-/**
- * Retrieve the tag version of the @sap/ux-specification based on the given version.
- *
- * @param ui5Version UI5 version used in the project
- * @returns version tag
- */
-export function getSpecTagVersion(ui5Version: string | undefined): string {
-    if (ui5Version) {
-        if (semVer.valid(ui5Version)) {
-            return `UI5-${semVer.major(ui5Version)}.${semVer.minor(ui5Version)}`;
-        } else if (ui5Version.includes('snapshot') && ui5Version.includes('.')) {
-            const snaphotVersion = ui5Version.split('snapshot-')[1];
-            return `UI5-${snaphotVersion}`;
-        }
-    }
-    return 'latest';
-}
