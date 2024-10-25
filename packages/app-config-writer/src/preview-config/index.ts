@@ -133,9 +133,8 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
     const cdsPluginUi5Exists =
         !!packageJson?.devDependencies?.['cds-plugin-ui5'] || !!packageJson?.dependencies?.['cds-plugin-ui5'];
     if (!ui5MiddlewareMockserverExists && !cdsPluginUi5Exists) {
-        //todo: add link to migration guide
         logger?.error(
-            "A conversion from 'sap/ui/core/util/MockServer' is not supported. Please migrate to '@sap-ux/ui5-middleware-fe-mockserver' first."
+            "A conversion from 'sap/ui/core/util/MockServer' is not supported. Please migrate to '@sap-ux/ui5-middleware-fe-mockserver' first (details see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver)."
         );
         prerequisitesMet = false;
     }
