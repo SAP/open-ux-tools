@@ -1,5 +1,43 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.7.6
+
+### Patch Changes
+
+-   02e4f29: add resource bundle for inquirer common in consumers
+-   Updated dependencies [02e4f29]
+    -   @sap-ux/inquirer-common@0.4.8
+
+## 0.7.5
+
+### Patch Changes
+
+-   d29b1a3: update ui5 default version logic
+-   Updated dependencies [d29b1a3]
+    -   @sap-ux/inquirer-common@0.4.7
+
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [eb38e5b]
+    -   @sap-ux/project-access@1.28.2
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [64e037d]
+    -   @sap-ux/project-access@1.28.1
+
+## 0.7.2
+
+### Patch Changes
+
+-   15e6959: TBI - refactor validation on target folder in app inquirer
+-   Updated dependencies [15e6959]
+    -   @sap-ux/project-access@1.28.0
+
 ## 0.7.1
 
 ### Patch Changes

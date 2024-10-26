@@ -1,5 +1,35 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.31.11
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.2.11
+
+## 0.31.10
+
+### Patch Changes
+
+-   Updated dependencies [eb38e5b]
+    -   @sap-ux/project-access@1.28.2
+    -   @sap-ux/fiori-annotation-api@0.2.10
+
+## 0.31.9
+
+### Patch Changes
+
+-   Updated dependencies [64e037d]
+    -   @sap-ux/project-access@1.28.1
+    -   @sap-ux/fiori-annotation-api@0.2.9
+
+## 0.31.8
+
+### Patch Changes
+
+-   Updated dependencies [15e6959]
+    -   @sap-ux/project-access@1.28.0
+    -   @sap-ux/fiori-annotation-api@0.2.8
+
 ## 0.31.7
 
 ### Patch Changes

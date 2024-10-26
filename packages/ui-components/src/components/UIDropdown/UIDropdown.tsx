@@ -11,7 +11,7 @@ import { UIIcon } from '../UIIcon';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty, getCalloutCollisionTransformationProps } from './utils';
+import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from './utils';
 import { CalloutCollisionTransform } from '../UICallout';
 
 import './UIDropdown.scss';
@@ -313,19 +313,6 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
         return (
             <Dropdown
                 ref={this.dropdownDomRef}
-                calloutProps={{
-                    calloutMaxHeight: 200,
-                    styles: this.props.useDropdownAsMenuMinWidth ? this.getCalloutStylesForUseAsMinWidth : undefined,
-                    className: 'ts-Callout ts-Callout-Dropdown',
-                    popupProps: {
-                        ref: this.menuDomRef
-                    },
-                    ...getCalloutCollisionTransformationProps(
-                        this.calloutCollisionTransform,
-                        this.props.multiSelect,
-                        this.props.calloutCollisionTransformation
-                    )
-                }}
                 onRenderCaretDown={this.onRenderCaretDown}
                 onClick={this.onClick}
                 onChange={this.onChange}
@@ -335,6 +322,16 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                 disabled={this.props.readOnly}
                 {...additionalProps}
                 {...this.props}
+                calloutProps={{
+                    calloutMaxHeight: 200,
+                    styles: this.props.useDropdownAsMenuMinWidth ? this.getCalloutStylesForUseAsMinWidth : undefined,
+                    className: 'ts-Callout ts-Callout-Dropdown',
+                    popupProps: {
+                        ref: this.menuDomRef
+                    },
+                    ...this.props.calloutProps,
+                    ...getCalloutCollisionTransformationPropsForDropdown(this, this.calloutCollisionTransform)
+                }}
                 onRenderOption={this.onRenderOption.bind(this)}
                 onRenderItem={this.onRenderItem.bind(this)}
                 styles={dropdownStyles}

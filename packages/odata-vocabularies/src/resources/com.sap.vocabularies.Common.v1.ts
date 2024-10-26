@@ -1,4 +1,4 @@
-// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
+// Last content update: Mon Oct 21 2024 11:45:53 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -99,6 +99,19 @@ export default {
             '$Kind': 'Term',
             '@Org.OData.Core.V1.Description': 'A short, human-readable text suitable for tool tips in UIs',
             '@Org.OData.Core.V1.IsLanguageDependent': true
+        },
+        'DocumentationRef': {
+            '$Kind': 'Term',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'A URI referencing language-dependent documentation for the annotated model element',
+            '@Org.OData.Core.V1.Example': {
+                '@odata.type':
+                    'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml#Core.PrimitiveExampleValue',
+                'Description':
+                    'URN scheme to look up the documentation for an object with given type and id in a given system.\n              This example looks up the documentation for data element /iwbep/account in system G1Y_000.',
+                'Value': 'urn:sap-com:documentation:key?=type=DTEL&id=%2fiwbep%2faccount&origin=G1Y_000'
+            }
         },
         'Text': {
             '$Kind': 'Term',
@@ -226,14 +239,9 @@ export default {
             '$Collection': true,
             '$Type': 'Edm.PropertyPath',
             '$AppliesTo': ['EntityType'],
-            '@Org.OData.Core.V1.Revisions': [
-                {
-                    'Kind': 'Deprecated',
-                    'Description': 'Use term `AlternateKeys` from the OASIS Core vocabulary instead'
-                }
-            ],
-            '@Org.OData.Core.V1.Description':
-                'The listed properties form a secondary key. Multiple secondary keys are possible using different qualifiers.'
+            '@Org.OData.Core.V1.Description': 'The listed properties form a secondary key',
+            '@Org.OData.Core.V1.LongDescription':
+                'Multiple secondary keys are possible using different qualifiers.\n          Unlike [`Core.AlternateKeys`](https://github.com/oasis-tcs/odata-vocabularies/blob/main/vocabularies/Org.OData.Core.V1.md#AlternateKeys),\n          secondary keys need not support addressing an entity in a resource path.'
         },
         'MinOccurs': {
             '$Kind': 'Term',
@@ -306,7 +314,7 @@ export default {
         'SemanticObjectMapping': {
             '$Kind': 'Term',
             '$Collection': true,
-            '$Type': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingType',
+            '$Type': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingAbstract',
             '$AppliesTo': ['EntitySet', 'EntityType', 'Property'],
             '$BaseTerm': 'com.sap.vocabularies.Common.v1.SemanticObject',
             '@Org.OData.Core.V1.Description':
@@ -314,17 +322,31 @@ export default {
             '@Org.OData.Core.V1.LongDescription':
                 'This allows "renaming" of properties in the current context to match property names of the Semantic Object, e.g. `SenderPartyID` to `PartyID`. Only properties explicitly listed in the mapping are renamed, all other properties are available for intent-based navigation with their "local" name.'
         },
+        'SemanticObjectMappingAbstract': {
+            '$Kind': 'ComplexType',
+            '$Abstract': true,
+            '@Org.OData.Core.V1.Description':
+                'Maps a property of the Semantic Object to a property of the annotated entity type or a sibling property of the annotated property or a constant value',
+            'SemanticObjectProperty': {
+                '@Org.OData.Core.V1.Description': 'Name of the Semantic Object property'
+            }
+        },
         'SemanticObjectMappingType': {
             '$Kind': 'ComplexType',
-            '@Org.OData.Core.V1.Description':
-                'Maps a property of the annotated entity type or a sibling property of the annotated property to a property of the Semantic Object',
+            '$BaseType': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingAbstract',
             'LocalProperty': {
                 '$Type': 'Edm.PropertyPath',
                 '@Org.OData.Core.V1.Description':
                     'Path to a local property that provides the value for the Semantic Object property'
-            },
-            'SemanticObjectProperty': {
-                '@Org.OData.Core.V1.Description': 'Name of the Semantic Object property'
+            }
+        },
+        'SemanticObjectMappingConstant': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingAbstract',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            'Constant': {
+                '$Type': 'Edm.PrimitiveType',
+                '@Org.OData.Core.V1.Description': 'Constant value for the Semantic Object property'
             }
         },
         'SemanticObjectUnavailableActions': {
@@ -1438,7 +1460,8 @@ export default {
         },
         'SortOrderType': {
             '$Kind': 'ComplexType',
-            '@Org.OData.Core.V1.Description': 'Exactly one of `Property` and `DynamicProperty` must be present',
+            '@Org.OData.Core.V1.Description':
+                'Exactly one of `Property`, `DynamicProperty` and `Expression` must be present',
             'Property': {
                 '$Type': 'Edm.PropertyPath',
                 '$Nullable': true,
@@ -1462,6 +1485,13 @@ export default {
                     'com.sap.vocabularies.Analytics.v1.AggregatedProperty',
                     'Org.OData.Aggregation.V1.CustomAggregate'
                 ]
+            },
+            'Expression': {
+                '$Type': 'Edm.PrimitiveType',
+                '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description':
+                    'Dynamic expression whose primitive result value is used to sort the instances'
             },
             'Descending': {
                 '$Type': 'Edm.Boolean',

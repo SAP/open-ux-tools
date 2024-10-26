@@ -1,5 +1,75 @@
 # @sap-ux/preview-middleware
 
+## 0.16.93
+
+### Patch Changes
+
+-   5ec7106: Modified indicators incorrectly displayed for some UI5 controls in Adaptation Project
+
+## 0.16.92
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.62
+
+## 0.16.91
+
+### Patch Changes
+
+-   c04007b: Enable quick actions by default
+
+## 0.16.90
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.61
+
+## 0.16.89
+
+### Patch Changes
+
+-   3e9cab4: make rta editor url params optional
+
+## 0.16.88
+
+### Patch Changes
+
+-   9bda640: CPE loading changes from backend and not from workspace
+-   Updated dependencies [9bda640]
+    -   @sap-ux/adp-tooling@0.12.60
+
+## 0.16.87
+
+### Patch Changes
+
+-   93ffe8d: Use feature toggles in the control property editor
+-   Updated dependencies [93ffe8d]
+    -   @sap-ux/feature-toggle@0.2.2
+
+## 0.16.86
+
+### Patch Changes
+
+-   Updated dependencies [eb38e5b]
+    -   @sap-ux/project-access@1.28.2
+    -   @sap-ux/adp-tooling@0.12.59
+
+## 0.16.85
+
+### Patch Changes
+
+-   Updated dependencies [64e037d]
+    -   @sap-ux/project-access@1.28.1
+    -   @sap-ux/adp-tooling@0.12.58
+
+## 0.16.84
+
+### Patch Changes
+
+-   Updated dependencies [15e6959]
+    -   @sap-ux/project-access@1.28.0
+    -   @sap-ux/adp-tooling@0.12.57
+
 ## 0.16.83
 
 ### Patch Changes

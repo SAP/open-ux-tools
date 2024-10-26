@@ -62,6 +62,7 @@
         data-sap-ui-xx-componentPreload="off"<%- ui5.bootstrapOptions %>
         data-sap-ui-oninit="module:open/ux/preview/client/flp/init"<% if (locals.init) { %>
         data-open-ux-preview-customInit='<%- init %>'<% } if (locals.flex) { %>
+        data-open-ux-preview-features='<%- JSON.stringify(features) %>'
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
     </script>

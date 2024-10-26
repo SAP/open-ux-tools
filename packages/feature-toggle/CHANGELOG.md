@@ -1,5 +1,11 @@
 # @sap-ux/feature-toggle
 
+## 0.2.2
+
+### Patch Changes
+
+-   93ffe8d: Include feature toggles form environment variable in `getAllFeatureToggles`
+
 ## 0.2.1
 
 ### Patch Changes

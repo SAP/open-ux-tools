@@ -1,5 +1,39 @@
 # @sap-ux/ui-components
 
+## 1.20.1
+
+### Patch Changes
+
+-   f7c606c: UIComboBox/UIDropdown:
+    Fixed an issue where `calloutCollisionTransformation` gets overwritten when external listeners are passed for the following props:
+    -   calloutProps.preventDismissOnEvent
+    -   calloutProps.layerProps.onLayerDidMount
+    -   calloutProps.layerProps.onLayerWillUnmount
+
+## 1.20.0
+
+### Minor Changes
+
+-   ae2a993: UICombobox: Added new property 'searchByKeyEnabled' to allow searching by the option's "key" in addition to "text".
+
+## 1.19.0
+
+### Minor Changes
+
+-   ea18bcb: Added new API method `initTheme` to override default Fluent UI styles, removing `-webkit-font-smoothing: antialiased`.
+
+## 1.18.11
+
+### Patch Changes
+
+-   b403459: fix(ui-components): #2140 - fix dropdown vertical align input field
+
+## 1.18.10
+
+### Patch Changes
+
+-   9e9daa4: UIComboBox, UIDropdown: Allow extending 'calloutProps' instead of overwriting.
+
 ## 1.18.9
 
 ### Patch Changes

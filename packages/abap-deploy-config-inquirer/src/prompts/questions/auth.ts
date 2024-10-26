@@ -1,11 +1,7 @@
 import { t } from '../../i18n';
 import { showPasswordQuestion, showUsernameQuestion } from '../conditions';
 import { validateCredentials } from '../validators';
-import {
-    abapDeployConfigInternalPromptNames,
-    type AbapDeployConfigAnswersInternal,
-    type AbapDeployConfigPromptOptions
-} from '../../types';
+import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../types';
 import type { InputQuestion, PasswordQuestion, Question } from 'inquirer';
 
 /**
@@ -18,7 +14,7 @@ function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<Aba
     return {
         when: (): Promise<boolean> => showUsernameQuestion(options.backendTarget),
         type: 'input',
-        name: abapDeployConfigInternalPromptNames.username,
+        name: promptNames.username,
         message: t('prompts.auth.username.message'),
         guiOptions: {
             mandatory: true
@@ -36,7 +32,7 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
     return {
         when: (): boolean => showPasswordQuestion(),
         type: 'password',
-        name: abapDeployConfigInternalPromptNames.password,
+        name: promptNames.password,
         message: t('prompts.auth.password.message'),
         mask: '*',
         guiOptions: {

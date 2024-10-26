@@ -1,7 +1,7 @@
 import { getUi5Themes, type UI5Theme, type UI5Version } from '@sap-ux/ui5-info';
 import * as fuzzy from 'fuzzy';
 import type { ListChoiceOptions } from 'inquirer';
-import { coerce, eq, lte } from 'semver';
+import { coerce, eq, lte, type SemVer } from 'semver';
 import { t } from '../i18n';
 import type { UI5VersionChoice } from '../types';
 import { Separator } from './separator';
@@ -44,7 +44,7 @@ export function searchChoices(searchVal: string, searchList: ListChoiceOptions[]
  *
  * @param versions ui5Versions
  * @param includeSeparators Include a separator to visually identify groupings, if false then grouping info is included in each entry as additional name text
- * @param defaultChoice optional, provides an additional version choice entry that is added as the first entry in the version choices and sets as the default
+ * @param defaultChoice optional, provides an additional version choice entry that is added as the first entry in the version choices (if it does not already exist in the version list) and sets as the default
  * @returns Array of ui5 version choices and separators if applicable, grouped by maintenance state
  */
 export function ui5VersionsGrouped(
@@ -95,27 +95,60 @@ export function ui5VersionsGrouped(
 
     const versionChoices = [...maintChoices, ...notMaintChoices];
     if (defaultChoice) {
-        versionChoices.unshift(defaultChoice);
+        const index = versionChoices.findIndex((choice) => choice.value === defaultChoice.value);
+        if (index === -1) {
+            // adds default choice to the top of the list
+            versionChoices.unshift(defaultChoice);
+        }
     }
     return versionChoices;
 }
 
 /**
- * Get the default UI5 version choice that should be selected based on the provided default choice.
- * Note that if the default choice is not found in the provided versions, the closest provided version is returned.
+ * Will either return the UI5 version that is the closest to the default choice version or simply the version that is passed to it.
  *
  * @param ui5Versions - UI5 versions ordered by version descending latest first
- * @param [defaultChoice] - optional default choice to use if found in the provided versions, otherwise the closest provided version is returned
- * @returns The default UI5 version choice that is closest to the provided default choice or the latest provided version
+ * @param useClosestVersion - whether to use the closest available version to the default choice
+ * @param defaultChoiceVersion - default version chosen
+ * @returns - ui5 version to be used as default
+ */
+function findDefaultUI5Version(
+    ui5Versions: UI5Version[],
+    useClosestVersion: boolean,
+    defaultChoiceVersion: SemVer
+): UI5Version | undefined {
+    let version;
+    if (useClosestVersion) {
+        version = ui5Versions.find((ui5Ver) => lte(ui5Ver.version, defaultChoiceVersion));
+    } else {
+        version = {
+            version: defaultChoiceVersion.version
+        };
+    }
+    return version;
+}
+
+/**
+ * Get the default UI5 version choice that should be selected based on the provided default choice.
+ * Note, if the provided version is a snapshot version, the closest provided version is returned.
+ * Otherwise if the default choice is not found in the provided versions, it will still be returned.
+ *
+ * @param ui5Versions - UI5 versions ordered by version descending latest first
+ * @param defaultChoice - optional default choice to be used
+ * @returns The default UI5 version choice or the latest provided version
  */
 export function getDefaultUI5VersionChoice(
     ui5Versions: UI5Version[],
     defaultChoice?: UI5VersionChoice
 ): UI5VersionChoice | undefined {
+    let useClosestVersion = false;
     if (defaultChoice) {
+        if (defaultChoice.value.toLowerCase().endsWith('snapshot')) {
+            useClosestVersion = true;
+        }
         const defaultChoiceVersion = coerce(defaultChoice.value);
         if (defaultChoiceVersion !== null) {
-            const version = ui5Versions.find((ui5Ver) => lte(ui5Ver.version, defaultChoiceVersion));
+            const version = findDefaultUI5Version(ui5Versions, useClosestVersion, defaultChoiceVersion);
             if (version) {
                 // if the versions are an exact match use the name (UI label) from the default choice as this may use a custom name
                 return {
