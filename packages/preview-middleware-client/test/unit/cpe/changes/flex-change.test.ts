@@ -6,6 +6,8 @@ import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
+import { ManifestPropertyChange } from 'sap/ui/dt/DesignTimeMetadata';
 
 describe('flexChange', () => {
     // prepare
@@ -149,5 +151,69 @@ describe('flexChange', () => {
 
         // assert
         expect(pushAndExecuteMock).not.toBeCalled();
+    });
+
+    test('applyChange - manifest change', async () => {
+        OverlayUtil.getClosestOverlayFor = jest.fn().mockReturnValue({
+            getDesignTimeMetadata: jest.fn().mockReturnValue({
+                getData: jest.fn().mockReturnValue({
+                    manifestPropertyPath: jest.fn().mockReturnValue('someConfiguration/test/component/settings'),
+                    manifestPropertyChange: jest.fn().mockReturnValue([
+                        {
+                            appComponent: {} as any,
+                            changeSpecificData: {
+                                appDescriptorChangeType: 'appdescr_fe_changePageConfiguration',
+                                content: {
+                                    parameters: {
+                                        entityPropertyChange: {
+                                            operation: 'upsert',
+                                            propertyPath: 'someConfiguration/test/component/settings',
+                                            propertyValue: 'apply'
+                                        },
+                                        page: 'ListReport'
+                                    }
+                                }
+                            },
+                            selector: {} as any
+                        }
+                    ] as ManifestPropertyChange[])
+                })
+            })
+        });
+        sapCoreMock.byId.mockReturnValueOnce(control);
+        const change: PropertyChange = {
+            controlId: 'testId',
+            propertyName: 'someConfiguration/test/component/settings',
+            propertyType: PropertyType.Configuration,
+            value: 'apply',
+            controlName: 'controlName',
+            changeType: 'propertyChange'
+        };
+
+        // act
+        await applyChange(testOptions, change);
+
+        // assert
+        expect(CommandFactory.getCommandFor).toBeCalledWith(
+            control,
+            'appDescriptor',
+            {
+                appComponent: {},
+                changeType: 'appdescr_fe_changePageConfiguration',
+                parameters: {
+                    entityPropertyChange: {
+                        operation: 'upsert',
+                        propertyPath: 'someConfiguration/test/component/settings',
+                        propertyValue: 'apply'
+                    },
+                    page: 'ListReport'
+                },
+                reference: '',
+                selector: {}
+            },
+            null,
+            flexSettings
+        );
+        expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
     });
 });

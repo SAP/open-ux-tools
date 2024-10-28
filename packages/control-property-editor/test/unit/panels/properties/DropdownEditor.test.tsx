@@ -48,7 +48,8 @@ describe('DropdownEditor', () => {
                 'controlId': 'testControlId',
                 'controlName': 'Button',
                 'propertyName': 'testProperty',
-                'value': 'option2'
+                'value': 'option2',
+                'propertyType': 'controlProperty'
             },
             'type': 'app/change-property'
         });
@@ -68,6 +69,7 @@ describe('DropdownEditor', () => {
                 "controlId": "testControlId",
                 "controlName": "Button",
                 "propertyName": "testPropertyName",
+                "propertyType": "controlProperty",
                 "value": "newValue",
               },
               "type": "app/change-property",

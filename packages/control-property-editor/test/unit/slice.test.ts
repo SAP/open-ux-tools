@@ -220,6 +220,7 @@ describe('main redux slice', () => {
                                         fileName: 'testFile1',
                                         isActive: true,
                                         propertyName: 'text',
+                                        propertyType: 'controlProperty',
                                         type: 'pending',
                                         value: '{i18n>DELETE}'
                                     },
@@ -230,6 +231,7 @@ describe('main redux slice', () => {
                                         kind: 'property',
                                         fileName: 'file',
                                         propertyName: 'text',
+                                        propertyType: 'controlProperty',
                                         timestamp: 123,
                                         type: 'saved',
                                         value: 'abc'
@@ -249,6 +251,7 @@ describe('main redux slice', () => {
                             controlId: 'control1',
                             fileName: 'testFile1',
                             isActive: true,
+                            propertyType: 'controlProperty',
                             propertyName: 'text',
                             value: '{i18n>DELETE}'
                         }
@@ -259,6 +262,7 @@ describe('main redux slice', () => {
                             controlId: 'control1',
                             controlName: 'Button',
                             propertyName: 'text',
+                            propertyType: 'controlProperty',
                             type: 'saved',
                             kind: 'property',
                             fileName: 'file',
