@@ -78,7 +78,6 @@ export async function renameSandboxes(fs: Editor, basePath: string, logger?: Too
  */
 export async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const webappTestPath = join(await getWebappPath(basePath), 'test');
-    // todo: check if the list of files is complete
     [
         join(webappTestPath, 'locate-reuse-libs.js'),
         join(webappTestPath, 'changes_loader.js'),
@@ -158,15 +157,6 @@ export async function checkPrerequisites(basePath: string, fs: Editor, logger?: 
  * @returns Explicit user approval to do the conversion.
  */
 async function getExplicitApprovalToAdjustFiles(): Promise<boolean> {
-    /* todo: is this needed?
-    const cancel = {
-        onCancel: () => {
-            logger?.info(yellow(t('info.operationAborted')));
-            return process.exit(1);
-        }
-    };
-    */
-
     const question: PromptObject = {
         name: 'approval',
         type: 'confirm',
@@ -175,6 +165,5 @@ async function getExplicitApprovalToAdjustFiles(): Promise<boolean> {
             'The converter will rename html files and delete js files used for the existing preview and configure the usage of virtual files instead. Do you want to proceed with the conversion?'
     };
 
-    //return (await prompt([question], cancel)) as boolean;
     return (await prompt([question])) as boolean;
 }
