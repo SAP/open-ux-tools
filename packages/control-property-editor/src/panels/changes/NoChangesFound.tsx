@@ -6,9 +6,9 @@ import styles from './ChangesPanel.module.scss';
 const NoChangesFound = () => {
     const { t } = useTranslation();
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <Text className={styles.noChangesFound}>{t('NO_CHANGES_FOUND')}</Text>
-            <Text className={styles.modifyChanges}>{t('MODIFY_CHANGES')}</Text>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', paddingTop: '30px' }}>
+            <Text className={styles.noChangesFoundTitle}>{t('NO_CHANGES_FOUND_TITLE')}</Text>
+            <Text className={styles.noChangesFoundDescription}>{t('NO_CHANGES_FOUND_DESCRIPTION')}</Text>
             <div className={styles.historyGlockIcon}>
                 <svg
                     width="42"
