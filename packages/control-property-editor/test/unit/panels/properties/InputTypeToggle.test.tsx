@@ -32,7 +32,7 @@ describe('InputTypeToggle', () => {
             isEnabled: false,
             name: 'testPropNameCheckbox',
             readableName: 'testName',
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
 
         let value = getValueForInputType(controlId, { ...propCheckbox }, InputType.booleanFalse);
@@ -53,7 +53,7 @@ describe('InputTypeToggle', () => {
                 { key: 'option2', text: 'option2' }
             ],
             readableName: 'testName',
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
 
         value = getValueForInputType(controlId, { ...propDropDown }, InputType.expression);
@@ -70,7 +70,7 @@ describe('InputTypeToggle', () => {
             isEnabled: true,
             name: 'testPropNameString',
             readableName: 'testName',
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
 
         value = getValueForInputType(controlId, { ...propString }, InputType.expression);
@@ -91,7 +91,7 @@ describe('InputTypeToggle', () => {
             name: propertyName,
             value,
             readableName: 'testName',
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
         const inputTypeProps: InputTypeToggleOptionProps = {
             inputType: InputType.booleanTrue,

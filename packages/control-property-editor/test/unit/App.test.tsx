@@ -43,7 +43,7 @@ test('renders properties', () => {
                     value: '',
                     isEnabled: true,
                     readableName: '',
-                    propertyType: PropertyType.ControlProperty,
+                    propertyType: PropertyType.ControlProperty
                 },
                 {
                     type: 'string',
@@ -78,7 +78,7 @@ test('renders properties', () => {
                             text: 'Dialog'
                         }
                     ],
-                    propertyType: PropertyType.ControlProperty,
+                    propertyType: PropertyType.ControlProperty
                 },
                 {
                     type: 'boolean',
@@ -87,7 +87,7 @@ test('renders properties', () => {
                     value: true,
                     isEnabled: true,
                     readableName: 'test check',
-                    propertyType: PropertyType.ControlProperty,
+                    propertyType: PropertyType.ControlProperty
                 },
                 {
                     type: 'string',
@@ -97,7 +97,7 @@ test('renders properties', () => {
                     value: '{ dropDownDynamicExpression }',
                     isEnabled: true,
                     readableName: '',
-                    propertyType: PropertyType.ControlProperty,
+                    propertyType: PropertyType.ControlProperty
                 },
                 {
                     type: 'boolean',
@@ -106,7 +106,7 @@ test('renders properties', () => {
                     isEnabled: true,
                     value: '{ checkBoxDynamicExpression }',
                     readableName: 'test check dynamic expression',
-                    propertyType: PropertyType.ControlProperty,
+                    propertyType: PropertyType.ControlProperty
                 },
                 {
                     type: 'string',
@@ -115,7 +115,7 @@ test('renders properties', () => {
                     isEnabled: true,
                     value: 'checkBoxDynamicExpression',
                     readableName: 'test check dynamic expression',
-                    propertyType: PropertyType.ControlProperty,
+                    propertyType: PropertyType.ControlProperty
                 }
             ]
         })

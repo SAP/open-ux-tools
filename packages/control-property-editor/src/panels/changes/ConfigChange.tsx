@@ -5,11 +5,13 @@ import { Text, Stack, StackItem } from '@fluentui/react';
 import { useDispatch } from 'react-redux';
 import styles from './ConfigChange.module.scss';
 import { UIIconButton, UiIcons, UIDialog, UIIcon } from '@sap-ux/ui-components';
-import { deletePropertyChanges, PendingConfigurationChange, PropertyChangeDeletionDetails, SavedConfigurationChange } from '@sap-ux-private/control-property-editor-common';
-import {
-    convertCamelCaseToPascalCase,
-    SAVED_CHANGE_TYPE
+import type {
+    PendingConfigurationChange,
+    PropertyChangeDeletionDetails,
+    SavedConfigurationChange
 } from '@sap-ux-private/control-property-editor-common';
+import { deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
+import { convertCamelCaseToPascalCase, SAVED_CHANGE_TYPE } from '@sap-ux-private/control-property-editor-common';
 import { getFormattedDateAndTime } from './utils';
 import { IconName } from '../../icons';
 
@@ -22,9 +24,9 @@ export interface ConfigChangeProps {
 }
 
 /**
- * React element for unknown change in change stack.
+ * React element for config change in change stack.
  *
- * @param unknownChangeProps UnknownChangeProps
+ * @param configChangeProps ConfigChangeProps
  * @returns ReactElement
  */
 export function ConfigChange(configChangeProps: Readonly<ConfigChangeProps>): ReactElement {

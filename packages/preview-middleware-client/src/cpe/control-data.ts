@@ -203,6 +203,7 @@ interface NewControlData {
  * Build control data.
  *
  * @param control - ui5 control
+ * @param changeService - Changeservice for change stack event handling.
  * @param controlOverlay - element overlay
  * @param includeDocumentation - include documentation flag
  * @returns Promise<Control>

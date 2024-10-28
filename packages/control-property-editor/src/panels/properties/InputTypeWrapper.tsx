@@ -119,13 +119,14 @@ export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFuncti
     if (
         property.propertyType === PropertyType.ControlProperty ||
         (property.propertyType === PropertyType.Configuration && type === STRING_VALUE_TYPE && editor != 'dropdown')
-    )
+    ) {
         inputTypeToggleOptions.push({
             inputType: InputType.expression,
             tooltip: getToolTip('EXPRESSION_TYPE', t),
             iconName: IconName.expression,
             selected: typeof value === 'string' && isExpression(value)
         });
+    }
 
     return inputTypeToggleOptions;
 };

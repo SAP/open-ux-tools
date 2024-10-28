@@ -63,6 +63,7 @@ function getChildren(current: OutlineViewNode): OutlineViewNode[] {
  *
  * @param {string} id - The unique identifier of the control to be added as a child node.
  * @param {OutlineNode[]} children - The array of children nodes to which the new node will be added.
+ * @param {ChangeService} changeService - Change service for change stack event handling.
  */
 function addChildToExtensionPoint(id: string, children: OutlineNode[], changeService: ChangeService) {
     const { text, technicalName } = getAdditionalData(id);
@@ -100,6 +101,7 @@ function indexNode(controlIndex: ControlTreeIndex, node: OutlineNode): void {
  * @param scenario type of project
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param controlIndex Control tree index
+ * @param changeService ChanegService for change stack event handling.
  * @returns transformed outline tree nodes
  */
 export async function transformNodes(
@@ -193,6 +195,7 @@ function fillReuseComponents(
  * @param scenario type of project
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param controlIndex Control tree index
+ * @param changeService ChangeService for change stack event handling.
  * @returns transformed outline tree nodes
  */
 export async function handleDuplicateNodes(

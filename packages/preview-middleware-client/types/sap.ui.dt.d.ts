@@ -1,6 +1,6 @@
 declare module 'sap/ui/dt/DesignTimeMetadata' {
     import type ManagedObject from 'sap/ui/base/ManagedObject';
-    import type AppComponent from "sap/fe/core/AppComponent";
+    import type AppComponent from 'sap/fe/core/AppComponent';
     export interface DesignTimeMetadataData {
         name: string;
         ignore: boolean;
@@ -9,10 +9,10 @@ declare module 'sap/ui/dt/DesignTimeMetadata' {
         specialIndexHandling?: boolean;
     }
     export enum TemplateType {
-        ListReport = "ListReport",
-        ObjectPage = "ObjectPage",
-        AnalyticalListPage = "AnalyticalListPage",
-        FreeStylePage = "None"
+        ListReport = 'ListReport',
+        ObjectPage = 'ObjectPage',
+        AnalyticalListPage = 'AnalyticalListPage',
+        FreeStylePage = 'None'
     }
     export interface DesigntimeSettingEnums {
         id: string;
@@ -50,7 +50,7 @@ declare module 'sap/ui/dt/DesignTimeMetadata' {
         appComponent: AppComponent;
         selector: AppComponent;
         changeSpecificData: {
-            appDescriptorChangeType: "appdescr_fe_changePageConfiguration";
+            appDescriptorChangeType: 'appdescr_fe_changePageConfiguration';
             content: {
                 parameters: {
                     page: string;

@@ -2,11 +2,11 @@ import type { ReactElement } from 'react';
 import React from 'react';
 import { Stack, Text } from '@fluentui/react';
 
-import {
+import type {
     PendingConfigurationChange,
-    SAVED_CHANGE_TYPE,
     SavedConfigurationChange
 } from '@sap-ux-private/control-property-editor-common';
+import { SAVED_CHANGE_TYPE } from '@sap-ux-private/control-property-editor-common';
 
 import styles from './ControlGroup.module.scss';
 import { ConfigChange as ConfigurationChange } from './ConfigChange';
@@ -19,9 +19,9 @@ export interface ConfigGroupProps {
 }
 
 /**
- * React Element for control groups.
+ * React Element for config groups.
  *
- * @param controlGroupProps ControlGroupProps
+ * @param configGroupProps ConfigGroupProps
  * @returns ReactElement
  */
 export function ConifgGroup(configGroupProps: ConfigGroupProps): ReactElement {

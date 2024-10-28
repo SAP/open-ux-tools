@@ -60,7 +60,7 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
         await rta.getCommandStack().pushAndExecute(command);
     } else if (change.propertyType === PropertyType.Configuration) {
         const overlay = getOverlay(modifiedControl);
-        if (!overlay) return;
+        if (!overlay) {return;}
         const overlayData = overlay?.getDesignTimeMetadata().getData();
         const manifestPropertyPath = overlayData.manifestPropertyPath(modifiedControl);
         const [manifestPropertyChange] = overlayData.manifestPropertyChange(

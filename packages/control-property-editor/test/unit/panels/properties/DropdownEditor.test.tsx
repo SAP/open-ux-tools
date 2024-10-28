@@ -54,7 +54,13 @@ describe('DropdownEditor', () => {
         });
     });
     test('valueChanged function', () => {
-        const result = valueChanged('testControlId', 'testPropertyName', 'newValue', 'Button', PropertyType.ControlProperty);
+        const result = valueChanged(
+            'testControlId',
+            'testPropertyName',
+            'newValue',
+            'Button',
+            PropertyType.ControlProperty
+        );
         expect(result).toMatchInlineSnapshot(`
             Object {
               "payload": Object {

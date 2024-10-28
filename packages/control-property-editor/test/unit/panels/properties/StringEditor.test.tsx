@@ -26,7 +26,7 @@ describe('StringEditor', () => {
             isEnabled: false,
             name: 'testProperty',
             value,
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
         render(<StringEditor controlName="testControl" property={property} controlId={controlId} />);
 
@@ -43,7 +43,7 @@ describe('StringEditor', () => {
             isIcon: true,
             name: 'testProperty',
             value,
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />, {
             initialState: {
@@ -79,7 +79,7 @@ describe('StringEditor', () => {
             name: 'testProperty',
             value,
             type: 'integer',
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
 
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
@@ -100,7 +100,7 @@ describe('StringEditor', () => {
             name: 'testProperty',
             value,
             type: 'integer',
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
 
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
@@ -123,7 +123,7 @@ describe('StringEditor', () => {
             name: 'testProperty',
             value,
             type: 'integer',
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
         const { dispatch } = render(
             <StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />
@@ -146,7 +146,7 @@ describe('StringEditor', () => {
             name: 'testProperty',
             value,
             type: 'integer',
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
 
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
@@ -169,7 +169,7 @@ describe('StringEditor', () => {
             name: 'testProperty',
             value,
             type: 'float',
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
 
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
@@ -190,7 +190,7 @@ describe('StringEditor', () => {
             name: 'testProperty',
             value,
             type: 'float',
-            propertyType: PropertyType.ControlProperty,
+            propertyType: PropertyType.ControlProperty
         };
 
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);

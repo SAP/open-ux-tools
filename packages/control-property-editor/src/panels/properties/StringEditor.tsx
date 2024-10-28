@@ -12,12 +12,7 @@ import { isExpression, InputType } from './types';
 import { setCachedValue } from './propertyValuesCache';
 
 import './Properties.scss';
-import {
-    reportTelemetry,
-    FLOAT_VALUE_TYPE,
-    INTEGER_VALUE_TYPE,
-    PropertyType
-} from '@sap-ux-private/control-property-editor-common';
+import { reportTelemetry, FLOAT_VALUE_TYPE, INTEGER_VALUE_TYPE } from '@sap-ux-private/control-property-editor-common';
 import './SapUiIcon.scss';
 import { IconValueHelp } from './IconValueHelp';
 import type { IconDetails } from '@sap-ux-private/control-property-editor-common';

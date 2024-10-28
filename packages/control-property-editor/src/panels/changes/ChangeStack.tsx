@@ -26,7 +26,8 @@ import type { RootState } from '../../store';
 import { getFormattedDateAndTime } from './utils';
 import type { ControlItemProps } from './ControlChange';
 import { ControlChange } from './ControlChange';
-import { ConfigGroupProps, ConifgGroup } from './ConfigGroup';
+import type { ConfigGroupProps } from './ConfigGroup';
+import { ConifgGroup } from './ConfigGroup';
 
 export interface ChangeStackProps {
     changes: Change[];
@@ -337,6 +338,12 @@ function filterGroup(model: Item[], query: string): Item[] {
     return filteredModel;
 }
 
+/**
+ * Checks if item is of type {@link ConfigGroupProps}.
+ *
+ * @param item ControlGroupProps | UnknownChangeProps | ConfigGroupProps
+ * @returns boolean
+ */
 function isConfigPropGroup(item: ControlGroupProps | UnknownChangeProps | ConfigGroupProps): item is ConfigGroupProps {
     return (item as ConfigGroupProps).configPath !== undefined;
 }
