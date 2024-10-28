@@ -3,6 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
+import { DirName, FileName } from '@sap-ux/project-access';
 import type { Ui5MockYamlConfig } from '../types';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
 import { getMainServiceDataSource, getODataSources } from '../app-info';
@@ -78,6 +79,48 @@ export async function enhanceYaml(
     }
     const yaml = mockConfig.toString();
     fs.write(ui5MockYamlPath, yaml);
+}
+
+/**
+ * Generates mock data folder for service in mem-fs.
+ * As mem-fs does not support direct directory creation (directories are only created along with files)
+ * so we create empty file in data folder to make sure the folder is created.
+ *
+ * @param fs - Editor instance to read existing information
+ * @param basePath - the base path where the package.json and ui5.yaml is
+ * @param serviceName - optional, name of the mockserver service
+ */
+export function generateMockDataFolder(fs: Editor, basePath: string, serviceName?: string): void {
+    // mockdataPath points to the mock data for service when mockserver config is generated, so we generate this folder
+    if (serviceName) {
+        const mockdataPath = join(basePath, DirName.Webapp, DirName.LocalService, serviceName, DirName.Data);
+        if (!fs.exists(mockdataPath)) {
+            const tempFilePath = join(mockdataPath, 'keep');
+            fs.write(tempFilePath, '');
+        }
+    }
+}
+
+/**
+ * Deletes mock data folders for all services from mem-fs.
+ *
+ * @param fs - mem-fs reference to be used for file access
+ * @param basePath - path to project root, where package.json and ui5.yaml is
+ */
+export function removeMockDataFolders(fs: Editor, basePath: string): void {
+    const manifestPath = join(basePath, DirName.Webapp, FileName.Manifest);
+    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
+    // Read service names from manifest.json
+    const dataSources = manifest['sap.app'].dataSources;
+    if (dataSources) {
+        const serviceNames = Object.keys(dataSources);
+        serviceNames.forEach((serviceName: string) => {
+            const mockdataPath = join(basePath, DirName.Webapp, DirName.LocalService, serviceName, DirName.Data);
+            if (mockdataPath) {
+                fs.delete(mockdataPath);
+            }
+        });
+    }
 }
 
 /**

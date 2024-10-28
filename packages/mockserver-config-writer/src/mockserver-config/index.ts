@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import type { MockserverConfig } from '../types';
 import { enhancePackageJson, removeFromPackageJson } from './package-json';
-import { enhanceYaml, removeUi5MockYaml } from './ui5-mock-yaml';
+import { enhanceYaml, generateMockDataFolder, removeMockDataFolders, removeUi5MockYaml } from './ui5-mock-yaml';
 
 /**
  *  Add mockserver configuration to a UI5 application.
@@ -19,6 +19,7 @@ export async function generateMockserverConfig(basePath: string, data: Mockserve
     }
     enhancePackageJson(fs, basePath, data.packageJsonConfig);
     await enhanceYaml(fs, basePath, data.webappPath, data.ui5MockYamlConfig);
+    generateMockDataFolder(fs, basePath, data.ui5MockYamlConfig?.name);
     return fs;
 }
 
@@ -35,5 +36,6 @@ export function removeMockserverConfig(basePath: string, fs?: Editor): Editor {
     }
     removeFromPackageJson(fs, basePath);
     removeUi5MockYaml(fs, basePath);
+    removeMockDataFolders(fs, basePath);
     return fs;
 }

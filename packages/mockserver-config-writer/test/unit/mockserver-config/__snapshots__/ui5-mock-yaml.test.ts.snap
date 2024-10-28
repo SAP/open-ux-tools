@@ -151,8 +151,9 @@ server:
   customMiddleware:
     - name: middleware-before
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
+        mountPath: /
         services:
           - urlPath: /some/previous/service/uri
             metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
@@ -202,8 +203,9 @@ server:
   customMiddleware:
     - name: middleware-before
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
+        mountPath: /
         services:
           - urlPath: /some/previous/service/uri
             metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
@@ -227,8 +229,9 @@ server:
   customMiddleware:
     - name: middleware-before
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
+        mountPath: /
         services:
           - urlPath: /some/previous/service/uri
             metadataXmlPath: ./webapp/localService/previous-service/metadata.xml

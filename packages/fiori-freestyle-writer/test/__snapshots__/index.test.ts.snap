@@ -301,6 +301,10 @@ title=My Test App",
 </html>",
     "state": "modified",
   },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
+    "state": "modified",
+  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
@@ -2651,6 +2655,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
+    "state": "modified",
+  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
@@ -4861,6 +4869,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     ></div>
 </body>
 </html>",
+    "state": "modified",
+  },
+  "webapp/localService/mainService/data/keep": Object {
+    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {

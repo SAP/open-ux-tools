@@ -63,4 +63,20 @@ describe('Test removeMockserverConfig()', () => {
         expect(fs.readJSON(packageJsonPath)).toEqual(packageJson);
         expect(fs.readJSON(manifestPath)).toEqual(manifestJson);
     });
+
+    test('Remove from app with existing mockserver config from fs', async () => {
+        // Enhance manifest.json
+        const basePath = join(__dirname, '../../fixtures/ui5-mock-config');
+        const ui5MockYaml = join(basePath, 'ui5-mock.yaml');
+        const mockdataPaths = [
+            join(basePath, 'webapp', 'localService', 'mainService', 'data', 'keep'),
+            join(basePath, 'webapp', 'localService', 'STTA_SALES_ORDER_ND_SRV_01', 'data', 'keep')
+        ];
+        const fs = removeMockserverConfig(basePath);
+
+        expect(fs.exists(ui5MockYaml)).toBe(false);
+        mockdataPaths.forEach((mockdataPath) => {
+            expect(fs.exists(mockdataPath)).toBeFalsy();
+        });
+    });
 });
