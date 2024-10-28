@@ -1,6 +1,6 @@
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { basename, join } from 'path';
 import { getWebappPath, type Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { prompt, type PromptObject } from 'prompts';
@@ -92,7 +92,9 @@ export async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logg
     ].forEach((path: string): void => {
         if (fs.exists(path)) {
             fs.delete(path);
-            logger?.info(`Deleted ${path}. This file is no longer needed for the preview.`);
+            logger?.info(
+                `Deleted ${join('webapp', 'test', basename(path))}. This file is no longer needed for the preview.`
+            );
         }
     });
 }

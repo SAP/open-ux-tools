@@ -7,6 +7,7 @@ import { create as createStorage } from 'mem-fs';
 describe('convertPreview', () => {
     const logger = new ToolsLogger();
     const errorLogMock = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
+    const infoLogMock = jest.spyOn(ToolsLogger.prototype, 'info').mockImplementation(() => {});
     const basePath = join(__dirname, '../../fixtures/preview-config');
     const fs = create(createStorage());
     fs.write(join(basePath, 'webapp', 'test', 'flpSandbox.html'), 'dummy content flpSandbox');
@@ -36,9 +37,15 @@ describe('convertPreview', () => {
     });
 
     test('delete no longer used files', async () => {
-        await deleteNoLongerUsedFiles(fs, basePath);
+        await deleteNoLongerUsedFiles(fs, basePath, logger);
+        expect(infoLogMock).toHaveBeenCalledWith(
+            `Deleted ${join('webapp', 'test', 'locate-reuse-libs.js')}. This file is no longer needed for the preview.`
+        );
         expect(() => fs.read(join(basePath, 'webapp', 'test', 'locate-reuse-libs.js'))).toThrowError(
             `${join(basePath, 'webapp', 'test', 'locate-reuse-libs.js')} doesn\'t exist`
+        );
+        expect(infoLogMock).toHaveBeenCalledWith(
+            `Deleted ${join('webapp', 'test', 'initFlpSandbox.js')}. This file is no longer needed for the preview.`
         );
         expect(() => fs.read(join(basePath, 'webapp', 'test', 'initFlpSandbox.js'))).toThrowError(
             `${join(basePath, 'webapp', 'test', 'initFlpSandbox.js')} doesn\'t exist`
