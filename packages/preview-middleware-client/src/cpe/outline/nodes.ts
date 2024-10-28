@@ -9,6 +9,7 @@ import type { ControlTreeIndex } from '../types';
 import { isReuseComponent } from '../utils';
 
 import { isEditable } from './editable';
+import { ChangeService } from '../changes';
 
 interface AdditionalData {
     text?: string;
@@ -63,9 +64,9 @@ function getChildren(current: OutlineViewNode): OutlineViewNode[] {
  * @param {string} id - The unique identifier of the control to be added as a child node.
  * @param {OutlineNode[]} children - The array of children nodes to which the new node will be added.
  */
-function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
+function addChildToExtensionPoint(id: string, children: OutlineNode[], changeService: ChangeService) {
     const { text, technicalName } = getAdditionalData(id);
-    const editable = isEditable(id);
+    const editable = isEditable(id, changeService);
 
     children.push({
         controlId: id,
@@ -105,14 +106,15 @@ export async function transformNodes(
     input: OutlineViewNode[],
     scenario: Scenario,
     reuseComponentsIds: Set<string>,
-    controlIndex: ControlTreeIndex
+    controlIndex: ControlTreeIndex,
+    changeService: ChangeService
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
     const ui5VersionInfo = await getUi5Version();
     while (stack.length) {
         const current = stack.shift();
-        const editable = isEditable(current?.id);
+        const editable = isEditable(current?.id, changeService);
         const isAdp = scenario === 'ADAPTATION_PROJECT';
         const isExtPoint = current?.type === 'extensionPoint';
 
@@ -122,8 +124,8 @@ export async function transformNodes(
             const technicalName = current.technicalName.split('.').slice(-1)[0];
 
             const transformedChildren = isAdp
-                ? await handleDuplicateNodes(children, scenario, reuseComponentsIds, controlIndex)
-                : await transformNodes(children, scenario, reuseComponentsIds, controlIndex);
+                ? await handleDuplicateNodes(children, scenario, reuseComponentsIds, controlIndex, changeService)
+                : await transformNodes(children, scenario, reuseComponentsIds, controlIndex, changeService);
 
             const node: OutlineNode = {
                 controlId: current.id,
@@ -146,7 +148,7 @@ export async function transformNodes(
             let children: OutlineNode[] = [];
             // We can combine both because there can only be either defaultContent or createdControls for one extension point node.
             [...defaultContent, ...createdControls].forEach((id: string) => {
-                addChildToExtensionPoint(id, children);
+                addChildToExtensionPoint(id, children, changeService);
             });
 
             const node: OutlineNode = {
@@ -197,7 +199,8 @@ export async function handleDuplicateNodes(
     children: OutlineViewNode[],
     scenario: Scenario,
     reuseComponentsIds: Set<string>,
-    controlIndex: ControlTreeIndex
+    controlIndex: ControlTreeIndex,
+    changeService: ChangeService
 ): Promise<OutlineNode[]> {
     const extPointIDs = new Set<string>();
 
@@ -210,5 +213,5 @@ export async function handleDuplicateNodes(
 
     const uniqueChildren = children.filter((child) => !extPointIDs.has(child.id));
 
-    return transformNodes(uniqueChildren, scenario, reuseComponentsIds, controlIndex);
+    return transformNodes(uniqueChildren, scenario, reuseComponentsIds, controlIndex, changeService);
 }

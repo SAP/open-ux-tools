@@ -30,7 +30,7 @@ describe('outline nodes', () => {
         scenario: Scenario,
         reuseComponentsIds: Set<string> = new Set<string>(),
         controlIndex: ControlTreeIndex = {}
-    ): Promise<OutlineNode[]> => tn(nodes, scenario, reuseComponentsIds, controlIndex);
+    ): Promise<OutlineNode[]> => tn(nodes, scenario, reuseComponentsIds, controlIndex, {} as any);
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest

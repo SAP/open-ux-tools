@@ -36,7 +36,8 @@ import {
     UNKNOWN_CHANGE_KIND,
     SAVED_CHANGE_TYPE,
     PENDING_CHANGE_TYPE,
-    PROPERTY_CHANGE_KIND
+    PROPERTY_CHANGE_KIND,
+    CONFIGURATION_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -283,7 +284,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.changes.controls = {};
 
                 for (const change of [...action.payload.pending, ...action.payload.saved].reverse()) {
-                    if (change.kind === UNKNOWN_CHANGE_KIND) {
+                    if (change.kind === UNKNOWN_CHANGE_KIND || change.kind === CONFIGURATION_CHANGE_KIND) {
                         continue;
                     }
                     const { controlId, type } = change;

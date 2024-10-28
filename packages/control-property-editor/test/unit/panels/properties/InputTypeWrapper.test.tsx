@@ -12,6 +12,7 @@ import {
     FLOAT_VALUE_TYPE,
     INPUT_EDITOR_TYPE,
     INTEGER_VALUE_TYPE,
+    PropertyType,
     STRING_VALUE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
 import {
@@ -51,7 +52,8 @@ describe('InputTypeWrapper', () => {
             value: true,
             isEnabled: false,
             name: 'testPropNameCheckbox',
-            readableName: 'Test Prop Name Checkbox'
+            readableName: 'Test Prop Name Checkbox',
+            propertyType: PropertyType.ControlProperty
         };
         expect(getInputTypeToggleOptions({ ...propCheckbox })).toMatchInlineSnapshot(`
             Array [
@@ -126,7 +128,8 @@ describe('InputTypeWrapper', () => {
             value: 'myString',
             isEnabled: true,
             name: 'testPropNameString',
-            readableName: 'Test Prop Name String'
+            readableName: 'Test Prop Name String',
+            propertyType: PropertyType.ControlProperty
         };
         expect(getInputTypeToggleOptions({ ...propString })).toMatchInlineSnapshot(`
             Array [
@@ -241,7 +244,8 @@ describe('InputTypeWrapper', () => {
                 { key: 'option1', text: 'option1' },
                 { key: 'option2', text: 'option2' }
             ],
-            readableName: 'Test Prop Name Drop Down'
+            readableName: 'Test Prop Name Drop Down',
+            propertyType: PropertyType.ControlProperty
         };
         expect(getInputTypeToggleOptions({ ...propDropDown })).toMatchInlineSnapshot(`
             Array [
@@ -309,7 +313,8 @@ describe('InputTypeWrapper', () => {
                 propertyName: propertyName,
                 type: BOOLEAN_VALUE_TYPE,
                 propertyType: 'testingTypeText'
-            }
+            },
+            propertyType: PropertyType.ControlProperty
         };
         const toggleOptions: InputTypeToggleOptionProps[] = getInputTypeToggleOptions(property);
         render(
@@ -357,7 +362,8 @@ describe('InputTypeWrapper', () => {
                 propertyName: propertyName,
                 type: 'string',
                 propertyType: 'testingTypeText'
-            }
+            },
+            propertyType: PropertyType.ControlProperty
         };
         const toggleOptions: InputTypeToggleOptionProps[] = getInputTypeToggleOptions(property);
         const { dispatch } = render(

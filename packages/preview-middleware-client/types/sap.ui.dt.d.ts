@@ -1,6 +1,6 @@
 declare module 'sap/ui/dt/DesignTimeMetadata' {
     import type ManagedObject from 'sap/ui/base/ManagedObject';
-
+    import type AppComponent from "sap/fe/core/AppComponent";
     export interface DesignTimeMetadataData {
         name: string;
         ignore: boolean;
@@ -8,19 +8,69 @@ declare module 'sap/ui/dt/DesignTimeMetadata' {
         deprecated?: boolean;
         specialIndexHandling?: boolean;
     }
+    export enum TemplateType {
+        ListReport = "ListReport",
+        ObjectPage = "ObjectPage",
+        AnalyticalListPage = "AnalyticalListPage",
+        FreeStylePage = "None"
+    }
+    export interface DesigntimeSettingEnums {
+        id: string;
+        name: string;
+        description?: string;
+    };
+    export interface DesigntimeSetting {
+        id: string;
+        path?: string;
+        name: string;
+        description: string;
+        restrictedTo?: TemplateType[];
+        value: unknown;
+        type?: string;
+        enums?: DesigntimeSettingEnums[];
+        skipChange?: boolean;
+        writeObjectFor?: string;
+        writeObject?: { id: string; path?: string }[];
+        keyUser?: boolean;
+    };
+
+    export interface ManifestSettings {
+        value: string | number | boolean;
+        description: string;
+        id: string;
+        name: string;
+    }
+
+
+    export interface ManifestSettingsValue {
+        [key: string]: string | number | boolean;
+    }
+
+    export interface ManifestPropertyChange   {
+        appComponent: AppComponent;
+        selector: AppComponent;
+        changeSpecificData: {
+            appDescriptorChangeType: "appdescr_fe_changePageConfiguration";
+            content: {
+                parameters: {
+                    page: string;
+                    entityPropertyChange: {
+                        propertyPath: string;
+                        operation: string;
+                        propertyValue: string | string[] | boolean | number | object | undefined;
+                    };
+                };
+            };
+        };
+    };
 
     interface DesignTimeMetadata extends ManagedObject {
         getData: () => {
             //TODO Improve Types
             manifestPropertyPath: (control: ManagedObject) => string;
-            manifestPropertyChange: (propertyChanges: any, propertyPath: string, control: ManagedObject) => any;
-            manifestSettings: (control: ManagedObject) => {
-                value: string | number | boolean;
-                description: string;
-                id: string;
-                name: string;
-            }[];
-            manifestSettingsValues: (designtimeSettings, control) => any;
+            manifestPropertyChange: (propertyChanges: any, propertyPath: string, control: ManagedObject) => ManifestPropertyChange[];
+            manifestSettings: (control: ManagedObject) => DesigntimeSetting[];
+            manifestSettingsValues: (designtimeSettings, control) => ManifestSettingsValue;
             properties: { [name: string]: DesignTimeMetadataData };
             aggregations: { [name: string]: DesignTimeMetadataData };
         };

@@ -3,8 +3,9 @@ import { getRuntimeControl } from '../utils';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { getComponent } from '../../utils/core';
+import { ChangeService } from '../changes';
 
-export const isEditable = (id = ''): boolean => {
+export const isEditable = (id = '', changeService: ChangeService): boolean => {
     let editable = false;
     const control = sap.ui.getCore().byId(id);
     if (!control) {
@@ -20,7 +21,7 @@ export const isEditable = (id = ''): boolean => {
         }
         if (controlOverlay) {
             const runtimeControl = getRuntimeControl(controlOverlay);
-            const controlData = buildControlData(runtimeControl, controlOverlay);
+            const controlData = buildControlData(runtimeControl, changeService, controlOverlay);
             const prop = controlData.properties.find((item) => item.isEnabled === true);
             editable = prop !== undefined;
         }

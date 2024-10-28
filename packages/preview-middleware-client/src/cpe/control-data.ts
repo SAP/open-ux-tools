@@ -6,6 +6,7 @@ import {
     FLOAT_VALUE_TYPE,
     INPUT_EDITOR_TYPE,
     INTEGER_VALUE_TYPE,
+    PropertyType,
     STRING_VALUE_TYPE,
     convertCamelCaseToPascalCase
 } from '@sap-ux-private/control-property-editor-common';
@@ -13,10 +14,12 @@ import {
 import Utils from 'sap/ui/fl/Utils';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
-import { getManifestProperties, type ManagedObjectMetadataProperties } from './utils';
+import { getManifestProperties, MergedSetting, type ManagedObjectMetadataProperties } from './utils';
 import { UI5ControlProperty } from './types';
 import DataType from 'sap/ui/base/DataType';
 import { getV4PageType } from '../utils/application';
+import { ChangeService } from './changes';
+import { TemplateType } from 'sap/ui/dt/DesignTimeMetadata';
 
 type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5Type' | 'enumValues'>;
 
@@ -125,18 +128,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
     return analyzedType;
 }
 
-function analyzeManifestProperty(property: {
-    manifest: boolean;
-    name: string;
-    description: string;
-    id: string;
-    type: string;
-    defaultValue: int | float | string | boolean;
-    enums: {
-        id: string;
-        name: string;
-    }[];
-}): AnalyzedType | undefined {
+function analyzeManifestProperty(property: MergedSetting): AnalyzedType | undefined {
     const analyzedType: AnalyzedType = {
         primitiveType: 'any',
         ui5Type: null,
@@ -215,21 +207,26 @@ interface NewControlData {
  * @param includeDocumentation - include documentation flag
  * @returns Promise<Control>
  */
-export function buildControlData(control: ManagedObject, controlOverlay?: ElementOverlay): Control {
+export function buildControlData(
+    control: ManagedObject,
+    changeService: ChangeService,
+    controlOverlay?: ElementOverlay
+): Control {
     const controlMetadata = control.getMetadata();
     const selectedControlName = controlMetadata.getName();
     const hasStableId = Utils.checkControlId(control);
     const overlayData = controlOverlay?.getDesignTimeMetadata().getData();
 
     const controlProperties = controlOverlay ? overlayData?.properties : undefined;
-    const manifestProperties = getManifestProperties(control, controlOverlay);
-    // Add the control's properties/manifest(appDescriptor) properties
+    const manifestProperties = getManifestProperties(control, changeService, controlOverlay);
+    // Add the control's properties/manifest properties
     const allProperties = {
         ...(controlMetadata.getAllProperties() as unknown as {
             [name: string]: ManagedObjectMetadataProperties;
         }),
         ...manifestProperties
     };
+    let propertyType;
     const propertyNames = Object.keys(allProperties);
     const properties: ControlProperty[] = [];
     for (const propertyName of propertyNames) {
@@ -237,17 +234,20 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
         let analyzedType;
         let isEnabled = false;
         let value: unknown;
-        if (property?.['manifest']) {
+        if (property && 'configuration' in property) {
+            propertyType = PropertyType.Configuration;
             analyzedType = analyzeManifestProperty(property);
             if (
                 !analyzedType ||
-                (property?.restrictedTo?.length && !property?.restrictedTo?.includes(getV4PageType(control)))
+                (property?.restrictedTo?.length &&
+                    !property?.restrictedTo?.includes(getV4PageType(control) as TemplateType))
             ) {
                 continue;
             }
             isEnabled = true;
-            value = property.value || property.defaultValue;
+            value = property.value;
         } else {
+            propertyType = PropertyType.ControlProperty;
             // the default behavior is that the property is enabled
             // meaning it's not ignored during design time
             analyzedType = analyzePropertyType(property);
@@ -289,6 +289,26 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
             analyzedType.ui5Type === 'sap.ui.core.URI';
         const ui5Type = analyzedType.ui5Type || undefined;
         const readableName = convertCamelCaseToPascalCase(property.name);
+        let docu:
+            | {
+                  defaultValue: string;
+                  description: string;
+                  propertyName: string;
+                  type?: string;
+                  propertyType?: string;
+              }
+            | undefined;
+        if ('configuration' in property) {
+            const defValue = ['undefined', 'null'].includes(String(property.defaultValue))
+                ? '-'
+                : String(property.defaultValue);
+            docu = {
+                description: property.description,
+                propertyName: property.id,
+                type: property.type,
+                defaultValue: defValue || '-'
+            };
+        }
         switch (analyzedType.primitiveType) {
             case 'enum': {
                 const values = analyzedType.enumValues ?? {};
@@ -299,12 +319,14 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
                 properties.push({
                     type: STRING_VALUE_TYPE,
                     editor: DROPDOWN_EDITOR_TYPE,
+                    propertyType,
                     name: property.name,
                     readableName,
                     value: value as string,
                     isEnabled,
                     ui5Type,
-                    options
+                    options,
+                    ...(docu && { documentation: docu })
                 });
                 break;
             }
@@ -312,12 +334,14 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
                 properties.push({
                     type: STRING_VALUE_TYPE,
                     editor: INPUT_EDITOR_TYPE,
+                    propertyType,
                     name: property.name,
                     readableName,
                     value: value as string,
                     isEnabled,
                     isIcon,
-                    ui5Type
+                    ui5Type,
+                    ...(docu && { documentation: docu })
                 });
                 break;
             }
@@ -325,11 +349,13 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
                 properties.push({
                     type: INTEGER_VALUE_TYPE,
                     editor: INPUT_EDITOR_TYPE,
+                    propertyType,
                     name: property.name,
                     readableName,
                     value: value as number,
                     isEnabled,
-                    ui5Type
+                    ui5Type,
+                    ...(docu && { documentation: docu })
                 });
                 break;
             }
@@ -337,11 +363,13 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
                 properties.push({
                     type: FLOAT_VALUE_TYPE,
                     editor: INPUT_EDITOR_TYPE,
+                    propertyType,
                     name: property.name,
                     readableName,
                     value: value as number,
                     isEnabled,
-                    ui5Type
+                    ui5Type,
+                    ...(docu && { documentation: docu })
                 });
                 break;
             }
@@ -349,11 +377,13 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
                 properties.push({
                     type: BOOLEAN_VALUE_TYPE,
                     editor: CHECKBOX_EDITOR_TYPE,
+                    propertyType,
                     name: property.name,
                     readableName,
                     value: value as boolean,
                     isEnabled,
-                    ui5Type
+                    ui5Type,
+                    ...(docu && { documentation: docu })
                 });
                 break;
             }

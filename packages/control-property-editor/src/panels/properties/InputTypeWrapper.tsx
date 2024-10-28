@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import type { TFunction } from 'i18next';
 import { Label, Stack } from '@fluentui/react';
@@ -20,6 +20,7 @@ import {
     DROPDOWN_EDITOR_TYPE,
     INPUT_EDITOR_TYPE,
     INTEGER_VALUE_TYPE,
+    PropertyType,
     STRING_VALUE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
 
@@ -115,12 +116,16 @@ export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFuncti
         default:
     }
 
-    inputTypeToggleOptions.push({
-        inputType: InputType.expression,
-        tooltip: getToolTip('EXPRESSION_TYPE', t),
-        iconName: IconName.expression,
-        selected: typeof value === 'string' && isExpression(value)
-    });
+    if (
+        property.propertyType === PropertyType.ControlProperty ||
+        (property.propertyType === PropertyType.Configuration && type === STRING_VALUE_TYPE && editor != 'dropdown')
+    )
+        inputTypeToggleOptions.push({
+            inputType: InputType.expression,
+            tooltip: getToolTip('EXPRESSION_TYPE', t),
+            iconName: IconName.expression,
+            selected: typeof value === 'string' && isExpression(value)
+        });
 
     return inputTypeToggleOptions;
 };
@@ -134,6 +139,7 @@ export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFuncti
 export function InputTypeWrapper(props: InputTypeWrapperProps): ReactElement {
     const { property, changes } = props;
     const { name, isEnabled, documentation } = property;
+    const fixedArea = useRef<HTMLElement | null>(null);
 
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -192,6 +198,20 @@ export function InputTypeWrapper(props: InputTypeWrapperProps): ReactElement {
                 <UITooltip
                     calloutProps={{
                         gapSpace: 5,
+                        layerProps: {
+                            onLayerDidMount: () => {
+                                fixedArea.current = document.querySelector('[data-portal-element]');
+                                if (fixedArea.current) {
+                                    fixedArea.current.removeAttribute('data-portal-element');
+                                }
+                                console.log(document.querySelector('[data-portal-element]'));
+                            },
+                            onLayerWillUnmount: () => {
+                                if (fixedArea.current) {
+                                    fixedArea.current.setAttribute('data-portal-element', '');
+                                }
+                            }
+                        },
                         styles: getCalloutStyle({
                             styles: {
                                 root: {
@@ -203,6 +223,7 @@ export function InputTypeWrapper(props: InputTypeWrapperProps): ReactElement {
                             }
                         })
                     }}
+                    closeDelay={500}
                     delay={2}
                     maxWidth={400}
                     directionalHint={UIDirectionalHint.leftCenter}

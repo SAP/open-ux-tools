@@ -1,14 +1,12 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import type { PropertyChange } from '@sap-ux-private/control-property-editor-common';
+import { PropertyType, type PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import type { UI5AdaptationOptions } from '../types';
 import { validateBindingModel } from './validator';
-import ManagedObject from 'sap/ui/base/ManagedObject';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import UI5Element from 'sap/ui/core/Element';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-import BaseCommand from 'sap/ui/rta/command/BaseCommand';
 import { getReference } from '../../utils/application';
 
 /**
@@ -28,17 +26,16 @@ function isBindingExpression(value: string): boolean {
  */
 export async function applyChange(options: UI5AdaptationOptions, change: PropertyChange): Promise<void> {
     const { rta } = options;
+
+    const isBindingString = typeof change.value === 'string' && isBindingExpression(change.value);
+    const flexSettings = rta.getFlexSettings();
     const modifiedControl = sap.ui.getCore().byId(change.controlId);
     if (!modifiedControl) {
         return;
     }
-    let command: BaseCommand;
-    const isBindingString = typeof change.value === 'string' && isBindingExpression(change.value);
-    const modifiedControlModifiedProperties = modifiedControl.getMetadata().getAllProperties()[change.propertyName];
-    const flexSettings = rta.getFlexSettings();
-    const overlay = getOverlay(modifiedControl);
-    const overlayData = overlay?.getDesignTimeMetadata().getData();
-    if (modifiedControlModifiedProperties && !overlayData?.properties?.[change.propertyName]?.ignore) {
+
+    if (change.propertyType === PropertyType.ControlProperty) {
+        const modifiedControlModifiedProperties = modifiedControl.getMetadata().getAllProperties()[change.propertyName];
         const isBindingModel = isBindingString && modifiedControlModifiedProperties?.type === 'string';
         const changeType = isBindingString ? 'BindProperty' : 'Property';
 
@@ -53,14 +50,16 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
             [property]: change.value
         };
 
-        command = await CommandFactory.getCommandFor<FlexCommand>(
+        const command = await CommandFactory.getCommandFor<FlexCommand>(
             modifiedControl,
             changeType,
             modifiedValue,
             null,
             flexSettings
         );
-    } else {
+        await rta.getCommandStack().pushAndExecute(command);
+    } else if (change.propertyType === PropertyType.Configuration) {
+        const overlay = getOverlay(modifiedControl);
         if (!overlay) return;
         const overlayData = overlay?.getDesignTimeMetadata().getData();
         const manifestPropertyPath = overlayData.manifestPropertyPath(modifiedControl);
@@ -73,24 +72,20 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
         const modifiedValue = {
             reference: getReference(modifiedControl),
             appComponent: manifestPropertyChange.appComponent,
-            changeType: manifestPropertyChange.changeSpecificData.appDescriptorChangeType, // 'appdescr_fe_changePageConfiguration',
+            changeType: manifestPropertyChange.changeSpecificData.appDescriptorChangeType,
             parameters: manifestPropertyChange.changeSpecificData.content.parameters,
             selector: manifestPropertyChange.selector
         };
 
-        // TODO> confirm whether confirmmposite command requuired
-        // implementation missing for undo for appDedc command
-        // const compositeCommand = await CommandFactory.getCommandFor(modifiedControl, 'composite');
-        command = await CommandFactory.getCommandFor(
+        const command = await CommandFactory.getCommandFor(
             modifiedControl,
             'appDescriptor',
             modifiedValue,
             null,
             flexSettings
         );
+        await rta.getCommandStack().pushAndExecute(command);
     }
-
-    await rta.getCommandStack().pushAndExecute(command);
 }
 
 export const getOverlay = (control: UI5Element): ElementOverlay | undefined => {

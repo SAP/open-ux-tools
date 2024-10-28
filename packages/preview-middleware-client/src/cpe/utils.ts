@@ -9,6 +9,9 @@ import UIComponent from 'sap/ui/core/UIComponent';
 
 import { getComponent } from '../utils/core';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { DesigntimeSetting } from 'sap/ui/dt/DesignTimeMetadata';
+import { ChangeService } from './changes';
+import { PendingConfigurationChange } from '@sap-ux-private/control-property-editor-common';
 
 export interface PropertiesInfo {
     defaultValue: string;
@@ -28,6 +31,29 @@ export interface ManagedObjectMetadataProperties {
     getType: () => DataType;
     getName: () => string;
     getDefaultValue: () => unknown;
+}
+
+// interface ManifestProperty {
+//     name: string;
+//     manifest: boolean;
+//     defaultValue: string | int | boolean | undefined;
+//     readableName: string;
+//     manifestPropertyPath: string;
+//     type: 'int' | 'number' | 'string';
+//     value: string | int | boolean | undefined;
+// }
+// interface ManifestProperties {
+//     [key: string]: ManifestProperty;
+// }
+
+export interface MergedSetting extends DesigntimeSetting {
+    defaultValue: unknown;
+    value: unknown;
+    configuration: boolean;
+    name: string;
+    readableName: string;
+    manifestPropertyPath: string;
+    type: 'string' | 'int' | 'boolean' | 'undefined';
 }
 
 /**
@@ -113,7 +139,13 @@ export function getRootControlFromComponentContainer(container?: ComponentContai
     return undefined;
 }
 
-export function getManifestProperties(control: ManagedObject, controlOverlay?: ElementOverlay): any {
+export function getManifestProperties(
+    control: ManagedObject,
+    changeService: ChangeService,
+    controlOverlay?: ElementOverlay
+): {
+    [key: string]: MergedSetting;
+} {
     const overlayData = controlOverlay?.getDesignTimeMetadata().getData();
     if (!controlOverlay || !overlayData?.manifestSettings) {
         return {};
@@ -122,22 +154,40 @@ export function getManifestProperties(control: ManagedObject, controlOverlay?: E
         overlayData?.manifestSettings(control),
         control
     );
-    const manifestProperties = (overlayData?.manifestSettings(control) as any[]).reduce((acc, item) => {
-        const propertyId = item.id;
-        if (!acc[propertyId]) {
-            acc[propertyId] = { ...item };
-            acc[propertyId].defaultValue = item.value;
-            acc[propertyId].manifest = true;
-            const readableName = item.name;
-            acc[propertyId].name = item.id;
-            acc[propertyId].readableName = readableName;
-            acc[propertyId].manifestPropertyPath = `${overlayData?.manifestPropertyPath(control)}/${propertyId}`;
-            if (acc[propertyId].type === 'number') {
-                acc[propertyId].type = 'int';
+    const manifestProperties = overlayData?.manifestSettings(control).reduce(
+        (
+            acc: {
+                [key: string]: MergedSetting;
+            },
+            item: DesigntimeSetting
+        ) => {
+            const propertyId = item.id;
+            const change = changeService.pendingChanges.filter(
+                (item) =>
+                    item.kind === 'configuration' &&
+                    item.propertyName === propertyId &&
+                    item.controlId === control.getId() &&
+                    item.isActive
+            ) as PendingConfigurationChange[];
+            let propertyValue = change?.[0]?.value || manifestPropertiesValue[propertyId];
+            if (item.type === 'boolean' && change?.[0]?.value === false) {
+                propertyValue = false;
             }
-            acc[propertyId].value = manifestPropertiesValue[propertyId];
-        }
-        return acc;
-    }, {});
+            if (!acc[propertyId]) {
+                acc[propertyId] = {
+                    ...item,
+                    defaultValue: item.value,
+                    configuration: true,
+                    name: item.id,
+                    readableName: item.name,
+                    manifestPropertyPath: `${overlayData?.manifestPropertyPath(control)}/${propertyId}`,
+                    type: item.type === 'number' ? 'int' : (item.type as 'string' | 'boolean' | 'undefined'),
+                    value: propertyValue
+                };
+            }
+            return acc;
+        },
+        {}
+    );
     return manifestProperties;
 }

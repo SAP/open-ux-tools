@@ -8,7 +8,8 @@ import {
     PENDING_CHANGE_TYPE,
     PROPERTY_CHANGE_KIND,
     SAVED_CHANGE_TYPE,
-    UNKNOWN_CHANGE_KIND
+    UNKNOWN_CHANGE_KIND,
+    CONFIGURATION_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
 
 import { Separator } from '../../components';
@@ -25,6 +26,7 @@ import type { RootState } from '../../store';
 import { getFormattedDateAndTime } from './utils';
 import type { ControlItemProps } from './ControlChange';
 import { ControlChange } from './ControlChange';
+import { ConfigGroupProps, ConifgGroup } from './ConfigGroup';
 
 export interface ChangeStackProps {
     changes: Change[];
@@ -60,7 +62,15 @@ export function ChangeStack(changeStackProps: ChangeStackProps): ReactElement {
  * @returns The rendered change item (`ControlGroup`, `ControlChange`, or `UnknownChange`).
  */
 function renderChangeItem(item: Item, stackName: string): ReactElement {
-    if (isPropertyGroup(item)) {
+    if (isConfigPropGroup(item)) {
+        return (
+            <Stack.Item
+                data-testid={`${stackName}-${item.configPath}-${item.index}`}
+                key={`${item.configPath}-${item.index}`}>
+                <ConifgGroup {...item} />
+            </Stack.Item>
+        );
+    } else if (isPropertyGroup(item)) {
         return (
             <Stack.Item
                 data-testid={`${stackName}-${item.controlId}-${item.index}`}
@@ -108,7 +118,7 @@ function getKey(i: number): string {
     return `${i}-separator`;
 }
 
-type Item = ControlGroupProps | UnknownChangeProps | ControlItemProps;
+type Item = ControlGroupProps | UnknownChangeProps | ControlItemProps | ConfigGroupProps;
 
 /**
  * Converts an array of changes into an array of items, grouping changes by controlId and handling different kinds of changes.
@@ -122,12 +132,36 @@ function convertChanges(changes: Change[]): Item[] {
     while (i < changes.length) {
         const change: Change = changes[i];
         let group: ControlGroupProps;
+        let configGroup: ConfigGroupProps;
         if (change.kind === UNKNOWN_CHANGE_KIND) {
             items.push(handleUnknownChange(change));
             i++;
         } else if (change.kind === CONTROL_CHANGE_KIND) {
             items.push(handleControlChange(change));
             i++;
+        } else if (change.kind === CONFIGURATION_CHANGE_KIND) {
+            configGroup = {
+                text: convertCamelCaseToPascalCase(change.changeType),
+                configPath: change.propertyPath,
+                index: i,
+                changes: [change]
+            };
+            items.push(configGroup);
+            i++;
+            while (i < changes.length) {
+                // We don't need to add header again if the next control is the same
+                const nextChange = changes[i];
+                if (
+                    nextChange.kind === UNKNOWN_CHANGE_KIND ||
+                    nextChange.kind === PROPERTY_CHANGE_KIND ||
+                    nextChange.kind === CONTROL_CHANGE_KIND ||
+                    change.propertyPath !== nextChange?.propertyPath
+                ) {
+                    break;
+                }
+                configGroup.changes.push(nextChange);
+                i++;
+            }
         } else {
             group = handleGroupedChange(change, i);
             items.push(group);
@@ -138,6 +172,7 @@ function convertChanges(changes: Change[]): Item[] {
                 if (
                     nextChange.kind === UNKNOWN_CHANGE_KIND ||
                     nextChange.kind === CONTROL_CHANGE_KIND ||
+                    nextChange.kind === CONFIGURATION_CHANGE_KIND ||
                     change.controlId !== nextChange.controlId
                 ) {
                     break;
@@ -222,13 +257,14 @@ function isControlItem(item: UnknownChangeProps | ControlItemProps): item is Con
 
 const filterPropertyChanges = (changes: Change[], query: string): Change[] => {
     return changes.filter((item): boolean => {
-        if (item.kind === PROPERTY_CHANGE_KIND) {
+        if (item.kind === PROPERTY_CHANGE_KIND || item.kind === CONFIGURATION_CHANGE_KIND) {
             return (
                 !query ||
                 item.propertyName.trim().toLowerCase().includes(query) ||
                 convertCamelCaseToPascalCase(item.propertyName.toString()).trim().toLowerCase().includes(query) ||
                 item.value.toString().trim().toLowerCase().includes(query) ||
                 convertCamelCaseToPascalCase(item.value.toString()).trim().toLowerCase().includes(query) ||
+                (item.kind === CONFIGURATION_CHANGE_KIND && item.propertyPath.trim().toLowerCase().includes(query)) ||
                 (item.type === SAVED_CHANGE_TYPE &&
                     getFormattedDateAndTime(item.timestamp).trim().toLowerCase().includes(query))
             );
@@ -269,7 +305,7 @@ function filterGroup(model: Item[], query: string): Item[] {
     }
     for (const item of model) {
         let parentMatch = false;
-        if (!isPropertyGroup(item)) {
+        if (!isConfigPropGroup(item) && !isPropertyGroup(item)) {
             if (isQueryMatchesChange(item, query)) {
                 filteredModel.push({ ...item, changes: [] });
             }
@@ -281,7 +317,7 @@ function filterGroup(model: Item[], query: string): Item[] {
             // add node without its children
             filteredModel.push({ ...item, changes: [] });
         }
-        const controlPropModel = item;
+        const controlPropModel: ControlGroupProps | ConfigGroupProps = item;
         if (controlPropModel.changes.length <= 0) {
             continue;
         }
@@ -289,13 +325,18 @@ function filterGroup(model: Item[], query: string): Item[] {
 
         if (parentMatch) {
             // parent matched filter query and pushed already to `filterModel`. only  replace matched children
-            (filteredModel[filteredModel.length - 1] as ControlGroupProps).changes = controlPropModel.changes;
+            (filteredModel[filteredModel.length - 1] as ControlGroupProps | ConfigGroupProps).changes =
+                controlPropModel.changes;
             // add node and its matched children
         } else if (data.length > 0) {
             const newFilterModel = { ...item, changes: data };
-            filteredModel.push(newFilterModel);
+            filteredModel.push(newFilterModel as ConfigGroupProps | ControlGroupProps);
         }
     }
 
     return filteredModel;
+}
+
+function isConfigPropGroup(item: ControlGroupProps | UnknownChangeProps | ConfigGroupProps): item is ConfigGroupProps {
+    return (item as ConfigGroupProps).configPath !== undefined;
 }

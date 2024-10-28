@@ -10,7 +10,8 @@ import {
     SCENARIO,
     showMessage,
     storageFileChanged,
-    updateQuickAction
+    updateQuickAction,
+    PropertyType
 } from '@sap-ux-private/control-property-editor-common';
 
 import reducer, {
@@ -107,6 +108,7 @@ describe('main redux slice', () => {
                     changeProperty({
                         controlId: 'control1',
                         controlName: 'Button',
+                        propertyType: PropertyType.ControlProperty,
                         propertyName: 'text',
                         value: 'change text',
                         changeType: 'propertyChange'
@@ -176,6 +178,7 @@ describe('main redux slice', () => {
                                 kind: 'property',
                                 type: 'pending',
                                 controlName: 'Button',
+                                propertyType: PropertyType.ControlProperty,
                                 controlId: 'control1',
                                 isActive: true,
                                 propertyName: 'text',
@@ -189,6 +192,7 @@ describe('main redux slice', () => {
                                 controlId: 'control1',
                                 controlName: 'Button',
                                 propertyName: 'text',
+                                propertyType: PropertyType.ControlProperty,
                                 type: 'saved',
                                 kind: 'property',
                                 fileName: 'file',

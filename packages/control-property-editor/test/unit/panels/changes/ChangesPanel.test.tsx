@@ -27,7 +27,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   value: 'testValue1',
                   isActive: true,
                   changeType: 'propertyChange',
-                  fileName: 'testFile1'
+                  fileName: 'testFile1',
+                  propertyType: cpeCommon.PropertyType.ControlProperty,
               },
               {
                   kind: 'property',
@@ -38,7 +39,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   value: false,
                   isActive: true,
                   changeType: 'propertyChange',
-                  fileName: 'testFile2'
+                  fileName: 'testFile2',
+                  propertyType: cpeCommon.PropertyType.ControlProperty,
               },
               {
                   kind: 'property',
@@ -49,7 +51,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   value: '{expression}',
                   isActive: true,
                   changeType: 'propertyBindingChange',
-                  fileName: 'testFile3'
+                  fileName: 'testFile3',
+                  propertyType: cpeCommon.PropertyType.ControlProperty,
               },
               {
                   kind: 'control',
@@ -64,7 +67,7 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   type: 'pending',
                   isActive: true,
                   changeType: 'addFields',
-                  fileName: 'id_1691659414768_128_addFields'
+                  fileName: 'id_1691659414768_128_addFields',
               }
           ]
         : [];
@@ -79,7 +82,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   fileName: 'testFileName',
                   kind: 'property',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                  changeType: 'propertyChange'
+                  changeType: 'propertyChange',
+                  propertyType: cpeCommon.PropertyType.ControlProperty,
               },
               {
                   controlId: 'testId2',
@@ -90,7 +94,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   fileName: 'testFileName2',
                   kind: 'property',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                  changeType: 'propertyChange'
+                  changeType: 'propertyChange',
+                  propertyType: cpeCommon.PropertyType.ControlProperty,
               },
               {
                   controlId: 'testId3',
@@ -101,7 +106,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   fileName: 'testFileNameBool',
                   kind: 'property',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                  changeType: 'propertyChange'
+                  changeType: 'propertyChange',
+                  propertyType: cpeCommon.PropertyType.ControlProperty,
               },
               {
                   controlId: 'testId4',
@@ -112,7 +118,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   fileName: 'testFileNameNum',
                   kind: 'property',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                  changeType: 'propertyChange'
+                  changeType: 'propertyChange',
+                  propertyType: cpeCommon.PropertyType.ControlProperty,
               },
               {
                   changeType: 'move',

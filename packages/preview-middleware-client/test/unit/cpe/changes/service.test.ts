@@ -4,6 +4,7 @@ import { ActionHandler } from '../../../../src/cpe/types';
 import {
     changeProperty,
     deletePropertyChanges,
+    PropertyType,
     setApplicationRequiresReload
 } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -99,12 +100,7 @@ describe('SelectionService', () => {
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
 
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await service.syncOutlineChanges();
@@ -215,12 +211,7 @@ describe('SelectionService', () => {
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
 
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         expect(fetchMock).toHaveBeenCalledWith('/preview/api/changes?_=123');
@@ -279,12 +270,7 @@ describe('SelectionService', () => {
             getCommands: jest.fn().mockReturnValue([]),
             getAllExecutedCommands: jest.fn().mockReturnValue([])
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
@@ -369,12 +355,7 @@ describe('SelectionService', () => {
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
 
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         expect(fetchMock).toHaveBeenCalledWith('/preview/api/changes?_=123');
@@ -465,12 +446,7 @@ describe('SelectionService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 
@@ -535,12 +511,7 @@ describe('SelectionService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 
@@ -585,12 +556,7 @@ describe('SelectionService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 
@@ -645,12 +611,7 @@ describe('SelectionService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
@@ -725,12 +686,7 @@ describe('SelectionService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
@@ -812,12 +768,7 @@ describe('SelectionService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
@@ -924,12 +875,7 @@ describe('SelectionService', () => {
             getCommands: jest.fn().mockReturnValue(commands),
             getAllExecutedCommands: jest.fn().mockReturnValue(commands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 
@@ -949,6 +895,7 @@ describe('SelectionService', () => {
                         fileName: 'testFileName',
                         type: 'pending',
                         kind: 'property',
+                        propertyType: 'controlProperty',
                         value: 'abc'
                     },
                     {
@@ -960,7 +907,8 @@ describe('SelectionService', () => {
                         fileName: 'testFileName',
                         type: 'pending',
                         kind: 'property',
-                        value: '{i18n>DELETE}'
+                        value: '{i18n>DELETE}',
+                        propertyType: 'controlProperty'
                     },
                     {
                         changeType: 'addXMLAtExtensionPoint',
@@ -979,12 +927,7 @@ describe('SelectionService', () => {
             json: () => Promise.resolve({})
         });
 
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         expect(subscribeMock).toHaveBeenCalledTimes(1);
@@ -992,6 +935,7 @@ describe('SelectionService', () => {
             changeProperty({
                 controlId: 'control1',
                 propertyName: 'text',
+                propertyType: PropertyType.ControlProperty,
                 controlName: 'button',
                 value: 'abc',
                 changeType: 'propertyChange'
@@ -1003,6 +947,7 @@ describe('SelectionService', () => {
             controlId: 'control1',
             controlName: 'button',
             propertyName: 'text',
+            propertyType: 'controlProperty',
             value: 'abc'
         });
     });
@@ -1050,8 +995,16 @@ describe('SelectionService', () => {
                 new Map<string, any>([
                     ['selector', { id: 'control1' }],
                     ['changeType', 'appdescr_fe_changePageConfiguration'],
-                    ['propertyName', 'text'],
-                    ['newValue', 'abc']
+                    [
+                        'parameters',
+                        {
+                            'entityPropertyChange': {
+                                'propertyPath': 'text',
+                                'operation': 'upsert',
+                                'propertyValue': 'hello'
+                            }
+                        }
+                    ]
                 ])
             )
         ];
@@ -1059,12 +1012,7 @@ describe('SelectionService', () => {
             getCommands: jest.fn().mockReturnValue(commands),
             getAllExecutedCommands: jest.fn().mockReturnValue(commands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 
@@ -1077,12 +1025,15 @@ describe('SelectionService', () => {
                 saved: [],
                 pending: [
                     {
-                        changeType: 'appdescr_fe_changePageConfiguration',
+                        changeType: 'configurationChange',
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         isActive: true,
                         fileName: 'testFileName',
                         type: 'pending',
-                        kind: 'control'
+                        kind: 'configuration',
+                        propertyName: 'text',
+                        propertyPath: '',
+                        value: 'hello'
                     }
                 ]
             }
@@ -1109,12 +1060,7 @@ describe('SelectionService', () => {
                 })
         });
 
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         expect(subscribeMock).toHaveBeenCalledTimes(1);

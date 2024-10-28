@@ -1,6 +1,6 @@
 import { applyChange } from '../../../../src/cpe/changes/flex-change';
 import type { UI5AdaptationOptions } from '../../../../src/cpe/types';
-import type { PropertyChange } from '@sap-ux-private/control-property-editor-common';
+import { PropertyType, type PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import { sapCoreMock } from 'mock/window';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -51,6 +51,7 @@ describe('flexChange', () => {
         const change: PropertyChange = {
             controlId: 'testId',
             propertyName: 'blocked',
+            propertyType: PropertyType.ControlProperty,
             value: false,
             controlName: 'controlName',
             changeType: 'propertyChange'
@@ -79,6 +80,7 @@ describe('flexChange', () => {
         const change: PropertyChange = {
             controlId: 'testId',
             propertyName: 'text',
+            propertyType: PropertyType.ControlProperty,
             value: 'apply',
             controlName: 'controlName',
             changeType: 'propertyChange'
@@ -107,6 +109,7 @@ describe('flexChange', () => {
         const change: PropertyChange = {
             controlId: 'testId',
             propertyName: 'enabled',
+            propertyType: PropertyType.ControlProperty,
             value: '{testModel>enabled}',
             controlName: 'controlName',
             changeType: 'propertyBindingChange'
@@ -135,6 +138,7 @@ describe('flexChange', () => {
         const change: PropertyChange = {
             controlId: 'testId',
             propertyName: 'enabled',
+            propertyType: PropertyType.ControlProperty,
             value: 'false',
             controlName: 'controlName',
             changeType: 'propertyChange'

@@ -3,7 +3,7 @@ import { UIDialog, UIIconButton, UiIcons, UISearchBox, UITable, SelectionMode } 
 import type { CSSProperties, ReactElement } from 'react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { IconDetails } from '@sap-ux-private/control-property-editor-common';
+import type { IconDetails, PropertyType } from '@sap-ux-private/control-property-editor-common';
 
 import './SapUiIcon.scss';
 import { changeProperty } from '../../slice';
@@ -24,6 +24,7 @@ export interface IconValueHelpProps {
     controlName: string;
     propertyName: string;
     disabled: boolean;
+    propertyType: PropertyType;
 }
 
 /**
@@ -33,7 +34,7 @@ export interface IconValueHelpProps {
  * @returns ReactElement
  */
 export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElement {
-    const { icons, value, propertyName, controlId, disabled, controlName } = iconValueHelpProps;
+    const { icons, value, propertyName, controlId, disabled, controlName, propertyType } = iconValueHelpProps;
     const dispatch = useDispatch();
     const [newValue, setNewValue] = useState(value || '');
     const { t } = useTranslation();
@@ -119,7 +120,8 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
                         controlName,
                         controlId,
                         propertyName,
-                        value: newValue
+                        value: newValue,
+                        propertyType
                     });
                     dispatch(action);
                 }}

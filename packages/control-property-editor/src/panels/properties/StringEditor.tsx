@@ -12,7 +12,12 @@ import { isExpression, InputType } from './types';
 import { setCachedValue } from './propertyValuesCache';
 
 import './Properties.scss';
-import { reportTelemetry, FLOAT_VALUE_TYPE, INTEGER_VALUE_TYPE } from '@sap-ux-private/control-property-editor-common';
+import {
+    reportTelemetry,
+    FLOAT_VALUE_TYPE,
+    INTEGER_VALUE_TYPE,
+    PropertyType
+} from '@sap-ux-private/control-property-editor-common';
 import './SapUiIcon.scss';
 import { IconValueHelp } from './IconValueHelp';
 import type { IconDetails } from '@sap-ux-private/control-property-editor-common';
@@ -26,7 +31,7 @@ import type { RootState } from '../../store';
  */
 export function StringEditor(propertyInputProps: PropertyInputProps): ReactElement {
     const {
-        property: { name, value, isEnabled, isIcon, type, errorMessage },
+        property: { name, value, isEnabled, isIcon, type, errorMessage, propertyType },
         controlId,
         controlName
     } = propertyInputProps;
@@ -45,6 +50,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
                 value={value as string}
                 controlId={controlId}
                 propertyName={name}
+                propertyType={propertyType}
             />
         );
     };
@@ -61,32 +67,27 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
         reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
             console.error(`Error in reporting telemetry`, error);
         });
-
-        if (type === FLOAT_VALUE_TYPE && !isExpression(val)) {
-            let newValue: string | number = String(e.currentTarget.value);
-            if (type === FLOAT_VALUE_TYPE && !isExpression(newValue)) {
-                newValue = parseFloat(String(newValue?.trim()));
+        if (!isExpression(val)) {
+            if (type === FLOAT_VALUE_TYPE) {
+                let newValue: string | number = String(e.currentTarget.value);
+                if (type === FLOAT_VALUE_TYPE && !isExpression(newValue)) {
+                    newValue = parseFloat(String(newValue?.trim()));
+                }
+                setCachedValue(controlId, name, InputType.number, newValue);
+                setValue(newValue);
             }
-            setCachedValue(controlId, name, InputType.number, newValue);
-            const action = changeProperty({
-                changeType: 'propertyBindingChange',
-                controlId,
-                propertyName: name,
-                value: newValue,
-                controlName
-            });
-            dispatch(action);
-            setValue(newValue);
-        } else {
-            const action = changeProperty({
-                changeType: 'propertyChange',
-                controlId,
-                propertyName: name,
-                value: val,
-                controlName
-            });
-            dispatch(action);
         }
+        const changeType = isExpression(val) ? 'propertyBindingChange' : 'propertyChange';
+
+        const action = changeProperty({
+            changeType,
+            controlId,
+            propertyName: name,
+            propertyType,
+            value: val,
+            controlName
+        });
+        dispatch(action);
     };
 
     const inputProps: UITextInputProps = {};

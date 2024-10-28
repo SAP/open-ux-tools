@@ -3,7 +3,9 @@ import type {
     PendingChange,
     SavedPropertyChange,
     UnknownSavedChange,
-    SavedControlChange
+    SavedControlChange,
+    PendingConfigurationChange,
+    SavedConfigurationChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
@@ -13,10 +15,10 @@ import {
     FlexChangesEndPoints,
     reloadApplication,
     setApplicationRequiresReload,
-    save
+    save,
+    PropertyType
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
-import type { SelectionService } from '../selection';
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
 import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
@@ -28,6 +30,8 @@ import { getError } from '../../utils/error';
 import { isLowerThanMinimalUi5Version, getUi5Version } from '../../utils/version';
 import MessageToast from 'sap/m/MessageToast';
 import { getTextBundle } from '../../i18n';
+import { getControlById } from '../../utils/core';
+import UI5Element from 'sap/ui/core/Element';
 
 interface ChangeContent {
     property: string;
@@ -35,7 +39,17 @@ interface ChangeContent {
     newBinding: string;
 }
 
-interface ManifestChangeContent {
+interface ChangeSelector {
+    id: string;
+    type: string;
+}
+
+export const STACK_CHANGE_EVENT = 'STACK_CHANGED';
+export interface StackChangedEventDetail {
+    controls: UI5Element[];
+}
+
+interface ConfigurationChangeContent {
     page: string;
     entityPropertyChange: {
         propertyPath: string;
@@ -61,20 +75,19 @@ const PROPRTY_CHANGE = 'propertyChange';
 const PROPRTY_BINDING_CHANGE = 'propertyBindingChange';
 const MANIFEST_V4_CHANGE = 'appdescr_fe_changePageConfiguration';
 
-interface Change extends BaseChange {
+interface PropertyChange extends BaseChange {
     changeType: typeof PROPRTY_CHANGE | typeof PROPRTY_BINDING_CHANGE;
     controlId: string;
     propertyName: string;
     content: ChangeContent;
 }
-
-interface ManifestChange extends BaseChange {
+interface ConfigChange extends BaseChange {
     changeType: typeof MANIFEST_V4_CHANGE;
     propertyName: string;
-    content: ManifestChangeContent;
+    content: ConfigurationChangeContent;
 }
 
-type SavedChangesResponse = Record<string, Change | ManifestChange>;
+type SavedChangesResponse = Record<string, PropertyChange | ConfigChange>;
 
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
 /**
@@ -97,7 +110,7 @@ function assertProperties<T extends object>(properties: Properties<T>[], target:
  *
  * @param change Change object
  */
-function assertChange(change: Change): void {
+function assertChange(change: PropertyChange): void {
     assertProperties(['fileName', 'selector', 'content', 'creation'], change);
     assertProperties(['id'], change.selector);
     assertProperties(['property'], change.content);
@@ -108,7 +121,7 @@ function assertChange(change: Change): void {
  *
  * @param change Change object
  */
-function assertManifestChange(change: ManifestChange): void {
+function assertManifestChange(change: ConfigChange): void {
     assertProperties(['fileName', 'content', 'creation'], change);
     assertProperties(['page', 'entityPropertyChange'], change.content);
     assertProperties(['propertyPath', 'operation', 'propertyValue'], change.content.entityPropertyChange);
@@ -129,11 +142,15 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
 /**
  * A Class of ChangeService
  */
-export class ChangeService {
-    private savedChanges: SavedPropertyChange[] | UnknownSavedChange[] | SavedControlChange[] = [];
+export class ChangeService extends EventTarget {
+    private savedChanges:
+        | SavedPropertyChange[]
+        | UnknownSavedChange[]
+        | SavedControlChange[]
+        | SavedConfigurationChange[] = [];
     private changesRequiringReload = 0;
     private sendAction: (action: ExternalAction) => void;
-    private pendingChanges: PendingChange[] = [];
+    public pendingChanges: PendingChange[] = [];
     private changedFiles: Record<string, object> = {};
     private readonly eventStack: object[] = [];
     /**
@@ -142,7 +159,9 @@ export class ChangeService {
      * @param ui5 facade for ui5 framework methods.
      * @param selectionService selection service instance.
      */
-    constructor(private readonly options: UI5AdaptationOptions, private readonly selectionService: SelectionService) {}
+    constructor(private readonly options: UI5AdaptationOptions) {
+        super();
+    }
 
     /**
      * Initializes change service.
@@ -155,10 +174,6 @@ export class ChangeService {
         subscribe(async (action): Promise<void> => {
             if (changeProperty.match(action)) {
                 try {
-                    this.selectionService.applyControlPropertyChange(
-                        action.payload.controlId,
-                        action.payload.propertyName
-                    );
                     await applyChange(this.options, action.payload);
                 } catch (exception) {
                     // send error information
@@ -220,40 +235,72 @@ export class ChangeService {
                     Object.keys(savedChanges ?? {}).map(
                         async (
                             key
-                        ): Promise<SavedPropertyChange | UnknownSavedChange | SavedControlChange | undefined> => {
-                            const change: Change = savedChanges[key];
+                        ): Promise<
+                            | SavedPropertyChange
+                            | UnknownSavedChange
+                            | SavedControlChange
+                            | SavedConfigurationChange
+                            | undefined
+                        > => {
+                            const change: PropertyChange | ConfigChange = savedChanges[key];
                             let selectorId;
                             try {
-                                const flexObject = await this.getFlexObject(change);
-                                selectorId = await this.getControlIdByChange(flexObject);
-                                assertChange(change);
-                                if (
-                                    [change.content.newValue, change.content.newBinding].every(
-                                        (item) => item === undefined || item === null
-                                    )
-                                ) {
-                                    throw new Error('Invalid change, missing new value in the change file');
+                                if (change.changeType === MANIFEST_V4_CHANGE) {
+                                    assertManifestChange(change);
+                                    if (
+                                        [change.content.entityPropertyChange.propertyValue].every(
+                                            (item) => item === undefined || item === null
+                                        )
+                                    ) {
+                                        throw new Error('Invalid change, missing property value on change file');
+                                    }
+                                    const propertyPathSegments =
+                                        change.content.entityPropertyChange.propertyPath.split('/');
+                                    const propertyName = propertyPathSegments.pop();
+                                    return {
+                                        type: 'saved',
+                                        kind: 'configuration',
+                                        fileName: change.fileName,
+                                        propertyPath: propertyPathSegments
+                                            .join('/')
+                                            .replace(/^controlConfiguration\/@[^/]+\.v1\./, ''),
+                                        propertyName: propertyName ?? '',
+                                        value: change.content.entityPropertyChange.propertyValue,
+                                        timestamp: new Date(change.creation).getTime(),
+                                        changeType: 'configurationChange'
+                                    };
+                                } else {
+                                    const flexObject = await this.getFlexObject(change);
+                                    selectorId = await this.getControlIdByChange(flexObject);
+                                    assertChange(change);
+                                    if (
+                                        [change.content.newValue, change.content.newBinding].every(
+                                            (item) => item === undefined || item === null
+                                        )
+                                    ) {
+                                        throw new Error('Invalid change, missing new value in the change file');
+                                    }
+                                    if (
+                                        change.changeType !== 'propertyChange' &&
+                                        change.changeType !== 'propertyBindingChange'
+                                    ) {
+                                        throw new Error('Unknown Change Type');
+                                    }
+                                    this.changedFiles[change.fileName] = change;
+                                    return {
+                                        type: 'saved',
+                                        kind: 'property',
+                                        fileName: change.fileName,
+                                        controlId: selectorId,
+                                        propertyName: change.content.property,
+                                        value: change.content.newValue ?? change.content.newBinding,
+                                        timestamp: new Date(change.creation).getTime(),
+                                        controlName: change.selector.type
+                                            ? (change.selector.type.split('.').pop() as string)
+                                            : '',
+                                        changeType: change.changeType
+                                    } as SavedPropertyChange;
                                 }
-                                if (
-                                    change.changeType !== 'propertyChange' &&
-                                    change.changeType !== 'propertyBindingChange'
-                                ) {
-                                    throw new Error('Unknown Change Type');
-                                }
-                                this.changedFiles[change.fileName] = change;
-                                return {
-                                    type: 'saved',
-                                    kind: 'property',
-                                    fileName: change.fileName,
-                                    controlId: selectorId,
-                                    propertyName: change.content.property,
-                                    value: change.content.newValue ?? change.content.newBinding,
-                                    timestamp: new Date(change.creation).getTime(),
-                                    controlName: change.selector.type
-                                        ? (change.selector.type.split('.').pop() as string)
-                                        : '',
-                                    changeType: change.changeType
-                                } as SavedPropertyChange;
                             } catch (error) {
                                 // Gracefully handle change files with invalid content
                                 if (change.fileName) {
@@ -361,7 +408,7 @@ export class ChangeService {
             if (this.eventStack.length - 1 === eventIndex) {
                 this.pendingChanges = pendingChanges.filter((change): boolean => !!change);
                 const changesRequiringReload = this.pendingChanges.reduce(
-                    (sum, change) => (change.changeType === 'appdescr_fe_changePageConfiguration' ? sum + 1 : sum),
+                    (sum, change) => (change.changeType === 'configurationChange' ? sum + 1 : sum),
                     0
                 );
                 if (changesRequiringReload > this.changesRequiringReload) {
@@ -376,6 +423,24 @@ export class ChangeService {
             if (Array.isArray(allCommands) && allCommands.length === 0) {
                 this.pendingChanges = [];
                 await this.fetchSavedChanges();
+            }
+
+            // Notify to update the ui for configuration changes.
+            const configurationChanges = this.pendingChanges?.filter((item) => item.kind === 'configuration');
+            if (configurationChanges.length) {
+                const event = new CustomEvent(STACK_CHANGE_EVENT, {
+                    detail: {
+                        controls: (configurationChanges as PendingConfigurationChange[])
+                            .map((item) => {
+                                if (item.controlId) {
+                                    return getControlById(item.controlId);
+                                }
+                                return;
+                            })
+                            .filter((item) => item?.getId())
+                    }
+                });
+                this.dispatchEvent(event);
             }
             this.updateStack();
             handleStackChange();
@@ -450,6 +515,7 @@ export class ChangeService {
                 type: 'pending',
                 kind: 'property',
                 changeType,
+                propertyType: PropertyType.ControlProperty,
                 controlId: selectorId,
                 propertyName: command.getProperty('propertyName') as string,
                 isActive: index >= inactiveCommandCount,
@@ -458,15 +524,17 @@ export class ChangeService {
                 fileName
             };
         } else if (changeType === 'appdescr_fe_changePageConfiguration') {
+            const propertyPathSegments = command.getProperty('parameters').entityPropertyChange.propertyPath.split('/');
+            const propName = propertyPathSegments.pop();
             result = {
                 type: 'pending',
-                kind: 'property',
-                controlId: selectorId,
-                changeType,
-                propertyName: command.getProperty('parameters').entityPropertyChange.propertyPath.split('/').pop(),
+                kind: 'configuration',
+                controlId: this.getCommandSelectorId(command) || '',
+                changeType: 'configurationChange',
+                propertyPath: propertyPathSegments.join('/').replace(/^controlConfiguration\/@[^/]+\.v1\./, ''),
+                propertyName: propName,
                 isActive: index >= inactiveCommandCount,
                 value,
-                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? '',
                 fileName
             };
         } else {
@@ -597,12 +665,16 @@ export class ChangeService {
      */
     public async syncOutlineChanges(): Promise<void> {
         for (const change of this.savedChanges) {
-            if (change.kind !== 'unknown') {
+            if (change.kind !== 'unknown' && change.kind !== 'configuration') {
                 const flexObject = await this.getFlexObject(this.changedFiles[change.fileName]);
                 change.controlId = (await this.getControlIdByChange(flexObject)) ?? '';
             }
         }
         this.updateStack();
+    }
+
+    public onStackChange(handler: (event: CustomEvent<StackChangedEventDetail>) => void | Promise<void>): void {
+        this.addEventListener(STACK_CHANGE_EVENT, handler as EventListener);
     }
 
     /**
