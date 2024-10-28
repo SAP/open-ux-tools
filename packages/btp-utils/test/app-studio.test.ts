@@ -3,7 +3,7 @@ import { join } from 'path';
 import type { Destination } from '../src';
 import {
     getAppStudioProxyURL,
-    getAppStudioBaseURL,
+    getAppStudioBaseURL, 
     isAppStudio,
     getDestinationUrlForAppStudio,
     listDestinations,
