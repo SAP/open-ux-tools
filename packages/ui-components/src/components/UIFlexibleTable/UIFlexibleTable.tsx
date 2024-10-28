@@ -274,8 +274,7 @@ export function UIFlexibleTable<T>(props: Readonly<UIFlexibleTableProps<T>>): Re
                                     disabled={props.isAddItemDisabled || props.isContentLoading || props.readonly}
                                     onClick={addNewRow}
                                     title={props.addRowButton.title}
-                                    aria-label={props.addRowButton.ariaLabel ?? props.addRowButton.label}
-                                    >
+                                    aria-label={props.addRowButton.ariaLabel ?? props.addRowButton.label}>
                                     {props.addRowButton.label}
                                 </UIDefaultButton>
                             </div>
