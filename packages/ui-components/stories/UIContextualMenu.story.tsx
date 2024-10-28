@@ -10,11 +10,9 @@ import {
 } from '../src/components/UIContextualMenu';
 import { UIDefaultButton, UIIconButton } from '../src/components/UIButton';
 import { UIDirectionalHint } from '../src/components/UITreeDropdown';
-import { initIcons, UiIcons } from '../src/components/Icons';
+import { UiIcons } from '../src/components/Icons';
 import { UIDropdown } from '../src/components/UIDropdown';
 import { UIToggle } from '../src/components/UIToggle';
-
-initIcons();
 
 export default { title: 'Dropdowns/ContextualMenu' };
 const stackTokens: IStackTokens = { childrenGap: 40 };

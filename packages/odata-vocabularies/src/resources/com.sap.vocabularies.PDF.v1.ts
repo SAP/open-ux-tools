@@ -1,4 +1,4 @@
-// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
+// Last content update: Mon Oct 21 2024 11:45:53 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -146,6 +146,14 @@ export default {
                 '@Org.OData.Core.V1.Description': 'Setting the text direction-layout is supported',
                 '@Org.OData.Core.V1.LongDescription':
                     'PDF supports setting the text direction-layout (e.g. left-to-right or right-to-left) in the document description'
+            },
+            'UploadToFileShare': {
+                '$Type': 'Edm.Boolean',
+                '$DefaultValue': false,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description': 'Support of PDF document upload',
+                '@Org.OData.Core.V1.LongDescription':
+                    'A file share connection needs to be configured on the server. \nThe response of a corresponding request is then `301 Moved Permanently` with a `Location` header containing the link to the document on the file share server.'
             }
         }
     }
