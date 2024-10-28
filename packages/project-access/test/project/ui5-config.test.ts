@@ -67,7 +67,7 @@ describe('Test getAllUi5YamlFileNames()', () => {
         `);
     });
 
-    test('Read list of Ui5 yaml files, filter out invalid ones but include from mem-fs', async () => {
+    test('Read list of Ui5 yaml files, filter out invalid ones but include from mem-fs changes', async () => {
         const memFs = create(createStorage());
 
         const yamlString = `
@@ -82,6 +82,7 @@ describe('Test getAllUi5YamlFileNames()', () => {
             `;
 
         memFs.write(join(samplesRoot, 'default-with-ui5-yaml', 'ui5-something.yaml'), yamlString);
+        memFs.delete(join(samplesRoot, 'default-with-ui5-yaml', 'ui5-custom.yaml'));
 
         expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
             Object {
@@ -89,7 +90,6 @@ describe('Test getAllUi5YamlFileNames()', () => {
                 "ui5.yaml",
               ],
               "valid": Array [
-                "ui5-custom.yaml",
                 "ui5-something.yaml",
               ],
             }
