@@ -57,6 +57,7 @@ export interface UIFlexibleTableProps<T> {
     addRowButton?: {
         label: string;
         title?: string;
+        ariaLabel?: string;
         onClick?: () => AddRowResultType | Promise<AddRowResultType>;
     };
     columns: UIFlexibleTableColumnType[];
