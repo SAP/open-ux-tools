@@ -15,6 +15,8 @@ import {
 } from './table-quick-action-base';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import UI5Element from 'sap/ui/core/Element';
+import { notifyUser } from '../../utils';
+import { getTextBundle } from '../../../i18n';
 
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
 
@@ -63,6 +65,12 @@ export class AddTableCustomColumnQuickAction
 
         const overlay = OverlayRegistry.getOverlay(tableInternal as UI5Element) || [];
         if (!overlay) {
+            return [];
+        }
+
+        if ((tableInternal.getAggregation('items') as ManagedObject[]).length === 0) {
+            const bundle = await getTextBundle();
+            notifyUser(bundle.getText('TABLE_ROWS_NEEDED_TO_CREATE_CUSTOM_COLUMN'), 8000);
             return [];
         }
         const dialog = [TREE_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE].some((type) =>

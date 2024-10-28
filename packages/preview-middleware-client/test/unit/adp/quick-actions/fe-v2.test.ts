@@ -35,6 +35,8 @@ import {
     TREE_TABLE_TYPE
 } from 'open/ux/preview/client/adp/quick-actions/fe-v2/table-quick-action-base';
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
+import * as adpUtils from 'open/ux/preview/client/adp/utils';
+
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
@@ -1411,6 +1413,118 @@ describe('FE V2 quick actions', () => {
                     aggregation: 'columns',
                     title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                 });
+            });
+            test('displays warning when no rows loaded', async () => {
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                    if (type === 'sap.uxap.ObjectPageSection') {
+                        // Return a mock object with the getSubSections method
+                        return {
+                            children: [2],
+                            getSubSections: () => [{}, {}],
+                            getTitle: () => 'section 01',
+                            setSelectedSubSection: () => {}
+                        };
+                    }
+
+                    if (type === 'sap.uxap.ObjectPageSubSection') {
+                        // Return a new instance of ManagedObject
+                        return new ManagedObject() as any;
+                    }
+
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+
+                            getAggregation: () => {
+                                return [
+                                    {
+                                        isA: (type: string) => type === M_TABLE_TYPE,
+                                        getAggregation: () => []
+                                    }
+                                ];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                const notifySpy = jest.spyOn(adpUtils, 'notifyUser');
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({
+                        id: 'objectPage0-create-table-custom-column',
+                        kind: 'nested',
+                        path: '-1/0'
+                    })
+                );
+
+                expect(notifySpy).toHaveBeenCalledWith(
+                    'At least one table row is required to create new custom column. Make sure the table data is loaded and try again.',
+                    8000
+                );
             });
         });
     });
