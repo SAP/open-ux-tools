@@ -35,7 +35,7 @@ describe('convertPreview', () => {
         );
     });
 
-    test('deleteNoLongerUsedFiles', async () => {
+    test('delete no longer used files', async () => {
         await deleteNoLongerUsedFiles(fs, basePath);
         expect(() => fs.read(join(basePath, 'webapp', 'test', 'locate-reuse-libs.js'))).toThrowError(
             `${join(basePath, 'webapp', 'test', 'locate-reuse-libs.js')} doesn\'t exist`
@@ -45,7 +45,7 @@ describe('convertPreview', () => {
         );
     });
 
-    test('checkPrerequisites with bestpractice', async () => {
+    test('check prerequisites with bestpractice build dependency', async () => {
         fs.write(
             join(basePath, 'package.json'),
             JSON.stringify({ devDependencies: { '@sap/grunt-sapui5-bestpractice-build': '1.0.0' } })
@@ -57,7 +57,7 @@ describe('convertPreview', () => {
         );
     });
 
-    test('checkPrerequisites with UI5 cli 2.0', async () => {
+    test('check prerequisites with UI5 cli 2.0 dependency', async () => {
         fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '2.0.0' } }));
 
         expect(await checkPrerequisites(basePath, fs, logger)).toBeFalsy();
@@ -66,7 +66,7 @@ describe('convertPreview', () => {
         );
     });
 
-    test('checkPrerequisites w/o mockserver', async () => {
+    test('check prerequisites w/o mockserver dependency', async () => {
         fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '3.0.0' } }));
 
         expect(await checkPrerequisites(basePath, fs, logger)).toBeFalsy();
@@ -75,7 +75,7 @@ describe('convertPreview', () => {
         );
     });
 
-    test('checkPrerequisites w/o mockserver but with cds-plugin-ui5', async () => {
+    test('check prerequisites w/o mockserver dependency but with cds-plugin-ui5 dependency', async () => {
         fs.write(
             join(basePath, 'package.json'),
             JSON.stringify({ devDependencies: { '@ui5/cli': '3.0.0', 'cds-plugin-ui5': '6.6.6' } })
@@ -84,7 +84,7 @@ describe('convertPreview', () => {
         expect(await checkPrerequisites(basePath, fs, logger)).toBeTruthy();
     });
 
-    test('checkPrerequisites fulfilled', async () => {
+    test('check prerequisites fulfilled', async () => {
         fs.write(
             join(basePath, 'package.json'),
             JSON.stringify({
