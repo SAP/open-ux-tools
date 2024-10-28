@@ -401,7 +401,14 @@ export class UI5Config {
     ): this {
         this.document.appendTo({
             path: 'server.customMiddleware',
-            value: getMockServerMiddlewareConfig(name, servicePath, undefined, annotationsConfig, dataSourcesConfig)
+            value: getMockServerMiddlewareConfig(
+                name,
+                servicePath,
+                undefined,
+                undefined,
+                annotationsConfig,
+                dataSourcesConfig
+            )
         });
         return this;
     }
@@ -426,44 +433,14 @@ export class UI5Config {
         } else {
             const mockserverConfig = mockserverMiddleware.configuration as MockserverConfig;
             if (mockserverConfig) {
-                const newServiceData: {
-                    urlPath: string;
-                    metadataPath: string;
-                    mockdataPath?: string;
-                    generateMockData?: boolean;
-                } = {
-                    urlPath: servicePath.replace(/\/$/, ''),
-                    metadataPath: `./webapp/localService/${name}/metadata.xml`,
-                    mockdataPath: `./webapp/localService/${name}/data`,
-                    generateMockData: true
-                };
-                if (mockserverConfig.services) {
-                    // Check if service with given paths already exists or placeholder service exists
-                    const existingServiceIndex: number = mockserverConfig.services.findIndex(
-                        (existingService) =>
-                            (existingService.urlPath === newServiceData.urlPath &&
-                                existingService.metadataPath === newServiceData.metadataPath) ||
-                            existingService.urlPath === ''
-                    );
-                    if (existingServiceIndex > -1) {
-                        mockserverConfig.services[existingServiceIndex] = newServiceData;
-                    } else {
-                        mockserverConfig.services = [...mockserverConfig.services, newServiceData];
-                    }
-                } else {
-                    mockserverConfig.services = [newServiceData];
-                }
-                if (mockserverConfig.annotations) {
-                    const mockserverAnnotations = mockserverConfig.annotations;
-                    annotationsConfig.forEach((annotationConfig) => {
-                        if (!mockserverAnnotations.includes(annotationConfig)) {
-                            mockserverAnnotations.push(annotationConfig);
-                        }
-                    });
-                } else {
-                    mockserverConfig.annotations = annotationsConfig;
-                }
-                this.updateCustomMiddleware(mockserverMiddleware);
+                const updatedMiddleware = getMockServerMiddlewareConfig(
+                    name,
+                    servicePath,
+                    mockserverConfig.services,
+                    mockserverConfig.annotations,
+                    annotationsConfig
+                );
+                this.updateCustomMiddleware(updatedMiddleware);
             }
         }
         return this;

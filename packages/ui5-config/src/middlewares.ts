@@ -131,10 +131,12 @@ export const getMockServerMiddlewareConfig = (
     serviceName?: string,
     servicePath?: string,
     existingServices: MockserverConfig['services'] = [],
+    existingAnnotations: MockserverConfig['annotations'] = [],
     annotationsConfig: MockserverConfig['annotations'] = [],
     dataSourcesConfig?: { serviceName: string; serviceUri: string }[]
 ): CustomMiddleware<MockserverConfig> => {
     let services: MockserverConfig['services'] = [];
+
     if (dataSourcesConfig) {
         dataSourcesConfig.forEach((dataSource) => {
             if (services) {
@@ -163,17 +165,26 @@ export const getMockServerMiddlewareConfig = (
         );
         if (existingServiceIndex > -1) {
             existingServices[existingServiceIndex] = newServiceData;
+            services = existingServices;
         } else {
             services = [...existingServices, newServiceData];
         }
     }
+    // Handle service annotations by avoiding existing ones from middleware
+    annotationsConfig.forEach((annotationConfig) => {
+        if (
+            !existingAnnotations.find((existingAnnotation) => existingAnnotation.urlPath === annotationConfig.urlPath)
+        ) {
+            existingAnnotations.push(annotationConfig);
+        }
+    });
     return {
         name: 'sap-fe-mockserver',
         beforeMiddleware: 'csp',
         configuration: {
             mountPath: '/',
             services,
-            annotations: annotationsConfig
+            annotations: existingAnnotations
         }
     };
 };
