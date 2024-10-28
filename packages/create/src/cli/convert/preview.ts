@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import { getLogger, traceChanges } from '../../tracing';
+import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
 import { convertToVirtualPreview } from '@sap-ux/app-config-writer';
 /**
  * Add a new sub-command to convert the preview of a project to virtual files.
@@ -9,7 +9,11 @@ import { convertToVirtualPreview } from '@sap-ux/app-config-writer';
 export function addConvertPreviewCommand(cmd: Command): void {
     cmd.command('preview [path]')
         .option('-s, --simulate', 'simulate only do not write or install')
+        .option('-v, --verbose', 'show verbose information')
         .action(async (path, options) => {
+            if (options.verbose === true || options.simulate) {
+                setLogLevelVerbose();
+            }
             await convertPreview(path, !!options.simulate);
         });
 }
