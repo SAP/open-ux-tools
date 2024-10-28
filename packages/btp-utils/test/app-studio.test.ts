@@ -10,7 +10,7 @@ import {
     getCredentialsForDestinationService,
     exposePort
     
-} from '../src';
+} from '../src'; 
 import { ENV } from '../src/app-studio.env';
 import destinationList from './mockResponses/destinations.json';
 
