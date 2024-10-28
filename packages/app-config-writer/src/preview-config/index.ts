@@ -54,7 +54,7 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
-async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+export async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const message = (filename: string): string =>
         `Renamed ${filename} to ${filename}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content e.g. to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`;
     const flpSandboxPath = join(await getWebappPath(basePath), 'test', 'flpSandbox.html');
@@ -76,7 +76,7 @@ async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogge
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
-async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+export async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const webappTestPath = join(await getWebappPath(basePath), 'test');
     // todo: check if the list of files is complete
     [
@@ -108,7 +108,7 @@ async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: To
  * @param logger logger to report info to the user
  * @returns indicator if the prerequisites are met
  */
-async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<boolean> {
+export async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<boolean> {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     let prerequisitesMet = true;
