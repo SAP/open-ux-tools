@@ -1,5 +1,5 @@
 import { UI5_DEFAULT } from '@sap-ux/ui5-config';
-import { mergeUi5, defaultUI5Libs, mergeApp, getSpecTagVersion } from '../src/data/defaults';
+import { mergeUi5, defaultUI5Libs, mergeApp } from '../src/data/defaults';
 import { mergeWithDefaults } from '../src/data/index';
 import type { App, UI5, Ui5App } from '../src/types';
 
@@ -406,20 +406,6 @@ describe('Setting defaults', () => {
                 sourceTemplate
             });
             expect(merged.sourceTemplate).toEqual(sourceTemplate);
-        });
-    });
-
-    describe('getSpecTagVersion', () => {
-        test('get latest version', async () => {
-            expect(getSpecTagVersion('')).toBe('latest');
-        });
-
-        test('get specific version', async () => {
-            expect(getSpecTagVersion('1.92.1')).toBe('UI5-1.92');
-        });
-
-        test('get snapshot version', async () => {
-            expect(getSpecTagVersion('snapshot-1.71')).toBe('UI5-1.71');
         });
     });
 });

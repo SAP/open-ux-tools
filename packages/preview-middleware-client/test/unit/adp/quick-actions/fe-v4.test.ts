@@ -1,6 +1,10 @@
 import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import type { ChangeService } from '../../../../src/cpe/changes/service';
+const mockChangeService = {
+    syncOutlineChanges: jest.fn()
+} as unknown as ChangeService;
 
 import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 
@@ -12,6 +16,7 @@ jest.mock('../../../../src/adp/init-dialogs', () => {
 });
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
+import { FeatureService } from '../../../../src/cpe/feature-service';
 
 import FEV4QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe-v4/registry';
 import { sapCoreMock } from 'mock/window';
@@ -101,7 +106,7 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -231,7 +236,7 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -275,6 +280,15 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('change table columns', () => {
+            beforeEach(() => {
+                jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature: string) => {
+                    if (feature === 'cpe.beta.quick-actions') {
+                        return true;
+                    }
+                    return false;
+                });
+                FeatureService.isFeatureEnabled;
+            });
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
@@ -342,7 +356,7 @@ describe('FE V2 quick actions', () => {
                     }
                 });
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -589,7 +603,7 @@ describe('FE V2 quick actions', () => {
 
                     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                     const registry = new FEV4QuickActionRegistry();
-                    const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                    const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                     await service.init(sendActionMock, subscribeMock);
 
                     await service.reloadQuickActions({

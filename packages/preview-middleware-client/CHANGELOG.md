@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.18
+
+### Patch Changes
+
+-   5ec7106: Modified indicators incorrectly displayed for some UI5 controls in Adaptation Project
+
+## 0.11.17
+
+### Patch Changes
+
+-   c04007b: Enable quick actions by default
+
 ## 0.11.16
 
 ### Patch Changes
