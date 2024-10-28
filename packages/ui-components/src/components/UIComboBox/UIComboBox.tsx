@@ -21,6 +21,7 @@ import { labelGlobalStyle } from '../UILabel';
 import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from '../UIDropdown';
 import { CalloutCollisionTransform } from '../UICallout';
 import { isHTMLInputElement } from '../../utilities';
+import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -737,7 +738,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                             ...(this.props.required && {
                                 selectors: {
                                     '::after': {
-                                        content: `' *'`,
+                                        content: REQUIRED_LABEL_INDICATOR,
                                         color: 'var(--vscode-inputValidation-errorBorder)',
                                         paddingRight: 12
                                     }
