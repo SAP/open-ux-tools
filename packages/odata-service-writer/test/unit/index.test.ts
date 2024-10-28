@@ -1,5 +1,5 @@
 import type { OdataService } from '../../src';
-import { generate, clean, OdataVersion, ServiceType } from '../../src';
+import { generate, remove, OdataVersion, ServiceType } from '../../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -404,7 +404,7 @@ describe('clean', () => {
         );
     });
     it('Try to remove an unexisting service', async () => {
-        await clean(testDir, { name: 'dummyService', url: 'https://dummyUrl', path: '/dummyPath' }, fs);
+        await remove(testDir, { name: 'dummyService', url: 'https://dummyUrl', path: '/dummyPath' }, fs);
         // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
         expect(manifest['sap.app'].dataSources).toStrictEqual({
@@ -428,7 +428,7 @@ describe('clean', () => {
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain('services:\n          - urlPath: /sap\n');
     });
     it('Remove an existing service', async () => {
-        await clean(testDir, { name: 'mainService', url: 'https://localhost', path: '/sap' }, fs);
+        await remove(testDir, { name: 'mainService', url: 'https://localhost', path: '/sap' }, fs);
         // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
         expect(manifest['sap.app'].dataSources).toStrictEqual({});

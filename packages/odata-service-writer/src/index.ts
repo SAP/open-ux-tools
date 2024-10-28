@@ -215,7 +215,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 }
 
 /**
- * Clenas project files from the odata service to an existing UI5 project specified by the base path.
+ * Removes project files from the odata service to an existing UI5 project specified by the base path.
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
@@ -226,7 +226,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
  * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function clean(
+async function remove(
     basePath: string,
     service: { name: string; path: string; url: string },
     fs?: Editor
@@ -263,4 +263,4 @@ async function clean(
     return fs;
 }
 
-export { generate, clean, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
+export { generate, remove, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
