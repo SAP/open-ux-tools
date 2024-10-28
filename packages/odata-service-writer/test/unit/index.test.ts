@@ -364,7 +364,7 @@ describe('generate', () => {
     });
 });
 
-describe('clean', () => {
+describe('remove', () => {
     let fs: Editor;
     beforeEach(async () => {
         const ui5Yaml = (await UI5Config.newInstance(''))
