@@ -66,11 +66,10 @@ export function getSapClientFromPackageJson(scripts: Package['scripts']): string
  * @param dependencyName - name of the (dev-)dependency
  * @returns version of the dependency as an array of numbers
  */
-export function getDependencyVersion(packageJson: Package, dependencyName: string): number[] {
+export function getDependencyVersion(packageJson: Package, dependencyName: string): number[] | undefined {
     return (
         packageJson?.devDependencies?.[dependencyName]?.split('.').map((versionPart) => parseInt(versionPart, 10)) ??
-        packageJson?.dependencies?.[dependencyName]?.split('.').map((versionPart) => parseInt(versionPart, 10)) ??
-        []
+        packageJson?.dependencies?.[dependencyName]?.split('.').map((versionPart) => parseInt(versionPart, 10))
     );
 }
 
@@ -98,9 +97,11 @@ function isVersionLessThan(version: number[], major: number, minor: number, patc
 export function enhanceUrlParametersWithRta(packageJson: Package, existingParams: Record<string, string> = {}): string {
     const parameters: Record<string, string> = {};
 
+    const previewMiddlewareVersion = getDependencyVersion(packageJson, '@sap-ux/preview-middleware');
+    const uxUi5ToolingVersion = getDependencyVersion(packageJson, '@sap/ux-ui5-tooling');
     if (
-        isVersionLessThan(getDependencyVersion(packageJson, '@sap-ux/preview-middleware'), 0, 16, 89) ||
-        isVersionLessThan(getDependencyVersion(packageJson, '@sap/ux-ui5-tooling'), 1, 15, 4)
+        (!previewMiddlewareVersion || isVersionLessThan(previewMiddlewareVersion, 0, 16, 89)) ??
+        (!uxUi5ToolingVersion || isVersionLessThan(uxUi5ToolingVersion, 1, 15, 4))
         // todo: adjust ux ui5 tooling version
     ) {
         parameters['fiori-tools-rta-mode'] = 'true';
