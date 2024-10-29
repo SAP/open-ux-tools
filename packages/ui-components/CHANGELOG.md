@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.20.2
+
+### Patch Changes
+
+-   9d06579: UITextInput, UIComboBox, UIDropdown, and UIChoiceGroup: Do not announce 'asterisk' on screen readers for required labels
+
 ## 1.20.1
 
 ### Patch Changes
