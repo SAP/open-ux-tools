@@ -31,7 +31,6 @@ export function getApplicationType(manifest: Manifest): ApplicationType {
     return 'freestyle';
 }
 
-
 export function getReference(control: ManagedObject): string {
     // probably same as flex setting id or base id TODO: CONFIRM
     const manifest = getAppComponent(control)?.getManifest() as Manifest;
@@ -55,6 +54,12 @@ export function getPageName(control: ManagedObject): string | undefined {
     return view.getId().split('::').pop();
 }
 
+/**
+ * Determines the page type of v4 app.
+ *
+ * @param control - ManagedObject.
+ * @returns 'ObjectPage' | 'ListReport' | undefined.
+ */
 export function getV4PageType(control: ManagedObject): 'ObjectPage' | 'ListReport' | undefined {
     const component = Component.getOwnerComponentFor(control);
     if (!component?.isA<TemplateComponent>('sap.fe.core.TemplateComponent')) {

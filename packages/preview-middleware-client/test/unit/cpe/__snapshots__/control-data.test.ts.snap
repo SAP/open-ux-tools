@@ -108,6 +108,99 @@ Object {
 }
 `;
 
+exports[`controlData buildControlData - manifest properties 1`] = `
+Object {
+  "id": "testTableId",
+  "name": "sap.m.Button",
+  "properties": Array [
+    Object {
+      "documentation": Object {
+        "defaultValue": "false",
+        "description": "Enable Export Excel",
+        "propertyName": "enableExportExcel",
+        "type": "boolean",
+      },
+      "editor": "checkbox",
+      "isEnabled": true,
+      "name": "enableExportExcel",
+      "propertyType": "configuration",
+      "readableName": "Enable Export Excel",
+      "type": "boolean",
+      "ui5Type": undefined,
+      "value": false,
+    },
+    Object {
+      "documentation": Object {
+        "defaultValue": "0",
+        "description": "Frozen Column Count",
+        "propertyName": "frozenColumnCount",
+        "type": "int",
+      },
+      "editor": "input",
+      "isEnabled": true,
+      "name": "frozenColumnCount",
+      "propertyType": "configuration",
+      "readableName": "Frozen Column Count",
+      "type": "integer",
+      "ui5Type": undefined,
+      "value": 12,
+    },
+    Object {
+      "documentation": Object {
+        "defaultValue": "Test Table",
+        "description": "table header",
+        "propertyName": "header",
+        "type": "string",
+      },
+      "editor": "input",
+      "isEnabled": true,
+      "isIcon": false,
+      "name": "header",
+      "propertyType": "configuration",
+      "readableName": "Header",
+      "type": "string",
+      "ui5Type": undefined,
+      "value": "USA table",
+    },
+    Object {
+      "documentation": Object {
+        "defaultValue": "gridTable",
+        "description": "table type",
+        "propertyName": "type",
+        "type": "string",
+      },
+      "editor": "dropdown",
+      "isEnabled": true,
+      "name": "type",
+      "options": Array [
+        Object {
+          "key": "analyticalTable",
+          "text": "Analytical Table",
+        },
+        Object {
+          "key": "treeTable",
+          "text": "Tree Table",
+        },
+        Object {
+          "key": "gridTable",
+          "text": "Grid Table",
+        },
+        Object {
+          "key": "responsiveTable",
+          "text": "Responsive Table",
+        },
+      ],
+      "propertyType": "configuration",
+      "readableName": "Type",
+      "type": "string",
+      "ui5Type": undefined,
+      "value": "responsiveTable",
+    },
+  ],
+  "type": "sap.m.Button",
+}
+`;
+
 exports[`controlData buildControlData 1`] = `
 Object {
   "id": "testID",
