@@ -168,7 +168,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
               {
                   propertyName: 'Frozen Column Count',
                   type: 'saved',
-                  value: 12,
+                  value: 24,
                   fileName: 'app_descrName1',
                   kind: 'configuration',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
@@ -497,7 +497,7 @@ describe('ChangePanel', () => {
         const propertyName1 = screen.getByText(/Frozen Column Count/i);
         expect(propertyName1).toBeInTheDocument();
 
-        const value1 = screen.getByText(/12/i);
+        const value1 = screen.getByText(/24/i);
         expect(value1).toBeInTheDocument();
 
         const propertyName3 = screen.getByText(/Header/i);
