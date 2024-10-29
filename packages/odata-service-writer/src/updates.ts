@@ -1,6 +1,6 @@
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import path, { join } from 'path';
+import { join, normalize, posix } from 'path';
 import { t } from './i18n';
 import type { OdataService, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import semVer from 'semver';
@@ -46,7 +46,7 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
  */
 async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotationsInfo): Promise<void> {
     const dirPath = join(annotations.projectName, 'annotations');
-    const annotationPath = path.normalize(dirPath).split(/[\\/]/g).join(path.posix.sep);
+    const annotationPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
     const annotationConfig = `\nusing from './${annotationPath}';`;
     // get index and service file paths
     const indexFilePath = join(annotations.projectPath, annotations.appPath ?? '', 'index.cds');

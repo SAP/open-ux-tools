@@ -404,7 +404,17 @@ describe('remove', () => {
         );
     });
     it('Try to remove an unexisting service', async () => {
-        await remove(testDir, { name: 'dummyService', url: 'https://dummyUrl', path: '/dummyPath' }, fs);
+        await remove(
+            testDir,
+            {
+                name: 'dummyService',
+                url: 'https://dummyUrl',
+                path: '/dummyPath',
+                type: ServiceType.EDMX,
+                annotations: []
+            },
+            fs
+        );
         // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
         expect(manifest['sap.app'].dataSources).toStrictEqual({
@@ -428,7 +438,17 @@ describe('remove', () => {
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain('services:\n          - urlPath: /sap\n');
     });
     it('Remove an existing service', async () => {
-        await remove(testDir, { name: 'mainService', url: 'https://localhost', path: '/sap' }, fs);
+        await remove(
+            testDir,
+            {
+                name: 'mainService',
+                url: 'https://localhost',
+                path: '/sap',
+                type: ServiceType.EDMX,
+                annotations: []
+            },
+            fs
+        );
         // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
         expect(manifest['sap.app'].dataSources).toStrictEqual({});
