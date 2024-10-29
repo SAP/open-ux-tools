@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.23
+
+### Patch Changes
+
+-   d4d1b3c: Add zero state for changes panel
+
 ## 0.5.22
 
 ### Patch Changes
