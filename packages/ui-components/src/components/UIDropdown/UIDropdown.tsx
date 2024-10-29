@@ -13,6 +13,7 @@ import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/Valida
 import { labelGlobalStyle } from '../UILabel';
 import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from './utils';
 import { CalloutCollisionTransform } from '../UICallout';
+import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 import './UIDropdown.scss';
 
@@ -298,7 +299,7 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                     ...(this.props.required && {
                         selectors: {
                             '::after': {
-                                content: `' *'`,
+                                content: REQUIRED_LABEL_INDICATOR,
                                 color: ERROR_BORDER_COLOR,
                                 paddingRight: 12
                             }

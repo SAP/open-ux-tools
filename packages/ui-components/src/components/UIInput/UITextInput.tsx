@@ -5,6 +5,7 @@ import { TextField } from '@fluentui/react';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
+import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 export { ITextField, ITextFieldProps } from '@fluentui/react';
 
@@ -206,7 +207,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                             props.required && {
                                 selectors: {
                                     '::after': {
-                                        content: `' *'`,
+                                        content: REQUIRED_LABEL_INDICATOR,
                                         color: 'var(--vscode-inputValidation-errorBorder)',
                                         paddingRight: 12
                                     }
