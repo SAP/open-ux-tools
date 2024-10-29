@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.20.3
+
+### Patch Changes
+
+-   e9e1e4d: Add aria-label for UIFlexibleTable Add Row Button
+
 ## 1.20.2
 
 ### Patch Changes
