@@ -114,7 +114,7 @@ describe('ui5/middleware', () => {
                 ]
             }
         });
-        await server.get(path).expect(200);
+        await server.get(path).expect(302);
         expect(consoleSpyError).toHaveBeenCalledWith(
             'developerMode is ONLY supported for SAP UI5 adaptation projects.'
         );

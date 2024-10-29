@@ -1,13 +1,19 @@
+import type { PendingChange, SavedChange } from '@sap-ux-private/control-property-editor-common';
+import type { FilterOptions, ChangesSlice } from '../../../../src/slice';
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-
-import type { PendingChange, SavedChange } from '@sap-ux-private/control-property-editor-common';
-
+import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
+import * as reactRedux from 'react-redux';
 import { render } from '../../utils';
-
 import { FilterName } from '../../../../src/slice';
-import type { FilterOptions, ChangesSlice } from '../../../../src/slice';
 import { ChangesPanel } from '../../../../src/panels/changes';
+
+jest.mock('@sap-ux-private/control-property-editor-common', () => {
+    return {
+        __esModule: true,
+        ...jest.requireActual('@sap-ux-private/control-property-editor-common')
+    };
+});
 
 const getChanges = (generateSavedChanges = false): ChangesSlice => {
     const pending: PendingChange[] = !generateSavedChanges
@@ -46,22 +52,19 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   fileName: 'testFile3'
               },
               {
-                  kind: 'unknown',
+                  kind: 'control',
                   controlId: 'ListReport::TableToolbar',
-                  controlName: 'OverflowToolbar',
                   type: 'pending',
                   isActive: true,
                   changeType: 'addXML',
-                  fileName: 'testFile4'
+                  fileName: 'id_1691659414768_128_addXML'
               },
               {
                   kind: 'unknown',
-                  controlId: 'FieldGroup::TechnicalData::FormGroup',
-                  controlName: 'Group',
                   type: 'pending',
                   isActive: true,
                   changeType: 'addFields',
-                  fileName: 'testFile5'
+                  fileName: 'id_1691659414768_128_addFields'
               }
           ]
         : [];
@@ -112,7 +115,6 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   changeType: 'propertyChange'
               },
               {
-                  controlId: 'supplierView--supplierForm',
                   changeType: 'move',
                   type: 'saved',
                   fileName: 'id_1698648267087_373_moveSimpleFormField',
@@ -120,7 +122,6 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   timestamp: new Date('2023-10-11T12:06:53.939Z').getTime()
               },
               {
-                  controlId: 'supplierView--supplierForm',
                   changeType: 'move',
                   type: 'saved',
                   fileName: 'id_1698648267088_374_moveSimpleFormField',
@@ -161,8 +162,12 @@ describe('ChangePanel', () => {
         });
 
         // check no controls found
-        const noControlFound = screen.getByText(/no control changes found/i);
-        expect(noControlFound).toBeInTheDocument();
+        const noChangesText = screen.getByText('No historic changes');
+        expect(noChangesText).toHaveTextContent('No historic changes');
+        const modifyApplicationText = screen.getByText('This application was not modified yet');
+        expect(modifyApplicationText).toHaveTextContent('This application was not modified yet');
+        const noChangesIcon = screen.getByTestId('Control-Property-Editor-No-Changes-Icon');
+        expect(noChangesIcon).toBeInTheDocument();
     });
 
     test('unsaved changes - all changes', () => {
@@ -186,11 +191,11 @@ describe('ChangePanel', () => {
         const value = screen.getByText(/testValue1/i);
         expect(value).toBeInTheDocument();
 
-        const controlToolbar = screen.getByRole('button', { name: /overflow toolbar/i });
-        expect(controlToolbar).toBeInTheDocument();
-
-        const changeAddXML = screen.getByText(/add fields/i);
+        const changeAddXML = screen.getByText(/add xml/i);
         expect(changeAddXML).toBeInTheDocument();
+
+        const changeAddFields = screen.getByText(/add fields/i);
+        expect(changeAddFields).toBeInTheDocument();
     });
 
     test('saved changes - property change', () => {
@@ -252,7 +257,7 @@ describe('ChangePanel', () => {
         expect(screen.queryByText(/Test Property Name2/i)).toStrictEqual(null);
     });
 
-    test('saved changes - Other change', () => {
+    test('saved changes - Unknown change', () => {
         render(<ChangesPanel />, {
             initialState: {
                 changes: {
@@ -260,11 +265,10 @@ describe('ChangePanel', () => {
                     pending: [],
                     saved: [
                         {
-                            changeType: '',
-                            fileName: 'testFileName2',
+                            changeType: 'codeExt',
+                            fileName: 'id_1691659414768_328_codeExt',
                             type: 'saved',
-                            kind: 'unknown',
-                            controlId: 'someSelectorId'
+                            kind: 'unknown'
                         }
                     ],
                     pendingChangeIds: []
@@ -277,20 +281,14 @@ describe('ChangePanel', () => {
         const savedChangesTitle = screen.getByText(/saved changes/i);
         expect(savedChangesTitle).toBeInTheDocument();
 
-        const title = screen.getByText(/Test File Name2 Change/i);
+        const title = screen.getByText(/code ext/i);
         expect(title).toBeInTheDocument();
 
         const fileLabel = screen.getByText(/file:/i);
         expect(fileLabel).toBeInTheDocument();
 
-        const fileName = screen.getByText(/testfilename2/i);
+        const fileName = screen.getByText(/id_1691659414768_328_codeExt/i);
         expect(fileName).toBeInTheDocument();
-
-        const selectorIdLabel = screen.getByText(/selector id:/i);
-        expect(selectorIdLabel).toBeInTheDocument();
-
-        const selectorId = screen.getByText(/someSelectorId/i);
-        expect(selectorId).toBeInTheDocument();
 
         const deleteButton = screen.getAllByRole('button')[0];
         const iTagAttributes = deleteButton?.children?.item(0)?.children?.item(0)?.attributes;
@@ -311,8 +309,105 @@ describe('ChangePanel', () => {
         confirmButton.click();
     });
 
+    test('saved changes - control change', () => {
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: {
+                    controls: {},
+                    pending: [],
+                    saved: [
+                        {
+                            changeType: 'renameLabel',
+                            controlId: 'testId1',
+                            fileName: 'id_1691659414768_328_renameLabel',
+                            timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
+                            type: 'saved',
+                            kind: 'control'
+                        }
+                    ],
+                    pendingChangeIds: []
+                },
+                filterQuery: filterInitOptions
+            }
+        });
+
+        const savedChangesTitle = screen.getByText(/saved changes/i);
+        expect(savedChangesTitle).toBeInTheDocument();
+
+        const title = screen.getByText(/Rename Label/i);
+        expect(title).toBeInTheDocument();
+
+        const fileLabel = screen.getByText(/file:/i);
+        expect(fileLabel).toBeInTheDocument();
+
+        const fileName = screen.getByText(/id_1691659414768_328_renameLabel/i);
+        expect(fileName).toBeInTheDocument();
+
+        const deleteButton = screen.getAllByRole('button')[1];
+        const iTagAttributes = deleteButton?.children?.item(0)?.children?.item(0)?.attributes;
+        const iconName = iTagAttributes?.getNamedItem('data-icon-name')?.value;
+        expect(deleteButton).toBeInTheDocument();
+        expect(iconName).toBe('TrashCan');
+
+        fireEvent.click(deleteButton);
+        expect(screen.getByText(/Are you sure you want to delete/i)).toBeInTheDocument();
+
+        // first cancel
+        const cancelButton = screen.getByRole('button', { name: /^Cancel$/i });
+        cancelButton.click();
+
+        // delete
+        fireEvent.click(deleteButton);
+        const confirmButton = screen.getByRole('button', { name: /^Delete$/i });
+        confirmButton.click();
+    });
+
+    test('saved control change - link', () => {
+        jest.spyOn(cpeCommon, 'selectControl').mockImplementationOnce(jest.fn());
+        jest.spyOn(reactRedux, 'useDispatch').mockReturnValue(jest.fn());
+
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: {
+                    controls: {},
+                    pending: [],
+                    saved: [
+                        {
+                            changeType: 'renameLabel',
+                            controlId: 'testId1',
+                            fileName: 'id_1691659414768_328_renameLabel',
+                            type: 'saved',
+                            kind: 'control'
+                        }
+                    ],
+                    pendingChangeIds: []
+                },
+                filterQuery: filterInitOptions
+            }
+        });
+
+        const savedChangesTitle = screen.getByText(/saved changes/i);
+        expect(savedChangesTitle).toBeInTheDocument();
+
+        const title = screen.getByText(/Rename Label/i);
+        expect(title).toBeInTheDocument();
+
+        const fileLabel = screen.getByText(/file:/i);
+        expect(fileLabel).toBeInTheDocument();
+
+        const fileName = screen.getByText(/id_1691659414768_328_renameLabel/i);
+        expect(fileName).toBeInTheDocument();
+
+        const link = screen.getByRole('button', { name: /Rename Label Change/i });
+        expect(link).toBeInTheDocument();
+
+        link.click();
+        expect(reactRedux.useDispatch).toBeCalled();
+        expect(cpeCommon.selectControl).toBeCalledWith('testId1');
+    });
+
     test('Filter unsaved changes', () => {
-        const filterInitOptions: FilterOptions[] = [{ name: FilterName.changeSummaryFilterQuery, value: 'toolbar' }];
+        const filterInitOptions: FilterOptions[] = [{ name: FilterName.changeSummaryFilterQuery, value: 'fields' }];
         render(<ChangesPanel />, {
             initialState: {
                 changes: getChanges(),
@@ -324,8 +419,8 @@ describe('ChangePanel', () => {
         const savedChangesTitle = screen.getByText(/unsaved changes/i);
         expect(savedChangesTitle).toBeInTheDocument();
 
-        const controlToolbar = screen.getByRole('button', { name: /overflow toolbar/i });
-        expect(controlToolbar).toBeInTheDocument();
+        const changeAddXML = screen.getByText(/add fields/i);
+        expect(changeAddXML).toBeInTheDocument();
     });
 
     test('Filter saved changes', () => {

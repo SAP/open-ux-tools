@@ -1,5 +1,29 @@
 # @sap-ux/control-property-editor
 
+## 0.5.22
+
+### Patch Changes
+
+-   5ec7106: Modified indicators incorrectly displayed for some UI5 controls in Adaptation Project
+
+## 0.5.21
+
+### Patch Changes
+
+-   bc75111: Upgrade http-proxy-middleware
+
+## 0.5.20
+
+### Patch Changes
+
+-   93ffe8d: Use feature toggles in the control property editor
+
+## 0.5.19
+
+### Patch Changes
+
+-   0135cea: Update filter bars.
+
 ## 0.5.18
 
 ### Patch Changes

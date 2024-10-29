@@ -1,16 +1,22 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["src", "src/**/*.json", "src/types/.ts"],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../btp-utils"
     },
-    "references": [
-        {
-            "path": "../btp-utils"
-        },
-        {
-            "path": "../project-access"
-        }
-    ]
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../telemetry"
+    }
+  ]
 }

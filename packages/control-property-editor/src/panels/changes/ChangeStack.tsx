@@ -3,6 +3,7 @@ import React from 'react';
 import { Stack } from '@fluentui/react';
 import type { Change } from '@sap-ux-private/control-property-editor-common';
 import {
+    CONTROL_CHANGE_KIND,
     convertCamelCaseToPascalCase,
     PENDING_CHANGE_TYPE,
     PROPERTY_CHANGE_KIND,
@@ -22,6 +23,8 @@ import type { FilterOptions } from '../../slice';
 import { FilterName } from '../../slice';
 import type { RootState } from '../../store';
 import { getFormattedDateAndTime } from './utils';
+import type { ControlItemProps } from './ControlChange';
+import { ControlChange } from './ControlChange';
 
 export interface ChangeStackProps {
     changes: Change[];
@@ -44,29 +47,55 @@ export function ChangeStack(changeStackProps: ChangeStackProps): ReactElement {
     const stackName = changes[0].type === PENDING_CHANGE_TYPE ? 'unsaved-changes-stack' : 'saved-changes-stack';
     return (
         <Stack data-testid={stackName} tokens={{ childrenGap: 5, padding: '5px 0px 5px 0px' }}>
-            {groups.map((item, i) => [
-                isControlGroup(item) ? (
-                    <Stack.Item
-                        data-testid={`${stackName}-${item.controlId}-${item.index}`}
-                        key={`${item.controlId}-${item.index}`}>
-                        <ControlGroup {...item} />
-                    </Stack.Item>
-                ) : (
-                    <Stack.Item key={`${item.fileName}`}>
-                        <UnknownChange {...item} />
-                    </Stack.Item>
-                ),
-
-                i + 1 < groups.length ? (
-                    <Stack.Item key={getKey(i)}>
-                        <Separator className={styles.item} />
-                    </Stack.Item>
-                ) : (
-                    <></>
-                )
-            ])}
+            {groups.map((item, i) => [renderChangeItem(item, stackName), renderSeparator(i, groups)])}
         </Stack>
     );
+}
+
+/**
+ * Renders the appropriate change item component based on the type of the item.
+ *
+ * @param item - The current item from the group to be rendered.
+ * @param stackName - The name of the stack used for test IDs.
+ * @returns The rendered change item (`ControlGroup`, `ControlChange`, or `UnknownChange`).
+ */
+function renderChangeItem(item: Item, stackName: string): ReactElement {
+    if (isPropertyGroup(item)) {
+        return (
+            <Stack.Item
+                data-testid={`${stackName}-${item.controlId}-${item.index}`}
+                key={`${item.controlId}-${item.index}`}>
+                <ControlGroup {...item} />
+            </Stack.Item>
+        );
+    } else if (isControlItem(item)) {
+        return (
+            <Stack.Item key={`${item.fileName}`}>
+                <ControlChange {...item} />
+            </Stack.Item>
+        );
+    } else {
+        return (
+            <Stack.Item key={`${item.fileName}`}>
+                <UnknownChange {...item} />
+            </Stack.Item>
+        );
+    }
+}
+
+/**
+ * Renders a separator between items, except for the last one.
+ *
+ * @param i - The index of the current item in the group.
+ * @param groups - The array of all groups to check if it's the last item.
+ * @returns {ReactElement | null} The rendered separator or `null` if it's the last item.
+ */
+function renderSeparator(i: number, groups: Item[]): ReactElement | null {
+    return i + 1 < groups.length ? (
+        <Stack.Item key={getKey(i)}>
+            <Separator className={styles.item} />
+        </Stack.Item>
+    ) : null;
 }
 
 /**
@@ -79,13 +108,13 @@ function getKey(i: number): string {
     return `${i}-separator`;
 }
 
-type Item = ControlGroupProps | UnknownChangeProps;
+type Item = ControlGroupProps | UnknownChangeProps | ControlItemProps;
 
 /**
- * Method to convert changes to unknown or control group.
+ * Converts an array of changes into an array of items, grouping changes by controlId and handling different kinds of changes.
  *
- * @param changes Change[]
- * @returns Item[]
+ * @param {Change[]} changes - An array of changes to be converted.
+ * @returns {Item[]} An array of items, some of which may be control groups.
  */
 function convertChanges(changes: Change[]): Item[] {
     const items: Item[] = [];
@@ -93,28 +122,24 @@ function convertChanges(changes: Change[]): Item[] {
     while (i < changes.length) {
         const change: Change = changes[i];
         let group: ControlGroupProps;
-        if (change.kind === UNKNOWN_CHANGE_KIND && change.type === SAVED_CHANGE_TYPE) {
-            items.push({
-                fileName: change.fileName,
-                timestamp: change.timestamp,
-                header: true,
-                controlId: change.controlId ?? ''
-            });
+        if (change.kind === UNKNOWN_CHANGE_KIND) {
+            items.push(handleUnknownChange(change));
+            i++;
+        } else if (change.kind === CONTROL_CHANGE_KIND) {
+            items.push(handleControlChange(change));
             i++;
         } else {
-            group = {
-                controlId: change.controlId,
-                controlName: change.controlName,
-                text: convertCamelCaseToPascalCase(change.controlName),
-                index: i,
-                changes: [change]
-            };
+            group = handleGroupedChange(change, i);
             items.push(group);
             i++;
             while (i < changes.length) {
                 // We don't need to add header again if the next control is the same
                 const nextChange = changes[i];
-                if (nextChange.kind === UNKNOWN_CHANGE_KIND || change.controlId !== nextChange.controlId) {
+                if (
+                    nextChange.kind === UNKNOWN_CHANGE_KIND ||
+                    nextChange.kind === CONTROL_CHANGE_KIND ||
+                    change.controlId !== nextChange.controlId
+                ) {
                     break;
                 }
                 group.changes.push(nextChange);
@@ -126,13 +151,73 @@ function convertChanges(changes: Change[]): Item[] {
 }
 
 /**
+ * Handles changes of kind `unknown` and creates an item with a header.
+ *
+ * @param {Change} change - The change object of kind `unknown`.
+ * @returns {Item} An item object containing the filename and header information.
+ */
+function handleUnknownChange(change: Change): Item {
+    return {
+        fileName: change.fileName,
+        header: true,
+        timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined
+    };
+}
+
+/**
+ * Handles changes of kind `control` and creates an item with controlId and type.
+ *
+ * @param {Change} change - The change object of kind `control`.
+ * @returns {Item} An item object containing the filename, controlId, type, and optional timestamp.
+ */
+function handleControlChange(change: Change & { controlId: string }): Item {
+    return {
+        fileName: change.fileName,
+        controlId: change.controlId,
+        timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined,
+        type: change.type
+    };
+}
+
+/**
+ * Handles grouped changes by initializing a control group with a list of changes that share the same controlId.
+ *
+ * @param {Change} change - The initial change object to start the group.
+ * @param {number} i - The index of the initial change in the list.
+ * @returns {ControlGroupProps} A control group object containing grouped changes.
+ */
+function handleGroupedChange(
+    change: Change & { controlId: string; controlName: string },
+    i: number
+): ControlGroupProps {
+    return {
+        controlId: change.controlId,
+        controlName: change.controlName,
+        text: convertCamelCaseToPascalCase(change.controlName),
+        index: i,
+        changes: [change],
+        timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined
+    };
+}
+
+/**
  * Checks if item is of type {@link ControlGroupProps}.
  *
- * @param item ControlGroupProps | UnknownChangeProps
+ * @param item ControlGroupProps | UnknownChangeProps | ControlItemProps
  * @returns boolean
  */
-function isControlGroup(item: ControlGroupProps | UnknownChangeProps): item is ControlGroupProps {
+function isPropertyGroup(item: ControlGroupProps | UnknownChangeProps | ControlItemProps): item is ControlGroupProps {
     return (item as ControlGroupProps).controlName !== undefined;
+}
+
+/**
+ * Checks if item is of type {@link ControlItemProps}.
+ *
+ * @param item UnknownChangeProps | ControlItemProps
+ * @returns boolean
+ */
+function isControlItem(item: UnknownChangeProps | ControlItemProps): item is ControlItemProps {
+    return item?.controlId !== undefined;
 }
 
 const filterPropertyChanges = (changes: Change[], query: string): Change[] => {
@@ -184,7 +269,7 @@ function filterGroup(model: Item[], query: string): Item[] {
     }
     for (const item of model) {
         let parentMatch = false;
-        if (!isControlGroup(item)) {
+        if (!isPropertyGroup(item)) {
             if (isQueryMatchesChange(item, query)) {
                 filteredModel.push({ ...item, changes: [] });
             }

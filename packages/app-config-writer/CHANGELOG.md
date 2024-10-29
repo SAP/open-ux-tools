@@ -1,5 +1,26 @@
 # @sap-ux/app-config-writer
 
+## 0.4.44
+
+### Patch Changes
+
+-   c3a8ebe: Introduce create command to add Configuration for Variants Creation.
+
+## 0.4.43
+
+### Patch Changes
+
+-   Updated dependencies [9bda640]
+    -   @sap-ux/axios-extension@1.16.7
+
+## 0.4.42
+
+### Patch Changes
+
+-   Updated dependencies [eb38e5b]
+    -   @sap-ux/project-access@1.28.2
+    -   @sap-ux/axios-extension@1.16.6
+
 ## 0.4.41
 
 ### Patch Changes

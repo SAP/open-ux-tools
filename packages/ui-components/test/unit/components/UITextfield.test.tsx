@@ -33,6 +33,13 @@ describe('<UIToggle />', () => {
         expect(getStyles()).toMatchSnapshot();
     });
 
+    it('Styles - required', () => {
+        wrapper.setProps({
+            required: true
+        });
+        expect(getStyles()).toMatchSnapshot();
+    });
+
     const testCases = [
         // Single line
         {

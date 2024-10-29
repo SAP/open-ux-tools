@@ -20,11 +20,23 @@ describe('<UIDropdown />', () => {
         wrapper.find('.ms-Dropdown .ms-Dropdown-caretDownWrapper').simulate('click', document.createEvent('Events'));
     };
 
+    let CalloutCollisionTransformSpy: {
+        preventDismissOnEvent: jest.SpyInstance;
+        applyTransformation: jest.SpyInstance;
+        resetTransformation: jest.SpyInstance;
+    };
+
     beforeEach(() => {
+        CalloutCollisionTransformSpy = {
+            preventDismissOnEvent: jest.spyOn(CalloutCollisionTransform.prototype, 'preventDismissOnEvent'),
+            applyTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'applyTransformation'),
+            resetTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'resetTransformation')
+        };
         wrapper = Enzyme.mount(<UIDropdown options={data} selectedKey="EE" />);
     });
 
     afterEach(() => {
+        jest.clearAllMocks();
         wrapper.unmount();
     });
 
@@ -63,6 +75,45 @@ describe('<UIDropdown />', () => {
             }
         `
         );
+    });
+
+    it('Styles - required', () => {
+        wrapper.setProps({
+            required: true
+        });
+        const styles = (wrapper.find(Dropdown).props().styles as IStyleFunction<{}, {}>)({}) as IDropdownStyleProps;
+        expect(styles).toMatchInlineSnapshot(`
+            Object {
+              "errorMessage": Array [
+                Object {
+                  "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
+                  "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "borderColor": "var(--vscode-inputValidation-errorBorder)",
+                  "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "color": "var(--vscode-input-foreground)",
+                  "margin": 0,
+                  "paddingBottom": 5,
+                  "paddingLeft": 8,
+                  "paddingTop": 4,
+                },
+              ],
+              "label": Object {
+                "color": "var(--vscode-input-foreground)",
+                "fontFamily": "var(--vscode-font-family)",
+                "fontSize": "13px",
+                "fontWeight": "bold",
+                "padding": "4px 0",
+                "selectors": Object {
+                  "::after": Object {
+                    "color": "var(--vscode-inputValidation-errorBorder)",
+                    "content": "' *' / ''",
+                    "paddingRight": 12,
+                  },
+                },
+              },
+            }
+        `);
     });
 
     it('Test responsive mode - custom value', () => {
@@ -356,10 +407,18 @@ describe('<UIDropdown />', () => {
                 const dropdown = wrapper.find(Dropdown);
                 expect(dropdown.length).toEqual(1);
                 const calloutProps = dropdown.prop('calloutProps');
+
                 if (expected) {
                     expect(calloutProps?.preventDismissOnEvent).toBeDefined();
                     expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
                     expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+
+                    calloutProps?.preventDismissOnEvent?.({} as Event);
+                    calloutProps?.layerProps?.onLayerDidMount?.();
+                    calloutProps?.layerProps?.onLayerWillUnmount?.();
+                    expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(1);
+                    expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(1);
+                    expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(1);
                 } else {
                     expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
                     expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
@@ -367,6 +426,39 @@ describe('<UIDropdown />', () => {
                 }
             });
         }
+
+        it(`Pass external listeners`, () => {
+            const externalListeners = {
+                calloutProps: {
+                    preventDismissOnEvent: jest.fn(),
+                    layerProps: {
+                        onLayerDidMount: jest.fn(),
+                        onLayerWillUnmount: jest.fn()
+                    }
+                }
+            };
+            wrapper.setProps({
+                multiSelect: true,
+                calloutCollisionTransformation: true,
+                ...externalListeners
+            });
+            const dropdown = wrapper.find(Dropdown);
+            expect(dropdown.length).toEqual(1);
+            const calloutProps = dropdown.prop('calloutProps');
+            expect(calloutProps?.preventDismissOnEvent).toBeDefined();
+            expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
+            expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+
+            calloutProps?.preventDismissOnEvent?.({} as Event);
+            calloutProps?.layerProps?.onLayerDidMount?.();
+            calloutProps?.layerProps?.onLayerWillUnmount?.();
+            expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.preventDismissOnEvent).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerDidMount).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerWillUnmount).toBeCalledTimes(1);
+        });
     });
 
     it('Custom renderers for "onRenderOption"', () => {

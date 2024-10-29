@@ -1,5 +1,37 @@
 # @sap-ux/adp-tooling
 
+## 0.12.62
+
+### Patch Changes
+
+-   Updated dependencies [02e4f29]
+    -   @sap-ux/inquirer-common@0.4.8
+
+## 0.12.61
+
+### Patch Changes
+
+-   Updated dependencies [d29b1a3]
+    -   @sap-ux/inquirer-common@0.4.7
+
+## 0.12.60
+
+### Patch Changes
+
+-   9bda640: CPE loading changes from backend and not from workspace
+-   Updated dependencies [9bda640]
+    -   @sap-ux/axios-extension@1.16.7
+    -   @sap-ux/system-access@0.5.13
+
+## 0.12.59
+
+### Patch Changes
+
+-   Updated dependencies [eb38e5b]
+    -   @sap-ux/project-access@1.28.2
+    -   @sap-ux/axios-extension@1.16.6
+    -   @sap-ux/system-access@0.5.12
+
 ## 0.12.58
 
 ### Patch Changes
