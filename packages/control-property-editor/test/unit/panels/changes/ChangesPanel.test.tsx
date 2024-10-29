@@ -162,8 +162,12 @@ describe('ChangePanel', () => {
         });
 
         // check no controls found
-        const noControlFound = screen.getByText(/no control changes found/i);
-        expect(noControlFound).toBeInTheDocument();
+        const noChangesText = screen.getByText('No historic changes');
+        expect(noChangesText).toHaveTextContent('No historic changes');
+        const modifyApplicationText = screen.getByText('This application was not modified yet');
+        expect(modifyApplicationText).toHaveTextContent('This application was not modified yet');
+        const noChangesIcon = screen.getByTestId('Control-Property-Editor-No-Changes-Icon');
+        expect(noChangesIcon).toBeInTheDocument();
     });
 
     test('unsaved changes - all changes', () => {
