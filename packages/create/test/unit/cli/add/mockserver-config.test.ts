@@ -6,6 +6,7 @@ import * as prompts from 'prompts';
 import * as mockserverWriter from '@sap-ux/mockserver-config-writer';
 import * as logger from '../../../../src/tracing/logger';
 import * as childProcess from 'child_process';
+import * as npmCommand from '@sap-ux/project-access';
 import { join } from 'path';
 
 jest.mock('child_process');
@@ -17,6 +18,7 @@ describe('Test command add mockserver-config', () => {
     let fsMock: Editor;
     let logLevelSpy: jest.SpyInstance;
     let spawnSpy: jest.SpyInstance;
+    let execNpmCommandSpy: jest.SpyInstance;
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -38,6 +40,7 @@ describe('Test command add mockserver-config', () => {
         } as Partial<Editor> as Editor;
         jest.spyOn(mockserverWriter, 'generateMockserverConfig').mockResolvedValue(fsMock);
         spawnSpy = jest.spyOn(childProcess, 'spawnSync');
+        execNpmCommandSpy = jest.spyOn(npmCommand, 'execNpmCommand');
     });
 
     test('Test create-fiori add mockserver-config <appRoot>', async () => {
@@ -53,10 +56,9 @@ describe('Test command add mockserver-config', () => {
         expect(loggerMock.warn).not.toBeCalled();
         expect(loggerMock.error).not.toBeCalled();
         expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).toBeCalledWith(
-            /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
+        expect(execNpmCommandSpy).toBeCalledWith(
             ['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver'],
-            { cwd: appRoot, stdio: [0, 1, 2] }
+            { cwd: appRoot, logger: undefined }
         );
     });
 
@@ -105,7 +107,7 @@ describe('Test command add mockserver-config', () => {
         expect(loggerMock.error).not.toBeCalled();
         expect(promptSpy).toBeCalledWith([{ webappPath: join(appRoot, 'webapp') }]);
         expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).toBeCalled();
+        expect(execNpmCommandSpy).toBeCalled();
     });
 
     test('Test create-fiori add mockserver-config --verbose', async () => {
