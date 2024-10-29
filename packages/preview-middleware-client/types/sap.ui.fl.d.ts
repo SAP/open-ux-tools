@@ -58,9 +58,6 @@ declare module 'sap/ui/fl/Change' {
         getLayer: () => Layer;
         getContent: () => ContentType;
         setContent: (newContent: ContentType) => void;
-        getDependentSelector: () => {
-            originalSelector;
-        }[];
     }
     const Change: Change;
     export default Change;
