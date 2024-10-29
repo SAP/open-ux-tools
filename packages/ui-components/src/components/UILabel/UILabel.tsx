@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { ILabelProps, ILabelStyleProps, ILabelStyles } from '@fluentui/react';
 import { Label } from '@fluentui/react';
+import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 export type UILabelProps = ILabelProps;
 
@@ -49,7 +50,7 @@ export class UILabel extends React.Component<UILabelProps> {
                         props.required && {
                             selectors: {
                                 '::after': {
-                                    content: `' *'`,
+                                    content: REQUIRED_LABEL_INDICATOR,
                                     color: 'var(--vscode-inputValidation-errorBorder)',
                                     paddingRight: 12
                                 }
