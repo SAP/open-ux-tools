@@ -312,7 +312,7 @@ export class ChangeService {
             );
             const activeCommandCount = allCommandsFlattened.length - executedCommands.length;
             let i = 0;
-            for (const command of  allCommands) {
+            for (const command of allCommands) {
                 try {
                     if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();

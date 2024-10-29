@@ -5,7 +5,6 @@ import {
     changeProperty,
     deletePropertyChanges,
     setApplicationRequiresReload,
-    undo
 } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
