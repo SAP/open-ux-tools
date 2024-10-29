@@ -1,7 +1,6 @@
 import { t } from '../i18n';
-import type { CfSystemChoice } from '../types';
+import type { CfSystemChoice, CfAppRouterDeployConfigAnswers } from '../types';
 import { existsSync } from 'fs';
-import type { CfAppRouterDeployConfigAnswers } from '../types';
 import { join } from 'path';
 
 /**
@@ -89,7 +88,8 @@ export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployC
     if (input.length > 100) {
         return t('errors.invalidMtaIdError');
     }
-    if (!input.match(/^[a-zA-Z_][a-zA-Z0-9_\-]{0,98}[a-zA-Z0-9]$/)) {
+    const idPattern = /^[a-zA-Z_][a-zA-Z0-9_\-]{0,98}[a-zA-Z0-9]$/;
+    if ((!idPattern.exec(input))) {
         return t('errors.invalidMtaIdError');
     }
     if (existsSync(join(previousAnswers.mtaPath, input.trim()))) {

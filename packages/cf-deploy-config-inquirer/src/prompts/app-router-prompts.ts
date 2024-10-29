@@ -1,5 +1,4 @@
-import type { ListQuestion } from '@sap-ux/inquirer-common';
-import { type ConfirmQuestion, type InputQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { t } from '../i18n';
 import type {
     CfAppRouterDeployConfigQuestions,
