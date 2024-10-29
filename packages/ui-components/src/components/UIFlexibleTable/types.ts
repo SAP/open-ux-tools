@@ -55,9 +55,9 @@ export type AddRowResultType = { scrollToRow?: number } | undefined;
 
 export interface UIFlexibleTableProps<T> {
     addRowButton?: {
+        ariaLabel?: string;
         label: string;
         title?: string;
-        ariaLabel?: string;
         onClick?: () => AddRowResultType | Promise<AddRowResultType>;
     };
     columns: UIFlexibleTableColumnType[];
