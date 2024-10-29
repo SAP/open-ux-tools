@@ -85,10 +85,13 @@ export function validateMtaPath(input: string): boolean | string {
 export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployConfigAnswers): boolean | string {
     if (typeof input !== 'string' || !input.trim()) {
         return t('errors.noMtaIdError');
-    } else if (!input.match(/^[a-zA-Z_]+[a-zA-Z0-9_\-.]*$/)) {
+    }
+    if (input.length > 100) {
         return t('errors.invalidMtaIdError');
     }
-
+    if (!input.match(/^[a-zA-Z_][a-zA-Z0-9_\-]{0,98}[a-zA-Z0-9]$/)) {
+        return t('errors.invalidMtaIdError');
+    }
     if (existsSync(join(previousAnswers.mtaPath, input.trim()))) {
         return t('errors.mtaIdAlreadyExistError', { mtaPath: previousAnswers.mtaPath });
     }
