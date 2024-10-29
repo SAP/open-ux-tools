@@ -11,7 +11,7 @@ import { t } from './i18n';
 import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
-import { deleteServiceFromManifest } from './delete';
+import { deleteServiceFromManifest, removeAnnotationsFromCDSFiles } from './delete';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -215,20 +215,34 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 }
 
 /**
- * Removes project files from the odata service to an existing UI5 project specified by the base path.
+ * Removes service related data from project files for an existing UI5 project specified by the base path.
+ * Works as follow:
+ * 1. Service is removed from manifest.
+ * If service type is EDMX:
+ * 2. ui5.yaml
+ *  - backend data of the service is removed from fiori-tools-proxy middleware
+ * 3. ui5-local.yaml
+ *  - backend data of the service is removed from fiori-tools-proxy middleware
+ *  - service is removed from mockserver middleware
+ * 4. ui5-mock.yaml
+ *  - service is removed from mockserver middleware
+ * If service type is CDS:
+ * 2. annotations of the service are removed from CDS files.
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
  * @param {string} service.name - name of the OData service instance
  * @param {string} service.path - path of the OData service instance
  * @param {string} service.url - url of the OData service instance
+ * @param {ServiceType} service.type - type of the OData service instance
+ * @param {OdataService['annotations']} service.annotations - annotations of the OData service instance
  * @param {Editor} [fs] - the memfs editor instance
  * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
 async function remove(
     basePath: string,
-    service: { name: string; path: string; url: string },
+    service: Required<Pick<OdataService, 'name' | 'path' | 'url' | 'type' | 'annotations'>>,
     fs?: Editor
 ): Promise<Editor> {
     if (!fs) {
@@ -239,26 +253,33 @@ async function remove(
     let ui5MockConfig: UI5Config | undefined;
     const paths = await findProjectFiles(basePath, fs);
     deleteServiceFromManifest(basePath, service.name, fs);
-    // Delete service data from manifest.json
-    if (paths.ui5Yaml) {
-        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
-        // Delete service backend from fiori-tools-proxy middleware config
-        ui5Config.removeBackendFromFioriToolsProxydMiddleware(service.url);
-        fs.write(paths.ui5Yaml, ui5Config.toString());
-    }
-    if (paths.ui5LocalYaml) {
-        ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
-        // Delete service backend from fiori-tools-proxy middleware config
-        ui5LocalConfig.removeBackendFromFioriToolsProxydMiddleware(service.url);
-        // Delete service from mockserver middleware config
-        ui5LocalConfig.removeServiceFromMockServerMiddleware(service.path);
-        fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
-    }
-    if (paths.ui5MockYaml) {
-        ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
-        // Delete service from mockserver config
-        ui5MockConfig.removeServiceFromMockServerMiddleware(service.path);
-        fs.write(paths.ui5MockYaml, ui5MockConfig.toString());
+    const isServiceTypeEdmx = service.type === ServiceType.EDMX;
+    // Remove service related data from middlewares for EDMX services
+    if (isServiceTypeEdmx) {
+        // Delete service data from manifest.json
+        if (paths.ui5Yaml) {
+            ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+            // Delete service backend from fiori-tools-proxy middleware config
+            ui5Config.removeBackendFromFioriToolsProxydMiddleware(service.url);
+            fs.write(paths.ui5Yaml, ui5Config.toString());
+        }
+        if (paths.ui5LocalYaml) {
+            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
+            // Delete service backend from fiori-tools-proxy middleware config
+            ui5LocalConfig.removeBackendFromFioriToolsProxydMiddleware(service.url);
+            // Delete service from mockserver middleware config
+            ui5LocalConfig.removeServiceFromMockServerMiddleware(service.path);
+            fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
+        }
+        if (paths.ui5MockYaml) {
+            ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
+            // Delete service from mockserver config
+            ui5MockConfig.removeServiceFromMockServerMiddleware(service.path);
+            fs.write(paths.ui5MockYaml, ui5MockConfig.toString());
+        }
+    } else {
+        // Remove annotations from CDS files
+        await removeAnnotationsFromCDSFiles(service.annotations as CdsAnnotationsInfo | CdsAnnotationsInfo[], fs);
     }
     return fs;
 }

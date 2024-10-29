@@ -1,9 +1,78 @@
-import { deleteServiceFromManifest } from '../../src/delete';
+import { deleteServiceFromManifest, removeAnnotationsFromCDSFiles } from '../../src/delete';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
+import { dirname, join } from 'path';
+import type { CdsAnnotationsInfo } from '../../src';
+import { updateCdsFilesWithAnnotations } from '../../src/updates';
 
-describe('delete', () => {
+describe('removeAnnotationsFromCDSFiles', () => {
+    let fs: Editor;
+    beforeEach(async () => {
+        fs = create(createStorage());
+    });
+    it('removes from annotation cds files correctly', async () => {
+        const annotationsInfo: CdsAnnotationsInfo = {
+            cdsFileContents: '"using AdminService as service from \'../../srv/admin-service\';"',
+            projectPath: 'testProject',
+            appPath: 'webapp',
+            projectName: 'annotations'
+        };
+        const annotationPath = join('./testProject/webapp/annotations', 'annotations.cds');
+
+        // Write annotation file
+        await updateCdsFilesWithAnnotations(annotationsInfo, fs);
+        let annotationCds = fs.read(annotationPath);
+        expect(annotationCds).toEqual(annotationsInfo.cdsFileContents);
+
+        // Remove from annotation file
+        await removeAnnotationsFromCDSFiles(annotationsInfo, fs);
+        annotationCds = fs.read(annotationPath);
+        expect(annotationCds).toEqual('');
+
+        // Convert the annotation path to the services path
+        const serviceCdsPath = join(dirname(annotationPath).replace('annotations', ''), 'services.cds');
+        const serviceCds = fs.read(serviceCdsPath);
+        expect(serviceCds).not.toContain(`using from './annotations/annotations';`);
+    });
+
+    it('removes from annotations cds files correctly for multiple annotations', async () => {
+        const annotationsInfo: CdsAnnotationsInfo[] = [
+            {
+                cdsFileContents: '"using AdminService as service from \'../../srv/admin-service\';"',
+                projectPath: 'testProject',
+                appPath: 'webapp',
+                projectName: 'annotations'
+            },
+            {
+                cdsFileContents: '"using IncidentService as service from \'../../srv/incidentservice\';"',
+                projectPath: 'testProject',
+                appPath: 'webapp',
+                projectName: 'annotations'
+            }
+        ];
+        const annotationsPath = join('./testProject/webapp/annotations', 'annotations.cds');
+
+        // Write annotation file
+        await updateCdsFilesWithAnnotations(annotationsInfo, fs);
+        let annotationCds = fs.read(annotationsPath);
+        expect(annotationCds).toContain(annotationsInfo[0].cdsFileContents);
+        expect(annotationCds).toContain(annotationsInfo[1].cdsFileContents);
+
+        // Remove from annotation file
+        await removeAnnotationsFromCDSFiles(annotationsInfo, fs);
+        annotationCds = fs.read(annotationsPath);
+        expect(annotationCds).not.toContain(annotationsInfo[0].cdsFileContents);
+        expect(annotationCds).not.toContain(annotationsInfo[1].cdsFileContents);
+
+        // Convert the annotation path to the services path
+        const serviceCdsPath = join(dirname(annotationsPath).replace('annotations', ''), 'services.cds');
+        const serviceCds = fs.read(serviceCdsPath);
+        expect(serviceCds).not.toContain(`using from './annotations/annotations';`);
+    });
+});
+
+describe('deleteServiceFromManifest', () => {
     let fs: Editor;
     beforeEach(async () => {
         fs = create(createStorage());

@@ -1,7 +1,87 @@
-import { dirname, join } from 'path';
+import { dirname, join, normalize, posix } from 'path';
 import { t } from './i18n';
 import type { Editor } from 'mem-fs-editor';
 import type { ManifestNamespace, Manifest } from '@sap-ux/project-access';
+import type { CdsAnnotationsInfo } from './types';
+
+/**
+ * Removes the cds index or service file with the provided annotations.
+ * This function takes an Editor instance and cds annotations
+ * and deletes either from the index file or the service file with the given annotations.
+ *
+ * @param {Editor} fs - The memfs editor instance
+ * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
+ * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
+ */
+async function removeCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotationsInfo): Promise<void> {
+    const dirPath = join(annotations.projectName, 'annotations');
+    const annotationPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
+    const annotationConfig = `\nusing from './${annotationPath}';`;
+    // Get index and service file paths
+    const indexFilePath = join(annotations.projectPath, annotations.appPath ?? '', 'index.cds');
+    const serviceFilePath = join(annotations.projectPath, annotations.appPath ?? '', 'services.cds');
+    // Remove annotation config from index or service file
+    if (indexFilePath && fs.exists(indexFilePath)) {
+        // Read old annotations content and replace it with empty string
+        const initialIndexContent = fs.read(indexFilePath);
+        const updatedContent = initialIndexContent.replace(annotationConfig, '');
+        fs.write(indexFilePath, updatedContent);
+    } else if (fs.exists(serviceFilePath)) {
+        // Read old annotations content and replace it with empty string
+        const initialServiceFileContent = fs.read(serviceFilePath);
+        const updatedContent = initialServiceFileContent.replace(annotationConfig, '');
+        fs.write(serviceFilePath, updatedContent);
+    }
+}
+
+/**
+ * Removes annotations from CDS files.
+ * This function takes cds annotations and an Editor instance,
+ * then updates the relevant cds files with the given annotations.
+ *
+ * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
+ * @param {Editor} fs - The memfs editor instance
+ * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
+ */
+export async function removeAnnotationsFromCDSFiles(
+    annotations: CdsAnnotationsInfo | CdsAnnotationsInfo[],
+    fs: Editor
+): Promise<void> {
+    if (Array.isArray(annotations)) {
+        for (const i in annotations) {
+            const annotation = annotations[i];
+            const annotationCdsPath = join(
+                annotation.projectPath,
+                annotation.appPath ?? '',
+                annotation.projectName,
+                'annotations.cds'
+            );
+            // Remove from annotations.cds file
+            if (fs.exists(annotationCdsPath)) {
+                // Read old annotations content and replace it with empty string
+                const initialCDSContent = fs.read(annotationCdsPath);
+                const updatedContent = initialCDSContent.replace(annotation.cdsFileContents, '');
+                fs.write(annotationCdsPath, updatedContent);
+            }
+            await removeCdsIndexOrServiceFile(fs, annotation);
+        }
+    } else {
+        const annotationCdsPath = join(
+            annotations.projectPath,
+            annotations.appPath ?? '',
+            annotations.projectName,
+            'annotations.cds'
+        );
+        // Write into annotations.cds file
+        if (fs.exists(annotationCdsPath)) {
+            // Read old annotations content and replace it with empty string
+            const initialCDSContent = fs.read(annotationCdsPath);
+            const updatedContent = initialCDSContent.replace(annotations.cdsFileContents, '');
+            fs.write(annotationCdsPath, updatedContent);
+        }
+        await removeCdsIndexOrServiceFile(fs, annotations);
+    }
+}
 
 /**
  * Internal function that deletes files related to dataSource.
