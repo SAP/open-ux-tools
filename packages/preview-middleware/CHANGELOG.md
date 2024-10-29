@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.94
+
+### Patch Changes
+
+-   fe9febe: add deep links to readme
+
 ## 0.16.93
 
 ### Patch Changes
