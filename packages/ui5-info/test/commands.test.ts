@@ -248,7 +248,7 @@ describe('Test commands internals', () => {
         mockedSpawn.setDefault(mockedSpawn.simple(1, '', 'stack trace'));
         const npmCmd = os.platform() === 'win32' ? 'npm.cmd' : 'npm';
         await expect(executeNpmUI5VersionsCmd()).rejects.toMatchInlineSnapshot(
-            `[Error: Command failed, \`npm show @sapui5/distribution-metadata versions --no-color\`, stack trace]`
+            `[Error: Command failed, \`${npmCmd} show @sapui5/distribution-metadata versions --no-color\`, stack trace]`
         );
     });
 });
