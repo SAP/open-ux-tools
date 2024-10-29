@@ -7,6 +7,7 @@ import type {
 } from '@fluentui/react';
 import { ChoiceGroup } from '@fluentui/react';
 import { labelGlobalStyle } from '../UILabel';
+import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 export type ChoiceGroupOption = IChoiceGroupOption;
 export type ChoiceGroupOptionProps = IChoiceGroupOptionProps;
@@ -162,7 +163,7 @@ export class UIChoiceGroup extends React.Component<ChoiceGroupProps, {}> {
                 ...(this.props.required && {
                     selectors: {
                         '::after': {
-                            content: `' *'`,
+                            content: REQUIRED_LABEL_INDICATOR,
                             color: 'var(--vscode-inputValidation-errorBorder)',
                             paddingRight: 12
                         }
