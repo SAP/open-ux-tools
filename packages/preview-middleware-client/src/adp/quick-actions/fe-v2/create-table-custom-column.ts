@@ -12,7 +12,7 @@ import {
     SMART_TABLE_TYPE,
     TableQuickActionDefinitionBase,
     TREE_TABLE_TYPE
-} from './table-quick-action-base';
+} from '../table-quick-action-base';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import UI5Element from 'sap/ui/core/Element';
 import { notifyUser } from '../../utils';

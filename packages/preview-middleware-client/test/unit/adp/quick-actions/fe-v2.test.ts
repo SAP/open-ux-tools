@@ -34,7 +34,7 @@ import {
     M_TABLE_TYPE,
     SMART_TABLE_TYPE,
     TREE_TABLE_TYPE
-} from 'open/ux/preview/client/adp/quick-actions/fe-v2/table-quick-action-base';
+} from 'open/ux/preview/client/adp/quick-actions/table-quick-action-base';
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import type { ChangeService } from '../../../../src/cpe/changes/service';

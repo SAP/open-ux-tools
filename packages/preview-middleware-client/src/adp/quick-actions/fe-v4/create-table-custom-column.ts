@@ -4,8 +4,8 @@ import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/qu
 import { getControlById } from '../../../utils/core';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { DialogNames, handler } from '../../init-dialogs';
-import { MDC_TABLE_TYPE, TableQuickActionDefinitionBase } from './table-quick-action-base';
-import { SMART_TABLE_TYPE } from '../fe-v2/table-quick-action-base';
+import { MDC_TABLE_TYPE, TableQuickActionDefinitionBase } from '../table-quick-action-base';
+import { SMART_TABLE_TYPE } from '../table-quick-action-base';
 
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
 

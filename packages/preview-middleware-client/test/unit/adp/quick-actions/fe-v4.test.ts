@@ -35,8 +35,8 @@ import UIComponent from 'sap/ui/core/UIComponent';
 import AppComponentMock from 'mock/sap/fe/core/AppComponent';
 import FlexRuntimeInfoAPI from 'mock/sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
-import { SMART_TABLE_TYPE } from 'open/ux/preview/client/adp/quick-actions/fe-v2/table-quick-action-base';
-import { MDC_TABLE_TYPE } from 'open/ux/preview/client/adp/quick-actions/fe-v4/table-quick-action-base';
+import { SMART_TABLE_TYPE } from '../../../../src/adp/quick-actions/table-quick-action-base';
+import { MDC_TABLE_TYPE } from 'open/ux/preview/client/adp/quick-actions/table-quick-action-base';
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 

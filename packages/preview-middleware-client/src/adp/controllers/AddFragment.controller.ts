@@ -35,7 +35,7 @@ import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
     TREE_TABLE_TYPE
-} from '../quick-actions/fe-v2/table-quick-action-base';
+} from '../quick-actions/table-quick-action-base';
 
 interface CreateFragmentProps {
     fragmentName: string;
