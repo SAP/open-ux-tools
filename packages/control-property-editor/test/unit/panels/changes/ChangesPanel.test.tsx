@@ -15,7 +15,7 @@ jest.mock('@sap-ux-private/control-property-editor-common', () => {
     };
 });
 
-const getChanges = (generateSavedChanges = false): ChangesSlice => {
+const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSlice => {
     const pending: PendingChange[] = !generateSavedChanges
         ? [
               {
@@ -68,6 +68,50 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   isActive: true,
                   changeType: 'addFields',
                   fileName: 'id_1691659414768_128_addFields'
+              },
+              {
+                  kind: 'configuration',
+                  controlId: 'testId1Exp',
+                  propertyName: 'Frozen Column Count',
+                  type: 'pending',
+                  value: 12,
+                  isActive: true,
+                  changeType: 'configurationChange',
+                  fileName: 'testFile5',
+                  propertyPath: '/test/components/settings'
+              },
+              {
+                  kind: 'configuration',
+                  controlId: 'testId1Exp',
+                  propertyName: 'Enable Export',
+                  type: 'pending',
+                  value: false,
+                  isActive: true,
+                  changeType: 'configurationChange',
+                  fileName: 'testFile6',
+                  propertyPath: '/test/components/settings'
+              },
+              {
+                  kind: 'configuration',
+                  controlId: 'testId1Exp',
+                  propertyName: 'Header',
+                  type: 'pending',
+                  value: '{stringVal}',
+                  isActive: true,
+                  changeType: 'configurationChange',
+                  fileName: 'testFile7',
+                  propertyPath: '/test/components/settings'
+              },
+              {
+                  kind: 'configuration',
+                  controlId: 'testId1Exp',
+                  propertyName: 'Hierarchy Qualifier',
+                  type: 'pending',
+                  value: 'newQualifer',
+                  isActive: true,
+                  changeType: 'configurationChange',
+                  fileName: 'testFile8',
+                  propertyPath: '/test/components'
               }
           ]
         : [];
@@ -122,6 +166,26 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   propertyType: cpeCommon.PropertyType.ControlProperty
               },
               {
+                  propertyName: 'Frozen Column Count',
+                  type: 'saved',
+                  value: 12,
+                  fileName: 'app_descrName1',
+                  kind: 'configuration',
+                  timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
+                  changeType: 'configurationChange',
+                  propertyPath: 'settings/test/demo'
+              },
+              {
+                  propertyName: 'Header',
+                  type: 'saved',
+                  value: 'Table Filtered by Region',
+                  fileName: 'app_descrName2',
+                  kind: 'configuration',
+                  timestamp: new Date('2022-01-09T12:06:53.939Z').getTime(),
+                  changeType: 'configurationChange',
+                  propertyPath: 'settings/test'
+              },
+              {
                   changeType: 'move',
                   type: 'saved',
                   fileName: 'id_1698648267087_373_moveSimpleFormField',
@@ -138,8 +202,18 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
           ]
         : [];
     return {
-        pending,
-        saved,
+        pending: pending.filter((item) => {
+            if (filterByKind) {
+                return item.type === 'pending' && item.kind === filterByKind;
+            }
+            return item.type === 'pending';
+        }),
+        saved: saved.filter((item) => {
+            if (filterByKind) {
+                return item.type === 'saved' && item.kind === filterByKind;
+            }
+            return item.type === 'saved';
+        }),
         controls: {},
         pendingChangeIds: []
     };
@@ -363,6 +437,74 @@ describe('ChangePanel', () => {
         fireEvent.click(deleteButton);
         const confirmButton = screen.getByRole('button', { name: /^Delete$/i });
         confirmButton.click();
+    });
+
+    test('pending changes - configuration change', () => {
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(false, 'configuration'),
+                filterQuery: filterInitOptions
+            }
+        });
+
+        // check saved changes
+        const savedChangesTitle = screen.getByText(/unsaved changes/i);
+        expect(savedChangesTitle).toBeInTheDocument();
+
+        const configChange = screen.getAllByText(/configuration change/i);
+        expect(configChange.length).toBe(2);
+
+        const propertyName1 = screen.getByText(/Frozen Column Count/i);
+        expect(propertyName1).toBeInTheDocument();
+
+        const value1 = screen.getByText(/12/i);
+        expect(value1).toBeInTheDocument();
+
+        const propertyName2 = screen.getByText(/Enable Export/i);
+        expect(propertyName2).toBeInTheDocument();
+
+        // const value2 = screen.getByText(/false/i);
+        // expect(value2).toBeInTheDocument();
+
+        const propertyName3 = screen.getByText(/Header/i);
+        expect(propertyName3).toBeInTheDocument();
+
+        const value3 = screen.getByText(/{stringval}/i);
+        expect(value3).toBeInTheDocument();
+
+        const propertyName4 = screen.getByText(/Hierarchy Qualifier/i);
+        expect(propertyName4).toBeInTheDocument();
+
+        const value4 = screen.getByText(/newqualifer/i);
+        expect(value4).toBeInTheDocument();
+    });
+
+    test('saved changes - configuration change', () => {
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(true, 'configuration'),
+                filterQuery: filterInitOptions
+            }
+        });
+
+        // check saved changes
+        const savedChangesTitle = screen.getByText(/saved changes/i);
+        expect(savedChangesTitle).toBeInTheDocument();
+
+        const configChange = screen.getAllByText(/configuration change/i);
+        expect(configChange.length).toBe(2);
+
+        const propertyName1 = screen.getByText(/Frozen Column Count/i);
+        expect(propertyName1).toBeInTheDocument();
+
+        const value1 = screen.getByText(/12/i);
+        expect(value1).toBeInTheDocument();
+
+        const propertyName3 = screen.getByText(/Header/i);
+        expect(propertyName3).toBeInTheDocument();
+
+        const value3 = screen.getByText(/Table Filtered by Region/i);
+        expect(value3).toBeInTheDocument();
     });
 
     test('saved control change - link', () => {
