@@ -1,6 +1,7 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
+import { FeatureService } from '../../../cpe/feature-service';
 import { DialogNames, handler } from '../../init-dialogs';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
@@ -14,6 +15,13 @@ const CONTROL_TYPES = ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageHeader', 's
 export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase implements SimpleQuickActionDefinition {
     constructor(context: QuickActionContext) {
         super(ADD_PAGE_ACTION, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION', context);
+    }
+
+    initialize(): void {
+        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
+            return;
+        }
+        return super.initialize();
     }
 
     async execute(): Promise<FlexCommand[]> {

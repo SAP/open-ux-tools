@@ -30,7 +30,7 @@ export function addAddHtmlFilesCmd(cmd: Command): void {
  * Adds the virtual html files hosted by the preview middleware to the file system.
  *
  * @param basePath - path to application root
- * @param simulate - if true, do not write but just show what would be change; otherwise write
+ * @param simulate - if true, do not write but just show what would be changed; otherwise write
  * @param yamlPath - path to the ui5*.yaml file
  */
 async function addHtmlFiles(basePath: string, simulate: boolean, yamlPath: string): Promise<void> {

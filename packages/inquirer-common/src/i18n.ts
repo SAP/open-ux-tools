@@ -3,13 +3,20 @@ import i18next from 'i18next';
 import translations from './translations/inquirer-common.i18n.json';
 
 const inquirerCommonI18nNamespace = 'inquirer-common';
+
+/**
+ * Adds the `inquirer-common` resource bundle to i18next.
+ * May be required to load i18n translations after initialising in the consumer module.
+ */
+export function addi18nResourceBundle(): void {
+    i18next.addResourceBundle('en', inquirerCommonI18nNamespace, translations);
+}
+
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18nInquirerCommon(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', inquirerCommonI18nNamespace, translations)
-    );
+    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () => addi18nResourceBundle());
 }
 
 /**
