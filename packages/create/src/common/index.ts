@@ -10,11 +10,17 @@ export { promptYUIQuestions } from './prompts';
  * @param [options] - optional options
  * @param [options.logger] - optional logger instance
  */
-export function runNpmInstallCommand(basePath: string, installArgs: string[] = [], options?:{ logger?: Logger }): void {
+export function runNpmInstallCommand(
+    basePath: string,
+    installArgs: string[] = [],
+    options?: { logger?: Logger }
+): void {
     const logger = options?.logger;
-    execNpmCommand(['install', ...installArgs], { cwd: basePath, logger: logger}).then(() => {
-        logger?.info('npm install completed successfully.');
-    }).catch((error) => {
-        logger?.error(`npm install failed. '${(error as Error).message}'`);
-    });
+    execNpmCommand(['install', ...installArgs], { cwd: basePath, logger: logger })
+        .then(() => {
+            logger?.info('npm install completed successfully.');
+        })
+        .catch((error) => {
+            logger?.error(`npm install failed. '${(error as Error).message}'`);
+        });
 }
