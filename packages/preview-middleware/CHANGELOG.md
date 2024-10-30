@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.16.98
+
+### Patch Changes
+
+-   df6fd7f: Quick action added to create custom table columns
+-   Updated dependencies [df6fd7f]
+    -   @sap-ux/adp-tooling@0.12.65
+
 ## 0.16.97
 
 ### Patch Changes
