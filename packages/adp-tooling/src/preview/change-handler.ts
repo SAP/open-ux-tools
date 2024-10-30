@@ -13,6 +13,7 @@ const V2_SMART_TABLE_COLUMN = 'V2_SMART_TABLE_COLUMN';
 const V2_SMART_TABLE_CELL = 'V2_SMART_TABLE_CELL';
 const V4_MDC_TABLE_COLUMN = 'V4_MDC_TABLE_COLUMN';
 const ANALYTICAL_TABLE_COLUMN = 'ANALYTICAL_TABLE_COLUMN';
+const TABLE_ACTION = 'TABLE_ACTION';
 
 interface FragmentTemplateConfig<T = { [key: string]: any }> {
     /**
@@ -43,6 +44,18 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
             return {
                 ids: {
                     toolbarActionButton: `btn-${uuid}`
+                }
+            };
+        }
+    },
+    [TABLE_ACTION]: {
+        path: 'common/v4-table-action.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    customToolbarAction: `toolbarAction-${uuid}`,
+                    customActionButton: `btn-${uuid}`
                 }
             };
         }

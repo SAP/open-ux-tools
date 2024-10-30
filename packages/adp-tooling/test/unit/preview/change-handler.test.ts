@@ -431,6 +431,40 @@ id="<%- ids.index %>
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });
+
+            it('should create custom page action', () => {
+                mockFs.exists.mockReturnValue(false);
+                const updatedChange = {
+                    ...change,
+                    content: {
+                        ...change.content,
+                        templateName: `TABLE_ACTION`
+                    }
+                } as unknown as AddXMLChange;
+                mockFs.read.mockReturnValue(`
+id="<%- ids.customToolbarAction %>"
+id="<%- ids.customActionButton %>"`);
+                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+
+                expect(mockFs.read).toHaveBeenCalled();
+                expect(
+                    (mockFs.read.mock.calls[0][0] as string)
+                        .replace(/\\/g, '/')
+                        .endsWith('templates/rta/common/v4-table-action.xml')
+                ).toBe(true);
+
+                expect(mockFs.write).toHaveBeenCalled();
+                expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                    `"project/path/changes/Share.fragment.xml"`
+                );
+                expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+"
+id=\\"toolbarAction-30303030\\"
+id=\\"btn-30303030\\""
+`);
+
+                expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
+            });
         });
     });
 });

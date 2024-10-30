@@ -161,7 +161,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
      * Builds data that is used in the dialog
      */
     async buildDialogData(): Promise<void> {
-        const { controlMetadata } = this.getControlMetadata();
+        const { controlMetadata, targetAggregation } = this.getControlMetadata();
         const defaultAggregation = this.options.aggregation ?? controlMetadata.getDefaultAggregationName();
         const selectedControlName = controlMetadata.getName();
 
@@ -177,13 +177,13 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
 
         const indexArray = this.fillIndexArray(selectedControlChildren);
 
-        if (!metadata.targetAggregation.includes(COLUMNS_AGGREGATION)) {
+        if (!targetAggregation.includes(COLUMNS_AGGREGATION)) {
             throw new Error(`Selected control does not have "${COLUMNS_AGGREGATION}" aggregation`);
         }
         this.model.setProperty('/selectedColumnsAggregation', COLUMNS_AGGREGATION);
         this.specialIndexHandling(COLUMNS_AGGREGATION);
 
-        if (!metadata.targetAggregation.includes(ITEMS_AGGREGATION)) {
+        if (!targetAggregation.includes(ITEMS_AGGREGATION)) {
             throw new Error(`Selected control does not have "${ITEMS_AGGREGATION}" aggregation`);
         }
         this.model.setProperty('/selectedItemsAggregation', ITEMS_AGGREGATION);
