@@ -161,9 +161,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
      * Builds data that is used in the dialog
      */
     async buildDialogData(): Promise<void> {
-        const metadata = this.getControlMetadata();
-
-        const { controlMetadata } = metadata;
+        const { controlMetadata } = this.getControlMetadata();
         const defaultAggregation = this.options.aggregation ?? controlMetadata.getDefaultAggregationName();
         const selectedControlName = controlMetadata.getName();
 
@@ -297,10 +295,13 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
                     fragment.targetAggregation === ITEMS_AGGREGATION ? CELLS_AGGREGATION : fragment.targetAggregation
             };
 
-            const command = await this.commandExecutor.getCommand<AddTableCellFragmentChangeContentType>(
+            const targetObject =
                 fragment.targetAggregation === COLUMNS_AGGREGATION
                     ? this.runtimeControl
-                    : (this.runtimeControl.getAggregation(ITEMS_AGGREGATION) as ManagedObject[])[0],
+                    : (this.runtimeControl.getAggregation(ITEMS_AGGREGATION) as ManagedObject[])[0];
+
+            const command = await this.commandExecutor.getCommand<AddTableCellFragmentChangeContentType>(
+                targetObject,
                 'addXML',
                 modifiedValue,
                 designMetadata,
@@ -310,8 +311,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
             const templateName =
                 fragment.targetAggregation === COLUMNS_AGGREGATION ? `V2_SMART_TABLE_COLUMN` : 'V2_SMART_TABLE_CELL';
             const preparedChange = command.getPreparedChange();
-            const content = { ...preparedChange.getContent() };
-            content.templateName = templateName;
+            const content = { ...preparedChange.getContent(), templateName };
             preparedChange.setContent(content);
             compositeCommand.addCommand(command, false);
             result.push(templateName);

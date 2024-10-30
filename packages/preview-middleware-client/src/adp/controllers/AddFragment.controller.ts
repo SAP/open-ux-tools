@@ -31,11 +31,7 @@ import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
-import {
-    ANALYTICAL_TABLE_TYPE,
-    GRID_TABLE_TYPE,
-    TREE_TABLE_TYPE
-} from '../quick-actions/table-quick-action-base';
+import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, TREE_TABLE_TYPE } from '../quick-actions/table-quick-action-base';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -186,8 +182,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      * Builds data that is used in the dialog
      */
     async buildDialogData(): Promise<void> {
-        const metadata = this.getControlMetadata();
-        const { controlMetadata, targetAggregation } = metadata;
+        const { controlMetadata, targetAggregation } = this.getControlMetadata();
         const defaultAggregation = this.options.aggregation ?? controlMetadata.getDefaultAggregationName();
         const selectedControlName = controlMetadata.getName();
 
