@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.16.96
+
+### Patch Changes
+
+-   29a4ef6: feat: create page and table action quick actions for OData(v4) applications
+-   Updated dependencies [29a4ef6]
+    -   @sap-ux/adp-tooling@0.12.63
+
 ## 0.16.95
 
 ### Patch Changes
