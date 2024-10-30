@@ -5,7 +5,8 @@ import type {
     UnknownSavedChange,
     SavedControlChange,
     PendingConfigurationChange,
-    SavedConfigurationChange
+    SavedConfigurationChange,
+    PropertyValue
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
@@ -16,6 +17,7 @@ import {
     reloadApplication,
     setApplicationRequiresReload,
     save,
+    CONFIGURATION_CHANGE_KIND,
     PropertyType
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
@@ -150,9 +152,10 @@ export class ChangeService extends EventTarget {
         | SavedConfigurationChange[] = [];
     private changesRequiringReload = 0;
     private sendAction: (action: ExternalAction) => void;
-    public pendingChanges: PendingChange[] = [];
+    private pendingChanges: PendingChange[] = [];
     private changedFiles: Record<string, object> = {};
     private readonly eventStack: object[] = [];
+    private pendingConfigChangeMap: Map<string, PendingConfigurationChange[]> = new Map();
     /**
      *
      * @param options ui5 adaptation options.
@@ -261,13 +264,10 @@ export class ChangeService extends EventTarget {
                                         type: 'saved',
                                         kind: 'configuration',
                                         fileName: change.fileName,
-                                        propertyPath: propertyPathSegments
-                                            .join('/')
-                                            .replace(/^controlConfiguration\/@[^/]+\.v1\./, ''),
+                                        propertyPath: getCompactV4ConfigPath(propertyPathSegments),
                                         propertyName: propertyName ?? '',
                                         value: change.content.entityPropertyChange.propertyValue,
-                                        timestamp: new Date(change.creation).getTime(),
-                                        changeType: 'configurationChange'
+                                        timestamp: new Date(change.creation).getTime()
                                     };
                                 } else {
                                     const flexObject = await this.getFlexObject(change);
@@ -388,6 +388,7 @@ export class ChangeService extends EventTarget {
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
             const inactiveCommandCount = allCommands.length - executedCommands.length;
+            this.pendingConfigChangeMap = new Map();
             let i: number, command: FlexCommand;
             for ([i, command] of allCommands.entries()) {
                 try {
@@ -408,7 +409,7 @@ export class ChangeService extends EventTarget {
             if (this.eventStack.length - 1 === eventIndex) {
                 this.pendingChanges = pendingChanges.filter((change): boolean => !!change);
                 const changesRequiringReload = this.pendingChanges.reduce(
-                    (sum, change) => (change.changeType === 'configurationChange' ? sum + 1 : sum),
+                    (sum, change) => (change.kind === CONFIGURATION_CHANGE_KIND ? sum + 1 : sum),
                     0
                 );
                 if (changesRequiringReload > this.changesRequiringReload) {
@@ -422,6 +423,7 @@ export class ChangeService extends EventTarget {
             this.eventStack.splice(eventIndex, 1);
             if (Array.isArray(allCommands) && allCommands.length === 0) {
                 this.pendingChanges = [];
+                this.pendingConfigChangeMap = new Map();
                 await this.fetchSavedChanges();
             }
 
@@ -435,7 +437,6 @@ export class ChangeService extends EventTarget {
                                 if (item.controlId) {
                                     return getControlById(item.controlId);
                                 }
-                                return;
                             })
                             .filter((item) => item?.getId())
                     }
@@ -445,6 +446,17 @@ export class ChangeService extends EventTarget {
             this.updateStack();
             handleStackChange();
         };
+    }
+    /**
+     * Cached configuration commands to set reset value during stack change event.
+     *
+     * @param {string} controlId - control id of the config property.
+     * @param {string} propertyName - config property name.
+     * @returns {PropertyValue | undefined}.
+     */
+    public getConfigurationPropertyValue(controlId: string, propertyName: string): PropertyValue | undefined {
+        const pendingChanges = this.pendingConfigChangeMap?.get(controlId);
+        return (pendingChanges || []).find((item) => item.isActive && item.propertyName === propertyName)?.value;
     }
 
     /**
@@ -515,8 +527,8 @@ export class ChangeService extends EventTarget {
                 type: 'pending',
                 kind: 'property',
                 changeType,
-                propertyType: PropertyType.ControlProperty,
                 controlId: selectorId,
+                propertyType: PropertyType.ControlProperty,
                 propertyName: command.getProperty('propertyName') as string,
                 isActive: index >= inactiveCommandCount,
                 value,
@@ -526,17 +538,23 @@ export class ChangeService extends EventTarget {
         } else if (changeType === 'appdescr_fe_changePageConfiguration') {
             const propertyPathSegments = command.getProperty('parameters').entityPropertyChange.propertyPath.split('/');
             const propName = propertyPathSegments.pop();
+            const controlId = this.getCommandSelectorId(command) ?? '';
+            const isActive = index >= inactiveCommandCount;
             result = {
                 type: 'pending',
                 kind: 'configuration',
-                controlId: this.getCommandSelectorId(command) || '',
-                changeType: 'configurationChange',
-                propertyPath: propertyPathSegments.join('/').replace(/^controlConfiguration\/@[^/]+\.v1\./, ''),
+                controlId,
+                propertyPath: getCompactV4ConfigPath(propertyPathSegments),
                 propertyName: propName,
-                isActive: index >= inactiveCommandCount,
+                isActive,
                 value,
                 fileName
             };
+            if (!this.pendingConfigChangeMap.get(controlId)) {
+                this.pendingConfigChangeMap.set(controlId, []);
+            }
+            const pendingChanges = this.pendingConfigChangeMap.get(controlId);
+            pendingChanges?.push(result);
         } else {
             result = {
                 type: 'pending',
@@ -692,4 +710,17 @@ export class ChangeService extends EventTarget {
         const FlexObjectFactory = (await import('sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory')).default;
         return FlexObjectFactory.createFromFileContent(change) as FlexChange<ChangeContent>;
     }
+}
+
+/**
+ * Returns a shortened version of the given configuration path segments by removing excess segments,
+ * leaving only the most relevant parts for display. For example, the configuration path
+ * `controlConfiguration/com.sap.UI.v1.LineItem/tableSettings` will be shortened to
+ * `LineItem/tableSettings`.
+ *
+ * @param propertyPathSeg string[]
+ * @returns string
+ */
+function getCompactV4ConfigPath(propertyPathSeg: string[]): string {
+    return propertyPathSeg.join('/').replace(/^controlConfiguration\/@[^/]+\.v1\./, '');
 }

@@ -5,7 +5,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { getComponent } from '../../utils/core';
 import { ChangeService } from '../changes';
 
-export const isEditable = (id = '', changeService: ChangeService): boolean => {
+export const isEditable = (changeService: ChangeService, id = ''): boolean => {
     let editable = false;
     const control = sap.ui.getCore().byId(id);
     if (!control) {

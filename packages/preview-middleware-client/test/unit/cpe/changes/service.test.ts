@@ -1025,7 +1025,6 @@ describe('SelectionService', () => {
                 saved: [],
                 pending: [
                     {
-                        changeType: 'configurationChange',
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         isActive: true,
                         fileName: 'testFileName',

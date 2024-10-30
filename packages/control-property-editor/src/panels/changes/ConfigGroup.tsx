@@ -24,7 +24,7 @@ export interface ConfigGroupProps {
  * @param configGroupProps ConfigGroupProps
  * @returns ReactElement
  */
-export function ConifgGroup(configGroupProps: ConfigGroupProps): ReactElement {
+export function ConifgGroup(configGroupProps: Readonly<ConfigGroupProps>): ReactElement {
     const { text, configPath, changes } = configGroupProps;
     const stackName = changes[0].type === SAVED_CHANGE_TYPE ? `saved-changes-stack` : `unsaved-changes-stack`;
     return (

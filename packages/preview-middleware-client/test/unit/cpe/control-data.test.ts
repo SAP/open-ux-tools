@@ -282,7 +282,11 @@ describe('controlData', () => {
             })
         });
         // act
-        const result = buildControlData(control as any, { pendingChanges: [] } as any, mockOverlay as any);
+        const result = buildControlData(
+            control as any,
+            { getConfigurationPropertyValue: jest.fn().mockReturnValue(undefined) } as any,
+            mockOverlay as any
+        );
 
         expect({
             ...result,
@@ -290,4 +294,3 @@ describe('controlData', () => {
         }).toMatchSnapshot();
     });
 });
-

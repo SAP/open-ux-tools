@@ -2,7 +2,12 @@ import React from 'react';
 import type { ReactElement } from 'react';
 import { Link, Stack } from '@fluentui/react';
 
-import { PROPERTY_CHANGE_KIND, SAVED_CHANGE_TYPE, selectControl } from '@sap-ux-private/control-property-editor-common';
+import {
+    CONFIGURATION_CHANGE_KIND,
+    PROPERTY_CHANGE_KIND,
+    SAVED_CHANGE_TYPE,
+    selectControl
+} from '@sap-ux-private/control-property-editor-common';
 import type { Change } from '@sap-ux-private/control-property-editor-common';
 
 import { PropertyChange } from './PropertyChange';
@@ -53,7 +58,9 @@ export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement
                 return (
                     <Stack.Item
                         data-testid={`${stackName}-${controlId}-${
-                            change.kind === PROPERTY_CHANGE_KIND ? change.propertyName : change.changeType
+                            change.kind === CONFIGURATION_CHANGE_KIND || change.kind === PROPERTY_CHANGE_KIND
+                                ? change.propertyName
+                                : change.changeType
                         }-${change.fileName}`}
                         key={change.fileName}
                         className={styles.item}>

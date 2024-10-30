@@ -11,7 +11,6 @@ import { getComponent } from '../utils/core';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import { DesigntimeSetting } from 'sap/ui/dt/DesignTimeMetadata';
 import { ChangeService } from './changes';
-import { PendingConfigurationChange } from '@sap-ux-private/control-property-editor-common';
 
 export interface PropertiesInfo {
     defaultValue: string;
@@ -32,19 +31,6 @@ export interface ManagedObjectMetadataProperties {
     getName: () => string;
     getDefaultValue: () => unknown;
 }
-
-// interface ManifestProperty {
-//     name: string;
-//     manifest: boolean;
-//     defaultValue: string | int | boolean | undefined;
-//     readableName: string;
-//     manifestPropertyPath: string;
-//     type: 'int' | 'number' | 'string';
-//     value: string | int | boolean | undefined;
-// }
-// interface ManifestProperties {
-//     [key: string]: ManifestProperty;
-// }
 
 export interface MergedSetting extends DesigntimeSetting {
     defaultValue: unknown;
@@ -162,16 +148,12 @@ export function getManifestProperties(
             item: DesigntimeSetting
         ) => {
             const propertyId = item.id;
-            const change = changeService.pendingChanges.filter(
-                (item) =>
-                    item.kind === 'configuration' &&
-                    item.propertyName === propertyId &&
-                    item.controlId === control.getId() &&
-                    item.isActive
-            ) as PendingConfigurationChange[];
-            let propertyValue = change?.[0]?.value || manifestPropertiesValue[propertyId];
-            if (item.type === 'boolean' && change?.[0]?.value === false) {
-                propertyValue = false;
+            const value = changeService.getConfigurationPropertyValue(control.getId(), propertyId);
+            let propertyValue = value === 0 || value === false || value ? value : manifestPropertiesValue[propertyId];
+            if (item?.type && ['boolean', 'number', 'string'].includes(item?.type)) {
+                if (propertyValue === undefined) {
+                    propertyValue = item.value as string | boolean | number; // set default value of property
+                }
             }
             if (!acc[propertyId]) {
                 acc[propertyId] = {

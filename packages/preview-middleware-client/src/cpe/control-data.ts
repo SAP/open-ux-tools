@@ -17,7 +17,7 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import { getManifestProperties, MergedSetting, type ManagedObjectMetadataProperties } from './utils';
 import { UI5ControlProperty } from './types';
 import DataType from 'sap/ui/base/DataType';
-import { getV4PageType } from '../utils/application';
+import { getV4PageType } from '../utils/fe-v4/utils';
 import { ChangeService } from './changes';
 import { TemplateType } from 'sap/ui/dt/DesignTimeMetadata';
 

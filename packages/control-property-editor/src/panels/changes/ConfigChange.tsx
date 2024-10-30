@@ -10,8 +10,11 @@ import type {
     PropertyChangeDeletionDetails,
     SavedConfigurationChange
 } from '@sap-ux-private/control-property-editor-common';
-import { deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
-import { convertCamelCaseToPascalCase, SAVED_CHANGE_TYPE } from '@sap-ux-private/control-property-editor-common';
+import {
+    deletePropertyChanges,
+    convertCamelCaseToPascalCase,
+    SAVED_CHANGE_TYPE
+} from '@sap-ux-private/control-property-editor-common';
 import { getFormattedDateAndTime, getValueIcon } from './utils';
 import { IconName } from '../../icons';
 

@@ -67,7 +67,7 @@ function getChildren(current: OutlineViewNode): OutlineViewNode[] {
  */
 function addChildToExtensionPoint(id: string, children: OutlineNode[], changeService: ChangeService) {
     const { text, technicalName } = getAdditionalData(id);
-    const editable = isEditable(id, changeService);
+    const editable = isEditable(changeService, id);
 
     children.push({
         controlId: id,
@@ -116,7 +116,7 @@ export async function transformNodes(
     const ui5VersionInfo = await getUi5Version();
     while (stack.length) {
         const current = stack.shift();
-        const editable = isEditable(current?.id, changeService);
+        const editable = isEditable(changeService, current?.id);
         const isAdp = scenario === 'ADAPTATION_PROJECT';
         const isExtPoint = current?.type === 'extensionPoint';
 

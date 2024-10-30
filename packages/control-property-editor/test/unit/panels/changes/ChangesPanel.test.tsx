@@ -76,7 +76,6 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   type: 'pending',
                   value: 12,
                   isActive: true,
-                  changeType: 'configurationChange',
                   fileName: 'testFile5',
                   propertyPath: '/test/components/settings'
               },
@@ -87,7 +86,6 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   type: 'pending',
                   value: false,
                   isActive: true,
-                  changeType: 'configurationChange',
                   fileName: 'testFile6',
                   propertyPath: '/test/components/settings'
               },
@@ -98,7 +96,6 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   type: 'pending',
                   value: '{stringVal}',
                   isActive: true,
-                  changeType: 'configurationChange',
                   fileName: 'testFile7',
                   propertyPath: '/test/components/settings'
               },
@@ -109,7 +106,6 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   type: 'pending',
                   value: 'newQualifer',
                   isActive: true,
-                  changeType: 'configurationChange',
                   fileName: 'testFile8',
                   propertyPath: '/test/components'
               }
@@ -172,7 +168,6 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   fileName: 'app_descrName1',
                   kind: 'configuration',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                  changeType: 'configurationChange',
                   propertyPath: 'settings/test/demo'
               },
               {
@@ -182,7 +177,6 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   fileName: 'app_descrName2',
                   kind: 'configuration',
                   timestamp: new Date('2022-01-09T12:06:53.939Z').getTime(),
-                  changeType: 'configurationChange',
                   propertyPath: 'settings/test'
               },
               {
@@ -451,7 +445,7 @@ describe('ChangePanel', () => {
         const savedChangesTitle = screen.getByText(/unsaved changes/i);
         expect(savedChangesTitle).toBeInTheDocument();
 
-        const configChange = screen.getAllByText(/configuration change/i);
+        const configChange = screen.getAllByText(/configuration/i);
         expect(configChange.length).toBe(2);
 
         const propertyName1 = screen.getByText(/Frozen Column Count/i);
@@ -491,7 +485,7 @@ describe('ChangePanel', () => {
         const savedChangesTitle = screen.getByText(/saved changes/i);
         expect(savedChangesTitle).toBeInTheDocument();
 
-        const configChange = screen.getAllByText(/configuration change/i);
+        const configChange = screen.getAllByText(/configuration/i);
         expect(configChange.length).toBe(2);
 
         const propertyName1 = screen.getByText(/Frozen Column Count/i);

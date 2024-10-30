@@ -30,11 +30,10 @@ export interface PropertyChanged<T extends PropertyValue = PropertyValue> {
     newValue: T;
 }
 export interface ConfigurationChange<T extends PropertyValue = PropertyValue> {
-    // controlId: string;
     propertyPath: string;
     propertyName: string;
     value: T;
-    changeType: 'configurationChange';
+    kind: typeof CONFIGURATION_CHANGE_KIND;
 }
 
 export interface PropertyChangeFailed {
@@ -147,7 +146,6 @@ export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> 
 
 export interface PendingConfigurationChange<T extends PropertyValue = PropertyValue> extends ConfigurationChange<T> {
     type: typeof PENDING_CHANGE_TYPE;
-    kind: typeof CONFIGURATION_CHANGE_KIND;
     controlId: string;
     /**
      * Indicates if change is before or after current position in undo redo stack
@@ -189,7 +187,6 @@ export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> ex
 
 export interface SavedConfigurationChange<T extends PropertyValue = PropertyValue> extends ConfigurationChange<T> {
     type: typeof SAVED_CHANGE_TYPE;
-    kind: typeof CONFIGURATION_CHANGE_KIND;
     fileName: string;
     timestamp: number;
 }

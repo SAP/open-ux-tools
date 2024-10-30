@@ -7,7 +7,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import UI5Element from 'sap/ui/core/Element';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-import { getReference } from '../../utils/application';
+import { getReference } from '../../utils/fe-v4/utils';
 
 /**
  * Function to check a give value is a binding expression.

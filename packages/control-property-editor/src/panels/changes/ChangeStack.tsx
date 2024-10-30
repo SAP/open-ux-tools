@@ -142,7 +142,7 @@ function convertChanges(changes: Change[]): Item[] {
             i++;
         } else if (change.kind === CONFIGURATION_CHANGE_KIND) {
             configGroup = {
-                text: convertCamelCaseToPascalCase(change.changeType),
+                text: convertCamelCaseToPascalCase(change.kind),
                 configPath: change.propertyPath,
                 index: i,
                 changes: [change]
