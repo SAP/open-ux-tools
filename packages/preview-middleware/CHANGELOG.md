@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.95
+
+### Patch Changes
+
+-   4f9528e: Fixed incorrect displaying of inactive composite and control changes
+
 ## 0.16.94
 
 ### Patch Changes
