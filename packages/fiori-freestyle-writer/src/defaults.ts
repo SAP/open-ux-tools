@@ -1,6 +1,7 @@
 import readPkgUp from 'read-pkg-up';
 import type { BasicAppSettings, FioriApp, FreestyleApp } from './types';
 import { TemplateType } from './types';
+import { compareUI5VersionGte, ui5LtsVersion_1_120 } from './utils';
 
 /**
  * Set defaults for missing parameters on the given Fiori/UI5 app instance.
@@ -22,7 +23,7 @@ function setBasicTemplateDefaults(settings: BasicAppSettings): void {
 }
 
 /**
- * Set defaults for missing parameters on the given instance of the overal config.
+ * Set defaults for missing parameters on the given instance of the overall config.
  * Adds source template info.
  *
  * @param ffApp full config object used by the generate method
@@ -43,8 +44,20 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
     if (ffApp.template.type === TemplateType.Basic) {
         setBasicTemplateDefaults(ffApp.template.settings as BasicAppSettings);
     }
-    // All fiori-freestyle apps should use load reuse libs, unless explicitly overridden
-    ffApp.appOptions = Object.assign({ loadReuseLibs: true }, ffApp.appOptions);
+    // All fiori-freestyle apps should use load reuse libs for ui5 below 1.120.0 , unless explicitly overridden
+    let loadReuseLibs = true;
+    if (
+        compareUI5VersionGte(ffApp.ui5?.minUI5Version ?? ffApp.ui5?.version ?? '', ui5LtsVersion_1_120) &&
+        ffApp.template.type === TemplateType.Basic
+    ) {
+        loadReuseLibs = false;
+    }
+    ffApp.appOptions = Object.assign(
+        {
+            loadReuseLibs: loadReuseLibs
+        },
+        ffApp.appOptions
+    );
     if (ffApp.ui5) {
         const ushell = 'sap.ushell';
         ffApp.ui5.manifestLibs = ffApp.ui5?.manifestLibs ?? ffApp.ui5?.ui5Libs;

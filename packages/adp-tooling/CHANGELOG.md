@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.65
+
+### Patch Changes
+
+-   df6fd7f: Quick action added to create custom table columns
+
 ## 0.12.64
 
 ### Patch Changes

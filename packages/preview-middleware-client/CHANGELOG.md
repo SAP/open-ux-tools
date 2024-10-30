@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.21
+
+### Patch Changes
+
+-   df6fd7f: Quick action added to create custom table columns
+
 ## 0.11.20
 
 ### Patch Changes
