@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.63
+
+### Patch Changes
+
+-   29a4ef6: feat: create page and table action quick actions for OData(v4) applications
+
 ## 0.12.62
 
 ### Patch Changes

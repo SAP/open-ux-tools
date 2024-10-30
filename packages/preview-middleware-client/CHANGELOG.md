@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.20
+
+### Patch Changes
+
+-   29a4ef6: feat: create page and table action quick actions for OData(v4) applications
+
 ## 0.11.19
 
 ### Patch Changes
