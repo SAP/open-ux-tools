@@ -8,7 +8,6 @@ import type UI5Element from 'sap/ui/core/Element';
 
 /** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
-import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
 /** sap.ui.model */
 import JSONModel from 'sap/ui/model/json/JSONModel';
@@ -18,13 +17,21 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 /** sap.ui.dt */
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+
+/** sap.ui.fl */
+import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
+
+import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+
+import { getResourceModel, getTextBundle } from '../../i18n';
+import { CommunicationService } from '../../cpe/communication-service';
 
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
+import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, TREE_TABLE_TYPE } from '../quick-actions/table-quick-action-base';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -34,21 +41,31 @@ interface CreateFragmentProps {
 
 const radix = 10;
 
-type AddFragmentModel = JSONModel & {
+export type AddFragmentModel = JSONModel & {
+    getProperty(sPath: '/title'): string;
+    getProperty(sPath: '/completeView'): boolean;
     getProperty(sPath: '/newFragmentName'): string;
     getProperty(sPath: '/selectedIndex'): number;
     getProperty(sPath: '/selectedAggregation/value'): string;
 };
 
+export interface AddFragmentOptions {
+    title: string;
+    aggregation?: string;
+}
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, private aggregation?: string) {
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
-        this.model = new JSONModel();
+        this.model = new JSONModel({
+            title: options.title,
+            completeView: options.aggregation === undefined
+        });
         this.ui5Version = sap.ui.version;
         this.commandExecutor = new CommandExecutor(this.rta);
     }
@@ -64,37 +81,12 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         this.setEscapeHandler();
 
         await this.buildDialogData();
+        const resourceModel = await getResourceModel('open.ux.preview.client');
 
+        this.dialog.setModel(resourceModel, 'i18n');
         this.dialog.setModel(this.model);
 
         this.dialog.open();
-    }
-
-    /**
-     * Handles the index field whenever a specific aggregation is chosen
-     *
-     * @param specialIndexAggregation string | number
-     */
-    private specialIndexHandling(specialIndexAggregation: string | number): void {
-        const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
-        const aggregations = overlay.getDesignTimeMetadata().getData().aggregations;
-
-        if (
-            specialIndexAggregation in aggregations &&
-            'specialIndexHandling' in aggregations[specialIndexAggregation]
-        ) {
-            const controlType = this.runtimeControl.getMetadata().getName();
-            this.model.setProperty('/indexHandlingFlag', false);
-            this.model.setProperty('/specialIndexHandlingIcon', true);
-            this.model.setProperty(
-                '/iconTooltip',
-                `Index is defined by special logic of ${controlType} and can't be set here`
-            );
-        } else {
-            this.model.setProperty('/indexHandlingFlag', true);
-            this.model.setProperty('/specialIndexHandlingIcon', false);
-            this.model.setProperty('/specialIndexHandlingIconPressed', false);
-        }
     }
 
     /**
@@ -150,9 +142,11 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             targetAggregation
         };
 
-        await this.createFragmentChange(fragmentData);
+        const templateName = await this.createFragmentChange(fragmentData);
 
-        notifyUser(`Note: The '${fragmentName}.fragment.xml' fragment will be created once you save the change.`, 8000);
+        const textKey = templateName ? 'ADP_ADD_FRAGMENT_WITH_TEMPLATE_NOTIFICATION' : 'ADP_ADD_FRAGMENT_NOTIFICATION';
+        const bundle = await getTextBundle();
+        notifyUser(bundle.getText(textKey, [fragmentName]), 8000);
 
         this.handleDialogClose();
     }
@@ -161,27 +155,8 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      * Builds data that is used in the dialog
      */
     async buildDialogData(): Promise<void> {
-        const selectorId = this.overlays.getId();
-
-        let controlMetadata: ManagedObjectMetadata;
-
-        const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
-        if (overlayControl) {
-            this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
-            controlMetadata = this.runtimeControl.getMetadata();
-        } else {
-            throw new Error('Cannot get overlay control');
-        }
-
-        const allAggregations = Object.keys(controlMetadata.getAllAggregations());
-        const hiddenAggregations = ['customData', 'layoutData', 'dependents'];
-        const targetAggregation = allAggregations.filter((item) => {
-            if (hiddenAggregations.indexOf(item) === -1) {
-                return item;
-            }
-            return false;
-        });
-        const defaultAggregation = this.aggregation ?? controlMetadata.getDefaultAggregationName();
+        const { controlMetadata, targetAggregation } = this.getControlMetadata();
+        const defaultAggregation = this.options.aggregation ?? controlMetadata.getDefaultAggregationName();
         const selectedControlName = controlMetadata.getName();
 
         let selectedControlChildren: string[] | number[] = Object.keys(
@@ -232,34 +207,11 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
     }
 
     /**
-     * Fills indexArray from selected control children
-     *
-     * @param selectedControlChildren Array of numbers
-     * @returns Array of key value pairs
-     */
-    private fillIndexArray(selectedControlChildren: number[]) {
-        let indexArray: { key: number; value: number }[] = [];
-        if (selectedControlChildren.length === 0) {
-            indexArray.push({ key: 0, value: 0 });
-        } else {
-            indexArray = selectedControlChildren.map((elem, index) => {
-                return { key: index + 1, value: elem + 1 };
-            });
-            indexArray.unshift({ key: 0, value: 0 });
-            indexArray.push({
-                key: selectedControlChildren.length + 1,
-                value: selectedControlChildren.length + 1
-            });
-        }
-        return indexArray;
-    }
-
-    /**
      * Creates an addXML fragment command and pushes it to the command stack
      *
      * @param fragmentData Fragment Data
      */
-    private async createFragmentChange(fragmentData: CreateFragmentProps) {
+    private async createFragmentChange(fragmentData: CreateFragmentProps): Promise<string | undefined> {
         const { fragmentName, index, targetAggregation } = fragmentData;
 
         const flexSettings = this.rta.getFlexSettings();
@@ -274,7 +226,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             targetAggregation: targetAggregation ?? 'content'
         };
 
-        const command = await this.commandExecutor.getCommand(
+        const command = await this.commandExecutor.getCommand<AddFragmentChangeContentType>(
             this.runtimeControl,
             'addXML',
             modifiedValue,
@@ -282,6 +234,80 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             flexSettings
         );
 
+        const templateName = this.getFragmentTemplateName(modifiedValue.targetAggregation);
+        if (templateName) {
+            const preparedChange = command.getPreparedChange();
+            const content = preparedChange.getContent();
+            preparedChange.setContent({ ...content, templateName });
+            CommunicationService.sendAction(setApplicationRequiresReload(true));
+        }
         await this.commandExecutor.pushAndExecuteCommand(command);
+        return templateName;
+    }
+
+    /**
+     * Determines fragment template name based on current control name and provided target aggregation
+     * @param targetAggregation - target aggregation name
+     * @returns fragment template name or empty string
+     */
+    private getFragmentTemplateName(targetAggregation: string): string {
+        const currentControlName = this.runtimeControl.getMetadata().getName();
+        if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections') {
+            return 'OBJECT_PAGE_CUSTOM_SECTION';
+        } else if (this.isCustomAction(currentControlName, targetAggregation)) {
+            return 'CUSTOM_ACTION';
+        } else if (this.isObjectPageHeaderField(currentControlName, targetAggregation)) {
+            return 'OBJECT_PAGE_HEADER_FIELD';
+        } else if (currentControlName === 'sap.ui.mdc.Table' && targetAggregation === 'columns') {
+            return 'V4_MDC_TABLE_COLUMN';
+        } else if (
+            [TREE_TABLE_TYPE, GRID_TABLE_TYPE, ANALYTICAL_TABLE_TYPE].includes(currentControlName) &&
+            targetAggregation === 'columns'
+        ) {
+            return 'ANALYTICAL_TABLE_COLUMN';
+        } else if (currentControlName === 'sap.ui.mdc.ActionToolbar' && targetAggregation === 'actions') {
+            return 'TABLE_ACTION';
+        }
+        return '';
+    }
+
+    /**
+     * Determines conditions for custom action fragment creation
+     * @param currentControlName - current control name
+     * @param targetAggregation - target aggregation name
+     * @returns true if control and aggregation combination allows to create custom action fragment
+     */
+    private isCustomAction(currentControlName: string, targetAggregation: string): boolean {
+        if (
+            ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageHeader', 'sap.uxap.ObjectPageDynamicHeaderTitle'].includes(
+                currentControlName
+            )
+        ) {
+            return targetAggregation === 'actions';
+        } else if (currentControlName === 'sap.m.OverflowToolbar' || currentControlName === 'sap.m.Toolbar') {
+            return targetAggregation === 'content';
+        }
+        return false;
+    }
+
+    /**
+     * Determines conditions for object page header field fragment creation
+     * @param currentControlName - current control name
+     * @param targetAggregation - target aggregation name
+     * @returns true if conditions allow to create object page header field fragment
+     */
+    private isObjectPageHeaderField(currentControlName: string, targetAggregation: string): boolean {
+        if (currentControlName === 'sap.uxap.ObjectPageLayout') {
+            return targetAggregation === 'headerContent';
+        } else if (currentControlName === 'sap.m.FlexBox') {
+            const parentName = this.runtimeControl.getParent()?.getMetadata().getName();
+            if (
+                parentName === 'sap.uxap.ObjectPageDynamicHeaderContent' ||
+                parentName === 'sap.uxap.ObjectPageLayout'
+            ) {
+                return targetAggregation === 'items';
+            }
+        }
+        return false;
     }
 }

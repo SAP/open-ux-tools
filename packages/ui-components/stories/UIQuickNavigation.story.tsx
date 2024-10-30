@@ -3,15 +3,12 @@ import React from 'react';
 import {
     UIQuickNavigation,
     UIDefaultButton,
-    initIcons,
     UITextInput,
     setQuickNavigationKey,
     UIQuickNavigationOffset
 } from '../src/components';
 
 export default { title: 'Utilities/Quick Navigation' };
-
-initIcons();
 
 const value = {
     name: 'Hello, world!',
@@ -67,9 +64,14 @@ export const External = () => {
 };
 
 export const ExternalWithCustomOffset = () => {
-    return <QuickNavigation inline={false} offsets={[
-        { y: 30, x: 0},
-        { y: 0, x: 30},
-        { y: -15, x: -15}
-    ]} />;
+    return (
+        <QuickNavigation
+            inline={false}
+            offsets={[
+                { y: 30, x: 0 },
+                { y: 0, x: 30 },
+                { y: -15, x: -15 }
+            ]}
+        />
+    );
 };

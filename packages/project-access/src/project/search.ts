@@ -170,7 +170,7 @@ export async function getAppRootFromWebappPath(webappPath: string): Promise<stri
  * @param path - path to check, e.g. to the manifest.json
  * @returns - in case a supported app is found this function returns the appRoot and projectRoot path
  */
-async function findRootsForPath(path: string): Promise<{ appRoot: string; projectRoot: string } | null> {
+export async function findRootsForPath(path: string): Promise<{ appRoot: string; projectRoot: string } | null> {
     try {
         // Get the root of the app, that is where the package.json is, otherwise not supported
         const appRoot = await findProjectRoot(path, false);
@@ -215,9 +215,10 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
  * Find CAP project root path.
  *
  * @param path - path inside CAP project
+ * @param checkForAppRouter - if true, checks for app router in CAP project app folder
  * @returns - CAP project root path
  */
-export async function findCapProjectRoot(path: string): Promise<string | null> {
+export async function findCapProjectRoot(path: string, checkForAppRouter = true): Promise<string | null> {
     try {
         if (!isAbsolute(path)) {
             return null;
@@ -228,7 +229,8 @@ export async function findCapProjectRoot(path: string): Promise<string | null> {
             if (await getCapProjectType(projectRoot)) {
                 // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
                 // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
-                if (join(projectRoot, 'app') !== path) {
+                // or skip app router check if checkForAppRouter is false and return the project root.
+                if ((checkForAppRouter && join(projectRoot, 'app') !== path) || !checkForAppRouter) {
                     return projectRoot;
                 }
             }

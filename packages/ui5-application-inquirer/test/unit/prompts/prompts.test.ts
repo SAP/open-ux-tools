@@ -188,7 +188,7 @@ describe('getQuestions', () => {
         ).toMatchInlineSnapshot(`"abc 123"`);
     });
 
-    test('getQuestions, prompt: `targetFolder`', () => {
+    test('getQuestions, prompt: `targetFolder`', async () => {
         const mockCwd = '/any/current/working/directory';
         jest.spyOn(process, 'cwd').mockReturnValueOnce(mockCwd);
         let questions = getQuestions([]);
@@ -213,12 +213,13 @@ describe('getQuestions', () => {
         // validators
         questions = getQuestions([]);
         targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
-        expect(targetFolderPrompt?.validate!(undefined, {})).toEqual(false);
 
-        const projectValidatorSpy = jest.spyOn(projectValidators, 'validateProjectFolder').mockReturnValueOnce(true);
+        await expect(targetFolderPrompt?.validate!(undefined, {})).resolves.toEqual(false);
+
+        const validateTargetFolderSpy = jest.spyOn(promptHelpers, 'validateTargetFolder').mockResolvedValueOnce(true);
         const args = ['/some/target/path', { name: 'project1' }] as const;
-        expect(targetFolderPrompt?.validate!(...args)).toEqual(true);
-        expect(projectValidatorSpy).toHaveBeenCalledWith(...[args[0], args[1].name]);
+        await expect(targetFolderPrompt?.validate!(...args)).resolves.toEqual(true);
+        expect(validateTargetFolderSpy).toHaveBeenCalledWith(...[args[0]], args[1].name, undefined);
 
         // Test `defaultValue` prompt option - should not replace existing default function
         const promptOptionsDefaultValue = {
@@ -300,7 +301,7 @@ describe('getQuestions', () => {
         // Default version should be used
         expect((ui5VersionPrompt?.default as Function)()).toEqual(expectedUI5VerChoices[0].value);
 
-        // This choice is not a maintained version and so the closest maintained version should be returned
+        // This choice is not a maintained version and so the closest maintained version should be added
         const defaultChoice = {
             'name': '1.120.99',
             'value': '1.120.99'
@@ -312,8 +313,11 @@ describe('getQuestions', () => {
         });
 
         ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
-        expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual([...expectedUI5VerChoices]);
-        expect((ui5VersionPrompt?.default as Function)()).toEqual('1.118.0');
+        expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual([
+            defaultChoice,
+            ...expectedUI5VerChoices
+        ]);
+        expect((ui5VersionPrompt?.default as Function)()).toEqual('1.120.99');
     });
 
     test('getQuestions, prompt: `addDeployConfig` conditions and message based on mta.yaml discovery', async () => {

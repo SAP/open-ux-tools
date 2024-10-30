@@ -1,5 +1,258 @@
 # @sap-ux/preview-middleware
 
+## 0.16.98
+
+### Patch Changes
+
+-   df6fd7f: Quick action added to create custom table columns
+-   Updated dependencies [df6fd7f]
+    -   @sap-ux/adp-tooling@0.12.65
+
+## 0.16.97
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.64
+
+## 0.16.96
+
+### Patch Changes
+
+-   29a4ef6: feat: create page and table action quick actions for OData(v4) applications
+-   Updated dependencies [29a4ef6]
+    -   @sap-ux/adp-tooling@0.12.63
+
+## 0.16.95
+
+### Patch Changes
+
+-   4f9528e: Fixed incorrect displaying of inactive composite and control changes
+
+## 0.16.94
+
+### Patch Changes
+
+-   fe9febe: add deep links to readme
+
+## 0.16.93
+
+### Patch Changes
+
+-   5ec7106: Modified indicators incorrectly displayed for some UI5 controls in Adaptation Project
+
+## 0.16.92
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.62
+
+## 0.16.91
+
+### Patch Changes
+
+-   c04007b: Enable quick actions by default
+
+## 0.16.90
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.61
+
+## 0.16.89
+
+### Patch Changes
+
+-   3e9cab4: make rta editor url params optional
+
+## 0.16.88
+
+### Patch Changes
+
+-   9bda640: CPE loading changes from backend and not from workspace
+-   Updated dependencies [9bda640]
+    -   @sap-ux/adp-tooling@0.12.60
+
+## 0.16.87
+
+### Patch Changes
+
+-   93ffe8d: Use feature toggles in the control property editor
+-   Updated dependencies [93ffe8d]
+    -   @sap-ux/feature-toggle@0.2.2
+
+## 0.16.86
+
+### Patch Changes
+
+-   Updated dependencies [eb38e5b]
+    -   @sap-ux/project-access@1.28.2
+    -   @sap-ux/adp-tooling@0.12.59
+
+## 0.16.85
+
+### Patch Changes
+
+-   Updated dependencies [64e037d]
+    -   @sap-ux/project-access@1.28.1
+    -   @sap-ux/adp-tooling@0.12.58
+
+## 0.16.84
+
+### Patch Changes
+
+-   Updated dependencies [15e6959]
+    -   @sap-ux/project-access@1.28.0
+    -   @sap-ux/adp-tooling@0.12.57
+
+## 0.16.83
+
+### Patch Changes
+
+-   6cd7e89: version bump to get newest version of preview middleware client
+
+## 0.16.82
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/adp-tooling@0.12.56
+
+## 0.16.81
+
+### Patch Changes
+
+-   fd215c2: Fixed a bug - Add Custom Page Action is not shown on the Object Page in some cases
+
+## 0.16.80
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.55
+
+## 0.16.79
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/adp-tooling@0.12.54
+
+## 0.16.78
+
+### Patch Changes
+
+-   7479bd3: fix: add page and table quick actions v2 app
+-   Updated dependencies [7479bd3]
+    -   @sap-ux/adp-tooling@0.12.53
+
+## 0.16.77
+
+### Patch Changes
+
+-   9605bb0: fix: ignore developerMode from rta editor config in case of no adp project
+
+## 0.16.76
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
+## 0.16.75
+
+### Patch Changes
+
+-   5a79abd: make rta editors path more resilient
+
+## 0.16.74
+
+### Patch Changes
+
+-   c1462a9: fix: check if the flexbox is in objectpage and in Dyanmic header.
+
+## 0.16.73
+
+### Patch Changes
+
+-   7579b99: UI improvements and bug fix in the Adaptation Editor
+
+## 0.16.72
+
+### Patch Changes
+
+-   595bdea: feat: enhance "add-header-field" quick action with the template
+-   Updated dependencies [595bdea]
+    -   @sap-ux/adp-tooling@0.12.52
+
+## 0.16.71
+
+### Patch Changes
+
+-   b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
+
+## 0.16.70
+
+### Patch Changes
+
+-   8f442a6: Usability improvements for Quick Actions that add fragments
+
+## 0.16.69
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.51
+-   @sap-ux/project-access@1.27.4
+
+## 0.16.68
+
+### Patch Changes
+
+-   00e1835: Fixed manifest changes not visible in preview after reload
+-   Updated dependencies [00e1835]
+    -   @sap-ux/adp-tooling@0.12.50
+
+## 0.16.67
+
+### Patch Changes
+
+-   1c20352: Added missing notification when manifest change is created
+
+## 0.16.66
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/adp-tooling@0.12.49
+
+## 0.16.65
+
+### Patch Changes
+
+-   Updated dependencies [2fd82b1]
+    -   @sap-ux/adp-tooling@0.12.48
+
+## 0.16.64
+
+### Patch Changes
+
+-   09f91c3: Fix changing index in Add Fragment dialog
+
+## 0.16.63
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/adp-tooling@0.12.47
+
+## 0.16.62
+
+### Patch Changes
+
+-   Updated dependencies [aa72f3c]
+    -   @sap-ux/adp-tooling@0.12.46
+
 ## 0.16.61
 
 ### Patch Changes

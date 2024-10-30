@@ -2,17 +2,19 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import { join, parse } from 'path';
+import { join, parse, relative } from 'path';
 import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
-import { getErrorMessage, validateBasePath } from '../common/validate';
+import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
 import { coerce, lt } from 'semver';
 import type { Manifest } from '../common/types';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
+import { detectTabSpacing, extendJSON } from '../common/file';
+import { getManifest, getManifestPath } from '../common/utils';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -26,18 +28,6 @@ interface MetadataPath {
 }
 
 /**
- * Gets manifest content.
- *
- * @param {string} basePath the base path
- * @param {Editor} fs the memfs editor instance
- * @returns {Manifest | undefined} the manifest content
- */
-function getManifest(basePath: string, fs: Editor): Manifest | undefined {
-    const manifestPath = join(basePath, 'webapp/manifest.json');
-    return fs.readJSON(manifestPath) as Manifest;
-}
-
-/**
  * Generates a building block into the provided xml view file.
  *
  * @param {string} basePath - the base path
@@ -45,25 +35,40 @@ function getManifest(basePath: string, fs: Editor): Manifest | undefined {
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Editor} the updated memfs editor instance
  */
-export function generateBuildingBlock<T extends BuildingBlock>(
+export async function generateBuildingBlock<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
     fs?: Editor
-): Editor {
+): Promise<Editor> {
+    const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
     if (!fs) {
         fs = create(createStorage());
     }
-    validateBasePath(basePath, fs, ['sap.fe.templates', 'sap.fe.core']);
-    if (!fs.exists(join(basePath, config.viewOrFragmentPath))) {
-        throw new Error(`Invalid view path ${config.viewOrFragmentPath}.`);
+    validateBasePath(basePath, fs, []);
+
+    if (!fs.exists(join(basePath, viewOrFragmentPath))) {
+        throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
     }
 
     // Read the view xml and template files and update contents of the view xml file
-    const xmlDocument = getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs);
-    const manifest = getManifest(basePath, fs);
-    const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs, manifest);
-    fs = updateViewFile(basePath, config.viewOrFragmentPath, config.aggregationPath, xmlDocument, templateDocument, fs);
+    const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
+    const { content: manifest } = await getManifest(basePath, fs);
+    const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
+    fs = updateViewFile(basePath, viewOrFragmentPath, aggregationPath, xmlDocument, templateDocument, fs);
+
+    if (allowAutoAddDependencyLib && manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
+        // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
+        const manifestPath = await getManifestPath(basePath, fs);
+        const manifestContent = await getManifestContent(fs);
+        const content = fs.read(manifestPath);
+        const tabInfo = detectTabSpacing(content);
+        extendJSON(fs, {
+            filepath: manifestPath,
+            content: manifestContent,
+            tabInfo: tabInfo
+        });
+    }
 
     return fs;
 }
@@ -149,7 +154,7 @@ function getMetaPath(
     if (!metaPath) {
         return getDefaultMetaPath(applyContextPath, usePlaceholders);
     }
-    const { bindingContextType = 'absolute' } = metaPath;
+    const { bindingContextType = 'absolute', alwaysAbsolutePath = true } = metaPath;
     let { entitySet, qualifier } = metaPath;
     entitySet = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
     const qualifierOrPlaceholder = qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '');
@@ -162,7 +167,10 @@ function getMetaPath(
         };
     }
     return {
-        metaPath: bindingContextType === 'absolute' ? `/${entitySet}/${qualifierOrPlaceholder}` : qualifierOrPlaceholder
+        metaPath:
+            bindingContextType === 'absolute' || alwaysAbsolutePath
+                ? `/${entitySet}/${qualifierOrPlaceholder}`
+                : qualifierOrPlaceholder
     };
 }
 
@@ -211,6 +219,18 @@ function getTemplateContent<T extends BuildingBlock>(
         },
         {}
     );
+}
+
+/**
+ * Method returns the manifest content for the required dependency library.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @returns {Promise<string>} Manifest content for the required dependency library.
+ */
+export async function getManifestContent(fs: Editor): Promise<string> {
+    // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
+    const templatePath = getTemplatePath('/building-block/common/manifest.json');
+    return render(fs.read(templatePath), { libraries: { 'sap.fe.macros': {} } });
 }
 
 /**
@@ -307,12 +327,14 @@ function getFilePathProps(basePath: string, relativePath?: string): FilePathProp
  * @param {Editor} [fs] - The memfs editor instance
  * @returns {{ [questionName: string]: CodeSnippet }} An object with serialized code snippet content and file props
  */
-export function getSerializedFileContent<T extends BuildingBlock>(
+export async function getSerializedFileContent<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
     fs?: Editor
-): { [questionName: string]: CodeSnippet } {
-    if (!config.buildingBlockData?.buildingBlockType) {
+): Promise<{ [questionName: string]: CodeSnippet }> {
+    const snippets: { [questionName: string]: CodeSnippet } = {};
+    const { buildingBlockData, viewOrFragmentPath, allowAutoAddDependencyLib = true } = config;
+    if (!buildingBlockData?.buildingBlockType) {
         return {};
     }
     // Validate the base and view paths
@@ -320,17 +342,29 @@ export function getSerializedFileContent<T extends BuildingBlock>(
         fs = create(createStorage());
     }
     // Read the view xml and template files and get content of the view xml file
-    const xmlDocument = config.viewOrFragmentPath
-        ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
-        : undefined;
-    const manifest = getManifest(basePath, fs);
-    const content = getTemplateContent(config.buildingBlockData, xmlDocument, manifest, fs, true);
-    const filePathProps = getFilePathProps(basePath, config.viewOrFragmentPath);
-    return {
-        viewOrFragmentPath: {
-            content,
-            language: CodeSnippetLanguage.XML,
-            filePathProps
-        }
+    const xmlDocument = viewOrFragmentPath ? getUI5XmlDocument(basePath, viewOrFragmentPath, fs) : undefined;
+    const { content: manifest, path: manifestPath } = await getManifest(basePath, fs, false);
+    const content = getTemplateContent(buildingBlockData, xmlDocument, manifest, fs, true);
+    const filePathProps = getFilePathProps(basePath, viewOrFragmentPath);
+    // Snippet for fragment xml
+    snippets['viewOrFragmentPath'] = {
+        content,
+        language: CodeSnippetLanguage.XML,
+        filePathProps
     };
+    // Snippet for manifest.json
+    if (allowAutoAddDependencyLib) {
+        const manifestContent = await getManifestContent(fs);
+        snippets['manifest'] = {
+            content: manifestContent,
+            language: CodeSnippetLanguage.JSON,
+            filePathProps: {
+                fileName: parse(manifestPath).base,
+                relativePath: relative(basePath, manifestPath),
+                fullPath: manifestPath
+            }
+        };
+    }
+
+    return snippets;
 }

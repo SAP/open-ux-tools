@@ -14,21 +14,24 @@ import FlUtils from 'sap/ui/fl/Utils';
 /** sap.ui.dt */
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
-import AddFragment from './controllers/AddFragment.controller';
+import AddFragment, { AddFragmentOptions } from './controllers/AddFragment.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import { isReuseComponent } from '../cpe/utils';
 import { Ui5VersionInfo } from '../utils/version';
+import { getTextBundle } from '../i18n';
+import AddTableColumnFragments from './controllers/AddTableColumnFragments.controller';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
+    ADD_TABLE_COLUMN_FRAGMENTS = 'AddTableColumnFragments',
     CONTROLLER_EXTENSION = 'ControllerExtension',
     ADD_FRAGMENT_AT_EXTENSION_POINT = 'ExtensionPoint'
 }
 
-type Controller = AddFragment | ControllerExtension | ExtensionPoint;
+type Controller = AddFragment | AddTableColumnFragments | ControllerExtension | ExtensionPoint;
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
@@ -118,25 +121,30 @@ export const getAddFragmentItemText = (overlay: ElementOverlay) => {
  * @param rta Runtime Authoring
  * @param dialogName Dialog name
  * @param extensionPointData Control ID
- * @param aggregation Name of aggregation that should be selected when dialog is opened
+ * @param options Dialog options
  */
 export async function handler(
     overlay: UI5Element,
     rta: RuntimeAuthoring,
     dialogName: DialogNames,
     extensionPointData?: ExtensionPointData,
-    aggregation?: string
+    options: Partial<AddFragmentOptions> = {}
 ): Promise<void> {
     let controller: Controller;
+    const resources = await getTextBundle();
 
     switch (dialogName) {
         case DialogNames.ADD_FRAGMENT:
-            controller = new AddFragment(
-                `open.ux.preview.client.adp.controllers.${dialogName}`,
-                overlay,
-                rta,
-                aggregation
-            );
+            controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta, {
+                aggregation: options.aggregation,
+                title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
+            });
+            break;
+        case DialogNames.ADD_TABLE_COLUMN_FRAGMENTS:
+            controller = new AddTableColumnFragments(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta, {
+                aggregation: options.aggregation,
+                title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
+            });
             break;
         case DialogNames.CONTROLLER_EXTENSION:
             controller = new ControllerExtension(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta);

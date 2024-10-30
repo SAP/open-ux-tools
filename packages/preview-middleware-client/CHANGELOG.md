@@ -1,5 +1,125 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.21
+
+### Patch Changes
+
+-   df6fd7f: Quick action added to create custom table columns
+
+## 0.11.20
+
+### Patch Changes
+
+-   29a4ef6: feat: create page and table action quick actions for OData(v4) applications
+
+## 0.11.19
+
+### Patch Changes
+
+-   4f9528e: Fixed incorrect displaying of inactive composite and control changes
+
+## 0.11.18
+
+### Patch Changes
+
+-   5ec7106: Modified indicators incorrectly displayed for some UI5 controls in Adaptation Project
+
+## 0.11.17
+
+### Patch Changes
+
+-   c04007b: Enable quick actions by default
+
+## 0.11.16
+
+### Patch Changes
+
+-   9bda640: CPE loading changes from backend and not from workspace
+
+## 0.11.15
+
+### Patch Changes
+
+-   93ffe8d: Use feature toggles in the control property editor
+
+## 0.11.14
+
+### Patch Changes
+
+-   e3c3927: fix: no longer load sap.ushell.Container syncronously
+
+## 0.11.13
+
+### Patch Changes
+
+-   fd215c2: Fixed a bug - Add Custom Page Action is not shown on the Object Page in some cases
+
+## 0.11.12
+
+### Patch Changes
+
+-   7479bd3: fix: add page and table quick actions v2 app
+
+## 0.11.11
+
+### Patch Changes
+
+-   1da1e7a: Small CPE UI improvements
+
+## 0.11.10
+
+### Patch Changes
+
+-   c1462a9: fix: check if the flexbox is in objectpage and in Dyanmic header.
+
+## 0.11.9
+
+### Patch Changes
+
+-   7579b99: UI improvements and bug fix in the Adaptation Editor
+
+## 0.11.8
+
+### Patch Changes
+
+-   595bdea: feat: enhance "add-header-field" quick action with the template
+
+## 0.11.7
+
+### Patch Changes
+
+-   b37b4c1: Fixed application mode after reload and various other usability fixes for Quick Actions
+
+## 0.11.6
+
+### Patch Changes
+
+-   8f442a6: Usability improvements for Quick Actions that add fragments
+
+## 0.11.5
+
+### Patch Changes
+
+-   1c20352: Added missing notification when manifest change is created
+
+## 0.11.4
+
+### Patch Changes
+
+-   2fd82b1: Object Page Add Custom Section quick action support
+
+## 0.11.3
+
+### Patch Changes
+
+-   09f91c3: Fix changing index in Add Fragment dialog
+
+## 0.11.2
+
+### Patch Changes
+
+-   c08bb59: Fixed quick actions panel not rendered in case of app running ui5 v.1.71
+
 ## 0.11.1
 
 ### Patch Changes

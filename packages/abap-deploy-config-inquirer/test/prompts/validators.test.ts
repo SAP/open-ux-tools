@@ -45,6 +45,13 @@ describe('Test validators', () => {
             expect(PromptState.abapDeployConfig.url).toBe('https://mock.url.dest2.com');
             expect(result).toBe(true);
         });
+
+        it('should return false for invalid destination', async () => {
+            const result = validateDestinationQuestion('', mockDestinations);
+            expect(PromptState.abapDeployConfig.destination).toBe(undefined);
+            expect(PromptState.abapDeployConfig.url).toBe(undefined);
+            expect(result).toBe(false);
+        });
     });
 
     describe('validateTargetSystem', () => {
@@ -436,7 +443,7 @@ describe('Test validators', () => {
         it('should return true for valid transport', async () => {
             PromptState.transportAnswers.transportRequired = true;
             const result = validateTransportQuestion('');
-            expect(result).toBe(t('prompts.config.transport.provideTransportRequest'));
+            expect(result).toBe(t('prompts.config.transport.common.provideTransportRequest'));
         });
 
         it('should return true when transport is not required', async () => {

@@ -232,7 +232,7 @@ describe('<UIToggle />', () => {
                 "selectors": Object {
                   "::after": Object {
                     "color": "var(--vscode-inputValidation-errorBorder)",
-                    "content": "' *'",
+                    "content": "' *' / ''",
                     "paddingRight": 12,
                   },
                 },

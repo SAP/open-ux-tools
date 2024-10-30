@@ -202,6 +202,38 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 }
             },
             settings: {}
+        },
+        {
+            name: 'basic_typescript_ui5_1_120_0',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    typescript: true
+                },
+                ui5: {
+                    version: '1.120.0',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.120.0'
+                }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_ui5_1_120_0',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    typescript: false
+                },
+                ui5: {
+                    version: '1.120.0',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.120.0'
+                }
+            },
+            settings: {}
         }
     ];
 
@@ -249,6 +281,28 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
 
         expect(fs.exists(Component.js)).toBeTruthy();
         expect(await fs.read(Component.js).includes('my/demo/App')).toBeTruthy();
+    });
+
+    test('sapuxLayer is added to package json for edmx projects when provided', async () => {
+        const freestyleApp: FreestyleApp<any> = {
+            app: {
+                id: 'my.demo.App',
+                projectType: 'EDMXBackend'
+            },
+            package: {
+                name: 'my.demo.App',
+                sapuxLayer: 'CUSTOMER_BASE'
+            },
+            template: {
+                type: TemplateType.Basic,
+                settings: {}
+            }
+        };
+
+        const fs = await generate(curTestOutPath, freestyleApp);
+        const packageJsonPath = join(curTestOutPath, 'package.json');
+        const packageJson = fs.readJSON(packageJsonPath);
+        expect((packageJson as any)?.sapuxLayer).toBe('CUSTOMER_BASE');
     });
 
     describe('set view-name at scaffolding time', () => {

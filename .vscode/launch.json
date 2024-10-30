@@ -33,12 +33,12 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "examples/prompting-ui: Run Example",
+            "name": "examples/ui-prompting-examples: Run Example",
             "runtimeExecutable": "pnpm",
             "runtimeArgs": ["storybook"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "cwd": "${workspaceFolder}/examples/prompting-ui"
+            "cwd": "${workspaceFolder}/examples/ui-prompting-examples"
         },
         {
             "type": "node",
@@ -351,6 +351,23 @@
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
             "cwd": "${workspaceFolder}/packages/xml-odata-annotation-converter"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "adp-tooling: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false", "--runInBand"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/adp-tooling",
+            "env": {
+                "UX_DEBUG": "false"
+            }
         },
         {
             "type": "node",

@@ -6,6 +6,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import nock from 'nock';
 import type { EnhancedRouter } from '../../../src/base/flp';
+import { ToolsLogger } from '@sap-ux/logger';
 
 jest.mock('@sap-ux/store', () => {
     return {
@@ -99,6 +100,8 @@ describe('ui5/middleware', () => {
     });
 
     test('unsupported editor config', async () => {
+        const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
+        const consoleSpyWarning = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
         const path = '/test/editor.html';
         const server = await getTestServer('simple-app', {
             rta: {
@@ -111,7 +114,13 @@ describe('ui5/middleware', () => {
                 ]
             }
         });
-        await server.get(path).expect(404);
+        await server.get(path).expect(302);
+        expect(consoleSpyError).toHaveBeenCalledWith(
+            'developerMode is ONLY supported for SAP UI5 adaptation projects.'
+        );
+        expect(consoleSpyWarning).toHaveBeenCalledWith('developerMode for /test/editor.html disabled');
+        consoleSpyError.mockRestore();
+        consoleSpyWarning.mockRestore();
     });
 
     test('adp config', async () => {

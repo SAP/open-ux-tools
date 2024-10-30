@@ -116,14 +116,3 @@ export interface FioriElementsApp<T> extends Ui5App {
 
 // We need this for the service version
 export { OdataVersion } from '@sap-ux/odata-service-writer';
-
-/**
-Represents a set of scripts defined in a package.json file.
- */
-export interface PackageJsonScripts {
-    start: string;
-    'start-local': string;
-    'start-noflp'?: string;
-    'start-mock'?: string;
-    'int-test'?: string;
-}

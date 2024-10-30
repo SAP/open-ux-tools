@@ -81,14 +81,23 @@ export function HeaderField(headerFieldProps: Readonly<HeaderFieldProps>): React
             </UITooltip>
             <TextField
                 id={label}
+                data-testid={label}
                 value={value}
                 readOnly={true}
+                title={value}
                 borderless
                 styles={{
                     field: {
                         color: 'var(--vscode-input-foreground)',
                         fontSize: defaultFontSize,
-                        backgroundColor: 'var(--vscode-sideBar-background)'
+                        backgroundColor: 'var(--vscode-sideBar-background)',
+                        border: '1px solid var(--vscode-input-border)',
+                        selectors: {
+                            ':hover': {
+                                borderColor: 'var(--vscode-focusBorder)'
+                            }
+                        },
+                        padding: 5
                     },
                     fieldGroup: {
                         color: 'var(--vscode-input-foreground)',

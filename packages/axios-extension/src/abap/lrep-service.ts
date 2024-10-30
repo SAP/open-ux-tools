@@ -61,6 +61,14 @@ export interface MergedAppDescriptor {
                 final: boolean;
             };
         }[];
+        components: {
+            name: string;
+            lazy?: boolean;
+            url?: {
+                url: string;
+                final: boolean;
+            };
+        }[];
         requests?: unknown[];
     };
 }
@@ -158,13 +166,24 @@ export class LayeredRepositoryService extends Axios implements Service {
      * Merge a given app descriptor variant with the stord app descriptor.
      *
      * @param appDescriptorVariant zip file containing an app descriptor variant
+     * @param workspacePath value for workspacePath URL parameter
      * @returns a promise with an object containing merged app descriptors with their id as keys.
      */
     public async mergeAppDescriptorVariant(
-        appDescriptorVariant: Buffer
+        appDescriptorVariant: Buffer,
+        workspacePath?: string
     ): Promise<{ [key: string]: MergedAppDescriptor }> {
+        const path = '/appdescr_variant_preview/';
+        const params = new URLSearchParams(this.defaults?.params);
+
+        if (workspacePath) {
+            params.append('workspacePath', workspacePath);
+        }
+
         try {
-            const response = await this.put('/appdescr_variant_preview/', appDescriptorVariant, {
+            const response = await this.put(path, appDescriptorVariant, {
+                paramsSerializer: (params) => decodeURIComponent(params.toString()),
+                params,
                 headers: {
                     'Content-Type': 'application/zip'
                 }

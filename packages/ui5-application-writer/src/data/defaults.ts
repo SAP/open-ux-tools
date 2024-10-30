@@ -1,5 +1,6 @@
 import { UI5_DEFAULT, getEsmTypesVersion, getTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
-import type { App, AppOptions, Package, UI5, UI5Framework } from '../types';
+import type { App, AppOptions, UI5, UI5Framework } from '../types';
+import type { Package } from '@sap-ux/project-access';
 import versionToManifestDescMapping from '@ui5/manifest/mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';
@@ -205,22 +206,4 @@ function getLocalVersion({
     } else {
         return minVersion;
     }
-}
-
-/**
- * Retrieve the tag version of the @sap/ux-specification based on the given version.
- *
- * @param ui5Version UI5 version used in the project
- * @returns version tag
- */
-export function getSpecTagVersion(ui5Version: string | undefined): string {
-    if (ui5Version) {
-        if (semVer.valid(ui5Version)) {
-            return `UI5-${semVer.major(ui5Version)}.${semVer.minor(ui5Version)}`;
-        } else if (ui5Version.includes('snapshot') && ui5Version.includes('.')) {
-            const snaphotVersion = ui5Version.split('snapshot-')[1];
-            return `UI5-${snaphotVersion}`;
-        }
-    }
-    return 'latest';
 }

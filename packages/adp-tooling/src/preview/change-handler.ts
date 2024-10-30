@@ -1,9 +1,129 @@
 import type { Editor } from 'mem-fs-editor';
-import { TemplateFileName } from '../types';
 import type { AddXMLChange, CommonChangeProperties, CodeExtChange } from '../types';
 import { join } from 'path';
 import { DirName } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
+import { render } from 'ejs';
+import { randomBytes } from 'crypto';
+
+const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
+const CUSTOM_ACTION = 'CUSTOM_ACTION';
+const OBJECT_PAGE_HEADER_FIELD = 'OBJECT_PAGE_HEADER_FIELD';
+const V2_SMART_TABLE_COLUMN = 'V2_SMART_TABLE_COLUMN';
+const V2_SMART_TABLE_CELL = 'V2_SMART_TABLE_CELL';
+const V4_MDC_TABLE_COLUMN = 'V4_MDC_TABLE_COLUMN';
+const ANALYTICAL_TABLE_COLUMN = 'ANALYTICAL_TABLE_COLUMN';
+const TABLE_ACTION = 'TABLE_ACTION';
+
+interface FragmentTemplateConfig<T = { [key: string]: any }> {
+    /**
+     * Relative path to ../../templates/rta, includes template file name
+     */
+    path: string;
+    getData: (change: AddXMLChange) => T;
+}
+
+const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
+    [OBJECT_PAGE_CUSTOM_SECTION]: {
+        path: 'common/op-custom-section.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    objectPageSection: `op-section-${uuid}`,
+                    objectPageSubSection: `op-subsection-${uuid}`,
+                    hBox: `hbox-${uuid}`
+                }
+            };
+        }
+    },
+    [CUSTOM_ACTION]: {
+        path: 'common/custom-action.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    toolbarActionButton: `btn-${uuid}`
+                }
+            };
+        }
+    },
+    [TABLE_ACTION]: {
+        path: 'common/v4-table-action.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    customToolbarAction: `toolbarAction-${uuid}`,
+                    customActionButton: `btn-${uuid}`
+                }
+            };
+        }
+    },
+    [OBJECT_PAGE_HEADER_FIELD]: {
+        path: 'common/header-field.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    vBoxContainer: `vBox-${uuid}`,
+                    label: `label-${uuid}`
+                }
+            };
+        }
+    },
+    [V2_SMART_TABLE_COLUMN]: {
+        path: 'v2/m-table-custom-column.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    column: `column-${uuid}`,
+                    columnTitle: `column-title-${uuid}`
+                }
+            };
+        }
+    },
+    [V2_SMART_TABLE_CELL]: {
+        path: 'v2/m-table-custom-column-cell.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    text: `cell-text-${uuid}`
+                }
+            };
+        }
+    },
+    [V4_MDC_TABLE_COLUMN]: {
+        path: 'v4/mdc-custom-column.xml',
+        getData: () => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    column: `column-${uuid}`,
+                    text: `text-${uuid}`
+                }
+            };
+        }
+    },
+    [ANALYTICAL_TABLE_COLUMN]: {
+        path: 'common/analytical-custom-column.xml',
+        getData: (change: AddXMLChange) => {
+            const uuid = randomBytes(4).toString('hex');
+            const columnIndex = change.content.index;
+            return {
+                ids: {
+                    column: `column-${uuid}`,
+                    label: `label-${uuid}`,
+                    text: `text-${uuid}`,
+                    customData: `custom-data-${uuid}`,
+                    index: columnIndex.toFixed(0)
+                }
+            };
+        }
+    }
+};
 
 /**
  * A mapping object that defines how to extract change content data from changes based on their type.
@@ -58,10 +178,19 @@ export function isAddXMLChange(change: CommonChangeProperties): change is AddXML
 export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Editor, logger: Logger): void {
     const { fragmentPath } = change.content;
     const fullPath = join(basePath, DirName.Changes, fragmentPath);
-
+    const templateConfig = fragmentTemplateDefinitions[change.content?.templateName ?? ''];
     try {
-        const fragmentTemplatePath = join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
-        fs.copy(fragmentTemplatePath, fullPath);
+        if (templateConfig) {
+            const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
+            const text = fs.read(fragmentTemplatePath);
+            const template = render(text, templateConfig.getData(change));
+            fs.write(fullPath, template);
+        } else {
+            // copy default fragment template
+            const templateName = 'fragment.xml'; /* TemplateFileName.Fragment */
+            const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateName);
+            fs.copy(fragmentTemplatePath, fullPath);
+        }
         logger.info(`XML Fragment "${fragmentPath}" was created`);
     } catch (error) {
         logger.error(`Failed to create XML Fragment "${fragmentPath}": ${error}`);

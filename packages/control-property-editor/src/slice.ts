@@ -5,14 +5,17 @@ import type {
     Control,
     IconDetails,
     OutlineNode,
+    PendingChange,
     PendingPropertyChange,
     PropertyChange,
     QuickActionGroup,
+    SavedChange,
     SavedPropertyChange,
     Scenario,
     ShowMessage
 } from '@sap-ux-private/control-property-editor-common';
 import {
+    setApplicationRequiresReload,
     changeStackModified,
     controlSelected,
     iconsLoaded,
@@ -28,11 +31,16 @@ import {
     setSaveEnablement,
     appLoaded,
     updateQuickAction,
-    quickActionListChanged
+    quickActionListChanged,
+    applicationModeChanged,
+    UNKNOWN_CHANGE_KIND,
+    SAVED_CHANGE_TYPE,
+    PENDING_CHANGE_TYPE,
+    PROPERTY_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
-interface SliceState {
+export interface SliceState {
     deviceType: DeviceType;
     scale: number;
 
@@ -46,6 +54,7 @@ interface SliceState {
     scenario: Scenario;
     isAdpProject: boolean;
     icons: IconDetails[];
+    features: Record<string, boolean>;
     changes: ChangesSlice;
     dialogMessage: ShowMessage | undefined;
     fileChanges?: string[];
@@ -55,14 +64,15 @@ interface SliceState {
         canRedo: boolean;
     };
     canSave: boolean;
+    applicationRequiresReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
 }
 
 export interface ChangesSlice {
     controls: ControlChanges;
-    pending: PendingPropertyChange[];
-    saved: SavedPropertyChange[];
+    pending: PendingChange[];
+    saved: SavedChange[];
     pendingChangeIds: string[];
 }
 export interface ControlChanges {
@@ -111,6 +121,7 @@ export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-
 export const changeDeviceType = createAction<DeviceType>('app/change-device-type');
 export const filterNodes = createAction<FilterOptions[]>('app/filter-nodes');
 export const fileChanged = createAction<string[]>('app/file-changed');
+export const setFeatureToggles = createAction<{ feature: string; isEnabled: boolean }[]>('app/set-feature-toggles');
 interface LivereloadOptions {
     port: number;
 
@@ -129,6 +140,7 @@ export const initialState: SliceState = {
     scenario: SCENARIO.UiAdaptation,
     isAdpProject: false,
     icons: [],
+    features: {},
     changes: {
         controls: {},
         pending: [],
@@ -142,8 +154,56 @@ export const initialState: SliceState = {
         canRedo: false
     },
     canSave: false,
+    applicationRequiresReload: false,
     isAppLoading: true,
     quickActions: []
+};
+
+/**
+ * Process a control and update the control stats.
+ *
+ * @param control The control to update
+ * @param changeType The type of change
+ */
+const processControl = (control: ControlChangeStats, changeType: string): void => {
+    if (changeType === PENDING_CHANGE_TYPE) {
+        control.pending++;
+    } else if (changeType === SAVED_CHANGE_TYPE) {
+        control.saved++;
+    }
+};
+
+/**
+ * Process a property change and update the property stats.
+ *
+ * @param control The control to update
+ * @param change The change to process
+ */
+const processPropertyChange = (
+    control: ControlChangeStats,
+    change: PendingPropertyChange | SavedPropertyChange
+): void => {
+    const { propertyName } = change;
+
+    const property = control.properties[propertyName]
+        ? {
+              pending: control.properties[propertyName].pending,
+              saved: control.properties[propertyName].saved,
+              lastSavedChange: control.properties[propertyName].lastSavedChange,
+              lastChange: control.properties[propertyName].lastChange
+          }
+        : {
+              pending: 0,
+              saved: 0
+          };
+    if (change.type === PENDING_CHANGE_TYPE) {
+        property.pending++;
+        property.lastChange = change;
+    } else if (change.type === SAVED_CHANGE_TYPE) {
+        property.lastSavedChange = change;
+        property.saved++;
+    }
+    control.properties[propertyName] = property;
 };
 
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
@@ -223,7 +283,10 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.changes.controls = {};
 
                 for (const change of [...action.payload.pending, ...action.payload.saved].reverse()) {
-                    const { controlId, propertyName, type, controlName } = change;
+                    if (change.kind === UNKNOWN_CHANGE_KIND) {
+                        continue;
+                    }
+                    const { controlId, type } = change;
                     const key = `${controlId}`;
                     const control = state.changes.controls[key]
                         ? {
@@ -235,33 +298,14 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                         : {
                               pending: 0,
                               saved: 0,
-                              controlName: controlName ?? '',
+                              controlName: change.kind === PROPERTY_CHANGE_KIND ? change.controlName : '',
                               properties: {}
                           };
-                    if (type === 'pending') {
-                        control.pending++;
-                    } else if (type === 'saved') {
-                        control.saved++;
+                    processControl(control, type);
+                    if (change.kind === PROPERTY_CHANGE_KIND) {
+                        processPropertyChange(control, change);
                     }
-                    const property = control.properties[propertyName]
-                        ? {
-                              pending: control.properties[propertyName].pending,
-                              saved: control.properties[propertyName].saved,
-                              lastSavedChange: control.properties[propertyName].lastSavedChange,
-                              lastChange: control.properties[propertyName].lastChange
-                          }
-                        : {
-                              pending: 0,
-                              saved: 0
-                          };
-                    if (change.type === 'pending') {
-                        property.pending++;
-                        property.lastChange = change;
-                    } else if (change.type === 'saved') {
-                        property.lastSavedChange = change;
-                        property.saved++;
-                    }
-                    control.properties[propertyName] = property;
+
                     state.changes.controls[key] = control;
                 }
             })
@@ -269,9 +313,12 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.dialogMessage = action.payload;
             })
             .addMatcher(fileChanged.match, (state, action: ReturnType<typeof fileChanged>): void => {
+                const firstFile = action.payload[0] ?? '';
+                const separator = firstFile.indexOf('\\') > -1 ? '\\' : '/';
+
                 const newFileChanges = action.payload.filter((changedFile) => {
                     const idx = state.changes.pendingChangeIds.findIndex((pendingFile) =>
-                        changedFile.includes(pendingFile)
+                        changedFile.includes(pendingFile.replace(/\//g, separator))
                     );
                     if (idx > -1) {
                         state.changes.pendingChangeIds.splice(idx, 1);
@@ -298,8 +345,15 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 }
             })
             .addMatcher(setAppMode.match, (state, action: ReturnType<typeof setAppMode>): void => {
+                // optimistic update
                 state.appMode = action.payload;
             })
+            .addMatcher(
+                applicationModeChanged.match,
+                (state, action: ReturnType<typeof applicationModeChanged>): void => {
+                    state.appMode = action.payload;
+                }
+            )
             .addMatcher(
                 setUndoRedoEnablement.match,
                 (state, action: ReturnType<typeof setUndoRedoEnablement>): void => {
@@ -309,9 +363,20 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             .addMatcher(setSaveEnablement.match, (state, action: ReturnType<typeof setSaveEnablement>): void => {
                 state.canSave = action.payload;
             })
+            .addMatcher(setFeatureToggles.match, (state, action: ReturnType<typeof setFeatureToggles>): void => {
+                for (const { feature, isEnabled } of action.payload) {
+                    state.features[feature] = isEnabled;
+                }
+            })
             .addMatcher(appLoaded.match, (state): void => {
                 state.isAppLoading = false;
             })
+            .addMatcher(
+                setApplicationRequiresReload.match,
+                (state, action: ReturnType<typeof setApplicationRequiresReload>): void => {
+                    state.applicationRequiresReload = action.payload;
+                }
+            )
             .addMatcher(
                 quickActionListChanged.match,
                 (state: SliceState, action: ReturnType<typeof quickActionListChanged>): void => {

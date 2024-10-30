@@ -1,11 +1,12 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
-import type { UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
-import { UIComboBox, UIComboBoxLoaderType } from '../../../src/components/UIComboBox';
+import type { UIComboBoxOption, UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
+import { UIComboBox, UIComboBoxLoaderType, UISelectableOptionMenuItemType } from '../../../src/components/UIComboBox';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 import { KeyCodes, ComboBox, Autofill } from '@fluentui/react';
+import { CalloutCollisionTransform } from '../../../src/components/UICallout/CalloutCollisionTransform';
 
 const data = JSON.parse(JSON.stringify(originalData));
 const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
@@ -32,8 +33,18 @@ describe('<UIComboBox />', () => {
             target: getInputTarget(query)
         });
     };
+    let CalloutCollisionTransformSpy: {
+        preventDismissOnEvent: jest.SpyInstance;
+        applyTransformation: jest.SpyInstance;
+        resetTransformation: jest.SpyInstance;
+    };
 
     beforeEach(() => {
+        CalloutCollisionTransformSpy = {
+            preventDismissOnEvent: jest.spyOn(CalloutCollisionTransform.prototype, 'preventDismissOnEvent'),
+            applyTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'applyTransformation'),
+            resetTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'resetTransformation')
+        };
         wrapper = Enzyme.mount(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" />);
     });
 
@@ -81,6 +92,48 @@ describe('<UIComboBox />', () => {
                 "fontSize": "13px",
                 "fontWeight": "bold",
                 "padding": "4px 0",
+              },
+            }
+        `
+        );
+    });
+
+    it('Styles - required', () => {
+        wrapper.setProps({
+            required: true
+        });
+        const styles = wrapper.find(ComboBox).props().styles;
+        expect(styles).toMatchInlineSnapshot(
+            {},
+            `
+            Object {
+              "errorMessage": Array [
+                Object {
+                  "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
+                  "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "borderColor": "var(--vscode-inputValidation-errorBorder)",
+                  "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "color": "var(--vscode-input-foreground)",
+                  "margin": 0,
+                  "paddingBottom": 5,
+                  "paddingLeft": 8,
+                  "paddingTop": 4,
+                },
+              ],
+              "label": Object {
+                "color": "var(--vscode-input-foreground)",
+                "fontFamily": "var(--vscode-font-family)",
+                "fontSize": "13px",
+                "fontWeight": "bold",
+                "padding": "4px 0",
+                "selectors": Object {
+                  "::after": Object {
+                    "color": "var(--vscode-inputValidation-errorBorder)",
+                    "content": "' *' / ''",
+                    "paddingRight": 12,
+                  },
+                },
               },
             }
         `
@@ -785,6 +838,13 @@ describe('<UIComboBox />', () => {
                     expect(calloutProps?.preventDismissOnEvent).toBeDefined();
                     expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
                     expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+
+                    calloutProps?.preventDismissOnEvent?.({} as Event);
+                    calloutProps?.layerProps?.onLayerDidMount?.();
+                    calloutProps?.layerProps?.onLayerWillUnmount?.();
+                    expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(expected ? 1 : 0);
+                    expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(expected ? 1 : 0);
+                    expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(expected ? 1 : 0);
                 } else {
                     expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
                     expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
@@ -792,6 +852,36 @@ describe('<UIComboBox />', () => {
                 }
             });
         }
+
+        it(`Pass external listeners`, () => {
+            const externalListeners = {
+                calloutProps: {
+                    preventDismissOnEvent: jest.fn(),
+                    layerProps: {
+                        onLayerDidMount: jest.fn(),
+                        onLayerWillUnmount: jest.fn()
+                    }
+                }
+            };
+            wrapper.setProps({
+                multiSelect: true,
+                calloutCollisionTransformation: true,
+                ...externalListeners
+            });
+            const dropdown = wrapper.find(ComboBox);
+            expect(dropdown.length).toEqual(1);
+            const calloutProps = dropdown.prop('calloutProps');
+
+            calloutProps?.preventDismissOnEvent?.({} as Event);
+            calloutProps?.layerProps?.onLayerDidMount?.();
+            calloutProps?.layerProps?.onLayerWillUnmount?.();
+            expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.preventDismissOnEvent).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerDidMount).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerWillUnmount).toBeCalledTimes(1);
+        });
     });
 
     describe('Test "isLoading" property', () => {
@@ -830,5 +920,106 @@ describe('<UIComboBox />', () => {
             expect(wrapper.find('.ms-Callout UILoader').length).toEqual(expectLoaderInMenu ? 1 : 0);
             expect(wrapper.find('.ms-ComboBox UILoader').length).toEqual(expectLoaderInInput ? 1 : 0);
         });
+    });
+
+    it('Custom renderers for "onRenderOption"', () => {
+        wrapper.setProps({
+            highlight: true,
+            onRenderOption: (
+                props?: UIComboBoxOption,
+                defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
+            ) => {
+                return <div className="custom-render-option">{defaultRender?.(props)}</div>;
+            }
+        });
+        openDropdown();
+        expect(wrapper.find('.custom-render-option').length).toBeGreaterThan(0);
+        expect(wrapper.find(highlightItemSelector).length).toBeGreaterThan(0);
+    });
+
+    it('Custom renderers for "onRenderItem"', () => {
+        wrapper.setProps({
+            options: JSON.parse(JSON.stringify(originalData)),
+            highlight: true,
+            selectedKey: 'AR',
+            onRenderItem: (
+                props?: UIComboBoxOption,
+                defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
+            ) => {
+                return <div className="custom-render-item">{defaultRender?.(props)}</div>;
+            }
+        });
+        openDropdown();
+        expect(wrapper.find('.custom-render-item').length).toBeGreaterThan(0);
+        expect(wrapper.find('.ts-ComboBox--selected').length).toBeGreaterThan(0);
+    });
+
+    it('Test "calloutProps"', () => {
+        wrapper.setProps({
+            calloutProps: {
+                className: 'dummy'
+            }
+        });
+        openDropdown();
+        expect(wrapper.find('div.dummy').length).toEqual(1);
+    });
+
+    describe('Test "searchByKeyEnabled" property', () => {
+        const searchKeysData = [
+            { 'key': 'test1', 'text': 'test1' },
+            { 'key': 'dummy', 'text': 'dummy' },
+            { 'key': 'customer', 'text': 'customer' },
+            { 'key': 'name', 'text': 'name' },
+            { 'key': 'employee', 'text': 'employee' },
+            { 'key': 'ID', 'text': 'ID' },
+            { 'key': 'tripEndDate', 'text': 'tripEndDate' },
+            { 'key': 'bookings', 'text': 'bookings', 'itemType': UISelectableOptionMenuItemType.Divider },
+            { 'key': 'bookings', 'text': 'bookings', 'itemType': UISelectableOptionMenuItemType.Header },
+            { 'key': 'bookings/airlines', 'text': 'airlines' },
+            { 'key': 'bookings/bookingDate', 'text': 'bookingDate' },
+            { 'key': 'bookings/DateOnBookings', 'text': 'DateOnBookings' },
+            { 'key': 'bookings/employee', 'text': 'employee' },
+            { 'key': 'bookings/flightDate', 'text': 'flightDate' },
+            { 'key': 'bookings/ID', 'text': 'ID' },
+            { 'key': 'bookings/priceUSD', 'text': 'priceUSD' },
+            { 'key': 'bookings/travel_ID', 'text': 'travel_ID' },
+            { 'key': 'bookings/usedString5', 'text': 'usedString5' },
+            { 'key': 'notes', 'text': 'notes', 'itemType': UISelectableOptionMenuItemType.Divider },
+            { 'key': 'notes', 'text': 'notes', 'itemType': UISelectableOptionMenuItemType.Header },
+            { 'key': 'notes/comment', 'text': 'comment' },
+            { 'key': 'notes/description', 'text': 'description' }
+        ];
+        const testCases = [
+            {
+                name: '"searchByKeyEnabled" is undefined',
+                searchByKeyEnabled: undefined,
+                expectedCount: 2
+            },
+            {
+                name: '"searchByKeyEnabled" is false',
+                searchByKeyEnabled: false,
+                expectedCount: 2
+            },
+            {
+                name: '"searchByKeyEnabled" is true',
+                searchByKeyEnabled: true,
+                expectedCount: 10
+            }
+        ];
+        for (const testCase of testCases) {
+            const { name, searchByKeyEnabled, expectedCount } = testCase;
+            it(name, () => {
+                const query = 'bookings';
+                wrapper.setProps({
+                    highlight: true,
+                    options: searchKeysData,
+                    searchByKeyEnabled
+                });
+                openDropdown();
+                wrapper.find('input').simulate('keyDown', {});
+                triggerSearch(query);
+                expect(wrapper.find('.ms-Button').length).toEqual(expectedCount);
+            });
+        }
     });
 });

@@ -25,6 +25,12 @@ export interface BuildingBlockMetaPath {
     entitySet: string;
     qualifier: string;
     bindingContextType?: BindingContextType;
+    /**
+     * Always generate absolute paths.
+     *
+     * @default true
+     */
+    alwaysAbsolutePath?: boolean;
 }
 
 /**
@@ -379,4 +385,12 @@ export interface BuildingBlockConfig<T extends BuildingBlock> {
      * The building block parameters.
      */
     buildingBlockData: T;
+
+    /**
+     * Allows updating the 'manifest.json' file with missing dependency libraries.
+     * Dependency libraries are listed under '"sap.ui5"/"dependencies"/"libs"', and 'sap.fe.macros' is required for Building Blocks.
+     *
+     * @default true
+     */
+    allowAutoAddDependencyLib?: boolean;
 }

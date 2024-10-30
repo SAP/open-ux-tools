@@ -95,6 +95,7 @@ export type ControlProperty =
     | IntegerControlProperty
     | FloatControlProperty
     | StringControlProperty
+    | ControlPropertyBase<typeof STRING_VALUE_TYPE, string, 'unknown'>
     | StringControlPropertyWithOptions;
 
 export interface OutlineNode {
@@ -114,8 +115,14 @@ export interface IconDetails {
     fontFamily: string;
 }
 
+export const PENDING_CHANGE_TYPE = 'pending';
+export const SAVED_CHANGE_TYPE = 'saved';
+export const PROPERTY_CHANGE_KIND = 'property';
+export const UNKNOWN_CHANGE_KIND = 'unknown';
+export const CONTROL_CHANGE_KIND = 'control';
 export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
-    type: 'pending';
+    type: typeof PENDING_CHANGE_TYPE;
+    kind: typeof PROPERTY_CHANGE_KIND;
     /**
      * Indicates if change is before or after current position in undo redo stack
      */
@@ -124,36 +131,54 @@ export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> 
 }
 
 export interface PendingOtherChange {
-    type: 'pending';
+    type: typeof PENDING_CHANGE_TYPE;
+    kind: typeof UNKNOWN_CHANGE_KIND;
     isActive: boolean;
     changeType: string;
-    controlId: string;
-    controlName: string;
     fileName: string;
 }
 
-export type PendingChange = PendingPropertyChange | PendingOtherChange;
+export interface PendingControlChange {
+    type: typeof PENDING_CHANGE_TYPE;
+    kind: typeof CONTROL_CHANGE_KIND;
+    isActive: boolean;
+    changeType: string;
+    controlId: string;
+    fileName: string;
+}
+
+export type PendingChange = PendingPropertyChange | PendingOtherChange | PendingControlChange;
+export type SavedChange = SavedPropertyChange | UnknownSavedChange | SavedControlChange;
 
 export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
-    type: 'saved';
-    kind: 'valid';
+    type: typeof SAVED_CHANGE_TYPE;
+    kind: typeof PROPERTY_CHANGE_KIND;
     fileName: string;
     timestamp: number;
 }
 
 export interface UnknownSavedChange {
-    type: 'saved';
-    kind: 'unknown';
+    type: typeof SAVED_CHANGE_TYPE;
+    kind: typeof UNKNOWN_CHANGE_KIND;
     fileName: string;
-    controlId?: string;
+    changeType: string;
     timestamp?: number;
 }
-export type ValidChange = PendingPropertyChange | SavedPropertyChange;
-export type Change = ValidChange | UnknownSavedChange;
+
+export interface SavedControlChange {
+    type: typeof SAVED_CHANGE_TYPE;
+    kind: typeof CONTROL_CHANGE_KIND;
+    controlId: string;
+    fileName: string;
+    changeType: string;
+    timestamp?: number;
+}
+
+export type Change = PendingChange | SavedChange;
 
 export interface ChangeStackModified {
     pending: PendingChange[];
-    saved: SavedPropertyChange[];
+    saved: SavedChange[];
 }
 
 export interface PropertyChangeDeletionDetails {
@@ -239,7 +264,17 @@ function createMatcher<Y extends { type: string }>(
  * @returns Function
  */
 function createActionFactory(prefix: string) {
-    return function createAction<T>(name: string) {
+    return function createAction<T>(name: string): {
+        (payload: T): PayloadAction<string, T>;
+        type: string;
+        match: (
+            value:
+                | {
+                      type: unknown;
+                  }
+                | undefined
+        ) => value is PayloadAction<string, T>;
+    } {
         const actionType = [prefix, name].join(' ');
         /**
          *
@@ -274,9 +309,12 @@ export const propertyChanged = createExternalAction<PropertyChanged>('property-c
 export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('change-property-failed');
 export const changeStackModified = createExternalAction<ChangeStackModified>('change-stack-modified');
 export const showMessage = createExternalAction<ShowMessage>('show-dialog-message');
-export const reloadApplication = createExternalAction<void>('reload-application');
+export const reloadApplication = createExternalAction<{
+    save?: boolean;
+}>('reload-application');
 export const storageFileChanged = createExternalAction<string>('storage-file-changed');
 export const setAppMode = createExternalAction<'navigation' | 'adaptation'>('set-app-mode');
+export const applicationModeChanged = createExternalAction<'navigation' | 'adaptation'>('application-mode-changed');
 export const setUndoRedoEnablement = createExternalAction<{ canRedo: boolean; canUndo: boolean }>(
     'set-undo-redo-enablement'
 );
@@ -288,6 +326,7 @@ export const save = createExternalAction<void>('save');
 export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('quick-action-list-changed');
 export const updateQuickAction = createExternalAction<QuickAction>('update-quick-action');
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
+export const setApplicationRequiresReload = createExternalAction<boolean>('set-application-requires-reload');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -304,6 +343,7 @@ export type ExternalAction =
     | ReturnType<typeof reloadApplication>
     | ReturnType<typeof storageFileChanged>
     | ReturnType<typeof setAppMode>
+    | ReturnType<typeof applicationModeChanged>
     | ReturnType<typeof setUndoRedoEnablement>
     | ReturnType<typeof setSaveEnablement>
     | ReturnType<typeof undo>
@@ -311,5 +351,6 @@ export type ExternalAction =
     | ReturnType<typeof save>
     | ReturnType<typeof appLoaded>
     | ReturnType<typeof quickActionListChanged>
+    | ReturnType<typeof setApplicationRequiresReload>
     | ReturnType<typeof updateQuickAction>
     | ReturnType<typeof executeQuickAction>;

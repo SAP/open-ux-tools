@@ -1,5 +1,77 @@
 # @sap-ux/ui5-library-writer
 
+## 0.5.27
+
+### Patch Changes
+
+-   Updated dependencies [f626d47]
+    -   @sap-ux/ui5-application-writer@1.2.1
+
+## 0.5.26
+
+### Patch Changes
+
+-   Updated dependencies [eb38e5b]
+    -   @sap-ux/project-access@1.28.2
+    -   @sap-ux/ui5-application-writer@1.2.0
+
+## 0.5.25
+
+### Patch Changes
+
+-   Updated dependencies [64e037d]
+    -   @sap-ux/project-access@1.28.1
+    -   @sap-ux/ui5-application-writer@1.2.0
+
+## 0.5.24
+
+### Patch Changes
+
+-   Updated dependencies [15e6959]
+    -   @sap-ux/project-access@1.28.0
+    -   @sap-ux/ui5-application-writer@1.2.0
+
+## 0.5.23
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/ui5-application-writer@1.2.0
+
+## 0.5.22
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/ui5-application-writer@1.2.0
+
+## 0.5.21
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/ui5-application-writer@1.2.0
+    -   @sap-ux/ui5-config@0.25.0
+    -   @sap-ux/project-access@1.27.4
+
+## 0.5.20
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/ui5-application-writer@1.1.6
+
+## 0.5.19
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/ui5-application-writer@1.1.6
+
 ## 0.5.18
 
 ### Patch Changes

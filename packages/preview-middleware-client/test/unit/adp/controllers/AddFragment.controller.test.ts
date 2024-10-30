@@ -14,6 +14,9 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
+import Core from 'sap/ui/core/Core';
+import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
+import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, TREE_TABLE_TYPE } from 'open/ux/preview/client/adp/quick-actions/table-quick-action-base';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -73,7 +76,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 overlays as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const openSpy = jest.fn();
@@ -103,7 +109,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const event = {
@@ -161,7 +170,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const closeSpy = jest.fn();
@@ -191,7 +203,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -221,7 +236,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -251,7 +269,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -281,7 +302,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -311,7 +335,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -353,7 +380,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -396,7 +426,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -443,7 +476,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -475,7 +511,10 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
@@ -505,7 +544,8 @@ describe('AddFragment', () => {
             jest.restoreAllMocks();
         });
         const testModel = {
-            getProperty: jest.fn().mockReturnValueOnce('Share').mockReturnValueOnce('0').mockReturnValueOnce('content')
+            getProperty: jest.fn().mockReturnValueOnce('Share').mockReturnValueOnce('0').mockReturnValueOnce('content'),
+            setProperty: jest.fn()
         } as unknown as JSONModel;
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
@@ -517,10 +557,26 @@ describe('AddFragment', () => {
             });
             rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
 
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            sapCoreMock.byId.mockReturnValue({});
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
+                    getDefaultAggregationName: jest.fn().mockReturnValue('content')
+                })
+            } as unknown as ManagedObject);
+
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
-                {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring
+                overlays as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
+                }
             );
 
             const event = {
@@ -551,6 +607,14 @@ describe('AddFragment', () => {
 
             addFragment.handleDialogClose = jest.fn();
 
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
             await addFragment.onCreateBtnPress(event as unknown as Event);
 
             expect(executeSpy).toHaveBeenCalledWith({
@@ -560,6 +624,913 @@ describe('AddFragment', () => {
                     },
                     setModuleName: expect.any(Function)
                 }
+            });
+            expect(CommandFactory.getCommandFor.mock.calls[0][4].selector).toBeUndefined();
+        });
+
+        test('creates new custom section fragment and a change', async () => {
+            sapMock.ui.version = '1.71.62';
+            const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                overlays as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    aggregation: 'sections'
+                }
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            const testModel = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('0')
+                    .mockReturnValueOnce('sections'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+            addFragment.model = testModel;
+
+            const dummyContent: AddFragmentChangeContentType = {
+                fragmentPath: 'dummyPath',
+                index: 1,
+                targetAggregation: 'sections'
+            };
+
+            const setContentSpy = jest.fn();
+            const commandForSpy = jest.fn().mockReturnValue({
+                _oPreparedChange: {
+                    _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                    setModuleName: jest.fn()
+                },
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getContent: jest.fn().mockReturnValue(dummyContent),
+                    setContent: setContentSpy
+                })
+            });
+            CommandFactory.getCommandFor = commandForSpy;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    id: 'id',
+                    reference: 'reference',
+                    namespace: 'namespace',
+                    layer: 'layer'
+                }),
+                text: jest.fn().mockReturnValue('XML Fragment was created!'),
+                ok: true
+            });
+
+            jest.spyOn(sap.ui, 'getCore').mockReturnValue({
+                byId: jest.fn().mockReturnValue({})
+            } as unknown as Core);
+
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout')
+                })
+            } as unknown as ManagedObject);
+
+            addFragment.handleDialogClose = jest.fn();
+
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await addFragment.onCreateBtnPress(event as unknown as Event);
+
+            expect(executeSpy).toHaveBeenCalledWith({
+                _oPreparedChange: {
+                    _oDefinition: {
+                        moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                    },
+                    setModuleName: expect.any(Function)
+                },
+                getPreparedChange: expect.any(Function)
+            });
+
+            expect(setContentSpy).toHaveBeenCalledWith({
+                ...dummyContent,
+                templateName: 'OBJECT_PAGE_CUSTOM_SECTION'
+            });
+        });
+
+        test('add header field fragment and a change if targetAggregation is headerContent', async () => {
+            sapMock.ui.version = '1.71.62';
+            const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                overlays as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD',
+                    aggregation: 'headerContent'
+                }
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            const testModel = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('0')
+                    .mockReturnValueOnce('headerContent'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+            addFragment.model = testModel;
+
+            const dummyContent: AddFragmentChangeContentType = {
+                fragmentPath: 'dummyPath',
+                index: 1,
+                targetAggregation: 'headerContent'
+            };
+
+            const setContentSpy = jest.fn();
+            const commandForSpy = jest.fn().mockReturnValue({
+                _oPreparedChange: {
+                    _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                    setModuleName: jest.fn()
+                },
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getContent: jest.fn().mockReturnValue(dummyContent),
+                    setContent: setContentSpy
+                })
+            });
+            CommandFactory.getCommandFor = commandForSpy;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    id: 'id',
+                    reference: 'reference',
+                    namespace: 'namespace',
+                    layer: 'layer'
+                }),
+                text: jest.fn().mockReturnValue('XML Fragment was created!'),
+                ok: true
+            });
+
+            jest.spyOn(sap.ui, 'getCore').mockReturnValue({
+                byId: jest.fn().mockReturnValue({})
+            } as unknown as Core);
+
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout')
+                })
+            } as unknown as ManagedObject);
+
+            addFragment.handleDialogClose = jest.fn();
+
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await addFragment.onCreateBtnPress(event as unknown as Event);
+
+            expect(executeSpy).toHaveBeenCalledWith({
+                _oPreparedChange: {
+                    _oDefinition: {
+                        moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                    },
+                    setModuleName: expect.any(Function)
+                },
+                getPreparedChange: expect.any(Function)
+            });
+
+            expect(setContentSpy).toHaveBeenCalledWith({
+                ...dummyContent,
+                templateName: 'OBJECT_PAGE_HEADER_FIELD'
+            });
+        });
+
+        test('add header field fragment and a change if targetAggregation is items', async () => {
+            sapMock.ui.version = '1.71.62';
+            const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                overlays as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD',
+                    aggregation: 'items'
+                }
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            const testModel = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('0')
+                    .mockReturnValueOnce('items'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+            addFragment.model = testModel;
+
+            const dummyContent: AddFragmentChangeContentType = {
+                fragmentPath: 'dummyPath',
+                index: 1,
+                targetAggregation: 'items'
+            };
+
+            const setContentSpy = jest.fn();
+            const commandForSpy = jest.fn().mockReturnValue({
+                _oPreparedChange: {
+                    _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                    setModuleName: jest.fn()
+                },
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getContent: jest.fn().mockReturnValue(dummyContent),
+                    setContent: setContentSpy
+                })
+            });
+            CommandFactory.getCommandFor = commandForSpy;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    id: 'id',
+                    reference: 'reference',
+                    namespace: 'namespace',
+                    layer: 'layer'
+                }),
+                text: jest.fn().mockReturnValue('XML Fragment was created!'),
+                ok: true
+            });
+
+            jest.spyOn(sap.ui, 'getCore').mockReturnValue({
+                byId: jest.fn().mockReturnValue({})
+            } as unknown as Core);
+
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.m.FlexBox')
+                }),
+                getParent: jest.fn().mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({
+                        getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageDynamicHeaderContent')
+                    })
+                })
+            } as unknown as ManagedObject);
+
+            addFragment.handleDialogClose = jest.fn();
+
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await addFragment.onCreateBtnPress(event as unknown as Event);
+
+            expect(executeSpy).toHaveBeenCalledWith({
+                _oPreparedChange: {
+                    _oDefinition: {
+                        moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                    },
+                    setModuleName: expect.any(Function)
+                },
+                getPreparedChange: expect.any(Function)
+            });
+
+            expect(setContentSpy).toHaveBeenCalledWith({
+                ...dummyContent,
+                templateName: 'OBJECT_PAGE_HEADER_FIELD'
+            });
+        });
+
+        test('add header field fragment and a change if targetAggregation is items and not a dynamic header', async () => {
+            sapMock.ui.version = '1.71.62';
+            const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                overlays as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD',
+                    aggregation: 'items'
+                }
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            const testModel = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('0')
+                    .mockReturnValueOnce('items'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+            addFragment.model = testModel;
+
+            const dummyContent: AddFragmentChangeContentType = {
+                fragmentPath: 'dummyPath',
+                index: 1,
+                targetAggregation: 'items'
+            };
+
+            const setContentSpy = jest.fn();
+            const commandForSpy = jest.fn().mockReturnValue({
+                _oPreparedChange: {
+                    _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                    setModuleName: jest.fn()
+                },
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getContent: jest.fn().mockReturnValue(dummyContent),
+                    setContent: setContentSpy
+                })
+            });
+            CommandFactory.getCommandFor = commandForSpy;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    id: 'id',
+                    reference: 'reference',
+                    namespace: 'namespace',
+                    layer: 'layer'
+                }),
+                text: jest.fn().mockReturnValue('XML Fragment was created!'),
+                ok: true
+            });
+
+            jest.spyOn(sap.ui, 'getCore').mockReturnValue({
+                byId: jest.fn().mockReturnValue({})
+            } as unknown as Core);
+
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.m.FlexBox')
+                }),
+                getParent: jest.fn().mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({
+                        getName: jest.fn().mockReturnValue('No.Dynamic.ObjectPageDynamicHeaderContent')
+                    })
+                })
+            } as unknown as ManagedObject);
+
+            addFragment.handleDialogClose = jest.fn();
+
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await addFragment.onCreateBtnPress(event as unknown as Event);
+
+            expect(executeSpy).toHaveBeenCalledWith({
+                _oPreparedChange: {
+                    _oDefinition: {
+                        moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                    },
+                    setModuleName: expect.any(Function)
+                },
+                getPreparedChange: expect.any(Function)
+            });
+        });
+
+        test('add header field fragment and a change if targetAggregation is items and not a dynamic header', async () => {
+            sapMock.ui.version = '1.71.62';
+            const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                overlays as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD',
+                    aggregation: 'items'
+                }
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            const testModel = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('0')
+                    .mockReturnValueOnce('items'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+            addFragment.model = testModel;
+
+            const dummyContent: AddFragmentChangeContentType = {
+                fragmentPath: 'dummyPath',
+                index: 1,
+                targetAggregation: 'items'
+            };
+
+            const setContentSpy = jest.fn();
+            const commandForSpy = jest.fn().mockReturnValue({
+                _oPreparedChange: {
+                    _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                    setModuleName: jest.fn()
+                },
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getContent: jest.fn().mockReturnValue(dummyContent),
+                    setContent: setContentSpy
+                })
+            });
+            CommandFactory.getCommandFor = commandForSpy;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    id: 'id',
+                    reference: 'reference',
+                    namespace: 'namespace',
+                    layer: 'layer'
+                }),
+                text: jest.fn().mockReturnValue('XML Fragment was created!'),
+                ok: true
+            });
+
+            jest.spyOn(sap.ui, 'getCore').mockReturnValue({
+                byId: jest.fn().mockReturnValue({})
+            } as unknown as Core);
+
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.m.FlexBox')
+                }),
+                getParent: jest.fn().mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({
+                        getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout')
+                    })
+                })
+            } as unknown as ManagedObject);
+
+            addFragment.handleDialogClose = jest.fn();
+
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await addFragment.onCreateBtnPress(event as unknown as Event);
+
+            expect(executeSpy).toHaveBeenCalledWith({
+                _oPreparedChange: {
+                    _oDefinition: {
+                        moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                    },
+                    setModuleName: expect.any(Function)
+                },
+                getPreparedChange: expect.any(Function)
+            });
+        });
+
+        test('add header field fragment and a change if targetAggregation is headerContent', async () => {
+            sapMock.ui.version = '1.71.62';
+            const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                overlays as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                {
+                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION',
+                    aggregation: 'actions'
+                }
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            const testModel = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('0')
+                    .mockReturnValueOnce('actions'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+            addFragment.model = testModel;
+
+            const dummyContent: AddFragmentChangeContentType = {
+                fragmentPath: 'dummyPath',
+                index: 1,
+                targetAggregation: 'actions'
+            };
+
+            const setContentSpy = jest.fn();
+            const commandForSpy = jest.fn().mockReturnValue({
+                _oPreparedChange: {
+                    _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                    setModuleName: jest.fn()
+                },
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getContent: jest.fn().mockReturnValue(dummyContent),
+                    setContent: setContentSpy
+                })
+            });
+            CommandFactory.getCommandFor = commandForSpy;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    id: 'id',
+                    reference: 'reference',
+                    namespace: 'namespace',
+                    layer: 'layer'
+                }),
+                text: jest.fn().mockReturnValue('XML Fragment was created!'),
+                ok: true
+            });
+
+            jest.spyOn(sap.ui, 'getCore').mockReturnValue({
+                byId: jest.fn().mockReturnValue({})
+            } as unknown as Core);
+
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.ui.mdc.ActionToolbar')
+                })
+            } as unknown as ManagedObject);
+
+            addFragment.handleDialogClose = jest.fn();
+
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await addFragment.onCreateBtnPress(event as unknown as Event);
+
+            expect(executeSpy).toHaveBeenCalledWith({
+                _oPreparedChange: {
+                    _oDefinition: {
+                        moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                    },
+                    setModuleName: expect.any(Function)
+                },
+                getPreparedChange: expect.any(Function)
+            });
+
+            expect(setContentSpy).toHaveBeenCalledWith({
+                ...dummyContent,
+                templateName: 'TABLE_ACTION'
+            });
+        });
+
+        test.each(['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageHeader', 'sap.uxap.ObjectPageDynamicHeaderTitle'])(
+            'creates new custom action fragment and a change (%s)',
+            async (compType) => {
+                sapMock.ui.version = '1.71.62';
+                const executeSpy = jest.fn();
+                rtaMock.getCommandStack.mockReturnValue({
+                    pushAndExecute: executeSpy
+                });
+                rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+                const overlays = {
+                    getId: jest.fn().mockReturnValue('some-id')
+                };
+
+                const addFragment = new AddFragment(
+                    'adp.extension.controllers.AddFragment',
+                    overlays as unknown as UI5Element,
+                    rtaMock as unknown as RuntimeAuthoring,
+                    {
+                        title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION',
+                        aggregation: 'actions'
+                    }
+                );
+
+                const event = {
+                    getSource: jest.fn().mockReturnValue({
+                        setEnabled: jest.fn()
+                    })
+                };
+
+                const testModel = {
+                    getProperty: jest
+                        .fn()
+                        .mockReturnValueOnce('Share')
+                        .mockReturnValueOnce('0')
+                        .mockReturnValueOnce('actions'),
+                    setProperty: jest.fn()
+                } as unknown as JSONModel;
+                addFragment.model = testModel;
+
+                const dummyContent: AddFragmentChangeContentType = {
+                    fragmentPath: 'dummyPath',
+                    index: 1,
+                    targetAggregation: 'actions'
+                };
+
+                const setContentSpy = jest.fn();
+                const commandForSpy = jest.fn().mockReturnValue({
+                    _oPreparedChange: {
+                        _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                        setModuleName: jest.fn()
+                    },
+                    getPreparedChange: jest.fn().mockReturnValue({
+                        getContent: jest.fn().mockReturnValue(dummyContent),
+                        setContent: setContentSpy
+                    })
+                });
+                CommandFactory.getCommandFor = commandForSpy;
+
+                fetchMock.mockResolvedValue({
+                    json: jest.fn().mockReturnValue({
+                        id: 'id',
+                        reference: 'reference',
+                        namespace: 'namespace',
+                        layer: 'layer'
+                    }),
+                    text: jest.fn().mockReturnValue('XML Fragment was created!'),
+                    ok: true
+                });
+
+                jest.spyOn(sap.ui, 'getCore').mockReturnValue({
+                    byId: jest.fn().mockReturnValue({})
+                } as unknown as Core);
+
+                jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({
+                        getAllAggregations: jest.fn().mockReturnValue({}),
+                        getName: jest.fn().mockReturnValue(compType)
+                    })
+                } as unknown as ManagedObject);
+
+                addFragment.handleDialogClose = jest.fn();
+
+                await addFragment.setup({
+                    setEscapeHandler: jest.fn(),
+                    destroy: jest.fn(),
+                    setModel: jest.fn(),
+                    open: jest.fn(),
+                    close: jest.fn()
+                } as unknown as Dialog);
+
+                await addFragment.onCreateBtnPress(event as unknown as Event);
+
+                expect(executeSpy).toHaveBeenCalledWith({
+                    _oPreparedChange: {
+                        _oDefinition: {
+                            moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                        },
+                        setModuleName: expect.any(Function)
+                    },
+                    getPreparedChange: expect.any(Function)
+                });
+
+                expect(setContentSpy).toHaveBeenCalledWith({
+                    ...dummyContent,
+                    templateName: 'CUSTOM_ACTION'
+                });
+            }
+        );
+
+        describe('Table custom column', () => {
+            let addFragment: AddFragment;
+            let event: {
+                getSource: jest.Mock<any, any, any>;
+            };
+            let executeSpy: jest.Mock<any, any, any>;
+            let dummyContent: AddFragmentChangeContentType;
+            let setContentSpy: jest.Mock<any, any, any>;
+
+            beforeEach(() => {
+                sapMock.ui.version = '1.71.62';
+                executeSpy = jest.fn();
+                rtaMock.getCommandStack.mockReturnValue({
+                    pushAndExecute: executeSpy
+                });
+                rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+                const overlays = {
+                    getId: jest.fn().mockReturnValue('some-id')
+                };
+
+                addFragment = new AddFragment(
+                    'adp.extension.controllers.AddFragment',
+                    overlays as unknown as UI5Element,
+                    rtaMock as unknown as RuntimeAuthoring,
+                    {
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN',
+                        aggregation: 'columns'
+                    }
+                );
+                event = {
+                    getSource: jest.fn().mockReturnValue({
+                        setEnabled: jest.fn()
+                    })
+                };
+
+                const testModel = {
+                    getProperty: jest
+                        .fn()
+                        .mockReturnValueOnce('Share')
+                        .mockReturnValueOnce('0')
+                        .mockReturnValueOnce('columns'),
+                    setProperty: jest.fn()
+                } as unknown as JSONModel;
+                addFragment.model = testModel;
+
+                dummyContent = {
+                    fragmentPath: 'dummyPath',
+                    index: 1,
+                    targetAggregation: 'columns'
+                };
+                setContentSpy = jest.fn();
+                const commandForSpy = jest.fn().mockReturnValue({
+                    _oPreparedChange: {
+                        _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                        setModuleName: jest.fn()
+                    },
+                    getPreparedChange: jest.fn().mockReturnValue({
+                        getContent: jest.fn().mockReturnValue(dummyContent),
+                        setContent: setContentSpy
+                    })
+                });
+                CommandFactory.getCommandFor = commandForSpy;
+
+                fetchMock.mockResolvedValue({
+                    json: jest.fn().mockReturnValue({
+                        id: 'id',
+                        reference: 'reference',
+                        namespace: 'namespace',
+                        layer: 'layer'
+                    }),
+                    text: jest.fn().mockReturnValue('XML Fragment was created!'),
+                    ok: true
+                });
+
+                jest.spyOn(sap.ui, 'getCore').mockReturnValue({
+                    byId: jest.fn().mockReturnValue({})
+                } as unknown as Core);
+                addFragment.handleDialogClose = jest.fn();
+            });
+
+            test('creates new mdc table custom column fragment and a change', async () => {
+                jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({
+                        getAllAggregations: jest.fn().mockReturnValue({}),
+                        getName: jest.fn().mockReturnValue('sap.ui.mdc.Table')
+                    })
+                } as unknown as ManagedObject);
+                await addFragment.setup({
+                    setEscapeHandler: jest.fn(),
+                    destroy: jest.fn(),
+                    setModel: jest.fn(),
+                    open: jest.fn(),
+                    close: jest.fn()
+                } as unknown as Dialog);
+
+                await addFragment.onCreateBtnPress(event as unknown as Event);
+
+                expect(executeSpy).toHaveBeenCalledWith({
+                    _oPreparedChange: {
+                        _oDefinition: {
+                            moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                        },
+                        setModuleName: expect.any(Function)
+                    },
+                    getPreparedChange: expect.any(Function)
+                });
+
+                expect(setContentSpy).toHaveBeenCalledWith({
+                    ...dummyContent,
+                    templateName: 'V4_MDC_TABLE_COLUMN'
+                });
+            });
+
+            const tableTypes = [TREE_TABLE_TYPE, GRID_TABLE_TYPE, ANALYTICAL_TABLE_TYPE];
+            test.each(tableTypes)('creates new analytical custom column fragment and a change (%s)', async (tableType) => {
+                jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({
+                        getAllAggregations: jest.fn().mockReturnValue({}),
+                        getName: jest.fn().mockReturnValue(tableType)
+                    })
+                } as unknown as ManagedObject);
+                await addFragment.setup({
+                    setEscapeHandler: jest.fn(),
+                    destroy: jest.fn(),
+                    setModel: jest.fn(),
+                    open: jest.fn(),
+                    close: jest.fn()
+                } as unknown as Dialog);
+
+                await addFragment.onCreateBtnPress(event as unknown as Event);
+
+                expect(executeSpy).toHaveBeenCalledWith({
+                    _oPreparedChange: {
+                        _oDefinition: {
+                            moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                        },
+                        setModuleName: expect.any(Function)
+                    },
+                    getPreparedChange: expect.any(Function)
+                });
+
+                expect(setContentSpy).toHaveBeenCalledWith({
+                    ...dummyContent,
+                    templateName: 'ANALYTICAL_TABLE_COLUMN'
+                });
             });
         });
     });

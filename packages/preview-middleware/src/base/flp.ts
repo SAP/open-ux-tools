@@ -18,6 +18,8 @@ import {
     type OperationType
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
@@ -104,8 +106,14 @@ export class FlpSandbox {
      * @param manifest application manifest
      * @param componentId optional componentId e.g. for adaptation projects
      * @param resources optional additional resource mappings
+     * @param descriptor optional additional descriptor mappings
      */
-    async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
+    async init(
+        manifest: Manifest,
+        componentId?: string,
+        resources: Record<string, string> = {},
+        descriptor?: MergedAppDescriptor
+    ): Promise<void> {
         this.createFlexHandler();
         this.config.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app'].id;
@@ -120,7 +128,8 @@ export class FlpSandbox {
                 local: '.',
                 intent: this.config.intent
             },
-            this.logger
+            this.logger,
+            descriptor
         );
         this.addStandardRoutes();
         if (this.rta) {
@@ -167,6 +176,8 @@ export class FlpSandbox {
             developerMode: editor.developerMode === true,
             pluginScript: editor.pluginScript
         };
+        config.features = FeatureToggleAccess.getAllFeatureToggles();
+
         if (editor.developerMode === true) {
             config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
         }
@@ -182,7 +193,7 @@ export class FlpSandbox {
     private addEditorRoutes(rta: RtaConfig) {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
         for (const editor of rta.editors) {
-            let previewUrl = editor.path;
+            let previewUrl = editor.path.startsWith('/') ? editor.path : `/${editor.path}`;
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
@@ -193,6 +204,7 @@ export class FlpSandbox {
                         templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
                     }
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
+                    const features = FeatureToggleAccess.getAllFeatureToggles();
                     const envPort = process.env.FIORI_TOOLS_LIVERELOAD_PORT;
                     let livereloadPort: number = envPort ? parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
                     livereloadPort = isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
@@ -203,7 +215,8 @@ export class FlpSandbox {
                         appName: rta.options?.appName,
                         scenario,
                         livereloadPort,
-                        livereloadUrl: envLivereloadUrl
+                        livereloadUrl: envLivereloadUrl,
+                        features: JSON.stringify(features)
                     });
                     this.sendResponse(res, 'text/html', 200, html);
                 });
@@ -214,7 +227,16 @@ export class FlpSandbox {
                 this.router.use(`${path}editor`, serveStatic(cpe));
             }
 
-            this.router.get(previewUrl, (_req: Request, res: Response) => {
+            this.router.get(previewUrl, (req: Request, res: Response) => {
+                if (!req.query['fiori-tools-rta-mode']) {
+                    // Redirect to the same URL but add the necessary parameter
+                    const params = JSON.parse(JSON.stringify(req.query));
+                    params['sap-ui-xx-viewCache'] = 'false';
+                    params['fiori-tools-rta-mode'] = 'true';
+                    params['sap-ui-rta-skip-flex-validation'] = 'true';
+                    res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
+                    return;
+                }
                 const html = this.generateSandboxForEditor(rta, editor).replace(
                     '</body>',
                     `</body>\n<!-- livereload disabled for editor </body>-->`
@@ -531,10 +553,8 @@ export async function initAdp(
         }
 
         const descriptor = adp.descriptor;
-        descriptor.asyncHints.requests = [];
         const { name, manifest } = descriptor;
-
-        await flp.init(manifest, name, adp.resources);
+        await flp.init(manifest, name, adp.resources, descriptor);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
         flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         flp.router.use(json());

@@ -7,6 +7,7 @@ import { readFileSync } from 'fs';
 import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 export interface CustomConnector {
     applyConnector: string;
@@ -33,7 +34,7 @@ export interface TemplateConfig {
             additionalInformation: string;
             applicationType: 'URL';
             url: string;
-            applicationDependencies?: { manifest: boolean };
+            applicationDependencies?: MergedAppDescriptor;
         }
     >;
     ui5: {
@@ -50,6 +51,7 @@ export interface TemplateConfig {
         developerMode: boolean;
         pluginScript?: string;
     };
+    features?: { feature: string; isEnabled: boolean }[];
     locateReuseLibsScript?: boolean;
 }
 
@@ -163,12 +165,13 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}) {
  */
 export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): void {
     if (config.rta && config.adp === undefined) {
-        config.rta.editors = config.rta.editors.filter((editor) => {
+        config.rta.editors = config.rta.editors.map((editor) => {
             if (editor.developerMode) {
                 logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
                 logger.warn(`developerMode for ${editor.path} disabled`);
+                editor.developerMode = false;
             }
-            return !editor.developerMode;
+            return editor;
         });
     }
 }
@@ -203,22 +206,34 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
  * @param manifest manifest of the additional target app
  * @param app configuration for the preview
  * @param logger logger instance
+ * @param descriptor descriptor of the additional target app
  */
-export async function addApp(templateConfig: TemplateConfig, manifest: Partial<Manifest>, app: App, logger: Logger) {
+export async function addApp(
+    templateConfig: TemplateConfig,
+    manifest: Partial<Manifest>,
+    app: App,
+    logger: Logger,
+    descriptor?: MergedAppDescriptor
+) {
     const id = manifest['sap.app']?.id ?? '';
+
     app.intent ??= {
         object: id.replace(/\./g, ''),
         action: 'preview'
     };
+
+    const appName = `${app.intent?.object}-${app.intent?.action}`;
     templateConfig.ui5.resources[id] = app.target;
-    templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
+    templateConfig.apps[appName] = {
         title: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.title, logger)) ?? id,
         description: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.description, logger)) ?? '',
         additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
         applicationType: 'URL',
-        url: app.target,
-        applicationDependencies: { manifest: true }
+        url: app.target
     };
+    if (descriptor) {
+        templateConfig.apps[appName].applicationDependencies = descriptor;
+    }
 }
 
 /**

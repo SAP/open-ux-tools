@@ -1,5 +1,110 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.2.11
+
+### Patch Changes
+
+-   Updated dependencies [8af1ba2]
+    -   @sap-ux/odata-vocabularies@0.4.4
+    -   @sap-ux/cds-annotation-parser@0.2.4
+    -   @sap-ux/cds-odata-annotation-converter@0.3.8
+    -   @sap-ux/xml-odata-annotation-converter@0.3.2
+
+## 0.2.10
+
+### Patch Changes
+
+-   Updated dependencies [eb38e5b]
+    -   @sap-ux/project-access@1.28.2
+    -   @sap-ux/cds-odata-annotation-converter@0.3.7
+
+## 0.2.9
+
+### Patch Changes
+
+-   Updated dependencies [64e037d]
+    -   @sap-ux/project-access@1.28.1
+    -   @sap-ux/cds-odata-annotation-converter@0.3.7
+
+## 0.2.8
+
+### Patch Changes
+
+-   Updated dependencies [15e6959]
+    -   @sap-ux/project-access@1.28.0
+    -   @sap-ux/cds-odata-annotation-converter@0.3.7
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/cds-odata-annotation-converter@0.3.7
+
+## 0.2.6
+
+### Patch Changes
+
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/cds-annotation-parser@0.2.3
+    -   @sap-ux/cds-odata-annotation-converter@0.3.7
+    -   @sap-ux/odata-annotation-core-types@0.4.2
+    -   @sap-ux/odata-annotation-core@0.2.2
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/odata-vocabularies@0.4.3
+    -   @sap-ux/xml-odata-annotation-converter@0.3.2
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/cds-odata-annotation-converter@0.3.6
+
+## 0.2.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.27.4
+-   @sap-ux/cds-odata-annotation-converter@0.3.6
+
+## 0.2.3
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/cds-odata-annotation-converter@0.3.6
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/cds-odata-annotation-converter@0.3.6
+
+## 0.2.1
+
+### Patch Changes
+
+-   a0836d0: Fixed writing SAP annotations to a file outside CDS project
+
+## 0.2.0
+
+### Minor Changes
+
+-   6ac4f50: Enable generating SAP annotations for CAP CDS projects
+
+## 0.1.41
+
+### Patch Changes
+
+-   Updated dependencies [2f64664]
+    -   @sap-ux/cds-odata-annotation-converter@0.3.6
+
 ## 0.1.40
 
 ### Patch Changes

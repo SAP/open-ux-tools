@@ -1,9 +1,10 @@
 .filter-outline {
     display: flex;
-    padding: 15px 14px 15px 14px;
+    padding: 15px 15px 15px 15px;
     flex-direction: row;
     align-items: center;
     background-color: var(--vscode-sideBar-background);
+    border-bottom: 1px solid var(--vscode-menu-separatorBackground);
 }
 
 .auto-element-scroller {
@@ -141,11 +142,4 @@
     color: var(--vscode-list-activeSelectionForeground);
     background-color: var(--vscode-list-activeSelectionBackground);
     outline: 1px solid var(--vscode-contrastActiveBorder);
-    i {
-        svg {
-            path {
-                fill: var(--vscode-list-activeSelectionForeground)
-            }
-        }
-    }
 }

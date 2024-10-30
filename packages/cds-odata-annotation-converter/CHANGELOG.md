@@ -1,5 +1,29 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [8af1ba2]
+    -   @sap-ux/odata-vocabularies@0.4.4
+    -   @sap-ux/cds-annotation-parser@0.2.4
+
+## 0.3.7
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/cds-annotation-parser@0.2.3
+    -   @sap-ux/odata-annotation-core@0.2.2
+    -   @sap-ux/odata-vocabularies@0.4.3
+
+## 0.3.6
+
+### Patch Changes
+
+-   2f64664: Refactor unit tests and remove cdsArtifacts method
+
 ## 0.3.5
 
 ### Patch Changes

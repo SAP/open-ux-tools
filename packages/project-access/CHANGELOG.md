@@ -1,5 +1,54 @@
 # @sap-ux/project-access
 
+## 1.28.2
+
+### Patch Changes
+
+-   eb38e5b: refactor: Update variable declarations in getCapModelAndServices function
+
+## 1.28.1
+
+### Patch Changes
+
+-   64e037d: TBI - Optionally allow filtering CAP folder(s) to compile CAP model from
+
+## 1.28.0
+
+### Minor Changes
+
+-   15e6959: TBI - refactor validation on target folder in app inquirer
+
+## 1.27.6
+
+### Patch Changes
+
+-   eb74890: Fix the bug for the app folder within CAP as the target folder for the new project.
+
+## 1.27.5
+
+### Patch Changes
+
+-   a64a3a5: Alert and prevent from generating a Fiori application into a CAP project folder
+
+## 1.27.4
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/ui5-config@0.25.0
+
+## 1.27.3
+
+### Patch Changes
+
+-   070182d: New public API method 'deleteCapApp', which allow delete application from CAP project
+
+## 1.27.2
+
+### Patch Changes
+
+-   09522df: Validates provided path does not contain a Fiori project, appropriate validation message displayed.
+
 ## 1.27.1
 
 ### Patch Changes

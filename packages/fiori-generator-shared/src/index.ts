@@ -1,5 +1,11 @@
 export * from './cap';
 export * from './environment';
-export { getBootstrapResourceUrls } from './helpers';
-export { generateReadMe } from './read-me';
+export * from './logWrapper';
 export * from './system-utils';
+export * from './telemetry';
+export { getPackageScripts } from './getPackageScripts';
+export { getBootstrapResourceUrls, getDefaultTargetFolder } from './helpers';
+export { generateReadMe } from './read-me';
+export { getHostEnvironment } from './environment';
+export { isExtensionInstalled } from './installedCheck';
+export { PackageJsonScripts, YeomanEnvironment, VSCodeInstance, hostEnvironment } from './types';

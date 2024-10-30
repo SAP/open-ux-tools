@@ -1,10 +1,5 @@
 import { isAppStudio, isOnPremiseDestination } from '@sap-ux/btp-utils';
-import {
-    abapDeployConfigInternalPromptNames,
-    AbapDeployConfigPromptOptions,
-    ClientChoiceValue,
-    TargetSystemType
-} from '../../../src/types';
+import { promptNames, AbapDeployConfigPromptOptions, ClientChoiceValue, TargetSystemType } from '../../../src/types';
 import { getAbapTargetPrompts } from '../../../src/prompts/questions';
 import { getAbapSystems } from '../../../src/utils';
 import { mockDestinations } from '../../fixtures/destinations';
@@ -115,7 +110,6 @@ describe('getAbapTargetPrompts', () => {
                 "filter": [Function],
                 "guiOptions": Object {
                   "breadcrumb": "Client",
-                  "mandatory": true,
                 },
                 "message": "Enter client",
                 "name": "client",
@@ -145,9 +139,7 @@ describe('getAbapTargetPrompts', () => {
         } as AbapDeployConfigPromptOptions;
 
         const abapTargetPrompts = await getAbapTargetPrompts(abapDeployConfigPromptOptions);
-        const destPrompt = abapTargetPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.destination
-        );
+        const destPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.destination);
 
         if (destPrompt) {
             expect((destPrompt.when as Function)()).toBe(true);
@@ -190,7 +182,7 @@ describe('getAbapTargetPrompts', () => {
         const updateDestinationPromptStateSpy = jest.spyOn(validators, 'updateDestinationPromptState');
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const destinationCliSetterPrompt = abapTargetPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.destinationCliSetter
+            (prompt) => prompt.name === promptNames.destinationCliSetter
         );
 
         if (destinationCliSetterPrompt) {
@@ -212,9 +204,7 @@ describe('getAbapTargetPrompts', () => {
         jest.spyOn(validators, 'validateTargetSystem').mockReturnValueOnce(true);
 
         const abapTargetPrompts = await getAbapTargetPrompts({});
-        const targetSystemPrompt = abapTargetPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.targetSystem
-        );
+        const targetSystemPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.targetSystem);
 
         if (targetSystemPrompt) {
             expect((targetSystemPrompt.when as Function)()).toBe(true);
@@ -260,7 +250,7 @@ describe('getAbapTargetPrompts', () => {
         const validateTargetSystemUrlCliSpy = jest.spyOn(validators, 'validateTargetSystemUrlCli');
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const targetSystemCliSetterPrompt = abapTargetPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.targetSystemCliSetter
+            (prompt) => prompt.name === promptNames.targetSystemCliSetter
         );
 
         if (targetSystemCliSetterPrompt) {
@@ -282,7 +272,7 @@ describe('getAbapTargetPrompts', () => {
         jest.spyOn(validators, 'validateTargetSystemUrlCli').mockReturnValueOnce();
         jest.spyOn(validators, 'validateUrl').mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({});
-        const urlPrompt = abapTargetPrompts.find((prompt) => prompt.name === abapDeployConfigInternalPromptNames.url);
+        const urlPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.url);
 
         if (urlPrompt) {
             expect((urlPrompt.when as Function)({ targetSystem: TargetSystemType.Url })).toBe(true);
@@ -305,7 +295,7 @@ describe('getAbapTargetPrompts', () => {
         const abapTargetPrompts = await getAbapTargetPrompts({
             backendTarget: { abapTarget: { scp: true } as UrlAbapTarget }
         });
-        const scpPrompt = abapTargetPrompts.find((prompt) => prompt.name === abapDeployConfigInternalPromptNames.scp);
+        const scpPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.scp);
 
         if (scpPrompt) {
             expect(
@@ -330,9 +320,7 @@ describe('getAbapTargetPrompts', () => {
         jest.spyOn(conditions, 'showClientChoiceQuestion').mockReturnValueOnce(true);
         jest.spyOn(validators, 'validateClientChoiceQuestion').mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({});
-        const clientChoicePrompt = abapTargetPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.clientChoice
-        );
+        const clientChoicePrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.clientChoice);
 
         if (clientChoicePrompt) {
             expect((clientChoicePrompt.when as Function)()).toBe(true);
@@ -370,9 +358,7 @@ describe('getAbapTargetPrompts', () => {
         const abapTargetPrompts = await getAbapTargetPrompts({
             backendTarget: { abapTarget: { client: '100' } as UrlAbapTarget }
         });
-        const clientPrompt = abapTargetPrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.client
-        );
+        const clientPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.client);
 
         if (clientPrompt) {
             expect((clientPrompt.when as Function)({})).toBe(true);

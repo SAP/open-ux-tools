@@ -84,6 +84,15 @@ describe('AdaptationProject', () => {
                     name: 'sap.reuse.lib',
                     url: { url: '/sap/reuse/lib' }
                 }
+            ],
+            components: [
+                {
+                    name: 'app.variant1',
+                    url: { url: '/webapp' }
+                },
+                {
+                    name: 'sap.io.lib.reuse'
+                }
             ]
         },
         name: 'the.original.app',
@@ -117,7 +126,7 @@ describe('AdaptationProject', () => {
             .reply(200)
             .persist(true);
         nock(backend)
-            .put('/sap/bc/lrep/appdescr_variant_preview/')
+            .put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//')
             .reply(200, {
                 'my.adaptation': mockMergedDescriptor
             })
@@ -148,7 +157,8 @@ describe('AdaptationProject', () => {
             expect(adp.descriptor).toEqual(mockMergedDescriptor);
             expect(adp.resources).toEqual({
                 'sap.reuse.lib': '/sap/reuse/lib',
-                'the.original.app': mockMergedDescriptor.url
+                'the.original.app': mockMergedDescriptor.url,
+                'app.variant1': '/webapp'
             });
         });
 
@@ -166,6 +176,32 @@ describe('AdaptationProject', () => {
 
             expect(() => adp.descriptor).toThrowError();
             expect(() => adp.resources).toThrowError();
+            await expect(() => adp.sync()).rejects.toEqual(Error('Not initialized'));
+        });
+    });
+    describe('sync', () => {
+        test('updates merged descriptor', async () => {
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getPath: () => '/manifest.appdescr_variant',
+                    getBuffer: () => Buffer.from(descriptorVariant)
+                }
+            ]);
+            await adp.init(JSON.parse(descriptorVariant));
+            (adp as any).mergedDescriptor = undefined;
+            await adp.sync();
+            expect(adp.descriptor).toBeDefined();
         });
     });
     describe('proxy', () => {
@@ -197,6 +233,18 @@ describe('AdaptationProject', () => {
             app.use((req) => fail(`${req.path} should have been intercepted.`));
 
             server = supertest(app);
+        });
+
+        afterEach(() => {
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+        });
+
+        test('/manifest.json with sync', async () => {
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
+            const syncSpy = jest.spyOn(AdpPreview.prototype, 'sync').mockImplementation(() => Promise.resolve());
+            const response = await server.get('/my/adaptation/manifest.json').expect(200);
+            expect(syncSpy).toHaveBeenCalledTimes(1);
+            expect(JSON.parse(response.text)).toEqual(mockMergedDescriptor.manifest);
         });
 
         test('/manifest.json', async () => {
