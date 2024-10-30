@@ -650,12 +650,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(commands),
             getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 

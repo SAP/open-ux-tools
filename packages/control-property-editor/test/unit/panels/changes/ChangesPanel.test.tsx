@@ -624,7 +624,8 @@ describe('ChangePanel', () => {
                             value: 'testValue1',
                             isActive: false,
                             changeType: 'propertyChange',
-                            fileName: 'testFile1'
+                            fileName: 'testFile1',
+                            propertyType: cpeCommon.PropertyType.ControlProperty
                         },
                         {
                             kind: 'property',
@@ -635,7 +636,8 @@ describe('ChangePanel', () => {
                             value: false,
                             isActive: true,
                             changeType: 'propertyChange',
-                            fileName: 'testFile2'
+                            fileName: 'testFile2',
+                            propertyType: cpeCommon.PropertyType.ControlProperty
                         },
                         {
                             kind: 'control',
