@@ -21,6 +21,7 @@ export interface ControlItemProps {
     fileName: string;
     timestamp?: number;
     controlId: string;
+    isActive: boolean;
     type: typeof SAVED_CHANGE_TYPE | typeof PENDING_CHANGE_TYPE;
 }
 
@@ -32,9 +33,16 @@ export interface ControlItemProps {
  * @param {string} props.fileName - The name of the file associated with the change.
  * @param {number} [props.timestamp] - The timestamp of the change, optional.
  * @param {string} props.type - The type of the change (e.g., 'saved' | 'pending').
+ * @param {string} props.isActive - Indicates if change is before or after current position in undo redo stack.
  * @returns {ReactElement} A React element that renders the control change UI.
  */
-export function ControlChange({ controlId, fileName, timestamp, type }: Readonly<ControlItemProps>): ReactElement {
+export function ControlChange({
+    controlId,
+    fileName,
+    timestamp,
+    type,
+    isActive
+}: Readonly<ControlItemProps>): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
@@ -80,14 +88,14 @@ export function ControlChange({ controlId, fileName, timestamp, type }: Readonly
                                 {name} {t('CHANGE')}
                             </Link>
 
-                            <Stack horizontal>
+                            <Stack horizontal style={{ opacity: isActive ? 1 : 0.4 }}>
                                 <Stack.Item className={styles.fileLabel}>{t('FILE')}</Stack.Item>
                                 <Stack.Item className={styles.fileText} title={fileName}>
                                     {fileName}
                                 </Stack.Item>
                             </Stack>
                             {controlId && (
-                                <Stack horizontal>
+                                <Stack horizontal style={{ opacity: isActive ? 1 : 0.4 }}>
                                     <Stack.Item className={styles.controlLabel}>{t('CONTROL')}</Stack.Item>
                                     <Stack.Item className={styles.controlText} title={controlId}>
                                         {controlId}
