@@ -13,7 +13,7 @@ import { getTemplateVersionPath, processDestinationPath } from './utils';
  * Input required to enable optional features.
  */
 export interface FeatureInput {
-    ui5App: { app: { id: string; baseComponent?: string; projectType?: ProjectType; ui5?: Partial<UI5> } };
+    ui5App: { app: { id: string; baseComponent?: string; projectType?: ProjectType }; ui5?: Partial<UI5> };
     fs: Editor;
     basePath: string;
     tmplPath: string;
@@ -32,7 +32,7 @@ export interface FeatureInput {
  */
 async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: FeatureInput) {
     let optTmplDirPath = join(tmplPath, 'optional', `${name}`);
-    const optionPath = getTemplateVersionPath(ui5App.app.ui5 as UI5);
+    const optionPath = getTemplateVersionPath(ui5App.ui5 as UI5);
     if (name === 'loadReuseLibs') {
         optTmplDirPath = join(optTmplDirPath, optionPath);
     }
