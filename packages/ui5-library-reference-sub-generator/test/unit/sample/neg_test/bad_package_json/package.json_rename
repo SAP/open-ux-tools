@@ -1,0 +1,8 @@
+{
+    "name": <%-  -%>,
+    "version": "",
+    "private": true,
+    "description": "",
+    "keywords": [],
+    "main": "webapp/index.html"
+}

@@ -1,0 +1,8 @@
+{
+  "name": "se.mi.plm.attachmentservice_no_manifest_json",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1"
+  }
+}

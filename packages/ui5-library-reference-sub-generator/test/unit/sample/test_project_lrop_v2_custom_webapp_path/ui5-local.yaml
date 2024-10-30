@@ -1,0 +1,35 @@
+specVersion: '2.0'
+metadata:
+  name: 'test_project_lrop_v2'
+type: application
+framework:
+  name: SAPUI5
+  version: '1.82.2'
+  libraries:
+    - name: sap.m
+    - name: sap.ushell
+    - name: sap.ui.core
+    - name: sap.f
+    - name: sap.ui.comp
+    - name: sap.ui.table
+    - name: sap.suite.ui.generic.template
+    - name: sap.ui.generic.app
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+  - name: fiori-tools-proxy
+    afterMiddleware: compression
+    configuration:
+      ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+      backend:
+      - path: /sap
+        url: http://ims.saplabs.com:50017
+  - name: fiori-tools-appreload
+    afterMiddleware: compression
+    configuration:
+     port: 35729
+     path: webapp
+resources:
+  configuration:
+    paths:
+      webapp: src/main/webapp
