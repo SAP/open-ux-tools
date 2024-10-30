@@ -17,6 +17,7 @@ import ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 import { getControlById } from '../../utils/core';
 import ControlUtils from '../control-utils';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
 type BaseDialogModel = JSONModel & {
     getProperty(sPath: '/fragmentList'): Fragments;
@@ -222,4 +223,32 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
         MessageToast.show(error.message, { duration: 5000 });
         throw error;
     }
+
+    /**
+     * Handles the index field whenever a specific aggregation is chosen
+     *
+     * @param specialIndexAggregation string | number
+     */
+    protected specialIndexHandling(specialIndexAggregation: string | number): void {
+        const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
+        const aggregations = overlay.getDesignTimeMetadata().getData().aggregations;
+
+        if (
+            specialIndexAggregation in aggregations &&
+            'specialIndexHandling' in aggregations[specialIndexAggregation]
+        ) {
+            const controlType = this.runtimeControl.getMetadata().getName();
+            this.model.setProperty('/indexHandlingFlag', false);
+            this.model.setProperty('/specialIndexHandlingIcon', true);
+            this.model.setProperty(
+                '/iconTooltip',
+                `Index is defined by special logic of ${controlType} and can't be set here`
+            );
+        } else {
+            this.model.setProperty('/indexHandlingFlag', true);
+            this.model.setProperty('/specialIndexHandlingIcon', false);
+            this.model.setProperty('/specialIndexHandlingIconPressed', false);
+        }
+    }
+
 }
