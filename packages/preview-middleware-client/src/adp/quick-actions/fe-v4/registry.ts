@@ -11,6 +11,7 @@ import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
 import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
 import { AddPageActionQuickAction } from '../common/create-page-action';
 import { AddTableActionQuickAction } from './create-table-action';
+import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-range-filter-bar';
 
 type PageName = 'listReport' | 'objectPage';
 
@@ -39,7 +40,8 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         AddControllerToPageQuickAction,
                         ChangeTableColumnsQuickAction,
                         AddPageActionQuickAction,
-                        AddTableActionQuickAction
+                        AddTableActionQuickAction,
+                        ToggleSemanticDateRangeFilterBar
                     ],
                     view,
                     key: name + index
