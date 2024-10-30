@@ -1,5 +1,5 @@
 import { gte } from 'semver';
-import { UI5, type Ui5App } from './types';
+import { type UI5 } from './types';
 
 export const ui5LtsVersion_1_71 = '1.71.0';
 export const ui5LtsVersion_1_120 = '1.120.0';

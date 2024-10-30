@@ -6,7 +6,7 @@ import { getFilePaths } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
 import { mergeObjects, UI5_DEFAULT } from '@sap-ux/ui5-config';
-import type { Package, ProjectType } from '@sap-ux/project-access';
+import type { ProjectType } from '@sap-ux/project-access';
 import { getTemplateVersionPath, processDestinationPath } from './utils';
 
 /**
