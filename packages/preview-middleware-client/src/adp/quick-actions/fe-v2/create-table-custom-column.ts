@@ -17,10 +17,48 @@ import ManagedObject from 'sap/ui/base/ManagedObject';
 import UI5Element from 'sap/ui/core/Element';
 import { notifyUser } from '../../utils';
 import { getTextBundle } from '../../../i18n';
+import { FeatureService } from '../../../cpe/feature-service';
+import ObjectPageSection from 'sap/uxap/ObjectPageSection';
+import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
+import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import IconTabBar from 'sap/m/IconTabBar';
 
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
 
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, TREE_TABLE_TYPE, GRID_TABLE_TYPE];
+
+/**
+ * Reusable function which performs some preparation steps before table action execution
+ *
+ * @param table - table element
+ * @param sectionInfo - section data
+ * @param iconTabBar - icon tab bar element
+ * @param iconTabBarFilterKey - tab bar key to select a tab
+ */
+export function preprocessActionExecution(
+    table: UI5Element,
+    sectionInfo:
+        | {
+              section: ObjectPageSection;
+              subSection: ObjectPageSubSection;
+              layout?: ObjectPageLayout;
+          }
+        | undefined,
+    iconTabBar: IconTabBar | undefined,
+    iconTabBarFilterKey: string | undefined
+) {
+    if (sectionInfo) {
+        const { layout, section, subSection } = sectionInfo;
+        layout?.setSelectedSection(section);
+        section.setSelectedSubSection(subSection);
+    } else {
+        getControlById(table.getId())?.getDomRef()?.scrollIntoView();
+    }
+
+    if (iconTabBar && iconTabBarFilterKey) {
+        iconTabBar.setSelectedKey(iconTabBarFilterKey);
+    }
+}
 
 export class AddTableCustomColumnQuickAction
     extends TableQuickActionDefinitionBase
@@ -30,25 +68,24 @@ export class AddTableCustomColumnQuickAction
         super(CREATE_TABLE_CUSTOM_COLUMN, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN', context);
     }
 
+    /**
+     * Initializes action object instance
+     */
+    async initialize(): Promise<void> {
+        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
+            return;
+        }
+        await super.initialize();
+    }
+
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         if (!table) {
             return [];
         }
 
-        if (sectionInfo) {
-            const { layout, section, subSection } = sectionInfo;
-            layout?.setSelectedSection(section);
-            section.setSelectedSubSection(subSection);
-            this.selectOverlay(table);
-        } else {
-            getControlById(table.getId())?.getDomRef()?.scrollIntoView();
-            this.selectOverlay(table);
-        }
-
-        if (this.iconTabBar && iconTabBarFilterKey) {
-            this.iconTabBar.setSelectedKey(iconTabBarFilterKey);
-        }
+        preprocessActionExecution(table, sectionInfo, this.iconTabBar, iconTabBarFilterKey);
+        this.selectOverlay(table);
 
         let tableInternal: ManagedObject | undefined = table;
         if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {

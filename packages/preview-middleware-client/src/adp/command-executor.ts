@@ -60,7 +60,7 @@ export default class CommandExecutor {
      */
     public async createCompositeCommand(runtimeControl: ManagedObject): Promise<CompositeCommand> {
         try {
-            return CommandFactory.getCommandFor<CompositeCommand>(runtimeControl, 'composite');
+            return await CommandFactory.getCommandFor<CompositeCommand>(runtimeControl, 'composite');
         } catch (e) {
             const error = getError(e);
             const msgToastErrorMsg = `Could not get composite command'. ${error.message}`;
