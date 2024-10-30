@@ -1,5 +1,21 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [cd28744]
+    -   @sap-ux/ui5-info@0.8.2
+    -   @sap-ux/inquirer-common@0.4.9
+
+## 0.7.6
+
+### Patch Changes
+
+-   02e4f29: add resource bundle for inquirer common in consumers
+-   Updated dependencies [02e4f29]
+    -   @sap-ux/inquirer-common@0.4.8
+
 ## 0.7.5
 
 ### Patch Changes

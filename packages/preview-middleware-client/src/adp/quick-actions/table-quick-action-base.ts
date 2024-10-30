@@ -3,24 +3,29 @@ import { NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/con
 import type IconTabBar from 'sap/m/IconTabBar';
 import type IconTabFilter from 'sap/m/IconTabFilter';
 import type Table from 'sap/m/Table';
+import type MdcTable from 'sap/ui/mdc/Table';
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
-import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
+import { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import type { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
-import { getParentContainer, getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import { getControlById, isA, isManagedObject } from '../../../utils/core';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
+import { getParentContainer, getRelevantControlFromActivePage } from '../../cpe/quick-actions/utils';
+import { getControlById, isA, isManagedObject } from '../../utils/core';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
 import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
-import TreeTable from 'sap/ui/table/TreeTable';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
 const SETTINGS_ID = 'CTX_SETTINGS';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
-const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
-const M_TABLE_TYPE = 'sap.m.Table';
+export const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
+export const M_TABLE_TYPE = 'sap.m.Table';
+export const MDC_TABLE_TYPE = 'sap.ui.mdc.Table';
+export const TREE_TABLE_TYPE = 'sap.ui.table.TreeTable';
+export const GRID_TABLE_TYPE = 'sap.ui.table.Table';
+export const ANALYTICAL_TABLE_TYPE = 'sap.ui.table.AnalyticalTable';
+
 async function getActionId(table: UI5Element): Promise<string[]> {
     const { major, minor } = await getUi5Version();
 
@@ -136,13 +141,12 @@ export abstract class TableQuickActionDefinitionBase {
      * @returns table label if found or 'Unnamed table'
      */
     private getTableLabel(table: UI5Element): string {
-        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+        if (isA<SmartTable>(SMART_TABLE_TYPE, table) || isA<MdcTable>(MDC_TABLE_TYPE, table)) {
             const header = table.getHeader();
             if (header) {
                 return `'${header}' table`;
             }
-        }
-        if (isA<Table>(M_TABLE_TYPE, table)) {
+        } else if (isA<Table>(M_TABLE_TYPE, table)) {
             const tilte = table?.getHeaderToolbar()?.getTitleControl()?.getText();
             if (tilte) {
                 return `'${tilte}' table`;
@@ -230,18 +234,13 @@ export abstract class TableQuickActionDefinitionBase {
         table: UI5Element,
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
     ): void {
-        if (isA<SmartTable>(SMART_TABLE_TYPE, table) || isA<TreeTable>('sap.ui.table.TreeTable', table)) {
+        if ([SMART_TABLE_TYPE, M_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE].some((type) => isA(type, table))) {
             this.children.push({
                 label: this.getTableLabel(table),
                 children: []
             });
         }
-        if (isA<Table>(M_TABLE_TYPE, table)) {
-            this.children.push({
-                label: this.getTableLabel(table),
-                children: []
-            });
-        }
+
         this.tableMap[`${this.children.length - 1}`] = {
             table,
             sectionInfo: sectionInfo,

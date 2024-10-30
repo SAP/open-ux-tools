@@ -1,7 +1,7 @@
 import type { App, UI5, AppOptions, Ui5App } from '../types';
 import type { Package } from '@sap-ux/project-access';
 import { mergeObjects } from '@sap-ux/ui5-config';
-import { mergeApp, packageDefaults, mergeUi5, getSpecTagVersion } from './defaults';
+import { mergeApp, packageDefaults, mergeUi5 } from './defaults';
 import { validate } from './validators';
 
 /**
@@ -35,12 +35,6 @@ export function mergeWithDefaults(ui5App: Ui5App): {
     if (!isEdmxProjectType) {
         // sapuxLayer is not defined for cap projects
         ui5App.package.sapuxLayer = undefined;
-    }
-
-    if (ui5App.appOptions.sapux && isEdmxProjectType) {
-        // Add @sap/ux-specification to devDependencies only for non-CAP projects
-        ui5App.package.devDependencies = ui5App.package.devDependencies || {};
-        ui5App.package.devDependencies['@sap/ux-specification'] = getSpecTagVersion(ui5App.ui5.version);
     }
 
     return ui5App as {
