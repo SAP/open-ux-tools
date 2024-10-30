@@ -1,5 +1,49 @@
 # @sap-ux/preview-middleware
 
+## 0.16.97
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.64
+
+## 0.16.96
+
+### Patch Changes
+
+-   29a4ef6: feat: create page and table action quick actions for OData(v4) applications
+-   Updated dependencies [29a4ef6]
+    -   @sap-ux/adp-tooling@0.12.63
+
+## 0.16.95
+
+### Patch Changes
+
+-   4f9528e: Fixed incorrect displaying of inactive composite and control changes
+
+## 0.16.94
+
+### Patch Changes
+
+-   fe9febe: add deep links to readme
+
+## 0.16.93
+
+### Patch Changes
+
+-   5ec7106: Modified indicators incorrectly displayed for some UI5 controls in Adaptation Project
+
+## 0.16.92
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.62
+
+## 0.16.91
+
+### Patch Changes
+
+-   c04007b: Enable quick actions by default
+
 ## 0.16.90
 
 ### Patch Changes

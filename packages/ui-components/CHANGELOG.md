@@ -1,5 +1,27 @@
 # @sap-ux/ui-components
 
+## 1.20.3
+
+### Patch Changes
+
+-   e9e1e4d: Add aria-label for UIFlexibleTable Add Row Button
+
+## 1.20.2
+
+### Patch Changes
+
+-   9d06579: UITextInput, UIComboBox, UIDropdown, and UIChoiceGroup: Do not announce 'asterisk' on screen readers for required labels
+
+## 1.20.1
+
+### Patch Changes
+
+-   f7c606c: UIComboBox/UIDropdown:
+    Fixed an issue where `calloutCollisionTransformation` gets overwritten when external listeners are passed for the following props:
+    -   calloutProps.preventDismissOnEvent
+    -   calloutProps.layerProps.onLayerDidMount
+    -   calloutProps.layerProps.onLayerWillUnmount
+
 ## 1.20.0
 
 ### Minor Changes

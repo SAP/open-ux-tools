@@ -15,7 +15,7 @@ import { ChangeTableColumnsQuickAction } from './change-table-columns';
 import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
 import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
 import { AddTableActionQuickAction } from '../fe-v2/create-table-action';
-import { AddPageActionQuickAction } from '../fe-v2/create-page-action';
+import { AddPageActionQuickAction } from '../common/create-page-action';
 import { ToggleSemanticDateRangeFilterBar } from './lr-enable-smeantic-date-range-filter-bar';
 type PageName = 'listReport' | 'objectPage';
 

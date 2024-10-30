@@ -6,6 +6,7 @@ import { data as originalData, groupsData as originalGroupsData } from '../../__
 import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 import { KeyCodes, ComboBox, Autofill } from '@fluentui/react';
+import { CalloutCollisionTransform } from '../../../src/components/UICallout/CalloutCollisionTransform';
 
 const data = JSON.parse(JSON.stringify(originalData));
 const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
@@ -32,8 +33,18 @@ describe('<UIComboBox />', () => {
             target: getInputTarget(query)
         });
     };
+    let CalloutCollisionTransformSpy: {
+        preventDismissOnEvent: jest.SpyInstance;
+        applyTransformation: jest.SpyInstance;
+        resetTransformation: jest.SpyInstance;
+    };
 
     beforeEach(() => {
+        CalloutCollisionTransformSpy = {
+            preventDismissOnEvent: jest.spyOn(CalloutCollisionTransform.prototype, 'preventDismissOnEvent'),
+            applyTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'applyTransformation'),
+            resetTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'resetTransformation')
+        };
         wrapper = Enzyme.mount(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" />);
     });
 
@@ -81,6 +92,48 @@ describe('<UIComboBox />', () => {
                 "fontSize": "13px",
                 "fontWeight": "bold",
                 "padding": "4px 0",
+              },
+            }
+        `
+        );
+    });
+
+    it('Styles - required', () => {
+        wrapper.setProps({
+            required: true
+        });
+        const styles = wrapper.find(ComboBox).props().styles;
+        expect(styles).toMatchInlineSnapshot(
+            {},
+            `
+            Object {
+              "errorMessage": Array [
+                Object {
+                  "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
+                  "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "borderColor": "var(--vscode-inputValidation-errorBorder)",
+                  "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "color": "var(--vscode-input-foreground)",
+                  "margin": 0,
+                  "paddingBottom": 5,
+                  "paddingLeft": 8,
+                  "paddingTop": 4,
+                },
+              ],
+              "label": Object {
+                "color": "var(--vscode-input-foreground)",
+                "fontFamily": "var(--vscode-font-family)",
+                "fontSize": "13px",
+                "fontWeight": "bold",
+                "padding": "4px 0",
+                "selectors": Object {
+                  "::after": Object {
+                    "color": "var(--vscode-inputValidation-errorBorder)",
+                    "content": "' *' / ''",
+                    "paddingRight": 12,
+                  },
+                },
               },
             }
         `
@@ -785,6 +838,13 @@ describe('<UIComboBox />', () => {
                     expect(calloutProps?.preventDismissOnEvent).toBeDefined();
                     expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
                     expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+
+                    calloutProps?.preventDismissOnEvent?.({} as Event);
+                    calloutProps?.layerProps?.onLayerDidMount?.();
+                    calloutProps?.layerProps?.onLayerWillUnmount?.();
+                    expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(expected ? 1 : 0);
+                    expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(expected ? 1 : 0);
+                    expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(expected ? 1 : 0);
                 } else {
                     expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
                     expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
@@ -792,6 +852,36 @@ describe('<UIComboBox />', () => {
                 }
             });
         }
+
+        it(`Pass external listeners`, () => {
+            const externalListeners = {
+                calloutProps: {
+                    preventDismissOnEvent: jest.fn(),
+                    layerProps: {
+                        onLayerDidMount: jest.fn(),
+                        onLayerWillUnmount: jest.fn()
+                    }
+                }
+            };
+            wrapper.setProps({
+                multiSelect: true,
+                calloutCollisionTransformation: true,
+                ...externalListeners
+            });
+            const dropdown = wrapper.find(ComboBox);
+            expect(dropdown.length).toEqual(1);
+            const calloutProps = dropdown.prop('calloutProps');
+
+            calloutProps?.preventDismissOnEvent?.({} as Event);
+            calloutProps?.layerProps?.onLayerDidMount?.();
+            calloutProps?.layerProps?.onLayerWillUnmount?.();
+            expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.preventDismissOnEvent).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerDidMount).toBeCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerWillUnmount).toBeCalledTimes(1);
+        });
     });
 
     describe('Test "isLoading" property', () => {

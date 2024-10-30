@@ -1,6 +1,10 @@
 import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import type { ChangeService } from '../../../../src/cpe/changes/service';
+const mockChangeService = {
+    syncOutlineChanges: jest.fn()
+} as unknown as ChangeService;
 
 import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 
@@ -12,6 +16,7 @@ jest.mock('../../../../src/adp/init-dialogs', () => {
 });
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
+import { FeatureService } from '../../../../src/cpe/feature-service';
 
 import FEV4QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe-v4/registry';
 import { sapCoreMock } from 'mock/window';
@@ -96,7 +101,7 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -226,7 +231,7 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -270,6 +275,15 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('change table columns', () => {
+            beforeEach(() => {
+                jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature: string) => {
+                    if (feature === 'cpe.beta.quick-actions') {
+                        return true;
+                    }
+                    return false;
+                });
+                FeatureService.isFeatureEnabled;
+            });
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
@@ -337,7 +351,7 @@ describe('FE V2 quick actions', () => {
                     }
                 });
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -369,6 +383,18 @@ describe('FE V2 quick actions', () => {
                                             label: `'MyTable' table`
                                         }
                                     ]
+                                },
+                                {
+                                    'kind': 'nested',
+                                    id: 'listReport0-create_table_action',
+                                    title: 'Add Custom Table Action',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            label: `'MyTable' table`
+                                        }
+                                    ]
                                 }
                             ]
                         }
@@ -380,6 +406,149 @@ describe('FE V2 quick actions', () => {
                 );
 
                 expect(execute).toHaveBeenCalledWith('Table', 'CTX_SETTINGS0');
+            });
+        });
+
+        describe('create table action', () => {
+            test('initialize and execute action', async () => {
+                const pageView = new XMLView();
+                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
+                const scrollIntoView = jest.fn();
+                const appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'Table') {
+                        return {
+                            isA: (type: string) => type === 'sap.ui.mdc.Table',
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+                            getParent: () => pageView,
+                            getBusy: () => false
+                        };
+                    }
+
+                    if (id == 'ToolbarAction') {
+                        return {
+                            isA: (type: string) => type === 'sap.ui.mdc.ActionToolbar',
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+                            getParent: () => pageView,
+                            getBusy: () => false
+                        };
+                    }
+
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new TemplateComponentMock();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getId.mockReturnValue('test.app::ProductsList');
+                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
+                        const componentContainer = new ComponentContainer();
+                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return componentContainer;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const execute = jest.fn();
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName: string): any => {
+                    if (serviceName === 'action') {
+                        return {
+                            get: (controlId: string) => {
+                                if (controlId === 'Table') {
+                                    return [{ id: 'CTX_SETTINGS0' }];
+                                }
+                            },
+                            execute
+                        };
+                    }
+                });
+                const registry = new FEV4QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.ui.mdc.Table': [
+                        {
+                            controlId: 'Table'
+                        } as any
+                    ],
+                    'sap.ui.mdc.ActionToolbar': [
+                        {
+                            controlId: 'ToolbarAction'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'kind': 'nested',
+                                    id: 'listReport0-change-table-columns',
+                                    title: 'Change Table Columns',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            label: `'MyTable' table`
+                                        }
+                                    ]
+                                },
+                                {
+                                    'kind': 'nested',
+                                    id: 'listReport0-create_table_action',
+                                    title: 'Add Custom Table Action',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            label: `'MyTable' table`
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-create_table_action', kind: 'nested', path: '0' })
+                );
             });
         });
 
@@ -462,7 +631,7 @@ describe('FE V2 quick actions', () => {
 
                     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                     const registry = new FEV4QuickActionRegistry();
-                    const service = new QuickActionService(rtaMock, new OutlineService(rtaMock), [registry]);
+                    const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
                     await service.init(sendActionMock, subscribeMock);
 
                     await service.reloadQuickActions({

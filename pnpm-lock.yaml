@@ -589,6 +589,9 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
     devDependencies:
+      '@sap-ux/preview-middleware':
+        specifier: workspace:*
+        version: link:../preview-middleware
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -1542,6 +1545,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
       '@vscode-logging/logger':
         specifier: 2.0.0
         version: 2.0.0
@@ -1557,6 +1563,12 @@ importers:
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
+      os-name:
+        specifier: 4.0.1
+        version: 4.0.1
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
     devDependencies:
       '@types/mem-fs':
         specifier: 1.1.2
@@ -1564,6 +1576,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+      '@types/semver':
+        specifier: 7.5.2
+        version: 7.5.2
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -20964,19 +20979,23 @@ packages:
 
   /semver@5.7.2:
     resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
+    hasBin: true
 
   /semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
+    hasBin: true
 
   /semver@7.5.4:
     resolution: {integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==}
     engines: {node: '>=10'}
+    hasBin: true
     dependencies:
       lru-cache: 6.0.0
 
   /semver@7.6.0:
     resolution: {integrity: sha512-EnwXhrlwXMk9gKu5/flx5sv/an57AkRplG3hTK68W7FRDN+k+OWBj65M7719OkA82XLBxrcX0KSHj+X5COhOVg==}
     engines: {node: '>=10'}
+    hasBin: true
     dependencies:
       lru-cache: 6.0.0
     dev: true
@@ -23116,6 +23135,7 @@ packages:
 
   /which@1.3.1:
     resolution: {integrity: sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==}
+    hasBin: true
     dependencies:
       isexe: 2.0.0
 
@@ -23128,12 +23148,14 @@ packages:
   /which@3.0.1:
     resolution: {integrity: sha512-XA1b62dzQzLfaEOSQFTCOd5KFf/1VSzZo7/7TUjnya6u0vGGKzU96UQBZTAThCb2j4/xjBAyii1OhRLJEivHvg==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+    hasBin: true
     dependencies:
       isexe: 2.0.0
 
   /which@4.0.0:
     resolution: {integrity: sha512-GlaYyEb07DPxYCKhKzplCWBJtvxZcZMrL+4UkrTSJHHPyZU4mYYTv3qaOe77H7EODLSSopAUFAc6W8U4yqvscg==}
     engines: {node: ^16.13.0 || >=18.0.0}
+    hasBin: true
     dependencies:
       isexe: 3.1.1
     dev: true

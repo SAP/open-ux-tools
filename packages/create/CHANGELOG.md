@@ -1,5 +1,82 @@
 # @sap-ux/create
 
+## 0.8.56
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.9
+-   @sap-ux/preview-middleware@0.16.97
+-   @sap-ux/abap-deploy-config-inquirer@1.0.9
+-   @sap-ux/adp-tooling@0.12.64
+-   @sap-ux/cap-config-writer@0.7.50
+-   @sap-ux/app-config-writer@0.4.44
+
+## 0.8.55
+
+### Patch Changes
+
+-   Updated dependencies [29a4ef6]
+    -   @sap-ux/adp-tooling@0.12.63
+    -   @sap-ux/preview-middleware@0.16.96
+    -   @sap-ux/app-config-writer@0.4.44
+
+## 0.8.54
+
+### Patch Changes
+
+-   Updated dependencies [4f9528e]
+    -   @sap-ux/preview-middleware@0.16.95
+    -   @sap-ux/app-config-writer@0.4.44
+
+## 0.8.53
+
+### Patch Changes
+
+-   Updated dependencies [fe9febe]
+    -   @sap-ux/preview-middleware@0.16.94
+    -   @sap-ux/app-config-writer@0.4.44
+
+## 0.8.52
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.0.8
+-   @sap-ux/cap-config-writer@0.7.50
+
+## 0.8.51
+
+### Patch Changes
+
+-   Updated dependencies [5ec7106]
+    -   @sap-ux/preview-middleware@0.16.93
+    -   @sap-ux/app-config-writer@0.4.44
+
+## 0.8.50
+
+### Patch Changes
+
+-   c3a8ebe: Introduce create command to add Configuration for Variants Creation.
+-   Updated dependencies [c3a8ebe]
+    -   @sap-ux/app-config-writer@0.4.44
+
+## 0.8.49
+
+### Patch Changes
+
+-   Updated dependencies [02e4f29]
+    -   @sap-ux/inquirer-common@0.4.8
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.7
+    -   @sap-ux/adp-tooling@0.12.62
+    -   @sap-ux/preview-middleware@0.16.92
+    -   @sap-ux/cap-config-writer@0.7.49
+
+## 0.8.48
+
+### Patch Changes
+
+-   Updated dependencies [c04007b]
+    -   @sap-ux/preview-middleware@0.16.91
+
 ## 0.8.47
 
 ### Patch Changes

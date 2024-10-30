@@ -37,6 +37,10 @@ export const defaultUsage = () => {
                 </Text>
                 <UITextInput label="Enter your name" disabled></UITextInput>
             </Stack>
+
+            <Stack tokens={{ childrenGap: 16 }}>
+                <UITextInput label="Required" required={true}></UITextInput>
+            </Stack>
         </Stack>
     );
 };
