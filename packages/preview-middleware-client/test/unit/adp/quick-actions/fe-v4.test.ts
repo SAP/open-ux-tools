@@ -35,7 +35,12 @@ import UIComponent from 'sap/ui/core/UIComponent';
 import AppComponentMock from 'mock/sap/fe/core/AppComponent';
 import FlexRuntimeInfoAPI from 'mock/sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
-import { SMART_TABLE_TYPE } from '../../../../src/adp/quick-actions/table-quick-action-base';
+import {
+    ANALYTICAL_TABLE_TYPE,
+    GRID_TABLE_TYPE,
+    SMART_TABLE_TYPE,
+    TREE_TABLE_TYPE
+} from '../../../../src/adp/quick-actions/table-quick-action-base';
 import { MDC_TABLE_TYPE } from 'open/ux/preview/client/adp/quick-actions/table-quick-action-base';
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import ManagedObject from 'sap/ui/base/ManagedObject';
@@ -673,14 +678,14 @@ describe('FE V2 quick actions', () => {
 
             describe('create table custom column', () => {
                 const testCases = [
-                    { tableType: MDC_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => MDC_TABLE_TYPE }
-                    // { tableType: TREE_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => TREE_TABLE_TYPE },
-                    // {
-                    //     tableType: ANALYTICAL_TABLE_TYPE,
-                    //     dialog: DialogNames.ADD_FRAGMENT,
-                    //     toString: () => ANALYTICAL_TABLE_TYPE
-                    // },
-                    // { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
+                    { tableType: MDC_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => MDC_TABLE_TYPE },
+                    { tableType: TREE_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => TREE_TABLE_TYPE },
+                    {
+                        tableType: ANALYTICAL_TABLE_TYPE,
+                        dialog: DialogNames.ADD_FRAGMENT,
+                        toString: () => ANALYTICAL_TABLE_TYPE
+                    },
+                    { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
                 ];
                 test.each(testCases)(
                     'initialize and execute action (%s)',
