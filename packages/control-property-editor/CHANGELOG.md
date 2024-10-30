@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.24
+
+### Patch Changes
+
+-   4f9528e: Fixed incorrect displaying of inactive composite and control changes
+
 ## 0.5.23
 
 ### Patch Changes

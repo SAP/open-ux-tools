@@ -29,6 +29,7 @@ declare module 'sap/ui/rta/command/BaseCommand' {
 
 declare module 'sap/ui/rta/command/Stack' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
+    import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
     interface Stack {
         pushAndExecute(command: BaseCommand): Promise<void>;
@@ -130,7 +131,11 @@ declare module 'sap/ui/rta/command/OutlineService' {
 
 declare module 'sap/ui/fl/FakeLrepConnector' {
     export default class FakeLrepConnector {
-        static fileChangeRequestNotifier?: <T extends object>(fileName: string, kind: 'delete' | 'create', change?: T) => void;
+        static fileChangeRequestNotifier?: <T extends object>(
+            fileName: string,
+            kind: 'delete' | 'create',
+            change?: T
+        ) => void;
         static enableFakeConnector: () => void;
     }
 }

@@ -329,6 +329,8 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             return 'CUSTOM_ACTION';
         } else if (this.isObjectPageHeaderField(currentControlName, targetAggregation)) {
             return 'OBJECT_PAGE_HEADER_FIELD';
+        } else if (currentControlName === 'sap.ui.mdc.ActionToolbar' && targetAggregation === 'actions') {
+            return 'TABLE_ACTION';
         }
         return '';
     }
