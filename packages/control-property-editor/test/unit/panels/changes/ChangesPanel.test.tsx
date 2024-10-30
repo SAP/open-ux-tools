@@ -237,8 +237,12 @@ describe('ChangePanel', () => {
         });
 
         // check no controls found
-        const noControlFound = screen.getByText(/no control changes found/i);
-        expect(noControlFound).toBeInTheDocument();
+        const noChangesText = screen.getByText('No historic changes');
+        expect(noChangesText).toHaveTextContent('No historic changes');
+        const modifyApplicationText = screen.getByText('This application was not modified yet');
+        expect(modifyApplicationText).toHaveTextContent('This application was not modified yet');
+        const noChangesIcon = screen.getByTestId('Control-Property-Editor-No-Changes-Icon');
+        expect(noChangesIcon).toBeInTheDocument();
     });
 
     test('unsaved changes - all changes', () => {
@@ -603,5 +607,72 @@ describe('ChangePanel', () => {
             'example1.changes',
             'example2.changes'
         ]);
+    });
+
+    test('inactive changes', () => {
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: {
+                    controls: {},
+                    pending: [
+                        {
+                            kind: 'property',
+                            controlId: 'testId1',
+                            controlName: 'controlName1',
+                            propertyName: 'testPropertyName1',
+                            type: 'pending',
+                            value: 'testValue1',
+                            isActive: false,
+                            changeType: 'propertyChange',
+                            fileName: 'testFile1'
+                        },
+                        {
+                            kind: 'property',
+                            controlId: 'testId1BoolFalse',
+                            controlName: 'controlNameBoolFalse',
+                            propertyName: 'testPropertyNameBoolFalse',
+                            type: 'pending',
+                            value: false,
+                            isActive: true,
+                            changeType: 'propertyChange',
+                            fileName: 'testFile2'
+                        },
+                        {
+                            kind: 'control',
+                            controlId: 'ListReport::TableToolbar',
+                            type: 'pending',
+                            isActive: false,
+                            changeType: 'addXML',
+                            fileName: 'id_1691659414768_128_addXML'
+                        },
+                        {
+                            kind: 'unknown',
+                            type: 'pending',
+                            isActive: false,
+                            changeType: 'addFields',
+                            fileName: 'id_1691659414768_128_addFields'
+                        }
+                    ],
+                    saved: [],
+                    pendingChangeIds: []
+                },
+                filterQuery: filterInitOptions
+            }
+        });
+
+        // check unsaved changes
+
+        const opacity = { opacity: 0.4 };
+
+        expect(
+            screen.getByText(/Test Property Name1/i).parentElement?.parentElement?.parentElement?.parentElement
+        ).toHaveStyle(opacity);
+        expect(
+            screen.getByText(/Test Property Name Bool False/i).parentElement?.parentElement?.parentElement
+                ?.parentElement
+        ).toHaveStyle({ opacity: 1 });
+        expect(screen.getByText(/ListReport::TableToolbar/i).parentElement).toHaveStyle(opacity);
+        expect(screen.getByText(/id_1691659414768_128_addXML/i).parentElement).toHaveStyle(opacity);
+        expect(screen.getByText(/id_1691659414768_128_addFields/i).parentElement).toHaveStyle(opacity);
     });
 });

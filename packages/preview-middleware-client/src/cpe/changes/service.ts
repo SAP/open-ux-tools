@@ -387,18 +387,23 @@ export class ChangeService extends EventTarget {
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
-            const inactiveCommandCount = allCommands.length - executedCommands.length;
+            const allCommandsFlattened = allCommands.flatMap((command: FlexCommand) =>
+                typeof command.getCommands === 'function' ? command.getCommands() : [command]
+            );
+            const activeCommandCount = allCommandsFlattened.length - executedCommands.length;
             this.pendingConfigChangeMap = new Map();
-            let i: number, command: FlexCommand;
-            for ([i, command] of allCommands.entries()) {
+            let i = 0;
+            for (const command of allCommands) {
                 try {
                     if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();
                         for (const subCommand of subCommands) {
-                            await this.handleCommand(subCommand, inactiveCommandCount, i, pendingChanges);
+                            await this.handleCommand(subCommand, activeCommandCount, i, pendingChanges);
+                            i++;
                         }
                     } else {
-                        await this.handleCommand(command, inactiveCommandCount, i, pendingChanges);
+                        await this.handleCommand(command, activeCommandCount, i, pendingChanges);
+                        i++;
                     }
                 } catch (error) {
                     Log.error('CPE: Change creation Failed', getError(error));
