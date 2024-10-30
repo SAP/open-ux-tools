@@ -28,7 +28,7 @@ export class UIMessageBar extends React.Component<IMessageBarProps, {}> {
         const { messageBarType } = props;
         return {
             root: {
-                ...((messageBarType === MessageBarType.error || messageBarType === MessageBarType.success) && {
+                ...((messageBarType === MessageBarType.error || messageBarType === MessageBarType.success || messageBarType === MessageBarType.info) && {
                     backgroundColor: 'transparent'
                 })
             },
@@ -49,7 +49,7 @@ export class UIMessageBar extends React.Component<IMessageBarProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const iconName = this.props.messageBarType === MessageBarType.error ? UiIcons.Error : UiIcons.Success;
+        const iconName = this.props.messageBarType === MessageBarType.error ? UiIcons.Error : (this.props.messageBarType === MessageBarType.success ? UiIcons.Success : UiIcons.Info);
         return (
             <MessageBar {...this.props} messageBarIconProps={{ iconName }} styles={this.setStyle(this.props)}>
                 {this.props.children}

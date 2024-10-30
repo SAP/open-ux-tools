@@ -4,7 +4,7 @@ import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 import type { ChangeService } from '../changes/service';
 
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
-import { outlineChanged, SCENARIO, showMessage } from '@sap-ux-private/control-property-editor-common';
+import { outlineChanged, SCENARIO, showMessage, showInfoCenterMessage, MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../../utils/error';
 import { getTextBundle } from '../../i18n';
@@ -57,6 +57,12 @@ export class OutlineService extends EventTarget {
                         showMessage({
                             message,
                             shouldHideIframe: false
+                        })
+                    );
+                    sendAction(
+                        showInfoCenterMessage({
+                            message,
+                            type: MessageBarType.info
                         })
                     );
                     hasSentWarning = true;

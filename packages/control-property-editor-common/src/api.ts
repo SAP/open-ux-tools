@@ -234,6 +234,20 @@ export interface NestedQuickActionExecutionPayload {
 
 export type QuickActionExecutionPayload = SimpleQuickActionExecutionPayload | NestedQuickActionExecutionPayload;
 
+export interface InfoCenterMessage {
+    message: string;
+    type: any;
+}
+
+export enum MessageBarType {
+    /** Info styled MessageBar */
+    info = 0,
+    /** Error styled MessageBar */
+    error = 1,
+    /** Warning styled MessageBar */
+    warning = 5
+}
+
 /**
  * ACTIONS
  */
@@ -327,6 +341,9 @@ export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('
 export const updateQuickAction = createExternalAction<QuickAction>('update-quick-action');
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
 export const setApplicationRequiresReload = createExternalAction<boolean>('set-application-requires-reload');
+export const showInfoCenterMessage = createExternalAction<InfoCenterMessage>('show-info-center-message');
+export const clearInfoCenterMessage = createExternalAction<any>('clear-info-center-message');
+export const clearAllInfoCenterMessages = createExternalAction('clear-all-info-center-message');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -353,4 +370,7 @@ export type ExternalAction =
     | ReturnType<typeof quickActionListChanged>
     | ReturnType<typeof setApplicationRequiresReload>
     | ReturnType<typeof updateQuickAction>
-    | ReturnType<typeof executeQuickAction>;
+    | ReturnType<typeof executeQuickAction>
+    | ReturnType<typeof showInfoCenterMessage>
+    | ReturnType<typeof clearInfoCenterMessage>
+    | ReturnType<typeof clearAllInfoCenterMessages>;

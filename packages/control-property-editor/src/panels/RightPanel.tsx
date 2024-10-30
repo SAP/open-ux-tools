@@ -7,6 +7,7 @@ import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
 import { PropertiesList } from './properties';
 import { QuickActionList } from './quick-actions';
+import { InfoCenter } from './info-center'
 import type { RootState } from '../store';
 import './RightPanel.scss';
 
@@ -25,7 +26,9 @@ export function RightPanel(): ReactElement {
 
     const rowSize = 100;
     const header = 50;
-    const initialSize = actionsCount * rowSize + header;
+    // const infoCenterMessagesCount = useSelector<RootState, number>((state) => state.infoCenter.length);
+    const initialSizeQuickActions = actionsCount * rowSize + header;
+    // const initialSizeInfoCenter = infoCenterMessagesCount * rowSize + header;
     return (
         <UISections
             vertical={true}
@@ -34,7 +37,7 @@ export function RightPanel(): ReactElement {
             splitterType={UISplitterType.Resize}
             splitterLayoutType={UISplitterLayoutType.Compact}
             minSectionSize={[0, 190]}
-            sizes={[initialSize, undefined]}
+            sizes={[initialSizeQuickActions, undefined, undefined]}
             sizesAsPercents={false}
             animation={true}>
             <UISections.Section
@@ -50,6 +53,13 @@ export function RightPanel(): ReactElement {
                 height="100%"
                 cleanPadding={true}>
                 <PropertiesList />
+            </UISections.Section>
+            <UISections.Section
+                scrollable={true}
+                layout={UISectionLayout.Standard}
+                className="editor__quickactions"
+                height="100%">
+                <InfoCenter />
             </UISections.Section>
         </UISections>
     );

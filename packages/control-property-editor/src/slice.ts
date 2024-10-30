@@ -4,6 +4,7 @@ import { createSlice, createAction } from '@reduxjs/toolkit';
 import type {
     Control,
     IconDetails,
+    InfoCenterMessage,
     OutlineNode,
     PendingChange,
     PendingPropertyChange,
@@ -33,6 +34,10 @@ import {
     updateQuickAction,
     quickActionListChanged,
     applicationModeChanged,
+    showInfoCenterMessage,
+    clearInfoCenterMessage,
+    clearAllInfoCenterMessages,
+    MessageBarType,
     UNKNOWN_CHANGE_KIND,
     SAVED_CHANGE_TYPE,
     PENDING_CHANGE_TYPE,
@@ -67,6 +72,7 @@ export interface SliceState {
     applicationRequiresReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
+    infoCenter: InfoCenterMessage[];
 }
 
 export interface ChangesSlice {
@@ -156,7 +162,8 @@ export const initialState: SliceState = {
     canSave: false,
     applicationRequiresReload: false,
     isAppLoading: true,
-    quickActions: []
+    quickActions: [],
+    infoCenter: [{message: 'Message info', type: 0}, {message: 'Message error', type: 1}]
 };
 
 /**
@@ -395,6 +402,24 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                             }
                         }
                     }
+                }
+            )
+            .addMatcher(
+                showInfoCenterMessage.match,
+                (state: SliceState, action: ReturnType<typeof showInfoCenterMessage>): void => {
+                    state.infoCenter.unshift(action.payload);
+                }
+            )
+            .addMatcher(
+                clearInfoCenterMessage.match,
+                (state: SliceState, action: ReturnType<typeof clearInfoCenterMessage>): void => {
+                    state.infoCenter = state.infoCenter.filter((_, index) => index !== action.payload);
+                }
+            )
+            .addMatcher(
+                clearAllInfoCenterMessages.match,
+                (state: SliceState): void => {
+                    state.infoCenter = state.infoCenter.filter((info) => info.type === MessageBarType.error);
                 }
             )
 });
