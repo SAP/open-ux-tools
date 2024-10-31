@@ -6,11 +6,12 @@ import { sample } from './sample/metadata';
 import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { FreestyleApp } from '../src';
+import { TemplateType, type FreestyleApp } from '../src';
 import { promisify } from 'util';
 import { exec as execCP } from 'child_process';
 const exec = promisify(execCP);
 import { ServiceType } from '@sap-ux/odata-service-writer';
+import { compareUI5VersionGte, ui5LtsVersion_1_120 } from '../src/utils';
 
 export const testOutputDir = join(__dirname, '/test-output');
 
@@ -87,6 +88,7 @@ export const projectChecks = async (
     if (debugFull && (config.appOptions?.typescript || config.appOptions?.eslint)) {
         // Do additonal checks on generated projects
         const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+        const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
         let npmResult;
         try {
             // Do npm install
@@ -104,6 +106,15 @@ export const projectChecks = async (
             // Check Eslint
             if (config.appOptions?.eslint) {
                 npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
+                console.log('stdout:', npmResult.stdout);
+                console.log('stderr:', npmResult.stderr);
+            }
+            if (
+                compareUI5VersionGte(config.ui5?.minUI5Version ?? config.ui5?.version ?? '', ui5LtsVersion_1_120) &&
+                config.template.type === TemplateType.Basic
+            ) {
+                // Check UI5 linter
+                npmResult = await exec(`${npx} @ui5/linter`, { cwd: rootPath });
                 console.log('stdout:', npmResult.stdout);
                 console.log('stderr:', npmResult.stderr);
             }

@@ -18,9 +18,10 @@ import { UiIcons } from '../Icons';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty, getCalloutCollisionTransformationProps } from '../UIDropdown';
+import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from '../UIDropdown';
 import { CalloutCollisionTransform } from '../UICallout';
 import { isHTMLInputElement } from '../../utilities';
+import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -66,6 +67,13 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     isForceEnabled?: boolean;
     readOnly?: boolean;
     calloutCollisionTransformation?: boolean;
+    /**
+     * Determines whether the `key` property should be considered during search.
+     * By default, only the `text` property of an option is considered.
+     *
+     * @default false
+     */
+    searchByKeyEnabled?: boolean;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -174,7 +182,11 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 isGroupVisible = false;
             } else {
                 // Handle selectable item
-                const isHidden = option.text.toLowerCase().indexOf(this.query) === -1;
+                let isHidden = !option.text.toLowerCase().includes(this.query);
+                // Consider 'key' of option if property 'searchByKeyEnabled' is enabled
+                if (this.props.searchByKeyEnabled && isHidden) {
+                    isHidden = !option.key.toString().toLowerCase().includes(this.query);
+                }
                 option.hidden = isHidden;
                 if (this.isListHidden && !option.hidden) {
                     this.isListHidden = false;
@@ -726,7 +738,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                             ...(this.props.required && {
                                 selectors: {
                                     '::after': {
-                                        content: `' *'`,
+                                        content: REQUIRED_LABEL_INDICATOR,
                                         color: 'var(--vscode-inputValidation-errorBorder)',
                                         paddingRight: 12
                                     }
@@ -751,12 +763,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                                 }
                             })
                         },
-                        ...getCalloutCollisionTransformationProps(
-                            this.calloutCollisionTransform,
-                            this.props.multiSelect,
-                            this.props.calloutCollisionTransformation
-                        ),
-                        ...this.props.calloutProps
+
+                        ...this.props.calloutProps,
+                        ...getCalloutCollisionTransformationPropsForDropdown(this, this.calloutCollisionTransform)
                     }}
                     {...(this.props.highlight && {
                         onInput: this.onInput,

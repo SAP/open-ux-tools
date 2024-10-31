@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.5.5
+
+### Patch Changes
+
+-   5ec7106: Modified indicators incorrectly displayed for some UI5 controls in Adaptation Project
+
 ## 0.5.4
 
 ### Patch Changes
