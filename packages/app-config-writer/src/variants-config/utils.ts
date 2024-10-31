@@ -102,7 +102,6 @@ export function enhanceUrlParametersWithRta(packageJson: Package, existingParams
     if (
         (!previewMiddlewareVersion || isVersionLessThan(previewMiddlewareVersion, 0, 16, 89)) ??
         (!uxUi5ToolingVersion || isVersionLessThan(uxUi5ToolingVersion, 1, 15, 4))
-        // todo: adjust ux ui5 tooling version
     ) {
         parameters['fiori-tools-rta-mode'] = 'true';
         parameters['sap-ui-rta-skip-flex-validation'] = 'true';
