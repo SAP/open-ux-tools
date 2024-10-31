@@ -8,7 +8,7 @@ import { updateMiddlewares, createPreviewMiddlewareConfig } from '../variants-co
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../variants-config/utils';
 import type { PreviewConfigOptions } from '../types';
-import type { Intent } from '@sap-ux/preview-middleware/dist/types'; //todo: update import path
+import type { FlpConfig } from '@sap-ux/preview-middleware';
 
 /**
  * Converts the local preview files of a project to virtual files.
@@ -34,22 +34,11 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     await renameSandboxes(fs, basePath);
     await deleteNoLongerUsedFiles(fs, basePath);
 
-    // ✔ adjust all ui5 yaml files according to the package.json run script they are being used in
-    // ✔ adjust left over ui5 yaml files and adjust deprecated (fiori tools) preview (middleware) configuration
     await updatePreviewMiddlewareConfigs(fs, basePath, logger);
 
-    // ❔ read from the script (start-variants-management) in the package.json which configuration should be used
-    // ✔ update the scrip in the package.json if required (e.g. variants script needs an update of the intent).
-    // ✔ add/update the configuration of the fiori-tools-preview (if no devDependency to ux-tooling: use preview-middleware)
-    // ✔ remove url parameters for RTA editor run scripts depending on preview-middleware/fiori-tools-preview version
-    // ✔ update existing variants management run script instead of exception
-    //todo: adjust start-variants-management script
-    // - adjust only the yaml file used by the variants management script
-    // - use custom <path> (if given via -c | -config) in start-variants-management script as --config <path>
-    // ❔ use fiori run command if ux-ui5-tooling is present (or is fiori-tools-preview is being used?)
     await updateMiddlewares(fs, basePath, logger);
 
-    //todo: check for more than one preview middleware?
+    //todo: check for more than one preview middleware and report error?
 
     return fs;
 }
@@ -98,7 +87,7 @@ export async function updatePreviewMiddlewareConfigs(
         unprocessedUi5YamlFileNames.splice(unprocessedUi5YamlFileNames.indexOf(ui5Yaml), 1);
     }
     for (const ui5Yaml of unprocessedUi5YamlFileNames) {
-        //todo: adjust at least deprecated preview config?
+        //todo: adjust at least deprecated preview config in unused ui5 yaml configurations?
         //await processUi5YamlConfig(fs, basePath, ui5Yaml, '');
         logger?.warn(
             `Skipping UI5 yaml configuration file ${ui5Yaml} because it is not being used in any package.json script.`
@@ -168,7 +157,7 @@ async function processUi5YamlConfig(fs: Editor, basePath: string, ui5Yaml: strin
  */
 function extractUrlDetails(script: string): {
     path: string | undefined;
-    intent: Intent | undefined;
+    intent: FlpConfig['intent'] | undefined;
 } {
     const url = script?.match(/-o (\S*)/)?.[1] ?? script?.match(/-open (\S*)/)?.[1] ?? undefined;
     const path = url?.match(/\/([^\/?#]+\.html)(?:[\/?# ]|$)/)?.[1] ?? undefined;
@@ -194,7 +183,7 @@ function extractUrlDetails(script: string): {
  */
 export function updatePreviewMiddlewareConfig(
     previewMiddleware: CustomMiddleware<PreviewConfigOptions>,
-    intent: Intent | undefined,
+    intent: FlpConfig['intent'] | undefined,
     path: string | undefined
 ): CustomMiddleware<PreviewConfigOptions> {
     const newMiddlewareConfig = {
@@ -226,7 +215,7 @@ export function updatePreviewMiddlewareConfig(
     }
 
     if (intent) {
-        configuration.flp.intent = configuration.flp.intent ?? ({} as Intent);
+        configuration.flp.intent = configuration.flp.intent ?? ({} as FlpConfig['intent']);
         configuration.flp.intent.object = intent.object;
         configuration.flp.intent.action = intent.action;
     }
