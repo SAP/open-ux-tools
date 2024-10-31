@@ -4,7 +4,7 @@ import { ActionHandler } from '../../../../src/cpe/types';
 import {
     changeProperty,
     deletePropertyChanges,
-    setApplicationRequiresReload
+    setApplicationRequiresReload,
 } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
@@ -13,7 +13,7 @@ import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModi
 import Control from 'sap/ui/core/Control';
 import * as Utils from '../../../../src/utils/version';
 
-describe('SelectionService', () => {
+describe('ChangeService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
         return Promise.resolve();
     });
@@ -463,7 +463,7 @@ describe('SelectionService', () => {
 
         rtaMock.getCommandStack.mockReturnValue({
             getCommands: jest.fn().mockReturnValue(compositeCommand),
-            getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
         const service = new ChangeService(
             { rta: rtaMock } as any,
@@ -481,6 +481,117 @@ describe('SelectionService', () => {
             payload: {
                 saved: [],
                 pending: [
+                    {
+                        changeType: 'addSimpleFormField',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        isActive: true,
+                        fileName: 'testFileName',
+                        kind: 'control',
+                        type: 'pending'
+                    },
+                    {
+                        changeType: 'addSimpleFormField',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        isActive: true,
+                        fileName: 'testFileName',
+                        kind: 'control',
+                        type: 'pending'
+                    }
+                ]
+            }
+        });
+    });
+
+    test('inactive composite command', async () => {
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        function createCommand(properties: Map<string, any>): {
+            getElement: () => any;
+            getSelector: () => any;
+            getChangeType: () => string;
+            getPreparedChange: () => { getDefinition: () => { fileName: string } };
+        } {
+            const cache = new Map(properties);
+            return {
+                getElement: jest.fn().mockReturnValue({
+                    getMetadata: jest
+                        .fn()
+                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
+                    getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
+                }),
+                getSelector: jest.fn().mockReturnValue({
+                    id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                }),
+                getChangeType: (): any => {
+                    return cache.get('changeType');
+                },
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getSelector: jest.fn().mockReturnValue({
+                        id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                    }),
+                    getChangeType: jest.fn().mockReturnValue(cache.get('changeType')),
+                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
+                    getDefinition: jest.fn().mockReturnValue({
+                        fileName: 'testFileName'
+                    })
+                })
+            };
+        }
+        const subCommands = [
+            createCommand(
+                new Map<string, any>([
+                    ['selector', { id: 'SEPMRA_C_PD_Product--supplierView--supplierForm' }],
+                    ['changeType', 'addSimpleFormField'],
+                    ['name', 'addDelegateProperty']
+                ])
+            ),
+            createCommand(
+                new Map<string, any>([
+                    ['selector', { id: 'supplierForm_SEPMRA_C_PD_SupplierType_FaxNumber' }],
+                    ['changeType', 'addSimpleFormField'],
+                    ['name', 'addDelegateProperty']
+                ])
+            )
+        ];
+
+        const commands = [
+            createCommand(
+                new Map<string, any>([
+                    ['selector', { id: 'SEPMRA_C_PD_Product--supplierView--supplierForm' }],
+                    ['changeType', 'addSimpleFormField'],
+                    ['name', 'addDelegateProperty']
+                ])
+            ),
+            createCompositeCommand(subCommands)
+        ];
+
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(commands),
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
+        });
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        await service.init(sendActionMock, subscribeMock);
+
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+        expect(sendActionMock).toHaveBeenCalledTimes(4);
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: [
+                    {
+                        changeType: 'addSimpleFormField',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        isActive: false,
+                        fileName: 'testFileName',
+                        kind: 'control',
+                        type: 'pending'
+                    },
                     {
                         changeType: 'addSimpleFormField',
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
@@ -533,7 +644,7 @@ describe('SelectionService', () => {
 
         rtaMock.getCommandStack.mockReturnValue({
             getCommands: jest.fn().mockReturnValue(compositeCommand),
-            getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
         const service = new ChangeService(
             { rta: rtaMock } as any,
@@ -643,7 +754,7 @@ describe('SelectionService', () => {
 
         rtaMock.getCommandStack.mockReturnValue({
             getCommands: jest.fn().mockReturnValue(compositeCommand),
-            getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
         const service = new ChangeService(
             { rta: rtaMock } as any,
@@ -723,7 +834,7 @@ describe('SelectionService', () => {
 
         rtaMock.getCommandStack.mockReturnValue({
             getCommands: jest.fn().mockReturnValue(compositeCommand),
-            getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
         const service = new ChangeService(
             { rta: rtaMock } as any,
@@ -810,7 +921,7 @@ describe('SelectionService', () => {
 
         rtaMock.getCommandStack.mockReturnValue({
             getCommands: jest.fn().mockReturnValue(compositeCommand),
-            getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
         const service = new ChangeService(
             { rta: rtaMock } as any,

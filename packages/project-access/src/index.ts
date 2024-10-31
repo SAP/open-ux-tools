@@ -48,5 +48,6 @@ export {
     toReferenceUri,
     updatePackageScript
 } from './project';
+export { execNpmCommand } from './command/npm-command';
 export * from './types';
 export * from './library';

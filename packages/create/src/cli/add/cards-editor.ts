@@ -39,8 +39,7 @@ async function addCardsEditorConfig(basePath: string, simulate: boolean, skipIns
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));
             if (!skipInstall) {
-                runNpmInstallCommand(basePath);
-                logger.info('Executed npm install');
+                runNpmInstallCommand(basePath, [], { logger });
             }
         } else {
             await traceChanges(fs);
