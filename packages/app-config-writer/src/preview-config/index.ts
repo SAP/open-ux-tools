@@ -163,7 +163,7 @@ function extractUrlDetails(script: string): {
 } {
     const valueOfOpenParameterMatch = /-open (\S*)|-o (\S*)/.exec(script);
     const url = valueOfOpenParameterMatch?.[1] ?? valueOfOpenParameterMatch?.[2] ?? undefined;
-    const path = /([^/?#]+\.html)(?=[/?# ]|$)/.exec(url ?? '')?.[1] ?? undefined;
+    const path = /[^/?#\s]+\.html(?=[/?#\s]|$)/.exec(url ?? '')?.[0] ?? undefined;
     const intent = /(?<=#)\w+-\w+/.exec(url ?? '')?.[0] ?? undefined;
 
     return {
