@@ -3,7 +3,6 @@
 exports[`getQuestions getQuestions 1`] = `
 [
   {
-    "additionalMessages": [Function],
     "choices": [
       {
         "name": "Connect to a SAP System",

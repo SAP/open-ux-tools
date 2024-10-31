@@ -3,7 +3,6 @@
 exports[`API tests getPrompts, i18n is loaded 1`] = `
 [
   {
-    "additionalMessages": [Function],
     "choices": [
       {
         "name": "Connect to a SAP System",
