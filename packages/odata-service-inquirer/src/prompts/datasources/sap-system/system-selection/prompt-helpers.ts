@@ -35,7 +35,7 @@ export async function connectWithBackendSystem(
 ): Promise<ValidationResult> {
     // Create a new connection with the selected system
     let connectValResult: ValidationResult = false;
-    if (!isAppStudio() && backendSystem) {
+    if (backendSystem) {
         // Assumption: non-BAS systems are BackendSystems
         if (backendSystem.authenticationType === 'reentranceTicket') {
             connectValResult = await connectionValidator.validateUrl(backendSystem.url, {

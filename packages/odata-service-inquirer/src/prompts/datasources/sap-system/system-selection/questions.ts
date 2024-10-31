@@ -62,6 +62,7 @@ async function validateSystemSelection(
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion
 ): Promise<ValidationResult> {
+    PromptState.reset();
     if (systemSelection.type === 'newSystemChoice') {
         return true;
     }
@@ -150,7 +151,7 @@ export async function getSystemConnectionQuestions(
 
     const questions: Question[] = [
         {
-            type: promptOptions?.serviceSelection?.useAutoComplete ? 'autocomplete' : 'list',
+            type: promptOptions?.systemSelection?.useAutoComplete ? 'autocomplete' : 'list',
             name: systemSelectionPromptNames.systemSelection,
             message: t('prompts.systemSelection.message'),
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
