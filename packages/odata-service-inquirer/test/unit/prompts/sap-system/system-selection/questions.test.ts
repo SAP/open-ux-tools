@@ -28,13 +28,36 @@ jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
     getHostEnvironment: jest.fn()
 }));
-const backendSystem1: BackendSystem = {
+const backendSystemBasic: BackendSystem = {
     name: 'http://abap.on.prem:1234',
     url: 'http://abap.on.prem:1234',
     username: 'user1',
     password: 'password1'
 };
-const backendSystems: BackendSystem[] = [backendSystem1];
+const backendSystemReentrance: BackendSystem = {
+    name: 'http://s4hc:1234',
+    url: 'http:/s4hc:1234',
+    authenticationType: 'reentranceTicket'
+};
+const backendSystemServiceKeys: BackendSystem = {
+    name: 'http://abap.on.btp:1234',
+    url: 'http:/abap.on.btp:1234',
+    authenticationType: 'serviceKeys',
+    serviceKeys: {
+        uaa: {
+            clientid: 'clientid',
+            clientsecret: 'client',
+            url: 'http:/abap.on.btp:1234'
+        },
+        url: 'https://example.com/uaa',
+        systemid: 'abap_btp_001'
+    }
+};
+const backendSystems: BackendSystem[] = [backendSystemBasic];
+let mockIsAppStudio = false;
+const destination1 = { Name: 'dest1', Host: 'http://dest1.com' } as Destination;
+const destinations: Destinations = { 'dest1': destination1 };
+
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
@@ -43,10 +66,6 @@ jest.mock('@sap-ux/store', () => ({
         getAll: jest.fn().mockResolvedValue(backendSystems)
     }))
 }));
-
-let mockIsAppStudio = false;
-const destination1 = { Name: 'dest1', Host: 'http://dest1.com' } as Destination;
-const destinations: Destinations = { 'dest1': destination1 };
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -60,7 +79,14 @@ let validateDestinationResultMock = { valResult: false };
 const resetConnectionState = jest.fn().mockImplementation(() => {
     serviceProviderMock = undefined;
 });
-const validateUrlMock = jest.fn().mockResolvedValue(true);
+let validateUrlResultMock: ValidationResult = true;
+const validateUrlMock = jest.fn().mockImplementation(() => {
+    resetConnectionState();
+    if (validateUrlResultMock === true) {
+        serviceProviderMock = { name: 'connectedServiceProvider' } as Partial<ServiceProvider>;
+    }
+    return validateUrlResultMock;
+});
 const isAuthRequiredMock = jest.fn().mockResolvedValue(false);
 let validateAuthResultMock: { valResult: ValidationResult; errorType?: ERROR_TYPE } = { valResult: false };
 
@@ -72,6 +98,14 @@ const validateAuthMock = jest.fn().mockImplementation(() => {
         isAuthRequiredMock.mockResolvedValue(true);
     }
     return validateAuthResultMock;
+});
+let validateServiceInfoResultMock: ValidationResult = true;
+const validateServiceInfoMock = jest.fn().mockImplementation(() => {
+    resetConnectionState();
+    if (validateServiceInfoResultMock === true) {
+        serviceProviderMock = { name: 'connectedServiceProvider' } as Partial<ServiceProvider>;
+    }
+    return validateServiceInfoResultMock;
 });
 
 // Mocking the validateDestination function for various results
@@ -103,7 +137,8 @@ const connectionValidatorMock = {
     catalogs,
     systemAuthType: 'basic',
     validateDestination,
-    resetConnectionState
+    resetConnectionState,
+    validateServiceInfo: validateServiceInfoMock
 };
 jest.mock('../../../../../src/prompts/connectionValidator', () => {
     return {
@@ -181,7 +216,7 @@ describe('Test system selection prompts', () => {
         ).toBe(true);
     });
 
-    test('getSystemConnectionQuestions: BAS', async () => {
+    test('getSystemConnectionQuestions: BAS (Destination)', async () => {
         const connectValidator = new ConnectionValidator();
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
@@ -223,7 +258,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithDestinationSpy).not.toHaveBeenCalled();
     });
 
-    test('getSystemConnectionQuestions: non-BAS', async () => {
+    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: basic)', async () => {
         mockIsAppStudio = false;
         const connectValidator = new ConnectionValidator();
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
@@ -243,11 +278,15 @@ describe('Test system selection prompts', () => {
         expect(
             await systemSelectionPrompt.validate?.({
                 type: 'backendSystem',
-                system: backendSystem1
+                system: backendSystemBasic
             } as SystemSelectionAnswerType)
         ).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(backendSystem1, connectionValidatorMock, undefined);
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            backendSystemBasic,
+            connectionValidatorMock,
+            undefined
+        );
         connectWithBackendSystemSpy.mockClear();
 
         // If auth failed using creds from BackendSystem, the creds prompts should be displayed and the user notified that the backend system creds will be updated
@@ -256,14 +295,18 @@ describe('Test system selection prompts', () => {
         expect(
             await systemSelectionPrompt.validate?.({
                 type: 'backendSystem',
-                system: backendSystem1
+                system: backendSystemBasic
             } as SystemSelectionAnswerType)
         ).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).not.toBeDefined();
-        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(backendSystem1, connectionValidatorMock, undefined);
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            backendSystemBasic,
+            connectionValidatorMock,
+            undefined
+        );
         expect(loggerErrorSpy).toHaveBeenCalledWith(
             t('errors.storedSystemConnectionError', {
-                systemName: backendSystem1.name,
+                systemName: backendSystemBasic.name,
                 error: t('errors.authenticationFailed')
             })
         );
@@ -271,7 +314,7 @@ describe('Test system selection prompts', () => {
         expect(
             await systemSelectionPrompt.additionalMessages?.({
                 type: 'backendSystem',
-                system: backendSystem1
+                system: backendSystemBasic
             } as SystemSelectionAnswerType)
         ).toMatchInlineSnapshot(`
             {
@@ -287,5 +330,81 @@ describe('Test system selection prompts', () => {
         );
         expect(await (usernamePrompt?.when as Function)()).toBe(true);
         expect(await (passwordPrompt?.when as Function)()).toBe(true);
+    });
+
+    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: reentranceTicket)', async () => {
+        mockIsAppStudio = false;
+        const connectValidator = new ConnectionValidator();
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+        backendSystems.push(backendSystemReentrance);
+
+        const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
+        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'backendSystem',
+                system: backendSystemReentrance
+            } as SystemSelectionAnswerType)
+        ).toBe(true);
+        expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            backendSystemReentrance,
+            connectionValidatorMock,
+            undefined
+        );
+        connectWithBackendSystemSpy.mockClear();
+        // Handles a failed reentrance ticket validation
+        validateUrlResultMock = 'Something went wrong';
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'backendSystem',
+                system: backendSystemReentrance
+            } as SystemSelectionAnswerType)
+        ).toBe('Something went wrong');
+        expect(PromptState.odataService.connectedSystem?.serviceProvider).not.toBeDefined();
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            backendSystemReentrance,
+            connectionValidatorMock,
+            undefined
+        );
+    });
+
+    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys)', async () => {
+        mockIsAppStudio = false;
+        const connectValidator = new ConnectionValidator();
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+        backendSystems.push(backendSystemReentrance);
+
+        const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
+        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'backendSystem',
+                system: backendSystemServiceKeys
+            } as SystemSelectionAnswerType)
+        ).toBe(true);
+        expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            backendSystemServiceKeys,
+            connectionValidatorMock,
+            undefined
+        );
+        connectWithBackendSystemSpy.mockClear();
+        // Handles a failed service info validation
+        validateServiceInfoResultMock = 'Something went wrong';
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'backendSystem',
+                system: backendSystemServiceKeys
+            } as SystemSelectionAnswerType)
+        ).toBe('Something went wrong');
+        expect(PromptState.odataService.connectedSystem?.serviceProvider).not.toBeDefined();
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            backendSystemServiceKeys,
+            connectionValidatorMock,
+            undefined
+        );
     });
 });
