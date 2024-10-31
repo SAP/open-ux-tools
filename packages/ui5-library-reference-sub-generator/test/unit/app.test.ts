@@ -21,6 +21,13 @@ let yoEnv4 = false;
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn(),
+        createTelemetryData: jest.fn().mockReturnValue({
+            OperatingSystem: 'CLI',
+            Platform: 'darwin'
+        })
+    },
     sendTelemetry: jest.fn(),
     isExtensionInstalled: jest.fn().mockReturnValue(true)
 }));
@@ -74,8 +81,8 @@ describe('Test reference generator', () => {
         expect(sendTelemetrySpy).toBeCalledWith(
             EventName.LIB_REFERENCE_ADDED,
             expect.objectContaining({
-                OperatingSystem: expect.any(String),
-                Platform: expect.any(String)
+                OperatingSystem: 'CLI',
+                Platform: 'darwin'
             }),
             testProjectPath
         );
