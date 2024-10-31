@@ -68,9 +68,8 @@ export async function updatePreviewMiddlewareConfigs(
             continue;
         }
 
-        const getValueOfConfigParameter = new RegExp('--config (\\S*)|--c (\\S*)');
-        const match = getValueOfConfigParameter.exec(script);
-        const ui5Yaml = basename(match?.[1] ?? match?.[2] ?? 'ui5.yaml');
+        const valueOfConfigParameterMatch = /--config (\S*)|--c (\S*)/.exec(script);
+        const ui5Yaml = basename(valueOfConfigParameterMatch?.[1] ?? valueOfConfigParameterMatch?.[2] ?? 'ui5.yaml');
 
         if ((validatedUi5YamlFileNames.invalid ?? []).includes(ui5Yaml)) {
             logger?.error(
@@ -162,15 +161,10 @@ function extractUrlDetails(script: string): {
     path: string | undefined;
     intent: FlpConfig['intent'] | undefined;
 } {
-    const getValueOfOpenParameter = new RegExp('-open (\\S*)|-o (\\S*)');
-    const match = getValueOfOpenParameter.exec(script);
-    const url = match?.[1] ?? match?.[2] ?? undefined;
-
-    const getPathFromUrl = new RegExp('/([^/?#]+\\.html)(?:[/?# ]|$)');
-    const path = getPathFromUrl.exec(url ?? '')?.[1] ?? undefined;
-
-    const getIntentFromUrl = new RegExp('(?<=#)\\w+-\\w+');
-    const intent = getIntentFromUrl.exec(url ?? '')?.[0] ?? undefined;
+    const valueOfOpenParameterMatch = /-open (\S*)|-o (\S*)/.exec(script);
+    const url = valueOfOpenParameterMatch?.[1] ?? valueOfOpenParameterMatch?.[2] ?? undefined;
+    const path = /([^/?#]+\.html)(?:[/?# ]|$)/.exec(url ?? '')?.[1] ?? undefined;
+    const intent = /(?<=#)\w+-\w+/.exec(url ?? '')?.[0] ?? undefined;
 
     return {
         path,
