@@ -29,7 +29,7 @@ server:
 "
 `;
 
-exports[`convertPreview update preview middleware config - deprecated tools preview 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run -o test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+exports[`convertPreview update preview middleware config - deprecated tools preview 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run -open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
 
 exports[`convertPreview update preview middleware config - existing tools preview 1`] = `
 "specVersion: \\"3.1\\"

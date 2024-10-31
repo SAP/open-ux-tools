@@ -252,7 +252,7 @@ describe('convertPreview', () => {
         const packageJson = {
             scripts: {
                 'ui:mockserver':
-                    'fiori run -o test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
+                    'fiori run -open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
                 'start-variants-management': 'ui5 serve --o chicken.html'
             },
             'devDependencies': {

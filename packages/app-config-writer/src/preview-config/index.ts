@@ -159,9 +159,16 @@ function extractUrlDetails(script: string): {
     path: string | undefined;
     intent: FlpConfig['intent'] | undefined;
 } {
-    const url = script?.match(/-o (\S*)/)?.[1] ?? script?.match(/-open (\S*)/)?.[1] ?? undefined;
-    const path = url?.match(/\/([^\/?#]+\.html)(?:[\/?# ]|$)/)?.[1] ?? undefined;
-    const intent = url?.match(/(?<=#)\w+-\w+/)?.[0] ?? undefined;
+    const getValueOfOpenParameter = new RegExp('-o (\\S*)|-open (\\S*)');
+    const match = getValueOfOpenParameter.exec(script);
+    const url = match?.[1] ?? match?.[2] ?? undefined;
+
+    const getPathFromUrl = new RegExp('/([^/?#]+\\.html)(?:[/?# ]|$)');
+    const path = getPathFromUrl.exec(url ?? '')?.[1] ?? undefined;
+
+    const getIntentFromUrl = new RegExp('(?<=#)\\w+-\\w+');
+    const intent = getIntentFromUrl.exec(url ?? '')?.[0] ?? undefined;
+
     return {
         path,
         intent: intent
