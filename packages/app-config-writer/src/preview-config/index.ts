@@ -68,8 +68,8 @@ export async function updatePreviewMiddlewareConfigs(
             continue;
         }
 
-        const valueOfConfigParameterMatch = /--config (\S*)|--c (\S*)/.exec(script);
-        const ui5Yaml = basename(valueOfConfigParameterMatch?.[1] ?? valueOfConfigParameterMatch?.[2] ?? 'ui5.yaml');
+        const configParameterValueMatch = /--config (\S*)|--c (\S*)/.exec(script);
+        const ui5Yaml = basename(configParameterValueMatch?.[1] ?? configParameterValueMatch?.[2] ?? 'ui5.yaml');
 
         if ((validatedUi5YamlFileNames.invalid ?? []).includes(ui5Yaml)) {
             logger?.error(
@@ -161,9 +161,9 @@ function extractUrlDetails(script: string): {
     path: string | undefined;
     intent: FlpConfig['intent'] | undefined;
 } {
-    const valueOfOpenParameterMatch = /-open (\S*)|-o (\S*)/.exec(script);
-    const url = valueOfOpenParameterMatch?.[1] ?? valueOfOpenParameterMatch?.[2] ?? undefined;
-    const path = /[^/?#\s]+\.html(?=[/?#\s]|$)/.exec(url ?? '')?.[0] ?? undefined;
+    const openParameterValueMatch = /-open (\S*)|-o (\S*)/.exec(script);
+    const url = openParameterValueMatch?.[1] ?? openParameterValueMatch?.[2] ?? undefined;
+    const path = /^[^?#]+\.html/.exec(url ?? '')?.[0] ?? undefined;
     const intent = /(?<=#)\w+-\w+/.exec(url ?? '')?.[0] ?? undefined;
 
     return {

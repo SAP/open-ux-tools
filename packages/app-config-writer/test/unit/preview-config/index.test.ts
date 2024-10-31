@@ -234,7 +234,7 @@ describe('convertPreview', () => {
         const packageJson = {
             scripts: {
                 'ui:mockserver':
-                    'ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-no-middleware.yaml'
+                    'ui5 serve -o /localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-no-middleware.yaml'
             },
             'devDependencies': {
                 '@sap-ux/preview-middleware': '0.16.83'
