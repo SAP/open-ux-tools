@@ -223,7 +223,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithDestinationSpy).not.toHaveBeenCalled();
     });
 
-    test.only('getSystemConnectionQuestions: non-BAS', async () => {
+    test('getSystemConnectionQuestions: non-BAS', async () => {
         mockIsAppStudio = false;
         const connectValidator = new ConnectionValidator();
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
