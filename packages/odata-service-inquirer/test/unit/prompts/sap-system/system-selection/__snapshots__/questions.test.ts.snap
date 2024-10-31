@@ -95,7 +95,9 @@ exports[`Test system selection prompts should return system selection prompts an
         "value": {
           "system": {
             "name": "http://abap.on.prem:1234",
+            "password": "password1",
             "url": "http://abap.on.prem:1234",
+            "username": "user1",
           },
           "type": "backendSystem",
         },
