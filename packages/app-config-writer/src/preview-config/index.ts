@@ -68,7 +68,10 @@ export async function updatePreviewMiddlewareConfigs(
             continue;
         }
 
-        const ui5Yaml = basename(script?.match(/--config (\S*)/)?.[1] ?? 'ui5.yaml');
+        const getValueOfConfigParameter = new RegExp('--config (\\S*)|--c (\\S*)');
+        const match = getValueOfConfigParameter.exec(script);
+        const ui5Yaml = basename(match?.[1] ?? match?.[2] ?? 'ui5.yaml');
+
         if ((validatedUi5YamlFileNames.invalid ?? []).includes(ui5Yaml)) {
             logger?.error(
                 `Skipping script ${scriptName} with UI5 yaml configuration file ${ui5Yaml} because it does not comply with the schema.`
@@ -159,7 +162,7 @@ function extractUrlDetails(script: string): {
     path: string | undefined;
     intent: FlpConfig['intent'] | undefined;
 } {
-    const getValueOfOpenParameter = new RegExp('-o (\\S*)|-open (\\S*)');
+    const getValueOfOpenParameter = new RegExp('-open (\\S*)|-o (\\S*)');
     const match = getValueOfOpenParameter.exec(script);
     const url = match?.[1] ?? match?.[2] ?? undefined;
 
