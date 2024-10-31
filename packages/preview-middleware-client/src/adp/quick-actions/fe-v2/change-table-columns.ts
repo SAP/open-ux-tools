@@ -1,11 +1,12 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type Table from 'sap/m/Table';
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
+import ManagedObject from 'sap/ui/base/ManagedObject';
 
+import { FeatureService } from '../../../cpe/feature-service';
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import { TableQuickActionDefinitionBase } from './table-quick-action-base';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
@@ -21,6 +22,13 @@ export class ChangeTableColumnsQuickAction
         super(CHANGE_TABLE_COLUMNS, CONTROL_TYPES, 'V2_QUICK_ACTION_CHANGE_TABLE_COLUMNS', context, true);
     }
 
+    initialize(): Promise<void> {
+        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
+            return Promise.resolve();
+        }
+        return super.initialize();
+    }
+    
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, changeColumnActionId, sectionInfo } = this.tableMap[path];
         if (!table) {
