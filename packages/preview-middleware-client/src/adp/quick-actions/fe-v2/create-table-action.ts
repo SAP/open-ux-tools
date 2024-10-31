@@ -9,7 +9,7 @@ import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/qu
 import { getControlById, isA } from '../../../utils/core';
 import { DialogNames, handler } from '../../init-dialogs';
 import { FeatureService } from '../../../cpe/feature-service';
-import { TableQuickActionDefinitionBase } from './table-quick-action-base';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';

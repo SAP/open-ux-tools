@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.28.3
+
+### Patch Changes
+
+-   42f13eb: **Fix**: Resolved an issue where running `npm install` after executing a create command would fail on Windows. This fix ensures that the installation process completes successfully across all platforms.
+
 ## 1.28.2
 
 ### Patch Changes
