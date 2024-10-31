@@ -1,5 +1,22 @@
 # @sap-ux/create
 
+## 0.8.58
+
+### Patch Changes
+
+-   42f13eb: **Fix**: Resolved an issue where running `npm install` after executing a create command would fail on Windows. This fix ensures that the installation process completes successfully across all platforms.
+-   Updated dependencies [42f13eb]
+    -   @sap-ux/project-access@1.28.3
+    -   @sap-ux/abap-deploy-config-writer@0.0.52
+    -   @sap-ux/adp-tooling@0.12.66
+    -   @sap-ux/app-config-writer@0.4.45
+    -   @sap-ux/cap-config-writer@0.7.51
+    -   @sap-ux/cards-editor-config-writer@0.4.5
+    -   @sap-ux/mockserver-config-writer@0.6.5
+    -   @sap-ux/preview-middleware@0.16.99
+    -   @sap-ux/system-access@0.5.13
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.10
+
 ## 0.8.57
 
 ### Patch Changes
