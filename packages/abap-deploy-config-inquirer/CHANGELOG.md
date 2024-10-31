@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.0.11
+
+### Patch Changes
+
+-   d69070a: Handle validator method not being invoked for confirm field
+
 ## 1.0.10
 
 ### Patch Changes
