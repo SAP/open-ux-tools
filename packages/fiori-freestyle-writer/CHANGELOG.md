@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.2.9
+
+### Patch Changes
+
+-   88973de: TBI - UI5 FreeStyle template update best practice update for UI5 1.120.x
+
 ## 1.2.8
 
 ### Patch Changes

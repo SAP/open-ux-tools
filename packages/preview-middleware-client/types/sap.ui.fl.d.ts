@@ -17,6 +17,14 @@ declare module 'sap/ui/fl/Layer' {
     export default Layer;
 }
 
+declare module 'sap/ui/layout/form' {
+    export interface SimpleForm<ContentType> {
+        getContent: () => ContentType;
+    }
+
+    export default SimpleForm;
+}
+
 declare module 'sap/ui/fl/Change' {
     import type { Layer } from 'sap/ui/fl';
     import type Selector from 'sap/ui/fl/Selector';
@@ -36,6 +44,10 @@ declare module 'sap/ui/fl/Change' {
         index: number;
         targetAggregation: string;
         templateName?: string;
+    }
+
+    export interface AddTableCellFragmentChangeContentType extends AddFragmentChangeContentType {
+        boundAggregation?: string;
     }
 
     class Change<ContentType> {

@@ -8,18 +8,29 @@
     border-bottom: 1px solid var(--vscode-menu-separatorBackground);
 }
 
-.noData {
-    font-style: normal;
-    font-weight: bolder;
-    font-size: 15px;
-    line-height: 21px;
-    text-align: center;
-    padding-top: 20px;
-    margin-left: 35px;
-    color: var(--vscode-foreground);
-}
-
 .infoIcon {
     margin-left: 15px;
     margin-top: 5px;
+}
+
+.noChangesFoundTitle {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+    color: var(--vscode-foreground);
+}
+
+.noChangesFoundDescription {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: center;
+    color: var(--vscode-foreground);
+}
+
+.historyGlockIcon {
+    text-align: center;
 }

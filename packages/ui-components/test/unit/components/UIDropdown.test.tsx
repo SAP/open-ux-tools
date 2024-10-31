@@ -77,6 +77,45 @@ describe('<UIDropdown />', () => {
         );
     });
 
+    it('Styles - required', () => {
+        wrapper.setProps({
+            required: true
+        });
+        const styles = (wrapper.find(Dropdown).props().styles as IStyleFunction<{}, {}>)({}) as IDropdownStyleProps;
+        expect(styles).toMatchInlineSnapshot(`
+            Object {
+              "errorMessage": Array [
+                Object {
+                  "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
+                  "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "borderColor": "var(--vscode-inputValidation-errorBorder)",
+                  "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
+                  "color": "var(--vscode-input-foreground)",
+                  "margin": 0,
+                  "paddingBottom": 5,
+                  "paddingLeft": 8,
+                  "paddingTop": 4,
+                },
+              ],
+              "label": Object {
+                "color": "var(--vscode-input-foreground)",
+                "fontFamily": "var(--vscode-font-family)",
+                "fontSize": "13px",
+                "fontWeight": "bold",
+                "padding": "4px 0",
+                "selectors": Object {
+                  "::after": Object {
+                    "color": "var(--vscode-inputValidation-errorBorder)",
+                    "content": "' *' / ''",
+                    "paddingRight": 12,
+                  },
+                },
+              },
+            }
+        `);
+    });
+
     it('Test responsive mode - custom value', () => {
         wrapper.setProps({
             responsiveMode: ResponsiveMode.small

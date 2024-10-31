@@ -1514,6 +1514,9 @@ importers:
       read-pkg-up:
         specifier: 7.0.1
         version: 7.0.1
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
     devDependencies:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
@@ -1533,6 +1536,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+      '@types/semver':
+        specifier: 7.5.2
+        version: 7.5.2
       fs-extra:
         specifier: 10.0.0
         version: 10.0.0

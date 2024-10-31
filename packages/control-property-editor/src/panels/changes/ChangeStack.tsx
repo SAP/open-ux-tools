@@ -1,7 +1,13 @@
 import type { ReactElement } from 'react';
 import React from 'react';
 import { Stack } from '@fluentui/react';
-import type { Change } from '@sap-ux-private/control-property-editor-common';
+import type {
+    Change,
+    PendingControlChange,
+    PendingPropertyChange,
+    SavedControlChange,
+    SavedPropertyChange
+} from '@sap-ux-private/control-property-editor-common';
 import {
     CONTROL_CHANGE_KIND,
     convertCamelCaseToPascalCase,
@@ -160,7 +166,8 @@ function handleUnknownChange(change: Change): Item {
     return {
         fileName: change.fileName,
         header: true,
-        timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined
+        timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined,
+        isActive: change.type === SAVED_CHANGE_TYPE ? true : change.isActive
     };
 }
 
@@ -170,11 +177,12 @@ function handleUnknownChange(change: Change): Item {
  * @param {Change} change - The change object of kind `control`.
  * @returns {Item} An item object containing the filename, controlId, type, and optional timestamp.
  */
-function handleControlChange(change: Change & { controlId: string }): Item {
+function handleControlChange(change: SavedControlChange | PendingControlChange): Item {
     return {
         fileName: change.fileName,
         controlId: change.controlId,
         timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined,
+        isActive: change.type === SAVED_CHANGE_TYPE ? true : change.isActive,
         type: change.type
     };
 }
@@ -186,10 +194,7 @@ function handleControlChange(change: Change & { controlId: string }): Item {
  * @param {number} i - The index of the initial change in the list.
  * @returns {ControlGroupProps} A control group object containing grouped changes.
  */
-function handleGroupedChange(
-    change: Change & { controlId: string; controlName: string },
-    i: number
-): ControlGroupProps {
+function handleGroupedChange(change: PendingPropertyChange | SavedPropertyChange, i: number): ControlGroupProps {
     return {
         controlId: change.controlId,
         controlName: change.controlName,
