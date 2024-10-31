@@ -6,7 +6,7 @@ import ManagedObject from 'sap/ui/base/ManagedObject';
 import { FeatureService } from '../../../cpe/feature-service';
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
-import { TableQuickActionDefinitionBase } from './table-quick-action-base';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
