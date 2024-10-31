@@ -47,7 +47,7 @@ export async function enhanceYaml(
     }));
 
     if (fs.exists(ui5MockYamlPath)) {
-        // In case of overwrite services from manifest dataSource section are used and existing ones removed from ui5-mock.yaml content
+        // In case of overwrite odata services from manifest dataSource section are used and existing ones removed from ui5-mock.yaml content
         let dataSourcesConfig: { serviceName: string; serviceUri: string }[] | undefined;
         if (overwrite) {
             const dataSource = getODataSources(manifest, 'OData');

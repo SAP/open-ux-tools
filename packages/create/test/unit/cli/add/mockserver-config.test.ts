@@ -107,7 +107,7 @@ describe('Test command add mockserver-config', () => {
         expect(loggerMock.error).not.toBeCalled();
         expect(promptSpy).toBeCalledWith([{ webappPath: join(appRoot, 'webapp'), askForOverwrite: true }]);
         expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).toBeCalled();
+        expect(execNpmCommandSpy).toBeCalled();
     });
 
     test('Test create-fiori add mockserver-config <appRoot> --interactive with overwrite option', async () => {
