@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convertPreview ensure preview middleware dependency 1`] = `
+"{
+  \\"name\\": \\"test\\",
+  \\"devDependencies\\": {
+    \\"@sap-ux/preview-middleware\\": \\"latest\\"
+  }
+}
+"
+`;
+
+exports[`convertPreview update preview middleware config - deprecated tools preview 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          theme: sap_horizon
+          path: flpSandbox.html
+          intent:
+            object: Chicken
+            action: dance
+"
+`;
+
+exports[`convertPreview update preview middleware config - deprecated tools preview 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run -o test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+
+exports[`convertPreview update preview middleware config - existing tools preview 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          theme: sap_horizon
+          path: flpSandbox.html
+          intent:
+            object: Chicken
+            action: dance
+          libs: true
+"
+`;
+
+exports[`convertPreview update preview middleware config - existing tools preview 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run -o test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-tools-preview.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+
+exports[`convertPreview update preview middleware config - no tooling, no middleware 1`] = `
+"specVersion: '4.0'
+metadata:
+  name: com.sap.cap.fe.ts.sample
+  allowSapInternal: true
+type: application
+framework:
+  name: SAPUI5
+  version: 1.124.0
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: index.html
+          intent:
+            object: Chicken
+            action: dance
+"
+`;
+
+exports[`convertPreview update preview middleware config - no tooling, no middleware 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-no-middleware.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
+
+exports[`convertPreview update preview middleware config - skip invalid yaml configurations 1`] = `"{\\"scripts\\":{\\"invalid\\":\\"ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-invalid.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
+
+exports[`convertPreview update preview middleware config - skip not found yaml configurations 1`] = `"{\\"scripts\\":{\\"not:found\\":\\"ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-unavailable.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
+
+exports[`convertPreview update preview middleware config - skip yaml configurations not used in any script 1`] = `"{\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
+
+exports[`convertPreview update preview middleware config w/o path and intent 1`] = `
+Object {
+  "afterMiddleware": "compression",
+  "configuration": Object {
+    "flp": Object {
+      "path": "test/flp.html",
+    },
+  },
+  "name": "fiori-tools-preview",
+}
+`;

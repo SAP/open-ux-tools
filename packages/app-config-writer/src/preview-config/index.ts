@@ -1,10 +1,15 @@
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { basename, join } from 'path';
-import { getWebappPath, type Package } from '@sap-ux/project-access';
+import { getAllUi5YamlFileNames, getWebappPath, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { prompt, type PromptObject } from 'prompts';
-import { updateMiddlewares } from '../variants-config/ui5-yaml';
+import { updateMiddlewares, createPreviewMiddlewareConfig } from '../variants-config/ui5-yaml';
+import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../variants-config/utils';
+import type { PreviewConfigOptions } from '../types';
+import type { Intent } from '@sap-ux/preview-middleware/dist/types'; //todo: update import path
+
 /**
  * Converts the local preview files of a project to virtual files.
  *
@@ -29,22 +34,211 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     await renameSandboxes(fs, basePath);
     await deleteNoLongerUsedFiles(fs, basePath);
 
-    //todo: implement the function logic (re-use from variants management script)
+    // ✔ adjust all ui5 yaml files according to the package.json run script they are being used in
+    // ✔ adjust left over ui5 yaml files and adjust deprecated (fiori tools) preview (middleware) configuration
+    await updatePreviewMiddlewareConfigs(fs, basePath, logger);
+
     // ❔ read from the script (start-variants-management) in the package.json which configuration should be used
-    /*
-    const packageJsonPath = join(basePath, 'package.json');
-    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
-    const ui5ConfigYaml = packageJson?.scripts?.['start-variants-management']?.search(/--config (\S*)/) ?? 'ui5.yaml';
-    */
-    // ✔ adjust all *.yaml files in webapp (not just ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
     // ✔ update the scrip in the package.json if required (e.g. variants script needs an update of the intent).
     // ✔ add/update the configuration of the fiori-tools-preview (if no devDependency to ux-tooling: use preview-middleware)
     // ✔ remove url parameters for RTA editor run scripts depending on preview-middleware/fiori-tools-preview version
     // ✔ update existing variants management run script instead of exception
-
+    //todo: adjust start-variants-management script
+    // - adjust only the yaml file used by the variants management script
+    // - use custom <path> (if given via -c | -config) in start-variants-management script as --config <path>
+    // ❔ use fiori run command if ux-ui5-tooling is present (or is fiori-tools-preview is being used?)
     await updateMiddlewares(fs, basePath, logger);
 
+    //todo: check for more than one preview middleware?
+
     return fs;
+}
+
+/**
+ * Update the preview middleware configurations according to the scripts they are being used in package.json.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used for the conversion
+ * @param logger logger to report info to the user
+ */
+export async function updatePreviewMiddlewareConfigs(
+    fs: Editor,
+    basePath: string,
+    logger?: ToolsLogger
+): Promise<void> {
+    const validatedUi5YamlFileNames = await getAllUi5YamlFileNames(fs, basePath);
+    const unprocessedUi5YamlFileNames = validatedUi5YamlFileNames.valid;
+    const packageJsonPath = join(basePath, 'package.json');
+    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
+    ensurePreviewMiddlewareDependency(packageJson, fs, packageJsonPath);
+    for (const [scriptName, script] of Object.entries(packageJson?.scripts ?? {})) {
+        if (
+            scriptName === 'start-variants-management' ||
+            !(script?.includes('ui5 serve') || script?.includes('fiori run'))
+        ) {
+            continue;
+        }
+
+        const ui5Yaml = basename(script?.match(/--config (\S*)/)?.[1] ?? 'ui5.yaml');
+        if ((validatedUi5YamlFileNames.invalid ?? []).includes(ui5Yaml)) {
+            logger?.error(
+                `Skipping script ${scriptName} with UI5 yaml configuration file ${ui5Yaml} because it does not comply with the schema.`
+            );
+            continue;
+        }
+
+        if (!validatedUi5YamlFileNames.valid.includes(ui5Yaml)) {
+            logger?.error(
+                `Skipping script ${scriptName} because UI5 yaml configuration file ${ui5Yaml} could not be found.`
+            );
+            continue;
+        }
+
+        await processUi5YamlConfig(fs, basePath, ui5Yaml, script);
+        unprocessedUi5YamlFileNames.splice(unprocessedUi5YamlFileNames.indexOf(ui5Yaml), 1);
+    }
+    for (const ui5Yaml of unprocessedUi5YamlFileNames) {
+        //todo: adjust at least deprecated preview config?
+        //await processUi5YamlConfig(fs, basePath, ui5Yaml, '');
+        logger?.warn(
+            `Skipping UI5 yaml configuration file ${ui5Yaml} because it is not being used in any package.json script.`
+        );
+    }
+}
+
+/**
+ * Ensure the @sap/ux-ui5-tooling or @sap-ux/preview-middleware dependency exists in package.json.
+ * If not @sap-ux/preview-middleware will be added as devDependency.
+ *
+ * @param packageJson - the package.json file content
+ * @param fs - file system reference
+ * @param packageJsonPath - the path to the package.json file
+ */
+export function ensurePreviewMiddlewareDependency(
+    packageJson: Package | undefined,
+    fs: Editor,
+    packageJsonPath: string
+): void {
+    if (!packageJson) {
+        return;
+    }
+
+    const dependencies = ['@sap-ux/preview-middleware', '@sap/ux-ui5-tooling'];
+
+    const hasDependency = (dependency: string): boolean =>
+        !!packageJson?.devDependencies?.[dependency] || !!packageJson?.dependencies?.[dependency];
+
+    if (dependencies.some((dependency) => hasDependency(dependency))) {
+        return;
+    }
+
+    packageJson.devDependencies = { ...packageJson.devDependencies, '@sap-ux/preview-middleware': 'latest' };
+    fs.writeJSON(packageJsonPath, packageJson);
+}
+
+/**
+ * Process the UI5 yaml configuration file.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used for the conversion
+ * @param ui5Yaml - the name of the UI5 yaml configuration file
+ * @param script - the content of the script
+ */
+async function processUi5YamlConfig(fs: Editor, basePath: string, ui5Yaml: string, script: string): Promise<void> {
+    const ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml, fs);
+    let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
+
+    if (!previewMiddleware) {
+        previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
+    }
+
+    const { path, intent } = extractUrlDetails(script);
+    previewMiddleware = updatePreviewMiddlewareConfig(previewMiddleware, intent, path);
+
+    ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
+    const yamlPath = join(basePath, ui5Yaml);
+    fs.write(yamlPath, ui5YamlConfig.toString());
+}
+
+/**
+ * Extract the URL details from the script.
+ *
+ * @param script - the content of the script
+ * @returns the URL details
+ */
+function extractUrlDetails(script: string): {
+    path: string | undefined;
+    intent: Intent | undefined;
+} {
+    const url = script?.match(/-o (\S*)/)?.[1] ?? script?.match(/-open (\S*)/)?.[1] ?? undefined;
+    const path = url?.match(/\/([^\/?#]+\.html)(?:[\/?# ]|$)/)?.[1] ?? undefined;
+    const intent = url?.match(/(?<=#)\w+-\w+/)?.[0] ?? undefined;
+    return {
+        path,
+        intent: intent
+            ? {
+                  object: intent?.split('-')[0],
+                  action: intent?.split('-')[1]
+              }
+            : undefined
+    };
+}
+
+/**
+ * Create a preview middleware configuration.
+ *
+ * @param previewMiddleware - the preview middleware configuration
+ * @param intent - the intent
+ * @param path - the flp path
+ * @returns the preview middleware configuration
+ */
+export function updatePreviewMiddlewareConfig(
+    previewMiddleware: CustomMiddleware<PreviewConfigOptions>,
+    intent: Intent | undefined,
+    path: string | undefined
+): CustomMiddleware<PreviewConfigOptions> {
+    const newMiddlewareConfig = {
+        name: previewMiddleware.name,
+        afterMiddleware: 'compression'
+    } as CustomMiddleware<PreviewConfigOptions>;
+
+    let configuration = previewMiddleware.configuration ?? {};
+
+    let ui5Theme: string | undefined;
+    if (isFioriToolsDeprecatedPreviewConfig(configuration)) {
+        ui5Theme = configuration.ui5Theme;
+        configuration = {};
+    }
+
+    // if no --open parameter given in script return the existing configuration as is
+    if (!path && !intent) {
+        newMiddlewareConfig.configuration = configuration;
+        return newMiddlewareConfig;
+    }
+
+    configuration.flp = configuration.flp ?? {};
+    if (ui5Theme) {
+        configuration.flp.theme = ui5Theme;
+    }
+
+    if (path) {
+        configuration.flp.path = path;
+    }
+
+    if (intent) {
+        configuration.flp.intent = configuration.flp.intent ?? ({} as Intent);
+        configuration.flp.intent.object = intent.object;
+        configuration.flp.intent.action = intent.action;
+    }
+
+    //Only add configuration property to middleware in case of
+    // - a non-empty flp config object or
+    // - a configuration object that contains more tha the flp property
+    if (Object.keys(configuration.flp).length > 0 || Object.keys(configuration).length > 1) {
+        newMiddlewareConfig.configuration = configuration;
+    }
+
+    return newMiddlewareConfig;
 }
 
 /**
@@ -60,12 +254,12 @@ export async function renameSandboxes(fs: Editor, basePath: string, logger?: Too
     const flpSandboxPath = join(await getWebappPath(basePath), 'test', 'flpSandbox.html');
     if (fs.exists(flpSandboxPath)) {
         fs.move(flpSandboxPath, flpSandboxPath.replace('.html', '_old.html'));
-        logger?.info(message('webapp/test/flpSandbox.html'));
+        logger?.info(message(join('webapp', 'test', 'flpSandbox.html')));
     }
     const flpSandboxMockserverPath = join(await getWebappPath(basePath), 'test', 'flpSandboxMockserver.html');
     if (fs.exists(flpSandboxMockserverPath)) {
         fs.move(flpSandboxMockserverPath, flpSandboxMockserverPath.replace('.html', '_old.html'));
-        logger?.info(message('webapp/test/flpSandboxMockserver.html'));
+        logger?.info(message(join('webapp', 'test', 'flpSandboxMockserver.html')));
     }
 }
 

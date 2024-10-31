@@ -37,7 +37,7 @@ export async function getPreviewMiddleware(
  * @param configuration preview middleware configuration
  * @returns true, if a preview middleware configuration is deprecated
  */
-function isFioriToolsDeprecatedPreviewConfig(
+export function isFioriToolsDeprecatedPreviewConfig(
     configuration: PreviewConfigOptions | undefined
 ): configuration is FioriToolsDeprecatedPreviewConfig {
     return (configuration as FioriToolsDeprecatedPreviewConfig)?.component !== undefined;
