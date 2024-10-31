@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
@@ -12,6 +12,8 @@ import { useAppDispatch } from './store';
 import { changePreviewScale } from './slice';
 import { useWindowSize } from './use-window-size';
 import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
+import { useConsoleCapture } from './hooks/useConsoleCapture';
+import { filterLogs } from './utils/console-filtration';
 
 import './App.scss';
 import './Workarounds.scss';
@@ -34,6 +36,10 @@ export default function App(appProps: AppProps): ReactElement {
     const dispatch = useAppDispatch();
 
     const isAdpProject = useSelector<RootState, boolean>((state) => state.isAdpProject);
+
+    const iframeRef = useRef<HTMLIFrameElement>(null);
+
+    useConsoleCapture(iframeRef, { filter: filterLogs });
 
     useEffect(() => {
         const sheet = window.document.styleSheets[0];
@@ -120,6 +126,7 @@ export default function App(appProps: AppProps): ReactElement {
                     <div className="app-canvas">
                         {!shouldHideIframe && (
                             <iframe
+                                ref={iframeRef}
                                 className="app-preview"
                                 id="preview"
                                 style={{
