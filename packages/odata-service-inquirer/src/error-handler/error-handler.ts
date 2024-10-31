@@ -1,19 +1,20 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type { Destination } from '@sap-ux/btp-utils';
 import {
-    isAbapODataDestination,
+    // isAbapODataDestination,
     isAppStudio,
     isFullUrlDestination,
     isHTML5DynamicConfigured,
     isOnPremiseDestination,
-    isPartialUrlDestination
+    isPartialUrlDestination,
+    WebIDEUsage
 } from '@sap-ux/btp-utils';
 import {
+    getHelpUrl,
     GUIDED_ANSWERS_ICON,
     GUIDED_ANSWERS_LAUNCH_CMD_ID,
     HELP_NODES,
-    HELP_TREE,
-    getHelpUrl
+    HELP_TREE
 } from '@sap-ux/guided-answers-helper';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
@@ -116,6 +117,18 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
 
 type ValidationLinkOrString = string | ValidationLink;
 
+// TODO: Replace with the function from btp-utils
+/**
+ *
+ * @param destination
+ * @returns true if the destination is an ABAP OData destination
+ */
+function isAbapODataDestination(destination: Destination): boolean {
+    return (
+        !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) &&
+        !destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_GENERIC)
+    );
+}
 /**
  * Used only to generate telemetry events in the case of destination errors.
  *
@@ -505,7 +518,6 @@ export class ErrorHandler {
         }
         return errorHelp ?? resolvedErrorMsg; // We mau not have a help link, so return the resolvedend user message
     }
-
     /**
      * Get a more specific error type for the specified destination.
      *

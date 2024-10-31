@@ -1,4 +1,3 @@
-import { Severity } from '@sap-devx/yeoman-ui-types';
 import { withCondition, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
 import { t } from '../i18n';
@@ -14,7 +13,6 @@ import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
 import { getMetadataFileQuestion } from './datasources/metadata-file';
 import { getSystemSelectionQuestions } from './datasources/sap-system/system-selection';
 import { getServiceUrlQuestions } from './datasources/service-url/questions';
-import LoggerHelper from './logger-helper';
 import { getDatasourceTypeChoices } from './prompt-helpers';
 
 /**
@@ -48,30 +46,7 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
         },
         default: options?.default ?? -1,
         message: t('prompts.datasourceType.message'),
-        choices,
-        additionalMessages: (source: DatasourceType) => {
-            if (
-                [DatasourceType.businessHub, DatasourceType.none, DatasourceType.projectSpecificDestination].includes(
-                    source
-                )
-            ) {
-                LoggerHelper.logger?.warn(
-                    t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType: source })
-                );
-                return {
-                    message: t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType: source }),
-                    severity: Severity.warning
-                };
-            }
-            if (source === DatasourceType.businessHub) {
-                return {
-                    message: t('prompts.nonUIServiceTypeWarningMessage', {
-                        serviceType: t('prompts.datasourceType.businessHubName')
-                    }),
-                    severity: Severity.warning
-                };
-            }
-        }
+        choices
     } as YUIQuestion;
 }
 

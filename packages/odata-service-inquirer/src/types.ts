@@ -1,11 +1,11 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
+import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { CdsVersionInfo } from '@sap-ux/project-access';
-import type { ListChoiceOptions } from 'inquirer';
 import type { BackendSystem } from '@sap-ux/store';
-import type { Destination } from '@sap-ux/btp-utils';
+import type { ListChoiceOptions } from 'inquirer';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -208,10 +208,6 @@ export type DatasourceTypePromptOptions = {
      * Include the no datasource option in the datasource type prompt
      */
     includeNone?: boolean;
-    /**
-     * Include the `projectSpecificDestination` option in the datasource type prompt
-     */
-    includeProjectSpecificDest?: boolean;
     /**
      * Limit the offered datasource types to the specified types. Note that if `default` is also provided and not included in the choices, the default will be ignored.
      * If `includeNone` is set to true, the `none` option will always be included.

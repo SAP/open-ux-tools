@@ -61,34 +61,5 @@ describe('getQuestions', () => {
                 { name: t('prompts.datasourceType.noneName'), value: DatasourceType.none }
             ])
         });
-        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValueOnce(true);
-        // Test that additional choices are added by options: 'includeProjectSpecificDest'
-        expect((await getQuestions({ datasourceType: { includeProjectSpecificDest: true } }))[0]).toMatchObject({
-            choices: expect.arrayContaining([
-                {
-                    name: t('prompts.datasourceType.projectSpecificDestChoiceText'),
-                    value: DatasourceType.projectSpecificDestination
-                }
-            ])
-        });
-    });
-
-    test('datasourceTypeQuestion displays and logs not implemented yet message', async () => {
-        const logWarnSpy = jest.spyOn(ToolsLogger.prototype, 'warn');
-        const datasourceTypeQuestion = (await getQuestions())[0];
-        expect(datasourceTypeQuestion.name).toEqual('datasourceType');
-
-        [DatasourceType.businessHub, DatasourceType.none, DatasourceType.projectSpecificDestination].forEach(
-            (datasourceType) => {
-                const additionalMessages = (datasourceTypeQuestion.additionalMessages as Function)(datasourceType);
-                expect(additionalMessages).toMatchObject({
-                    message: t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType }),
-                    severity: Severity.warning
-                });
-                expect(logWarnSpy).toHaveBeenCalledWith(
-                    t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType })
-                );
-            }
-        );
     });
 });

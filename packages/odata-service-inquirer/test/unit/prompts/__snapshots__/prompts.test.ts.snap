@@ -14,10 +14,6 @@ exports[`getQuestions getQuestions 1`] = `
         "value": "odataServiceUrl",
       },
       {
-        "name": "Connect to SAP Business Accelerator Hub",
-        "value": "businessHub",
-      },
-      {
         "name": "Use a Local CAP Project",
         "value": "capProject",
       },

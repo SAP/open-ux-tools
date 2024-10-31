@@ -1,7 +1,7 @@
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/odata-service-inquirer.i18n.json';
-import type { OdataVersion } from '@sap-ux/odata-service-writer';
 
 const odataServiceInquirerNamespace = 'odata-service-inquirer';
 export const defaultProjectNumber = 1;
@@ -9,19 +9,20 @@ export const defaultProjectNumber = 1;
  * Initialize i18next with the translations for this module.
  */
 export async function initI18nOdataServiceInquirer(): Promise<void> {
-    await i18next.init(
-        {
-            lng: 'en',
-            fallbackLng: 'en',
-            missingInterpolationHandler: () => '',
-            interpolation: {
-                format: function odataVersionFormatter(odataVersion: OdataVersion) {
-                    return odataVersion ? ` V${odataVersion}` : '';
-                }
+    const t0 = performance.now();
+    await i18next.init({
+        lng: 'en',
+        fallbackLng: 'en',
+        missingInterpolationHandler: () => '',
+        interpolation: {
+            format: function odataVersionFormatter(odataVersion: OdataVersion) {
+                return odataVersion ? ` V${odataVersion}` : '';
             }
-        },
-        () => i18next.addResourceBundle('en', odataServiceInquirerNamespace, translations)
-    );
+        }
+    });
+    i18next.addResourceBundle('en', odataServiceInquirerNamespace, translations);
+    const t1 = performance.now();
+    console.log(`i18n load time: ${Math.round(t1 - t0)}`);
 }
 
 /**
