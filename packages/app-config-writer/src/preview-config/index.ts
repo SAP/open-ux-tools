@@ -188,46 +188,21 @@ export function updatePreviewMiddlewareConfig(
     intent: FlpConfig['intent'] | undefined,
     path: string | undefined
 ): CustomMiddleware<PreviewConfigOptions> {
-    const newMiddlewareConfig = {
-        name: previewMiddleware.name,
-        afterMiddleware: 'compression'
-    } as CustomMiddleware<PreviewConfigOptions>;
+    const newMiddlewareConfig = sanitizePreviewMiddleware(previewMiddleware);
 
-    let configuration = previewMiddleware.configuration ?? {};
-
-    let ui5Theme: string | undefined;
-    if (isFioriToolsDeprecatedPreviewConfig(configuration)) {
-        ui5Theme = configuration.ui5Theme;
-        configuration = {};
-    }
-
-    // if no --open parameter given in script return the existing configuration as is
-    if (!path && !intent) {
-        if (sanitizePreviewMiddlewareConfiguration(configuration)) {
-            newMiddlewareConfig.configuration = configuration;
-        }
-        return newMiddlewareConfig;
-    }
-
+    const configuration = newMiddlewareConfig.configuration ?? ({} as PreviewConfig);
     configuration.flp = configuration.flp ?? {};
-    if (ui5Theme) {
-        configuration.flp.theme = ui5Theme;
-    }
-
     if (path) {
         configuration.flp.path = path;
     }
-
     if (intent) {
-        configuration.flp.intent = configuration.flp.intent ?? ({} as FlpConfig['intent']);
-        configuration.flp.intent.object = intent.object;
-        configuration.flp.intent.action = intent.action;
+        configuration.flp.intent = {
+            object: intent.object,
+            action: intent.action
+        };
     }
 
-    //Only add configuration property to middleware in case of
-    // - a non-empty flp config object or
-    // - a configuration object that contains more than the flp property
-    if (sanitizePreviewMiddlewareConfiguration(configuration)) {
+    if (path || intent) {
         newMiddlewareConfig.configuration = configuration;
     }
 
@@ -235,21 +210,27 @@ export function updatePreviewMiddlewareConfig(
 }
 
 /**
- * Sanitize the preview middleware configuration.
- * Configuration object that contains only the empty flp property will be discarded.
+ * Sanitize the preview middleware. In case of an outdated preview configuration the following changes will be applied:
+ * - property 'ui5Theme' will be moved to 'flp.theme'.
+ * - no longer used property 'component' will be removed.
  *
- * @param configuration - the preview middleware configuration
- * @returns the sanitized preview middleware configuration
+ * @param previewMiddleware - the preview middleware
+ * @returns the sanitized preview middleware
  */
-export function sanitizePreviewMiddlewareConfiguration(configuration: PreviewConfig): PreviewConfig | undefined {
-    //if (Object.keys(configuration?.flp ?? {}).length > 0 || Object.keys(configuration).length > 1) {
-    if (
-        Object.keys(configuration?.flp ?? {}).length > 0 ||
-        Object.keys(configuration).filter((key) => key !== 'flp').length > 0
-    ) {
-        return configuration;
+export function sanitizePreviewMiddleware(
+    previewMiddleware: CustomMiddleware<PreviewConfigOptions>
+): CustomMiddleware<PreviewConfig> {
+    if (!isFioriToolsDeprecatedPreviewConfig(previewMiddleware.configuration)) {
+        return previewMiddleware as CustomMiddleware<PreviewConfig>;
     }
-    return undefined;
+    const ui5Theme = previewMiddleware.configuration.ui5Theme;
+    const configuration = {} as PreviewConfig;
+    configuration.flp = {};
+    if (ui5Theme) {
+        configuration.flp.theme = ui5Theme;
+        previewMiddleware.configuration = configuration;
+    }
+    return previewMiddleware as CustomMiddleware<PreviewConfig>;
 }
 
 /**
