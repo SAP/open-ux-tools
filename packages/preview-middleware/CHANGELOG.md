@@ -1,5 +1,41 @@
 # @sap-ux/preview-middleware
 
+## 0.16.99
+
+### Patch Changes
+
+-   Updated dependencies [42f13eb]
+    -   @sap-ux/project-access@1.28.3
+    -   @sap-ux/adp-tooling@0.12.66
+
+## 0.16.98
+
+### Patch Changes
+
+-   df6fd7f: Quick action added to create custom table columns
+-   Updated dependencies [df6fd7f]
+    -   @sap-ux/adp-tooling@0.12.65
+
+## 0.16.97
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.64
+
+## 0.16.96
+
+### Patch Changes
+
+-   29a4ef6: feat: create page and table action quick actions for OData(v4) applications
+-   Updated dependencies [29a4ef6]
+    -   @sap-ux/adp-tooling@0.12.63
+
+## 0.16.95
+
+### Patch Changes
+
+-   4f9528e: Fixed incorrect displaying of inactive composite and control changes
+
 ## 0.16.94
 
 ### Patch Changes

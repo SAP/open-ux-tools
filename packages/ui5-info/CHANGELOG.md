@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.8.2
+
+### Patch Changes
+
+-   cd28744: Updates ui5 version fallbacks
+
 ## 0.8.1
 
 ### Patch Changes

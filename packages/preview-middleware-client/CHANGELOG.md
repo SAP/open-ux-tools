@@ -1,5 +1,23 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.21
+
+### Patch Changes
+
+-   df6fd7f: Quick action added to create custom table columns
+
+## 0.11.20
+
+### Patch Changes
+
+-   29a4ef6: feat: create page and table action quick actions for OData(v4) applications
+
+## 0.11.19
+
+### Patch Changes
+
+-   4f9528e: Fixed incorrect displaying of inactive composite and control changes
+
 ## 0.11.18
 
 ### Patch Changes

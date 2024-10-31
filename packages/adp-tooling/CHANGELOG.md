@@ -1,5 +1,32 @@
 # @sap-ux/adp-tooling
 
+## 0.12.66
+
+### Patch Changes
+
+-   Updated dependencies [42f13eb]
+    -   @sap-ux/project-access@1.28.3
+    -   @sap-ux/axios-extension@1.16.7
+    -   @sap-ux/system-access@0.5.13
+
+## 0.12.65
+
+### Patch Changes
+
+-   df6fd7f: Quick action added to create custom table columns
+
+## 0.12.64
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.9
+
+## 0.12.63
+
+### Patch Changes
+
+-   29a4ef6: feat: create page and table action quick actions for OData(v4) applications
+
 ## 0.12.62
 
 ### Patch Changes
