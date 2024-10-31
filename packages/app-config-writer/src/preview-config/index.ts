@@ -8,7 +8,7 @@ import { updateMiddlewares, createPreviewMiddlewareConfig } from '../variants-co
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../variants-config/utils';
 import type { PreviewConfigOptions } from '../types';
-import type { FlpConfig } from '@sap-ux/preview-middleware';
+import type { FlpConfig, MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 
 /**
  * Converts the local preview files of a project to virtual files.
@@ -37,8 +37,6 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     await updatePreviewMiddlewareConfigs(fs, basePath, logger);
 
     await updateMiddlewares(fs, basePath, logger);
-
-    //todo: check for more than one preview middleware and report error?
 
     return fs;
 }
@@ -205,7 +203,9 @@ export function updatePreviewMiddlewareConfig(
 
     // if no --open parameter given in script return the existing configuration as is
     if (!path && !intent) {
-        newMiddlewareConfig.configuration = configuration;
+        if (sanitizePreviewMiddlewareConfiguration(configuration)) {
+            newMiddlewareConfig.configuration = configuration;
+        }
         return newMiddlewareConfig;
     }
 
@@ -226,12 +226,30 @@ export function updatePreviewMiddlewareConfig(
 
     //Only add configuration property to middleware in case of
     // - a non-empty flp config object or
-    // - a configuration object that contains more tha the flp property
-    if (Object.keys(configuration.flp).length > 0 || Object.keys(configuration).length > 1) {
+    // - a configuration object that contains more than the flp property
+    if (sanitizePreviewMiddlewareConfiguration(configuration)) {
         newMiddlewareConfig.configuration = configuration;
     }
 
     return newMiddlewareConfig;
+}
+
+/**
+ * Sanitize the preview middleware configuration.
+ * Configuration object that contains only the empty flp property will be discarded.
+ *
+ * @param configuration - the preview middleware configuration
+ * @returns the sanitized preview middleware configuration
+ */
+export function sanitizePreviewMiddlewareConfiguration(configuration: PreviewConfig): PreviewConfig | undefined {
+    //if (Object.keys(configuration?.flp ?? {}).length > 0 || Object.keys(configuration).length > 1) {
+    if (
+        Object.keys(configuration?.flp ?? {}).length > 0 ||
+        Object.keys(configuration).filter((key) => key !== 'flp').length > 0
+    ) {
+        return configuration;
+    }
+    return undefined;
 }
 
 /**
@@ -334,6 +352,8 @@ export async function checkPrerequisites(basePath: string, fs: Editor, logger?: 
         );
         prerequisitesMet = false;
     }
+
+    //todo: check for more than one preview middleware in ui5 configuration yaml and report error?
 
     return prerequisitesMet;
 }
