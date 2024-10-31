@@ -24,7 +24,6 @@ const whitelistedWords = ['important', 'critical', 'alert'];
  *
  * @param {string} message - The log message to process.
  * @returns {string} The message with the date and time removed.
- *
  * @example
  * const cleanMessage = removeDateFromMessage('2024-10-31 11:56:44.825100 Example log message');
  * // Result: 'Example log message'
@@ -39,7 +38,6 @@ export const removeDateFromMessage = (message: string): string => {
  * @param {LogType} type - The type of log message ('log', 'warn', or 'error').
  * @param {any[]} args - The arguments of the log message.
  * @returns {boolean} `true` if the message should be processed; `false` otherwise.
- *
  * @example
  * const shouldLog = filterLogs('log', ['2024-10-31 11:56:44.825100 Example message']);
  * // Result: depends on the content of the message and the blacklisted/whitelisted words

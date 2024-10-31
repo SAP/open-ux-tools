@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { LogType, removeDateFromMessage } from '../utils/console-filtration';
+import type { LogType } from '../utils/console-filtration';
+import { removeDateFromMessage } from '../utils/console-filtration';
 
 interface IframeConsoleCaptureOptions {
     filter?: (type: LogType, args: any[]) => boolean;
@@ -13,9 +14,7 @@ interface IframeConsoleCaptureOptions {
  * @param {React.RefObject<HTMLIFrameElement>} iframeRef - A reference to the iframe element whose console should be captured.
  * @param {IframeConsoleCaptureOptions} [options] - Optional configuration object for the console capture.
  * @param {Function} [options.filter] - A filter function to determine which console messages to capture. Should return `true` to capture a message or `false` to ignore it.
- *
  * @returns {void} This hook does not return anything. It sets up and cleans up the console capture logic.
- *
  * @example
  * const iframeRef = useRef<HTMLIFrameElement>(null);
  * useConsoleCapture(iframeRef, {
