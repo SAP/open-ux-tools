@@ -20,15 +20,6 @@ import type { ReuseLibConfig } from '@sap-ux/ui5-library-reference-writer';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { InquirerAdapter, UI5LibraryReferenceAnswers } from '@sap-ux/ui5-library-reference-inquirer';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let vscode: any | undefined;
-// Dynamically load vscode if available
-try {
-    vscode = require('vscode');
-} catch (e) {
-    // Vscode not available
-}
-
 /**
  * Generator for adding a UI5 library reference to a Fiori application.
  */
@@ -37,6 +28,7 @@ export default class extends Generator implements UI5ReferenceLibGenerator {
     prompts: Prompts;
     appWizard: AppWizard;
     basePath: string;
+    vscode: unknown;
 
     /**
      * Constructor for the generator.
@@ -49,6 +41,7 @@ export default class extends Generator implements UI5ReferenceLibGenerator {
             unique: 'namespace'
         });
         this.appWizard = opts.appWizard || AppWizard.create(opts);
+        this.vscode = opts.vscode;
         ReferenceLibGenLogger.configureLogging(
             this.options.logger,
             this.rootGeneratorName(),
@@ -110,7 +103,7 @@ export default class extends Generator implements UI5ReferenceLibGenerator {
 
     end(): void {
         try {
-            if (isExtensionInstalled(vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)) {
+            if (isExtensionInstalled(this.vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)) {
                 this.appWizard?.showInformation(t('info.filesGenerated'), MessageType.notification);
             }
             const telemetryData = TelemetryHelper.createTelemetryData();
