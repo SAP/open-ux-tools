@@ -1,4 +1,5 @@
-import { spawnSync } from 'child_process';
+import { execNpmCommand } from '@sap-ux/project-access';
+import type { Logger } from '@sap-ux/logger';
 export { promptYUIQuestions } from './prompts';
 
 /**
@@ -6,12 +7,20 @@ export { promptYUIQuestions } from './prompts';
  *
  * @param basePath - path to application root
  * @param [installArgs] - optional string array of arguments
+ * @param [options] - optional options
+ * @param [options.logger] - optional logger instance
  */
-export function runNpmInstallCommand(basePath: string, installArgs: string[] = []): void {
-    const npmCommand = process.platform.startsWith('win') ? 'npm.cmd' : 'npm';
-    const args = ['install', ...installArgs];
-    spawnSync(npmCommand, args, {
-        cwd: basePath,
-        stdio: [0, 1, 2]
-    });
+export function runNpmInstallCommand(
+    basePath: string,
+    installArgs: string[] = [],
+    options?: { logger?: Logger }
+): void {
+    const logger = options?.logger;
+    execNpmCommand(['install', ...installArgs], { cwd: basePath, logger: logger })
+        .then(() => {
+            logger?.info('npm install completed successfully.');
+        })
+        .catch((error) => {
+            logger?.error(`npm install failed. '${(error as Error).message}'`);
+        });
 }
