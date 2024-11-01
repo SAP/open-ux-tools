@@ -1,7 +1,8 @@
 import Generator from 'yeoman-generator';
 import ReferenceLibGenLogger from '../utils/logger';
+import { generatorTitle, prompts } from '../utils/constants';
 import { workspace } from 'vscode';
-import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
+import { Prompts, AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
 import { generate } from '@sap-ux/ui5-library-reference-writer';
 import {
     isExtensionInstalled,
@@ -15,13 +16,14 @@ import { prompt } from '@sap-ux/ui5-library-reference-inquirer';
 import { t } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import type { UI5ReferenceLibGenerator } from './types';
-import type { Prompts } from '@sap-devx/yeoman-ui-types';
 import type { ReuseLibConfig } from '@sap-ux/ui5-library-reference-writer';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { InquirerAdapter, UI5LibraryReferenceAnswers } from '@sap-ux/ui5-library-reference-inquirer';
 
 /**
  * Generator for adding a UI5 library reference to a Fiori application.
+ *
+ * @extends Generator
  */
 export default class extends Generator implements UI5ReferenceLibGenerator {
     answers: UI5LibraryReferenceAnswers = {};
@@ -29,6 +31,7 @@ export default class extends Generator implements UI5ReferenceLibGenerator {
     appWizard: AppWizard;
     basePath: string;
     vscode: unknown;
+    setPromptsCallback: (fn: any) => void;
 
     /**
      * Constructor for the generator.
@@ -37,9 +40,8 @@ export default class extends Generator implements UI5ReferenceLibGenerator {
      * @param opts - options passed to the generator
      */
     constructor(args: string | string[], opts: Generator.GeneratorOptions) {
-        super(args, opts, {
-            unique: 'namespace'
-        });
+        super(args, opts);
+
         this.appWizard = opts.appWizard || AppWizard.create(opts);
         this.vscode = opts.vscode;
         ReferenceLibGenLogger.configureLogging(
@@ -50,12 +52,16 @@ export default class extends Generator implements UI5ReferenceLibGenerator {
             this.options.logLevel
         );
 
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = true;
-        }
+        this.appWizard.setHeaderTitle(generatorTitle);
+        this.prompts = new Prompts(prompts);
+        this.setPromptsCallback = (fn): void => {
+            if (this.prompts) {
+                this.prompts.setCallback(fn);
+            }
+        };
     }
 
-    async default(): Promise<void> {
+    public async initializing(): Promise<void> {
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
                 name: '@sap-ux/ui5-library-reference-sub-generator',
@@ -64,6 +70,9 @@ export default class extends Generator implements UI5ReferenceLibGenerator {
             internalFeature: isInternalFeaturesSettingEnabled(),
             watchTelemetrySettingStore: false
         });
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = true;
+        }
     }
 
     public async prompting(): Promise<void> {

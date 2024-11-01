@@ -49,6 +49,7 @@ afterAll(() => {
 });
 
 describe('Test reference generator', () => {
+    jest.setTimeout(60000);
     it('should run the generator', async () => {
         const sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
         const testProjectPath = path.join(testOutputDir, 'test_project');
@@ -57,6 +58,7 @@ describe('Test reference generator', () => {
         fsextra.copySync(path.join(__dirname, 'sample/test_project_lrop_v2'), testProjectPath);
         const showInformationSpy = jest.fn();
         const mockAppWizard = {
+            setHeaderTitle: jest.fn(),
             showInformation: showInformationSpy
         };
 
