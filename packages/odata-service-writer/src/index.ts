@@ -51,10 +51,10 @@ export async function findProjectFiles(
             files.ui5Yaml = join(path, 'ui5.yaml');
         }
         if (!files.ui5LocalYaml && fs.exists(join(path, 'ui5-local.yaml'))) {
-            files.ui5Yaml = join(path, 'ui5.yaml');
+            files.ui5LocalYaml = join(path, 'ui5-local.yaml');
         }
         if (!files.ui5MockYaml && fs.exists(join(path, 'ui5-mock.yaml'))) {
-            files.ui5Yaml = join(path, 'ui5.yaml');
+            files.ui5MockYaml = join(path, 'ui5-mock.yaml');
         }
         parts.pop();
     }
@@ -96,14 +96,8 @@ async function generateMockserverMiddlewareBasedOnUi5MockYaml(
  * @param {UI5Config} ui5Config - UI5 configuration
  * @param {string} ui5ConfigPath - path to the YAML config file
  * @throws {Error} - if required UI5 project files are not found
- * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function extendBackendMiddleware(
-    fs: Editor,
-    service: OdataService,
-    ui5Config: UI5Config,
-    ui5ConfigPath: string
-): Promise<Editor> {
+function extendBackendMiddleware(fs: Editor, service: OdataService, ui5Config: UI5Config, ui5ConfigPath: string): void {
     try {
         ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
     } catch (error: any) {
@@ -120,7 +114,6 @@ async function extendBackendMiddleware(
         }
     }
     fs.write(ui5ConfigPath, ui5Config.toString());
-    return fs;
 }
 
 /**
@@ -152,12 +145,12 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     if (isServiceTypeEdmx) {
         if (paths.ui5Yaml) {
             ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+            extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml);
             ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
-            await extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml);
             // Update ui5-local.yaml with backend middleware
             if (fs.exists(ui5LocalConfigPath)) {
                 ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-                await extendBackendMiddleware(fs, service, ui5LocalConfig, ui5LocalConfigPath);
+                extendBackendMiddleware(fs, service, ui5LocalConfig, ui5LocalConfigPath);
             }
         }
         if (service.metadata) {
