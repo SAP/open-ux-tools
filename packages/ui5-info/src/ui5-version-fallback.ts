@@ -372,17 +372,16 @@ export const ui5VersionFallbacks = [
     }
 ] as UI5VersionSupport[];
 
-const supportedUi5VersionFallbacks = ui5VersionFallbacks
-    .filter((supportVersion) => {
-        if (
+const supportedUi5VersionFallbacks: UI5VersionSupport[] = ui5VersionFallbacks
+    .filter(
+        (supportVersion) =>
             supportVersion.support === supportState.maintenance &&
             gte(coerce(supportVersion.version) ?? '0.0.0', defaultMinUi5Version)
-        ) {
-            return true;
-        }
-        return false;
-    })
-    .map((maintainedVersion) => coerce(maintainedVersion.version)?.version ?? '0.0.0');
+    )
+    .map((maintainedVersion) => ({
+        version: coerce(maintainedVersion.version)?.version ?? '0.0.0',
+        support: supportState.maintenance
+    }));
 
-const defaultUi5Versions = [...supportedUi5VersionFallbacks];
+const defaultUi5Versions = [...supportedUi5VersionFallbacks].map((version) => version.version);
 export { defaultUi5Versions, supportedUi5VersionFallbacks };
