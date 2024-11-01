@@ -542,7 +542,7 @@ export class ConnectionValidator {
      * @param destination the destination to validate
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
      * @param servicePath the service path to validate, if specified will be appended to the destination URL for validation, if not specified the destination url will be used
-     * @returns @returns true if the system is reachable and authenticated, if required, false if not, or an error message string
+     * @returns true if the system is reachable and authenticated, if required, false if not, or an error message string
      */
     public async validateDestination(
         destination: Destination,
@@ -603,7 +603,6 @@ export class ConnectionValidator {
                 valResult: this.getValidationResultFromStatusCode(200)
             };
         } catch (error) {
-            //LoggerHelper.logger.debug(`ConnectionValidator.validateDestination() - error: ${error.message}`);
             if (error?.isAxiosError) {
                 this.getValidationResultFromStatusCode(error?.response?.status || error?.code);
             }
@@ -699,8 +698,7 @@ export class ConnectionValidator {
     }
 
     /**
-     * Converts the http status code into 'validty' and returns true if the status code indicates that the URL was reachable.
-     * Sets the instance validity state based on the status code.
+     * Sets the instance validity state based on the status code and returns true if the status code indicates that the URL was reachable.
      *
      * @param status a http request status code used to determine the validation result
      * @returns true, if the status code indicates the url is reachable, false if not, or an error message string

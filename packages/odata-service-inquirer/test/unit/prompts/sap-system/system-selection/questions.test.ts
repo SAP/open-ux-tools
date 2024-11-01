@@ -1,7 +1,7 @@
 import type { ServiceProvider, V2CatalogService, V4CatalogService } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
-import { WebIDEUsage } from '@sap-ux/btp-utils';
+import { WebIDEAdditionalData, WebIDEUsage } from '@sap-ux/btp-utils';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions, Question } from 'inquirer';
@@ -216,7 +216,7 @@ describe('Test system selection prompts', () => {
         ).toBe(true);
     });
 
-    test.only('getSystemConnectionQuestions: BAS (Destination)', async () => {
+    test('getSystemConnectionQuestions: BAS (Destination)', async () => {
         const connectValidator = new ConnectionValidator();
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
@@ -259,6 +259,19 @@ describe('Test system selection prompts', () => {
 
         // prompt for service path
         const destServicePathPrompt = systemConnectionQuestions[1];
+        expect(
+            await (destServicePathPrompt.when as Function)?.({
+                [promptNames.systemSelection]: {
+                    type: 'destination',
+                    system: {
+                        Name: 'dest2',
+                        Host: 'http://dest2.com:1234',
+                        WebIDEUsage: `${WebIDEUsage.ODATA_GENERIC}`,
+                        WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
+                    } as Destination
+                }
+            })
+        ).toBe(false);
         expect(
             await (destServicePathPrompt.when as Function)?.({
                 [promptNames.systemSelection]: {
