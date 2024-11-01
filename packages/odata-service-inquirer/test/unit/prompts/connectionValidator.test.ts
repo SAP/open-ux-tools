@@ -61,7 +61,7 @@ describe('ConnectionValidator', () => {
         const validator = new ConnectionValidator();
 
         const result = await validator.validateUrl(invalidUrl);
-        expect(result).toBe(t('errors.invalidUrl'));
+        expect(result).toBe(t('errors.invalidUrl', { input: invalidUrl }));
         expect(validator.validity).toEqual({});
 
         expect(await validator.validateUrl('')).toBe(false);

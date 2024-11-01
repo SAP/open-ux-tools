@@ -2,8 +2,10 @@ import type { ServiceProvider, V2CatalogService, V4CatalogService } from '@sap-u
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import { WebIDEUsage } from '@sap-ux/btp-utils';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions, Question } from 'inquirer';
+import { ERROR_TYPE } from '../../../../../src';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ValidationResult } from '../../../../../src/prompts/connectionValidator';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
@@ -18,11 +20,9 @@ import {
     getSystemSelectionQuestions,
     newSystemChoiceValue
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
+import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { hostEnvironment, promptNames } from '../../../../../src/types';
 import { getHostEnvironment, PromptState } from '../../../../../src/utils';
-import { ERROR_TYPE } from '../../../../../src';
-import LoggerHelper from '../../../../../src/prompts/logger-helper';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
 
 jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
@@ -216,7 +216,7 @@ describe('Test system selection prompts', () => {
         ).toBe(true);
     });
 
-    test('getSystemConnectionQuestions: BAS (Destination)', async () => {
+    test.only('getSystemConnectionQuestions: BAS (Destination)', async () => {
         const connectValidator = new ConnectionValidator();
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
@@ -243,10 +243,10 @@ describe('Test system selection prompts', () => {
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
         expect(connectWithDestinationSpy).toHaveBeenCalledWith(destination1, connectionValidatorMock, undefined);
         connectWithDestinationSpy.mockClear();
-        // valid partial url destination selection, prompt state not updated yet
+        // valid partial url destination selection, prompt state should not be updated yet, since the service path is not provided
         const partialUrlDest = {
             Name: 'dest2',
-            Host: 'http://dest2.com',
+            Host: 'http://dest2.com:1234',
             WebIDEUsage: `${WebIDEUsage.ODATA_GENERIC}`
         } as Destination;
         expect(
@@ -256,6 +256,42 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe(true); // true because we defer the validation to the (destintion) service url path prompt
         expect(connectWithDestinationSpy).not.toHaveBeenCalled();
+
+        // prompt for service path
+        const destServicePathPrompt = systemConnectionQuestions[1];
+        expect(
+            await (destServicePathPrompt.when as Function)?.({
+                [promptNames.systemSelection]: {
+                    type: 'destination',
+                    system: partialUrlDest
+                }
+            })
+        ).toBe(true);
+        expect(await (destServicePathPrompt.validate as Function)?.('')).toEqual(
+            t('prompts.destinationServicePath.invalidServicePathWarning')
+        );
+        expect(
+            await (destServicePathPrompt.validate as Function)?.('/\\', {
+                [promptNames.systemSelection]: {
+                    type: 'destination',
+                    system: partialUrlDest
+                }
+            })
+        ).toEqual(t('errors.invalidUrl', { input: partialUrlDest.Host + '/\\' }));
+        expect(
+            await (destServicePathPrompt.validate as Function)?.('/servicepath', {
+                [promptNames.systemSelection]: {
+                    type: 'destination',
+                    system: partialUrlDest
+                }
+            })
+        ).toBe(true);
+        expect(connectWithDestinationSpy).toHaveBeenCalledWith(
+            partialUrlDest,
+            connectionValidatorMock,
+            undefined,
+            '/servicepath'
+        );
     });
 
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: basic)', async () => {

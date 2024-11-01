@@ -145,7 +145,7 @@
         "urlCertValidationError": "The system URL is using {{certErrorReason}} security certificate.",
         "authenticationFailed": "Authentication incorrect. {{error}}",
         "authenticationTimeout": "Authorization was not verified within the allowed time. Please ensure you have authenticated using the associated browser window.",
-        "invalidUrl": "Not a valid URL",
+        "invalidUrl": "Invalid URL: [{{-input}}]",
         "connectionError": "A connection error occurred, please ensure the target host is available on the network: {{- error}}",
         "timeout": "A connection timeout error occurred: {{- error}}",
         "serverReturnedAnError": "The server returned an error. {{errorDesc}} {{- errorMsg}}",

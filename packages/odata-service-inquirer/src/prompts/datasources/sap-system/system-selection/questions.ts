@@ -7,7 +7,7 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import { hostEnvironment, type OdataServicePromptOptions } from '../../../../types';
+import { hostEnvironment, promptNames, type OdataServicePromptOptions } from '../../../../types';
 import { getHostEnvironment, PromptState } from '../../../../utils';
 import type { ValidationResult } from '../../../connectionValidator';
 import { ConnectionValidator } from '../../../connectionValidator';
@@ -17,7 +17,7 @@ import { getNewSystemQuestions } from '../new-system/questions';
 import type { ServiceAnswer } from '../service-selection';
 import { getSystemServiceQuestion } from '../service-selection/questions';
 import { connectWithBackendSystem, connectWithDestination, createSystemChoices } from './prompt-helpers';
-import { validateUrl } from '@sap-ux/project-input-validator';
+import { validateServiceUrl } from '../validators';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -30,7 +30,6 @@ const usernamePromptName = `${systemSelectionPromptNamespace}:${BasicCredentials
 const passwordPromptName = `${systemSelectionPromptNamespace}:${BasicCredentialsPromptNames.systemPassword}` as const;
 
 const systemSelectionPromptNames = {
-    systemSelection: 'systemSelection',
     systemSelectionCli: 'systemSelectionCli',
     destinationServicePath: 'destinationServicePath'
 } as const;
@@ -46,7 +45,7 @@ interface SystemSelectionCredentialsAnswers {
 }
 
 export interface SystemSelectionAnswers extends SystemSelectionCredentialsAnswers {
-    [systemSelectionPromptNames.systemSelection]?: SystemSelectionAnswerType;
+    [promptNames.systemSelection]?: SystemSelectionAnswerType;
 }
 
 /**
@@ -152,7 +151,7 @@ export async function getSystemConnectionQuestions(
     const questions: Question[] = [
         {
             type: promptOptions?.systemSelection?.useAutoComplete ? 'autocomplete' : 'list',
-            name: systemSelectionPromptNames.systemSelection,
+            name: promptNames.systemSelection,
             message: t('prompts.systemSelection.message'),
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
             choices: systemChoices,
@@ -183,7 +182,7 @@ export async function getSystemConnectionQuestions(
         // Additional service path prompt for partial URL destinations
         const servicePathPrompt = {
             when: (answers: SystemSelectionAnswers): boolean => {
-                const systemSelection = answers?.[systemSelectionPromptNames.systemSelection];
+                const systemSelection = answers?.[promptNames.systemSelection];
                 if (systemSelection?.type === 'destination') {
                     return isPartialUrlDestination(systemSelection.system as Destination);
                 }
@@ -202,9 +201,8 @@ export async function getSystemConnectionQuestions(
                     return t('prompts.destinationServicePath.invalidServicePathWarning');
                 }
                 // Validate format of the service path, note this relies on the assumption that the destination is correctly configured with a valid URL
-                const selectedDestination = answers?.[systemSelectionPromptNames.systemSelection]
-                    ?.system as Destination;
-                const valUrlResult = validateUrl(selectedDestination.Host + servicePath);
+                const selectedDestination = answers?.[promptNames.systemSelection]?.system as Destination;
+                const valUrlResult = validateServiceUrl(selectedDestination.Host, servicePath);
                 if (valUrlResult !== true) {
                     return valUrlResult;
                 }
@@ -225,7 +223,7 @@ export async function getSystemConnectionQuestions(
     if (getHostEnvironment() === hostEnvironment.cli) {
         questions.push({
             when: async (answers: Answers): Promise<boolean> => {
-                const systemSelection = answers?.[systemSelectionPromptNames.systemSelection];
+                const systemSelection = answers?.[promptNames.systemSelection];
                 const connectValResult = await validateSystemSelection(
                     systemSelection,
                     connectionValidator,

@@ -22,7 +22,7 @@ export async function initI18nOdataServiceInquirer(): Promise<void> {
     });
     i18next.addResourceBundle('en', odataServiceInquirerNamespace, translations);
     const t1 = performance.now();
-    console.log(`i18n load time: ${Math.round(t1 - t0)}`);
+    console.log(`i18n load time: ${Math.round(t1 - t0)} milliseconds`);
 }
 
 /**

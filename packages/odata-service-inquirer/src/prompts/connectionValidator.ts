@@ -565,7 +565,6 @@ export class ConnectionValidator {
                     : destination.Host;
                 this._destination = destination;
                 // No need to apply sap-client as this happens automatically (from destination config) when going through the BAS proxy
-                //const validationResult = await this.validateUrl(destUrl);
                 const status = await this.checkSapServiceUrl(new URL(destUrl), undefined, undefined, { odataVersion });
                 this._validatedUrl = destUrl;
                 const validationResult = this.getValidationResultFromStatusCode(status);
@@ -653,20 +652,26 @@ export class ConnectionValidator {
             this.validity.urlFormat = false;
             return false;
         }
+        let url: URL;
+        try {
+            // Check if the url is valid
+            url = new URL(serviceUrl);
+            if (url.origin === 'null') {
+                return t('errors.invalidUrl', { input: serviceUrl });
+            }
+        } catch (error) {
+            return t('errors.invalidUrl', { input: serviceUrl });
+        }
+
         if (systemAuthType) {
             this.systemAuthType = systemAuthType;
         }
         try {
-            const url = new URL(serviceUrl);
             if (!forceReValidation && this.isUrlValidated(serviceUrl)) {
                 return this.validity.reachable ?? false;
             } else {
                 // New URL so reset the validity
                 this.resetValidity();
-            }
-
-            if (url.origin === 'null') {
-                return t('errors.invalidUrl');
             }
             // Ignore path if a system url
             const status = await this.checkSapServiceUrl(url, undefined, undefined, {
@@ -689,7 +694,7 @@ export class ConnectionValidator {
                 return errorHandler.logErrorMsgs(t('errors.systemOrServiceUrlNotFound', { url: serviceUrl }));
             }
             const errorMsg = errorHandler.getErrorMsg(error);
-            return errorMsg ?? t('errors.invalidUrl');
+            return errorMsg ?? error.message;
         }
     }
 
