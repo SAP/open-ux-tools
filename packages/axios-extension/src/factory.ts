@@ -7,7 +7,7 @@ import {
     isAbapSystem,
     BAS_DEST_INSTANCE_CRED_HEADER
 } from '@sap-ux/btp-utils';
-import { Agent as HttpsAgent, AgentOptions } from 'https';
+import { type AgentOptions, Agent as HttpsAgent } from 'https';
 import type { ServiceInfo, RefreshTokenChanged } from './auth';
 import {
     attachConnectionHandler,
@@ -23,7 +23,7 @@ import { inspect } from 'util';
 import { TlsPatch } from './base/patchTls';
 import { getProxyForUrl } from 'proxy-from-env';
 import { type HttpsProxyAgentOptions, HttpsProxyAgent } from 'https-proxy-agent';
-import { type HttpProxyAgentOptions, HttpProxyAgent } from 'http-proxy-agent';
+import { HttpProxyAgent } from 'http-proxy-agent';
 
 type Class<T> = new (...args: any[]) => T;
 
@@ -66,8 +66,7 @@ function createInstance<T extends ServiceProvider>(
             localProxy,
             agentOptions as HttpsProxyAgentOptions<string>
         );
-        // Support additional options i.e. ignoreCertErrors, without needing to modify the agent
-        providerConfig.httpAgent = new HttpProxyAgent(localProxy, agentOptions as HttpProxyAgentOptions<string>);
+        providerConfig.httpAgent = new HttpProxyAgent(localProxy);
         providerConfig.proxy = false;
     }
     // Default httpAgent with optional parameters passed to the agent
