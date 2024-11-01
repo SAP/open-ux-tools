@@ -5,7 +5,8 @@ on:
         branches: [main]
     pull_request:
         branches: [main]
-
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.CI_NX_ACCESS_TOKEN }}
 jobs:
     build:
         strategy:
@@ -46,12 +47,12 @@ jobs:
               id: cache-playwright-browsers
               uses: actions/cache@v4
               with:
-                path: |
-                  ${{ runner.os == 'Windows' }}:
-                    C:\Users\runneradmin\AppData\Local\ms-playwright
-                  ${{ runner.os != 'Windows' }}:
-                    ~/.cache/ms-playwright
-                key: playwright-browsers-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
+                  path: |
+                      ${{ runner.os == 'Windows' }}:
+                        C:\Users\runneradmin\AppData\Local\ms-playwright
+                      ${{ runner.os != 'Windows' }}:
+                        ~/.cache/ms-playwright
+                  key: playwright-browsers-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
             - name: Install playwright browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install --with-deps
@@ -61,11 +62,11 @@ jobs:
               if: failure()
               uses: actions/upload-artifact@v3
               with:
-                name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
-                path: |
-                  packages/*/playwright-report
-                  !packages/*/node_modules
-                retention-days: 15
+                  name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
+                  path: |
+                      packages/*/playwright-report
+                      !packages/*/node_modules
+                  retention-days: 15
             - name: Run SonarCloud scan
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
               uses: sonarsource/sonarcloud-github-action@master
@@ -163,17 +164,17 @@ jobs:
             - name: Prepare Slack notification message
               if: steps.changesetPublish.outputs.published == 'true'
               run: |
-                # Random delimiter required to support multi-line environment variable value
-                EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-                echo "PUBLISHED_PACKAGES_MESSAGE<<$EOF" >> $GITHUB_ENV
-                # publishedPackages JSON format: '[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
-                echo "$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_ENV
-                echo "$EOF" >> $GITHUB_ENV
+                  # Random delimiter required to support multi-line environment variable value
+                  EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+                  echo "PUBLISHED_PACKAGES_MESSAGE<<$EOF" >> $GITHUB_ENV
+                  # publishedPackages JSON format: '[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
+                  echo "$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_ENV
+                  echo "$EOF" >> $GITHUB_ENV
             - name: Send Slack notification
               if: steps.changesetPublish.outputs.published == 'true'
               uses: slackapi/slack-github-action@v1.26.0
               with:
-                payload: |
-                  {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }
+                  payload: |
+                      {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }
               env:
-                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
