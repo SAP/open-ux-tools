@@ -360,6 +360,7 @@ describe('<UIFlexibleTable />', () => {
                     addRowButton: { label: 'Add New Item', onClick: onAddClick }
                 });
                 expect(wrapper.find(selectors.addButton).length).toEqual(1);
+                expect(wrapper.find(selectors.addButton).prop('aria-label')).toBe('Add New Item');
                 wrapper.find(selectors.addButton).first().simulate('click');
                 expect(onAddClick.mock.calls.length).toEqual(1);
                 wrapper.setProps({ isContentLoading: true });
@@ -893,8 +894,9 @@ describe('<UIFlexibleTable />', () => {
             const onAddClick = jest.fn().mockImplementation(() => ({ scrollToRow: 1 }));
             Element.prototype.scrollIntoView = jest.fn();
             const scrollSpy = jest.spyOn(Element.prototype, 'scrollIntoView');
-            wrapper.setProps({ addRowButton: { label: 'Add', onClick: onAddClick } });
+            wrapper.setProps({ addRowButton: { label: 'Add', onClick: onAddClick, ariaLabel: 'Add Button' } });
             expect(wrapper.find(selectors.addButton).length).toEqual(1);
+            expect(wrapper.find(selectors.addButton).prop('aria-label')).toBe('Add Button');
             wrapper.find(selectors.addButton).first().simulate('click');
             expect(onAddClick.mock.calls.length).toEqual(1);
             wrapper.setProps({ isContentLoading: true });

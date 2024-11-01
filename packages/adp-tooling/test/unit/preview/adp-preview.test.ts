@@ -126,7 +126,7 @@ describe('AdaptationProject', () => {
             .reply(200)
             .persist(true);
         nock(backend)
-            .put('/sap/bc/lrep/appdescr_variant_preview/')
+            .put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//')
             .reply(200, {
                 'my.adaptation': mockMergedDescriptor
             })
