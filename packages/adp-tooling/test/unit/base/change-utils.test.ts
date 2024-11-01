@@ -2,6 +2,13 @@ import path, { resolve } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync, existsSync, readdirSync } from 'fs';
+import { renderFile } from 'ejs';
+
+jest.mock('ejs', () => ({
+    ...jest.requireActual('ejs'),
+    renderFile: jest.fn()
+}));
+const renderFileMock = renderFile as jest.Mock;
 
 import {
     type AnnotationsData,
@@ -19,6 +26,8 @@ import {
     writeAnnotationChange,
     writeChangeToFolder
 } from '../../../src/base/change-utils';
+import { isCapNodeJsProject } from '@sap-ux/project-access';
+import { hasUncaughtExceptionCaptureCallback } from 'process';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -334,7 +343,16 @@ describe('Change Utils', () => {
             writeAnnotationChange(
                 mockProjectPath,
                 123456789,
-                mockData.annotation as AnnotationsData['annotation'],
+                {
+                    ...mockData.annotation as AnnotationsData['annotation'],
+                    namespaces: [
+                        {
+                            namespace: 'mockNamespace',
+                            alias: 'mockAlias'
+                        }
+                    ],
+                    serviceUrl: '/path/to/odata'
+                },
                 mockChange as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
             );
@@ -344,9 +362,19 @@ describe('Change Utils', () => {
                 mockChange
             );
 
-            expect(copySpy).toHaveBeenCalledWith(
+            expect(renderFileMock).toHaveBeenCalledWith(
                 expect.stringContaining(path.join('templates', 'changes', 'annotation.xml')),
-                expect.stringContaining('mockAnnotation.xml')
+                expect.objectContaining({
+                    namespaces: [
+                        {
+                            namespace: 'mockNamespace',
+                            alias: 'mockAlias'
+                        }
+                    ],
+                    path: '/path/to/odata'
+                }),
+                expect.objectContaining({}),
+                expect.any(Function)
             );
         });
 
