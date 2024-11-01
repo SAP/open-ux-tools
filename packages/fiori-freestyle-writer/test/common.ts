@@ -90,34 +90,36 @@ export const projectChecks = async (
     const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
     let npmResult;
     try {
-        if (debugFull && (config.appOptions?.typescript || config.appOptions?.eslint)) {
-            // Do npm install
-            npmResult = await exec(`${npm} install`, { cwd: rootPath });
-            console.log('stdout:', npmResult.stdout);
-            console.log('stderr:', npmResult.stderr);
+        if (debugFull) {
+            if (config.appOptions?.typescript || config.appOptions?.eslint) {
+                // Do npm install
+                npmResult = await exec(`${npm} install`, { cwd: rootPath });
+                console.log('stdout:', npmResult.stdout);
+                console.log('stderr:', npmResult.stderr);
 
-            // run checks on the project
-            // Check TS Types
-            if (config.appOptions?.typescript && config.service?.type === ServiceType.EDMX) {
-                npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
+                // run checks on the project
+                // Check TS Types
+                if (config.appOptions?.typescript && config.service?.type === ServiceType.EDMX) {
+                    npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
+                    console.log('stdout:', npmResult.stdout);
+                    console.log('stderr:', npmResult.stderr);
+                }
+                // Check Eslint
+                if (config.appOptions?.eslint) {
+                    npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
+                    console.log('stdout:', npmResult.stdout);
+                    console.log('stderr:', npmResult.stderr);
+                }
+            }
+            if (
+                compareUI5VersionGte(config.ui5?.minUI5Version ?? config.ui5?.version ?? '', ui5LtsVersion_1_120) &&
+                config.template.type === TemplateType.Basic
+            ) {
+                // Check UI5 linter
+                npmResult = await exec(`${npx} @ui5/linter`, { cwd: rootPath });
                 console.log('stdout:', npmResult.stdout);
                 console.log('stderr:', npmResult.stderr);
             }
-            // Check Eslint
-            if (config.appOptions?.eslint) {
-                npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
-                console.log('stdout:', npmResult.stdout);
-                console.log('stderr:', npmResult.stderr);
-            }
-        }
-        if (
-            compareUI5VersionGte(config.ui5?.minUI5Version ?? config.ui5?.version ?? '', ui5LtsVersion_1_120) &&
-            config.template.type === TemplateType.Basic
-        ) {
-            // Check UI5 linter
-            npmResult = await exec(`${npx} @ui5/linter`, { cwd: rootPath });
-            console.log('stdout:', npmResult.stdout);
-            console.log('stderr:', npmResult.stderr);
         }
     } catch (error) {
         console.log('stdout:', error?.stdout);
