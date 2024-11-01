@@ -69,7 +69,7 @@ function createInstance<T extends ServiceProvider>(
         providerConfig.httpAgent = new HttpProxyAgent(localProxy);
         providerConfig.proxy = false;
     }
-    // Default httpAgent with optional parameters passed to the agent
+    // Default httpsAgent with optional parameters passed to the agent
     if (!providerConfig.httpsAgent) {
         providerConfig.httpsAgent = new HttpsAgent(agentOptions as AgentOptions);
     }
