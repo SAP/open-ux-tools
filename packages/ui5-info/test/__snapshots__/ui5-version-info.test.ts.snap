@@ -4106,6 +4106,51 @@ exports[`getUI5Versions filterOptions: snapshots included - snapshotVersionsHost
 ]
 `;
 
+exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 versions fallback for maintained versions, if request fails 1`] = `
+[
+  {
+    "maintained": true,
+    "version": "1.129.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.127.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.126.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.124.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.121.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.120.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.108.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.96.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.84.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.71.0",
+  },
+]
+`;
+
 exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 versions fallback for specified min UI5 version, if request fails 1`] = `
 [
   {
