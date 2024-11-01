@@ -1,5 +1,5 @@
 import type { Manifest } from '@sap-ux/project-access';
-import { getMainServiceDataSource, getODataSources } from '../../src/app-info';
+import { getMainServiceDataSource, getODataSources, getMockserverAnnotationConfig } from '../../src/app-info';
 
 describe('Tests for getMainServiceDataSource()', () => {
     test('Empty manifest.json, should return undefined', () => {
@@ -151,5 +151,83 @@ describe('Tests for getODataSources()', () => {
                 }
             }
         });
+    });
+});
+
+describe('getMockserverAnnotationConfig', () => {
+    it('should return an empty array when no ODataAnnotation sources are available', () => {
+        const manifestJson = {
+            'sap.app': {
+                'dataSources': {
+                    'v2': {
+                        'uri': '/v2/service/path/',
+                        'type': 'OData',
+                        'settings': {
+                            'odataVersion': '2.0'
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getMockserverAnnotationConfig(manifestJson);
+        expect(result).toEqual([]);
+    });
+
+    it('should return the correct annotation config with localUri and uri', () => {
+        const manifestJson = {
+            'sap.app': {
+                'dataSources': {
+                    'annotation': {
+                        'type': 'ODataAnnotation',
+                        'uri': 'annotations/annotation.xml',
+                        'settings': {
+                            'localUri': 'annotations/annotation.xml'
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getMockserverAnnotationConfig(manifestJson);
+        expect(result).toEqual([
+            {
+                localPath: './webapp/annotations/annotation.xml',
+                urlPath: 'annotations/annotation.xml'
+            }
+        ]);
+    });
+
+    it('should handle multiple annotation sources', () => {
+        const manifestJson = {
+            'sap.app': {
+                'dataSources': {
+                    'SEPMRA_PROD_MAN': {
+                        'uri': "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/",
+                        'type': 'ODataAnnotation',
+                        'settings': {
+                            'localUri': 'localService/SEPMRA_PROD_MAN.xml'
+                        }
+                    },
+                    'annotation': {
+                        'type': 'ODataAnnotation',
+                        'uri': 'annotations/annotation.xml',
+                        'settings': {
+                            'localUri': 'annotations/annotation.xml'
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getMockserverAnnotationConfig(manifestJson);
+
+        expect(result).toEqual([
+            {
+                localPath: './webapp/localService/SEPMRA_PROD_MAN.xml',
+                urlPath: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`
+            },
+            {
+                localPath: './webapp/annotations/annotation.xml',
+                urlPath: 'annotations/annotation.xml'
+            }
+        ]);
     });
 });

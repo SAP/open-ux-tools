@@ -1,4 +1,5 @@
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
+import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
 
 /**
  * Get the main service data source entry from manifest.json.
@@ -38,4 +39,19 @@ export function getODataSources(
         }
     }
     return result;
+}
+
+/**
+ * Retrieves the annotation configuration for a mock server by reading and parsing the OData annotations
+ * defined in the application's manifest file.
+ *
+ * @param {Manifest} manifest - The application manifest containing OData annotation sources.
+ * @returns {MockserverConfig['annotations']} - An array of annotation configurations.
+ */
+export function getMockserverAnnotationConfig(manifest: Manifest): MockserverConfig['annotations'] {
+    const annotationSources = Object.values(getODataSources(manifest, 'ODataAnnotation'));
+    return annotationSources.map((annotation) => ({
+        localPath: `./webapp/${annotation.settings?.localUri}`,
+        urlPath: annotation.uri
+    }));
 }

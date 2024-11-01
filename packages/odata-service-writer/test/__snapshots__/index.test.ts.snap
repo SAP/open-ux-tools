@@ -40,7 +40,11 @@ Object {
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/sepmra_annotations_tech_name.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/
+          - localPath: ./webapp/annotations/annotations_test.xml
+            urlPath: annotations/annotations_test.xml
 ",
     "state": "modified",
   },
@@ -2820,7 +2824,9 @@ Object {
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService//SEPM_XYZ/SERVICE.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/
 ",
     "state": "modified",
   },

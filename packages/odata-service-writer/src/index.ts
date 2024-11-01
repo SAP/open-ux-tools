@@ -9,8 +9,8 @@ import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
 import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
-import { getWebappPath } from '@sap-ux/project-access';
-import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
+import { getWebappPath, type Manifest } from '@sap-ux/project-access';
+import { generateMockserverConfig, getMockserverAnnotationConfig } from '@sap-ux/mockserver-config-writer';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -129,7 +129,9 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
             await generateMockserverConfig(basePath, config, fs);
             // add mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {
-                ui5LocalConfig.addMockServerMiddleware(service.path);
+                const manifest = fs.readJSON(join(webappPath, 'manifest.json')) as Partial<Manifest> as Manifest;
+                const annotationsConfig = getMockserverAnnotationConfig(manifest);
+                ui5LocalConfig.addMockServerMiddleware(service.path, annotationsConfig);
             }
         }
 
