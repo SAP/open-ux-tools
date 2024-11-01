@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.0.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.10
+
 ## 1.0.11
 
 ### Patch Changes
