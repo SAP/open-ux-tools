@@ -74,7 +74,7 @@
         "false": "false",
         "annotationFile": {
             "selectFromWorkspace": "Select annotation file from workspace",
-            "createEmptyFile": "Create an empty annotation file"
+            "createTemplateFile": "Create an template annotation file"
         }
     }
 }
