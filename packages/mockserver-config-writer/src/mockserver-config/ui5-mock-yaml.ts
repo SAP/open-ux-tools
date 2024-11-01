@@ -124,8 +124,8 @@ export function removeMockDataFolders(fs: Editor, basePath: string): void {
  *
  * @param fs - Editor instance to read existing information
  * @param ui5MockYamlPath - path to ui5-mock.yaml file
- * @param name - optional, name of the mockserver service
- * @param path - optional, url path the mockserver listens to
+ * @param serviceName - optional, name of the mockserver service to be added
+ * @param servicePath - optional, url path the mockserver service to be added
  * @param dataSourcesConfig - optional, dataSources config from manifest to add to mockserver middleware services list
  * @param annotationsConfig - optional, annotations config to add to mockserver mockserver middleware annotations list
  * @param overwrite - optional, whether to overwrite existing annotations and services
@@ -134,8 +134,8 @@ export function removeMockDataFolders(fs: Editor, basePath: string): void {
 async function updateUi5MockYamlConfig(
     fs: Editor,
     ui5MockYamlPath: string,
-    name?: string,
-    path?: string,
+    serviceName?: string,
+    servicePath?: string,
     dataSourcesConfig?: { serviceName: string; servicePath: string }[],
     annotationsConfig?: MockserverConfig['annotations'],
     overwrite = false
@@ -144,8 +144,8 @@ async function updateUi5MockYamlConfig(
     if (overwrite) {
         const newMockserverMiddleware = await getNewMockserverMiddleware(dataSourcesConfig, annotationsConfig);
         existingUi5MockYamlConfig.updateCustomMiddleware(newMockserverMiddleware);
-    } else if (name && path) {
-        existingUi5MockYamlConfig.addServiceToMockserverMiddleware(name, path, annotationsConfig);
+    } else if (serviceName && servicePath) {
+        existingUi5MockYamlConfig.addServiceToMockserverMiddleware(serviceName, servicePath, annotationsConfig);
     }
     return existingUi5MockYamlConfig;
 }
