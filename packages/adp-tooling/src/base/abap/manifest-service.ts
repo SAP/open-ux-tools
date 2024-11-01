@@ -169,7 +169,7 @@ export class ManifestService {
      * @returns A promise that resolves to the metadata of the data source.
      * @throws Error if no metadata path is found in the manifest or fetching fails.
      */
-    public async getDataSourceMetadata(dataSourceId: string): Promise<any> {
+    public async getDataSourceMetadata(dataSourceId: string): Promise<string> {
         const dataSource = this.manifest?.['sap.app']?.dataSources?.[dataSourceId];
 
         if (!dataSource) {
