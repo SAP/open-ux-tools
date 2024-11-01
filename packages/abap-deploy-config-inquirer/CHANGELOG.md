@@ -1,5 +1,25 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.0.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.10
+
+## 1.0.11
+
+### Patch Changes
+
+-   d69070a: Handle validator method not being invoked for confirm field
+
+## 1.0.10
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.7
+-   @sap-ux/fiori-generator-shared@0.7.1
+-   @sap-ux/system-access@0.5.13
+
 ## 1.0.9
 
 ### Patch Changes

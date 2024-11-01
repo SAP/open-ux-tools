@@ -105,7 +105,10 @@ export class AddTableCustomColumnQuickAction
             return [];
         }
 
-        if ((tableInternal.getAggregation('items') as ManagedObject[]).length === 0) {
+        if (
+            isA(M_TABLE_TYPE, tableInternal) &&
+            (tableInternal.getAggregation('items') as ManagedObject[]).length === 0
+        ) {
             const bundle = await getTextBundle();
             notifyUser(bundle.getText('TABLE_ROWS_NEEDED_TO_CREATE_CUSTOM_COLUMN'), 8000);
             return [];

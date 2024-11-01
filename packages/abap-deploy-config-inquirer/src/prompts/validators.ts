@@ -159,17 +159,6 @@ export function validateTargetSystemUrlCli(targetSystem?: string, choices?: Abap
 }
 
 /**
- * Validates the SCP question and sets the SCP in the prompt state.
- *
- * @param input - if confirm was selected
- * @returns boolean
- */
-export function validateScpQuestion(input: boolean): boolean {
-    PromptState.abapDeployConfig.scp = input;
-    return true;
-}
-
-/**
  * Validates and updates the client property in the state.
  *
  * @param clientChoice - client choice
