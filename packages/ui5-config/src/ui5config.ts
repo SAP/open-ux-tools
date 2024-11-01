@@ -386,29 +386,18 @@ export class UI5Config {
     /**
      * Adds a instance of the mockserver middleware to the config.
      *
-     * @param name - optional, name of the mockserver service
-     * @param servicePath optional, service path that is to be mocked
-     * @param annotationsConfig optional, annotations config that is to be mocked
      * @param dataSourcesConfig optional, annotations config that is to be mocked
+     * @param annotationsConfig optional, annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
     public addMockServerMiddleware(
-        name?: string,
-        servicePath?: string,
-        annotationsConfig?: MockserverConfig['annotations'],
-        dataSourcesConfig?: { serviceName: string; serviceUri: string }[]
+        dataSourcesConfig?: { serviceName: string; servicePath: string }[],
+        annotationsConfig?: MockserverConfig['annotations']
     ): this {
         this.document.appendTo({
             path: 'server.customMiddleware',
-            value: getMockServerMiddlewareConfig(
-                name,
-                servicePath,
-                undefined,
-                undefined,
-                annotationsConfig,
-                dataSourcesConfig
-            )
+            value: getMockServerMiddlewareConfig(undefined, undefined, dataSourcesConfig, annotationsConfig)
         });
         return this;
     }
@@ -416,32 +405,58 @@ export class UI5Config {
     /**
      * Adds a service configuration to an existing sap-fe-mockserver middleware keeping any existing service configurations. If the config does not contain a sap-fe-mockserver middleware, an error is thrown.
      *
-     * @param name - optional, name of the mockserver service
-     * @param servicePath path that is to be mocked
+     * @param serviceName - name of the service
+     * @param servicePath - path of the service that is to be mocked
      * @param annotationsConfig optional annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
     public addServiceToMockserverMiddleware(
-        name: string,
+        serviceName: string,
         servicePath: string,
         annotationsConfig: MockserverConfig['annotations'] = []
     ): this {
-        const mockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver') as CustomMiddleware;
-        if (!mockserverMiddleware) {
+        const middlewareListYaml = this.document.getSequence({ path: 'server.customMiddleware' });
+        // Throw error if middleware is not found
+        const mockserverMiddlewareYaml = this.document.findItem(
+            middlewareListYaml,
+            (item: any) => item.name === 'sap-fe-mockserver'
+        ) as YAMLMap;
+        if (!mockserverMiddlewareYaml) {
             throw new Error('Could not find sap-fe-mockserver');
         } else {
-            const mockserverConfig = mockserverMiddleware.configuration as MockserverConfig;
-            if (mockserverConfig) {
-                const updatedMiddleware = getMockServerMiddlewareConfig(
-                    name,
-                    servicePath,
-                    mockserverConfig.services,
-                    mockserverConfig.annotations,
-                    annotationsConfig
+            // Else append new data to current middleware config and then run middleware update
+            const mockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver') as CustomMiddleware;
+            const mockserverMiddlewareConfig = mockserverMiddleware?.configuration as MockserverConfig;
+            if (mockserverMiddlewareConfig.services) {
+                const newServiceData = {
+                    urlPath: servicePath,
+                    metadataPath: `./webapp/localService/${serviceName}/metadata.xml`,
+                    mockdataPath: `./webapp/localService/${serviceName}/data`,
+                    generateMockData: true
+                };
+                const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
+                    (existingService) => existingService.urlPath === servicePath || existingService.urlPath === ''
                 );
-                this.updateCustomMiddleware(updatedMiddleware);
+                if (serviceIndex > -1) {
+                    mockserverMiddlewareConfig.services[serviceIndex] = newServiceData;
+                } else {
+                    mockserverMiddlewareConfig.services = [...mockserverMiddlewareConfig.services, newServiceData];
+                }
             }
+            if (mockserverMiddlewareConfig.annotations) {
+                const existingAnnotations = mockserverMiddlewareConfig.annotations;
+                annotationsConfig.forEach((annotationConfig) => {
+                    if (
+                        !existingAnnotations.find(
+                            (existingAnnotation) => existingAnnotation.urlPath === annotationConfig.urlPath
+                        )
+                    ) {
+                        existingAnnotations.push(annotationConfig);
+                    }
+                });
+            }
+            this.updateCustomMiddleware(mockserverMiddleware);
         }
         return this;
     }

@@ -48,15 +48,20 @@ describe('Test enhanceYaml()', () => {
         jest.clearAllMocks();
     });
 
-    test('Create new ui5-mock.yaml with annotations from mock manifest.json', async () => {
+    test('Create new ui5-mock.yaml with services and annotations from mock manifest.json', async () => {
         const fs = getFs({ [manifestJsonPath]: mockManifestJson });
-        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService', path: '/path/for/new/config' });
+        await enhanceYaml(fs, basePath, webappPath);
 
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
 
         const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
         const mockserverConfig = ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
-        expect(mockserverConfig?.configuration.services?.[0].urlPath).toBe('/path/for/new/config');
+        expect(mockserverConfig?.configuration.services?.[0]).toStrictEqual({
+            generateMockData: true,
+            metadataPath: './webapp/localService/mainService/metadata.xml',
+            mockdataPath: './webapp/localService/mainService/data',
+            urlPath: '/sap/opu/odata/sap/SEPMRA_PROD_MAN'
+        });
         expect(mockserverConfig?.configuration.annotations).toEqual([
             {
                 localPath: './webapp/localService/SEPMRA_PROD_MAN.xml',
@@ -67,15 +72,15 @@ describe('Test enhanceYaml()', () => {
         ]);
     });
 
-    test('Update ui5-mock.yaml, path from manifest', async () => {
+    test('Update ui5-mock.yaml, path and service name from manifest', async () => {
         const fs = getFsWithUi5MockYaml(manifestWithMainService);
-        await enhanceYaml(fs, basePath, webappPath, { name: 'ds' });
+        await enhanceYaml(fs, basePath, webappPath);
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
     });
 
-    test('Update ui5-mock.yaml, path from manifest with annotations', async () => {
+    test('Update ui5-mock.yaml, path and service name from manifest with annotations', async () => {
         const fs = getFsWithUi5MockYaml(mockManifestJson);
-        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService' });
+        await enhanceYaml(fs, basePath, webappPath);
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
     });
 
@@ -91,15 +96,20 @@ describe('Test enhanceYaml()', () => {
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
     });
 
-    test('Create new ui5-mock.yaml based on ui5.yaml, updated with annotations', async () => {
+    test('Create new ui5-mock.yaml based on ui5.yaml, updated with services and annotations', async () => {
         const fs = getFsWithUi5Yaml(mockManifestJson);
-        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService', path: 'new/path/to/service' });
+        await enhanceYaml(fs, basePath, webappPath);
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
         // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
         const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
         expect(
-            ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.services?.[0].urlPath
-        ).toBe('new/path/to/service');
+            ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.services?.[0]
+        ).toStrictEqual({
+            generateMockData: true,
+            metadataPath: './webapp/localService/mainService/metadata.xml',
+            mockdataPath: './webapp/localService/mainService/data',
+            urlPath: '/sap/opu/odata/sap/SEPMRA_PROD_MAN'
+        });
         expect(
             ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.annotations
         ).toEqual([
@@ -112,26 +122,28 @@ describe('Test enhanceYaml()', () => {
         ]);
     });
 
-    test('Create new ui5-mock.yaml based on ui5.yaml', async () => {
+    test('Create new ui5-mock.yaml based on ui5.yaml and manifest without dataSources', async () => {
         const fs = getFsWithUi5Yaml('{}');
-        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService', path: 'new/path/to/service' });
+        await enhanceYaml(fs, basePath, webappPath);
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
         // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
         const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        // manifest without dataSources are used, so no services added
         expect(
-            ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.services?.[0].urlPath
-        ).toBe('new/path/to/service');
+            ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.services
+        ).toStrictEqual([]);
     });
 
-    test('Create new ui5-mock.yaml without app name in manifest.json', async () => {
+    test('Create new ui5-mock.yaml without app name and dataSources in manifest.json', async () => {
         const fs = getFs({ [manifestJsonPath]: '{}' });
-        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService', path: '/path/for/new/config' });
+        await enhanceYaml(fs, basePath, webappPath);
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
         // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
         const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        // manifest without dataSources are used, so no services added
         expect(
-            ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.services?.[0].urlPath
-        ).toBe('/path/for/new/config');
+            ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.services
+        ).toStrictEqual([]);
     });
 
     test(`Should throw error in case new added middleware can't be found by name 'sap-fe-mockserver'`, async () => {

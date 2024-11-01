@@ -3,7 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { updateManifest, updatePackageJson, updateCdsFilesWithAnnotations, writeAnnotationXmlFiles } from './updates';
-import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
+import type { CustomMiddleware, FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
@@ -63,46 +63,35 @@ export async function findProjectFiles(
 }
 
 /**
- * Extends mockserver middleware for UI5Config with service data.
+ * Generates mockserver middleware config for ui5-local.yaml file based on ui5-mock.yaml.
  *
- * @param {Editor} [fs] - the memfs editor instance
- * @param {OdataService} service - the OData service instance data
- * @param {UI5Config} ui5Config - UI5 configuration
- * @param {string} ui5ConfigPath - path to the YAML config file
- * @throws {Error} - if required UI5 project files are not found
+ * @param {Editor} fs - the memfs editor instance
+ * @param {OdataService} ui5YamlPath - path pointing to the ui5.yaml file
+ * @param {UI5Config} ui5LocalConfigPath - ui5-local.yaml configuration
+ * @param {string} ui5LocalConfig - path pointing to the ui5-local.yaml file
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function extendMockserverMiddleware(
+async function generateMockserverMiddlewareBasedOnUi5MockYaml(
     fs: Editor,
-    service: OdataService,
-    ui5Config: UI5Config,
-    ui5ConfigPath: string
-): Promise<Editor> {
-    try {
-        // Service name and path are defined after enhanceData()
-        if (service.name && service.path) {
-            ui5Config.addServiceToMockserverMiddleware(service.name, service.path);
-        }
-    } catch (error: any) {
-        if (
-            (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) ||
-            error.message === 'Could not find sap-fe-mockserver'
-        ) {
-            if (service.name && service.path) {
-                ui5Config.addMockServerMiddleware(service.name, service.path);
-            }
-        } else {
-            throw error;
-        }
+    ui5YamlPath: string,
+    ui5LocalConfigPath?: string,
+    ui5LocalConfig?: UI5Config
+): Promise<void> {
+    // Update ui5-local.yaml with mockserver middleware from ui5-mock.yaml
+    const ui5MockYamlPath = join(dirname(ui5YamlPath), 'ui5-mock.yaml');
+    const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+    const mockserverMiddlewareFromUi5Mock = ui5MockYamlConfig.findCustomMiddleware(
+        'sap-fe-mockserver'
+    ) as CustomMiddleware;
+    if (ui5LocalConfigPath && fs.exists(ui5LocalConfigPath) && ui5LocalConfig && mockserverMiddlewareFromUi5Mock) {
+        ui5LocalConfig.updateCustomMiddleware(mockserverMiddlewareFromUi5Mock);
     }
-    fs.write(ui5ConfigPath, ui5Config.toString());
-    return fs;
 }
 
 /**
  * Extends backend middleware for UI5Config with service data.
  *
- * @param {Editor} [fs] - the memfs editor instance
+ * @param {Editor} fs - the memfs editor instance
  * @param {OdataService} service - the OData service instance data
  * @param {UI5Config} ui5Config - UI5 configuration
  * @param {string} ui5ConfigPath - path to the YAML config file
@@ -178,11 +167,15 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
                     webappPath: webappPath,
                     ui5MockYamlConfig: { path: service.path, name: service.name }
                 };
+                // Generate mockserver middleware for ui5-mock.yaml
                 await generateMockserverConfig(basePath, config, fs);
-                // Update ui5-local.yaml with mockserver middleware
-                if (ui5LocalConfigPath && fs.exists(ui5LocalConfigPath) && ui5LocalConfig) {
-                    await extendMockserverMiddleware(fs, service, ui5LocalConfig, ui5LocalConfigPath);
-                }
+                // Update ui5-local.yaml with mockserver middleware from newly ui5-mock.yaml
+                await generateMockserverMiddlewareBasedOnUi5MockYaml(
+                    fs,
+                    paths.ui5Yaml,
+                    ui5LocalConfigPath,
+                    ui5LocalConfig
+                );
             }
             // Create local copy of metadata and annotations
             fs.write(

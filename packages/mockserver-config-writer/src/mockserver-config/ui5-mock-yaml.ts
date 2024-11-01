@@ -6,7 +6,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import { DirName, FileName } from '@sap-ux/project-access';
 import type { Ui5MockYamlConfig } from '../types';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
-import { getMainServiceDataSource, getODataSources } from '../app-info';
+import { getMainServiceDataSourceName, getMainServiceDataSource, getODataSources } from '../app-info';
 
 /**
  * Enhance or create the ui5-mock.yaml with mockserver config.
@@ -39,43 +39,37 @@ export async function enhanceYaml(
     let mockConfig;
     const manifest = fs.readJSON(join(webappPath, 'manifest.json')) as Partial<Manifest> as Manifest;
     const mockserverPath = config?.path ?? getMainServiceDataSource(manifest)?.uri;
-    const serviceName = config?.name;
+    const serviceName = config?.name ?? getMainServiceDataSourceName(manifest);
+    // Prepare annotations list to be used in mockserver middleware config annotations
     const annotationSource = Object.values(getODataSources(manifest, 'ODataAnnotation'));
     const annotationsConfig = annotationSource.map((annotation) => ({
         localPath: `./webapp/${annotation.settings?.localUri}`,
         urlPath: annotation.uri
     }));
+    // Prepare dataSources list to be used in mockserver middleware config services
+    const dataSources = getODataSources(manifest, 'OData');
+    const dataSourcesConfig: { serviceName: string; servicePath: string }[] = [];
+    for (const i in dataSources) {
+        dataSourcesConfig.push({
+            serviceName: i,
+            servicePath: dataSources[i].uri
+        });
+    }
 
     if (fs.exists(ui5MockYamlPath)) {
-        // In case of overwrite odata services from manifest dataSource section are used and existing ones removed from ui5-mock.yaml content
-        let dataSourcesConfig: { serviceName: string; serviceUri: string }[] | undefined;
-        if (overwrite) {
-            const dataSource = getODataSources(manifest, 'OData');
-            dataSourcesConfig = [];
-            for (const i in dataSource) {
-                dataSourcesConfig.push({
-                    serviceName: i,
-                    serviceUri: dataSource[i].uri
-                });
-            }
-        }
         mockConfig = await updateUi5MockYamlConfig(
             fs,
             ui5MockYamlPath,
             serviceName,
             mockserverPath,
+            dataSourcesConfig,
             annotationsConfig,
-            dataSourcesConfig
+            overwrite
         );
     } else {
         mockConfig = fs.exists(join(basePath, 'ui5.yaml'))
-            ? await generateUi5MockYamlBasedOnUi5Yaml(fs, basePath, serviceName, mockserverPath, annotationsConfig)
-            : await generateNewUi5MockYamlConfig(
-                  manifest['sap.app']?.id || '',
-                  serviceName,
-                  mockserverPath,
-                  annotationsConfig
-              );
+            ? await generateUi5MockYamlBasedOnUi5Yaml(fs, basePath, dataSourcesConfig, annotationsConfig)
+            : await generateNewUi5MockYamlConfig(manifest['sap.app']?.id || '', dataSourcesConfig, annotationsConfig);
     }
     const yaml = mockConfig.toString();
     fs.write(ui5MockYamlPath, yaml);
@@ -124,32 +118,33 @@ export function removeMockDataFolders(fs: Editor, basePath: string): void {
 }
 
 /**
- * Update existing ui5-mock.yaml config. This will add or replace existing middleware configuration
+ * Update existing ui5-mock.yaml config. This will add or replace existing middleware configuration.
+ * If 'overwrite' is set to true, then mockserver middleware configuration would be replaced else only enhanced with data from 'name' and 'path'.
  * 'sap-fe-mockserver' with state of the art config.
  *
  * @param fs - Editor instance to read existing information
  * @param ui5MockYamlPath - path to ui5-mock.yaml file
  * @param name - optional, name of the mockserver service
  * @param path - optional, url path the mockserver listens to
- * @param annotationsConfig - optional, annotations config to add to mockserver middleware
- * @param dataSourcesConfig - optional, dataSources config from manifest in case of overwrite
- * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
+ * @param dataSourcesConfig - optional, dataSources config from manifest to add to mockserver middleware services list
+ * @param annotationsConfig - optional, annotations config to add to mockserver mockserver middleware annotations list
+ * @param overwrite - optional, whether to overwrite existing annotations and services
+ * @returns {*}  {Promise<UI5Config>} - Updated Yaml Doc
  */
 async function updateUi5MockYamlConfig(
     fs: Editor,
     ui5MockYamlPath: string,
     name?: string,
     path?: string,
+    dataSourcesConfig?: { serviceName: string; servicePath: string }[],
     annotationsConfig?: MockserverConfig['annotations'],
-    dataSourcesConfig?: { serviceName: string; serviceUri: string }[]
+    overwrite = false
 ): Promise<UI5Config> {
     const existingUi5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
-    if (dataSourcesConfig) {
-        existingUi5MockYamlConfig.updateCustomMiddleware(
-            await getNewMockserverMiddleware(name, path, annotationsConfig, dataSourcesConfig)
-        );
+    if (overwrite) {
+        const newMockserverMiddleware = await getNewMockserverMiddleware(dataSourcesConfig, annotationsConfig);
+        existingUi5MockYamlConfig.updateCustomMiddleware(newMockserverMiddleware);
     } else if (name && path) {
-        // name and path are sed to generate mock content for service
         existingUi5MockYamlConfig.addServiceToMockserverMiddleware(name, path, annotationsConfig);
     }
     return existingUi5MockYamlConfig;
@@ -160,20 +155,19 @@ async function updateUi5MockYamlConfig(
  *
  * @param fs - Editor instance to read existing information
  * @param basePath - the base path where the package.json and ui5.yaml is
- * @param name - optional, name of the mockserver service
- * @param path - optional path for mockserver config
- * @param annotationsConfig - optional annotations config to add to mockserver middleware
+ * @param dataSourcesConfig - optional, dataSources config from manifest to add to mockserver middleware services list
+ * @param annotationsConfig - optional, annotations config to add to mockserver mockserver middleware annotations list
  * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
  */
 async function generateUi5MockYamlBasedOnUi5Yaml(
     fs: Editor,
     basePath: string,
-    name?: string,
-    path?: string,
+    dataSourcesConfig?: { serviceName: string; servicePath: string }[],
     annotationsConfig?: MockserverConfig['annotations']
 ): Promise<UI5Config> {
-    const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(join(basePath, 'ui5.yaml')));
-    const ui5MockServerMiddleware = await getNewMockserverMiddleware(name, path, annotationsConfig);
+    const ui5YamlPath = join(basePath, 'ui5.yaml');
+    const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5YamlPath));
+    const ui5MockServerMiddleware = await getNewMockserverMiddleware(dataSourcesConfig, annotationsConfig);
     ui5MockYamlConfig.updateCustomMiddleware(ui5MockServerMiddleware);
     return ui5MockYamlConfig;
 }
@@ -182,15 +176,13 @@ async function generateUi5MockYamlBasedOnUi5Yaml(
  * Create fresh ui5-mock.yaml configuration which can be stringified and written.
  *
  * @param appId - application id
- * @param name - optional, name of the mockserver service
- * @param path - optional, url path the mockserver listens to
- * @param annotationsConfig - optional annotations config to add to mockserver middleware
+ * @param dataSourcesConfig - optional, dataSources config from manifest to add to mockserver middleware services list
+ * @param annotationsConfig - optional, annotations config to add to mockserver mockserver middleware annotations list
  * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
  */
 async function generateNewUi5MockYamlConfig(
     appId: string,
-    name?: string,
-    path?: string,
+    dataSourcesConfig?: { serviceName: string; servicePath: string }[],
     annotationsConfig?: MockserverConfig['annotations']
 ): Promise<UI5Config> {
     const ui5MockYaml = await UI5Config.newInstance(
@@ -200,27 +192,23 @@ async function generateNewUi5MockYamlConfig(
     ui5MockYaml.setType('application');
     ui5MockYaml.addFioriToolsProxydMiddleware({ ui5: {} });
     ui5MockYaml.addFioriToolsAppReloadMiddleware();
-    ui5MockYaml.addMockServerMiddleware(name, path, annotationsConfig);
+    ui5MockYaml.addMockServerMiddleware(dataSourcesConfig, annotationsConfig);
     return ui5MockYaml;
 }
 
 /**
  * Return new mockserver middleware.
  *
- * @param name - optional, name of the mockserver service
- * @param path - optional, path for mockserver config
- * @param annotationsConfig - optional annotations config to add to mockserver middleware
- * @param dataSourcesConfig - optional, dataSources config from manifest in case of overwrite
+ * @param dataSourcesConfig - optional, dataSources config from manifest to add to mockserver middleware services list
+ * @param annotationsConfig - optional, annotations config to add to mockserver mockserver middleware annotations list
  * @returns - mockserver middleware
  */
 async function getNewMockserverMiddleware(
-    name?: string,
-    path?: string,
-    annotationsConfig?: MockserverConfig['annotations'],
-    dataSourcesConfig?: { serviceName: string; serviceUri: string }[]
+    dataSourcesConfig?: { serviceName: string; servicePath: string }[],
+    annotationsConfig?: MockserverConfig['annotations']
 ): Promise<CustomMiddleware<MockserverConfig>> {
     const ui5MockYaml = await UI5Config.newInstance('');
-    ui5MockYaml.addMockServerMiddleware(name, path, annotationsConfig, dataSourcesConfig);
+    ui5MockYaml.addMockServerMiddleware(dataSourcesConfig, annotationsConfig);
     const mockserverMiddleware = ui5MockYaml.findCustomMiddleware('sap-fe-mockserver');
     if (!mockserverMiddleware) {
         throw Error('Could not create new mockserver config');

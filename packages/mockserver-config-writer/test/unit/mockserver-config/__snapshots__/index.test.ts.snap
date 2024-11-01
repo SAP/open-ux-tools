@@ -1,43 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test generateMockserverConfig() Add config with service to bare minimum project 1`] = `
-"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
-specVersion: \\"2.5\\"
+exports[`Test generateMockserverConfig() Add config with service to project with dataSources 1`] = `
+"specVersion: \\"2.6\\"
 metadata:
-  name: bare-minimum
+  name: ui-mock-config
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
         mountPath: /
         services:
-          - urlPath: /path/to/service
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+          - urlPath: /first/path
             mockdataPath: ./webapp/localService/mainService/data
+            generateMockData: true
+          - urlPath: /second/path
+            mockdataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/data
+            generateMockData: true
+          - urlPath: /third/path
+            metadataPath: ./webapp/localService/third-service/metadata.xml
+            mockdataPath: ./webapp/localService/third-service/data
             generateMockData: true
         annotations: []
 "
 `;
 
-exports[`Test generateMockserverConfig() Add config without any services to bare minimum project 1`] = `
+exports[`Test generateMockserverConfig() Add config without any services to bare minimum project without dataSources 1`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: \\"2.5\\"

@@ -128,47 +128,34 @@ export function getFioriToolsProxyMiddlewareConfig(
 }
 
 export const getMockServerMiddlewareConfig = (
-    serviceName?: string,
-    servicePath?: string,
     existingServices: MockserverConfig['services'] = [],
     existingAnnotations: MockserverConfig['annotations'] = [],
-    annotationsConfig: MockserverConfig['annotations'] = [],
-    dataSourcesConfig?: { serviceName: string; serviceUri: string }[]
+    dataSourcesConfig?: { serviceName: string; servicePath: string }[],
+    annotationsConfig: MockserverConfig['annotations'] = []
 ): CustomMiddleware<MockserverConfig> => {
     let services: MockserverConfig['services'] = [];
 
     if (dataSourcesConfig) {
         dataSourcesConfig.forEach((dataSource) => {
-            if (services) {
-                services.push({
-                    urlPath: dataSource.serviceUri,
-                    metadataPath: `./webapp/localService/${dataSource.serviceName}/metadata.xml`,
-                    mockdataPath: `./webapp/localService/${dataSource.serviceName}/data`,
-                    generateMockData: true
-                });
+            const newServiceData = {
+                urlPath: dataSource.servicePath.replace(/\/$/, ''), // // Mockserver is sensitive to trailing '/'
+                metadataPath: `./webapp/localService/${dataSource.serviceName}/metadata.xml`,
+                mockdataPath: `./webapp/localService/${dataSource.serviceName}/data`,
+                generateMockData: true
+            };
+            const existingServiceIndex: number = existingServices.findIndex(
+                (existingService) =>
+                    (existingService.urlPath === newServiceData.urlPath &&
+                        existingService.metadataPath === newServiceData.metadataPath) ||
+                    existingService.urlPath === ''
+            );
+            if (existingServiceIndex > -1) {
+                existingServices[existingServiceIndex] = newServiceData;
+                services = existingServices;
+            } else {
+                services = [...existingServices, newServiceData];
             }
         });
-    } else if (serviceName && servicePath) {
-        const urlPath = servicePath.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
-        const newServiceData = {
-            urlPath,
-            metadataPath: `./webapp/localService/${serviceName}/metadata.xml`,
-            mockdataPath: `./webapp/localService/${serviceName}/data`,
-            generateMockData: true
-        };
-        // Check if service with given paths already exists or placeholder service exists
-        const existingServiceIndex: number = existingServices.findIndex(
-            (existingService) =>
-                (existingService.urlPath === newServiceData.urlPath &&
-                    existingService.metadataPath === newServiceData.metadataPath) ||
-                existingService.urlPath === ''
-        );
-        if (existingServiceIndex > -1) {
-            existingServices[existingServiceIndex] = newServiceData;
-            services = existingServices;
-        } else {
-            services = [...existingServices, newServiceData];
-        }
     }
     // Handle service annotations by avoiding existing ones from middleware
     annotationsConfig.forEach((annotationConfig) => {

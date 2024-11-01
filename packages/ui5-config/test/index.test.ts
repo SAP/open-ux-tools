@@ -286,23 +286,20 @@ describe('UI5Config', () => {
     });
 
     describe('addMockServerMiddleware', () => {
-        test('add with given name and path', () => {
-            ui5Config.addMockServerMiddleware(name, path);
-            expect(ui5Config.toString()).toMatchSnapshot();
-        });
-
-        test('add mockserver middleware without any services', () => {
+        test('add without services and annotations', () => {
             ui5Config.addMockServerMiddleware();
             expect(ui5Config.toString()).toMatchSnapshot();
         });
-        test('add with name, path and annotationsConfig', () => {
-            ui5Config.addMockServerMiddleware(name, path, annotationsConfig);
+
+        test('add with services', () => {
+            ui5Config.addMockServerMiddleware([{ serviceName: 'new-service', servicePath: '/path/to/service' }]);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
-        test('add with dataSource config', () => {
-            ui5Config.addMockServerMiddleware(undefined, undefined, annotationsConfig, [
-                { serviceName: 'data-source-service', serviceUri: '/path/to/service' }
-            ]);
+        test('add with services and annotations', () => {
+            ui5Config.addMockServerMiddleware(
+                [{ serviceName: 'new-service', servicePath: '/path/to/service' }],
+                annotationsConfig
+            );
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
@@ -310,36 +307,38 @@ describe('UI5Config', () => {
     describe('addServiceToMockserverMiddleware', () => {
         test('add new service', () => {
             ui5Config.addMockServerMiddleware();
-            ui5Config.addServiceToMockserverMiddleware('new-service', '/sap');
+            ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service');
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add service duplicate, should overwrite', () => {
             ui5Config.addMockServerMiddleware();
-            ui5Config.addServiceToMockserverMiddleware('new-service', '/sap');
-            ui5Config.addServiceToMockserverMiddleware('new-service', '/sap');
+            ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service');
+            ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service');
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add new service with annotationsConfig', () => {
             ui5Config.addMockServerMiddleware();
-            ui5Config.addServiceToMockserverMiddleware('new-service', '/sap', annotationsConfig);
+            ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service', annotationsConfig);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
 
     describe('removeServiceFromMockServerMiddleware', () => {
         test('remove exisisting service', () => {
-            // create middleware with one service
-            ui5Config.addMockServerMiddleware('new-service', '/sap');
-            ui5Config.removeServiceFromMockServerMiddleware('/sap');
+            // Create middleware with one service
+            ui5Config.addMockServerMiddleware([{ serviceName: 'new-service', servicePath: '/path/to/service' }]);
+            // Remove it
+            ui5Config.removeServiceFromMockServerMiddleware('/path/to/service');
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('remove unexisting service', () => {
-            // create middleware without any services
+            // Create middleware without any services
             ui5Config.addMockServerMiddleware();
-            ui5Config.removeServiceFromMockServerMiddleware('/sap');
+            // Try to remove unexisting service
+            ui5Config.removeServiceFromMockServerMiddleware('/path/to/service');
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });

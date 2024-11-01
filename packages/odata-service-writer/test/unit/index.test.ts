@@ -372,9 +372,11 @@ describe('remove', () => {
             .toString();
         const ui5LocalYaml = (await UI5Config.newInstance(''))
             .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
-            .addMockServerMiddleware('mainService', '/sap')
+            .addMockServerMiddleware([{ serviceName: 'mainService', servicePath: '/sap' }])
             .toString();
-        const ui5MockYaml = (await UI5Config.newInstance('')).addMockServerMiddleware('mainService', '/sap').toString();
+        const ui5MockYaml = (await UI5Config.newInstance(''))
+            .addMockServerMiddleware([{ serviceName: 'mainService', servicePath: '/sap' }])
+            .toString();
         // generate required files
         fs = create(createStorage());
         fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
