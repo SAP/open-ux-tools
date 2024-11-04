@@ -22,6 +22,14 @@ jest.mock('@sap-ux/btp-utils', () => {
     };
 });
 
+jest.mock('https-proxy-agent', () => {
+    const original = jest.requireActual('https-proxy-agent');
+    return {
+        ...original,
+        connect: jest.fn()
+    };
+});
+
 jest.mock('proxy-from-env');
 
 beforeAll(() => {
@@ -59,6 +67,22 @@ test('create', async () => {
     expect(metadata).toBe(expectedMetadata);
     expect(getProxyForUrlSpy).toHaveBeenNthCalledWith(1, `${server}${servicePath}${metadataPath}?sap-client=${client}`);
     getProxyForUrlSpy.mockRestore();
+    expect(provider.defaults.proxy).toBeUndefined();
+    expect(provider.defaults.httpAgent).toBeUndefined();
+    expect(provider.defaults.httpsAgent).toBeDefined();
+});
+
+test('create with proxy', async () => {
+    const getProxyForUrlSpy = jest.spyOn(ProxyFromEnv, 'getProxyForUrl').mockReturnValue('http://proxy.example:8080');
+    const provider = create({
+        baseURL: server,
+        params: { 'sap-client': client }
+    });
+    expect(getProxyForUrlSpy).toHaveBeenNthCalledWith(1, `${server}`);
+    getProxyForUrlSpy.mockRestore();
+    expect(provider.defaults.proxy).toEqual(false);
+    expect(provider.defaults.httpAgent).toBeDefined();
+    expect(provider.defaults.httpsAgent).toBeDefined();
 });
 
 test('createForServiceUrl', async () => {
