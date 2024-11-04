@@ -5,7 +5,7 @@ import { useValue, getLabelRenderer } from '../../../utilities';
 import { useTranslation } from '../../../context/TranslationContext';
 import type { InputProps } from './Input';
 import { TRANSLATE_EVENT_UPDATE, TRANSLATE_EVENT_SHOW } from '../../../types';
-import type { TranslationProperties, AnswerValue } from '../../../types';
+import type { TranslationProperties } from '../../../types';
 
 export interface TranslationInputProps extends InputProps {
     properties: TranslationProperties;

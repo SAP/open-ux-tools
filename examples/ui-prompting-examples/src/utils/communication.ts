@@ -343,6 +343,7 @@ export function getI18nBundle(): Promise<I18nBundle> {
  *
  * @param key Key of new i18n entry
  * @param value Value of new i18n entry
+ * @param properties i18n properties
  * @returns Returns updated i18n bundle.
  */
 export function createI18n(key: string, value: string, properties?: TranslationProperties): Promise<I18nBundle> {
