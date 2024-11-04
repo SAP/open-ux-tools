@@ -1077,10 +1077,6 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
-    "state": "modified",
-  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
@@ -4706,10 +4702,6 @@ appDescription=A Fiori application.",
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>",
-    "state": "modified",
-  },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -8442,10 +8434,6 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
-    "state": "modified",
-  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
@@ -11035,10 +11023,6 @@ appDescription=A Fiori application.",
     ></div>
 </body>
 </html>",
-    "state": "modified",
-  },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -14725,10 +14709,6 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
-    "state": "modified",
-  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\"
@@ -18412,10 +18392,6 @@ appDescription=A Fiori application.",
     ></div>
 </body>
 </html>",
-    "state": "modified",
-  },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -23995,10 +23971,6 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
-    "state": "modified",
-  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\"
@@ -25344,10 +25316,6 @@ appDescription=A Fiori application.",
     ></div>
 </body>
 </html>",
-    "state": "modified",
-  },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -29032,10 +29000,6 @@ appDescription=A Fiori application.",
     ></div>
 </body>
 </html>",
-    "state": "modified",
-  },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -33534,10 +33498,6 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
-    "state": "modified",
-  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
@@ -37167,10 +37127,6 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
-    "state": "modified",
-  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
@@ -40557,10 +40513,6 @@ appDescription=A Fiori application.",
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>",
-    "state": "modified",
-  },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -44189,10 +44141,6 @@ appDescription=A Fiori application.",
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>",
-    "state": "modified",
-  },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -47926,10 +47874,6 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
-    "state": "modified",
-  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
@@ -51424,10 +51368,6 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
-    "state": "modified",
-  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
@@ -54920,10 +54860,6 @@ appDescription=A Fiori application.",
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>",
-    "state": "modified",
-  },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {
@@ -58728,10 +58664,6 @@ appDescription=A Fiori application.",
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>",
-    "state": "modified",
-  },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {

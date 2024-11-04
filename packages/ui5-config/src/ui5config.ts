@@ -397,7 +397,7 @@ export class UI5Config {
     ): this {
         this.document.appendTo({
             path: 'server.customMiddleware',
-            value: getMockServerMiddlewareConfig(undefined, undefined, dataSourcesConfig, annotationsConfig)
+            value: getMockServerMiddlewareConfig(undefined, undefined, undefined, dataSourcesConfig, annotationsConfig)
         });
         return this;
     }
@@ -407,6 +407,7 @@ export class UI5Config {
      *
      * @param serviceName - name of the service
      * @param servicePath - path of the service that is to be mocked
+     * @param appRoot - root to the application
      * @param annotationsConfig optional annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -414,6 +415,7 @@ export class UI5Config {
     public addServiceToMockserverMiddleware(
         serviceName: string,
         servicePath: string,
+        appRoot?: string,
         annotationsConfig: MockserverConfig['annotations'] = []
     ): this {
         const middlewareListYaml = this.document.getSequence({ path: 'server.customMiddleware' });
@@ -426,13 +428,15 @@ export class UI5Config {
             throw new Error('Could not find sap-fe-mockserver');
         } else {
             // Else append new data to current middleware config and then run middleware update
+            const serviceRoot = `${appRoot ?? './webapp'}/localService/${serviceName}`;
+
             const mockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver') as CustomMiddleware;
             const mockserverMiddlewareConfig = mockserverMiddleware?.configuration as MockserverConfig;
             if (mockserverMiddlewareConfig.services) {
                 const newServiceData = {
                     urlPath: servicePath,
-                    metadataPath: `./webapp/localService/${serviceName}/metadata.xml`,
-                    mockdataPath: `./webapp/localService/${serviceName}/data`,
+                    metadataPath: `${serviceRoot}/metadata.xml`,
+                    mockdataPath: `${serviceRoot}/data`,
                     generateMockData: true
                 };
                 const serviceIndex = mockserverMiddlewareConfig.services.findIndex(

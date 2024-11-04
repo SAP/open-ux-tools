@@ -327,10 +327,6 @@ MainTitle=Main",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
-    "state": "modified",
-  },
   "webapp/localService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\"
@@ -4164,10 +4160,6 @@ MainTitle=Main",
     ></div>
 </body>
 </html>",
-    "state": "modified",
-  },
-  "webapp/localService/mainService/data/keep": Object {
-    "contents": "",
     "state": "modified",
   },
   "webapp/localService/metadata.xml": Object {

@@ -76,26 +76,6 @@ export async function enhanceYaml(
 }
 
 /**
- * Generates mock data folder for service in mem-fs.
- * As mem-fs does not support direct directory creation (directories are only created along with files)
- * so we create empty file in data folder to make sure the folder is created.
- *
- * @param fs - Editor instance to read existing information
- * @param basePath - the base path where the package.json and ui5.yaml is
- * @param serviceName - optional, name of the mockserver service
- */
-export function generateMockDataFolder(fs: Editor, basePath: string, serviceName?: string): void {
-    // mockdataPath points to the mock data for service when mockserver config is generated, so we generate this folder
-    if (serviceName) {
-        const mockdataPath = join(basePath, DirName.Webapp, DirName.LocalService, serviceName, DirName.Data);
-        if (!fs.exists(mockdataPath)) {
-            const tempFilePath = join(mockdataPath, 'keep');
-            fs.write(tempFilePath, '');
-        }
-    }
-}
-
-/**
  * Deletes mock data folders for all services from mem-fs.
  *
  * @param fs - mem-fs reference to be used for file access
@@ -145,7 +125,12 @@ async function updateUi5MockYamlConfig(
         const newMockserverMiddleware = await getNewMockserverMiddleware(dataSourcesConfig, annotationsConfig);
         existingUi5MockYamlConfig.updateCustomMiddleware(newMockserverMiddleware);
     } else if (serviceName && servicePath) {
-        existingUi5MockYamlConfig.addServiceToMockserverMiddleware(serviceName, servicePath, annotationsConfig);
+        existingUi5MockYamlConfig.addServiceToMockserverMiddleware(
+            serviceName,
+            servicePath,
+            undefined,
+            annotationsConfig
+        );
     }
     return existingUi5MockYamlConfig;
 }

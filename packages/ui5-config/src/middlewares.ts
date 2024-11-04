@@ -128,6 +128,7 @@ export function getFioriToolsProxyMiddlewareConfig(
 }
 
 export const getMockServerMiddlewareConfig = (
+    appRoot?: string,
     existingServices: MockserverConfig['services'] = [],
     existingAnnotations: MockserverConfig['annotations'] = [],
     dataSourcesConfig?: { serviceName: string; servicePath: string }[],
@@ -137,10 +138,12 @@ export const getMockServerMiddlewareConfig = (
 
     if (dataSourcesConfig) {
         dataSourcesConfig.forEach((dataSource) => {
+            const serviceRoot = `${appRoot ?? './webapp'}/localService/${dataSource.serviceName}`;
+
             const newServiceData = {
                 urlPath: dataSource.servicePath.replace(/\/$/, ''), // // Mockserver is sensitive to trailing '/'
-                metadataPath: `./webapp/localService/${dataSource.serviceName}/metadata.xml`,
-                mockdataPath: `./webapp/localService/${dataSource.serviceName}/data`,
+                metadataPath: `${serviceRoot}/metadata.xml`,
+                mockdataPath: `${serviceRoot}/data`,
                 generateMockData: true
             };
             const existingServiceIndex: number = existingServices.findIndex(

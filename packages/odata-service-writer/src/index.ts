@@ -162,7 +162,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
                 };
                 // Generate mockserver middleware for ui5-mock.yaml
                 await generateMockserverConfig(basePath, config, fs);
-                // Update ui5-local.yaml with mockserver middleware from newly ui5-mock.yaml
+                // Update ui5-local.yaml with mockserver middleware from newly created/updated ui5-mock.yaml
                 await generateMockserverMiddlewareBasedOnUi5MockYaml(
                     fs,
                     paths.ui5Yaml,
