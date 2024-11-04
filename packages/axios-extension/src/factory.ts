@@ -53,7 +53,7 @@ export class PatchedHttpsProxyAgent<Uri extends string> extends HttpsProxyAgent<
      * @returns {Promise<net.Socket>}
      */
     async connect(req: any, opts: any) {
-        return super.connect(req, Object.assign({}, this.extraOptions, opts));
+        return super.connect(req, { ...this.extraOptions, ...opts });
     }
 }
 
