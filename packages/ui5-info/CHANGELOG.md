@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.8.3
+
+### Patch Changes
+
+-   1cccbf1: fix fallback logic for retrieving maintained versions
+
 ## 0.8.2
 
 ### Patch Changes

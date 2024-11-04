@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.22
+
+### Patch Changes
+
+-   61cea6d: Fix: Resolved an issue where Add Custom Table Column quick action didn't work with Analytical/Grid/Tree tables in SAP Fiori Elements for OData V2.
+
+## 0.11.21
+
+### Patch Changes
+
+-   df6fd7f: Quick action added to create custom table columns
+
 ## 0.11.20
 
 ### Patch Changes
