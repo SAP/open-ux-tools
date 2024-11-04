@@ -1,11 +1,10 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import FilterBar from 'sap/ui/mdc/FilterBar';
 
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
-import { getAppComponent, getPageName, getReference } from './utils';
+import { executeToggleAction } from './utils';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ENABLE_SEMANTIC_DATE_RANGE = 'enable-semantic-date-range';
@@ -13,7 +12,7 @@ const PROPERTY_PATH = 'controlConfiguration/@com.sap.vocabularies.UI.v1.Selectio
 const CONTROL_TYPE = 'sap.fe.macros.controls.FilterBar';
 const boolMap: { [key: string]: boolean } = {
     'true': true,
-    'false': false,
+    'false': false
 };
 /**
  * Quick Action for toggling the visibility of "Semantic date range" for filter bar fields in LR.
@@ -28,7 +27,7 @@ export class ToggleSemanticDateRangeFilterBar
     readonly forceRefreshAfterExecution = true;
     private isUseDateRangeTypeEnabled = false;
 
-    async initialize(): Promise<void> {
+    initialize(): void {
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);
@@ -47,45 +46,15 @@ export class ToggleSemanticDateRangeFilterBar
     }
 
     async execute(): Promise<FlexCommand[]> {
-        const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
-        const control = controls[0];
-        if (control) {
-            const modifiedControl = getControlById(control.controlId);
-            if (!modifiedControl) {
-                return [];
-            }
-
-            const { flexSettings } = this.context;
-            const parent = modifiedControl.getParent();
-            if (!parent) {
-                return [];
-            }
-
-            const modifiedValue = {
-                reference: getReference(modifiedControl),
-                appComponent: getAppComponent(modifiedControl),
-                changeType: 'appdescr_fe_changePageConfiguration',
-                parameters: {
-                    page: getPageName(parent),
-                    entityPropertyChange: {
-                        propertyPath: PROPERTY_PATH,
-                        propertyValue: !this.isUseDateRangeTypeEnabled,
-                        operation: 'UPSERT'
-                    }
-                }
-            };
-
-            const command = await CommandFactory.getCommandFor<FlexCommand>(
-                modifiedControl,
-                'appDescriptor',
-                modifiedValue,
-                null,
-                flexSettings
-            );
-
-            return [command];
+        const command = await executeToggleAction(
+            this.context,
+            this.isUseDateRangeTypeEnabled,
+            CONTROL_TYPE,
+            PROPERTY_PATH
+        );
+        if (command.length) {
+            this.isUseDateRangeTypeEnabled = !this.isUseDateRangeTypeEnabled;
         }
-
-        return [];
+        return command;
     }
 }

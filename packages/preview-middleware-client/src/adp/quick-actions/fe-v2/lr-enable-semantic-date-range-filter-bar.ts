@@ -14,14 +14,17 @@ const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
 /**
  * Quick Action for toggling the visibility of "semantic date range" for filterbar fields.
  */
-export class ToggleSemanticDateRangeFilterBar extends SimpleQuickActionDefinitionBase implements SimpleQuickActionDefinition {
+export class ToggleSemanticDateRangeFilterBar
+    extends SimpleQuickActionDefinitionBase
+    implements SimpleQuickActionDefinition
+{
     constructor(context: QuickActionContext) {
         super(ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR, [], '', context);
     }
-
+    readonly forceRefreshAfterExecution = true;
     private isUseDateRangeTypeEnabled = false;
 
-    async initialize(): Promise<void> {
+    initialize(): void {
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);
