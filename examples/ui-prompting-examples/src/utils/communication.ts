@@ -13,7 +13,13 @@ import type {
     UpdateProjectPathResultPayload,
     ValidateAnswers
 } from '../addons/project/types';
-import type { DynamicChoices, PromptQuestion, ValidationResults, PromptsGroup } from '@sap-ux/ui-prompting';
+import type {
+    DynamicChoices,
+    PromptQuestion,
+    ValidationResults,
+    PromptsGroup,
+    TranslationProperties
+} from '@sap-ux/ui-prompting';
 import type { Actions, CreateI18n, GetChoices, GetQuestions, RequestI18n } from './types';
 import {
     APPLY_ANSWERS,
@@ -339,12 +345,13 @@ export function getI18nBundle(): Promise<I18nBundle> {
  * @param value Value of new i18n entry
  * @returns Returns updated i18n bundle.
  */
-export function createI18n(key: string, value: string): Promise<I18nBundle> {
+export function createI18n(key: string, value: string, properties?: TranslationProperties): Promise<I18nBundle> {
     return new Promise((resolve) => {
         const createAction: CreateI18n = {
             type: CREATE_I18N_ENTRY,
             key,
-            value
+            value,
+            properties
         };
         sendMessage(createAction);
         const handleMessage = (action: Actions) => {

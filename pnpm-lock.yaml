@@ -1271,9 +1271,6 @@ importers:
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
-      '@sap-ux/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -1308,6 +1305,9 @@ importers:
         specifier: 0.0.33
         version: 0.0.33
     devDependencies:
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sap-ux/ui-prompting':
         specifier: workspace:*
         version: link:../ui-prompting
