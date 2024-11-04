@@ -5,10 +5,15 @@ import { useValue, getLabelRenderer } from '../../../utilities';
 import { useTranslation } from '../../../context/TranslationContext';
 import type { InputProps } from './Input';
 import { TRANSLATE_EVENT_UPDATE, TRANSLATE_EVENT_SHOW } from '../../../types';
+import type { TranslationProperties, AnswerValue } from '../../../types';
 
-export const TranslationInput = (props: InputProps) => {
+export interface TranslationInputProps extends InputProps {
+    properties: TranslationProperties;
+}
+
+export const TranslationInput = (props: TranslationInputProps) => {
     const { bundle, onEvent: triggerEvent, pendingQuestions } = useTranslation();
-    const { name, onChange, guiOptions = {}, message, errorMessage, id } = props;
+    const { name, onChange, guiOptions = {}, message, errorMessage, id, properties } = props;
     const { mandatory, hint, placeholder } = guiOptions;
     const [value, setValue] = useValue('', props.value);
     const onLiveChange = (_event: React.FormEvent, newValue?: string | undefined) => {
@@ -20,7 +25,8 @@ export const TranslationInput = (props: InputProps) => {
         (entry: TranslationEntry): void => {
             triggerEvent?.(name, {
                 name: TRANSLATE_EVENT_UPDATE,
-                entry
+                entry,
+                properties
             });
         },
         [name]

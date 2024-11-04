@@ -169,6 +169,7 @@ export const TRANSLATE_EVENT_SHOW = 'show';
 export interface TranlateUpdateEvent<T extends TranslationEntry> {
     name: typeof TRANSLATE_EVENT_UPDATE;
     entry: T;
+    properties?: TranslationProperties;
 }
 export interface TranlateShowEvent<T extends TranslationEntry> {
     name: typeof TRANSLATE_EVENT_SHOW;
