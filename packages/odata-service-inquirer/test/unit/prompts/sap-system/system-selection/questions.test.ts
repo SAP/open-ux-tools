@@ -28,6 +28,7 @@ jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
     getHostEnvironment: jest.fn()
 }));
+
 const backendSystemBasic: BackendSystem = {
     name: 'http://abap.on.prem:1234',
     url: 'http://abap.on.prem:1234',

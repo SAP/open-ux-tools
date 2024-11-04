@@ -218,38 +218,42 @@ export type DatasourceTypePromptOptions = {
 
 export type DestinationFilters = {
     /**
-     * 'WebIDEUsage' property is defined and includes the value 'odata_abap' and does not includes the value 'odata_gen'
+     * 'WebIDEUsage' property is defined and includes the value 'odata_abap' and does not includes the value 'odata_gen'. If this matches, the destination will be included regardless of other matches.
      */
     odata_abap: boolean;
     /**
-     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'.
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'. If this matches, the destination will be included regardless of other matches.
      */
     odata_generic: boolean;
     /**
      * 'WebIDEAdditionalData' property is defined and includes the value 'full_url' and
-     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'.
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'. If this matches, the destination will be included regardless of other matches.
      */
     full_service_url: boolean;
     /**
      * 'WebIDEAdditionalData' property is defined and does not include the value 'full_url' and
-     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'.
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'. If this matches, the destination will be included regardless of other matches.
      */
     partial_service_url: boolean;
     /**
-     * todo: Add implementation
-     * Abap cloud destination
+     * Currently not implemented
+     *
+     * Destination is configured with 'WebIDEUsage' including 'abap_cloud'. This is an additive filter and will include destinations that have 'abap_cloud' in the 'WebIDEUsage' property AND any other filter, if specified.
      */
-    abap_cloud: boolean;
+    // abap_cloud: boolean;
     /**
-     * Abap on-premise destination
+     * Currently not implemented
+     *
+     * Destination is configured with 'ProxyType' of 'OnPremise',  This is an additive filter and will include destinations that have 'abap_on_premise' in the 'ProxyType' property AND any other filter, if specified.
      */
-    abap_on_premise: boolean;
+    // abap_on_premise: boolean;
 };
 
 export type SystemSelectionPromptOptions = {
     /**
      * Set the specific filter option(s) to true to include only the destinatons that have matching configuration attributes.
      * If no filter is set, all destinations will be included. If multiple filters are set, the destination will be included if it matches any of the filters.
+     * i.e. if both `abap_cloud` and `abap_on_premise` are set to true, the destination will be included if it has either 'abap_cloud' or 'abap_on_premise' matching configuration.
      */
     destinationFilters?: Partial<DestinationFilters>;
     /**

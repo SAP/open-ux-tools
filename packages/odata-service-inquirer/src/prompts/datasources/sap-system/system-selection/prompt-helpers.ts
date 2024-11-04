@@ -3,6 +3,7 @@ import {
     getDisplayName,
     isAppStudio,
     isFullUrlDestination,
+    isGenericODataDestination,
     isPartialUrlDestination,
     listDestinations,
     WebIDEUsage
@@ -162,6 +163,10 @@ function matchesFilters(destination: Destination, filters?: Partial<DestinationF
         return true;
     }
     if (filters.odata_abap && isAbapODataDestination(destination)) {
+        return true;
+    }
+
+    if (filters.odata_generic && isGenericODataDestination(destination)) {
         return true;
     }
 
