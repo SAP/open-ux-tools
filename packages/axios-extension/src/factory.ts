@@ -34,11 +34,24 @@ type Class<T> = new (...args: any[]) => T;
 export class PatchedHttpsProxyAgent<Uri extends string> extends HttpsProxyAgent<Uri> {
     private readonly extraOptions: any;
 
+    /**
+     * Extension of the base constructor.
+     *
+     * @param proxy
+     * @param opts
+     */
     constructor(proxy: Uri | URL, opts?: HttpsProxyAgentOptions<Uri>) {
         super(proxy, opts);
         this.extraOptions = opts;
     }
 
+    /**
+     * Performs transparent encryption of written data and all required TLS negotiation.
+     *
+     * @param req
+     * @param opts
+     * @returns {Promise<net.Socket>}
+     */
     async connect(req: any, opts: any) {
         return super.connect(req, Object.assign({}, this.extraOptions, opts));
     }
