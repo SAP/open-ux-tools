@@ -30,6 +30,11 @@ jest.mock('https-proxy-agent', () => {
     };
 });
 
+jest.mock('@sap-ux/feature-toggle', () => ({
+    ...jest.requireActual('@sap-ux/feature-toggle'),
+    isFeatureEnabled: jest.fn().mockImplementation((featureId) => featureId === 'sap.ux.enablePatchProxy')
+}));
+
 jest.mock('proxy-from-env');
 
 beforeAll(() => {

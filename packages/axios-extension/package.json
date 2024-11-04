@@ -28,6 +28,7 @@
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*",
         "axios": "1.7.4",
         "detect-content-type": "1.2.0",
         "fast-xml-parser": "4.4.1",

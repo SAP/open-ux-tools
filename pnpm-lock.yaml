@@ -616,6 +616,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
