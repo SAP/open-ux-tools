@@ -1,11 +1,11 @@
 import type { ReactElement } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Label, MessageBarType } from '@fluentui/react';
+import { Label, Stack, Text } from '@fluentui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { InfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
-import { clearInfoCenterMessage, clearAllInfoCenterMessages } from '@sap-ux-private/control-property-editor-common';
-import { UIMessageBar, UIIcon, UIIconButton } from '@sap-ux/ui-components';
+import { clearInfoCenterMessage, clearAllInfoCenterMessages, MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { UIMessageBar, UIIconButton, UiIcons, UIIconButtonSizes } from '@sap-ux/ui-components';
 import type { RootState } from '../../store';
 import { sectionHeaderFontSize } from '../properties/constants';
 import './InfoCenter.scss';
@@ -18,40 +18,56 @@ export function InfoCenter(): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const infoCenter = useSelector<RootState, InfoCenterMessage[]>((state) => state.infoCenter);
-    console.log(infoCenter);
+    function getMessageType(type: MessageBarType) {
+        switch (type) {
+            case MessageBarType.error:
+                return 'error';
+            case MessageBarType.warning:
+                return 'warning';
+            default:
+                return 'info';
+        }
+    }
     return (
         <>
-            <div className={`property-content app-panel-scroller`}>
-                <Label
-                    data-aria-label={t('Info Center')}
-                    style={{
-                        color: 'var(--vscode-foreground)',
-                        fontSize: sectionHeaderFontSize,
-                        fontWeight: 'bold',
-                        padding: 0,
-                        marginBottom: '10px'
-                    }}>
-                    {t('Info Center')}
-                </Label>
-                <UIIconButton onClick={() => dispatch(clearAllInfoCenterMessages(undefined))}>
-                    <UIIcon iconName='clear' />
-                </UIIconButton>
-                <div className={`info-center-items`}>
-                    {infoCenter.map((info, index)=> (
-                        <UIMessageBar key={index} messageBarType={info.type as unknown as MessageBarType} className="message-bar">
-                            <div>{info.message}</div>
-                            {
-                                info.type !== MessageBarType.error &&  
-                                <div className="icon-button-container">
-                                    <UIIconButton onClick={() => dispatch(clearInfoCenterMessage(index))}>
-                                        <UIIcon iconName='Clear' />
-                                    </UIIconButton>
-                                </div>
-                            }
-                        </UIMessageBar>
-                    ))}
+            <Stack>
+                <div className='info-center-header'>
+                    <Stack.Item>
+                        <Label
+                            data-aria-label={t('INFO CENTER')}
+                            style={{
+                                color: 'var(--vscode-foreground)',
+                                fontSize: sectionHeaderFontSize,
+                                fontWeight: 'bold',
+                                padding: 0
+                            }}>
+                            {t('INFO CENTER')}
+                        </Label>
+                    </Stack.Item>
+                    <Stack.Item className='dismiss-icon-button-container'>
+                        <UIIconButton onClick={() => dispatch(clearAllInfoCenterMessages())} iconProps={{ iconName: UiIcons.TextGrammarDismiss }} sizeType={UIIconButtonSizes.Wide} />
+                    </Stack.Item>
                 </div>
-            </div>
+                <Stack className={`info-center-items`}>
+                    {infoCenter.map((info, index) => (
+                        <Stack.Item>
+                            <UIMessageBar key={index} messageBarType={info.type as MessageBarType} className={`message-bar ${getMessageType(info.type)}`}>
+                                    <Text block={true} className={`message-title`}>{info.message.title}</Text>
+                                    <Text block={true} className={`message-description`}>{info.message.description}</Text>
+                                    
+                                {
+                                    info.type !== MessageBarType.error &&
+                                    <UIIconButton
+                                        className='icon-button-container'
+                                        onClick={() => dispatch(clearInfoCenterMessage(index))}
+                                        iconProps={{ iconName: UiIcons.Clear }}
+                                    />
+                                }
+                            </UIMessageBar>
+                        </Stack.Item>
+                    ))}
+                </Stack>
+            </Stack>
         </>
     );
 }

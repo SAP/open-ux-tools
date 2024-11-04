@@ -19,6 +19,7 @@ import './RightPanel.scss';
 export function RightPanel(): ReactElement {
     const actionsCount = useSelector<RootState, number>((state) => state.quickActions.length);
     const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
+    const infoCenterMessagesCount = useSelector<RootState, number>((state) => state.infoCenter.length);
 
     if (scenario !== 'ADAPTATION_PROJECT' || actionsCount === 0) {
         return <PropertiesList />;
@@ -26,9 +27,8 @@ export function RightPanel(): ReactElement {
 
     const rowSize = 100;
     const header = 50;
-    // const infoCenterMessagesCount = useSelector<RootState, number>((state) => state.infoCenter.length);
     const initialSizeQuickActions = actionsCount * rowSize + header;
-    // const initialSizeInfoCenter = infoCenterMessagesCount * rowSize + header;
+    const initialSizeInfoCenter = Math.min(infoCenterMessagesCount * rowSize + header);
     return (
         <UISections
             vertical={true}
@@ -36,8 +36,8 @@ export function RightPanel(): ReactElement {
             height="100%"
             splitterType={UISplitterType.Resize}
             splitterLayoutType={UISplitterLayoutType.Compact}
-            minSectionSize={[0, 190]}
-            sizes={[initialSizeQuickActions, undefined, undefined]}
+            minSectionSize={[0, 190, 0]}
+            sizes={[initialSizeQuickActions, undefined, initialSizeInfoCenter]}
             sizesAsPercents={false}
             animation={true}>
             <UISections.Section
@@ -57,7 +57,7 @@ export function RightPanel(): ReactElement {
             <UISections.Section
                 scrollable={true}
                 layout={UISectionLayout.Standard}
-                className="editor__quickactions"
+                className="editor__infocenter"
                 height="100%">
                 <InfoCenter />
             </UISections.Section>

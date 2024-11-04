@@ -163,7 +163,7 @@ export const initialState: SliceState = {
     applicationRequiresReload: false,
     isAppLoading: true,
     quickActions: [],
-    infoCenter: [{message: 'Message info', type: 0}, {message: 'Message error', type: 1}]
+    infoCenter: [{message: {title: 'Error message', description: "this is the error message"},  type: MessageBarType.error}, {message: {title: 'Warning message', description: "this is the warning message"}, type: MessageBarType.warning}, {message: {title: 'Info message', description: "this is the info message"}, type: MessageBarType.info}]
 };
 
 /**

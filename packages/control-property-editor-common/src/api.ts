@@ -235,8 +235,11 @@ export interface NestedQuickActionExecutionPayload {
 export type QuickActionExecutionPayload = SimpleQuickActionExecutionPayload | NestedQuickActionExecutionPayload;
 
 export interface InfoCenterMessage {
-    message: string;
-    type: any;
+    type: MessageBarType;
+    message: {
+        title: string;
+        description: string;
+    };
 }
 
 export enum MessageBarType {
@@ -342,8 +345,8 @@ export const updateQuickAction = createExternalAction<QuickAction>('update-quick
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
 export const setApplicationRequiresReload = createExternalAction<boolean>('set-application-requires-reload');
 export const showInfoCenterMessage = createExternalAction<InfoCenterMessage>('show-info-center-message');
-export const clearInfoCenterMessage = createExternalAction<any>('clear-info-center-message');
-export const clearAllInfoCenterMessages = createExternalAction('clear-all-info-center-message');
+export const clearInfoCenterMessage = createExternalAction<number>('clear-info-center-message');
+export const clearAllInfoCenterMessages = createExternalAction<void>('clear-all-info-center-message');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>

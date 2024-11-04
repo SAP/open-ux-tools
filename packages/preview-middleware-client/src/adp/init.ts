@@ -41,7 +41,7 @@ export default async function (rta: RuntimeAuthoring) {
             showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true })
         );
         CommunicationService.sendAction(
-            showInfoCenterMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), type: MessageBarType.info })
+            showInfoCenterMessage({ message: {title: 'UI5 Validation message',description: getUI5VersionValidationMessage(ui5VersionInfo)}, type: MessageBarType.info })
         );
         return;
     }
@@ -56,7 +56,10 @@ export default async function (rta: RuntimeAuthoring) {
         );
         CommunicationService.sendAction(
             showInfoCenterMessage({
-                message: bundle.getText('ADP_SYNC_VIEWS_MESSAGE'),
+                message: {
+                    title: 'Synchronous views are detected',
+                    description: bundle.getText('ADP_SYNC_VIEWS_MESSAGE')
+                },
                 type: MessageBarType.info
             })
         );

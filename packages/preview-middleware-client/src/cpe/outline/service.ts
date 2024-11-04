@@ -61,7 +61,10 @@ export class OutlineService extends EventTarget {
                     );
                     sendAction(
                         showInfoCenterMessage({
-                            message,
+                            message: {
+                                title: "Reuse components detected",
+                                description: message
+                            },
                             type: MessageBarType.info
                         })
                     );
