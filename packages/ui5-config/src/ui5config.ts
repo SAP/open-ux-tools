@@ -386,18 +386,20 @@ export class UI5Config {
     /**
      * Adds a instance of the mockserver middleware to the config.
      *
+     * @param appRoot - root to the application
      * @param dataSourcesConfig optional, annotations config that is to be mocked
      * @param annotationsConfig optional, annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
     public addMockServerMiddleware(
+        appRoot?: string,
         dataSourcesConfig?: { serviceName: string; servicePath: string }[],
         annotationsConfig?: MockserverConfig['annotations']
     ): this {
         this.document.appendTo({
             path: 'server.customMiddleware',
-            value: getMockServerMiddlewareConfig(undefined, undefined, undefined, dataSourcesConfig, annotationsConfig)
+            value: getMockServerMiddlewareConfig(appRoot, undefined, undefined, dataSourcesConfig, annotationsConfig)
         });
         return this;
     }

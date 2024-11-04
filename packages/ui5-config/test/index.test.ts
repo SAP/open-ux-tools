@@ -292,11 +292,22 @@ describe('UI5Config', () => {
         });
 
         test('add with services', () => {
-            ui5Config.addMockServerMiddleware([{ serviceName: 'new-service', servicePath: '/path/to/service' }]);
+            ui5Config.addMockServerMiddleware(undefined, [
+                { serviceName: 'new-service', servicePath: '/path/to/service' }
+            ]);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
+
+        test('add with services and appRoot', () => {
+            ui5Config.addMockServerMiddleware('./appRoot/webapp', [
+                { serviceName: 'new-service', servicePath: '/path/to/service' }
+            ]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
         test('add with services and annotations', () => {
             ui5Config.addMockServerMiddleware(
+                undefined,
                 [{ serviceName: 'new-service', servicePath: '/path/to/service' }],
                 annotationsConfig
             );
@@ -334,7 +345,9 @@ describe('UI5Config', () => {
     describe('removeServiceFromMockServerMiddleware', () => {
         test('remove exisisting service', () => {
             // Create middleware with one service
-            ui5Config.addMockServerMiddleware([{ serviceName: 'new-service', servicePath: '/path/to/service' }]);
+            ui5Config.addMockServerMiddleware(undefined, [
+                { serviceName: 'new-service', servicePath: '/path/to/service' }
+            ]);
             // Remove it
             ui5Config.removeServiceFromMockServerMiddleware('/path/to/service');
             expect(ui5Config.toString()).toMatchSnapshot();

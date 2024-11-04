@@ -177,7 +177,7 @@ async function generateNewUi5MockYamlConfig(
     ui5MockYaml.setType('application');
     ui5MockYaml.addFioriToolsProxydMiddleware({ ui5: {} });
     ui5MockYaml.addFioriToolsAppReloadMiddleware();
-    ui5MockYaml.addMockServerMiddleware(dataSourcesConfig, annotationsConfig);
+    ui5MockYaml.addMockServerMiddleware(undefined, dataSourcesConfig, annotationsConfig);
     return ui5MockYaml;
 }
 
@@ -193,7 +193,7 @@ async function getNewMockserverMiddleware(
     annotationsConfig?: MockserverConfig['annotations']
 ): Promise<CustomMiddleware<MockserverConfig>> {
     const ui5MockYaml = await UI5Config.newInstance('');
-    ui5MockYaml.addMockServerMiddleware(dataSourcesConfig, annotationsConfig);
+    ui5MockYaml.addMockServerMiddleware(undefined, dataSourcesConfig, annotationsConfig);
     const mockserverMiddleware = ui5MockYaml.findCustomMiddleware('sap-fe-mockserver');
     if (!mockserverMiddleware) {
         throw Error('Could not create new mockserver config');
