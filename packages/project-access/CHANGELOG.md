@@ -1,5 +1,29 @@
 # @sap-ux/project-access
 
+## 1.28.3
+
+### Patch Changes
+
+-   42f13eb: **Fix**: Resolved an issue where running `npm install` after executing a create command would fail on Windows. This fix ensures that the installation process completes successfully across all platforms.
+
+## 1.28.2
+
+### Patch Changes
+
+-   eb38e5b: refactor: Update variable declarations in getCapModelAndServices function
+
+## 1.28.1
+
+### Patch Changes
+
+-   64e037d: TBI - Optionally allow filtering CAP folder(s) to compile CAP model from
+
+## 1.28.0
+
+### Minor Changes
+
+-   15e6959: TBI - refactor validation on target folder in app inquirer
+
 ## 1.27.6
 
 ### Patch Changes

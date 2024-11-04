@@ -5,7 +5,6 @@ export {
     clearCdsModuleCache,
     createApplicationAccess,
     createProjectAccess,
-    isPathForCapApp,
     deleteCapApp,
     filterDataSourcesByType,
     findAllApps,
@@ -48,5 +47,6 @@ export {
     toReferenceUri,
     updatePackageScript
 } from './project';
+export { execNpmCommand } from './command/npm-command';
 export * from './types';
 export * from './library';

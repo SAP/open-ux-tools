@@ -1,5 +1,59 @@
 # @sap-ux/control-property-editor
 
+## 0.5.24
+
+### Patch Changes
+
+-   4f9528e: Fixed incorrect displaying of inactive composite and control changes
+
+## 0.5.23
+
+### Patch Changes
+
+-   d4d1b3c: Add zero state for changes panel
+
+## 0.5.22
+
+### Patch Changes
+
+-   5ec7106: Modified indicators incorrectly displayed for some UI5 controls in Adaptation Project
+
+## 0.5.21
+
+### Patch Changes
+
+-   bc75111: Upgrade http-proxy-middleware
+
+## 0.5.20
+
+### Patch Changes
+
+-   93ffe8d: Use feature toggles in the control property editor
+
+## 0.5.19
+
+### Patch Changes
+
+-   0135cea: Update filter bars.
+
+## 0.5.18
+
+### Patch Changes
+
+-   0acf383: Added tooltip for value of control id and type and removed controlid popup
+
+## 1.0.0
+
+### Major Changes
+
+-   efea4c1: Added tooltip for value of control id and type and removed controlid popup
+
+## 0.5.17
+
+### Patch Changes
+
+-   e65bb7f: Update popup styling and add more space between labels and icons
+
 ## 0.5.16
 
 ### Patch Changes

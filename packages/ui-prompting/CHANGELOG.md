@@ -1,5 +1,75 @@
 # @sap-ux/ui-prompting
 
+## 0.2.13
+
+### Patch Changes
+
+-   Updated dependencies [e9e1e4d]
+    -   @sap-ux/ui-components@1.20.3
+
+## 0.2.12
+
+### Patch Changes
+
+-   Updated dependencies [9d06579]
+    -   @sap-ux/ui-components@1.20.2
+
+## 0.2.11
+
+### Patch Changes
+
+-   Updated dependencies [f7c606c]
+    -   @sap-ux/ui-components@1.20.1
+
+## 0.2.10
+
+### Patch Changes
+
+-   Updated dependencies [ae2a993]
+    -   @sap-ux/ui-components@1.20.0
+
+## 0.2.9
+
+### Patch Changes
+
+-   Updated dependencies [ea18bcb]
+    -   @sap-ux/ui-components@1.19.0
+
+## 0.2.8
+
+### Patch Changes
+
+-   Updated dependencies [b403459]
+    -   @sap-ux/ui-components@1.18.11
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [9e9daa4]
+    -   @sap-ux/ui-components@1.18.10
+
+## 0.2.6
+
+### Patch Changes
+
+-   Updated dependencies [4c6f92c]
+    -   @sap-ux/ui-components@1.18.9
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [b669796]
+    -   @sap-ux/ui-components@1.18.8
+
+## 0.2.4
+
+### Patch Changes
+
+-   Updated dependencies [e65bb7f]
+    -   @sap-ux/ui-components@1.18.7
+
 ## 0.2.3
 
 ### Patch Changes

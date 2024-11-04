@@ -1,5 +1,11 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { ClientChoiceValue, PackageInputChoices, TransportChoices, TransportConfig } from '../../src/types';
+import {
+    ClientChoiceValue,
+    PackageInputChoices,
+    TargetSystemType,
+    TransportChoices,
+    TransportConfig
+} from '../../src/types';
 import {
     defaultOrShowManualPackageQuestion,
     defaultOrShowManualTransportQuestion,
@@ -9,7 +15,6 @@ import {
     showClientChoiceQuestion,
     showClientQuestion,
     showIndexQuestion,
-    showOverwriteQuestion,
     showPackageInputChoiceQuestion,
     showPasswordQuestion,
     showScpQuestion,
@@ -71,25 +76,93 @@ describe('Test abap deploy config inquirer conditions', () => {
     test('should show client choice question', () => {
         mockIsAppStudio.mockReturnValueOnce(false);
         PromptState.isYUI = false;
-        expect(showClientChoiceQuestion('100', false)).toBe(true);
+        PromptState.abapDeployConfig.isS4HC = false;
+        expect(
+            showClientChoiceQuestion({ scp: false, targetSystem: TargetSystemType.Url, url: '', package: '' }, '100')
+        ).toBe(true);
+        PromptState.resetAbapDeployConfig();
+        // Should not show client choice question if SCP is enabled
+        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.scp = true;
+        expect(
+            showClientChoiceQuestion({ scp: false, targetSystem: TargetSystemType.Url, url: '', package: '' }, '100')
+        ).toBe(false);
+        PromptState.resetAbapDeployConfig();
+        // Should not show client choice question if target system is not a URL
+        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.scp = true;
+        expect(showClientChoiceQuestion({ scp: true, url: '', package: '' }, '100')).toBe(false);
+        PromptState.resetAbapDeployConfig();
     });
 
     test('should not show client choice question', () => {
         mockIsAppStudio.mockReturnValueOnce(false);
         PromptState.isYUI = false;
-        expect(showClientChoiceQuestion(undefined, true)).toBe(false);
+        PromptState.abapDeployConfig.isS4HC = true;
+        expect(
+            showClientChoiceQuestion({ scp: true, targetSystem: TargetSystemType.Url, url: '', package: '' }, undefined)
+        ).toBe(false);
+        PromptState.resetAbapDeployConfig();
     });
 
-    test('should show client question', () => {
-        PromptState.isYUI = true;
-        mockIsAppStudio.mockReturnValueOnce(false);
-        expect(showClientQuestion(undefined, undefined, false)).toBe(true);
-    });
+    it.each([
+        { isYui: true, scpEnabled: false, scpDisabled: true, clientChoice: undefined },
+        {
+            isYui: false,
+            scpEnabled: false,
+            scpDisabled: true,
+            clientChoice: ClientChoiceValue.New
+        },
+        { isYui: false, scpEnabled: false, scpDisabled: true, clientChoice: undefined }
+    ])(
+        'Validate showClientQuestion for different environments isYui: $isYui, clientChoice: $clientChoice',
+        ({ isYui, scpEnabled, scpDisabled, clientChoice }) => {
+            PromptState.resetAbapDeployConfig();
+            PromptState.isYUI = isYui;
+            mockIsAppStudio.mockReturnValueOnce(false);
+            // Validate client question if SCP is enabled
+            PromptState.abapDeployConfig.isS4HC = false;
+            expect(showClientQuestion({ scp: true, targetSystem: TargetSystemType.Url, url: '', package: '' })).toBe(
+                scpEnabled
+            );
+            PromptState.resetAbapDeployConfig();
+            // Validate client question if SCP is disabled
+            PromptState.abapDeployConfig.client = '100';
+            PromptState.abapDeployConfig.isS4HC = false;
+            expect(
+                showClientQuestion({
+                    scp: false,
+                    clientChoice,
+                    targetSystem: TargetSystemType.Url,
+                    url: '',
+                    package: ''
+                })
+            ).toBe(scpDisabled);
+            // Should always be shown if target system is not SCP and is URL for both CLI and YUI
+            expect(
+                showClientQuestion({
+                    scp: false,
+                    clientChoice: ClientChoiceValue.Blank,
+                    targetSystem: TargetSystemType.Url,
+                    url: '',
+                    package: ''
+                })
+            ).toBe(true);
+            PromptState.resetAbapDeployConfig();
+        }
+    );
 
     test('should show client question (CLI)', () => {
         PromptState.isYUI = false;
         mockIsAppStudio.mockReturnValue(false);
-        expect(showClientQuestion(ClientChoiceValue.New, undefined, false)).toBe(true);
+        expect(
+            showClientQuestion({
+                clientChoice: ClientChoiceValue.New,
+                targetSystem: TargetSystemType.Url,
+                url: '',
+                package: ''
+            })
+        ).toBe(true);
     });
 
     test('should show username question', async () => {
@@ -117,12 +190,7 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should show ui5 app deploy config questions', () => {
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
-        expect(showUi5AppDeployConfigQuestion(undefined)).toBe(true);
-    });
-
-    test('should not show ui5 app deploy config questions', () => {
-        PromptState.abapDeployConfig.scp = true;
-        expect(showUi5AppDeployConfigQuestion(true)).toBe(false);
+        expect(showUi5AppDeployConfigQuestion()).toBe(true);
     });
 
     test('should show package input choice question', () => {
@@ -217,17 +285,7 @@ describe('Test abap deploy config inquirer conditions', () => {
         PromptState.abapDeployConfig.index = undefined;
         expect(
             showIndexQuestion({
-                indexGenerationAllowed: true
-            })
-        ).toBe(true);
-    });
-
-    test('should show overwrite question', () => {
-        PromptState.abapDeployConfig.overwrite = undefined;
-        expect(
-            showOverwriteQuestion({
-                showOverwriteQuestion: true,
-                existingDeployTaskConfig: {}
+                index: { indexGenerationAllowed: true }
             })
         ).toBe(true);
     });

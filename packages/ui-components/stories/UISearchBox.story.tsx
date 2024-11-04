@@ -3,13 +3,10 @@ import type { ISearchBoxProps, IStackTokens } from '@fluentui/react';
 import { Text, Stack } from '@fluentui/react';
 
 import { UISearchBox } from '../src/components/UISearchBox';
-import { initIcons } from '../src/components/Icons';
 import { UICheckbox } from '../src/components';
 
 export default { title: 'Basic Inputs/Search' };
 const stackTokens: IStackTokens = { childrenGap: 40 };
-
-initIcons();
 
 export const SearchBox = () => {
     const [query, setQuery] = useState('');

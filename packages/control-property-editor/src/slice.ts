@@ -35,7 +35,8 @@ import {
     applicationModeChanged,
     UNKNOWN_CHANGE_KIND,
     SAVED_CHANGE_TYPE,
-    PENDING_CHANGE_TYPE
+    PENDING_CHANGE_TYPE,
+    PROPERTY_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -53,6 +54,7 @@ export interface SliceState {
     scenario: Scenario;
     isAdpProject: boolean;
     icons: IconDetails[];
+    features: Record<string, boolean>;
     changes: ChangesSlice;
     dialogMessage: ShowMessage | undefined;
     fileChanges?: string[];
@@ -119,6 +121,7 @@ export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-
 export const changeDeviceType = createAction<DeviceType>('app/change-device-type');
 export const filterNodes = createAction<FilterOptions[]>('app/filter-nodes');
 export const fileChanged = createAction<string[]>('app/file-changed');
+export const setFeatureToggles = createAction<{ feature: string; isEnabled: boolean }[]>('app/set-feature-toggles');
 interface LivereloadOptions {
     port: number;
 
@@ -137,6 +140,7 @@ export const initialState: SliceState = {
     scenario: SCENARIO.UiAdaptation,
     isAdpProject: false,
     icons: [],
+    features: {},
     changes: {
         controls: {},
         pending: [],
@@ -153,6 +157,53 @@ export const initialState: SliceState = {
     applicationRequiresReload: false,
     isAppLoading: true,
     quickActions: []
+};
+
+/**
+ * Process a control and update the control stats.
+ *
+ * @param control The control to update
+ * @param changeType The type of change
+ */
+const processControl = (control: ControlChangeStats, changeType: string): void => {
+    if (changeType === PENDING_CHANGE_TYPE) {
+        control.pending++;
+    } else if (changeType === SAVED_CHANGE_TYPE) {
+        control.saved++;
+    }
+};
+
+/**
+ * Process a property change and update the property stats.
+ *
+ * @param control The control to update
+ * @param change The change to process
+ */
+const processPropertyChange = (
+    control: ControlChangeStats,
+    change: PendingPropertyChange | SavedPropertyChange
+): void => {
+    const { propertyName } = change;
+
+    const property = control.properties[propertyName]
+        ? {
+              pending: control.properties[propertyName].pending,
+              saved: control.properties[propertyName].saved,
+              lastSavedChange: control.properties[propertyName].lastSavedChange,
+              lastChange: control.properties[propertyName].lastChange
+          }
+        : {
+              pending: 0,
+              saved: 0
+          };
+    if (change.type === PENDING_CHANGE_TYPE) {
+        property.pending++;
+        property.lastChange = change;
+    } else if (change.type === SAVED_CHANGE_TYPE) {
+        property.lastSavedChange = change;
+        property.saved++;
+    }
+    control.properties[propertyName] = property;
 };
 
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
@@ -235,7 +286,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     if (change.kind === UNKNOWN_CHANGE_KIND) {
                         continue;
                     }
-                    const { controlId, propertyName, type, controlName } = change;
+                    const { controlId, type } = change;
                     const key = `${controlId}`;
                     const control = state.changes.controls[key]
                         ? {
@@ -247,33 +298,14 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                         : {
                               pending: 0,
                               saved: 0,
-                              controlName: controlName ?? '',
+                              controlName: change.kind === PROPERTY_CHANGE_KIND ? change.controlName : '',
                               properties: {}
                           };
-                    if (type === PENDING_CHANGE_TYPE) {
-                        control.pending++;
-                    } else if (type === SAVED_CHANGE_TYPE) {
-                        control.saved++;
+                    processControl(control, type);
+                    if (change.kind === PROPERTY_CHANGE_KIND) {
+                        processPropertyChange(control, change);
                     }
-                    const property = control.properties[propertyName]
-                        ? {
-                              pending: control.properties[propertyName].pending,
-                              saved: control.properties[propertyName].saved,
-                              lastSavedChange: control.properties[propertyName].lastSavedChange,
-                              lastChange: control.properties[propertyName].lastChange
-                          }
-                        : {
-                              pending: 0,
-                              saved: 0
-                          };
-                    if (change.type === PENDING_CHANGE_TYPE) {
-                        property.pending++;
-                        property.lastChange = change;
-                    } else if (change.type === SAVED_CHANGE_TYPE) {
-                        property.lastSavedChange = change;
-                        property.saved++;
-                    }
-                    control.properties[propertyName] = property;
+
                     state.changes.controls[key] = control;
                 }
             })
@@ -330,6 +362,11 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             )
             .addMatcher(setSaveEnablement.match, (state, action: ReturnType<typeof setSaveEnablement>): void => {
                 state.canSave = action.payload;
+            })
+            .addMatcher(setFeatureToggles.match, (state, action: ReturnType<typeof setFeatureToggles>): void => {
+                for (const { feature, isEnabled } of action.payload) {
+                    state.features[feature] = isEnabled;
+                }
             })
             .addMatcher(appLoaded.match, (state): void => {
                 state.isAppLoading = false;

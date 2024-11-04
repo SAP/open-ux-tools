@@ -3,7 +3,6 @@ import {
     validateClientChoiceQuestion,
     validateClient,
     validateDestinationQuestion,
-    validateScpQuestion,
     validateTargetSystem,
     validateTargetSystemUrlCli,
     validateUrl,
@@ -17,7 +16,7 @@ import { PromptState } from '../prompt-state';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio, isOnPremiseDestination, type Destinations } from '@sap-ux/btp-utils';
 import {
-    abapDeployConfigInternalPromptNames,
+    promptNames,
     ClientChoiceValue,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
@@ -26,6 +25,7 @@ import {
 } from '../../types';
 import type { InputQuestion, ListQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Question } from 'inquirer';
+import { TargetSystemType } from '../../types';
 
 /**
  * Returns the destination prompt.
@@ -44,7 +44,7 @@ function getDestinationPrompt(
         {
             when: (): boolean => isAppStudio(),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.destination,
+            name: promptNames.destination,
             message: t('prompts.target.destination.message'),
             guiOptions: {
                 mandatory: true,
@@ -70,13 +70,13 @@ function getDestinationPrompt(
     if (isAppStudio() && !PromptState.isYUI) {
         prompts.push({
             when: (answers: AbapDeployConfigAnswersInternal): boolean => {
-                const destination = answers[abapDeployConfigInternalPromptNames.destination];
+                const destination = answers[promptNames.destination];
                 if (destination) {
                     updateDestinationPromptState(destination, destinations);
                 }
                 return false;
             },
-            name: abapDeployConfigInternalPromptNames.destinationCliSetter
+            name: promptNames.destinationCliSetter
         } as Question);
     }
     return prompts;
@@ -95,7 +95,7 @@ function getTargetSystemPrompt(
         {
             when: (): boolean => !isAppStudio(),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.targetSystem,
+            name: promptNames.targetSystem,
             message: t('prompts.target.targetSystem.message'),
             guiOptions: {
                 mandatory: true,
@@ -110,13 +110,13 @@ function getTargetSystemPrompt(
     if (!isAppStudio() && !PromptState.isYUI) {
         prompts.push({
             when: (answers: AbapDeployConfigAnswersInternal): boolean => {
-                const target = answers[abapDeployConfigInternalPromptNames.targetSystem];
+                const target = answers[promptNames.targetSystem];
                 if (target) {
                     validateTargetSystemUrlCli(target, choices);
                 }
                 return false;
             },
-            name: abapDeployConfigInternalPromptNames.targetSystemCliSetter
+            name: promptNames.targetSystemCliSetter
         } as Question);
     }
     return prompts;
@@ -140,7 +140,7 @@ function getUrlPrompt(
             return isValid;
         },
         type: 'input',
-        name: abapDeployConfigInternalPromptNames.url,
+        name: promptNames.url,
         message: t('prompts.target.url.message'),
         guiOptions: {
             mandatory: true,
@@ -158,18 +158,31 @@ function getUrlPrompt(
  * @param backendTarget - backend target
  * @returns confirm question for scp
  */
-function getScpPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigAnswersInternal> {
-    return {
-        when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => showScpQuestion(previousAnswers),
-        type: 'confirm',
-        name: abapDeployConfigInternalPromptNames.scp,
-        message: t('prompts.target.scp.message'),
-        guiOptions: {
-            breadcrumb: t('prompts.target.scp.breadcrumb')
+function getScpPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigAnswersInternal>[] {
+    const prompts: (ConfirmQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
+        {
+            when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => showScpQuestion(previousAnswers),
+            type: 'confirm',
+            name: promptNames.scp,
+            message: t('prompts.target.scp.message'),
+            guiOptions: {
+                breadcrumb: t('prompts.target.scp.breadcrumb')
+            },
+            default: (): boolean | undefined => backendTarget?.abapTarget?.scp
+        }
+    ];
+    // Setter prompt to ensure the state for both CLI and YUI is updated
+    prompts.push({
+        when: (answers: AbapDeployConfigAnswersInternal): boolean => {
+            const scpChoice = answers[promptNames.scp];
+            const targetChoice = answers[promptNames.targetSystem];
+            // scpChoice by default is true so only update state if target system is a URL
+            PromptState.abapDeployConfig.scp = !!(targetChoice === TargetSystemType.Url && scpChoice);
+            return false;
         },
-        default: (): boolean | undefined => backendTarget?.abapTarget?.scp,
-        validate: (scp: boolean): boolean | string => validateScpQuestion(scp)
-    } as ConfirmQuestion<AbapDeployConfigAnswersInternal>;
+        name: promptNames.scpSetter
+    } as Question);
+    return prompts;
 }
 
 /**
@@ -183,10 +196,10 @@ function getClientChoicePrompt(
 ): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
         {
-            when: (): boolean =>
-                showClientChoiceQuestion(backendTarget?.abapTarget?.client, PromptState.abapDeployConfig?.isS4HC),
+            when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
+                showClientChoiceQuestion(previousAnswers, backendTarget?.abapTarget?.client),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.clientChoice,
+            name: promptNames.clientChoice,
             message: t('prompts.target.clientChoice.message'),
             guiOptions: {
                 applyDefaultWhenDirty: true
@@ -202,13 +215,13 @@ function getClientChoicePrompt(
     if (!PromptState.isYUI) {
         prompts.push({
             when: (answers: AbapDeployConfigAnswersInternal): boolean => {
-                const clientChoice = answers[abapDeployConfigInternalPromptNames.clientChoice];
+                const clientChoice = answers[promptNames.clientChoice];
                 if (clientChoice) {
                     validateClientChoiceQuestion(clientChoice as ClientChoiceValue, backendTarget?.abapTarget?.client);
                 }
                 return false;
             },
-            name: abapDeployConfigInternalPromptNames.clientChoiceCliSetter
+            name: promptNames.clientChoiceCliSetter
         } as Question);
     }
     return prompts;
@@ -217,25 +230,20 @@ function getClientChoicePrompt(
 /**
  * Returns the client prompt.
  *
- * @param backendTarget - backend target
  * @returns input question for client
  */
-function getClientPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigAnswersInternal> {
+function getClientPrompt(): Question<AbapDeployConfigAnswersInternal> {
     return {
         when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => {
-            return showClientQuestion(
-                previousAnswers.clientChoice,
-                backendTarget?.abapTarget?.client,
-                PromptState.abapDeployConfig?.isS4HC
-            );
+            return showClientQuestion(previousAnswers);
         },
         type: 'input',
-        name: abapDeployConfigInternalPromptNames.client,
+        name: promptNames.client,
         message: t('prompts.target.client.message'),
         guiOptions: {
             breadcrumb: t('prompts.target.client.breadcrumb')
         },
-        default: (): string | undefined => backendTarget?.abapTarget?.client,
+        default: (): string | undefined => PromptState.abapDeployConfig?.client, // Already set from previous step, if passed in from yaml config for example
         filter: (input: string): string => input?.trim(),
         validate: (client: string): boolean | string => validateClient(client)
     } as InputQuestion<AbapDeployConfigAnswersInternal>;
@@ -256,8 +264,8 @@ export async function getAbapTargetPrompts(
         ...getDestinationPrompt(abapSystemChoices, destinations, options.backendTarget),
         ...getTargetSystemPrompt(abapSystemChoices),
         getUrlPrompt(destinations, options.backendTarget),
-        getScpPrompt(options.backendTarget),
+        ...getScpPrompt(options.backendTarget),
         ...getClientChoicePrompt(options.backendTarget),
-        getClientPrompt(options.backendTarget)
+        getClientPrompt()
     ];
 }
