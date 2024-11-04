@@ -18,7 +18,7 @@ server:
         backend:
           - apiHub: true
             path: /northwindV2
-            url: https://kran3.apim.hana.ondemand.com
+            url: https://example.net
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

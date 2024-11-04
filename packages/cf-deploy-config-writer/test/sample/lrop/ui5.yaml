@@ -10,7 +10,7 @@ server:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - path: /sap
-            url: https://abap.hanavlab.ondemand.com
+            url: https://example.net
         ui5:
           path:
             - /resources
