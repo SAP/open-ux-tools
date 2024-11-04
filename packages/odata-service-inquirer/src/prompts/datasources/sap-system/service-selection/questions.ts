@@ -101,7 +101,15 @@ export function getSystemServiceQuestion(
             getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, requiredOdataVersion),
         default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
         // Warning: only executes in YUI not cli
-        validate: async (service: ServiceAnswer): Promise<string | boolean | ValidationLink> => {
+        validate: async (
+            service: ServiceAnswer | ListChoiceOptions<ServiceAnswer>
+        ): Promise<string | boolean | ValidationLink> => {
+            let serviceAnswer = service as ServiceAnswer;
+            // Autocomplete passes the entire choice object as the answer, so we need to extract the value
+            if (promptOptions?.systemSelection?.useAutoComplete && (service as ListChoiceOptions).value) {
+                serviceAnswer = (service as ListChoiceOptions).value;
+            }
+
             if (!connectValidator.validatedUrl) {
                 return false;
             }
@@ -110,9 +118,9 @@ export function getSystemServiceQuestion(
                 return ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE) ?? false;
             }
             // Dont re-request the same service details
-            if (service && previousService?.servicePath !== service.servicePath) {
-                previousService = service;
-                return getServiceDetails(service, connectValidator, requiredOdataVersion);
+            if (service && previousService?.servicePath !== serviceAnswer.servicePath) {
+                previousService = serviceAnswer;
+                return getServiceDetails(serviceAnswer, connectValidator, requiredOdataVersion);
             }
             return true;
         }
@@ -120,8 +128,8 @@ export function getSystemServiceQuestion(
 
     const questions: Question<ServiceAnswer>[] = [systemServiceQuestion];
 
-    // Only for CLI use as `list` prompt validation does not run on CLI
-    if (getHostEnvironment() === hostEnvironment.cli) {
+    // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
+    if (getHostEnvironment() === hostEnvironment.cli && !promptOptions?.serviceSelection?.useAutoComplete) {
         questions.push({
             when: async (answers: Answers): Promise<boolean> => {
                 const selectedService = answers?.[`${promptNamespace}:${promptNames.serviceSelection}`];

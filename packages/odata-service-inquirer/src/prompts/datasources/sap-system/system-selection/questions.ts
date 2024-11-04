@@ -155,12 +155,20 @@ export async function getSystemConnectionQuestions(
             message: t('prompts.systemSelection.message'),
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
             choices: systemChoices,
-            validate: async (selectedSystem: SystemSelectionAnswerType): Promise<ValidationResult> => {
+            validate: async (
+                selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
+            ): Promise<ValidationResult> => {
                 if (!selectedSystem) {
                     return false;
                 }
-                // connectionValidator.resetValidity();
-                return validateSystemSelection(selectedSystem, connectionValidator, requiredOdataVersion) ?? false;
+                let selectedSystemAnswer = selectedSystem as SystemSelectionAnswerType;
+                // Autocomplete passes the entire choice object as the answer, so we need to extract the value
+                if (promptOptions?.systemSelection?.useAutoComplete && (selectedSystem as ListChoiceOptions).value) {
+                    selectedSystemAnswer = (selectedSystem as ListChoiceOptions).value;
+                }
+                return (
+                    validateSystemSelection(selectedSystemAnswer, connectionValidator, requiredOdataVersion) ?? false
+                );
             },
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
                 // Backend systems credentials may need to be updated
@@ -182,9 +190,9 @@ export async function getSystemConnectionQuestions(
         // Additional service path prompt for partial URL destinations
         const servicePathPrompt = {
             when: (answers: SystemSelectionAnswers): boolean => {
-                const systemSelection = answers?.[promptNames.systemSelection];
-                if (systemSelection?.type === 'destination') {
-                    return isPartialUrlDestination(systemSelection.system as Destination);
+                const selectedSystem = answers?.[promptNames.systemSelection];
+                if (selectedSystem?.type === 'destination') {
+                    return isPartialUrlDestination(selectedSystem.system as Destination);
                 }
                 return false;
             },
@@ -219,17 +227,21 @@ export async function getSystemConnectionQuestions(
         questions.push(servicePathPrompt);
     }
 
-    // Only for CLI use as `list` prompt validation does not run on CLI
-    if (getHostEnvironment() === hostEnvironment.cli) {
+    // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
+    if (getHostEnvironment() === hostEnvironment.cli && !promptOptions?.systemSelection?.useAutoComplete) {
         questions.push({
             when: async (answers: Answers): Promise<boolean> => {
-                const systemSelection = answers?.[promptNames.systemSelection];
+                const selectedSystem = answers?.[promptNames.systemSelection];
+                if (!selectedSystem) {
+                    return false;
+                }
                 const connectValResult = await validateSystemSelection(
-                    systemSelection,
+                    selectedSystem,
                     connectionValidator,
                     requiredOdataVersion
                 );
                 // An issue occurred with the selected system, there is no need to continue on the CLI, log and exit
+                // Note that for connection authentication errors, the result will be true, the user will be prompted to update their credentials in the next prompt
                 if (connectValResult !== true) {
                     LoggerHelper.logger.error(connectValResult.toString);
                     throw new Error(connectValResult.toString());

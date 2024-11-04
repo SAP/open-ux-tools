@@ -1,11 +1,10 @@
+import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
 import {
     createSystemChoices,
     getBackendSystemDisplayName
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
-import type { Destination, Destinations } from '@sap-ux/btp-utils';
-import { WebIDEAdditionalData } from '@sap-ux/btp-utils';
 
 const backendSystemBasic: BackendSystem = {
     name: 'http://abap.on.prem:1234',

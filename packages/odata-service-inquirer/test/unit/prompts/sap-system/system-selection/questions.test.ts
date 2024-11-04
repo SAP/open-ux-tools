@@ -457,4 +457,41 @@ describe('Test system selection prompts', () => {
             undefined
         );
     });
+
+    test('should execute additional prompt on CLI (if autocomplete is not used) to handle YUI validate function', async () => {
+        mockIsAppStudio = false;
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+        const systemConnectionQuestions = await getSystemConnectionQuestions(new ConnectionValidator());
+        const validateSystemSelectionCliPrompt = systemConnectionQuestions.find(
+            (question) => question.name === 'systemSelectionCli'
+        );
+
+        expect(await (validateSystemSelectionCliPrompt!.when as Function)({})).toBe(false);
+
+        const answers = {
+            [promptNames.systemSelection]: {
+                type: 'backendSystem',
+                system: backendSystemBasic
+            }
+        };
+        validateAuthResultMock = { valResult: true };
+        expect(await (validateSystemSelectionCliPrompt!.when as Function)(answers)).toBe(false); // Always false as its a functional only prompt
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            backendSystemBasic,
+            connectionValidatorMock,
+            undefined
+        );
+        connectWithBackendSystemSpy.mockClear();
+        // Should prompt for credentials if the system selection is a backend system and an auth error is returned
+        validateAuthResultMock = { valResult: 'A connection error occurred.' };
+        await expect((validateSystemSelectionCliPrompt!.when as Function)(answers)).rejects.toThrowError(
+            'A connection error occurred.'
+        );
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            backendSystemBasic,
+            connectionValidatorMock,
+            undefined
+        );
+    });
 });
