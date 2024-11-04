@@ -11,8 +11,9 @@ import { UIIcon } from '../UIIcon';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty, getCalloutCollisionTransformationProps } from './utils';
+import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from './utils';
 import { CalloutCollisionTransform } from '../UICallout';
+import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 import './UIDropdown.scss';
 
@@ -298,7 +299,7 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                     ...(this.props.required && {
                         selectors: {
                             '::after': {
-                                content: `' *'`,
+                                content: REQUIRED_LABEL_INDICATOR,
                                 color: ERROR_BORDER_COLOR,
                                 paddingRight: 12
                             }
@@ -329,12 +330,8 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                     popupProps: {
                         ref: this.menuDomRef
                     },
-                    ...getCalloutCollisionTransformationProps(
-                        this.calloutCollisionTransform,
-                        this.props.multiSelect,
-                        this.props.calloutCollisionTransformation
-                    ),
-                    ...this.props.calloutProps
+                    ...this.props.calloutProps,
+                    ...getCalloutCollisionTransformationPropsForDropdown(this, this.calloutCollisionTransform)
                 }}
                 onRenderOption={this.onRenderOption.bind(this)}
                 onRenderItem={this.onRenderItem.bind(this)}

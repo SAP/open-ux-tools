@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 0.9.3
+
+### Patch Changes
+
+-   ff75382: No error message for systems with denied keychain access
+
 ## 0.9.2
 
 ### Patch Changes
