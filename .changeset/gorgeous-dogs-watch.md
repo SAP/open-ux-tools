@@ -1,5 +1,5 @@
 ---
-'@sap-ux/ui5-library-sub-generator': patch
+'@sap-ux/ui5-library-reference-sub-generator': patch
 '@sap-ux/fiori-generator-shared': patch
 '@sap-ux/project-access': patch
 ---

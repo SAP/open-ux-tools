@@ -40,7 +40,7 @@ export default class extends Generator implements Ui5LibGenerator {
     constructor(args: string | string[], opts: Generator.GeneratorOptions) {
         super(args, opts);
 
-        this.appWizard = opts.appWizard || AppWizard.create(opts);
+        this.appWizard = AppWizard.create(opts);
         this.vscode = opts.vscode;
         ReuseLibGenLogger.configureLogging(
             this.options.logger,
