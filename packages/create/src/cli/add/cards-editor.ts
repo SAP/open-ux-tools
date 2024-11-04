@@ -26,7 +26,7 @@ export function addCardsEditorConfigCommand(cmd: Command): void {
  * Adds an cards editor config to an app. To prevent overwriting existing inbounds will be checked.
  *
  * @param basePath - path to application root
- * @param simulate - if true, do not write but just show what would be change; otherwise write
+ * @param simulate - if true, do not write but just show what would be changed; otherwise write
  * @param skipInstall - if true, do not run npm install
  */
 async function addCardsEditorConfig(basePath: string, simulate: boolean, skipInstall: boolean): Promise<void> {
@@ -39,8 +39,7 @@ async function addCardsEditorConfig(basePath: string, simulate: boolean, skipIns
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));
             if (!skipInstall) {
-                runNpmInstallCommand(basePath);
-                logger.info('Executed npm install');
+                runNpmInstallCommand(basePath, [], { logger });
             }
         } else {
             await traceChanges(fs);

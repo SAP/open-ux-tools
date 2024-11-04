@@ -8,5 +8,8 @@
     },
     "debug": {
         "loggingConfigured": "Logging has been configured at log level: {{logLevel}}"
+    },
+    "telemetry": {
+        "unknownOs": "Unknown"
     }
 }
