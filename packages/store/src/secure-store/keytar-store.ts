@@ -53,7 +53,10 @@ export class KeytarStore implements SecureStore {
         try {
             return (await this.keytar.findCredentials(service)).reduce((result, entry) => {
                 try {
-                    result[String(entry.account)] = JSON.parse(entry.password);
+                    // when a user denies permission to access the keystore entry.account and password return empty strings
+                    if (entry.account) {
+                        result[String(entry.account)] = JSON.parse(entry.password);
+                    }
                 } catch (e) {
                     this.log.error(`Error parsing credentials for [${entry.account}]`);
                 }
