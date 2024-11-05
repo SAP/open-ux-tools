@@ -37,9 +37,11 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
 
     await updatePreviewMiddlewareConfigs(fs, basePath, logger);
 
-    //todo: use yaml from start-variants-management script
-    const yamlPath = join(basePath, 'ui5.yaml');
+    const packageJsonPath = join(basePath, 'package.json');
+    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
+    const yamlPath = join(basePath, packageJson?.scripts?.['start-variants-management'] ?? 'ui5.yaml');
     await addVariantsManagementScript(fs, basePath, yamlPath, logger);
+    //todo: add yamlPath
     await updateMiddlewares(fs, basePath, logger);
 
     return fs;
