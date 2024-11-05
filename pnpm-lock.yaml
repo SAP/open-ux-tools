@@ -920,6 +920,79 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
 
+  packages/cf-deploy-config-writer:
+    dependencies:
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      '@sap-ux/yaml':
+        specifier: workspace:*
+        version: link:../yaml
+      '@sap/cf-tools':
+        specifier: 3.2.0
+        version: 3.2.0
+      '@sap/mta-lib':
+        specifier: 1.7.4
+        version: 1.7.4
+      ejs:
+        specifier: 3.1.10
+        version: 3.1.10
+      hasbin:
+        specifier: 1.2.3
+        version: 1.2.3
+      i18next:
+        specifier: 21.10.0
+        version: 21.10.0
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
+    devDependencies:
+      '@types/ejs':
+        specifier: 3.1.2
+        version: 3.1.2
+      '@types/fs-extra':
+        specifier: 9.0.13
+        version: 9.0.13
+      '@types/hasbin':
+        specifier: 1.2.2
+        version: 1.2.2
+      '@types/js-yaml':
+        specifier: 4.0.9
+        version: 4.0.9
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/semver':
+        specifier: 7.5.2
+        version: 7.5.2
+      fs-extra:
+        specifier: 10.0.0
+        version: 10.0.0
+      js-yaml:
+        specifier: 3.14.0
+        version: 3.14.0
+      memfs:
+        specifier: 3.4.13
+        version: 3.4.13
+
   packages/control-property-editor:
     devDependencies:
       '@esbuild-plugins/node-modules-polyfill':
@@ -5995,7 +6068,7 @@ packages:
     resolution: {integrity: sha512-TS/9KG2CdGXS27S+QxbZXgr8uPsP4yNJYb4BC2/NeFUj80Rni3TeD2qwWmabymxmrLo7JEsytXH1FbpKTbvivw==}
     dependencies:
       '@changesets/types': 6.0.0
-      js-yaml: 3.14.1
+      js-yaml: 3.14.0
     dev: true
 
   /@changesets/pre@2.0.0:
@@ -6777,7 +6850,7 @@ packages:
       camelcase: 5.3.1
       find-up: 4.1.0
       get-package-type: 0.1.0
-      js-yaml: 3.14.1
+      js-yaml: 3.14.0
       resolve-from: 5.0.0
     dev: true
 
@@ -8144,6 +8217,17 @@ packages:
       url: 0.11.0
     dev: false
 
+  /@sap/mta-lib@1.7.4:
+    resolution: {integrity: sha512-NBtcVKipYrw9uCiWwH2QVfaVeJC3OV6spAE29TsUKjGzqUrSzMkFi8FtsikvDDDThtysjmcvWN8SDvkK3eQxmg==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      cross-spawn: 7.0.3
+      fs-extra: 8.1.0
+      mta-local: 1.0.0
+      temp-dir: 2.0.0
+      which: 2.0.2
+    dev: false
+
   /@sap/ux-cds-compiler-facade@1.15.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
     resolution: {integrity: sha512-WeA/wnF0NoHNod6H/Rcpgbh3ue4TVBSAlHQoupWzdu91yl+RZ4rKS4hARaRH+LV7gTXxJ5k6llJ/wyUN7sMDdw==}
     engines: {node: '>=18.16.0'}
@@ -9340,6 +9424,10 @@ packages:
       '@types/node': 18.11.9
     dev: true
 
+  /@types/hasbin@1.2.2:
+    resolution: {integrity: sha512-+WjYdtDVxfzvyIkVrLmBikOuChFvTE1jEuz51cTqk7dhemLw1A4DYaJjBwsemNhzS9oDiVWr+bqx/Ld9pUVO5Q==}
+    dev: true
+
   /@types/hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-YIQtIg4PKr7ZyqNPZObpxfHsHEmuB8dXCxd6qVcGuQVDK2bpsF7bYNnBJ4Nn7giuACZg+WewExgrtAJ3XnA4Xw==}
     dependencies:
@@ -9427,6 +9515,10 @@ packages:
     resolution: {integrity: sha512-ZxJrup8nz/ZxcU0vantG+TPdboMhB24jad2uSap50zE7Q9rUeYlCF25kFMSmHR33qoeOgqcdHEp3roaookC0Sg==}
     dependencies:
       '@types/sizzle': 2.3.3
+    dev: true
+
+  /@types/js-yaml@4.0.9:
+    resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
     dev: true
 
   /@types/jsdom@20.0.1:
@@ -10610,7 +10702,7 @@ packages:
     resolution: {integrity: sha512-aiATs7pSutzda/rq8fnuPwTglyVwjM22bNnK2ZgjrpAjQHSSl3lztd2f9evst1W/qnC58DRz7T7QndUDumAR4Q==}
     engines: {node: '>=14.15.0'}
     dependencies:
-      js-yaml: 3.14.1
+      js-yaml: 3.14.0
       tslib: 2.6.3
     dev: true
 
@@ -11228,6 +11320,10 @@ packages:
     dependencies:
       semver: 5.7.2
       shimmer: 1.2.1
+    dev: false
+
+  /async@1.5.2:
+    resolution: {integrity: sha512-nSVgobk4rv61R9PUSDtYt7mPVB2olxNR5RWJcAsH676/ef11bUZwvu7+RGYrYauVdDPcO519v68wRhXQtxsV9w==}
     dev: false
 
   /async@2.6.4:
@@ -13213,6 +13309,7 @@ packages:
   /ejs@3.1.10:
     resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
     engines: {node: '>=0.10.0'}
+    hasBin: true
     dependencies:
       jake: 10.8.5
 
@@ -15443,6 +15540,13 @@ packages:
       function-bind: 1.1.2
     dev: true
 
+  /hasbin@1.2.3:
+    resolution: {integrity: sha512-CCd8e/w2w28G8DyZvKgiHnQJ/5XXDz6qiUHnthvtag/6T5acUeN5lqq+HMoBqcmgWueWDhiCplrw0Kb1zDACRg==}
+    engines: {node: '>=0.10'}
+    dependencies:
+      async: 1.5.2
+    dev: false
+
   /hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
@@ -15750,7 +15854,7 @@ packages:
   /i18next@21.10.0:
     resolution: {integrity: sha512-YeuIBmFsGjUfO3qBmMOc0rQaun4mIpGKET5WDwvu8lU7gvwpcariZLNtL0Fzj+zazcHUrlXHiptcFhBMFaxzfg==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.25.0
 
   /i18next@21.6.11:
     resolution: {integrity: sha512-tJ2+o0lVO+fhi8bPkCpBAeY1SgkqmQm5NzgPWCQssBrywJw98/o+Kombhty5nxQOpHtvMmsxcOopczUiH6bJxQ==}
@@ -17057,14 +17161,16 @@ packages:
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  /js-yaml@3.14.1:
-    resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
+  /js-yaml@3.14.0:
+    resolution: {integrity: sha512-/4IbIeHcD9VMHFqDR/gQ7EdZdLimOvW2DdcxFjdyyZ9NsbS+ccrXqVWDtab/lRl5AlUqmpBx8EhPaWR+OtY17A==}
+    hasBin: true
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
 
   /js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
+    hasBin: true
     dependencies:
       argparse: 2.0.1
 
@@ -17448,7 +17554,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       graceful-fs: 4.2.11
-      js-yaml: 3.14.1
+      js-yaml: 3.14.0
       pify: 4.0.1
       strip-bom: 3.0.0
 
@@ -18187,6 +18293,10 @@ packages:
 
   /ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+
+  /mta-local@1.0.0:
+    resolution: {integrity: sha512-+pL8q5wJMyyVUj0gGFwceq7utIjwt744GBmBqYMARK6I4CzPvSv/0akRNTOxcsffXsu8EVyH2NJZ4XS9WcHzZA==}
+    dev: false
 
   /multimatch@4.0.0:
     resolution: {integrity: sha512-lDmx79y1z6i7RNx0ZGCPq1bzJ6ZoDDKbvh7jxr9SJcWLkShMzXrHbYVpTdnhNM5MXpDUxCQ4DgqVttVXlBgiBQ==}
@@ -20436,7 +20546,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       graceful-fs: 4.2.11
-      js-yaml: 3.14.1
+      js-yaml: 3.14.0
       pify: 4.0.1
       strip-bom: 3.0.0
     dev: true
@@ -21983,7 +22093,6 @@ packages:
   /temp-dir@2.0.0:
     resolution: {integrity: sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==}
     engines: {node: '>=8'}
-    dev: true
 
   /temp-dir@3.0.0:
     resolution: {integrity: sha512-nHc6S/bwIilKHNRgK/3jlhDoIHcp45YgyiwcAk46Tr0LfEqGBVpmiAyuiuxeVE44m3mXnEeVhaipLOEWmH+Njw==}
@@ -22240,7 +22349,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.6.3
+      semver: 7.5.4
       typescript: 5.6.2
       yargs-parser: 21.1.1
     dev: true
