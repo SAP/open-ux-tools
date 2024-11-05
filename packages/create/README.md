@@ -44,6 +44,7 @@ Common Options:
 The `@sap-ux/create` modules provides commands for the following cases:
 - `sap-ux add` - allows adding a feature
 - `sap-ux change` allows changing a feature
+- `sap-ux convert` allows converting an app to a new feature
 - `sap-ux remove` allows removing a feature
 - `sap-ux generate` allows generating a new project
 
@@ -141,6 +142,16 @@ Calling `sap-ux change inbound` allows replacing the Inbound FLP configurations 
 ```sh
 sap-ux change inbound [path]
 ```
+
+## sap-ux convert
+Calling `sap-ux convert` allows converting an app to a new feature.
+
+### preview
+Calling `sap-ux convert preview` will convert the app to the preview with virtual files. It will use the configuration from the scripts in `package.json` to adjust the UI5 configuration yaml files accordingly. No longer needed js/ts sources will be deleted and the html files used for the preview will be renamed to *_old.html.
+```sh
+sap-ux convert preview [path]
+```
+- `-c | --config` base path to project
 
 ## sap-ux remove
 Calling `sap-ux remove` allows removing a feature to a project.
