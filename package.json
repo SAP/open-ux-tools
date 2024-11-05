@@ -5,7 +5,7 @@
     "author": "@SAP/ux-tools-team",
     "private": true,
     "devDependencies": {
-        "@changesets/cli": "2.27.7",
+        "@changesets/cli": "2.27.9",
         "@nrwl/nx-cloud": "19.0.0",
         "@playwright/test": "1.39.0",
         "@types/jest": "29.5.5",
