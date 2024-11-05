@@ -1,0 +1,17 @@
+specVersion: "3.1"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: localService/index.html
+          intent:
+            object: Chicken
+            action: dance
+        rta:
+          editors:
+            - path: preview.html

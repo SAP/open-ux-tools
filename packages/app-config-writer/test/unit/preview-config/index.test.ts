@@ -182,6 +182,9 @@ describe('convertPreview', () => {
             'Skipping UI5 yaml configuration file ui5-deprecated-tools-preview.yaml because it is not being used in any package.json script.'
         );
         expect(warnLogMock).toHaveBeenCalledWith(
+            'Skipping UI5 yaml configuration file ui5-existing-preview-middleware.yaml because it is not being used in any package.json script.'
+        );
+        expect(warnLogMock).toHaveBeenCalledWith(
             'Skipping UI5 yaml configuration file ui5-existing-tools-preview.yaml because it is not being used in any package.json script.'
         );
         expect(warnLogMock).toHaveBeenCalledWith(
@@ -281,6 +284,24 @@ describe('convertPreview', () => {
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-existing-tools-preview.yaml'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+    });
+
+    test('update preview middleware config - existing preview middleware', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'ui:mockserver':
+                    'fiori run -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml'
+            },
+            'devDependencies': {
+                '@sap-ux/preview-middleware': '0.16.102'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        expect(fs.read(join(variousConfigsPath, 'ui5-existing-preview-middleware.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 });
