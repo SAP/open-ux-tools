@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.25.1
+
+### Patch Changes
+
+-   6275288: add new cf deploy writer and dependencies that it requires
+
 ## 0.25.0
 
 ### Minor Changes
