@@ -210,6 +210,9 @@
       "path": "packages/ui5-library-reference-inquirer"
     },
     {
+      "path": "packages/ui5-library-reference-sub-generator"
+    },
+    {
       "path": "packages/ui5-library-reference-writer"
     },
     {
