@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.2.13
+
+### Patch Changes
+
+-   b2de757: Fix @ui5/linter errors in locate-reuse-lib.js
+-   Updated dependencies [b2de757]
+    -   @sap-ux/ui5-application-writer@1.2.2
+
 ## 1.2.12
 
 ### Patch Changes
