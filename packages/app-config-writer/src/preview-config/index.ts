@@ -148,8 +148,6 @@ async function processUi5YamlConfig(fs: Editor, basePath: string, ui5Yaml: strin
     const { path, intent } = extractUrlDetails(script);
     previewMiddleware = updatePreviewMiddlewareConfig(previewMiddleware, intent, path);
 
-    //todo: dependency preview-middleware <-> reload-middleware
-
     ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
     const yamlPath = join(basePath, ui5Yaml);
     fs.write(yamlPath, ui5YamlConfig.toString());
