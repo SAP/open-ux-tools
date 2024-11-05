@@ -8,7 +8,7 @@ Object {
   "sapuxLayer": "VENDOR",
   "scripts": Object {
     "start": "fiori run --open \\"test/flpSandbox.html?sap-client=500#test-app\\"",
-    "start-variants-management": "fiori run --open \\"/preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-client=500#app-preview\\"",
+    "start-variants-management": "fiori run --config ./ui5.yaml --open \\"/preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-client=500#app-preview\\"",
   },
 }
 `;

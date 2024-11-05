@@ -1,7 +1,12 @@
 import { join } from 'path';
 import * as utils from '../../../src/variants-config/utils';
+import { create as createFS } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
 
 describe('utils', () => {
+    const basePath = join(__dirname, '../../fixtures/variants-config');
+
     describe('getSapClientFromPackageJson', () => {
         test('scripts with no sap client', () => {
             expect(utils.getSapClientFromPackageJson({ start: 'fiori run --open preview.html' })).toStrictEqual(
@@ -32,10 +37,9 @@ describe('utils', () => {
 
     describe('getRTAUrl', () => {
         const query = 'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true';
-        const basePath = join(__dirname, '../../fixtures/variants-config');
 
         test('given rta mount point in preview-middleware config', async () => {
-            const url = await utils.getRTAUrl(basePath, query);
+            const url = await utils.getRTAUrl(basePath, query, 'ui5.yaml');
 
             //check for rta mount point defined in ui5.yaml
             expect(url).toContain('/my-variants.html');
@@ -46,7 +50,7 @@ describe('utils', () => {
 
         test('fiori-tools-preview defaults', async () => {
             const fioriToolsConfig = join(basePath, 'fiori-tools-config');
-            const url = await utils.getRTAUrl(fioriToolsConfig, query);
+            const url = await utils.getRTAUrl(fioriToolsConfig, query, 'ui5.yaml');
 
             expect(url).toStrictEqual(
                 '/preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#app-preview'
@@ -55,7 +59,7 @@ describe('utils', () => {
 
         test('fiori-tools-preview deprecated config', async () => {
             const deprecatedConfig = join(basePath, 'deprecated-config');
-            const url = await utils.getRTAUrl(deprecatedConfig, query);
+            const url = await utils.getRTAUrl(deprecatedConfig, query, 'ui5.yaml');
 
             //check for fiori-tools default mount point provided over the ux-ui5-tooling
             expect(url).toContain('/preview.html');
@@ -67,7 +71,7 @@ describe('utils', () => {
         test('open-source preview-middleware config with no rta mount point', async () => {
             const openSourceConfig = join(basePath, 'open-source-config');
             //check for fiori-tools default mount point provided over the ux-ui5-tooling
-            expect(await utils.getRTAUrl(openSourceConfig, query)).toBe(undefined);
+            expect(await utils.getRTAUrl(openSourceConfig, query, 'ui5.yaml')).toBe(undefined);
         });
 
         test('exception handling - file not found', async () => {
@@ -89,6 +93,24 @@ describe('utils', () => {
             await expect(utils.getPreviewMiddleware(undefined, basePath, 'chicken.html')).rejects.toThrowError(
                 `File 'chicken.html' not found in project '${basePath}'`
             );
+        });
+    });
+
+    describe('getRTAServe', () => {
+        let fs: Editor;
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+            fs = createFS(createStorage());
+        });
+        test('RTA serve for preview middleware', async () => {
+            const openSourceConfig = join(basePath, 'open-source-config');
+            expect(await utils.getRTAServe(openSourceConfig, 'ui5.yaml', fs)).toStrictEqual('ui5 serve');
+        });
+
+        test('RTA serve for fiori-tools-preview middleware', async () => {
+            const fioriToolsConfig = join(basePath, 'fiori-tools-config');
+            expect(await utils.getRTAServe(fioriToolsConfig, 'ui5.yaml', fs)).toStrictEqual('fiori run');
         });
     });
 });
