@@ -184,7 +184,6 @@ export const BuildingBlockQuestions = (props: {
                         translationProps={{
                             bundle: i18nBundle,
                             onEvent: (name, event) => {
-                                // ToDo
                                 if (event.name === 'update') {
                                     updateBundle(name, event.entry, event.properties);
                                 } else {
