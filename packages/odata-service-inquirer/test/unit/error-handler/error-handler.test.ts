@@ -183,7 +183,7 @@ describe('Test ErrorHandler', () => {
         errorHandler.getValidationErrorHelp(undefined, true);
         expect(errorHandler.getErrorMsg()).toEqual(undefined);
 
-        // Ensure command is not generated when GA is not enabled
+        // Ensure VSCode GA command is not generated when GA is not enabled
         ErrorHandler.guidedAnswersEnabled = false;
         const serviceUnavailableHelpNoCommandLink = errorHandler.getValidationErrorHelp(
             ERROR_TYPE.SERVICES_UNAVAILABLE

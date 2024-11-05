@@ -17,7 +17,6 @@ import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
 import { validateODataVersion } from '../../../validators';
 import type { ServiceAnswer } from './types';
-import type { integer } from '../../../../../../text-document-utils/src';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON/'];
@@ -65,12 +64,12 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
 /**
  * Logs the catalog request errors using the error handler.
  *
- * @param requestErrors catalog request errors
+ * @param requestErrors catalog request errors, keyed by the OData version of the catalog service, with the error, status code number or error message as the value
  * @param numOfRequests
  */
 function logServiceCatalogErrorsForHelp(
     requestErrors: Record<ODataVersion, Error | number | string> | {},
-    numOfRequests: integer
+    numOfRequests: number
 ): void {
     const catalogRequesErrors = Object.values(requestErrors);
     catalogRequesErrors.forEach((error) => {

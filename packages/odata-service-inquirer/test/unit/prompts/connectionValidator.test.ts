@@ -1,22 +1,22 @@
-import {
-    AbapServiceProvider,
-    Annotations,
-    ODataService,
-    ODataVersion,
-    ServiceProvider,
-    type AxiosRequestConfig
-} from '@sap-ux/axios-extension';
 import * as axiosExtension from '@sap-ux/axios-extension';
-import { AxiosError, type AxiosResponse } from 'axios';
+import type { ODataServiceInfo } from '@sap-ux/axios-extension';
+import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
-import { ErrorHandler } from '../../../src/error-handler/error-handler';
-import { GUIDED_ANSWERS_LAUNCH_CMD_ID, GUIDED_ANSWERS_ICON } from '@sap-ux/guided-answers-helper';
+import {
+    GUIDED_ANSWERS_ICON,
+    GUIDED_ANSWERS_LAUNCH_CMD_ID,
+    HELP_NODES,
+    HELP_TREE
+} from '@sap-ux/guided-answers-helper';
+import { AxiosError, type AxiosResponse } from 'axios';
+import { ERROR_TYPE, ErrorHandler } from '../../../src/error-handler/error-handler';
 import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
 import { ConnectionValidator } from '../../../src/prompts/connectionValidator';
 
+const odataServicesMock: ODataServiceInfo[] = [];
 const catalogServiceMock = jest.fn().mockImplementation(() => ({
     interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
-    listServices: jest.fn().mockResolvedValue([])
+    listServices: jest.fn().mockImplementation(() => odataServicesMock)
 }));
 
 jest.mock('@sap-ux/axios-extension', () => ({
@@ -54,6 +54,7 @@ describe('ConnectionValidator', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
         mockIsAppStudio = false;
+        ErrorHandler.guidedAnswersEnabled = false;
     });
 
     test('should handle an invalid url', async () => {
@@ -486,5 +487,143 @@ describe('ConnectionValidator', () => {
         });
         expect(listServicesV2Mock).not.toHaveBeenCalled();
         expect(listServicesV4Mock).toHaveBeenCalled();
+    });
+
+    test('should validate destination system connection', async () => {
+        const listServicesV2Mock = jest
+            .spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
+            .mockResolvedValueOnce([
+                { id: 'service1', path: '/service1', odataVersion: ODataVersion.v2 } as ODataServiceInfo
+            ]);
+        const listServicesV4Mock = jest
+            .spyOn(axiosExtension.V4CatalogService.prototype, 'listServices')
+            .mockResolvedValueOnce([
+                { id: 'service2', path: '/service2', odataVersion: ODataVersion.v4 } as ODataServiceInfo
+            ]);
+        const connectValidator = new ConnectionValidator();
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system:12345',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_abap'
+            })
+        ).toEqual({ valResult: true });
+        // Connection validation uses v2 first
+        expect(listServicesV2Mock).toHaveBeenCalled();
+        expect(listServicesV4Mock).not.toHaveBeenCalled();
+        expect(connectValidator.validatedUrl).toEqual('https://dest1.dest');
+        expect(connectValidator.destinationUrl).toEqual('https://system:12345');
+        expect(connectValidator.validity).toEqual({
+            authenticated: true,
+            reachable: true
+        });
+
+        // If any error occurs and HTML5.DynamicDestination property is missing, return a destination misconfiguration message and specific GA link
+        jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices').mockRejectedValueOnce(
+            newAxiosErrorWithStatus(500)
+        );
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system:12345',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_abap'
+            })
+        ).toEqual(
+            expect.objectContaining({
+                errorType: ERROR_TYPE.INTERNAL_SERVER_ERROR,
+                valResult: {
+                    link: {
+                        icon: GUIDED_ANSWERS_ICON,
+                        text: t('guidedAnswers.validationErrorHelpText'),
+                        url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.DESTINATION_MISCONFIGURED}`
+                    },
+                    message: t('errors.destination.misconfigured', { destinationProperty: 'HTML5.DynamicDestination' })
+                }
+            })
+        );
+    });
+
+    test('should validate destination service (full and partial url) connection', async () => {
+        jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        const connectValidator = new ConnectionValidator();
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system1:12345/path/to/service',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_gen',
+                WebIDEAdditionalData: 'full_url'
+            })
+        ).toEqual({ valResult: true });
+
+        expect(connectValidator.validatedUrl).toEqual('https://dest1.dest');
+        expect(connectValidator.destinationUrl).toEqual('https://system1:12345/path/to/service');
+        expect(connectValidator.validity).toEqual({
+            authenticated: true,
+            reachable: true
+        });
+
+        jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        expect(
+            await connectValidator.validateDestination(
+                {
+                    Name: 'dest2',
+                    Host: 'https://system2:12345/',
+                    Type: 'HTTP',
+                    Authentication: 'NoAuthentication',
+                    ProxyType: 'Internet',
+                    Description: 'desc',
+                    WebIDEUsage: 'odata_gen'
+                },
+                undefined,
+                'path/to/service'
+            )
+        ).toEqual({ valResult: true });
+
+        expect(connectValidator.validatedUrl).toEqual('https://dest2.dest/path/to/service');
+        expect(connectValidator.destinationUrl).toEqual('https://system2:12345/path/to/service');
+        expect(connectValidator.validity).toEqual({
+            authenticated: true,
+            reachable: true
+        });
+
+        // If any error occurs return a GA link
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(404));
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system1:12345/path/to/service',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_gen',
+                WebIDEAdditionalData: 'full_url',
+                'HTML5.DynamicDestination': 'true'
+            })
+        ).toEqual(
+            expect.objectContaining({
+                errorType: ERROR_TYPE.NOT_FOUND,
+                valResult: {
+                    link: {
+                        icon: GUIDED_ANSWERS_ICON,
+                        text: t('guidedAnswers.validationErrorHelpText'),
+                        url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.DESTINATION_NOT_FOUND}`
+                    },
+                    message: t('errors.urlNotFound')
+                }
+            })
+        );
     });
 });

@@ -490,7 +490,7 @@ export class ErrorHandler {
         if (error) {
             ({ errorMsg: resolvedErrorMsg, errorType: resolvedErrorType } = ErrorHandler.mapErrorToMsg(error));
         } else {
-            // User the existing error if we have it
+            // Use the existing error if we have it
             resolvedErrorMsg = this.currentErrorMsg ?? undefined;
             if (this.currentErrorType) {
                 resolvedErrorType = this.currentErrorType;

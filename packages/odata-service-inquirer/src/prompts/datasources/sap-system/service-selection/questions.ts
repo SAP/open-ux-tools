@@ -118,7 +118,7 @@ export function getSystemServiceQuestion(
                 return ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE) ?? false;
             }
             // Dont re-request the same service details
-            if (service && previousService?.servicePath !== serviceAnswer.servicePath) {
+            if (serviceAnswer && previousService?.servicePath !== serviceAnswer.servicePath) {
                 previousService = serviceAnswer;
                 return getServiceDetails(serviceAnswer, connectValidator, requiredOdataVersion);
             }

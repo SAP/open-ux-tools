@@ -17,14 +17,12 @@ import {
     createForAbapOnCloud,
     createForDestination
 } from '@sap-ux/axios-extension';
-import type { DestinationProperty } from '@sap-ux/btp-utils';
 import {
     Authentication,
     type Destination,
     getDestinationUrlForAppStudio,
     isAppStudio,
     isFullUrlDestination,
-    isHTML5DynamicConfigured,
     isPartialUrlDestination
 } from '@sap-ux/btp-utils';
 import https from 'https';
@@ -256,7 +254,7 @@ export class ConnectionValidator {
      * @returns the status code or error returned by the connection attempt
      * @throws an error if the connection attempt fails and the error is a 500 on App Studio or a non-axios error is caught
      */
-    private async checkSapServiceUrl(
+    private async checkUrl(
         url: URL,
         username?: string,
         password?: string,
@@ -298,8 +296,8 @@ export class ConnectionValidator {
         } catch (e) {
             LoggerHelper.logger.debug(`ConnectionValidator.checkSapService() - error: ${e.message}`);
             if (e?.isAxiosError) {
-                // Only throw for 500 on App Studio
-                if (e?.response?.status === 500 && isBAS) {
+                // Error handling for BAS specific 500 errors
+                if (e?.response?.status.toString().match(/5[0-9][0-9]/) && isBAS) {
                     throw e;
                 }
                 return e?.response?.status || e?.code;
@@ -565,27 +563,17 @@ export class ConnectionValidator {
                     : destination.Host;
                 this._destination = destination;
                 // No need to apply sap-client as this happens automatically (from destination config) when going through the BAS proxy
-                const status = await this.checkSapServiceUrl(new URL(destUrl), undefined, undefined, { odataVersion });
+                const status = await this.checkUrl(new URL(destUrl), undefined, undefined, { odataVersion });
                 this._validatedUrl = destUrl;
                 const validationResult = this.getValidationResultFromStatusCode(status);
 
-                // todo: Is this condition necessary, 500s on BAS are thrown as errors
                 if (!this.validity.reachable) {
-                    if (!isHTML5DynamicConfigured(destination)) {
-                        const destinationProperty: DestinationProperty = 'HTML5.DynamicDestination';
-                        return {
-                            valResult: ErrorHandler.getHelpForError(
-                                ERROR_TYPE.DESTINATION_MISCONFIGURED,
-                                t('errors.destination.misconfigured', { destinationProperty })
-                            )!
-                        };
-                    } else {
-                        return {
-                            valResult:
-                                errorHandler.getErrorMsg(status) ??
-                                t('errors.destination.notReachable', { systemName: destination.Name })
-                        };
-                    }
+                    // Log the error
+                    const errorLog = errorHandler.logErrorMsgs(status);
+                    return {
+                        valResult: errorHandler.getValidationErrorHelp(status, false, destination) ?? errorLog,
+                        errorType: errorHandler.getCurrentErrorType() ?? ERROR_TYPE.DESTINATION_CONNECTION_ERROR
+                    };
                 }
                 if (this.validity.authRequired) {
                     return {
@@ -673,7 +661,7 @@ export class ConnectionValidator {
                 this.resetValidity();
             }
             // Ignore path if a system url
-            const status = await this.checkSapServiceUrl(url, undefined, undefined, {
+            const status = await this.checkUrl(url, undefined, undefined, {
                 ignoreCertError,
                 isSystem,
                 odataVersion
@@ -817,9 +805,8 @@ export class ConnectionValidator {
                 url.searchParams.append(SAP_CLIENT_KEY, client);
             }
             const authError =
-                ErrorHandler.getErrorType(
-                    await this.checkSapServiceUrl(url, undefined, undefined, { ignoreCertError })
-                ) === ERROR_TYPE.AUTH;
+                ErrorHandler.getErrorType(await this.checkUrl(url, undefined, undefined, { ignoreCertError })) ===
+                ERROR_TYPE.AUTH;
 
             // Only if we get the specific auth error so we know that auth is required, otherwise we cannot determine so leave as undefined
             if (authError) {
@@ -875,7 +862,7 @@ export class ConnectionValidator {
             }
 
             this.systemAuthType = 'basic';
-            const status = await this.checkSapServiceUrl(urlObject, username, password, {
+            const status = await this.checkUrl(urlObject, username, password, {
                 ignoreCertError,
                 isSystem,
                 odataVersion
