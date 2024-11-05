@@ -4,4 +4,4 @@
 '@sap-ux/create': patch
 ---
 
-Enhance RTA handling for varinats-config command
+Enhance RTA handling for variants-config command
