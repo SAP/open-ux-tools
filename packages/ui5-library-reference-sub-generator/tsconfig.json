@@ -1,0 +1,31 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "generators"
+  },
+  "references": [
+    {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../telemetry"
+    },
+    {
+      "path": "../ui5-library-reference-inquirer"
+    },
+    {
+      "path": "../ui5-library-reference-writer"
+    }
+  ]
+}

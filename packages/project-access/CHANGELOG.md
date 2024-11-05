@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.28.4
+
+### Patch Changes
+
+-   5a68903: adds new reference library sub generator
+
 ## 1.28.3
 
 ### Patch Changes
