@@ -31,6 +31,50 @@ server:
 
 exports[`convertPreview update preview middleware config - deprecated tools preview 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run -open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
 
+exports[`convertPreview update preview middleware config - existing RTA script 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: localService/index.html
+          intent:
+            object: Chicken
+            action: dance
+        rta:
+          editors:
+            - path: preview.html
+"
+`;
+
+exports[`convertPreview update preview middleware config - existing RTA script 2`] = `"{\\"scripts\\":{\\"start-rta\\":\\"ui5 run -o preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml\\",\\"start-local\\":\\"ui5 run -o test/flp.html#Chicken-dance --config ./ui5-existing-preview-middleware.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.4\\"}}"`;
+
+exports[`convertPreview update preview middleware config - existing add-variants-management script 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          theme: sap_horizon
+          path: test/flp.html
+          intent:
+            object: Chicken
+            action: dance
+"
+`;
+
+exports[`convertPreview update preview middleware config - existing add-variants-management script 2`] = `"{\\"scripts\\":{\\"start-variants-management\\":\\"fiori run -o /preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\",\\"start-local\\":\\"fiori run -o test/flp.html#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.4\\"}}"`;
+
 exports[`convertPreview update preview middleware config - existing preview middleware 1`] = `
 "specVersion: \\"3.1\\"
 metadata:

@@ -8,7 +8,7 @@ import {
     ensurePreviewMiddlewareDependency
 } from '../../../src/preview-config';
 import { ToolsLogger } from '@sap-ux/logger';
-import { create } from 'mem-fs-editor';
+import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { PreviewConfigOptions } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
@@ -81,18 +81,16 @@ describe('convertPreview', () => {
     const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
     const errorLogMock = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
     const basePath = join(__dirname, '../../fixtures/preview-config');
-    const fs = create(createStorage());
-    fs.write(join(basePath, 'webapp', 'test', 'flpSandbox.html'), 'dummy content flpSandbox');
-    fs.write(join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html'), 'dummy content flpSandboxMockserver');
-    fs.write(join(basePath, 'webapp', 'test', 'locate-reuse-libs.js'), 'dummy content');
-    fs.write(join(basePath, 'webapp', 'test', 'initFlpSandbox.js'), 'dummy content');
+    let fs: Editor;
 
     beforeEach(() => {
         jest.clearAllMocks();
-        fs.delete(join(basePath, 'various-configs', 'package.json'));
+        fs = create(createStorage());
     });
 
     test('rename Sandboxes', async () => {
+        fs.write(join(basePath, 'webapp', 'test', 'flpSandbox.html'), 'dummy content flpSandbox');
+        fs.write(join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html'), 'dummy content flpSandboxMockserver');
         await renameSandboxes(fs, basePath, logger);
         expect(() => fs.read(join(basePath, 'webapp', 'test', 'flpSandbox.html'))).toThrowError(
             `${join(basePath, 'webapp', 'test', 'flpSandbox.html')} doesn\'t exist`
@@ -117,6 +115,8 @@ describe('convertPreview', () => {
     });
 
     test('delete no longer used files', async () => {
+        fs.write(join(basePath, 'webapp', 'test', 'locate-reuse-libs.js'), 'dummy content');
+        fs.write(join(basePath, 'webapp', 'test', 'initFlpSandbox.js'), 'dummy content');
         await deleteNoLongerUsedFiles(fs, basePath, logger);
         expect(infoLogMock).toHaveBeenCalledWith(
             `Deleted ${join('webapp', 'test', 'locate-reuse-libs.js')}. This file is no longer needed for the preview.`
@@ -302,6 +302,44 @@ describe('convertPreview', () => {
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-existing-preview-middleware.yaml'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+    });
+
+    test('update preview middleware config - existing RTA script', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'start-rta':
+                    'ui5 run -o preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml',
+                'start-local': 'ui5 run -o test/flp.html#Chicken-dance --config ./ui5-existing-preview-middleware.yaml'
+            },
+            'devDependencies': {
+                '@sap/ux-ui5-tooling': '1.15.4'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        expect(fs.read(join(variousConfigsPath, 'ui5-existing-preview-middleware.yaml'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+    });
+
+    test('update preview middleware config - existing add-variants-management script', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'start-variants-management':
+                    'fiori run -o /preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
+                'start-local': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml'
+            },
+            'devDependencies': {
+                '@sap/ux-ui5-tooling': '1.15.4'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 });

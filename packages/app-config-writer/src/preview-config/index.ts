@@ -9,6 +9,7 @@ import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../variants-config/utils';
 import type { PreviewConfigOptions } from '../types';
 import type { FlpConfig, MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
+import { addVariantsManagementScript } from '../variants-config/package-json';
 
 /**
  * Converts the local preview files of a project to virtual files.
@@ -36,6 +37,9 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
 
     await updatePreviewMiddlewareConfigs(fs, basePath, logger);
 
+    //todo: use yaml from start-variants-management script
+    const yamlPath = join(basePath, 'ui5.yaml');
+    await addVariantsManagementScript(fs, basePath, yamlPath, logger);
     await updateMiddlewares(fs, basePath, logger);
 
     return fs;
@@ -66,7 +70,7 @@ export async function updatePreviewMiddlewareConfigs(
             continue;
         }
 
-        const configParameterValueMatch = /--config (\S*)|--c (\S*)/.exec(script);
+        const configParameterValueMatch = / --config (\S*)| --c (\S*)/.exec(script);
         const ui5Yaml = basename(configParameterValueMatch?.[1] ?? configParameterValueMatch?.[2] ?? 'ui5.yaml');
 
         if ((validatedUi5YamlFileNames.invalid ?? []).includes(ui5Yaml)) {
@@ -88,7 +92,7 @@ export async function updatePreviewMiddlewareConfigs(
     }
     for (const ui5Yaml of unprocessedUi5YamlFileNames) {
         //todo: adjust at least deprecated preview config in unused ui5 yaml configurations?
-        //await processUi5YamlConfig(fs, basePath, ui5Yaml, '');
+        //await processUi5YamlConfig(fs, basePath, ui5Yaml, ''); -> add parameter createMissingPreviewConfig
         logger?.warn(
             `Skipping UI5 yaml configuration file ${ui5Yaml} because it is not being used in any package.json script.`
         );
@@ -144,6 +148,8 @@ async function processUi5YamlConfig(fs: Editor, basePath: string, ui5Yaml: strin
     const { path, intent } = extractUrlDetails(script);
     previewMiddleware = updatePreviewMiddlewareConfig(previewMiddleware, intent, path);
 
+    //todo: dependency preview-middleware <-> reload-middleware
+
     ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
     const yamlPath = join(basePath, ui5Yaml);
     fs.write(yamlPath, ui5YamlConfig.toString());
@@ -159,7 +165,7 @@ function extractUrlDetails(script: string): {
     path: string | undefined;
     intent: FlpConfig['intent'] | undefined;
 } {
-    const openParameterValueMatch = /-open (\S*)|-o (\S*)/.exec(script);
+    const openParameterValueMatch = / -open (\S*)| -o (\S*)/.exec(script);
     const url = openParameterValueMatch?.[1] ?? openParameterValueMatch?.[2] ?? undefined;
     const path = /^[^?#]+\.html/.exec(url ?? '')?.[0] ?? undefined;
     const intent = /(?<=#)\w+-\w+/.exec(url ?? '')?.[0] ?? undefined;
@@ -192,7 +198,7 @@ export function updatePreviewMiddlewareConfig(
 
     const configuration = newMiddlewareConfig.configuration ?? ({} as PreviewConfig);
     configuration.flp = configuration.flp ?? {};
-    if (path) {
+    if (path && (configuration.rta?.editors?.filter((editor) => editor.path === path)?.length === 0 || true)) {
         configuration.flp.path = path;
     }
     if (intent) {
@@ -224,9 +230,9 @@ export function sanitizePreviewMiddleware(
         return previewMiddleware as CustomMiddleware<PreviewConfig>;
     }
     const ui5Theme = previewMiddleware.configuration.ui5Theme;
-    const configuration = {} as PreviewConfig;
-    configuration.flp = {};
     if (ui5Theme) {
+        const configuration = {} as PreviewConfig;
+        configuration.flp = {};
         configuration.flp.theme = ui5Theme;
         previewMiddleware.configuration = configuration;
     }
