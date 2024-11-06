@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.2.15
+
+### Patch Changes
+
+-   da732f3: fix: fiori freestyle writer path issue
+
 ## 1.2.14
 
 ### Patch Changes
