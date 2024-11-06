@@ -48,8 +48,8 @@ describe('Test command convert preview', () => {
 
         // Result check
         expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).not.toBeCalled();
-        expect(loggerMock.info).not.toBeCalled();
+        expect(loggerMock.debug).toBeCalled();
+        expect(loggerMock.info).toBeCalled();
         expect(loggerMock.warn).not.toBeCalled();
         expect(loggerMock.error).not.toBeCalled();
         expect(fsMock.commit).toBeCalled();
@@ -78,7 +78,7 @@ describe('Test command convert preview', () => {
 
         // Result check
         expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.debug).not.toBeCalled();
+        expect(loggerMock.debug).toBeCalled();
         expect(loggerMock.error).not.toBeCalled();
         expect(fsMock.commit).toBeCalled();
         expect(spawnSpy).not.toBeCalled();
