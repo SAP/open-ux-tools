@@ -348,27 +348,6 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=myComponent",
-      "applicationDependencies": Object {
-        "asyncHints": Object {
-          "requests": Array [
-            Object {
-              "url": "myRequestUrl",
-            },
-          ],
-        },
-        "components": Array [
-          Object {
-            "name": "myComponent",
-            "url": "myComponentUrl",
-          },
-        ],
-        "libs": Array [
-          Object {
-            "name": "myLib",
-            "url": "myLibUrl",
-          },
-        ],
-      },
       "applicationType": "URL",
       "description": "",
       "title": "my.id",

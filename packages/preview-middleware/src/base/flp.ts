@@ -18,7 +18,6 @@ import {
     type OperationType
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
-import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 
 import { deleteChange, readChanges, writeChange } from './flex';
@@ -30,13 +29,9 @@ import {
     PREVIEW_URL,
     type TemplateConfig,
     createTestTemplateConfig,
-    addApp
+    addApp,
+    getAppName
 } from './config';
-declare global {
-    // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
-    // eslint-disable-next-line no-var
-    var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
-}
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -69,8 +64,8 @@ type OnChangeRequestHandler = (
  */
 export class FlpSandbox {
     private adp?: AdpPreview;
+    private manifest: Manifest;
     private app: App;
-    private descriptor?: MergedAppDescriptor;
     protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
@@ -127,18 +122,19 @@ export class FlpSandbox {
         const id = manifest['sap.app']?.id ?? '';
         this.templateConfig = createFlpTemplateConfig(this.config, manifest, resources);
         this.adp = adp;
+        this.manifest = manifest;
 
-        this.app = {
-            componentId,
-            target: resources[componentId ?? id] ?? this.templateConfig.basePath,
-            local: '.',
-            intent: this.config.intent ?? {
-                object: id.replace(/\./g, ''),
-                action: 'preview'
-            }
-        };
-
-        await addApp(this.templateConfig, manifest, this.app, this.logger);
+        await addApp(
+            this.templateConfig,
+            manifest,
+            {
+                componentId,
+                target: resources[componentId ?? id] ?? this.templateConfig.basePath,
+                local: '.',
+                intent: this.config.intent
+            },
+            this.logger
+        );
         this.addStandardRoutes();
         if (this.rta) {
             this.rta.options ??= {};
@@ -204,7 +200,7 @@ export class FlpSandbox {
     private async setApplicationDependecies(): Promise<void> {
         if (this.adp) {
             await this.adp.sync();
-            const appName = `${this.app.intent?.object}-${this.app.intent?.action}`;
+            const appName = getAppName(this.manifest, this.config.intent);
             this.templateConfig.apps[appName].applicationDependencies = this.adp.descriptor;
         }
     }

@@ -183,7 +183,7 @@ describe('FlpSandbox', () => {
                 'myResources2': 'myResourcesUrl2'
             };
 
-            await flp.init(manifest, componendId, resources, descriptor as unknown as MergedAppDescriptor);
+            await flp.init(manifest, componendId, resources);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
