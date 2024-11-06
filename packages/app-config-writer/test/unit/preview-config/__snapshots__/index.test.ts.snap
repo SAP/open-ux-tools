@@ -120,6 +120,30 @@ server:
 
 exports[`convertPreview update preview middleware config - existing tools preview 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run -o test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-tools-preview.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
 
+exports[`convertPreview update preview middleware config - multiple scripts same yaml configuration 1`] = `
+"specVersion: '4.0'
+metadata:
+  name: com.sap.cap.fe.ts.sample
+  allowSapInternal: true
+type: application
+framework:
+  name: SAPUI5
+  version: 1.124.0
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: test/flp.html
+          intent:
+            object: Chicken
+            action: dance
+"
+`;
+
+exports[`convertPreview update preview middleware config - multiple scripts same yaml configuration 2`] = `"{\\"scripts\\":{\\"start\\":\\"fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml\\",\\"start-local\\":\\"fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml\\",\\"start-mock\\":\\"fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.4\\"}}"`;
+
 exports[`convertPreview update preview middleware config - no tooling, no middleware 1`] = `
 "specVersion: '4.0'
 metadata:

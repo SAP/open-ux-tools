@@ -337,4 +337,24 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
+
+    test('update preview middleware config - multiple scripts same yaml configuration', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'start': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml',
+                'start-local': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml',
+                'start-mock': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml'
+            },
+            'devDependencies': {
+                '@sap/ux-ui5-tooling': '1.15.4'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+
+        expect(fs.read(join(variousConfigsPath, 'ui5-no-middleware.yaml'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+    });
 });

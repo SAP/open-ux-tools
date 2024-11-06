@@ -59,8 +59,11 @@ export async function updatePreviewMiddlewareConfigs(
     basePath: string,
     logger?: ToolsLogger
 ): Promise<void> {
-    const validatedUi5YamlFileNames = await getAllUi5YamlFileNames(fs, basePath);
-    const unprocessedUi5YamlFileNames = validatedUi5YamlFileNames.valid;
+    const { valid: validUi5YamlFileNames, invalid: invalidUi5YamlFileNames } = await getAllUi5YamlFileNames(
+        fs,
+        basePath
+    );
+    const unprocessedUi5YamlFileNames = [...validUi5YamlFileNames];
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     ensurePreviewMiddlewareDependency(packageJson, fs, packageJsonPath);
@@ -75,14 +78,14 @@ export async function updatePreviewMiddlewareConfigs(
         const configParameterValueMatch = / --config (\S*)| --c (\S*)/.exec(script);
         const ui5Yaml = basename(configParameterValueMatch?.[1] ?? configParameterValueMatch?.[2] ?? 'ui5.yaml');
 
-        if ((validatedUi5YamlFileNames.invalid ?? []).includes(ui5Yaml)) {
+        if ((invalidUi5YamlFileNames ?? []).includes(ui5Yaml)) {
             logger?.error(
                 `Skipping script ${scriptName} with UI5 yaml configuration file ${ui5Yaml} because it does not comply with the schema.`
             );
             continue;
         }
 
-        if (!validatedUi5YamlFileNames.valid.includes(ui5Yaml)) {
+        if (!validUi5YamlFileNames.includes(ui5Yaml)) {
             logger?.error(
                 `Skipping script ${scriptName} because UI5 yaml configuration file ${ui5Yaml} could not be found.`
             );
@@ -139,7 +142,12 @@ export function ensurePreviewMiddlewareDependency(
  * @param ui5Yaml - the name of the UI5 yaml configuration file
  * @param script - the content of the script
  */
-async function processUi5YamlConfig(fs: Editor, basePath: string, ui5Yaml: string, script: string): Promise<void> {
+export async function processUi5YamlConfig(
+    fs: Editor,
+    basePath: string,
+    ui5Yaml: string,
+    script: string
+): Promise<void> {
     const ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml, fs);
     let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
 
