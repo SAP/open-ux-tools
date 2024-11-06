@@ -1,5 +1,37 @@
 # @sap-ux/adp-tooling
 
+## 0.12.70
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+    -   @sap-ux/project-access@1.28.5
+    -   @sap-ux/axios-extension@1.16.7
+    -   @sap-ux/system-access@0.5.14
+
+## 0.12.69
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/project-access@1.28.4
+    -   @sap-ux/axios-extension@1.16.7
+    -   @sap-ux/system-access@0.5.14
+
+## 0.12.68
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.14
+-   @sap-ux/ui5-config@0.25.0
+
+## 0.12.67
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.10
+
 ## 0.12.66
 
 ### Patch Changes
