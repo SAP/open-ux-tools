@@ -70,6 +70,7 @@ export async function updatePreviewMiddlewareConfigs(
     for (const [scriptName, script] of Object.entries(packageJson?.scripts ?? {})) {
         if (
             scriptName === 'start-variants-management' ||
+            //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             !(script?.includes('ui5 serve') || script?.includes('fiori run'))
         ) {
             continue;
@@ -216,6 +217,7 @@ export function updatePreviewMiddlewareConfig(
         };
     }
 
+    //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     if (path || intent) {
         newMiddlewareConfig.configuration = configuration;
     }
