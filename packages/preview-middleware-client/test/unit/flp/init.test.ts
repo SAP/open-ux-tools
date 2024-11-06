@@ -13,6 +13,28 @@ import { fetchMock, sapMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
+import { CommunicationService } from '../../../src/cpe/communication-service';
+
+jest.mock('../../../src/i18n', () => {
+    return {
+        ...jest.requireActual('../../../src/i18n'),
+        getTextBundle: async () => {
+            return {
+                hasText: jest.fn().mockReturnValueOnce(true),
+                getText: jest.fn().mockReturnValueOnce('The application was reloaded because of changes in a higher layer.')
+            }
+        }
+    }
+});
+
+Object.defineProperty(window, 'location', {
+    value: {
+        ...window.location,
+        reload: jest.fn()
+    },
+    writable: true
+});
+
 
 describe('flp/init', () => {
     test('registerSAPFonts', () => {
@@ -226,7 +248,7 @@ describe('flp/init', () => {
             expect(mockService.attachAppLoaded).toBeCalled();
             const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
 
-            loadedCb({ getParameter: () => {} });
+            loadedCb({ getParameter: () => { } });
             expect(sapMock.ui.require).toBeCalledWith(
                 ['sap/ui/rta/api/startAdaptation', flexSettings.pluginScript],
                 expect.anything()
@@ -264,7 +286,7 @@ describe('flp/init', () => {
             expect(mockService.attachAppLoaded).toBeCalled();
             const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
 
-            loadedCb({ getParameter: () => {} });
+            loadedCb({ getParameter: () => { } });
             expect(sapMock.ui.require).toBeCalledWith(
                 ['open/ux/preview/client/flp/initRta', flexSettings.pluginScript],
                 expect.anything()
@@ -297,6 +319,50 @@ describe('flp/init', () => {
             await init({ customInit: customInit });
 
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
+        });
+
+        test('init handle higher layer changes', async () => {
+            const flexSettings = {
+                layer: 'VENDOR',
+                pluginScript: 'my/script'
+            };
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.84.50' });
+        
+            // Mocking `sap.ui.require` to throw the correct error structure
+            sapMock.ui.require.mockImplementationOnce((libs, callback) => {
+                callback(
+                    async () => { throw 'Reload triggered'; },
+                    {}
+                );
+            });
+        
+            const sendActionSpy = jest.spyOn(CommunicationService, 'sendAction').mockImplementation(() => {});
+            const reloadSpy = jest.spyOn(window.location, 'reload').mockImplementation(() => {});
+        
+            await init({ flex: JSON.stringify(flexSettings) });
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock.calls[0][0] as () => Promise<void>;
+        
+            const mockService = { attachAppLoaded: jest.fn() };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+        
+            await rendererCb();
+        
+            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => Promise<void>;
+            await loadedCb({ getParameter: () => {} });
+
+            setTimeout(() => {
+                expect(sendActionSpy).toHaveBeenCalled();
+                expect(sendActionSpy).toHaveBeenNthCalledWith(1, {
+                    type: '[ext] show-dialog-message',
+                    payload: {
+                        message:
+                            'The application was reloaded because of changes in a higher layer.',
+                        shouldHideIframe: false
+                    }
+                });
+            expect(reloadSpy).toHaveBeenCalled();
+            }, 5*1000);
+            
         });
     });
 });

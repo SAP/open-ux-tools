@@ -1,7 +1,7 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import { SCENARIO, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import { SCENARIO, showMessage, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
@@ -9,7 +9,9 @@ import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
 import initConnectors from './initConnectors';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
+import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { CommunicationService } from '../cpe/communication-service';
+import { getTextBundle } from '../i18n';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -304,7 +306,11 @@ export async function init({
                     libs,
                     // eslint-disable-next-line no-shadow
                     async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
-                        await startAdaptation(options, pluginScript);
+                        try {
+                            await startAdaptation(options, pluginScript);
+                        } catch (error) {
+                            await handleHigherLayerChanges(error, ui5VersionInfo);
+                        }
                     }
                 );
             });
@@ -350,4 +356,27 @@ if (bootstrapConfig) {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
     });
+}
+
+/**
+ * Handle higher layer changes when starting UI Adaptation.
+ * When RTA detects higher layer changes an error with Reload triggered text is thrown, the RTA instance is destroyed and the application is reloaded.
+ * For UI5 version lower then 1.84.0 RTA is showing a popup with notification text about the detection of higher layer changes.
+ *
+ * @param error the error thrown when there are higher layer changes when starting UI Adaptation.
+ * @param ui5VersionInfo ui5 version info
+ */
+export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: Ui5VersionInfo): Promise<void> {
+    const err = getError(error);
+    if (err.message.includes('Reload triggered')) {
+        if (ui5VersionInfo && ui5VersionInfo.minor >= 84 && ui5VersionInfo.major >= 1) {
+            const bundle = await getTextBundle();
+            const action  = showMessage({
+                message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
+                shouldHideIframe: false
+            })
+            CommunicationService.sendAction(action);
+        }
+        window.location.reload();
+    }
 }
