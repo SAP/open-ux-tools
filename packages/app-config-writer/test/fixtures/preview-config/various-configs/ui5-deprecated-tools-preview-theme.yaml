@@ -8,3 +8,4 @@ server:
       afterMiddleware: compression
       configuration:
         component: v2lrop0909
+        ui5Theme: sap_horizon

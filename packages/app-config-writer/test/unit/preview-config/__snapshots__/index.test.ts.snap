@@ -10,7 +10,27 @@ exports[`convertPreview ensure preview middleware dependency 1`] = `
 "
 `;
 
-exports[`convertPreview update preview middleware config - deprecated tools preview 1`] = `
+exports[`convertPreview update preview middleware config - deprecated tools preview w/o theme 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: test/flpSandbox.html
+          intent:
+            object: Chicken
+            action: dance
+"
+`;
+
+exports[`convertPreview update preview middleware config - deprecated tools preview w/o theme 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run --open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+
+exports[`convertPreview update preview middleware config - deprecated tools preview with theme 1`] = `
 "specVersion: \\"3.1\\"
 metadata:
   name: v2lrop0909
@@ -29,7 +49,7 @@ server:
 "
 `;
 
-exports[`convertPreview update preview middleware config - deprecated tools preview 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run -open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+exports[`convertPreview update preview middleware config - deprecated tools preview with theme 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run --open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
 
 exports[`convertPreview update preview middleware config - existing RTA script 1`] = `
 "specVersion: \\"3.1\\"
@@ -65,7 +85,6 @@ server:
       afterMiddleware: compression
       configuration:
         flp:
-          theme: sap_horizon
           path: test/flp.html
           intent:
             object: Chicken

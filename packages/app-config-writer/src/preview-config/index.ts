@@ -34,17 +34,40 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
 
     await renameSandboxes(fs, basePath);
     await deleteNoLongerUsedFiles(fs, basePath);
-
     await updatePreviewMiddlewareConfigs(fs, basePath, logger);
-
-    const packageJsonPath = join(basePath, 'package.json');
-    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
-    const yamlPath = join(basePath, packageJson?.scripts?.['start-variants-management'] ?? 'ui5.yaml');
-    await addVariantsManagementScript(fs, basePath, yamlPath, logger);
-    //todo: add yamlPath
-    await updateMiddlewares(fs, basePath, logger);
+    await updateVariantsCreationScript(fs, basePath, logger);
 
     return fs;
+}
+
+/**
+ * Update the variants creation script in package.json if needed.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used for the conversion
+ * @param logger logger to report info to the user
+ */
+async function updateVariantsCreationScript(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+    const packageJsonPath = join(basePath, 'package.json');
+    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
+    if (packageJson?.scripts?.['start-variants-management']) {
+        const ui5Yaml = basename(extractYamlConfigFileName(packageJson?.scripts?.['start-variants-management']));
+        const yamlPath = join(basePath, ui5Yaml);
+        await addVariantsManagementScript(fs, basePath, yamlPath, logger);
+        //todo: add yamlPath
+        await updateMiddlewares(fs, basePath, logger);
+    }
+}
+
+/**
+ * Extract the UI5 yaml configuration file name from the script.
+ *
+ * @param script - the content of the script from package.json
+ * @returns the UI5 yaml configuration file name or 'ui5.yaml' as default
+ */
+function extractYamlConfigFileName(script: string): string {
+    const configParameterValueMatch = / --config (\S*)| -c (\S*)/.exec(script);
+    return configParameterValueMatch?.[1] ?? configParameterValueMatch?.[2] ?? 'ui5.yaml';
 }
 
 /**
@@ -59,6 +82,7 @@ export async function updatePreviewMiddlewareConfigs(
     basePath: string,
     logger?: ToolsLogger
 ): Promise<void> {
+    //todo: yaml files could be located anywhere in the project
     const { valid: validUi5YamlFileNames, invalid: invalidUi5YamlFileNames } = await getAllUi5YamlFileNames(
         fs,
         basePath
@@ -76,8 +100,7 @@ export async function updatePreviewMiddlewareConfigs(
             continue;
         }
 
-        const configParameterValueMatch = / --config (\S*)| --c (\S*)/.exec(script);
-        const ui5Yaml = basename(configParameterValueMatch?.[1] ?? configParameterValueMatch?.[2] ?? 'ui5.yaml');
+        const ui5Yaml = basename(extractYamlConfigFileName(script));
 
         if ((invalidUi5YamlFileNames ?? []).includes(ui5Yaml)) {
             logger?.error(
@@ -174,8 +197,9 @@ function extractUrlDetails(script: string): {
     path: string | undefined;
     intent: FlpConfig['intent'] | undefined;
 } {
-    const openParameterValueMatch = / -open (\S*)| -o (\S*)/.exec(script);
-    const url = openParameterValueMatch?.[1] ?? openParameterValueMatch?.[2] ?? undefined;
+    const openParameterValueMatch = / --open (\S*)| -o (\S*)| --o (\S*)/.exec(script);
+    const url =
+        openParameterValueMatch?.[1] ?? openParameterValueMatch?.[2] ?? openParameterValueMatch?.[3] ?? undefined;
     const path = /^[^?#]+\.html/.exec(url ?? '')?.[0] ?? undefined;
     const intent = /(?<=#)\w+-\w+/.exec(url ?? '')?.[0] ?? undefined;
 
@@ -240,12 +264,12 @@ export function sanitizePreviewMiddleware(
         return previewMiddleware as CustomMiddleware<PreviewConfig>;
     }
     const ui5Theme = previewMiddleware.configuration.ui5Theme;
+    const configuration = {} as PreviewConfig;
     if (ui5Theme) {
-        const configuration = {} as PreviewConfig;
         configuration.flp = {};
         configuration.flp.theme = ui5Theme;
-        previewMiddleware.configuration = configuration;
     }
+    previewMiddleware.configuration = configuration;
     return previewMiddleware as CustomMiddleware<PreviewConfig>;
 }
 

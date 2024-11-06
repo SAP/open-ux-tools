@@ -12,6 +12,7 @@ import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { PreviewConfigOptions } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import * as previewConfig from '../../../src/preview-config';
 
 describe('check prerequisites', () => {
     const logger = new ToolsLogger();
@@ -182,6 +183,7 @@ describe('convertPreview', () => {
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-deprecated-tools-preview.yaml'));
+        //expect(warnLogMock).toHaveBeenCalledWith(text('ui5-deprecated-tools-preview-theme.yaml'));
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-existing-preview-middleware.yaml'));
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-existing-tools-preview.yaml'));
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-no-middleware.yaml'));
@@ -245,12 +247,31 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - deprecated tools preview', async () => {
+    test('update preview middleware config - deprecated tools preview with theme', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
                 'ui:mockserver':
-                    'fiori run -open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
+                    'fiori run --open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview-theme.yaml',
+                'start-variants-management': 'ui5 serve --o chicken.html'
+            },
+            'devDependencies': {
+                '@sap/ux-ui5-tooling': '1.15.1'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview-theme.yaml'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+    });
+
+    test('update preview middleware config - deprecated tools preview w/o theme', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'ui:mockserver':
+                    'fiori run --open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
                 'start-variants-management': 'ui5 serve --o chicken.html'
             },
             'devDependencies': {
