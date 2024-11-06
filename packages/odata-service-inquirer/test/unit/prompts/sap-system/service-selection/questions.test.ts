@@ -15,6 +15,7 @@ import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection';
 import { getSystemServiceQuestion } from '../../../../../src/prompts/datasources/sap-system/service-selection';
+import * as serviceHelpers from '../../../../../src/prompts/datasources/sap-system/service-selection/service-helper';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { hostEnvironment, promptNames } from '../../../../../src/types';
 import * as utils from '../../../../../src/utils';
@@ -52,23 +53,24 @@ let connectedUserNameMock: string | undefined;
 const catalogs = {
     [ODataVersion.v2]: {
         listServices: jest.fn().mockResolvedValue([])
-    } as Partial<V2CatalogService>,
+    } as Partial<V2CatalogService> | undefined,
     [ODataVersion.v4]: {
         listServices: jest.fn().mockResolvedValue([])
-    } as Partial<V4CatalogService>
+    } as Partial<V4CatalogService> | undefined
 };
 const serviceProviderMock = {} as Partial<ServiceProvider>;
+let odataServiceMock: Partial<ODataService> | undefined;
+let destinationUrlMock: string | undefined;
 
 const connectionValidatorMock = {
     validity: {} as ConnectionValidator['validity'],
     connectedUserName: connectedUserNameMock,
-    validatedUrl: '' /*
-    validateUrl: validateUrlMock,
-    validateAuth: validateAuthMock,
-    isAuthRequired: isAuthRequiredMock,*/,
+    validatedUrl: '',
+    destinationUrl: destinationUrlMock,
     serviceProvider: serviceProviderMock,
     catalogs,
-    systemAuthType: 'basic'
+    systemAuthType: 'basic',
+    odataService: odataServiceMock
 };
 
 jest.mock('../../../../../src/prompts/connectionValidator', () => {
@@ -483,6 +485,16 @@ describe('Test new system prompt', () => {
         expect(found).toEqual([flightChoice]);
         found = await ((serviceSelectionPrompt as AutocompleteQuestionOptions)?.source as Function)({}, 'not found');
         expect(found).toEqual([]);
+
+        // autocomplete passes the entire choice object to the validate function instead of the value (as in YUI)
+        // test to ensure this is handled correctly
+        const getServiceDetailsSpy = jest.spyOn(serviceHelpers, 'getServiceDetails').mockResolvedValue(true);
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
+        // change the choice service path otherwise the validate function not re-request the service details
+        flightChoice!.value.servicePath = '/a/different/service/path';
+        const validationResult = await (serviceSelectionPrompt?.validate as Function)(flightChoice);
+        expect(validationResult).toBe(true);
+        expect(getServiceDetailsSpy).toHaveBeenCalledWith(flightChoice?.value, connectionValidatorMock, undefined);
     });
 
     test('Should show and log error message when service validation fails', async () => {
@@ -560,5 +572,26 @@ describe('Test new system prompt', () => {
                 error: catRequestError
             })
         );
+    });
+
+    test('Should set a single odata service as the only choice when catalogs not available (BAS full/partial URL destinations)', async () => {
+        const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: undefined,
+            [ODataVersion.v4]: undefined
+        };
+        connectionValidatorMock.validatedUrl = 'http://someDest.dest';
+        connectionValidatorMock.destinationUrl = 'http://abap01:1234/path/to/odata/service';
+        // Having an odataService indicates that there will only be a single service available, and selected by default
+        connectionValidatorMock.odataService = {} as Partial<ODataService>;
+        const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
+
+        const serviceSelectionPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
+        );
+        const choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)();
+        expect(choices).toEqual([
+            { name: 'http://abap01:1234/path/to/odata/service', value: { servicePath: '/path/to/odata/service' } }
+        ]);
     });
 });

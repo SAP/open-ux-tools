@@ -78,7 +78,7 @@ function logServiceCatalogErrorsForHelp(
     // If all requests failed, log a generic message, this will be stored in the error handler
     if (numOfRequests === catalogRequesErrors.length) {
         errorHandler.logErrorMsgs(
-            t('errors.allCatalogRequestsFailed', { version: Object.keys(requestErrors).join(', ') })
+            t('errors.allCatalogServiceRequestsFailed', { version: Object.keys(requestErrors).join(', ') })
         );
     }
 }

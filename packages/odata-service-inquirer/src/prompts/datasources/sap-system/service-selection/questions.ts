@@ -106,7 +106,7 @@ export function getSystemServiceQuestion(
         ): Promise<string | boolean | ValidationLink> => {
             let serviceAnswer = service as ServiceAnswer;
             // Autocomplete passes the entire choice object as the answer, so we need to extract the value
-            if (promptOptions?.systemSelection?.useAutoComplete && (service as ListChoiceOptions).value) {
+            if (promptOptions?.serviceSelection?.useAutoComplete && (service as ListChoiceOptions).value) {
                 serviceAnswer = (service as ListChoiceOptions).value;
             }
 
@@ -120,7 +120,7 @@ export function getSystemServiceQuestion(
             // Dont re-request the same service details
             if (serviceAnswer && previousService?.servicePath !== serviceAnswer.servicePath) {
                 previousService = serviceAnswer;
-                return getServiceDetails(serviceAnswer, connectValidator, requiredOdataVersion);
+                return await getServiceDetails(serviceAnswer, connectValidator, requiredOdataVersion);
             }
             return true;
         }
