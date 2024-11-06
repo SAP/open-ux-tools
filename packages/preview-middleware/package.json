@@ -62,7 +62,7 @@
         "copyfiles": "2.4.1",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "express": "4.21.0",
+        "express": "4.21.1",
         "npm-run-all2": "6.2.0",
         "nock": "13.4.0",
         "supertest": "6.3.3",
