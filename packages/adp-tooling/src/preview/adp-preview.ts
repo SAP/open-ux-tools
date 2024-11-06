@@ -135,6 +135,7 @@ export class AdpPreview {
         const buffer = zip.toBuffer();
 
         this.mergedDescriptor = (await this.lrep.mergeAppDescriptorVariant(buffer, '//'))[this.descriptorVariantId];
+        global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
     }
 
     /**
@@ -146,7 +147,7 @@ export class AdpPreview {
      */
     async proxy(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.path === '/manifest.json') {
-            await this.sync();
+            await 
             res.status(200);
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {
