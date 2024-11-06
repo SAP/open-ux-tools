@@ -114,7 +114,10 @@ export const getReuseLibs = async (libs?: LibraryResults[]): Promise<ReuseLib[]>
         for (const lib of libs) {
             const excludeFolders = ['.git', 'node_modules', 'dist'];
             const manifestPaths = await findFiles('manifest.json', lib.projectRoot, excludeFolders);
-            const libraryPaths = await findFiles('library.js', lib.projectRoot, excludeFolders);
+            const libraryPaths = [
+                ...(await findFiles('library.js', lib.projectRoot, excludeFolders)),
+                ...(await findFiles('library.ts', lib.projectRoot, excludeFolders))
+            ];
 
             for (const manifestPath of manifestPaths) {
                 const manifestFilePath = join(manifestPath, FileName.Manifest);

@@ -18,6 +18,7 @@ import type { PromptContext, Prompts, PromptsGroup } from '../../../prompts/type
 import { BuildingBlockType } from '../../types';
 import type { BuildingBlockConfig, Table } from '../../types';
 import { getManifestPromptsGroup } from './building-blocks';
+import { SapShortTextType } from '@sap-ux/i18n';
 
 const MANIFEST_LIBRARIES_GROUP = getManifestPromptsGroup();
 
@@ -189,7 +190,10 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 message: t('header.message'),
                 guiOptions: {
                     groupId: groupIds.visualisationProperties,
-                    translatable: true
+                    translationProperties: {
+                        type: SapShortTextType.TableTitle,
+                        annotation: t('header.translationAnnotation')
+                    }
                 }
             },
             {

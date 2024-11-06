@@ -8,6 +8,7 @@ import type { QuestionsProps } from '../../../src';
 import { questions } from '../../mock-data/questions';
 import { getDependantQuestions } from '../../../src/utilities';
 import { acceptI18nCallout, clickI18nButton, isI18nLoading, translationInputSelectors } from '../utils';
+import { SapShortTextType } from '@sap-ux/i18n';
 
 describe('Questions', () => {
     initIcons();
@@ -284,13 +285,17 @@ describe('Questions', () => {
     });
 
     describe('Translation input', () => {
+        const translationAnnotation = {
+            type: SapShortTextType.GeneralText,
+            annotation: 'Dummy text'
+        };
         const question: PromptQuestion = {
             message: 'Translatable empty',
             name: 'testInput',
             type: 'input',
             default: 'dummy value',
             guiOptions: {
-                translatable: true
+                translationProperties: translationAnnotation
             }
         };
 
@@ -316,7 +321,8 @@ describe('Questions', () => {
             expect(onTranslateEvent).toBeCalledTimes(1);
             expect(onTranslateEvent).toBeCalledWith('testInput', {
                 entry: { key: { value: 'dummyValue' }, value: { value: 'dummy value' } },
-                name: TRANSLATE_EVENT_UPDATE
+                name: TRANSLATE_EVENT_UPDATE,
+                properties: translationAnnotation
             });
         });
 
