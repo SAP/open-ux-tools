@@ -12,6 +12,11 @@ import RoutesHandler from './routes-handler';
 import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
+declare global {
+    // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
+    // eslint-disable-next-line no-var
+    var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
+}
 
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
@@ -113,9 +118,12 @@ export class AdpPreview {
 
     /**
      * Synchronize local changes with the backend.
-     *
+     * The descriptor is refreshed only if the global flag is set to true.
      */
     async sync(): Promise<void> {
+        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__) {
+            return;
+        }
         if (!this.lrep || !this.descriptorVariantId) {
             throw new Error('Not initialized');
         }

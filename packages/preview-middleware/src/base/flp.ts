@@ -114,25 +114,19 @@ export class FlpSandbox {
      * @param manifest application manifest
      * @param componentId optional componentId e.g. for adaptation projects
      * @param resources optional additional resource mappings
-     * @param descriptor optional additional descriptor mappings
      * @param adp optional reference to the ADP tooling
      */
     async init(
         manifest: Manifest,
         componentId?: string,
         resources: Record<string, string> = {},
-        descriptor?: MergedAppDescriptor,
         adp?: AdpPreview
     ): Promise<void> {
         this.createFlexHandler();
         this.config.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
         this.templateConfig = createFlpTemplateConfig(this.config, manifest, resources);
-
-        if (adp) {
-            this.adp = adp;
-            this.descriptor = descriptor;
-        }
+        this.adp = adp;
 
         this.app = {
             componentId,
@@ -209,12 +203,9 @@ export class FlpSandbox {
      */
     private async setApplicationDependecies(): Promise<void> {
         if (this.adp) {
-            if (global.__SAP_UX_MANIFEST_SYNC_REQUIRED__) {
-                await this.adp.sync();
-                this.descriptor = this.adp.descriptor;
-            }
+            await this.adp.sync();
             const appName = `${this.app.intent?.object}-${this.app.intent?.action}`;
-            this.templateConfig.apps[appName].applicationDependencies = this.descriptor;
+            this.templateConfig.apps[appName].applicationDependencies = this.adp.descriptor;
         }
     }
 
@@ -587,7 +578,7 @@ export async function initAdp(
 
         const descriptor = adp.descriptor;
         const { name, manifest } = descriptor;
-        await flp.init(manifest, name, adp.resources, descriptor, adp);
+        await flp.init(manifest, name, adp.resources, adp);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
         flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         flp.router.use(json());
