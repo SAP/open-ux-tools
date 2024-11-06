@@ -29,7 +29,8 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     }
 
     if (!(await getExplicitApprovalToAdjustFiles())) {
-        throw Error('Approval not given');
+        logger?.error('Approval not given. Conversion aborted.');
+        return fs;
     }
 
     await renameSandboxes(fs, basePath);
@@ -398,5 +399,5 @@ async function getExplicitApprovalToAdjustFiles(): Promise<boolean> {
             'The converter will rename html files and delete js/ts files used for the existing preview and configure the usage of virtual files instead. Do you want to proceed with the conversion?'
     };
 
-    return (await prompt([question])) as boolean;
+    return (await prompt([question])).approval as boolean;
 }
