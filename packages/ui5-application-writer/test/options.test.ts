@@ -79,6 +79,27 @@ describe('UI5 templates', () => {
             }
         });
     });
+    it('option: `loadReuseLibs` UI5 1.120.0', async () => {
+        const projectDir = join(outputDir, 'testapp_loadReuseLibs_1.120.0');
+        const fs = await generate(projectDir, {
+            ...baseAppConfig,
+            appOptions: {
+                loadReuseLibs: true
+            },
+            ui5: {
+                version: '1.120.0'
+            }
+        });
+        expect(fs.dump(projectDir)).toMatchSnapshot();
+        return new Promise((resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
 
     it('generates options: `sapux` with specific version', async () => {
         const projectDir = join(outputDir, 'testapp_options');
