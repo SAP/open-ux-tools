@@ -1,5 +1,11 @@
 # @sap-ux/ui-prompting
 
+## 0.3.0
+
+### Minor Changes
+
+-   a52de73: Enhance the translation input to allow passing i18n annotation information.
+
 ## 0.2.13
 
 ### Patch Changes

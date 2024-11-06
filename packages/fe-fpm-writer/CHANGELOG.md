@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.31.15
+
+### Patch Changes
+
+-   a52de73: Update the "header" question in the Table building block prompt to include i18n annotation information for the translation entry.
+
 ## 0.31.14
 
 ### Patch Changes
