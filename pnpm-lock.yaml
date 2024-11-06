@@ -1378,6 +1378,9 @@ importers:
         specifier: 0.0.33
         version: 0.0.33
     devDependencies:
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sap-ux/ui-prompting':
         specifier: workspace:*
         version: link:../ui-prompting
@@ -2695,6 +2698,9 @@ importers:
       '@babel/preset-typescript':
         specifier: 7.22.15
         version: 7.22.15(@babel/core@7.22.20)
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
