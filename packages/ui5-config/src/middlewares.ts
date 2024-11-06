@@ -128,45 +128,23 @@ export function getFioriToolsProxyMiddlewareConfig(
 }
 
 export const getMockServerMiddlewareConfig = (
-    appRoot?: string,
-    existingServices: MockserverConfig['services'] = [],
-    existingAnnotations: MockserverConfig['annotations'] = [],
-    dataSourcesConfig?: { serviceName: string; servicePath: string }[],
-    annotationsConfig: MockserverConfig['annotations'] = []
+    dataSourcesConfig: { serviceName: string; servicePath: string }[],
+    annotationsConfig: MockserverConfig['annotations'],
+    appRoot?: string
 ): CustomMiddleware<MockserverConfig> => {
-    let services: MockserverConfig['services'] = [];
+    const services: MockserverConfig['services'] = [];
 
-    if (dataSourcesConfig) {
-        dataSourcesConfig.forEach((dataSource) => {
-            const serviceRoot = `${appRoot ?? './webapp'}/localService/${dataSource.serviceName}`;
+    // Populate services based on dataSourcesConfig
+    dataSourcesConfig.forEach((dataSource) => {
+        const serviceRoot = `${appRoot ?? './webapp'}/localService/${dataSource.serviceName}`;
 
-            const newServiceData = {
-                urlPath: dataSource.servicePath.replace(/\/$/, ''), // // Mockserver is sensitive to trailing '/'
-                metadataPath: `${serviceRoot}/metadata.xml`,
-                mockdataPath: `${serviceRoot}/data`,
-                generateMockData: true
-            };
-            const existingServiceIndex: number = existingServices.findIndex(
-                (existingService) =>
-                    (existingService.urlPath === newServiceData.urlPath &&
-                        existingService.metadataPath === newServiceData.metadataPath) ||
-                    existingService.urlPath === ''
-            );
-            if (existingServiceIndex > -1) {
-                existingServices[existingServiceIndex] = newServiceData;
-                services = existingServices;
-            } else {
-                services = [...existingServices, newServiceData];
-            }
-        });
-    }
-    // Handle service annotations by avoiding existing ones from middleware
-    annotationsConfig.forEach((annotationConfig) => {
-        if (
-            !existingAnnotations.find((existingAnnotation) => existingAnnotation.urlPath === annotationConfig.urlPath)
-        ) {
-            existingAnnotations.push(annotationConfig);
-        }
+        const newServiceData = {
+            urlPath: dataSource.servicePath.replace(/\/$/, ''), // // Mockserver is sensitive to trailing '/'
+            metadataPath: `${serviceRoot}/metadata.xml`,
+            mockdataPath: `${serviceRoot}/data`,
+            generateMockData: true
+        };
+        services.push(newServiceData);
     });
     return {
         name: 'sap-fe-mockserver',
@@ -174,7 +152,7 @@ export const getMockServerMiddlewareConfig = (
         configuration: {
             mountPath: '/',
             services,
-            annotations: existingAnnotations
+            annotations: annotationsConfig
         }
     };
 };

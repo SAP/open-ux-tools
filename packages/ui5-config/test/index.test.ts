@@ -287,27 +287,26 @@ describe('UI5Config', () => {
 
     describe('addMockServerMiddleware', () => {
         test('add without services and annotations', () => {
-            ui5Config.addMockServerMiddleware();
+            ui5Config.addMockServerMiddleware([], []);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add with services', () => {
-            ui5Config.addMockServerMiddleware(undefined, [
-                { serviceName: 'new-service', servicePath: '/path/to/service' }
-            ]);
+            ui5Config.addMockServerMiddleware([{ serviceName: 'new-service', servicePath: '/path/to/service' }], []);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add with services and appRoot', () => {
-            ui5Config.addMockServerMiddleware('./appRoot/webapp', [
-                { serviceName: 'new-service', servicePath: '/path/to/service' }
-            ]);
+            ui5Config.addMockServerMiddleware(
+                [{ serviceName: 'new-service', servicePath: '/path/to/service' }],
+                [],
+                './appRoot/webapp'
+            );
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add with services and annotations', () => {
             ui5Config.addMockServerMiddleware(
-                undefined,
                 [{ serviceName: 'new-service', servicePath: '/path/to/service' }],
                 annotationsConfig
             );
@@ -317,26 +316,26 @@ describe('UI5Config', () => {
 
     describe('addServiceToMockserverMiddleware', () => {
         test('add new service', () => {
-            ui5Config.addMockServerMiddleware();
+            ui5Config.addMockServerMiddleware([], []);
             ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service');
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add new service with appRoot', () => {
-            ui5Config.addMockServerMiddleware();
+            ui5Config.addMockServerMiddleware([], []);
             ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service', './appRoot');
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add service duplicate, should overwrite', () => {
-            ui5Config.addMockServerMiddleware();
+            ui5Config.addMockServerMiddleware([], []);
             ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service');
             ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service');
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add new service with annotationsConfig', () => {
-            ui5Config.addMockServerMiddleware();
+            ui5Config.addMockServerMiddleware([], []);
             ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service', undefined, annotationsConfig);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
@@ -345,9 +344,7 @@ describe('UI5Config', () => {
     describe('removeServiceFromMockServerMiddleware', () => {
         test('remove exisisting service', () => {
             // Create middleware with one service
-            ui5Config.addMockServerMiddleware(undefined, [
-                { serviceName: 'new-service', servicePath: '/path/to/service' }
-            ]);
+            ui5Config.addMockServerMiddleware([{ serviceName: 'new-service', servicePath: '/path/to/service' }], []);
             // Remove it
             ui5Config.removeServiceFromMockServerMiddleware('/path/to/service');
             expect(ui5Config.toString()).toMatchSnapshot();
@@ -355,7 +352,7 @@ describe('UI5Config', () => {
 
         test('remove unexisting service', () => {
             // Create middleware without any services
-            ui5Config.addMockServerMiddleware();
+            ui5Config.addMockServerMiddleware([], []);
             // Try to remove unexisting service
             ui5Config.removeServiceFromMockServerMiddleware('/path/to/service');
             expect(ui5Config.toString()).toMatchSnapshot();
