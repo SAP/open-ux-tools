@@ -121,7 +121,7 @@ export class AdpPreview {
      * The descriptor is refreshed only if the global flag is set to true.
      */
     async sync(): Promise<void> {
-        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__) {
+        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
             return;
         }
         if (!this.lrep || !this.descriptorVariantId) {
