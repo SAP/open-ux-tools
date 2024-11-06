@@ -391,7 +391,7 @@ export class ChangeService {
         let result: PendingChange;
         let value = '';
 
-        const change = command?.getPreparedChange && command.getPreparedChange();
+        const change = command?.getPreparedChange?.();
 
         const selectorId =
             typeof change?.getSelector === 'function'
