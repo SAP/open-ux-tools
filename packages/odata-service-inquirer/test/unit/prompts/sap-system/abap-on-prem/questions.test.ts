@@ -21,6 +21,7 @@ import { hostEnvironment, promptNames } from '../../../../../src/types';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import type { ChoiceOptions } from 'inquirer';
 import { type ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection/types';
+import exp from 'constants';
 
 const v2Metadata =
     '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
@@ -767,5 +768,13 @@ describe('questions', () => {
                 error: catRequestError
             })
         );
+    });
+
+    test.only('Should validate sap-client input', () => {
+        let newSystemQuestions = getAbapOnPremQuestions();
+        let sapClientPrompt = newSystemQuestions.find((question) => question.name === `sapClient`);
+        expect((sapClientPrompt?.validate as Function)('')).toBe(true);
+        expect((sapClientPrompt?.validate as Function)('123')).toBe(true);
+        expect((sapClientPrompt?.validate as Function)('123x')).toEqual(expect.any(String));
     });
 });

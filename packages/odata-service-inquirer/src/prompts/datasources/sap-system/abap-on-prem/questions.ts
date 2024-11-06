@@ -21,8 +21,8 @@ const systemUrlPromptName = `${abapOnPremPromptNamespace}:${newSystemPromptNames
 const usernamePromptName = `${abapOnPremPromptNamespace}:${BasicCredentialsPromptNames.systemUsername}` as const;
 const passwordPromptName = `${abapOnPremPromptNamespace}:${BasicCredentialsPromptNames.systemPassword}` as const;
 
-export enum abapOnPremPromptNames {
-    sapClient = 'sapClient'
+const abapOnPremPromptNames = {
+    sapClient: 'sapClient'
 }
 
 interface AbabpOnPremCredentialsAnswers {
