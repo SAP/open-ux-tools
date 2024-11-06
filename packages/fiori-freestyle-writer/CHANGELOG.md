@@ -1,5 +1,53 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.2.14
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+    -   @sap-ux/odata-service-writer@0.23.1
+    -   @sap-ux/ui5-application-writer@1.2.3
+    -   @sap-ux/fiori-generator-shared@0.7.4
+
+## 1.2.13
+
+### Patch Changes
+
+-   b2de757: Fix @ui5/linter errors in locate-reuse-lib.js
+-   Updated dependencies [b2de757]
+    -   @sap-ux/ui5-application-writer@1.2.2
+
+## 1.2.12
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/fiori-generator-shared@0.7.3
+    -   @sap-ux/odata-service-writer@0.23.0
+    -   @sap-ux/ui5-application-writer@1.2.1
+
+## 1.2.11
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.25.0
+-   @sap-ux/fiori-generator-shared@0.7.2
+
+## 1.2.10
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.1
+-   @sap-ux/odata-service-writer@0.23.0
+-   @sap-ux/ui5-application-writer@1.2.1
+
+## 1.2.9
+
+### Patch Changes
+
+-   88973de: TBI - UI5 FreeStyle template update best practice update for UI5 1.120.x
+
 ## 1.2.8
 
 ### Patch Changes

@@ -1,5 +1,114 @@
 # @sap-ux/create
 
+## 0.8.64
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.15
+    -   @sap-ux/abap-deploy-config-writer@0.0.55
+    -   @sap-ux/adp-tooling@0.12.70
+    -   @sap-ux/app-config-writer@0.4.48
+    -   @sap-ux/cards-editor-config-writer@0.4.6
+    -   @sap-ux/mockserver-config-writer@0.6.6
+    -   @sap-ux/project-access@1.28.5
+    -   @sap-ux/preview-middleware@0.16.104
+    -   @sap-ux/cap-config-writer@0.7.54
+    -   @sap-ux/system-access@0.5.14
+
+## 0.8.63
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/project-access@1.28.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.14
+    -   @sap-ux/cap-config-writer@0.7.53
+    -   @sap-ux/abap-deploy-config-writer@0.0.54
+    -   @sap-ux/adp-tooling@0.12.69
+    -   @sap-ux/app-config-writer@0.4.47
+    -   @sap-ux/cards-editor-config-writer@0.4.5
+    -   @sap-ux/mockserver-config-writer@0.6.5
+    -   @sap-ux/preview-middleware@0.16.103
+    -   @sap-ux/system-access@0.5.14
+
+## 0.8.62
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.0.13
+-   @sap-ux/adp-tooling@0.12.68
+-   @sap-ux/app-config-writer@0.4.46
+-   @sap-ux/preview-middleware@0.16.102
+-   @sap-ux/system-access@0.5.14
+-   @sap-ux/ui5-config@0.25.0
+-   @sap-ux/cap-config-writer@0.7.52
+-   @sap-ux/abap-deploy-config-writer@0.0.53
+
+## 0.8.61
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.10
+-   @sap-ux/preview-middleware@0.16.101
+-   @sap-ux/abap-deploy-config-inquirer@1.0.12
+-   @sap-ux/adp-tooling@0.12.67
+-   @sap-ux/cap-config-writer@0.7.51
+-   @sap-ux/app-config-writer@0.4.45
+
+## 0.8.60
+
+### Patch Changes
+
+-   Updated dependencies [d69070a]
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.11
+
+## 0.8.59
+
+### Patch Changes
+
+-   Updated dependencies [61cea6d]
+    -   @sap-ux/preview-middleware@0.16.100
+    -   @sap-ux/app-config-writer@0.4.45
+
+## 0.8.58
+
+### Patch Changes
+
+-   42f13eb: **Fix**: Resolved an issue where running `npm install` after executing a create command would fail on Windows. This fix ensures that the installation process completes successfully across all platforms.
+-   Updated dependencies [42f13eb]
+    -   @sap-ux/project-access@1.28.3
+    -   @sap-ux/abap-deploy-config-writer@0.0.52
+    -   @sap-ux/adp-tooling@0.12.66
+    -   @sap-ux/app-config-writer@0.4.45
+    -   @sap-ux/cap-config-writer@0.7.51
+    -   @sap-ux/cards-editor-config-writer@0.4.5
+    -   @sap-ux/mockserver-config-writer@0.6.5
+    -   @sap-ux/preview-middleware@0.16.99
+    -   @sap-ux/system-access@0.5.13
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.10
+
+## 0.8.57
+
+### Patch Changes
+
+-   Updated dependencies [df6fd7f]
+    -   @sap-ux/adp-tooling@0.12.65
+    -   @sap-ux/preview-middleware@0.16.98
+    -   @sap-ux/app-config-writer@0.4.44
+
+## 0.8.56
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.9
+-   @sap-ux/preview-middleware@0.16.97
+-   @sap-ux/abap-deploy-config-inquirer@1.0.9
+-   @sap-ux/adp-tooling@0.12.64
+-   @sap-ux/cap-config-writer@0.7.50
+-   @sap-ux/app-config-writer@0.4.44
+
 ## 0.8.55
 
 ### Patch Changes

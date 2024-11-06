@@ -1,5 +1,24 @@
 # @sap-ux/project-access
 
+## 1.28.5
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+
+## 1.28.4
+
+### Patch Changes
+
+-   5a68903: adds new reference library sub generator
+
+## 1.28.3
+
+### Patch Changes
+
+-   42f13eb: **Fix**: Resolved an issue where running `npm install` after executing a create command would fail on Windows. This fix ensures that the installation process completes successfully across all platforms.
+
 ## 1.28.2
 
 ### Patch Changes
