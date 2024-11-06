@@ -176,20 +176,15 @@ describe('convertPreview', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
+        const text = (filename: string) =>
+            `Skipping UI5 yaml configuration file ${filename} because it is not being used in any package.json script. Consider deleting this file as it seems to be not used.`;
+
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-        expect(warnLogMock).toHaveBeenCalledWith(
-            'Skipping UI5 yaml configuration file ui5-deprecated-tools-preview.yaml because it is not being used in any package.json script.'
-        );
-        expect(warnLogMock).toHaveBeenCalledWith(
-            'Skipping UI5 yaml configuration file ui5-existing-preview-middleware.yaml because it is not being used in any package.json script.'
-        );
-        expect(warnLogMock).toHaveBeenCalledWith(
-            'Skipping UI5 yaml configuration file ui5-existing-tools-preview.yaml because it is not being used in any package.json script.'
-        );
-        expect(warnLogMock).toHaveBeenCalledWith(
-            'Skipping UI5 yaml configuration file ui5-no-middleware.yaml because it is not being used in any package.json script.'
-        );
+        expect(warnLogMock).toHaveBeenCalledWith(text('ui5-deprecated-tools-preview.yaml'));
+        expect(warnLogMock).toHaveBeenCalledWith(text('ui5-existing-preview-middleware.yaml'));
+        expect(warnLogMock).toHaveBeenCalledWith(text('ui5-existing-tools-preview.yaml'));
+        expect(warnLogMock).toHaveBeenCalledWith(text('ui5-no-middleware.yaml'));
     });
 
     test('update preview middleware config - skip invalid yaml configurations', async () => {

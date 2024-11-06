@@ -96,7 +96,7 @@ export async function updatePreviewMiddlewareConfigs(
         //todo: adjust at least deprecated preview config in unused ui5 yaml configurations?
         //await processUi5YamlConfig(fs, basePath, ui5Yaml, ''); -> add parameter createMissingPreviewConfig
         logger?.warn(
-            `Skipping UI5 yaml configuration file ${ui5Yaml} because it is not being used in any package.json script.`
+            `Skipping UI5 yaml configuration file ${ui5Yaml} because it is not being used in any package.json script. Consider deleting this file as it seems to be not used.`
         );
     }
 }
