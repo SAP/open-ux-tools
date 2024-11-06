@@ -4,14 +4,15 @@ import { ActionHandler } from '../../../../src/cpe/types';
 import {
     changeProperty,
     deletePropertyChanges,
-    setApplicationRequiresReload,
+    setApplicationRequiresReload
 } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
-import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
+import JsControlTreeModifierMock from 'mock/sap/ui/core/util/reflection/JsControlTreeModifier';
 import Control from 'sap/ui/core/Control';
 import * as Utils from '../../../../src/utils/version';
+import ChangesWriteAPIMock from 'mock/sap/ui/fl/write/api/ChangesWriteAPI';
 
 describe('ChangeService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
@@ -31,9 +32,20 @@ describe('ChangeService', () => {
 
     beforeEach(() => {
         rtaMock.attachUndoRedoStackModified = jest.fn() as jest.Mock;
+        ChangesWriteAPIMock.getChangeHandler.mockReturnValue({
+            getChangeVisualizationInfo: jest.fn().mockImplementation((change) => {
+                return Promise.resolve({
+                    affectedControls: [`appComponent${change.getSelector().id}`]
+                });
+            })
+        });
         sendActionMock = jest.fn();
         subscribeMock = jest.fn<void, [ActionHandler]>();
         fetchMock.mockClear();
+    });
+
+    afterEach(() => {
+        ChangesWriteAPIMock.getChangeHandler.mockRestore();
     });
 
     function createCompositeCommand(subCommands: any): {
@@ -717,10 +729,10 @@ describe('ChangeService', () => {
     });
 
     test('get control ID from ChangeHandler API', async () => {
-        jest.spyOn(JsControlTreeModifier, 'getControlIdBySelector').mockImplementation((selector): string => {
+        JsControlTreeModifierMock.getControlIdBySelector.mockImplementation((selector): string => {
             return selector;
         });
-        jest.spyOn(JsControlTreeModifier, 'bySelector').mockReturnValue(mockControl);
+        JsControlTreeModifierMock.bySelector.mockReturnValue(mockControl);
         jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 120 });
         jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(false);
 
@@ -793,14 +805,11 @@ describe('ChangeService', () => {
     });
 
     test('get control ID from ChangeHandler API - SAPUI5 version below 1.109.x', async () => {
-        jest.spyOn(JsControlTreeModifier, 'getControlIdBySelector')
-            .mockImplementationOnce((selector): string => {
-                return selector;
-            })
-            .mockImplementationOnce((selector): string => {
-                return selector;
-            });
-        jest.spyOn(JsControlTreeModifier, 'bySelector').mockReturnValueOnce(mockControl);
+        JsControlTreeModifierMock.getControlIdBySelector.mockImplementation((selector): string => {
+            return selector;
+        });
+
+        JsControlTreeModifierMock.bySelector.mockReturnValueOnce(mockControl);
         jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
         jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(true);
 
@@ -874,20 +883,84 @@ describe('ChangeService', () => {
         expect(sendActionMock).toHaveBeenNthCalledWith(2, expectedResult);
     });
 
-    test('get control ID from ChangeHandler API - no getChangeVisualizationInfo available', async () => {
-        jest.spyOn(JsControlTreeModifier, 'getControlIdBySelector')
-            .mockImplementationOnce((selector): string => {
-                return selector.id;
-            })
-            .mockImplementationOnce((selector): string => {
-                return selector.id;
-            });
-        jest.spyOn(JsControlTreeModifier, 'bySelector').mockReturnValue(mockControl);
-        jest.doMock('sap/ui/fl/write/api/ChangesWriteAPI', () => {
-            return {
-                getChangeHandler: jest.fn().mockReturnValue({})
-            };
+    test('get control ID from ChangeHandler API - SAPUI5 version below 1.96.x (no getChangeHandler)', async () => {
+        JsControlTreeModifierMock.getControlIdBySelector.mockImplementation((selector): string => {
+            return selector.id;
         });
+
+        JsControlTreeModifierMock.bySelector.mockReturnValueOnce(mockControl);
+        ChangesWriteAPIMock.getChangeHandler.mockRejectedValue(new Error('Failed'));
+        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
+        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(true);
+
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        function createCommand(): {
+            getElement: () => any;
+            getPreparedChange: () => any;
+        } {
+            return {
+                getElement: jest.fn().mockReturnValue({
+                    getMetadata: jest
+                        .fn()
+                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
+                    getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
+                }),
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getSelector: jest.fn().mockReturnValue({
+                        id: '_ST_SmartVariantManagement'
+                    }),
+                    getChangeType: jest.fn().mockReturnValue('page'),
+                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
+                    getDefinition: jest.fn().mockReturnValue({
+                        changeType: 'page',
+                        fileName: 'testFileName'
+                    })
+                })
+            };
+        }
+        const subCommands = [createCommand()];
+        const compositeCommand = [createCompositeCommand(subCommands)];
+
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(compositeCommand),
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
+        });
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        await service.init(sendActionMock, subscribeMock);
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+
+        const expectedResult = {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: [
+                    {
+                        changeType: 'page',
+                        controlId: '_ST_SmartVariantManagement',
+                        isActive: true,
+                        type: 'pending',
+                        fileName: 'testFileName',
+                        kind: 'control'
+                    }
+                ]
+            }
+        };
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, expectedResult);
+    });
+
+    test('get control ID from ChangeHandler API - no getChangeVisualizationInfo available', async () => {
+        JsControlTreeModifierMock.getControlIdBySelector.mockImplementation((selector): string => {
+            return selector.id;
+        });
+        JsControlTreeModifierMock.bySelector.mockReturnValue(mockControl);
+        ChangesWriteAPIMock.getChangeHandler = jest.fn().mockReturnValue({});
         jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 120 });
         jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(false);
 
@@ -961,8 +1034,12 @@ describe('ChangeService', () => {
     });
 
     test('undo/redo stack changed', async () => {
-        jest.unmock('sap/ui/fl/write/api/ChangesWriteAPI');
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        JsControlTreeModifierMock.bySelector.mockReturnValue(mockControl);
+        JsControlTreeModifierMock.getControlIdBySelector.mockImplementation((selector): string => {
+            return selector;
+        });
+
         function createCommand(
             properties: Map<string, any>,
             toggle = false
