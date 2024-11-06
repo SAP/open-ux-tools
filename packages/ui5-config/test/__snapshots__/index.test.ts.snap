@@ -505,7 +505,7 @@ exports[`UI5Config addServiceToMockserverMiddleware add new service with appRoot
 "
 `;
 
-exports[`UI5Config addServiceToMockserverMiddleware add service duplicate, should overwrite 1`] = `
+exports[`UI5Config addServiceToMockserverMiddleware try to add service duplicate 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver

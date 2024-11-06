@@ -327,7 +327,7 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('add service duplicate, should overwrite', () => {
+        test('try to add service duplicate', () => {
             ui5Config.addMockServerMiddleware([], []);
             ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service');
             ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service');

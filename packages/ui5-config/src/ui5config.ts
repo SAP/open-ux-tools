@@ -442,11 +442,9 @@ export class UI5Config {
                     generateMockData: true
                 };
                 const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
-                    (existingService) => existingService.urlPath === servicePath || existingService.urlPath === ''
+                    (existingService) => existingService.urlPath === servicePath
                 );
-                if (serviceIndex > -1) {
-                    mockserverMiddlewareConfig.services[serviceIndex] = newServiceData;
-                } else {
+                if (serviceIndex === -1) {
                     mockserverMiddlewareConfig.services = [...mockserverMiddlewareConfig.services, newServiceData];
                 }
             }
