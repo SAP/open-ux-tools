@@ -179,7 +179,11 @@
                 }
             },
             "headerVisible": "Display Header",
-            "header": { "message": "Table Header Text", "validation": "Enter a Table Header Text" },
+            "header": {
+                "message": "Table Header Text",
+                "validation": "Enter a Table Header Text",
+                "translationAnnotation": "Header of the table"
+            },
             "personalization": {
                 "message": "Table Personalization",
                 "choices": {
