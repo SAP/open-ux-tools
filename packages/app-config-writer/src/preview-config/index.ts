@@ -115,7 +115,7 @@ export async function updatePreviewMiddlewareConfigs(
 
         if (!validUi5YamlFileNames.includes(ui5Yaml)) {
             logger?.error(
-                `Skipping script ${scriptName} because UI5 yaml configuration file ${ui5Yaml} could not be found.`
+                `Skipping script ${scriptName} because UI5 yaml configuration file ${ui5Yaml} could not be found or is invalid.`
             );
             continue;
         }
