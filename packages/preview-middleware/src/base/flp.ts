@@ -23,7 +23,7 @@ import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import type { Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig, App } from '../types';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -32,6 +32,11 @@ import {
     createTestTemplateConfig,
     addApp
 } from './config';
+declare global {
+    // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
+    // eslint-disable-next-line no-var
+    var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
+}
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -63,6 +68,9 @@ type OnChangeRequestHandler = (
  * Class handling preview of a sandbox FLP.
  */
 export class FlpSandbox {
+    private adp?: AdpPreview;
+    private app: App;
+    private descriptor?: MergedAppDescriptor;
     protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
@@ -107,30 +115,36 @@ export class FlpSandbox {
      * @param componentId optional componentId e.g. for adaptation projects
      * @param resources optional additional resource mappings
      * @param descriptor optional additional descriptor mappings
+     * @param adp optional reference to the ADP tooling
      */
     async init(
         manifest: Manifest,
         componentId?: string,
         resources: Record<string, string> = {},
-        descriptor?: MergedAppDescriptor
+        descriptor?: MergedAppDescriptor,
+        adp?: AdpPreview
     ): Promise<void> {
         this.createFlexHandler();
         this.config.libs ??= await this.hasLocateReuseLibsScript();
-        const id = manifest['sap.app'].id;
+        const id = manifest['sap.app']?.id ?? '';
         this.templateConfig = createFlpTemplateConfig(this.config, manifest, resources);
 
-        await addApp(
-            this.templateConfig,
-            manifest,
-            {
-                componentId,
-                target: resources[componentId ?? id] ?? this.templateConfig.basePath,
-                local: '.',
-                intent: this.config.intent
-            },
-            this.logger,
-            descriptor
-        );
+        if (adp) {
+            this.adp = adp;
+            this.descriptor = descriptor;
+        }
+
+        this.app = {
+            componentId,
+            target: resources[componentId ?? id] ?? this.templateConfig.basePath,
+            local: '.',
+            intent: this.config.intent ?? {
+                object: id.replace(/\./g, ''),
+                action: 'preview'
+            }
+        };
+
+        await addApp(this.templateConfig, manifest, this.app, this.logger);
         this.addStandardRoutes();
         if (this.rta) {
             this.rta.options ??= {};
@@ -158,10 +172,12 @@ export class FlpSandbox {
      * @param editor editor configuration
      * @returns FLP sandbox html
      */
-    private generateSandboxForEditor(rta: RtaConfig, editor: Editor): string {
+    private async generateSandboxForEditor(rta: RtaConfig, editor: Editor): Promise<string> {
         const defaultGenerator = editor.developerMode
             ? '@sap-ux/control-property-editor'
             : '@sap-ux/preview-middleware';
+
+        await this.setApplicationDependecies();
         const config = { ...this.templateConfig };
         /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
         if (!config.ui5.libs.includes('sap.ui.rta')) {
@@ -183,6 +199,23 @@ export class FlpSandbox {
         }
         const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
         return render(template, config);
+    }
+
+    /**
+     * Sets application dependencies in the template configuration.
+     * The descriptor is refreshed if the global flag is set.
+     *
+     * @returns Promise that resolves when the application dependencies are set
+     */
+    private async setApplicationDependecies(): Promise<void> {
+        if (this.adp) {
+            if (global.__SAP_UX_MANIFEST_SYNC_REQUIRED__) {
+                await this.adp.sync();
+                this.descriptor = this.adp.descriptor;
+            }
+            const appName = `${this.app.intent?.object}-${this.app.intent?.action}`;
+            this.templateConfig.apps[appName].applicationDependencies = this.descriptor;
+        }
     }
 
     /**
@@ -227,7 +260,7 @@ export class FlpSandbox {
                 this.router.use(`${path}editor`, serveStatic(cpe));
             }
 
-            this.router.get(previewUrl, (req: Request, res: Response) => {
+            this.router.get(previewUrl, async (req: Request, res: Response) => {
                 if (!req.query['fiori-tools-rta-mode']) {
                     // Redirect to the same URL but add the necessary parameter
                     const params = JSON.parse(JSON.stringify(req.query));
@@ -237,7 +270,7 @@ export class FlpSandbox {
                     res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
                     return;
                 }
-                const html = this.generateSandboxForEditor(rta, editor).replace(
+                const html = (await this.generateSandboxForEditor(rta, editor)).replace(
                     '</body>',
                     `</body>\n<!-- livereload disabled for editor </body>-->`
                 );
@@ -554,7 +587,7 @@ export async function initAdp(
 
         const descriptor = adp.descriptor;
         const { name, manifest } = descriptor;
-        await flp.init(manifest, name, adp.resources, descriptor);
+        await flp.init(manifest, name, adp.resources, descriptor, adp);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
         flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         flp.router.use(json());

@@ -206,21 +206,9 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
  * @param manifest manifest of the additional target app
  * @param app configuration for the preview
  * @param logger logger instance
- * @param descriptor descriptor of the additional target app
  */
-export async function addApp(
-    templateConfig: TemplateConfig,
-    manifest: Partial<Manifest>,
-    app: App,
-    logger: Logger,
-    descriptor?: MergedAppDescriptor
-) {
+export async function addApp(templateConfig: TemplateConfig, manifest: Partial<Manifest>, app: App, logger: Logger) {
     const id = manifest['sap.app']?.id ?? '';
-
-    app.intent ??= {
-        object: id.replace(/\./g, ''),
-        action: 'preview'
-    };
 
     const appName = `${app.intent?.object}-${app.intent?.action}`;
     templateConfig.ui5.resources[id] = app.target;
@@ -231,9 +219,6 @@ export async function addApp(
         applicationType: 'URL',
         url: app.target
     };
-    if (descriptor) {
-        templateConfig.apps[appName].applicationDependencies = descriptor;
-    }
 }
 
 /**

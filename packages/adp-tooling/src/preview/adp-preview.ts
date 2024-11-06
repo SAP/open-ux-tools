@@ -13,12 +13,6 @@ import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, Opera
 import type { Editor } from 'mem-fs-editor';
 import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
 
-declare global {
-    // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
-    // eslint-disable-next-line no-var
-    var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
-}
-
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
@@ -144,10 +138,6 @@ export class AdpPreview {
      */
     async proxy(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.path === '/manifest.json') {
-            if (global.__SAP_UX_MANIFEST_SYNC_REQUIRED__) {
-                await this.sync();
-                global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
-            }
             res.status(200);
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {
