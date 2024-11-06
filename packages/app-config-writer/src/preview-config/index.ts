@@ -117,6 +117,9 @@ export async function updatePreviewMiddlewareConfigs(
         }
 
         await processUi5YamlConfig(fs, basePath, ui5Yaml, script);
+
+        logger?.info(`UI5 yaml configuration file ${ui5Yaml} updated according to script ${scriptName}.`);
+
         unprocessedUi5YamlFileNames.splice(unprocessedUi5YamlFileNames.indexOf(ui5Yaml), 1);
     }
     for (const ui5Yaml of unprocessedUi5YamlFileNames) {
@@ -388,7 +391,7 @@ async function getExplicitApprovalToAdjustFiles(): Promise<boolean> {
         type: 'confirm',
         initial: false,
         message:
-            'The converter will rename html files and delete js files used for the existing preview and configure the usage of virtual files instead. Do you want to proceed with the conversion?'
+            'The converter will rename html files and delete js/ts files used for the existing preview and configure the usage of virtual files instead. Do you want to proceed with the conversion?'
     };
 
     return (await prompt([question])) as boolean;

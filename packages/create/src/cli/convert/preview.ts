@@ -26,15 +26,17 @@ export function addConvertPreviewCommand(cmd: Command): void {
  */
 async function convertPreview(basePath: string, simulate: boolean): Promise<void> {
     const logger = getLogger();
-    try {
-        if (!basePath) {
-            basePath = process.cwd();
-        }
 
+    if (!basePath) {
+        basePath = process.cwd();
+    }
+
+    logger.debug(`Called convert preview for path '${basePath}', simulate is '${simulate}'`);
+    try {
         const fs = await convertToVirtualPreview(basePath, logger);
 
         if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
+            fs.commit(() => logger.info(`Changes for preview conversion written.`));
         } else {
             await traceChanges(fs);
         }
