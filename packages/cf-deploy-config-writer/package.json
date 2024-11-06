@@ -1,0 +1,62 @@
+{
+  "name": "@sap-ux/cf-deploy-config-writer",
+  "description": "Add or amend Cloud Foundry and ABAP deployment configuration for SAP projects",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP/open-ux-tools.git",
+    "directory": "packages/cf-deploy-config-writer"
+  },
+  "bugs": {
+    "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Acf-deploy-config-writer"
+  },
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "author": "@SAP/ux-tools-team",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf dist coverage *.tsbuildinfo",
+    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "test": "jest --ci --forceExit --detectOpenHandles --colors",
+    "watch": "tsc --watch"
+  },
+  "files": [
+    "LICENSE",
+    "dist",
+    "templates",
+    "!dist/*.map",
+    "!dist/**/*.map"
+  ],
+  "dependencies": {
+    "@sap-ux/project-access": "workspace:*",
+    "@sap-ux/yaml": "workspace:*",
+    "@sap-ux/btp-utils": "workspace:*",
+    "@sap-ux/logger": "workspace:*",
+    "@sap-ux/ui5-config": "workspace:*",
+    "@sap/mta-lib": "1.7.4",
+    "@sap/cf-tools": "3.2.0",
+    "semver": "7.5.4",
+    "ejs": "3.1.10",
+    "i18next": "21.10.0",
+    "mem-fs": "2.1.0",
+    "mem-fs-editor": "9.4.0",
+    "hasbin": "1.2.3"
+  },
+  "devDependencies": {
+    "@types/ejs": "3.1.2",
+    "@types/mem-fs": "1.1.2",
+    "@types/mem-fs-editor": "7.0.1",
+    "@types/hasbin": "1.2.2",
+    "@types/fs-extra": "9.0.13",
+    "@types/js-yaml": "4.0.9",
+    "@types/semver": "7.5.2",
+    "memfs": "3.4.13",
+    "js-yaml": "3.14.0",
+    "fs-extra": "10.0.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
