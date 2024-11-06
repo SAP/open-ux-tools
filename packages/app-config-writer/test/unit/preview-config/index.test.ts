@@ -12,7 +12,6 @@ import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { PreviewConfigOptions } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
-import * as previewConfig from '../../../src/preview-config';
 
 describe('check prerequisites', () => {
     const logger = new ToolsLogger();
