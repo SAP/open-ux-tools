@@ -60,6 +60,17 @@ describe('FE V2 quick actions', () => {
     });
 
     describe('ListReport', () => {
+        beforeEach(() => {
+            jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature: string) => {
+                if (feature === 'cpe.beta.quick-actions') {
+                    return true;
+                }
+                return false;
+            });
+        });
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
         describe('clear filter bar button', () => {
             test('initialize and execute action', async () => {
                 const appComponent = new AppComponentMock();
@@ -289,15 +300,6 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('change table columns', () => {
-            beforeEach(() => {
-                jest.spyOn(FeatureService, 'isFeatureEnabled').mockImplementation((feature: string) => {
-                    if (feature === 'cpe.beta.quick-actions') {
-                        return true;
-                    }
-                    return false;
-                });
-                FeatureService.isFeatureEnabled;
-            });
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
