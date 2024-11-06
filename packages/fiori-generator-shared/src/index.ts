@@ -1,4 +1,5 @@
 export * from './cap';
+export * from './constants';
 export * from './environment';
 export * from './logWrapper';
 export * from './system-utils';

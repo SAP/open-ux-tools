@@ -1,5 +1,18 @@
 # @sap-ux/ui5-application-writer
 
+## 1.2.3
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+
+## 1.2.2
+
+### Patch Changes
+
+-   b2de757: Fix @ui5/linter errors in locate-reuse-lib.js
+
 ## 1.2.1
 
 ### Patch Changes

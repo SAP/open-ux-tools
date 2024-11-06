@@ -6,7 +6,7 @@ import {
     subscribeOnChoicesUpdate,
     unsubscribeOnChoicesUpdate
 } from './communication';
-import type { DynamicChoices, PromptQuestion } from '@sap-ux/ui-prompting';
+import type { DynamicChoices, PromptQuestion, TranslationProperties } from '@sap-ux/ui-prompting';
 import type { PromptsType } from './types';
 import type { PromptsGroup } from '@sap-ux/ui-prompting';
 import type { Answers } from 'inquirer';
@@ -105,14 +105,18 @@ function removePendingQuestions(pendingQuestions: string[], question: string): s
  *
  * @returns I18n bundle with creation function.
  */
-export function useI18nBundle(): [I18nBundle, (question: string, entry: TranslationEntry) => void, string[]] {
+export function useI18nBundle(): [
+    I18nBundle,
+    (question: string, entry: TranslationEntry, properties?: TranslationProperties) => void,
+    string[]
+] {
     const [i18nBundle, setI18nBundle] = useState({});
     const [pendingQuestions, setPendingQuestions] = useState<string[]>([]);
-    const updateBundle = (question: string, entry: TranslationEntry) => {
+    const updateBundle = (question: string, entry: TranslationEntry, properties?: TranslationProperties) => {
         // Update pending creations
         pendingQuestions.push(question);
         setPendingQuestions([...pendingQuestions]);
-        createI18n(entry.key.value, entry.value.value)
+        createI18n(entry.key.value, entry.value.value, properties)
             .then((bundle: I18nBundle) => {
                 setI18nBundle(bundle);
                 const newPendingQuestions = removePendingQuestions(pendingQuestions, question);
