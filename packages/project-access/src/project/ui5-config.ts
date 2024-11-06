@@ -10,6 +10,7 @@ import Ajv, { type Schema } from 'ajv';
 type ValidatedUi5ConfigFileNames = {
     valid: string[];
     invalid?: string[];
+    skipped?: string[];
 };
 
 /**
@@ -102,6 +103,7 @@ export async function getAllUi5YamlFileNames(
 
 /**
  * Validates the schema of the given yaml files.
+ * Multi-document sources are currently not supported and will be skipped.
  *
  * @param memFs - mem-fs editor instance
  * @param yamlFileNames - list of yaml file names to be validated
@@ -114,22 +116,31 @@ export async function validateUi5ConfigSchema(
     yamlFileNames: Set<string>,
     projectRoot: string
 ): Promise<ValidatedUi5ConfigFileNames> {
-    const invalidFileNames: string[] = [];
-    const schema: Schema = JSON.parse(memFs.read(join(__dirname, '..', '..', 'dist', 'schema', 'ui5.yaml.json')));
+    const invalid: string[] = [];
+    const skipped: string[] = [];
+    const schema = JSON.parse(memFs.read(join(__dirname, '..', '..', 'dist', 'schema', 'ui5.yaml.json'))) as Schema;
     if (!schema) {
         throw Error('Schema not found. No validation possible.');
     }
     const ajv = new Ajv({ strict: false });
     const validate = ajv.compile(schema);
-    yamlFileNames.forEach((fileName) => {
-        const document = yaml.load(memFs.read(join(projectRoot, fileName)), { filename: fileName });
+    for (const fileName of yamlFileNames) {
+        let document: unknown;
+        try {
+            document = yaml.load(memFs.read(join(projectRoot, fileName)), { filename: fileName });
+        } catch (error) {
+            skipped.push(fileName);
+            yamlFileNames.delete(fileName);
+            continue;
+        }
         if (!validate(document)) {
             yamlFileNames.delete(fileName);
-            invalidFileNames.push(fileName);
+            invalid.push(fileName);
         }
-    });
+    }
     return {
         valid: Array.from(yamlFileNames),
-        invalid: invalidFileNames
+        invalid,
+        skipped
     };
 }

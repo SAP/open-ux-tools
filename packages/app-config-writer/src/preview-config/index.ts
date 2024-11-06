@@ -83,10 +83,14 @@ export async function updatePreviewMiddlewareConfigs(
     logger?: ToolsLogger
 ): Promise<void> {
     //todo: yaml files could be located anywhere in the project
-    const { valid: validUi5YamlFileNames, invalid: invalidUi5YamlFileNames } = await getAllUi5YamlFileNames(
-        fs,
-        basePath
-    );
+    const {
+        valid: validUi5YamlFileNames,
+        invalid: invalidUi5YamlFileNames,
+        skipped: skippedUi5YamlFileNames
+    } = await getAllUi5YamlFileNames(fs, basePath);
+    skippedUi5YamlFileNames?.forEach((fileName) => {
+        logger?.warn(`Schema validation not possible for file ${fileName}. File ${fileName} will not be converted.`);
+    });
     const unprocessedUi5YamlFileNames = [...validUi5YamlFileNames];
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;

@@ -14,6 +14,7 @@ describe('Test getAllUi5YamlFileNames()', () => {
               "invalid": Array [
                 "ui5.yaml",
               ],
+              "skipped": Array [],
               "valid": Array [],
             }
         `);
@@ -40,6 +41,9 @@ describe('Test getAllUi5YamlFileNames()', () => {
               "invalid": Array [
                 "ui5.yaml",
               ],
+              "skipped": Array [
+                "ui5-custom-multi.yaml",
+              ],
               "valid": Array [
                 "ui5-custom.yaml",
               ],
@@ -59,6 +63,9 @@ describe('Test getAllUi5YamlFileNames()', () => {
               "invalid": Array [
                 "ui5.yaml",
                 "ui5-something.yaml",
+              ],
+              "skipped": Array [
+                "ui5-custom-multi.yaml",
               ],
               "valid": Array [
                 "ui5-custom.yaml",
@@ -88,6 +95,9 @@ describe('Test getAllUi5YamlFileNames()', () => {
             Object {
               "invalid": Array [
                 "ui5.yaml",
+              ],
+              "skipped": Array [
+                "ui5-custom-multi.yaml",
               ],
               "valid": Array [
                 "ui5-something.yaml",
