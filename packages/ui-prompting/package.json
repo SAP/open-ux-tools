@@ -46,6 +46,7 @@
         "@babel/preset-env": "7.22.20",
         "@babel/preset-react": "7.22.15",
         "@babel/preset-typescript": "7.22.15",
+        "@sap-ux/i18n": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@storybook/addons": "7.6.17",
         "@storybook/components": "8.1.11",

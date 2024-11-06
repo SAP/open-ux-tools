@@ -1,14 +1,19 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import { TranslationInput } from '../../../src/components';
-import type { InputProps } from '../../../src/components';
+import type { TranslationInputProps } from '../../../src/components';
 import { TranslationProvider } from '../../../src/context/TranslationContext';
 import type { TranslationProviderProps } from '../../../src/context/TranslationContext';
 import { acceptI18nCallout, clickI18nButton, isI18nLoading } from '../utils';
 import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE } from '../../../src/types';
+import { SapShortTextType } from '@sap-ux/i18n';
 
 const id = 'test';
-const props: InputProps = {
+const annotationProps = {
+    type: SapShortTextType.GeneralText,
+    annotation: 'Dummy text'
+};
+const props: TranslationInputProps = {
     id,
     value: 'dummy',
     name: 'testInput',
@@ -18,7 +23,8 @@ const props: InputProps = {
         hint: '',
         placeholder: undefined
     },
-    errorMessage: undefined
+    errorMessage: undefined,
+    properties: annotationProps
 };
 
 describe('TranslationProvider', () => {
@@ -47,7 +53,8 @@ describe('TranslationProvider', () => {
         expect(translationProps.onEvent).toBeCalledTimes(1);
         expect(translationProps.onEvent).toBeCalledWith('testInput', {
             entry: { key: { value: 'dummyValue' }, value: { value: 'dummy value' } },
-            name: TRANSLATE_EVENT_UPDATE
+            name: TRANSLATE_EVENT_UPDATE,
+            properties: annotationProps
         });
     });
 
