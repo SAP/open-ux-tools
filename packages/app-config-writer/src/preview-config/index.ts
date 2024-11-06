@@ -340,8 +340,6 @@ export async function checkPrerequisites(basePath: string, fs: Editor, logger?: 
         prerequisitesMet = false;
     }
 
-    //todo: check for more than one preview middleware in ui5 configuration yaml and report error?
-
     return prerequisitesMet;
 }
 
