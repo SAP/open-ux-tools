@@ -22,7 +22,7 @@ import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig, App } from '../types';
+import type { Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -65,7 +65,6 @@ type OnChangeRequestHandler = (
 export class FlpSandbox {
     private adp?: AdpPreview;
     private manifest: Manifest;
-    private app: App;
     protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;

@@ -11,6 +11,7 @@ import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { AdpPreview } from '../../../src/preview/adp-preview';
 import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
 import { addXmlFragment, tryFixChange } from '../../../src/preview/change-handler';
+import exp from 'constants';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -120,7 +121,7 @@ describe('AdaptationProject', () => {
         }
     };
 
-    beforeAll(() => {
+    beforeEach(() => {
         nock(backend)
             .get((path) => path.startsWith('/sap/bc/lrep/actions/getcsrftoken/'))
             .reply(200)
@@ -181,6 +182,69 @@ describe('AdaptationProject', () => {
     });
     describe('sync', () => {
         test('updates merged descriptor', async () => {
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getPath: () => '/manifest.appdescr_variant',
+                    getBuffer: () => Buffer.from(descriptorVariant)
+                }
+            ]);
+            await adp.init(JSON.parse(descriptorVariant));
+            (adp as any).mergedDescriptor = undefined;
+            await adp.sync();
+            expect(adp.descriptor).toBeDefined();
+        });
+
+        test('skip updating the merge descriptor if no manifest changes', async () => {
+            nock(backend).put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//').reply(200, {
+                'my.adaptation': mockMergedDescriptor
+            });
+            nock(backend).put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//').reply(200, {
+                'my.adaptation': 'testDescriptor'
+            });
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getPath: () => '/manifest.appdescr_variant',
+                    getBuffer: () => Buffer.from(descriptorVariant)
+                }
+            ]);
+            await adp.init(JSON.parse(descriptorVariant));
+            (adp as any).mergedDescriptor = undefined;
+            await adp.sync();
+            expect(adp.descriptor).toBeDefined();
+            await adp.sync();
+            expect(adp.descriptor).not.toEqual('testDescriptor');
+        });
+
+        test('update descriptor if no manifest changes, but this is first descriptor fetch', async () => {
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+            nock(backend).put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//').reply(200, {
+                'my.adaptation': mockMergedDescriptor
+            });
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
             const adp = new AdpPreview(
                 {
                     target: {
