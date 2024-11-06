@@ -23,7 +23,7 @@ const passwordPromptName = `${abapOnPremPromptNamespace}:${BasicCredentialsPromp
 
 const abapOnPremPromptNames = {
     sapClient: 'sapClient'
-}
+};
 
 interface AbabpOnPremCredentialsAnswers {
     [usernamePromptName]?: string;

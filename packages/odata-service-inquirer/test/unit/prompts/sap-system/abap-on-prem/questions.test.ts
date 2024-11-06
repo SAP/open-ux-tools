@@ -771,8 +771,8 @@ describe('questions', () => {
     });
 
     test('Should validate sap-client input', () => {
-        let newSystemQuestions = getAbapOnPremQuestions();
-        let sapClientPrompt = newSystemQuestions.find((question) => question.name === `sapClient`);
+        const newSystemQuestions = getAbapOnPremQuestions();
+        const sapClientPrompt = newSystemQuestions.find((question) => question.name === `sapClient`);
         expect((sapClientPrompt?.validate as Function)('')).toBe(true);
         expect((sapClientPrompt?.validate as Function)('123')).toBe(true);
         expect((sapClientPrompt?.validate as Function)('123x')).toEqual(expect.any(String));
