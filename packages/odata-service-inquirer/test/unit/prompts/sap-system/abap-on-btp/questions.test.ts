@@ -330,7 +330,7 @@ describe('questions', () => {
         expect(connectionValidatorMock.connectedSystemName).toBe(undefined);
     });
 
-    test.only('Service key prompt should validate service key and connect', async () => {
+    test('Service key prompt should validate service key and connect', async () => {
         const serviceInfoMock: ServiceInfo = {
             uaa: {
                 clientid: 'clientid1',
