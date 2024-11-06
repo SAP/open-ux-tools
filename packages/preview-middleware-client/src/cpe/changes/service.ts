@@ -34,6 +34,7 @@ import MessageToast from 'sap/m/MessageToast';
 import { getTextBundle } from '../../i18n';
 import { getControlById } from '../../utils/core';
 import UI5Element from 'sap/ui/core/Element';
+import { getConfigMapControlIdMap } from '../../utils/fe-v4/utils';
 
 interface ChangeContent {
     property: string;
@@ -156,6 +157,7 @@ export class ChangeService extends EventTarget {
     private changedFiles: Record<string, object> = {};
     private readonly eventStack: object[] = [];
     private pendingConfigChangeMap: Map<string, PendingConfigurationChange[]> = new Map();
+    private configPropertyControlIdMap: Map<string, string[]> = new Map();
     /**
      *
      * @param options ui5 adaptation options.
@@ -260,10 +262,13 @@ export class ChangeService extends EventTarget {
                                     const propertyPathSegments =
                                         change.content.entityPropertyChange.propertyPath.split('/');
                                     const propertyName = propertyPathSegments.pop();
+                                    const key = getConfigMapControlIdMap(change.content.page, propertyPathSegments);
+                                    const controlIds = this.configPropertyControlIdMap?.get(key) || [];
                                     return {
                                         type: 'saved',
                                         kind: 'configuration',
                                         fileName: change.fileName,
+                                        controlIds,
                                         propertyPath: getCompactV4ConfigPath(propertyPathSegments),
                                         propertyName: propertyName ?? '',
                                         value: change.content.entityPropertyChange.propertyValue,
@@ -437,13 +442,15 @@ export class ChangeService extends EventTarget {
             if (configurationChanges.length) {
                 const event = new CustomEvent(STACK_CHANGE_EVENT, {
                     detail: {
-                        controls: (configurationChanges as PendingConfigurationChange[])
-                            .map((item) => {
-                                if (item.controlId) {
-                                    return getControlById(item.controlId);
-                                }
-                            })
-                            .filter((item) => item?.getId())
+                        controls: (configurationChanges as PendingConfigurationChange[]).reduce((acc, item) => {
+                            const controls = (item.controlIds || [])
+                                .map((id: string) => {
+                                    return getControlById(id);
+                                })
+                                .filter((item) => item?.getId()) as UI5Element[];
+                            acc.push(...controls);
+                            return acc;
+                        }, new Array<UI5Element>())
                     }
                 });
                 this.dispatchEvent(event);
@@ -462,6 +469,12 @@ export class ChangeService extends EventTarget {
     public getConfigurationPropertyValue(controlId: string, propertyName: string): PropertyValue | undefined {
         const pendingChanges = this.pendingConfigChangeMap?.get(controlId);
         return (pendingChanges || []).find((item) => item.isActive && item.propertyName === propertyName)?.value;
+    }
+
+    public async updateConfigurationProps(configPropertyControlIdMap: Map<string, string[]>): Promise<void> {
+        this.configPropertyControlIdMap = configPropertyControlIdMap;
+        await this.fetchSavedChanges();
+        this.updateStack();
     }
 
     /**
@@ -541,25 +554,31 @@ export class ChangeService extends EventTarget {
                 fileName
             };
         } else if (changeType === 'appdescr_fe_changePageConfiguration') {
-            const propertyPathSegments = command.getProperty('parameters').entityPropertyChange.propertyPath.split('/');
-            const propName = propertyPathSegments.pop();
+            const { entityPropertyChange, page } = command.getProperty('parameters');
             const controlId = this.getCommandSelectorId(command) ?? '';
+            const propertyPathSegments = entityPropertyChange.propertyPath.split('/');
+            const propName = propertyPathSegments.pop();
+            const key = getConfigMapControlIdMap(page, propertyPathSegments);
+
             const isActive = index >= inactiveCommandCount;
+            const controlIds = this.configPropertyControlIdMap?.get(key) || [controlId];
             result = {
                 type: 'pending',
                 kind: 'configuration',
-                controlId,
+                controlIds,
                 propertyPath: getCompactV4ConfigPath(propertyPathSegments),
                 propertyName: propName,
                 isActive,
                 value,
                 fileName
             };
-            if (!this.pendingConfigChangeMap.get(controlId)) {
-                this.pendingConfigChangeMap.set(controlId, []);
+            for (const id of result.controlIds) {
+                if (!this.pendingConfigChangeMap.get(id)) {
+                    this.pendingConfigChangeMap.set(id, []);
+                }
+                const pendingChanges = this.pendingConfigChangeMap.get(id);
+                pendingChanges?.push(result);
             }
-            const pendingChanges = this.pendingConfigChangeMap.get(controlId);
-            pendingChanges?.push(result);
         } else {
             result = {
                 type: 'pending',
@@ -729,3 +748,5 @@ export class ChangeService extends EventTarget {
 function getCompactV4ConfigPath(propertyPathSeg: string[]): string {
     return propertyPathSeg.join('/').replace(/^controlConfiguration\/@[^/]+\.v1\./, '');
 }
+
+

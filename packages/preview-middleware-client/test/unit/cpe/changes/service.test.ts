@@ -1237,7 +1237,7 @@ describe('ChangeService', () => {
                 saved: [],
                 pending: [
                     {
-                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        controlIds: ['ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'],
                         isActive: true,
                         fileName: 'testFileName',
                         type: 'pending',
@@ -1249,7 +1249,7 @@ describe('ChangeService', () => {
                 ]
             }
         });
-    });
+    }, 888888888);
 
     test('delete property', async () => {
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);

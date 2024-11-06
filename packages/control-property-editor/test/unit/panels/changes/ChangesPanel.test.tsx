@@ -71,7 +71,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
               },
               {
                   kind: 'configuration',
-                  controlId: 'testId1Exp',
+                  controlIds: ['testId1Exp'],
                   propertyName: 'Frozen Column Count',
                   type: 'pending',
                   value: 12,
@@ -81,7 +81,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
               },
               {
                   kind: 'configuration',
-                  controlId: 'testId1Exp',
+                  controlIds: ['testId1Exp'],
                   propertyName: 'Enable Export',
                   type: 'pending',
                   value: false,
@@ -91,7 +91,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
               },
               {
                   kind: 'configuration',
-                  controlId: 'testId1Exp',
+                  controlIds: ['testId1Exp'],
                   propertyName: 'Header',
                   type: 'pending',
                   value: '{stringVal}',
@@ -101,7 +101,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
               },
               {
                   kind: 'configuration',
-                  controlId: 'testId1Exp',
+                  controlIds: ['testId1Exp'],
                   propertyName: 'Hierarchy Qualifier',
                   type: 'pending',
                   value: 'newQualifer',
@@ -166,6 +166,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   type: 'saved',
                   value: 24,
                   fileName: 'app_descrName1',
+                  controlIds: [],
                   kind: 'configuration',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
                   propertyPath: 'settings/test/demo'
@@ -176,6 +177,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   value: 'Table Filtered by Region',
                   fileName: 'app_descrName2',
                   kind: 'configuration',
+                  controlIds: [],
                   timestamp: new Date('2022-01-09T12:06:53.939Z').getTime(),
                   propertyPath: 'settings/test'
               },

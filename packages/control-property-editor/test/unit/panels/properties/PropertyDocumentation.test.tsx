@@ -123,6 +123,6 @@ describe('PropertyDoc', () => {
 
         deleteButton.click();
 
-        expect(props.onDelete).toHaveBeenCalledWith('control1', 'testProperty');
+        expect(props.onDelete).toHaveBeenCalledWith('control1', 'testProperty', 'file');
     });
 });

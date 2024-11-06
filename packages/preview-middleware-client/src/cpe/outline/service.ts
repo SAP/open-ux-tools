@@ -41,12 +41,14 @@ export class OutlineService extends EventTarget {
             try {
                 const viewNodes = await outline.get();
                 const controlIndex: ControlTreeIndex = {};
+                const configPropertyIdMap = new Map<string, string[]>();
                 const outlineNodes = await transformNodes(
                     viewNodes,
                     scenario,
                     reuseComponentsIds,
                     controlIndex,
-                    this.changeService
+                    this.changeService,
+                    configPropertyIdMap
                 );
 
                 const event = new CustomEvent(OUTLINE_CHANGE_EVENT, {
@@ -66,6 +68,7 @@ export class OutlineService extends EventTarget {
                     );
                     hasSentWarning = true;
                 }
+                await this.changeService.updateConfigurationProps(configPropertyIdMap);
             } catch (error) {
                 Log.error('Outline sync failed!', getError(error));
             }

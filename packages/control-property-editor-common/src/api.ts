@@ -146,7 +146,7 @@ export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> 
 
 export interface PendingConfigurationChange<T extends PropertyValue = PropertyValue> extends ConfigurationChange<T> {
     type: typeof PENDING_CHANGE_TYPE;
-    controlId: string;
+    controlIds: string[];
     /**
      * Indicates if change is before or after current position in undo redo stack
      */
@@ -188,6 +188,7 @@ export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> ex
 export interface SavedConfigurationChange<T extends PropertyValue = PropertyValue> extends ConfigurationChange<T> {
     type: typeof SAVED_CHANGE_TYPE;
     fileName: string;
+    controlIds: string[]; // configuration could be shared by multiple controls.
     timestamp: number;
 }
 

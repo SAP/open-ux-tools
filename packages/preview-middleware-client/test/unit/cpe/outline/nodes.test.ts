@@ -9,6 +9,7 @@ import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
 import { sapCoreMock } from 'mock/window';
 import ComponentMock from 'mock/sap/ui/core/Component';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
+import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
 
 jest.mock('../../../../src/cpe/outline/editable', () => {
     return {
@@ -30,7 +31,7 @@ describe('outline nodes', () => {
         scenario: Scenario,
         reuseComponentsIds: Set<string> = new Set<string>(),
         controlIndex: ControlTreeIndex = {}
-    ): Promise<OutlineNode[]> => tn(nodes, scenario, reuseComponentsIds, controlIndex, {} as any);
+    ): Promise<OutlineNode[]> => tn(nodes, scenario, reuseComponentsIds, controlIndex, {} as any, new Map());
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest
@@ -41,6 +42,10 @@ describe('outline nodes', () => {
             getElementName: jest.fn().mockReturnValue('some-name')
         }),
         getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
+    });
+
+    mockOverlay.getDesignTimeMetadata = jest.fn().mockReturnValue({
+        getData: jest.fn().mockReturnValue(undefined)
     });
 
     beforeAll(() => {

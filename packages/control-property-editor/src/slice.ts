@@ -6,10 +6,14 @@ import type {
     IconDetails,
     OutlineNode,
     PendingChange,
+    PendingConfigurationChange,
+    PendingControlChange,
     PendingPropertyChange,
     PropertyChange,
     QuickActionGroup,
     SavedChange,
+    SavedConfigurationChange,
+    SavedControlChange,
     SavedPropertyChange,
     Scenario,
     ShowMessage
@@ -81,7 +85,7 @@ export interface ControlChanges {
 }
 
 export interface ControlChangeStats {
-    controlName: string;
+    controlName?: string;
     pending: number;
     saved: number;
     properties: PropertyChanges;
@@ -93,8 +97,8 @@ export interface PropertyChanges {
 export interface PropertyChangeStats {
     pending: number;
     saved: number;
-    lastSavedChange?: SavedPropertyChange;
-    lastChange?: PendingPropertyChange;
+    lastSavedChange?: SavedPropertyChange | SavedConfigurationChange;
+    lastChange?: PendingPropertyChange | PendingConfigurationChange;
 }
 
 export const enum FilterName {
@@ -182,7 +186,7 @@ const processControl = (control: ControlChangeStats, changeType: string): void =
  */
 const processPropertyChange = (
     control: ControlChangeStats,
-    change: PendingPropertyChange | SavedPropertyChange
+    change: PendingPropertyChange | SavedPropertyChange | PendingConfigurationChange | SavedConfigurationChange
 ): void => {
     const { propertyName } = change;
 
@@ -205,6 +209,49 @@ const processPropertyChange = (
         property.saved++;
     }
     control.properties[propertyName] = property;
+};
+
+/**
+ * Gets control chnage stats.
+ *
+ * @param controls ControlChanges
+ * @param key string
+ * @param change all supported changes
+ * @param type
+ * @returns ControlChangeStats
+ */
+const getControlChangeStats = (
+    controls: ControlChanges,
+    key: string,
+    change:
+        | PendingPropertyChange
+        | SavedPropertyChange
+        | PendingConfigurationChange
+        | SavedConfigurationChange
+        | PendingControlChange
+        | SavedControlChange,
+    type: string
+): ControlChangeStats => {
+    const control = controls[key]
+        ? {
+              pending: controls[key].pending,
+              saved: controls[key].saved,
+              controlName: controls[key]?.controlName ?? undefined,
+              properties: controls[key].properties
+          }
+        : {
+              pending: 0,
+              saved: 0,
+              controlName: change.kind === PROPERTY_CHANGE_KIND ? change.controlName : undefined,
+              properties: {}
+          };
+    processControl(control, type);
+    if (change.kind === CONFIGURATION_CHANGE_KIND || change.kind === PROPERTY_CHANGE_KIND) {
+        processPropertyChange(control, change);
+    }
+
+    controls[key] = control;
+    return control;
 };
 
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
@@ -284,30 +331,22 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.changes.controls = {};
 
                 for (const change of [...action.payload.pending, ...action.payload.saved].reverse()) {
-                    if (change.kind === UNKNOWN_CHANGE_KIND || change.kind === CONFIGURATION_CHANGE_KIND) {
+                    if (change.kind === UNKNOWN_CHANGE_KIND) {
                         continue;
                     }
-                    const { controlId, type } = change;
-                    const key = `${controlId}`;
-                    const control = state.changes.controls[key]
-                        ? {
-                              pending: state.changes.controls[key].pending,
-                              saved: state.changes.controls[key].saved,
-                              controlName: state.changes.controls[key].controlName,
-                              properties: state.changes.controls[key].properties
-                          }
-                        : {
-                              pending: 0,
-                              saved: 0,
-                              controlName: change.kind === PROPERTY_CHANGE_KIND ? change.controlName : '',
-                              properties: {}
-                          };
-                    processControl(control, type);
-                    if (change.kind === PROPERTY_CHANGE_KIND) {
-                        processPropertyChange(control, change);
+                    if (change.kind === CONFIGURATION_CHANGE_KIND) {
+                        const { controlIds, type } = change;
+                        for (const id of controlIds) {
+                            const key = `${id}`;
+                            const control = getControlChangeStats(state.changes.controls, key, change, type);
+                            state.changes.controls[key] = control;
+                        }
+                    } else {
+                        const { controlId, type } = change;
+                        const key = `${controlId}`;
+                        const control = getControlChangeStats(state.changes.controls, key, change, type);
+                        state.changes.controls[key] = control;
                     }
-
-                    state.changes.controls[key] = control;
                 }
             })
             .addMatcher(showMessage.match, (state, action: ReturnType<typeof showMessage>): void => {

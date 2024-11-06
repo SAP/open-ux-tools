@@ -161,11 +161,13 @@ export function InputTypeWrapper(props: InputTypeWrapperProps): ReactElement {
      *
      * @param controlId string
      * @param propertyName string
+     * @param fileName string
      */
-    function showDeleteConfirmation(controlId: string, propertyName: string): void {
+    function showDeleteConfirmation(controlId: string, propertyName: string, fileName?: string): void {
         setDialogState({
             controlId,
-            propertyName
+            propertyName,
+            fileName
         });
     }
 

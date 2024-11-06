@@ -10,6 +10,8 @@ import { isReuseComponent } from '../utils';
 
 import { isEditable } from './editable';
 import { ChangeService } from '../changes';
+import { getOverlay } from '../changes/flex-change';
+import { getConfigMapControlIdMap, getPageName } from '../../utils/fe-v4/utils';
 
 interface AdditionalData {
     text?: string;
@@ -94,6 +96,25 @@ function indexNode(controlIndex: ControlTreeIndex, node: OutlineNode): void {
     }
 }
 
+function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string[]>): void {
+    const control = getControlById(node.controlId);
+    if (control) {
+        const overlay = getOverlay(control);
+        const overlayData = overlay?.getDesignTimeMetadata().getData();
+        if (overlayData) {
+            const path = overlayData?.manifestPropertyPath?.(control);
+            const pageName = getPageName(control);
+            const key = getConfigMapControlIdMap(pageName, path.split('/'));
+            if (key) {
+                if (!propertyIdMap.get(key)) {
+                    propertyIdMap.set(key, []);
+                }
+                propertyIdMap.get(key)?.push(node.controlId);
+            }
+        }
+    }
+}
+
 /**
  * Transform node.
  *
@@ -102,6 +123,7 @@ function indexNode(controlIndex: ControlTreeIndex, node: OutlineNode): void {
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param controlIndex Control tree index
  * @param changeService ChanegService for change stack event handling.
+ * @param propertyIdMap ChanegService for change stack event handling.
  * @returns transformed outline tree nodes
  */
 export async function transformNodes(
@@ -109,7 +131,8 @@ export async function transformNodes(
     scenario: Scenario,
     reuseComponentsIds: Set<string>,
     controlIndex: ControlTreeIndex,
-    changeService: ChangeService
+    changeService: ChangeService,
+    propertyIdMap: Map<string, string[]>
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
@@ -126,8 +149,22 @@ export async function transformNodes(
             const technicalName = current.technicalName.split('.').slice(-1)[0];
 
             const transformedChildren = isAdp
-                ? await handleDuplicateNodes(children, scenario, reuseComponentsIds, controlIndex, changeService)
-                : await transformNodes(children, scenario, reuseComponentsIds, controlIndex, changeService);
+                ? await handleDuplicateNodes(
+                      children,
+                      scenario,
+                      reuseComponentsIds,
+                      controlIndex,
+                      changeService,
+                      propertyIdMap
+                  )
+                : await transformNodes(
+                      children,
+                      scenario,
+                      reuseComponentsIds,
+                      controlIndex,
+                      changeService,
+                      propertyIdMap
+                  );
 
             const node: OutlineNode = {
                 controlId: current.id,
@@ -139,6 +176,7 @@ export async function transformNodes(
             };
 
             indexNode(controlIndex, node);
+            addToPropertyIdMap(node, propertyIdMap);
             fillReuseComponents(reuseComponentsIds, current, scenario, ui5VersionInfo);
 
             items.push(node);
@@ -196,6 +234,7 @@ function fillReuseComponents(
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param controlIndex Control tree index
  * @param changeService ChangeService for change stack event handling.
+ * @param propertyIdMap  Map<string, string[]>.
  * @returns transformed outline tree nodes
  */
 export async function handleDuplicateNodes(
@@ -203,7 +242,8 @@ export async function handleDuplicateNodes(
     scenario: Scenario,
     reuseComponentsIds: Set<string>,
     controlIndex: ControlTreeIndex,
-    changeService: ChangeService
+    changeService: ChangeService,
+    propertyIdMap: Map<string, string[]>
 ): Promise<OutlineNode[]> {
     const extPointIDs = new Set<string>();
 
@@ -216,5 +256,5 @@ export async function handleDuplicateNodes(
 
     const uniqueChildren = children.filter((child) => !extPointIDs.has(child.id));
 
-    return transformNodes(uniqueChildren, scenario, reuseComponentsIds, controlIndex, changeService);
+    return transformNodes(uniqueChildren, scenario, reuseComponentsIds, controlIndex, changeService, propertyIdMap);
 }

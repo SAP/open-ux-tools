@@ -5,8 +5,7 @@ import FilterBar from 'sap/ui/mdc/FilterBar';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
-import { getPageName } from './utils';
-import { getAppComponent, getReference } from '../../../utils/fe-v4/utils';
+import { getAppComponent, getPageName, getReference } from '../../../utils/fe-v4/utils';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ENABLE_CLEAR_FILTER_BAR_TYPE = 'enable-clear-filter-bar';

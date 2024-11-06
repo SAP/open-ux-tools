@@ -4,6 +4,7 @@ import Component from 'sap/ui/core/Component';
 import AppComponent from 'sap/fe/core/AppComponent';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import { isA } from '../../utils/core';
 
 /**
  * Gets reference id of the app.
@@ -50,4 +51,27 @@ export function getV4PageType(control: ManagedObject): 'ObjectPage' | 'ListRepor
     if (name === 'sap.fe.templates.ListReport.ListReport') {
         return 'ListReport';
     }
+}
+
+
+/**
+ * Get the containing page name of a control.
+ *
+ * @param control - UI5 control instance.
+ * @returns Page name to which the control belongs.
+ */
+export function getPageName(control: ManagedObject): string | undefined {
+    const component = Component.getOwnerComponentFor(control);
+    if (!isA<TemplateComponent>('sap.fe.core.TemplateComponent', component)) {
+        return undefined;
+    }
+    const view = component.getRootControl();
+    return view.getId().split('::').pop();
+}
+
+export function getConfigMapControlIdMap(page: string | undefined, propertyPathSegments: string[]): string {
+    if (page) {
+        return `${page}-${propertyPathSegments.join('/')}`;
+    }
+    return propertyPathSegments.join('/');
 }

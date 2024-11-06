@@ -426,7 +426,7 @@ describe('InputTypeWrapper', () => {
 
         expect(dispatch).toHaveBeenCalledWith({
             type: '[ext] delete-property-changes',
-            payload: { controlId: 'control1', propertyName }
+            payload: { controlId: 'control1', propertyName, fileName: 'file' }
         });
     });
 });
