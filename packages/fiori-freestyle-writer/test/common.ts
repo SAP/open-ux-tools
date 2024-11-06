@@ -85,29 +85,31 @@ export const projectChecks = async (
     config: FreestyleApp<unknown>,
     debugFull = false
 ): Promise<void> => {
-    if (debugFull && (config.appOptions?.typescript || config.appOptions?.eslint)) {
-        // Do additonal checks on generated projects
-        const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-        const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-        let npmResult;
-        try {
-            // Do npm install
-            npmResult = await exec(`${npm} install`, { cwd: rootPath });
-            console.log('stdout:', npmResult.stdout);
-            console.log('stderr:', npmResult.stderr);
+    // Do additional checks on generated projects
+    const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+    const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+    let npmResult;
+    try {
+        if (debugFull) {
+            if (config.appOptions?.typescript || config.appOptions?.eslint) {
+                // Do npm install
+                npmResult = await exec(`${npm} install`, { cwd: rootPath });
+                console.log('stdout:', npmResult.stdout);
+                console.log('stderr:', npmResult.stderr);
 
-            // run checks on the project
-            // Check TS Types
-            if (config.appOptions?.typescript && config.service?.type === ServiceType.EDMX) {
-                npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
-                console.log('stdout:', npmResult.stdout);
-                console.log('stderr:', npmResult.stderr);
-            }
-            // Check Eslint
-            if (config.appOptions?.eslint) {
-                npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
-                console.log('stdout:', npmResult.stdout);
-                console.log('stderr:', npmResult.stderr);
+                // run checks on the project
+                // Check TS Types
+                if (config.appOptions?.typescript && config.service?.type === ServiceType.EDMX) {
+                    npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
+                    console.log('stdout:', npmResult.stdout);
+                    console.log('stderr:', npmResult.stderr);
+                }
+                // Check Eslint
+                if (config.appOptions?.eslint) {
+                    npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
+                    console.log('stdout:', npmResult.stdout);
+                    console.log('stderr:', npmResult.stderr);
+                }
             }
             if (
                 compareUI5VersionGte(config.ui5?.minUI5Version ?? config.ui5?.version ?? '', ui5LtsVersion_1_120) &&
@@ -118,10 +120,10 @@ export const projectChecks = async (
                 console.log('stdout:', npmResult.stdout);
                 console.log('stderr:', npmResult.stderr);
             }
-        } catch (error) {
-            console.log('stdout:', error?.stdout);
-            console.log('stderr:', error?.stderr);
-            expect(error).toBeUndefined();
         }
+    } catch (error) {
+        console.log('stdout:', error?.stdout);
+        console.log('stderr:', error?.stderr);
+        expect(error).toBeUndefined();
     }
 };

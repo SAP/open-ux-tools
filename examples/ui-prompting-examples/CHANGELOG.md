@@ -1,5 +1,13 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.2.14
+
+### Patch Changes
+
+-   a52de73: Implement changes to handle i18n entry creation with i18n annotation information.
+-   Updated dependencies [a52de73]
+    -   @sap-ux/ui-prompting@0.3.0
+
 ## 0.2.13
 
 ### Patch Changes

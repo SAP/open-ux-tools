@@ -66,6 +66,9 @@
       "path": "packages/cf-deploy-config-inquirer"
     },
     {
+      "path": "packages/cf-deploy-config-writer"
+    },
+    {
       "path": "packages/control-property-editor-common"
     },
     {
