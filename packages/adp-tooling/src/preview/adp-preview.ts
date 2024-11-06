@@ -147,7 +147,7 @@ export class AdpPreview {
      */
     async proxy(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.path === '/manifest.json') {
-            await 
+            await this.sync();
             res.status(200);
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {
