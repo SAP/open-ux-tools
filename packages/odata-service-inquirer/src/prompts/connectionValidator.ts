@@ -469,7 +469,7 @@ export class ConnectionValidator {
     }
 
     /**
-     * Callback for when the refresh token changes.
+     * Callback for when the Abap cloud system refresh token changes.
      *
      * @param refreshToken the new refresh token
      */

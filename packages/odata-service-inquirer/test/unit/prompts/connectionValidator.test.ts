@@ -1,5 +1,5 @@
 import * as axiosExtension from '@sap-ux/axios-extension';
-import type { ODataServiceInfo } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
 import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import {
@@ -25,10 +25,11 @@ jest.mock('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: jest.fn().mockImplementation(() => ({
         catalog: catalogServiceMock
     })),
-    createForAbapOnCloud: jest.fn().mockImplementation(() => ({
+    createForAbapOnCloud: jest.fn().mockImplementation(({ refreshTokenChangedCb }) => ({
         interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
         catalog: catalogServiceMock,
-        user: jest.fn().mockReturnValue('user1@acme.com')
+        user: jest.fn().mockReturnValue('user1@acme.com'),
+        refreshTokenChangedCb // Test only, usually handled by attachUaaAuthInterceptor but here for testing purposes
     }))
 }));
 
@@ -454,6 +455,10 @@ describe('ConnectionValidator', () => {
         expect(connectValidator.serviceInfo).toEqual(serviceInfoMock);
         expect(connectValidator.validatedUrl).toBe(serviceInfoMock.url);
         expect(connectValidator.connectedSystemName).toBe('abap_btp_001');
+
+        // Ensure the refresh token is updated when it changes
+        (connectValidator.serviceProvider as any).refreshTokenChangedCb('newToken1234');
+        expect(connectValidator.refreshToken).toEqual('newToken1234');
     });
 
     test('should attempt to validate auth using v4 catalog where v2 is not available or user is not authorized', async () => {
