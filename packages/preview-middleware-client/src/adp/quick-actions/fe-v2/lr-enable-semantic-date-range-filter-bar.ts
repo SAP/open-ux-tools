@@ -43,38 +43,34 @@ export class ToggleSemanticDateRangeFilterBar
     }
 
     async execute(): Promise<FlexCommand[]> {
-        if (this.control) {
-            const { flexSettings } = this.context;
+        const { flexSettings } = this.context;
 
-            const modifiedValue = {
-                changeType: 'appdescr_ui_generic_app_changePageConfiguration',
-                reference: flexSettings.projectId,
-                parameters: {
-                    parentPage: {
-                        component: 'sap.suite.ui.generic.template.ListReport',
-                        entitySet: (this.control as SmartFilterBar).getEntitySet()
-                    },
-                    entityPropertyChange: {
-                        propertyPath: 'component/settings/filterSettings/dateSettings',
-                        operation: 'UPSERT',
-                        propertyValue: {
-                            useDateRange: !this.isUseDateRangeTypeEnabled
-                        }
+        const modifiedValue = {
+            changeType: 'appdescr_ui_generic_app_changePageConfiguration',
+            reference: flexSettings.projectId,
+            parameters: {
+                parentPage: {
+                    component: 'sap.suite.ui.generic.template.ListReport',
+                    entitySet: (this.control as SmartFilterBar).getEntitySet()
+                },
+                entityPropertyChange: {
+                    propertyPath: 'component/settings/filterSettings/dateSettings',
+                    operation: 'UPSERT',
+                    propertyValue: {
+                        useDateRange: !this.isUseDateRangeTypeEnabled
                     }
                 }
-            };
-            const command = await CommandFactory.getCommandFor<FlexCommand>(
-                this.control,
-                'appDescriptor',
-                modifiedValue,
-                null,
-                flexSettings
-            );
+            }
+        };
+        const command = await CommandFactory.getCommandFor<FlexCommand>(
+            this.control!,
+            'appDescriptor',
+            modifiedValue,
+            null,
+            flexSettings
+        );
 
-            this.isUseDateRangeTypeEnabled = !this.isUseDateRangeTypeEnabled;
-            return [command];
-        }
-
-        return [];
+        this.isUseDateRangeTypeEnabled = !this.isUseDateRangeTypeEnabled;
+        return [command];
     }
 }
