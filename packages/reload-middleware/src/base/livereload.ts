@@ -73,7 +73,10 @@ export function watchManifestChanges(livereload: LiveReloadServer): void {
         if (fileExtension === '.appdescr_variant') {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
         } else if (fileExtension === '.change') {
-            if (path.endsWith('appdescr_fe_changePageConfiguration.change')) {
+            if (
+                path.endsWith('appdescr_fe_changePageConfiguration.change') ||
+                path.endsWith('appdescr_ui_generic_app_changePageConfiguration.change')
+            ) {
                 global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
             }
         }

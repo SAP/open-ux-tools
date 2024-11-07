@@ -856,6 +856,119 @@ describe('FE V2 quick actions', () => {
                 });
             });
         });
+
+        describe('disable/enable "semantic date range" in filter bar', () => {
+            test('initialize and execute action', async () => {
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartFilterBar') {
+                        return {
+                            getProperty: jest.fn().mockImplementation(() => false),
+                            getDomRef: () => ({}),
+                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        const pageView = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
+                    registry
+                ]);
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smartfilterbar.SmartFilterBar': [
+                        {
+                            controlId: 'SmartFilterBar'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'kind': 'simple',
+                                    id: 'listReport0-enable-semantic-daterange-filterbar',
+                                    title: 'Enable "Sematic Date Range" for Filter Bar',
+                                    enabled: true
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-enable-semantic-daterange-filterbar', kind: 'simple' })
+                );
+                expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                    'settings': {},
+                    'type': 'appDescriptor',
+                    'value': {
+                        'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
+                        'parameters': {
+                            'entityPropertyChange': {
+                                'operation': 'UPSERT',
+                                'propertyPath': 'component/settings/filterSettings/dateSettings',
+                                'propertyValue': {
+                                    'useDateRange': true
+                                }
+                            },
+                            'parentPage': {
+                                'component': 'sap.suite.ui.generic.template.ListReport',
+                                'entitySet': 'testEntity'
+                            }
+                        },
+                        'reference': undefined
+                    }
+                });
+            });
+        });
     });
     describe('ObjectPage', () => {
         describe('add header field', () => {
