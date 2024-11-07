@@ -16,12 +16,12 @@ import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentia
 import { getNewSystemQuestions } from '../new-system/questions';
 import type { ServiceAnswer } from '../service-selection';
 import { getSystemServiceQuestion } from '../service-selection/questions';
-import { connectWithBackendSystem, connectWithDestination, createSystemChoices } from './prompt-helpers';
 import { validateServiceUrl } from '../validators';
+import { connectWithBackendSystem, connectWithDestination, createSystemChoices } from './prompt-helpers';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
-export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^' as const;
+export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^';
 type NewSystemChoice = typeof newSystemChoiceValue;
 
 const systemSelectionPromptNamespace = 'systemSelection';
@@ -107,21 +107,22 @@ export async function getSystemSelectionQuestions(
         promptOptions
     );
 
-    // Existing system (BackendSystem or Destination) selected, TODO: make the service prompt optional by wrapping in condition `[promptOptions?.serviceSelection?.hide]`
+    // Existing system (BackendSystem or Destination) selected,
+    // In future, make the service prompt optional by wrapping in condition `[promptOptions?.serviceSelection?.hide]`
     questions.push(
-        ...(withCondition(
+        ...withCondition(
             getSystemServiceQuestion(connectValidator, systemSelectionPromptNamespace, promptOptions) as Question[],
             (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
-        ) as Question[])
+        )
     );
 
     // Create new system connection for storage only supported on non-App Studio environments
     if (!isAppStudio()) {
         questions.push(
-            ...(withCondition(
+            ...withCondition(
                 getNewSystemQuestions(promptOptions) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
-            ) as Question[])
+            )
         );
     }
 
@@ -249,7 +250,7 @@ export async function getSystemConnectionQuestions(
                 return false;
             },
             name: `${systemSelectionPromptNames.systemSelectionCli}`
-        } as Question);
+        });
     }
     const credentialsPrompts = getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace) as Question[];
     questions.push(...credentialsPrompts);

@@ -1,12 +1,12 @@
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
 import {
     getDisplayName,
+    isAbapODataDestination,
     isAppStudio,
     isFullUrlDestination,
     isGenericODataDestination,
     isPartialUrlDestination,
-    listDestinations,
-    WebIDEUsage
+    listDestinations
 } from '@sap-ux/btp-utils';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
@@ -136,19 +136,6 @@ export function getBackendSystemDisplayName(system: BackendSystem): string {
         systemTypeName = ` (${t('texts.systemTypeBTP')})`;
     }
     return `${system.name}${systemTypeName}${userDisplayName}`;
-}
-
-// TODO: Replace with the function from btp-utils
-/**
- *
- * @param destination
- * @returns true if the destination is an ABAP OData destination
- */
-export function isAbapODataDestination(destination: Destination): boolean {
-    return (
-        !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) &&
-        !destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_GENERIC)
-    );
 }
 
 /**
