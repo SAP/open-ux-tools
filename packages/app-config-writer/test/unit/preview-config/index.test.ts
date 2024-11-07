@@ -104,14 +104,14 @@ describe('convertPreview', () => {
         expect(fs.read(join(basePath, 'webapp', 'test', 'flpSandboxMockserver_old.html'))).toMatchInlineSnapshot(
             '"dummy content flpSandboxMockserver"'
         );
-        let path = join('webapp', 'test', 'flpSandbox.html');
+        let path = join('test', 'flpSandbox.html');
         expect(infoLogMock).toHaveBeenCalledWith(
             `Renamed ${path} to ${path.slice(
                 0,
                 -5
             )}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
         );
-        path = join('webapp', 'test', 'flpSandboxMockserver.html');
+        path = join('test', 'flpSandboxMockserver.html');
         expect(infoLogMock).toHaveBeenCalledWith(
             `Renamed ${path} to ${path.slice(
                 0,

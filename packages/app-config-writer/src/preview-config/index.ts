@@ -326,22 +326,17 @@ export function sanitizePreviewMiddleware(
 }
 
 /**
- * Add '_old' to webapp/test/flpSandbox.html and webapp/test/flpSandboxMockserver.html to indicate that they will no longer be used.
+ * Add '_old' to test/flpSandbox.html and test/flpSandboxMockserver.html to indicate that they will no longer be used.
  *
  * @param fs - file system reference
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
 export async function renameDefaultSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const flpSandboxPath = join(await getWebappPath(basePath), 'test', 'flpSandbox.html');
-    if (fs.exists(flpSandboxPath)) {
-        fs.move(flpSandboxPath, flpSandboxPath.replace('.html', '_old.html'));
-        logger?.info(renameMessage(join('webapp', 'test', 'flpSandbox.html')));
-    }
-    const flpSandboxMockserverPath = join(await getWebappPath(basePath), 'test', 'flpSandboxMockserver.html');
-    if (fs.exists(flpSandboxMockserverPath)) {
-        fs.move(flpSandboxMockserverPath, flpSandboxMockserverPath.replace('.html', '_old.html'));
-        logger?.info(renameMessage(join('webapp', 'test', 'flpSandboxMockserver.html')));
+    const defaultSandboxPaths = [join('test', 'flpSandbox.html'), join('test', 'flpSandboxMockserver.html')];
+    for (const path of defaultSandboxPaths) {
+        const fakeScript = ` --open ${path}`;
+        await renameSandbox(fs, basePath, fakeScript, logger);
     }
 }
 
