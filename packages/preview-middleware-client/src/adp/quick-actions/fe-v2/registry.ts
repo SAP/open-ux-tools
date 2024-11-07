@@ -17,6 +17,7 @@ import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
 import { AddTableActionQuickAction } from '../fe-v2/create-table-action';
 import { AddTableCustomColumnQuickAction } from './create-table-custom-column';
 import { AddPageActionQuickAction } from '../common/create-page-action';
+import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-range-filter-bar';
 type PageName = 'listReport' | 'objectPage' | 'analyticalListPage';
 
 const OBJECT_PAGE_TYPE = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
@@ -46,7 +47,8 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                         ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction,
-                        AddPageActionQuickAction
+                        AddPageActionQuickAction,
+                        ToggleSemanticDateRangeFilterBar
                     ],
                     view,
                     key: name + index
