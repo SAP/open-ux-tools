@@ -2,8 +2,10 @@
  * Service selection prompting for SAP systems. Used by new and existing system prompts.
  *
  */
-import type { CatalogService } from '@sap-ux/axios-extension';
+import type { CatalogService, ODataVersion } from '@sap-ux/axios-extension';
+import type { Destination } from '@sap-ux/btp-utils';
 import { searchChoices, type ListQuestion } from '@sap-ux/inquirer-common';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { ERROR_TYPE, ErrorHandler } from '../../../../error-handler/error-handler';
 import { t } from '../../../../i18n';
@@ -20,10 +22,8 @@ import {
     getServiceDetails,
     sendDestinationServiceSuccessTelemetryEvent
 } from '../service-selection/service-helper';
-import { type ServiceAnswer } from './types';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { SystemSelectionAnswers } from '../system-selection';
-import type { Destination } from '@sap-ux/btp-utils';
+import { type ServiceAnswer } from './types';
 
 const cliServicePromptName = 'cliServiceSelection';
 
@@ -69,15 +69,12 @@ export function getSystemServiceQuestion(
             ) {
                 // if we have a catalog, use it to list services
                 if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
-                    let catalogs: CatalogService[] = [];
-                    if (requiredOdataVersion && connectValidator.catalogs[requiredOdataVersion]) {
-                        catalogs.push(connectValidator.catalogs[requiredOdataVersion]);
-                    } else {
-                        catalogs = Object.values(connectValidator.catalogs).filter((cat) => cat !== undefined);
-                    }
+                    serviceChoices = await createServiceChoicesFromCatalog(
+                        connectValidator.catalogs,
+                        requiredOdataVersion
+                    );
                     previousSystemUrl = connectValidator.validatedUrl;
                     previousClient = connectValidator.validatedClient;
-                    serviceChoices = await getServiceChoices(catalogs);
 
                     // Telemetry event for successful service listing using a destination
                     if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
@@ -111,7 +108,7 @@ export function getSystemServiceQuestion(
         additionalMessages: (selectedService: ServiceAnswer) =>
             getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, requiredOdataVersion),
         default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
-        // Warning: only executes in YUI not cli
+        // Warning: only executes in YUI and cli when automcomplete is used
         validate: async (
             service: ServiceAnswer | ListChoiceOptions<ServiceAnswer>
         ): Promise<string | boolean | ValidationLink> => {
@@ -161,4 +158,23 @@ export function getSystemServiceQuestion(
         } as Question);
     }
     return questions;
+}
+/**
+ * Create service choices from the catalog.
+ *
+ * @param availableCatalogs catalogs that can be used to list services
+ * @param requiredOdataVersion the required OData version to list services for, if not provided all available catalogs will be used
+ * @returns service choices
+ */
+async function createServiceChoicesFromCatalog(
+    availableCatalogs: Record<ODataVersion, CatalogService | undefined>,
+    requiredOdataVersion?: OdataVersion
+): Promise<ListChoiceOptions<ServiceAnswer>[]> {
+    let catalogs: CatalogService[] = [];
+    if (requiredOdataVersion && availableCatalogs[requiredOdataVersion]) {
+        catalogs.push(availableCatalogs[requiredOdataVersion]);
+    } else {
+        catalogs = Object.values(availableCatalogs).filter((cat) => cat !== undefined);
+    }
+    return await getServiceChoices(catalogs);
 }

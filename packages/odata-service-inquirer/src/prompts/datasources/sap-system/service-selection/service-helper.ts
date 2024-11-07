@@ -1,8 +1,8 @@
 import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
-import type { ODataService } from '@sap-ux/axios-extension';
 import {
     type Annotations,
     type CatalogService,
+    type ODataService,
     type ODataServiceInfo,
     ODataVersion,
     ServiceType,

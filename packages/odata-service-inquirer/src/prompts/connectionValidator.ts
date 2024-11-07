@@ -402,7 +402,6 @@ export class ConnectionValidator {
         destination?: Destination;
         odataVersion?: ODataVersion;
     }): Promise<void> {
-        // todo: Would it be better to return a boolean or string, calling getValidationResultFromStatusCode() and returning the result?
         this.resetConnectionState();
         this.resetValidity();
 
