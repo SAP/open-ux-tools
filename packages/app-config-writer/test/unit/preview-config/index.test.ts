@@ -1,6 +1,6 @@
 import { join } from 'path';
 import {
-    renameSandboxes,
+    renameDefaultSandboxes,
     deleteNoLongerUsedFiles,
     checkPrerequisites,
     updatePreviewMiddlewareConfigs,
@@ -88,10 +88,10 @@ describe('convertPreview', () => {
         fs = create(createStorage());
     });
 
-    test('rename Sandboxes', async () => {
+    test('rename default Sandboxes', async () => {
         fs.write(join(basePath, 'webapp', 'test', 'flpSandbox.html'), 'dummy content flpSandbox');
         fs.write(join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html'), 'dummy content flpSandboxMockserver');
-        await renameSandboxes(fs, basePath, logger);
+        await renameDefaultSandboxes(fs, basePath, logger);
         expect(() => fs.read(join(basePath, 'webapp', 'test', 'flpSandbox.html'))).toThrowError(
             `${join(basePath, 'webapp', 'test', 'flpSandbox.html')} doesn\'t exist`
         );
@@ -106,11 +106,17 @@ describe('convertPreview', () => {
         );
         let path = join('webapp', 'test', 'flpSandbox.html');
         expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed ${path} to ${path}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content e.g. to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
+            `Renamed ${path} to ${path.slice(
+                0,
+                -5
+            )}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
         );
         path = join('webapp', 'test', 'flpSandboxMockserver.html');
         expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed ${path} to ${path}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content e.g. to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
+            `Renamed ${path} to ${path.slice(
+                0,
+                -5
+            )}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
         );
     });
 

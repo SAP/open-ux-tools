@@ -11,6 +11,12 @@ import type { PreviewConfigOptions } from '../types';
 import type { FlpConfig, MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import { addVariantsManagementScript } from '../variants-config/package-json';
 
+const renameMessage = (filename: string): string =>
+    `Renamed ${filename} to ${filename.slice(
+        0,
+        -5
+    )}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`;
+
 /**
  * Converts the local preview files of a project to virtual files.
  *
@@ -33,9 +39,10 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
         return fs;
     }
 
-    await renameSandboxes(fs, basePath);
-    await deleteNoLongerUsedFiles(fs, basePath);
     await updatePreviewMiddlewareConfigs(fs, basePath, logger);
+    //todo: check if this can be deleted because of renameSandbox
+    await renameDefaultSandboxes(fs, basePath);
+    await deleteNoLongerUsedFiles(fs, basePath);
     await updateVariantsCreationScript(fs, basePath, logger);
 
     return fs;
@@ -97,6 +104,7 @@ export async function updatePreviewMiddlewareConfigs(
             scriptName === 'start-variants-management' ||
             //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             !(script?.includes('ui5 serve') || script?.includes('fiori run'))
+            //todo: how to ensure we don't mistake test scripts for preview scripts?
         ) {
             continue;
         }
@@ -126,6 +134,7 @@ export async function updatePreviewMiddlewareConfigs(
         }
 
         await processUi5YamlConfig(fs, basePath, ui5Yaml, script);
+        await renameSandbox(fs, basePath, script, logger);
         ensurePreviewMiddlewareDependency(packageJson, fs, packageJsonPath);
 
         logger?.info(`UI5 yaml configuration file ${ui5Yaml} updated according to script ${scriptName}.`);
@@ -136,6 +145,25 @@ export async function updatePreviewMiddlewareConfigs(
         logger?.warn(
             `Skipping UI5 yaml configuration file ${ui5Yaml} because it is not being used in any package.json script. Consider deleting this file as it seems to be not used.`
         );
+    }
+}
+
+/**
+ * Rename the sandbox file used in the given script.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used for the conversion
+ * @param script - the content of the script
+ * @param logger logger to report info to the user
+ */
+async function renameSandbox(fs: Editor, basePath: string, script: string, logger?: ToolsLogger): Promise<void> {
+    const { path: relativePath } = extractUrlDetails(script);
+    if (relativePath) {
+        const absolutePath = join(await getWebappPath(basePath), relativePath);
+        if (fs.exists(absolutePath)) {
+            fs.move(absolutePath, absolutePath.replace('.html', '_old.html'));
+            logger?.info(renameMessage(relativePath));
+        }
     }
 }
 
@@ -156,11 +184,10 @@ export function ensurePreviewMiddlewareDependency(
         return;
     }
 
-    const dependencies = ['@sap-ux/preview-middleware', '@sap/ux-ui5-tooling'];
-
     const hasDependency = (dependency: string): boolean =>
         !!packageJson?.devDependencies?.[dependency] || !!packageJson?.dependencies?.[dependency];
 
+    const dependencies = ['@sap-ux/preview-middleware', '@sap/ux-ui5-tooling'];
     if (dependencies.some((dependency) => hasDependency(dependency))) {
         return;
     }
@@ -208,9 +235,9 @@ function extractUrlDetails(script: string): {
     path: string | undefined;
     intent: FlpConfig['intent'] | undefined;
 } {
-    const openParameterValueMatch = / --open (\S*)| -o (\S*)| --o (\S*)/.exec(script);
-    const url =
-        openParameterValueMatch?.[1] ?? openParameterValueMatch?.[2] ?? openParameterValueMatch?.[3] ?? undefined;
+    const openParameterValueMatch = / --open ([^"]?\S*)| -o ([^"]?\S*)| --o ([^"]?\S*)/.exec(script);
+    let url = openParameterValueMatch?.[1] ?? openParameterValueMatch?.[2] ?? openParameterValueMatch?.[3] ?? undefined;
+    url = url?.startsWith('"') ? url.slice(1) : url;
     const path = /^[^?#]+\.html/.exec(url ?? '')?.[0] ?? undefined;
     const intent = /(?<=#)\w+-\w+/.exec(url ?? '')?.[0] ?? undefined;
 
@@ -242,7 +269,7 @@ export function updatePreviewMiddlewareConfig(
 
     const configuration = newMiddlewareConfig.configuration ?? ({} as PreviewConfig);
     configuration.flp = configuration.flp ?? {};
-    if (path && (configuration.rta?.editors?.filter((editor) => editor.path === path)?.length === 0 || true)) {
+    if (pathIsFlpPath(path, configuration)) {
         configuration.flp.path = path;
     }
     if (intent) {
@@ -258,6 +285,21 @@ export function updatePreviewMiddlewareConfig(
     }
 
     return newMiddlewareConfig;
+}
+
+/**
+ * Check if the path is an FLP path.
+ *
+ * @param path - the path
+ * @param configuration - the preview configuration
+ * @returns indicator if the path is an FLP path
+ */
+function pathIsFlpPath(path: string | undefined, configuration: PreviewConfig): boolean {
+    return (
+        !!path &&
+        (configuration.rta?.editors?.filter((editor) => editor.path === path)?.length === 0 || true) &&
+        (configuration.test?.filter((test) => test.path === path)?.length === 0 || true)
+    );
 }
 
 /**
@@ -291,18 +333,16 @@ export function sanitizePreviewMiddleware(
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
-export async function renameSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const message = (filename: string): string =>
-        `Renamed ${filename} to ${filename}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content e.g. to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`;
+export async function renameDefaultSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const flpSandboxPath = join(await getWebappPath(basePath), 'test', 'flpSandbox.html');
     if (fs.exists(flpSandboxPath)) {
         fs.move(flpSandboxPath, flpSandboxPath.replace('.html', '_old.html'));
-        logger?.info(message(join('webapp', 'test', 'flpSandbox.html')));
+        logger?.info(renameMessage(join('webapp', 'test', 'flpSandbox.html')));
     }
     const flpSandboxMockserverPath = join(await getWebappPath(basePath), 'test', 'flpSandboxMockserver.html');
     if (fs.exists(flpSandboxMockserverPath)) {
         fs.move(flpSandboxMockserverPath, flpSandboxMockserverPath.replace('.html', '_old.html'));
-        logger?.info(message(join('webapp', 'test', 'flpSandboxMockserver.html')));
+        logger?.info(renameMessage(join('webapp', 'test', 'flpSandboxMockserver.html')));
     }
 }
 
