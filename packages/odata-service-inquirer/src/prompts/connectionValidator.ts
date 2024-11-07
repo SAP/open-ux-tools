@@ -388,7 +388,6 @@ export class ConnectionValidator {
      * @param connectConfig.odataVersion the odata version to restrict the catalog requests if only a specific version is required
      * @param connectConfig.destination the destination to connect with
      * @throws an error if the connection attempt fails, callers should handle the error
-     *
      */
     private async createSystemConnection({
         axiosConfig,

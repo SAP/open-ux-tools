@@ -1,3 +1,5 @@
+import type { ServiceProvider } from '@sap-ux/axios-extension';
+import { isFullUrlDestination, isPartialUrlDestination, type Destination } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers, InputQuestion, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../../i18n';
@@ -5,7 +7,6 @@ import { promptNames } from '../../../../types';
 import { PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import type { SystemSelectionAnswerType } from '../system-selection';
-import { isFullUrlDestination, isPartialUrlDestination, type Destination } from '@sap-ux/btp-utils';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',
@@ -75,14 +76,14 @@ export function getCredentialsPrompts<T extends Answers>(
                     return false;
                 }
                 // We may have a previously selected system
-                const selectedSytem = answers?.[promptNames.systemSelection] as SystemSelectionAnswerType;
+                const selectedSystem = answers?.[promptNames.systemSelection] as SystemSelectionAnswerType;
                 let selectedSystemClient;
                 let isSystem = true;
-                if (selectedSytem?.type === 'backendSystem') {
-                    selectedSystemClient = (selectedSytem.system as BackendSystem)?.client;
-                } else if (selectedSytem?.type === 'destination') {
+                if (selectedSystem?.type === 'backendSystem') {
+                    selectedSystemClient = (selectedSystem.system as BackendSystem)?.client;
+                } else if (selectedSystem?.type === 'destination') {
                     // Note no need to set the client as its specified by the destination itself
-                    const destination = selectedSytem.system as Destination;
+                    const destination = selectedSystem.system as Destination;
                     if (isFullUrlDestination(destination) || isPartialUrlDestination(destination)) {
                         isSystem = false;
                     }
@@ -98,32 +99,48 @@ export function getCredentialsPrompts<T extends Answers>(
                     }
                 );
                 if (valResult === true && connectionValidator.serviceProvider) {
-                    PromptState.odataService.connectedSystem = {
-                        serviceProvider: connectionValidator.serviceProvider
-                    };
-                    // If the connection is successful and an existing backend system was selected,
-                    // update the existing backend system with the new credentials that may be used to update in the store.
-                    if (selectedSytem?.type === 'backendSystem') {
-                        const backendSystem = selectedSytem.system as BackendSystem;
-                        // Have the credentials changed..
-                        if (
-                            backendSystem.username !== answers?.[usernamePromptName] ||
-                            backendSystem.password !== password
-                        ) {
-                            PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
-                                username: answers?.[usernamePromptName],
-                                password,
-                                newOrUpdated: true
-                            } as Partial<BackendSystem>);
-                        }
-                        // If the connection is successful and a destination was selected, assign the connected destination to the prompt state.
-                    } else if (selectedSytem?.type === 'destination') {
-                        PromptState.odataService.connectedSystem.destination = selectedSytem.system as Destination;
-                    }
+                    updatePromptStateWithConnectedSystem(connectionValidator.serviceProvider, selectedSystem, {
+                        username: answers?.[usernamePromptName],
+                        password: password
+                    });
                     return true;
                 }
                 return valResult;
             }
         } as PasswordQuestion<T>
     ];
+}
+
+/**
+ * Updates the prompt state with the connected system.
+ *
+ * @param serviceProvider the connected system service provider which is used to update the prompt state
+ * @param selectedSystem  the selected system, either a backend system or a destination
+ * @param credentials
+ * @param credentials.username the username
+ * @param credentials.password the password
+ */
+function updatePromptStateWithConnectedSystem(
+    serviceProvider: ServiceProvider,
+    selectedSystem: SystemSelectionAnswerType,
+    { username, password }: { username: string; password: string }
+): void {
+    PromptState.odataService.connectedSystem = {
+        serviceProvider
+    };
+    // Update the existing backend system with the new credentials that may be used to update in the store.
+    if (selectedSystem?.type === 'backendSystem') {
+        const backendSystem = selectedSystem.system as BackendSystem;
+        // Have the credentials changed..
+        if (backendSystem.username !== username || backendSystem.password !== password) {
+            PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
+                username: username,
+                password,
+                newOrUpdated: true
+            } as Partial<BackendSystem>);
+        }
+        // If the connection is successful and a destination was selected, assign the connected destination to the prompt state.
+    } else if (selectedSystem?.type === 'destination') {
+        PromptState.odataService.connectedSystem.destination = selectedSystem.system as Destination;
+    }
 }
