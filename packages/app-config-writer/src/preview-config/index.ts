@@ -40,7 +40,6 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     }
 
     await updatePreviewMiddlewareConfigs(fs, basePath, logger);
-    //todo: check if this can be deleted because of renameSandbox
     await renameDefaultSandboxes(fs, basePath);
     await deleteNoLongerUsedFiles(fs, basePath);
     await updateVariantsCreationScript(fs, basePath, logger);
