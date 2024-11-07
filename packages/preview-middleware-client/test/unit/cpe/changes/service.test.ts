@@ -1211,7 +1211,7 @@ describe('ChangeService', () => {
                         'parameters',
                         {
                             'entityPropertyChange': {
-                                'propertyPath': 'text',
+                                'propertyPath': 'controlConfig/settings',
                                 'operation': 'upsert',
                                 'propertyValue': 'hello'
                             }
@@ -1242,8 +1242,8 @@ describe('ChangeService', () => {
                         fileName: 'testFileName',
                         type: 'pending',
                         kind: 'configuration',
-                        propertyName: 'text',
-                        propertyPath: '',
+                        propertyName: 'settings',
+                        propertyPath: 'controlConfig',
                         value: 'hello'
                     }
                 ]

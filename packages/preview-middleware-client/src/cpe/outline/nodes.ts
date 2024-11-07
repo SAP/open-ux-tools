@@ -101,10 +101,16 @@ function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string
     if (control) {
         const overlay = getOverlay(control);
         const overlayData = overlay?.getDesignTimeMetadata().getData();
+        if (!overlayData?.manifestSettings) {
+            return;
+        }
         if (overlayData) {
             const path = overlayData?.manifestPropertyPath?.(control);
             const pageName = getPageName(control);
-            const key = getConfigMapControlIdMap(pageName, path.split('/'));
+            const key = getConfigMapControlIdMap(
+                pageName,
+                path.split('/').filter((item) => item)
+            );
             if (key) {
                 if (!propertyIdMap.get(key)) {
                     propertyIdMap.set(key, []);

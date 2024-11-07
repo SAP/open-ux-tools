@@ -269,7 +269,8 @@ export class ChangeService extends EventTarget {
                                         kind: 'configuration',
                                         fileName: change.fileName,
                                         controlIds,
-                                        propertyPath: getCompactV4ConfigPath(propertyPathSegments),
+                                        propertyPath:
+                                            getCompactV4ConfigPath(propertyPathSegments) || change.content.page,
                                         propertyName: propertyName ?? '',
                                         value: change.content.entityPropertyChange.propertyValue,
                                         timestamp: new Date(change.creation).getTime()
@@ -571,7 +572,7 @@ export class ChangeService extends EventTarget {
                 type: 'pending',
                 kind: 'configuration',
                 controlIds,
-                propertyPath: getCompactV4ConfigPath(propertyPathSegments),
+                propertyPath: getCompactV4ConfigPath(propertyPathSegments) || page,
                 propertyName: propName,
                 isActive,
                 value,
@@ -751,7 +752,5 @@ export class ChangeService extends EventTarget {
  * @returns string
  */
 function getCompactV4ConfigPath(propertyPathSeg: string[]): string {
-    return propertyPathSeg.join('/').replace(/^controlConfiguration\/@[^/]+\.v1\./, '');
+    return propertyPathSeg.join('/').replace(/^controlConfiguration\/(?:([^/]+\/))?@[^/]+\.v1\./, '$1');
 }
-
-

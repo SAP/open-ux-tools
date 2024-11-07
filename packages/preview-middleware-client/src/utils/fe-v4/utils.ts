@@ -17,7 +17,6 @@ export function getReference(control: ManagedObject): string {
     return manifest?.['sap.app']?.id ?? '';
 }
 
-
 /**
  * Gets app component of a v4 project.
  *
@@ -53,7 +52,6 @@ export function getV4PageType(control: ManagedObject): 'ObjectPage' | 'ListRepor
     }
 }
 
-
 /**
  * Get the containing page name of a control.
  *
@@ -70,6 +68,10 @@ export function getPageName(control: ManagedObject): string | undefined {
 }
 
 export function getConfigMapControlIdMap(page: string | undefined, propertyPathSegments: string[]): string {
+    if (page && !propertyPathSegments.length) {
+        return page;
+    }
+
     if (page) {
         return `${page}-${propertyPathSegments.join('/')}`;
     }
