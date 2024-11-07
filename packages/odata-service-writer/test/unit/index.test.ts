@@ -1,4 +1,4 @@
-import type { OdataService } from '../../src';
+import type { EdmxAnnotationsInfo, OdataService } from '../../src';
 import { generate, remove, OdataVersion, ServiceType } from '../../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
@@ -372,10 +372,24 @@ describe('remove', () => {
             .toString();
         const ui5LocalYaml = (await UI5Config.newInstance(''))
             .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
-            .addMockServerMiddleware([{ serviceName: 'mainService', servicePath: '/sap' }], [])
+            .addMockServerMiddleware(
+                [{ serviceName: 'mainService', servicePath: '/sap' }],
+                [
+                    {
+                        urlPath: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`
+                    }
+                ]
+            )
             .toString();
         const ui5MockYaml = (await UI5Config.newInstance(''))
-            .addMockServerMiddleware([{ serviceName: 'mainService', servicePath: '/sap' }], [])
+            .addMockServerMiddleware(
+                [{ serviceName: 'mainService', servicePath: '/sap' }],
+                [
+                    {
+                        urlPath: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`
+                    }
+                ]
+            )
             .toString();
         // generate required files
         fs = create(createStorage());
@@ -391,7 +405,25 @@ describe('remove', () => {
                     dataSources: {
                         mainService: {
                             uri: '/sap',
-                            type: 'OData'
+                            type: 'OData',
+                            settings: {
+                                annotations: ['SEPMRA_PROD_MAN', 'annotation'],
+                                localUri: 'annotations/annotation.xml'
+                            }
+                        },
+                        SEPMRA_PROD_MAN: {
+                            uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
+                            type: 'ODataAnnotation',
+                            settings: {
+                                localUri: 'localService/SEPMRA_PROD_MAN.xml'
+                            }
+                        },
+                        annotation: {
+                            type: 'ODataAnnotation',
+                            uri: 'annotations/annotation.xml',
+                            settings: {
+                                localUri: 'annotations/annotation.xml'
+                            }
                         }
                     }
                 },
@@ -413,7 +445,7 @@ describe('remove', () => {
                 url: 'https://dummyUrl',
                 path: '/dummyPath',
                 type: ServiceType.EDMX,
-                annotations: []
+                annotations: [{ technicalName: 'dummy-technical-name' }] as EdmxAnnotationsInfo[]
             },
             fs
         );
@@ -421,8 +453,26 @@ describe('remove', () => {
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
         expect(manifest['sap.app'].dataSources).toStrictEqual({
             mainService: {
+                uri: '/sap',
                 type: 'OData',
-                uri: '/sap'
+                settings: {
+                    annotations: ['SEPMRA_PROD_MAN', 'annotation'],
+                    localUri: 'annotations/annotation.xml'
+                }
+            },
+            SEPMRA_PROD_MAN: {
+                uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
+                type: 'ODataAnnotation',
+                settings: {
+                    localUri: 'localService/SEPMRA_PROD_MAN.xml'
+                }
+            },
+            annotation: {
+                type: 'ODataAnnotation',
+                uri: 'annotations/annotation.xml',
+                settings: {
+                    localUri: 'annotations/annotation.xml'
+                }
             }
         });
         expect(manifest['sap.ui5'].models).toStrictEqual({
@@ -438,6 +488,9 @@ describe('remove', () => {
             'backend:\n          - path: /sap\n            url: https://localhost\n'
         );
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain('services:\n          - urlPath: /sap\n');
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain(
+            `annotations:\n          - urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/\n`
+        );
     });
     it('Remove an existing service', async () => {
         await remove(
@@ -447,13 +500,21 @@ describe('remove', () => {
                 url: 'https://localhost',
                 path: '/sap',
                 type: ServiceType.EDMX,
-                annotations: []
+                annotations: [{ technicalName: 'SEPMRA_PROD_MAN' }] as EdmxAnnotationsInfo[]
             },
             fs
         );
         // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-        expect(manifest['sap.app'].dataSources).toStrictEqual({});
+        expect(manifest['sap.app'].dataSources).toStrictEqual({
+            annotation: {
+                type: 'ODataAnnotation',
+                uri: 'annotations/annotation.xml',
+                settings: {
+                    localUri: 'annotations/annotation.xml'
+                }
+            }
+        });
         expect(manifest['sap.ui5'].models).toStrictEqual({});
         // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
         expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('- path: /sap\n            url: http://localhost\n');
@@ -462,6 +523,9 @@ describe('remove', () => {
         );
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).not.toContain(
             'services:\n          - urlPath: /sap/odata/testme\n '
+        );
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain(
+            `annotations:\n          - urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/\n`
         );
     });
 });

@@ -468,11 +468,12 @@ export class UI5Config {
     /**
      * Removes a service from the mockserver middleware.
      *
-     * @param servicePath path of the service that is to be deleted
+     * @param servicePath - path of the service that is to be deleted
+     * @param annotationsURI - list of URI of the service related annotations
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public removeServiceFromMockServerMiddleware(servicePath: string): this {
+    public removeServiceFromMockServerMiddleware(servicePath: string, annotationsURI: string[]): this {
         const middlewareListYaml = this.document.getSequence({ path: 'server.customMiddleware' });
         const mockserverMiddlewareYaml = this.document.findItem(
             middlewareListYaml,
@@ -483,17 +484,29 @@ export class UI5Config {
         } else {
             const mockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver');
             const mockserverMiddlewareConfig = mockserverMiddleware?.configuration as MockserverConfig;
+            const configuration = this.document.getMap({
+                start: mockserverMiddlewareYaml,
+                path: 'configuration'
+            });
             // Remove service from middleware configurations in yaml
             if (mockserverMiddlewareConfig.services) {
                 const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
                     (existingService) => existingService.urlPath === servicePath
                 );
-                const configuration = this.document.getMap({
-                    start: mockserverMiddlewareYaml,
-                    path: 'configuration'
-                });
                 const services = this.document.getSequence({ start: configuration, path: 'services' });
                 services.delete(serviceIndex);
+            }
+            // Remove service related annotations
+            if (mockserverMiddlewareConfig.annotations) {
+                const mockserverMiddlewareConfigAnnotations = mockserverMiddlewareConfig.annotations;
+                const annotationSection = this.document.getSequence({ start: configuration, path: 'annotations' });
+                annotationsURI.forEach((annotationPath: string) => {
+                    // Search for annotations that needs to be deleted
+                    const annotationIndex = mockserverMiddlewareConfigAnnotations.findIndex(
+                        (existingAnnotation) => existingAnnotation.urlPath === annotationPath
+                    );
+                    annotationSection.delete(annotationIndex);
+                });
             }
         }
         return this;

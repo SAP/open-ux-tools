@@ -117,6 +117,29 @@ function extendBackendMiddleware(fs: Editor, service: OdataService, ui5Config: U
 }
 
 /**
+ * Returns all URI of the service annotations.
+ *
+ * @param {OdataService} serviceAnnotations - service annotations
+ * @returns {string} annotations URI.
+ */
+function getAnnotationsURI(serviceAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]): string[] {
+    const serviceAnnotationsURI: string[] = [];
+    if (Array.isArray(serviceAnnotations)) {
+        // URI for local annotations starts with "annotations/.."
+        serviceAnnotations.forEach((annotation: EdmxAnnotationsInfo) => {
+            serviceAnnotationsURI.push(
+                `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(${annotation.technicalName}) %>',Version='0001')/$value/`
+            );
+        });
+    } else {
+        serviceAnnotationsURI.push(
+            `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(${serviceAnnotations.technicalName}) %>',Version='0001')/$value/`
+        );
+    }
+    return serviceAnnotationsURI;
+}
+
+/**
  * Writes the odata service related file updates to an existing UI5 project specified by the base path.
  *
  * @param {string} basePath - the root path of an existing UI5 application
@@ -238,6 +261,7 @@ async function remove(
     let ui5LocalConfig: UI5Config | undefined;
     let ui5MockConfig: UI5Config | undefined;
     const paths = await findProjectFiles(basePath, fs);
+    // Delete service and it's annotations from manifest
     deleteServiceFromManifest(basePath, service.name, fs);
     const isServiceTypeEdmx = service.type === ServiceType.EDMX;
     // Remove service related data from middlewares for EDMX services
@@ -249,22 +273,25 @@ async function remove(
             ui5Config.removeBackendFromFioriToolsProxydMiddleware(service.url);
             fs.write(paths.ui5Yaml, ui5Config.toString());
         }
+        const serviceAnnotationsURI = getAnnotationsURI(
+            service.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[]
+        );
         if (paths.ui5LocalYaml) {
             ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
             // Delete service backend from fiori-tools-proxy middleware config
             ui5LocalConfig.removeBackendFromFioriToolsProxydMiddleware(service.url);
             // Delete service from mockserver middleware config
-            ui5LocalConfig.removeServiceFromMockServerMiddleware(service.path);
+            ui5LocalConfig.removeServiceFromMockServerMiddleware(service.path, serviceAnnotationsURI);
             fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
         }
         if (paths.ui5MockYaml) {
             ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
             // Delete service from mockserver config
-            ui5MockConfig.removeServiceFromMockServerMiddleware(service.path);
+            ui5MockConfig.removeServiceFromMockServerMiddleware(service.path, serviceAnnotationsURI);
             fs.write(paths.ui5MockYaml, ui5MockConfig.toString());
         }
     } else {
-        // Remove annotations from CDS files
+        // Remove annotations from CDS files based on annotations info
         await removeAnnotationsFromCDSFiles(service.annotations as CdsAnnotationsInfo | CdsAnnotationsInfo[], fs);
     }
     return fs;
