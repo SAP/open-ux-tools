@@ -12,6 +12,7 @@ import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
 import { AddTableCustomColumnQuickAction } from './create-table-custom-column';
 import { AddPageActionQuickAction } from '../common/create-page-action';
 import { AddTableActionQuickAction } from './create-table-action';
+import { EnableTableFilteringQuickAction } from './lr-enable-table-filtering';
 
 type PageName = 'listReport' | 'objectPage';
 
@@ -41,7 +42,8 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         ChangeTableColumnsQuickAction,
                         AddPageActionQuickAction,
                         AddTableActionQuickAction,
-                        AddTableCustomColumnQuickAction
+                        AddTableCustomColumnQuickAction,
+                        EnableTableFilteringQuickAction
                     ],
                     view,
                     key: name + index
