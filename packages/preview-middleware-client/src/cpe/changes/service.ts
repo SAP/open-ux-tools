@@ -421,10 +421,8 @@ export class ChangeService extends EventTarget {
                 this.pendingChanges = pendingChanges.filter((change): boolean => !!change);
                 const changesRequiringReload = this.pendingChanges.reduce(
                     (sum, change) =>
-                        [
-                            'appdescr_fe_changePageConfiguration',
-                            'appdescr_ui_generic_app_changePageConfiguration'
-                        ].includes(change.changeType)
+                        change.kind === CONFIGURATION_CHANGE_KIND ||
+                        change.changeType === 'appdescr_ui_generic_app_changePageConfiguration'
                             ? sum + 1
                             : sum,
                     0
