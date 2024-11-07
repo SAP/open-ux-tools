@@ -118,7 +118,7 @@ export class ErrorHandler {
 
     private static _logger: Logger;
 
-    private static getMessageFromError = (error: unknown): string => {
+    private static readonly getMessageFromError = (error: unknown): string => {
         return (
             (error as Error)?.message ||
             (error as AxiosError)?.status?.toString() ||
