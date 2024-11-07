@@ -11,7 +11,6 @@ import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { AdpPreview } from '../../../src/preview/adp-preview';
 import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
 import { addXmlFragment, tryFixChange } from '../../../src/preview/change-handler';
-import exp from 'constants';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -121,21 +120,23 @@ describe('AdaptationProject', () => {
         }
     };
 
-    beforeEach(() => {
-        nock(backend)
-            .get((path) => path.startsWith('/sap/bc/lrep/actions/getcsrftoken/'))
-            .reply(200)
-            .persist(true);
-        nock(backend)
-            .put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//')
-            .reply(200, {
-                'my.adaptation': mockMergedDescriptor
-            })
-            .persist(true);
-    });
-
     const logger = new ToolsLogger();
     describe('init', () => {
+        beforeAll(() => {
+            nock(backend)
+                .get((path) => path.startsWith('/sap/bc/lrep/actions/getcsrftoken/'))
+                .reply(200)
+                .persist(true);
+            nock(backend)
+                .put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//')
+                .reply(200, {
+                    'my.adaptation': mockMergedDescriptor
+                })
+                .persist(true);
+        });
+        afterAll(() => {
+            nock.cleanAll();
+        });
         test('default (no) config', async () => {
             const adp = new AdpPreview(
                 {
@@ -181,6 +182,31 @@ describe('AdaptationProject', () => {
         });
     });
     describe('sync', () => {
+        let secondCall: boolean = false;
+        beforeAll(() => {
+            nock(backend)
+                .get((path) => path.startsWith('/sap/bc/lrep/actions/getcsrftoken/'))
+                .reply(200)
+                .persist(true);
+            nock(backend)
+                .put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//')
+                .reply(200, () => {
+                    if (secondCall) {
+                        return {
+                            'my.adaptation': 'testDescriptor'
+                        };
+                    }
+                    return {
+                        'my.adaptation': mockMergedDescriptor
+                    };
+                })
+                .persist(true);
+        });
+
+        afterAll(() => {
+            nock.cleanAll();
+        });
+
         test('updates merged descriptor', async () => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
             const adp = new AdpPreview(
@@ -206,13 +232,7 @@ describe('AdaptationProject', () => {
             expect(adp.descriptor).toBeDefined();
         });
 
-        test('skip updating the merge descriptor if no manifest changes', async () => {
-            nock(backend).put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//').reply(200, {
-                'my.adaptation': mockMergedDescriptor
-            });
-            nock(backend).put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//').reply(200, {
-                'my.adaptation': 'testDescriptor'
-            });
+        test('skip updating the merge descriptor if no manifest changes and descriptor was already fetched', async () => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
             const adp = new AdpPreview(
                 {
@@ -234,16 +254,39 @@ describe('AdaptationProject', () => {
             await adp.init(JSON.parse(descriptorVariant));
             (adp as any).mergedDescriptor = undefined;
             await adp.sync();
-            expect(adp.descriptor).toBeDefined();
+            expect(adp.descriptor).toEqual(mockMergedDescriptor);
+            secondCall = true;
             await adp.sync();
+            secondCall = false;
             expect(adp.descriptor).not.toEqual('testDescriptor');
         });
 
         test('update descriptor if no manifest changes, but this is first descriptor fetch', async () => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
-            nock(backend).put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//').reply(200, {
-                'my.adaptation': mockMergedDescriptor
-            });
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getPath: () => '/manifest.appdescr_variant',
+                    getBuffer: () => Buffer.from(descriptorVariant)
+                }
+            ]);
+            await adp.init(JSON.parse(descriptorVariant));
+            (adp as any).mergedDescriptor = undefined;
+            await adp.sync();
+            expect(adp.descriptor).toEqual(mockMergedDescriptor);
+        });
+
+        test('update descriptor if descriptor was already fetched, but there are manifest changes', async () => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
             const adp = new AdpPreview(
                 {
@@ -265,13 +308,28 @@ describe('AdaptationProject', () => {
             await adp.init(JSON.parse(descriptorVariant));
             (adp as any).mergedDescriptor = undefined;
             await adp.sync();
-            expect(adp.descriptor).toBeDefined();
+            expect(adp.descriptor).toEqual(mockMergedDescriptor);
+            secondCall = true;
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
+            await adp.sync();
+            secondCall = false;
+            expect(adp.descriptor).toEqual('testDescriptor');
         });
     });
     describe('proxy', () => {
         let server: SuperTest<Test>;
         const next = jest.fn().mockImplementation((_req, res) => res.status(200).send());
         beforeAll(async () => {
+            nock(backend)
+                .get((path) => path.startsWith('/sap/bc/lrep/actions/getcsrftoken/'))
+                .reply(200)
+                .persist(true);
+            nock(backend)
+                .put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//')
+                .reply(200, {
+                    'my.adaptation': mockMergedDescriptor
+                })
+                .persist(true);
             const adp = new AdpPreview(
                 {
                     target: {
@@ -297,6 +355,10 @@ describe('AdaptationProject', () => {
             app.use((req) => fail(`${req.path} should have been intercepted.`));
 
             server = supertest(app);
+        });
+
+        afterAll(() => {
+            nock.cleanAll();
         });
 
         afterEach(() => {
@@ -385,6 +447,16 @@ describe('AdaptationProject', () => {
     describe('addApis', () => {
         let server: SuperTest<Test>;
         beforeAll(async () => {
+            nock(backend)
+                .get((path) => path.startsWith('/sap/bc/lrep/actions/getcsrftoken/'))
+                .reply(200)
+                .persist(true);
+            nock(backend)
+                .put('/sap/bc/lrep/appdescr_variant_preview/?workspacePath=//')
+                .reply(200, {
+                    'my.adaptation': mockMergedDescriptor
+                })
+                .persist(true);
             const adp = new AdpPreview(
                 {
                     target: {
