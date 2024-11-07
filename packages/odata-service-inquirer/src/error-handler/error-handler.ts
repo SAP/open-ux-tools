@@ -1,13 +1,6 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type { Destination } from '@sap-ux/btp-utils';
-import {
-    isAbapODataDestination,
-    isAppStudio,
-    isFullUrlDestination,
-    isHTML5DynamicConfigured,
-    isOnPremiseDestination,
-    isPartialUrlDestination
-} from '@sap-ux/btp-utils';
+import { isAppStudio, isHTML5DynamicConfigured, isOnPremiseDestination } from '@sap-ux/btp-utils';
 import {
     getHelpUrl,
     GUIDED_ANSWERS_ICON,
@@ -18,21 +11,15 @@ import {
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
 import { ValidationLink } from '../types';
-import { sendTelemetryEvent } from '../utils';
+import { getTelemPropertyDestinationType, sendTelemetryEvent } from '../utils';
 
 // Telemetry event names specific to odata service error handling
 const telemEventGALinkCreated = 'GA_LINK_CREATED';
 const telemBasError = 'SERVICE_INQUIRER_BAS_ERROR';
-type TelemPropertyDestinationType =
-    | 'AbapODataCatalogDest'
-    | 'GenericODataFullUrlDest'
-    | 'GenericODataPartialUrlDest'
-    | 'Unknown';
 
 /**
  * Constants specific to error handling
  */
-
 export enum ERROR_TYPE {
     AUTH = 'AUTH',
     AUTH_TIMEOUT = 'AUTH_TIMEOUT',
@@ -116,23 +103,6 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
 
 type ValidationLinkOrString = string | ValidationLink;
 
-/**
- * Used only to generate telemetry events in the case of destination errors.
- *
- * @param destination
- * @returns the telemetry property destination type
- */
-function getTelemPropertyDestinationType(destination: Destination): TelemPropertyDestinationType {
-    if (isAbapODataDestination(destination)) {
-        return 'AbapODataCatalogDest';
-    } else if (isFullUrlDestination(destination)) {
-        return 'GenericODataFullUrlDest';
-    } else if (isPartialUrlDestination(destination)) {
-        return 'GenericODataPartialUrlDest';
-    } else {
-        return 'Unknown';
-    }
-}
 // Best effort to get a useful error message from an error of unknown type
 const getErrorMessage = (error: unknown): string =>
     (error as Error)?.message ?? (typeof error === 'string' ? error : JSON.stringify(error));

@@ -8,10 +8,12 @@ import {
     ServiceType,
     V2CatalogService
 } from '@sap-ux/axios-extension';
+import type { Destination } from '@sap-ux/btp-utils';
+import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
-import { PromptState } from '../../../../utils';
+import { getTelemPropertyDestinationType, PromptState, sendTelemetryEvent } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
@@ -20,6 +22,8 @@ import type { ServiceAnswer } from './types';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON/'];
+// Telemetry event name for successful service validation on BAS, note: legacy event names should not be changed
+export const telemEventBASServiceSuccess = 'SERVICE_INQUIRER_BAS_SUCCESS';
 /**
  * Builds and formats the service choices list.
  *
@@ -125,16 +129,26 @@ export async function getServiceChoices(catalogs: CatalogService[]): Promise<Lis
     const serviceInfos: ODataServiceInfo[][] = await Promise.all(listServicesRequests);
     const flatServices = serviceInfos?.flat() ?? [];
     LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
+
     if (flatServices.length === 0) {
         logServiceCatalogErrorsForHelp(requestErrors, catalogs.length);
-    } else {
-        // todo : send telemetry that we successfullly queried the catalog services from a destination
-        /**
-         * const telemBasSucess = 'SERVICE_INQUIRER_BAS_SUCCESS';
-         */
     }
 
     return createServiceChoices(flatServices);
+}
+
+/**
+ * Generates a telemetry event for successfully listing service(s) using a destination.
+ *
+ * @param destination the destination used to list the service(s)
+ */
+export function sendDestinationServiceSuccessTelemetryEvent(destination: Destination): void {
+    // May return undefined if the same event was already sent within some time frame
+    const telemetryData =
+        TelemetryHelper.createTelemetryData({
+            destODataType: getTelemPropertyDestinationType(destination)
+        }) ?? {};
+    sendTelemetryEvent(telemEventBASServiceSuccess, telemetryData);
 }
 
 /**

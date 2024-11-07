@@ -10,7 +10,6 @@ import type { ListChoiceOptions } from 'inquirer';
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
  */
-
 export enum DatasourceType {
     sapSystem = 'sapSystem',
     businessHub = 'businessHub',

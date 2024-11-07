@@ -1,5 +1,11 @@
 import { ODataVersion } from '@sap-ux/axios-extension';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import {
+    type Destination,
+    isAbapODataDestination,
+    isAppStudio,
+    isFullUrlDestination,
+    isPartialUrlDestination
+} from '@sap-ux/btp-utils';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { TelemetryEvent, TelemetryProperties, ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { SampleRate } from '@sap-ux/telemetry';
@@ -12,6 +18,12 @@ import { hostEnvironment } from '../types';
 import { PromptState } from './prompt-state';
 
 const osVersionName = osName();
+
+export type TelemPropertyDestinationType =
+    | 'AbapODataCatalogDest'
+    | 'GenericODataFullUrlDest'
+    | 'GenericODataPartialUrlDest'
+    | 'Unknown';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
@@ -46,6 +58,7 @@ export function setTelemetryClient(toolsSuiteTelemetryClient: ToolsSuiteTelemetr
 export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): void {
     const telemetryEvent = createTelemetryEvent(eventName, telemetryData);
     if (telemetryClient) {
+        // Do not wait for the telemetry event to be sent, it cannot be recovered if it fails, do not block the process
         /* eslint-disable @typescript-eslint/no-floating-promises */
         telemetryClient.reportEvent(telemetryEvent, SampleRate.NoSampling);
     }
@@ -68,6 +81,24 @@ function createTelemetryEvent(eventName: string, telemetryData: TelemetryPropert
         properties: telemProps,
         measurements: {}
     };
+}
+
+/**
+ * Used only to generate telemetry events in the case of destination errors.
+ *
+ * @param destination
+ * @returns the telemetry property destination type
+ */
+export function getTelemPropertyDestinationType(destination: Destination): TelemPropertyDestinationType {
+    if (isAbapODataDestination(destination)) {
+        return 'AbapODataCatalogDest';
+    } else if (isFullUrlDestination(destination)) {
+        return 'GenericODataFullUrlDest';
+    } else if (isPartialUrlDestination(destination)) {
+        return 'GenericODataPartialUrlDest';
+    } else {
+        return 'Unknown';
+    }
 }
 
 /**

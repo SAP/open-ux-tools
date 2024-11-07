@@ -17,10 +17,13 @@ import {
     getSelectedServiceLabel,
     getSelectedServiceMessage,
     getServiceChoices,
-    getServiceDetails
+    getServiceDetails,
+    sendDestinationServiceSuccessTelemetryEvent
 } from '../service-selection/service-helper';
 import { type ServiceAnswer } from './types';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { SystemSelectionAnswers } from '../system-selection';
+import type { Destination } from '@sap-ux/btp-utils';
 
 const cliServicePromptName = 'cliServiceSelection';
 
@@ -57,7 +60,8 @@ export function getSystemServiceQuestion(
             applyDefaultWhenDirty: true
         },
         source: (prevAnswers: unknown, input: string) => searchChoices(input, serviceChoices as ListChoiceOptions[]),
-        choices: async () => {
+        // SystemSelectionAnswers should not be needed here in the interest of keeping these prompts decoupled but TelemetryHelper is used here and it requires the previously selected destination
+        choices: async (answers: SystemSelectionAnswers) => {
             if (
                 serviceChoices.length === 0 ||
                 previousSystemUrl !== connectValidator.validatedUrl ||
@@ -67,15 +71,20 @@ export function getSystemServiceQuestion(
                 if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
                     let catalogs: CatalogService[] = [];
                     if (requiredOdataVersion && connectValidator.catalogs[requiredOdataVersion]) {
-                        catalogs.push(connectValidator.catalogs[requiredOdataVersion]!);
+                        catalogs.push(connectValidator.catalogs[requiredOdataVersion]);
                     } else {
-                        catalogs = Object.values(connectValidator.catalogs).filter(
-                            (cat) => cat !== undefined
-                        ) as CatalogService[];
+                        catalogs = Object.values(connectValidator.catalogs).filter((cat) => cat !== undefined);
                     }
                     previousSystemUrl = connectValidator.validatedUrl;
                     previousClient = connectValidator.validatedClient;
                     serviceChoices = await getServiceChoices(catalogs);
+
+                    // Telemetry event for successful service listing using a destination
+                    if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
+                        sendDestinationServiceSuccessTelemetryEvent(
+                            answers?.[`${promptNames.systemSelection}`]?.system as Destination
+                        );
+                    }
                 } else if (connectValidator.odataService && connectValidator.validatedUrl) {
                     // We have connected to a service endpoint, use this service as the only choice
                     const serviceUrl = new URL(connectValidator.destinationUrl ?? connectValidator.validatedUrl);
@@ -87,10 +96,12 @@ export function getSystemServiceQuestion(
                             } as ServiceAnswer
                         }
                     ];
-                    // todo : send telemetry that we successfullly queried the services from a destination, this covers full/part url dests
-                    /**
-                     * const telemBasSucess = 'SERVICE_INQUIRER_BAS_SUCCESS';
-                     */
+                    // Telemetry event for successful service listing using a destination
+                    if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
+                        sendDestinationServiceSuccessTelemetryEvent(
+                            answers?.[`${promptNames.systemSelection}`]?.system as Destination
+                        );
+                    }
                 } else {
                     LoggerHelper.logger.error(t('error.noCatalogOrServiceAvailable'));
                 }
