@@ -89,9 +89,6 @@ export async function updatePreviewMiddlewareConfigs(
         invalid: invalidUi5YamlFileNames,
         skipped: skippedUi5YamlFileNames
     } = await getAllUi5YamlFileNames(fs, basePath);
-    skippedUi5YamlFileNames?.forEach((fileName) => {
-        logger?.warn(`Schema validation not possible for file ${fileName}. File ${fileName} will not be converted.`);
-    });
     const unprocessedUi5YamlFileNames = [...validUi5YamlFileNames];
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
@@ -106,6 +103,7 @@ export async function updatePreviewMiddlewareConfigs(
         }
 
         const ui5Yaml = basename(extractYamlConfigFileName(script));
+        unprocessedUi5YamlFileNames.splice(unprocessedUi5YamlFileNames.indexOf(ui5Yaml), 1);
 
         if ((invalidUi5YamlFileNames ?? []).includes(ui5Yaml)) {
             logger?.error(
@@ -114,9 +112,16 @@ export async function updatePreviewMiddlewareConfigs(
             continue;
         }
 
+        if ((skippedUi5YamlFileNames ?? []).includes(ui5Yaml)) {
+            logger?.error(
+                `Skipping script ${scriptName} with UI5 yaml configuration file ${ui5Yaml} because the schema validation was not possible for file ${ui5Yaml}.`
+            );
+            continue;
+        }
+
         if (!validUi5YamlFileNames.includes(ui5Yaml)) {
             logger?.error(
-                `Skipping script ${scriptName} because UI5 yaml configuration file ${ui5Yaml} could not be found or is invalid.`
+                `Skipping script ${scriptName} because UI5 yaml configuration file ${ui5Yaml} could not be found.`
             );
             continue;
         }
@@ -124,8 +129,6 @@ export async function updatePreviewMiddlewareConfigs(
         await processUi5YamlConfig(fs, basePath, ui5Yaml, script);
 
         logger?.info(`UI5 yaml configuration file ${ui5Yaml} updated according to script ${scriptName}.`);
-
-        unprocessedUi5YamlFileNames.splice(unprocessedUi5YamlFileNames.indexOf(ui5Yaml), 1);
     }
     for (const ui5Yaml of unprocessedUi5YamlFileNames) {
         //todo: adjust at least deprecated preview config in unused ui5 yaml configurations?
