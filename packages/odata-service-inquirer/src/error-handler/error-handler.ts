@@ -141,15 +141,15 @@ export class ErrorHandler {
             }),
         [ERROR_TYPE.AUTH]: (error) =>
             t('errors.authenticationFailed', {
-                error: (error as Error)?.message || typeof error === 'string' ? error : JSON.stringify(error)
+                error: getErrorMessage(error)
             }),
         [ERROR_TYPE.AUTH_TIMEOUT]: () => t('errors.authenticationTimeout'),
         [ERROR_TYPE.TIMEOUT]: (error) =>
             t('errors.timeout', { error: typeof error === 'string' ? error : JSON.stringify(error) }),
-        [ERROR_TYPE.INVALID_URL]: () => t('errors.invalidUrl'),
+        [ERROR_TYPE.INVALID_URL]: (invalidUrl) => t('errors.invalidUrl', { input: invalidUrl ?? '' }),
         [ERROR_TYPE.CONNECTION]: (error) =>
             t('errors.connectionError', {
-                error: (error as Error)?.message || typeof error === 'string' ? error : JSON.stringify(error)
+                error: getErrorMessage(error)
             }),
         [ERROR_TYPE.UNKNOWN]: (error) =>
             t('errors.unknownError', {

@@ -12,12 +12,14 @@ import type { ListChoiceOptions } from 'inquirer';
  */
 export enum DatasourceType {
     sapSystem = 'sapSystem',
-    businessHub = 'businessHub',
     capProject = 'capProject',
     odataServiceUrl = 'odataServiceUrl',
     none = 'none',
     metadataFile = 'metadataFile',
-    projectSpecificDestination = 'projectSpecificDestination'
+    // @deprecated
+    projectSpecificDestination = 'projectSpecificDestination',
+    // @deprecated
+    businessHub = 'businessHub'
 }
 
 export const SapSystemTypes = {

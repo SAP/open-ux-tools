@@ -129,7 +129,7 @@
     "errors": {
         "destination": {
             "unavailable": "The selected destination references an instance that is not available. Please check your destination configuration and try again.",
-            "notFound": "The destination is mis-configured, HTTP Error 404 returned, the requested resource could not be found.",
+            "notFound": "The destination is misconfigured, HTTP Error 404 returned, the requested resource could not be found.",
             "authError": "The selected system is returning an authentication error. System name: {{systemName}}, error: {{- error}}",
             "notReachable": "The selected system is not reachable. System name: {{systemName}}, error: {{- error}}",
             "misconfigured": "The destination is misconfigured. $t(errors.destination.missingPropMsg, {\"destinationProperty\": \"{{destinationProperty}}\" })",

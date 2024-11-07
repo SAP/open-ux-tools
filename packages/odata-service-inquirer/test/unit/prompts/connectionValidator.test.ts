@@ -419,6 +419,8 @@ describe('ConnectionValidator', () => {
         getOdataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(401));
         expect(await connectValidator.isAuthRequired('https://example.com/serviceA', '111')).toBe(true);
         expect(getOdataServiceSpy).toHaveBeenCalled();
+        // bad url
+        expect(await connectValidator.isAuthRequired('bad url', '111')).toBe(false);
     });
 
     test('should validate service key info can be used to authenticate', async () => {
