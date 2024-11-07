@@ -345,9 +345,27 @@ describe('UI5Config', () => {
         test('remove exisisting service', () => {
             // Create middleware with one service
             ui5Config.addMockServerMiddleware([{ serviceName: 'new-service', servicePath: '/path/to/service' }], []);
+            let mockserverMiddleware = ui5Config.findCustomMiddleware('sap-fe-mockserver');
+            expect(mockserverMiddleware?.configuration).toStrictEqual({
+                services: [
+                    {
+                        generateMockData: true,
+                        metadataPath: './webapp/localService/new-service/metadata.xml',
+                        mockdataPath: './webapp/localService/new-service/data',
+                        urlPath: '/path/to/service'
+                    }
+                ],
+                mountPath: '/',
+                annotations: []
+            });
             // Remove it
             ui5Config.removeServiceFromMockServerMiddleware('/path/to/service', []);
-            expect(ui5Config.toString()).toMatchSnapshot();
+            mockserverMiddleware = ui5Config.findCustomMiddleware('sap-fe-mockserver');
+            expect(mockserverMiddleware?.configuration).toStrictEqual({
+                services: [],
+                mountPath: '/',
+                annotations: []
+            });
         });
 
         test('remove exisisting service with annotations', () => {
@@ -356,17 +374,50 @@ describe('UI5Config', () => {
                 [{ serviceName: 'new-service', servicePath: '/path/to/service' }],
                 [{ urlPath: '/path/to/annotation' }]
             );
+            let mockserverMiddleware = ui5Config.findCustomMiddleware('sap-fe-mockserver');
+            expect(mockserverMiddleware?.configuration).toStrictEqual({
+                services: [
+                    {
+                        generateMockData: true,
+                        metadataPath: './webapp/localService/new-service/metadata.xml',
+                        mockdataPath: './webapp/localService/new-service/data',
+                        urlPath: '/path/to/service'
+                    }
+                ],
+                mountPath: '/',
+                annotations: [
+                    {
+                        urlPath: '/path/to/annotation'
+                    }
+                ]
+            });
             // Remove it
             ui5Config.removeServiceFromMockServerMiddleware('/path/to/service', ['/path/to/annotation']);
-            expect(ui5Config.toString()).toMatchSnapshot();
+            mockserverMiddleware = ui5Config.findCustomMiddleware('sap-fe-mockserver');
+            expect(mockserverMiddleware?.configuration).toStrictEqual({
+                services: [],
+                mountPath: '/',
+                annotations: []
+            });
         });
 
         test('remove unexisting service', () => {
             // Create middleware without any services
             ui5Config.addMockServerMiddleware([], []);
+            let mockserverMiddleware = ui5Config.findCustomMiddleware('sap-fe-mockserver');
+            expect(mockserverMiddleware?.configuration).toStrictEqual({
+                services: [],
+                mountPath: '/',
+                annotations: []
+            });
             // Try to remove unexisting service
             ui5Config.removeServiceFromMockServerMiddleware('/path/to/service', []);
-            expect(ui5Config.toString()).toMatchSnapshot();
+            mockserverMiddleware = ui5Config.findCustomMiddleware('sap-fe-mockserver');
+            expect(mockserverMiddleware?.configuration).toStrictEqual({
+                services: [],
+                mountPath: '/',
+                annotations: []
+            });
         });
     });
 
