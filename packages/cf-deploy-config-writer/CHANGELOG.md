@@ -1,1 +1,1 @@
-# @sap-ux/deploy-config-writer
+# @sap-ux/cf-deploy-config-inquirer
