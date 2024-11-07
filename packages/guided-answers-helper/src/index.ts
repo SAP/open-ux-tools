@@ -26,7 +26,7 @@ export const HELP_NODES = {
     DESTINATION_BAD_GATEWAY_503: 52526, // Destination Service Unavailable 503
     NO_V4_SERVICES: 57573, // No V4 OData services available
     NO_ADT_SERVICE_AUTH: 57266, //Users does not have authorizations to use ADT services
-    SYSTEM_CONNECTION_ERRORS: 48366 // Error during system connection validation TODO: This is mapped to the same node as BAS_CATALOG_SERVICES_REQUEST_FAILED but should be a separate node
+    DESTINATION_CONNECTION_ERRORS: 48366 // Non specific destination connection error help page, currently this is mapped to the same node as BAS_CATALOG_SERVICES_REQUEST_FAILED which will be updated in the future (and the entry here removed)
 };
 
 export const GUIDED_ANSWERS_EXTENSION_ID = 'saposs.sap-guided-answers-extension';

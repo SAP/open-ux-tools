@@ -1,13 +1,12 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type { Destination } from '@sap-ux/btp-utils';
 import {
-    // isAbapODataDestination,
+    isAbapODataDestination,
     isAppStudio,
     isFullUrlDestination,
     isHTML5DynamicConfigured,
     isOnPremiseDestination,
-    isPartialUrlDestination,
-    WebIDEUsage
+    isPartialUrlDestination
 } from '@sap-ux/btp-utils';
 import {
     getHelpUrl,
@@ -21,7 +20,7 @@ import { t } from '../i18n';
 import { ValidationLink } from '../types';
 import { sendTelemetryEvent } from '../utils';
 
-// todo: Update to use event names from the telemetry package
+// Telemetry event names specific to odata service error handling
 const telemEventGALinkCreated = 'GA_LINK_CREATED';
 const telemBasError = 'SERVICE_INQUIRER_BAS_ERROR';
 type TelemPropertyDestinationType =
@@ -112,23 +111,11 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.NO_V4_SERVICES]: [],
     [ERROR_TYPE.BAD_REQUEST]: [/400/],
     [ERROR_TYPE.DESTINATION_CONNECTION_ERROR]: [],
-    [ERROR_TYPE.SERVER_HTTP_ERROR]: [/5[0-9][0-9]/] // catch all for 5xx server errors
+    [ERROR_TYPE.SERVER_HTTP_ERROR]: [/5\d\d/] // catch all for 5xx server errors
 };
 
 type ValidationLinkOrString = string | ValidationLink;
 
-// TODO: Replace with the function from btp-utils
-/**
- *
- * @param destination
- * @returns true if the destination is an ABAP OData destination
- */
-function isAbapODataDestination(destination: Destination): boolean {
-    return (
-        !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) &&
-        !destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_GENERIC)
-    );
-}
 /**
  * Used only to generate telemetry events in the case of destination errors.
  *
@@ -165,7 +152,6 @@ export class ErrorHandler {
     private static _logger: Logger;
 
     // Get the localized parameterized error message for the specified error type
-    // TODO: remove the repition of the error message string/object conversion
     private static readonly _errorTypeToMsg: Record<ERROR_TYPE, (error?: Error | object | string) => string> = {
         [ERROR_TYPE.CERT]: (error) =>
             t('errors.certificateError', { error: typeof error === 'string' ? error : JSON.stringify(error) }),
@@ -288,7 +274,7 @@ export class ErrorHandler {
             [ERROR_TYPE.NO_V2_SERVICES]: undefined,
             [ERROR_TYPE.TIMEOUT]: undefined,
             [ERROR_TYPE.BAD_REQUEST]: undefined,
-            [ERROR_TYPE.DESTINATION_CONNECTION_ERROR]: HELP_NODES.BAS_CATALOG_SERVICES_REQUEST_FAILED, // HELP_NODES.SYSTEM_CONNECTION_ERRORS TODO: Change the GA page and link name to be less catalog specific
+            [ERROR_TYPE.DESTINATION_CONNECTION_ERROR]: HELP_NODES.DESTINATION_CONNECTION_ERRORS,
             [ERROR_TYPE.SERVER_HTTP_ERROR]: undefined
         };
         return errorToHelp[errorType];
