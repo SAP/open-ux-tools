@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.23
+
+### Patch Changes
+
+-   0671c95: support semantic date range quick action for v2/v4
+
 ## 0.11.22
 
 ### Patch Changes
