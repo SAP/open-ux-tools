@@ -616,6 +616,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -631,12 +634,21 @@ importers:
       fast-xml-parser:
         specifier: 4.4.1
         version: 4.4.1
+      http-proxy-agent:
+        specifier: 7.0.2
+        version: 7.0.2
+      https-proxy-agent:
+        specifier: 7.0.5
+        version: 7.0.5
       lodash:
         specifier: 4.17.21
         version: 4.17.21
       open:
         specifier: 7.0.3
         version: 7.0.3
+      proxy-from-env:
+        specifier: 1.1.0
+        version: 1.1.0
       qs:
         specifier: 6.11.0
         version: 6.11.0
@@ -650,6 +662,9 @@ importers:
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
+      '@types/proxy-from-env':
+        specifier: 1.0.1
+        version: 1.0.1
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -10839,7 +10854,6 @@ packages:
       debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   /agentkeepalive@4.3.0:
     resolution: {integrity: sha512-7Epl1Blf4Sy37j4v9f9FjICCh4+KAQOyXgHEwlyBiAQLbhKdq/i2QQU3amQalS/wPhdPzDXPL5DMR5bkn+YeWg==}
@@ -15751,7 +15765,6 @@ packages:
       debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   /http-proxy-middleware@2.0.7(@types/express@4.17.21):
     resolution: {integrity: sha512-fgVY8AV7qU7z/MmXJ/rxwbrtQH4jBQ9m7kp3llF0liB7glmFeVZFBepQb32T3y8n8k2+AEYuMPCpinYW+/CuRA==}
@@ -15794,7 +15807,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.4
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
@@ -15806,7 +15819,6 @@ packages:
       debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   /human-id@1.0.2:
     resolution: {integrity: sha512-UNopramDEhHJD+VR+ehk8rOslwSfByxPIZyJRfV739NDhN5LF1fa1MqnzKm2lGTQRjNrjK19Q5fhkgIfjlVUKw==}
