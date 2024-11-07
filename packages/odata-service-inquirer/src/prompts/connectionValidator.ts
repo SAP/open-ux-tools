@@ -87,9 +87,8 @@ export class ConnectionValidator {
     private _serviceInfo: ServiceInfo | undefined;
     private _connectedUserName: string | undefined;
     private _connectedSystemName: string | undefined;
-    // todo: private _isS4HanaCloud: boolean | undefined;
-
     private _refreshToken: string | undefined;
+
     /**
      * Getter for the axios configuration.
      *
