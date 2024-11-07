@@ -469,11 +469,11 @@ export class UI5Config {
      * Removes a service from the mockserver middleware.
      *
      * @param servicePath - path of the service that is to be deleted
-     * @param annotationsURI - list of URI of the service related annotations
+     * @param annotationPaths - paths of the service related annotations
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public removeServiceFromMockServerMiddleware(servicePath: string, annotationsURI: string[]): this {
+    public removeServiceFromMockServerMiddleware(servicePath: string, annotationPaths: string[]): this {
         const middlewareListYaml = this.document.getSequence({ path: 'server.customMiddleware' });
         const mockserverMiddlewareYaml = this.document.findItem(
             middlewareListYaml,
@@ -500,7 +500,7 @@ export class UI5Config {
             if (mockserverMiddlewareConfig.annotations) {
                 const mockserverMiddlewareConfigAnnotations = mockserverMiddlewareConfig.annotations;
                 const annotationSection = this.document.getSequence({ start: configuration, path: 'annotations' });
-                annotationsURI.forEach((annotationPath: string) => {
+                annotationPaths.forEach((annotationPath: string) => {
                     // Search for annotations that needs to be deleted
                     const annotationIndex = mockserverMiddlewareConfigAnnotations.findIndex(
                         (existingAnnotation) => existingAnnotation.urlPath === annotationPath

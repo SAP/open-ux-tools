@@ -117,26 +117,26 @@ function extendBackendMiddleware(fs: Editor, service: OdataService, ui5Config: U
 }
 
 /**
- * Returns all URI of the service annotations.
+ * Returns all paths of the service annotations.
  *
  * @param {OdataService} serviceAnnotations - service annotations
- * @returns {string} annotations URI.
+ * @returns {string} annotation paths.
  */
-function getAnnotationsURI(serviceAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]): string[] {
-    const serviceAnnotationsURI: string[] = [];
+function getAnnotationPaths(serviceAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]): string[] {
+    const serviceAnnotationPaths: string[] = [];
     if (Array.isArray(serviceAnnotations)) {
-        // URI for local annotations starts with "annotations/.."
+        // Paths for local annotations starts with "annotations/.."
         serviceAnnotations.forEach((annotation: EdmxAnnotationsInfo) => {
-            serviceAnnotationsURI.push(
+            serviceAnnotationPaths.push(
                 `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(${annotation.technicalName}) %>',Version='0001')/$value/`
             );
         });
     } else {
-        serviceAnnotationsURI.push(
+        serviceAnnotationPaths.push(
             `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(${serviceAnnotations.technicalName}) %>',Version='0001')/$value/`
         );
     }
-    return serviceAnnotationsURI;
+    return serviceAnnotationPaths;
 }
 
 /**
@@ -273,7 +273,7 @@ async function remove(
             ui5Config.removeBackendFromFioriToolsProxydMiddleware(service.url);
             fs.write(paths.ui5Yaml, ui5Config.toString());
         }
-        const serviceAnnotationsURI = getAnnotationsURI(
+        const serviceAnnotationPaths = getAnnotationPaths(
             service.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[]
         );
         if (paths.ui5LocalYaml) {
@@ -281,13 +281,13 @@ async function remove(
             // Delete service backend from fiori-tools-proxy middleware config
             ui5LocalConfig.removeBackendFromFioriToolsProxydMiddleware(service.url);
             // Delete service from mockserver middleware config
-            ui5LocalConfig.removeServiceFromMockServerMiddleware(service.path, serviceAnnotationsURI);
+            ui5LocalConfig.removeServiceFromMockServerMiddleware(service.path, serviceAnnotationPaths);
             fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
         }
         if (paths.ui5MockYaml) {
             ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
             // Delete service from mockserver config
-            ui5MockConfig.removeServiceFromMockServerMiddleware(service.path, serviceAnnotationsURI);
+            ui5MockConfig.removeServiceFromMockServerMiddleware(service.path, serviceAnnotationPaths);
             fs.write(paths.ui5MockYaml, ui5MockConfig.toString());
         }
     } else {

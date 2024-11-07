@@ -739,6 +739,18 @@ exports[`UI5Config removeServiceFromMockServerMiddleware remove exisisting servi
 "
 `;
 
+exports[`UI5Config removeServiceFromMockServerMiddleware remove exisisting service with annotations 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services: []
+        annotations: []
+"
+`;
+
 exports[`UI5Config removeServiceFromMockServerMiddleware remove unexisting service 1`] = `
 "server:
   customMiddleware:

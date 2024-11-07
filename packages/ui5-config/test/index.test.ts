@@ -346,7 +346,18 @@ describe('UI5Config', () => {
             // Create middleware with one service
             ui5Config.addMockServerMiddleware([{ serviceName: 'new-service', servicePath: '/path/to/service' }], []);
             // Remove it
-            ui5Config.removeServiceFromMockServerMiddleware('/path/to/service');
+            ui5Config.removeServiceFromMockServerMiddleware('/path/to/service', []);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('remove exisisting service with annotations', () => {
+            // Create middleware with one service
+            ui5Config.addMockServerMiddleware(
+                [{ serviceName: 'new-service', servicePath: '/path/to/service' }],
+                [{ urlPath: '/path/to/annotation' }]
+            );
+            // Remove it
+            ui5Config.removeServiceFromMockServerMiddleware('/path/to/service', ['/path/to/annotation']);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
@@ -354,7 +365,7 @@ describe('UI5Config', () => {
             // Create middleware without any services
             ui5Config.addMockServerMiddleware([], []);
             // Try to remove unexisting service
-            ui5Config.removeServiceFromMockServerMiddleware('/path/to/service');
+            ui5Config.removeServiceFromMockServerMiddleware('/path/to/service', []);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
