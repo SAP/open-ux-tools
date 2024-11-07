@@ -374,9 +374,11 @@ export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: U
             const action  = showMessage({
                 message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
                 shouldHideIframe: false
-            })
+            });
             CommunicationService.sendAction(action);
         }
+
+        // eslint-disable-next-line fiori-custom/sap-no-location-reload
         window.location.reload();
     }
 }
