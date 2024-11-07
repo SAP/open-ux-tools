@@ -47,8 +47,10 @@ export async function addVariantsManagementScript(
         throw new Error(`${ERROR_MSG} No RTA editor specified in ui5.yaml.`);
     }
 
+    // set --config flag if default ui5.yaml is not used
+    const yamlConfigFile = ui5YamlFileName !== FileName.Ui5Yaml ? ` --config ./${basename(ui5YamlFileName)}` : '';
     const startVariantsManagementScriptOld = packageJson.scripts['start-variants-management'] ?? undefined;
-    const startVariantsManagementScriptNew = `${serveCommand} --config ./${basename(ui5YamlFileName)} --open "${url}"`;
+    const startVariantsManagementScriptNew = `${serveCommand}${yamlConfigFile} --open "${url}"`;
 
     if (!startVariantsManagementScriptOld) {
         logger?.debug(`Script 'start-variants-management' not found. Script will be added.`);
