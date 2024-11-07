@@ -92,7 +92,7 @@ export async function updatePreviewMiddlewareConfigs(
     const unprocessedUi5YamlFileNames = [...validUi5YamlFileNames];
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
-    ensurePreviewMiddlewareDependency(packageJson, fs, packageJsonPath);
+    let checkPreviewMiddlewareDependency = false;
     for (const [scriptName, script] of Object.entries(packageJson?.scripts ?? {})) {
         if (
             scriptName === 'start-variants-management' ||
@@ -127,8 +127,12 @@ export async function updatePreviewMiddlewareConfigs(
         }
 
         await processUi5YamlConfig(fs, basePath, ui5Yaml, script);
+        checkPreviewMiddlewareDependency = true;
 
         logger?.info(`UI5 yaml configuration file ${ui5Yaml} updated according to script ${scriptName}.`);
+    }
+    if (checkPreviewMiddlewareDependency) {
+        ensurePreviewMiddlewareDependency(packageJson, fs, packageJsonPath);
     }
     for (const ui5Yaml of unprocessedUi5YamlFileNames) {
         //todo: adjust at least deprecated preview config in unused ui5 yaml configurations?
