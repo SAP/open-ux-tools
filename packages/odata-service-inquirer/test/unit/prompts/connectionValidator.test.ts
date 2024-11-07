@@ -632,5 +632,34 @@ describe('ConnectionValidator', () => {
                 }
             })
         );
+
+        // 500s should return a destination misconfiguration message and specific GA link in BAS
+        mockIsAppStudio = true;
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(502));
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system1:12345/path/to/service',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_gen',
+                WebIDEAdditionalData: 'full_url',
+                'HTML5.DynamicDestination': 'true'
+            })
+        ).toEqual(
+            expect.objectContaining({
+                errorType: ERROR_TYPE.BAD_GATEWAY,
+                valResult: {
+                    link: {
+                        icon: GUIDED_ANSWERS_ICON,
+                        text: t('guidedAnswers.validationErrorHelpText'),
+                        url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.BAD_GATEWAY}`
+                    },
+                    message: 'The server returned an error. Bad gateway: 502'
+                }
+            })
+        );
     });
 });

@@ -551,7 +551,7 @@ export class ConnectionValidator {
             this.systemAuthType = destination.Authentication === Authentication.NO_AUTHENTICATION ? 'basic' : 'unknown';
             // Since a destination may be a system or a service connection, we need to determine the connection request (catalog or service)
             if (isFullUrlDestination(destination) || isPartialUrlDestination(destination)) {
-                return this.validateOdataServiceDestination(destination, servicePath);
+                return await this.validateOdataServiceDestination(destination, servicePath);
             } else {
                 await this.createSystemConnection({ destination, odataVersion });
             }
@@ -590,7 +590,7 @@ export class ConnectionValidator {
         // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest
         const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath);
         // Get the destination URL in the portable form <protocol>://<host>:<port>
-        this._destinationUrl = servicePath ? new URL(servicePath, destination.Host).toString() : destination.Host;
+        this._destinationUrl = servicePath ? new URL(`${destination.Host}${servicePath}`).toString() : destination.Host;
         this._destination = destination;
         // No need to apply sap-client as this happens automatically (from destination config) when going through the BAS proxy
         const status = await this.checkUrl(new URL(destUrl), undefined, undefined, {

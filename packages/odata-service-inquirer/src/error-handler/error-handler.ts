@@ -12,6 +12,7 @@ import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
 import { ValidationLink } from '../types';
 import { getTelemPropertyDestinationType, sendTelemetryEvent } from '../utils';
+import type { AxiosError } from 'axios';
 
 // Telemetry event names specific to odata service error handling
 const telemEventGALinkCreated = 'GA_LINK_CREATED';
@@ -103,10 +104,6 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
 
 type ValidationLinkOrString = string | ValidationLink;
 
-// Best effort to get a useful error message from an error of unknown type
-const getErrorMessage = (error: unknown): string =>
-    (error as Error)?.message ?? (typeof error === 'string' ? error : JSON.stringify(error));
-
 /**
  * Maps errors to end-user messages using some basic root cause analysis based on regex matching.
  * This class will also log errors and provide help links for validation errors in some limited use cases.
@@ -120,6 +117,15 @@ export class ErrorHandler {
     private static _guidedAnswersEnabled: boolean;
 
     private static _logger: Logger;
+
+    private static getMessageFromError = (error: unknown): string => {
+        return (
+            (error as Error)?.message ||
+            (error as AxiosError)?.status?.toString() ||
+            (error as AxiosError)?.response?.status?.toString() ||
+            (typeof error === 'string' ? error : JSON.stringify(error))
+        );
+    };
 
     // Get the localized parameterized error message for the specified error type
     private static readonly _errorTypeToMsg: Record<ERROR_TYPE, (error?: Error | object | string) => string> = {
@@ -141,7 +147,7 @@ export class ErrorHandler {
             }),
         [ERROR_TYPE.AUTH]: (error) =>
             t('errors.authenticationFailed', {
-                error: getErrorMessage(error)
+                error: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.AUTH_TIMEOUT]: () => t('errors.authenticationTimeout'),
         [ERROR_TYPE.TIMEOUT]: (error) =>
@@ -149,29 +155,29 @@ export class ErrorHandler {
         [ERROR_TYPE.INVALID_URL]: () => t('errors.invalidUrl'),
         [ERROR_TYPE.CONNECTION]: (error) =>
             t('errors.connectionError', {
-                error: getErrorMessage(error)
+                error: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.UNKNOWN]: (error) =>
             t('errors.unknownError', {
-                error: getErrorMessage(error)
+                error: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.SERVICES_UNAVAILABLE]: () => t('errors.servicesUnavailable'),
         [ERROR_TYPE.SERVICE_UNAVAILABLE]: (error) =>
             t('errors.serverReturnedAnError', {
-                errorMsg: getErrorMessage(error)
+                errorMsg: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: () => t('errors.catalogServiceNotActive'),
         [ERROR_TYPE.INTERNAL_SERVER_ERROR]: (error) =>
             t('errors.serverReturnedAnError', {
                 errorDesc: 'Internal server error:',
-                errorMsg: getErrorMessage(error)
+                errorMsg: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.NOT_FOUND]: () => t('errors.urlNotFound'),
         [ERROR_TYPE.ODATA_URL_NOT_FOUND]: () => t('errors.odataServiceUrlNotFound'),
         [ERROR_TYPE.BAD_GATEWAY]: (error) =>
             t('errors.serverReturnedAnError', {
                 errorDesc: 'Bad gateway:',
-                errorMsg: getErrorMessage(error)
+                errorMsg: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.DESTINATION_UNAVAILABLE]: () => t('errors.destination.unavailable'),
         [ERROR_TYPE.DESTINATION_NOT_FOUND]: () => t('errors.destination.notFound'),
@@ -188,12 +194,12 @@ export class ErrorHandler {
         [ERROR_TYPE.BAD_REQUEST]: (error) =>
             t('errors.serverReturnedAnError', {
                 errorDesc: 'Bad request:',
-                errorMsg: getErrorMessage(error)
+                errorMsg: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.DESTINATION_CONNECTION_ERROR]: () => t('errors.systemConnectionValidationFailed'),
         [ERROR_TYPE.SERVER_HTTP_ERROR]: (error) =>
             t('errors.serverReturnedAnError', {
-                errorMsg: getErrorMessage(error)
+                errorMsg: ErrorHandler.getMessageFromError(error)
             })
     };
     /**
