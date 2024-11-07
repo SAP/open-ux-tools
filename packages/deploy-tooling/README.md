@@ -127,7 +127,7 @@ Options:
   --username                           ABAP Service username
   --password                           ABAP Service password
   --authentication-type                Authentication type for the app (e.g. 'basic', 'reentranceTicket'). Required for 'reentranceTicket'.
-  --create-transport                   Create a transport request during deployment
+  --create-transport                   Create a transport request during deployment/undeployment
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --name <bsp-name>                    Project name of the app
   --no-strict-ssl                      Deactivate SSL certificate validation, enabled by default
@@ -212,4 +212,13 @@ Options:
   --test                               Run in test mode. ABAP backend reports undeployment errors without actually undeploying (use --no-test to deactivate it).
   -v, --version                        version of the deploy tooling
   -h, --help                           display help for command
+```
+
+### Proxy Support
+
+To enable a patched version of `https-proxy-agent`, to support `tls.connect` connections, update your environment variable with the following `TOOLSUITE_FEATURES` environment variable;
+
+```bash
+export TOOLSUITE_FEATURES=sap.ux.enablePatchProxy
+export HTTPS_PROXY=<YOUR-PROXY:PORT>
 ```

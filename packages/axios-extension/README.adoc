@@ -117,3 +117,14 @@ const metadata = await service.metadata();
 
 ```
 See more examples in link:./test/factory.test.ts[/test/factory.test.ts]
+
+## Proxy Support
+
+To enable a patched version of `https-proxy-agent`, to support `tls.connect` connections, update your environment variable with the following `TOOLSUITE_FEATURES` environment variable;
+
+```bash
+export TOOLSUITE_FEATURES=sap.ux.enablePatchProxy
+export HTTPS_PROXY=<YOUR-PROXY:PORT>
+```
+
+
