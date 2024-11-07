@@ -296,7 +296,7 @@ export class ConnectionValidator {
             LoggerHelper.logger.debug(`ConnectionValidator.checkSapService() - error: ${e.message}`);
             if (e?.isAxiosError) {
                 // Error handling for BAS specific 500 errors
-                if (e?.response?.status.toString().match(/5[0-9][0-9]/) && isBAS) {
+                if (e?.response?.status.toString().match(/5\d\d/) && isBAS) {
                     throw e;
                 }
                 return e?.response?.status || e?.code;
@@ -386,7 +386,9 @@ export class ConnectionValidator {
      * @param connectConfig.url the system url
      * @param connectConfig.serviceInfo the service info
      * @param connectConfig.odataVersion the odata version to restrict the catalog requests if only a specific version is required
-     * @param connectConfig.destination
+     * @param connectConfig.destination the destination to connect with
+     * @throws an error if the connection attempt fails, callers should handle the error
+     *
      */
     private async createSystemConnection({
         axiosConfig,
@@ -419,7 +421,6 @@ export class ConnectionValidator {
 
         if (this._serviceProvider) {
             LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
-            //this._isS4HanaCloud = await (this._serviceProvider as AbapServiceProvider).isS4Cloud();
         }
 
         if (!odataVersion || odataVersion === ODataVersion.v2) {
@@ -552,37 +553,7 @@ export class ConnectionValidator {
             this.systemAuthType = destination.Authentication === Authentication.NO_AUTHENTICATION ? 'basic' : 'unknown';
             // Since a destination may be a system or a service connection, we need to determine the connection request (catalog or service)
             if (isFullUrlDestination(destination) || isPartialUrlDestination(destination)) {
-                this.resetConnectionState();
-                this.resetValidity();
-                // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest
-                const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath);
-                // Get the destination URL in the portable form <protocol>://<host>:<port>
-                this._destinationUrl = servicePath
-                    ? new URL(servicePath, destination.Host).toString()
-                    : destination.Host;
-                this._destination = destination;
-                // No need to apply sap-client as this happens automatically (from destination config) when going through the BAS proxy
-                const status = await this.checkUrl(new URL(destUrl), undefined, undefined, { odataVersion });
-                this._validatedUrl = destUrl;
-                const validationResult = this.getValidationResultFromStatusCode(status);
-
-                if (!this.validity.reachable) {
-                    // Log the error
-                    const errorLog = errorHandler.logErrorMsgs(status);
-                    return {
-                        valResult: errorHandler.getValidationErrorHelp(status, false, destination) ?? errorLog,
-                        errorType: errorHandler.getCurrentErrorType() ?? ERROR_TYPE.DESTINATION_CONNECTION_ERROR
-                    };
-                }
-                if (this.validity.authRequired) {
-                    return {
-                        valResult: ErrorHandler.getErrorMsgFromType(ERROR_TYPE.AUTH)!,
-                        errorType: ERROR_TYPE.AUTH
-                    };
-                }
-                return {
-                    valResult: validationResult
-                };
+                return this.validateOdataServiceDestination(destination, servicePath);
             } else {
                 await this.createSystemConnection({ destination, odataVersion });
             }
@@ -601,6 +572,44 @@ export class ConnectionValidator {
                 errorType: errorHandler.getCurrentErrorType() ?? ERROR_TYPE.DESTINATION_CONNECTION_ERROR
             };
         }
+    }
+
+    private async validateOdataServiceDestination(
+        destination: Destination,
+        servicePath?: string,
+        requiredOdataVersion?: ODataVersion
+    ): Promise<{ valResult: ValidationResult; errorType?: ERROR_TYPE }> {
+        this.resetConnectionState();
+        this.resetValidity();
+        // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest
+        const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath);
+        // Get the destination URL in the portable form <protocol>://<host>:<port>
+        this._destinationUrl = servicePath ? new URL(servicePath, destination.Host).toString() : destination.Host;
+        this._destination = destination;
+        // No need to apply sap-client as this happens automatically (from destination config) when going through the BAS proxy
+        const status = await this.checkUrl(new URL(destUrl), undefined, undefined, {
+            odataVersion: requiredOdataVersion
+        });
+        this._validatedUrl = destUrl;
+        const validationResult = this.getValidationResultFromStatusCode(status);
+
+        if (!this.validity.reachable) {
+            // Log the error
+            const errorLog = errorHandler.logErrorMsgs(status);
+            return {
+                valResult: errorHandler.getValidationErrorHelp(status, false, destination) ?? errorLog,
+                errorType: errorHandler.getCurrentErrorType() ?? ERROR_TYPE.DESTINATION_CONNECTION_ERROR
+            };
+        }
+        if (this.validity.authRequired) {
+            return {
+                valResult: ErrorHandler.getErrorMsgFromType(ERROR_TYPE.AUTH)!,
+                errorType: ERROR_TYPE.AUTH
+            };
+        }
+        return {
+            valResult: validationResult
+        };
     }
 
     /**
@@ -812,7 +821,7 @@ export class ConnectionValidator {
                 this.validity.authRequired = true;
                 this.validity.reachable = true;
             }
-            // Since an exception was not thrown, this is a valid url (todo: retest all flows that use this since these 2 loc were added)
+            // Since an exception was not thrown, this is a valid url
             this.validity.urlFormat = true;
             this._validatedUrl = urlString;
             return this.validity.authRequired;
@@ -885,8 +894,8 @@ export class ConnectionValidator {
             return {
                 valResult:
                     errorHandler.getValidationErrorHelp(error, false, this.destination) ??
-                    errorHandler.getErrorMsg(error) ?? // not sure this condition is needed todo
-                    false,
+                    errorHandler.getErrorMsg(error) ??
+                    t('errors.unknownError'),
                 errorType: errorHandler.getCurrentErrorType() ?? undefined
             };
         }
