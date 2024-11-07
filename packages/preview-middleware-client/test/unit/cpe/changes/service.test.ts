@@ -883,11 +883,89 @@ describe('ChangeService', () => {
         expect(sendActionMock).toHaveBeenNthCalledWith(2, expectedResult);
     });
 
-    test('get control ID from ChangeHandler API - SAPUI5 version below 1.96.x (no getChangeHandler)', async () => {
-        JsControlTreeModifierMock.getControlIdBySelector.mockImplementation((selector): string => {
-            return selector.id;
+    test('get control ID from ChangeHandler API - SAPUI5 version below 1.96.x (no getChangeHandler available)', async () => {
+        JsControlTreeModifierMock.bySelector.mockReturnValueOnce(mockControl);
+        Object.defineProperty(ChangesWriteAPIMock, 'getChangeHandler', {
+            value: null,
+            configurable: true
+        });
+        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
+        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(true);
+
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        function createCommand(): {
+            getElement: () => any;
+            getPreparedChange: () => any;
+        } {
+            return {
+                getElement: jest.fn().mockReturnValue({
+                    getMetadata: jest
+                        .fn()
+                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
+                    getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
+                }),
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getSelector: jest.fn().mockReturnValue({
+                        id: '_ST_SmartVariantManagement'
+                    }),
+                    getChangeType: jest.fn().mockReturnValue('page'),
+                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
+                    getDefinition: jest.fn().mockReturnValue({
+                        changeType: 'page',
+                        fileName: 'testFileName'
+                    })
+                })
+            };
+        }
+        const subCommands = [createCommand()];
+        const compositeCommand = [createCompositeCommand(subCommands)];
+
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(compositeCommand),
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
+        });
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        await service.init(sendActionMock, subscribeMock);
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+
+        const expectedResult = {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: [
+                    {
+                        changeType: 'page',
+                        controlId: '_ST_SmartVariantManagement',
+                        isActive: true,
+                        type: 'pending',
+                        fileName: 'testFileName',
+                        kind: 'control'
+                    }
+                ]
+            }
+        };
+
+        Object.defineProperty(ChangesWriteAPIMock, 'getChangeHandler', {
+            value: jest.fn().mockReturnValue({
+                getChangeVisualizationInfo: jest.fn().mockImplementation((change) => {
+                    return Promise.resolve({
+                        affectedControls: [`appComponent${change.getSelector().id}`]
+                    });
+                })
+            }),
+            configurable: true
         });
 
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, expectedResult);
+    });
+
+    test('throws error when there was a problem with the ChangesWriteAPI api', async () => {
         JsControlTreeModifierMock.bySelector.mockReturnValueOnce(mockControl);
         ChangesWriteAPIMock.getChangeHandler.mockRejectedValue(new Error('Failed'));
         jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
