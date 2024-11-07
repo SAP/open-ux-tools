@@ -18,7 +18,7 @@ declare module 'sap/ui/dt/DesignTimeMetadata' {
         id: string;
         name: string;
         description?: string;
-    };
+    }
     export interface DesigntimeSetting {
         id: string;
         path?: string;
@@ -32,7 +32,7 @@ declare module 'sap/ui/dt/DesignTimeMetadata' {
         writeObjectFor?: string;
         writeObject?: { id: string; path?: string }[];
         keyUser?: boolean;
-    };
+    }
 
     export interface ManifestSettings {
         value: string | number | boolean;
@@ -41,12 +41,11 @@ declare module 'sap/ui/dt/DesignTimeMetadata' {
         name: string;
     }
 
-
     export interface ManifestSettingsValue {
         [key: string]: string | number | boolean;
     }
 
-    export interface ManifestPropertyChange   {
+    export interface ManifestPropertyChange {
         appComponent: AppComponent;
         selector: AppComponent;
         changeSpecificData: {
@@ -62,13 +61,16 @@ declare module 'sap/ui/dt/DesignTimeMetadata' {
                 };
             };
         };
-    };
+    }
 
     interface DesignTimeMetadata extends ManagedObject {
         getData: () => {
-            //TODO Improve Types
             manifestPropertyPath: (control: ManagedObject) => string;
-            manifestPropertyChange: (propertyChanges: any, propertyPath: string, control: ManagedObject) => ManifestPropertyChange[];
+            manifestPropertyChange: (
+                propertyChanges: Record<string, string | string[] | boolean | number | object | undefined>,
+                propertyPath: string,
+                control: ManagedObject
+            ) => ManifestPropertyChange[];
             manifestSettings: (control: ManagedObject) => DesigntimeSetting[];
             manifestSettingsValues: (designtimeSettings, control) => ManifestSettingsValue;
             properties: { [name: string]: DesignTimeMetadataData };
