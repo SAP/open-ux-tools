@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.17.0
+
+### Minor Changes
+
+-   0120dda: Handle HTTP(S) proxy configurations
+
 ## 1.16.7
 
 ### Patch Changes
