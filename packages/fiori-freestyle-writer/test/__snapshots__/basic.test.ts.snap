@@ -312,7 +312,8 @@ function (JSONModel, Device) {
 
     return {
         /**
-         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         * Provides runtime information for the device the UI5 app is running on as a JSONModel.
+         * @returns {sap.ui.model.json.JSONModel} The device model.
          */
         createDeviceModel: function () {
             var oModel = new JSONModel(Device);
@@ -455,7 +456,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -472,7 +473,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -525,7 +526,7 @@ function (JSONModel, Device) {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -580,7 +581,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -1174,7 +1175,7 @@ export function createDeviceModel () {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -1191,7 +1192,7 @@ export function createDeviceModel () {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -1244,7 +1245,7 @@ export function createDeviceModel () {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -1299,7 +1300,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -1761,7 +1762,8 @@ function (JSONModel, Device) {
 
     return {
         /**
-         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         * Provides runtime information for the device the UI5 app is running on as a JSONModel.
+         * @returns {sap.ui.model.json.JSONModel} The device model.
          */
         createDeviceModel: function () {
             var oModel = new JSONModel(Device);
@@ -1904,7 +1906,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -1921,7 +1923,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -1974,7 +1976,7 @@ function (JSONModel, Device) {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -2029,7 +2031,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -5073,7 +5075,8 @@ function (JSONModel, Device) {
 
     return {
         /**
-         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         * Provides runtime information for the device the UI5 app is running on as a JSONModel.
+         * @returns {sap.ui.model.json.JSONModel} The device model.
          */
         createDeviceModel: function () {
             var oModel = new JSONModel(Device);
@@ -5195,8 +5198,16 @@ function (JSONModel, Device) {
 }
 `;
 
-exports[`Fiori freestyle template: basicTemplate Generate files for template: basic_ui5_1_120_0_with_reuse_libs 1`] = `
+exports[`Fiori freestyle template: basicTemplate Generate files for template: basic_ui5_1_120_0_with_reuse_libs_and_eslint 1`] = `
 Object {
+  ".eslintrc": Object {
+    "contents": "{
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultJS\\",
+    \\"root\\": true
+}
+",
+    "state": "modified",
+  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -5225,12 +5236,17 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
+    \\"eslint\\": \\"8.57.0\\",
+    \\"eslint-plugin-fiori-custom\\": \\"2.6.7\\",
+    \\"@babel/eslint-parser\\": \\"7.14.7\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
@@ -5608,7 +5624,8 @@ function (JSONModel, Device) {
 
     return {
         /**
-         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         * Provides runtime information for the device the UI5 app is running on as a JSONModel.
+         * @returns {sap.ui.model.json.JSONModel} The device model.
          */
         createDeviceModel: function () {
             var oModel = new JSONModel(Device);
@@ -5751,7 +5768,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         var getComponentUsageNames = function (compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -5768,7 +5785,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
 
             sap.ui.require([\\"sap/ui/thirdparty/jquery\\"], function (localJQuery) {  
@@ -5824,7 +5841,7 @@ function (JSONModel, Device) {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -5879,7 +5896,7 @@ function (JSONModel, Device) {
         //Registering to the icon pool
         IconPool.registerFont(bSuiteTheme);
         });
-    }
+    };
     
     /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
     var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -6445,7 +6462,8 @@ function (JSONModel, Device) {
 
     return {
         /**
-         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         * Provides runtime information for the device the UI5 app is running on as a JSONModel.
+         * @returns {sap.ui.model.json.JSONModel} The device model.
          */
         createDeviceModel: function () {
             var oModel = new JSONModel(Device);
@@ -6588,7 +6606,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -6605,7 +6623,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -6658,7 +6676,7 @@ function (JSONModel, Device) {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -6713,7 +6731,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -7258,7 +7276,8 @@ function (JSONModel, Device) {
 
     return {
         /**
-         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         * Provides runtime information for the device the UI5 app is running on as a JSONModel.
+         * @returns {sap.ui.model.json.JSONModel} The device model.
          */
         createDeviceModel: function () {
             var oModel = new JSONModel(Device);
@@ -7401,7 +7420,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -7418,7 +7437,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -7471,7 +7490,7 @@ function (JSONModel, Device) {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -7526,7 +7545,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -8072,7 +8091,8 @@ function (JSONModel, Device) {
 
     return {
         /**
-         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         * Provides runtime information for the device the UI5 app is running on as a JSONModel.
+         * @returns {sap.ui.model.json.JSONModel} The device model.
          */
         createDeviceModel: function () {
             var oModel = new JSONModel(Device);
@@ -8215,7 +8235,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -8232,7 +8252,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -8285,7 +8305,7 @@ function (JSONModel, Device) {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -8340,7 +8360,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -8885,7 +8905,8 @@ function (JSONModel, Device) {
 
     return {
         /**
-         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         * Provides runtime information for the device the UI5 app is running on as a JSONModel.
+         * @returns {sap.ui.model.json.JSONModel} The device model.
          */
         createDeviceModel: function () {
             var oModel = new JSONModel(Device);
@@ -9415,7 +9436,8 @@ function (JSONModel, Device) {
 
     return {
         /**
-         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         * Provides runtime information for the device the UI5 app is running on as a JSONModel.
+         * @returns {sap.ui.model.json.JSONModel} The device model.
          */
         createDeviceModel: function () {
             var oModel = new JSONModel(Device);
@@ -9558,7 +9580,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -9575,7 +9597,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -9628,7 +9650,7 @@ function (JSONModel, Device) {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -9683,7 +9705,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");

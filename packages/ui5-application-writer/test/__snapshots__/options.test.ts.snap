@@ -830,7 +830,7 @@ appDescription=Test App Description",
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -847,7 +847,7 @@ appDescription=Test App Description",
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -900,7 +900,7 @@ appDescription=Test App Description",
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -955,7 +955,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -1327,7 +1327,7 @@ appDescription=Test App Description",
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         var getComponentUsageNames = function (compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -1344,7 +1344,7 @@ appDescription=Test App Description",
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
 
             sap.ui.require([\\"sap/ui/thirdparty/jquery\\"], function (localJQuery) {  
@@ -1400,7 +1400,7 @@ appDescription=Test App Description",
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -1455,7 +1455,7 @@ appDescription=Test App Description",
         //Registering to the icon pool
         IconPool.registerFont(bSuiteTheme);
         });
-    }
+    };
     
     /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
     var currentScript = document.getElementById(\\"locate-reuse-libs\\");
