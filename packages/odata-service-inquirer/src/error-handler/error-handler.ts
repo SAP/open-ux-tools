@@ -146,7 +146,7 @@ export class ErrorHandler {
         [ERROR_TYPE.AUTH_TIMEOUT]: () => t('errors.authenticationTimeout'),
         [ERROR_TYPE.TIMEOUT]: (error) =>
             t('errors.timeout', { error: typeof error === 'string' ? error : JSON.stringify(error) }),
-        [ERROR_TYPE.INVALID_URL]: (invalidUrl) => t('errors.invalidUrl', { input: invalidUrl ?? '' }),
+        [ERROR_TYPE.INVALID_URL]: () => t('errors.invalidUrl'),
         [ERROR_TYPE.CONNECTION]: (error) =>
             t('errors.connectionError', {
                 error: getErrorMessage(error)
