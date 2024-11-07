@@ -101,7 +101,7 @@ function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string
     if (control) {
         const overlay = getOverlay(control);
         const overlayData = overlay?.getDesignTimeMetadata().getData();
-        if (!overlayData?.manifestSettings) {
+        if (!overlayData?.manifestPropertyPath) {
             return;
         }
         if (overlayData) {

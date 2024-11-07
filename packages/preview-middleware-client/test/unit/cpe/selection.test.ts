@@ -33,7 +33,8 @@ describe('SelectionService', () => {
             }
         ]
     } as Control;
-    const changeService = { onStackChange: jest.fn() } as any;
+    const onStackChangeMock = jest.fn();
+    const changeService = { onStackChange: onStackChangeMock } as any;
     beforeEach(() => {
         buildControlDataSpy = jest.spyOn(controlData, 'buildControlData').mockImplementation((): any => {
             return mockControlData;
@@ -711,6 +712,15 @@ describe('SelectionService', () => {
         expect(sendActionMock).toHaveBeenNthCalledWith(1, { type: '[ext] control-selected', payload: mockControlData });
         expect(sendActionMock).toHaveBeenNthCalledWith(2, { type: '[ext] control-selected', payload: mockControlData });
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, {}, changeService, undefined);
+        expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
+
+
+        // call buildControlData when stack changed
+        changeService.onStackChange.mock.calls[0][0]({
+            detail: {
+                controls: [cache.get('testIdfinal')]
+            }
+        });
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
     });
 

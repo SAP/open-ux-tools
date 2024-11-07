@@ -4,6 +4,7 @@ import { ActionHandler } from '../../../../src/cpe/types';
 import {
     changeProperty,
     deletePropertyChanges,
+    propertyChangeFailed,
     PropertyType,
     setApplicationRequiresReload
 } from '@sap-ux-private/control-property-editor-common';
@@ -95,7 +96,20 @@ describe('ChangeService', () => {
                         },
                         creation: '2021-12-21T17:13:37.301Z'
                     },
-                    change5: {}
+                    change6: {
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        fileName: 'id_1640106755570_204_appdescr_fe_changePageConfiguration',
+                        content: {
+                            page: 'ProductsList',
+                            entityPropertyChange: {
+                                propertyPath:
+                                    'controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/tableSettings/enableAddCardToInsights',
+                                operation: 'UPSERT',
+                                propertyValue: true
+                            }
+                        },
+                        creation: '2021-12-22T17:23:37.301Z'
+                    }
                 })
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
@@ -111,6 +125,16 @@ describe('ChangeService', () => {
             payload: {
                 pending: [],
                 saved: [
+                    {
+                        controlIds: [],
+                        fileName: 'id_1640106755570_204_appdescr_fe_changePageConfiguration',
+                        kind: 'configuration',
+                        propertyName: 'enableAddCardToInsights',
+                        propertyPath: 'LineItem/tableSettings',
+                        timestamp: 1640193817301,
+                        type: 'saved',
+                        value: true
+                    },
                     {
                         changeType: 'codeExt',
                         type: 'saved',
@@ -1249,7 +1273,7 @@ describe('ChangeService', () => {
                 ]
             }
         });
-    }, 888888888);
+    });
 
     test('delete property', async () => {
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
@@ -1289,5 +1313,51 @@ describe('ChangeService', () => {
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'
         });
+    });
+
+    test('change property - exception', async () => {
+        fetchMock.mockResolvedValue({
+            json: () => Promise.resolve({})
+        });
+
+        const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
+            throw 'RTA Error: Not acceptable value';
+        });
+
+        const service = new ChangeService({ rta: rtaMock } as any);
+
+        await service.init(sendActionMock, subscribeMock);
+        expect(subscribeMock).toHaveBeenCalledTimes(1);
+        await subscribeMock.mock.calls[0][0](
+            changeProperty({
+                controlId: 'control1',
+                propertyName: 'text',
+                propertyType: PropertyType.ControlProperty,
+                controlName: 'button',
+                value: 'abc',
+                changeType: 'propertyChange'
+            })
+        );
+
+        expect(applyChangeSpy.mock.calls[0][1]).toStrictEqual({
+            changeType: 'propertyChange',
+            controlId: 'control1',
+            controlName: 'button',
+            propertyName: 'text',
+            propertyType: 'controlProperty',
+            value: 'abc'
+        });
+
+        expect(sendActionMock).toBeCalledWith(
+            propertyChangeFailed({
+                controlId: 'control1',
+                propertyName: 'text',
+                propertyType: 'controlProperty',
+                controlName: 'button',
+                value: 'abc',
+                changeType: 'propertyChange',
+                errorMessage: 'Error: "RTA Error: Not acceptable value"'
+            } as any)
+        );
     });
 });

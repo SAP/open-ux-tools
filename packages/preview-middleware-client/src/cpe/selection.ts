@@ -150,7 +150,7 @@ export class SelectionService implements Service {
                 }
             }
         });
-
+        // rebuild config properties in panel for the selected control onStackChange event
         this.changeService.onStackChange(async (event) => {
             const control = event.detail.controls.find((control) => control === this.currentSelection);
             if (control) {
