@@ -31,8 +31,6 @@ export async function validateService(
         if (ignoreCertError === true) {
             ConnectionValidator.setGlobalRejectUnauthorized(!ignoreCertError);
         }
-        // todo: Replace with `validateODataVersion`
-
         const metadata = await odataService.metadata();
         const odataVersionValResult = validateODataVersion(metadata, requiredVersion);
         if (odataVersionValResult.validationMsg) {

@@ -252,7 +252,7 @@ export async function getSystemConnectionQuestions(
             name: `${systemSelectionPromptNames.systemSelectionCli}`
         });
     }
-    const credentialsPrompts = getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace) as Question[];
+    const credentialsPrompts = getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace);
     questions.push(...credentialsPrompts);
 
     return questions;
