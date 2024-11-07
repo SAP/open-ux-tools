@@ -2164,6 +2164,9 @@ export function createDeviceModel () {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
+    var sanitizeString = function (str) {
+        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
+    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -2260,9 +2263,9 @@ export function createDeviceModel () {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                dependency.componentId +
+                                sanitizeString(dependency.componentId) +
                                 \\" from server \\" +
-                                dependency.url);
+                                sanitizeString(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -4879,6 +4882,9 @@ export function createDeviceModel () {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
+    var sanitizeString = function (str) {
+        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
+    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -4975,9 +4981,9 @@ export function createDeviceModel () {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                dependency.componentId +
+                                sanitizeString(dependency.componentId) +
                                 \\" from server \\" +
-                                dependency.url);
+                                sanitizeString(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -7594,6 +7600,9 @@ export function createDeviceModel () {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
+    var sanitizeString = function (str) {
+        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
+    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -7690,9 +7699,9 @@ export function createDeviceModel () {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                dependency.componentId +
+                                sanitizeString(dependency.componentId) +
                                 \\" from server \\" +
-                                dependency.url);
+                                sanitizeString(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -10224,6 +10233,9 @@ function (JSONModel, Device) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
+    var sanitizeString = function (str) {
+        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
+    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -10320,9 +10332,9 @@ function (JSONModel, Device) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                dependency.componentId +
+                                sanitizeString(dependency.componentId) +
                                 \\" from server \\" +
-                                dependency.url);
+                                sanitizeString(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -12792,6 +12804,9 @@ export function createDeviceModel () {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
+    var sanitizeString = function (str) {
+        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
+    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -12888,9 +12903,9 @@ export function createDeviceModel () {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                dependency.componentId +
+                                sanitizeString(dependency.componentId) +
                                 \\" from server \\" +
-                                dependency.url);
+                                sanitizeString(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {

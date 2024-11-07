@@ -1,4 +1,7 @@
 (function (sap) {
+    var sanitizeString = function (str) {
+        return str.replace(/[\n]/g, '\\n').replace(/[\r]/g, '\\r');
+    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = "";
@@ -98,9 +101,9 @@
                     if (dependency.url && dependency.url.length > 0 && dependency.type === "UI5LIB") {
                         sap.ui.require(["sap/base/Log"], function (Log) {
                             Log.info("Registering Library " +
-                                dependency.componentId +
+                                sanitizeString(dependency.componentId) +
                                 " from server " +
-                                dependency.url);
+                                sanitizeString(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\./g, "/");
                         var config = {
