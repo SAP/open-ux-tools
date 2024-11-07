@@ -25,7 +25,7 @@ export abstract class TableQuickActionDefinitionBase {
         public readonly type: string,
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
-        protected readonly skipVariantManagement?: boolean
+        protected readonly isSkipVariantManagementCheck?: boolean
     ) {}
 
     async initialize(): Promise<void> {
@@ -33,7 +33,7 @@ export abstract class TableQuickActionDefinitionBase {
         for (const smartTable of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
             CONTROL_TYPE
         ])) {
-            if (!this.skipVariantManagement) {
+            if (!this.isSkipVariantManagementCheck) {
                 const hasVariantManagement = FlexRuntimeInfoAPI.hasVariantManagement({ element: smartTable });
                 if (!hasVariantManagement) {
                     continue;
