@@ -471,6 +471,11 @@ export class ChangeService extends EventTarget {
         return (pendingChanges || []).find((item) => item.isActive && item.propertyName === propertyName)?.value;
     }
 
+    /**
+     * Update config changes with assocaited controls.
+     *
+     * @param {Map<string, string[]>} configPropertyControlIdMap - config property path control id map.
+     */
     public async updateConfigurationProps(configPropertyControlIdMap: Map<string, string[]>): Promise<void> {
         this.configPropertyControlIdMap = configPropertyControlIdMap;
         await this.fetchSavedChanges();
