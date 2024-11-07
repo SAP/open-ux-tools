@@ -573,6 +573,14 @@ export class ConnectionValidator {
         }
     }
 
+    /**
+     * Validate the connectivity to a destination odata service (for generic odata service destinations), determining, for example, if authentication is required.
+     *
+     * @param destination a destination that is a generic odata service destination
+     * @param servicePath additional service path to append to the destination URL
+     * @param requiredOdataVersion the required odata version, if specified will validate the odata service version satisfies the specified version
+     * @returns validation result and error type if validation fails
+     */
     private async validateOdataServiceDestination(
         destination: Destination,
         servicePath?: string,
