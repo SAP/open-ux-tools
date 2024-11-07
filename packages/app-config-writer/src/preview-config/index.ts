@@ -139,10 +139,10 @@ export async function updatePreviewMiddlewareConfigs(
         logger?.info(`UI5 yaml configuration file ${ui5Yaml} updated according to script ${scriptName}.`);
     }
     for (const ui5Yaml of unprocessedUi5YamlFileNames) {
-        //todo: adjust at least deprecated preview config in unused ui5 yaml configurations?
-        //await processUi5YamlConfig(fs, basePath, ui5Yaml, ''); -> add parameter createMissingPreviewConfig
+        //at least adjust deprecated preview config of unused ui5 yaml configurations
+        await processUi5YamlConfig(fs, basePath, ui5Yaml, '', true);
         logger?.warn(
-            `Skipping UI5 yaml configuration file ${ui5Yaml} because it is not being used in any package.json script. Consider deleting this file as it seems to be not used.`
+            `UI5 yaml configuration file ${ui5Yaml} it is not being used in any package.json script. Consider deleting this file.`
         );
     }
 }
@@ -202,16 +202,21 @@ export function ensurePreviewMiddlewareDependency(
  * @param basePath - base path to be used for the conversion
  * @param ui5Yaml - the name of the UI5 yaml configuration file
  * @param script - the content of the script
+ * @param skipPreviewMiddlewareCreation - (default: true) indicator if the preview middleware creation should be skipped if no preview middleware is configured
  */
 export async function processUi5YamlConfig(
     fs: Editor,
     basePath: string,
     ui5Yaml: string,
-    script: string
+    script: string,
+    skipPreviewMiddlewareCreation = false
 ): Promise<void> {
     const ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml, fs);
     let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
 
+    if (skipPreviewMiddlewareCreation && !previewMiddleware) {
+        return;
+    }
     if (!previewMiddleware) {
         previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
     }
@@ -283,7 +288,7 @@ export function updatePreviewMiddlewareConfig(
         newMiddlewareConfig.configuration = configuration;
     }
 
-    return newMiddlewareConfig;
+    return newMiddlewareConfig as CustomMiddleware<PreviewConfig>;
 }
 
 /**
@@ -311,16 +316,20 @@ function pathIsFlpPath(path: string | undefined, configuration: PreviewConfig): 
  */
 export function sanitizePreviewMiddleware(
     previewMiddleware: CustomMiddleware<PreviewConfigOptions>
-): CustomMiddleware<PreviewConfig> {
+): CustomMiddleware<PreviewConfig | undefined> {
     if (!isFioriToolsDeprecatedPreviewConfig(previewMiddleware.configuration)) {
         return previewMiddleware as CustomMiddleware<PreviewConfig>;
     }
     const ui5Theme = previewMiddleware.configuration.ui5Theme;
-    const configuration = {} as PreviewConfig;
-    if (ui5Theme) {
-        configuration.flp = {};
-        configuration.flp.theme = ui5Theme;
+    delete (previewMiddleware as CustomMiddleware<PreviewConfig | undefined>).configuration;
+
+    if (!ui5Theme) {
+        return previewMiddleware as unknown as CustomMiddleware<undefined>;
     }
+
+    const configuration = {} as PreviewConfig;
+    configuration.flp = {};
+    configuration.flp.theme = ui5Theme;
     previewMiddleware.configuration = configuration;
     return previewMiddleware as CustomMiddleware<PreviewConfig>;
 }

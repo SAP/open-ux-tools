@@ -193,6 +193,33 @@ exports[`convertPreview update preview middleware config - skip not found yaml c
 
 exports[`convertPreview update preview middleware config - skip yaml configurations not used in any script 1`] = `"{\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
 
+exports[`convertPreview update preview middleware config - skip yaml configurations not used in any script 2`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+"
+`;
+
+exports[`convertPreview update preview middleware config - skip yaml configurations not used in any script 3`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          theme: sap_horizon
+"
+`;
+
 exports[`convertPreview update preview middleware config w/o path and intent 1`] = `
 Object {
   "afterMiddleware": "compression",
