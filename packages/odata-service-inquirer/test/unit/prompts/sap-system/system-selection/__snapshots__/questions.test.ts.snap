@@ -25,7 +25,7 @@ exports[`Test system selection prompts should return system selection prompts an
   {
     "guiOptions": {
       "breadcrumb": true,
-      "hint": "Enter the path to the odata service, relative to the selected destination URL",
+      "hint": "Enter the path to the OData service, relative to the selected destination URL",
       "mandatory": true,
     },
     "message": "Service path",

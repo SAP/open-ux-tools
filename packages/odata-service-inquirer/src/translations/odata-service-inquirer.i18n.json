@@ -122,7 +122,7 @@
         },
         "destinationServicePath": {
             "message": "Service path",
-            "hint": "Enter the path to the odata service, relative to the selected destination URL",
+            "hint": "Enter the path to the OData service, relative to the selected destination URL",
             "invalidServicePathWarning": "Please enter a valid service path"
         }
     },
