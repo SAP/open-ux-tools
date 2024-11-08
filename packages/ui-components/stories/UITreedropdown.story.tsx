@@ -38,7 +38,6 @@ export const Basic = (): JSX.Element => {
     const [changesCount, setChangesCount] = React.useState(0);
     const [value, setValue] = React.useState('');
     const handleSelected = (value: any) => {
-        console.log(`Value: ${value}`);
         setChangesCount(changesCount + 1);
         setValue(value);
     };
