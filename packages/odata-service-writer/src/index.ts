@@ -8,7 +8,7 @@ import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
-import type { ProjectPaths } from './types';
+import type { EdmxOdataService, ProjectPaths } from './types';
 import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
@@ -144,14 +144,14 @@ function getAnnotationPaths(serviceAnnotations: EdmxAnnotationsInfo | EdmxAnnota
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {ProjectPaths} paths - locations of the package.json and ui5.yaml, ui5-local.yaml, ui5-mock.yaml
  * @param {string} templateRoot - path to the file templates
- * @param {OdataService} service - the OData service instance
+ * @param {OdataService} service - the OData service instance with EDMX type
  */
-async function writeEDMXServicesFiles(
+async function writeEDMXServiceFiles(
     fs: Editor,
     basePath: string,
     paths: ProjectPaths,
     templateRoot: string,
-    service: OdataService
+    service: EdmxOdataService
 ): Promise<void> {
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
@@ -197,7 +197,7 @@ async function writeEDMXServicesFiles(
         // write ui5 local yaml if service type is not CDS
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
-    writeAnnotationXmlFiles(fs, basePath, service.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[]);
+    writeAnnotationXmlFiles(fs, basePath, service.annotations);
 }
 
 /**
@@ -224,7 +224,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     updateManifest(basePath, service, fs, templateRoot);
     // Dont extend backend and mockserver middlewares if service type is CDS
     if (isServiceTypeEdmx) {
-        await writeEDMXServicesFiles(fs, basePath, paths, templateRoot, service);
+        await writeEDMXServiceFiles(fs, basePath, paths, templateRoot, service as EdmxOdataService);
     } else if (!isServiceTypeEdmx && service.annotations) {
         // Update cds files with annotations only if service type is CDS and annotations are provided
         await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo | CdsAnnotationsInfo[], fs);

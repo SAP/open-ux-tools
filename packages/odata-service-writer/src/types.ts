@@ -80,6 +80,10 @@ export interface OdataService {
     ignoreCertError?: boolean;
 }
 
+export type EdmxOdataService = Omit<OdataService, 'annotations'> & {
+    annotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[];
+};
+
 export interface ProjectPaths {
     packageJson?: string;
     ui5Yaml?: string;
