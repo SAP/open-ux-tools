@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.0.3
+
+### Patch Changes
+
+-   7551316: Small text cleanups
+
 ## 0.0.2
 
 ### Patch Changes
