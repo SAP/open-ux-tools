@@ -1,4 +1,4 @@
-# @sap-ux/deploy-config-writer
+# @sap-ux/cf-deploy-config-inquirer
 
 ## 0.0.2
 
