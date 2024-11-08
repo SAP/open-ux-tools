@@ -53,6 +53,8 @@ export interface CFAppConfig {
     apiHubConfig?: ApiHubConfig;
     serviceHost?: string; // Data service host
     lcapMode?: boolean;
+    addMtaDestination?: boolean; // Used during headless flow, support toggling on/off destination being added
+    cloudServiceName?: string; // Used during headless flow
 }
 export interface CFConfig extends CFAppConfig, CFBaseConfig {
     appId: string;
@@ -63,8 +65,7 @@ export interface CFConfig extends CFAppConfig, CFBaseConfig {
     servicePath?: string;
     firstServicePathSegment?: string;
     isFullUrlDest?: boolean;
-    destinationAuthType?: Authentication;
-    cloudServiceName?: string;
+    destinationAuthentication?: Authentication;
     isMtaRoot?: boolean;
 }
 export const enum ApiHubType {

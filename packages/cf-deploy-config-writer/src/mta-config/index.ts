@@ -25,7 +25,19 @@ export async function getMtaId(rootPath: string): Promise<string | undefined> {
  * @returns MtaConfig instance if found
  */
 export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefined> {
-    return await MtaConfig.newInstance(rootPath, LoggerHelper.logger);
+    let mtaConfig;
+    for (let retries = 5; retries >= 0; retries--) {
+        try {
+            mtaConfig = await MtaConfig.newInstance(rootPath, LoggerHelper.logger);
+            if (mtaConfig?.prefix) {
+                break;
+            }
+        } catch (error) {
+            await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+    }
+    LoggerHelper.logger?.info(`Read mta.yaml with prefix ${mtaConfig?.prefix}`);
+    return mtaConfig;
 }
 
 /**
