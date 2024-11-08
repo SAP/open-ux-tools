@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.2.5
+
+### Patch Changes
+
+-   d0331b8: fix - locate-reuse-libs.js|ts - sanitize server response before logging
+
 ## 1.2.4
 
 ### Patch Changes
