@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test generateMockserverConfig() Add config with service to project with dataSources 1`] = `
+exports[`Test generateMockserverConfig() Add config with services to project 1`] = `
 "specVersion: \\"2.6\\"
 metadata:
   name: ui-mock-config
@@ -18,15 +18,19 @@ server:
           - urlPath: /second/path
             mockdataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/data
             generateMockData: true
-          - urlPath: /third/path
-            metadataPath: ./webapp/localService/third-service/metadata.xml
-            mockdataPath: ./webapp/localService/third-service/data
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN/
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
+            generateMockData: true
+          - urlPath: /sap/opu/odata/sap/STTA_SALES_ORDER_ND_SRV_01/
+            metadataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/metadata.xml
+            mockdataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/data
             generateMockData: true
         annotations: []
 "
 `;
 
-exports[`Test generateMockserverConfig() Add config without any services to bare minimum project without dataSources 1`] = `
+exports[`Test generateMockserverConfig() Add config without any services to bare minimum project 1`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: \\"2.5\\"

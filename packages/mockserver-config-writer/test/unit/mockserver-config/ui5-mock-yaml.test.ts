@@ -84,12 +84,6 @@ describe('Test enhanceYaml()', () => {
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
     });
 
-    test('Update old ui5-mock.yaml with given name and path', async () => {
-        const fs = getFsWithUi5MockYaml('{}');
-        await enhanceYaml(fs, basePath, webappPath, { name: 'mainService', path: 'path/to/service' });
-        expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
-    });
-
     test('Update old ui5-mock.yaml with service overwrite', async () => {
         const fs = getFsWithUi5MockYaml(mockManifestJson);
         await enhanceYaml(fs, basePath, webappPath, { overwrite: true });

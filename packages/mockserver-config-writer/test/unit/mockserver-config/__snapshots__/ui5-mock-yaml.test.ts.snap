@@ -134,31 +134,6 @@ server:
 "
 `;
 
-exports[`Test enhanceYaml() Update old ui5-mock.yaml with given name and path 1`] = `
-"specVersion: '2.0'
-metadata:
-  name: 'app'
-type: application
-server:
-  customMiddleware:
-    - name: middleware-before
-    - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
-      configuration:
-        services:
-          - urlPath: /some/previous/service/uri
-            metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
-            mockdataRootPath: ./webapp/localService/previous-service/data
-            generateMockData: true
-          - urlPath: path/to/service
-            metadataPath: ./webapp/localService/mainService/metadata.xml
-            mockdataPath: ./webapp/localService/mainService/data
-            generateMockData: true
-        annotations: []
-    - name: middleware-after
-"
-`;
-
 exports[`Test enhanceYaml() Update old ui5-mock.yaml with service overwrite 1`] = `
 "specVersion: '2.0'
 metadata:

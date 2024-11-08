@@ -402,16 +402,14 @@ export class UI5Config {
     /**
      * Adds a service configuration to an existing sap-fe-mockserver middleware keeping any existing service configurations. If the config does not contain a sap-fe-mockserver middleware, an error is thrown.
      *
-     * @param serviceName - name of the service
-     * @param servicePath - path of the service that is to be mocked
+     * @param dataSourcesConfig - dataSource config from manifest to add to mockserver middleware services list
      * @param appRoot - root to the application
      * @param annotationsConfig optional annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
     public addServiceToMockserverMiddleware(
-        serviceName: string,
-        servicePath: string,
+        dataSourcesConfig: DataSourceConfig,
         appRoot?: string,
         annotationsConfig: MockserverConfig['annotations'] = []
     ): this {
@@ -420,18 +418,18 @@ export class UI5Config {
             throw new Error('Could not find sap-fe-mockserver');
         } else {
             // Else append new data to current middleware config and then run middleware update
-            const serviceRoot = `${appRoot ?? './webapp'}/localService/${serviceName}`;
+            const serviceRoot = `${appRoot ?? './webapp'}/localService/${dataSourcesConfig.serviceName}`;
 
             const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
             if (mockserverMiddlewareConfig?.services) {
                 const newServiceData = {
-                    urlPath: servicePath,
+                    urlPath: dataSourcesConfig.servicePath,
                     metadataPath: `${serviceRoot}/metadata.xml`,
                     mockdataPath: `${serviceRoot}/data`,
                     generateMockData: true
                 };
                 const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
-                    (existingService) => existingService.urlPath === servicePath
+                    (existingService) => existingService.urlPath === dataSourcesConfig.servicePath
                 );
                 if (serviceIndex === -1) {
                     mockserverMiddlewareConfig.services = [...mockserverMiddlewareConfig.services, newServiceData];

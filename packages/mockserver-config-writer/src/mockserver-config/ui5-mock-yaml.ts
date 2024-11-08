@@ -6,10 +6,12 @@ import type { Manifest } from '@sap-ux/project-access';
 import { DirName, FileName } from '@sap-ux/project-access';
 import type { Ui5MockYamlConfig } from '../types';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
-import { getMainServiceDataSourceName, getMainServiceDataSource, getODataSources } from '../app-info';
+import { getODataSources } from '../app-info';
 
 /**
  * Enhance or create the ui5-mock.yaml with mockserver config.
+ * Mockserver config services and annotations are collected from associated manifest.json file of the project.
+ * If there aren't any services or annotations defined in manifest dataSources section, then mockserver config will be generated without those.
  * Following enhancement strategy is applied:
  *
  * ui5-mock.yaml exists
@@ -38,8 +40,6 @@ export async function enhanceYaml(
     const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
     let mockConfig;
     const manifest = fs.readJSON(join(webappPath, 'manifest.json')) as Partial<Manifest> as Manifest;
-    const mockserverPath = config?.path ?? getMainServiceDataSource(manifest)?.uri;
-    const serviceName = config?.name ?? getMainServiceDataSourceName(manifest);
     // Prepare annotations list to be used in mockserver middleware config annotations
     const annotationSource = Object.values(getODataSources(manifest, 'ODataAnnotation'));
     const annotationsConfig = annotationSource.map((annotation) => ({
@@ -62,8 +62,6 @@ export async function enhanceYaml(
             ui5MockYamlPath,
             dataSourcesConfig,
             annotationsConfig,
-            serviceName,
-            mockserverPath,
             overwrite
         );
     } else {
@@ -106,8 +104,6 @@ export function removeMockDataFolders(fs: Editor, basePath: string): void {
  * @param ui5MockYamlPath - path to ui5-mock.yaml file
  * @param dataSourcesConfig - dataSources config from manifest to add to mockserver middleware services list
  * @param annotationsConfig - annotations config to add to mockserver mockserver middleware annotations list
- * @param serviceName - optional, name of the mockserver service to be added
- * @param servicePath - optional, url path the mockserver service to be added
  * @param overwrite - optional, whether to overwrite existing annotations and services
  * @returns {*}  {Promise<UI5Config>} - Updated Yaml Doc
  */
@@ -116,21 +112,20 @@ async function updateUi5MockYamlConfig(
     ui5MockYamlPath: string,
     dataSourcesConfig: DataSourceConfig[],
     annotationsConfig: MockserverConfig['annotations'],
-    serviceName?: string,
-    servicePath?: string,
     overwrite = false
 ): Promise<UI5Config> {
     const existingUi5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
     if (overwrite) {
         const newMockserverMiddleware = await getNewMockserverMiddleware(dataSourcesConfig, annotationsConfig);
         existingUi5MockYamlConfig.updateCustomMiddleware(newMockserverMiddleware);
-    } else if (serviceName && servicePath) {
-        existingUi5MockYamlConfig.addServiceToMockserverMiddleware(
-            serviceName,
-            servicePath,
-            undefined,
-            annotationsConfig
-        );
+    } else {
+        for (const dataSourceName in dataSourcesConfig) {
+            existingUi5MockYamlConfig.addServiceToMockserverMiddleware(
+                dataSourcesConfig[dataSourceName],
+                undefined,
+                annotationsConfig
+            );
+        }
     }
     return existingUi5MockYamlConfig;
 }

@@ -3,7 +3,8 @@ import { join } from 'path';
 import { generateMockserverConfig, removeMockserverConfig } from '../../../src';
 
 describe('Test generateMockserverConfig()', () => {
-    test('Add config without any services to bare minimum project without dataSources', async () => {
+    test('Add config without any services to bare minimum project', async () => {
+        // Project hasn't any dataSources defined in manifest.json
         const basePath = join(__dirname, '../../fixtures/bare-minimum');
         const webappPath = join(basePath, 'webapp');
 
@@ -18,14 +19,13 @@ describe('Test generateMockserverConfig()', () => {
         expect(fs.read(join(basePath, 'ui5-mock.yaml'))).toMatchSnapshot();
     });
 
-    test('Add config with service to project with dataSources', async () => {
+    test('Add config with services to project', async () => {
+        // Project has dataSources defined in manifest.json and existing ones in ui5-mock.yaml, ones from manifest.json would be appended
         const basePath = join(__dirname, '../../fixtures/ui5-mock-config');
         const webappPath = join(basePath, 'webapp');
 
-        // Since ui5-mock.yaml exists for this project with some services and is only getting updated, we need to pass data for new service
         const fs = await generateMockserverConfig(basePath, {
-            webappPath,
-            ui5MockYamlConfig: { name: 'third-service', path: '/third/path' }
+            webappPath
         });
 
         expect(fs.readJSON(join(basePath, 'package.json'))).toEqual({

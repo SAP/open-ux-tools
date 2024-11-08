@@ -350,26 +350,33 @@ describe('UI5Config', () => {
     describe('addServiceToMockserverMiddleware', () => {
         test('add new service', () => {
             ui5Config.addMockServerMiddleware([], []);
-            ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service');
+            ui5Config.addServiceToMockserverMiddleware({ serviceName: 'new-service', servicePath: '/path/to/service' });
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add new service with appRoot', () => {
             ui5Config.addMockServerMiddleware([], []);
-            ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service', './appRoot');
+            ui5Config.addServiceToMockserverMiddleware(
+                { serviceName: 'new-service', servicePath: '/path/to/service' },
+                './appRoot'
+            );
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('try to add service duplicate', () => {
             ui5Config.addMockServerMiddleware([], []);
-            ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service');
-            ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service');
+            ui5Config.addServiceToMockserverMiddleware({ serviceName: 'new-service', servicePath: '/path/to/service' });
+            ui5Config.addServiceToMockserverMiddleware({ serviceName: 'new-service', servicePath: '/path/to/service' });
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add new service with annotationsConfig', () => {
             ui5Config.addMockServerMiddleware([], []);
-            ui5Config.addServiceToMockserverMiddleware('new-service', '/path/to/service', undefined, annotationsConfig);
+            ui5Config.addServiceToMockserverMiddleware(
+                { serviceName: 'new-service', servicePath: '/path/to/service' },
+                undefined,
+                annotationsConfig
+            );
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
