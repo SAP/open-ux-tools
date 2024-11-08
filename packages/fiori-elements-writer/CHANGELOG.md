@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.3.18
+
+### Patch Changes
+
+-   7cf9ed0: Fix lint issue in templates
+-   Updated dependencies [7cf9ed0]
+    -   @sap-ux/ui5-application-writer@1.2.4
+
 ## 1.3.17
 
 ### Patch Changes
