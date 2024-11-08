@@ -1,5 +1,5 @@
 import { AuthenticationType } from '@sap-ux/store';
-import type { BspApp, UI5ProxyConfig } from '../src';
+import type { BspApp, FioriToolsProxyConfig, UI5ProxyConfig } from '../src';
 import { UI5Config } from '../src';
 
 describe('UI5Config', () => {
@@ -258,14 +258,47 @@ describe('UI5Config', () => {
     describe('removeBackendFromFioriToolsProxydMiddleware', () => {
         test('add proxy with backend first and then call remove backend for existing backend', () => {
             ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
+            let fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
+            expect(fioriToolsProxyMiddleware?.configuration).toStrictEqual({
+                ignoreCertError: false,
+                backend: [
+                    {
+                        url: 'http://localhost:8080',
+                        path: '/~testpath~'
+                    }
+                ],
+                ui5: { path: ['/resources', '/test-resources'], url: 'https://ui5.sap.com' }
+            });
             ui5Config.removeBackendFromFioriToolsProxydMiddleware(url);
-            expect(ui5Config.toString()).toMatchSnapshot();
+            fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
+            expect(fioriToolsProxyMiddleware?.configuration).toStrictEqual({
+                ignoreCertError: false,
+                backend: [],
+                ui5: { path: ['/resources', '/test-resources'], url: 'https://ui5.sap.com' }
+            });
         });
 
         test('add proxy with backend first and then call remove backend for unexisting backend', () => {
             ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
+            const initialFioriToolsProxyMiddleware =
+                ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
+            expect(initialFioriToolsProxyMiddleware?.configuration).toStrictEqual({
+                ignoreCertError: false,
+                backend: [
+                    {
+                        url: 'http://localhost:8080',
+                        path: '/~testpath~'
+                    }
+                ],
+                ui5: { path: ['/resources', '/test-resources'], url: 'https://ui5.sap.com' }
+            });
             ui5Config.removeBackendFromFioriToolsProxydMiddleware('dummy');
-            expect(ui5Config.toString()).toMatchSnapshot();
+            const updatedFioriToolsProxyMiddleware =
+                ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
+            // Check if nothing changed
+            expect(initialFioriToolsProxyMiddleware?.configuration).toStrictEqual(
+                updatedFioriToolsProxyMiddleware?.configuration
+            );
         });
 
         test('try removing backend without a proxy middleware added before', () => {

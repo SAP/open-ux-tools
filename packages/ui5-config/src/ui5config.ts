@@ -317,27 +317,21 @@ export class UI5Config {
      * @memberof UI5Config
      */
     public removeBackendFromFioriToolsProxydMiddleware(backendUrl: string): this {
-        const middlewareListYaml = this.document.getSequence({ path: 'server.customMiddleware' });
-        const proxyMiddlewareYaml = this.document.findItem(
-            middlewareListYaml,
-            (item: any) => item.name === fioriToolsProxy
-        ) as YAMLMap;
-        if (!proxyMiddlewareYaml) {
+        const fioriToolsProxyMiddleware = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
+        if (!fioriToolsProxyMiddleware) {
             throw new Error('Could not find fiori-tools-proxy');
-        }
-        const proxyMiddlewareYamlContent = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
-        const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration;
-        // Remove backend from middleware configurations in yaml
-        if (proxyMiddlewareConfig?.backend) {
-            const backendIndex = proxyMiddlewareConfig.backend.findIndex(
-                (existingBackend) => existingBackend.url === backendUrl
-            );
-            const configuration = this.document.getMap({
-                start: proxyMiddlewareYaml,
-                path: 'configuration'
-            });
-            const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
-            backendConfigs.delete(backendIndex);
+        } else {
+            const proxyMiddlewareConfig = fioriToolsProxyMiddleware?.configuration;
+            // Remove backend from middleware configurations in yaml
+            if (proxyMiddlewareConfig?.backend) {
+                const backendIndex = proxyMiddlewareConfig.backend.findIndex(
+                    (existingBackend) => existingBackend.url === backendUrl
+                );
+                proxyMiddlewareConfig.backend = proxyMiddlewareConfig.backend.filter(
+                    (backend, index) => index !== backendIndex
+                );
+                this.updateCustomMiddleware(fioriToolsProxyMiddleware);
+            }
         }
         return this;
     }
@@ -421,19 +415,13 @@ export class UI5Config {
         appRoot?: string,
         annotationsConfig: MockserverConfig['annotations'] = []
     ): this {
-        const middlewareListYaml = this.document.getSequence({ path: 'server.customMiddleware' });
-        // Throw error if middleware is not found
-        const mockserverMiddlewareYaml = this.document.findItem(
-            middlewareListYaml,
-            (item: any) => item.name === 'sap-fe-mockserver'
-        ) as YAMLMap;
-        if (!mockserverMiddlewareYaml) {
+        const mockserverMiddleware = this.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
+        if (!mockserverMiddleware) {
             throw new Error('Could not find sap-fe-mockserver');
         } else {
             // Else append new data to current middleware config and then run middleware update
             const serviceRoot = `${appRoot ?? './webapp'}/localService/${serviceName}`;
 
-            const mockserverMiddleware = this.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
             const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
             if (mockserverMiddlewareConfig?.services) {
                 const newServiceData = {
@@ -461,9 +449,7 @@ export class UI5Config {
                     }
                 });
             }
-            if (mockserverMiddleware) {
-                this.updateCustomMiddleware(mockserverMiddleware);
-            }
+            this.updateCustomMiddleware(mockserverMiddleware);
         }
         return this;
     }
@@ -477,40 +463,35 @@ export class UI5Config {
      * @memberof UI5Config
      */
     public removeServiceFromMockServerMiddleware(servicePath: string, annotationPaths: string[]): this {
-        const middlewareListYaml = this.document.getSequence({ path: 'server.customMiddleware' });
-        const mockserverMiddlewareYaml = this.document.findItem(
-            middlewareListYaml,
-            (item: any) => item.name === 'sap-fe-mockserver'
-        ) as YAMLMap;
-        if (!mockserverMiddlewareYaml) {
+        const mockserverMiddleware = this.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
+        if (!mockserverMiddleware) {
             throw new Error('Could not find sap-fe-mockserver');
         } else {
-            const mockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver');
-            const mockserverMiddlewareConfig = mockserverMiddleware?.configuration as MockserverConfig;
-            const configuration = this.document.getMap({
-                start: mockserverMiddlewareYaml,
-                path: 'configuration'
-            });
+            const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
             // Remove service from middleware configurations in yaml
-            if (mockserverMiddlewareConfig.services) {
+            if (mockserverMiddlewareConfig?.services) {
                 const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
                     (existingService) => existingService.urlPath === servicePath
                 );
-                const services = this.document.getSequence({ start: configuration, path: 'services' });
-                services.delete(serviceIndex);
+                mockserverMiddlewareConfig.services = mockserverMiddlewareConfig?.services.filter(
+                    (service, index) => index !== serviceIndex
+                );
             }
             // Remove service related annotations
-            if (mockserverMiddlewareConfig.annotations) {
+            if (mockserverMiddlewareConfig?.annotations) {
                 const mockserverMiddlewareConfigAnnotations = mockserverMiddlewareConfig.annotations;
-                const annotationSection = this.document.getSequence({ start: configuration, path: 'annotations' });
+                const annotationSection = mockserverMiddlewareConfig?.annotations;
                 annotationPaths.forEach((annotationPath: string) => {
                     // Search for annotations that needs to be deleted
                     const annotationIndex = mockserverMiddlewareConfigAnnotations.findIndex(
                         (existingAnnotation) => existingAnnotation.urlPath === annotationPath
                     );
-                    annotationSection.delete(annotationIndex);
+                    mockserverMiddlewareConfig.annotations = annotationSection.filter(
+                        (annotation, index) => index !== annotationIndex
+                    );
                 });
             }
+            this.updateCustomMiddleware(mockserverMiddleware);
         }
         return this;
     }
