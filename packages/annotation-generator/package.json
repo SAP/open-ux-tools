@@ -18,7 +18,7 @@
         "watch": "tsc  --build ./ -watch"
     },
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.8.0",
+        "@sap-ux/annotation-converter": "0.9.6",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",

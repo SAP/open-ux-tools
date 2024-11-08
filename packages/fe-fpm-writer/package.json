@@ -29,7 +29,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.8.0",
+        "@sap-ux/annotation-converter": "0.9.6",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/vocabularies-types": "0.11.4",
