@@ -498,9 +498,7 @@ export const AdditionalCustomSearch = (): JSX.Element => (
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
             customSearchFilter={(searchTerm: string, option: UIComboBoxOption) => {
-                // console.log('customSearchFilter');
                 if ('customMark' in option && option.customMark) {
-                    // console.log('always visible');
                     return true;
                 }
                 return undefined;
