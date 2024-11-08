@@ -221,7 +221,18 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
             {...props}
             title={title}
             onRenderSuffix={value?.trim() ? onRenderSuffix : undefined}
+            label="dummy label"
             className={classNames}
+            onRenderInput={
+                title
+                    ? (props, defaultRender) => {
+                          if (defaultRender) {
+                              return <div title={title}>{defaultRender({ ...props, title: undefined })}</div>;
+                          }
+                          return null;
+                      }
+                    : undefined
+            }
         />
     );
 };
