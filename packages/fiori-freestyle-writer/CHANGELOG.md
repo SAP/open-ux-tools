@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.2.18
+
+### Patch Changes
+
+-   d0331b8: fix - locate-reuse-libs.js|ts - sanitize server response before logging
+-   Updated dependencies [d0331b8]
+    -   @sap-ux/ui5-application-writer@1.2.5
+
 ## 1.2.17
 
 ### Patch Changes
