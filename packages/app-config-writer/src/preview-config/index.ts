@@ -4,12 +4,12 @@ import { basename, join } from 'path';
 import { getAllUi5YamlFileNames, getWebappPath, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { prompt, type PromptObject } from 'prompts';
-import { updateMiddlewares, createPreviewMiddlewareConfig } from '../variants-config/ui5-yaml';
+import { createPreviewMiddlewareConfig } from '../variants-config/ui5-yaml';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../variants-config/utils';
 import type { PreviewConfigOptions } from '../types';
 import type { FlpConfig, MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
-import { addVariantsManagementScript } from '../variants-config/package-json';
+import { generateVariantsConfig } from '../variants-config';
 
 const renameMessage = (filename: string): string =>
     `Renamed ${filename} to ${filename.slice(
@@ -60,8 +60,7 @@ async function updateVariantsCreationScript(fs: Editor, basePath: string, logger
     if (packageJson?.scripts?.['start-variants-management']) {
         const ui5Yaml = basename(extractYamlConfigFileName(packageJson?.scripts?.['start-variants-management']));
         const yamlPath = join(basePath, ui5Yaml);
-        await addVariantsManagementScript(fs, basePath, yamlPath, logger);
-        await updateMiddlewares(fs, basePath, yamlPath, logger);
+        await generateVariantsConfig(basePath, yamlPath, logger, fs);
     }
 }
 
