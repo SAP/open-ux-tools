@@ -1,5 +1,31 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.3.20
+
+### Patch Changes
+
+-   d0331b8: fix - locate-reuse-libs.js|ts - sanitize server response before logging
+-   Updated dependencies [d0331b8]
+    -   @sap-ux/ui5-application-writer@1.2.5
+
+## 1.3.19
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.16
+-   @sap-ux/fiori-generator-shared@0.7.5
+-   @sap-ux/odata-service-writer@0.23.1
+-   @sap-ux/ui5-application-writer@1.2.4
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.18
+
+### Patch Changes
+
+-   7cf9ed0: Fix lint issue in templates
+-   Updated dependencies [7cf9ed0]
+    -   @sap-ux/ui5-application-writer@1.2.4
+
 ## 1.3.17
 
 ### Patch Changes
