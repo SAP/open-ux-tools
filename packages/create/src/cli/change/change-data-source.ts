@@ -62,7 +62,9 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         logger.error(error.message);
         if (error.response?.status === 401 && loginAttempts) {
             loginAttempts--;
-            logger.error(`Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts}`);
+            logger.error(
+                `Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts + 1}`
+            );
             await changeDataSource(basePath, simulate, yamlPath);
             return;
         }

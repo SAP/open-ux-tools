@@ -7,7 +7,7 @@ import {
     ManifestService,
     getVariant
 } from '@sap-ux/adp-tooling';
-import { getAnnotationNamespaces, NamespaceAlias } from '@sap-ux/odata-service-writer';
+import { getAnnotationNamespaces, type NamespaceAlias } from '@sap-ux/odata-service-writer';
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
 import { validateAdpProject } from '../../validation/validation';
@@ -76,7 +76,9 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         logger.error(error.message);
         if (error.response?.status === 401 && loginAttempts) {
             loginAttempts--;
-            logger.error(`Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts}`);
+            logger.error(
+                `Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts + 1}`
+            );
             await addAnnotationsToOdata(basePath, simulate, yamlPath);
             return;
         }
