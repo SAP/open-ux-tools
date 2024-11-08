@@ -62,18 +62,21 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
 }
 
 /**
- * Writes annotation XML files.
+ * Writes annotation XML files for EDMX annotations.
  *
  * @param {Editor} fs - The memfs editor instance.
  * @param {string} basePath - The base path of the project.
- * @param {OdataService} service - The OData service information.
+ * @param {OdataService} edmxAnnotations - The OData service annotations.
  */
-export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
+export function writeAnnotationXmlFiles(
+    fs: Editor,
+    basePath: string,
+    edmxAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]
+): void {
     // Write annotation xml if annotations are provided and service type is EDMX
-    if (Array.isArray(service.annotations)) {
-        const annotations = service.annotations as EdmxAnnotationsInfo[];
-        for (const annotationName in annotations) {
-            const annotation = annotations[annotationName];
+    if (Array.isArray(edmxAnnotations)) {
+        for (const annotationName in edmxAnnotations) {
+            const annotation = edmxAnnotations[annotationName];
             if (annotation?.xml) {
                 fs.write(
                     join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
@@ -81,14 +84,11 @@ export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: O
                 );
             }
         }
-    } else {
-        const annotation = service.annotations as EdmxAnnotationsInfo;
-        if (annotation?.xml) {
-            fs.write(
-                join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
-                prettifyXml(annotation.xml, { indent: 4 })
-            );
-        }
+    } else if (edmxAnnotations?.xml) {
+        fs.write(
+            join(basePath, 'webapp', 'localService', `${edmxAnnotations.technicalName}.xml`),
+            prettifyXml(edmxAnnotations.xml, { indent: 4 })
+        );
     }
 }
 

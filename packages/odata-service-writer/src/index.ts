@@ -197,7 +197,7 @@ async function writeEDMXServicesFiles(
         // write ui5 local yaml if service type is not CDS
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
-    writeAnnotationXmlFiles(fs, basePath, service);
+    writeAnnotationXmlFiles(fs, basePath, service.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[]);
 }
 
 /**
