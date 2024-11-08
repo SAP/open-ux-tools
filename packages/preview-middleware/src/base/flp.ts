@@ -166,7 +166,7 @@ export class FlpSandbox {
             ? '@sap-ux/control-property-editor'
             : '@sap-ux/preview-middleware';
 
-        await this.setApplicationDependecies();
+        await this.setApplicationDependencies();
         const config = { ...this.templateConfig };
         /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
         if (!config.ui5.libs.includes('sap.ui.rta')) {
@@ -196,7 +196,7 @@ export class FlpSandbox {
      *
      * @returns Promise that resolves when the application dependencies are set
      */
-    private async setApplicationDependecies(): Promise<void> {
+    private async setApplicationDependencies(): Promise<void> {
         if (this.adp) {
             await this.adp.sync();
             const appName = getAppName(this.manifest, this.config.intent);
