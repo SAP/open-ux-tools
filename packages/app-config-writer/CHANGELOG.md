@@ -1,5 +1,14 @@
 # @sap-ux/app-config-writer
 
+## 0.4.50
+
+### Patch Changes
+
+-   fb26f92: Enhance RTA handling for variants-config command
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+    -   @sap-ux/axios-extension@1.17.0
+
 ## 0.4.49
 
 ### Patch Changes

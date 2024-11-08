@@ -1,5 +1,19 @@
 # @sap-ux/preview-middleware
 
+## 0.16.107
+
+### Patch Changes
+
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+    -   @sap-ux/adp-tooling@0.12.72
+
+## 0.16.106
+
+### Patch Changes
+
+-   0671c95: support semantic date range quick action for v2/v4
+
 ## 0.16.105
 
 ### Patch Changes
