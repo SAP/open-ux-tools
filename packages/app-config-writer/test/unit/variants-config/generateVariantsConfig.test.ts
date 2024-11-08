@@ -18,7 +18,7 @@ describe('generateVariantsConfig', () => {
     test('adding variants configuration to a non existing project', async () => {
         const basePath = join(__dirname, '../../fixtures/a-folder-that-does-not-exist');
         await expect(generateVariantsConfig(basePath, 'hugo.yaml', new ToolsLogger())).rejects.toThrowError(
-            `Script 'start-variants-management' cannot be written to package.json. File 'package.json' not found at ${basePath}`
+            `File 'hugo.yaml' not found in project '${basePath}'`
         );
     });
 });
