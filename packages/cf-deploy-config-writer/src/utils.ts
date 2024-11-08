@@ -1,6 +1,6 @@
 import { join, normalize, posix } from 'path';
 import { coerce, satisfies } from 'semver';
-import { isAppStudio, listDestinations, isFullUrlDestination, type Authentication } from '@sap-ux/btp-utils';
+import { isAppStudio, listDestinations, isFullUrlDestination, type Authentication, type Destinations } from '@sap-ux/btp-utils';
 import { addPackageDevDependency, type Manifest } from '@sap-ux/project-access';
 import {
     MTAVersion,
@@ -13,7 +13,6 @@ import {
     XSSecurityFile
 } from './constants';
 import type { Editor } from 'mem-fs-editor';
-import type { Destinations } from '@sap-ux/btp-utils';
 import type { MTABaseConfig } from './types';
 
 let cachedDestinationsList: Destinations = {};
