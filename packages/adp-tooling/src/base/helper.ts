@@ -33,6 +33,12 @@ export async function getAdpConfig(basePath: string, yamlPath: string): Promise<
     return adp;
 }
 
+/**
+ * Get all files in the webapp folder.
+ *
+ * @param {string} basePath - The path to the adaptation project.
+ * @returns {Array<{ relativePath: string; content: string }>} The files in the webapp folder.
+ */
 export function getWebappFiles(basePath: string): { relativePath: string; content: string }[] {
     const dir = join(basePath, 'webapp');
     const files: { relativePath: string; content: string }[] = [];
