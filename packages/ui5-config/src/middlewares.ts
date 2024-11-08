@@ -5,7 +5,8 @@ import type {
     FioriToolsProxyConfig,
     MockserverConfig,
     FioriToolsProxyConfigUI5,
-    FioriPreviewConfig
+    FioriPreviewConfig,
+    DataSourceConfig
 } from './types';
 import type { NodeComment } from '@sap-ux/yaml';
 
@@ -128,7 +129,7 @@ export function getFioriToolsProxyMiddlewareConfig(
 }
 
 export const getMockServerMiddlewareConfig = (
-    dataSourcesConfig: { serviceName: string; servicePath: string }[],
+    dataSourcesConfig: DataSourceConfig[],
     annotationsConfig: MockserverConfig['annotations'],
     appRoot?: string
 ): CustomMiddleware<MockserverConfig> => {

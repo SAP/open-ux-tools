@@ -48,8 +48,8 @@ export async function removeAnnotationsFromCDSFiles(
     fs: Editor
 ): Promise<void> {
     if (Array.isArray(annotations)) {
-        for (const i in annotations) {
-            const annotation = annotations[i];
+        for (const annotationName in annotations) {
+            const annotation = annotations[annotationName];
             const annotationCdsPath = join(
                 annotation.projectPath,
                 annotation.appPath ?? '',

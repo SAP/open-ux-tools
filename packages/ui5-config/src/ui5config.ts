@@ -12,7 +12,8 @@ import type {
     Ui5Document,
     Adp,
     MockserverConfig,
-    ServeStaticPath
+    ServeStaticPath,
+    DataSourceConfig
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -281,8 +282,8 @@ export class UI5Config {
         }
         const comments = getBackendComments(backend);
         let backendNode;
-        const proxyMiddlewareYamlContent = this.findCustomMiddleware(fioriToolsProxy);
-        const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration as FioriToolsProxyConfig;
+        const proxyMiddlewareYamlContent = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
+        const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration;
         // Add new entry to existing backend configurations in yaml
         if (proxyMiddlewareConfig?.backend) {
             // Avoid adding duplicates by checking existing backend configs
@@ -324,8 +325,8 @@ export class UI5Config {
         if (!proxyMiddlewareYaml) {
             throw new Error('Could not find fiori-tools-proxy');
         }
-        const proxyMiddlewareYamlContent = this.findCustomMiddleware(fioriToolsProxy);
-        const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration as FioriToolsProxyConfig;
+        const proxyMiddlewareYamlContent = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
+        const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration;
         // Remove backend from middleware configurations in yaml
         if (proxyMiddlewareConfig?.backend) {
             const backendIndex = proxyMiddlewareConfig.backend.findIndex(
@@ -393,7 +394,7 @@ export class UI5Config {
      * @memberof UI5Config
      */
     public addMockServerMiddleware(
-        dataSourcesConfig: { serviceName: string; servicePath: string }[],
+        dataSourcesConfig: DataSourceConfig[],
         annotationsConfig: MockserverConfig['annotations'],
         appRoot?: string
     ): this {
@@ -432,9 +433,9 @@ export class UI5Config {
             // Else append new data to current middleware config and then run middleware update
             const serviceRoot = `${appRoot ?? './webapp'}/localService/${serviceName}`;
 
-            const mockserverMiddleware = this.findCustomMiddleware('sap-fe-mockserver') as CustomMiddleware;
-            const mockserverMiddlewareConfig = mockserverMiddleware?.configuration as MockserverConfig;
-            if (mockserverMiddlewareConfig.services) {
+            const mockserverMiddleware = this.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
+            const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
+            if (mockserverMiddlewareConfig?.services) {
                 const newServiceData = {
                     urlPath: servicePath,
                     metadataPath: `${serviceRoot}/metadata.xml`,
@@ -448,7 +449,7 @@ export class UI5Config {
                     mockserverMiddlewareConfig.services = [...mockserverMiddlewareConfig.services, newServiceData];
                 }
             }
-            if (mockserverMiddlewareConfig.annotations) {
+            if (mockserverMiddlewareConfig?.annotations) {
                 const existingAnnotations = mockserverMiddlewareConfig.annotations;
                 annotationsConfig.forEach((annotationConfig) => {
                     if (
@@ -460,7 +461,9 @@ export class UI5Config {
                     }
                 });
             }
-            this.updateCustomMiddleware(mockserverMiddleware);
+            if (mockserverMiddleware) {
+                this.updateCustomMiddleware(mockserverMiddleware);
+            }
         }
         return this;
     }

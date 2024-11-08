@@ -41,8 +41,8 @@ export function getAnnotationNamespaces({ metadata, annotations }: Partial<Odata
     // Enhance service with annotations namespaces
     let schemaNamespaces = metadata ? getNamespaces(metadata) : [];
     if (Array.isArray(annotations)) {
-        for (const i in annotations) {
-            const edmxAnnotation = annotations[i] as EdmxAnnotationsInfo;
+        for (const annotationName in annotations) {
+            const edmxAnnotation = annotations[annotationName] as EdmxAnnotationsInfo;
             schemaNamespaces = getAnnotationNamespacesForSingleAnnotation(edmxAnnotation, schemaNamespaces);
         }
     } else {

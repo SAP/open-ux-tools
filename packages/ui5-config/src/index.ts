@@ -1,5 +1,6 @@
 export { UI5Config } from './ui5config';
 export {
+    DataSourceConfig,
     Configuration,
     CustomItem,
     CustomTask,

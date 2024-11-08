@@ -63,3 +63,5 @@ export interface ServeStaticPath {
     src: string;
     fallthrough: boolean;
 }
+
+export type DataSourceConfig = { serviceName: string; servicePath: string };

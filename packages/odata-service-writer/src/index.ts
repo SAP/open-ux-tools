@@ -177,8 +177,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
             }
         }
         if (service.metadata) {
+            const webappPath = await getWebappPath(basePath, fs);
             if (paths.ui5Yaml && ui5Config) {
-                const webappPath = await getWebappPath(basePath, fs);
                 const config = {
                     webappPath: webappPath,
                     ui5MockYamlConfig: { path: service.path, name: service.name }
@@ -194,10 +194,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
                 );
             }
             // Create local copy of metadata and annotations
-            fs.write(
-                join(basePath, 'webapp', 'localService', 'metadata.xml'),
-                prettifyXml(service.metadata, { indent: 4 })
-            );
+            fs.write(join(webappPath, 'localService', 'metadata.xml'), prettifyXml(service.metadata, { indent: 4 }));
             // Adds local annotations to datasources section of manifest.json and writes the annotations file
             if (service.localAnnotationsName) {
                 const namespaces = getAnnotationNamespaces(service);

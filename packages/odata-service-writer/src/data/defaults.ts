@@ -42,10 +42,10 @@ function setDefaultServiceModel(service: OdataService): void {
  * @param {OdataService} service - The service object whose annotations name needs to be set or modified.
  */
 function setDefaultAnnotationsName(service: OdataService): void {
-    if (service.annotations && Array.isArray(service.annotations)) {
+    if (Array.isArray(service.annotations)) {
         const annotations = service.annotations as EdmxAnnotationsInfo[];
-        for (const i in annotations) {
-            const annotation = annotations[i];
+        for (const annotationName in annotations) {
+            const annotation = annotations[annotationName];
             if (annotation?.technicalName && !annotation.name) {
                 annotation.name = annotation?.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');
             }

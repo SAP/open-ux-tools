@@ -70,10 +70,10 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
  */
 export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
     // Write annotation xml if annotations are provided and service type is EDMX
-    if (service.annotations && Array.isArray(service.annotations)) {
+    if (Array.isArray(service.annotations)) {
         const annotations = service.annotations as EdmxAnnotationsInfo[];
-        for (const i in annotations) {
-            const annotation = annotations[i];
+        for (const annotationName in annotations) {
+            const annotation = annotations[annotationName];
             if (annotation?.xml) {
                 fs.write(
                     join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
@@ -106,8 +106,8 @@ export async function updateCdsFilesWithAnnotations(
     fs: Editor
 ): Promise<void> {
     if (Array.isArray(annotations)) {
-        for (const i in annotations) {
-            const annotation = annotations[i];
+        for (const annotationName in annotations) {
+            const annotation = annotations[annotationName];
             const annotationCdsPath = join(
                 annotation.projectPath,
                 annotation.appPath ?? '',

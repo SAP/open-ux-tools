@@ -1,7 +1,7 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
-import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import type { CustomMiddleware, DataSourceConfig } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
 import { DirName, FileName } from '@sap-ux/project-access';
 import type { Ui5MockYamlConfig } from '../types';
@@ -47,12 +47,12 @@ export async function enhanceYaml(
         urlPath: annotation.uri
     }));
     // Prepare dataSources list to be used in mockserver middleware config services
-    const dataSources = getODataSources(manifest, 'OData');
-    const dataSourcesConfig: { serviceName: string; servicePath: string }[] = [];
-    for (const i in dataSources) {
+    const dataSources = getODataSources(manifest);
+    const dataSourcesConfig: DataSourceConfig[] = [];
+    for (const dataSource in dataSources) {
         dataSourcesConfig.push({
-            serviceName: i,
-            servicePath: dataSources[i].uri
+            serviceName: dataSource,
+            servicePath: dataSources[dataSource].uri
         });
     }
 
@@ -114,7 +114,7 @@ export function removeMockDataFolders(fs: Editor, basePath: string): void {
 async function updateUi5MockYamlConfig(
     fs: Editor,
     ui5MockYamlPath: string,
-    dataSourcesConfig: { serviceName: string; servicePath: string }[],
+    dataSourcesConfig: DataSourceConfig[],
     annotationsConfig: MockserverConfig['annotations'],
     serviceName?: string,
     servicePath?: string,
@@ -147,7 +147,7 @@ async function updateUi5MockYamlConfig(
 async function generateUi5MockYamlBasedOnUi5Yaml(
     fs: Editor,
     basePath: string,
-    dataSourcesConfig: { serviceName: string; servicePath: string }[],
+    dataSourcesConfig: DataSourceConfig[],
     annotationsConfig: MockserverConfig['annotations']
 ): Promise<UI5Config> {
     const ui5YamlPath = join(basePath, 'ui5.yaml');
@@ -167,7 +167,7 @@ async function generateUi5MockYamlBasedOnUi5Yaml(
  */
 async function generateNewUi5MockYamlConfig(
     appId: string,
-    dataSourcesConfig: { serviceName: string; servicePath: string }[],
+    dataSourcesConfig: DataSourceConfig[],
     annotationsConfig: MockserverConfig['annotations']
 ): Promise<UI5Config> {
     const ui5MockYaml = await UI5Config.newInstance(
@@ -189,7 +189,7 @@ async function generateNewUi5MockYamlConfig(
  * @returns - mockserver middleware
  */
 async function getNewMockserverMiddleware(
-    dataSourcesConfig: { serviceName: string; servicePath: string }[],
+    dataSourcesConfig: DataSourceConfig[],
     annotationsConfig: MockserverConfig['annotations']
 ): Promise<CustomMiddleware<MockserverConfig>> {
     const ui5MockYaml = await UI5Config.newInstance('');
