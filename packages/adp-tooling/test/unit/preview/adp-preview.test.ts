@@ -207,6 +207,10 @@ describe('AdaptationProject', () => {
             nock.cleanAll();
         });
 
+        afterEach(() => {
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+        });
+
         test('updates merged descriptor', async () => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
             const adp = new AdpPreview(
@@ -233,7 +237,6 @@ describe('AdaptationProject', () => {
         });
 
         test('skip updating the merge descriptor if no manifest changes and descriptor was already fetched', async () => {
-            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
             const adp = new AdpPreview(
                 {
                     target: {
@@ -262,7 +265,6 @@ describe('AdaptationProject', () => {
         });
 
         test('update descriptor if no manifest changes, but this is first descriptor fetch', async () => {
-            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
             const adp = new AdpPreview(
                 {
                     target: {
@@ -287,7 +289,6 @@ describe('AdaptationProject', () => {
         });
 
         test('update descriptor if descriptor was already fetched, but there are manifest changes', async () => {
-            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
             const adp = new AdpPreview(
                 {
                     target: {
