@@ -8,6 +8,7 @@ import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
+import type { ProjectPaths } from './types';
 import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
@@ -33,13 +34,10 @@ function ensureExists(basePath: string, files: string[], fs: Editor): void {
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {Editor} [fs] - the memfs editor instance
- * @returns an object with the optional locations of the package.json and ui5.yaml
+ * @returns an object with the optional locations of the package.json and ui5.yaml, ui5-local.yaml, ui5-mock.yaml
  */
-export async function findProjectFiles(
-    basePath: string,
-    fs: Editor
-): Promise<{ packageJson?: string; ui5Yaml?: string; ui5LocalYaml?: string; ui5MockYaml?: string }> {
-    const files: { packageJson?: string; ui5Yaml?: string; ui5LocalYaml?: string; ui5MockYaml?: string } = {};
+export async function findProjectFiles(basePath: string, fs: Editor): Promise<ProjectPaths> {
+    const files: ProjectPaths = {};
     const parts = basePath.split(sep);
 
     while (parts.length > 0 && (!files.packageJson || !files.ui5Yaml || !files.ui5LocalYaml || !files.ui5MockYaml)) {
@@ -140,6 +138,69 @@ function getAnnotationPaths(serviceAnnotations: EdmxAnnotationsInfo | EdmxAnnota
 }
 
 /**
+ * Writes EDMX service data to ui5.yaml, ui5-mock.yaml, ui5-local.yaml, package.json and annotations xml files.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {ProjectPaths} paths - locations of the package.json and ui5.yaml, ui5-local.yaml, ui5-mock.yaml
+ * @param {string} templateRoot - path to the file templates
+ * @param {OdataService} service - the OData service instance
+ */
+async function writeEDMXServicesFiles(
+    fs: Editor,
+    basePath: string,
+    paths: ProjectPaths,
+    templateRoot: string,
+    service: OdataService
+): Promise<void> {
+    let ui5Config: UI5Config | undefined;
+    let ui5LocalConfig: UI5Config | undefined;
+    let ui5LocalConfigPath: string | undefined;
+    if (paths.ui5Yaml) {
+        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+        extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml);
+        ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
+        // Update ui5-local.yaml with backend middleware
+        if (fs.exists(ui5LocalConfigPath)) {
+            ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+            extendBackendMiddleware(fs, service, ui5LocalConfig, ui5LocalConfigPath);
+        }
+    }
+    if (service.metadata) {
+        const webappPath = await getWebappPath(basePath, fs);
+        if (paths.ui5Yaml && ui5Config) {
+            const config = {
+                webappPath: webappPath,
+                ui5MockYamlConfig: { path: service.path, name: service.name }
+            };
+            // Generate mockserver middleware for ui5-mock.yaml
+            await generateMockserverConfig(basePath, config, fs);
+            // Update ui5-local.yaml with mockserver middleware from newly created/updated ui5-mock.yaml
+            await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, ui5LocalConfigPath, ui5LocalConfig);
+        }
+        // Create local copy of metadata and annotations
+        fs.write(join(webappPath, 'localService', 'metadata.xml'), prettifyXml(service.metadata, { indent: 4 }));
+        // Adds local annotations to datasources section of manifest.json and writes the annotations file
+        if (service.localAnnotationsName) {
+            const namespaces = getAnnotationNamespaces(service);
+            fs.copyTpl(
+                join(templateRoot, 'add', 'annotation.xml'),
+                join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
+                { ...service, namespaces }
+            );
+        }
+    }
+    if (paths.packageJson && paths.ui5Yaml) {
+        updatePackageJson(paths.packageJson, fs, !!service.metadata);
+    }
+    if (ui5LocalConfigPath && ui5LocalConfig) {
+        // write ui5 local yaml if service type is not CDS
+        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    }
+    writeAnnotationXmlFiles(fs, basePath, service);
+}
+
+/**
  * Writes the odata service related file updates to an existing UI5 project specified by the base path.
  *
  * @param {string} basePath - the root path of an existing UI5 application
@@ -161,58 +222,9 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     const templateRoot = join(__dirname, '../templates');
     // Update manifest.json
     updateManifest(basePath, service, fs, templateRoot);
-    let ui5Config: UI5Config | undefined;
-    let ui5LocalConfig: UI5Config | undefined;
-    let ui5LocalConfigPath: string | undefined;
     // Dont extend backend and mockserver middlewares if service type is CDS
     if (isServiceTypeEdmx) {
-        if (paths.ui5Yaml) {
-            ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
-            extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml);
-            ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
-            // Update ui5-local.yaml with backend middleware
-            if (fs.exists(ui5LocalConfigPath)) {
-                ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-                extendBackendMiddleware(fs, service, ui5LocalConfig, ui5LocalConfigPath);
-            }
-        }
-        if (service.metadata) {
-            const webappPath = await getWebappPath(basePath, fs);
-            if (paths.ui5Yaml && ui5Config) {
-                const config = {
-                    webappPath: webappPath,
-                    ui5MockYamlConfig: { path: service.path, name: service.name }
-                };
-                // Generate mockserver middleware for ui5-mock.yaml
-                await generateMockserverConfig(basePath, config, fs);
-                // Update ui5-local.yaml with mockserver middleware from newly created/updated ui5-mock.yaml
-                await generateMockserverMiddlewareBasedOnUi5MockYaml(
-                    fs,
-                    paths.ui5Yaml,
-                    ui5LocalConfigPath,
-                    ui5LocalConfig
-                );
-            }
-            // Create local copy of metadata and annotations
-            fs.write(join(webappPath, 'localService', 'metadata.xml'), prettifyXml(service.metadata, { indent: 4 }));
-            // Adds local annotations to datasources section of manifest.json and writes the annotations file
-            if (service.localAnnotationsName) {
-                const namespaces = getAnnotationNamespaces(service);
-                fs.copyTpl(
-                    join(templateRoot, 'add', 'annotation.xml'),
-                    join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
-                    { ...service, namespaces }
-                );
-            }
-        }
-        if (paths.packageJson && paths.ui5Yaml) {
-            updatePackageJson(paths.packageJson, fs, !!service.metadata);
-        }
-        if (ui5LocalConfigPath && ui5LocalConfig) {
-            // write ui5 local yaml if service type is not CDS
-            fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-        }
-        writeAnnotationXmlFiles(fs, basePath, service);
+        await writeEDMXServicesFiles(fs, basePath, paths, templateRoot, service);
     } else if (!isServiceTypeEdmx && service.annotations) {
         // Update cds files with annotations only if service type is CDS and annotations are provided
         await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo | CdsAnnotationsInfo[], fs);

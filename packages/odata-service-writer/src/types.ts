@@ -79,3 +79,10 @@ export interface OdataService {
      */
     ignoreCertError?: boolean;
 }
+
+export interface ProjectPaths {
+    packageJson?: string;
+    ui5Yaml?: string;
+    ui5LocalYaml?: string;
+    ui5MockYaml?: string;
+}
