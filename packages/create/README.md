@@ -58,7 +58,7 @@ Calling `sap-ux add annotations` allows adding an annotation to the OData Source
 ```sh
 sap-ux add annotations [path]
 ```
-- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5.yaml`
+- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
 
 
 ### cards-editor
@@ -98,7 +98,7 @@ Calling `sap-ux add html` will add html files for local preview and testing to t
 ```sh
 sap-ux add html [path]
 ```
-- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5.yaml`
+- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
 
 ### model
 Calling `sap-ux add model` allows to add new OData Service and SAPUI5 Model to an existing adaptation project.
@@ -121,11 +121,11 @@ sap-ux add smartlinks-config [path]
 ```
 
 ### variants-config
-Calling `sap-ux add variants-config` will add the necessary configuration to existing yaml files and the script to package.json for variants management. It will use the configuration from the `ui5.yaml` as default, as provided by the `fiori-tools-preview` or `preview-middleware`.
+Calling `sap-ux add variants-config` will add the necessary configuration to an existing yaml file and the script to package.json for variants creation. It will use the configuration from the yaml file passed by cli or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
 ```sh
 sap-ux add variants-config [path]
 ```
-- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5.yaml`
+- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
 
 ## sap-ux change
 Calling `sap-ux change` allows changing a feature of a project.
@@ -135,7 +135,7 @@ Calling `sap-ux change data-source` allows replacing the OData Source of the bas
 ```sh
 sap-ux change data-source [path]
 ```
-- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5.yaml`
+- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
 
 ### inbound
 Calling `sap-ux change inbound` allows replacing the Inbound FLP configurations of the base application in an adaptation project.  

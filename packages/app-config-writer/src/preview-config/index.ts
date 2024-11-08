@@ -61,8 +61,7 @@ async function updateVariantsCreationScript(fs: Editor, basePath: string, logger
         const ui5Yaml = basename(extractYamlConfigFileName(packageJson?.scripts?.['start-variants-management']));
         const yamlPath = join(basePath, ui5Yaml);
         await addVariantsManagementScript(fs, basePath, yamlPath, logger);
-        //todo: add yamlPath
-        await updateMiddlewares(fs, basePath, logger);
+        await updateMiddlewares(fs, basePath, yamlPath, logger);
     }
 }
 

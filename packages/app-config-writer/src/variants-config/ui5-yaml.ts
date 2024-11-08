@@ -1,6 +1,6 @@
-import { join } from 'path';
+import { basename, join } from 'path';
 import { MiddlewareConfigs } from '../types';
-import { type Package, readUi5Yaml, getAllUi5YamlFileNames } from '@sap-ux/project-access';
+import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { PreviewConfigOptions } from '../types';
@@ -54,43 +54,32 @@ export function createPreviewMiddlewareConfig(fs: Editor, basePath: string): Cus
  *
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to project root, where package.json and ui5.yaml is
+ * @param yamlPath - path to the ui5*.yaml file passed by cli
  * @param logger - logger
  */
-export async function updateMiddlewares(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const validatedUi5YamlFileNames = await getAllUi5YamlFileNames(fs, basePath);
-    for (const ui5Yaml of validatedUi5YamlFileNames.invalid ?? []) {
-        logger?.warn(`Skipping UI5 yaml configuration file ${ui5Yaml} because it does not comply with the schema.`);
+export async function updateMiddlewares(
+    fs: Editor,
+    basePath: string,
+    yamlPath?: string,
+    logger?: ToolsLogger
+): Promise<void> {
+    const ui5YamlFile = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
+    const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile);
+
+    let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
+    const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);
+
+    if (!previewMiddleware) {
+        logger?.warn(`No preview middleware found in ${ui5YamlFile}. Preview middleware will be added.`);
+        previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
     }
-    for (const ui5Yaml of validatedUi5YamlFileNames.valid) {
-        let ui5YamlConfig: UI5Config;
-        try {
-            ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml);
-        } catch (error) {
-            logger?.debug((error as Error).message);
-            continue;
-        }
-
-        let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
-
-        if (!previewMiddleware) {
-            //todo: do we need excludes to not mess up custom UI5 yaml configuration files?
-            // - in case of builder but no server in config (e.g. because configs have been split)
-            // or request for approval for each of those files?
-            logger?.warn(`No preview middleware found in ${ui5Yaml}. Preview middleware will be added.`);
-            previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
-        }
-
-        const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);
-
-        if (reloadMiddleware) {
-            previewMiddleware.afterMiddleware = reloadMiddleware.name;
-            ui5YamlConfig.updateCustomMiddleware(reloadMiddleware);
-            logger?.debug(`Updated reload middleware in ${ui5Yaml}.`);
-        }
-
-        ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
-        const yamlPath = join(basePath, ui5Yaml);
-        fs.write(yamlPath, ui5YamlConfig.toString());
-        logger?.debug(`Updated preview middleware in ${ui5Yaml}.`);
+    if (reloadMiddleware) {
+        previewMiddleware.afterMiddleware = reloadMiddleware.name;
+        ui5YamlConfig.updateCustomMiddleware(reloadMiddleware);
+        logger?.debug(`Updated reload middleware in ${ui5YamlFile}.`);
     }
+
+    ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
+    fs.write(join(basePath, ui5YamlFile), ui5YamlConfig.toString());
+    logger?.debug(`Updated preview middleware in ${ui5YamlFile}.`);
 }

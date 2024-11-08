@@ -1,7 +1,7 @@
-import { join } from 'path';
-import { getSapClientFromPackageJson, enhanceUrlParametersWithRta, getRTAUrl } from './utils';
+import { basename, join } from 'path';
+import { getSapClientFromPackageJson, enhanceUrlParametersWithRta, getRTAUrl, getRTAServe } from './utils';
 import type { Editor } from 'mem-fs-editor';
-import type { Package } from '@sap-ux/project-access';
+import { FileName, type Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 const ERROR_MSG = `Script 'start-variants-management' cannot be written to package.json.`;
@@ -23,6 +23,7 @@ export async function addVariantsManagementScript(
 ): Promise<void> {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
+    const ui5YamlFileName = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
 
     if (!packageJson) {
         throw new Error(`${ERROR_MSG} File 'package.json' not found at ${basePath}`);
@@ -39,14 +40,17 @@ export async function addVariantsManagementScript(
         urlParameters['sap-client'] = sapClient;
     }
 
-    const url = await getRTAUrl(basePath, enhanceUrlParametersWithRta(packageJson, urlParameters), yamlPath);
+    const url = await getRTAUrl(basePath, enhanceUrlParametersWithRta(packageJson, urlParameters), ui5YamlFileName);
+    const serveCommand = await getRTAServe(basePath, ui5YamlFileName, fs);
 
     if (!url) {
         throw new Error(`${ERROR_MSG} No RTA editor specified in ui5.yaml.`);
     }
 
+    // set --config flag if default ui5.yaml is not used
+    const yamlConfigFile = ui5YamlFileName !== FileName.Ui5Yaml ? ` --config ./${basename(ui5YamlFileName)}` : '';
     const startVariantsManagementScriptOld = packageJson.scripts['start-variants-management'] ?? undefined;
-    const startVariantsManagementScriptNew = `fiori run --open "${url}"`;
+    const startVariantsManagementScriptNew = `${serveCommand}${yamlConfigFile} --open "${url}"`;
 
     if (!startVariantsManagementScriptOld) {
         logger?.debug(`Script 'start-variants-management' not found. Script will be added.`);

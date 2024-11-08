@@ -187,4 +187,12 @@ describe('Test readUi5Yaml()', () => {
             expect(error).toBeDefined();
         }
     });
+    test('Read Ui5 yaml file from memory', async () => {
+        const basePath = join(samplesRoot, 'default-webapp-path');
+
+        const memFs = create(createStorage());
+        memFs.write(join(basePath, 'myCustomUI5.yaml'), 'chicken-head');
+        await readUi5Yaml(basePath, 'myCustomUI5.yaml', memFs);
+        expect(memFs.read(join(basePath, 'myCustomUI5.yaml'))).toMatchInlineSnapshot('"chicken-head"');
+    });
 });

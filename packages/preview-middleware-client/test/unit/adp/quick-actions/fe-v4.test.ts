@@ -440,7 +440,7 @@ describe('FE V2 quick actions', () => {
         describe('create table action', () => {
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
-                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
+                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(false);
                 const scrollIntoView = jest.fn();
                 const appComponent = new AppComponentMock();
                 const component = new TemplateComponentMock();
@@ -547,18 +547,6 @@ describe('FE V2 quick actions', () => {
                         {
                             title: 'LIST REPORT',
                             actions: [
-                                {
-                                    'kind': 'nested',
-                                    id: 'listReport0-change-table-columns',
-                                    title: 'Change Table Columns',
-                                    enabled: true,
-                                    children: [
-                                        {
-                                            children: [],
-                                            label: `'MyTable' table`
-                                        }
-                                    ]
-                                },
                                 {
                                     'kind': 'nested',
                                     id: 'listReport0-create_table_action',
@@ -702,6 +690,120 @@ describe('FE V2 quick actions', () => {
                 expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, DialogNames.ADD_FRAGMENT, undefined, {
                     aggregation: 'columns',
                     title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                });
+            });
+        });
+
+        describe('disable/enable "Semantic Date Range" in Filter Bar', () => {
+            test('initialize and execute action', async () => {
+                const appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'FilterBar') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => ({}),
+                            data: jest.fn().mockImplementation((key) => {
+                                // Mock the return value for 'useSemanticDateRange'
+                                if (key === 'useSemanticDateRange') {
+                                    return true;
+                                }
+                                return undefined;
+                            })
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const pageView = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getId.mockReturnValue('test.app::ProductsList');
+                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
+                        const componentContainer = new ComponentContainer();
+                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return componentContainer;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV4QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
+                    registry
+                ]);
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.fe.macros.controls.FilterBar': [
+                        {
+                            controlId: 'FilterBar'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'kind': 'simple',
+                                    id: 'listReport0-enable-semantic-date-range',
+                                    title: 'Disable "Sematic Date Range" Button in Filter Bar',
+                                    enabled: true
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-enable-semantic-date-range', kind: 'simple' })
+                );
+                expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                    settings: {},
+                    type: 'appDescriptor',
+                    value: {
+                        appComponent,
+                        reference: 'test.id',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        parameters: {
+                            page: 'ProductsList',
+                            entityPropertyChange: {
+                                propertyPath: 'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/useSemanticDateRange',
+                                propertyValue: false,
+                                operation: 'UPSERT'
+                            }
+                        }
+                    }
                 });
             });
         });
