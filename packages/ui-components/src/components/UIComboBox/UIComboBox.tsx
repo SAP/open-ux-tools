@@ -188,30 +188,42 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 isGroupVisible = false;
             } else {
                 // Handle selectable item
-                let isHidden: boolean | undefined;
-                if (this.props.customSearchFilter) {
-                    // Apply external custom search
-                    const isVisibleByExternalFilter = this.props.customSearchFilter(this.query, option);
-                    isHidden = isVisibleByExternalFilter !== undefined ? !isVisibleByExternalFilter : undefined;
-                }
-                if (isHidden === undefined) {
-                    // Apply internal search
-                    isHidden = !option.text.toLowerCase().includes(this.query);
-                    // Consider 'key' of option if property 'searchByKeyEnabled' is enabled
-                    if (this.props.searchByKeyEnabled && isHidden) {
-                        isHidden = !option.key.toString().toLowerCase().includes(this.query);
-                    }
-                }
-
-                option.hidden = isHidden;
+                const isVisible = this.isOptionVisibleByQuery(option, this.query);
+                option.hidden = !isVisible;
                 if (this.isListHidden && !option.hidden) {
                     this.isListHidden = false;
                 }
                 // Groups should be visible if at least one item is visible within group
-                isGroupVisible = !isHidden || isGroupVisible;
+                isGroupVisible = isVisible || isGroupVisible;
             }
         }
         updateGroupVisibility();
+    }
+
+    /**
+     * Determines whether an option should be hidden based on the current search query.
+     * Applies a custom filter if `customSearchFilter` is provided, otherwise uses the default
+     * search logic to match the `text` property (and `key` if `searchByKeyEnabled` is enabled).
+     *
+     * @param option - The option to evaluate for visibility.
+     * @param query - The current search query string.
+     * @returns `true` if the option should be hidden, `false` if it should be visible.
+     */
+    private isOptionVisibleByQuery(option: IComboBoxOption, query: string): boolean {
+        let isVisible: boolean | undefined;
+        if (this.props.customSearchFilter) {
+            // Apply external custom search
+            isVisible = this.props.customSearchFilter(query, option);
+        }
+        if (isVisible === undefined) {
+            // Apply internal search
+            isVisible = option.text.toLowerCase().includes(query);
+            // Consider 'key' of option if property 'searchByKeyEnabled' is enabled
+            if (this.props.searchByKeyEnabled && !isVisible) {
+                isVisible = option.key.toString().toLowerCase().includes(this.query);
+            }
+        }
+        return isVisible;
     }
 
     /**
