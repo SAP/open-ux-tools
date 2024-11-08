@@ -77,6 +77,26 @@ function extractYamlConfigFileName(script: string): string {
 }
 
 /**
+ * Check if the script is valid for the conversion.
+ *
+ * @param script - the content of the script from package.json
+ * @returns indicator if the script is valid
+ */
+function isValidScript(script: string | undefined): boolean {
+    /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+    return (
+        !!(script?.includes('ui5 serve') || script?.includes('fiori run')) &&
+        //todo: how to ensure we don't mistake test scripts for preview scripts?
+        !(
+            script?.includes('opaTests.qunit.html') ||
+            script?.includes('unitTests.qunit.html') ||
+            script?.includes('testsuite.qunit.html')
+        )
+    );
+    /* eslint-enable @typescript-eslint/prefer-nullish-coalescing */
+}
+
+/**
  * Update the preview middleware configurations according to the scripts they are being used in package.json.
  *
  * @param fs - file system reference
@@ -88,7 +108,6 @@ export async function updatePreviewMiddlewareConfigs(
     basePath: string,
     logger?: ToolsLogger
 ): Promise<void> {
-    //todo: yaml files could be located anywhere in the project
     const {
         valid: validUi5YamlFileNames,
         invalid: invalidUi5YamlFileNames,
@@ -98,12 +117,7 @@ export async function updatePreviewMiddlewareConfigs(
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     for (const [scriptName, script] of Object.entries(packageJson?.scripts ?? {})) {
-        if (
-            scriptName === 'start-variants-management' ||
-            //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            !(script?.includes('ui5 serve') || script?.includes('fiori run'))
-            //todo: how to ensure we don't mistake test scripts for preview scripts?
-        ) {
+        if (scriptName === 'start-variants-management' || !script || !isValidScript(script)) {
             continue;
         }
 
