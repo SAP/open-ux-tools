@@ -58,7 +58,7 @@ export class KeytarStore implements SecureStore {
                         result[String(entry.account)] = JSON.parse(entry.password);
                     }
                 } catch (e) {
-                    this.log.error(`Error parsing credentials for [${entry.account}]`);
+                    this.log.warn(`Error parsing credentials for [${entry.account}]`);
                 }
                 return result;
             }, {} as Entities<T>);
