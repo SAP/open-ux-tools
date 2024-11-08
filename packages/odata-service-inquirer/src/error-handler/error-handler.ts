@@ -167,18 +167,20 @@ export class ErrorHandler {
                 errorMsg: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: () => t('errors.catalogServiceNotActive'),
-        [ERROR_TYPE.INTERNAL_SERVER_ERROR]: (error) =>
-            t('errors.serverReturnedAnError', {
-                errorDesc: 'Internal server error:',
-                errorMsg: ErrorHandler.getMessageFromError(error)
-            }),
+        [ERROR_TYPE.INTERNAL_SERVER_ERROR]: (error) => {
+            const errorMsg = ErrorHandler.getMessageFromError(error);
+            return t('errors.serverReturnedAnError', {
+                errorDesc: t('errors.internalServerError', { errorMsg })
+            });
+        },
         [ERROR_TYPE.NOT_FOUND]: () => t('errors.urlNotFound'),
         [ERROR_TYPE.ODATA_URL_NOT_FOUND]: () => t('errors.odataServiceUrlNotFound'),
-        [ERROR_TYPE.BAD_GATEWAY]: (error) =>
-            t('errors.serverReturnedAnError', {
-                errorDesc: 'Bad gateway:',
-                errorMsg: ErrorHandler.getMessageFromError(error)
-            }),
+        [ERROR_TYPE.BAD_GATEWAY]: (error) => {
+            const errorMsg = ErrorHandler.getMessageFromError(error);
+            return t('errors.serverReturnedAnError', {
+                errorDesc: t('errors.badGateway', { errorMsg })
+            });
+        },
         [ERROR_TYPE.DESTINATION_UNAVAILABLE]: () => t('errors.destination.unavailable'),
         [ERROR_TYPE.DESTINATION_NOT_FOUND]: () => t('errors.destination.notFound'),
         [ERROR_TYPE.DESTINATION_MISCONFIGURED]: (error) =>
@@ -191,15 +193,16 @@ export class ErrorHandler {
         [ERROR_TYPE.REDIRECT]: () => t('errors.redirectError'),
         [ERROR_TYPE.NO_SUCH_HOST]: () => t('errors.noSuchHostError'),
         [ERROR_TYPE.NO_ABAP_ENVS]: () => t('errors.abapEnvsUnavailable'),
-        [ERROR_TYPE.BAD_REQUEST]: (error) =>
-            t('errors.serverReturnedAnError', {
-                errorDesc: 'Bad request:',
-                errorMsg: ErrorHandler.getMessageFromError(error)
-            }),
+        [ERROR_TYPE.BAD_REQUEST]: (error) => {
+            const errorMsg = ErrorHandler.getMessageFromError(error);
+            return t('errors.serverReturnedAnError', {
+                errorDesc: t('errors.badRequest', { errorMsg })
+            });
+        },
         [ERROR_TYPE.DESTINATION_CONNECTION_ERROR]: () => t('errors.systemConnectionValidationFailed'),
         [ERROR_TYPE.SERVER_HTTP_ERROR]: (error) =>
             t('errors.serverReturnedAnError', {
-                errorMsg: ErrorHandler.getMessageFromError(error)
+                errorDesc: ErrorHandler.getMessageFromError(error)
             })
     };
     /**

@@ -1,4 +1,3 @@
-import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/odata-service-inquirer.i18n.json';
@@ -15,8 +14,17 @@ export async function initI18nOdataServiceInquirer(): Promise<void> {
         fallbackLng: 'en',
         missingInterpolationHandler: () => '',
         interpolation: {
-            format: function odataVersionFormatter(odataVersion: OdataVersion) {
-                return odataVersion ? ` V${odataVersion}` : '';
+            format: function (value, format?: string) {
+                // OData version formatter
+                if (format === 'odataVersionFormatter') {
+                    return value ? ` V${value}` : '';
+                }
+
+                // If we have a value add a colon before outputting
+                if (format === 'addMsgWithColonFormatter') {
+                    return value ? `: ${value}` : '';
+                }
+                return value;
             }
         }
     });
