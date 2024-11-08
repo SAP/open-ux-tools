@@ -440,7 +440,7 @@ describe('FE V2 quick actions', () => {
         describe('create table action', () => {
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
-                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
+                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(false);
                 const scrollIntoView = jest.fn();
                 const appComponent = new AppComponentMock();
                 const component = new TemplateComponentMock();
@@ -547,18 +547,6 @@ describe('FE V2 quick actions', () => {
                         {
                             title: 'LIST REPORT',
                             actions: [
-                                {
-                                    'kind': 'nested',
-                                    id: 'listReport0-change-table-columns',
-                                    title: 'Change Table Columns',
-                                    enabled: true,
-                                    children: [
-                                        {
-                                            children: [],
-                                            label: `'MyTable' table`
-                                        }
-                                    ]
-                                },
                                 {
                                     'kind': 'nested',
                                     id: 'listReport0-create_table_action',

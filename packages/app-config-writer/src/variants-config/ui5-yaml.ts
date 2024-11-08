@@ -54,7 +54,7 @@ export function createPreviewMiddlewareConfig(fs: Editor, basePath: string): Cus
  *
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to project root, where package.json and ui5.yaml is
- * @param yamlPath - the path where the ui5.yaml is
+ * @param yamlPath - path to the ui5*.yaml file passed by cli
  * @param logger - logger
  */
 export async function updateMiddlewares(
@@ -63,37 +63,23 @@ export async function updateMiddlewares(
     yamlPath?: string,
     logger?: ToolsLogger
 ): Promise<void> {
-    const ui5Yamls: string[] = [FileName.Ui5Yaml, FileName.Ui5MockYaml, FileName.Ui5LocalYaml];
-    if (yamlPath) {
-        ui5Yamls.unshift(basename(yamlPath));
+    const ui5YamlFile = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
+    const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile);
+
+    let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
+    const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);
+
+    if (!previewMiddleware) {
+        logger?.warn(`No preview middleware found in ${ui5YamlFile}. Preview middleware will be added.`);
+        previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
     }
-    for (const ui5Yaml of ui5Yamls) {
-        let ui5YamlConfig: UI5Config;
-        try {
-            ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml);
-        } catch (error) {
-            logger?.debug((error as Error).message);
-            continue;
-        }
-
-        let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
-
-        if (!previewMiddleware) {
-            logger?.warn(`No preview middleware found in ${ui5Yaml}. Preview middleware will be added.`);
-            previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
-        }
-
-        const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);
-
-        if (reloadMiddleware) {
-            previewMiddleware.afterMiddleware = reloadMiddleware.name;
-            ui5YamlConfig.updateCustomMiddleware(reloadMiddleware);
-            logger?.debug(`Updated reload middleware in ${ui5Yaml}.`);
-        }
-
-        ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
-        const yamlPath = join(basePath, ui5Yaml);
-        fs.write(yamlPath, ui5YamlConfig.toString());
-        logger?.debug(`Updated preview middleware in ${ui5Yaml}.`);
+    if (reloadMiddleware) {
+        previewMiddleware.afterMiddleware = reloadMiddleware.name;
+        ui5YamlConfig.updateCustomMiddleware(reloadMiddleware);
+        logger?.debug(`Updated reload middleware in ${ui5YamlFile}.`);
     }
+
+    ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
+    fs.write(join(basePath, ui5YamlFile), ui5YamlConfig.toString());
+    logger?.debug(`Updated preview middleware in ${ui5YamlFile}.`);
 }
