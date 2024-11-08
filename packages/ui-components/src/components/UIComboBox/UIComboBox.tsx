@@ -74,6 +74,12 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
      * @default false
      */
     searchByKeyEnabled?: boolean;
+    /**
+     * Custom filter function to apply custom filtering logic on top of the default search.
+     * Receives the current search term and an option, returning `true` if the option should be shown,
+     * `false` to hide it, or `undefined` to apply the default search filtering behavior.
+     */
+    customSearchFilter?: (searchTerm: string, option: IComboBoxOption) => boolean | undefined;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -182,11 +188,21 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 isGroupVisible = false;
             } else {
                 // Handle selectable item
-                let isHidden = !option.text.toLowerCase().includes(this.query);
-                // Consider 'key' of option if property 'searchByKeyEnabled' is enabled
-                if (this.props.searchByKeyEnabled && isHidden) {
-                    isHidden = !option.key.toString().toLowerCase().includes(this.query);
+                let isHidden: boolean | undefined;
+                if (this.props.customSearchFilter) {
+                    // Apply external custom search
+                    const isVisibleByExternalFilter = this.props.customSearchFilter(this.query, option);
+                    isHidden = isVisibleByExternalFilter !== undefined ? !isVisibleByExternalFilter : undefined;
                 }
+                if (isHidden === undefined) {
+                    // Apply internal search
+                    isHidden = !option.text.toLowerCase().includes(this.query);
+                    // Consider 'key' of option if property 'searchByKeyEnabled' is enabled
+                    if (this.props.searchByKeyEnabled && isHidden) {
+                        isHidden = !option.key.toString().toLowerCase().includes(this.query);
+                    }
+                }
+
                 option.hidden = isHidden;
                 if (this.isListHidden && !option.hidden) {
                     this.isListHidden = false;
