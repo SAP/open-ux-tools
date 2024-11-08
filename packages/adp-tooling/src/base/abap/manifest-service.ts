@@ -1,9 +1,8 @@
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Ui5AppInfoContent } from '@sap-ux/axios-extension';
 import type { AdpPreviewConfig, DescriptorVariant } from '../../types';
 import ZipFile from 'adm-zip';
-import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
+import { isAxiosError, type AbapServiceProvider, type Ui5AppInfoContent } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getWebappFiles } from '../helper';
 
@@ -25,7 +24,7 @@ export class ManifestService {
      * @param provider - The ABAP service provider.
      * @param logger - The logger instance.
      */
-    private constructor(private provider: AbapServiceProvider, private logger: ToolsLogger) {}
+    private constructor(private readonly provider: AbapServiceProvider, private readonly logger: ToolsLogger) {}
 
     /**
      * Creates an instance of the ManifestService and fetches the base manifest of the application.
@@ -186,7 +185,7 @@ export class ManifestService {
                 try {
                     const fallbackUrl = new URL(
                         dataSource?.settings.localUri,
-                        `${baseUrl.toString().slice(-1) === '/' ? baseUrl.toString() : baseUrl.toString() + '/'}`
+                        `${baseUrl.toString().endsWith('/') ? baseUrl.toString() : baseUrl.toString() + '/'}`
                     );
                     const response = await this.provider.get(fallbackUrl.toString());
                     return response.data;
