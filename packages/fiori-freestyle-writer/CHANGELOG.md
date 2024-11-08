@@ -1,5 +1,21 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.2.17
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.5
+-   @sap-ux/odata-service-writer@0.23.1
+-   @sap-ux/ui5-application-writer@1.2.4
+
+## 1.2.16
+
+### Patch Changes
+
+-   7cf9ed0: Fix lint issue in templates
+-   Updated dependencies [7cf9ed0]
+    -   @sap-ux/ui5-application-writer@1.2.4
+
 ## 1.2.15
 
 ### Patch Changes

@@ -24,10 +24,11 @@ export function addAddVariantsConfigCommand(cmd: Command): void {
 
 /**
  * Adds a variants config to an app or project.
+ * The command will update the package.json file with the ‘start-variant-management’ script and will use the configuration in yaml format passed by cli or default to the ui5.yaml file, if given.
  *
  * @param basePath - the base path where the package.json and ui5.yaml is
  * @param simulate - if true, do not write but just show what would be changed; otherwise write
- * @param yamlPath - path to the ui5*.yaml file
+ * @param yamlPath - path to the ui5*.yaml file passed by cli
  */
 async function addVariantsConfig(basePath: string, simulate: boolean, yamlPath: string): Promise<void> {
     const logger = getLogger();
