@@ -344,7 +344,7 @@ describe('Change Utils', () => {
                 mockProjectPath,
                 123456789,
                 {
-                    ...mockData.annotation as AnnotationsData['annotation'],
+                    ...(mockData.annotation as AnnotationsData['annotation']),
                     namespaces: [
                         {
                             namespace: 'mockNamespace',

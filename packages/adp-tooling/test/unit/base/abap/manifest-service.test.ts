@@ -9,7 +9,7 @@ import ZipFile from 'adm-zip';
 jest.mock('@sap-ux/axios-extension');
 jest.mock('adm-zip');
 jest.mock('../../../../src/base/helper');
-jest.mock('@sap-ux/system-access')
+jest.mock('@sap-ux/system-access');
 
 describe('ManifestService', () => {
     let provider: jest.Mocked<axiosExtension.AbapServiceProvider>;
@@ -66,10 +66,13 @@ describe('ManifestService', () => {
             provider
         );
 
-        (ZipFile as jest.MockedClass<typeof ZipFile>).mockImplementation(() => ({
-            addFile: jest.fn(),
-            toBuffer: jest.fn().mockReturnValue(Buffer.from('zip content'))
-        } as unknown as ZipFile));
+        (ZipFile as jest.MockedClass<typeof ZipFile>).mockImplementation(
+            () =>
+                ({
+                    addFile: jest.fn(),
+                    toBuffer: jest.fn().mockReturnValue(Buffer.from('zip content'))
+                } as unknown as ZipFile)
+        );
     });
 
     afterEach(() => {
@@ -79,7 +82,7 @@ describe('ManifestService', () => {
     describe('initBaseManifest', () => {
         it('should initialize and fetch the base manifest with default ignoreCertErrors', async () => {
             const adpConfigWithoutIgnoreCers: AdpPreviewConfig = {
-                target: { url: 'https://example.com' },
+                target: { url: 'https://example.com' }
             };
             manifestService = await ManifestService.initBaseManifest('appId', adpConfigWithoutIgnoreCers, logger);
 
@@ -173,7 +176,7 @@ describe('ManifestService', () => {
     describe('initMergedManifest', () => {
         it('should initialize and fetch the merged manifest with default ignoreCertErrors', async () => {
             const adpConfigWithoutIgnoreCers: AdpPreviewConfig = {
-                target: { url: 'https://example.com' },
+                target: { url: 'https://example.com' }
             };
             const variant = { id: 'descriptorVariantId', reference: 'referenceAppId' };
             (getWebappFiles as jest.MockedFunction<typeof getWebappFiles>).mockReturnValue([
@@ -275,7 +278,7 @@ describe('ManifestService', () => {
             };
             provider.get
                 .mockResolvedValueOnce({ data: JSON.stringify(mockManifest) })
-                .mockRejectedValueOnce('fetching failed')
+                .mockRejectedValueOnce('fetching failed');
             manifestService = await ManifestService.initBaseManifest('appId', adpConfig, logger);
 
             try {
@@ -291,7 +294,7 @@ describe('ManifestService', () => {
                 target: { url: 'https://example.com/' },
                 ignoreCertErrors: false
             };
-    
+
             const baseConfigWithoutSlash: AdpPreviewConfig = {
                 target: { url: 'https://example.com' },
                 ignoreCertErrors: false
@@ -319,7 +322,7 @@ describe('ManifestService', () => {
             manifestService = await ManifestService.initBaseManifest('appId', baseConfig, logger);
             let metadata = await manifestService.getDataSourceMetadata('someDataSource');
             expect(metadata).toEqual('<metadata>local content</metadata>');
-            
+
             mockAppInfoContent.appId.url = '/sapApp/';
             manifestService = await ManifestService.initBaseManifest('appId', baseConfigWithoutSlash, logger);
             metadata = await manifestService.getDataSourceMetadata('someDataSource');
@@ -341,8 +344,9 @@ describe('ManifestService', () => {
 
         it('should throw an error if data source is not found', async () => {
             manifestService = await ManifestService.initBaseManifest('appId', adpConfig, logger);
-            await expect(manifestService.getDataSourceMetadata('nonExistentDataSource'))
-                .rejects.toThrow('No metadata path found in the manifest');
+            await expect(manifestService.getDataSourceMetadata('nonExistentDataSource')).rejects.toThrow(
+                'No metadata path found in the manifest'
+            );
         });
     });
 });
