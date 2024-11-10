@@ -11,6 +11,7 @@ import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
+import { getTemplateVersionPath, processDestinationPath } from './utils';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -29,12 +30,12 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // set defaults
     setDefaults(ffApp);
     const isTypeScriptEnabled = ffApp.appOptions?.typescript;
+
     fs = await generateUi5Project(basePath, ffApp, fs);
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
-
     // Determine if the project type is 'EDMXBackend'.
     const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
     // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
@@ -48,8 +49,10 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         uShellBootstrapResourceUrl,
         uiBootstrapResourceUrl
     };
+    const templateVersionPath = getTemplateVersionPath(ffApp);
+
     fs.copyTpl(
-        join(tmplPath, 'common', 'add'),
+        join(tmplPath, 'common', 'add', templateVersionPath),
         basePath,
         {
             ...appConfig,
@@ -57,25 +60,62 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         },
         undefined,
         {
-            globOptions: { ignore, dot: true }
+            globOptions: { ignore, dot: true },
+            processDestinationPath: processDestinationPath
         }
     );
-    fs.copyTpl(join(tmplPath, ffApp.template.type, 'add'), basePath, ffApp, undefined, {
-        globOptions: { ignore, dot: true }
-    });
+    fs.copyTpl(
+        join(
+            tmplPath,
+            ffApp.template.type,
+            'add',
+            ffApp.template.type === TemplateType.Basic ? templateVersionPath : ''
+        ),
+        basePath,
+        ffApp,
+        undefined,
+        {
+            globOptions: { ignore, dot: true },
+            processDestinationPath: processDestinationPath
+        }
+    );
 
     if (ffApp.template.type === TemplateType.Basic) {
         const viewName = (ffApp.template.settings as BasicAppSettings).viewName;
         const viewTarget = join(basePath, 'webapp', 'view', `${viewName}.view.xml`);
-        fs.copyTpl(join(tmplPath, ffApp.template.type, 'custom/View.xml'), viewTarget, ffApp);
+        fs.copyTpl(
+            join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/View.xml`),
+            viewTarget,
+            ffApp,
+            undefined,
+            {
+                processDestinationPath: processDestinationPath
+            }
+        );
         const ext = isTypeScriptEnabled ? 'ts' : 'js';
         const controllerTarget = join(basePath, `webapp/controller/${viewName}.controller.${ext}`);
-        fs.copyTpl(join(tmplPath, ffApp.template.type, `custom/Controller.${ext}`), controllerTarget, ffApp);
+        fs.copyTpl(
+            join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/Controller.${ext}`),
+            controllerTarget,
+            ffApp,
+            undefined,
+            {
+                processDestinationPath: processDestinationPath
+            }
+        );
     }
 
     // Add template specific manifest settings
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
-    const extRoot = join(__dirname, '..', 'templates', ffApp.template.type, 'extend', 'webapp');
+    const extRoot = join(
+        __dirname,
+        '..',
+        'templates',
+        ffApp.template.type,
+        'extend',
+        ffApp.template.type === TemplateType.Basic ? templateVersionPath : '',
+        'webapp'
+    );
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, 'manifest.json')), ffApp, {})));
 
     // i18n.properties

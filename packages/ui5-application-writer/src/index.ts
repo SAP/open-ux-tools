@@ -153,3 +153,10 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
 
 export { Ui5App, generate, enableTypescript, isTypescriptEnabled };
 export { App, Package, UI5, AppOptions };
+export {
+    compareUI5VersionGte,
+    ui5LtsVersion_1_120,
+    ui5LtsVersion_1_71,
+    processDestinationPath,
+    getTemplateVersionPath
+} from './utils';

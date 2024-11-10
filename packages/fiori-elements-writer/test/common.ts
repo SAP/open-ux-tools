@@ -165,37 +165,39 @@ export const projectChecks = async (
     config: FioriElementsApp<unknown>,
     debugFull = false
 ): Promise<void> => {
-    if (debugFull && (config.appOptions?.typescript ?? config.appOptions?.eslint)) {
-        // Do additonal checks on generated projects
-        const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-        let npmResult;
-        try {
-            // Do npm install
-            npmResult = await exec(`${npm} install`, { cwd: rootPath });
-            console.log('stdout:', npmResult.stdout);
-            console.log('stderr:', npmResult.stderr);
+    // Do additional checks on generated projects
+    const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+    let npmResult;
+    try {
+        if (debugFull) {
+            if (config.appOptions?.typescript ?? config.appOptions?.eslint) {
+                // Do npm install
+                npmResult = await exec(`${npm} install`, { cwd: rootPath });
+                console.log('stdout:', npmResult.stdout);
+                console.log('stderr:', npmResult.stderr);
 
-            // run checks on the project
-            if (config.appOptions?.typescript && config.service?.type === ServiceType.EDMX) {
-                // Check TS Types
-                npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
-                console.log('stdout:', npmResult.stdout);
-                console.log('stderr:', npmResult.stderr);
+                // run checks on the project
+                if (config.appOptions?.typescript && config.service?.type === ServiceType.EDMX) {
+                    // Check TS Types
+                    npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
+                    console.log('stdout:', npmResult.stdout);
+                    console.log('stderr:', npmResult.stderr);
+                    // Check Eslint
+                    npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
+                    console.log('stdout:', npmResult.stdout);
+                    console.log('stderr:', npmResult.stderr);
+                }
                 // Check Eslint
-                npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
-                console.log('stdout:', npmResult.stdout);
-                console.log('stderr:', npmResult.stderr);
+                if (config.appOptions?.eslint) {
+                    npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
+                    console.log('stdout:', npmResult.stdout);
+                    console.log('stderr:', npmResult.stderr);
+                }
             }
-            // Check Eslint
-            if (config.appOptions?.eslint) {
-                npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
-                console.log('stdout:', npmResult.stdout);
-                console.log('stderr:', npmResult.stderr);
-            }
-        } catch (error) {
-            console.log('stdout:', error?.stdout);
-            console.log('stderr:', error?.stderr);
-            expect(error).toBeUndefined();
         }
+    } catch (error) {
+        console.log('stdout:', error?.stdout);
+        console.log('stderr:', error?.stderr);
+        expect(error).toBeUndefined();
     }
 };

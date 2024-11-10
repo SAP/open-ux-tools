@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generateVariantsConfig add variants configuration to a project 1`] = `
+Object {
+  "name": "test-app",
+  "sapux": true,
+  "sapuxLayer": "VENDOR",
+  "scripts": Object {
+    "start-variants-management": "ui5 serve --open \\"/my-variants.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#hello-world\\"",
+  },
+}
+`;
+
+exports[`generateVariantsConfig add variants configuration to a project 2`] = `
+"specVersion: \\"3.0\\"
+metadata:
+  name: fe_lrop_v2
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          intent:
+            object: hello
+            action: world
+        rta:
+          layer: VENDOR
+          editors:
+            - path: /editor.html
+              developerMode: true
+            - path: /my-variants.html
+"
+`;

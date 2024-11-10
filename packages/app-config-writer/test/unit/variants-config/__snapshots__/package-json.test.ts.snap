@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`addVariantsManagementScript add start-variants-management script to package.json 1`] = `
+Object {
+  "description": "An SAP Fiori application.",
+  "name": "test-app",
+  "sapux": true,
+  "sapuxLayer": "VENDOR",
+  "scripts": Object {
+    "start": "fiori run --open \\"test/flpSandbox.html?sap-client=500#test-app\\"",
+    "start-variants-management": "fiori run --open \\"/preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-client=500#app-preview\\"",
+  },
+}
+`;
+
+exports[`addVariantsManagementScript set --config flag if default ui5.yaml is not used 1`] = `
+Object {
+  "devDependencies": Object {
+    "@sap/ux-ui5-tooling": "1.15.1",
+  },
+  "name": "test-app",
+  "sapux": true,
+  "sapuxLayer": "VENDOR",
+  "scripts": Object {
+    "start-variants-management": "fiori run --config ./myCustomUI5.yaml --open \\"/preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-client=500#app-preview\\"",
+  },
+}
+`;

@@ -589,6 +589,9 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
     devDependencies:
+      '@sap-ux/preview-middleware':
+        specifier: workspace:*
+        version: link:../preview-middleware
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -613,6 +616,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -628,12 +634,21 @@ importers:
       fast-xml-parser:
         specifier: 4.4.1
         version: 4.4.1
+      http-proxy-agent:
+        specifier: 7.0.2
+        version: 7.0.2
+      https-proxy-agent:
+        specifier: 7.0.5
+        version: 7.0.5
       lodash:
         specifier: 4.17.21
         version: 4.17.21
       open:
         specifier: 7.0.3
         version: 7.0.3
+      proxy-from-env:
+        specifier: 1.1.0
+        version: 1.1.0
       qs:
         specifier: 6.11.0
         version: 6.11.0
@@ -647,6 +662,9 @@ importers:
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
+      '@types/proxy-from-env':
+        specifier: 1.0.1
+        version: 1.0.1
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -675,8 +693,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       http-proxy-middleware:
-        specifier: 2.0.6
-        version: 2.0.6(@types/express@4.17.21)
+        specifier: 2.0.7
+        version: 2.0.7(@types/express@4.17.21)
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -917,6 +935,79 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
 
+  packages/cf-deploy-config-writer:
+    dependencies:
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      '@sap-ux/yaml':
+        specifier: workspace:*
+        version: link:../yaml
+      '@sap/cf-tools':
+        specifier: 3.2.0
+        version: 3.2.0
+      '@sap/mta-lib':
+        specifier: 1.7.4
+        version: 1.7.4
+      ejs:
+        specifier: 3.1.10
+        version: 3.1.10
+      hasbin:
+        specifier: 1.2.3
+        version: 1.2.3
+      i18next:
+        specifier: 21.10.0
+        version: 21.10.0
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
+    devDependencies:
+      '@types/ejs':
+        specifier: 3.1.2
+        version: 3.1.2
+      '@types/fs-extra':
+        specifier: 9.0.13
+        version: 9.0.13
+      '@types/hasbin':
+        specifier: 1.2.2
+        version: 1.2.2
+      '@types/js-yaml':
+        specifier: 4.0.9
+        version: 4.0.9
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/semver':
+        specifier: 7.5.2
+        version: 7.5.2
+      fs-extra:
+        specifier: 10.0.0
+        version: 10.0.0
+      js-yaml:
+        specifier: 3.14.0
+        version: 3.14.0
+      memfs:
+        specifier: 3.4.13
+        version: 3.4.13
+
   packages/control-property-editor:
     devDependencies:
       '@esbuild-plugins/node-modules-polyfill':
@@ -986,8 +1077,8 @@ importers:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.57.0)
       http-proxy-middleware:
-        specifier: 1.3.1
-        version: 1.3.1
+        specifier: 2.0.7
+        version: 2.0.7(@types/express@4.17.21)
       i18next:
         specifier: 20.6.1
         version: 20.6.1
@@ -1302,6 +1393,9 @@ importers:
         specifier: 0.0.33
         version: 0.0.33
     devDependencies:
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sap-ux/ui-prompting':
         specifier: workspace:*
         version: link:../ui-prompting
@@ -1511,6 +1605,9 @@ importers:
       read-pkg-up:
         specifier: 7.0.1
         version: 7.0.1
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
     devDependencies:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
@@ -1530,6 +1627,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+      '@types/semver':
+        specifier: 7.5.2
+        version: 7.5.2
       fs-extra:
         specifier: 10.0.0
         version: 10.0.0
@@ -1542,6 +1642,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
       '@vscode-logging/logger':
         specifier: 2.0.0
         version: 2.0.0
@@ -1557,6 +1660,12 @@ importers:
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
+      os-name:
+        specifier: 4.0.1
+        version: 4.0.1
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
     devDependencies:
       '@types/mem-fs':
         specifier: 1.1.2
@@ -1564,6 +1673,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+      '@types/semver':
+        specifier: 7.5.2
+        version: 7.5.2
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -2601,6 +2713,9 @@ importers:
       '@babel/preset-typescript':
         specifier: 7.22.15
         version: 7.22.15(@babel/core@7.22.20)
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
@@ -2887,6 +3002,70 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
 
+  packages/ui5-library-reference-sub-generator:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
+      '@sap-ux/ui5-library-reference-inquirer':
+        specifier: workspace:*
+        version: link:../ui5-library-reference-inquirer
+      '@sap-ux/ui5-library-reference-writer':
+        specifier: workspace:*
+        version: link:../ui5-library-reference-writer
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    devDependencies:
+      '@jest/types':
+        specifier: 29.6.3
+        version: 29.6.3
+      '@types/fs-extra':
+        specifier: 9.0.13
+        version: 9.0.13
+      '@types/vscode':
+        specifier: 1.73.1
+        version: 1.73.1
+      '@types/yeoman-environment':
+        specifier: 2.10.11
+        version: 2.10.11
+      '@types/yeoman-generator':
+        specifier: 5.2.11
+        version: 5.2.11
+      '@types/yeoman-test':
+        specifier: 4.0.6
+        version: 4.0.6
+      '@vscode-logging/logger':
+        specifier: 2.0.0
+        version: 2.0.0
+      fs-extra:
+        specifier: 10.0.0
+        version: 10.0.0
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      yeoman-test:
+        specifier: 6.3.0
+        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+
   packages/ui5-library-reference-writer:
     dependencies:
       '@sap-ux/project-access':
@@ -3049,8 +3228,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       http-proxy-middleware:
-        specifier: 2.0.6
-        version: 2.0.6(@types/express@4.17.21)
+        specifier: 2.0.7
+        version: 2.0.7(@types/express@4.17.21)
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -3773,7 +3952,6 @@ packages:
   /@babel/parser@7.25.3:
     resolution: {integrity: sha512-iLTJKDbJ4hMvFPgQwwsVoxtHyWpKKPBrxkANrSYewDPaPpT5py5yeVkgPIJ7XYXhndxJpaA3PyALSXQ7u8e/Dw==}
     engines: {node: '>=6.0.0'}
-    hasBin: true
     dependencies:
       '@babel/types': 7.25.2
 
@@ -5911,7 +6089,7 @@ packages:
     resolution: {integrity: sha512-TS/9KG2CdGXS27S+QxbZXgr8uPsP4yNJYb4BC2/NeFUj80Rni3TeD2qwWmabymxmrLo7JEsytXH1FbpKTbvivw==}
     dependencies:
       '@changesets/types': 6.0.0
-      js-yaml: 3.14.1
+      js-yaml: 3.14.0
     dev: true
 
   /@changesets/pre@2.0.0:
@@ -5966,7 +6144,6 @@ packages:
   /@colors/colors@1.5.0:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
-    requiresBuild: true
 
   /@colors/colors@1.6.0:
     resolution: {integrity: sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA==}
@@ -6694,7 +6871,7 @@ packages:
       camelcase: 5.3.1
       find-up: 4.1.0
       get-package-type: 0.1.0
-      js-yaml: 3.14.1
+      js-yaml: 3.14.0
       resolve-from: 5.0.0
     dev: true
 
@@ -8061,6 +8238,17 @@ packages:
       url: 0.11.0
     dev: false
 
+  /@sap/mta-lib@1.7.4:
+    resolution: {integrity: sha512-NBtcVKipYrw9uCiWwH2QVfaVeJC3OV6spAE29TsUKjGzqUrSzMkFi8FtsikvDDDThtysjmcvWN8SDvkK3eQxmg==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      cross-spawn: 7.0.3
+      fs-extra: 8.1.0
+      mta-local: 1.0.0
+      temp-dir: 2.0.0
+      which: 2.0.2
+    dev: false
+
   /@sap/ux-cds-compiler-facade@1.15.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
     resolution: {integrity: sha512-WeA/wnF0NoHNod6H/Rcpgbh3ue4TVBSAlHQoupWzdu91yl+RZ4rKS4hARaRH+LV7gTXxJ5k6llJ/wyUN7sMDdw==}
     engines: {node: '>=18.16.0'}
@@ -9257,6 +9445,10 @@ packages:
       '@types/node': 18.11.9
     dev: true
 
+  /@types/hasbin@1.2.2:
+    resolution: {integrity: sha512-+WjYdtDVxfzvyIkVrLmBikOuChFvTE1jEuz51cTqk7dhemLw1A4DYaJjBwsemNhzS9oDiVWr+bqx/Ld9pUVO5Q==}
+    dev: true
+
   /@types/hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-YIQtIg4PKr7ZyqNPZObpxfHsHEmuB8dXCxd6qVcGuQVDK2bpsF7bYNnBJ4Nn7giuACZg+WewExgrtAJ3XnA4Xw==}
     dependencies:
@@ -9344,6 +9536,10 @@ packages:
     resolution: {integrity: sha512-ZxJrup8nz/ZxcU0vantG+TPdboMhB24jad2uSap50zE7Q9rUeYlCF25kFMSmHR33qoeOgqcdHEp3roaookC0Sg==}
     dependencies:
       '@types/sizzle': 2.3.3
+    dev: true
+
+  /@types/js-yaml@4.0.9:
+    resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
     dev: true
 
   /@types/jsdom@20.0.1:
@@ -10527,7 +10723,7 @@ packages:
     resolution: {integrity: sha512-aiATs7pSutzda/rq8fnuPwTglyVwjM22bNnK2ZgjrpAjQHSSl3lztd2f9evst1W/qnC58DRz7T7QndUDumAR4Q==}
     engines: {node: '>=14.15.0'}
     dependencies:
-      js-yaml: 3.14.1
+      js-yaml: 3.14.0
       tslib: 2.6.3
     dev: true
 
@@ -10635,7 +10831,6 @@ packages:
   /acorn@8.12.1:
     resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
     engines: {node: '>=0.4.0'}
-    hasBin: true
 
   /address@1.2.2:
     resolution: {integrity: sha512-4B/qKCfeE/ODUaAUpSwfzazo5x29WD4r3vXiWsB7I2mSDAihwEqKO+g8GELZUQSSAo5e1XTYh3ZVfLyxBc12nA==}
@@ -10662,7 +10857,6 @@ packages:
       debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   /agentkeepalive@4.3.0:
     resolution: {integrity: sha512-7Epl1Blf4Sy37j4v9f9FjICCh4+KAQOyXgHEwlyBiAQLbhKdq/i2QQU3amQalS/wPhdPzDXPL5DMR5bkn+YeWg==}
@@ -11148,6 +11342,10 @@ packages:
       shimmer: 1.2.1
     dev: false
 
+  /async@1.5.2:
+    resolution: {integrity: sha512-nSVgobk4rv61R9PUSDtYt7mPVB2olxNR5RWJcAsH676/ef11bUZwvu7+RGYrYauVdDPcO519v68wRhXQtxsV9w==}
+    dev: false
+
   /async@2.6.4:
     resolution: {integrity: sha512-mzo5dfJYwAn29PeiJ0zvwTo04zj8HDJj0Mn8TD7sno7q12prdbnasKJHhkm2c1LgrhlJ0teaea8860oxi51mGA==}
     dependencies:
@@ -11613,7 +11811,6 @@ packages:
   /browserslist@4.23.3:
     resolution: {integrity: sha512-btwCFJVjI4YWDNfau8RhZ+B1Q/VLoUITrm3RlP6y1tYGWIOa+InuYiRGXUBXo8nA1qKmHMyLB/iVQg5TT4eFoA==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
-    hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001649
       electron-to-chromium: 1.5.4
@@ -12389,7 +12586,6 @@ packages:
 
   /copyfiles@2.4.1:
     resolution: {integrity: sha512-fereAvAvxDrQDOXybk3Qu3dPbOoKoysFMWtkY3mv5BsL8//OSZVL5DCLYqgRfY5cWirgRzlC+WSrxp6Bo3eNZg==}
-    hasBin: true
     dependencies:
       glob: 7.2.3
       minimatch: 3.0.5
@@ -13133,6 +13329,7 @@ packages:
   /ejs@3.1.10:
     resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
     engines: {node: '>=0.10.0'}
+    hasBin: true
     dependencies:
       jake: 10.8.5
 
@@ -14222,7 +14419,6 @@ packages:
   /esprima@4.0.1:
     resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
     engines: {node: '>=4'}
-    hasBin: true
 
   /esquery@1.5.0:
     resolution: {integrity: sha512-YQLXUplAwJgCydQ78IMJywZCceoqk1oH01OERdSAJc/7U2AylwjhSCLDEtqwg811idIS/9fIU5GjG73IgjKMVg==}
@@ -15149,7 +15345,6 @@ packages:
 
   /glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -15365,6 +15560,13 @@ packages:
       function-bind: 1.1.2
     dev: true
 
+  /hasbin@1.2.3:
+    resolution: {integrity: sha512-CCd8e/w2w28G8DyZvKgiHnQJ/5XXDz6qiUHnthvtag/6T5acUeN5lqq+HMoBqcmgWueWDhiCplrw0Kb1zDACRg==}
+    engines: {node: '>=0.10'}
+    dependencies:
+      async: 1.5.2
+    dev: false
+
   /hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
@@ -15566,23 +15768,9 @@ packages:
       debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
-  /http-proxy-middleware@1.3.1:
-    resolution: {integrity: sha512-13eVVDYS4z79w7f1+NPllJtOQFx/FdUW4btIvVRMaRlUY9VGstAbo5MOhLEuUgZFRHn3x50ufn25zkj/boZnEg==}
-    engines: {node: '>=8.0.0'}
-    dependencies:
-      '@types/http-proxy': 1.17.8
-      http-proxy: 1.18.1
-      is-glob: 4.0.3
-      is-plain-obj: 3.0.0
-      micromatch: 4.0.5
-    transitivePeerDependencies:
-      - debug
-    dev: true
-
-  /http-proxy-middleware@2.0.6(@types/express@4.17.21):
-    resolution: {integrity: sha512-ya/UeJ6HVBYxrgYotAZo1KvPWlgB48kUJLDePFeneHsVujFaW5WNj2NgWCAE//B1Dl02BIfYlpNgBy8Kf8Rjmw==}
+  /http-proxy-middleware@2.0.7(@types/express@4.17.21):
+    resolution: {integrity: sha512-fgVY8AV7qU7z/MmXJ/rxwbrtQH4jBQ9m7kp3llF0liB7glmFeVZFBepQb32T3y8n8k2+AEYuMPCpinYW+/CuRA==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       '@types/express': ^4.17.13
@@ -15595,10 +15783,9 @@ packages:
       http-proxy: 1.18.1
       is-glob: 4.0.3
       is-plain-obj: 3.0.0
-      micromatch: 4.0.5
+      micromatch: 4.0.7
     transitivePeerDependencies:
       - debug
-    dev: false
 
   /http-proxy@1.18.1:
     resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==}
@@ -15623,7 +15810,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.4
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
@@ -15635,7 +15822,6 @@ packages:
       debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   /human-id@1.0.2:
     resolution: {integrity: sha512-UNopramDEhHJD+VR+ehk8rOslwSfByxPIZyJRfV739NDhN5LF1fa1MqnzKm2lGTQRjNrjK19Q5fhkgIfjlVUKw==}
@@ -15686,7 +15872,7 @@ packages:
   /i18next@21.10.0:
     resolution: {integrity: sha512-YeuIBmFsGjUfO3qBmMOc0rQaun4mIpGKET5WDwvu8lU7gvwpcariZLNtL0Fzj+zazcHUrlXHiptcFhBMFaxzfg==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.25.0
 
   /i18next@21.6.11:
     resolution: {integrity: sha512-tJ2+o0lVO+fhi8bPkCpBAeY1SgkqmQm5NzgPWCQssBrywJw98/o+Kombhty5nxQOpHtvMmsxcOopczUiH6bJxQ==}
@@ -16461,7 +16647,6 @@ packages:
   /jake@10.8.5:
     resolution: {integrity: sha512-sVpxYeuAhWt0OTWITwT98oyV0GsXyMlXCF+3L1SuafBVUIr/uILGRB+NqwkzhgXKvoJpDIpQvqkUALgdmQsQxw==}
     engines: {node: '>=10'}
-    hasBin: true
     dependencies:
       async: 3.2.4
       chalk: 4.1.2
@@ -16994,14 +17179,16 @@ packages:
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  /js-yaml@3.14.1:
-    resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
+  /js-yaml@3.14.0:
+    resolution: {integrity: sha512-/4IbIeHcD9VMHFqDR/gQ7EdZdLimOvW2DdcxFjdyyZ9NsbS+ccrXqVWDtab/lRl5AlUqmpBx8EhPaWR+OtY17A==}
+    hasBin: true
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
 
   /js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
+    hasBin: true
     dependencies:
       argparse: 2.0.1
 
@@ -17151,7 +17338,6 @@ packages:
 
   /jsesc@0.5.0:
     resolution: {integrity: sha512-uZz5UnB7u4T9LvwmFqXii7pZSouaRPorGs5who1Ip7VO0wxanFvBL7GkM6dTHlgX+jhBApRetaWpnDabOeTcnA==}
-    hasBin: true
     dev: true
 
   /jsesc@2.5.2:
@@ -17201,7 +17387,6 @@ packages:
 
   /json5@1.0.2:
     resolution: {integrity: sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA==}
-    hasBin: true
     dependencies:
       minimist: 1.2.8
     dev: true
@@ -17209,7 +17394,6 @@ packages:
   /json5@2.2.3:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
-    hasBin: true
 
   /jsonc-parser@3.2.0:
     resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
@@ -17388,7 +17572,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       graceful-fs: 4.2.11
-      js-yaml: 3.14.1
+      js-yaml: 3.14.0
       pify: 4.0.1
       strip-bom: 3.0.0
 
@@ -17527,7 +17711,6 @@ packages:
 
   /loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
-    hasBin: true
     dependencies:
       js-tokens: 4.0.0
 
@@ -17888,6 +18071,7 @@ packages:
     dependencies:
       braces: 3.0.3
       picomatch: 2.3.1
+    dev: true
 
   /micromatch@4.0.7:
     resolution: {integrity: sha512-LPP/3KorzCwBxfeUuZmaR6bG2kdeHSbe0P2tY3FLRU4vYrjYz5hI4QZwV0njUx3jeuKe67YukQ1LSPZBKDqO/Q==}
@@ -17914,13 +18098,11 @@ packages:
   /mime@1.6.0:
     resolution: {integrity: sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==}
     engines: {node: '>=4'}
-    hasBin: true
     dev: true
 
   /mime@2.6.0:
     resolution: {integrity: sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==}
     engines: {node: '>=4.0.0'}
-    hasBin: true
     dev: true
 
   /mimic-fn@2.1.0:
@@ -18129,6 +18311,10 @@ packages:
 
   /ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+
+  /mta-local@1.0.0:
+    resolution: {integrity: sha512-+pL8q5wJMyyVUj0gGFwceq7utIjwt744GBmBqYMARK6I4CzPvSv/0akRNTOxcsffXsu8EVyH2NJZ4XS9WcHzZA==}
+    dev: false
 
   /multimatch@4.0.0:
     resolution: {integrity: sha512-lDmx79y1z6i7RNx0ZGCPq1bzJ6ZoDDKbvh7jxr9SJcWLkShMzXrHbYVpTdnhNM5MXpDUxCQ4DgqVttVXlBgiBQ==}
@@ -18709,7 +18895,7 @@ packages:
       enquirer: 2.3.6
       figures: 3.2.0
       flat: 5.0.2
-      fs-extra: 11.2.0
+      fs-extra: 11.1.1
       ignore: 5.3.2
       jest-diff: 29.7.0
       js-yaml: 4.1.0
@@ -19199,7 +19385,6 @@ packages:
   /pacote@15.2.0:
     resolution: {integrity: sha512-rJVZeIwHTUta23sIZgEIM62WYwbmGbThdbnkt81ravBplQv+HjyroqnLRNH2+sLJHcGZmLRmhPwACqhfTcOmnA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    hasBin: true
     dependencies:
       '@npmcli/git': 4.1.0
       '@npmcli/installed-package-contents': 2.0.2
@@ -19456,7 +19641,6 @@ packages:
   /pidtree@0.6.0:
     resolution: {integrity: sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g==}
     engines: {node: '>=0.10'}
-    hasBin: true
     dev: true
 
   /pify@2.3.0:
@@ -19951,7 +20135,6 @@ packages:
   /querystring@0.2.0:
     resolution: {integrity: sha512-X/xY82scca2tau62i9mDyU9K+I+djTMUsvwf7xnUX5GLvVzgJybOJf4Y6o9Zx3oJK/LSXg5tTZBjwzqVPaPO2g==}
     engines: {node: '>=0.4.x'}
-    deprecated: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
 
   /querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
@@ -20018,7 +20201,6 @@ packages:
 
   /rc@1.2.8:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
-    hasBin: true
     dependencies:
       deep-extend: 0.6.0
       ini: 1.3.8
@@ -20382,7 +20564,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       graceful-fs: 4.2.11
-      js-yaml: 3.14.1
+      js-yaml: 3.14.0
       pify: 4.0.1
       strip-bom: 3.0.0
     dev: true
@@ -21045,7 +21227,6 @@ packages:
   /semver@7.6.3:
     resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
     engines: {node: '>=10'}
-    hasBin: true
     dev: true
 
   /send@0.19.0:
@@ -21151,7 +21332,6 @@ packages:
   /shelljs@0.8.5:
     resolution: {integrity: sha512-TiwcRcrkhHvbrZbnRcFYMLl30Dfov3HKqzp5tO5b4pt6G/SezKcYhmDg15zXVBswHmctSAQKznqNW2LO5tTDow==}
     engines: {node: '>=4'}
-    hasBin: true
     dependencies:
       glob: 7.2.3
       interpret: 1.4.0
@@ -21931,7 +22111,6 @@ packages:
   /temp-dir@2.0.0:
     resolution: {integrity: sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==}
     engines: {node: '>=8'}
-    dev: true
 
   /temp-dir@3.0.0:
     resolution: {integrity: sha512-nHc6S/bwIilKHNRgK/3jlhDoIHcp45YgyiwcAk46Tr0LfEqGBVpmiAyuiuxeVE44m3mXnEeVhaipLOEWmH+Njw==}
@@ -21998,7 +22177,6 @@ packages:
   /terser@5.32.0:
     resolution: {integrity: sha512-v3Gtw3IzpBJ0ugkxEX8U0W6+TnPKRRCWGh1jC/iM/e3Ki5+qvO1L1EAZ56bZasc64aXHwRHNIQEzm6//i5cemQ==}
     engines: {node: '>=10'}
-    hasBin: true
     dependencies:
       '@jridgewell/source-map': 0.3.6
       acorn: 8.12.1
@@ -22189,7 +22367,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.6.3
+      semver: 7.5.4
       typescript: 5.6.2
       yargs-parser: 21.1.1
     dev: true
@@ -22472,7 +22650,6 @@ packages:
   /typescript@5.6.2:
     resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
     engines: {node: '>=14.17'}
-    hasBin: true
 
   /uc.micro@1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
@@ -22481,7 +22658,6 @@ packages:
   /uglify-js@3.19.3:
     resolution: {integrity: sha512-v3Xu+yuwBXisp6QYTcH4UbH+xYJXqnq2m/LtQVWKWzYc1iehYnLixoQDN9FH6/j9/oybfd6W9Ghwkl8+UMKTKQ==}
     engines: {node: '>=0.8.0'}
-    hasBin: true
     requiresBuild: true
     dev: true
     optional: true

@@ -1,11 +1,10 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import FilterBar from 'sap/ui/mdc/FilterBar';
 
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
-import { getAppComponent, getPageName, getReference } from './utils';
+import { executeToggleAction } from './utils';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ENABLE_CLEAR_FILTER_BAR_TYPE = 'enable-clear-filter-bar';
@@ -44,46 +43,10 @@ export class ToggleClearFilterBarQuickAction
     }
 
     async execute(): Promise<FlexCommand[]> {
-        const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
-        const control = controls[0];
-        if (control) {
-            const modifiedControl = getControlById(control.controlId);
-            if (!modifiedControl) {
-                return [];
-            }
-
-            const { flexSettings } = this.context;
-            const parent = modifiedControl.getParent();
-            if (!parent) {
-                return [];
-            }
-
-            const modifiedValue = {
-                reference: getReference(modifiedControl),
-                appComponent: getAppComponent(modifiedControl),
-                changeType: 'appdescr_fe_changePageConfiguration',
-                parameters: {
-                    page: getPageName(parent),
-                    entityPropertyChange: {
-                        propertyPath: PROPERTY_PATH,
-                        propertyValue: !this.isClearButtonEnabled,
-                        operation: 'UPSERT'
-                    }
-                }
-            };
-
-            const command = await CommandFactory.getCommandFor<FlexCommand>(
-                modifiedControl,
-                'appDescriptor',
-                modifiedValue,
-                null,
-                flexSettings
-            );
-
+        const command = await executeToggleAction(this.context, this.isClearButtonEnabled, CONTROL_TYPE, PROPERTY_PATH);
+        if (command.length) {
             this.isClearButtonEnabled = !this.isClearButtonEnabled;
-            return [command];
         }
-
-        return [];
+        return command;
     }
 }

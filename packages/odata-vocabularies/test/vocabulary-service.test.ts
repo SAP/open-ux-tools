@@ -317,6 +317,7 @@ Object {
       "com.sap.vocabularies.UI.v1.Importance",
       "com.sap.vocabularies.UI.v1.PartOfPreview",
       "com.sap.vocabularies.HTML5.v1.CssDefaults",
+      "com.sap.vocabularies.HTML5.v1.RowSpanForDuplicateValues",
       "com.sap.vocabularies.Common.v1.FieldControl",
     ],
   },
@@ -389,6 +390,7 @@ Object {
       "com.sap.vocabularies.UI.v1.Importance",
       "com.sap.vocabularies.UI.v1.PartOfPreview",
       "com.sap.vocabularies.HTML5.v1.CssDefaults",
+      "com.sap.vocabularies.HTML5.v1.RowSpanForDuplicateValues",
       "com.sap.vocabularies.Common.v1.FieldControl",
     ],
   },
@@ -608,6 +610,7 @@ SAPUI.Hidden
 SAPUI.Importance  
 SAPUI.PartOfPreview  
 HTML5.CssDefaults  
+HTML5.RowSpanForDuplicateValues  
 Common.FieldControl 
 ",
 ]

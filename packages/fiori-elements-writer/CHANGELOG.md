@@ -1,5 +1,106 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.3.20
+
+### Patch Changes
+
+-   d0331b8: fix - locate-reuse-libs.js|ts - sanitize server response before logging
+-   Updated dependencies [d0331b8]
+    -   @sap-ux/ui5-application-writer@1.2.5
+
+## 1.3.19
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.16
+-   @sap-ux/fiori-generator-shared@0.7.5
+-   @sap-ux/odata-service-writer@0.23.1
+-   @sap-ux/ui5-application-writer@1.2.4
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.18
+
+### Patch Changes
+
+-   7cf9ed0: Fix lint issue in templates
+-   Updated dependencies [7cf9ed0]
+    -   @sap-ux/ui5-application-writer@1.2.4
+
+## 1.3.17
+
+### Patch Changes
+
+-   Updated dependencies [a52de73]
+    -   @sap-ux/fe-fpm-writer@0.31.15
+
+## 1.3.16
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+    -   @sap-ux/odata-service-writer@0.23.1
+    -   @sap-ux/ui5-application-writer@1.2.3
+    -   @sap-ux/fe-fpm-writer@0.31.14
+    -   @sap-ux/fiori-generator-shared@0.7.4
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.15
+
+### Patch Changes
+
+-   Updated dependencies [b2de757]
+    -   @sap-ux/ui5-application-writer@1.2.2
+
+## 1.3.14
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/fiori-generator-shared@0.7.3
+    -   @sap-ux/fe-fpm-writer@0.31.13
+    -   @sap-ux/odata-service-writer@0.23.0
+    -   @sap-ux/ui5-application-writer@1.2.1
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.13
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.25.0
+-   @sap-ux/fiori-generator-shared@0.7.2
+
+## 1.3.12
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.12
+-   @sap-ux/fiori-generator-shared@0.7.1
+-   @sap-ux/odata-service-writer@0.23.0
+-   @sap-ux/ui5-application-writer@1.2.1
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.11
+
+### Patch Changes
+
+-   Updated dependencies [231e713]
+    -   @sap-ux/fiori-generator-shared@0.7.0
+
+## 1.3.10
+
+### Patch Changes
+
+-   f626d47: remove @sap/ux-specification from generated apps
+-   Updated dependencies [f626d47]
+    -   @sap-ux/ui5-application-writer@1.2.1
+
+## 1.3.9
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.11
+
 ## 1.3.8
 
 ### Patch Changes

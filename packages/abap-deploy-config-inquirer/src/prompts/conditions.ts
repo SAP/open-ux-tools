@@ -1,6 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { PromptState } from './prompt-state';
-import { clientDoesNotExistOrInvalid } from '../validator-utils';
 import { findBackendSystemByUrl, initTransportConfig } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
 import { t } from '../i18n';
@@ -53,52 +52,45 @@ export function showScpQuestion(previousAnswers: AbapDeployConfigAnswersInternal
 }
 
 /**
- * Client condition to determine if the client question should be shown.
+ * Client condition to determine if the client question should be shown. Validates the SCP confirmation and project configuration properties.
  *
- * @param isS4HanaCloudSystem - is S/4 HANA Cloud system
+ * @param scp - is SCP system
  * @returns boolean
  */
-function showClientCondition(isS4HanaCloudSystem?: boolean): boolean {
+function showClientCondition(scp?: boolean): boolean {
     return Boolean(
-        !isAppStudio() &&
-            clientDoesNotExistOrInvalid(PromptState.abapDeployConfig.client) &&
-            !PromptState.abapDeployConfig.scp &&
-            !isS4HanaCloudSystem
+        !isAppStudio() && !PromptState.abapDeployConfig?.isS4HC && !scp && !PromptState.abapDeployConfig?.scp
     );
 }
 
 /**
  * Determines if the client choice question should be shown.
  *
+ * @param previousAnswers - previous answers
  * @param client - client
- * @param isS4HanaCloudSystem - is S/4 HANA Cloud system
  * @returns boolean
  */
-export function showClientChoiceQuestion(client?: string, isS4HanaCloudSystem?: boolean): boolean {
+export function showClientChoiceQuestion(previousAnswers?: AbapDeployConfigAnswersInternal, client?: string): boolean {
     if (PromptState.isYUI || !client) {
         return false;
     }
-
-    return showClientCondition(isS4HanaCloudSystem);
+    return showClientCondition(previousAnswers?.scp) && previousAnswers?.targetSystem === TargetSystemType.Url;
 }
 
 /**
- * Determines if the client question should be shown.
- * Note: In some instances, when a yaml conf is parsed, double quoted properties i.e. client: "100" are saved as a number instead of a string.
+ * Determines if the client question should be shown under very specific conditions.
  *
- * @param clientChoice - client choice from previous answers
- * @param client - client
- * @param isS4HanaCloudSystem - is S/4 HANA Cloud system
+ * @param previousAnswers - previous answers
  * @returns boolean
  */
-export function showClientQuestion(clientChoice?: string, client?: string, isS4HanaCloudSystem?: boolean): boolean {
-    const clientCondition = showClientCondition(isS4HanaCloudSystem);
-
-    if (clientCondition && client) {
-        PromptState.abapDeployConfig.client = String(client);
-    }
-    const showOnCli = clientChoice === ClientChoiceValue.New || !client;
-    return !PromptState.isYUI ? showOnCli && clientCondition : clientCondition;
+export function showClientQuestion(previousAnswers?: AbapDeployConfigAnswersInternal): boolean {
+    const clientCondition = showClientCondition(previousAnswers?.scp);
+    const isTargetUrl = previousAnswers?.targetSystem === TargetSystemType.Url;
+    const showCli = !PromptState.isYUI
+        ? previousAnswers?.clientChoice === ClientChoiceValue.New || isTargetUrl
+        : isTargetUrl;
+    const showYui = PromptState.isYUI ? isTargetUrl : false;
+    return (showYui && clientCondition) || (showCli && clientCondition);
 }
 
 /**

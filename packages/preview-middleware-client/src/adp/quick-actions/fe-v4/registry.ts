@@ -9,6 +9,10 @@ import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
 import { ChangeTableColumnsQuickAction } from './change-table-columns';
 import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
 import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
+import { AddTableCustomColumnQuickAction } from './create-table-custom-column';
+import { AddPageActionQuickAction } from '../common/create-page-action';
+import { AddTableActionQuickAction } from './create-table-action';
+import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-range-filter-bar';
 
 type PageName = 'listReport' | 'objectPage';
 
@@ -23,20 +27,23 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
         [LIST_REPORT_TYPE]: 'listReport',
         [OBJECT_PAGE_TYPE]: 'objectPage'
     };
+
     getDefinitions(context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         const activePages = this.getActivePageContent(context.controlIndex);
-
         const definitionGroups: QuickActionDefinitionGroup[] = [];
         for (let index = 0; index < activePages.length; index++) {
             const { name, view } = activePages[index];
-
             if (name === 'listReport') {
                 definitionGroups.push({
                     title: 'LIST REPORT',
                     definitions: [
                         ToggleClearFilterBarQuickAction,
                         AddControllerToPageQuickAction,
-                        ChangeTableColumnsQuickAction
+                        ChangeTableColumnsQuickAction,
+                        AddPageActionQuickAction,
+                        AddTableActionQuickAction,
+                        AddTableCustomColumnQuickAction,
+                        ToggleSemanticDateRangeFilterBar
                     ],
                     view,
                     key: name + index
@@ -48,7 +55,10 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         AddControllerToPageQuickAction,
                         ChangeTableColumnsQuickAction,
                         AddHeaderFieldQuickAction,
-                        AddCustomSectionQuickAction
+                        AddCustomSectionQuickAction,
+                        AddPageActionQuickAction,
+                        AddTableActionQuickAction,
+                        AddTableCustomColumnQuickAction
                     ],
                     view,
                     key: name + index

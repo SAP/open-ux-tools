@@ -1,5 +1,59 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.24
+
+### Patch Changes
+
+-   25488a9: fix: resolve the issue when add table action quick action in the object page didn't work because the Variant Management was disabled.
+
+## 0.11.23
+
+### Patch Changes
+
+-   0671c95: support semantic date range quick action for v2/v4
+
+## 0.11.22
+
+### Patch Changes
+
+-   61cea6d: Fix: Resolved an issue where Add Custom Table Column quick action didn't work with Analytical/Grid/Tree tables in SAP Fiori Elements for OData V2.
+
+## 0.11.21
+
+### Patch Changes
+
+-   df6fd7f: Quick action added to create custom table columns
+
+## 0.11.20
+
+### Patch Changes
+
+-   29a4ef6: feat: create page and table action quick actions for OData(v4) applications
+
+## 0.11.19
+
+### Patch Changes
+
+-   4f9528e: Fixed incorrect displaying of inactive composite and control changes
+
+## 0.11.18
+
+### Patch Changes
+
+-   5ec7106: Modified indicators incorrectly displayed for some UI5 controls in Adaptation Project
+
+## 0.11.17
+
+### Patch Changes
+
+-   c04007b: Enable quick actions by default
+
+## 0.11.16
+
+### Patch Changes
+
+-   9bda640: CPE loading changes from backend and not from workspace
+
 ## 0.11.15
 
 ### Patch Changes

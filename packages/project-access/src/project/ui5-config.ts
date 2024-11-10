@@ -32,10 +32,11 @@ export async function getWebappPath(projectRoot: string, memFs?: Editor): Promis
  * @param fileName - name of yaml file to be read
  * @param [memFs] - optional mem-fs editor instance
  * @returns {UI5Config} UI5 config file in yaml format
+ * @throws {Error} if file is not found
  */
 export async function readUi5Yaml(projectRoot: string, fileName: string, memFs?: Editor): Promise<UI5Config> {
     const ui5YamlPath = join(projectRoot, fileName);
-    if (await fileExists(ui5YamlPath)) {
+    if (await fileExists(ui5YamlPath, memFs)) {
         const yamlString = await readFile(ui5YamlPath, memFs);
         return await UI5Config.newInstance(yamlString);
     }

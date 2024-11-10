@@ -30,7 +30,6 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -3443,6 +3442,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
+    var sanitizeString = function (str) {
+        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
+    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -3484,7 +3486,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -3501,7 +3503,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -3539,9 +3541,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                dependency.componentId +
+                                sanitizeString(dependency.componentId) +
                                 \\" from server \\" +
-                                dependency.url);
+                                sanitizeString(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -3554,7 +3556,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -3609,7 +3611,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -3726,7 +3728,6 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.96.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",

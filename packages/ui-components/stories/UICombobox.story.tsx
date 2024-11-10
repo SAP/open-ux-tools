@@ -12,10 +12,7 @@ import {
 import { UICheckbox } from '../src/components/UICheckbox';
 import { data, groupsData } from '../test/__mock__/select-data';
 
-import { initIcons } from '../src/components/Icons';
 import { UITextInput } from '../src/components';
-
-initIcons();
 
 export default { title: 'Dropdowns/Combobox' };
 
@@ -445,3 +442,50 @@ export const customRender = () => {
         />
     );
 };
+
+const searchKeysData = [
+    { 'key': 'test1', 'text': 'test1' },
+    { 'key': 'dummy', 'text': 'dummy' },
+    { 'key': 'customer', 'text': 'customer' },
+    { 'key': 'name', 'text': 'name' },
+    { 'key': 'employee', 'text': 'employee' },
+    { 'key': 'ID', 'text': 'ID' },
+    { 'key': 'tripEndDate', 'text': 'tripEndDate' },
+    { 'key': 'bookings', 'text': 'bookings', 'itemType': UISelectableOptionMenuItemType.Divider },
+    { 'key': 'bookings', 'text': 'bookings', 'itemType': UISelectableOptionMenuItemType.Header },
+    { 'key': 'bookings/airlines', 'text': 'airlines' },
+    { 'key': 'bookings/bookingDate', 'text': 'bookingDate' },
+    { 'key': 'bookings/DateOnBookings', 'text': 'DateOnBookings' },
+    { 'key': 'bookings/employee', 'text': 'employee' },
+    { 'key': 'bookings/flightDate', 'text': 'flightDate' },
+    { 'key': 'bookings/ID', 'text': 'ID' },
+    { 'key': 'bookings/priceUSD', 'text': 'priceUSD' },
+    { 'key': 'bookings/travel_ID', 'text': 'travel_ID' },
+    { 'key': 'bookings/usedString5', 'text': 'usedString5' },
+    { 'key': 'notes', 'text': 'notes', 'itemType': UISelectableOptionMenuItemType.Divider },
+    { 'key': 'notes', 'text': 'notes', 'itemType': UISelectableOptionMenuItemType.Header },
+    { 'key': 'notes/comment', 'text': 'comment' },
+    { 'key': 'notes/description', 'text': 'description' }
+];
+
+export const SearchIncludeKeys = (): JSX.Element => (
+    <div style={{ width: '300px' }}>
+        <UIComboBox
+            options={searchKeysData}
+            highlight={true}
+            allowFreeform={true}
+            useComboBoxAsMenuMinWidth={true}
+            autoComplete="on"
+            searchByKeyEnabled={true}
+        />
+        <UIComboBox
+            options={searchKeysData}
+            highlight={true}
+            allowFreeform={true}
+            useComboBoxAsMenuMinWidth={true}
+            autoComplete="on"
+            disabled={true}
+            searchByKeyEnabled={true}
+        />
+    </div>
+);

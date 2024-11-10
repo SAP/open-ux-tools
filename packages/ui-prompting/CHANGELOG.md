@@ -1,5 +1,46 @@
 # @sap-ux/ui-prompting
 
+## 0.3.0
+
+### Minor Changes
+
+-   a52de73: Enhance the translation input to allow passing i18n annotation information.
+
+## 0.2.13
+
+### Patch Changes
+
+-   Updated dependencies [e9e1e4d]
+    -   @sap-ux/ui-components@1.20.3
+
+## 0.2.12
+
+### Patch Changes
+
+-   Updated dependencies [9d06579]
+    -   @sap-ux/ui-components@1.20.2
+
+## 0.2.11
+
+### Patch Changes
+
+-   Updated dependencies [f7c606c]
+    -   @sap-ux/ui-components@1.20.1
+
+## 0.2.10
+
+### Patch Changes
+
+-   Updated dependencies [ae2a993]
+    -   @sap-ux/ui-components@1.20.0
+
+## 0.2.9
+
+### Patch Changes
+
+-   Updated dependencies [ea18bcb]
+    -   @sap-ux/ui-components@1.19.0
+
 ## 0.2.8
 
 ### Patch Changes
