@@ -90,7 +90,10 @@ describe('getAbapTargetPrompts', () => {
                 "message": "Is this an SAP Business Technology Platform system?",
                 "name": "scp",
                 "type": "confirm",
-                "validate": [Function],
+                "when": [Function],
+              },
+              Object {
+                "name": "scpSetter",
                 "when": [Function],
               },
               Object {
@@ -192,6 +195,8 @@ describe('getAbapTargetPrompts', () => {
                 })
             ).toBe(false);
             expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith('mockDest1', mockDestinations);
+        } else {
+            throw new Error('Destination setter prompt not found');
         }
     });
 
@@ -260,6 +265,8 @@ describe('getAbapTargetPrompts', () => {
                 })
             ).toBe(false);
             expect(validateTargetSystemUrlCliSpy).toBeCalledTimes(1);
+        } else {
+            throw new Error('Target system setter prompt not found');
         }
     });
 
@@ -291,12 +298,11 @@ describe('getAbapTargetPrompts', () => {
             backendSystems: undefined
         });
         jest.spyOn(conditions, 'showScpQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateScpQuestion').mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({
             backendTarget: { abapTarget: { scp: true } as UrlAbapTarget }
         });
         const scpPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.scp);
-
+        const scpSetterPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.scpSetter);
         if (scpPrompt) {
             expect(
                 (scpPrompt.when as Function)({
@@ -306,10 +312,42 @@ describe('getAbapTargetPrompts', () => {
             ).toBe(true);
             expect(scpPrompt.message).toBe(t('prompts.target.scp.message'));
             expect((scpPrompt.default as Function)()).toEqual(true);
-            expect((scpPrompt.validate as Function)()).toEqual(true);
         } else {
             throw new Error('Scp prompt not found');
         }
+
+        if (scpSetterPrompt) {
+            PromptState.resetAbapDeployConfig();
+            expect(PromptState.abapDeployConfig.scp).toBeUndefined();
+            expect(
+                (scpSetterPrompt.when as Function)({
+                    targetSystem: TargetSystemType.Url,
+                    url: 'https://mock.target1.url.com',
+                    scp: true
+                })
+            ).toBe(false);
+            expect(PromptState.abapDeployConfig.scp).toBe(true);
+            // Lets toggle the question
+            expect(
+                (scpSetterPrompt.when as Function)({
+                    targetSystem: TargetSystemType.Url,
+                    url: 'https://mock.target1.url.com',
+                    scp: false
+                })
+            ).toBe(false);
+            expect(PromptState.abapDeployConfig.scp).toBe(false);
+            // When SCP is not answered
+            expect(
+                (scpSetterPrompt.when as Function)({
+                    targetSystem: TargetSystemType.Url,
+                    url: 'https://mock.target1.url.com'
+                })
+            ).toBe(false);
+            expect(PromptState.abapDeployConfig.scp).toBe(false);
+        } else {
+            throw new Error('Scp setter prompt not found');
+        }
+        PromptState.resetAbapDeployConfig();
     });
 
     test('should return expected values from client choice prompt methods', async () => {
@@ -361,6 +399,7 @@ describe('getAbapTargetPrompts', () => {
         const clientPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.client);
 
         if (clientPrompt) {
+            PromptState.abapDeployConfig.client = '100';
             expect((clientPrompt.when as Function)({})).toBe(true);
             expect(clientPrompt.message).toBe(t('prompts.target.client.message'));
             expect((clientPrompt.default as Function)()).toEqual('100');
@@ -370,5 +409,6 @@ describe('getAbapTargetPrompts', () => {
         } else {
             throw new Error('Client choice prompt not found');
         }
+        PromptState.resetAbapDeployConfig();
     });
 });

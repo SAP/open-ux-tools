@@ -1,5 +1,35 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.7.5
+
+### Patch Changes
+
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+    -   @sap-ux/telemetry@0.5.41
+
+## 0.7.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.5
+-   @sap-ux/telemetry@0.5.40
+
+## 0.7.3
+
+### Patch Changes
+
+-   5a68903: adds new reference library sub generator
+-   Updated dependencies [5a68903]
+    -   @sap-ux/project-access@1.28.4
+    -   @sap-ux/telemetry@0.5.39
+
+## 0.7.2
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.38
+
 ## 0.7.1
 
 ### Patch Changes

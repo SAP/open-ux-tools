@@ -28,8 +28,8 @@ export const Question = (props: QuestionProps) => {
     const inputId = id ? `${id}--input` : undefined;
     switch (question?.type) {
         case 'input': {
-            const { translatable } = question.guiOptions ?? {};
-            if (isI18nInputSupported && translatable) {
+            const { translationProperties } = question.guiOptions ?? {};
+            if (isI18nInputSupported && translationProperties) {
                 questionInput = (
                     <TranslationInput
                         value={value}
@@ -37,6 +37,7 @@ export const Question = (props: QuestionProps) => {
                         onChange={onChange}
                         errorMessage={errorMessage}
                         id={inputId}
+                        properties={translationProperties}
                     />
                 );
             } else {

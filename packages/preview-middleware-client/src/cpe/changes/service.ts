@@ -333,7 +333,13 @@ export class ChangeService {
             if (this.eventStack.length - 1 === eventIndex) {
                 this.pendingChanges = pendingChanges.filter((change): boolean => !!change);
                 const changesRequiringReload = this.pendingChanges.reduce(
-                    (sum, change) => (change.changeType === 'appdescr_fe_changePageConfiguration' ? sum + 1 : sum),
+                    (sum, change) =>
+                        [
+                            'appdescr_fe_changePageConfiguration',
+                            'appdescr_ui_generic_app_changePageConfiguration'
+                        ].includes(change.changeType)
+                            ? sum + 1
+                            : sum,
                     0
                 );
                 if (changesRequiringReload > this.changesRequiringReload) {
@@ -391,10 +397,10 @@ export class ChangeService {
         let result: PendingChange;
         let value = '';
 
-        const change = command.getPreparedChange();
+        const change = command?.getPreparedChange?.();
 
         const selectorId =
-            typeof change.getSelector === 'function'
+            typeof change?.getSelector === 'function'
                 ? await this.getControlIdByChange(change)
                 : this.getCommandSelectorId(command);
 
@@ -462,10 +468,10 @@ export class ChangeService {
                 }
                 return result;
             } catch (error) {
-                Log.error('Retry operation failed:', getError(error));
                 continue;
             }
         }
+        Log.error('All retry operations failed');
         return undefined;
     }
 
@@ -521,6 +527,10 @@ export class ChangeService {
             }
 
             const changeHandlerAPI = (await import('sap/ui/fl/write/api/ChangesWriteAPI')).default;
+
+            if (typeof changeHandlerAPI?.getChangeHandler !== 'function') {
+                return selector.id;
+            }
 
             const changeHandler = await changeHandlerAPI.getChangeHandler({
                 changeType,
