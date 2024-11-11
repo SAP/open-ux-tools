@@ -220,7 +220,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             isVisible = option.text.toLowerCase().includes(query);
             // Consider 'key' of option if property 'searchByKeyEnabled' is enabled
             if (this.props.searchByKeyEnabled && !isVisible) {
-                isVisible = option.key.toString().toLowerCase().includes(this.query);
+                isVisible = option.key.toString().toLowerCase().includes(query);
             }
         }
         return isVisible;
