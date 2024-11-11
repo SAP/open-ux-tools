@@ -1,22 +1,22 @@
-import {
-    AbapServiceProvider,
-    Annotations,
-    ODataService,
-    ODataVersion,
-    ServiceProvider,
-    type AxiosRequestConfig
-} from '@sap-ux/axios-extension';
 import * as axiosExtension from '@sap-ux/axios-extension';
-import { AxiosError, type AxiosResponse } from 'axios';
+import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
-import { ErrorHandler } from '../../../src/error-handler/error-handler';
-import { GUIDED_ANSWERS_LAUNCH_CMD_ID, GUIDED_ANSWERS_ICON } from '@sap-ux/guided-answers-helper';
+import {
+    GUIDED_ANSWERS_ICON,
+    GUIDED_ANSWERS_LAUNCH_CMD_ID,
+    HELP_NODES,
+    HELP_TREE
+} from '@sap-ux/guided-answers-helper';
+import { AxiosError, type AxiosResponse } from 'axios';
+import { ERROR_TYPE, ErrorHandler } from '../../../src/error-handler/error-handler';
 import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
 import { ConnectionValidator } from '../../../src/prompts/connectionValidator';
 
+const odataServicesMock: ODataServiceInfo[] = [];
 const catalogServiceMock = jest.fn().mockImplementation(() => ({
     interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
-    listServices: jest.fn().mockResolvedValue([])
+    listServices: jest.fn().mockImplementation(() => odataServicesMock)
 }));
 
 jest.mock('@sap-ux/axios-extension', () => ({
@@ -25,10 +25,11 @@ jest.mock('@sap-ux/axios-extension', () => ({
     AbapServiceProvider: jest.fn().mockImplementation(() => ({
         catalog: catalogServiceMock
     })),
-    createForAbapOnCloud: jest.fn().mockImplementation(() => ({
+    createForAbapOnCloud: jest.fn().mockImplementation(({ refreshTokenChangedCb }) => ({
         interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
         catalog: catalogServiceMock,
-        user: jest.fn().mockReturnValue('user1@acme.com')
+        user: jest.fn().mockReturnValue('user1@acme.com'),
+        refreshTokenChangedCb // Test only, usually handled by attachUaaAuthInterceptor but here for testing purposes
     }))
 }));
 
@@ -54,6 +55,7 @@ describe('ConnectionValidator', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
         mockIsAppStudio = false;
+        ErrorHandler.guidedAnswersEnabled = false;
     });
 
     test('should handle an invalid url', async () => {
@@ -61,10 +63,8 @@ describe('ConnectionValidator', () => {
         const validator = new ConnectionValidator();
 
         const result = await validator.validateUrl(invalidUrl);
-        expect(result).toBe(t('errors.invalidUrl'));
-        expect(validator.validity).toEqual({
-            urlFormat: false
-        });
+        expect(result).toBe(t('errors.invalidUrl', { input: invalidUrl }));
+        expect(validator.validity).toEqual({});
 
         expect(await validator.validateUrl('')).toBe(false);
         expect(validator.validity).toEqual({
@@ -130,7 +130,7 @@ describe('ConnectionValidator', () => {
 
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
 
-        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toBe(true);
+        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({ valResult: true });
         const params = (createProviderSpy.mock.calls[0][0] as AxiosRequestConfig).params;
         expect(params['sap-client']).toBe('010');
         expect(createProviderSpy).toHaveBeenCalledWith(
@@ -143,12 +143,15 @@ describe('ConnectionValidator', () => {
 
         // Username/pword are invalid
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(403));
-        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toBe(t('errors.authenticationFailed'));
+        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({
+            valResult: t('errors.authenticationFailed'),
+            errorType: 'AUTH'
+        });
 
         // Dont authenticate if the url is empty
         getODataServiceSpy.mockReset();
         getODataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(404));
-        expect(await validator.validateAuth('', 'user1', 'password1')).toBe(false);
+        expect(await validator.validateAuth('', 'user1', 'password1')).toEqual({ valResult: false });
         expect(getODataServiceSpy).not.toHaveBeenCalled();
 
         // Dont authenticate if the url was previously validated as unreachable
@@ -157,7 +160,7 @@ describe('ConnectionValidator', () => {
         getODataServiceSpy.mockClear();
 
         getODataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(404));
-        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toBe('URL not found');
+        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({ valResult: 'URL not found' });
         expect(validator.validity).toEqual({ urlFormat: true, reachable: false });
         expect(getODataServiceSpy).toHaveBeenCalled();
     });
@@ -196,7 +199,12 @@ describe('ConnectionValidator', () => {
                 toString: expect.any(Function)
             })
         );
-        expect(validator.validity).toEqual({ canSkipCertError: true, reachable: true, urlFormat: true });
+        expect(validator.validity).toEqual({
+            authenticated: false,
+            canSkipCertError: true,
+            reachable: true,
+            urlFormat: true
+        });
     });
 
     test('should ignore cert errors if specified', async () => {
@@ -292,7 +300,6 @@ describe('ConnectionValidator', () => {
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(200));
         await validator.validateUrl('https://example.com/service', { forceReValidation: true });
         expect(validator.validity).toEqual({
-            authRequired: true,
             authenticated: true,
             reachable: true,
             urlFormat: true
@@ -403,8 +410,8 @@ describe('ConnectionValidator', () => {
         expect(getOdataServiceSpy).toHaveBeenCalled();
 
         getOdataServiceSpy.mockClear();
-        // Auth is required even though a 200 since the url initially returned 401
-        expect(await connectValidator.isAuthRequired('https://example.com/serviceA', '999')).toBe(true);
+        // Auth is not required since the connection has been authenticated
+        expect(await connectValidator.isAuthRequired('https://example.com/serviceA', '999')).toBe(false);
         // Should not recheck with the same url and client
         expect(getOdataServiceSpy).not.toHaveBeenCalled();
 
@@ -412,6 +419,8 @@ describe('ConnectionValidator', () => {
         getOdataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(401));
         expect(await connectValidator.isAuthRequired('https://example.com/serviceA', '111')).toBe(true);
         expect(getOdataServiceSpy).toHaveBeenCalled();
+        // bad url
+        expect(await connectValidator.isAuthRequired('bad url', '111')).toBe(false);
     });
 
     test('should validate service key info can be used to authenticate', async () => {
@@ -448,6 +457,10 @@ describe('ConnectionValidator', () => {
         expect(connectValidator.serviceInfo).toEqual(serviceInfoMock);
         expect(connectValidator.validatedUrl).toBe(serviceInfoMock.url);
         expect(connectValidator.connectedSystemName).toBe('abap_btp_001');
+
+        // Ensure the refresh token is updated when it changes
+        (connectValidator.serviceProvider as any).refreshTokenChangedCb('newToken1234');
+        expect(connectValidator.refreshToken).toEqual('newToken1234');
     });
 
     test('should attempt to validate auth using v4 catalog where v2 is not available or user is not authorized', async () => {
@@ -481,5 +494,172 @@ describe('ConnectionValidator', () => {
         });
         expect(listServicesV2Mock).not.toHaveBeenCalled();
         expect(listServicesV4Mock).toHaveBeenCalled();
+    });
+
+    test('should validate destination system connection', async () => {
+        const listServicesV2Mock = jest
+            .spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
+            .mockResolvedValueOnce([
+                { id: 'service1', path: '/service1', odataVersion: ODataVersion.v2 } as ODataServiceInfo
+            ]);
+        const listServicesV4Mock = jest
+            .spyOn(axiosExtension.V4CatalogService.prototype, 'listServices')
+            .mockResolvedValueOnce([
+                { id: 'service2', path: '/service2', odataVersion: ODataVersion.v4 } as ODataServiceInfo
+            ]);
+        const connectValidator = new ConnectionValidator();
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system:12345',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_abap'
+            })
+        ).toEqual({ valResult: true });
+        // Connection validation uses v2 first
+        expect(listServicesV2Mock).toHaveBeenCalled();
+        expect(listServicesV4Mock).not.toHaveBeenCalled();
+        expect(connectValidator.validatedUrl).toEqual('https://dest1.dest');
+        expect(connectValidator.destinationUrl).toEqual('https://system:12345');
+        expect(connectValidator.validity).toEqual({
+            authenticated: true,
+            reachable: true
+        });
+
+        // If any error occurs and HTML5.DynamicDestination property is missing, return a destination misconfiguration message and specific GA link
+        jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices').mockRejectedValueOnce(
+            newAxiosErrorWithStatus(500)
+        );
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system:12345',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_abap'
+            })
+        ).toEqual(
+            expect.objectContaining({
+                errorType: ERROR_TYPE.INTERNAL_SERVER_ERROR,
+                valResult: {
+                    link: {
+                        icon: GUIDED_ANSWERS_ICON,
+                        text: t('guidedAnswers.validationErrorHelpText'),
+                        url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.DESTINATION_MISCONFIGURED}`
+                    },
+                    message: t('errors.destination.misconfigured', { destinationProperty: 'HTML5.DynamicDestination' })
+                }
+            })
+        );
+    });
+
+    test('should validate destination service (full and partial url) connection', async () => {
+        jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        const connectValidator = new ConnectionValidator();
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system1:12345/path/to/service',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_gen',
+                WebIDEAdditionalData: 'full_url'
+            })
+        ).toEqual({ valResult: true });
+
+        expect(connectValidator.validatedUrl).toEqual('https://dest1.dest');
+        expect(connectValidator.destinationUrl).toEqual('https://system1:12345/path/to/service');
+        expect(connectValidator.validity).toEqual({
+            authenticated: true,
+            reachable: true
+        });
+
+        jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        expect(
+            await connectValidator.validateDestination(
+                {
+                    Name: 'dest2',
+                    Host: 'https://system2:12345/',
+                    Type: 'HTTP',
+                    Authentication: 'NoAuthentication',
+                    ProxyType: 'Internet',
+                    Description: 'desc',
+                    WebIDEUsage: 'odata_gen'
+                },
+                undefined,
+                'path/to/service'
+            )
+        ).toEqual({ valResult: true });
+
+        expect(connectValidator.validatedUrl).toEqual('https://dest2.dest/path/to/service');
+        expect(connectValidator.destinationUrl).toEqual('https://system2:12345/path/to/service');
+        expect(connectValidator.validity).toEqual({
+            authenticated: true,
+            reachable: true
+        });
+
+        // If any error occurs return a GA link
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(404));
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system1:12345/path/to/service',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_gen',
+                WebIDEAdditionalData: 'full_url',
+                'HTML5.DynamicDestination': 'true'
+            })
+        ).toEqual(
+            expect.objectContaining({
+                errorType: ERROR_TYPE.NOT_FOUND,
+                valResult: {
+                    link: {
+                        icon: GUIDED_ANSWERS_ICON,
+                        text: t('guidedAnswers.validationErrorHelpText'),
+                        url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.DESTINATION_NOT_FOUND}`
+                    },
+                    message: t('errors.urlNotFound')
+                }
+            })
+        );
+
+        // 500s should return a destination misconfiguration message and specific GA link in BAS
+        mockIsAppStudio = true;
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(502));
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system1:12345/path/to/service',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_gen',
+                WebIDEAdditionalData: 'full_url',
+                'HTML5.DynamicDestination': 'true'
+            })
+        ).toEqual(
+            expect.objectContaining({
+                errorType: ERROR_TYPE.BAD_GATEWAY,
+                valResult: {
+                    link: {
+                        icon: GUIDED_ANSWERS_ICON,
+                        text: t('guidedAnswers.validationErrorHelpText'),
+                        url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.BAD_GATEWAY}`
+                    },
+                    message: 'The server returned an error. Bad gateway: 502'
+                }
+            })
+        );
     });
 });

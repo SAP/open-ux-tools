@@ -76,6 +76,9 @@ export interface Destination extends Partial<AdditionalDestinationProperties> {
     Authentication: string;
     ProxyType: string;
     Description: string;
+    /**
+     * N.B. Not the host but the full destination URL property!
+     */
     Host: string;
 }
 
@@ -223,4 +226,15 @@ export function isS4HC(destination: Destination): boolean {
             destination.Authentication === Authentication.SAML_ASSERTION &&
             destination.ProxyType === ProxyType.INTERNET
     );
+}
+
+/**
+ * Checks if the destination attributes WebIDEUsage is configured with odata_abap.
+ * This is a non-strict check, as we want to maintain existing destinations, perhaps accidentally configured with other conflicting configurations.
+ *
+ * @param destination destination configuration properties
+ * @returns true, if this destination has the the 'odata_abap' attribute set
+ */
+export function isAbapODataDestination(destination: Destination): boolean {
+    return !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP);
 }
