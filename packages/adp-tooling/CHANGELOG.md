@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.74
+
+### Patch Changes
+
+-   48dd15d: fix: refresh descriptor after manifest changes
+
 ## 0.12.73
 
 ### Patch Changes
