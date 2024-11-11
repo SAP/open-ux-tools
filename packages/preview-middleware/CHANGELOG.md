@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.110
+
+### Patch Changes
+
+-   838cdf1: fix: Unavailability of changeHandlerAPI in lower ui5 version causes console to be spammed with errors
+
 ## 0.16.109
 
 ### Patch Changes
