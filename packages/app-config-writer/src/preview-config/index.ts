@@ -128,21 +128,21 @@ export async function updatePreviewMiddlewareConfigs(
         unprocessedUi5YamlFileNames.splice(unprocessedUi5YamlFileNames.indexOf(ui5Yaml), 1);
 
         if ((invalidUi5YamlFileNames ?? []).includes(ui5Yaml)) {
-            logger?.error(
+            logger?.warn(
                 `Skipping script ${scriptName} with UI5 yaml configuration file ${ui5Yaml} because it does not comply with the schema.`
             );
             continue;
         }
 
         if ((skippedUi5YamlFileNames ?? []).includes(ui5Yaml)) {
-            logger?.error(
+            logger?.warn(
                 `Skipping script ${scriptName} with UI5 yaml configuration file ${ui5Yaml} because the schema validation was not possible for file ${ui5Yaml}.`
             );
             continue;
         }
 
         if (!validUi5YamlFileNames.includes(ui5Yaml)) {
-            logger?.error(
+            logger?.warn(
                 `Skipping script ${scriptName} because UI5 yaml configuration file ${ui5Yaml} could not be found.`
             );
             continue;
@@ -178,6 +178,8 @@ async function renameSandbox(fs: Editor, basePath: string, script: string, logge
         if (fs.exists(absolutePath)) {
             fs.move(absolutePath, absolutePath.replace('.html', '_old.html'));
             logger?.info(renameMessage(relativePath));
+        } else {
+            logger?.warn(`File ${relativePath} not found. Skipping renaming.`);
         }
     }
 }

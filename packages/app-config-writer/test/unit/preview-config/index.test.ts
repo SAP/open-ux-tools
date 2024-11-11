@@ -24,6 +24,10 @@ describe('check prerequisites', () => {
         fs.delete(join(basePath, 'various-configs', 'package.json'));
     });
 
+    test('check prerequisites w/o package.json', async () => {
+        await expect(async () => checkPrerequisites(basePath, fs, logger)).rejects.toThrow();
+    });
+
     test('check prerequisites with bestpractice build dependency', async () => {
         fs.write(
             join(basePath, 'package.json'),
@@ -79,7 +83,6 @@ describe('convertPreview', () => {
     const logger = new ToolsLogger();
     const infoLogMock = jest.spyOn(ToolsLogger.prototype, 'info').mockImplementation(() => {});
     const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
-    const errorLogMock = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
     const basePath = join(__dirname, '../../fixtures/preview-config');
     let fs: Editor;
 
@@ -194,6 +197,28 @@ describe('convertPreview', () => {
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-existing-preview-middleware.yaml'));
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-existing-tools-preview.yaml'));
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-no-middleware.yaml'));
+        expect(warnLogMock).toHaveBeenCalledWith(text('ui5.yaml'));
+    });
+
+    test('update preview middleware config - skip multi-file yaml', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'multi-file':
+                    'ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-multi-file.yaml'
+            },
+            'devDependencies': {
+                '@sap-ux/preview-middleware': '0.16.83'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+        expect(warnLogMock).toHaveBeenCalledWith(
+            `Skipping script multi-file with UI5 yaml configuration file ui5-multi-file.yaml because the schema validation was not possible for file ui5-multi-file.yaml.`
+        );
+        expect(fs.read(join(variousConfigsPath, 'ui5-multi-file.yaml'))).toMatchSnapshot();
     });
 
     test('update preview middleware config - skip invalid yaml configurations', async () => {
@@ -211,7 +236,7 @@ describe('convertPreview', () => {
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-        expect(errorLogMock).toHaveBeenCalledWith(
+        expect(warnLogMock).toHaveBeenCalledWith(
             'Skipping script invalid with UI5 yaml configuration file ui5-invalid.yaml because it does not comply with the schema.'
         );
     });
@@ -231,7 +256,7 @@ describe('convertPreview', () => {
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-        expect(errorLogMock).toHaveBeenCalledWith(
+        expect(warnLogMock).toHaveBeenCalledWith(
             'Skipping script not:found because UI5 yaml configuration file ui5-unavailable.yaml could not be found.'
         );
     });
@@ -315,7 +340,11 @@ describe('convertPreview', () => {
         const packageJson = {
             scripts: {
                 'ui:mockserver':
-                    'fiori run -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml'
+                    'fiori run -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml',
+                'ui:opa5':
+                    'fiori run -o test/integration/opaTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml',
+                'ui:unit':
+                    'fiori run -o test/unit/unitTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml'
             },
             'devDependencies': {
                 '@sap-ux/preview-middleware': '0.16.102'

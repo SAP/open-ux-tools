@@ -1,0 +1,18 @@
+specVersion: "3.1"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        component: v2lrop0909
+---
+specVersion: "3.0"
+metadata:
+  name: preview-middleware
+kind: extension
+type: server-middleware
+middleware:
+  path: to/somewhere/middleware.js

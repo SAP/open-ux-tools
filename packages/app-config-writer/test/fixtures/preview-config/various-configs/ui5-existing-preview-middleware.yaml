@@ -12,6 +12,12 @@ server:
           intent:
             object: Chicken
             action: dance
+        test:
+          - framework: OPA5
+            path: /test/integration/opaTests.qunit.html
+          - framework: QUnit
+            path: /test/unit/unitTests.qunit.html
+          - framework: Testsuite
         rta:
           editors:
             - path: preview.html
