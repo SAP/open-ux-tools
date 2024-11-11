@@ -1,17 +1,15 @@
-import React, { Ref, useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { UIComboBox } from '../UIComboBox';
-import type { UIComboBoxOption, UIComboBoxProps, UIComboBoxRef, UISelectableOption } from '../UIComboBox';
-import type { IComboBoxOption, ISelectableOption } from '@fluentui/react';
-import { UITextInput } from '../../UIInput';
+import type { UIComboBoxOption, UIComboBoxProps, UIComboBoxRef } from '../UIComboBox';
 import { UIContextualMenu, UIContextualMenuItem } from '../../UIContextualMenu';
-import { useOptions, useSelectedKey } from './hooks';
+import { useOptions } from './hooks';
 import { OptionKey, UISelectableOptionWithSubValues } from './types';
 import { ItemInput, ItemInputRef } from './ItemInput';
-import { isValueValid, RenamedEntries, resolveValueForOption, updateEditableEntry } from './utils';
 
 import './ComboBoxEditable.scss';
+import { getOption } from './utils';
 
-export interface UIComboboxTestProps extends UIComboBoxProps {
+export interface ComboBoxEditableProps extends UIComboBoxProps {
     /**
      * Collection of options for this ComboBox.
      */
@@ -31,23 +29,17 @@ interface SubMenuData {
     option?: UISelectableOptionWithSubValues;
 }
 
-function getOption(
-    options: UISelectableOptionWithSubValues[],
-    key?: string | number
-): UISelectableOptionWithSubValues | undefined {
-    return options.find((option) => option.key === key);
-}
-
-export const ComboBoxEditable = (props: UIComboboxTestProps) => {
+export const ComboBoxEditable = (props: ComboBoxEditableProps) => {
     const { options, onChange, multiSelect } = props;
     const [selectedKey, updateSelection, convertedOptions] = useOptions(props.selectedKey, options, props.multiSelect);
     const [subMenu, setSubMenu] = useState<SubMenuData | null>(null);
     const { target, option: activeOption } = subMenu ?? {};
     const inputItemRefs = useRef<{ [key: string]: ItemInputRef | null }>({});
-    const [_pendingText, setPendingText] = useState<string | undefined>(undefined);
+    const [pendingText, setPendingText] = useState<string | undefined>(undefined);
     // Set local ref in component context
     const selectedKeyRef = useRef<OptionKey>();
     selectedKeyRef.current = selectedKey;
+    const delayedChange = useRef<boolean>(false);
 
     const handleChange = (
         event: React.FormEvent<UIComboBoxRef>,
@@ -65,7 +57,7 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
             if (result.value) {
                 onChange?.(
                     event,
-                    selectedOption ? { ...selectedOption, key: result.value ?? selectedOption.key } : undefined,
+                    selectedOption ? { ...selectedOption, key: result.value } : undefined,
                     index,
                     result.value,
                     result.selection
@@ -91,8 +83,8 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
             <UIComboBox
                 {...(props as any)}
                 className="editable-combobox"
-                // ToDo - recheck if text is passed from outside
-                text={undefined}
+                // ToDo(before making feature without switch) - recheck if we need check text when passed through props
+                text={selectedKey === undefined ? pendingText : undefined}
                 onChange={(
                     event: React.FormEvent<UIComboBoxRef>,
                     selectedOption?: UISelectableOptionWithSubValues,
@@ -114,7 +106,10 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
                 options={convertedOptions}
                 onMenuOpen={() => {}}
                 onMenuDismiss={() => {
-                    setSubMenu(null);
+                    if (!multiSelect && selectedKeyRef.current && !Array.isArray(selectedKeyRef.current)) {
+                        const changedOption = getOption(convertedOptions, selectedKeyRef.current);
+                        handleChange({} as React.FormEvent<UIComboBoxRef>, changedOption, undefined, true);
+                    }
                 }}
                 calloutProps={{
                     preventDismissOnEvent(event) {
@@ -126,6 +121,11 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
                             );
                         }
                         return prevent;
+                    },
+                    layerProps: {
+                        onLayerWillUnmount: () => {
+                            setSubMenu(null);
+                        }
                     }
                 }}
                 onRenderList={(
@@ -166,7 +166,6 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
                     defaultRender?: (props?: UISelectableOptionWithSubValues) => JSX.Element | null
                 ) => {
                     if (props?.editable) {
-                        const { subValue } = props;
                         const option = getOption(convertedOptions, props?.key);
                         return (
                             <ItemInput
@@ -191,10 +190,19 @@ export const ComboBoxEditable = (props: UIComboboxTestProps) => {
                                             undefined,
                                             true
                                         );
+                                    } else {
+                                        delayedChange.current = true;
                                     }
                                 }}
                                 onClick={() => {
                                     updateSelection(props.key, true);
+                                }}
+                                onEnter={(event) => {
+                                    if (!multiSelect) {
+                                        const target = event.target as HTMLElement;
+                                        // Simulate selection by clicking on related item
+                                        (target.closest('.ms-Button') as HTMLElement)?.click();
+                                    }
                                 }}
                                 option={props}
                             />

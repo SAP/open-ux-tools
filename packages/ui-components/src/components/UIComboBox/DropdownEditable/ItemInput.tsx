@@ -1,10 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import type { ReactElement } from 'react';
 import { UITextInput } from '../../UIInput';
 import type { UITextInputProps } from '../../UIInput';
-import { UIContextualMenuItem } from '../../UIContextualMenu';
 import { UISelectableOptionWithSubValues } from './types';
-import { RenamedEntry } from './utils';
 import { useEditValue } from './hooks';
 
 import './ItemInput.scss';
@@ -16,6 +13,7 @@ import './ItemInput.scss';
 export interface ItemInputProps extends UITextInputProps {
     option?: UISelectableOptionWithSubValues;
     renamedEntry?: string;
+    onEnter?: (ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
 export interface ItemInputRef {
@@ -27,7 +25,7 @@ function getSubValueText(option?: UISelectableOptionWithSubValues): string | und
 }
 
 function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemInputRef>): React.ReactElement {
-    const { option, renamedEntry, ...inputProps } = props;
+    const { option, renamedEntry, onEnter, ...inputProps } = props;
     const { value, onChange, onClick, onMouseDown } = inputProps;
     const [subValue, setSubValue] = useState<string | undefined>(getSubValueText(option));
     const [localValue, setLocalValue] = useEditValue('', value, renamedEntry);
@@ -47,6 +45,11 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
         setLocalValue(newValue ?? '');
         onChange?.(event, newValue);
     };
+    const onKeyDown = (ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (ev.key === 'Enter') {
+            onEnter?.(ev);
+        }
+    };
 
     return (
         <div className={`editable-item ${subOptionsCount > 1 ? 'editable-item-expandable' : ''}`}>
@@ -54,7 +57,6 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
                 className="editable-item-input"
                 {...inputProps}
                 onMouseDown={(event) => {
-                    console.log('mouse down!!');
                     const target = event.target as HTMLElement;
                     (document.activeElement as HTMLElement)?.blur();
                     target.focus();
@@ -66,6 +68,7 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
                     event.stopPropagation();
                     onClick?.(event);
                 }}
+                onKeyDown={onKeyDown}
                 onChange={onLocalChange}
                 value={localValue}
             />

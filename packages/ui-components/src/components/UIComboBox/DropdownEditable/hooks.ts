@@ -3,18 +3,17 @@ import { UISelectableOption, UISelectableOptionMenuItemType } from '../UIComboBo
 import {
     isEditableValue,
     getTypeFromEditableItem,
-    RenamedEntry,
     resolveValueForOption,
     getOption,
     isValueValid,
-    getBaseKey
+    convertToPlaceholderText,
 } from './utils';
 import type { OptionKey, SelectionUpdate, UISelectableOptionWithSubValues } from './types';
 import { UIContextualMenuItem } from '../../UIContextualMenu';
 
-function findOptionByValue<T extends string | number | string[] | number[] | null | undefined>(
+function findOptionByValue(
     options: UISelectableOptionWithSubValues[],
-    value: T
+    value?: string | number | null
 ): UISelectableOptionWithSubValues | undefined {
     for (const option of options) {
         if (
@@ -97,6 +96,11 @@ function convertToEditableOptions(data: UISelectableOption[]): UISelectableOptio
     }
     // Combine regular options with the grouped editable ones
     for (const groupId in groupedEditableOptions) {
+        // Set default sub value as string
+        const defaultSubValue = groupedEditableOptions[groupId].options?.find((option) => option.text === 'String');
+        if (defaultSubValue) {
+            groupedEditableOptions[groupId].subValue = defaultSubValue;
+        }
         const { first, last } = findIndices(regularOptions, groupId);
         let diff = 1;
         // Insert header item
@@ -142,8 +146,8 @@ export function useOptions(
     multiSelect?: boolean
 ): [OptionKey, (selectedKey: OptionKey, checked?: boolean) => SelectionUpdate, UISelectableOptionWithSubValues[]] {
     const [options, setOptions] = useState(convertToEditableOptions(originalOptions));
-    const [_selectedKey, setSelectedKey] = useState<OptionKey>(externalSelectedKey);
-    const selection = useRef<OptionKey>(externalSelectedKey);
+    const [selectedKey, setSelectedKey] = useState<OptionKey>(externalSelectedKey);
+    const selection = useRef<OptionKey>(externalSelectedKey ?? selectedKey);
     const previousOptions = useRef<UISelectableOptionWithSubValues[]>(originalOptions);
     useEffect(() => {
         if (Array.isArray(externalSelectedKey)) {
@@ -156,8 +160,11 @@ export function useOptions(
             }
             selection.current = newKey as OptionKey;
         } else {
-            const optionKey = findOptionByValue(options, externalSelectedKey);
-            selection.current = optionKey?.key as OptionKey;
+            for (const option of options) {
+                delete option.selected;
+            }
+            const option = findOptionByValue(options, externalSelectedKey);
+            selection.current = option?.key as OptionKey;
         }
         if (selection.current) {
             setSelectedKey(selection.current);
@@ -217,7 +224,7 @@ export function useOptions(
             }
         }
         // Resolve latest/changed value
-        if (!Array.isArray(key) && key) {
+        if (!Array.isArray(key) && key !== undefined && key !== null) {
             const option = getOption(options, key);
             if (!option?.editable || isValueValid(option)) {
                 const resolveValue = option ? resolveValueForOption(option) : key?.toString();
@@ -243,20 +250,6 @@ export function useSelectedKey<T extends string | number | string[] | number[] |
     }, [externalSelectedKey]);
 
     return [selectedKey, setSelectedKey];
-}
-
-// DUPLICATE!!!!
-export function convertToPlaceholderText(value: string): string {
-    const baseKey = getBaseKey(value);
-    const type = getTypeFromEditableItem(value);
-    if (type) {
-        if (baseKey.includes('Entity')) {
-            return `Enter new entity`;
-        }
-        return `Enter new property`;
-    }
-
-    return '';
 }
 
 /**
