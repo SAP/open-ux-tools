@@ -77,6 +77,9 @@ function extractYamlConfigFileName(script: string): string {
 
 /**
  * Check if the script is valid for the conversion.
+ * - scripts must contain 'ui5 serve' or 'fiori run'
+ * - must not be a test script
+ * - must not be 'webapp/index.html'.
  *
  * @param script - the content of the script from package.json
  * @returns indicator if the script is valid
@@ -85,14 +88,12 @@ function isValidScript(script: string | undefined): boolean {
     const { path } = extractUrlDetails(script ?? '');
     /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
     return (
+        //prerequisite: script contains "ui5 serve" or "fiori run"
         !!(script?.includes('ui5 serve') || script?.includes('fiori run')) &&
-        //todo: how to ensure we don't mistake test scripts for preview scripts?
-        !(
-            script?.includes('opaTests.qunit.html') ||
-            script?.includes('unitTests.qunit.html') ||
-            script?.includes('testsuite.qunit.html')
-        ) &&
-        //ignore "webapp/index.html"
+        //but ignore test scripts
+        //todo: how to ensure we don't mistake other test scripts for preview scripts?
+        !script?.includes('qunit.html') &&
+        //and ignore "webapp/index.html"
         !(path === 'index.html')
     );
     /* eslint-enable @typescript-eslint/prefer-nullish-coalescing */

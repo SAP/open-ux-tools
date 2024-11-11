@@ -385,4 +385,22 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'ui5-no-middleware.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
+
+    test('update preview middleware config - default ui5.yaml', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'start': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"'
+            },
+            'devDependencies': {
+                '@sap/ux-ui5-tooling': '1.15.4'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+
+        expect(fs.read(join(variousConfigsPath, 'ui5.yaml'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+    });
 });
