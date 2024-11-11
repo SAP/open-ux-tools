@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.16.111
+
+### Patch Changes
+
+-   48dd15d: fix: refresh descriptor after manifest changes
+-   Updated dependencies [48dd15d]
+    -   @sap-ux/adp-tooling@0.12.74
+
 ## 0.16.110
 
 ### Patch Changes
