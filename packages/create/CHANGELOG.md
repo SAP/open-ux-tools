@@ -1,5 +1,63 @@
 # @sap-ux/create
 
+## 0.8.69
+
+### Patch Changes
+
+-   Updated dependencies [7551316]
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.18
+    -   @sap-ux/adp-tooling@0.12.73
+    -   @sap-ux/app-config-writer@0.4.51
+    -   @sap-ux/preview-middleware@0.16.109
+    -   @sap-ux/system-access@0.5.16
+    -   @sap-ux/cap-config-writer@0.7.55
+    -   @sap-ux/abap-deploy-config-writer@0.0.58
+
+## 0.8.68
+
+### Patch Changes
+
+-   Updated dependencies [25488a9]
+    -   @sap-ux/preview-middleware@0.16.108
+    -   @sap-ux/app-config-writer@0.4.50
+
+## 0.8.67
+
+### Patch Changes
+
+-   fb26f92: Enhance RTA handling for variants-config command
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/app-config-writer@0.4.50
+    -   @sap-ux/project-access@1.28.6
+    -   @sap-ux/abap-deploy-config-writer@0.0.57
+    -   @sap-ux/adp-tooling@0.12.72
+    -   @sap-ux/cap-config-writer@0.7.55
+    -   @sap-ux/cards-editor-config-writer@0.4.6
+    -   @sap-ux/mockserver-config-writer@0.6.6
+    -   @sap-ux/preview-middleware@0.16.107
+    -   @sap-ux/system-access@0.5.15
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.17
+
+## 0.8.66
+
+### Patch Changes
+
+-   Updated dependencies [0671c95]
+    -   @sap-ux/preview-middleware@0.16.106
+    -   @sap-ux/app-config-writer@0.4.49
+
+## 0.8.65
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.0.16
+-   @sap-ux/adp-tooling@0.12.71
+-   @sap-ux/app-config-writer@0.4.49
+-   @sap-ux/preview-middleware@0.16.105
+-   @sap-ux/system-access@0.5.15
+-   @sap-ux/cap-config-writer@0.7.54
+-   @sap-ux/abap-deploy-config-writer@0.0.56
+
 ## 0.8.64
 
 ### Patch Changes

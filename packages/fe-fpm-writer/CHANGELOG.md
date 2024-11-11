@@ -1,5 +1,19 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.31.16
+
+### Patch Changes
+
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+    -   @sap-ux/fiori-annotation-api@0.2.15
+
+## 0.31.15
+
+### Patch Changes
+
+-   a52de73: Update the "header" question in the Table building block prompt to include i18n annotation information for the translation entry.
+
 ## 0.31.14
 
 ### Patch Changes
