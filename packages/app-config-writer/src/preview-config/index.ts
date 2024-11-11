@@ -96,7 +96,7 @@ function isValidScript(scriptName: string, script: string | undefined): boolean 
         //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         !!(script?.includes('ui5 serve') || script?.includes('fiori run')) &&
         //todo: how to ensure we don't mistake other test scripts for preview scripts?
-        !script?.includes('qunit.html') &&
+        !path?.includes('qunit.html') &&
         path != 'index.html';
     return isValidScriptName && isValidScript;
 }
