@@ -219,7 +219,7 @@ export type DatasourceTypePromptOptions = {
 
 export type DestinationFilters = {
     /**
-     * 'WebIDEUsage' property is defined and includes the value 'odata_abap' and does not includes the value 'odata_gen'. If this matches, the destination will be included regardless of other matches.
+     * 'WebIDEUsage' property is defined and includes the value 'odata_abap'. If this matches, the destination will be included regardless of other matches.
      */
     odata_abap: boolean;
     /**
