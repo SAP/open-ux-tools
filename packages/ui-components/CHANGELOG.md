@@ -1,5 +1,13 @@
 # @sap-ux/ui-components
 
+## 1.20.4
+
+### Patch Changes
+
+-   1c8b59f: Fix UITreeDropdown change callback being triggered twice on first selection:
+    1. First call with empty value
+    2. Second call with selected value
+
 ## 1.20.3
 
 ### Patch Changes
