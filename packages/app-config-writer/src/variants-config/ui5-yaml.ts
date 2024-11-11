@@ -64,7 +64,7 @@ export async function updateMiddlewares(
     logger?: ToolsLogger
 ): Promise<void> {
     const ui5YamlFile = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
-    const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile);
+    const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile, fs);
 
     let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
     const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);
