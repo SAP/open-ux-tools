@@ -6,7 +6,7 @@ import {
     resolveValueForOption,
     getOption,
     isValueValid,
-    convertToPlaceholderText,
+    convertToPlaceholderText
 } from './utils';
 import type { OptionKey, SelectionUpdate, UISelectableOptionWithSubValues } from './types';
 import { UIContextualMenuItem } from '../../UIContextualMenu';
@@ -124,6 +124,7 @@ function convertToEditableOptions(data: UISelectableOption[]): UISelectableOptio
             regularOptions.push(groupedEditableOptions[groupId]);
         }
     }
+
     return regularOptions;
 }
 
@@ -140,15 +141,89 @@ function areArraysEqualByKeyAndText(array1: UISelectableOption[], array2: UISele
     });
 }
 
+function getEditedItems(options: UISelectableOptionWithSubValues[]): Array<string | number> {
+    const editedItems: Array<string | number> = [];
+    for (const option of options) {
+        if (option.editable && option.text) {
+            editedItems.push(option.key);
+        }
+    }
+    return editedItems;
+}
+
+/**
+ * Creates a deep clone of a given item, modifying its key, name, and value with a provided index.
+ *
+ * @param item - The item (IGroup or TreeNode) to be cloned.
+ * @param index - The index used to differentiate the cloned item.
+ * @returns A deep clone of the item with updated key, name, and value.
+ */
+function cloneOption(option: UISelectableOptionWithSubValues, index: number): UISelectableOptionWithSubValues {
+    const optionClone = structuredClone(option);
+    optionClone.key = `${option.key}-${index}`;
+    optionClone.text = '';
+    optionClone.clone = true;
+    optionClone.subValue = {
+        key: optionClone.key,
+        text: getTypeFromEditableItem(optionClone.key)
+    };
+    for (const subOption of optionClone.options ?? []) {
+        subOption.key = `${subOption.key}-${index}`;
+    }
+
+    return optionClone;
+}
+
+function parseCloneKey(value: string): { index: number; key: string } {
+    const match = value.match(/(.*?)-(\d+)$/);
+    if (match) {
+        return {
+            key: match[1],
+            index: parseInt(match[2], 10)
+        };
+    }
+    return {
+        key: value,
+        index: 0
+    };
+}
+
+function applyEditClone(options: UISelectableOptionWithSubValues[], editedKey: string | number): void {
+    let insertIndex = -1;
+    for (let i = 0; i < options.length; i++) {
+        const option = options[i];
+        if (option.key === editedKey) {
+            insertIndex = i;
+            break;
+        }
+    }
+    let originalOption: UISelectableOptionWithSubValues | undefined = options[insertIndex];
+    // ToDo - Get base
+    let cloneIndex = 1;
+    if (originalOption?.clone) {
+        const clodeData = parseCloneKey(originalOption.key.toString());
+        originalOption = options.find((option) => option.key === clodeData.key);
+        cloneIndex = clodeData.index + 1;
+    }
+    if (!originalOption) {
+        return;
+    }
+
+    const optionClone = cloneOption(originalOption, cloneIndex);
+    options.splice(insertIndex + 1, 0, optionClone);
+}
+
 export function useOptions(
     externalSelectedKey: OptionKey,
     originalOptions: UISelectableOption[],
     multiSelect?: boolean
 ): [OptionKey, (selectedKey: OptionKey, checked?: boolean) => SelectionUpdate, UISelectableOptionWithSubValues[]] {
-    const [options, setOptions] = useState(convertToEditableOptions(originalOptions));
+    const [options, setOptions] = useState(() => convertToEditableOptions(originalOptions));
     const [selectedKey, setSelectedKey] = useState<OptionKey>(externalSelectedKey);
     const selection = useRef<OptionKey>(externalSelectedKey ?? selectedKey);
     const previousOptions = useRef<UISelectableOptionWithSubValues[]>(originalOptions);
+    const currentEditedKeys = getEditedItems(options);
+    const cachedEditedKeys = useRef<Array<string | number>>(currentEditedKeys);
     useEffect(() => {
         if (Array.isArray(externalSelectedKey)) {
             const newKey: Array<string | number> = [];
@@ -192,6 +267,19 @@ export function useOptions(
         }
         setOptions(convertedOptions);
     }, [originalOptions]);
+
+    useEffect(() => {
+        // Enable multiple inputs: a new input appears when the user enters the first character into the last input
+        if (!multiSelect) {
+            return;
+        }
+        const newEdit = currentEditedKeys.find((key) => !cachedEditedKeys.current.includes(key));
+        if (newEdit) {
+            cachedEditedKeys.current = currentEditedKeys;
+            // Append new clone to stack
+            applyEditClone(options, newEdit);
+        }
+    }, [currentEditedKeys, multiSelect]);
 
     const updateSelection = (key: OptionKey, selected = true): SelectionUpdate => {
         const result: SelectionUpdate = {};
