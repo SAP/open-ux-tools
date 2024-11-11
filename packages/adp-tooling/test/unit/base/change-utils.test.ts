@@ -26,14 +26,13 @@ import {
     writeAnnotationChange,
     writeChangeToFolder
 } from '../../../src/base/change-utils';
-import { isCapNodeJsProject } from '@sap-ux/project-access';
-import { hasUncaughtExceptionCaptureCallback } from 'process';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
     existsSync: jest.fn(),
     readdirSync: jest.fn(),
-    readFileSync: jest.fn()
+    readFileSync: jest.fn(),
+    writeJSON: jest.fn()
 }));
 
 jest.mock('path', () => ({
@@ -340,6 +339,9 @@ describe('Change Utils', () => {
         };
 
         it('should write the change file and an empty annotation file for NewEmptyFile option', () => {
+            renderFileMock.mockImplementation((templatePath, data, options, callback) => {
+                callback(undefined, 'test');
+            });
             writeAnnotationChange(
                 mockProjectPath,
                 123456789,
@@ -376,6 +378,8 @@ describe('Change Utils', () => {
                 expect.objectContaining({}),
                 expect.any(Function)
             );
+
+            expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('mockAnnotation.xml'), 'test');
         });
 
         it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
@@ -420,7 +424,7 @@ describe('Change Utils', () => {
         it('should throw error when write operation fails', () => {
             mockData.annotation.filePath = '';
 
-            mockFs.writeJSON.mockImplementation(() => {
+            mockFs.writeJSON.mockImplementationOnce(() => {
                 throw new Error('Failed to write JSON');
             });
 
@@ -441,6 +445,22 @@ describe('Change Utils', () => {
                     'id_123456789_addAnnotationsToOData.change'
                 )}. Reason: Failed to write JSON`
             );
+        });
+
+        it('should throw an error if rendering the annotation file fails', () => {
+            renderFileMock.mockImplementation((templatePath, data, options, callback) => {
+                callback(new Error('Failed to render annotation file'), '');
+            });
+
+            expect(() => {
+                writeAnnotationChange(
+                    mockProjectPath,
+                    123456789,
+                    mockData.annotation as AnnotationsData['annotation'],
+                    mockChange as unknown as ManifestChangeProperties,
+                    mockFs as unknown as Editor
+                );
+            }).toThrow('Failed to render annotation file');
         });
     });
 });
