@@ -1,0 +1,76 @@
+_schema-version: "3.2"
+ID: test-mta
+description: An SAP Fiori application.
+version: 0.0.1
+modules:
+- name: test-mta-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: test-mta-destination-service
+    parameters:
+      content-target: true
+  - name: test-mta-repo-host
+    parameters:
+      service-key:
+        name: test-mta-repo-host-key
+  - name: test-mta-uaa
+    parameters:
+      service-key:
+        name: test-mta-uaa-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: test-mta_html_repo_host
+          ServiceInstanceName: test-mta-html5-srv
+          ServiceKeyName: test-mta-repo-host-key
+          sap.cloud.service: test-mta
+        - Authentication: OAuth2UserTokenExchange
+          Name: test-mta_uaa
+          ServiceInstanceName: test-mta-xsuaa-srv
+          ServiceKeyName: test-mta-uaa-key
+          sap.cloud.service: test-mta
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: test-mta-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: test-mta-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - test-mta.zip
+      name: test-mta
+      target-path: resources/
+- name: test-mta
+  type: html5
+  path: .
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: test-mta-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: test-mta-xsuaa-srv
+    service-plan: application
+- name: test-mta-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: test-mta-html5-srv
+    service-plan: app-host
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true

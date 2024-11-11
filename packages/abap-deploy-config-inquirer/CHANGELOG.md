@@ -1,5 +1,59 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.0.18
+
+### Patch Changes
+
+-   7551316: Small text cleanups
+-   Updated dependencies [7551316]
+    -   @sap-ux/axios-extension@1.17.1
+    -   @sap-ux/system-access@0.5.16
+
+## 1.0.17
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.17.0
+-   @sap-ux/fiori-generator-shared@0.7.5
+-   @sap-ux/system-access@0.5.15
+
+## 1.0.16
+
+### Patch Changes
+
+-   Updated dependencies [0120dda]
+    -   @sap-ux/axios-extension@1.17.0
+    -   @sap-ux/system-access@0.5.15
+
+## 1.0.15
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+    -   @sap-ux/axios-extension@1.16.7
+    -   @sap-ux/fiori-generator-shared@0.7.4
+    -   @sap-ux/system-access@0.5.14
+
+## 1.0.14
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/fiori-generator-shared@0.7.3
+    -   @sap-ux/axios-extension@1.16.7
+    -   @sap-ux/system-access@0.5.14
+
+## 1.0.13
+
+### Patch Changes
+
+-   Updated dependencies [ff75382]
+    -   @sap-ux/store@0.9.3
+    -   @sap-ux/system-access@0.5.14
+    -   @sap-ux/ui5-config@0.25.0
+    -   @sap-ux/fiori-generator-shared@0.7.2
+
 ## 1.0.12
 
 ### Patch Changes

@@ -14,6 +14,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../feature-toggle"
+    },
+    {
       "path": "../logger"
     },
     {

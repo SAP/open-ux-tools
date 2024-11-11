@@ -1,4 +1,7 @@
 (function (sap) {
+    var sanitizeString = function (str) {
+        return str.replace(/[\n]/g, '\\n').replace(/[\r]/g, '\\r');
+    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = "";
@@ -40,7 +43,7 @@
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -57,7 +60,7 @@
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -95,9 +98,9 @@
                     if (dependency.url && dependency.url.length > 0 && dependency.type === "UI5LIB") {
                         sap.ui.require(["sap/base/Log"], function (Log) {
                             Log.info("Registering Library " +
-                                dependency.componentId +
+                                sanitizeString(dependency.componentId) +
                                 " from server " +
-                                dependency.url);
+                                sanitizeString(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\./g, "/");
                         var config = {
@@ -110,7 +113,7 @@
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -165,7 +168,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById("locate-reuse-libs");
