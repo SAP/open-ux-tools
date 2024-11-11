@@ -369,9 +369,9 @@ if (bootstrapConfig) {
 export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: Ui5VersionInfo): Promise<void> {
     const err = getError(error);
     if (err.message.includes('Reload triggered')) {
-        if (ui5VersionInfo && ui5VersionInfo.minor >= 84 && ui5VersionInfo.major >= 1) {
+        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 84 })) {
             const bundle = await getTextBundle();
-            const action  = showMessage({
+            const action = showMessage({
                 message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
                 shouldHideIframe: false
             });

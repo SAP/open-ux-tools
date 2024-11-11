@@ -326,8 +326,15 @@ describe('flp/init', () => {
                 layer: 'VENDOR',
                 pluginScript: 'my/script'
             };
+            const reloadSpy = jest.fn();
+            const location = window.location;
+            Object.defineProperty(window, 'location', {
+                value: {
+                    reload: reloadSpy
+                }
+            });
             VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.84.50' });
-        
+
             // Mocking `sap.ui.require` to throw the correct error structure
             sapMock.ui.require.mockImplementationOnce((libs, callback) => {
                 callback(
@@ -335,20 +342,18 @@ describe('flp/init', () => {
                     {}
                 );
             });
-        
-            const sendActionSpy = jest.spyOn(CommunicationService, 'sendAction').mockImplementation(() => {});
-            const reloadSpy = jest.spyOn(window.location, 'reload').mockImplementation(() => {});
-        
+
+            const sendActionSpy = jest.spyOn(CommunicationService, 'sendAction').mockImplementation(() => { });
             await init({ flex: JSON.stringify(flexSettings) });
             const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock.calls[0][0] as () => Promise<void>;
-        
+
             const mockService = { attachAppLoaded: jest.fn() };
             sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
-        
+
             await rendererCb();
-        
+
             const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => Promise<void>;
-            await loadedCb({ getParameter: () => {} });
+            await loadedCb({ getParameter: () => { } });
 
             setTimeout(() => {
                 expect(sendActionSpy).toHaveBeenCalled();
@@ -360,9 +365,11 @@ describe('flp/init', () => {
                         shouldHideIframe: false
                     }
                 });
-            expect(reloadSpy).toHaveBeenCalled();
-            }, 5*1000);
-            
+                expect(reloadSpy).toHaveBeenCalled();
+                Object.defineProperty(window, 'location', {
+                    value: location
+                });
+            }, 5 * 1000);
         });
     });
 });
