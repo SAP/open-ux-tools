@@ -397,10 +397,10 @@ export class ChangeService {
         let result: PendingChange;
         let value = '';
 
-        const change = command.getPreparedChange();
+        const change = command?.getPreparedChange?.();
 
         const selectorId =
-            typeof change.getSelector === 'function'
+            typeof change?.getSelector === 'function'
                 ? await this.getControlIdByChange(change)
                 : this.getCommandSelectorId(command);
 
@@ -468,10 +468,10 @@ export class ChangeService {
                 }
                 return result;
             } catch (error) {
-                Log.error('Retry operation failed:', getError(error));
                 continue;
             }
         }
+        Log.error('All retry operations failed');
         return undefined;
     }
 
@@ -527,6 +527,10 @@ export class ChangeService {
             }
 
             const changeHandlerAPI = (await import('sap/ui/fl/write/api/ChangesWriteAPI')).default;
+
+            if (typeof changeHandlerAPI?.getChangeHandler !== 'function') {
+                return selector.id;
+            }
 
             const changeHandler = await changeHandlerAPI.getChangeHandler({
                 changeType,
