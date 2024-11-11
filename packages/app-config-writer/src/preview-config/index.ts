@@ -79,7 +79,7 @@ function extractYamlConfigFileName(script: string): string {
  * Check if the script/-name is valid for the conversion. The script
  * - must contain 'ui5 serve' or 'fiori run' command
  * - must not be a test script
- * - must not relate to 'webapp/index.html'.
+ * - must not relate to 'webapp/index.html'.</br>
  * The script name
  * - must not be 'start-variants-management'
  * - must not be 'start-control-property-editor'.
@@ -88,7 +88,7 @@ function extractYamlConfigFileName(script: string): string {
  * @param script - the content of the script from package.json
  * @returns indicator if the script is valid
  */
-function isValidScript(scriptName: string, script: string | undefined): boolean {
+function isValidPreviewScript(scriptName: string, script: string | undefined): boolean {
     const isValidScriptName =
         scriptName != 'start-variants-management' && scriptName != 'start-control-property-editor';
     const { path } = extractUrlDetails(script ?? '');
@@ -122,7 +122,7 @@ export async function updatePreviewMiddlewareConfigs(
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     for (const [scriptName, script] of Object.entries(packageJson?.scripts ?? {})) {
-        if (!script || !isValidScript(scriptName, script)) {
+        if (!script || !isValidPreviewScript(scriptName, script)) {
             continue;
         }
 
