@@ -105,7 +105,7 @@
     "warnings": {
         "packageNotFound": "Package list cannot be fetched. Please enter the Package manually.",
         "providePackage": "Provide a package",
-        "transportConfigFailure": "Cannot get transport configuration from the backend. You can still proceed with deployment configuration by manually providing the package and transport request needed. \nFor more information on this error, please see Guided Answers {{helpLink}}",
+        "transportConfigFailure": "Cannot get transport configuration from the backend. You can still proceed with deployment configuration by manually providing the package and transport request needed. \nFor more information on this error, please see Guided Answers {{-helpLink}}",
         "noTransportReqs": "There are no Transport Requests for the supplied package. You can choose to create a new one now or during deployment.",
         "noExistingTransportReqList": "Transport Request list cannot be fetched. Please enter Transport Request manually.",
         "virtualHost": "The destination is using a virtual host, you will need to replace the host in the URL with the internal host that is configured with your SAP Cloud Connector when viewing your deployed application."

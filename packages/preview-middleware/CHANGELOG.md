@@ -1,5 +1,23 @@
 # @sap-ux/preview-middleware
 
+## 0.16.110
+
+### Patch Changes
+
+-   838cdf1: fix: Unavailability of changeHandlerAPI in lower ui5 version causes console to be spammed with errors
+
+## 0.16.109
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.73
+
+## 0.16.108
+
+### Patch Changes
+
+-   25488a9: fix: resolve the issue when add table action quick action in the object page didn't work because the Variant Management was disabled.
+
 ## 0.16.107
 
 ### Patch Changes
