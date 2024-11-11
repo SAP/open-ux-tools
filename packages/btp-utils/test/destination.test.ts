@@ -215,8 +215,13 @@ describe('destination', () => {
             expect(isAbapODataDestination(destination1)).toBe(true);
         });
 
-        it('Should return false if WebIDEUsage contains `odata_abap` and `odata_gen`', () => {
+        it('Should return true if WebIDEUsage contains `odata_abap` and `odata_gen`', () => {
             destination1.WebIDEUsage = 'odata_abap,odata_gen';
+            expect(isAbapODataDestination(destination1)).toBe(true);
+        });
+
+        it('Should return false if WebIDEUsage does not contains `odata_abap`', () => {
+            destination1.WebIDEUsage = 'odata_gen, any_other_values';
             expect(isAbapODataDestination(destination1)).toBe(false);
         });
     });
