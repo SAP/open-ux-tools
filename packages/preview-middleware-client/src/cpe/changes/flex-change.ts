@@ -3,11 +3,8 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { PropertyType, type PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import type { UI5AdaptationOptions } from '../types';
 import { validateBindingModel } from './validator';
-import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import ElementOverlay from 'sap/ui/dt/ElementOverlay';
-import UI5Element from 'sap/ui/core/Element';
-import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-import { getReference } from '../../utils/fe-v4/utils';
+import { getReference } from '../../utils/fe-v4';
+import { getOverlay } from '../utils';
 
 /**
  * Function to check a give value is a binding expression.
@@ -60,7 +57,9 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
         await rta.getCommandStack().pushAndExecute(command);
     } else if (change.propertyType === PropertyType.Configuration) {
         const overlay = getOverlay(modifiedControl);
-        if (!overlay) {return;}
+        if (!overlay) {
+            return;
+        }
         const overlayData = overlay?.getDesignTimeMetadata().getData();
         const manifestPropertyPath = overlayData.manifestPropertyPath(modifiedControl);
         const [manifestPropertyChange] = overlayData.manifestPropertyChange(
@@ -87,13 +86,3 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
         await rta.getCommandStack().pushAndExecute(command);
     }
 }
-
-export const getOverlay = (control: UI5Element): ElementOverlay | undefined => {
-    let controlOverlay = OverlayRegistry.getOverlay(control);
-    if (!controlOverlay?.getDomRef()) {
-        //look for closest control
-        controlOverlay = OverlayUtil.getClosestOverlayFor(control);
-    }
-
-    return controlOverlay;
-};

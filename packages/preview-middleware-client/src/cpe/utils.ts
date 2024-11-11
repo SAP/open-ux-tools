@@ -11,6 +11,9 @@ import { getComponent } from '../utils/core';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import { DesigntimeSetting } from 'sap/ui/dt/DesignTimeMetadata';
 import { ChangeService } from './changes';
+import UI5Element from 'sap/ui/core/Element';
+import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 
 export interface PropertiesInfo {
     defaultValue: string;
@@ -173,3 +176,13 @@ export function getManifestProperties(
     );
     return manifestProperties;
 }
+
+export const getOverlay = (control: UI5Element): ElementOverlay | undefined => {
+    let controlOverlay = OverlayRegistry.getOverlay(control);
+    if (!controlOverlay?.getDomRef()) {
+        //look for closest control
+        controlOverlay = OverlayUtil.getClosestOverlayFor(control);
+    }
+
+    return controlOverlay;
+};

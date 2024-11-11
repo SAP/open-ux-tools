@@ -211,6 +211,9 @@ export interface SavedControlChange {
 }
 
 export type Change = PendingChange | SavedChange;
+export type NonConfigChange =
+    | Exclude<PendingChange, PendingConfigurationChange>
+    | Exclude<SavedChange, SavedConfigurationChange>;
 
 export interface ChangeStackModified {
     pending: PendingChange[];

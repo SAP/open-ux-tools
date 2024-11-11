@@ -2,25 +2,19 @@ import React from 'react';
 import type { ReactElement } from 'react';
 import { Link, Stack } from '@fluentui/react';
 
-import {
-    CONFIGURATION_CHANGE_KIND,
-    PROPERTY_CHANGE_KIND,
-    SAVED_CHANGE_TYPE,
-    selectControl
-} from '@sap-ux-private/control-property-editor-common';
-import type { Change } from '@sap-ux-private/control-property-editor-common';
+import { PROPERTY_CHANGE_KIND, SAVED_CHANGE_TYPE, selectControl } from '@sap-ux-private/control-property-editor-common';
+import type { NonConfigChange } from '@sap-ux-private/control-property-editor-common';
 
 import { PropertyChange } from './PropertyChange';
 import { useAppDispatch } from '../../store';
 
 import styles from './ControlGroup.module.scss';
-
 export interface ControlGroupProps {
     text: string;
     controlId: string;
     controlName: string;
     index: number;
-    changes: Change[];
+    changes: NonConfigChange[];
     timestamp?: number;
 }
 
@@ -58,9 +52,7 @@ export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement
                 return (
                     <Stack.Item
                         data-testid={`${stackName}-${controlId}-${
-                            change.kind === CONFIGURATION_CHANGE_KIND || change.kind === PROPERTY_CHANGE_KIND
-                                ? change.propertyName
-                                : change.changeType
+                            change.kind === PROPERTY_CHANGE_KIND ? change.propertyName : change.changeType
                         }-${change.fileName}`}
                         key={change.fileName}
                         className={styles.item}>

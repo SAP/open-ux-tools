@@ -4,18 +4,8 @@ import Component from 'sap/ui/core/Component';
 import AppComponent from 'sap/fe/core/AppComponent';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
-import { isA } from '../../utils/core';
+import { isA } from './core';
 
-/**
- * Gets reference id of the app.
- *
- * @param control - ManagedObject.
- * @returns string.
- */
-export function getReference(control: ManagedObject): string {
-    const manifest = getAppComponent(control)?.getManifest() as Manifest;
-    return manifest?.['sap.app']?.id ?? '';
-}
 
 /**
  * Gets app component of a v4 project.
@@ -29,6 +19,17 @@ export function getAppComponent(control: ManagedObject): AppComponent | undefine
         return ownerComponent.getAppComponent();
     }
     return undefined;
+}
+
+/**
+ * Gets reference id of the app.
+ *
+ * @param control - ManagedObject.
+ * @returns string.
+ */
+export function getReference(control: ManagedObject): string {
+    const manifest = getAppComponent(control)?.getManifest() as Manifest;
+    return manifest?.['sap.app']?.id ?? '';
 }
 
 /**
@@ -50,6 +51,7 @@ export function getV4PageType(control: ManagedObject): 'ObjectPage' | 'ListRepor
     if (name === 'sap.fe.templates.ListReport.ListReport') {
         return 'ListReport';
     }
+    return undefined;
 }
 
 /**

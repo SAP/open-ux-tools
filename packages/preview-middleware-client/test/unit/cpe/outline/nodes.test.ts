@@ -10,7 +10,7 @@ import { sapCoreMock } from 'mock/window';
 import ComponentMock from 'mock/sap/ui/core/Component';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
-import * as v4Utils from '../../../../src/utils/fe-v4/utils';
+import * as v4Utils from '../../../../src/utils/fe-v4';
 
 jest.mock('../../../../src/cpe/outline/editable', () => {
     return {

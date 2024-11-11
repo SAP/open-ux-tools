@@ -9,7 +9,7 @@ import {
     PropertyType
 } from '@sap-ux-private/control-property-editor-common';
 import { buildControlData } from './control-data';
-import { getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
+import { getOverlay, getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
 import type { ActionSenderFunction, Service, SubscribeFunction } from './types';
 
 import type Event from 'sap/ui/base/Event';
@@ -25,7 +25,6 @@ import { getComponent } from '../utils/core';
 import { getError } from '../utils/error';
 import { ChangeService } from './changes';
 import UI5Element from 'sap/ui/core/Element';
-import { getOverlay } from './changes/flex-change';
 
 export interface PropertyChangeParams {
     name: string;
@@ -152,7 +151,7 @@ export class SelectionService implements Service {
         });
         // rebuild config properties in panel for the selected control onStackChange event
         this.changeService.onStackChange(async (event) => {
-            const control = event.detail.controls.find((control) => control === this.currentSelection);
+            const control = event.detail.controls.find((ctrl) => ctrl === this.currentSelection);
             if (control) {
                 const overlay = getOverlay(control);
                 await this.buildProperties(control, sendAction, overlay);

@@ -32,21 +32,15 @@ import { getError } from '../../utils/error';
 import { isLowerThanMinimalUi5Version, getUi5Version } from '../../utils/version';
 import MessageToast from 'sap/m/MessageToast';
 import { getTextBundle } from '../../i18n';
-import { getControlById } from '../../utils/core';
+import { getControlById, isA } from '../../utils/core';
 import UI5Element from 'sap/ui/core/Element';
-import { getConfigMapControlIdMap } from '../../utils/fe-v4/utils';
+import { getConfigMapControlIdMap } from '../../utils/fe-v4';
 
 interface ChangeContent {
     property: string;
     newValue: string;
     newBinding: string;
 }
-
-interface ChangeSelector {
-    id: string;
-    type: string;
-}
-
 export const STACK_CHANGE_EVENT = 'STACK_CHANGED';
 export interface StackChangedEventDetail {
     controls: UI5Element[];
@@ -143,6 +137,19 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
 }
 
 /**
+ * Returns a shortened version of the given configuration path segments by removing excess segments,
+ * leaving only the most relevant parts for display. For example, the configuration path
+ * `controlConfiguration/com.sap.UI.v1.LineItem/tableSettings` will be shortened to
+ * `LineItem/tableSettings`.
+ *
+ * @param propertyPathSeg string[]
+ * @returns string
+ */
+function getCompactV4ConfigPath(propertyPathSeg: string[]): string {
+    return propertyPathSeg.join('/').replace(/^controlConfiguration\/(?:([^/]+\/))?@[^/]+\.v1\./, '$1');
+}
+
+/**
  * A Class of ChangeService
  */
 export class ChangeService extends EventTarget {
@@ -227,6 +234,27 @@ export class ChangeService extends EventTarget {
         );
     }
 
+    private getSavedConfigurationChange(change: ConfigChange): SavedConfigurationChange {
+        assertManifestChange(change);
+        if ([change.content.entityPropertyChange.propertyValue].every((item) => item === undefined || item === null)) {
+            throw new Error('Invalid change, missing property value on change file');
+        }
+        const propertyPathSegments = change.content.entityPropertyChange.propertyPath.split('/');
+        const propertyName = propertyPathSegments.pop();
+        const configMapKey = getConfigMapControlIdMap(change.content.page, propertyPathSegments);
+        const controlIds = this.configPropertyControlIdMap?.get(configMapKey) || [];
+        return {
+            type: 'saved',
+            kind: 'configuration',
+            fileName: change.fileName,
+            controlIds,
+            propertyPath: getCompactV4ConfigPath(propertyPathSegments) || change.content.page,
+            propertyName: propertyName ?? '',
+            value: change.content.entityPropertyChange.propertyValue,
+            timestamp: new Date(change.creation).getTime()
+        };
+    }
+
     /**
      * Fetches saved changes from the workspace and sorts them.
      */
@@ -251,30 +279,7 @@ export class ChangeService extends EventTarget {
                             let selectorId;
                             try {
                                 if (change.changeType === MANIFEST_V4_CHANGE) {
-                                    assertManifestChange(change);
-                                    if (
-                                        [change.content.entityPropertyChange.propertyValue].every(
-                                            (item) => item === undefined || item === null
-                                        )
-                                    ) {
-                                        throw new Error('Invalid change, missing property value on change file');
-                                    }
-                                    const propertyPathSegments =
-                                        change.content.entityPropertyChange.propertyPath.split('/');
-                                    const propertyName = propertyPathSegments.pop();
-                                    const key = getConfigMapControlIdMap(change.content.page, propertyPathSegments);
-                                    const controlIds = this.configPropertyControlIdMap?.get(key) || [];
-                                    return {
-                                        type: 'saved',
-                                        kind: 'configuration',
-                                        fileName: change.fileName,
-                                        controlIds,
-                                        propertyPath:
-                                            getCompactV4ConfigPath(propertyPathSegments) || change.content.page,
-                                        propertyName: propertyName ?? '',
-                                        value: change.content.entityPropertyChange.propertyValue,
-                                        timestamp: new Date(change.creation).getTime()
-                                    };
+                                    return this.getSavedConfigurationChange(change);
                                 } else {
                                     const flexObject = await this.getFlexObject(change);
                                     selectorId = await this.getControlIdByChange(flexObject);
@@ -362,6 +367,7 @@ export class ChangeService extends EventTarget {
                 if (change.kind === 'control') {
                     return change.controlId === controlId;
                 }
+                return false;
             })
             .map((change) =>
                 fetch(FlexChangesEndPoints.changes, {
@@ -445,20 +451,20 @@ export class ChangeService extends EventTarget {
             // Notify to update the ui for configuration changes.
             const configurationChanges = this.pendingChanges?.filter((item) => item.kind === 'configuration');
             if (configurationChanges.length) {
-                const event = new CustomEvent(STACK_CHANGE_EVENT, {
+                const stackChangeEvent = new CustomEvent(STACK_CHANGE_EVENT, {
                     detail: {
-                        controls: (configurationChanges as PendingConfigurationChange[]).reduce((acc, item) => {
+                        controls: configurationChanges.reduce((acc: UI5Element[], item) => {
                             const controls = (item.controlIds || [])
                                 .map((id: string) => {
                                     return getControlById(id);
                                 })
-                                .filter((item) => item?.getId()) as UI5Element[];
+                                .filter((ui5Element) => isA<UI5Element>('sap.ui.core.Element', ui5Element));
                             acc.push(...controls);
                             return acc;
-                        }, new Array<UI5Element>())
+                        }, [])
                     }
                 });
-                this.dispatchEvent(event);
+                this.dispatchEvent(stackChangeEvent);
             }
             this.updateStack();
             handleStackChange();
@@ -508,6 +514,47 @@ export class ChangeService extends EventTarget {
         }
     }
 
+    private preparev4ConfigurationChange(
+        command: FlexCommand,
+        value: string,
+        fileName: string,
+        index: number,
+        inactiveCommandCount: number
+    ): PendingConfigurationChange {
+        const { entityPropertyChange, page } = command.getProperty('parameters') as {
+            entityPropertyChange: {
+                propertyPath: string;
+            };
+            page: string;
+        };
+        const controlId = this.getCommandSelectorId(command) ?? '';
+        const propertyPathSegments = entityPropertyChange.propertyPath.split('/');
+        const propName = propertyPathSegments.pop();
+        const key = getConfigMapControlIdMap(page, propertyPathSegments);
+
+        const isActive = index >= inactiveCommandCount;
+        const controlIds = this.configPropertyControlIdMap?.get(key) || [controlId];
+        const result: PendingConfigurationChange = {
+            type: 'pending',
+            kind: 'configuration',
+            controlIds,
+            propertyPath: getCompactV4ConfigPath(propertyPathSegments) || page,
+            propertyName: propName as string,
+            isActive,
+            value,
+            fileName
+        };
+        for (const id of result.controlIds) {
+            if (!this.pendingConfigChangeMap.get(id)) {
+                this.pendingConfigChangeMap.set(id, []);
+            }
+            const pendingChanges = this.pendingConfigChangeMap.get(id);
+            pendingChanges?.push(result);
+        }
+
+        return result;
+    }
+
     /**
      * Prepares the type of change based on the command and other parameters.
      *
@@ -545,7 +592,8 @@ export class ChangeService extends EventTarget {
                 value = command.getProperty('newBinding') as string;
                 break;
             case 'appdescr_fe_changePageConfiguration':
-                value = command.getProperty('parameters').entityPropertyChange.propertyValue as string; //entityPropertyChange.propertyValue  as string;
+                value = (command.getProperty('parameters') as { entityPropertyChange: { propertyValue: unknown } })
+                    .entityPropertyChange.propertyValue as string;
                 break;
         }
 
@@ -564,31 +612,7 @@ export class ChangeService extends EventTarget {
                 fileName
             };
         } else if (changeType === 'appdescr_fe_changePageConfiguration') {
-            const { entityPropertyChange, page } = command.getProperty('parameters');
-            const controlId = this.getCommandSelectorId(command) ?? '';
-            const propertyPathSegments = entityPropertyChange.propertyPath.split('/');
-            const propName = propertyPathSegments.pop();
-            const key = getConfigMapControlIdMap(page, propertyPathSegments);
-
-            const isActive = index >= inactiveCommandCount;
-            const controlIds = this.configPropertyControlIdMap?.get(key) || [controlId];
-            result = {
-                type: 'pending',
-                kind: 'configuration',
-                controlIds,
-                propertyPath: getCompactV4ConfigPath(propertyPathSegments) || page,
-                propertyName: propName,
-                isActive,
-                value,
-                fileName
-            };
-            for (const id of result.controlIds) {
-                if (!this.pendingConfigChangeMap.get(id)) {
-                    this.pendingConfigChangeMap.set(id, []);
-                }
-                const pendingChanges = this.pendingConfigChangeMap.get(id);
-                pendingChanges?.push(result);
-            }
+            result = this.preparev4ConfigurationChange(command, value, fileName, index, inactiveCommandCount);
         } else {
             result = {
                 type: 'pending',
@@ -744,17 +768,4 @@ export class ChangeService extends EventTarget {
         const FlexObjectFactory = (await import('sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory')).default;
         return FlexObjectFactory.createFromFileContent(change) as FlexChange<ChangeContent>;
     }
-}
-
-/**
- * Returns a shortened version of the given configuration path segments by removing excess segments,
- * leaving only the most relevant parts for display. For example, the configuration path
- * `controlConfiguration/com.sap.UI.v1.LineItem/tableSettings` will be shortened to
- * `LineItem/tableSettings`.
- *
- * @param propertyPathSeg string[]
- * @returns string
- */
-function getCompactV4ConfigPath(propertyPathSeg: string[]): string {
-    return propertyPathSeg.join('/').replace(/^controlConfiguration\/(?:([^/]+\/))?@[^/]+\.v1\./, '$1');
 }

@@ -2,7 +2,7 @@ import { getControlById } from '../../../utils/core';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { getAppComponent, getPageName, getReference } from '../../../utils/fe-v4/utils';
+import { getAppComponent, getPageName, getReference } from '../../../utils/fe-v4';
 
 export async function executeToggleAction(
     context: QuickActionContext,

@@ -6,12 +6,11 @@ import { getUi5Version, Ui5VersionInfo } from '../../utils/version';
 import { getControlById } from '../../utils/core';
 
 import type { ControlTreeIndex } from '../types';
-import { isReuseComponent } from '../utils';
+import { getOverlay, isReuseComponent } from '../utils';
 
 import { isEditable } from './editable';
 import { ChangeService } from '../changes';
-import { getOverlay } from '../changes/flex-change';
-import { getConfigMapControlIdMap, getPageName } from '../../utils/fe-v4/utils';
+import { getConfigMapControlIdMap, getPageName } from '../../utils/fe-v4';
 
 interface AdditionalData {
     text?: string;
