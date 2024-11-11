@@ -1,7 +1,7 @@
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { basename, join } from 'path';
-import { getAllUi5YamlFileNames, getWebappPath, type Package, readUi5Yaml } from '@sap-ux/project-access';
+import { FileName, getAllUi5YamlFileNames, getWebappPath, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { prompt, type PromptObject } from 'prompts';
 import { createPreviewMiddlewareConfig } from '../variants-config/ui5-yaml';
@@ -72,7 +72,7 @@ async function updateVariantsCreationScript(fs: Editor, basePath: string, logger
  */
 function extractYamlConfigFileName(script: string): string {
     const configParameterValueMatch = / --config (\S*)| -c (\S*)/.exec(script);
-    return configParameterValueMatch?.[1] ?? configParameterValueMatch?.[2] ?? 'ui5.yaml';
+    return configParameterValueMatch?.[1] ?? configParameterValueMatch?.[2] ?? FileName.Ui5Yaml;
 }
 
 /**
@@ -463,5 +463,5 @@ async function getExplicitApprovalToAdjustFiles(): Promise<boolean> {
             'The converter will rename html files and delete js/ts files used for the existing preview and configure the usage of virtual files instead. Do you want to proceed with the conversion?'
     };
 
-    return (await prompt([question])).approval as boolean;
+    return !!(await prompt([question])).approval;
 }
