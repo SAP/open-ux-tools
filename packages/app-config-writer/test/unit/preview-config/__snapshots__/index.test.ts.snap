@@ -85,7 +85,6 @@ server:
       afterMiddleware: compression
       configuration:
         flp:
-          path: test/flp.html
           intent:
             object: Chicken
             action: dance
@@ -154,7 +153,6 @@ server:
       afterMiddleware: compression
       configuration:
         flp:
-          path: test/flp.html
           intent:
             object: Chicken
             action: dance

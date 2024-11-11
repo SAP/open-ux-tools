@@ -285,18 +285,24 @@ export function updatePreviewMiddlewareConfig(
 
     const configuration = newMiddlewareConfig.configuration ?? ({} as PreviewConfig);
     configuration.flp = configuration.flp ?? {};
-    if (pathIsFlpPath(path, configuration)) {
+
+    let writeConfig = false;
+    //check path and respect defaults
+    if (pathIsFlpPath(path, configuration) && !path?.includes('test/flp.html')) {
         configuration.flp.path = path;
+        writeConfig = true;
     }
-    if (intent) {
+    //check intent and respect defaults
+    if (intent && intent.object != 'app' && intent.action != 'preview') {
         configuration.flp.intent = {
             object: intent.object,
             action: intent.action
         };
+        writeConfig = true;
     }
 
     //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    if (path || intent) {
+    if (writeConfig) {
         newMiddlewareConfig.configuration = configuration;
     }
 
