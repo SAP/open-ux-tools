@@ -1,7 +1,7 @@
 (function (sap) {
     var sanitizeString = function (str) {
         return str.replace(/[\n]/g, '\\n').replace(/[\r]/g, '\\r');
-    }
+    };
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = "";

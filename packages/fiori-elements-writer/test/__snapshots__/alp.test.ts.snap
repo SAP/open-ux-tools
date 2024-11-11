@@ -5737,7 +5737,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     "contents": "(function (sap) {
     var sanitizeString = function (str) {
         return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
+    };
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -11744,7 +11744,7 @@ appDescription=A Fiori application.",
     "contents": "(function (sap) {
     var sanitizeString = function (str) {
         return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
+    };
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
