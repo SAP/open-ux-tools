@@ -82,6 +82,7 @@ function extractYamlConfigFileName(script: string): string {
  * @returns indicator if the script is valid
  */
 function isValidScript(script: string | undefined): boolean {
+    const { path } = extractUrlDetails(script ?? '');
     /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
     return (
         !!(script?.includes('ui5 serve') || script?.includes('fiori run')) &&
@@ -90,7 +91,9 @@ function isValidScript(script: string | undefined): boolean {
             script?.includes('opaTests.qunit.html') ||
             script?.includes('unitTests.qunit.html') ||
             script?.includes('testsuite.qunit.html')
-        )
+        ) &&
+        //ignore "webapp/index.html"
+        !(path === 'index.html')
     );
     /* eslint-enable @typescript-eslint/prefer-nullish-coalescing */
 }
