@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.17.1
+
+### Patch Changes
+
+-   7551316: Small text cleanups
+
 ## 1.17.0
 
 ### Minor Changes
