@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.24
+
+### Patch Changes
+
+-   25488a9: fix: resolve the issue when add table action quick action in the object page didn't work because the Variant Management was disabled.
+
 ## 0.11.23
 
 ### Patch Changes
