@@ -1,0 +1,54 @@
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { DeploymentGenerator } from '../base';
+import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
+import { t } from './i18n';
+import { cdsExecutable, cdsPkg, mtaExecutable, mtaPkg, mtaYaml } from './constants';
+
+export class ErrorMessages {
+    private static readonly cannotFindBinary = (bin: string, pkg: string): string => t('errors.noBinary', { bin, pkg });
+
+    public static readonly abortSignal = t('errors.abortSignal'); // check this one, is ABORT_SIGNAL signifcant? or can we just throw an error?
+    public static readonly noManifest = t('errors.noManifest');
+    public static readonly noAppName = t('errors.noAppName');
+    public static readonly noCdsBin = this.cannotFindBinary(cdsExecutable, cdsPkg);
+    public static readonly noMtaBin = this.cannotFindBinary(mtaExecutable, mtaPkg);
+    public static readonly noMta = t('errors.noMta');
+    public static readonly noPath = t('errors.noPath');
+    public static readonly noMtaId = t('errors.noMtaId');
+    public static readonly invalidMtaId = t('errors.invalidMtaId');
+    public static readonly capDeploymentnoMta = t('errors.capDeploymentNoMta');
+
+    public static mtaIdAlreadyExist = (destinationRoot: string): string =>
+        t('errors.mtaIdAlreadyExists', { destinationRoot });
+    public static noMtaInRoot = (root: string): string => t('errors.noMtaInRoot', { mtaFileName: mtaYaml, root });
+    public static unrecognizedTarget = (target: string): string => t('errors.unrecognizedTarget', { target });
+    public static cannotReadUi5Config = (reason: string): string => t('errors.cannotReadUi5Config', { reason });
+    public static fileDoesNotExist = (filePath: string): string => t('errors.fileDoesNotExist', { filePath });
+    public static folderDoesNotExist = (filePath: string): string => t('errors.folderDoesNotExist', { filePath });
+    public static invalidClient = (client: string): string => t('errors.invalidClient', { client });
+    public static invalidURL = (input: string): string => t('errors.invalidURL', { input });
+}
+
+/**
+ * Bail out with an error message
+ *
+ * @param errorMessage - Error message to be displayed
+ */
+export function bail(errorMessage: string): void {
+    throw new Error(errorMessage);
+}
+
+/**
+ * Handle error message, display it in the UI or throws an error in CLI
+ *
+ * @param appWizard - AppWizard instance
+ * @param errorMsg - Error message to be displayed
+ */
+export function handleErrorMessage(appWizard: AppWizard, errorMsg: string): void {
+    if (getHostEnvironment() === hostEnvironment.cli) {
+        bail(errorMsg);
+    } else {
+        DeploymentGenerator.logger?.debug(errorMsg);
+        appWizard?.showError(errorMsg, MessageType.notification);
+    }
+}

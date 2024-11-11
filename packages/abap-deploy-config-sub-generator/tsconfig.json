@@ -1,0 +1,40 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "generators"
+  },
+  "references": [
+    {
+      "path": "../abap-deploy-config-inquirer"
+    },
+    {
+      "path": "../abap-deploy-config-writer"
+    },
+    {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../deploy-config-generator-common"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../ui5-config"
+    }
+  ]
+}
