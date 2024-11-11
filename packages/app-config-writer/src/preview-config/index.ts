@@ -370,6 +370,7 @@ export function sanitizePreviewMiddleware(
 export async function renameDefaultSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const defaultSandboxPaths = [join('test', 'flpSandbox.html'), join('test', 'flpSandboxMockserver.html')];
     for (const path of defaultSandboxPaths) {
+        //use fake script to be able to re-use the renameSandbox function for the default sandboxes as well
         const fakeScript = ` --open ${path}`;
         await renameSandbox(fs, basePath, fakeScript, logger);
     }
