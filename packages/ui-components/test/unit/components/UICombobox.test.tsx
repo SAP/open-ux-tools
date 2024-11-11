@@ -1022,4 +1022,74 @@ describe('<UIComboBox />', () => {
             });
         }
     });
+
+    describe('Test "customSearchFilter" property', () => {
+        const dataForCustomSearch = [
+            ...data,
+            {
+                key: 'A1',
+                text: 'Do not hide',
+                customMark: true
+            },
+            {
+                key: 'A2',
+                text: 'Always visible',
+                customMark: true
+            }
+        ];
+        const testCases = [
+            {
+                name: 'Test "true" and "undefined" result from custom filter',
+                options: dataForCustomSearch,
+                query: 'Australia',
+                expectedCountBefore: 1,
+                expectedCountAfter: 3
+            },
+            {
+                name: 'Test "true" result from custom filter when no default matches',
+                options: dataForCustomSearch,
+                query: '404',
+                expectedCountBefore: 0,
+                expectedCountAfter: 2
+            },
+            {
+                name: 'Test "false" result from custom filter',
+                options: data,
+                query: 'Lorem ipsum dolor sit amet',
+                expectedCountBefore: 1,
+                expectedCountAfter: 0
+            }
+        ];
+        for (const testCase of testCases) {
+            const { name, query, expectedCountBefore, expectedCountAfter, options } = testCase;
+            it(name, () => {
+                // Default state before custom filter
+                wrapper.setProps({
+                    highlight: true,
+                    options: options
+                });
+                openDropdown();
+                wrapper.find('input').simulate('keyDown', {});
+                triggerSearch(query);
+                expect(wrapper.find('.ms-Button--action').length).toEqual(expectedCountBefore);
+                // Apply custom filter and check result for same query
+                wrapper.setProps({
+                    customSearchFilter: (searchTerm: string, option: UIComboBoxOption) => {
+                        if ('customMark' in option && option.customMark) {
+                            return true;
+                        }
+                        if (option.key === 'BC') {
+                            // Hide 'Lorem ipsum dolor sit amet' when searching
+                            return false;
+                        }
+                        return undefined;
+                    }
+                });
+                openDropdown();
+                wrapper.find('input').simulate('keyDown', {});
+                triggerSearch(query);
+                expect(wrapper.find('.ms-Button--action').length).toEqual(expectedCountAfter);
+            });
+        }
+    });
 });
