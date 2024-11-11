@@ -386,11 +386,12 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - default ui5.yaml', async () => {
+    test('update preview middleware config - default ui5.yaml w/o index.html', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
-                'start': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"'
+                'start': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"',
+                'start-index': 'fiori run --open "index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"'
             },
             'devDependencies': {
                 '@sap/ux-ui5-tooling': '1.15.4'
