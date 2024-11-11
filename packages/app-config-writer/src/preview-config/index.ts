@@ -158,7 +158,7 @@ export async function updatePreviewMiddlewareConfigs(
         //at least adjust deprecated preview config of unused ui5 yaml configurations
         await processUi5YamlConfig(fs, basePath, ui5Yaml, '', true);
         logger?.warn(
-            `UI5 yaml configuration file ${ui5Yaml} it is not being used in any package.json script. Consider deleting this file.`
+            `UI5 yaml configuration file ${ui5Yaml} it is not being used in any preview script. Outdated preview middleware will be adjusted nevertheless if necessary.`
         );
     }
 }

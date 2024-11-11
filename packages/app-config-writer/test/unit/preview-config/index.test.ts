@@ -186,7 +186,7 @@ describe('convertPreview', () => {
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
         const text = (filename: string) =>
-            `UI5 yaml configuration file ${filename} it is not being used in any package.json script. Consider deleting this file.`;
+            `UI5 yaml configuration file ${filename} it is not being used in any preview script. Outdated preview middleware will be adjusted nevertheless if necessary.`;
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
