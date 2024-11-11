@@ -376,12 +376,14 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - existing add-variants-management script', async () => {
+    test('update preview middleware config - existing start-variants-management and start-control-property-editor script', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
                 'start-variants-management':
                     'fiori run -o /preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
+                'start-control-property-editor':
+                    'fiori run -o /editor.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
                 'start-local': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml'
             },
             'devDependencies': {

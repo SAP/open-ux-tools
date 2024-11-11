@@ -76,10 +76,10 @@ function extractYamlConfigFileName(script: string): string {
 }
 
 /**
- * Check if the script is valid for the conversion.
- * - scripts must contain 'ui5 serve' or 'fiori run'
+ * Check if the script is valid for the conversion. The script
+ * - must contain 'ui5 serve' or 'fiori run' command
  * - must not be a test script
- * - must not be 'webapp/index.html'.
+ * - must not relate to 'webapp/index.html'.
  *
  * @param script - the content of the script from package.json
  * @returns indicator if the script is valid
@@ -97,6 +97,18 @@ function isValidScript(script: string | undefined): boolean {
         !(path === 'index.html')
     );
     /* eslint-enable @typescript-eslint/prefer-nullish-coalescing */
+}
+
+/**
+ * Check if the script name is valid for the conversion. The script name
+ * - must not be 'start-variants-management'
+ * - must not be 'start-control-property-editor'.
+ *
+ * @param scriptName - the name of the script from package.json
+ * @returns indicator if the script name is valid
+ */
+function isValidScriptName(scriptName: string | undefined): boolean {
+    return scriptName != 'start-variants-management' && scriptName != 'start-control-property-editor';
 }
 
 /**
@@ -120,7 +132,7 @@ export async function updatePreviewMiddlewareConfigs(
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     for (const [scriptName, script] of Object.entries(packageJson?.scripts ?? {})) {
-        if (scriptName === 'start-variants-management' || !script || !isValidScript(script)) {
+        if (!isValidScriptName(scriptName) || !script || !isValidScript(script)) {
             continue;
         }
 
