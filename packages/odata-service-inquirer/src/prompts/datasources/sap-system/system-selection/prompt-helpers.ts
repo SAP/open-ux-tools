@@ -12,7 +12,7 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
 import { SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
-import { ERROR_TYPE } from '../../../../error-handler/error-handler';
+import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { t } from '../../../../i18n';
 import { type DestinationFilters } from '../../../../types';
 import { convertODataVersionType, PromptState } from '../../../../utils';

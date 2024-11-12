@@ -3,7 +3,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.json"
-  ],
+, "../inquirer-common/src/prompts/cf-helper.ts"  ],
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist"

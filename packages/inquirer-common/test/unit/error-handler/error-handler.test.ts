@@ -1,5 +1,5 @@
 import 'jest-extended';
-import { t } from '../../../src/i18n';
+import { initI18nInquirerCommon, t } from '../../../src/i18n';
 import {
     GUIDED_ANSWERS_LAUNCH_CMD_ID,
     HELP_NODES,
@@ -9,8 +9,7 @@ import {
 import { ErrorHandler, ERROR_TYPE } from '../../../src/error-handler/error-handler';
 import type { ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { SampleRate } from '@sap-ux/telemetry';
-import { initI18nOdataServiceInquirer } from '../../../src/i18n';
-import * as utils from '../../../src/utils';
+import * as telemetryUtils from '../../../src/utils/telemetry';
 
 let mockIsAppStudio = false;
 
@@ -24,15 +23,15 @@ jest.mock('@sap-ux/feature-toggle', () => ({
     isFeatureEnabled: jest.fn().mockImplementation((featureId) => featureId === 'enableGAIntegration')
 }));
 
-jest.mock('../../../src/utils', () => ({
-    ...jest.requireActual('../../../src/utils'),
-    getPlatform: jest.fn().mockReturnValue({ name: 'CLI', technical: 'CLI' })
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn().mockReturnValue({ name: 'CLI', technical: 'CLI' })
 }));
 
 describe('Test ErrorHandler', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
-        await initI18nOdataServiceInquirer();
+        await initI18nInquirerCommon();
     });
 
     afterEach(() => (mockIsAppStudio = false));
@@ -127,7 +126,7 @@ describe('Test ErrorHandler', () => {
         const mockTelemClient = {
             reportEvent: jest.fn()
         } as Partial<ToolsSuiteTelemetryClient> as ToolsSuiteTelemetryClient;
-        utils.setTelemetryClient(mockTelemClient);
+        telemetryUtils.setTelemetryClient(mockTelemClient);
 
         expect(errorHandler.getValidationErrorHelp()).toEqual(undefined); // No error provided and no previous error state to use
         expect(errorHandler.getValidationErrorHelp(ERROR_TYPE.SERVICES_UNAVAILABLE)).toEqual(
@@ -135,6 +134,7 @@ describe('Test ErrorHandler', () => {
         );
 
         mockIsAppStudio = true;
+        ErrorHandler.guidedAnswersTrigger = 'some_ga_trigger_text';
         const serviceUnavailableHelpLink = errorHandler.getValidationErrorHelp(ERROR_TYPE.SERVICES_UNAVAILABLE);
         expect(serviceUnavailableHelpLink).toEqual(
             expect.objectContaining({
@@ -144,7 +144,7 @@ describe('Test ErrorHandler', () => {
                         params: {
                             nodeIdPath: [HELP_NODES.BAS_CATALOG_SERVICES_REQUEST_FAILED],
                             treeId: HELP_TREE.FIORI_TOOLS,
-                            trigger: '@sap-ux/odata-service-inquirer'
+                            trigger: 'some_ga_trigger_text'
                         }
                     }),
                     icon: GUIDED_ANSWERS_ICON,

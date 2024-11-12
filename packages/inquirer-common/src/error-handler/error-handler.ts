@@ -1,6 +1,6 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import type { Destination } from '@sap-ux/btp-utils';
-import { isAppStudio, isHTML5DynamicConfigured, isOnPremiseDestination } from '@sap-ux/btp-utils';
+import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { type Destination, isAppStudio, isHTML5DynamicConfigured, isOnPremiseDestination } from '@sap-ux/btp-utils';
 import {
     getHelpUrl,
     GUIDED_ANSWERS_ICON,
@@ -11,7 +11,7 @@ import {
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
 import { ValidationLink } from '../types';
-import { getTelemPropertyDestinationType, sendTelemetryEvent } from '../utils';
+import { getTelemPropertyDestinationType, sendTelemetryEvent } from '../utils/telemetry';
 import type { AxiosError } from 'axios';
 
 // Telemetry event names specific to odata service error handling
@@ -117,6 +117,27 @@ export class ErrorHandler {
     private static _guidedAnswersEnabled: boolean;
 
     private static _logger: Logger;
+
+    /**
+     * The current platform string to be reported in telemetry events. If not provided it will be determined from the environment.
+     */
+    private static _platform: string | undefined;
+
+    public static get platform(): string | undefined {
+        return ErrorHandler._platform;
+    }
+    public static set platform(value: string | undefined) {
+        ErrorHandler._platform = value;
+    }
+
+    private static _guidedAnswersTrigger: string | undefined;
+
+    public static get guidedAnswersTrigger(): string | undefined {
+        return ErrorHandler._platform;
+    }
+    public static set guidedAnswersTrigger(value: string | undefined) {
+        ErrorHandler._platform = value;
+    }
 
     private static readonly getMessageFromError = (error: unknown): string => {
         return (
@@ -515,7 +536,8 @@ export class ErrorHandler {
         // Always raise a telemetry event for destination related errors
         sendTelemetryEvent(telemBasError, {
             basErrorType: destErrorType ?? errorType,
-            destODataType: getTelemPropertyDestinationType(destination)
+            destODataType: getTelemPropertyDestinationType(destination),
+            Platform: this.platform ?? getHostEnvironment().technical
         });
         return {
             errorType: destErrorType ?? errorType,
@@ -607,7 +629,7 @@ export class ErrorHandler {
                     params: {
                         treeId: HELP_TREE.FIORI_TOOLS,
                         nodeIdPath: [helpNode],
-                        trigger: '@sap-ux/odata-service-inquirer'
+                        trigger: this.guidedAnswersTrigger
                     }
                 };
             }
@@ -615,7 +637,8 @@ export class ErrorHandler {
             sendTelemetryEvent(telemEventGALinkCreated, {
                 errorType,
                 isGuidedAnswersEnabled: this.guidedAnswersEnabled,
-                nodeIdPath: `${helpNode}`
+                nodeIdPath: `${helpNode}`,
+                Platform: this.platform ?? getHostEnvironment().technical
             });
             return new ValidationLink(valLink);
         }
