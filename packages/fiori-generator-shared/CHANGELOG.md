@@ -1,5 +1,13 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.7.6
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/btp-utils@0.16.0
+    -   @sap-ux/telemetry@0.5.42
+
 ## 0.7.5
 
 ### Patch Changes

@@ -2000,6 +2000,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/guided-answers-helper':
         specifier: workspace:*
         version: link:../guided-answers-helper
@@ -2064,9 +2067,6 @@ importers:
       jest-extended:
         specifier: 3.2.4
         version: 3.2.4(jest@29.7.0)
-      lodash:
-        specifier: 4.17.21
-        version: 4.17.21
 
   packages/odata-service-writer:
     dependencies:
