@@ -9,7 +9,7 @@ import { hostEnvironment } from '../../../../src/types';
 import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 
 const validateUrlMockTrue = jest.fn().mockResolvedValue(true);
-const validateAuthTrue = jest.fn().mockResolvedValue(true);
+const validateAuthTrue = jest.fn().mockResolvedValue({ valResult: true });
 const odataServiceMock = {} as Partial<ODataService>;
 const serviceProviderMock = {} as Partial<ServiceProvider>;
 
@@ -408,7 +408,9 @@ describe('Service URL prompts', () => {
         );
 
         // should return a validation message if authentication fails
-        connectionValidatorMock.validateAuth = jest.fn().mockResolvedValue('A connection error message');
+        connectionValidatorMock.validateAuth = jest
+            .fn()
+            .mockResolvedValue({ valResult: 'A connection error message', errorType: 'SOME_ERROR' });
         expect(await (passwordPrompt?.validate as Function)(password, { serviceUrl, username })).toBe(
             'A connection error message'
         );

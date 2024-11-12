@@ -1,7 +1,7 @@
 import type { ReaderCollection } from '@ui5/fs';
 import type { TemplateConfig } from '../../../src/base/config';
 import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
-import type { FlpConfig } from '../../../src/types';
+import type { FlpConfig, MiddlewareConfig } from '../../../src/types';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest } from '@sap-ux/project-access';
@@ -151,42 +151,6 @@ describe('FlpSandbox', () => {
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
-        test('with passed descriptor', async () => {
-            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
-            const manifest = {
-                'sap.app': { id: 'my.id' }
-            } as Manifest;
-            const descriptor = {
-                components: [
-                    {
-                        name: 'myComponent',
-                        url: 'myComponentUrl'
-                    }
-                ],
-                libs: [
-                    {
-                        name: 'myLib',
-                        url: 'myLibUrl'
-                    }
-                ],
-                asyncHints: {
-                    requests: [
-                        {
-                            url: 'myRequestUrl'
-                        }
-                    ]
-                }
-            };
-            const componendId = 'myComponent';
-            const resources = {
-                'myResources1': 'myResourcesUrl1',
-                'myResources2': 'myResourcesUrl2'
-            };
-
-            await flp.init(manifest, componendId, resources, descriptor as unknown as MergedAppDescriptor);
-            expect(flp.templateConfig).toMatchSnapshot();
-        });
-
         test('optional configurations', async () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
@@ -279,53 +243,54 @@ describe('FlpSandbox', () => {
 
     describe('router', () => {
         let server!: SuperTest<Test>;
+        const mockConfig = {
+            flp: {
+                apps: [
+                    {
+                        target: '/yet/another/app',
+                        local: join(fixtures, 'multi-app')
+                    }
+                ]
+            },
+            test: [
+                {
+                    framework: 'QUnit'
+                },
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    init: '/test/integration/opaTests.qunit.js'
+                }
+            ],
+            rta: {
+                layer: 'CUSTOMER_BASE',
+                editors: [
+                    {
+                        path: '/my/rta.html'
+                    },
+                    {
+                        path: 'without/slash/rta.html'
+                    },
+                    {
+                        path: '/my/editor.html',
+                        developerMode: true
+                    },
+                    {
+                        path: '/with/plugin.html',
+                        developerMode: true,
+                        pluginScript: 'open/ux/tools/plugin'
+                    },
+                    {
+                        path: '/my/editorWithConfig.html',
+                        generator: 'test-generator'
+                    }
+                ]
+            }
+        };
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
-                {
-                    flp: {
-                        apps: [
-                            {
-                                target: '/yet/another/app',
-                                local: join(fixtures, 'multi-app')
-                            }
-                        ]
-                    },
-                    test: [
-                        {
-                            framework: 'QUnit'
-                        },
-                        {
-                            framework: 'OPA5',
-                            path: '/test/integration/opaTests.qunit.html',
-                            init: '/test/integration/opaTests.qunit.js'
-                        }
-                    ],
-                    rta: {
-                        layer: 'CUSTOMER_BASE',
-                        editors: [
-                            {
-                                path: '/my/rta.html'
-                            },
-                            {
-                                path: 'without/slash/rta.html'
-                            },
-                            {
-                                path: '/my/editor.html',
-                                developerMode: true
-                            },
-                            {
-                                path: '/with/plugin.html',
-                                developerMode: true,
-                                pluginScript: 'open/ux/tools/plugin'
-                            },
-                            {
-                                path: '/my/editorWithConfig.html',
-                                generator: 'test-generator'
-                            }
-                        ]
-                    }
-                },
+                mockConfig as unknown as Partial<MiddlewareConfig>,
                 mockProject,
                 mockUtils,
                 logger
@@ -364,6 +329,56 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
             expect(response.text.includes('livereloadPort: 35729')).toBe(true);
             response = await server.get('/my/editor.html.inner.html').expect(302);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with adp instance', async () => {
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1',
+                'myResources2': 'myResourcesUrl2'
+            };
+            const url = 'http://sap.example';
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            const adpToolingMock = {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {},
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn()
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            expect(flp.templateConfig).toMatchSnapshot();
+            const response = await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
             expect(response.text).toMatchSnapshot();
         });
 

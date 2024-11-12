@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "include": [
-    "src",
+    "src/**/*.ts",
     "src/**/*.json"
   ],
   "compilerOptions": {
@@ -17,6 +17,9 @@
     },
     {
       "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-generator-shared"
     },
     {
       "path": "../guided-answers-helper"
