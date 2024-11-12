@@ -1,11 +1,7 @@
 import Log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import {
-    iconsLoaded,
-    enableTelemetry,
-    appLoaded
-} from '@sap-ux-private/control-property-editor-common';
+import { iconsLoaded, enableTelemetry, appLoaded } from '@sap-ux-private/control-property-editor-common';
 
 import type { ActionHandler, Service } from './types';
 import { OutlineService } from './outline/service';
@@ -40,11 +36,12 @@ export default function init(
         CommunicationService.subscribe(handler);
     }
 
-    const selectionService = new SelectionService(rta);
-
-    const changesService = new ChangeService({ rta }, selectionService);
-    const connectorService = new WorkspaceConnectorService();
     const rtaService = new RtaService(rta);
+
+    const changesService = new ChangeService({ rta });
+    const selectionService = new SelectionService(rta, changesService);
+
+    const connectorService = new WorkspaceConnectorService();
     const outlineService = new OutlineService(rta, changesService);
     const quickActionService = new QuickActionService(rta, outlineService, registries);
     const services: Service[] = [

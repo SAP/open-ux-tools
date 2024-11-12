@@ -1,11 +1,12 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 
-import type {
-    FloatControlProperty,
-    IntegerControlProperty,
-    StringControlProperty,
-    StringControlPropertyWithOptions
+import {
+    PropertyType,
+    type FloatControlProperty,
+    type IntegerControlProperty,
+    type StringControlProperty,
+    type StringControlPropertyWithOptions
 } from '@sap-ux-private/control-property-editor-common';
 
 import { render } from '../../utils';
@@ -24,7 +25,8 @@ describe('StringEditor', () => {
             isIcon: false,
             isEnabled: false,
             name: 'testProperty',
-            value
+            value,
+            propertyType: PropertyType.ControlProperty
         };
         render(<StringEditor controlName="testControl" property={property} controlId={controlId} />);
 
@@ -40,7 +42,8 @@ describe('StringEditor', () => {
             isEnabled: true,
             isIcon: true,
             name: 'testProperty',
-            value
+            value,
+            propertyType: PropertyType.ControlProperty
         };
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />, {
             initialState: {
@@ -75,7 +78,8 @@ describe('StringEditor', () => {
             isIcon: false,
             name: 'testProperty',
             value,
-            type: 'integer'
+            type: 'integer',
+            propertyType: PropertyType.ControlProperty
         };
 
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
@@ -95,7 +99,8 @@ describe('StringEditor', () => {
             isIcon: false,
             name: 'testProperty',
             value,
-            type: 'integer'
+            type: 'integer',
+            propertyType: PropertyType.ControlProperty
         };
 
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
@@ -117,7 +122,8 @@ describe('StringEditor', () => {
             isIcon: false,
             name: 'testProperty',
             value,
-            type: 'integer'
+            type: 'integer',
+            propertyType: PropertyType.ControlProperty
         };
         const { dispatch } = render(
             <StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />
@@ -139,7 +145,8 @@ describe('StringEditor', () => {
             isIcon: false,
             name: 'testProperty',
             value,
-            type: 'integer'
+            type: 'integer',
+            propertyType: PropertyType.ControlProperty
         };
 
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
@@ -161,7 +168,8 @@ describe('StringEditor', () => {
             isIcon: false,
             name: 'testProperty',
             value,
-            type: 'float'
+            type: 'float',
+            propertyType: PropertyType.ControlProperty
         };
 
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
@@ -181,7 +189,8 @@ describe('StringEditor', () => {
             isIcon: false,
             name: 'testProperty',
             value,
-            type: 'float'
+            type: 'float',
+            propertyType: PropertyType.ControlProperty
         };
 
         render(<StringEditor controlName="testControl" property={{ ...props }} controlId={controlId} />);
@@ -199,6 +208,7 @@ describe('StringEditor', () => {
             readableName: 'Test Property',
             isEnabled: false,
             isIcon: false,
+            propertyType: PropertyType.ControlProperty,
             name: 'testProperty',
             value,
             type: 'float'
