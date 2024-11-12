@@ -12,6 +12,7 @@ import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { PreviewConfigOptions } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import * as projectAccess from '@sap-ux/project-access';
 
 describe('check prerequisites', () => {
     const logger = new ToolsLogger();
@@ -79,10 +80,9 @@ describe('check prerequisites', () => {
     });
 });
 
-describe('convertPreview', () => {
+describe('misc', () => {
     const logger = new ToolsLogger();
     const infoLogMock = jest.spyOn(ToolsLogger.prototype, 'info').mockImplementation(() => {});
-    const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
     const basePath = join(__dirname, '../../fixtures/preview-config');
     let fs: Editor;
 
@@ -162,8 +162,33 @@ describe('convertPreview', () => {
             `${variousConfigsPackageJsonPath} doesn\'t exist`
         );
     });
+});
 
-    test('update preview middleware config w/o path and intent', async () => {
+describe('update preview middleware config', () => {
+    const logger = new ToolsLogger();
+    const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
+    const basePath = join(__dirname, '../../fixtures/preview-config');
+    let fs: Editor;
+    let getAllUi5YamlFileNamesMock: jest.SpyInstance;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        fs = create(createStorage());
+        getAllUi5YamlFileNamesMock = jest.spyOn(projectAccess, 'getAllUi5YamlFileNames').mockResolvedValue({
+            valid: [
+                'ui5.yaml',
+                'ui5-deprecated-tools-preview.yaml',
+                'ui5-deprecated-tools-preview-theme.yaml',
+                'ui5-existing-preview-middleware.yaml',
+                'ui5-existing-tools-preview.yaml',
+                'ui5-no-middleware.yaml'
+            ],
+            invalid: ['ui5-invalid.yaml'],
+            skipped: ['ui5-multi-file.yaml']
+        });
+    });
+
+    test('w/o path and intent', async () => {
         const previewMiddleware = {
             name: 'fiori-tools-preview',
             afterMiddleware: 'compression',
@@ -176,7 +201,7 @@ describe('convertPreview', () => {
         expect(updatePreviewMiddlewareConfig(previewMiddleware, undefined, undefined)).toMatchSnapshot();
     });
 
-    test('update preview middleware config - skip yaml configurations not used in any script', async () => {
+    test('skip yaml configurations not used in any script', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             'devDependencies': {
@@ -198,9 +223,10 @@ describe('convertPreview', () => {
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-existing-tools-preview.yaml'));
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-no-middleware.yaml'));
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5.yaml'));
+        expect(getAllUi5YamlFileNamesMock).toHaveBeenCalledTimes(1);
     });
 
-    test('update preview middleware config - skip multi-file yaml', async () => {
+    test('skip multi-file yaml', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
@@ -218,10 +244,9 @@ describe('convertPreview', () => {
         expect(warnLogMock).toHaveBeenCalledWith(
             `Skipping script multi-file with UI5 yaml configuration file ui5-multi-file.yaml because the schema validation was not possible for file ui5-multi-file.yaml.`
         );
-        expect(fs.read(join(variousConfigsPath, 'ui5-multi-file.yaml'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - skip invalid yaml configurations', async () => {
+    test('skip invalid yaml configurations', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
@@ -241,7 +266,7 @@ describe('convertPreview', () => {
         );
     });
 
-    test('update preview middleware config - skip not found yaml configurations', async () => {
+    test('skip not found yaml configurations', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
@@ -261,7 +286,7 @@ describe('convertPreview', () => {
         );
     });
 
-    test('update preview middleware config - no tooling, no middleware', async () => {
+    test('no tooling, no middleware', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
@@ -279,7 +304,7 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - deprecated tools preview with theme', async () => {
+    test('deprecated tools preview with theme', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
@@ -298,7 +323,7 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - deprecated tools preview w/o theme', async () => {
+    test('deprecated tools preview w/o theme', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
@@ -317,7 +342,7 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - existing tools preview', async () => {
+    test('existing tools preview', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
@@ -335,7 +360,7 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - existing preview middleware', async () => {
+    test('existing preview middleware', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
@@ -357,7 +382,7 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - existing RTA script', async () => {
+    test('existing RTA script', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
@@ -376,7 +401,7 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - existing start-variants-management and start-control-property-editor script', async () => {
+    test('existing start-variants-management and start-control-property-editor script', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
@@ -397,7 +422,7 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - multiple scripts same yaml configuration', async () => {
+    test('multiple scripts same yaml configuration', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
@@ -417,7 +442,7 @@ describe('convertPreview', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
-    test('update preview middleware config - default ui5.yaml w/o index.html', async () => {
+    test('default ui5.yaml w/o index.html', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
