@@ -9,6 +9,11 @@ import UIComponent from 'sap/ui/core/UIComponent';
 
 import { getComponent } from '../utils/core';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { DesigntimeSetting } from 'sap/ui/dt/DesignTimeMetadata';
+import { ChangeService } from './changes';
+import UI5Element from 'sap/ui/core/Element';
+import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 
 export interface PropertiesInfo {
     defaultValue: string;
@@ -28,6 +33,16 @@ export interface ManagedObjectMetadataProperties {
     getType: () => DataType;
     getName: () => string;
     getDefaultValue: () => unknown;
+}
+
+export interface MergedSetting extends DesigntimeSetting {
+    defaultValue: unknown;
+    value: unknown;
+    configuration: boolean;
+    name: string;
+    readableName: string;
+    manifestPropertyPath: string;
+    type: 'string' | 'int' | 'boolean' | 'undefined';
 }
 
 /**
@@ -112,3 +127,62 @@ export function getRootControlFromComponentContainer(container?: ComponentContai
     }
     return undefined;
 }
+
+export function getManifestProperties(
+    control: ManagedObject,
+    changeService: ChangeService,
+    controlOverlay?: ElementOverlay
+): {
+    [key: string]: MergedSetting;
+} {
+    const overlayData = controlOverlay?.getDesignTimeMetadata().getData();
+    if (!controlOverlay || !overlayData?.manifestSettings) {
+        return {};
+    }
+    const manifestPropertiesValue = overlayData?.manifestSettingsValues(
+        overlayData?.manifestSettings(control),
+        control
+    );
+    const manifestProperties = overlayData?.manifestSettings(control).reduce(
+        (
+            acc: {
+                [key: string]: MergedSetting;
+            },
+            item: DesigntimeSetting
+        ) => {
+            const propertyId = item.id;
+            const value = changeService.getConfigurationPropertyValue(control.getId(), propertyId);
+            let propertyValue = value === 0 || value === false || value ? value : manifestPropertiesValue[propertyId];
+            if (item?.type && ['boolean', 'number', 'string'].includes(item?.type)) {
+                if (propertyValue === undefined) {
+                    propertyValue = item.value as string | boolean | number; // set default value of property
+                }
+            }
+            if (!acc[propertyId]) {
+                acc[propertyId] = {
+                    ...item,
+                    defaultValue: item.value,
+                    configuration: true,
+                    name: item.id,
+                    readableName: item.name,
+                    manifestPropertyPath: `${overlayData?.manifestPropertyPath(control)}/${propertyId}`,
+                    type: item.type === 'number' ? 'int' : (item.type as 'string' | 'boolean' | 'undefined'),
+                    value: propertyValue
+                };
+            }
+            return acc;
+        },
+        {}
+    );
+    return manifestProperties;
+}
+
+export const getOverlay = (control: UI5Element): ElementOverlay | undefined => {
+    let controlOverlay = OverlayRegistry.getOverlay(control);
+    if (!controlOverlay?.getDomRef()) {
+        //look for closest control
+        controlOverlay = OverlayUtil.getClosestOverlayFor(control);
+    }
+
+    return controlOverlay;
+};

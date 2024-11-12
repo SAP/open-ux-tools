@@ -1,48 +1,44 @@
 import type { ReactElement } from 'react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Text, Stack, StackItem } from '@fluentui/react';
 import { useDispatch } from 'react-redux';
-
-import { Stack, StackItem, Text } from '@fluentui/react';
-import { UIIcon, UIIconButton, UiIcons, UIDialog } from '@sap-ux/ui-components';
-
+import styles from './ConfigChange.module.scss';
+import { UIIconButton, UiIcons, UIDialog, UIIcon } from '@sap-ux/ui-components';
 import type {
-    PendingPropertyChange,
+    PendingConfigurationChange,
     PropertyChangeDeletionDetails,
-    SavedPropertyChange
+    SavedConfigurationChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
-    convertCamelCaseToPascalCase,
     deletePropertyChanges,
+    convertCamelCaseToPascalCase,
     SAVED_CHANGE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
+import { getFormattedDateAndTime, getValueIcon } from './utils';
 import { IconName } from '../../icons';
 
-import styles from './PropertyChange.module.scss';
-import { getFormattedDateAndTime, getValueIcon } from './utils';
-
-export interface PropertyChangeProps {
+export interface ConfigChangeProps {
     /**
      * Class used for showing and hiding actions
      */
-    actionClassName: string;
-    change: PendingPropertyChange | SavedPropertyChange;
+    actionClassName?: string;
+    change: PendingConfigurationChange | SavedConfigurationChange;
 }
 
 /**
- * React element for property change.
+ * React element for config change in change stack.
  *
- * @param propertyChangeProps PropertyChangeProps
+ * @param configChangeProps ConfigChangeProps
  * @returns ReactElement
  */
-export function PropertyChange(propertyChangeProps: Readonly<PropertyChangeProps>): ReactElement {
-    const { change, actionClassName } = propertyChangeProps;
+export function ConfigChange(configChangeProps: Readonly<ConfigChangeProps>): ReactElement {
+    const { change, actionClassName } = configChangeProps;
+    const { value, propertyName } = change;
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
-
-    const valueIcon = getValueIcon(change.value);
-
+    const valueIcon = getValueIcon(value);
     function onConfirmDelete(): void {
         if (dialogState) {
             dispatch(deletePropertyChanges(dialogState));
@@ -60,7 +56,6 @@ export function PropertyChange(propertyChangeProps: Readonly<PropertyChangeProps
                 tokens={{
                     childrenGap: 5
                 }}
-                className={styles.container}
                 style={{
                     opacity: change.type === SAVED_CHANGE_TYPE || change.isActive ? 1 : 0.4
                 }}>
@@ -71,31 +66,30 @@ export function PropertyChange(propertyChangeProps: Readonly<PropertyChangeProps
                         tokens={{
                             childrenGap: 5
                         }}>
-                        <Stack.Item>
-                            <Text className={styles.text}>{convertCamelCaseToPascalCase(change.propertyName)}</Text>
+                        <Stack.Item className={styles.item}>
+                            <Text className={styles.text} title={propertyName}>
+                                {convertCamelCaseToPascalCase(propertyName)}
+                            </Text>
                             <UIIcon iconName={IconName.arrow} className={styles.text} />
                             {valueIcon && <UIIcon className={'ui-cpe-icon-light-theme'} iconName={valueIcon} />}
-                            <Text className={styles.text}>{change.value}</Text>
+                            <Text className={styles.text}>{value}</Text>
                         </Stack.Item>
                         {change.type === SAVED_CHANGE_TYPE && (
                             <Stack.Item className={actionClassName}>
                                 <UIIconButton
                                     iconProps={{ iconName: UiIcons.TrashCan }}
                                     onClick={(): void => {
-                                        if (change.controlId) {
-                                            setDialogState({
-                                                controlId: change.controlId,
-                                                propertyName: change.propertyName,
-                                                fileName: change.fileName
-                                            });
-                                        }
+                                        setDialogState({
+                                            controlId: '',
+                                            propertyName: '',
+                                            fileName: change.fileName
+                                        });
                                     }}
                                 />
                             </Stack.Item>
                         )}
                     </Stack>
                 </Stack.Item>
-
                 {change.type === SAVED_CHANGE_TYPE && (
                     <StackItem>
                         <Stack horizontal horizontalAlign="space-between">
