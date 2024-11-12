@@ -27,6 +27,25 @@ export class ManifestService {
     private constructor(private readonly provider: AbapServiceProvider, private readonly logger: ToolsLogger) {}
 
     /**
+     * Initializes the ManifestService with the given ADP configuration and logger.
+     *
+     * @param adpConfig - The ADP preview configuration.
+     * @param logger - The logger instance.
+     * @returns A promise that resolves to an instance of ManifestService.
+     */
+    private static async init(adpConfig: AdpPreviewConfig, logger: ToolsLogger): Promise<ManifestService> {
+        const provider = await createAbapServiceProvider(
+            adpConfig.target,
+            {
+                ignoreCertErrors: adpConfig.ignoreCertErrors ?? false
+            },
+            true,
+            logger
+        );
+        return new ManifestService(provider, logger);
+    }
+
+    /**
      * Creates an instance of the ManifestService and fetches the base manifest of the application.
      *
      * @param appId - The application ID.
@@ -39,15 +58,7 @@ export class ManifestService {
         adpConfig: AdpPreviewConfig,
         logger: ToolsLogger
     ): Promise<ManifestService> {
-        const provider = await createAbapServiceProvider(
-            adpConfig.target,
-            {
-                ignoreCertErrors: adpConfig.ignoreCertErrors ?? false
-            },
-            true,
-            logger
-        );
-        const manifestService = new ManifestService(provider, logger);
+        const manifestService = await this.init(adpConfig, logger);
         await manifestService.fetchBaseManifest(appId);
         return manifestService;
     }
@@ -67,16 +78,8 @@ export class ManifestService {
         adpConfig: AdpPreviewConfig,
         logger: ToolsLogger
     ): Promise<ManifestService> {
-        const provider = await createAbapServiceProvider(
-            adpConfig.target,
-            {
-                ignoreCertErrors: adpConfig.ignoreCertErrors ?? false
-            },
-            true,
-            logger
-        );
-        const manifestService = new ManifestService(provider, logger);
-        manifestService.manifest = await manifestService.fetchMergedManifest(basePath, variant.id);
+        const manifestService = await this.init(adpConfig, logger);
+        await manifestService.fetchMergedManifest(basePath, variant.id);
         await manifestService.fetchAppInfo(variant.reference);
         return manifestService;
     }
@@ -134,7 +137,7 @@ export class ManifestService {
      * @param descriptorVariantId - The descriptor variant ID.
      * @returns A promise that resolves to the merged manifest.
      */
-    private async fetchMergedManifest(basePath: string, descriptorVariantId: string): Promise<Manifest> {
+    private async fetchMergedManifest(basePath: string, descriptorVariantId: string): Promise<void> {
         const zip = new ZipFile();
         const files = getWebappFiles(basePath);
         for (const file of files) {
@@ -144,7 +147,7 @@ export class ManifestService {
         const lrep = this.provider.getLayeredRepository();
         await lrep.getCsrfToken();
         const response = await lrep.mergeAppDescriptorVariant(buffer);
-        return response[descriptorVariantId].manifest;
+        this.manifest = response[descriptorVariantId].manifest;
     }
 
     /**
