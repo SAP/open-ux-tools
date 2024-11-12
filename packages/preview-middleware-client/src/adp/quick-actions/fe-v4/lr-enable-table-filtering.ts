@@ -1,17 +1,9 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import FilterBar from 'sap/ui/mdc/FilterBar';
 
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { pageHasControlId } from '../../../cpe/quick-actions/utils';
-import { getControlById } from '../../../utils/core';
-import { getAppComponent, getPageName, getReference } from './utils';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
-// TODO: specify correct ones
-const PROPERTY_PATH = 'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/showClearButton';
-const CONTROL_TYPE = 'sap.fe.macros.controls.FilterBar';
 
 /**
  * Quick Action for toggling the visibility of "clear filter bar" button in List Report page.
@@ -37,7 +29,7 @@ export class EnableTableFilteringQuickAction
         // }
     }
 
-    async execute(): Promise<FlexCommand[]> {
+    execute(): Promise<FlexCommand[]> {
         // const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         // const control = controls[0];
         // if (control) {
