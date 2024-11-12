@@ -176,7 +176,7 @@ server:
             metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
             mockdataRootPath: ./webapp/localService/previous-service/data
             generateMockData: true
-          - urlPath: ds/uri/
+          - urlPath: ds/uri
             metadataPath: ./webapp/localService/ds/metadata.xml
             mockdataPath: ./webapp/localService/ds/data
             generateMockData: true
@@ -201,7 +201,7 @@ server:
             metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
             mockdataRootPath: ./webapp/localService/previous-service/data
             generateMockData: true
-          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN/
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true

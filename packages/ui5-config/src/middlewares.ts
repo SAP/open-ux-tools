@@ -140,7 +140,7 @@ export const getMockServerMiddlewareConfig = (
         const serviceRoot = `${appRoot ?? './webapp'}/localService/${dataSource.serviceName}`;
 
         const newServiceData = {
-            urlPath: dataSource.servicePath.replace(/\/$/, ''), // // Mockserver is sensitive to trailing '/'
+            urlPath: dataSource.servicePath.replace(/\/$/, ''), // Mockserver is sensitive to trailing '/'
             metadataPath: `${serviceRoot}/metadata.xml`,
             mockdataPath: `${serviceRoot}/data`,
             generateMockData: true

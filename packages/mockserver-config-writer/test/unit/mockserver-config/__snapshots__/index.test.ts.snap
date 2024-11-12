@@ -18,11 +18,11 @@ server:
           - urlPath: /second/path
             mockdataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/data
             generateMockData: true
-          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN/
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-          - urlPath: /sap/opu/odata/sap/STTA_SALES_ORDER_ND_SRV_01/
+          - urlPath: /sap/opu/odata/sap/STTA_SALES_ORDER_ND_SRV_01
             metadataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/metadata.xml
             mockdataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/data
             generateMockData: true
