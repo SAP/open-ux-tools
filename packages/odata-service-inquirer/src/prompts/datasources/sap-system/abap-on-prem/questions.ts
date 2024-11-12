@@ -1,34 +1,37 @@
 import { withCondition } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
-import type { Answers, InputQuestion, PasswordQuestion, Question } from 'inquirer';
+import type { InputQuestion, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type {
-    OdataServiceAnswers,
-    OdataServicePromptOptions,
-    ServiceSelectionPromptOptions,
-    SystemNamePromptOptions,
-    promptNames
+import {
+    type OdataServiceAnswers,
+    type OdataServicePromptOptions,
+    type ServiceSelectionPromptOptions,
+    type SystemNamePromptOptions
 } from '../../../../types';
 import { PromptState } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
-import { getSystemServiceQuestion, getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
-import { newSystemPromptNames, type ServiceAnswer } from '../new-system/types';
+import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions';
+import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
+import { newSystemPromptNames } from '../new-system/types';
+import { getSystemServiceQuestion, type ServiceAnswer } from '../service-selection';
 
 const abapOnPremPromptNamespace = 'abapOnPrem';
 const systemUrlPromptName = `${abapOnPremPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
+const usernamePromptName = `${abapOnPremPromptNamespace}:${BasicCredentialsPromptNames.systemUsername}` as const;
+const passwordPromptName = `${abapOnPremPromptNamespace}:${BasicCredentialsPromptNames.systemPassword}` as const;
 
-export enum abapOnPremInternalPromptNames {
-    sapClient = 'sapClient',
-    systemUsername = 'abapSystemUsername',
-    systemPassword = 'abapSystemPassword'
+const abapOnPremPromptNames = {
+    sapClient: 'sapClient'
+};
+
+interface AbabpOnPremCredentialsAnswers {
+    [usernamePromptName]?: string;
+    [passwordPromptName]?: string;
 }
 
-interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
+export interface AbapOnPremAnswers extends Partial<OdataServiceAnswers>, AbabpOnPremCredentialsAnswers {
     [systemUrlPromptName]?: string;
-    [abapOnPremInternalPromptNames.systemUsername]?: string;
-    [abapOnPremInternalPromptNames.systemPassword]?: string;
-    [promptNames.serviceSelection]?: ServiceAnswer;
 }
 
 /**
@@ -37,13 +40,15 @@ interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
  * @param promptOptions options for prompts. Applicable options are: {@link ServiceSelectionPromptOptions}, {@link SystemNamePromptOptions}
  * @returns property questions for the Abap on-premise datasource
  */
-export function getAbapOnPremQuestions(promptOptions?: OdataServicePromptOptions): Question<AbapOnPremAnswers>[] {
+export function getAbapOnPremQuestions(
+    promptOptions?: OdataServicePromptOptions
+): Question<AbapOnPremAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
     // Prompt options
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
 
-    const questions: Question<AbapOnPremAnswers>[] = getAbapOnPremSystemQuestions(
+    const questions: Question<AbapOnPremAnswers & ServiceAnswer>[] = getAbapOnPremSystemQuestions(
         promptOptions?.userSystemName,
         connectValidator,
         requiredOdataVersion
@@ -68,13 +73,15 @@ export function getAbapOnPremSystemQuestions(
     requiredOdataVersion?: OdataVersion
 ): Question<AbapOnPremAnswers>[] {
     const connectValidator = connectionValidator ?? new ConnectionValidator();
-    let validClient = true;
+    // Object reference to access dynamic sapClient value in prompts where the previous answers are not available.
+    // This allows re-usability of the credentials prompts where a client prompt was not used (client was loaded from store).
+    const sapClientRef: { sapClient: string | undefined; isValid: boolean } = { sapClient: undefined, isValid: true };
 
     const questions: Question<AbapOnPremAnswers>[] = [
         getSystemUrlQuestion<AbapOnPremAnswers>(connectValidator, abapOnPremPromptNamespace, requiredOdataVersion),
         {
             type: 'input',
-            name: abapOnPremInternalPromptNames.sapClient,
+            name: abapOnPremPromptNames.sapClient,
             message: t('prompts.sapClient.message'),
             guiOptions: {
                 breadcrumb: t('prompts.sapClient.breadcrumb')
@@ -82,57 +89,20 @@ export function getAbapOnPremSystemQuestions(
             validate: (client) => {
                 const valRes = validateClient(client);
                 if (valRes === true) {
-                    validClient = true;
+                    sapClientRef.sapClient = client;
+                    sapClientRef.isValid = true;
                     return true;
                 }
-                validClient = false;
+                sapClientRef.sapClient = undefined;
+                sapClientRef.isValid = false;
                 return valRes;
             }
         } as InputQuestion<AbapOnPremAnswers>,
-        {
-            when: () => connectValidator.isAuthRequired(),
-            type: 'input',
-            name: abapOnPremInternalPromptNames.systemUsername,
-            message: t('prompts.systemUsername.message'),
-            guiOptions: {
-                mandatory: true
-            },
-            default: '',
-            validate: (user: string) => user?.length > 0
-        } as InputQuestion<AbapOnPremAnswers>,
-        {
-            when: () => connectValidator.isAuthRequired(),
-            type: 'password',
-            guiOptions: {
-                mandatory: true
-            },
-            name: abapOnPremInternalPromptNames.systemPassword,
-            message: t('prompts.systemPassword.message'),
-            guiType: 'login',
-            mask: '*',
-            default: '',
-            validate: async (password, answers: AbapOnPremAnswers & Answers) => {
-                if (!(connectValidator.validatedUrl && answers.abapSystemUsername && password && validClient)) {
-                    return false;
-                }
-                const valResult = await connectValidator.validateAuth(
-                    connectValidator.validatedUrl,
-                    answers.abapSystemUsername,
-                    password,
-                    {
-                        sapClient: answers.sapClient,
-                        isSystem: true
-                    }
-                );
-                if (valResult === true && connectValidator.serviceProvider) {
-                    PromptState.odataService.connectedSystem = {
-                        serviceProvider: connectValidator.serviceProvider
-                    };
-                    return true;
-                }
-                return valResult;
-            }
-        } as PasswordQuestion<AbapOnPremAnswers>
+        ...getCredentialsPrompts<AbabpOnPremCredentialsAnswers>(
+            connectValidator,
+            abapOnPremPromptNamespace,
+            sapClientRef
+        )
     ];
 
     if (systemNamePromptOptions?.hide !== true) {
@@ -143,7 +113,7 @@ export function getAbapOnPremSystemQuestions(
                 (answers: AbapOnPremAnswers) =>
                     !!answers?.[systemUrlPromptName] &&
                     connectValidator.validity.reachable === true &&
-                    (connectValidator.validity.authenticated || connectValidator.validity.authRequired !== true)
+                    (connectValidator.validity.authenticated || connectValidator.validity.authRequired === false)
             )[0]
         );
     }
