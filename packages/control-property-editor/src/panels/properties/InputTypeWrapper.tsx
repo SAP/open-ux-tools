@@ -202,12 +202,12 @@ export function InputTypeWrapper(props: InputTypeWrapperProps): ReactElement {
                     calloutProps={{
                         gapSpace: 5,
                         layerProps: {
+                            /* Workaround to fix an issue in Fluent UI where tooltip visibility is not restored when hovering over the tooltip while it is hiding */
                             onLayerDidMount: () => {
                                 fixedArea.current = document.querySelector('[data-portal-element]');
                                 if (fixedArea.current) {
                                     fixedArea.current.removeAttribute('data-portal-element');
                                 }
-                                console.log(document.querySelector('[data-portal-element]'));
                             },
                             onLayerWillUnmount: () => {
                                 if (fixedArea.current) {
