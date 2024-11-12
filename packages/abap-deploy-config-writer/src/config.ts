@@ -51,9 +51,8 @@ export async function getDeployConfig(config: AbapDeployConfig, baseConfig: UI5C
         target.authenticationType = 'reentranceTicket';
         if (target.url) {
             const url = new URL(target.url);
-            const [first, ...rest] = url.hostname.split('.');
-            url.hostname = [first.replace(/-api$/, ''), ...rest].join('.');
-            target.url = url.toString();
+            url.hostname = url.hostname.replace(/-api(\.|$)/, '$1');
+            target.url = url.origin + url.pathname.replace(/\/$/, '');
         }
 
         comments.push({

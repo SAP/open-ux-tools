@@ -138,7 +138,7 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         target:
-          url: https://example.com/
+          url: https://example.com
           client: '000'
           authenticationType: reentranceTicket # SAML support for vscode
         app:
