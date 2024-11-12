@@ -35,10 +35,6 @@ describe('prompt-helpers', () => {
                 "value": "odataServiceUrl",
               },
               {
-                "name": "Connect to SAP Business Accelerator Hub",
-                "value": "businessHub",
-              },
-              {
                 "name": "Use a Local CAP Project",
                 "value": "capProject",
               },
@@ -50,8 +46,7 @@ describe('prompt-helpers', () => {
         `);
 
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValueOnce(true);
-        expect(getDatasourceTypeChoices({ includeNone: true, includeProjectSpecificDest: true }))
-            .toMatchInlineSnapshot(`
+        expect(getDatasourceTypeChoices({ includeNone: true })).toMatchInlineSnapshot(`
             [
               {
                 "name": "None",
@@ -64,14 +59,6 @@ describe('prompt-helpers', () => {
               {
                 "name": "Connect to an OData Service Url",
                 "value": "odataServiceUrl",
-              },
-              {
-                "name": "Connect to SAP Business Accelerator Hub",
-                "value": "businessHub",
-              },
-              {
-                "name": "Connect to a Project Specific Destination",
-                "value": "projectSpecificDestination",
               },
               {
                 "name": "Use a Local CAP Project",

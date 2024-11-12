@@ -219,15 +219,15 @@ function getPasswordPrompt(
             applyDefaultWhenDirty: true,
             mandatory: true
         },
+        guiType: 'login',
         name: promptNames.serviceUrlPassword,
         message: t('prompts.servicePassword.message'),
-        guiType: 'login',
         mask: '*',
         validate: async (password: string, { username, serviceUrl, ignoreCertError, sapClient }: ServiceUrlAnswers) => {
             if (!serviceUrl || !username || !password) {
                 return false;
             }
-            const validAuth = await connectValidator.validateAuth(serviceUrl, username, password, {
+            const { valResult: validAuth } = await connectValidator.validateAuth(serviceUrl, username, password, {
                 ignoreCertError,
                 sapClient
             });
