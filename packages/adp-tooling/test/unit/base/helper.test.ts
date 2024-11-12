@@ -71,7 +71,7 @@ describe('helper', () => {
         test('should return webapp files', () => {
             expect(getWebappFiles(basePath)).toEqual([
                 {
-                    relativePath: 'i18n/i18n.properties',
+                    relativePath: join('i18n', 'i18n.properties'),
                     content: expect.any(String)
                 },
                 {
