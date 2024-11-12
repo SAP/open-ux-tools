@@ -1,23 +1,25 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
+import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { CdsVersionInfo } from '@sap-ux/project-access';
-import type { ListChoiceOptions } from 'inquirer';
 import type { BackendSystem } from '@sap-ux/store';
+import type { ListChoiceOptions } from 'inquirer';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
  */
-
 export enum DatasourceType {
     sapSystem = 'sapSystem',
-    businessHub = 'businessHub',
     capProject = 'capProject',
     odataServiceUrl = 'odataServiceUrl',
     none = 'none',
     metadataFile = 'metadataFile',
-    projectSpecificDestination = 'projectSpecificDestination'
+    // @deprecated
+    projectSpecificDestination = 'projectSpecificDestination',
+    // @deprecated
+    businessHub = 'businessHub'
 }
 
 export const SapSystemTypes = {
@@ -89,8 +91,14 @@ export interface OdataServiceAnswers {
 
         /**
          * The persistable backend system representation of the connected service provider
+         * `newOrUpdated` is set to true if the system was newly created or updated during the connection validation process and should be considered for storage.
          */
-        backendSystem?: BackendSystem;
+        backendSystem?: BackendSystem & { newOrUpdated?: boolean };
+
+        /**
+         * The destination information for the connected system
+         */
+        destination?: Destination;
     };
 }
 
@@ -129,7 +137,11 @@ export enum promptNames {
     /**
      * Newly created systems can be named for storage
      */
-    userSystemName = 'userSystemName'
+    userSystemName = 'userSystemName',
+    /**
+     * System selection
+     */
+    systemSelection = 'systemSelection'
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
@@ -198,15 +210,52 @@ export type DatasourceTypePromptOptions = {
      */
     includeNone?: boolean;
     /**
-     * Include the `projectSpecificDestination` option in the datasource type prompt
-     */
-    includeProjectSpecificDest?: boolean;
-    /**
      * Limit the offered datasource types to the specified types. Note that if `default` is also provided and not included in the choices, the default will be ignored.
      * If `includeNone` is set to true, the `none` option will always be included.
      *
      */
     choices?: DatasourceType[];
+};
+
+export type DestinationFilters = {
+    /**
+     * 'WebIDEUsage' property is defined and includes the value 'odata_abap'. If this matches, the destination will be included regardless of other matches.
+     */
+    odata_abap: boolean;
+    /**
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'. If this matches, the destination will be included regardless of other matches.
+     */
+    odata_generic: boolean;
+    /**
+     * 'WebIDEAdditionalData' property is defined and includes the value 'full_url' and
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'. If this matches, the destination will be included regardless of other matches.
+     */
+    full_service_url: boolean;
+    /**
+     * 'WebIDEAdditionalData' property is defined and does not include the value 'full_url' and
+     * 'WebIDEUsage' property is defined and includes the value 'odata_gen' and does not includes the value 'odata_abap'. If this matches, the destination will be included regardless of other matches.
+     */
+    partial_service_url: boolean;
+};
+
+export type SystemSelectionPromptOptions = {
+    /**
+     * Set the specific filter option(s) to true to include only the destinatons that have matching configuration attributes.
+     * If no filter is set, all destinations will be included. If multiple filters are set, the destination will be included if it matches any of the filters.
+     * i.e. if both `abap_cloud` and `abap_on_premise` are set to true, the destination will be included if it has either 'abap_cloud' or 'abap_on_premise' matching configuration.
+     */
+    destinationFilters?: Partial<DestinationFilters>;
+    /**
+     * Determines if the system selection prompt should use auto complete prompt for system names.
+     * Note that the auto-complete module must be registered with the inquirer instance to use this feature.
+     */
+    useAutoComplete?: boolean;
+    /**
+     * Include the Cloud Foundry Abap environments service in the system selection prompt, note this option is only supported on Business Application Studio.
+     * Even if this option is set to true, the choice will only be included if the prompts are executed in the Business Application Studio.
+     * Note that there is no implementation for this option in this module and handling of the prompt optin and subsequent prompting must be implemented by the consumer.
+     */
+    includeCloudFoundryAbapEnvChoice?: boolean;
 };
 
 export type MetadataPromptOptions = {
@@ -255,7 +304,8 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
     Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
     Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
-    Record<promptNames.userSystemName, SystemNamePromptOptions>;
+    Record<promptNames.userSystemName, SystemNamePromptOptions> &
+    Record<promptNames.systemSelection, SystemSelectionPromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 

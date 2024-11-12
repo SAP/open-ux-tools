@@ -3,10 +3,11 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { ERROR_TYPE, ErrorHandler } from '../../../error-handler/error-handler';
 import { t } from '../../../i18n';
 import { SAP_CLIENT_KEY } from '../../../types';
-import { PromptState, originToRelative, parseOdataVersion } from '../../../utils';
+import { PromptState, originToRelative } from '../../../utils';
 import { ConnectionValidator } from '../../connectionValidator';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
+import { validateODataVersion } from '../../validators';
 
 /**
  * Validates that a service specified by the service url is accessible, has the required version and returns valid metadata.
@@ -31,14 +32,11 @@ export async function validateService(
             ConnectionValidator.setGlobalRejectUnauthorized(!ignoreCertError);
         }
         const metadata = await odataService.metadata();
-        const serviceOdataVersion = parseOdataVersion(metadata);
-
-        if (requiredVersion && requiredVersion !== serviceOdataVersion) {
-            return `${t('errors.odataServiceVersionMismatch', {
-                serviceVersion: serviceOdataVersion,
-                requiredVersion
-            })}`;
+        const odataVersionValResult = validateODataVersion(metadata, requiredVersion);
+        if (odataVersionValResult.validationMsg) {
+            return odataVersionValResult.validationMsg;
         }
+        const serviceOdataVersion = odataVersionValResult.version;
 
         // Remove all occurrences of the origin from the metadata to make backend uris relative
         PromptState.odataService.metadata = originToRelative(metadata);

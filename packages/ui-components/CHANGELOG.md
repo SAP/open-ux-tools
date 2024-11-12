@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.21.0
+
+### Minor Changes
+
+-   25b90b5: UIComboBox: New property "customSearchFilter" allows passing a custom filter function to apply additional filtering logic on top of the default search.
+
 ## 1.20.4
 
 ### Patch Changes
