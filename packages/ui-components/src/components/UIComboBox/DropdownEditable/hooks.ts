@@ -124,7 +124,6 @@ function convertToEditableOptions(data: UISelectableOption[]): UISelectableOptio
             regularOptions.push(groupedEditableOptions[groupId]);
         }
     }
-
     return regularOptions;
 }
 
@@ -224,7 +223,7 @@ export function useOptions(
     originalOptions: UISelectableOption[],
     multiSelect?: boolean
 ): [OptionKey, (selectedKey: OptionKey, checked?: boolean) => SelectionUpdate, UISelectableOptionWithSubValues[]] {
-    const [options, setOptions] = useState(() => convertToEditableOptions(originalOptions));
+    const [options, setOptions] = useState(convertToEditableOptions(originalOptions));
     const [selectedKey, setSelectedKey] = useState<OptionKey>(externalSelectedKey);
     const selection = useRef<OptionKey>(externalSelectedKey ?? selectedKey);
     const previousOptions = useRef<UISelectableOptionWithSubValues[]>(originalOptions);
