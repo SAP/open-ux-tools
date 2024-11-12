@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.26
+
+### Patch Changes
+
+-   06e9468: Allow adaptations of manifest settings in FEv4 adaptation projects via Control Property Editor Property Panel
+
+## 0.11.25
+
+### Patch Changes
+
+-   838cdf1: fix: Unavailability of changeHandlerAPI in lower ui5 version causes console to be spammed with errors
+
+## 0.11.24
+
+### Patch Changes
+
+-   25488a9: fix: resolve the issue when add table action quick action in the object page didn't work because the Variant Management was disabled.
+
+## 0.11.23
+
+### Patch Changes
+
+-   0671c95: support semantic date range quick action for v2/v4
+
 ## 0.11.22
 
 ### Patch Changes

@@ -8,7 +8,7 @@ import { parseOdataVersion } from '../utils';
  *
  * @param edmx the edmx to validate
  * @param requiredVersion the required odata version to validate against
- * @returns version and/or validation error message
+ * @returns the version only if odata version of the specified edmx matches otherwises the validation error message
  */
 export function validateODataVersion(
     edmx: string,
