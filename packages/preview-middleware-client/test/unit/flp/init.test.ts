@@ -336,7 +336,7 @@ describe('flp/init', () => {
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
         });
 
-        test('init handle higher layer changes', async () => {
+        test('handle higher layer changes', async () => {
             const flexSettings = {
                 layer: 'VENDOR',
                 pluginScript: 'my/script'
