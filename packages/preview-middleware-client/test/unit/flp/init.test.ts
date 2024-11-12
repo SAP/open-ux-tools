@@ -337,7 +337,6 @@ describe('flp/init', () => {
         });
 
         test('handle higher layer changes', async () => {
-            jest.setTimeout(10000);
             const flexSettings = {
                 layer: 'VENDOR',
                 pluginScript: 'my/script'
