@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import { render } from '../../utils';
 import type { PropertyDocumentationProps } from '../../../../src/panels/properties/PropertyDocumentation';
 import { PropertyDocumentation } from '../../../../src/panels/properties/PropertyDocumentation';
+import { PropertyType } from '@sap-ux-private/control-property-editor-common';
 
 describe('PropertyDoc', () => {
     test('no changes', () => {
@@ -61,7 +62,8 @@ describe('PropertyDoc', () => {
                                         controlId: 'control1',
                                         changeType: 'propertyChange',
                                         fileName: 'testFile1',
-                                        controlName: 'controlName1'
+                                        controlName: 'controlName1',
+                                        propertyType: PropertyType.ControlProperty
                                     }
                                 }
                             }
@@ -121,6 +123,6 @@ describe('PropertyDoc', () => {
 
         deleteButton.click();
 
-        expect(props.onDelete).toHaveBeenCalledWith('control1', 'testProperty');
+        expect(props.onDelete).toHaveBeenCalledWith('control1', 'testProperty', 'file');
     });
 });
