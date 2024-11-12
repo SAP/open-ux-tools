@@ -97,7 +97,7 @@ function convertToEditableOptions(data: UISelectableOption[]): UISelectableOptio
     // Combine regular options with the grouped editable ones
     for (const groupId in groupedEditableOptions) {
         // Set default sub value as string
-        const defaultSubValue = groupedEditableOptions[groupId].options?.find((option) => option.text === 'String');
+        const defaultSubValue = getDefaultSubOption(groupedEditableOptions[groupId].options);
         if (defaultSubValue) {
             groupedEditableOptions[groupId].subValue = defaultSubValue;
         }
@@ -159,17 +159,19 @@ function getEditedItems(options: UISelectableOptionWithSubValues[]): Array<strin
  * @returns A deep clone of the item with updated key, name, and value.
  */
 function cloneOption(option: UISelectableOptionWithSubValues, index: number): UISelectableOptionWithSubValues {
+    console.log('cloneOption');
     const optionClone = structuredClone(option);
     optionClone.key = `${option.key}-${index}`;
     optionClone.text = '';
     optionClone.clone = true;
-    optionClone.subValue = {
-        key: optionClone.key,
-        text: getTypeFromEditableItem(optionClone.key)
-    };
     for (const subOption of optionClone.options ?? []) {
         subOption.key = `${subOption.key}-${index}`;
     }
+    const defaultSubValue = getDefaultSubOption(optionClone.options);
+    optionClone.subValue = defaultSubValue ?? {
+        key: optionClone.key,
+        text: getTypeFromEditableItem(optionClone.key)
+    };
 
     return optionClone;
 }
@@ -188,7 +190,10 @@ function parseCloneKey(value: string): { index: number; key: string } {
     };
 }
 
-function applyEditClone(options: UISelectableOptionWithSubValues[], editedKey: string | number): void {
+function applyEditClone(
+    options: UISelectableOptionWithSubValues[],
+    editedKey: string | number
+): UISelectableOptionWithSubValues[] | undefined {
     let insertIndex = -1;
     for (let i = 0; i < options.length; i++) {
         const option = options[i];
@@ -211,6 +216,7 @@ function applyEditClone(options: UISelectableOptionWithSubValues[], editedKey: s
 
     const optionClone = cloneOption(originalOption, cloneIndex);
     options.splice(insertIndex + 1, 0, optionClone);
+    return [...options];
 }
 
 export function useOptions(
@@ -277,7 +283,10 @@ export function useOptions(
         if (newEdit) {
             cachedEditedKeys.current = currentEditedKeys;
             // Append new clone to stack
-            applyEditClone(options, newEdit);
+            const changeOptions = applyEditClone(options, newEdit);
+            if (changeOptions) {
+                setOptions(changeOptions);
+            }
         }
     }, [currentEditedKeys, multiSelect]);
 
@@ -372,4 +381,8 @@ export function useEditValue(
         edited.current = true;
     };
     return [value, updateValue];
+}
+
+function getDefaultSubOption(options?: UIContextualMenuItem[]): UIContextualMenuItem | undefined {
+    return options?.find((option) => option.text === 'String');
 }
