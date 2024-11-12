@@ -325,11 +325,13 @@ export function updatePreviewMiddlewareConfig(
  * @returns indicator if the path is an FLP path
  */
 function pathIsFlpPath(path: string | undefined, configuration: PreviewConfig): boolean {
-    return (
-        !!path &&
-        (configuration.rta?.editors?.filter((editor) => editor.path === path)?.length === 0 || true) &&
-        (configuration.test?.filter((test) => test.path === path)?.length === 0 || true)
-    );
+    if (!path) {
+        return false;
+    }
+    const isNotRtaEditorPath = configuration.rta?.editors?.every((editor) => editor.path !== path) ?? true;
+    const isNotTestPath = configuration.test?.every((test) => test.path !== path) ?? true;
+
+    return isNotRtaEditorPath && isNotTestPath;
 }
 
 /**
