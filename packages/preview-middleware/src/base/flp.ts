@@ -18,7 +18,6 @@ import {
     type OperationType
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
-import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 
 import { deleteChange, readChanges, writeChange } from './flex';
@@ -30,7 +29,8 @@ import {
     PREVIEW_URL,
     type TemplateConfig,
     createTestTemplateConfig,
-    addApp
+    addApp,
+    getAppName
 } from './config';
 
 const DEVELOPER_MODE_CONFIG = new Map([
@@ -63,6 +63,8 @@ type OnChangeRequestHandler = (
  * Class handling preview of a sandbox FLP.
  */
 export class FlpSandbox {
+    private adp?: AdpPreview;
+    private manifest: Manifest;
     protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
@@ -106,18 +108,20 @@ export class FlpSandbox {
      * @param manifest application manifest
      * @param componentId optional componentId e.g. for adaptation projects
      * @param resources optional additional resource mappings
-     * @param descriptor optional additional descriptor mappings
+     * @param adp optional reference to the ADP tooling
      */
     async init(
         manifest: Manifest,
         componentId?: string,
         resources: Record<string, string> = {},
-        descriptor?: MergedAppDescriptor
+        adp?: AdpPreview
     ): Promise<void> {
         this.createFlexHandler();
         this.config.libs ??= await this.hasLocateReuseLibsScript();
-        const id = manifest['sap.app'].id;
+        const id = manifest['sap.app']?.id ?? '';
         this.templateConfig = createFlpTemplateConfig(this.config, manifest, resources);
+        this.adp = adp;
+        this.manifest = manifest;
 
         await addApp(
             this.templateConfig,
@@ -128,8 +132,7 @@ export class FlpSandbox {
                 local: '.',
                 intent: this.config.intent
             },
-            this.logger,
-            descriptor
+            this.logger
         );
         this.addStandardRoutes();
         if (this.rta) {
@@ -158,10 +161,12 @@ export class FlpSandbox {
      * @param editor editor configuration
      * @returns FLP sandbox html
      */
-    private generateSandboxForEditor(rta: RtaConfig, editor: Editor): string {
+    private async generateSandboxForEditor(rta: RtaConfig, editor: Editor): Promise<string> {
         const defaultGenerator = editor.developerMode
             ? '@sap-ux/control-property-editor'
             : '@sap-ux/preview-middleware';
+
+        await this.setApplicationDependencies();
         const config = { ...this.templateConfig };
         /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
         if (!config.ui5.libs.includes('sap.ui.rta')) {
@@ -183,6 +188,20 @@ export class FlpSandbox {
         }
         const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
         return render(template, config);
+    }
+
+    /**
+     * Sets application dependencies in the template configuration.
+     * The descriptor is refreshed if the global flag is set.
+     *
+     * @returns Promise that resolves when the application dependencies are set
+     */
+    private async setApplicationDependencies(): Promise<void> {
+        if (this.adp) {
+            await this.adp.sync();
+            const appName = getAppName(this.manifest, this.config.intent);
+            this.templateConfig.apps[appName].applicationDependencies = this.adp.descriptor;
+        }
     }
 
     /**
@@ -227,7 +246,7 @@ export class FlpSandbox {
                 this.router.use(`${path}editor`, serveStatic(cpe));
             }
 
-            this.router.get(previewUrl, (req: Request, res: Response) => {
+            this.router.get(previewUrl, async (req: Request, res: Response) => {
                 if (!req.query['fiori-tools-rta-mode']) {
                     // Redirect to the same URL but add the necessary parameter
                     const params = JSON.parse(JSON.stringify(req.query));
@@ -237,7 +256,7 @@ export class FlpSandbox {
                     res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
                     return;
                 }
-                const html = this.generateSandboxForEditor(rta, editor).replace(
+                const html = (await this.generateSandboxForEditor(rta, editor)).replace(
                     '</body>',
                     `</body>\n<!-- livereload disabled for editor </body>-->`
                 );
@@ -554,7 +573,7 @@ export async function initAdp(
 
         const descriptor = adp.descriptor;
         const { name, manifest } = descriptor;
-        await flp.init(manifest, name, adp.resources, descriptor);
+        await flp.init(manifest, name, adp.resources, adp);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
         flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         flp.router.use(json());

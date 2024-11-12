@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.7.13
+
+### Patch Changes
+
+-   9f84893: Corrected Log Message & Removed Unused Error Entry
+
 ## 0.7.12
 
 ### Patch Changes

@@ -1,4 +1,3 @@
-import { Severity } from '@sap-devx/yeoman-ui-types';
 import { withCondition, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
 import { t } from '../i18n';
@@ -12,10 +11,8 @@ import {
 } from '../types';
 import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
 import { getMetadataFileQuestion } from './datasources/metadata-file';
-import type { SystemSelectionAnswer } from './datasources/sap-system/new-system/questions';
-import { getNewSystemQuestions, newSystemChoiceValue } from './datasources/sap-system/new-system/questions';
+import { getSystemSelectionQuestions } from './datasources/sap-system/system-selection';
 import { getServiceUrlQuestions } from './datasources/service-url/questions';
-import LoggerHelper from './logger-helper';
 import { getDatasourceTypeChoices } from './prompt-helpers';
 
 /**
@@ -49,33 +46,7 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
         },
         default: options?.default ?? -1,
         message: t('prompts.datasourceType.message'),
-        choices,
-        additionalMessages: (source: DatasourceType) => {
-            if (
-                [
-                    DatasourceType.businessHub,
-                    DatasourceType.none,
-                    DatasourceType.projectSpecificDestination,
-                    DatasourceType.sapSystem
-                ].includes(source)
-            ) {
-                LoggerHelper.logger?.warn(
-                    t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType: source })
-                );
-                return {
-                    message: t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType: source }),
-                    severity: Severity.warning
-                };
-            }
-            if (source === DatasourceType.businessHub) {
-                return {
-                    message: t('prompts.nonUIServiceTypeWarningMessage', {
-                        serviceType: t('prompts.datasourceType.businessHubName')
-                    }),
-                    severity: Severity.warning
-                };
-            }
-        }
+        choices
     } as YUIQuestion;
 }
 
@@ -89,6 +60,13 @@ async function getDatasourceTypeConditionalQuestions(
     promptOptions?: OdataServicePromptOptions
 ): Promise<OdataServiceQuestion[]> {
     const conditionalQuestions: OdataServiceQuestion[] = [];
+
+    conditionalQuestions.push(
+        ...(withCondition(
+            (await getSystemSelectionQuestions(promptOptions)) as Question[],
+            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem
+        ) as OdataServiceQuestion[])
+    );
 
     conditionalQuestions.push(
         ...(withCondition(
@@ -110,17 +88,6 @@ async function getDatasourceTypeConditionalQuestions(
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.odataServiceUrl
         ) as OdataServiceQuestion[])
     );
-
-    conditionalQuestions.push(
-        ...(withCondition(
-            getNewSystemQuestions(promptOptions) as Question[],
-            (answers: Answers) =>
-                (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem &&
-                (answers as SystemSelectionAnswer).system === newSystemChoiceValue
-        ) as OdataServiceQuestion[])
-    );
-
-    //...further data sources to be added here
 
     return conditionalQuestions;
 }
