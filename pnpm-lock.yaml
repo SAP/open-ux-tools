@@ -366,6 +366,9 @@ importers:
 
   packages/abap-deploy-config-writer:
     dependencies:
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access

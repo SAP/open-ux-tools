@@ -1,5 +1,6 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import { UI5_TASK_FLATTEN_LIB } from './constants';
+import { removeApiHostname } from '@sap-ux/fiori-generator-shared';
 import type { Editor } from 'mem-fs-editor';
 import type { AbapDeployConfig, AbapTarget, CustomTask, NodeComment } from '@sap-ux/ui5-config';
 
@@ -50,9 +51,7 @@ export async function getDeployConfig(config: AbapDeployConfig, baseConfig: UI5C
     if (config.target.authenticationType === 'reentranceTicket') {
         target.authenticationType = 'reentranceTicket';
         if (target.url) {
-            const url = new URL(target.url);
-            url.hostname = url.hostname.replace(/-api(\.|$)/, '$1');
-            target.url = url.origin + url.pathname.replace(/\/$/, '');
+            target.url = removeApiHostname(target.url);
         }
 
         comments.push({

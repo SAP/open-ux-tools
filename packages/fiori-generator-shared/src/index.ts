@@ -5,7 +5,7 @@ export * from './logWrapper';
 export * from './system-utils';
 export * from './telemetry';
 export { getPackageScripts } from './getPackageScripts';
-export { getBootstrapResourceUrls, getDefaultTargetFolder } from './helpers';
+export { getBootstrapResourceUrls, getDefaultTargetFolder, removeApiHostname } from './helpers';
 export { generateReadMe } from './read-me';
 export { getHostEnvironment } from './environment';
 export { isExtensionInstalled } from './installedCheck';
