@@ -9,7 +9,9 @@ import { UIIcon, UIIconButton, UiIcons } from '@sap-ux/ui-components';
 import type {
     Control,
     SavedPropertyChange,
-    PendingPropertyChange
+    PendingPropertyChange,
+    SavedConfigurationChange,
+    PendingConfigurationChange
 } from '@sap-ux-private/control-property-editor-common';
 import { Separator } from '../../components';
 import type { RootState } from '../../store';
@@ -27,8 +29,9 @@ export interface PropertyDocumentationProps {
      *
      * @param controlId - The ID of the control.
      * @param propertyName - The name of the property.
+     * @param propertyName - The filename of the saved property.
      */
-    onDelete?(controlId: string, propertyName: string): void;
+    onDelete?(controlId: string, propertyName: string, fileName?: string): void;
 }
 /**
  * React element PropertyDocumentation.
@@ -47,8 +50,8 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
         | {
               pending: number;
               saved: number;
-              lastSavedChange?: SavedPropertyChange;
-              lastChange?: PendingPropertyChange;
+              lastSavedChange?: SavedPropertyChange | SavedConfigurationChange;
+              lastChange?: PendingPropertyChange | PendingConfigurationChange;
           }
         | undefined
     >((state) => state.changes.controls[control?.id ?? '']?.properties[propertyName]);
@@ -105,7 +108,11 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
                                     title={t('DELETE_ALL_PROPERTY_CHANGES_TOOLTIP')}
                                     onClick={(): void => {
                                         if (control?.id && onDelete) {
-                                            onDelete(control.id, propertyName);
+                                            onDelete(
+                                                control.id,
+                                                propertyName,
+                                                propertyChanges.lastSavedChange?.fileName
+                                            );
                                         }
                                     }}
                                 />
