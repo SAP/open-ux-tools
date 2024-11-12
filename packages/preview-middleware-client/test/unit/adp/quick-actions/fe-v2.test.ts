@@ -842,6 +842,82 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('disable/enable "semantic date range" in filter bar', () => {
+            test('not available by default', async () => {
+                jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(false);
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartFilterBar') {
+                        return {
+                            getProperty: jest.fn().mockImplementation(() => false),
+                            getDomRef: () => ({}),
+                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        const pageView = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
+                    registry
+                ]);
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smartfilterbar.SmartFilterBar': [
+                        {
+                            controlId: 'SmartFilterBar'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: []
+                        }
+                    ])
+                );
+            });
             test('initialize and execute action', async () => {
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartFilterBar') {
