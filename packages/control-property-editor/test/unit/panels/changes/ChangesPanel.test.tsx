@@ -15,7 +15,7 @@ jest.mock('@sap-ux-private/control-property-editor-common', () => {
     };
 });
 
-const getChanges = (generateSavedChanges = false): ChangesSlice => {
+const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSlice => {
     const pending: PendingChange[] = !generateSavedChanges
         ? [
               {
@@ -27,7 +27,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   value: 'testValue1',
                   isActive: true,
                   changeType: 'propertyChange',
-                  fileName: 'testFile1'
+                  fileName: 'testFile1',
+                  propertyType: cpeCommon.PropertyType.ControlProperty
               },
               {
                   kind: 'property',
@@ -38,7 +39,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   value: false,
                   isActive: true,
                   changeType: 'propertyChange',
-                  fileName: 'testFile2'
+                  fileName: 'testFile2',
+                  propertyType: cpeCommon.PropertyType.ControlProperty
               },
               {
                   kind: 'property',
@@ -49,7 +51,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   value: '{expression}',
                   isActive: true,
                   changeType: 'propertyBindingChange',
-                  fileName: 'testFile3'
+                  fileName: 'testFile3',
+                  propertyType: cpeCommon.PropertyType.ControlProperty
               },
               {
                   kind: 'control',
@@ -65,6 +68,46 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   isActive: true,
                   changeType: 'addFields',
                   fileName: 'id_1691659414768_128_addFields'
+              },
+              {
+                  kind: 'configuration',
+                  controlIds: ['testId1Exp'],
+                  propertyName: 'Frozen Column Count',
+                  type: 'pending',
+                  value: 12,
+                  isActive: true,
+                  fileName: 'testFile5',
+                  propertyPath: '/test/components/settings'
+              },
+              {
+                  kind: 'configuration',
+                  controlIds: ['testId1Exp'],
+                  propertyName: 'Enable Export',
+                  type: 'pending',
+                  value: false,
+                  isActive: true,
+                  fileName: 'testFile6',
+                  propertyPath: '/test/components/settings'
+              },
+              {
+                  kind: 'configuration',
+                  controlIds: ['testId1Exp'],
+                  propertyName: 'Header',
+                  type: 'pending',
+                  value: '{stringVal}',
+                  isActive: true,
+                  fileName: 'testFile7',
+                  propertyPath: '/test/components/settings'
+              },
+              {
+                  kind: 'configuration',
+                  controlIds: ['testId1Exp'],
+                  propertyName: 'Hierarchy Qualifier',
+                  type: 'pending',
+                  value: 'newQualifer',
+                  isActive: true,
+                  fileName: 'testFile8',
+                  propertyPath: '/test/components'
               }
           ]
         : [];
@@ -79,7 +122,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   fileName: 'testFileName',
                   kind: 'property',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                  changeType: 'propertyChange'
+                  changeType: 'propertyChange',
+                  propertyType: cpeCommon.PropertyType.ControlProperty
               },
               {
                   controlId: 'testId2',
@@ -90,7 +134,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   fileName: 'testFileName2',
                   kind: 'property',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                  changeType: 'propertyChange'
+                  changeType: 'propertyChange',
+                  propertyType: cpeCommon.PropertyType.ControlProperty
               },
               {
                   controlId: 'testId3',
@@ -101,7 +146,8 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   fileName: 'testFileNameBool',
                   kind: 'property',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                  changeType: 'propertyChange'
+                  changeType: 'propertyChange',
+                  propertyType: cpeCommon.PropertyType.ControlProperty
               },
               {
                   controlId: 'testId4',
@@ -112,7 +158,28 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
                   fileName: 'testFileNameNum',
                   kind: 'property',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                  changeType: 'propertyChange'
+                  changeType: 'propertyChange',
+                  propertyType: cpeCommon.PropertyType.ControlProperty
+              },
+              {
+                  propertyName: 'Frozen Column Count',
+                  type: 'saved',
+                  value: 24,
+                  fileName: 'app_descrName1',
+                  controlIds: [],
+                  kind: 'configuration',
+                  timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
+                  propertyPath: 'settings/test/demo'
+              },
+              {
+                  propertyName: 'Header',
+                  type: 'saved',
+                  value: 'Table Filtered by Region',
+                  fileName: 'app_descrName2',
+                  kind: 'configuration',
+                  controlIds: [],
+                  timestamp: new Date('2022-01-09T12:06:53.939Z').getTime(),
+                  propertyPath: 'settings/test'
               },
               {
                   changeType: 'move',
@@ -131,8 +198,18 @@ const getChanges = (generateSavedChanges = false): ChangesSlice => {
           ]
         : [];
     return {
-        pending,
-        saved,
+        pending: pending.filter((item) => {
+            if (filterByKind) {
+                return item.type === 'pending' && item.kind === filterByKind;
+            }
+            return item.type === 'pending';
+        }),
+        saved: saved.filter((item) => {
+            if (filterByKind) {
+                return item.type === 'saved' && item.kind === filterByKind;
+            }
+            return item.type === 'saved';
+        }),
         controls: {},
         pendingChangeIds: []
     };
@@ -362,6 +439,74 @@ describe('ChangePanel', () => {
         confirmButton.click();
     });
 
+    test('pending changes - configuration change', () => {
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(false, 'configuration'),
+                filterQuery: filterInitOptions
+            }
+        });
+
+        // check saved changes
+        const savedChangesTitle = screen.getByText(/unsaved changes/i);
+        expect(savedChangesTitle).toBeInTheDocument();
+
+        const configChange = screen.getAllByText(/configuration/i);
+        expect(configChange.length).toBe(2);
+
+        const propertyName1 = screen.getByText(/Frozen Column Count/i);
+        expect(propertyName1).toBeInTheDocument();
+
+        const value1 = screen.getByText(/12/i);
+        expect(value1).toBeInTheDocument();
+
+        const propertyName2 = screen.getByText(/Enable Export/i);
+        expect(propertyName2).toBeInTheDocument();
+
+        // const value2 = screen.getByText(/false/i);
+        // expect(value2).toBeInTheDocument();
+
+        const propertyName3 = screen.getByText(/Header/i);
+        expect(propertyName3).toBeInTheDocument();
+
+        const value3 = screen.getByText(/{stringval}/i);
+        expect(value3).toBeInTheDocument();
+
+        const propertyName4 = screen.getByText(/Hierarchy Qualifier/i);
+        expect(propertyName4).toBeInTheDocument();
+
+        const value4 = screen.getByText(/newqualifer/i);
+        expect(value4).toBeInTheDocument();
+    });
+
+    test('saved changes - configuration change', () => {
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(true, 'configuration'),
+                filterQuery: filterInitOptions
+            }
+        });
+
+        // check saved changes
+        const savedChangesTitle = screen.getByText(/saved changes/i);
+        expect(savedChangesTitle).toBeInTheDocument();
+
+        const configChange = screen.getAllByText(/configuration/i);
+        expect(configChange.length).toBe(2);
+
+        const propertyName1 = screen.getByText(/Frozen Column Count/i);
+        expect(propertyName1).toBeInTheDocument();
+
+        const value1 = screen.getByText(/24/i);
+        expect(value1).toBeInTheDocument();
+
+        const propertyName3 = screen.getByText(/Header/i);
+        expect(propertyName3).toBeInTheDocument();
+
+        const value3 = screen.getByText(/Table Filtered by Region/i);
+        expect(value3).toBeInTheDocument();
+    });
+
     test('saved control change - link', () => {
         jest.spyOn(cpeCommon, 'selectControl').mockImplementationOnce(jest.fn());
         jest.spyOn(reactRedux, 'useDispatch').mockReturnValue(jest.fn());
@@ -481,7 +626,8 @@ describe('ChangePanel', () => {
                             value: 'testValue1',
                             isActive: false,
                             changeType: 'propertyChange',
-                            fileName: 'testFile1'
+                            fileName: 'testFile1',
+                            propertyType: cpeCommon.PropertyType.ControlProperty
                         },
                         {
                             kind: 'property',
@@ -492,7 +638,8 @@ describe('ChangePanel', () => {
                             value: false,
                             isActive: true,
                             changeType: 'propertyChange',
-                            fileName: 'testFile2'
+                            fileName: 'testFile2',
+                            propertyType: cpeCommon.PropertyType.ControlProperty
                         },
                         {
                             kind: 'control',
