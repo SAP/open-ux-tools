@@ -1,5 +1,6 @@
 ---
 '@sap-ux/abap-deploy-config-writer': patch
+'@sap-ux/fiori-generator-shared': patch
 '@sap-ux/ui5-config': patch
 ---
 
