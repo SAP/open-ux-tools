@@ -196,9 +196,9 @@ describe('create', () => {
 
         expect(fs.exists(launchConfigPath)).toBe(true);
         expect(mockLog.info).toHaveBeenCalledWith(
-            t('startServerMessage', {
+            t('info.startServerMessage', {
                 folder: basename(projectPath),
-                npmCommand: 'start'
+                npmCommand: 'run start-mock'
             })
         );
         expect(fs.readJSON(launchConfigPath)).toStrictEqual({
