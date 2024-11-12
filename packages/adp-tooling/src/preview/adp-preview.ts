@@ -12,7 +12,6 @@ import RoutesHandler from './routes-handler';
 import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
-
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
     // eslint-disable-next-line no-var
@@ -119,9 +118,12 @@ export class AdpPreview {
 
     /**
      * Synchronize local changes with the backend.
-     *
+     * The descriptor is refreshed only if the global flag is set to true.
      */
     async sync(): Promise<void> {
+        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
+            return;
+        }
         if (!this.lrep || !this.descriptorVariantId) {
             throw new Error('Not initialized');
         }
@@ -133,6 +135,7 @@ export class AdpPreview {
         const buffer = zip.toBuffer();
 
         this.mergedDescriptor = (await this.lrep.mergeAppDescriptorVariant(buffer, '//'))[this.descriptorVariantId];
+        global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
     }
 
     /**
@@ -144,10 +147,7 @@ export class AdpPreview {
      */
     async proxy(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.path === '/manifest.json') {
-            if (global.__SAP_UX_MANIFEST_SYNC_REQUIRED__) {
-                await this.sync();
-                global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
-            }
+            await this.sync();
             res.status(200);
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {
