@@ -361,7 +361,7 @@ if (bootstrapConfig) {
 /**
  * Handle higher layer changes when starting UI Adaptation.
  * When RTA detects higher layer changes an error with Reload triggered text is thrown, the RTA instance is destroyed and the application is reloaded.
- * For UI5 version lower then 1.84.0 RTA is showing a popup with notification text about the detection of higher layer changes.
+ * For UI5 version lower than 1.84.0 RTA is showing a popup with notification text about the detection of higher layer changes.
  *
  * @param error the error thrown when there are higher layer changes when starting UI Adaptation.
  * @param ui5VersionInfo ui5 version info

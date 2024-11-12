@@ -212,10 +212,24 @@ describe('flp/init', () => {
     });
 
     describe('init', () => {
+        const reloadSpy = jest.fn();
+        const location = window.location;
         beforeEach(() => {
             sapMock.ushell.Container.attachRendererCreatedEvent.mockReset();
             sapMock.ui.require.mockReset();
             jest.clearAllMocks();
+
+            Object.defineProperty(window, 'location', {
+                value: {
+                    reload: reloadSpy
+                }
+            });
+        });
+
+        afterEach(() => {
+            Object.defineProperty(window, 'location', {
+                value: location
+            });
         });
 
         test('nothing configured', async () => {
@@ -321,19 +335,14 @@ describe('flp/init', () => {
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
         });
 
-        test('init handle higher layer changes', async () => {
+        test('handle higher layer changes', async () => {
+            jest.setTimeout(10000);
             const flexSettings = {
                 layer: 'VENDOR',
                 pluginScript: 'my/script'
             };
-            const reloadSpy = jest.fn();
-            const location = window.location;
-            Object.defineProperty(window, 'location', {
-                value: {
-                    reload: reloadSpy
-                }
-            });
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.84.50' });
+
+            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.84.50' });
 
             // Mocking `sap.ui.require` to throw the correct error structure
             sapMock.ui.require.mockImplementationOnce((libs, callback) => {
@@ -343,11 +352,14 @@ describe('flp/init', () => {
                 );
             });
 
-            const sendActionSpy = jest.spyOn(CommunicationService, 'sendAction').mockImplementation(() => { });
+            const sendActionSpy = jest.spyOn(CommunicationService, 'sendAction');
             await init({ flex: JSON.stringify(flexSettings) });
             const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock.calls[0][0] as () => Promise<void>;
-
-            const mockService = { attachAppLoaded: jest.fn() };
+            const mockService = {
+                attachAppLoaded: jest.fn().mockImplementation((callback) => {
+                    callback({ getParameter: jest.fn() });
+                })
+            };
             sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
 
             await rendererCb();
@@ -355,21 +367,16 @@ describe('flp/init', () => {
             const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => Promise<void>;
             await loadedCb({ getParameter: () => { } });
 
-            setTimeout(() => {
-                expect(sendActionSpy).toHaveBeenCalled();
-                expect(sendActionSpy).toHaveBeenNthCalledWith(1, {
-                    type: '[ext] show-dialog-message',
-                    payload: {
-                        message:
-                            'The application was reloaded because of changes in a higher layer.',
-                        shouldHideIframe: false
-                    }
-                });
-                expect(reloadSpy).toHaveBeenCalled();
-                Object.defineProperty(window, 'location', {
-                    value: location
-                });
-            }, 5 * 1000);
+            expect(sendActionSpy).toHaveBeenCalled();
+            expect(sendActionSpy).toHaveBeenNthCalledWith(1, {
+                type: '[ext] show-dialog-message',
+                payload: {
+                    message:
+                        'The application was reloaded because of changes in a higher layer.',
+                    shouldHideIframe: false
+                }
+            });
+            expect(reloadSpy).toHaveBeenCalled();
         });
     });
 });
