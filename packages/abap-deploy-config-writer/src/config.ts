@@ -1,8 +1,7 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { UI5_TASK_FLATTEN_LIB } from './constants';
 import type { Editor } from 'mem-fs-editor';
-import type { AbapDeployConfig, AbapTarget } from '@sap-ux/ui5-config';
+import type { AbapDeployConfig, AbapTarget, CustomTask, NodeComment } from '@sap-ux/ui5-config';
 
 /**
  * Updates the base config with the required custom tasks.
@@ -33,6 +32,7 @@ export function updateBaseConfig(isLib: boolean, basePath: string, baseConfig: U
  */
 export async function getDeployConfig(config: AbapDeployConfig, baseConfig: UI5Config): Promise<UI5Config> {
     const target: Partial<AbapTarget> = {};
+    const comments: NodeComment<CustomTask<AbapDeployConfig>>[] = [];
 
     if (config.target.destination !== undefined) {
         target.destination = config.target.destination;
@@ -47,13 +47,20 @@ export async function getDeployConfig(config: AbapDeployConfig, baseConfig: UI5C
         target.scp = true;
     }
 
-    if (!isAppStudio()) {
-        const backendConfigs = baseConfig.getBackendConfigsFromFioriToolsProxydMiddleware();
-        for (const backend of backendConfigs) {
-            if (backend.authenticationType === 'reentranceTicket') {
-                target.authenticationType = 'reentranceTicket';
-            }
+    if (config.target.authenticationType === 'reentranceTicket') {
+        target.authenticationType = 'reentranceTicket';
+        if (target.url) {
+            const url = new URL(target.url);
+            const [first, ...rest] = url.hostname.split('.');
+            url.hostname = [first.replace(/-api$/, ''), ...rest].join('.');
+            target.url = url.toString();
         }
+
+        comments.push({
+            path: 'configuration.target.authenticationType',
+            comment: ' SAML support for vscode',
+            key: 'authenticationType'
+        });
     }
 
     const baseUi5Doc = baseConfig.removeConfig('server');
@@ -64,7 +71,14 @@ export async function getDeployConfig(config: AbapDeployConfig, baseConfig: UI5C
         location: 'beginning'
     });
 
-    ui5DeployConfig.addAbapDeployTask(target as unknown as AbapTarget, config.app, true, ['/test/'], config.index);
+    ui5DeployConfig.addAbapDeployTask(
+        target as unknown as AbapTarget,
+        config.app,
+        true,
+        ['/test/'],
+        config.index,
+        comments
+    );
 
     return ui5DeployConfig;
 }
