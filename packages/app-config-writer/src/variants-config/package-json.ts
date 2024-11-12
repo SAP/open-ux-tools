@@ -40,7 +40,7 @@ export async function addVariantsManagementScript(
         urlParameters['sap-client'] = sapClient;
     }
 
-    const url = await getRTAUrl(basePath, enhanceUrlParametersWithRta(packageJson, urlParameters), ui5YamlFileName);
+    const url = await getRTAUrl(basePath, enhanceUrlParametersWithRta(packageJson, urlParameters), ui5YamlFileName, fs);
     const serveCommand = await getRTAServe(basePath, ui5YamlFileName, fs);
 
     if (!url) {

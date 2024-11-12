@@ -84,7 +84,15 @@ export function getDependencyVersion(packageJson: Package, dependencyName: strin
  * @param patch - patch version to be compared with
  * @returns true, if the given version is less than the given major, minor and patch version
  */
-function isVersionLessThan(version: number[], major: number, minor: number, patch: number): boolean {
+function isVersionLessThan(
+    version: number[] | undefined,
+    major: number,
+    minor: number,
+    patch: number
+): boolean | undefined {
+    if (!version) {
+        return undefined;
+    }
     const [vMajor, vMinor, vPatch] = version;
     return vMajor < major || (vMajor === major && (vMinor < minor || (vMinor === minor && vPatch < patch)));
 }
@@ -102,8 +110,9 @@ export function enhanceUrlParametersWithRta(packageJson: Package, existingParams
     const previewMiddlewareVersion = getDependencyVersion(packageJson, '@sap-ux/preview-middleware');
     const uxUi5ToolingVersion = getDependencyVersion(packageJson, '@sap/ux-ui5-tooling');
     if (
-        (!previewMiddlewareVersion || isVersionLessThan(previewMiddlewareVersion, 0, 16, 89)) ??
-        (!uxUi5ToolingVersion || isVersionLessThan(uxUi5ToolingVersion, 1, 15, 4))
+        isVersionLessThan(previewMiddlewareVersion, 0, 16, 89) ??
+        isVersionLessThan(uxUi5ToolingVersion, 1, 15, 4) ??
+        true
     ) {
         parameters['fiori-tools-rta-mode'] = 'true';
         parameters['sap-ui-rta-skip-flex-validation'] = 'true';
@@ -166,12 +175,18 @@ export async function getRTAServe(basePath: string, yamlFileName: string, fs: Ed
  * @param basePath - path to project root, where package.json and ui5.yaml is located
  * @param query - query to create fragment
  * @param yamlFileName - path of the ui5 yaml file
+ * @param fs - the memfs editor instance
  * @returns - review url parameters
  */
-export async function getRTAUrl(basePath: string, query: string, yamlFileName: string): Promise<string | undefined> {
+export async function getRTAUrl(
+    basePath: string,
+    query: string,
+    yamlFileName: string,
+    fs?: Editor
+): Promise<string | undefined> {
     let previewMiddleware: CustomMiddleware<PreviewConfigOptions> | undefined;
     try {
-        previewMiddleware = await getPreviewMiddleware(undefined, basePath, yamlFileName);
+        previewMiddleware = await getPreviewMiddleware(undefined, basePath, yamlFileName, fs);
     } catch (error) {
         throw new Error(`No ${yamlFileName} file found. ${error}`);
     }
@@ -184,8 +199,9 @@ export async function getRTAUrl(basePath: string, query: string, yamlFileName: s
     }
     const mountPoint = getRTAMountPoint(previewMiddleware?.configuration) ?? '/preview.html';
     const intent = getRTAIntent(previewMiddleware?.configuration) ?? '#app-preview';
+    const queryString = query ? '?' + query : '';
 
     return isFioriToolsDeprecatedPreviewConfig(previewMiddleware?.configuration)
-        ? `${mountPoint}?${query}#preview-app`
-        : `${mountPoint}?${query}${intent}`;
+        ? `${mountPoint}${queryString}#preview-app`
+        : `${mountPoint}${queryString}${intent}`;
 }
