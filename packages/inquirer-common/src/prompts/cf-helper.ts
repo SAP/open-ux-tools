@@ -1,7 +1,7 @@
 import type { ServiceInstanceInfo } from '@sap/cf-tools';
 import { apiGetServicesInstancesFilteredByType as getServicesInstances } from '@sap/cf-tools';
 import type { ListChoiceOptions } from 'inquirer';
-import { ErrorHandler, ERROR_TYPE } from '../error-handler/error-handler';
+import { ERROR_TYPE, type ErrorHandler } from '../error-handler/error-handler';
 import { t } from '../i18n';
 
 const AbapEnvType = {
@@ -19,9 +19,12 @@ const AbapEnvType = {
 /**
  * Get the name sorted list of ABAP instance choices from an active CF login. If not logged in, an error message is logged.
  *
+ * @param errorHandler The error handler instance used to log and retain messages for use in prompts
  * @returns The list of ABAP instance choices
  */
-export async function getCFAbapInstanceChoices(errorHandler: ErrorHandler): Promise<ListChoiceOptions<ServiceInstanceInfo>[]> {
+export async function getCFAbapInstanceChoices(
+    errorHandler: ErrorHandler
+): Promise<ListChoiceOptions<ServiceInstanceInfo>[]> {
     const choices: ListChoiceOptions[] = [];
     try {
         const filteredInstances = [
