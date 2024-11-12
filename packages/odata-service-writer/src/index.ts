@@ -178,8 +178,11 @@ async function writeEDMXServiceFiles(
             // Update ui5-local.yaml with mockserver middleware from newly created/updated ui5-mock.yaml
             await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, ui5LocalConfigPath, ui5LocalConfig);
         }
-        // Create local copy of metadata and annotations
-        fs.write(join(webappPath, 'localService', 'metadata.xml'), prettifyXml(service.metadata, { indent: 4 }));
+        // Create local copy of metadata and annotations, mainService should be used in case there is no name defined for service
+        fs.write(
+            join(webappPath, 'localService', service.name ?? 'mainService', 'metadata.xml'),
+            prettifyXml(service.metadata, { indent: 4 })
+        );
         // Adds local annotations to datasources section of manifest.json and writes the annotations file
         if (service.localAnnotationsName) {
             const namespaces = getAnnotationNamespaces(service);

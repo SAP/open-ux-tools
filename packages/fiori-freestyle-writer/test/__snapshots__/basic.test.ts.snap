@@ -2512,7 +2512,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -3150,7 +3150,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -3782,7 +3782,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -4412,7 +4412,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -4936,7 +4936,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -5471,7 +5471,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -6295,7 +6295,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -7105,7 +7105,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -7915,7 +7915,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -8726,7 +8726,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -9256,7 +9256,7 @@ appDescription=A Fiori application.
 title=App Title",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },

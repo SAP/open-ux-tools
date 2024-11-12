@@ -160,7 +160,9 @@ describe('generate', () => {
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
             expect(manifest['sap.app'].dataSources[config.annotations.technicalName]).toBeDefined();
             // verify local copy of metadata
-            expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
+            expect(fs.read(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(
+                config.metadata
+            );
             expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations.technicalName}.xml`))).toBe(
                 config.annotations.xml
             );
@@ -189,7 +191,10 @@ describe('generate', () => {
             expect(manifest['sap.app'].dataSources[config.annotations[0].technicalName]).toBeDefined();
             expect(manifest['sap.app'].dataSources[config.annotations[1].technicalName]).toBeDefined();
             // verify local copy of metadata
-            expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
+            // mainService should be used in case there is no name defined for service
+            expect(fs.read(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(
+                config.metadata
+            );
             expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations[0].technicalName}.xml`))).toBe(
                 config.annotations[0].xml
             );
@@ -210,7 +215,7 @@ describe('generate', () => {
             const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
             expect(manifest['sap.app'].dataSources[config.name].uri).toBe(config.path);
             // verify local copy of metadata
-            expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
+            expect(fs.read(join(testDir, 'webapp', 'localService', 'myService', 'metadata.xml'))).toBe(config.metadata);
             // verify that no destination is added to the ui5.yaml
             expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('destination: ');
             // verify that client is set
