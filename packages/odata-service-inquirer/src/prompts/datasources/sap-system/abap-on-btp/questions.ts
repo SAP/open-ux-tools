@@ -1,8 +1,7 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import { type FileBrowserQuestion, type ListQuestion, ERROR_TYPE } from '@sap-ux/inquirer-common';
-import { withCondition } from '@sap-ux/inquirer-common';
-import type { ServiceInstanceInfo } from '@sap/cf-tools';
-import { apiGetInstanceCredentials, cfGetTarget } from '@sap/cf-tools';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { type FileBrowserQuestion, type ListQuestion, ERROR_TYPE, getCFAbapInstanceChoices, withCondition } from '@sap-ux/inquirer-common';
+import { type ServiceInstanceInfo, apiGetInstanceCredentials, cfGetTarget } from '@sap/cf-tools';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import { type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
@@ -12,10 +11,8 @@ import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
 import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
 import { newSystemPromptNames } from '../new-system/types';
-import { validateServiceKey } from '../validators';
-import { getCFAbapInstanceChoices } from '@sap-ux/inquirer-common';
 import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { validateServiceKey } from '../validators';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
