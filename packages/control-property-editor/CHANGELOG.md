@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.25
+
+### Patch Changes
+
+-   06e9468: Allow adaptations of manifest settings in FEv4 adaptation projects via Control Property Editor Property Panel
+
 ## 0.5.24
 
 ### Patch Changes

@@ -3,6 +3,7 @@ import { render } from '../../utils';
 import React from 'react';
 import type { IconValueHelpProps } from '../../../../src/panels/properties/IconValueHelp';
 import { IconValueHelp } from '../../../../src/panels/properties/IconValueHelp';
+import { PropertyType } from '@sap-ux-private/control-property-editor-common';
 
 describe('IconValueHelp', () => {
     const iconValueHelpProps: IconValueHelpProps = {
@@ -27,7 +28,8 @@ describe('IconValueHelp', () => {
         controlName: 'controlName',
         propertyName: 'testProperty',
         value: 'testValue',
-        disabled: false
+        disabled: false,
+        propertyType: PropertyType.ControlProperty
     };
     test('initial load', () => {
         render(<IconValueHelp {...iconValueHelpProps} />);
