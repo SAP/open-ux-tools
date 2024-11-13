@@ -1087,7 +1087,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
           \\"bundleName\\": \\"feovp1.i18n.i18n\\"
         }
       },
-      \\"mainModel\\": {
+      \\"\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -1114,7 +1114,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"mainModel\\",
+    \\"globalFilterModel\\": \\"\\",
     \\"globalFilterEntityType\\": \\"GlobalFilters\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,
@@ -2887,7 +2887,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
           \\"bundleName\\": \\"feovp1.i18n.i18n\\"
         }
       },
-      \\"mainModel\\": {
+      \\"\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -2914,7 +2914,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"mainModel\\",
+    \\"globalFilterModel\\": \\"\\",
     \\"globalFilterEntityType\\": \\"GlobalFilters\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,
@@ -8829,7 +8829,7 @@ appDescription=A Fiori application.",
           \\"bundleName\\": \\"feovp2.i18n.i18n\\"
         }
       },
-      \\"mainModel\\": {
+      \\"\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -8854,7 +8854,7 @@ appDescription=A Fiori application.",
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"mainModel\\",
+    \\"globalFilterModel\\": \\"\\",
     \\"globalFilterEntityType\\": \\"SalesOrderItem\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,
@@ -14864,7 +14864,7 @@ appDescription=A Fiori application.",
           \\"bundleName\\": \\"feovp2.i18n.i18n\\"
         }
       },
-      \\"mainModel\\": {
+      \\"\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -14889,7 +14889,7 @@ appDescription=A Fiori application.",
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"mainModel\\",
+    \\"globalFilterModel\\": \\"\\",
     \\"globalFilterEntityType\\": \\"SalesOrderItem\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,

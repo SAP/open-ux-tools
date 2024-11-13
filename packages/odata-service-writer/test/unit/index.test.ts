@@ -313,9 +313,9 @@ describe('generate', () => {
                 path: '/V2/Northwind/Northwind.svc',
                 version: OdataVersion.v2
             } as OdataService;
-
+            // No services defined - mainService used for service name and '' for service model
             let configCopy = cloneDeep(config);
-            enhanceData(configCopy);
+            enhanceData('', configCopy, fs);
             expect(configCopy).toMatchInlineSnapshot(`
                 Object {
                   "model": "",
@@ -331,8 +331,12 @@ describe('generate', () => {
                 }
             `);
 
+            // Services already defined - actual service name and service model are used
             configCopy = cloneDeep(Object.assign({}, config, { model: 'modelName', name: 'datasourceName' }));
-            enhanceData(configCopy);
+            fs.writeJSON(join('webapp', 'manifest.json'), {
+                'sap.ui5': { models: { existingModel: { dataSource: 'existingService ' } } }
+            });
+            enhanceData('', configCopy, fs);
             expect(configCopy).toMatchInlineSnapshot(`
                 Object {
                   "model": "modelName",
@@ -348,9 +352,10 @@ describe('generate', () => {
                 }
             `);
 
+            fs.delete(join('webapp', 'manifest.json'));
             // Undefined path does not throw but sets valid path
             configCopy = cloneDeep(Object.assign({}, config, { path: undefined }));
-            enhanceData(configCopy);
+            enhanceData('', configCopy, fs);
             expect(configCopy).toMatchInlineSnapshot(`
                 Object {
                   "model": "",

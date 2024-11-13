@@ -1,6 +1,9 @@
+import { join } from 'path';
 import type { OdataService, EdmxAnnotationsInfo } from '../types';
 import { ServiceType } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
+import type { Manifest } from '@sap-ux/project-access';
+import type { Editor } from 'mem-fs-editor';
 
 /**
  * Sets the default path for a given service.
@@ -25,12 +28,32 @@ function setDefaultServiceName(service: OdataService): void {
 
 /**
  * Sets the default model for a given service.
- * If the service model is not defined, it sets the model to an empty string (Default UI5 model).
+ * Default UI5 model is used for first service model.
+ * For next services service model or service name is used as model (if model is not defined).
  *
- * @param {OdataService} service - The service object whose model needs to be set or modified.
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {OdataService} service - The service object whose model needs to be set or modified
+ * @param fs - the memfs editor instance
  */
-function setDefaultServiceModel(service: OdataService): void {
-    service.model = service.model ?? ''; // Default UI5 model
+function setDefaultServiceModel(basePath: string, service: OdataService, fs: Editor): void {
+    const manifestPath = join(basePath, 'webapp', 'manifest.json');
+    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
+    // Check if manifest has already any dataSource models defined, empty string '' should be used for the first service
+    const models = manifest?.['sap.ui5']?.models;
+    if (models) {
+        // Filter dataSource models by dataSource property
+        const servicesModels = Object.values(models).filter((model) => model.dataSource);
+        // First one is being added, set model to ''
+        if (servicesModels.length === 0) {
+            service.model = '';
+        } else {
+            // Else use actual model or service name as service model to avoid another '' being added
+            service.model = service.model ?? service.name;
+        }
+    } else {
+        // No models defined, that means first one is being added, set model to ''
+        service.model = '';
+    }
 }
 
 /**
@@ -62,12 +85,14 @@ function setDefaultAnnotationsName(service: OdataService): void {
  * Enhances the provided OData service object with path, name and model information.
  * Directly modifies the passed object reference.
  *
- * @param {OdataService} service - the OData service object
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {OdataService} service - the OData service instance
+ * @param {Editor} fs - the memfs editor instance
  */
-export function enhanceData(service: OdataService): void {
+export function enhanceData(basePath: string, service: OdataService, fs: Editor): void {
     setDefaultServicePath(service);
     setDefaultServiceName(service);
-    setDefaultServiceModel(service);
+    setDefaultServiceModel(basePath, service, fs);
     // set service type to EDMX if not defined
     service.type = service.type ?? ServiceType.EDMX;
     /**
@@ -80,10 +105,10 @@ export function enhanceData(service: OdataService): void {
     }
 
     // enhance preview settings with service configuration
-    service.previewSettings = service.previewSettings || {};
+    service.previewSettings = service.previewSettings ?? {};
     service.previewSettings.path =
-        service.previewSettings.path || `/${service.path?.split('/').filter((s: string) => s !== '')[0] ?? ''}`;
-    service.previewSettings.url = service.previewSettings.url || service.url || 'http://localhost';
+        service.previewSettings.path ?? `/${service.path?.split('/').filter((s: string) => s !== '')[0] ?? ''}`;
+    service.previewSettings.url = service.previewSettings.url ?? service.url ?? 'http://localhost';
     if (service.client && !service.previewSettings.client) {
         service.previewSettings.client = service.client;
     }
