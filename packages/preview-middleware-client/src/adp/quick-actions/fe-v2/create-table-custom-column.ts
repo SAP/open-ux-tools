@@ -17,7 +17,6 @@ import ManagedObject from 'sap/ui/base/ManagedObject';
 import UI5Element from 'sap/ui/core/Element';
 import { notifyUser } from '../../utils';
 import { getTextBundle } from '../../../i18n';
-import { FeatureService } from '../../../cpe/feature-service';
 import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
@@ -66,16 +65,6 @@ export class AddTableCustomColumnQuickAction
 {
     constructor(context: QuickActionContext) {
         super(CREATE_TABLE_CUSTOM_COLUMN, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN', context);
-    }
-
-    /**
-     * Initializes action object instance
-     */
-    async initialize(): Promise<void> {
-        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
-            return;
-        }
-        await super.initialize();
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
