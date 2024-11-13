@@ -37,13 +37,13 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                 definitionGroups.push({
                     title: 'LIST REPORT',
                     definitions: [
-                        ToggleClearFilterBarQuickAction,
                         AddControllerToPageQuickAction,
-                        ChangeTableColumnsQuickAction,
                         AddPageActionQuickAction,
+                        ToggleClearFilterBarQuickAction,
+                        ToggleSemanticDateRangeFilterBar,
+                        ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
-                        AddTableCustomColumnQuickAction,
-                        ToggleSemanticDateRangeFilterBar
+                        AddTableCustomColumnQuickAction
                     ],
                     view,
                     key: name + index
@@ -53,10 +53,10 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                     title: 'OBJECT PAGE',
                     definitions: [
                         AddControllerToPageQuickAction,
-                        ChangeTableColumnsQuickAction,
+                        AddPageActionQuickAction,
                         AddHeaderFieldQuickAction,
                         AddCustomSectionQuickAction,
-                        AddPageActionQuickAction,
+                        ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction
                     ],
