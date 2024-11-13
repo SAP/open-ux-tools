@@ -1,8 +1,8 @@
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from '../translations/deploy-config-generator-common.i18n.json';
+import translations from '../translations/deploy-config-generator-shared.i18n.json';
 
-const deployConfigGenCommon = 'deploy-config-generator-common';
+const deployConfigGenCommon = 'deploy-config-generator-shared';
 
 /**
  * Initialize i18next with the translations for this module.

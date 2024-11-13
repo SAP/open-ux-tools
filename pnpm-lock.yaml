@@ -364,73 +364,6 @@ importers:
         specifier: 2.0.1
         version: 2.0.1
 
-  packages/abap-deploy-config-sub-generator:
-    dependencies:
-      '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
-      '@sap-ux/abap-deploy-config-inquirer':
-        specifier: workspace:*
-        version: link:../abap-deploy-config-inquirer
-      '@sap-ux/abap-deploy-config-writer':
-        specifier: workspace:*
-        version: link:../abap-deploy-config-writer
-      '@sap-ux/axios-extension':
-        specifier: workspace:*
-        version: link:../axios-extension
-      '@sap-ux/btp-utils':
-        specifier: workspace:*
-        version: link:../btp-utils
-      '@sap-ux/deploy-config-generator-common':
-        specifier: workspace:*
-        version: link:../deploy-config-generator-common
-      '@sap-ux/feature-toggle':
-        specifier: workspace:*
-        version: link:../feature-toggle
-      '@sap-ux/fiori-generator-shared':
-        specifier: workspace:*
-        version: link:../fiori-generator-shared
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
-      '@sap-ux/ui5-config':
-        specifier: workspace:*
-        version: link:../ui5-config
-      i18next:
-        specifier: 23.5.1
-        version: 23.5.1
-      mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
-      yeoman-generator:
-        specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
-    devDependencies:
-      '@jest/types':
-        specifier: 29.6.3
-        version: 29.6.3
-      '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
-      '@types/yeoman-environment':
-        specifier: 2.10.11
-        version: 2.10.11
-      '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
-      '@types/yeoman-test':
-        specifier: 4.0.6
-        version: 4.0.6
-      '@vscode-logging/logger':
-        specifier: 2.0.0
-        version: 2.0.0
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
-      yeoman-test:
-        specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
-
   packages/abap-deploy-config-writer:
     dependencies:
       '@sap-ux/btp-utils':
@@ -1289,7 +1222,7 @@ importers:
         specifier: 2.4.4
         version: 2.4.4
 
-  packages/deploy-config-generator-common:
+  packages/deploy-config-generator-shared:
     dependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
