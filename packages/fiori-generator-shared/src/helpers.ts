@@ -61,6 +61,7 @@ export function getDefaultTargetFolder(vscode: any): string | undefined {
 
 /**
  * Removes any `-api` suffix in the first label of the hostname.
+ * Required for local preview in VSCode with S/4 Hana Public Cloud systems.
  *
  * @param url - the url to check
  * @returns url without `-api` suffix
