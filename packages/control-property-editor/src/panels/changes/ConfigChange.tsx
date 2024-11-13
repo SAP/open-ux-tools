@@ -38,7 +38,8 @@ export function ConfigChange(configChangeProps: Readonly<ConfigChangeProps>): Re
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
-    const valueIcon = getValueIcon(value);
+    const isPrimitiveValue = typeof value !== 'object';
+    const valueIcon = isPrimitiveValue ? getValueIcon(value) : undefined;
     function onConfirmDelete(): void {
         if (dialogState) {
             dispatch(deletePropertyChanges(dialogState));
@@ -70,9 +71,13 @@ export function ConfigChange(configChangeProps: Readonly<ConfigChangeProps>): Re
                             <Text className={styles.text} title={propertyName}>
                                 {convertCamelCaseToPascalCase(propertyName)}
                             </Text>
-                            <UIIcon iconName={IconName.arrow} className={styles.text} />
-                            {valueIcon && <UIIcon className={'ui-cpe-icon-light-theme'} iconName={valueIcon} />}
-                            <Text className={styles.text}>{value}</Text>
+                            {isPrimitiveValue && valueIcon && (
+                                <>
+                                    <UIIcon iconName={IconName.arrow} className={styles.text} />
+                                    <UIIcon className={'ui-cpe-icon-light-theme'} iconName={valueIcon} />
+                                    <Text className={styles.text}>{value}</Text>
+                                </>
+                            )}
                         </Stack.Item>
                         {change.type === SAVED_CHANGE_TYPE && (
                             <Stack.Item className={actionClassName}>

@@ -15,6 +15,7 @@ export interface Control {
     properties: ControlProperty[];
 }
 export type PropertyValue = string | boolean | number;
+export type ConfigurationValue = PropertyValue | Record<string, unknown>;
 export type PropertyChangeType = 'propertyChange' | 'propertyBindingChange';
 export interface PropertyChange<T extends PropertyValue = PropertyValue> {
     controlId: string;
@@ -29,7 +30,7 @@ export interface PropertyChanged<T extends PropertyValue = PropertyValue> {
     propertyName: string;
     newValue: T;
 }
-export interface ConfigurationChange<T extends PropertyValue = PropertyValue> {
+export interface ConfigurationChange<T extends ConfigurationValue = ConfigurationValue> {
     propertyPath: string;
     propertyName: string;
     value: T;
@@ -144,7 +145,8 @@ export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> 
     fileName: string;
 }
 
-export interface PendingConfigurationChange<T extends PropertyValue = PropertyValue> extends ConfigurationChange<T> {
+export interface PendingConfigurationChange<T extends ConfigurationValue = ConfigurationValue>
+    extends ConfigurationChange<T> {
     type: typeof PENDING_CHANGE_TYPE;
     controlIds: string[];
     /**
