@@ -181,7 +181,7 @@ async function renameSandbox(fs: Editor, basePath: string, script: string, logge
         if (fs.exists(absolutePath)) {
             fs.move(absolutePath, absolutePath.replace('.html', '_old.html'));
             logger?.info(renameMessage(relativePath));
-        } else {
+        } else if (!fs.dump(basePath, (file) => file.history.includes(absolutePath))) {
             logger?.warn(`File ${relativePath} not found. Skipping renaming.`);
         }
     }

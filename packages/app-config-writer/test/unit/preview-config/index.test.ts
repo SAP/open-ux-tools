@@ -460,4 +460,22 @@ describe('update preview middleware config', () => {
         expect(fs.read(join(variousConfigsPath, 'ui5.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
+
+    test('same yaml config same endpoints', async () => {
+        fs.write(join(basePath, 'various-configs', 'webapp', 'test', 'flpSandbox.html'), 'dummy content flpSandbox');
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'start1': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"',
+                'start2': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"'
+            },
+            'devDependencies': {
+                '@sap/ux-ui5-tooling': '1.15.4'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        expect(warnLogMock).toHaveBeenCalledTimes(4);
+    });
 });
