@@ -96,7 +96,7 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
           - localPath: ./webapp/annotations/annotation.xml
             urlPath: annotations/annotation.xml
@@ -145,7 +145,7 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
           - localPath: ./webapp/annotations/annotation.xml
             urlPath: annotations/annotation.xml
@@ -5274,7 +5274,7 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -5282,7 +5282,7 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {
@@ -11487,7 +11487,7 @@ appDescription=A Fiori application.",
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },

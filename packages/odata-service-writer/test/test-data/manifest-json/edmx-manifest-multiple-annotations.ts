@@ -14,14 +14,14 @@ export const expectedEdmxManifestMultipleAnnotations = {
                 uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='annotation1Technical',Version='0001')/$value/`,
                 type: 'ODataAnnotation',
                 settings: {
-                    localUri: 'localService/annotation1Technical.xml'
+                    localUri: 'localService/aname/annotation1Technical.xml'
                 }
             },
             annotation2: {
                 uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='annotation2Technical',Version='0001')/$value/`,
                 type: 'ODataAnnotation',
                 settings: {
-                    localUri: 'localService/annotation2Technical.xml'
+                    localUri: 'localService/aname/annotation2Technical.xml'
                 }
             },
             localTest: {

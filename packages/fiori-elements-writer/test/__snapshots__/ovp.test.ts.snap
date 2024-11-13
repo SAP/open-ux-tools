@@ -99,7 +99,7 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/GWSAMPLE_BASIC.xml
+          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
           - localPath: ./webapp/annotations/annotation.xml
             urlPath: annotations/annotation.xml
@@ -148,7 +148,7 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/GWSAMPLE_BASIC.xml
+          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
           - localPath: ./webapp/annotations/annotation.xml
             urlPath: annotations/annotation.xml
@@ -1023,7 +1023,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
             \\"GWSAMPLE_BASIC\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -1031,7 +1031,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/GWSAMPLE_BASIC.xml\\"
+          \\"localUri\\": \\"localService/mainService/GWSAMPLE_BASIC.xml\\"
         }
       },
       \\"annotation\\": {
@@ -1851,7 +1851,7 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/GWSAMPLE_BASIC.xml
+          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
           - localPath: ./webapp/annotations/annotation.xml
             urlPath: annotations/annotation.xml
@@ -1916,7 +1916,7 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/GWSAMPLE_BASIC.xml
+          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
           - localPath: ./webapp/annotations/annotation.xml
             urlPath: annotations/annotation.xml
@@ -2823,7 +2823,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
             \\"GWSAMPLE_BASIC\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -2831,7 +2831,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/GWSAMPLE_BASIC.xml\\"
+          \\"localUri\\": \\"localService/mainService/GWSAMPLE_BASIC.xml\\"
         }
       },
       \\"annotation\\": {
@@ -8776,7 +8776,7 @@ appDescription=A Fiori application.",
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -14811,7 +14811,7 @@ appDescription=A Fiori application.",
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },

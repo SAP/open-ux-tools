@@ -41,7 +41,7 @@ Object {
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/sepmra_annotations_tech_name.xml
+          - localPath: ./webapp/localService/mainService/sepmra_annotations_tech_name.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/
           - localPath: ./webapp/annotations/annotations_test.xml
             urlPath: annotations/annotations_test.xml
@@ -73,7 +73,7 @@ Object {
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/sepmra_annotations_tech_name.xml
+          - localPath: ./webapp/localService/mainService/sepmra_annotations_tech_name.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/
           - localPath: ./webapp/annotations/annotations_test.xml
             urlPath: annotations/annotations_test.xml
@@ -2744,7 +2744,7 @@ Object {
             \\"sepmra_annotations_tech_name\\",
             \\"annotations_test\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -2752,7 +2752,7 @@ Object {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/sepmra_annotations_tech_name.xml\\"
+          \\"localUri\\": \\"localService/mainService/sepmra_annotations_tech_name.xml\\"
         }
       },
       \\"annotations_test\\": {
@@ -2825,7 +2825,7 @@ Object {
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService//SEPM_XYZ/SERVICE.xml
+          - localPath: ./webapp/localService/mainService//SEPM_XYZ/SERVICE.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/
 ",
     "state": "modified",
@@ -2855,7 +2855,7 @@ Object {
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService//SEPM_XYZ/SERVICE.xml
+          - localPath: ./webapp/localService/mainService//SEPM_XYZ/SERVICE.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/
 ",
     "state": "modified",
@@ -2907,7 +2907,7 @@ Object {
           \\"annotations\\": [
             \\"SEPM_XYZ_SERVICE\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -2915,7 +2915,7 @@ Object {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService//SEPM_XYZ/SERVICE.xml\\"
+          \\"localUri\\": \\"localService/mainService//SEPM_XYZ/SERVICE.xml\\"
         }
       }
     }
