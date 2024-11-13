@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.16.115
+
+### Patch Changes
+
+-   8c0ba5c: Fixed Adaptation Editor crash when project contains Personalization change.
+
+## 0.16.114
+
+### Patch Changes
+
+-   8b123e3: Fixed typo in "Semantic Date Range" quick action.
+
 ## 0.16.113
 
 ### Patch Changes
