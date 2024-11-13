@@ -19,7 +19,7 @@ import {
 import { IconName } from '../../icons';
 
 import styles from './PropertyChange.module.scss';
-import { getFormattedDateAndTime } from './utils';
+import { getFormattedDateAndTime, getValueIcon } from './utils';
 
 export interface PropertyChangeProps {
     /**
@@ -119,29 +119,4 @@ export function PropertyChange(propertyChangeProps: Readonly<PropertyChangeProps
             )}
         </>
     );
-}
-
-/**
- * Get value icon based on type.
- *
- * @param value string | number | boolean
- * @returns string | undefined
- */
-function getValueIcon(value: string | number | boolean): string | undefined {
-    if (typeof value === 'string') {
-        if (value.trim().startsWith('{') && value.trim().endsWith('}')) {
-            return IconName.expression;
-        } else {
-            return IconName.string;
-        }
-    } else if (typeof value === 'number') {
-        return IconName.number;
-    } else if (typeof value === 'boolean') {
-        if (value === true) {
-            return IconName.boolTrue;
-        } else {
-            return IconName.boolFalse;
-        }
-    }
-    return undefined;
 }

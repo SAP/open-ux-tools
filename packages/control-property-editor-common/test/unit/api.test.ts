@@ -1,4 +1,5 @@
 import {
+    PropertyType,
     addExtensionPoint,
     changeProperty,
     changeStackModified,
@@ -89,7 +90,8 @@ describe('createExternalAction', () => {
             controlName: 'input',
             value: 'oldValue',
             propertyName: 'testProp',
-            changeType: 'propertyChange'
+            changeType: 'propertyChange',
+            propertyType: PropertyType.ControlProperty
         };
         const changedProp = changeProperty(payload);
         expect(changedProp.type).toBe('[ext] change-property');
@@ -126,7 +128,8 @@ describe('createExternalAction', () => {
                     controlName: 'test',
                     kind: 'property',
                     changeType: 'propertyChange',
-                    fileName: 'fileName1'
+                    fileName: 'fileName1',
+                    propertyType: PropertyType.ControlProperty
                 }
             ],
             saved: [
@@ -139,7 +142,8 @@ describe('createExternalAction', () => {
                     kind: 'property',
                     changeType: 'propertyChange',
                     controlName: 'button',
-                    timestamp: 12343310032023
+                    timestamp: 12343310032023,
+                    propertyType: PropertyType.ControlProperty
                 }
             ]
         };
