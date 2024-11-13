@@ -844,6 +844,9 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('disable/enable "semantic date range" in filter bar', () => {
+            afterEach(() => {
+                jest.restoreAllMocks();  // Restores all mocked functions to their original implementations
+            });
             test('not available by default', async () => {
                 jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(false);
                 jest.spyOn(VersionUtils, 'getUi5Version').mockReturnValue( // unsupported version. 
