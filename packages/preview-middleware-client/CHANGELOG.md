@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.27
+
+### Patch Changes
+
+-   fcc5518: Remove feature flag from "Add Custom Table Action", "Add Custom Page Action", "Add Custom Table Column" and "Change Table Columns" Quick Actions.
+
+## 0.11.26
+
+### Patch Changes
+
+-   06e9468: Allow adaptations of manifest settings in FEv4 adaptation projects via Control Property Editor Property Panel
+
 ## 0.11.25
 
 ### Patch Changes

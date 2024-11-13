@@ -10,7 +10,8 @@ import {
     SCENARIO,
     showMessage,
     storageFileChanged,
-    updateQuickAction
+    updateQuickAction,
+    PropertyType
 } from '@sap-ux-private/control-property-editor-common';
 
 import reducer, {
@@ -107,6 +108,7 @@ describe('main redux slice', () => {
                     changeProperty({
                         controlId: 'control1',
                         controlName: 'Button',
+                        propertyType: PropertyType.ControlProperty,
                         propertyName: 'text',
                         value: 'change text',
                         changeType: 'propertyChange'
@@ -176,6 +178,7 @@ describe('main redux slice', () => {
                                 kind: 'property',
                                 type: 'pending',
                                 controlName: 'Button',
+                                propertyType: PropertyType.ControlProperty,
                                 controlId: 'control1',
                                 isActive: true,
                                 propertyName: 'text',
@@ -189,6 +192,7 @@ describe('main redux slice', () => {
                                 controlId: 'control1',
                                 controlName: 'Button',
                                 propertyName: 'text',
+                                propertyType: PropertyType.ControlProperty,
                                 type: 'saved',
                                 kind: 'property',
                                 fileName: 'file',
@@ -216,6 +220,7 @@ describe('main redux slice', () => {
                                         fileName: 'testFile1',
                                         isActive: true,
                                         propertyName: 'text',
+                                        propertyType: 'controlProperty',
                                         type: 'pending',
                                         value: '{i18n>DELETE}'
                                     },
@@ -226,6 +231,7 @@ describe('main redux slice', () => {
                                         kind: 'property',
                                         fileName: 'file',
                                         propertyName: 'text',
+                                        propertyType: 'controlProperty',
                                         timestamp: 123,
                                         type: 'saved',
                                         value: 'abc'
@@ -245,6 +251,7 @@ describe('main redux slice', () => {
                             controlId: 'control1',
                             fileName: 'testFile1',
                             isActive: true,
+                            propertyType: 'controlProperty',
                             propertyName: 'text',
                             value: '{i18n>DELETE}'
                         }
@@ -255,10 +262,164 @@ describe('main redux slice', () => {
                             controlId: 'control1',
                             controlName: 'Button',
                             propertyName: 'text',
+                            propertyType: 'controlProperty',
                             type: 'saved',
                             kind: 'property',
                             fileName: 'file',
                             timestamp: 123,
+                            value: 'abc'
+                        }
+                    ]
+                }
+            });
+        });
+
+        test('changeStackModified - configuration', () => {
+            expect(
+                reducer(
+                    {
+                        changes: {
+                            saved: [],
+                            pending: [],
+                            controls: [] // make sure that old value is not reused
+                        }
+                    } as any,
+                    changeStackModified({
+                        pending: [
+                            {
+                                kind: 'configuration',
+                                type: 'pending',
+                                controlIds: ['control1', 'control5'],
+                                isActive: true,
+                                propertyName: 'configProperty1',
+                                value: '{i18n>DELETE}',
+                                fileName: 'testFile1',
+                                propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings'
+                            }
+                        ],
+                        saved: [
+                            {
+                                controlIds: ['control2', 'control4'],
+                                propertyName: 'configProperty2',
+                                type: 'saved',
+                                kind: 'configuration',
+                                fileName: 'file',
+                                timestamp: 123,
+                                value: 'abc',
+                                propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings'
+                            }
+                        ]
+                    })
+                )
+            ).toStrictEqual({
+                changes: {
+                    controls: {
+                        control1: {
+                            controlName: undefined,
+                            pending: 1,
+                            properties: {
+                                configProperty1: {
+                                    lastChange: {
+                                        controlIds: ['control1', 'control5'],
+                                        fileName: 'testFile1',
+                                        isActive: true,
+                                        kind: 'configuration',
+                                        propertyName: 'configProperty1',
+                                        propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                        type: 'pending',
+                                        value: '{i18n>DELETE}'
+                                    },
+                                    pending: 1,
+                                    saved: 0
+                                }
+                            },
+                            saved: 0
+                        },
+                        control2: {
+                            controlName: undefined,
+                            pending: 0,
+                            properties: {
+                                configProperty2: {
+                                    lastSavedChange: {
+                                        controlIds: ['control2', 'control4'],
+                                        fileName: 'file',
+                                        kind: 'configuration',
+                                        propertyName: 'configProperty2',
+                                        propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                        timestamp: 123,
+                                        type: 'saved',
+                                        value: 'abc'
+                                    },
+                                    pending: 0,
+                                    saved: 1
+                                }
+                            },
+                            saved: 1
+                        },
+                        control4: {
+                            controlName: undefined,
+                            pending: 0,
+                            properties: {
+                                configProperty2: {
+                                    lastSavedChange: {
+                                        controlIds: ['control2', 'control4'],
+                                        fileName: 'file',
+                                        kind: 'configuration',
+                                        propertyName: 'configProperty2',
+                                        propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                        timestamp: 123,
+                                        type: 'saved',
+                                        value: 'abc'
+                                    },
+                                    pending: 0,
+                                    saved: 1
+                                }
+                            },
+                            saved: 1
+                        },
+                        control5: {
+                            controlName: undefined,
+                            pending: 1,
+                            properties: {
+                                configProperty1: {
+                                    lastChange: {
+                                        controlIds: ['control1', 'control5'],
+                                        fileName: 'testFile1',
+                                        isActive: true,
+                                        kind: 'configuration',
+                                        propertyName: 'configProperty1',
+                                        propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                        type: 'pending',
+                                        value: '{i18n>DELETE}'
+                                    },
+                                    pending: 1,
+                                    saved: 0
+                                }
+                            },
+                            saved: 0
+                        }
+                    },
+                    pending: [
+                        {
+                            controlIds: ['control1', 'control5'],
+                            fileName: 'testFile1',
+                            isActive: true,
+                            kind: 'configuration',
+                            propertyName: 'configProperty1',
+                            propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                            type: 'pending',
+                            value: '{i18n>DELETE}'
+                        }
+                    ],
+                    saved: [
+                        {
+                            controlIds: ['control2', 'control4'],
+                            fileName: 'file',
+                            kind: 'configuration',
+                            propertyName: 'configProperty2',
+                            propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                            timestamp: 123,
+                            type: 'saved',
                             value: 'abc'
                         }
                     ]

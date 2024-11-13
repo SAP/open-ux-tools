@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.113
+
+### Patch Changes
+
+-   fcc5518: Remove feature flag from "Add Custom Table Action", "Add Custom Page Action", "Add Custom Table Column" and "Change Table Columns" Quick Actions.
+
 ## 0.16.112
 
 ### Patch Changes
