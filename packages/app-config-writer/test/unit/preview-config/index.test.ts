@@ -282,7 +282,7 @@ describe('update preview middleware config', () => {
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(warnLogMock).toHaveBeenCalledWith(
-            'Skipping script not:found because UI5 yaml configuration file ui5-unavailable.yaml could not be found.'
+            `Skipping script 'not:found' because UI5 yaml configuration file ui5-unavailable.yaml could not be found.`
         );
     });
 
