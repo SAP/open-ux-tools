@@ -2,14 +2,9 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
-import {
-    NestedQuickActionDefinition,
-    QuickActionContext,
-    SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
+import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById } from '../../../utils/core';
 import { getReference } from './utils';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import UI5Element from 'sap/ui/core/Element';
 import Table from 'sap/ui/mdc/Table';
 import { TableQuickActionDefinitionBase } from './table-quick-action-base';
@@ -64,14 +59,6 @@ export class EnableTableFilteringQuickAction
         }
         return Promise.resolve();
     }
-
-    // const modifiedControl = this.getModifiedControl();
-    // if (!modifiedControl) {
-    //     return;
-    // }
-    // const personalizationData = (modifiedControl as Table).getP13nMode();
-    // const isFilterEnabled = personalizationData.includes('Filter');
-    // this.control = isFilterEnabled ? undefined : modifiedControl;
 
     async execute(path: string): Promise<FlexCommand[]> {
         const { flexSettings, rta } = this.context;
