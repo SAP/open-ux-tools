@@ -71,7 +71,7 @@ async function updateVariantsCreationScript(fs: Editor, basePath: string, logger
  * @returns the UI5 yaml configuration file name or 'ui5.yaml' as default
  */
 function extractYamlConfigFileName(script: string): string {
-    const configParameterValueMatch = / --config (\S*)| -c (\S*)/.exec(script);
+    const configParameterValueMatch = / (?:--config|-c) (\S*)/.exec(script);
     return configParameterValueMatch?.[1] ?? configParameterValueMatch?.[2] ?? FileName.Ui5Yaml;
 }
 
@@ -259,10 +259,15 @@ function extractUrlDetails(script: string): {
     path: string | undefined;
     intent: FlpConfig['intent'] | undefined;
 } {
-    const openParameterValueMatch = / --open ([^"]?\S*)| -o ([^"]?\S*)| --o ([^"]?\S*)/.exec(script);
+    //extract the URL from the 'open' command of the script
+    const openParameterValueMatch = / (?:--open|-o|--o) ([^"]?\S*)/.exec(script);
     let url = openParameterValueMatch?.[1] ?? openParameterValueMatch?.[2] ?? openParameterValueMatch?.[3] ?? undefined;
     url = url?.startsWith('"') ? url.slice(1) : url;
+
+    //extract the path from the URL
     const path = /^[^?#]+\.html/.exec(url ?? '')?.[0] ?? undefined;
+
+    //extract the intent from the URL
     const intent = /(?<=#)\w+-\w+/.exec(url ?? '')?.[0] ?? undefined;
 
     return {
@@ -291,7 +296,8 @@ export function updatePreviewMiddlewareConfig(
 ): CustomMiddleware<PreviewConfigOptions> {
     const newMiddlewareConfig = sanitizePreviewMiddleware(previewMiddleware);
 
-    const configuration = newMiddlewareConfig.configuration ?? ({} as PreviewConfig);
+    //copy of configuration to avoid ending up with an empty configuration object in some cases
+    const configuration = Object.assign({}, newMiddlewareConfig.configuration) as PreviewConfig;
     configuration.flp = configuration.flp ?? {};
 
     let writeConfig = false;
@@ -309,7 +315,6 @@ export function updatePreviewMiddlewareConfig(
         writeConfig = true;
     }
 
-    //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     if (writeConfig) {
         newMiddlewareConfig.configuration = configuration;
     }
