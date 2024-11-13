@@ -1,9 +1,12 @@
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { DeploymentGenerator } from '../base';
-import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
+import { DeploymentGenerator } from '../base/generator';
 import { t } from './i18n';
 import { cdsExecutable, cdsPkg, mtaExecutable, mtaPkg, mtaYaml } from './constants';
+import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
 
+/**
+ * Error messages for the deploy configuration generator.
+ */
 export class ErrorMessages {
     private static readonly cannotFindBinary = (bin: string, pkg: string): string => t('errors.noBinary', { bin, pkg });
 
@@ -30,7 +33,7 @@ export class ErrorMessages {
 }
 
 /**
- * Bail out with an error message
+ * Bail out with an error message.
  *
  * @param errorMessage - Error message to be displayed
  */
@@ -39,7 +42,7 @@ export function bail(errorMessage: string): void {
 }
 
 /**
- * Handle error message, display it in the UI or throws an error in CLI
+ * Handle error message, display it in the UI or throws an error in CLI.
  *
  * @param appWizard - AppWizard instance
  * @param errorMsg - Error message to be displayed

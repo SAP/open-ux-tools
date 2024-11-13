@@ -28,11 +28,13 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@types/yeoman-test": "4.0.6",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-devx/yeoman-ui-types": "1.14.4",
         "@vscode-logging/logger": "2.0.0",
         "i18next": "20.6.1",
-        "yeoman-generator": "5.10.0"
+        "yeoman-generator": "5.10.0",
+        "yeoman-test": "6.3.0"
     },
     "devDependencies": {
         "@types/yeoman-generator": "5.2.11",

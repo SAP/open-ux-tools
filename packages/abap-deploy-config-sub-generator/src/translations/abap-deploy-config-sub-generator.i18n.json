@@ -1,8 +1,0 @@
-{
-    "info": {},
-    "debug": {
-        "initFailed": "Initializing failed, unable to process deployment configuration",
-        "notOverwritingIndexHtml": "'webapp/index.html' already exists. Won't overwrite",
-        "projectPath": "Project loaded from {{destinationPath}}"
-    }
-}

@@ -27,6 +27,9 @@
       "path": "packages/abap-deploy-config-inquirer"
     },
     {
+      "path": "packages/abap-deploy-config-sub-generator"
+    },
+    {
       "path": "packages/abap-deploy-config-writer"
     },
     {
@@ -76,6 +79,9 @@
     },
     {
       "path": "packages/create"
+    },
+    {
+      "path": "packages/deploy-config-generator-common"
     },
     {
       "path": "packages/deploy-tooling"
