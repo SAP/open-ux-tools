@@ -4,6 +4,8 @@ import { ActionHandler } from '../../../../src/cpe/types';
 import {
     changeProperty,
     deletePropertyChanges,
+    propertyChangeFailed,
+    PropertyType,
     setApplicationRequiresReload
 } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -106,17 +108,25 @@ describe('ChangeService', () => {
                         },
                         creation: '2021-12-21T17:13:37.301Z'
                     },
-                    change5: {}
+                    change6: {
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        fileName: 'id_1640106755570_204_appdescr_fe_changePageConfiguration',
+                        content: {
+                            page: 'ProductsList',
+                            entityPropertyChange: {
+                                propertyPath:
+                                    'controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/tableSettings/enableAddCardToInsights',
+                                operation: 'UPSERT',
+                                propertyValue: true
+                            }
+                        },
+                        creation: '2021-12-22T17:23:37.301Z'
+                    }
                 })
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
 
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await service.syncOutlineChanges();
@@ -127,6 +137,16 @@ describe('ChangeService', () => {
             payload: {
                 pending: [],
                 saved: [
+                    {
+                        controlIds: [],
+                        fileName: 'id_1640106755570_204_appdescr_fe_changePageConfiguration',
+                        kind: 'configuration',
+                        propertyName: 'enableAddCardToInsights',
+                        propertyPath: 'LineItem/tableSettings',
+                        timestamp: 1640193817301,
+                        type: 'saved',
+                        value: true
+                    },
                     {
                         changeType: 'codeExt',
                         type: 'saved',
@@ -227,12 +247,7 @@ describe('ChangeService', () => {
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
 
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         expect(fetchMock).toHaveBeenCalledWith('/preview/api/changes?_=123');
@@ -291,12 +306,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue([]),
             getAllExecutedCommands: jest.fn().mockReturnValue([])
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
@@ -381,12 +391,7 @@ describe('ChangeService', () => {
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
 
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         expect(fetchMock).toHaveBeenCalledWith('/preview/api/changes?_=123');
@@ -477,12 +482,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 
@@ -580,12 +580,113 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(commands),
             getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
+
+        await service.init(sendActionMock, subscribeMock);
+
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+        expect(sendActionMock).toHaveBeenCalledTimes(4);
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: [
+                    {
+                        changeType: 'addSimpleFormField',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        isActive: false,
+                        fileName: 'testFileName',
+                        kind: 'control',
+                        type: 'pending'
+                    },
+                    {
+                        changeType: 'addSimpleFormField',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        isActive: true,
+                        fileName: 'testFileName',
+                        kind: 'control',
+                        type: 'pending'
+                    },
+                    {
+                        changeType: 'addSimpleFormField',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        isActive: true,
+                        fileName: 'testFileName',
+                        kind: 'control',
+                        type: 'pending'
+                    }
+                ]
+            }
+        });
+    });
+
+    test('inactive composite command', async () => {
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        function createCommand(properties: Map<string, any>): {
+            getElement: () => any;
+            getSelector: () => any;
+            getChangeType: () => string;
+            getPreparedChange: () => { getDefinition: () => { fileName: string } };
+        } {
+            const cache = new Map(properties);
+            return {
+                getElement: jest.fn().mockReturnValue({
+                    getMetadata: jest
+                        .fn()
+                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
+                    getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
+                }),
+                getSelector: jest.fn().mockReturnValue({
+                    id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                }),
+                getChangeType: (): any => {
+                    return cache.get('changeType');
+                },
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getSelector: jest.fn().mockReturnValue({
+                        id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                    }),
+                    getChangeType: jest.fn().mockReturnValue(cache.get('changeType')),
+                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
+                    getDefinition: jest.fn().mockReturnValue({
+                        fileName: 'testFileName'
+                    })
+                })
+            };
+        }
+        const subCommands = [
+            createCommand(
+                new Map<string, any>([
+                    ['selector', { id: 'SEPMRA_C_PD_Product--supplierView--supplierForm' }],
+                    ['changeType', 'addSimpleFormField'],
+                    ['name', 'addDelegateProperty']
+                ])
+            ),
+            createCommand(
+                new Map<string, any>([
+                    ['selector', { id: 'supplierForm_SEPMRA_C_PD_SupplierType_FaxNumber' }],
+                    ['changeType', 'addSimpleFormField'],
+                    ['name', 'addDelegateProperty']
+                ])
+            )
+        ];
+
+        const commands = [
+            createCommand(
+                new Map<string, any>([
+                    ['selector', { id: 'SEPMRA_C_PD_Product--supplierView--supplierForm' }],
+                    ['changeType', 'addSimpleFormField'],
+                    ['name', 'addDelegateProperty']
+                ])
+            ),
+            createCompositeCommand(subCommands)
+        ];
+
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(commands),
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
+        });
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 
@@ -658,12 +759,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 
@@ -708,12 +804,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 
@@ -768,12 +859,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
@@ -845,12 +931,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
@@ -924,12 +1005,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
@@ -1003,12 +1079,147 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
+
+        await service.init(sendActionMock, subscribeMock);
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+
+        const expectedResult = {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: [
+                    {
+                        changeType: 'page',
+                        controlId: '_ST_SmartVariantManagement',
+                        isActive: true,
+                        type: 'pending',
+                        fileName: 'testFileName',
+                        kind: 'control'
+                    }
+                ]
+            }
+        };
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, expectedResult);
+    });
+
+    test('get control ID from ChangeHandler API - SAPUI5 version below 1.96.x (no getChangeHandler available)', async () => {
+        JsControlTreeModifierMock.bySelector.mockReturnValueOnce(mockControl);
+        Object.defineProperty(ChangesWriteAPIMock, 'getChangeHandler', {
+            value: null,
+            configurable: true
+        });
+        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
+        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(true);
+
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        function createCommand(): {
+            getElement: () => any;
+            getPreparedChange: () => any;
+        } {
+            return {
+                getElement: jest.fn().mockReturnValue({
+                    getMetadata: jest
+                        .fn()
+                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
+                    getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
+                }),
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getSelector: jest.fn().mockReturnValue({
+                        id: '_ST_SmartVariantManagement'
+                    }),
+                    getChangeType: jest.fn().mockReturnValue('page'),
+                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
+                    getDefinition: jest.fn().mockReturnValue({
+                        changeType: 'page',
+                        fileName: 'testFileName'
+                    })
+                })
+            };
+        }
+        const subCommands = [createCommand()];
+        const compositeCommand = [createCompositeCommand(subCommands)];
+
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(compositeCommand),
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
+        });
+        const service = new ChangeService({ rta: rtaMock } as any);
+
+        await service.init(sendActionMock, subscribeMock);
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+
+        const expectedResult = {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: [
+                    {
+                        changeType: 'page',
+                        controlId: '_ST_SmartVariantManagement',
+                        isActive: true,
+                        type: 'pending',
+                        fileName: 'testFileName',
+                        kind: 'control'
+                    }
+                ]
+            }
+        };
+
+        Object.defineProperty(ChangesWriteAPIMock, 'getChangeHandler', {
+            value: jest.fn().mockReturnValue({
+                getChangeVisualizationInfo: jest.fn().mockImplementation((change) => {
+                    return Promise.resolve({
+                        affectedControls: [`appComponent${change.getSelector().id}`]
+                    });
+                })
+            }),
+            configurable: true
+        });
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, expectedResult);
+    });
+
+    test('throws error when there was a problem with the ChangesWriteAPI api', async () => {
+        JsControlTreeModifierMock.bySelector.mockReturnValueOnce(mockControl);
+        ChangesWriteAPIMock.getChangeHandler.mockRejectedValue(new Error('Failed'));
+        jest.spyOn(Utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 108 });
+        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(true);
+
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        function createCommand(): {
+            getElement: () => any;
+            getPreparedChange: () => any;
+        } {
+            return {
+                getElement: jest.fn().mockReturnValue({
+                    getMetadata: jest
+                        .fn()
+                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
+                    getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
+                }),
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getSelector: jest.fn().mockReturnValue({
+                        id: '_ST_SmartVariantManagement'
+                    }),
+                    getChangeType: jest.fn().mockReturnValue('page'),
+                    getLayer: jest.fn().mockReturnValue('CUSTOMER'),
+                    getDefinition: jest.fn().mockReturnValue({
+                        changeType: 'page',
+                        fileName: 'testFileName'
+                    })
+                })
+            };
+        }
+        const subCommands = [createCommand()];
+        const compositeCommand = [createCompositeCommand(subCommands)];
+
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(compositeCommand),
+            getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
+        });
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
@@ -1074,12 +1285,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(compositeCommand),
             getAllExecutedCommands: jest.fn().mockReturnValue(subCommands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
@@ -1190,12 +1396,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(commands),
             getAllExecutedCommands: jest.fn().mockReturnValue(commands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 
@@ -1215,6 +1416,7 @@ describe('ChangeService', () => {
                         fileName: 'testFileName',
                         type: 'pending',
                         kind: 'property',
+                        propertyType: 'controlProperty',
                         value: 'abc'
                     },
                     {
@@ -1226,7 +1428,8 @@ describe('ChangeService', () => {
                         fileName: 'testFileName',
                         type: 'pending',
                         kind: 'property',
-                        value: '{i18n>DELETE}'
+                        value: '{i18n>DELETE}',
+                        propertyType: 'controlProperty'
                     },
                     {
                         changeType: 'addXMLAtExtensionPoint',
@@ -1245,12 +1448,7 @@ describe('ChangeService', () => {
             json: () => Promise.resolve({})
         });
 
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         expect(subscribeMock).toHaveBeenCalledTimes(1);
@@ -1258,6 +1456,7 @@ describe('ChangeService', () => {
             changeProperty({
                 controlId: 'control1',
                 propertyName: 'text',
+                propertyType: PropertyType.ControlProperty,
                 controlName: 'button',
                 value: 'abc',
                 changeType: 'propertyChange'
@@ -1269,6 +1468,7 @@ describe('ChangeService', () => {
             controlId: 'control1',
             controlName: 'button',
             propertyName: 'text',
+            propertyType: 'controlProperty',
             value: 'abc'
         });
     });
@@ -1316,8 +1516,16 @@ describe('ChangeService', () => {
                 new Map<string, any>([
                     ['selector', { id: 'control1' }],
                     ['changeType', 'appdescr_fe_changePageConfiguration'],
-                    ['propertyName', 'text'],
-                    ['newValue', 'abc']
+                    [
+                        'parameters',
+                        {
+                            'entityPropertyChange': {
+                                'propertyPath': 'controlConfig/settings',
+                                'operation': 'upsert',
+                                'propertyValue': 'hello'
+                            }
+                        }
+                    ]
                 ])
             )
         ];
@@ -1325,12 +1533,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(commands),
             getAllExecutedCommands: jest.fn().mockReturnValue(commands)
         });
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
 
@@ -1343,12 +1546,14 @@ describe('ChangeService', () => {
                 saved: [],
                 pending: [
                     {
-                        changeType: 'appdescr_fe_changePageConfiguration',
-                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        controlIds: ['ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'],
                         isActive: true,
                         fileName: 'testFileName',
                         type: 'pending',
-                        kind: 'control'
+                        kind: 'configuration',
+                        propertyName: 'settings',
+                        propertyPath: 'controlConfig',
+                        value: 'hello'
                     }
                 ]
             }
@@ -1375,12 +1580,7 @@ describe('ChangeService', () => {
                 })
         });
 
-        const service = new ChangeService(
-            { rta: rtaMock } as any,
-            {
-                applyControlPropertyChange: jest.fn()
-            } as any
-        );
+        const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
         expect(subscribeMock).toHaveBeenCalledTimes(1);
@@ -1398,5 +1598,51 @@ describe('ChangeService', () => {
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'
         });
+    });
+
+    test('change property - exception', async () => {
+        fetchMock.mockResolvedValue({
+            json: () => Promise.resolve({})
+        });
+
+        const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
+            throw 'RTA Error: Not acceptable value';
+        });
+
+        const service = new ChangeService({ rta: rtaMock } as any);
+
+        await service.init(sendActionMock, subscribeMock);
+        expect(subscribeMock).toHaveBeenCalledTimes(1);
+        await subscribeMock.mock.calls[0][0](
+            changeProperty({
+                controlId: 'control1',
+                propertyName: 'text',
+                propertyType: PropertyType.ControlProperty,
+                controlName: 'button',
+                value: 'abc',
+                changeType: 'propertyChange'
+            })
+        );
+
+        expect(applyChangeSpy.mock.calls[0][1]).toStrictEqual({
+            changeType: 'propertyChange',
+            controlId: 'control1',
+            controlName: 'button',
+            propertyName: 'text',
+            propertyType: 'controlProperty',
+            value: 'abc'
+        });
+
+        expect(sendActionMock).toBeCalledWith(
+            propertyChangeFailed({
+                controlId: 'control1',
+                propertyName: 'text',
+                propertyType: 'controlProperty',
+                controlName: 'button',
+                value: 'abc',
+                changeType: 'propertyChange',
+                errorMessage: 'Error: "RTA Error: Not acceptable value"'
+            } as any)
+        );
     });
 });

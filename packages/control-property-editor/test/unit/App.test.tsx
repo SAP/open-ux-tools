@@ -5,7 +5,7 @@ import { act } from 'react-dom/test-utils';
 import { render, mockDomEventListener } from './utils';
 
 import App from '../../src/App';
-import { controlSelected, SCENARIO } from '@sap-ux-private/control-property-editor-common';
+import { controlSelected, PropertyType, SCENARIO } from '@sap-ux-private/control-property-editor-common';
 
 import { InputType } from '../../src/panels/properties/types';
 import { DeviceType } from '../../src/devices';
@@ -42,7 +42,8 @@ test('renders properties', () => {
                     name: propNameString,
                     value: '',
                     isEnabled: true,
-                    readableName: ''
+                    readableName: '',
+                    propertyType: PropertyType.ControlProperty
                 },
                 {
                     type: 'string',
@@ -76,7 +77,8 @@ test('renders properties', () => {
                             key: 'Dialog',
                             text: 'Dialog'
                         }
-                    ]
+                    ],
+                    propertyType: PropertyType.ControlProperty
                 },
                 {
                     type: 'boolean',
@@ -84,7 +86,8 @@ test('renders properties', () => {
                     name: propNameCheckbox,
                     value: true,
                     isEnabled: true,
-                    readableName: 'test check'
+                    readableName: 'test check',
+                    propertyType: PropertyType.ControlProperty
                 },
                 {
                     type: 'string',
@@ -93,7 +96,8 @@ test('renders properties', () => {
                     name: propNameDropDownExpression,
                     value: '{ dropDownDynamicExpression }',
                     isEnabled: true,
-                    readableName: ''
+                    readableName: '',
+                    propertyType: PropertyType.ControlProperty
                 },
                 {
                     type: 'boolean',
@@ -101,7 +105,8 @@ test('renders properties', () => {
                     name: propNameCheckboxExpression,
                     isEnabled: true,
                     value: '{ checkBoxDynamicExpression }',
-                    readableName: 'test check dynamic expression'
+                    readableName: 'test check dynamic expression',
+                    propertyType: PropertyType.ControlProperty
                 },
                 {
                     type: 'string',
@@ -109,7 +114,8 @@ test('renders properties', () => {
                     name: 'unknownprop',
                     isEnabled: true,
                     value: 'checkBoxDynamicExpression',
-                    readableName: 'test check dynamic expression'
+                    readableName: 'test check dynamic expression',
+                    propertyType: PropertyType.ControlProperty
                 }
             ]
         })
