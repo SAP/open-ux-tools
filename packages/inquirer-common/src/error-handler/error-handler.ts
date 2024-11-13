@@ -123,20 +123,43 @@ export class ErrorHandler {
      */
     private static _platform: string | undefined;
 
+    /**
+     * Get the current platform string that would be used by the error handler.
+     *
+     * @returns the platform string as defined by `hostEnvironment.technical` or the value set by the user
+     */
     public static get platform(): string | undefined {
         return ErrorHandler._platform;
     }
+    /**
+     * Set platform string usually defined by `hostEnvironment.technical`
+     *
+     * @param value the platform string to set
+     */
     public static set platform(value: string | undefined) {
         ErrorHandler._platform = value;
     }
 
+    /**
+     * The Guided Answers (help) trigger property sent with some telemetry events.
+     */
     private static _guidedAnswersTrigger: string | undefined;
 
+    /**
+     * Get the Guided Answers (help) trigger property.
+     *
+     * @returns the Guided Answers trigger property
+     */
     public static get guidedAnswersTrigger(): string | undefined {
-        return ErrorHandler._platform;
+        return ErrorHandler._guidedAnswersTrigger;
     }
+    /**
+     * Set the Guided Answers (help) trigger property.
+     *
+     * @param value the Guided Answers trigger property
+     */
     public static set guidedAnswersTrigger(value: string | undefined) {
-        ErrorHandler._platform = value;
+        ErrorHandler._guidedAnswersTrigger = value;
     }
 
     private static readonly getMessageFromError = (error: unknown): string => {
