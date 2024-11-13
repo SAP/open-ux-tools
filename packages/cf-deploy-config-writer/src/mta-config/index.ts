@@ -44,7 +44,7 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
  *  Generate an MTA ID that is suitable for CF deployment.
  *
  * @param appId Name of the app, like `sap.ux.app` and restrict to 128 characters
- * @returns Name that's acceptable in an mta.yaml
+ * @returns Name that's acceptable for mta.yaml
  */
 export function toMtaModuleName(appId: string): string {
     return appId.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>]/gi, '').slice(0, 128);
@@ -58,7 +58,7 @@ export function toMtaModuleName(appId: string): string {
 export function createMTA(config: MTABaseConfig): void {
     const mtaTemplate = readFileSync(getTemplatePath(`app/${MTAYamlFile}`), 'utf-8');
     const mtaContents = render(mtaTemplate, {
-        id: config.mtaId,
+        id: `${config.mtaId.slice(0, 128)}`,
         mtaDescription: config.mtaDescription ?? MTADescription,
         mtaVersion: config.mtaVersion ?? MTAVersion
     });

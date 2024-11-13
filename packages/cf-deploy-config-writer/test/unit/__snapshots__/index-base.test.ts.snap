@@ -78,7 +78,7 @@ modules:
           sap.cloud.service: managed
         - Authentication: OAuth2UserTokenExchange
           Name: managed_uaa
-          ServiceInstanceName: managed-xsuaa-srv
+          ServiceInstanceName: managed-xsuaa-service
           ServiceKeyName: managed-uaa-key
           sap.cloud.service: managed
         existing_destinations_policy: ignore
@@ -118,7 +118,7 @@ resources:
   parameters:
     path: ./xs-security.json
     service: xsuaa
-    service-name: managed-xsuaa-srv
+    service-name: managed-xsuaa-service
     service-plan: application
 - name: managed-repo-host
   type: org.cloudfoundry.managed-service
@@ -246,9 +246,9 @@ modules:
   type: approuter.nodejs
   path: router
   requires:
-  - name: standalonewithabapserviceprov-html5-repo-runtime
+  - name: standalonewithabapserviceprovider-html5-repo-runtime
   - name: standalonewithabapserviceprovider-uaa
-  - name: standalonewithabapserviceprovi-destination-service
+  - name: standalonewithabapserviceprovider-destination-service
     group: destinations
     properties:
       forwardAuthToken: false
@@ -267,12 +267,12 @@ resources:
       xsappname: standalonewithabapserviceprovider-\${space-guid}
     service: xsuaa
     service-plan: application
-- name: standalonewithabapserviceprov-html5-repo-runtime
+- name: standalonewithabapserviceprovider-html5-repo-runtime
   type: org.cloudfoundry.managed-service
   parameters:
     service: html5-apps-repo
     service-plan: app-runtime
-- name: standalonewithabapserviceprovi-destination-service
+- name: standalonewithabapserviceprovider-destination-service
   type: org.cloudfoundry.managed-service
   parameters:
     config:
@@ -288,7 +288,7 @@ resources:
           existing_destinations_policy: update
       version: 1.0.0
     service: destination
-    service-name: standalonewithabapserviceprovi-destination-service
+    service-name: standalonewithabapserviceprovider-destination-service
     service-plan: lite
 - name: standalonewithabapservic-abap-Y11_00.0035
   type: org.cloudfoundry.existing-service
@@ -410,9 +410,9 @@ modules:
   type: approuter.nodejs
   path: router
   requires:
-  - name: standalonewithconnectivityser-html5-repo-runtime
+  - name: standalonewithconnectivityservice-html5-repo-runtime
   - name: standalonewithconnectivityservice-uaa
-  - name: standalonewithconnectivityserv-destination-service
+  - name: standalonewithconnectivityservice-destination-service
     group: destinations
     properties:
       forwardAuthToken: false
@@ -431,12 +431,12 @@ resources:
       xsappname: standalonewithconnectivityservice-\${space-guid}
     service: xsuaa
     service-plan: application
-- name: standalonewithconnectivityser-html5-repo-runtime
+- name: standalonewithconnectivityservice-html5-repo-runtime
   type: org.cloudfoundry.managed-service
   parameters:
     service: html5-apps-repo
     service-plan: app-runtime
-- name: standalonewithconnectivityserv-destination-service
+- name: standalonewithconnectivityservice-destination-service
   type: org.cloudfoundry.managed-service
   parameters:
     config:
@@ -452,7 +452,7 @@ resources:
           existing_destinations_policy: update
       version: 1.0.0
     service: destination
-    service-name: standalonewithconnectivityserv-destination-service
+    service-name: standalonewithconnectivityservice-destination-service
     service-plan: lite
 - name: standalonewithconnectivityservice-connectivity
   type: org.cloudfoundry.managed-service

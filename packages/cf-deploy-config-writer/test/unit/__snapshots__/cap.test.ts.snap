@@ -368,7 +368,7 @@ modules:
               sap.cloud.service: cappapp
             - Authentication: OAuth2UserTokenExchange
               Name: cappapp_uaa
-              ServiceInstanceName: cappapp-xsuaa-srv
+              ServiceInstanceName: cappapp-xsuaa-service
               ServiceKeyName: cappapp-uaa-key
               sap.cloud.service: cappapp
           existing_destinations_policy: ignore
@@ -438,7 +438,7 @@ resources:
     parameters:
       path: ./xs-security.json
       service: xsuaa
-      service-name: cappapp-xsuaa-srv
+      service-name: cappapp-xsuaa-service
       service-plan: application
   - name: cappapp-repo-host
     type: org.cloudfoundry.managed-service

@@ -277,7 +277,7 @@ modules:
           sap.cloud.service: basicapp
         - Authentication: OAuth2UserTokenExchange
           Name: basicapp_uaa
-          ServiceInstanceName: basicapp-xsuaa-srv
+          ServiceInstanceName: basicapp-xsuaa-service
           ServiceKeyName: basicapp-uaa-key
           sap.cloud.service: basicapp
         existing_destinations_policy: ignore
@@ -331,7 +331,7 @@ resources:
   parameters:
     path: ./xs-security.json
     service: xsuaa
-    service-name: basicapp-xsuaa-srv
+    service-name: basicapp-xsuaa-service
     service-plan: application
 - name: basicapp-repo-host
   type: org.cloudfoundry.managed-service
@@ -674,7 +674,7 @@ modules:
           sap.cloud.service: multiproject
         - Authentication: OAuth2UserTokenExchange
           Name: multiproject_uaa
-          ServiceInstanceName: multiproject-xsuaa-srv
+          ServiceInstanceName: multiproject-xsuaa-service
           ServiceKeyName: multiproject-uaa-key
           sap.cloud.service: multiproject
         existing_destinations_policy: ignore
@@ -728,7 +728,7 @@ resources:
   parameters:
     path: ./xs-security.json
     service: xsuaa
-    service-name: multiproject-xsuaa-srv
+    service-name: multiproject-xsuaa-service
     service-plan: application
 - name: multiproject-repo-host
   type: org.cloudfoundry.managed-service
@@ -1071,7 +1071,7 @@ modules:
           sap.cloud.service: comfioritoolslrop
         - Authentication: OAuth2UserTokenExchange
           Name: comfioritoolslrop_uaa
-          ServiceInstanceName: comfioritoolslrop-xsuaa-srv
+          ServiceInstanceName: comfioritoolslrop-xsuaa-service
           ServiceKeyName: comfioritoolslrop-uaa-key
           sap.cloud.service: comfioritoolslrop
         existing_destinations_policy: ignore
@@ -1125,7 +1125,7 @@ resources:
   parameters:
     path: ./xs-security.json
     service: xsuaa
-    service-name: comfioritoolslrop-xsuaa-srv
+    service-name: comfioritoolslrop-xsuaa-service
     service-plan: application
 - name: comfioritoolslrop-repo-host
   type: org.cloudfoundry.managed-service
