@@ -191,7 +191,7 @@ describe('ConnectionValidator', () => {
                     text: expect.any(String),
                     url: expect.any(String)
                 },
-                message: expect.stringContaining('The system URL is using texts.aSelfSignedCert security certificate.'),
+                message: expect.stringContaining('The system URL is using a self-signed security certificate.'),
                 toString: expect.any(Function)
             })
         );

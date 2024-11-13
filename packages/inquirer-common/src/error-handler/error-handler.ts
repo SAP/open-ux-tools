@@ -1,6 +1,6 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
+import { isAppStudio, isHTML5DynamicConfigured, isOnPremiseDestination, type Destination } from '@sap-ux/btp-utils';
 import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { type Destination, isAppStudio, isHTML5DynamicConfigured, isOnPremiseDestination } from '@sap-ux/btp-utils';
 import {
     getHelpUrl,
     GUIDED_ANSWERS_ICON,
@@ -9,10 +9,10 @@ import {
     HELP_TREE
 } from '@sap-ux/guided-answers-helper';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
+import type { AxiosError } from 'axios';
 import { t } from '../i18n';
 import { ValidationLink } from '../types';
 import { getTelemPropertyDestinationType, sendTelemetryEvent } from '../utils/telemetry';
-import type { AxiosError } from 'axios';
 
 // Telemetry event names specific to odata service error handling
 const telemEventGALinkCreated = 'GA_LINK_CREATED';
@@ -174,7 +174,7 @@ export class ErrorHandler {
     // Get the localized parameterized error message for the specified error type
     private static readonly _errorTypeToMsg: Record<ERROR_TYPE, (error?: Error | object | string) => string> = {
         [ERROR_TYPE.CERT]: (error) =>
-            t('errors.certificateError', { error: typeof error === 'string' ? error : JSON.stringify(error) }),
+            t('errors.certificateError', { errorMsg: ErrorHandler.getMessageFromError(error) }),
         [ERROR_TYPE.CERT_EXPIRED]: () =>
             t('errors.urlCertValidationError', { certErrorReason: t('texts.anExpiredCert') }),
         [ERROR_TYPE.CERT_SELF_SIGNED]: () =>
@@ -194,8 +194,7 @@ export class ErrorHandler {
                 error: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.AUTH_TIMEOUT]: () => t('errors.authenticationTimeout'),
-        [ERROR_TYPE.TIMEOUT]: (error) =>
-            t('errors.timeout', { error: typeof error === 'string' ? error : JSON.stringify(error) }),
+        [ERROR_TYPE.TIMEOUT]: (error) => t('errors.timeout', { errorMsg: ErrorHandler.getMessageFromError(error) }),
         [ERROR_TYPE.INVALID_URL]: () => t('errors.invalidUrl'),
         [ERROR_TYPE.CONNECTION]: (error) =>
             t('errors.connectionError', {
@@ -229,7 +228,7 @@ export class ErrorHandler {
         [ERROR_TYPE.DESTINATION_NOT_FOUND]: () => t('errors.destination.notFound'),
         [ERROR_TYPE.DESTINATION_MISCONFIGURED]: (error) =>
             t('errors.destination.misconfigured', {
-                destinationProperty: typeof error === 'string' ? error : JSON.stringify(error)
+                destinationProperty: typeof error === 'string' ? error : ''
             }),
         [ERROR_TYPE.NO_V2_SERVICES]: () => t('errors.noServicesAvailable', { version: '2' }),
         [ERROR_TYPE.NO_V4_SERVICES]: () => t('errors.noServicesAvailable', { version: '4' }),

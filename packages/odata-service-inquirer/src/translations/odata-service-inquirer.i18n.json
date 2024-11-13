@@ -130,7 +130,7 @@
         "destination": {
             "authError": "The selected system is returning an authentication error. System name: {{systemName}}, error: {{- error}}"
         },
-        "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. See log for more details.",
+        "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. $t(texts.seeLogForDetails)",
         "capModelAndServicesLoadError": "An error occurred loading the CAP model and services. {{- error}}",
         "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. CAP service property `urlPath` is not defined but is required.",
         "unknownError": "An error occurred{{- error, addMsgWithColonFormatter}}",
@@ -155,10 +155,6 @@
         "allCatalogServiceRequestsFailed": "All catalog service requests failed for the selected system. OData version(s): V{{version}}."
     },
     "texts": {
-        "anExpiredCert": "an expired",
-        "aSelfSignedCert": "a self-signed",
-        "anUnknownOrInvalidCert": "an unknown or invalid",
-        "anUntrustedRootCert": "an untrusted root",
         "suggestedSystemNameClient": ", client {{client}}",
         "seeLogForDetails": "See log for more details.",
         "forUserName": "(for user [{{username}}])",

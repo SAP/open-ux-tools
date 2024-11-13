@@ -10,6 +10,7 @@ import { ErrorHandler, ERROR_TYPE } from '../../../src/error-handler/error-handl
 import type { ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { SampleRate } from '@sap-ux/telemetry';
 import * as telemetryUtils from '../../../src/utils/telemetry';
+import { AxiosError } from 'axios';
 
 let mockIsAppStudio = false;
 
@@ -215,6 +216,93 @@ describe('Test ErrorHandler', () => {
         );
         expect(serviceUnavailableHelpNoCommandLink?.toString()).toMatchInlineSnapshot(
             `"An error occurred retrieving service(s) for SAP System. Need help with this error? : https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/48366"`
+        );
+    });
+
+    test('Error types should map to specific error messages', () => {
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CERT)).toEqual('A certificate error has occurred');
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CERT, new Error('a cert error'))).toEqual(
+            t('errors.certificateError', { errorMsg: 'a cert error' })
+        );
+
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CERT_EXPIRED)).toEqual(
+            'The system URL is using an expired security certificate.'
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CERT_SELF_SIGNED)).toEqual(
+            t('errors.urlCertValidationError', { certErrorReason: t('texts.aSelfSignedCert') })
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CERT_UKNOWN_OR_INVALID)).toEqual(
+            t('errors.urlCertValidationError', { certErrorReason: t('texts.anUnknownOrInvalidCert') })
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN)).toEqual(
+            t('errors.urlCertValidationError', { certErrorReason: t('texts.anUntrustedRootCert') })
+        );
+
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.AUTH, (new AxiosError('').status = 401))).toEqual(
+            'Authentication incorrect. 401'
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.AUTH_TIMEOUT)).toEqual(t('errors.authenticationTimeout'));
+
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.TIMEOUT, new Error('408 Request Timeout'))).toEqual(
+            'A connection timeout error occurred: 408 Request Timeout'
+        );
+
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.INVALID_URL)).toEqual(t('errors.invalidUrl'));
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CONNECTION)).toEqual(t('errors.connectionError'));
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.UNKNOWN)).toEqual(t('errors.unknownError'));
+
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.SERVICES_UNAVAILABLE)).toEqual(
+            t('errors.servicesUnavailable')
+        );
+        expect(
+            ErrorHandler.getErrorMsgFromType(ERROR_TYPE.SERVICE_UNAVAILABLE, new Error('503 Service Unavailable'))
+        ).toEqual(t('errors.serverReturnedAnError', { errorMsg: '503 Service Unavailable' }));
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE)).toEqual(
+            t('errors.catalogServiceNotActive')
+        );
+        expect(
+            ErrorHandler.getErrorMsgFromType(ERROR_TYPE.INTERNAL_SERVER_ERROR, new Error('500 Internal Server Error'))
+        ).toEqual(
+            t('errors.serverReturnedAnError', {
+                errorDesc: t('errors.internalServerError', { errorMsg: '500 Internal Server Error' })
+            })
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NOT_FOUND)).toEqual(t('errors.urlNotFound'));
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ODATA_URL_NOT_FOUND)).toEqual(
+            t('errors.odataServiceUrlNotFound')
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.BAD_GATEWAY, new Error('502 Bad Gateway'))).toEqual(
+            t('errors.serverReturnedAnError', { errorDesc: t('errors.badGateway', { errorMsg: '502 Bad Gateway' }) })
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.DESTINATION_UNAVAILABLE)).toEqual(
+            t('errors.destination.unavailable')
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.DESTINATION_NOT_FOUND)).toEqual(
+            t('errors.destination.notFound')
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.DESTINATION_MISCONFIGURED, 'Some misconfiguration')).toEqual(
+            t('errors.destination.misconfigured', { destinationProperty: 'Some misconfiguration' })
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_V2_SERVICES)).toEqual(
+            t('errors.noServicesAvailable', { version: '2' })
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_V4_SERVICES)).toEqual(
+            t('errors.noServicesAvailable', { version: '4' })
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.DESTINATION_BAD_GATEWAY_503)).toEqual(
+            t('errors.destination.unavailable')
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.REDIRECT)).toEqual(t('errors.redirectError'));
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_SUCH_HOST)).toEqual(t('errors.noSuchHostError'));
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_ABAP_ENVS)).toEqual(t('errors.abapEnvsUnavailable'));
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.BAD_REQUEST, new Error('400 Bad Request'))).toEqual(
+            t('errors.serverReturnedAnError', { errorDesc: t('errors.badRequest', { errorMsg: '400 Bad Request' }) })
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.DESTINATION_CONNECTION_ERROR)).toEqual(
+            t('errors.systemConnectionValidationFailed')
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.SERVER_HTTP_ERROR, new Error('500 Server Error'))).toEqual(
+            t('errors.serverReturnedAnError', { errorDesc: '500 Server Error' })
         );
     });
 });
