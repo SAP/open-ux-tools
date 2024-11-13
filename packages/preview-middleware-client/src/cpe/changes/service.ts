@@ -6,7 +6,7 @@ import type {
     SavedControlChange,
     PendingConfigurationChange,
     SavedConfigurationChange,
-    PropertyValue
+    ConfigurationValue
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
@@ -18,7 +18,10 @@ import {
     setApplicationRequiresReload,
     save,
     CONFIGURATION_CHANGE_KIND,
-    PropertyType
+    PropertyType,
+    PENDING_CHANGE_TYPE,
+    PROPERTY_CHANGE_KIND,
+    UNKNOWN_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
@@ -473,17 +476,17 @@ export class ChangeService extends EventTarget {
     /**
      * Cached configuration commands to set reset value during stack change event.
      *
-     * @param {string} controlId - control id of the config property.
-     * @param {string} propertyName - config property name.
-     * @returns {PropertyValue | undefined}.
+     * @param  controlId - control id of the config property.
+     * @param  propertyName - config property name.
+     * @returns Configuration property value.
      */
-    public getConfigurationPropertyValue(controlId: string, propertyName: string): PropertyValue | undefined {
+    public getConfigurationPropertyValue(controlId: string, propertyName: string): ConfigurationValue | undefined {
         const pendingChanges = this.pendingConfigChangeMap?.get(controlId);
         return (pendingChanges || []).find((item) => item.isActive && item.propertyName === propertyName)?.value;
     }
 
     /**
-     * Update config changes with assocaited controls.
+     * Update config changes with associated controls.
      *
      * @param {Map<string, string[]>} configPropertyControlIdMap - config property path control id map.
      */
@@ -514,9 +517,9 @@ export class ChangeService extends EventTarget {
         }
     }
 
-    private preparev4ConfigurationChange(
+    private prepareV4ConfigurationChange(
         command: FlexCommand,
-        value: string,
+        value: ConfigurationValue,
         fileName: string,
         index: number,
         inactiveCommandCount: number
@@ -529,17 +532,17 @@ export class ChangeService extends EventTarget {
         };
         const controlId = this.getCommandSelectorId(command) ?? '';
         const propertyPathSegments = entityPropertyChange.propertyPath.split('/');
-        const propName = propertyPathSegments.pop();
+        const propName = propertyPathSegments.pop() as string;
         const key = getConfigMapControlIdMap(page, propertyPathSegments);
 
         const isActive = index >= inactiveCommandCount;
         const controlIds = this.configPropertyControlIdMap?.get(key) || [controlId];
         const result: PendingConfigurationChange = {
-            type: 'pending',
-            kind: 'configuration',
+            type: PENDING_CHANGE_TYPE,
+            kind: CONFIGURATION_CHANGE_KIND,
             controlIds,
             propertyPath: getCompactV4ConfigPath(propertyPathSegments) || page,
-            propertyName: propName as string,
+            propertyName: propName,
             isActive,
             value,
             fileName
@@ -568,9 +571,6 @@ export class ChangeService extends EventTarget {
         inactiveCommandCount: number,
         index: number
     ): Promise<PendingChange | undefined> {
-        let result: PendingChange;
-        let value = '';
-
         const change = command?.getPreparedChange?.();
 
         const selectorId =
@@ -584,24 +584,21 @@ export class ChangeService extends EventTarget {
             return undefined;
         }
 
-        switch (changeType) {
-            case 'propertyChange':
-                value = command.getProperty('newValue') as string;
-                break;
-            case 'propertyBindingChange':
-                value = command.getProperty('newBinding') as string;
-                break;
-            case 'appdescr_fe_changePageConfiguration':
-                value = (command.getProperty('parameters') as { entityPropertyChange: { propertyValue: unknown } })
-                    .entityPropertyChange.propertyValue as string;
-                break;
-        }
-
         const { fileName } = change.getDefinition();
         if ((changeType === 'propertyChange' || changeType === 'propertyBindingChange') && selectorId) {
-            result = {
-                type: 'pending',
-                kind: 'property',
+            let value = '';
+            switch (changeType) {
+                case 'propertyChange':
+                    value = command.getProperty('newValue') as string;
+                    break;
+                case 'propertyBindingChange':
+                    value = command.getProperty('newBinding') as string;
+                    break;
+            }
+
+            return {
+                type: PENDING_CHANGE_TYPE,
+                kind: PROPERTY_CHANGE_KIND,
                 changeType,
                 controlId: selectorId,
                 propertyType: PropertyType.ControlProperty,
@@ -612,11 +609,14 @@ export class ChangeService extends EventTarget {
                 fileName
             };
         } else if (changeType === 'appdescr_fe_changePageConfiguration') {
-            result = this.preparev4ConfigurationChange(command, value, fileName, index, inactiveCommandCount);
+            const value = (
+                command.getProperty('parameters') as { entityPropertyChange: { propertyValue: ConfigurationValue } }
+            ).entityPropertyChange.propertyValue;
+            return this.prepareV4ConfigurationChange(command, value, fileName, index, inactiveCommandCount);
         } else {
-            result = {
-                type: 'pending',
-                kind: 'unknown',
+            let result: PendingChange = {
+                type: PENDING_CHANGE_TYPE,
+                kind: UNKNOWN_CHANGE_KIND,
                 changeType,
                 isActive: index >= inactiveCommandCount,
                 fileName
@@ -629,9 +629,8 @@ export class ChangeService extends EventTarget {
                     controlId: selectorId
                 };
             }
+            return result;
         }
-
-        return result;
     }
 
     /**
