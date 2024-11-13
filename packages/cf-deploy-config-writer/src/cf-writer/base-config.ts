@@ -56,7 +56,6 @@ async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void>
         await mtaConfigInstance.addRoutingModules(true);
     }
     await addMtaDeployParameters(mtaConfigInstance);
-    await addMtaBuildParams(mtaConfigInstance);
     await mtaConfigInstance.save();
 }
 

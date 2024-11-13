@@ -129,11 +129,6 @@ resources:
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
-build-parameters:
-  before-all:
-  - builder: custom
-    commands:
-    - npm install
 "
 `;
 
@@ -301,11 +296,6 @@ resources:
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
-build-parameters:
-  before-all:
-  - builder: custom
-    commands:
-    - npm install
 "
 `;
 
@@ -462,10 +452,5 @@ resources:
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
-build-parameters:
-  before-all:
-  - builder: custom
-    commands:
-    - npm install
 "
 `;
