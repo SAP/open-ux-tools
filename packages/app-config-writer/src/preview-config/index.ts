@@ -299,7 +299,7 @@ export function updatePreviewMiddlewareConfig(
     const newMiddlewareConfig = sanitizePreviewMiddleware(previewMiddleware);
 
     //copy of configuration to avoid ending up with an empty configuration object in some cases
-    const configuration = Object.assign({}, newMiddlewareConfig.configuration) as PreviewConfig;
+    const configuration = { ...newMiddlewareConfig.configuration };
     configuration.flp = configuration.flp ?? {};
 
     let writeConfig = false;
