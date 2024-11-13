@@ -3,6 +3,7 @@ import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
 import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
+import * as VersionUtils from '../../../../src/utils/version';
 
 jest.mock('../../../../src/adp/init-dialogs', () => {
     return {
@@ -38,6 +39,7 @@ import {
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
+import { Ui5VersionInfo } from '../../../../src/utils/version';
 
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -844,6 +846,12 @@ describe('FE V2 quick actions', () => {
         describe('disable/enable "semantic date range" in filter bar', () => {
             test('not available by default', async () => {
                 jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(false);
+                jest.spyOn(VersionUtils, 'getUi5Version').mockReturnValue( // unsupported version. 
+                    Promise.resolve({
+                        major: 1,
+                        minor: 80
+                    } as Ui5VersionInfo)
+                );
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartFilterBar') {
                         return {
@@ -887,7 +895,6 @@ describe('FE V2 quick actions', () => {
                         return container;
                     }
                 });
-
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
