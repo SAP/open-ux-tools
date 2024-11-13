@@ -28,7 +28,7 @@ export function SimpleQuickActionListItem({ action }: Readonly<SimpleQuickAction
         <div className={`quick-action-item`}>
             <UILink
                 key={action.id}
-                title={action.title}
+                title={action.tooltip ?? action.title}
                 underline={false}
                 disabled={isDisabled}
                 onClick={() => {

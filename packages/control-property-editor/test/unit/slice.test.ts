@@ -476,13 +476,16 @@ describe('main redux slice', () => {
                                 children: [
                                     {
                                         label: 'test label',
+                                        enabled: true,
                                         children: [
                                             {
                                                 label: 'test label 2',
+                                                enabled: true,
                                                 children: []
                                             },
                                             {
                                                 label: 'test label 3',
+                                                enabled: true,
                                                 children: []
                                             }
                                         ]

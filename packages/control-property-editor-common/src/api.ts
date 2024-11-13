@@ -197,6 +197,7 @@ export interface SimpleQuickAction {
     kind: typeof SIMPLE_QUICK_ACTION_KIND;
     id: string;
     title: string;
+    tooltip?: string;
     enabled: boolean;
 }
 
@@ -205,12 +206,15 @@ export interface NestedQuickAction {
     kind: typeof NESTED_QUICK_ACTION_KIND;
     id: string;
     title: string;
+    tooltip?: string;
     enabled: boolean;
     children: NestedQuickActionChild[];
 }
 
 export interface NestedQuickActionChild {
     label: string;
+    tooltip?: string;
+    enabled: boolean;
     children: NestedQuickActionChild[];
 }
 

@@ -2,25 +2,29 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 
 import { render } from '../../utils';
-import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
+import { executeQuickAction, NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { QuickActionList } from '../../../../src/panels/quick-actions';
 
 describe('QuickActionList', () => {
     test('check if quick action list rendered', () => {
-        const children = [
+        const children: NestedQuickActionChild[] = [
             {
                 label: 'submenu1',
+                enabled: true,
                 children: []
             },
             {
                 label: 'submenu2',
+                enabled: true,
                 children: [
                     {
                         label: 'submenu2-submenu1',
+                        enabled: true,
                         children: []
                     },
                     {
                         label: 'submenu2-submenu2',
+                        enabled: true,
                         children: []
                     }
                 ]
@@ -124,6 +128,7 @@ describe('QuickActionList', () => {
         const children = [
             {
                 label: 'submenu1',
+                enabled: true,
                 children: []
             }
         ];

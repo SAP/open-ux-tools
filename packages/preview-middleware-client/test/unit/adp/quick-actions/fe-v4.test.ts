@@ -396,6 +396,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -408,6 +409,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -416,6 +418,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -555,6 +558,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -563,6 +567,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ],
@@ -664,6 +669,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -798,7 +804,8 @@ describe('FE V2 quick actions', () => {
                         parameters: {
                             page: 'ProductsList',
                             entityPropertyChange: {
-                                propertyPath: 'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/useSemanticDateRange',
+                                propertyPath:
+                                    'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/useSemanticDateRange',
                                 propertyValue: false,
                                 operation: 'UPSERT'
                             }
@@ -1098,9 +1105,11 @@ describe('FE V2 quick actions', () => {
                                         {
                                             'children': [
                                                 {
+                                                    enabled: true,
                                                     'children': [
                                                         {
                                                             'children': [],
+                                                            enabled: true,
                                                             'label': `'MyTable' table`
                                                         }
                                                     ],

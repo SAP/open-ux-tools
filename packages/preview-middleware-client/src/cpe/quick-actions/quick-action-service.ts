@@ -123,7 +123,7 @@ export class QuickActionService implements Service {
     }
 
     private addAction(group: QuickActionGroup, instance: QuickActionDefinition): void {
-        if (instance.isActive) {
+        if (instance.isApplicable) {
             const quickAction = instance.getActionObject();
             group.actions.push(quickAction);
             this.actions.push(instance);

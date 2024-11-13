@@ -60,7 +60,8 @@ export function NestedQuickActionListItem({
             return {
                 key: `${value}-${index}`,
                 text: value,
-                title: value,
+                disabled: !child.enabled,
+                title: child?.tooltip ?? value,
                 subMenuProps: hasChildren
                     ? {
                           directionalHint: UIDirectionalHint.leftTopEdge,
@@ -80,14 +81,16 @@ export function NestedQuickActionListItem({
         });
     };
 
+    
+
     const buttonId = `quick-action-children-button-${groupIndex}-${actionIndex}`;
     return (
         <div className="quick-action-item">
             {action.children.length === 1 && (
                 <UILink
                     underline={false}
-                    disabled={isDisabled}
-                    title={`${action.title} - ${action.children[0].label}`}
+                    disabled={isDisabled || !action.children[0].enabled}
+                    title={action.children[0].tooltip ?? action.tooltip ?? `${action.title} - ${action.children[0].label}`}
                     onClick={(): void => {
                         dispatch(
                             executeQuickAction({
@@ -103,8 +106,8 @@ export function NestedQuickActionListItem({
             {action.children.length > 1 && (
                 <>
                     <UILink
-                        title={action.title}
-                        disabled={isDisabled}
+                        title={action.tooltip ?? action.title}
+                        disabled={isDisabled || !action.enabled}
                         underline={false}
                         onClick={() => {
                             setShowContextualMenu(true);
@@ -114,7 +117,7 @@ export function NestedQuickActionListItem({
                         <UIIcon
                             id={buttonId}
                             iconName={IconName.dropdown}
-                            title={action.title}
+                            title={action.tooltip ?? action.title}
                             style={{ verticalAlign: 'middle' }}
                             onClick={(): void => {
                                 setShowContextualMenu(true);

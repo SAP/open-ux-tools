@@ -17,7 +17,12 @@ export abstract class TableQuickActionDefinitionBase {
     protected get textKey(): string {
         return this.defaultTextKey;
     }
-    isActive = false;
+    isApplicable = false;
+    protected isDisabled = false;
+    public get tooltip(): string | undefined {
+        return;
+    }
+
     isClearButtonEnabled = false;
     children: NestedQuickActionChild[] = [];
     tableMap: Record<string, number> = {};
@@ -45,6 +50,7 @@ export abstract class TableQuickActionDefinitionBase {
             if (changeColumnAction) {
                 this.children.push({
                     label: `'${(smartTable as Table).getHeader()}' table`,
+                    enabled: true,
                     children: []
                 });
                 this.tableMap[`${this.children.length - 1}`] = index;
@@ -53,7 +59,7 @@ export abstract class TableQuickActionDefinitionBase {
         }
 
         if (this.children.length > 0) {
-            this.isActive = true;
+            this.isApplicable = true;
         }
     }
 
@@ -61,7 +67,8 @@ export abstract class TableQuickActionDefinitionBase {
         return {
             kind: NESTED_QUICK_ACTION_KIND,
             id: this.id,
-            enabled: this.isActive,
+            enabled: !this.isDisabled,
+            tooltip: this.tooltip,
             title: this.context.resourceBundle.getText(this.textKey),
             children: this.children
         };
