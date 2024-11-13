@@ -100,31 +100,35 @@ function validateMtaConfig(): void {
 async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<CFConfig> {
     const isLCAP = cfAppConfig.lcapMode ?? false;
     const { rootPath, isCap, mtaId, mtaPath, hasRoot, capRoot } = await getProjectProperties(cfAppConfig);
-    const { serviceHost, destination } = await processUI5Config(cfAppConfig.appPath, fs);
+    const { serviceHost, destination, firstServicePathSegmentUI5Config } = await processUI5Config(
+        cfAppConfig.appPath,
+        fs
+    );
     const { servicePath, firstServicePathSegment, appId } = await processManifest(cfAppConfig.appPath, fs);
-    const { isFullUrlDest, destinationAuthentication } = await getDestinationProperties(
+    const { destinationIsFullUrl, destinationAuthentication } = await getDestinationProperties(
         cfAppConfig.destinationName ?? destination
     );
 
     const config = {
         appPath: cfAppConfig.appPath.replace(/\/$/, ''),
-        destinationName: cfAppConfig.destinationName ?? destination,
+        destinationName: cfAppConfig.destinationName || destination,
         addManagedAppRouter: cfAppConfig.addManagedAppRouter ?? true,
         addMtaDestination: cfAppConfig.addMtaDestination ?? false,
         cloudServiceName: cfAppConfig.cloudServiceName,
         lcapMode: !isCap ? false : isLCAP, // Restricting local changes is only applicable for CAP flows
         isMtaRoot: hasRoot ?? false,
-        serviceHost: cfAppConfig.serviceHost ?? serviceHost,
+        serviceHost: cfAppConfig.serviceHost || serviceHost,
         rootPath: rootPath.replace(/\/$/, ''),
+        destinationAuthentication: cfAppConfig.destinationAuthentication || destinationAuthentication,
+        isDestinationFullUrl: cfAppConfig.isDestinationFullUrl ?? destinationIsFullUrl,
+        apiHubConfig: cfAppConfig.apiHubConfig,
+        firstServicePathSegment: firstServicePathSegmentUI5Config || firstServicePathSegment,
         mtaId,
         mtaPath,
-        destinationAuthentication,
         isCap,
         servicePath,
-        firstServicePathSegment,
         appId,
-        capRoot,
-        isFullUrlDest
+        capRoot
     } as CFConfig;
     LoggerHelper.logger?.debug(`CF Config loaded: ${JSON.stringify(config, null, 2)}`);
     return config;
@@ -181,23 +185,23 @@ async function processUI5Config(
 ): Promise<{
     serviceHost: string | undefined;
     destination: string | undefined;
-    firstServicePathSegment: string | undefined;
+    firstServicePathSegmentUI5Config: string | undefined;
 }> {
     let destination;
     let serviceHost;
-    let firstServicePathSegment;
+    let firstServicePathSegmentUI5Config;
     try {
         const ui5YamlConfig: UI5Config = await readUi5Yaml(appPath, FileName.Ui5Yaml, fs);
         const toolsConfig = ui5YamlConfig.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
         if (toolsConfig?.configuration?.backend?.length === 1) {
             destination = toolsConfig?.configuration?.backend[0].destination;
             serviceHost = toolsConfig?.configuration?.backend[0].url;
-            firstServicePathSegment = toolsConfig?.configuration?.backend[0].path;
+            firstServicePathSegmentUI5Config = toolsConfig?.configuration?.backend[0].path;
         }
     } catch (error) {
         LoggerHelper.logger?.debug(t('debug.ui5YamlDoesNotExist'));
     }
-    return { destination, serviceHost, firstServicePathSegment };
+    return { destination, serviceHost, firstServicePathSegmentUI5Config };
 }
 
 /**
@@ -349,8 +353,8 @@ async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor):
     if (cfConfig.destinationName && cfConfig.destinationName !== EmptyDestination) {
         fs.copyTpl(getTemplatePath('app/xs-app-destination.json'), join(cfConfig.appPath, XSAppFile), {
             destination: cfConfig.destinationName,
-            servicePathSegment: `${cfConfig.firstServicePathSegment}${cfConfig.isFullUrlDest ? '/.*' : ''}`, // For service URL's, pull out everything after the last slash
-            targetPath: `${cfConfig.isFullUrlDest ? '' : cfConfig.firstServicePathSegment}/$1`, // Pull group 1 from the regex
+            servicePathSegment: `${cfConfig.firstServicePathSegment}${cfConfig.isDestinationFullUrl ? '/.*' : ''}`, // For service URL's, pull out everything after the last slash
+            targetPath: `${cfConfig.isDestinationFullUrl ? '' : cfConfig.firstServicePathSegment}/$1`, // Pull group 1 from the regex
             authentication: cfConfig.destinationAuthentication === Authentication.NO_AUTHENTICATION ? 'none' : 'xsuaa'
         });
     } else {

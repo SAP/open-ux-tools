@@ -23,8 +23,7 @@ import {
     MTAAPIDestination,
     UI5StandaloneModuleDestination,
     ServiceAPIRequires,
-    HTMLAppBuildParams,
-    MTAVersion
+    HTMLAppBuildParams
 } from '../constants';
 import { t } from '../i18n';
 import type { Logger } from '@sap-ux/logger';
@@ -712,7 +711,7 @@ export class MtaConfig {
                 headerKey: headerConfig.key,
                 headerValue: headerConfig.value,
                 destinationServiceName: destinationServiceName,
-                mtaVersion: MTAVersion
+                mtaVersion: '1.0.0'
             };
             const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${MTAFileExtension}`), 'utf-8');
             writeFileSync(mtaExtFilePath, render(mtaExtTemplate, mtaExt));

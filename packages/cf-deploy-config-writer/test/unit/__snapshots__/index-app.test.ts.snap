@@ -204,7 +204,7 @@ builder:
   \\"authenticationMethod\\": \\"route\\",
   \\"routes\\": [
     {
-      \\"source\\": \\"^undefined/.*/(.*)$\\",
+      \\"source\\": \\"^/sap/.*/(.*)$\\",
       \\"target\\": \\"/$1\\",
       \\"destination\\": \\"TestDestination\\",
       \\"authenticationType\\": \\"none\\",

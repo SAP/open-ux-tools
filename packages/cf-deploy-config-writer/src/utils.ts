@@ -1,6 +1,12 @@
 import { join, normalize, posix } from 'path';
 import { coerce, satisfies } from 'semver';
-import { isAppStudio, listDestinations, isFullUrlDestination, type Authentication, type Destinations } from '@sap-ux/btp-utils';
+import {
+    isAppStudio,
+    listDestinations,
+    isFullUrlDestination,
+    type Authentication,
+    type Destinations
+} from '@sap-ux/btp-utils';
 import { addPackageDevDependency, type Manifest } from '@sap-ux/project-access';
 import {
     MTAVersion,
@@ -67,17 +73,17 @@ export function toPosixPath(dirPath: string): string {
  */
 export async function getDestinationProperties(
     destination: string | undefined
-): Promise<{ isFullUrlDest: boolean; destinationAuthentication: Authentication | undefined }> {
-    let isFullUrlDest = false;
+): Promise<{ destinationIsFullUrl: boolean; destinationAuthentication: Authentication | undefined }> {
+    let destinationIsFullUrl = false;
     let destinationAuthentication;
     if (isAppStudio() && destination) {
         const destinations = await getBTPDestinations();
         if (destinations[destination]) {
-            isFullUrlDest = isFullUrlDestination(destinations[destination]);
+            destinationIsFullUrl = isFullUrlDestination(destinations[destination]);
             destinationAuthentication = destinations[destination].Authentication as Authentication;
         }
     }
-    return { isFullUrlDest, destinationAuthentication };
+    return { destinationIsFullUrl, destinationAuthentication };
 }
 
 /**
