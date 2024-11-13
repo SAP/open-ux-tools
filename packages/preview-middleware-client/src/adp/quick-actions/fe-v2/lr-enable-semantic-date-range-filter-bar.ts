@@ -34,9 +34,7 @@ export class ToggleSemanticDateRangeFilterBar
                 isEqualToUi5Version(version, { major: 1, minor: 96 }) ||
                 isEqualToUi5Version(version, { major: 1, minor: 108 }) ||
                 isEqualToUi5Version(version, { major: 1, minor: 120 })
-            )
-                ? true
-                : false;
+            );
 
         if (isUI5VersionNotSupported) {
             return;
