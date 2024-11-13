@@ -1,6 +1,12 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { type FileBrowserQuestion, type ListQuestion, ERROR_TYPE, getCFAbapInstanceChoices, withCondition } from '@sap-ux/inquirer-common';
+import {
+    type FileBrowserQuestion,
+    type ListQuestion,
+    ERROR_TYPE,
+    getCFAbapInstanceChoices,
+    withCondition
+} from '@sap-ux/inquirer-common';
 import { type ServiceInstanceInfo, apiGetInstanceCredentials, cfGetTarget } from '@sap/cf-tools';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
