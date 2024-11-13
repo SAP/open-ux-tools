@@ -108,6 +108,19 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   isActive: true,
                   fileName: 'testFile8',
                   propertyPath: '/test/components'
+              },
+              {
+                  kind: 'configuration',
+                  controlIds: ['testId1Exp'],
+                  propertyName: 'Personalization',
+                  type: 'pending',
+                  value: {
+                      a: 'test',
+                      b: 'value'
+                  },
+                  isActive: true,
+                  fileName: 'testFile9',
+                  propertyPath: '/test/components'
               }
           ]
         : [];
