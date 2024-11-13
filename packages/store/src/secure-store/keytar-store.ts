@@ -56,7 +56,8 @@
 //             return (await this.keytar.findCredentials(service)).reduce((result, entry) => {
 //                 try {
 //                     result[String(entry.account)] = JSON.parse(entry.password);
-//                     console.log("------------- keytar store constructor rror getting values for service ", service, "result", result);
+//                     //console.log("------------- keytar store constructor rror getting values for service ", service, "result", result);
+//                     console.log("---result", JSON.stringify(result, null,2));
 //                 } catch (e) {
 //                     this.log.error(`Error parsing credentials for [${entry.account}]`);
 //                     console.log("------------- keytar store constructor rror getting values for service ", service, e);
