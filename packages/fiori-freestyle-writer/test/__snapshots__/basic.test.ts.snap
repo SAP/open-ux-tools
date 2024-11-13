@@ -5202,8 +5202,8 @@ exports[`Fiori freestyle template: basicTemplate Generate files for template: ba
 Object {
   ".eslintrc": Object {
     "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultJS\\",
-    \\"root\\": true
+  \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultJS\\",
+  \\"root\\": true
 }
 ",
     "state": "modified",

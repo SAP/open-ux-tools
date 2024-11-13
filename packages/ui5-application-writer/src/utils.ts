@@ -45,5 +45,5 @@ export function getTemplateVersionPath(ui5: UI5): string {
  * @returns {string} - The processed file path.
  */
 export function processDestinationPath(filePath: string): string {
-    return filePath.replace('/1.120.0', '').replace('/1.71.0', '');
+    return filePath.replace(`/${ui5LtsVersion_1_120}`, '').replace(`/${ui5LtsVersion_1_71}`, '').replace('/common', '');
 }

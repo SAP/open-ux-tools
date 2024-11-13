@@ -8220,15 +8220,15 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-    \\"compilerOptions\\": {
-        \\"module\\": \\"none\\",
-        \\"noEmit\\": true,
-        \\"checkJs\\": true,
-        \\"allowJs\\": true,
-        \\"types\\": [
-            \\"@sapui5/ts-types\\"
-        ]
-    }
+  \\"compilerOptions\\": {
+    \\"module\\": \\"none\\",
+    \\"noEmit\\": true,
+    \\"checkJs\\": true,
+    \\"allowJs\\": true,
+    \\"types\\": [
+      \\"@sapui5/ts-types\\"
+    ]
+  }
 }
 ",
     "state": "modified",

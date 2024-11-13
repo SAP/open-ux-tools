@@ -32,19 +32,26 @@ export interface FeatureInput {
  */
 async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: FeatureInput) {
     let optTmplDirPath = join(tmplPath, 'optional', `${name}`);
+    const optCommonTmplDirPath = join(tmplPath, 'optional', `${name}`, 'common');
     const optionPath = getTemplateVersionPath(ui5App.ui5 as UI5);
-    if (name === 'loadReuseLibs') {
+    if (name === 'loadReuseLibs' || name === 'typescript') {
         optTmplDirPath = join(optTmplDirPath, optionPath);
     }
-    const optTmplFilePaths = await getFilePaths(optTmplDirPath);
+    let optTmplFilePathsCommon: string[] = [];
+    try {
+        optTmplFilePathsCommon = await getFilePaths(optCommonTmplDirPath);
+    } catch (error) {
+        // ignore error if common templates are not available
+    }
+    let optTmplFilePaths: string[] = await getFilePaths(optTmplDirPath);
+    optTmplFilePaths = optTmplFilePathsCommon.concat(optTmplFilePaths);
     optTmplFilePaths.forEach((optTmplFilePath) => {
-        const relPath = optTmplFilePath.replace(optTmplDirPath, '');
-        const outPath = join(basePath, relPath);
+        const relPath = optTmplFilePath.replace(optTmplDirPath, '').replace(optCommonTmplDirPath, '');
+        const outPath = processDestinationPath(join(basePath, relPath));
         // Extend or add
         if (!fs.exists(outPath)) {
             fs.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
-                globOptions: { dot: true },
-                processDestinationPath: processDestinationPath
+                globOptions: { dot: true }
             });
         } else {
             const add = JSON.parse(render(fs.read(optTmplFilePath), ui5App, {}));
