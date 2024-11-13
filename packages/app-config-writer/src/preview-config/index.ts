@@ -91,14 +91,16 @@ function extractYamlConfigFileName(script: string): string {
 function isValidPreviewScript(scriptName: string, script: string | undefined): boolean {
     const isValidScriptName =
         scriptName != 'start-variants-management' && scriptName != 'start-control-property-editor';
+
+    //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    const startsWebServer = !!(script?.includes('ui5 serve') || script?.includes('fiori run'));
+
     const { path } = extractUrlDetails(script ?? '');
-    const isValidScript =
-        //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        !!(script?.includes('ui5 serve') || script?.includes('fiori run')) &&
-        //todo: how to ensure we don't mistake other test scripts for preview scripts?
-        !path?.includes('qunit.html') &&
-        path != 'index.html';
-    return isValidScriptName && isValidScript;
+    //todo: how to ensure we don't mistake other test scripts for preview scripts?
+    const opensTest = path?.includes('qunit.html');
+    const opensIndexHtml = path === 'index.html';
+
+    return isValidScriptName && startsWebServer && !opensTest && !opensIndexHtml;
 }
 
 /**
