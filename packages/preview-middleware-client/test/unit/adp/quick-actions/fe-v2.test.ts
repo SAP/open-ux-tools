@@ -1013,7 +1013,7 @@ describe('FE V2 quick actions', () => {
                 jest.spyOn(VersionUtils, 'getUi5Version').mockReturnValue(
                     Promise.resolve({
                         major: 1,
-                        minor: 130
+                        minor: 96
                     } as Ui5VersionInfo)
                 );
                 sapCoreMock.byId.mockImplementation((id) => {

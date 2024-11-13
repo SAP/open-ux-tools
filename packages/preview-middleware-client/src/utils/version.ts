@@ -66,6 +66,26 @@ export function isLowerThanMinimalUi5Version(
 }
 
 /**
+ * Checks if the given version is equal to the specified version.
+ * @param ui5VersionInfo to check
+ * @param targetUi5VersionInfo to check against (default is 1.71)
+ *
+ * @returns boolean
+ */
+export function isEqualToUi5Version(
+    ui5VersionInfo: Ui5VersionInfo,
+    targetUi5VersionInfo: Ui5VersionInfo = minVersionInfo
+): boolean {
+    if (!isNaN(ui5VersionInfo.major) && !isNaN(ui5VersionInfo.minor)) {
+        return (
+            ui5VersionInfo.major === targetUi5VersionInfo.major &&
+            ui5VersionInfo.minor === targetUi5VersionInfo.minor
+        );
+    }
+    return false;
+}
+
+/**
  * Get UI5 version validation message.
  * @param ui5VersionInfo to be mentioned in the message
  * @returns string with validation message.
