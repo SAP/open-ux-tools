@@ -14,7 +14,7 @@ import {
 } from '../utils';
 import LoggerHelper from '../logger-helper';
 import { t } from '../i18n';
-import { MtaConfig, createMTA, addMtaDeployParameters, addMtaBuildParams } from '../mta-config';
+import { MtaConfig, createMTA, addMtaDeployParameters } from '../mta-config';
 import { type Logger } from '@sap-ux/logger';
 import { type CFBaseConfig, RouterModuleType, type MTABaseConfig } from '../types';
 
