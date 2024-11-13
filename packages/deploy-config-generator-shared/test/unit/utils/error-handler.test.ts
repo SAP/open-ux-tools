@@ -97,14 +97,4 @@ describe('handleErrorMessage', () => {
         expect(debugSpy).toHaveBeenCalledWith(errorMessage);
         expect(appWizardMock.showError).toHaveBeenCalledWith(errorMessage, MessageType.notification);
     });
-
-    // it('should not fail if DeploymentGenerator.logger is undefined', () => {
-    //     const errorMessage = 'UI error without logger';
-    //     DeploymentGenerator.logger = undefined;
-    //     (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.ui);
-
-    //     handleErrorMessage(appWizardMock, errorMessage);
-
-    //     expect(appWizardMock.showError).toHaveBeenCalledWith(errorMessage, MessageType.notification);
-    // });
 });

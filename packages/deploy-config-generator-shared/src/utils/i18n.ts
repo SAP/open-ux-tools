@@ -2,14 +2,14 @@ import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from '../translations/deploy-config-generator-shared.i18n.json';
 
-const deployConfigGenCommon = 'deploy-config-generator-shared';
+const deployConfigGenShared = 'deploy-config-generator-shared';
 
 /**
  * Initialize i18next with the translations for this module.
  */
 async function initI18n(): Promise<void> {
     await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', deployConfigGenCommon, translations)
+        i18next.addResourceBundle('en', deployConfigGenShared, translations)
     );
 }
 
@@ -22,7 +22,7 @@ async function initI18n(): Promise<void> {
  */
 export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
-        options = Object.assign(options ?? {}, { ns: deployConfigGenCommon });
+        options = Object.assign(options ?? {}, { ns: deployConfigGenShared });
     }
     return i18next.t(key, options);
 }
