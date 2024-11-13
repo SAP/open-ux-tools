@@ -71,8 +71,7 @@ async function updateVariantsCreationScript(fs: Editor, basePath: string, logger
  * @returns the UI5 yaml configuration file name or 'ui5.yaml' as default
  */
 function extractYamlConfigFileName(script: string): string {
-    const configParameterValueMatch = / (?:--config|-c) (\S*)/.exec(script);
-    return configParameterValueMatch?.[1] ?? configParameterValueMatch?.[2] ?? FileName.Ui5Yaml;
+    return / (?:--config|-c) (\S*)/.exec(script)?.[1] ?? FileName.Ui5Yaml;
 }
 
 /**
@@ -262,8 +261,7 @@ function extractUrlDetails(script: string): {
     intent: FlpConfig['intent'] | undefined;
 } {
     //extract the URL from the 'open' command of the script
-    const openParameterValueMatch = / (?:--open|-o|--o) ([^"]?\S*)/.exec(script);
-    let url = openParameterValueMatch?.[1] ?? openParameterValueMatch?.[2] ?? openParameterValueMatch?.[3] ?? undefined;
+    let url = / (?:--open|-o|--o) ([^"]?\S*)/.exec(script)?.[1] ?? undefined;
     url = url?.startsWith('"') ? url.slice(1) : url;
 
     //extract the path from the URL

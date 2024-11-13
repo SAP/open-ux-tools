@@ -309,7 +309,7 @@ describe('update preview middleware config', () => {
         const packageJson = {
             scripts: {
                 'ui:mockserver':
-                    'fiori run --open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview-theme.yaml',
+                    'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance" --config ./ui5-deprecated-tools-preview-theme.yaml',
                 'start-variants-management': 'ui5 serve --o chicken.html'
             },
             'devDependencies': {
