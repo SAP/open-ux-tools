@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.114
+
+### Patch Changes
+
+-   8b123e3: Fixed typo in "Semantic Date Range" quick action.
+
 ## 0.16.113
 
 ### Patch Changes
