@@ -31,7 +31,10 @@ export class ToggleSemanticDateRangeFilterBar
         const isUI5VersionNotSupported =
             isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 }) ||
             (version.major === 1 && (version.minor === 96 || version.minor === 108 || version.minor === 120));
-        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false && isUI5VersionNotSupported) {
+        if (isUI5VersionNotSupported) {
+            return;
+        }
+        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
             return;
         }
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
