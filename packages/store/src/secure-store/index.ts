@@ -7,7 +7,7 @@ import type { SecureStore } from './types';
 import { join, dirname } from 'path';
 import { homedir } from 'os';
 import { default as fs } from 'fs';
-import { Wrapper } from './wrapper';
+import { SecureStoreHandler } from './secureStore';
 
 // __non_webpack_require__ is used to ensure the require is not bundled by webpack and resolved at runtime
 declare function __non_webpack_require__(m: string): any;
@@ -94,7 +94,7 @@ export const getSecureStore = (log: Logger): SecureStore => {
         // const keytar = getKeytar(log);
         // console.log(" --- keytar ----", keytar)
         // return keytar ? new KeytarStore(log, keytar) : new DummyStore(log);
-        return new Wrapper(log) ?? new DummyStore(log);
+        return new SecureStoreHandler(log) ?? new DummyStore(log);
     }
 };
 
