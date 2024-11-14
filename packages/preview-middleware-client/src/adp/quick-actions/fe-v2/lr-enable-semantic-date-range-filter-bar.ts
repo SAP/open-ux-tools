@@ -1,12 +1,13 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type FilterBar from 'sap/ui/comp/filterbar/FilterBar';
+import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
+import { FeatureService } from '../../../cpe/feature-service';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';
 const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
@@ -25,6 +26,9 @@ export class ToggleSemanticDateRangeFilterBar
     private isUseDateRangeTypeEnabled = false;
 
     initialize(): void {
+        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
+            return;
+        }
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);

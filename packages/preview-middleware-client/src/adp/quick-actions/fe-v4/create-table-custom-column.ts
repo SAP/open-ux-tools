@@ -10,7 +10,6 @@ import {
     TableQuickActionDefinitionBase,
     TREE_TABLE_TYPE
 } from '../table-quick-action-base';
-import { FeatureService } from '../../../cpe/feature-service';
 import { preprocessActionExecution } from '../fe-v2/create-table-custom-column';
 
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
@@ -23,16 +22,6 @@ export class AddTableCustomColumnQuickAction
 {
     constructor(context: QuickActionContext) {
         super(CREATE_TABLE_CUSTOM_COLUMN, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN', context);
-    }
-
-    /**
-     * Initializes action object instance
-     */
-    async initialize(): Promise<void> {
-        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
-            return;
-        }
-        await super.initialize();
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
