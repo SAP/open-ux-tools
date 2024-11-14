@@ -478,4 +478,28 @@ describe('update preview middleware config', () => {
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(warnLogMock).toHaveBeenCalledTimes(4);
     });
+
+    test('same yaml config different endpoints', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'start1': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"',
+                'start2':
+                    'fiori run --open "test/flpSandboxMockserver.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"'
+            },
+            'devDependencies': {
+                '@sap/ux-ui5-tooling': '1.15.4'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+
+        expect(fs.read(join(variousConfigsPath, 'ui5.yaml'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+
+        expect(warnLogMock).toHaveBeenCalledWith(
+            `Skipping script 'start2' because another script also refers to UI5 yaml configuration file ui5.yaml. Please manually adjust the flp.path property in the UI5 yaml configuration file to the correct endpoint or create a separate ui5 yaml configuration for script 'start2'. ui5.yaml currently uses test/flpSandbox.html whereas script 'start2' uses test/flpSandboxMockserver.html.`
+        );
+    });
 });

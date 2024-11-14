@@ -238,6 +238,47 @@ server:
 
 exports[`update preview middleware config no tooling, no middleware 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"ui5 serve -o /localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-no-middleware.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
 
+exports[`update preview middleware config same yaml config different endpoints 1`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: v4lropconvert0711
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: https://sap-ux-mock-services-v4-lrop.cfapps.us10.hana.ondemand.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: v4lropconvert0711
+            action: tile
+"
+`;
+
+exports[`update preview middleware config same yaml config different endpoints 2`] = `"{\\"scripts\\":{\\"start1\\":\\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\\\\\"\\",\\"start2\\":\\"fiori run --open \\\\\\"test/flpSandboxMockserver.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\\\\\"\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.4\\"}}"`;
+
 exports[`update preview middleware config skip invalid yaml configurations 1`] = `"{\\"scripts\\":{\\"invalid\\":\\"ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-invalid.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
 
 exports[`update preview middleware config skip multi-file yaml 1`] = `"{\\"scripts\\":{\\"multi-file\\":\\"ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-multi-file.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;

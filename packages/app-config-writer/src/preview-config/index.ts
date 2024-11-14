@@ -17,6 +17,8 @@ const renameMessage = (filename: string): string =>
         -5
     )}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`;
 
+const DEFAULT_FLP_PATH = 'test/flp.html';
+
 /**
  * Converts the local preview files of a project to virtual files.
  *
@@ -151,6 +153,10 @@ export async function updatePreviewMiddlewareConfigs(
             continue;
         }
 
+        if (await isAlreadyConverted(fs, basePath, ui5Yaml, scriptName, script, logger)) {
+            continue;
+        }
+
         await processUi5YamlConfig(fs, basePath, ui5Yaml, script);
         await renameSandbox(fs, basePath, script, logger);
         ensurePreviewMiddlewareDependency(packageJson, fs, packageJsonPath);
@@ -164,6 +170,51 @@ export async function updatePreviewMiddlewareConfigs(
             `UI5 yaml configuration file ${ui5Yaml} it is not being used in any preview script. Outdated preview middleware will be adjusted nevertheless if necessary.`
         );
     }
+}
+
+/**
+ * Check if the UI5 yaml configuration file has already been converted based on another script.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used for the conversion
+ * @param ui5Yaml - the name of the UI5 yaml configuration file
+ * @param scriptName - the name of the script from package.json
+ * @param script - the content of the script from package.json
+ * @param logger logger to report info to the user
+ * @returns indicator if the UI5 yaml configuration file has already been converted
+ */
+async function isAlreadyConverted(
+    fs: Editor,
+    basePath: string,
+    ui5Yaml: string,
+    scriptName: string,
+    script: string,
+    logger?: ToolsLogger
+): Promise<boolean> {
+    if (
+        Object.keys(
+            fs.dump(basePath, (file) => {
+                return file.basename === ui5Yaml && file.state === 'modified';
+            })
+        ).length === 0
+    ) {
+        return false;
+    }
+    const flpPath = ((await getPreviewMiddleware(undefined, basePath, ui5Yaml, fs)) as CustomMiddleware<PreviewConfig>)
+        ?.configuration?.flp?.path;
+    const { path: scriptPath } = extractUrlDetails(script);
+    if (flpPath != scriptPath) {
+        logger?.warn(
+            `Skipping script '${scriptName}' because another script also refers to UI5 yaml configuration file ${ui5Yaml}. Please manually adjust the flp.path property in the UI5 yaml configuration file to the correct endpoint or create a separate ui5 yaml configuration for script '${scriptName}'. ${ui5Yaml} currently uses ${
+                flpPath ?? DEFAULT_FLP_PATH
+            } whereas script '${scriptName}' uses ${scriptPath}.`
+        );
+    } else {
+        logger?.info(
+            `Skipping script '${scriptName}' because the UI5 yaml configuration file ${ui5Yaml} has already been adjusted based on another script.`
+        );
+    }
+    return true;
 }
 
 /**
@@ -302,7 +353,7 @@ export function updatePreviewMiddlewareConfig(
 
     let writeConfig = false;
     //check path and respect defaults
-    if (pathIsFlpPath(path, configuration) && !path?.includes('test/flp.html')) {
+    if (pathIsFlpPath(path, configuration) && !path?.includes(DEFAULT_FLP_PATH)) {
         configuration.flp.path = path;
         writeConfig = true;
     }
