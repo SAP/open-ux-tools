@@ -234,10 +234,10 @@ export class UITextInput extends React.Component<UITextInputProps> {
      * @param {(props?: InputRenderProps) => JSX.Element | null} [defaultRender] Default renderer.
      * @returns {JSX.Element | null} Input element to render.
      */
-    private onRenderDisabledInput = (
+    private onRenderDisabledInput(
         props?: InputRenderProps,
         defaultRender?: (props?: InputRenderProps) => JSX.Element | null
-    ): JSX.Element | null => {
+    ): JSX.Element | null {
         const inputProps = this.props.disabled
             ? {
                   ...props,
@@ -247,7 +247,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
               }
             : props;
         return defaultRender?.(inputProps) || null;
-    };
+    }
 
     /**
      * Method to render HTML input element.
@@ -256,17 +256,17 @@ export class UITextInput extends React.Component<UITextInputProps> {
      * @param {(props?: InputRenderProps) => JSX.Element | null} [defaultRender] Default renderer.
      * @returns {JSX.Element | null} Input element to render.
      */
-    private onRenderInput = (
+    private onRenderInput(
         props?: InputRenderProps,
         defaultRender?: (props?: InputRenderProps) => JSX.Element | null
-    ): JSX.Element | null => {
+    ): JSX.Element | null {
         if (this.props.onRenderInput) {
             return this.props.onRenderInput(props, (renderProps?: InputRenderProps): JSX.Element | null => {
                 return this.onRenderDisabledInput(renderProps, defaultRender);
             });
         }
         return this.onRenderDisabledInput(props, defaultRender);
-    };
+    }
 
     /**
      * @returns {JSX.Element}
