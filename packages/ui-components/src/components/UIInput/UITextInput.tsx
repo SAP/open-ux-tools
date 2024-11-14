@@ -227,7 +227,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
     };
 
     /**
-     * Method to render HTML input element.
+     * Method to extend HTML input element.
      * Custom rendering is used to use "readonly" attribute instead of "disabled" to make disabled field focusable.
      *
      * @param {InputRenderProps} [props] Input props.
