@@ -6,14 +6,14 @@ import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import LoggerHelper from '../prompts/logger-helper';
 import { PromptState } from './prompt-state';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
  *
  * @returns the platform name and technical name
  */
-export function getPromptHostEnvironment(): { name: string; technical: string } {
+export function getPromptHostEnvironment(): { name: string; technical: HostEnvironmentId } {
     if (!PromptState.isYUI) {
         return hostEnvironment.cli;
     } else {
