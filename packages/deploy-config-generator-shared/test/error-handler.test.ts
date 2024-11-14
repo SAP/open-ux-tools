@@ -1,4 +1,4 @@
-import { DeploymentGenerator } from '../src';
+import { DeploymentGenerator } from '../src/base/generator';
 import { bail, ErrorMessages, handleErrorMessage } from '../src/utils/error-handler';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
@@ -25,7 +25,7 @@ describe('Error Message Methods', () => {
 
     it('noMtaInRoot should return the correct error message', () => {
         const root = '/path/to/root';
-        const mtaYaml = 'mta.yaml'; // Ensure this matches the variable in your module
+        const mtaYaml = 'mta.yaml';
         const result = ErrorMessages.noMtaInRoot(root);
         expect(result).toBe(t('errors.noMtaInRoot', { mtaFileName: mtaYaml, root }));
     });
@@ -70,7 +70,6 @@ describe('handleErrorMessage', () => {
     let appWizardMock: AppWizard;
 
     beforeEach(() => {
-        // Set up a mock instance for appWizard
         appWizardMock = {
             showError: jest.fn()
         } as unknown as AppWizard;
