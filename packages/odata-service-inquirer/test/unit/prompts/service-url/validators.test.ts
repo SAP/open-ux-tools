@@ -171,7 +171,7 @@ describe('Test service url validators', () => {
                 'axiosConfig': {}
             })
         ).toBe(
-            'The service URL you have provided is not a valid OData Service. Fiori applications require an OData service as the data source.'
+            'The service URL you have provided is not a valid OData Service. SAP Fiori applications require an OData service as the data source.'
         );
     });
 });
