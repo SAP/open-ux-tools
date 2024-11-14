@@ -3,6 +3,7 @@ import { ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import { WebIDEAdditionalData, WebIDEUsage } from '@sap-ux/btp-utils';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import { ERROR_TYPE } from '../../../../../src';
@@ -21,12 +22,12 @@ import {
     newSystemChoiceValue
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
-import { hostEnvironment, promptNames } from '../../../../../src/types';
-import { getHostEnvironment, PromptState } from '../../../../../src/utils';
+import { promptNames } from '../../../../../src/types';
+import { getPromptHostEnvironment, PromptState } from '../../../../../src/utils';
 
 jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
-    getHostEnvironment: jest.fn()
+    getPromptHostEnvironment: jest.fn()
 }));
 
 const backendSystemBasic: BackendSystem = {
@@ -219,7 +220,7 @@ describe('Test system selection prompts', () => {
 
     test('getSystemConnectionQuestions: BAS (Destination)', async () => {
         const connectValidator = new ConnectionValidator();
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
 
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
@@ -311,7 +312,7 @@ describe('Test system selection prompts', () => {
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: basic)', async () => {
         mockIsAppStudio = false;
         const connectValidator = new ConnectionValidator();
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
         expect(systemConnectionQuestions).toHaveLength(4);
         expect(systemConnectionQuestions[0].name).toBe('systemSelection');
@@ -385,7 +386,7 @@ describe('Test system selection prompts', () => {
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: reentranceTicket)', async () => {
         mockIsAppStudio = false;
         const connectValidator = new ConnectionValidator();
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
         backendSystems.push(backendSystemReentrance);
 
@@ -423,7 +424,7 @@ describe('Test system selection prompts', () => {
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys)', async () => {
         mockIsAppStudio = false;
         const connectValidator = new ConnectionValidator();
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
         backendSystems.push(backendSystemReentrance);
 
@@ -460,7 +461,7 @@ describe('Test system selection prompts', () => {
 
     test('should execute additional prompt on CLI (if autocomplete is not used) to handle YUI validate function', async () => {
         mockIsAppStudio = false;
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
         const systemConnectionQuestions = await getSystemConnectionQuestions(new ConnectionValidator());
         const validateSystemSelectionCliPrompt = systemConnectionQuestions.find(

@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.7.7
+
+### Patch Changes
+
+-   2886db3: Moves `getCFAbapServiceChoices` to inquirer-common and exports.
+
 ## 0.7.6
 
 ### Patch Changes

@@ -1,4 +1,3 @@
-const { flattenDiagnosticMessageText } = require('typescript');
 const config = require('../../jest.base');
 config.setupFilesAfterEnv = ['jest-extended/all'];
 config.snapshotFormat = {

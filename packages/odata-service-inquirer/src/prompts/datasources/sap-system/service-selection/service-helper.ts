@@ -10,10 +10,11 @@ import {
 } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
+import { getTelemPropertyDestinationType, sendTelemetryEvent } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
-import { getTelemPropertyDestinationType, PromptState, sendTelemetryEvent } from '../../../../utils';
+import { PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';

@@ -16,7 +16,21 @@ export function addi18nResourceBundle(): void {
  * Initialize i18next with the translations for this module.
  */
 export async function initI18nInquirerCommon(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () => addi18nResourceBundle());
+    await i18next.init({
+        lng: 'en',
+        fallbackLng: 'en',
+        missingInterpolationHandler: () => '',
+        interpolation: {
+            format: function (value, format?: string) {
+                // If we have a value add a colon before outputting
+                if (format === 'addMsgWithColonFormatter') {
+                    return value ? `: ${value}` : '';
+                }
+                return value;
+            }
+        }
+    });
+    addi18nResourceBundle();
 }
 
 /**
