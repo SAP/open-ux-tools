@@ -3,7 +3,7 @@ import os from 'os';
 import fs from 'fs';
 import { getBootstrapResourceUrls } from '../src/index';
 import { YEOMANUI_TARGET_FOLDER_CONFIG_PROP } from '../src/constants';
-import { getDefaultTargetFolder, removeApiHostname } from '../src/helpers';
+import { getDefaultTargetFolder } from '../src/helpers';
 
 describe('getResourceUrlsForUi5Bootstrap', () => {
     it('should return relative paths for Edmx projects', () => {
@@ -100,13 +100,5 @@ describe('getDefaultTargetFolder', () => {
         };
         expect(getDefaultTargetFolder(undefined)).toBeUndefined();
         expect(getDefaultTargetFolder(vscodeMock)).toBe(YEOMANUI_TARGET_FOLDER_CONFIG_PROP);
-    });
-});
-
-describe('removeApiHostname', () => {
-    it('should remove -api from url', () => {
-        const url = 'https://example-api.com';
-        const result = removeApiHostname(url);
-        expect(result).toBe('https://example.com');
     });
 });

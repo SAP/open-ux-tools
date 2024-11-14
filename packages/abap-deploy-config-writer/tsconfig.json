@@ -10,9 +10,6 @@
   },
   "references": [
     {
-      "path": "../fiori-generator-shared"
-    },
-    {
       "path": "../project-access"
     },
     {

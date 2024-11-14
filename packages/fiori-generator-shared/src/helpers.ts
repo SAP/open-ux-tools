@@ -58,16 +58,3 @@ export function getDefaultTargetFolder(vscode: any): string | undefined {
     // Otherwise use <home-dir>/projects,
     return existsSync(DEFAULT_PROJECTS_FOLDER) ? DEFAULT_PROJECTS_FOLDER : undefined;
 }
-
-/**
- * Removes any `-api` suffix in the first label of the hostname.
- * Required for local preview in VSCode with S/4 Hana Public Cloud systems.
- *
- * @param url - the url to check
- * @returns url without `-api` suffix
- */
-export function removeApiHostname(url: string): string {
-    const urlObj = new URL(url);
-    urlObj.hostname = urlObj.hostname.replace(/-api(\.|$)/, '$1');
-    return urlObj.origin + urlObj.pathname.replace(/\/$/, '');
-}

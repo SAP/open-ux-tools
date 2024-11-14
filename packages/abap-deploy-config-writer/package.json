@@ -31,7 +31,6 @@
         "node": ">=18.x"
     },
     "dependencies": {
-        "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",

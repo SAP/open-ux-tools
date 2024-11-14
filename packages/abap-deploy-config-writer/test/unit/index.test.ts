@@ -29,7 +29,6 @@ describe('generate', () => {
                 ...config,
                 target: {
                     ...config.target,
-                    url: 'https://example-api.com',
                     authenticationType: 'reentranceTicket'
                 }
             },
