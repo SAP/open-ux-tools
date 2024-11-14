@@ -135,11 +135,10 @@ export async function updatePreviewMiddlewareConfigs(
         const ui5Yaml = basename(extractYamlConfigFileName(script));
         unprocessedUi5YamlFileNames.splice(unprocessedUi5YamlFileNames.indexOf(ui5Yaml), 1);
 
-        if (!isUi5YamlToBeConverted(ui5Yaml, scriptName, validatedUi5YamlFileNames, logger)) {
-            continue;
-        }
-
-        if (await isUi5YamlAlreadyConverted(fs, basePath, ui5Yaml, scriptName, script, logger)) {
+        if (
+            !isUi5YamlToBeConverted(ui5Yaml, scriptName, validatedUi5YamlFileNames, logger) ||
+            (await isUi5YamlAlreadyConverted(fs, basePath, ui5Yaml, scriptName, script, logger))
+        ) {
             continue;
         }
 
