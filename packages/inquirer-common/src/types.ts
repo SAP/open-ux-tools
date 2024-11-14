@@ -1,4 +1,4 @@
-import { type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import type { IValidationLink, IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import type {
     Answers,
     ConfirmQuestion as BaseConfirmQuestion,
@@ -117,3 +117,37 @@ export type CommonPromptOptions<T extends Answers = Answers> = {
 export type PromptDefaultValue<T> = {
     default?: AsyncDynamicQuestionProperty<T>;
 };
+
+export type TelemPropertyDestinationType =
+    | 'AbapODataCatalogDest'
+    | 'GenericODataFullUrlDest'
+    | 'GenericODataPartialUrlDest'
+    | 'Unknown';
+
+/**
+ * Implementation of IValidationLink interface.
+ * Provides a toString() for serialization on CLI since IValidationLink rendering is only supported by YeomanUI.
+ */
+export class ValidationLink implements IValidationLink {
+    // Having to redeclare properties from an interface should not be required see: https://github.com/Microsoft/TypeScript/issues/5326
+    message: IValidationLink['message'];
+    link: IValidationLink['link'];
+
+    /**
+     * Constructor for ValidationLink.
+     *
+     * @param validationLink The validation link object to be used for serialization
+     */
+    constructor(validationLink: IValidationLink) {
+        Object.assign(this, validationLink);
+    }
+
+    /**
+     * Serialize the validation link object to a string.
+     *
+     * @returns The validation link object as a string
+     */
+    public toString(): string {
+        return `${this.message} ${this.link.text}${this.link.url ? ' : ' + this.link.url : ''}`;
+    }
+}

@@ -17,9 +17,10 @@ import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-s
 import { getSystemServiceQuestion } from '../../../../../src/prompts/datasources/sap-system/service-selection';
 import * as serviceHelpers from '../../../../../src/prompts/datasources/sap-system/service-selection/service-helper';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
-import { hostEnvironment, promptNames } from '../../../../../src/types';
+import { promptNames } from '../../../../../src/types';
 import * as utils from '../../../../../src/utils';
 import { PromptState } from '../../../../../src/utils';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 const serviceV4a = {
     id: '/DMO/FLIGHT',
@@ -405,7 +406,7 @@ describe('Test new system prompt', () => {
     });
 
     test('Should get the service details on CLI using `when` condition(list validators dont run on CLI)', async () => {
-        const getHostEnvSpy = jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
+        const getHostEnvSpy = jest.spyOn(utils, 'getPromptHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         const annotations = [
             {
                 Definitions: v2Annotations,
@@ -564,7 +565,7 @@ describe('Test new system prompt', () => {
         const choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)();
         expect(choices).toEqual([]);
         const valResult = await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)();
-        expect(valResult).toBe(t('errors.servicesUnavailable'));
+        expect(valResult).toBe('An error occurred retrieving service(s) for SAP System.');
         expect(loggerSpy).toHaveBeenCalledWith(
             t('errors.serviceCatalogRequest', {
                 catalogRequestUri: mockV2CatUri,
