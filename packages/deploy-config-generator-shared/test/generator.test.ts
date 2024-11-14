@@ -1,8 +1,8 @@
 import { LogWrapper } from '@sap-ux/fiori-generator-shared';
 import yeomanTest from 'yeoman-test';
-import MockGenerator from './mockGenerator';
+import MockGenerator from './mock/mockGenerator';
 import { join } from 'path';
-import { t } from '../../../src/utils';
+import { t } from '../src/utils';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),

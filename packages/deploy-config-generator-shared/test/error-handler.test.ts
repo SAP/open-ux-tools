@@ -1,8 +1,8 @@
-import { DeploymentGenerator } from '../../../src/';
-import { bail, ErrorMessages, handleErrorMessage } from '../../../src/utils/error-handler';
+import { DeploymentGenerator } from '../src';
+import { bail, ErrorMessages, handleErrorMessage } from '../src/utils/error-handler';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
-import { t } from '../../../src/utils/i18n';
+import { t } from '../src/utils/i18n';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
