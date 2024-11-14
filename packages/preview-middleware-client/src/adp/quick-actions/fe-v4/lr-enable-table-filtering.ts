@@ -4,11 +4,11 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
 import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById } from '../../../utils/core';
-import { getReference } from './utils';
 import UI5Element from 'sap/ui/core/Element';
 import Table from 'sap/ui/mdc/Table';
 import { TableQuickActionDefinitionBase } from './table-quick-action-base';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import { getReference } from '../../../utils/fe-v4';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
 const CONTROL_TYPE = 'sap.ui.mdc.Table';
