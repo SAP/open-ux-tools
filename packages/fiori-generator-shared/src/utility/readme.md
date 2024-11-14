@@ -1,0 +1,1 @@
+Add generally applicable functions here to promote reuse rather.

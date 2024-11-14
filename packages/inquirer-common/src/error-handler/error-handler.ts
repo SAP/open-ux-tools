@@ -1,6 +1,7 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio, isHTML5DynamicConfigured, isOnPremiseDestination, type Destination } from '@sap-ux/btp-utils';
 import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
 import {
     getHelpUrl,
     GUIDED_ANSWERS_ICON,
@@ -79,7 +80,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.SERVICES_UNAVAILABLE]: [],
     [ERROR_TYPE.SERVICE_UNAVAILABLE]: [/503/],
     [ERROR_TYPE.INVALID_URL]: [/Invalid URL/, /ERR_INVALID_URL/],
-    [ERROR_TYPE.REDIRECT]: [/3[\d][\d]/],
+    [ERROR_TYPE.REDIRECT]: [/3\d\d/],
     [ERROR_TYPE.NO_ABAP_ENVS]: [],
     [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: [
         /\/IWBEP\/CM_V4_COS\/014/,
@@ -121,22 +122,22 @@ export class ErrorHandler {
     /**
      * The current platform string to be reported in telemetry events. If not provided it will be determined from the environment.
      */
-    private static _platform: string | undefined;
+    private static _platform: HostEnvironmentId | undefined;
 
     /**
      * Get the current platform string that would be used by the error handler.
      *
-     * @returns the platform string as defined by `hostEnvironment.technical` or the value set by the user
+     * @returns the platform string as defined by `HostEnvironmentId` or the value set by the user
      */
-    public static get platform(): string | undefined {
+    public static get platform(): HostEnvironmentId | undefined {
         return ErrorHandler._platform;
     }
     /**
-     * Set platform string usually defined by `hostEnvironment.technical`
+     * Set platform string usually defined by `HostEnvironmentId`
      *
      * @param value the platform string to set
      */
-    public static set platform(value: string | undefined) {
+    public static set platform(value: HostEnvironmentId | undefined) {
         ErrorHandler._platform = value;
     }
 
@@ -308,7 +309,7 @@ export class ErrorHandler {
      * @param error any type of error or object that has an error code, status, name or message
      * @returns a value that can be used to look up a general error type
      */
-    private static findErrorValueForMapping = (error: any) =>
+    private static readonly findErrorValueForMapping = (error: any) =>
         error.response?.data?.error?.code ||
         error.response?.status ||
         error.response?.data ||
@@ -559,7 +560,7 @@ export class ErrorHandler {
         sendTelemetryEvent(telemBasError, {
             basErrorType: destErrorType ?? errorType,
             destODataType: getTelemPropertyDestinationType(destination),
-            Platform: this.platform ?? getHostEnvironment().technical
+            Platform: this._platform ?? getHostEnvironment().technical
         });
         return {
             errorType: destErrorType ?? errorType,

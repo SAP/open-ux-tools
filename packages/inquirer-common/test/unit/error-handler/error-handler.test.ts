@@ -1,16 +1,17 @@
-import 'jest-extended';
-import { initI18nInquirerCommon, t } from '../../../src/i18n';
+import { HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
 import {
+    GUIDED_ANSWERS_ICON,
     GUIDED_ANSWERS_LAUNCH_CMD_ID,
     HELP_NODES,
-    HELP_TREE,
-    GUIDED_ANSWERS_ICON
+    HELP_TREE
 } from '@sap-ux/guided-answers-helper';
-import { ErrorHandler, ERROR_TYPE } from '../../../src/error-handler/error-handler';
 import type { ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { SampleRate } from '@sap-ux/telemetry';
-import * as telemetryUtils from '../../../src/utils/telemetry';
 import { AxiosError } from 'axios';
+import 'jest-extended';
+import { ERROR_TYPE, ErrorHandler } from '../../../src/error-handler/error-handler';
+import { initI18nInquirerCommon, t } from '../../../src/i18n';
+import * as telemetryUtils from '../../../src/utils/telemetry';
 
 let mockIsAppStudio = false;
 
@@ -123,6 +124,7 @@ describe('Test ErrorHandler', () => {
     });
 
     test('getValidationErrorHelp', () => {
+        ErrorHandler.platform = 'VSCode';
         const errorHandler = new ErrorHandler(undefined, true);
         const mockTelemClient = {
             reportEvent: jest.fn()
@@ -161,7 +163,7 @@ describe('Test ErrorHandler', () => {
                 measurements: {},
                 properties: {
                     OperatingSystem: expect.any(String),
-                    Platform: expect.any(String),
+                    Platform: 'VSCode' as HostEnvironmentId,
                     errorType: 'SERVICES_UNAVAILABLE',
                     isGuidedAnswersEnabled: true,
                     nodeIdPath: '48366'
@@ -206,7 +208,7 @@ describe('Test ErrorHandler', () => {
                 measurements: {},
                 properties: {
                     OperatingSystem: expect.any(String),
-                    Platform: expect.any(String),
+                    Platform: 'VSCode' as HostEnvironmentId,
                     errorType: 'SERVICES_UNAVAILABLE',
                     isGuidedAnswersEnabled: true,
                     nodeIdPath: '48366'

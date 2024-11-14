@@ -1,12 +1,12 @@
 export * from './cap';
 export * from './constants';
 export * from './environment';
-export * from './logWrapper';
 export * from './system-utils';
 export * from './telemetry';
-export { getPackageScripts } from './getPackageScripts';
-export { getBootstrapResourceUrls, getDefaultTargetFolder } from './helpers';
-export { generateReadMe } from './read-me';
+export * from './logging/logWrapper';
+export { getPackageScripts } from './npm-package-scripts/getPackageScripts';
+export { getBootstrapResourceUrls } from './helpers';
+export { getDefaultTargetFolder, isExtensionInstalled } from './vscode-helpers/vscode-helpers';
+export { generateReadMe } from './read-me/read-me';
 export { getHostEnvironment } from './environment';
-export { isExtensionInstalled } from './installedCheck';
-export { PackageJsonScripts, YeomanEnvironment, VSCodeInstance, hostEnvironment } from './types';
+export { YeomanEnvironment, VSCodeInstance, hostEnvironment } from './types';
