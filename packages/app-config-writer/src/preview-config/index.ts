@@ -1,7 +1,14 @@
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { basename, join } from 'path';
-import { FileName, getAllUi5YamlFileNames, getWebappPath, type Package, readUi5Yaml } from '@sap-ux/project-access';
+import {
+    FileName,
+    getAllUi5YamlFileNames,
+    getWebappPath,
+    type Package,
+    readUi5Yaml,
+    type ValidatedUi5ConfigFileNames
+} from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { prompt, type PromptObject } from 'prompts';
 import { createPreviewMiddlewareConfig } from '../variants-config/ui5-yaml';
@@ -116,12 +123,8 @@ export async function updatePreviewMiddlewareConfigs(
     basePath: string,
     logger?: ToolsLogger
 ): Promise<void> {
-    const {
-        valid: validUi5YamlFileNames,
-        invalid: invalidUi5YamlFileNames,
-        skipped: skippedUi5YamlFileNames
-    } = await getAllUi5YamlFileNames(fs, basePath);
-    const unprocessedUi5YamlFileNames = [...validUi5YamlFileNames];
+    const validatedUi5YamlFileNames = await getAllUi5YamlFileNames(fs, basePath);
+    const unprocessedUi5YamlFileNames = [...validatedUi5YamlFileNames.valid];
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     for (const [scriptName, script] of Object.entries(packageJson?.scripts ?? {})) {
@@ -132,28 +135,11 @@ export async function updatePreviewMiddlewareConfigs(
         const ui5Yaml = basename(extractYamlConfigFileName(script));
         unprocessedUi5YamlFileNames.splice(unprocessedUi5YamlFileNames.indexOf(ui5Yaml), 1);
 
-        if ((invalidUi5YamlFileNames ?? []).includes(ui5Yaml)) {
-            logger?.warn(
-                `Skipping script ${scriptName} with UI5 yaml configuration file ${ui5Yaml} because it does not comply with the schema.`
-            );
+        if (!isUi5YamlToBeConverted(ui5Yaml, scriptName, validatedUi5YamlFileNames, logger)) {
             continue;
         }
 
-        if ((skippedUi5YamlFileNames ?? []).includes(ui5Yaml)) {
-            logger?.warn(
-                `Skipping script ${scriptName} with UI5 yaml configuration file ${ui5Yaml} because the schema validation was not possible for file ${ui5Yaml}.`
-            );
-            continue;
-        }
-
-        if (!validUi5YamlFileNames.includes(ui5Yaml)) {
-            logger?.warn(
-                `Skipping script '${scriptName}' because UI5 yaml configuration file ${ui5Yaml} could not be found.`
-            );
-            continue;
-        }
-
-        if (await isAlreadyConverted(fs, basePath, ui5Yaml, scriptName, script, logger)) {
+        if (await isUi5YamlAlreadyConverted(fs, basePath, ui5Yaml, scriptName, script, logger)) {
             continue;
         }
 
@@ -173,6 +159,44 @@ export async function updatePreviewMiddlewareConfigs(
 }
 
 /**
+ * Check if the script is to be converted.
+ *
+ * @param ui5Yaml - the name of the UI5 yaml configuration file
+ * @param scriptName - the name of the script from package.json
+ * @param validatedUi5YamlFileNames - the validated UI5 yaml configuration file names
+ * @param logger logger to report info to the user
+ * @returns indicator if the script is to be converted
+ */
+function isUi5YamlToBeConverted(
+    ui5Yaml: string,
+    scriptName: string,
+    validatedUi5YamlFileNames: ValidatedUi5ConfigFileNames,
+    logger?: ToolsLogger
+): boolean {
+    if ((validatedUi5YamlFileNames.invalid ?? []).includes(ui5Yaml)) {
+        logger?.warn(
+            `Skipping script ${scriptName} with UI5 yaml configuration file ${ui5Yaml} because it does not comply with the schema.`
+        );
+        return false;
+    }
+
+    if ((validatedUi5YamlFileNames.skipped ?? []).includes(ui5Yaml)) {
+        logger?.warn(
+            `Skipping script ${scriptName} with UI5 yaml configuration file ${ui5Yaml} because the schema validation was not possible for file ${ui5Yaml}.`
+        );
+        return false;
+    }
+
+    if (!validatedUi5YamlFileNames.valid.includes(ui5Yaml)) {
+        logger?.warn(
+            `Skipping script '${scriptName}' because UI5 yaml configuration file ${ui5Yaml} could not be found.`
+        );
+        return false;
+    }
+    return true;
+}
+
+/**
  * Check if the UI5 yaml configuration file has already been converted based on another script.
  *
  * @param fs - file system reference
@@ -183,7 +207,7 @@ export async function updatePreviewMiddlewareConfigs(
  * @param logger logger to report info to the user
  * @returns indicator if the UI5 yaml configuration file has already been converted
  */
-async function isAlreadyConverted(
+async function isUi5YamlAlreadyConverted(
     fs: Editor,
     basePath: string,
     ui5Yaml: string,

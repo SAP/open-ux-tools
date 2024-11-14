@@ -5,5 +5,6 @@ export * from './find';
 export * from './info';
 export * from './library';
 export * from './package';
+export * from './ui5-config';
 export * from './vscode';
 export * from './webapp';

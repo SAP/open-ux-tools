@@ -6,12 +6,7 @@ import { fileExists, readFile } from '../file';
 import { readdir } from 'fs';
 import yaml from 'js-yaml';
 import Ajv, { type Schema } from 'ajv';
-
-type ValidatedUi5ConfigFileNames = {
-    valid: string[];
-    invalid?: string[];
-    skipped?: string[];
-};
+import type { ValidatedUi5ConfigFileNames } from '../types';
 
 /**
  * Get path to webapp.
