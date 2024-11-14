@@ -307,7 +307,7 @@ export function updatePreviewMiddlewareConfig(
         writeConfig = true;
     }
     //check intent and respect defaults
-    if (intent && intent.object != 'app' && intent.action != 'preview') {
+    if (intent && `${intent?.object}-${intent?.action}` !== 'app-preview') {
         configuration.flp.intent = {
             object: intent.object,
             action: intent.action
