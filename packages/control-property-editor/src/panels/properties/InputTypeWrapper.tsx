@@ -116,10 +116,7 @@ export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFuncti
         default:
     }
 
-    if (
-        property.propertyType === PropertyType.ControlProperty ||
-        (property.propertyType === PropertyType.Configuration && type === STRING_VALUE_TYPE && editor != 'dropdown')
-    ) {
+    if (property.propertyType === PropertyType.ControlProperty) {
         inputTypeToggleOptions.push({
             inputType: InputType.expression,
             tooltip: getToolTip('EXPRESSION_TYPE', t),

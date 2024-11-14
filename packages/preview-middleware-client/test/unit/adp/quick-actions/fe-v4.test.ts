@@ -928,7 +928,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'kind': 'simple',
                                     id: 'listReport0-enable-semantic-date-range',
-                                    title: 'Disable "Sematic Date Range" Button in Filter Bar',
+                                    title: 'Disable "Semantic Date Range" Button in Filter Bar',
                                     enabled: true
                                 }
                             ]
