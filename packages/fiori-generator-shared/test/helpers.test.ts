@@ -2,8 +2,7 @@ import { join } from 'path';
 import os from 'os';
 import fs from 'fs';
 import { getBootstrapResourceUrls } from '../src/index';
-import { YEOMANUI_TARGET_FOLDER_CONFIG_PROP } from '../src/constants';
-import { getDefaultTargetFolder } from '../src/helpers';
+import { YEOMANUI_TARGET_FOLDER_CONFIG_PROP, getDefaultTargetFolder } from '../src/vscode-helpers/vscode-helpers';
 
 describe('getResourceUrlsForUi5Bootstrap', () => {
     it('should return relative paths for Edmx projects', () => {
