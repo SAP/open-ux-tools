@@ -11,7 +11,7 @@ import { AxiosError } from 'axios';
 import 'jest-extended';
 import { ERROR_TYPE, ErrorHandler } from '../../../src/error-handler/error-handler';
 import { initI18nInquirerCommon, t } from '../../../src/i18n';
-import * as telemetryUtils from '../../../src/utils/telemetry';
+import * as telemetryUtils from '../../../src/telemetry/telemetry';
 
 let mockIsAppStudio = false;
 
