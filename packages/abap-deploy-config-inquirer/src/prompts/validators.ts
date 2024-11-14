@@ -8,6 +8,7 @@ import {
     isValidUrl,
     isAppNameValid
 } from '../validator-utils';
+import { DEFAULT_PACKAGE_ABAP } from '../constants';
 import { getTransportListFromService } from '../service-provider-utils';
 import { t } from '../i18n';
 import { findBackendSystemByUrl, initTransportConfig, getPackageAnswer, queryPackages } from '../utils';
@@ -355,6 +356,10 @@ export async function validatePackage(
 ): Promise<boolean | string> {
     if (!input?.trim()) {
         return t('warnings.providePackage');
+    }
+    if (input === DEFAULT_PACKAGE_ABAP) {
+        PromptState.transportAnswers.transportRequired = false;
+        return true;
     }
     const systemConfig: SystemConfig = {
         url: PromptState.abapDeployConfig.url,
