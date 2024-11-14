@@ -1,7 +1,7 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio, isHTML5DynamicConfigured, isOnPremiseDestination, type Destination } from '@sap-ux/btp-utils';
 import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
+import type { HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
 import {
     getHelpUrl,
     GUIDED_ANSWERS_ICON,

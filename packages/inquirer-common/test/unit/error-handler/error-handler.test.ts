@@ -1,4 +1,4 @@
-import { HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
+import type { HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
 import {
     GUIDED_ANSWERS_ICON,
     GUIDED_ANSWERS_LAUNCH_CMD_ID,
