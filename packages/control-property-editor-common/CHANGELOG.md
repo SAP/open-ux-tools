@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.5.7
+
+### Patch Changes
+
+-   8c0ba5c: Fixed Adaptation Editor crash when project contains Personalization change.
+
 ## 0.5.6
 
 ### Patch Changes
