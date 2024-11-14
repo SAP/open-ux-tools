@@ -21,15 +21,18 @@ export class ErrorMessages {
     public static readonly invalidMtaId = t('errors.invalidMtaId');
     public static readonly capDeploymentnoMta = t('errors.capDeploymentNoMta');
 
-    public static mtaIdAlreadyExist = (destinationRoot: string): string =>
+    public static readonly mtaIdAlreadyExist = (destinationRoot: string): string =>
         t('errors.mtaIdAlreadyExists', { destinationRoot });
-    public static noMtaInRoot = (root: string): string => t('errors.noMtaInRoot', { mtaFileName: mtaYaml, root });
-    public static unrecognizedTarget = (target: string): string => t('errors.unrecognizedTarget', { target });
-    public static cannotReadUi5Config = (reason: string): string => t('errors.cannotReadUi5Config', { reason });
-    public static fileDoesNotExist = (filePath: string): string => t('errors.fileDoesNotExist', { filePath });
-    public static folderDoesNotExist = (filePath: string): string => t('errors.folderDoesNotExist', { filePath });
-    public static invalidClient = (client: string): string => t('errors.invalidClient', { client });
-    public static invalidURL = (input: string): string => t('errors.invalidURL', { input });
+    public static readonly noMtaInRoot = (root: string): string =>
+        t('errors.noMtaInRoot', { mtaFileName: mtaYaml, root });
+    public static readonly unrecognizedTarget = (target: string): string => t('errors.unrecognizedTarget', { target });
+    public static readonly cannotReadUi5Config = (reason: string): string =>
+        t('errors.cannotReadUi5Config', { reason });
+    public static readonly fileDoesNotExist = (filePath: string): string => t('errors.fileDoesNotExist', { filePath });
+    public static readonly folderDoesNotExist = (filePath: string): string =>
+        t('errors.folderDoesNotExist', { filePath });
+    public static readonly invalidClient = (client: string): string => t('errors.invalidClient', { client });
+    public static readonly invalidURL = (input: string): string => t('errors.invalidURL', { input });
 }
 
 /**
