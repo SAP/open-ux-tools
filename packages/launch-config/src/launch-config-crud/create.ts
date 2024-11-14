@@ -147,7 +147,7 @@ async function handleDebugOptions(
     // If the `addStartCmd` option is set to `true`, the `npm start` command is used to start the server.
     const npmCommand = debugOptions.addStartCmd ? 'start' : 'run start-mock';
     logger?.info(
-        t('startServerMessage', {
+        t('info.startServerMessage', {
             folder: basename(rootFolder),
             npmCommand
         })

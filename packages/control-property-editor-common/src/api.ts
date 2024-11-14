@@ -15,18 +15,26 @@ export interface Control {
     properties: ControlProperty[];
 }
 export type PropertyValue = string | boolean | number;
+export type ConfigurationValue = PropertyValue | Record<string, unknown>;
 export type PropertyChangeType = 'propertyChange' | 'propertyBindingChange';
 export interface PropertyChange<T extends PropertyValue = PropertyValue> {
     controlId: string;
     controlName: string;
     propertyName: string;
     value: T;
+    propertyType: PropertyType;
     changeType: PropertyChangeType;
 }
 export interface PropertyChanged<T extends PropertyValue = PropertyValue> {
     controlId: string;
     propertyName: string;
     newValue: T;
+}
+export interface ConfigurationChange<T extends ConfigurationValue = ConfigurationValue> {
+    propertyPath: string;
+    propertyName: string;
+    value: T;
+    kind: typeof CONFIGURATION_CHANGE_KIND;
 }
 
 export interface PropertyChangeFailed {
@@ -51,11 +59,17 @@ export const SCENARIO = {
     UiAdaptation: 'UI_ADAPTATION'
 } as const;
 
+export enum PropertyType {
+    Configuration = 'configuration',
+    ControlProperty = 'controlProperty'
+}
+
 export type Scenario = (typeof SCENARIO)[keyof typeof SCENARIO];
 
 interface ControlPropertyBase<T, V, E> {
     type: T;
     editor: E;
+    propertyType: PropertyType;
     name: string;
     readableName: string;
     value: V | string; // string: expression binding
@@ -118,11 +132,23 @@ export interface IconDetails {
 export const PENDING_CHANGE_TYPE = 'pending';
 export const SAVED_CHANGE_TYPE = 'saved';
 export const PROPERTY_CHANGE_KIND = 'property';
+export const CONFIGURATION_CHANGE_KIND = 'configuration';
 export const UNKNOWN_CHANGE_KIND = 'unknown';
 export const CONTROL_CHANGE_KIND = 'control';
 export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
     type: typeof PENDING_CHANGE_TYPE;
     kind: typeof PROPERTY_CHANGE_KIND;
+    /**
+     * Indicates if change is before or after current position in undo redo stack
+     */
+    isActive: boolean;
+    fileName: string;
+}
+
+export interface PendingConfigurationChange<T extends ConfigurationValue = ConfigurationValue>
+    extends ConfigurationChange<T> {
+    type: typeof PENDING_CHANGE_TYPE;
+    controlIds: string[];
     /**
      * Indicates if change is before or after current position in undo redo stack
      */
@@ -147,8 +173,12 @@ export interface PendingControlChange {
     fileName: string;
 }
 
-export type PendingChange = PendingPropertyChange | PendingOtherChange | PendingControlChange;
-export type SavedChange = SavedPropertyChange | UnknownSavedChange | SavedControlChange;
+export type PendingChange =
+    | PendingPropertyChange
+    | PendingOtherChange
+    | PendingControlChange
+    | PendingConfigurationChange;
+export type SavedChange = SavedPropertyChange | SavedControlChange | UnknownSavedChange | SavedConfigurationChange;
 
 export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
     type: typeof SAVED_CHANGE_TYPE;
@@ -157,11 +187,19 @@ export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> ex
     timestamp: number;
 }
 
+export interface SavedConfigurationChange<T extends PropertyValue = PropertyValue> extends ConfigurationChange<T> {
+    type: typeof SAVED_CHANGE_TYPE;
+    fileName: string;
+    controlIds: string[]; // configuration could be shared by multiple controls.
+    timestamp: number;
+}
+
 export interface UnknownSavedChange {
     type: typeof SAVED_CHANGE_TYPE;
     kind: typeof UNKNOWN_CHANGE_KIND;
     fileName: string;
     changeType: string;
+    controlId?: string;
     timestamp?: number;
 }
 
@@ -175,16 +213,20 @@ export interface SavedControlChange {
 }
 
 export type Change = PendingChange | SavedChange;
+export type NonConfigChange =
+    | Exclude<PendingChange, PendingConfigurationChange>
+    | Exclude<SavedChange, SavedConfigurationChange>;
 
 export interface ChangeStackModified {
     pending: PendingChange[];
     saved: SavedChange[];
 }
-
-export interface PropertyChangeDeletionDetails {
+export interface ChangeDeletionDetails {
+    fileName?: string;
+}
+export interface PropertyChangeDeletionDetails extends ChangeDeletionDetails {
     controlId: string;
     propertyName: string;
-    fileName?: string;
 }
 
 export interface ShowMessage {

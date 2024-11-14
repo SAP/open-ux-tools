@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.29
+
+### Patch Changes
+
+-   8c0ba5c: Fixed Adaptation Editor crash when project contains Personalization change.
+
+## 0.11.28
+
+### Patch Changes
+
+-   8b123e3: Fixed typo in "Semantic Date Range" quick action.
+
+## 0.11.27
+
+### Patch Changes
+
+-   fcc5518: Remove feature flag from "Add Custom Table Action", "Add Custom Page Action", "Add Custom Table Column" and "Change Table Columns" Quick Actions.
+
+## 0.11.26
+
+### Patch Changes
+
+-   06e9468: Allow adaptations of manifest settings in FEv4 adaptation projects via Control Property Editor Property Panel
+
 ## 0.11.25
 
 ### Patch Changes
