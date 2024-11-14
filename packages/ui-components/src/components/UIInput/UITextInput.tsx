@@ -38,7 +38,7 @@ const COLOR_STYLES = {
     }
 };
 
-type InputRenderProps = React.InputHTMLAttributes<HTMLInputElement> & React.RefAttributes<HTMLInputElement>;
+export type InputRenderProps = React.InputHTMLAttributes<HTMLInputElement> & React.RefAttributes<HTMLInputElement>;
 
 /**
  * UITextInput component

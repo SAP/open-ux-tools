@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import type { ReactElement } from 'react';
 import { UITextInput } from '../UIInput';
-import type { ITextFieldProps } from '../UIInput';
+import type { InputRenderProps, ITextFieldProps } from '../UIInput';
 import { UiIcons } from '../Icons';
 import { UITranslationButton } from './UITranslationButton';
 import type {
@@ -218,10 +218,8 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
 
     const onRenderInput = useCallback(
         (
-            props?: React.InputHTMLAttributes<HTMLInputElement> & React.RefAttributes<HTMLInputElement>,
-            defaultRender?: (
-                props?: React.InputHTMLAttributes<HTMLInputElement> & React.RefAttributes<HTMLInputElement>
-            ) => JSX.Element | null
+            props?: InputRenderProps,
+            defaultRender?: (props?: InputRenderProps) => JSX.Element | null
         ): JSX.Element | null => {
             if (defaultRender) {
                 return (
