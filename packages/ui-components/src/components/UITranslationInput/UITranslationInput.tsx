@@ -216,12 +216,31 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
         onUpdateValue
     ]);
 
+    const onRenderInput = useCallback(
+        (
+            props?: React.InputHTMLAttributes<HTMLInputElement> & React.RefAttributes<HTMLInputElement>,
+            defaultRender?: (
+                props?: React.InputHTMLAttributes<HTMLInputElement> & React.RefAttributes<HTMLInputElement>
+            ) => JSX.Element | null
+        ): JSX.Element | null => {
+            if (defaultRender) {
+                return (
+                    <div className="ui-translatable__field" title={title}>
+                        {defaultRender({ ...props, title: undefined })}
+                    </div>
+                );
+            }
+            return null;
+        },
+        [title]
+    );
+
     return (
         <UITextInput
             {...props}
-            title={title}
             onRenderSuffix={value?.trim() ? onRenderSuffix : undefined}
             className={classNames}
+            onRenderInput={onRenderInput}
         />
     );
 };

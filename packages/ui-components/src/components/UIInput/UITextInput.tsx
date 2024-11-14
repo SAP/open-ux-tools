@@ -57,7 +57,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
     public constructor(props: UITextInputProps) {
         super(props);
 
-        this.onRenderDisabledInput = this.onRenderDisabledInput.bind(this);
+        this.onRenderInput = this.onRenderInput.bind(this);
     }
 
     /**
@@ -238,13 +238,34 @@ export class UITextInput extends React.Component<UITextInputProps> {
         props?: InputRenderProps,
         defaultRender?: (props?: InputRenderProps) => JSX.Element | null
     ): JSX.Element | null => {
-        const inputProps = {
-            ...props,
-            disabled: undefined,
-            readOnly: true,
-            ['aria-disabled']: true
-        };
+        const inputProps = this.props.disabled
+            ? {
+                  ...props,
+                  disabled: undefined,
+                  readOnly: true,
+                  ['aria-disabled']: true
+              }
+            : props;
         return defaultRender?.(inputProps) || null;
+    };
+
+    /**
+     * Method to render HTML input element.
+     *
+     * @param {InputRenderProps} [props] Input props.
+     * @param {(props?: InputRenderProps) => JSX.Element | null} [defaultRender] Default renderer.
+     * @returns {JSX.Element | null} Input element to render.
+     */
+    private onRenderInput = (
+        props?: InputRenderProps,
+        defaultRender?: (props?: InputRenderProps) => JSX.Element | null
+    ): JSX.Element | null => {
+        if (this.props.onRenderInput) {
+            return this.props.onRenderInput(props, (renderProps?: InputRenderProps): JSX.Element | null => {
+                return this.onRenderDisabledInput(renderProps, defaultRender);
+            });
+        }
+        return this.onRenderDisabledInput(props, defaultRender);
     };
 
     /**
@@ -255,8 +276,8 @@ export class UITextInput extends React.Component<UITextInputProps> {
         const textFieldStyles = this.getStyles;
         return (
             <TextField
-                onRenderInput={this.props.disabled ? this.onRenderDisabledInput : undefined}
                 {...this.props}
+                onRenderInput={this.onRenderInput}
                 errorMessage={messageInfo.message}
                 styles={textFieldStyles}
             />
