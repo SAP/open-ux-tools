@@ -1,11 +1,5 @@
 # @sap-ux-private/preview-middleware-client
 
-## 0.11.29
-
-### Patch Changes
-
--   8c0ba5c: Fixed Adaptation Editor crash when project contains Personalization change.
-
 ## 0.11.28
 
 ### Patch Changes
