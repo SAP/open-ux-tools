@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.2.6
+
+### Patch Changes
+
+-   f2d3335: Expose `watchManifestChanges` function.
+
 ## 0.2.5
 
 ### Patch Changes

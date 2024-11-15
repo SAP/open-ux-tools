@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.30
+
+### Patch Changes
+
+-   f2d3335: Hide "Semantic Date Range" Quick Action behind feature toggle.
+
 ## 0.11.29
 
 ### Patch Changes
