@@ -85,7 +85,7 @@ describe('ui5/middleware', () => {
             .persist();
     });
 
-    test.only('no config', async () => {
+    test('no config', async () => {
         const server = await getTestServer('simple-app');
         await server.get('/test/flp.html').expect(200);
         await server.get('/preview/client/flp/init.js').expect(200);
