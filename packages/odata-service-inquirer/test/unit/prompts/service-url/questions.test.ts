@@ -5,7 +5,7 @@ import * as utils from '../../../../src/utils';
 import { getServiceUrlQuestions } from '../../../../src/prompts/datasources/service-url/questions';
 import { serviceUrlInternalPromptNames } from '../../../../src/prompts/datasources/service-url/types';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
-import { hostEnvironment } from '../../../../src/types';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 
 const validateUrlMockTrue = jest.fn().mockResolvedValue(true);
@@ -283,7 +283,7 @@ describe('Service URL prompts', () => {
     });
 
     test('Test prompt: cliIgnoreCertValidate', async () => {
-        jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
+        jest.spyOn(utils, 'getPromptHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         connectionValidatorMock.validity = {
             urlFormat: true,
             reachable: true,
