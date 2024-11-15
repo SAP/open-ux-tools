@@ -1,5 +1,27 @@
 # @sap-ux/adp-tooling
 
+## 0.12.76
+
+### Patch Changes
+
+-   Updated dependencies [2886db3]
+    -   @sap-ux/inquirer-common@0.5.0
+
+## 0.12.75
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/btp-utils@0.16.0
+    -   @sap-ux/axios-extension@1.17.2
+    -   @sap-ux/system-access@0.5.17
+
+## 0.12.74
+
+### Patch Changes
+
+-   48dd15d: fix: refresh descriptor after manifest changes
+
 ## 0.12.73
 
 ### Patch Changes

@@ -55,3 +55,19 @@ export function validateServiceKey(path: string): string | ServiceInfo | boolean
         return error.name === 'SyntaxError' ? t('prompts.serviceKey.unparseableServiceKey') : error.message;
     }
 }
+
+/**
+ * Validates the specified origin and service path can be used to form a valid URL.
+ *
+ * @param origin the origin of the service
+ * @param servicePath the path to the service
+ * @returns true if a URL can be created from the specified parameters, otherwise an error message
+ */
+export function validateServiceUrl(origin: string, servicePath: string): string | boolean {
+    try {
+        new URL(servicePath, origin);
+        return true;
+    } catch (error) {
+        return t('errors.invalidUrl', { input: `${origin}${servicePath}` });
+    }
+}
