@@ -11,6 +11,7 @@ type SingleVersionInfo =
 export type Ui5VersionInfo = {
     major: number;
     minor: number;
+    patch?: number;
 };
 
 /**
@@ -32,11 +33,12 @@ export async function getUi5Version(): Promise<Ui5VersionInfo> {
         Log.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
         version = '1.121.0';
     }
-    const [major, minor] = version.split('.').map(versionPart => parseInt(versionPart, 10));
+    const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
 
     return {
         major: major,
-        minor: minor
+        minor: minor,
+        patch: patch
     } satisfies Ui5VersionInfo;
 }
 
@@ -55,10 +57,7 @@ export function isLowerThanMinimalUi5Version(
         if (ui5VersionInfo.major < minUi5VersionInfo.major) {
             return true;
         }
-        if (
-            ui5VersionInfo.major === minUi5VersionInfo.major &&
-            ui5VersionInfo.minor < minUi5VersionInfo.minor
-        ) {
+        if (ui5VersionInfo.major === minUi5VersionInfo.major && ui5VersionInfo.minor < minUi5VersionInfo.minor) {
             return true;
         }
     }
@@ -69,18 +68,22 @@ export function isLowerThanMinimalUi5Version(
  * Checks if the given version is equal to the specified version.
  * @param ui5VersionInfo to check
  * @param targetUi5VersionInfo to check against (default is 1.71)
+ * @param checkPatch to compare patch version
  *
  * @returns boolean
  */
 export function isEqualToUi5Version(
     ui5VersionInfo: Ui5VersionInfo,
-    targetUi5VersionInfo: Ui5VersionInfo = minVersionInfo
+    targetUi5VersionInfo: Ui5VersionInfo = minVersionInfo,
+    checkPatch?: boolean
 ): boolean {
     if (!isNaN(ui5VersionInfo.major) && !isNaN(ui5VersionInfo.minor)) {
-        return (
-            ui5VersionInfo.major === targetUi5VersionInfo.major &&
-            ui5VersionInfo.minor === targetUi5VersionInfo.minor
-        );
+        return checkPatch
+            ? ui5VersionInfo.major === targetUi5VersionInfo.major &&
+                  ui5VersionInfo.minor === targetUi5VersionInfo.minor &&
+                  ui5VersionInfo.patch === targetUi5VersionInfo.patch
+            : ui5VersionInfo.major === targetUi5VersionInfo.major &&
+                  ui5VersionInfo.minor === targetUi5VersionInfo.minor;
     }
     return false;
 }
