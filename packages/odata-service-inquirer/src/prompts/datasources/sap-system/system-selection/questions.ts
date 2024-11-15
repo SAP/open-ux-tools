@@ -1,14 +1,13 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Destination } from '@sap-ux/btp-utils';
 import { isAppStudio, isPartialUrlDestination } from '@sap-ux/btp-utils';
-import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { searchChoices, withCondition } from '@sap-ux/inquirer-common';
+import { type InputQuestion, type ListQuestion, searchChoices, withCondition } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import { hostEnvironment, promptNames, type OdataServicePromptOptions } from '../../../../types';
-import { getHostEnvironment, PromptState } from '../../../../utils';
+import { promptNames, type OdataServicePromptOptions } from '../../../../types';
+import { getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ValidationResult } from '../../../connectionValidator';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
@@ -18,6 +17,7 @@ import type { ServiceAnswer } from '../service-selection';
 import { getSystemServiceQuestion } from '../service-selection/questions';
 import { validateServiceUrl } from '../validators';
 import { connectWithBackendSystem, connectWithDestination, createSystemChoices } from './prompt-helpers';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -229,7 +229,7 @@ export async function getSystemConnectionQuestions(
     }
 
     // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
-    if (getHostEnvironment() === hostEnvironment.cli && !promptOptions?.systemSelection?.useAutoComplete) {
+    if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.systemSelection?.useAutoComplete) {
         questions.push({
             when: async (answers: Answers): Promise<boolean> => {
                 const selectedSystem = answers?.[promptNames.systemSelection];
