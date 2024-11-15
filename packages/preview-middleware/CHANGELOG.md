@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.118
+
+### Patch Changes
+
+-   1f7827c: handle higher layer changes
+
 ## 0.16.117
 
 ### Patch Changes
