@@ -5,8 +5,7 @@
                 "canTrackAnalytics": false,
                 "showUsageWarnings": true,
                 "nxCloudId": "63723103eb505e0e8ebeb550"
-            },
-            "runner": "nx-cloud"
+            }
         }
     },
     "namedInputs": {
