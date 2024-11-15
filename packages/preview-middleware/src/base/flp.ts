@@ -253,6 +253,7 @@ export class FlpSandbox {
                     params['sap-ui-xx-viewCache'] = 'false';
                     params['fiori-tools-rta-mode'] = 'true';
                     params['sap-ui-rta-skip-flex-validation'] = 'true';
+                    params['sap-ui-xx-condense-changes'] = 'true';
                     res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
                     return;
                 }
