@@ -1,5 +1,5 @@
 import type { PackageJsonScripts, PackageScriptsOptions } from './types';
-import { t } from './i18n';
+import { t } from '../i18n';
 
 /**
  * Builds the command for the `start-noflp` script in `package.json`.

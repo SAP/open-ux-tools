@@ -2,7 +2,7 @@ import type { ServiceInfo, ServiceProvider } from '@sap-ux/axios-extension';
 import type { Question } from 'inquirer';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { apiGetServicesInstancesFilteredByType as getServicesFromCF, type ServiceInstanceInfo } from '@sap/cf-tools';
-import { ERROR_TYPE, ErrorHandler } from '../../../../../src/error-handler/error-handler';
+import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getAbapOnBTPSystemQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
@@ -228,7 +228,10 @@ describe('questions', () => {
         const errorHandlerSpy = jest.spyOn(ErrorHandler.prototype, 'logErrorMsgs');
         PromptState.isYUI = true;
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
-        expect(errorHandlerSpy).toHaveBeenCalledWith(ERROR_TYPE.NO_ABAP_ENVS, t('errors.noAbapEnvsInCFSpace'));
+        expect(errorHandlerSpy).toHaveBeenCalledWith(
+            ERROR_TYPE.NO_ABAP_ENVS,
+            'No ABAP environments in CF space found.'
+        );
         expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
             'No ABAP environments in CF space found. See log for more details.'
         );
@@ -244,7 +247,8 @@ describe('questions', () => {
         (getServicesFromCF as jest.Mock).mockRejectedValueOnce(new Error('Not logged in'));
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
         expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
-            `${t('errors.abapEnvsCFDiscoveryFailed')} ${t('texts.seeLogForDetails')}`
+            'Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry ' +
+                '(see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login). See log for more details.'
         );
     });
 

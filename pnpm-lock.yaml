@@ -1734,9 +1734,33 @@ importers:
 
   packages/inquirer-common:
     dependencies:
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/guided-answers-helper':
+        specifier: workspace:*
+        version: link:../guided-answers-helper
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
       '@sap-ux/ui5-info':
         specifier: workspace:*
         version: link:../ui5-info
+      '@sap/cf-tools':
+        specifier: 3.2.0
+        version: 3.2.0
+      axios:
+        specifier: 1.7.4
+        version: 1.7.4
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -1752,6 +1776,9 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
+      os-name:
+        specifier: 4.0.1
+        version: 4.0.1
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -1768,6 +1795,9 @@ importers:
       '@types/semver':
         specifier: 7.5.4
         version: 7.5.4
+      jest-extended:
+        specifier: 3.2.4
+        version: 3.2.4(jest@29.7.0)
 
   packages/jest-file-matchers:
     dependencies:
@@ -16852,7 +16882,7 @@ packages:
     dependencies:
       jest: 29.7.0(@types/node@18.11.9)(ts-node@10.9.2)
       jest-diff: 29.7.0
-      jest-get-type: 29.4.3
+      jest-get-type: 29.6.3
     dev: true
 
   /jest-extended@4.0.2(jest@29.7.0):
@@ -20138,6 +20168,7 @@ packages:
   /querystring@0.2.0:
     resolution: {integrity: sha512-X/xY82scca2tau62i9mDyU9K+I+djTMUsvwf7xnUX5GLvVzgJybOJf4Y6o9Zx3oJK/LSXg5tTZBjwzqVPaPO2g==}
     engines: {node: '>=0.4.x'}
+    deprecated: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
 
   /querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
