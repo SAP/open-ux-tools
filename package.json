@@ -30,7 +30,8 @@
         "rimraf": "5.0.5",
         "ts-jest": "29.1.2",
         "typescript": "5.6.2",
-        "update-ts-references": "3.2.1"
+        "update-ts-references": "3.2.1",
+        "prebuild-install": "^7.0.1"
     },
     "scripts": {
         "postinstall": "update-ts-references",
