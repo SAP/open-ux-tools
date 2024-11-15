@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.2
+
+### Patch Changes
+
+-   1fb5a5c: Removes console log statement
+
 ## 0.6.1
 
 ### Patch Changes
