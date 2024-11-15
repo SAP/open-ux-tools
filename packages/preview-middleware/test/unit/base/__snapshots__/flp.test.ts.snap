@@ -514,7 +514,7 @@ exports[`FlpSandbox router editor with config 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox router rta 1`] = `"Found. Redirecting to /my/rta.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true"`;
+exports[`FlpSandbox router rta 1`] = `"Found. Redirecting to /my/rta.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true"`;
 
 exports[`FlpSandbox router rta with adp instance 1`] = `
 Object {
@@ -698,7 +698,7 @@ exports[`FlpSandbox router rta with developerMode=true 1`] = `
 "
 `;
 
-exports[`FlpSandbox router rta with developerMode=true 2`] = `"Found. Redirecting to /my/editor.html.inner.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true"`;
+exports[`FlpSandbox router rta with developerMode=true 2`] = `"Found. Redirecting to /my/editor.html.inner.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true"`;
 
 exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
 "<!DOCTYPE HTML>
@@ -795,7 +795,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox router rta with editors path without leading "/" 1`] = `"Found. Redirecting to /without/slash/rta.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true"`;
+exports[`FlpSandbox router rta with editors path without leading "/" 1`] = `"Found. Redirecting to /without/slash/rta.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true"`;
 
 exports[`FlpSandbox router rta with url parameters 1`] = `
 "<!DOCTYPE HTML>
