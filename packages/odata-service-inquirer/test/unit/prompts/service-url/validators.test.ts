@@ -2,7 +2,7 @@ import type { Annotations } from '@sap-ux/axios-extension';
 import { AbapServiceProvider, V2CatalogService, createServiceForUrl } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { AxiosError, AxiosResponse } from 'axios';
-import { ErrorHandler } from '../../../../src/error-handler/error-handler';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { validateService } from '../../../../src/prompts/datasources/service-url/validators'; // Import the validateService function from its module
 import LoggerHelper from '../../../../src/prompts/logger-helper';
@@ -170,6 +170,8 @@ describe('Test service url validators', () => {
                 odataService,
                 'axiosConfig': {}
             })
-        ).toBe(t('errors.odataServiceUrlNotFound'));
+        ).toBe(
+            'The service URL you have provided is not a valid OData Service. SAP Fiori applications require an OData service as the data source.'
+        );
     });
 });

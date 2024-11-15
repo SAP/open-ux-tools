@@ -1,6 +1,7 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import type { Destination } from '@sap-ux/btp-utils';
-import { isAppStudio, isHTML5DynamicConfigured, isOnPremiseDestination } from '@sap-ux/btp-utils';
+import { isAppStudio, isHTML5DynamicConfigured, isOnPremiseDestination, type Destination } from '@sap-ux/btp-utils';
+import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { type HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
 import {
     getHelpUrl,
     GUIDED_ANSWERS_ICON,
@@ -9,10 +10,10 @@ import {
     HELP_TREE
 } from '@sap-ux/guided-answers-helper';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
-import { t } from '../i18n';
-import { ValidationLink } from '../types';
-import { getTelemPropertyDestinationType, sendTelemetryEvent } from '../utils';
 import type { AxiosError } from 'axios';
+import { t } from '../i18n';
+import { getTelemPropertyDestinationType, sendTelemetryEvent } from '../telemetry/telemetry';
+import { ValidationLink } from '../types';
 
 // Telemetry event names specific to odata service error handling
 const telemEventGALinkCreated = 'GA_LINK_CREATED';
@@ -79,7 +80,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.SERVICES_UNAVAILABLE]: [],
     [ERROR_TYPE.SERVICE_UNAVAILABLE]: [/503/],
     [ERROR_TYPE.INVALID_URL]: [/Invalid URL/, /ERR_INVALID_URL/],
-    [ERROR_TYPE.REDIRECT]: [/3[\d][\d]/],
+    [ERROR_TYPE.REDIRECT]: [/3\d\d/],
     [ERROR_TYPE.NO_ABAP_ENVS]: [],
     [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: [
         /\/IWBEP\/CM_V4_COS\/014/,
@@ -118,6 +119,50 @@ export class ErrorHandler {
 
     private static _logger: Logger;
 
+    /**
+     * The current platform string to be reported in telemetry events. If not provided it will be determined from the environment.
+     */
+    private static _platform: HostEnvironmentId | undefined;
+
+    /**
+     * Get the current platform string that would be used by the error handler.
+     *
+     * @returns the platform string as defined by `HostEnvironmentId` or the value set by the user
+     */
+    public static get platform(): HostEnvironmentId | undefined {
+        return ErrorHandler._platform;
+    }
+    /**
+     * Set platform string usually defined by `HostEnvironmentId`
+     *
+     * @param value the platform string to set
+     */
+    public static set platform(value: HostEnvironmentId | undefined) {
+        ErrorHandler._platform = value;
+    }
+
+    /**
+     * The Guided Answers (help) trigger property sent with some telemetry events.
+     */
+    private static _guidedAnswersTrigger: string | undefined;
+
+    /**
+     * Get the Guided Answers (help) trigger property.
+     *
+     * @returns the Guided Answers trigger property
+     */
+    public static get guidedAnswersTrigger(): string | undefined {
+        return ErrorHandler._guidedAnswersTrigger;
+    }
+    /**
+     * Set the Guided Answers (help) trigger property.
+     *
+     * @param value the Guided Answers trigger property
+     */
+    public static set guidedAnswersTrigger(value: string | undefined) {
+        ErrorHandler._guidedAnswersTrigger = value;
+    }
+
     private static readonly getMessageFromError = (error: unknown): string => {
         return (
             (error as Error)?.message ||
@@ -130,7 +175,7 @@ export class ErrorHandler {
     // Get the localized parameterized error message for the specified error type
     private static readonly _errorTypeToMsg: Record<ERROR_TYPE, (error?: Error | object | string) => string> = {
         [ERROR_TYPE.CERT]: (error) =>
-            t('errors.certificateError', { error: typeof error === 'string' ? error : JSON.stringify(error) }),
+            t('errors.certificateError', { errorMsg: ErrorHandler.getMessageFromError(error) }),
         [ERROR_TYPE.CERT_EXPIRED]: () =>
             t('errors.urlCertValidationError', { certErrorReason: t('texts.anExpiredCert') }),
         [ERROR_TYPE.CERT_SELF_SIGNED]: () =>
@@ -150,8 +195,7 @@ export class ErrorHandler {
                 error: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.AUTH_TIMEOUT]: () => t('errors.authenticationTimeout'),
-        [ERROR_TYPE.TIMEOUT]: (error) =>
-            t('errors.timeout', { error: typeof error === 'string' ? error : JSON.stringify(error) }),
+        [ERROR_TYPE.TIMEOUT]: (error) => t('errors.timeout', { errorMsg: ErrorHandler.getMessageFromError(error) }),
         [ERROR_TYPE.INVALID_URL]: () => t('errors.invalidUrl'),
         [ERROR_TYPE.CONNECTION]: (error) =>
             t('errors.connectionError', {
@@ -185,7 +229,7 @@ export class ErrorHandler {
         [ERROR_TYPE.DESTINATION_NOT_FOUND]: () => t('errors.destination.notFound'),
         [ERROR_TYPE.DESTINATION_MISCONFIGURED]: (error) =>
             t('errors.destination.misconfigured', {
-                destinationProperty: typeof error === 'string' ? error : JSON.stringify(error)
+                destinationProperty: typeof error === 'string' ? error : ''
             }),
         [ERROR_TYPE.NO_V2_SERVICES]: () => t('errors.noServicesAvailable', { version: '2' }),
         [ERROR_TYPE.NO_V4_SERVICES]: () => t('errors.noServicesAvailable', { version: '4' }),
@@ -265,7 +309,7 @@ export class ErrorHandler {
      * @param error any type of error or object that has an error code, status, name or message
      * @returns a value that can be used to look up a general error type
      */
-    private static findErrorValueForMapping = (error: any) =>
+    private static readonly findErrorValueForMapping = (error: any) =>
         error.response?.data?.error?.code ||
         error.response?.status ||
         error.response?.data ||
@@ -515,7 +559,8 @@ export class ErrorHandler {
         // Always raise a telemetry event for destination related errors
         sendTelemetryEvent(telemBasError, {
             basErrorType: destErrorType ?? errorType,
-            destODataType: getTelemPropertyDestinationType(destination)
+            destODataType: getTelemPropertyDestinationType(destination),
+            Platform: this._platform ?? getHostEnvironment().technical
         });
         return {
             errorType: destErrorType ?? errorType,
@@ -607,7 +652,7 @@ export class ErrorHandler {
                     params: {
                         treeId: HELP_TREE.FIORI_TOOLS,
                         nodeIdPath: [helpNode],
-                        trigger: '@sap-ux/odata-service-inquirer'
+                        trigger: this.guidedAnswersTrigger
                     }
                 };
             }
@@ -615,7 +660,8 @@ export class ErrorHandler {
             sendTelemetryEvent(telemEventGALinkCreated, {
                 errorType,
                 isGuidedAnswersEnabled: this.guidedAnswersEnabled,
-                nodeIdPath: `${helpNode}`
+                nodeIdPath: `${helpNode}`,
+                Platform: this.platform ?? getHostEnvironment().technical
             });
             return new ValidationLink(valLink);
         }

@@ -68,10 +68,6 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
-    "name": "systemSelectionCli",
-    "when": [Function],
-  },
-  {
     "default": "",
     "guiOptions": {
       "mandatory": true,

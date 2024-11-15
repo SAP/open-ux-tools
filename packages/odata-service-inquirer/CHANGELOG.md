@@ -1,5 +1,14 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.1
+
+### Patch Changes
+
+-   2886db3: Moves `getCFAbapServiceChoices` to inquirer-common and exports.
+-   Updated dependencies [2886db3]
+    -   @sap-ux/inquirer-common@0.5.0
+    -   @sap-ux/fiori-generator-shared@0.7.7
+
 ## 0.6.0
 
 ### Minor Changes

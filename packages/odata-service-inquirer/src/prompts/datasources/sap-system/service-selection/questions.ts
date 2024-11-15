@@ -4,14 +4,20 @@
  */
 import type { CatalogService, ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
-import { searchChoices, type ListQuestion } from '@sap-ux/inquirer-common';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import {
+    ERROR_TYPE,
+    ErrorHandler,
+    searchChoices,
+    type ListQuestion,
+    type ValidationLink
+} from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
-import { ERROR_TYPE, ErrorHandler } from '../../../../error-handler/error-handler';
 import { t } from '../../../../i18n';
-import type { OdataServicePromptOptions, ValidationLink } from '../../../../types';
-import { hostEnvironment, promptNames } from '../../../../types';
-import { getDefaultChoiceIndex, getHostEnvironment } from '../../../../utils';
+import type { OdataServicePromptOptions } from '../../../../types';
+import { promptNames } from '../../../../types';
+import { getDefaultChoiceIndex, getPromptHostEnvironment } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
@@ -137,7 +143,7 @@ export function getSystemServiceQuestion(
     const questions: Question<ServiceAnswer>[] = [systemServiceQuestion];
 
     // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
-    if (getHostEnvironment() === hostEnvironment.cli && !promptOptions?.serviceSelection?.useAutoComplete) {
+    if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.serviceSelection?.useAutoComplete) {
         questions.push({
             when: async (answers: Answers): Promise<boolean> => {
                 const selectedService = answers?.[`${promptNamespace}:${promptNames.serviceSelection}`];
