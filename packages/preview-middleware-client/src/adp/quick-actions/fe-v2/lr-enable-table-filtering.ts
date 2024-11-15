@@ -1,9 +1,14 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage, pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../table-quick-action-base';
+import {
+    GRID_TABLE_TYPE,
+    M_TABLE_TYPE,
+    SMART_TABLE_TYPE,
+    TableQuickActionDefinitionBase,
+    TREE_TABLE_TYPE
+} from '../table-quick-action-base';
 import { executeToggleAction } from './utils';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
@@ -14,29 +19,46 @@ const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, TREE_TABLE_TYPE, GRID_TAB
  * Quick Action for toggling the visibility of "clear filter bar" button in List Report page.
  */
 export class EnableTableFilteringQuickAction
-    extends SimpleQuickActionDefinitionBase
-    implements SimpleQuickActionDefinition
+    extends TableQuickActionDefinitionBase
+    implements NestedQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(ENABLE_TABLE_FILTERING, [], '', context);
+        super(ENABLE_TABLE_FILTERING, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION', context);
     }
-
+    isActive: boolean;
     readonly forceRefreshAfterExecution = true;
     private isTableFilteringInPageVariantEnabled = false;
-
-    initialize(): void {
-        for (const control of getRelevantControlFromActivePage(
+    lsTableMap: Record<string, number> = {};
+    initialize(): Promise<void> {
+        let index = 0;
+        const tables = getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
             CONTROL_TYPES
-        )) {
-            const isActionApplicable = pageHasControlId(this.context.view, control.getId());
-            const modifiedControl = getControlById(control.getId());
-            if (isActionApplicable && modifiedControl) {
-                this.isTableFilteringInPageVariantEnabled = modifiedControl.data('p13nDialogSettings').filter.visible;
-                this.control = modifiedControl;
+        );
+        for (const table of tables) {
+            const isActionApplicable = pageHasControlId(this.context.view, table.getId());
+            const modifiedControl = getControlById(table.getId());
+            if (modifiedControl) {
+                const isFilterEnabled = modifiedControl.data('p13nDialogSettings').filter.visible;
+                this.children.push({
+                    label: this.getTableLabel(modifiedControl),
+                    enabled: !isFilterEnabled,
+                    tooltip: isFilterEnabled ? 'Filter already enabled' : undefined,
+                    children: []
+                });
+                this.lsTableMap[`${this.children.length - 1}`] = index;
+                index++;
             }
         }
+
+        if (this.children.length > 0) {
+            this.isApplicable = true;
+        }
+        if (this.children.every((child) => !child.enabled)) {
+            this.isDisabled = true;
+        }
+        return Promise.resolve();
     }
 
     protected get textKey() {
@@ -45,12 +67,19 @@ export class EnableTableFilteringQuickAction
             : 'V2_QUICK_ACTION_LR_ENABLE_TABLE_FILTERING';
     }
 
-    async execute(): Promise<FlexCommand[]> {
+    async execute(path: string): Promise<FlexCommand[]> {
+        const index = this.lsTableMap[path];
+        const table = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, CONTROL_TYPES);
+
+        const modifiedControl = table[index];
+        if (!modifiedControl) {
+            return [];
+        }
         const command = await executeToggleAction(
             this.context,
             this.isTableFilteringInPageVariantEnabled,
             'component/settings',
-            this.control!,
+            modifiedControl,
             {
                 enableTableFilterInPageVariant: !this.isTableFilteringInPageVariantEnabled
             }
