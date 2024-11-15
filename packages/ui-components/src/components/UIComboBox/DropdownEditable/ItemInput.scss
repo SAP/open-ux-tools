@@ -14,7 +14,7 @@ $menu-item-selection-color: var(
     font-size: var(--vscode-font-size);
     font-family: var(--vscode-font-family);
     font-weight: var(--vscode-font-weight);
-    overflow: hidden;
+    overflow: visible;
     &-input {
         flex-grow: 1;
         .ms-TextField-wrapper {
@@ -30,6 +30,13 @@ $menu-item-selection-color: var(
         input {
             display: block !important;
             padding-left: 3px;
+        }
+        // Hide error message - error is shown as tooltip
+        .ms-TextField-errorMessage {
+            display: none;
+        }
+        &--error:hover .ms-TextField-fieldGroup {
+            border-color: var(--vscode-charts-red);
         }
     }
     &-sub-value {

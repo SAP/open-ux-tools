@@ -3,8 +3,6 @@ import { UITextInput } from '../../UIInput';
 import type { UITextInputProps } from '../../UIInput';
 import { UISelectableOptionWithSubValues } from './types';
 import { useEditValue } from './hooks';
-
-import './ItemInput.scss';
 import { UIIcon } from '../../UIIcon';
 import { UiIcons } from '../../Icons';
 
@@ -14,6 +12,11 @@ export interface ItemInputProps extends UITextInputProps {
     option?: UISelectableOptionWithSubValues;
     renamedEntry?: string;
     onEnter?: (ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    onChange?: (
+        event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+        newValue?: string,
+        invalid?: boolean
+    ) => void;
 }
 
 export interface ItemInputRef {
@@ -24,11 +27,26 @@ function getSubValueText(option?: UISelectableOptionWithSubValues): string | und
     return option?.subValue?.text ?? option?.text;
 }
 
+/**
+ * Returns a class name string based on the presence of an error.
+ *
+ * @param error Indicates if an error message is present.
+ * @returns A string representing the computed class name.
+ */
+const getClassName = (error: boolean): string => {
+    const classNames = ['editable-item-input'];
+    if (error) {
+        classNames.push('editable-item-input--error');
+    }
+    return classNames.join(' ');
+};
+
 function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemInputRef>): React.ReactElement {
     const { option, renamedEntry, onEnter, ...inputProps } = props;
     const { value, onChange, onClick, onMouseDown } = inputProps;
     const [subValue, setSubValue] = useState<string | undefined>(getSubValueText(option));
     const [localValue, setLocalValue] = useEditValue('', value, renamedEntry);
+    const [errorMessage, setErrorMessage] = useState<undefined | string>(validateValue(localValue));
     const subOptionsCount = option?.options?.length ?? 0;
 
     useImperativeHandle<ItemInputRef, ItemInputRef>(ref, () => ({
@@ -43,7 +61,15 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
 
     const onLocalChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         setLocalValue(newValue ?? '');
-        onChange?.(event, newValue);
+        const validationMessage = newValue ? validateValue(newValue) : undefined;
+        if (validationMessage) {
+            // Show validation error message
+            setErrorMessage(validationMessage);
+        } else if (errorMessage) {
+            // No validation error - clear input
+            setErrorMessage(undefined);
+        }
+        onChange?.(event, newValue, !!validationMessage);
     };
     const onKeyDown = (ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (ev.key === 'Enter') {
@@ -54,7 +80,7 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
     return (
         <div className={`editable-item ${subOptionsCount > 1 ? 'editable-item-expandable' : ''}`}>
             <UITextInput
-                className="editable-item-input"
+                className={getClassName(!!errorMessage)}
                 {...inputProps}
                 onMouseDown={(event) => {
                     const target = event.target as HTMLElement;
@@ -71,6 +97,8 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
                 onKeyDown={onKeyDown}
                 onChange={onLocalChange}
                 value={localValue}
+                errorMessage={errorMessage}
+                title={errorMessage}
             />
             <div className="editable-item-sub-value">{subValue}</div>
             {subOptionsCount > 1 && <UIIcon iconName={UiIcons.Chevron} className="editable-item-sub-menu-icon" />}

@@ -140,6 +140,12 @@ function areArraysEqualByKeyAndText(array1: UISelectableOption[], array2: UISele
     });
 }
 
+/**
+ * Retrieves keys of items that are marked as editable and have text.
+ *
+ * @param options An array of selectable options, each with possible sub-values.
+ * @returns An array of keys for the options that are editable and contain text.
+ */
 function getEditedItems(options: UISelectableOptionWithSubValues[]): Array<string | number> {
     const editedItems: Array<string | number> = [];
     for (const option of options) {
@@ -153,12 +159,11 @@ function getEditedItems(options: UISelectableOptionWithSubValues[]): Array<strin
 /**
  * Creates a deep clone of a given item, modifying its key, name, and value with a provided index.
  *
- * @param item - The item (IGroup or TreeNode) to be cloned.
- * @param index - The index used to differentiate the cloned item.
+ * @param item The item (IGroup or TreeNode) to be cloned.
+ * @param index The index used to differentiate the cloned item.
  * @returns A deep clone of the item with updated key, name, and value.
  */
 function cloneOption(option: UISelectableOptionWithSubValues, index: number): UISelectableOptionWithSubValues {
-    console.log('cloneOption');
     const optionClone = structuredClone(option);
     optionClone.key = `${option.key}-${index}`;
     optionClone.text = '';
@@ -169,14 +174,20 @@ function cloneOption(option: UISelectableOptionWithSubValues, index: number): UI
     const defaultSubValue = getDefaultSubOption(optionClone.options);
     optionClone.subValue = defaultSubValue ?? {
         key: optionClone.key,
-        text: getTypeFromEditableItem(optionClone.key)
+        text: getTypeFromEditableItem(option.key)
     };
 
     return optionClone;
 }
 
+/**
+ * Parses a key string to separate the base key and its clone index.
+ *
+ * @param value The key value to parse, expected in the format "key-index".
+ * @returns An object containing the base key and the clone index.
+ */
 function parseCloneKey(value: string): { index: number; key: string } {
-    const match = value.match(/(.*?)-(\d+)$/);
+    const match = value.match(/^(.+)-(\d+)$/);
     if (match) {
         return {
             key: match[1],
@@ -189,6 +200,13 @@ function parseCloneKey(value: string): { index: number; key: string } {
     };
 }
 
+/**
+ * Creates a clone of an option with an incremented clone index and inserts it in the options array.
+ *
+ * @param options The list of selectable options with potential sub-values.
+ * @param editedKey The key of the option to be cloned.
+ * @returns A new array of options with the cloned option inserted.
+ */
 function applyEditClone(
     options: UISelectableOptionWithSubValues[],
     editedKey: string | number
@@ -202,7 +220,6 @@ function applyEditClone(
         }
     }
     let originalOption: UISelectableOptionWithSubValues | undefined = options[insertIndex];
-    // ToDo - Get base
     let cloneIndex = 1;
     if (originalOption?.clone) {
         const clodeData = parseCloneKey(originalOption.key.toString());
@@ -218,6 +235,14 @@ function applyEditClone(
     return [...options];
 }
 
+/**
+ * Custom hook to manage selectable options and selection updates, with support for multi-select and dynamically editable options.
+ *
+ * @param externalSelectedKey The key representing the currently selected option or options.
+ * @param originalOptions The original list of selectable options, potentially without edits.
+ * @param multiSelect If true, allows multiple options to be selected simultaneously.
+ * @returns Returns a tuple containing the current selection, a function to update the selection and the list of editable options with potential sub-values.
+ */
 export function useOptions(
     externalSelectedKey: OptionKey,
     originalOptions: UISelectableOption[],

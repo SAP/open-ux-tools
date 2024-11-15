@@ -6,7 +6,6 @@ export interface UISelectableOptionWithSubValues extends UISelectableOption {
     subValue?: UIContextualMenuItem;
     editable?: boolean;
     clone?: boolean;
-    // editedValue?: string;
     placeholder?: string;
 }
 
