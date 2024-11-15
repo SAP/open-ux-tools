@@ -63,7 +63,7 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
-async function updateVariantsCreationScript(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+export async function updateVariantsCreationScript(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     if (packageJson?.scripts?.['start-variants-management']) {

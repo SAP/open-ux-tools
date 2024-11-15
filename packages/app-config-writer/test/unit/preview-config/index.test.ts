@@ -5,7 +5,8 @@ import {
     checkPrerequisites,
     updatePreviewMiddlewareConfigs,
     updatePreviewMiddlewareConfig,
-    ensurePreviewMiddlewareDependency
+    ensurePreviewMiddlewareDependency,
+    updateVariantsCreationScript
 } from '../../../src/preview-config';
 import { ToolsLogger } from '@sap-ux/logger';
 import { create, type Editor } from 'mem-fs-editor';
@@ -13,6 +14,7 @@ import { create as createStorage } from 'mem-fs';
 import type { PreviewConfigOptions } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import * as projectAccess from '@sap-ux/project-access';
+import * as variantsConfig from '../../../src/variants-config/generateVariantsConfig';
 
 describe('check prerequisites', () => {
     const logger = new ToolsLogger();
@@ -161,6 +163,41 @@ describe('misc', () => {
         expect(() => fs.read(join(variousConfigsPath, 'package.json'))).toThrowError(
             `${variousConfigsPackageJsonPath} doesn\'t exist`
         );
+    });
+
+    test('update variants creation script - yes', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'start-variants-management':
+                    'fiori run -o /preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        const getAllUi5YamlFileNamesMock = jest.spyOn(variantsConfig, 'generateVariantsConfig').mockResolvedValue(fs);
+
+        await updateVariantsCreationScript(fs, variousConfigsPath, logger);
+
+        expect(getAllUi5YamlFileNamesMock).toHaveBeenCalledTimes(1);
+    });
+
+    test('update variants creation script - no', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        //the following typo in the script name is indented!
+        const packageJson = {
+            scripts: {
+                'start-varinats-management':
+                    'fiori run -o /preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        const getAllUi5YamlFileNamesMock = jest.spyOn(variantsConfig, 'generateVariantsConfig').mockResolvedValue(fs);
+
+        await updateVariantsCreationScript(fs, variousConfigsPath, logger);
+
+        expect(getAllUi5YamlFileNamesMock).not.toHaveBeenCalled();
     });
 });
 
