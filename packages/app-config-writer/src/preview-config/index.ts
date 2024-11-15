@@ -297,7 +297,7 @@ export function ensurePreviewMiddlewareDependency(
  * @param basePath - base path to be used for the conversion
  * @param ui5Yaml - the name of the UI5 yaml configuration file
  * @param script - the content of the script
- * @param skipPreviewMiddlewareCreation - (default: true) indicator if the preview middleware creation should be skipped if no preview middleware is configured
+ * @param skipPreviewMiddlewareCreation - (default: false) indicator if the preview middleware creation should be skipped if no preview middleware is configured
  */
 export async function processUi5YamlConfig(
     fs: Editor,
