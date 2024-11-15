@@ -147,7 +147,7 @@ export abstract class TableQuickActionDefinitionBase {
      * @param table - table element
      * @returns table label if found or 'Unnamed table'
      */
-    private getTableLabel(table: UI5Element): string {
+    public getTableLabel(table: UI5Element): string {
         if (isA<SmartTable>(SMART_TABLE_TYPE, table) || isA<MdcTable>(MDC_TABLE_TYPE, table)) {
             const header = table.getHeader();
             if (header) {
