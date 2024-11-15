@@ -25,14 +25,14 @@ describe('utils', () => {
         test('defaults', () => {
             const packageJson = { devDependencies: { '@sap/ux-ui5-tooling': '1.15.3' } };
             expect(utils.enhanceUrlParametersWithRta(packageJson)).toStrictEqual(
-                'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true'
+                'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false'
             );
         });
 
         test('parameters overwrite with sap-client', () => {
             const packageJson = { devDependencies: { '@sap-ux/preview-middleware': '0.16.88' } };
             expect(utils.enhanceUrlParametersWithRta(packageJson, { 'sap-client': '500' })).toStrictEqual(
-                'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-client=500'
+                'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false&sap-client=500'
             );
         });
     });
