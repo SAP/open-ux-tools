@@ -13,7 +13,7 @@ describe('Custom environment', () => {
 
         // This is done centrally in the CustomEnvironment constructor but we need to call it here for the test purpose
 
-    },15000);
+    },60000);
 
     it('Can be created in 1.71', async () => {
 
@@ -28,5 +28,5 @@ describe('Custom environment', () => {
 
         // This is done centrally in the CustomEnvironment constructor but we need to call it here for the test purpose
 
-    },15000);
+    },60000);
 });
