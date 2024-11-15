@@ -5,6 +5,9 @@ Test environment for Jest for SAPUI5.
 The `@sap-ux/jest-environment-ui5` is a custom test environment for Jest that allows to run tests for SAPUI5 applications. 
 It is based on the `@ui5/project` to resolve the UI5 dependencies and serve the application sources during the test execution.
 
+Usage of this module is allowed but should be considered experimental, most scenario should work but some might not be supported.
+ 
+
 ## Installation
 Npm
 `npm install --save @sap-ux/jest-environment-ui5`

@@ -146,7 +146,6 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
         'sap/ui/thirdparty/hasher': path.resolve(__dirname, './shim/hasher.js'),
         'sap/ui/thirdparty/hasher.js': path.resolve(__dirname, './shim/hasher.js'),
 
-        'sap-ui-version.json': path.resolve(__dirname, './shim/sap-ui-version.json'),
         ui5loader: path.resolve(__dirname, './shim/ui5loader.js'),
         'ui5loader-dbg': path.resolve(__dirname, './shim/ui5loader.js')
     };
