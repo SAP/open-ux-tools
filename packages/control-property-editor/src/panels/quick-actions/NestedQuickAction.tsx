@@ -81,8 +81,6 @@ export function NestedQuickActionListItem({
         });
     };
 
-    
-
     const buttonId = `quick-action-children-button-${groupIndex}-${actionIndex}`;
     return (
         <div className="quick-action-item">
@@ -90,7 +88,9 @@ export function NestedQuickActionListItem({
                 <UILink
                     underline={false}
                     disabled={isDisabled || !action.children[0].enabled}
-                    title={action.children[0].tooltip ?? action.tooltip ?? `${action.title} - ${action.children[0].label}`}
+                    title={
+                        action.children[0].tooltip ?? action.tooltip ?? `${action.title} - ${action.children[0].label}`
+                    }
                     onClick={(): void => {
                         dispatch(
                             executeQuickAction({

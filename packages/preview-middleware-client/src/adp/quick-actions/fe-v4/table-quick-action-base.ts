@@ -20,7 +20,7 @@ export abstract class TableQuickActionDefinitionBase {
     isApplicable = false;
     protected isDisabled = false;
     public get tooltip(): string | undefined {
-        return;
+        return undefined;
     }
 
     isClearButtonEnabled = false;

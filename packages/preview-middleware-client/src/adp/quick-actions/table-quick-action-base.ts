@@ -52,9 +52,9 @@ export abstract class TableQuickActionDefinitionBase {
     public isApplicable = false;
 
     protected isDisabled: boolean | undefined;
-   
+
     public get tooltip(): string | undefined {
-        return;
+        return undefined;
     }
 
     public children: NestedQuickActionChild[] = [];

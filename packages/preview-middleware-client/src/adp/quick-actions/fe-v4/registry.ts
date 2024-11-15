@@ -45,7 +45,7 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction,
-                        EnableTableFilteringQuickAction,
+                        EnableTableFilteringQuickAction
                     ],
                     view,
                     key: name + index

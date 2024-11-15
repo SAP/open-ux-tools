@@ -21,7 +21,7 @@ export abstract class SimpleQuickActionDefinitionBase {
     protected isDisabled: boolean | undefined;
 
     public get tooltip(): string | undefined {
-        return;
+        return undefined;
     }
 
     protected get textKey(): string {

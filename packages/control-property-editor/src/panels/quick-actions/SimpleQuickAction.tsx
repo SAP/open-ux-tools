@@ -30,7 +30,7 @@ export function SimpleQuickActionListItem({ action }: Readonly<SimpleQuickAction
                 key={action.id}
                 title={action.tooltip ?? action.title}
                 underline={false}
-                disabled={isDisabled}
+                disabled={isDisabled || !action.enabled}
                 onClick={() => {
                     dispatch(executeQuickAction({ kind: action.kind, id: action.id }));
                 }}>

@@ -680,13 +680,16 @@ describe('main redux slice', () => {
                             kind: 'nested',
                             children: [
                                 {
+                                    enabled: true,
                                     label: 'test label',
                                     children: [
                                         {
+                                            enabled: true,
                                             label: 'test label 2',
                                             children: []
                                         },
                                         {
+                                            enabled: true,
                                             label: 'test label 3',
                                             children: []
                                         }
