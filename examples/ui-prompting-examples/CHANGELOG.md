@@ -1,5 +1,37 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.2.17
+
+### Patch Changes
+
+-   Updated dependencies [32191dd]
+    -   @sap-ux/ui-components@1.21.1
+    -   @sap-ux/ui-prompting@0.3.3
+
+## 0.2.16
+
+### Patch Changes
+
+-   Updated dependencies [25b90b5]
+    -   @sap-ux/ui-components@1.21.0
+    -   @sap-ux/ui-prompting@0.3.2
+
+## 0.2.15
+
+### Patch Changes
+
+-   Updated dependencies [1c8b59f]
+    -   @sap-ux/ui-components@1.20.4
+    -   @sap-ux/ui-prompting@0.3.1
+
+## 0.2.14
+
+### Patch Changes
+
+-   a52de73: Implement changes to handle i18n entry creation with i18n annotation information.
+-   Updated dependencies [a52de73]
+    -   @sap-ux/ui-prompting@0.3.0
+
 ## 0.2.13
 
 ### Patch Changes

@@ -3,19 +3,18 @@ import type { ReactElement } from 'react';
 import { Link, Stack } from '@fluentui/react';
 
 import { PROPERTY_CHANGE_KIND, SAVED_CHANGE_TYPE, selectControl } from '@sap-ux-private/control-property-editor-common';
-import type { Change } from '@sap-ux-private/control-property-editor-common';
+import type { NonConfigChange } from '@sap-ux-private/control-property-editor-common';
 
 import { PropertyChange } from './PropertyChange';
 import { useAppDispatch } from '../../store';
 
 import styles from './ControlGroup.module.scss';
-
 export interface ControlGroupProps {
     text: string;
     controlId: string;
     controlName: string;
     index: number;
-    changes: Change[];
+    changes: NonConfigChange[];
     timestamp?: number;
 }
 

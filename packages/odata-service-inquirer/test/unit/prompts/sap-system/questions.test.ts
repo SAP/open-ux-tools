@@ -54,7 +54,7 @@ describe('questions', () => {
                   "mandatory": true,
                 },
                 "message": "Username",
-                "name": "abapSystemUsername",
+                "name": "abapOnPrem:systemUsername",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
@@ -62,12 +62,13 @@ describe('questions', () => {
               {
                 "default": "",
                 "guiOptions": {
+                  "applyDefaultWhenDirty": true,
                   "mandatory": true,
                 },
                 "guiType": "login",
                 "mask": "*",
                 "message": "Password",
-                "name": "abapSystemPassword",
+                "name": "abapOnPrem:systemPassword",
                 "type": "password",
                 "validate": [Function],
                 "when": [Function],

@@ -230,7 +230,18 @@ async function handleAction(action: Actions): Promise<void> {
             case CREATE_I18N_ENTRY: {
                 if (currentApp?.projectPath) {
                     await createI18nEntry(
-                        [{ key: action.key, value: action.value }],
+                        [
+                            {
+                                key: action.key,
+                                value: action.value,
+                                annotation: action.properties
+                                    ? {
+                                          textType: action.properties.type,
+                                          note: action.properties.annotation
+                                      }
+                                    : undefined
+                            }
+                        ],
                         currentApp?.projectPath,
                         currentApp?.appId
                     );

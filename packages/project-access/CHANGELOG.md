@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.28.6
+
+### Patch Changes
+
+-   fb26f92: Enhance RTA handling for variants-config command
+
+## 1.28.5
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+
 ## 1.28.4
 
 ### Patch Changes
