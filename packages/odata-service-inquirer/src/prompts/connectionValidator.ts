@@ -26,7 +26,7 @@ import {
     isPartialUrlDestination
 } from '@sap-ux/btp-utils';
 import https from 'https';
-import { ERROR_TYPE, ErrorHandler } from '../error-handler/error-handler';
+import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import { t } from '../i18n';
 import { SAP_CLIENT_KEY } from '../types';
 import LoggerHelper from './logger-helper';
