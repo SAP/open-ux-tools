@@ -1,0 +1,471 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CF Writer Base Generate Base Config - Managed Generate deployment configs - managed 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"mta-project\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"description\\": \\"Build and deployment scripts\\",
+  \\"scripts\\": {
+    \\"clean\\": \\"rimraf resources mta_archives mta-op*\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\",
+    \\"undeploy\\": \\"cf undeploy managed --delete-services --delete-service-keys --delete-service-brokers\\"
+  },
+  \\"devDependencies\\": {
+    \\"mbt\\": \\"^1.2.27\\",
+    \\"rimraf\\": \\"^5.0.5\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "xs-security.json": Object {
+    "contents": "{
+  \\"xsappname\\": \\"managed\\",
+  \\"tenant-mode\\": \\"dedicated\\",
+  \\"description\\": \\"Security profile of called application\\",
+  \\"scopes\\": [],
+  \\"role-templates\\": []
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`CF Writer Base Generate Base Config - Managed Generate deployment configs - managed 2`] = `
+"_schema-version: \\"3.2\\"
+ID: managed
+description: MyManagedDescription
+version: 0.0.1
+modules:
+- name: managed-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: managed-destination-service
+    parameters:
+      content-target: true
+  - name: managed-repo-host
+    parameters:
+      service-key:
+        name: managed-repo-host-key
+  - name: managed-uaa
+    parameters:
+      service-key:
+        name: managed-uaa-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: managed_html_repo_host
+          ServiceInstanceName: managed-html5-service
+          ServiceKeyName: managed-repo-host-key
+          sap.cloud.service: managed
+        - Authentication: OAuth2UserTokenExchange
+          Name: managed_uaa
+          ServiceInstanceName: managed-xsuaa-srv
+          ServiceKeyName: managed-uaa-key
+          sap.cloud.service: managed
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: managed-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: managed-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires: []
+resources:
+- name: managed-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: managed-destination-service
+    service-plan: lite
+- name: managed-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: managed-xsuaa-srv
+    service-plan: application
+- name: managed-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: managed-html5-service
+    service-plan: app-host
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm install
+"
+`;
+
+exports[`CF Writer Base Generate Base Config - Standalone Generate deployment configs - standalone with ABAP service provider 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"mta-project\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"description\\": \\"Build and deployment scripts\\",
+  \\"scripts\\": {
+    \\"clean\\": \\"rimraf resources mta_archives mta-op*\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\",
+    \\"undeploy\\": \\"cf undeploy standalonewithabapserviceprovider --delete-services --delete-service-keys --delete-service-brokers\\"
+  },
+  \\"devDependencies\\": {
+    \\"mbt\\": \\"^1.2.27\\",
+    \\"rimraf\\": \\"^5.0.5\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "router/package.json": Object {
+    "contents": "{
+    \\"name\\": \\"app-router\\",
+    \\"private\\": true,
+    \\"description\\": \\"App router\\",
+    \\"engines\\": {
+        \\"node\\": \\">= 16.0.0\\"
+    },
+    \\"scripts\\": {
+        \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\",
+        \\"start-local\\": \\"node node_modules/@sap/html5-repo-mock/index.js\\"
+    },
+    \\"dependencies\\": {
+        \\"@sap/approuter\\": \\"^14\\"
+    },
+    \\"devDependencies\\": {
+        \\"@sap/html5-repo-mock\\": \\"^2.1.0\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "router/xs-app.json": Object {
+    "contents": "{
+  \\"authenticationMethod\\": \\"route\\",
+  \\"routes\\": [
+    {
+      \\"source\\": \\"^/sap/(.*)$\\",
+      \\"target\\": \\"/sap/$1\\",
+      \\"service\\": \\"TestService\\",
+      \\"endpoint\\": \\"TestEndPoint\\",
+      \\"authenticationType\\": \\"xsuaa\\",
+      \\"csrfProtection\\": false
+    },
+    {
+      \\"source\\": \\"^/resources/(.*)$\\",
+      \\"target\\": \\"/resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/test-resources/(.*)$\\",
+      \\"target\\": \\"/test-resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    }
+  ]
+}
+",
+    "state": "modified",
+  },
+  "xs-security.json": Object {
+    "contents": "{
+  \\"xsappname\\": \\"standalonewithabapserviceprovider\\",
+  \\"tenant-mode\\": \\"dedicated\\",
+  \\"description\\": \\"Security profile of called application\\",
+  \\"scopes\\": [],
+  \\"role-templates\\": []
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`CF Writer Base Generate Base Config - Standalone Generate deployment configs - standalone with ABAP service provider 2`] = `
+"_schema-version: \\"3.2\\"
+ID: standalonewithabapserviceprovider
+description: Generated by Fiori Tools
+version: 0.0.1
+modules:
+- name: standalonewithabapserviceprovider-router
+  type: approuter.nodejs
+  path: router
+  requires:
+  - name: standalonewithabapserviceprov-html5-repo-runtime
+  - name: standalonewithabapserviceprovider-uaa
+  - name: standalonewithabapserviceprovi-destination-service
+    group: destinations
+    properties:
+      forwardAuthToken: false
+      name: ui5
+      url: https://ui5.sap.com
+  - name: standalonewithabapservic-abap-Y11_00.0035
+  parameters:
+    disk-quota: 256M
+    memory: 256M
+resources:
+- name: standalonewithabapserviceprovider-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      tenant-mode: dedicated
+      xsappname: standalonewithabapserviceprovider-\${space-guid}
+    service: xsuaa
+    service-plan: application
+- name: standalonewithabapserviceprov-html5-repo-runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+- name: standalonewithabapserviceprovi-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: false
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: standalonewithabapserviceprovi-destination-service
+    service-plan: lite
+- name: standalonewithabapservic-abap-Y11_00.0035
+  type: org.cloudfoundry.existing-service
+  parameters:
+    protocol:
+    - ODataV2
+    service: abap-haas
+    service-name: Y11_00.0035
+    service-plan: 16_abap_64_db
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm install
+"
+`;
+
+exports[`CF Writer Base Generate Base Config - Standalone Generate deployment configs - standalone with connectivity service 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"mta-project\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"description\\": \\"Build and deployment scripts\\",
+  \\"scripts\\": {
+    \\"clean\\": \\"rimraf resources mta_archives mta-op*\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\",
+    \\"undeploy\\": \\"cf undeploy standalonewithconnectivityservice --delete-services --delete-service-keys --delete-service-brokers\\"
+  },
+  \\"devDependencies\\": {
+    \\"mbt\\": \\"^1.2.27\\",
+    \\"rimraf\\": \\"^5.0.5\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "router/package.json": Object {
+    "contents": "{
+    \\"name\\": \\"app-router\\",
+    \\"private\\": true,
+    \\"description\\": \\"App router\\",
+    \\"engines\\": {
+        \\"node\\": \\">= 16.0.0\\"
+    },
+    \\"scripts\\": {
+        \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\",
+        \\"start-local\\": \\"node node_modules/@sap/html5-repo-mock/index.js\\"
+    },
+    \\"dependencies\\": {
+        \\"@sap/approuter\\": \\"^14\\"
+    },
+    \\"devDependencies\\": {
+        \\"@sap/html5-repo-mock\\": \\"^2.1.0\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "router/xs-app.json": Object {
+    "contents": "{
+  \\"authenticationMethod\\": \\"route\\",
+  \\"routes\\": [
+    {
+      \\"source\\": \\"^(?:/app|/app/.*)?/resources/(.*)$\\",
+      \\"target\\": \\"/resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^(?:/app|/app/.*)?/test-resources/(.*)$\\",
+      \\"target\\": \\"/test-resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    }
+  ]
+}
+",
+    "state": "modified",
+  },
+  "xs-security.json": Object {
+    "contents": "{
+  \\"xsappname\\": \\"standalonewithconnectivityservice\\",
+  \\"tenant-mode\\": \\"dedicated\\",
+  \\"description\\": \\"Security profile of called application\\",
+  \\"scopes\\": [],
+  \\"role-templates\\": []
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`CF Writer Base Generate Base Config - Standalone Generate deployment configs - standalone with connectivity service 2`] = `
+"_schema-version: \\"3.2\\"
+ID: standalonewithconnectivityservice
+description: Generated by Fiori Tools
+version: 0.0.1
+modules:
+- name: standalonewithconnectivityservice-router
+  type: approuter.nodejs
+  path: router
+  requires:
+  - name: standalonewithconnectivityser-html5-repo-runtime
+  - name: standalonewithconnectivityservice-uaa
+  - name: standalonewithconnectivityserv-destination-service
+    group: destinations
+    properties:
+      forwardAuthToken: false
+      name: ui5
+      url: https://ui5.sap.com
+  - name: standalonewithconnectivityservice-connectivity
+  parameters:
+    disk-quota: 256M
+    memory: 256M
+resources:
+- name: standalonewithconnectivityservice-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      tenant-mode: dedicated
+      xsappname: standalonewithconnectivityservice-\${space-guid}
+    service: xsuaa
+    service-plan: application
+- name: standalonewithconnectivityser-html5-repo-runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+- name: standalonewithconnectivityserv-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: false
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: standalonewithconnectivityserv-destination-service
+    service-plan: lite
+- name: standalonewithconnectivityservice-connectivity
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: connectivity
+    service-plan: lite
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm install
+"
+`;

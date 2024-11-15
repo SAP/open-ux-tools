@@ -44,7 +44,10 @@ export class WorkspaceConnectorService {
             };
         };
         if (
-            (changeType && changeType !== 'appdescr_fe_changePageConfiguration') ||
+            (changeType &&
+                !['appdescr_fe_changePageConfiguration', 'appdescr_ui_generic_app_changePageConfiguration'].includes(
+                    changeType
+                )) ||
             kind === 'delete' ||
             this.isReloadPending
         ) {

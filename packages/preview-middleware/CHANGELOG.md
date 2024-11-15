@@ -1,5 +1,98 @@
 # @sap-ux/preview-middleware
 
+## 0.16.116
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.76
+
+## 0.16.115
+
+### Patch Changes
+
+-   8c0ba5c: Fixed Adaptation Editor crash when project contains Personalization change.
+
+## 0.16.114
+
+### Patch Changes
+
+-   8b123e3: Fixed typo in "Semantic Date Range" quick action.
+
+## 0.16.113
+
+### Patch Changes
+
+-   fcc5518: Remove feature flag from "Add Custom Table Action", "Add Custom Page Action", "Add Custom Table Column" and "Change Table Columns" Quick Actions.
+
+## 0.16.112
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/btp-utils@0.16.0
+    -   @sap-ux/adp-tooling@0.12.75
+
+## 0.16.111
+
+### Patch Changes
+
+-   48dd15d: fix: refresh descriptor after manifest changes
+-   Updated dependencies [48dd15d]
+    -   @sap-ux/adp-tooling@0.12.74
+
+## 0.16.110
+
+### Patch Changes
+
+-   838cdf1: fix: Unavailability of changeHandlerAPI in lower ui5 version causes console to be spammed with errors
+
+## 0.16.109
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.73
+
+## 0.16.108
+
+### Patch Changes
+
+-   25488a9: fix: resolve the issue when add table action quick action in the object page didn't work because the Variant Management was disabled.
+
+## 0.16.107
+
+### Patch Changes
+
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+    -   @sap-ux/adp-tooling@0.12.72
+
+## 0.16.106
+
+### Patch Changes
+
+-   0671c95: support semantic date range quick action for v2/v4
+
+## 0.16.105
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.71
+
+## 0.16.104
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.70
+-   @sap-ux/project-access@1.28.5
+
+## 0.16.103
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/project-access@1.28.4
+    -   @sap-ux/adp-tooling@0.12.69
+
 ## 0.16.102
 
 ### Patch Changes

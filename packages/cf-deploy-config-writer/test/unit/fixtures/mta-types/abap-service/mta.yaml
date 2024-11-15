@@ -1,0 +1,63 @@
+_schema-version: "3.2"
+ID: managedApp
+version: 0.0.1
+modules:
+  - name: managedApp-dest-content
+    type: com.sap.application.content
+    requires:
+      - name: managedApp-destination-service
+        parameters:
+          content-target: true
+      - name: managedApp_repo_host
+        parameters:
+          service-key:
+            name: managedApp_repo_host-key
+      - name: uaa_managedApp
+        parameters:
+          service-key:
+            name: uaa_managedApp-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: myTestApp_managedApp_repo_host
+              ServiceInstanceName: managedApp-html5-srv
+              ServiceKeyName: managedApp_repo_host-key
+              sap.cloud.service: myTestApp
+            - Authentication: OAuth2UserTokenExchange
+              Name: myTestApp_uaa_managedApp
+              ServiceInstanceName: managedApp-xsuaa-srv
+              ServiceKeyName: uaa_managedApp-key
+              sap.cloud.service: myTestApp
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+resources:
+  - name: managedApp-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+      service: destination
+      service-name: managedApp-destination-service
+      service-plan: lite
+  - name: managedApp_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: managedApp-html5-srv
+      service-plan: app-host
+  - name: uaa_managedApp
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: managedApp-xsuaa-srv
+      service-plan: application
+  - name: managedApp-abap-service
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service: managedApp-abap-solution
+      service-name: abap-solution
+      service-plan: standard

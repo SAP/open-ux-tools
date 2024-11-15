@@ -6,6 +6,7 @@ import type {
     GuiOptions as BaseGuiOptions
 } from '@sap-ux/inquirer-common';
 import type { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
+import type { SapTextType } from '@sap-ux/i18n';
 
 export { Answers };
 
@@ -61,15 +62,28 @@ export interface ListPromptQuestionCreationProps {
 }
 
 /**
+ * Translation properties for translatable entry.
+ */
+export interface TranslationProperties {
+    /**
+     * Text types for translatable entry.
+     */
+    type: SapTextType;
+
+    /**
+     * Description of the annotation for a new entry in the translation file.
+     */
+    annotation?: string;
+}
+
+/**
  * Extended GUI interface for list question.
  */
 export interface InputGuiOptions extends GuiOptions {
     /**
-     * Renders the input field as translatable, allowing the creation of i18n entries with i18n binding.
-     *
-     * @default false
+     * Translation properties for translatable input. If this is defined, the input is considered translatable.
      */
-    translatable?: boolean;
+    translationProperties?: TranslationProperties;
 }
 
 /**
@@ -155,6 +169,7 @@ export const TRANSLATE_EVENT_SHOW = 'show';
 export interface TranlateUpdateEvent<T extends TranslationEntry> {
     name: typeof TRANSLATE_EVENT_UPDATE;
     entry: T;
+    properties?: TranslationProperties;
 }
 export interface TranlateShowEvent<T extends TranslationEntry> {
     name: typeof TRANSLATE_EVENT_SHOW;

@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.3.9
+
+### Patch Changes
+
+-   0235973: Update @sap/ux-cds-compiler-facade dependency
+
 ## 0.3.8
 
 ### Patch Changes
