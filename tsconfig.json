@@ -108,6 +108,9 @@
       "path": "packages/fiori-tools-settings"
     },
     {
+      "path": "packages/flp-config-inquirer"
+    },
+    {
       "path": "packages/guided-answers-helper"
     },
     {

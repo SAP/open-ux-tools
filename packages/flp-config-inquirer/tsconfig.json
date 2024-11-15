@@ -1,0 +1,31 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../app-config-writer"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../cap-config-writer"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../project-input-validator"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+    "prompts": {
+        "semanticObject": "Semantic Object",
+        "action": "Action",
+        "title": "Title",
+        "subTitle": "Subtitle (optional)",
+        "subTitleBreadcrumb": "Subtitle"
+    },
+    "validators": {
+        "inboundConfigKeyExists": "An inbound configuration with the key: '{{inboundKey}}' is already defined.",
+        "flpConfigOverwrite": "Overwrite existing configuration?"
+    }
+}

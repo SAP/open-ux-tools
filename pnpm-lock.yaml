@@ -1696,6 +1696,58 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
 
+  packages/flp-config-inquirer:
+    dependencies:
+      '@sap-ux/app-config-writer':
+        specifier: workspace:*
+        version: link:../app-config-writer
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      inquirer-autocomplete-prompt:
+        specifier: 2.0.1
+        version: 2.0.1(inquirer@8.2.6)
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
+    devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/cap-config-writer':
+        specifier: workspace:*
+        version: link:../cap-config-writer
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/inquirer-autocomplete-prompt':
+        specifier: 2.0.1
+        version: 2.0.1
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
+      '@types/semver':
+        specifier: 7.5.4
+        version: 7.5.4
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
+
   packages/guided-answers-helper: {}
 
   packages/i18n:
@@ -21227,6 +21279,7 @@ packages:
   /semver@7.6.3:
     resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
     engines: {node: '>=10'}
+    hasBin: true
     dev: true
 
   /send@0.19.0:
