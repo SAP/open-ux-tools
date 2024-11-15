@@ -41,7 +41,7 @@ const COLOR_STYLES = {
 type InputRenderProps = React.InputHTMLAttributes<HTMLInputElement> & React.RefAttributes<HTMLInputElement>;
 
 /**
- * UITextInput component
+ * UITextInput component test
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/textfield
  *
  * @exports
