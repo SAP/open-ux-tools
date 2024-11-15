@@ -117,6 +117,7 @@ export function enhanceUrlParametersWithRta(packageJson: Package, existingParams
         parameters['fiori-tools-rta-mode'] = 'true';
         parameters['sap-ui-rta-skip-flex-validation'] = 'true';
         parameters['sap-ui-xx-condense-changes'] = 'true';
+        parameters['sap-ui-xx-viewCache'] = 'false';
     }
     return stringify(Object.assign(parameters, existingParams));
 }
