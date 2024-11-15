@@ -184,7 +184,7 @@ describe('misc', () => {
 
     test('update variants creation script - no', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
-        //the following typo in the script name is indented!
+        //the following typo in the script name is intended!
         const packageJson = {
             scripts: {
                 'start-varinats-management':
