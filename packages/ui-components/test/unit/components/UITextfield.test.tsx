@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as Enzyme from 'enzyme';
 import type { IStyleFunction, ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
 import { TextField } from '@fluentui/react';
-import type { UITextInputProps } from '../../../src/components/UIInput';
+import type { InputRenderProps, UITextInputProps } from '../../../src/components/UIInput';
 import { UITextInput } from '../../../src/components/UIInput';
 
 describe('<UIToggle />', () => {
@@ -155,6 +155,39 @@ describe('<UIToggle />', () => {
             await new Promise((resolve) => setTimeout(resolve, 100));
             const element = wrapper.getDOMNode();
             expect(element.querySelectorAll('.dummyError').length).toEqual(1);
+        });
+    });
+
+    describe('Custom renderers for "onRenderInput"', () => {
+        it('External "onRenderInput"', () => {
+            wrapper.setProps({
+                onRenderInput: (
+                    props?: InputRenderProps,
+                    defaultRender?: (props?: InputRenderProps) => JSX.Element | null
+                ) => {
+                    return <div className="custom-render-option">{defaultRender?.(props)}</div>;
+                }
+            });
+            expect(wrapper.find('.custom-render-option').length).toEqual(1);
+            const inputProps = wrapper.find('input.ms-TextField-field')?.props();
+            expect(inputProps?.disabled).toEqual(undefined);
+            expect(inputProps?.readOnly).toEqual(undefined);
+        });
+
+        it('External and internal "onRenderInput"', () => {
+            wrapper.setProps({
+                disabled: true,
+                onRenderInput: (
+                    props?: InputRenderProps,
+                    defaultRender?: (props?: InputRenderProps) => JSX.Element | null
+                ) => {
+                    return <div className="custom-render-option">{defaultRender?.(props)}</div>;
+                }
+            });
+            expect(wrapper.find('.custom-render-option').length).toEqual(1);
+            const inputProps = wrapper.find('input.ms-TextField-field')?.props();
+            expect(inputProps?.disabled).toEqual(undefined);
+            expect(inputProps?.readOnly).toEqual(true);
         });
     });
 });
