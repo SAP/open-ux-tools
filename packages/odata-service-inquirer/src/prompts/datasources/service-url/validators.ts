@@ -1,6 +1,6 @@
 import { createForAbap, type AxiosRequestConfig, type ODataService, type ODataVersion } from '@sap-ux/axios-extension';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { ERROR_TYPE, ErrorHandler } from '../../../error-handler/error-handler';
+import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import { t } from '../../../i18n';
 import { SAP_CLIENT_KEY } from '../../../types';
 import { PromptState, originToRelative } from '../../../utils';

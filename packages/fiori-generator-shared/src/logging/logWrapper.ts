@@ -7,11 +7,12 @@ import type {
 import { getExtensionLogger } from '@vscode-logging/logger';
 import { format } from 'logform';
 import type { Logger } from 'yeoman-environment';
-import { t } from './i18n';
-import { LOGGING_LEVEL_CONFIG_PROP } from './constants';
+import { t } from '../i18n';
 
 // Re-export so we dont need to add vscode-logging dependencies to all app gen sub-modules
 export type { ILogWrapper };
+
+export const LOGGING_LEVEL_CONFIG_PROP = 'ApplicationWizard.loggingLevel';
 
 /**
  * Empty Implementation of the Logger, this is not strictly necessary in app gen but
