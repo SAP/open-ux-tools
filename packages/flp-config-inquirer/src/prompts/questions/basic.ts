@@ -1,4 +1,5 @@
-import { t } from 'i18next';
+import { validateText } from '@sap-ux/app-config-writer';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 import {
     ActionPromptOptions,
@@ -10,8 +11,7 @@ import {
     TitlePromptOptions,
     promptNames
 } from '../../types';
-import { validateText } from '@sap-ux/app-config-writer';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import { t } from '../../i18n';
 
 /**
  * Function to get the 'semanticObject' prompt.
