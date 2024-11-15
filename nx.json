@@ -27,7 +27,7 @@
                 "{projectRoot}/lib",
                 "{projectRoot}/storybook"
             ],
-            "cache": false
+            "cache": true
         },
         "test": {
             "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
