@@ -1,4 +1,4 @@
-import { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
+import type { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 
 /**
  * Enumeration of prompt names used in the FLP configuration.
@@ -21,6 +21,13 @@ export interface FLPConfigAnswers {
     [promptNames.title]?: string;
     [promptNames.subTitle]?: string;
     s4Continue?: boolean;
+}
+
+/**
+ * Boolean reference to already existing inbound id key.
+ */
+export interface ExistingInboundRef {
+    value: boolean;
 }
 
 /**

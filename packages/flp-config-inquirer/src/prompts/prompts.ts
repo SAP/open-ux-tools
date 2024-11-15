@@ -1,4 +1,4 @@
-import type { FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
+import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
 import { promptNames } from '../types';
 import { PLATFORMS, getPlatform } from './utils';
 import {
@@ -10,11 +10,15 @@ import {
 } from './questions/basic';
 
 /**
- * Function to get all FLP configuration prompts.
+ * Generates a list of prompts for FLP (Fiori Launchpad) configuration.
+ *
+ * @param {string[]} [inboundKeys] - An array of existing inbound keys to check for duplicates.
+ * @param {FLPConfigPromptOptions} [promptOptions] - Optional configuration to control prompt behavior and defaults.
+ * @returns {FLPConfigQuestion[]} An array of FLPConfigQuestion objects to be used for prompting the user.
  */
 export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConfigPromptOptions): FLPConfigQuestion[] {
     const isCLI = getPlatform() === PLATFORMS.CLI;
-    const existingKeyRef = { value: false };
+    const existingKeyRef: ExistingInboundRef = { value: false };
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {

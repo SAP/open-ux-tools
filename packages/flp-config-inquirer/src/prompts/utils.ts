@@ -1,6 +1,11 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 
-export const PLATFORMS = {
+interface Platform {
+    name: string;
+    technical: string;
+}
+
+export const PLATFORMS: { [key: string]: Platform } = {
     VSCODE: {
         name: 'Visual Studio Code',
         technical: 'VSCode'
@@ -16,10 +21,12 @@ export const PLATFORMS = {
 };
 
 /**
- * Determine if the current environment is cli or YUI (app studio or vscode)
+ * Determines the platform where the application is running.
+ *
+ * @returns {Platform} An object containing the platform's name and technical identifier.
  */
-export function getPlatform(): { name: string; technical: string } {
-    if ((process.mainModule && process.mainModule.filename.includes('yo')) || process.stdin.isTTY) {
+export function getPlatform(): Platform {
+    if (process.mainModule?.filename.includes('yo') || process.stdin.isTTY) {
         return PLATFORMS.CLI;
     } else {
         return isAppStudio() ? PLATFORMS.SBAS : PLATFORMS.VSCODE;

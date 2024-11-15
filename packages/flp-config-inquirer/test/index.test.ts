@@ -1,5 +1,6 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { FLPConfigAnswers, getPrompts, prompt } from '../src';
+import type { FLPConfigAnswers } from '../src';
+import { getPrompts, prompt } from '../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
