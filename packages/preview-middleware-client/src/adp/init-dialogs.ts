@@ -98,7 +98,7 @@ export const isFragmentCommandEnabled = (overlays: ElementOverlay[], ui5VersionI
  * @returns {string} The text of the Add Fragment context menu item.
  */
 export const getAddFragmentItemText = (overlay: ElementOverlay) => {
-    if (overlay && !hasStableId(overlay)) {
+    if (!hasStableId(overlay)) {
         return 'Add: Fragment (Unavailable due to unstable ID of the control or its parent control)';
     }
 
