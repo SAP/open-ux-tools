@@ -142,6 +142,9 @@ class CustomEnvironment extends JSDOMEnvironment {
         });
     }
 
+    /**
+     * @returns {object} The VM Context for the current environment
+     */
     getVmContext() {
         if (this.dom) {
             const context = this.dom.getInternalVMContext();
