@@ -361,8 +361,9 @@ export class ConnectionValidator {
     }
 
     /**
+     * Resets any connection state and validity information.
      *
-     * @param resetValidity
+     * @param resetValidity if true, the validity information will be reset also
      */
     public resetConnectionState(resetValidity = false): void {
         this._serviceProvider = undefined;
