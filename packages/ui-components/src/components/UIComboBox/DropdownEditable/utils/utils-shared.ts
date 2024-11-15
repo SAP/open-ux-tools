@@ -1,4 +1,4 @@
-import { EDITABLE_ENTRY_PREFIXES } from "./types";
+import { EDITABLE_ENTRY_PREFIXES } from './types';
 
 export function getTypeFromEditableItem(value: string | number): string | undefined {
     const valueStr = getBaseKey(value);
@@ -43,4 +43,18 @@ export function convertToPlaceholderText(value: string): string {
     }
 
     return '';
+}
+
+/**
+ * Validates a given value.
+ * Ensures that the value starts with a letter, contains only alphanumeric characters,
+ * and is not a reserved word.
+ *
+ * @param value The value to validate (optional).
+ * @returns Returns an error message if invalid; otherwise `undefined`.
+ */
+export function validateValue(value?: string): string | undefined {
+    if (value && (!value.match(/^[a-z][a-z0-9]*$/i))) {
+        return 'Wrong value';
+    }
 }

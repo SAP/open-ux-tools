@@ -7,6 +7,7 @@ import { UIIcon } from '../../UIIcon';
 import { UiIcons } from '../../Icons';
 
 import './ItemInput.scss';
+import { validateValue } from './utils';
 
 export interface ItemInputProps extends UITextInputProps {
     option?: UISelectableOptionWithSubValues;
