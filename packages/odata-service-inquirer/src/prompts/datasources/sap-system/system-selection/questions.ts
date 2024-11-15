@@ -51,9 +51,9 @@ export interface SystemSelectionAnswers extends SystemSelectionCredentialsAnswer
 /**
  * Validates the system selection, connecting to the selected system and validating the connection.
  *
- * @param systemSelection
- * @param connectionValidator
- * @param requiredOdataVersion
+ * @param systemSelection the selected system to validate
+ * @param connectionValidator the active connection validator to use for the connection attempt
+ * @param requiredOdataVersion the required OData version for the selected system, only the specified version will be used to request a service catalog
  * @returns the validation result of the selected system connection attempt
  */
 async function validateSystemSelection(
@@ -135,7 +135,7 @@ export async function getSystemSelectionQuestions(
  * Additional destination attribute filters may be provided.
  *
  * @param connectionValidator A reference to the active connection validator, used to validate the service selection and retrieve service details.
- * @param promptOptions
+ * @param promptOptions prompt options that may be used to customize the questions
  * @returns a list of existing systems
  */
 export async function getSystemConnectionQuestions(
