@@ -15,6 +15,8 @@ export const COMMON_INPUT_STYLES = {
     borderRadius: 2
 };
 
+// test
+
 const COLOR_STYLES = {
     regular: {
         backgroundColor: 'var(--vscode-input-background)',
