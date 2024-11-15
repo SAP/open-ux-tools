@@ -39,7 +39,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@ui5/project": "^4.0.3",
+        "@ui5/project": "^3.9.0",
         "jest-environment-jsdom": "^29.7.0",
         "jquery": "3.6.0",
         "signals": "^1.0.0",
