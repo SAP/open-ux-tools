@@ -1,5 +1,58 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.2
+
+### Patch Changes
+
+-   1fb5a5c: Removes console log statement
+
+## 0.6.1
+
+### Patch Changes
+
+-   2886db3: Moves `getCFAbapServiceChoices` to inquirer-common and exports.
+-   Updated dependencies [2886db3]
+    -   @sap-ux/inquirer-common@0.5.0
+    -   @sap-ux/fiori-generator-shared@0.7.7
+
+## 0.6.0
+
+### Minor Changes
+
+-   3734fe8: Adds system prompting to `@sap-ux/odata-service-inquirer`
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/guided-answers-helper@0.1.0
+    -   @sap-ux/btp-utils@0.16.0
+    -   @sap-ux/axios-extension@1.17.2
+    -   @sap-ux/fiori-generator-shared@0.7.6
+    -   @sap-ux/telemetry@0.5.42
+
+## 0.5.60
+
+### Patch Changes
+
+-   Updated dependencies [7551316]
+    -   @sap-ux/axios-extension@1.17.1
+
+## 0.5.59
+
+### Patch Changes
+
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+    -   @sap-ux/axios-extension@1.17.0
+    -   @sap-ux/telemetry@0.5.41
+
+## 0.5.58
+
+### Patch Changes
+
+-   Updated dependencies [0120dda]
+    -   @sap-ux/axios-extension@1.17.0
+
 ## 0.5.57
 
 ### Patch Changes

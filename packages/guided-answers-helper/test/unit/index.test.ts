@@ -34,6 +34,7 @@ describe('Guided Answers Helper', () => {
               "BAS_CATALOG_SERVICES_REQUEST_FAILED": 48366,
               "CERTIFICATE_ERROR": 53643,
               "DESTINATION_BAD_GATEWAY_503": 52526,
+              "DESTINATION_CONNECTION_ERRORS": 48366,
               "DESTINATION_MISCONFIGURED": 54336,
               "DESTINATION_NOT_FOUND": 51208,
               "DESTINATION_UNAVAILABLE": 51208,

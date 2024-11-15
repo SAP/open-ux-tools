@@ -1,5 +1,48 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.2.20
+
+### Patch Changes
+
+-   Updated dependencies [2886db3]
+    -   @sap-ux/fiori-generator-shared@0.7.7
+
+## 1.2.19
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.6
+
+## 1.2.18
+
+### Patch Changes
+
+-   d0331b8: fix - locate-reuse-libs.js|ts - sanitize server response before logging
+-   Updated dependencies [d0331b8]
+    -   @sap-ux/ui5-application-writer@1.2.5
+
+## 1.2.17
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.5
+-   @sap-ux/odata-service-writer@0.23.1
+-   @sap-ux/ui5-application-writer@1.2.4
+
+## 1.2.16
+
+### Patch Changes
+
+-   7cf9ed0: Fix lint issue in templates
+-   Updated dependencies [7cf9ed0]
+    -   @sap-ux/ui5-application-writer@1.2.4
+
+## 1.2.15
+
+### Patch Changes
+
+-   da732f3: fix: fiori freestyle writer path issue
+
 ## 1.2.14
 
 ### Patch Changes

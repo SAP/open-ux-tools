@@ -1,5 +1,24 @@
 # @sap-ux/reload-middleware
 
+## 0.2.6
+
+### Patch Changes
+
+-   f2d3335: Expose `watchManifestChanges` function.
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/btp-utils@0.16.0
+
+## 0.2.4
+
+### Patch Changes
+
+-   0671c95: support semantic date range quick action for v2/v4
+
 ## 0.2.3
 
 ### Patch Changes
