@@ -1175,6 +1175,9 @@ importers:
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
       '@sap-ux/preview-middleware':
         specifier: workspace:*
         version: link:../preview-middleware
@@ -10431,8 +10434,8 @@ packages:
       escape-string-regexp: 5.0.0
       globby: 13.2.2
       graceful-fs: 4.2.11
-      micromatch: 4.0.5
-      minimatch: 9.0.3
+      micromatch: 4.0.7
+      minimatch: 9.0.5
       pretty-hrtime: 1.0.3
       random-int: 3.0.0
     dev: true
