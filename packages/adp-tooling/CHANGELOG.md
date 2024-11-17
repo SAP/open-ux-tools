@@ -1,5 +1,14 @@
 # @sap-ux/adp-tooling
 
+## 0.12.77
+
+### Patch Changes
+
+-   8237f83: feat: add namespaces to annotation template
+-   Updated dependencies [8237f83]
+    -   @sap-ux/axios-extension@1.17.3
+    -   @sap-ux/system-access@0.5.18
+
 ## 0.12.76
 
 ### Patch Changes
