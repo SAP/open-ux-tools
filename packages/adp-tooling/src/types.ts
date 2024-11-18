@@ -305,6 +305,8 @@ export interface AnnotationsData {
         dataSource: string;
         /** Optional path to the annotation file. */
         filePath?: string;
+        namespaces?: { namespace: string; alias: string }[];
+        serviceUrl?: string;
     };
 }
 
