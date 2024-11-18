@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.3.26
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.9
+
 ## 1.3.25
 
 ### Patch Changes

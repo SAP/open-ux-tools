@@ -1,5 +1,17 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.0.23
+
+### Patch Changes
+
+-   a62ff25: adds new options for listing destinations api
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/axios-extension@1.17.4
+    -   @sap-ux/fiori-generator-shared@0.7.9
+    -   @sap-ux/inquirer-common@0.5.2
+    -   @sap-ux/system-access@0.5.19
+
 ## 1.0.22
 
 ### Patch Changes
