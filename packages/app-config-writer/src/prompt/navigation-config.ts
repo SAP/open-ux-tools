@@ -1,42 +1,6 @@
 import type { PromptObject } from 'prompts';
-import { prompt } from 'prompts';
 import { NAV_CONFIG_NS, t } from '../i18n';
-import type { ManifestNamespace } from '@sap-ux/project-access';
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
-import { readManifest } from '../navigation-config';
 import type { AllowedCharacters } from '../types/';
-
-/**
- * Prompt for inbound navigation configuration values.
- *
- * @param basePath the application root path
- * @returns inbound config or undefined if config prompting was aborted
- */
-export async function promptInboundNavigationConfig(
-    basePath: string
-): Promise<{ config: ManifestNamespace.Inbound[string] | undefined; fs: Editor }> {
-    const fs = create(createStorage());
-    const { manifest } = await readManifest(basePath, fs);
-
-    const inbounds = manifest?.['sap.app']?.crossNavigation?.inbounds;
-    let config = await prompt(getPrompts(Object.keys(inbounds ?? {})));
-    // Exit if overwrite is false
-    if (config?.overwrite === false) {
-        config = undefined;
-    }
-    // prompting returns '' for optional `subTitle` instead of undefined
-    // this would result in the value being written
-    if (config?.subTitle === '') {
-        config.subTitle = undefined;
-    }
-
-    return {
-        config,
-        fs
-    };
-}
 
 /**
  * Validates that text input does not have zero length and optionally is less than the specified maximum length.
