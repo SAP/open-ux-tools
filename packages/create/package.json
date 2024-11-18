@@ -46,6 +46,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/flp-config-inquirer": "workspace:*",
         "chalk": "4.1.2",
         "commander": "9.4.0",
         "diff": "5.1.0",

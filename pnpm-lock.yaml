@@ -1163,6 +1163,9 @@ importers:
       '@sap-ux/cards-editor-config-writer':
         specifier: workspace:*
         version: link:../cards-editor-config-writer
+      '@sap-ux/flp-config-inquirer':
+        specifier: workspace:*
+        version: link:../flp-config-inquirer
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
