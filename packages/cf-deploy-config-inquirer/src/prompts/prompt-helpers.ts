@@ -47,7 +47,7 @@ export async function getCfSystemChoices(destinations?: Destinations): Promise<C
  */
 export async function fetchBTPDestinations(): Promise<Destinations | undefined> {
     if (isAppStudio()) {
-        const destinations = await listDestinations();
+        const destinations = await listDestinations({ stripS4HCApiHosts: true });
         return destinations;
     }
     LoggerHelper.logger.warn(t('warning.btpDestinationListWarning'));
