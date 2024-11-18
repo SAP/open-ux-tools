@@ -26,7 +26,7 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "test:integration:clean": "rimraf --glob playwright-report",
-        "test:integration:run": "playwright test",
+        "test:integration:run": "playwright test --headed",
         "test:integration": "npm-run-all -l -s test:integration:clean test:integration:run",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
