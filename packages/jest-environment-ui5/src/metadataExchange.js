@@ -27,7 +27,7 @@ const getTestMetadata = function (testName) {
             metadata = JSON.parse(readFileSync(getTestMetadataFilePath()));
         }
     }
-    return metadata[testName] || {};
+    return metadata[testName] || [];
 };
 
 module.exports = { storeTestMetadata, getTestMetadata };
