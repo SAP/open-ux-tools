@@ -1,7 +1,7 @@
 import Log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { iconsLoaded, enableTelemetry, appLoaded } from '@sap-ux-private/control-property-editor-common';
+import { iconsLoaded, enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 
 import type { ActionHandler, Service } from './types';
 import { OutlineService } from './outline/service';
@@ -43,7 +43,7 @@ export default function init(
 
     const connectorService = new WorkspaceConnectorService();
     const outlineService = new OutlineService(rta, changesService);
-    const quickActionService = new QuickActionService(rta, outlineService, registries);
+    const quickActionService = new QuickActionService(rta, outlineService, registries, changesService);
     const services: Service[] = [
         connectorService,
         selectionService,
@@ -63,9 +63,7 @@ export default function init(
         }
 
         const icons = getIcons();
-
         CommunicationService.sendAction(iconsLoaded(icons));
-        CommunicationService.sendAction(appLoaded());
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', getError(error));
     }

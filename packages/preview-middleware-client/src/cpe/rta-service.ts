@@ -7,7 +7,8 @@ import {
     save,
     ExternalAction,
     reloadApplication,
-    applicationModeChanged
+    applicationModeChanged,
+    appLoaded
 } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
@@ -56,6 +57,9 @@ export class RtaService {
         this.rta.attachStop(() => {
             // eslint-disable-next-line fiori-custom/sap-no-location-reload
             location.reload();
+        });
+        this.rta.attachStart(() => {
+            sendAction(appLoaded());
         });
         this.rta.attachModeChanged(modeAndStackChangeHandler(sendAction, this.rta));
     }

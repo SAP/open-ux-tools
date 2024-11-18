@@ -77,7 +77,9 @@ describe('quick action service', () => {
     test('initialize simple action definition', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
         const registry = new MockRegistry();
-        const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
+        const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
+            onStackChange: jest.fn()
+        } as any);
         await service.init(sendActionMock, subscribeMock);
 
         await service.reloadQuickActions({});

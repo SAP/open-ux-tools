@@ -168,9 +168,12 @@ describe('FE V2 quick actions', () => {
                     }
                 });
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -271,9 +274,18 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest
+                            .fn()
+                            .mockReturnValueOnce(false)
+                            .mockReturnValueOnce(undefined)
+                    } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -403,9 +415,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -516,9 +531,12 @@ describe('FE V2 quick actions', () => {
                     }
                 });
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -670,9 +688,12 @@ describe('FE V2 quick actions', () => {
                     }
                 });
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -789,9 +810,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -902,9 +926,18 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest
+                            .fn()
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(true)
+                    } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -949,7 +982,8 @@ describe('FE V2 quick actions', () => {
                         parameters: {
                             page: 'ProductsList',
                             entityPropertyChange: {
-                                propertyPath: 'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/useSemanticDateRange',
+                                propertyPath:
+                                    'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/useSemanticDateRange',
                                 propertyValue: false,
                                 operation: 'UPSERT'
                             }
@@ -1038,9 +1072,12 @@ describe('FE V2 quick actions', () => {
 
                     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                     const registry = new FEV4QuickActionRegistry();
-                    const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                        registry
-                    ]);
+                    const service = new QuickActionService(
+                        rtaMock,
+                        new OutlineService(rtaMock, mockChangeService),
+                        [registry],
+                        { onStackChange: jest.fn() } as any
+                    );
                     await service.init(sendActionMock, subscribeMock);
 
                     await service.reloadQuickActions({
@@ -1224,7 +1261,10 @@ describe('FE V2 quick actions', () => {
                         const service = new QuickActionService(
                             rtaMock,
                             new OutlineService(rtaMock, mockChangeService),
-                            [registry]
+                            [registry],
+                            {
+                                onStackChange: jest.fn()
+                            } as any
                         );
 
                         await service.init(sendActionMock, subscribeMock);
