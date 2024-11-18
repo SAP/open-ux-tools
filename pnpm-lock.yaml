@@ -1701,9 +1701,6 @@ importers:
 
   packages/flp-config-inquirer:
     dependencies:
-      '@sap-ux/app-config-writer':
-        specifier: workspace:*
-        version: link:../app-config-writer
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils

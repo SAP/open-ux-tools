@@ -1,4 +1,3 @@
-import { validateText } from '@sap-ux/app-config-writer';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 import type {
@@ -11,6 +10,7 @@ import type {
     SubTitlePromptOptions,
     TitlePromptOptions
 } from '../../types';
+import { validateText } from '../validators';
 import { promptNames } from '../../types';
 import { t } from '../../i18n';
 

@@ -33,7 +33,6 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
-        "@sap-ux/app-config-writer": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "i18next": "23.5.1",
         "inquirer-autocomplete-prompt": "2.0.1",

@@ -10,9 +10,6 @@
   },
   "references": [
     {
-      "path": "../app-config-writer"
-    },
-    {
       "path": "../btp-utils"
     },
     {

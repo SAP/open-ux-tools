@@ -1,9 +1,10 @@
-import { validateText } from '@sap-ux/app-config-writer';
-import { promptNames } from '../../../src';
-import { getSemanticObjectPrompt } from '../../../src/prompts/questions';
 import { initI18n, t } from '../../../src/i18n';
+import { promptNames } from '../../../src/types';
+import { getSemanticObjectPrompt } from '../../../src/prompts/questions';
+import { validateText } from '../../../src/prompts/validators';
 
-jest.mock('@sap-ux/app-config-writer', () => ({
+jest.mock('../../../src/prompts/validators.ts', () => ({
+    ...jest.requireActual('../../../src/prompts/validators.ts'),
     validateText: jest.fn()
 }));
 
