@@ -1,4 +1,4 @@
-import { DefaultLogger, createCLILogger, LogWrapper } from '../src/logWrapper';
+import { DefaultLogger, createCLILogger, LogWrapper } from '../src/logging/logWrapper';
 import type { Logger } from 'yeoman-environment';
 import type { IVSCodeExtLogger } from '@vscode-logging/logger';
 

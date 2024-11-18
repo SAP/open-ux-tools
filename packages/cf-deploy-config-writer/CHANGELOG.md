@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.0.5
+
+### Patch Changes
+
+-   e65b5e0: better support for headless flow in tools-suite
+
 ## 0.0.4
 
 ### Patch Changes

@@ -1,4 +1,4 @@
-import { getPackageScripts } from '../src/getPackageScripts';
+import { getPackageScripts } from '../src/npm-package-scripts/getPackageScripts';
 
 describe('package.json task generation', () => {
     test('sap-client is specified, flpAppId is specified', () => {

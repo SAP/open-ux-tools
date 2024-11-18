@@ -10,10 +10,11 @@ import {
 } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
+import { getTelemPropertyDestinationType, sendTelemetryEvent } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
-import { getTelemPropertyDestinationType, PromptState, sendTelemetryEvent } from '../../../../utils';
+import { PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
@@ -69,7 +70,7 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
  * Logs the catalog request errors using the error handler.
  *
  * @param requestErrors catalog request errors, keyed by the OData version of the catalog service, with the error, status code number or error message as the value
- * @param numOfRequests
+ * @param numOfRequests the number of catalog service requests made
  */
 function logServiceCatalogErrorsForHelp(
     requestErrors: Record<ODataVersion, Error | number | string> | {},
@@ -215,7 +216,7 @@ export async function getServiceType(
  *
  * @param service the specific service to get details for
  * @param connectionValidator a reference to the connection validator which has an active connection to the backend
- * @param requiredOdataVersion
+ * @param requiredOdataVersion the required OData version used to validate the service
  * @returns true if successful, setting the PromptState.odataService properties, or an error message indicating why the service details could not be retrieved.
  */
 export async function getServiceDetails(

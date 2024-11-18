@@ -61,7 +61,7 @@ describe('CF Writer Base', () => {
     describe('Generate Base Config - Standalone', () => {
         test('Generate deployment configs - standalone with connectivity service', async () => {
             const debugSpy = jest.spyOn(logger, 'debug');
-            const mtaId = 'standalonewithconnectivityservice';
+            const mtaId = 'standalone-with-connectivity-service';
             const mtaPath = join(outputDir, mtaId);
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(mtaPath);
