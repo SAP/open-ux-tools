@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.23.2
+
+### Patch Changes
+
+-   8237f83: feat: add namespaces to annotation template
+
 ## 0.23.1
 
 ### Patch Changes

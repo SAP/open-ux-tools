@@ -70,7 +70,7 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
  * Logs the catalog request errors using the error handler.
  *
  * @param requestErrors catalog request errors, keyed by the OData version of the catalog service, with the error, status code number or error message as the value
- * @param numOfRequests
+ * @param numOfRequests the number of catalog service requests made
  */
 function logServiceCatalogErrorsForHelp(
     requestErrors: Record<ODataVersion, Error | number | string> | {},
@@ -216,7 +216,7 @@ export async function getServiceType(
  *
  * @param service the specific service to get details for
  * @param connectionValidator a reference to the connection validator which has an active connection to the backend
- * @param requiredOdataVersion
+ * @param requiredOdataVersion the required OData version used to validate the service
  * @returns true if successful, setting the PromptState.odataService properties, or an error message indicating why the service details could not be retrieved.
  */
 export async function getServiceDetails(
