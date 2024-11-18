@@ -69,10 +69,9 @@ export function getSapClientFromPackageJson(scripts: Package['scripts']): string
  * @returns version of the dependency as an array of numbers
  */
 export function getDependencyVersion(packageJson: Package, dependencyName: string): number[] | undefined {
-    return (
-        packageJson?.devDependencies?.[dependencyName]?.split('.').map((versionPart) => parseInt(versionPart, 10)) ??
-        packageJson?.dependencies?.[dependencyName]?.split('.').map((versionPart) => parseInt(versionPart, 10))
-    );
+    return (packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName])
+        ?.split('.')
+        .map((versionPart) => parseInt(versionPart, 10));
 }
 
 /**
