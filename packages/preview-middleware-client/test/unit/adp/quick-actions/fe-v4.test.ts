@@ -935,8 +935,8 @@ describe('FE V2 quick actions', () => {
                         onStackChange: jest.fn(),
                         getConfigurationPropertyValue: jest
                             .fn()
-                            .mockReturnValueOnce(false)
                             .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(false)
                     } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
