@@ -1,5 +1,5 @@
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-// import { DeploymentGenerator } from '../base/generator';
+import { DeploymentGenerator } from '../base/generator';
 import { t } from './i18n';
 import { cdsExecutable, cdsPkg, mtaExecutable, mtaPkg, mtaYaml } from './constants';
 import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
@@ -54,7 +54,7 @@ export function handleErrorMessage(appWizard: AppWizard, errorMsg: string): void
     if (getHostEnvironment() === hostEnvironment.cli) {
         bail(errorMsg);
     } else {
-        //    DeploymentGenerator.logger?.debug(errorMsg);
+        DeploymentGenerator.logger?.debug(errorMsg);
         appWizard?.showError(errorMsg, MessageType.notification);
     }
 }

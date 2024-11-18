@@ -1,3 +1,4 @@
+import { DeploymentGenerator } from '../src/base/generator';
 import { bail, ErrorMessages, handleErrorMessage } from '../src/utils/error-handler';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
@@ -86,13 +87,13 @@ describe('handleErrorMessage', () => {
     });
 
     it('should log error and call appWizard.showError if environment is not CLI', () => {
-        // const debugSpy = jest.spyOn(DeploymentGenerator.logger, 'debug');
+        const debugSpy = jest.spyOn(DeploymentGenerator.logger, 'debug');
         const errorMessage = 'UI error';
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
 
         handleErrorMessage(appWizardMock, errorMessage);
 
-        //   expect(debugSpy).toHaveBeenCalledWith(errorMessage);
+        expect(debugSpy).toHaveBeenCalledWith(errorMessage);
         expect(appWizardMock.showError).toHaveBeenCalledWith(errorMessage, MessageType.notification);
     });
 });
