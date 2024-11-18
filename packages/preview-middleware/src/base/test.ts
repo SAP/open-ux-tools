@@ -50,7 +50,7 @@ export function mergeTestConfigDefaults(config: TestConfig): InternalTestConfig 
 export function generateImportList(ns: string, resourceList: Resource[]): string[] {
     return resourceList
         ? resourceList.map((file) => {
-              const path = file.getPath().split('.') as string[];
+              const path = file.getPath().split('.');
               path.pop();
               return `${ns}${path.join('.')}`;
           })

@@ -1,4 +1,4 @@
-import type { ReaderCollection, Resource } from '@ui5/fs';
+import type { ReaderCollection } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor as MemFsEditor } from 'mem-fs-editor';
@@ -295,7 +295,7 @@ export class FlpSandbox {
      * @returns the location of the locate-reuse-libs script or undefined.
      */
     private async hasLocateReuseLibsScript(): Promise<boolean | undefined> {
-        const files = (await this.project.byGlob('**/locate-reuse-libs.js')) as Resource[];
+        const files = await this.project.byGlob('**/locate-reuse-libs.js');
         return files.length > 0;
     }
 
@@ -433,7 +433,7 @@ export class FlpSandbox {
 
         this.logger.debug(`Add route for ${config.init}`);
         this.router.get(config.init, (async (_req, res, next) => {
-            const files = (await this.project.byGlob(config.init.replace('.js', '.[jt]s'))) as Resource[];
+            const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
             if (files?.length > 0) {
                 this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
                 next();
@@ -502,12 +502,12 @@ export class FlpSandbox {
             this.router.get(config.init, (async (_req, res, next) => {
                 this.logger.debug(`Serving test init script: ${config.init}`);
 
-                const files = (await this.project.byGlob(config.init.replace('.js', '.[jt]s'))) as Resource[];
+                const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
                 if (files?.length > 0) {
                     this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
                     next();
                 } else {
-                    const testFiles = (await this.project.byGlob(config.pattern)) as Resource[];
+                    const testFiles = await this.project.byGlob(config.pattern);
                     const templateConfig = { tests: generateImportList(ns, testFiles) };
                     const js = render(initTemplate, templateConfig);
                     this.sendResponse(res, 'application/javascript', 200, js);

@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { ReaderCollection, Resource } from '@ui5/fs';
+import type { ReaderCollection } from '@ui5/fs';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readdirSync, unlinkSync } from 'fs';
 import { join, parse } from 'path';
@@ -17,7 +17,7 @@ export async function readChanges(
     logger: Logger
 ): Promise<Record<string, CommonChangeProperties>> {
     const changes: Record<string, CommonChangeProperties> = {};
-    const files = (await project.byGlob('/**/changes/*.*')) as Resource[];
+    const files = await project.byGlob('/**/changes/*.*');
     for (const file of files) {
         try {
             changes[`sap.ui.fl.${parse(file.getName()).name}`] = JSON.parse(
