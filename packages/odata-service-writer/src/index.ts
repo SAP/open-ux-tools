@@ -8,7 +8,14 @@ import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
-import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
+import {
+    OdataService,
+    OdataVersion,
+    ServiceType,
+    CdsAnnotationsInfo,
+    EdmxAnnotationsInfo,
+    NamespaceAlias
+} from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 
@@ -169,3 +176,4 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 }
 
 export { generate, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
+export { getAnnotationNamespaces, NamespaceAlias };

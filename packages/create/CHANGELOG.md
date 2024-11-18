@@ -1,5 +1,36 @@
 # @sap-ux/create
 
+## 0.8.79
+
+### Patch Changes
+
+-   8237f83: feat: add namespaces to annotation template
+-   Updated dependencies [8237f83]
+    -   @sap-ux/adp-tooling@0.12.77
+    -   @sap-ux/odata-service-writer@0.23.2
+    -   @sap-ux/preview-middleware@0.16.119
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.21
+    -   @sap-ux/app-config-writer@0.4.53
+    -   @sap-ux/system-access@0.5.18
+    -   @sap-ux/cap-config-writer@0.7.57
+    -   @sap-ux/abap-deploy-config-writer@0.0.60
+
+## 0.8.78
+
+### Patch Changes
+
+-   Updated dependencies [1f7827c]
+    -   @sap-ux/preview-middleware@0.16.118
+    -   @sap-ux/app-config-writer@0.4.52
+
+## 0.8.77
+
+### Patch Changes
+
+-   Updated dependencies [f2d3335]
+    -   @sap-ux/preview-middleware@0.16.117
+    -   @sap-ux/app-config-writer@0.4.52
+
 ## 0.8.76
 
 ### Patch Changes
