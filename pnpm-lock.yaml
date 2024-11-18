@@ -1228,6 +1228,8 @@ importers:
         specifier: 2.4.4
         version: 2.4.4
 
+  packages/deploy-config-generator-shared: {}
+
   packages/deploy-tooling:
     dependencies:
       '@sap-ux/axios-extension':
