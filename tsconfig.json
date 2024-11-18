@@ -183,6 +183,9 @@
       "path": "packages/telemetry"
     },
     {
+      "path": "packages/test-mock-utils"
+    },
+    {
       "path": "packages/text-document-utils"
     },
     {
