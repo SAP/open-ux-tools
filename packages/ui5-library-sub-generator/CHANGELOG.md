@@ -1,5 +1,13 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.0.23
+
+### Patch Changes
+
+-   @sap-ux/ui5-library-writer@0.5.35
+-   @sap-ux/fiori-generator-shared@0.7.8
+-   @sap-ux/ui5-library-inquirer@0.3.13
+
 ## 0.0.22
 
 ### Patch Changes
