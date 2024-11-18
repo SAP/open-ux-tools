@@ -1,5 +1,21 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.61
+
+### Patch Changes
+
+-   1beac7e: adds reentrance ticket auth type to deploy config
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+    -   @sap-ux/project-access@1.28.7
+    -   @sap-ux/system-access@0.5.18
+
+## 0.0.60
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.18
+
 ## 0.0.59
 
 ### Patch Changes
