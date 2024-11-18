@@ -1,6 +1,6 @@
 import { RtaService } from '../../../src/cpe/rta-service';
 import { ActionHandler } from '../../../src/cpe/types';
-import { setAppMode, undo, redo, save, reloadApplication } from '@sap-ux-private/control-property-editor-common';
+import { setAppMode, undo, redo, save, reloadApplication, appLoaded } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
 import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
@@ -102,5 +102,21 @@ describe('rta-service', () => {
         Object.defineProperty(window, 'location', {
             value: location
         });
+    });
+
+    test('attach start callback check', async () => {
+        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+        const service = new RtaService(rtaMock as unknown as RuntimeAuthoring);
+        const reloadSpy = jest.fn();
+        Object.defineProperty(window, 'location', {
+            value: {
+                reload: reloadSpy
+            }
+        });
+        service.init(sendActionMock, subscribeMock);
+        expect(rtaMock.attachStart).toBeCalledTimes(1);
+
+        rtaMock.attachStart.mock.calls[0][0]();
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, appLoaded());
     });
 });
