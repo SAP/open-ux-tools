@@ -1,4 +1,4 @@
-import type { ReaderCollection } from '@ui5/fs';
+import type { ReaderCollection, Resource } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor as MemFsEditor } from 'mem-fs-editor';
@@ -15,6 +15,7 @@ import {
     AdpPreview,
     type AdpPreviewConfig,
     type CommonChangeProperties,
+    type DescriptorVariant,
     type OperationType
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
@@ -209,7 +210,7 @@ export class FlpSandbox {
      *
      * @param rta runtime authoring configuration
      */
-    private addEditorRoutes(rta: RtaConfig) {
+    private addEditorRoutes(rta: RtaConfig): void {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
         for (const editor of rta.editors) {
             let previewUrl = editor.path.startsWith('/') ? editor.path : `/${editor.path}`;
@@ -249,10 +250,10 @@ export class FlpSandbox {
             this.router.get(previewUrl, async (req: Request, res: Response) => {
                 if (!req.query['fiori-tools-rta-mode']) {
                     // Redirect to the same URL but add the necessary parameter
-                    const params = JSON.parse(JSON.stringify(req.query));
-                    params['sap-ui-xx-viewCache'] = 'false';
-                    params['fiori-tools-rta-mode'] = 'true';
-                    params['sap-ui-rta-skip-flex-validation'] = 'true';
+                    const params = JSON.parse(JSON.stringify(req.query)) as URLSearchParams;
+                    params.set('sap-ui-xx-viewCache', 'false');
+                    params.set('fiori-tools-rta-mode', 'true');
+                    params.set('sap-ui-rta-skip-flex-validation', 'true');
                     res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
                     return;
                 }
@@ -268,13 +269,14 @@ export class FlpSandbox {
     /**
      * Add routes for html and scripts required for a local FLP.
      */
-    private addStandardRoutes() {
+    private addStandardRoutes(): void {
         // register static client sources
         this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {
             // inform the user if a html file exists on the filesystem
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const file = await this.project.byPath(this.config.path);
             if (file) {
                 this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
@@ -293,18 +295,20 @@ export class FlpSandbox {
      * @returns the location of the locate-reuse-libs script or undefined.
      */
     private async hasLocateReuseLibsScript(): Promise<boolean | undefined> {
-        const files = await this.project.byGlob('**/locate-reuse-libs.js');
+        const files = (await this.project.byGlob('**/locate-reuse-libs.js')) as Resource[];
         return files.length > 0;
     }
 
     /**
      * Add additional routes for apps also to be shown in the local FLP.
      */
-    private async addRoutesForAdditionalApps() {
+    private async addRoutesForAdditionalApps(): Promise<void> {
         for (const app of this.config.apps) {
             let manifest: Manifest | undefined;
             if (app.local) {
-                manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
+                manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8')) as
+                    | Manifest
+                    | undefined;
                 this.router.use(app.target, serveStatic(join(app.local, 'webapp')));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
             } else if (app.componentId) {
@@ -387,7 +391,7 @@ export class FlpSandbox {
      * @param configs test configurations
      * @private
      */
-    private createTestSuite(configs: TestConfig[]) {
+    private createTestSuite(configs: TestConfig[]): void {
         const testsuiteConfig = configs.find((config) => config.framework === 'Testsuite');
         if (!testsuiteConfig) {
             //silent skip: create a testsuite only if it is explicitly part of the test configuration
@@ -429,7 +433,7 @@ export class FlpSandbox {
 
         this.logger.debug(`Add route for ${config.init}`);
         this.router.get(config.init, (async (_req, res, next) => {
-            const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
+            const files = (await this.project.byGlob(config.init.replace('.js', '.[jt]s'))) as Resource[];
             if (files?.length > 0) {
                 this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
                 next();
@@ -454,7 +458,7 @@ export class FlpSandbox {
      * @param body the response body
      * @private
      */
-    private sendResponse(res: Response | http.ServerResponse, contentType: string, status: number, body: string) {
+    private sendResponse(res: Response | http.ServerResponse, contentType: string, status: number, body: string): void {
         res.writeHead(status, {
             'Content-Type': contentType
         });
@@ -468,7 +472,7 @@ export class FlpSandbox {
      * @param configs test configurations
      * @param id application id from manifest
      */
-    private addTestRoutes(configs: TestConfig[], id: string) {
+    private addTestRoutes(configs: TestConfig[], id: string): void {
         const ns = id.replace(/\./g, '/');
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.html'), 'utf-8');
         const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
@@ -478,6 +482,7 @@ export class FlpSandbox {
             // add route for the *.qunit.html
             this.router.get(config.path, (async (_req, res, next) => {
                 this.logger.debug(`Serving test route: ${config.path}`);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const file = await this.project.byPath(config.path);
                 if (file) {
                     this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
@@ -497,12 +502,12 @@ export class FlpSandbox {
             this.router.get(config.init, (async (_req, res, next) => {
                 this.logger.debug(`Serving test init script: ${config.init}`);
 
-                const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
+                const files = (await this.project.byGlob(config.init.replace('.js', '.[jt]s'))) as Resource[];
                 if (files?.length > 0) {
                     this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
                     next();
                 } else {
-                    const testFiles = await this.project.byGlob(config.pattern);
+                    const testFiles = (await this.project.byGlob(config.pattern)) as Resource[];
                     const templateConfig = { tests: generateImportList(ns, testFiles) };
                     const js = render(initTemplate, templateConfig);
                     this.sendResponse(res, 'application/javascript', 200, js);
@@ -546,6 +551,7 @@ function serializeUi5Configuration(config: Map<string, string>): string {
  * @param flp FlpSandbox instance
  * @param util middleware utilities provided by the UI5 CLI
  * @param logger logger instance
+ * @throws Error in case no manifest.appdescr_variant found
  */
 export async function initAdp(
     rootProject: ReaderCollection,
@@ -553,11 +559,11 @@ export async function initAdp(
     flp: FlpSandbox,
     util: MiddlewareUtils,
     logger: ToolsLogger
-) {
+): Promise<void> {
     const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
     if (appVariant) {
         const adp = new AdpPreview(config, rootProject, util, logger);
-        const variant = JSON.parse(await appVariant.getString());
+        const variant = JSON.parse(await appVariant.getString()) as DescriptorVariant;
         const layer = await adp.init(variant);
         if (flp.rta) {
             flp.rta.layer = layer;
