@@ -1,6 +1,6 @@
 import { join } from 'path';
-import { Store } from 'mem-fs';
 import { Command } from 'commander';
+import type { Store } from 'mem-fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Editor, create } from 'mem-fs-editor';
 import type { Manifest } from '@sap-ux/project-access';

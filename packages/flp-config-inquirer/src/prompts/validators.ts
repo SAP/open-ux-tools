@@ -1,6 +1,6 @@
 import { t } from '../i18n';
 
-import { AllowedCharacters } from '../types';
+import type { AllowedCharacters } from '../types';
 
 /**
  * Validates that text input does not have zero length and optionally is less than the specified maximum length.

@@ -87,7 +87,7 @@ export function getOverwritePrompt(
         guiOptions: {
             applyDefaultWhenDirty: true
         },
-        default: options?.default ?? (() => !existingKeyRef.value),
+        default: options?.default ?? ((): boolean => !existingKeyRef.value),
         when: options?.hide
             ? false
             : (previousAnswers: FLPConfigAnswers): boolean => {
