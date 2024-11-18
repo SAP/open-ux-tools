@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/test-mock-utils",
-    "version": "0.16.0",
-    "description": "Library to simplify working with SAP BTP specific features especially in SAP Business Application",
+    "version": "0.0.0",
+    "description": "Library for testing",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
