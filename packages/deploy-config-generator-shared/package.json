@@ -1,14 +1,14 @@
 {
-    "name": "@sap-ux/test-mock-utils",
+    "name": "@sap-ux/deploy-config-generator-shared",
     "version": "0.0.0",
     "description": "Library for testing",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/test-mock-utils"
+        "directory": "packages/deploy-config-generator-shared"
     },
     "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Atest-mock-utils"
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Adeploy-config-generator-shared"
     },
     "license": "Apache-2.0",
     "private": false,

@@ -1,5 +1,5 @@
 ---
-'@sap-ux/test-mock-utils': patch
+'@sap-ux/deploy-config-generator-shared': patch
 ---
 
 test
