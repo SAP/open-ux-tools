@@ -1,14 +1,8 @@
 import { join } from 'path';
 import { generate } from '../../src';
 import fsExtra from 'fs-extra';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import type { AbapDeployConfig, BspApp } from '@sap-ux/ui5-config';
 import type { DeployConfigOptions } from '../../src/types';
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
-}));
-const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('generate', () => {
     const outputDir = join(__dirname, '../test-output');
@@ -31,7 +25,13 @@ describe('generate', () => {
     }> = [
         {
             name: 'test-js-app',
-            config,
+            config: {
+                ...config,
+                target: {
+                    ...config.target,
+                    authenticationType: 'reentranceTicket'
+                }
+            },
             isAppStudio: false
         },
         {
@@ -59,7 +59,6 @@ describe('generate', () => {
 
     test.each(testConfigs)('Generate deployment configs: $name', async ({ name, options, config, isAppStudio }) => {
         (config.app as BspApp).name = name;
-        mockIsAppStudio.mockReturnValueOnce(isAppStudio);
         const testPath = join(outputDir, name);
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(testPath);
