@@ -53,6 +53,10 @@ export interface CFAppConfig {
     apiHubConfig?: ApiHubConfig;
     serviceHost?: string; // Data service host
     lcapMode?: boolean;
+    addMtaDestination?: boolean; // Used during headless flow, support toggling on/off destination being added
+    cloudServiceName?: string; // Used during headless flow
+    destinationAuthentication?: Authentication;
+    isDestinationFullUrl?: boolean; // If WebIDEAdditionalData contains full_url, false by default
 }
 export interface CFConfig extends CFAppConfig, CFBaseConfig {
     appId: string;
@@ -62,9 +66,6 @@ export interface CFConfig extends CFAppConfig, CFBaseConfig {
     isCap?: boolean;
     servicePath?: string;
     firstServicePathSegment?: string;
-    isFullUrlDest?: boolean;
-    destinationAuthType?: Authentication;
-    cloudServiceName?: string;
     isMtaRoot?: boolean;
 }
 export const enum ApiHubType {
