@@ -21,7 +21,7 @@ export function getPrompts(
     const dataSourceIds = Object.keys(filterDataSourcesByType(dataSources, 'OData'));
     const annotationFileSelectOptions = [
         { name: t('choices.annotationFile.selectFromWorkspace'), value: AnnotationFileSelectType.ExistingFile },
-        { name: t('choices.annotationFile.createEmptyFile'), value: AnnotationFileSelectType.NewEmptyFile }
+        { name: t('choices.annotationFile.createTemplateFile'), value: AnnotationFileSelectType.NewEmptyFile }
     ];
     return [
         {

@@ -1175,6 +1175,9 @@ importers:
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
       '@sap-ux/preview-middleware':
         specifier: workspace:*
         version: link:../preview-middleware
@@ -10443,8 +10446,8 @@ packages:
       escape-string-regexp: 5.0.0
       globby: 13.2.2
       graceful-fs: 4.2.11
-      micromatch: 4.0.5
-      minimatch: 9.0.3
+      micromatch: 4.0.7
+      minimatch: 9.0.5
       pretty-hrtime: 1.0.3
       random-int: 3.0.0
     dev: true
@@ -18258,14 +18261,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: false
-
-  /micromatch@4.0.5:
-    resolution: {integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==}
-    engines: {node: '>=8.6'}
-    dependencies:
-      braces: 3.0.3
-      picomatch: 2.3.1
-    dev: true
 
   /micromatch@4.0.7:
     resolution: {integrity: sha512-LPP/3KorzCwBxfeUuZmaR6bG2kdeHSbe0P2tY3FLRU4vYrjYz5hI4QZwV0njUx3jeuKe67YukQ1LSPZBKDqO/Q==}
