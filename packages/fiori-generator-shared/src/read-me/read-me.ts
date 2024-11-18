@@ -12,7 +12,7 @@ import type { Editor } from 'mem-fs-editor';
  */
 export function generateReadMe(destPath: string, readMe: ReadMe, fs: Editor): Editor {
     // Apply the configuration to generate the README file
-    const templateSourcePath = join(__dirname, '..', 'templates/README.md');
+    const templateSourcePath = join(__dirname, '../../templates/README.md');
     const templateDestPath = `${destPath}/README.md`;
     // copy template
     fs.copyTpl(templateSourcePath, templateDestPath, readMe);

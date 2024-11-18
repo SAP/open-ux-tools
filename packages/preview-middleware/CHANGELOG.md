@@ -1,5 +1,30 @@
 # @sap-ux/preview-middleware
 
+## 0.16.119
+
+### Patch Changes
+
+-   Updated dependencies [8237f83]
+    -   @sap-ux/adp-tooling@0.12.77
+
+## 0.16.118
+
+### Patch Changes
+
+-   1f7827c: handle higher layer changes
+
+## 0.16.117
+
+### Patch Changes
+
+-   f2d3335: Hide "Semantic Date Range" Quick Action behind feature toggle.
+
+## 0.16.116
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.76
+
 ## 0.16.115
 
 ### Patch Changes

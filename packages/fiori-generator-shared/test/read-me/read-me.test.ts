@@ -1,8 +1,8 @@
 import path from 'path';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
-import { generateReadMe } from '../../src/read-me';
-import type { ReadMe } from '../../src/types';
+import { generateReadMe } from '../../src/read-me/read-me';
+import type { ReadMe } from '../../src/read-me/types';
 
 function getLaunchText(): string {
     return (
