@@ -1,9 +1,13 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src"],
+    "include": ["src", "src/**/*.json"],
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist"
     },
-    "references": []
+    "references": [
+        {
+            "path": "../fiori-generator-shared"
+        }
+    ]
 }

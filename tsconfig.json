@@ -78,6 +78,9 @@
       "path": "packages/create"
     },
     {
+      "path": "packages/deploy-config-generator-shared"
+    },
+    {
       "path": "packages/deploy-tooling"
     },
     {
@@ -181,9 +184,6 @@
     },
     {
       "path": "packages/telemetry"
-    },
-    {
-      "path": "packages/test-mock-utils"
     },
     {
       "path": "packages/text-document-utils"
