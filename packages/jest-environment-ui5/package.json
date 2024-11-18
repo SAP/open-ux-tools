@@ -16,7 +16,7 @@
         "lint": "eslint . --ext .js",
         "lint:fix": "eslint . --ext .js --fix",
         "test": "pnpm run test-ut",
-        "test-ut": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests  --runInBand ",
+        "test-ut": "cross-env NODE_OPTIONS='--experimental-vm-modules' npx jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests  --runInBand ",
         "test-e2e": "pnpm run testlatest && pnpm run test71 && pnpm run test84 && pnpm run test96 && pnpm run test108 && pnpm run test120 && pnpm run test124 && pnpm run test127",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
