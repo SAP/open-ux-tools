@@ -8,11 +8,7 @@ global.test.info = function () {
     }
     annotations.push = function (annotation) {
         let currentAnnotations = MetadataExchange.getTestMetadata(currentTestName);
-        // TODO: this comparison is always true, if exchanged with Array.isArray, then tests fail
-        // eslint-disable-next-line valid-typeof
-        if (typeof currentAnnotations !== 'array') {
-            currentAnnotations = [];
-        }
+        currentAnnotations ??= [];
         currentAnnotations.push(annotation);
         MetadataExchange.storeTestMetadata(currentTestName, currentAnnotations);
     };
