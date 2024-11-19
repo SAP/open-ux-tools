@@ -83,7 +83,7 @@ export function getOverwritePrompt(
                           inboundKey: `${previousAnswers.semanticObject}-${previousAnswers.action}`
                       })
                     : ''
-            }${t('validators.flpConfigOverwrite')}`,
+            } ${t('validators.flpConfigOverwrite')}`,
         guiOptions: {
             applyDefaultWhenDirty: true
         },

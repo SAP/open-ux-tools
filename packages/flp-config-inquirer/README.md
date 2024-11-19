@@ -1,7 +1,9 @@
 # @sap-ux/flp-config-inquirer
 
-Provides Inquirer based prompting to allow input and validation of data required to generate an FLP configuration
+Provides Inquirer-based prompting to allow input and validation of data required to generate an **FLP** (*Fiori Launchpad*) configuration.
+
 ## Installation
+
 Npm
 `npm install --save @sap-ux/flp-config-inquirer`
 
@@ -13,66 +15,71 @@ Pnpm
 
 ## Explainer
 
-Prompts may be retrieved using `getPrompts` and then executed in another prompting module that supports `inquirer` type prompts. However, it is recommended to call `prompt` so that unanswered prompts can be assigned defaults if provided via prompt options before returning, otherwise this needs to be taken care of by the callers prompting functionality. Note that hidden prompts, for example those hidden behind the advanced option, may not have been executed, depending on the users selection of `showAdvanced`. In addition, previous answers need to be provided to default functions, and this is taken care of when calling `prompt` but would need to be handled by the consumers prompting framework if using the prompts returned by `getPrompts` directly.
+The `@sap-ux/flp-config-inquirer` package provides a set of prompts for collecting user input required to generate FLP configuration. It leverages [Inquirer.js](https://www.npmjs.com/package/inquirer) for interactive command-line user interfaces.
 
-`getPrompts` is provided to allow consumers to access prompts. There may be cases where these can be transformed to support other prompting frameworks. Most prompt configuration is possible via `UI5ApplicationInquirerOptions` and calling `prompt`. 
+You can retrieve the prompts using `getPrompts` and execute them with your own prompting mechanism. However, it is recommended to use the `prompt` function, which handles assigning default values to unanswered prompts based on provided prompt options. This ensures that hidden prompts or those not executed due to conditional logic are correctly populated.
 
-Configurability of prompts is entirely controlled using the `UI5ApplicationInquirerOptions` parameter. Note that if a prompt is hidden specifiying the `hide` property as `true`,
-the prompt validation or default functions will not be executed and so there may not be an answer provided for that prompt name. It is advisable therefore to provide a default
-value or function when hiding prompts that are not specified as advanced option prompts.
+Configurability of prompts is entirely controlled using the `FLPConfigPromptOptions` parameter.
 
-Similarly if a prompt is set to be grouped under advanced options by specifying `advancedOption` as `true`, these prompts may not be executed if the end-user chooses not to set them. In this case a default will be provided based on the current fallback defaults or default provided as the property `default`. 
-See [Inquirer.js](https://www.npmjs.com/package/inquirer) for valid default properties.
+- **Prompt Options**: Use `FLPConfigPromptOptions` to customize prompts, such as setting default values, hiding prompts, or adding validation.
+- **Defaults Handling**: When prompts are hidden or not executed, default values or functions can be provided to ensure all required answers are available.
+- **Conditional Prompts**: Some prompts may be conditionally displayed based on previous answers. The `prompt` function handles these conditions and default assignments.
 
 ### Inquirer usage example:
 
-In the following example the prompts are customised as follows:
+In the following example, the prompts are customized as follows:
 
-- Provides a default application name of 'travelApp'
-- Provides additional validation of description to be less than 50 characters
-- Hides the UI5 version prompt behind an advanced confirm prompt
+- Sets a default `semanticObject` of `'MySemanticObject'`.
+- Sets a default `action` of `'display'`.
+- Hides the `title` prompt and provides a default value of `'My Application Title'`.
 
-```javascript
-import { type UI5ApplicationPromptOptions, type UI5ApplicationAnswerspromptNames, prompt } from '@sap-ux/flp-config-inquirer';
+```ts
+import { prompt, promptNames, type FLPConfigPromptOptions, type FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import inquirer from 'inquirer';
 
-const promptOptions: UI5ApplicationPromptOptions = {
-    // Provides a default UI5 application name
-    [promptNames.name]: {
-        default: 'travelApp'
+const promptOptions: FLPConfigPromptOptions = {
+    // Provides a default semantic object
+    [promptNames.semanticObject]: {
+        default: 'MySemanticObject'
     },
-    // Adds additional validation to description prompt
-    [promptNames.description]: {
-        validate: (description, previousAnsers) => {
-            if (description.length > 50) {
-                return 'Please enter a description less than 50 characters'
-            }
-        }
+    // Provides a default action
+    [promptNames.action]: {
+        default: 'display'
     },
-    // Hide behind `showAdvanced` prompt
-    [promptNames.ui5Version]: {
-        advanced: true
+    // Hide the title prompt and provide a default value
+    [promptNames.title]: {
+        hide: true,
+        default: 'My Application Title'
     }
-}
+};
 
 const inquirerAdapter: InquirerAdapter = {
     prompt: inquirer.prompt
 };
 
-// ui5AppAnswers will contain all values required to generate a UI5 app
-const ui5AppAnswers: UI5ApplicationAnswers = await prompt(
+// Assume there are no existing inbound keys
+const inboundKeys: string[] = [];
+
+// flpConfigAnswers will contain all values required to generate an FLP configuration
+const flpConfigAnswers: FLPConfigAnswers = await prompt(
     inquirerAdapter,
+    inboundKeys,
     promptOptions
 );
 
+// Use flpConfigAnswers as needed
+console.log('FLP Configuration Answers:', flpConfigAnswers);
 ```
+
 ## License
 
 Read [License](./LICENSE).
 
 ## Keywords
-SAP UI5 Application
+
+SAP Fiori Launchpad
+FLP Configuration
 Inquirer
 Prompting
 Generator
