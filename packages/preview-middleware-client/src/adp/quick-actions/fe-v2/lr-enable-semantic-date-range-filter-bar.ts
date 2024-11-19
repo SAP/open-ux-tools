@@ -48,7 +48,6 @@ export class ToggleSemanticDateRangeFilterBar
     async execute(): Promise<FlexCommand[]> {
         const command = await executeToggleAction(
             this.context,
-            this.isUseDateRangeTypeEnabled,
             'component/settings/filterSettings/dateSettings',
             this.control!,
             {

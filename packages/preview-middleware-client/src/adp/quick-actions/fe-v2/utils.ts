@@ -7,7 +7,6 @@ import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
 export async function executeToggleAction(
     context: QuickActionContext,
-    isQAEnabled: boolean,
     propertyPath: string,
     control: UI5Element,
     propertyValue: object
@@ -36,7 +35,5 @@ export async function executeToggleAction(
         null,
         flexSettings
     );
-
-    isQAEnabled = !isQAEnabled;
     return [command];
 }

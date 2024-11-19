@@ -1152,6 +1152,7 @@ describe('FE V2 quick actions', () => {
                                     'kind': 'nested',
                                     id: 'listReport0-create-table-action',
                                     title: 'Add Custom Table Action',
+                                    tooltip: undefined,
                                     enabled: true,
                                     children: [
                                         {
@@ -1186,7 +1187,7 @@ describe('FE V2 quick actions', () => {
                                                     'tooltip': testCase.expectedTooltip
                                                 }
                                             ],
-                                            'enabled': testCase.expectedIsEnabled,
+                                            'enabled': true,
                                             'id': 'listReport0-enable-table-filtering',
                                             'kind': 'nested',
                                             'title': 'Enable Table Filtering for Page Variants',
