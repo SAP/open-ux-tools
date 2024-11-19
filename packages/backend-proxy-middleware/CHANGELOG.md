@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.8.21
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
 ## 0.8.20
 
 ### Patch Changes
