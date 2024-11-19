@@ -1,5 +1,20 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.0.9
+
+### Patch Changes
+
+-   a62ff25: adds new options for listing destinations api
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/inquirer-common@0.5.2
+
+## 0.0.8
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.1
+
 ## 0.0.7
 
 ### Patch Changes

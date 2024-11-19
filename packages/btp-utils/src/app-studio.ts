@@ -2,7 +2,7 @@ import axios from 'axios';
 import { cfGetInstanceKeyParameters } from '@sap/cf-tools';
 import type { Logger } from '@sap-ux/logger';
 import { ENV } from './app-studio.env';
-import type { Destination } from './destination';
+import { isS4HC, type Destination, type ListDestinationOpts } from './destination';
 
 /**
  * HTTP header that is to be used for encoded credentials when communicating with a destination service instance.
@@ -78,16 +78,32 @@ export function getDestinationUrlForAppStudio(name: string, path?: string): stri
 export type Destinations = { [name: string]: Destination };
 
 /**
+ * Helper function to strip `-api` from the host name.
+ *
+ * @param host -
+ * @returns
+ */
+function stripS4HCApiHost(host: string): string {
+    const [first, ...rest] = host.split('.');
+    return [first.replace(/-api$/, ''), ...rest].join('.');
+}
+
+/**
  * Get a list of available destinations in SAP Business Application Studio.
  *
+ * @param options - options for the destinations
  * @returns the list of destinations
  */
-export async function listDestinations(): Promise<Destinations> {
+export async function listDestinations(options?: ListDestinationOpts): Promise<Destinations> {
     const destinations: Destinations = {};
     await axios.get('/reload', { baseURL: process.env[ENV.PROXY_URL] });
     const response = await axios.get<Destination[]>('/api/listDestinations', { baseURL: process.env[ENV.H2O_URL] });
     const list = Array.isArray(response.data) ? response.data : [];
     list.forEach((destination) => {
+        if (options?.stripS4HCApiHosts && isS4HC(destination)) {
+            destination.Host = stripS4HCApiHost(destination.Host);
+        }
+
         if (destination.WebIDEEnabled) {
             destinations[destination.Name] = destination;
         }

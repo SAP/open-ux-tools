@@ -190,7 +190,7 @@ export async function createSystemChoices(
 
     // If this is BAS, return destinations, otherwise return stored backend systems
     if (isAppStudio()) {
-        const destinations = await listDestinations();
+        const destinations = await listDestinations({ stripS4HCApiHosts: true });
         systemChoices = Object.values(destinations)
             .filter((destination) => {
                 return matchesFilters(destination, destinationFilters);
