@@ -51,7 +51,7 @@ export async function getUi5Version(): Promise<Ui5VersionInfo> {
  */
 export function isLowerThanMinimalUi5Version(
     ui5VersionInfo: Ui5VersionInfo,
-    minUi5VersionInfo: Ui5VersionInfo = minVersionInfo,
+    minUi5VersionInfo: Ui5VersionInfo = minVersionInfo
 ): boolean {
     if (!isNaN(ui5VersionInfo.major) && !isNaN(ui5VersionInfo.minor)) {
         if (ui5VersionInfo.major < minUi5VersionInfo.major) {
