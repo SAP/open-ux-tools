@@ -15,8 +15,8 @@ export enum BasicCredentialsPromptNames {
 /**
  * Re-usable credentials prompts for connection to systems using basic auth.
  *
- * @param connectionValidator
- * @param promptNamespace
+ * @param connectionValidator the connection validator to be used for the credentials validation
+ * @param promptNamespace the namespace to be used for the prompts when used multiple times in the same prompt set
  * @param sapClient
  * @param sapClient.sapClient the sapClient value to be used along with the credentials validation
  * @param sapClient.isValid validation of credentials is deferred until a valid sapClient is provided or undefined

@@ -13,6 +13,7 @@ import {
     type ManifestChangeProperties,
     type PropertyValueType
 } from '../types';
+import { renderFile } from 'ejs';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
@@ -55,7 +56,13 @@ export function writeAnnotationChange(
                 'changes',
                 TemplateFileName.Annotation
             );
-            fs.copy(annotationsTemplate, path.join(annotationsFolderPath, annotation.fileName ?? ''));
+            const { namespaces, serviceUrl } = annotation;
+            renderFile(annotationsTemplate, { namespaces, path: serviceUrl }, {}, (err, str) => {
+                if (err) {
+                    throw new Error('Error rendering template: ' + err.message);
+                }
+                fs.write(path.join(annotationsFolderPath, annotation.fileName ?? ''), str);
+            });
         } else {
             const selectedDir = path.dirname(annotation.filePath);
             if (selectedDir !== annotationsFolderPath) {

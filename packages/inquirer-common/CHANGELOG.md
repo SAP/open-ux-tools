@@ -1,5 +1,39 @@
 # @sap-ux/inquirer-common
 
+## 0.5.3
+
+### Patch Changes
+
+-   Updated dependencies [575ff89]
+    -   @sap-ux/fiori-generator-shared@0.7.10
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/fiori-generator-shared@0.7.9
+    -   @sap-ux/telemetry@0.5.44
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.43
+-   @sap-ux/fiori-generator-shared@0.7.8
+
+## 0.5.0
+
+### Minor Changes
+
+-   2886db3: Moves `getCFAbapServiceChoices` to inquirer-common and exports.
+
+### Patch Changes
+
+-   Updated dependencies [2886db3]
+    -   @sap-ux/fiori-generator-shared@0.7.7
+
 ## 0.4.10
 
 ### Patch Changes

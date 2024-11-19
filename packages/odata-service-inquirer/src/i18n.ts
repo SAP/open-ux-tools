@@ -1,3 +1,4 @@
+import { addi18nResourceBundle as addInquirerCommoni18nResourceBundle } from '@sap-ux/inquirer-common';
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/odata-service-inquirer.i18n.json';
@@ -8,7 +9,6 @@ export const defaultProjectNumber = 1;
  * Initialize i18next with the translations for this module.
  */
 export async function initI18nOdataServiceInquirer(): Promise<void> {
-    const t0 = performance.now();
     await i18next.init({
         lng: 'en',
         fallbackLng: 'en',
@@ -29,8 +29,8 @@ export async function initI18nOdataServiceInquirer(): Promise<void> {
         }
     });
     i18next.addResourceBundle('en', odataServiceInquirerNamespace, translations);
-    const t1 = performance.now();
-    console.log(`i18n load time: ${Math.round(t1 - t0)} milliseconds`);
+    // add the inquirer common i18n resource bundle to ensure all translations are available
+    addInquirerCommoni18nResourceBundle();
 }
 
 /**

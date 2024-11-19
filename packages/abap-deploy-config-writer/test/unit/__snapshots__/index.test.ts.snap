@@ -140,7 +140,7 @@ builder:
         target:
           url: https://example.com
           client: '000'
-          authenticationType: reentranceTicket
+          authenticationType: reentranceTicket # SAML support for vscode
         app:
           name: test-js-app
           package: TESTPKG12
