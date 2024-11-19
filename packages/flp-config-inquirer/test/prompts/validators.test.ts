@@ -1,6 +1,6 @@
 import { initI18n, t } from '../../src/i18n';
-import { validateText } from '../../src/prompts/validators';
 import type { AllowedCharacters } from '../../src/types';
+import { validateText } from '../../src/prompts/validators';
 
 const allowedCharacters: AllowedCharacters[] = ['_'];
 const inputName = 'Test Input';

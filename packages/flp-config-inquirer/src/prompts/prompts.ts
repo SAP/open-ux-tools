@@ -1,6 +1,3 @@
-import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
-import { promptNames } from '../types';
-import { PLATFORMS, getPlatform } from './utils';
 import {
     getSemanticObjectPrompt,
     getActionPrompt,
@@ -8,6 +5,9 @@ import {
     getSubTitlePrompt,
     getOverwritePrompt
 } from './questions/basic';
+import { promptNames } from '../types';
+import { PLATFORMS, getPlatform } from './utils';
+import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
 
 /**
  * Generates a list of prompts for FLP (Fiori Launchpad) configuration.

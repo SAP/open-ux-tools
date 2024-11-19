@@ -1,7 +1,8 @@
-import type { TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/flp-config-inquirer.i18n.json';
+import type { TOptions } from 'i18next';
 import { addi18nResourceBundle as addInquirerCommoni18nResourceBundle } from '@sap-ux/inquirer-common';
+
+import translations from './translations/flp-config-inquirer.i18n.json';
 
 const flpAppInquirerNamespace = 'flp-config-inquirer';
 export const defaultProjectNumber = 1;

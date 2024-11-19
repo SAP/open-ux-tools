@@ -1,13 +1,13 @@
 import { create } from 'mem-fs-editor';
 import type { Command } from 'commander';
 import { create as createStorage } from 'mem-fs';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { type FLPConfigAnswers, getPrompts } from '@sap-ux/flp-config-inquirer';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
 
 import { promptYUIQuestions } from '../../common';
 import { validateBasePath } from '../../validation';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
-import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Add the "add inbound-navigation" command to a passed command.

@@ -1,4 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
+
 import { getPlatform, PLATFORMS } from '../../src/prompts/utils';
 
 jest.mock('@sap-ux/btp-utils', () => ({

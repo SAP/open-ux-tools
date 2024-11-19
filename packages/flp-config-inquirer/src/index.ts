@@ -1,8 +1,11 @@
-import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 import isNil from 'lodash/isNil';
-import { getQuestions } from './prompts';
-import { promptNames, type FLPConfigAnswers, type FLPConfigQuestion, type FLPConfigPromptOptions } from './types';
+
+import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
+
 import { initI18n } from './i18n';
+import { promptNames } from './types';
+import { getQuestions } from './prompts';
+import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types';
 
 /**
  * Get the inquirer prompts for the FLP configuration inquirer.

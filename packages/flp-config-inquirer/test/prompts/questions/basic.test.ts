@@ -1,5 +1,5 @@
-import { initI18n, t } from '../../../src/i18n';
-import { promptNames } from '../../../src/types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+
 import {
     getActionPrompt,
     getOverwritePrompt,
@@ -7,8 +7,9 @@ import {
     getSubTitlePrompt,
     getTitlePrompt
 } from '../../../src/prompts/questions';
+import { initI18n, t } from '../../../src/i18n';
+import { promptNames } from '../../../src/types';
 import { validateText } from '../../../src/prompts/validators';
-import { Severity } from '@sap-devx/yeoman-ui-types';
 
 jest.mock('../../../src/prompts/validators.ts', () => ({
     ...jest.requireActual('../../../src/prompts/validators.ts'),

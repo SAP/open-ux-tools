@@ -10,9 +10,9 @@ import type {
     SubTitlePromptOptions,
     TitlePromptOptions
 } from '../../types';
-import { validateText } from '../validators';
-import { promptNames } from '../../types';
 import { t } from '../../i18n';
+import { promptNames } from '../../types';
+import { validateText } from '../validators';
 
 /**
  * Creates the 'semanticObject' prompt for FLP configuration.
