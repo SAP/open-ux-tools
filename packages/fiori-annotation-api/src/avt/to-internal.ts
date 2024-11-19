@@ -116,7 +116,7 @@ export function convertCollectionElement(
             return convertExpressionToInternal(aliasInfo, entry);
         } else {
             // entry must be record
-            return convertRecordToInternal(aliasInfo, entry);
+            return convertRecordToInternal(aliasInfo, entry as AnnotationRecord);
         }
     } else if (typeof entry === 'boolean') {
         // obvious extension of annotation.record definition
