@@ -4,9 +4,10 @@ import {
     ChangeType,
     getPromptsForAddAnnotationsToOData,
     getAdpConfig,
-    getManifestDataSources,
+    ManifestService,
     getVariant
 } from '@sap-ux/adp-tooling';
+import { getAnnotationNamespaces, type NamespaceAlias } from '@sap-ux/odata-service-writer';
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
 import { validateAdpProject } from '../../validation/validation';
@@ -43,8 +44,14 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         await validateAdpProject(basePath);
         const variant = getVariant(basePath);
         const adpConfig = await getAdpConfig(basePath, yamlPath);
-        const dataSources = await getManifestDataSources(variant.reference, adpConfig, logger);
+        const manifestService = await ManifestService.initMergedManifest(basePath, variant, adpConfig, logger);
+        const dataSources = manifestService.getManifestDataSources();
         const answers = await promptYUIQuestions(getPromptsForAddAnnotationsToOData(basePath, dataSources), false);
+        let namespaces: NamespaceAlias[] = [];
+        if (!answers.filePath) {
+            const metadata = await manifestService.getDataSourceMetadata(answers.id);
+            namespaces = getAnnotationNamespaces({ metadata });
+        }
 
         const fs = await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
             basePath,
@@ -53,7 +60,9 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
                 variant,
                 annotation: {
                     dataSource: answers.id,
-                    filePath: answers.filePath
+                    filePath: answers.filePath,
+                    namespaces,
+                    serviceUrl: dataSources[answers.id].uri
                 }
             }
         );
@@ -67,7 +76,9 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         logger.error(error.message);
         if (error.response?.status === 401 && loginAttempts) {
             loginAttempts--;
-            logger.error(`Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts}`);
+            logger.error(
+                `Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts + 1}`
+            );
             await addAnnotationsToOdata(basePath, simulate, yamlPath);
             return;
         }

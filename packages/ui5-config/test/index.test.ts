@@ -393,7 +393,20 @@ describe('UI5Config', () => {
         });
 
         test('use open source task', () => {
-            ui5Config.addAbapDeployTask({ url, client }, app, false, ['/test/'], true);
+            ui5Config.addAbapDeployTask(
+                { url, client, authenticationType: 'reentranceTicket' },
+                app,
+                false,
+                ['/test/'],
+                true,
+                [
+                    {
+                        path: 'configuration.target.authenticationType',
+                        comment: ' SAML support for vscode',
+                        key: 'authenticationType'
+                    }
+                ]
+            );
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
