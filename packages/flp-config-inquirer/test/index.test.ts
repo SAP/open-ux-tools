@@ -16,6 +16,13 @@ describe('index', () => {
             expect(prompts).toBeDefined();
             expect(prompts.length).toBe(5);
         });
+
+        it('should return prompts from getPrompts without any arguments', async () => {
+            const prompts = await getPrompts();
+
+            expect(prompts).toBeDefined();
+            expect(prompts.length).toBe(5);
+        });
     });
 
     describe('prompt', () => {
