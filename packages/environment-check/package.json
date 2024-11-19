@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/environment-check",
-    "version": "0.17.56",
+    "version": "0.17.57",
     "description": "SAP Fiori environment check",
     "license": "Apache-2.0",
     "bin": {
