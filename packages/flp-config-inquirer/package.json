@@ -31,21 +31,14 @@
     ],
     "dependencies": {
         "@sap-ux/inquirer-common": "workspace:*",
-        "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "i18next": "23.5.1",
-        "inquirer-autocomplete-prompt": "2.0.1",
-        "lodash": "4.17.21",
-        "semver": "7.5.4"
+        "lodash": "4.17.21"
     },
     "devDependencies": {
         "@sap-devx/yeoman-ui-types": "1.14.4",
-        "@sap-ux/cap-config-writer": "workspace:*",
-        "@types/inquirer-autocomplete-prompt": "2.0.1",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202",
-        "@types/semver": "7.5.4",
         "inquirer": "8.2.6"
     },
     "engines": {
