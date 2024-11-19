@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.7.10
+
+### Patch Changes
+
+-   575ff89: fix for reading readme template
+
 ## 0.7.9
 
 ### Patch Changes
