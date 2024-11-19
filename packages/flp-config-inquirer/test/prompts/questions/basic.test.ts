@@ -323,7 +323,7 @@ describe('basic prompts', () => {
                 guiOptions: {
                     breadcrumb: t('prompts.subTitleBreadcrumb')
                 },
-                message: t('prompts.semanticObject'),
+                message: t('prompts.subTitle'),
                 default: 'Default Subtitle',
                 filter: expect.any(Function)
             });
