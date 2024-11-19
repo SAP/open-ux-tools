@@ -12,7 +12,7 @@ import { executeToggleAction } from './utils';
 import { translateText } from '../../quick-actions/utils';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
-// TODO: specify correct ones
+
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, TREE_TABLE_TYPE, GRID_TABLE_TYPE];
 
 /**
@@ -68,7 +68,6 @@ export class EnableTableFilteringQuickAction
         }
         const command = await executeToggleAction(
             this.context,
-            this.isTableFilteringInPageVariantEnabled,
             'component/settings',
             modifiedControl,
             {
