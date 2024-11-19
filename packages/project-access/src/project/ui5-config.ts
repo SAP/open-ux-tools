@@ -5,8 +5,9 @@ import { FileName } from '../constants';
 import { fileExists, readFile } from '../file';
 import { readdir } from 'fs';
 import yaml from 'js-yaml';
-import Ajv, { type Schema } from 'ajv';
+import Ajv from 'ajv';
 import type { ValidatedUi5ConfigFileNames } from '../types';
+import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
 
 /**
  * Get path to webapp.
@@ -113,17 +114,19 @@ export async function validateUi5ConfigSchema(
 ): Promise<ValidatedUi5ConfigFileNames> {
     const invalid: string[] = [];
     const skipped: string[] = [];
-    const schema = JSON.parse(memFs.read(join(__dirname, '..', '..', 'dist', 'schema', 'ui5.yaml.json'))) as Schema;
+    const schema = JSON.parse(
+        memFs.read(join(__dirname, '..', '..', 'dist', 'schema', 'ui5.yaml.json'))
+    ) as SomeJSONSchema | null;
     if (!schema) {
         throw Error('Schema not found. No validation possible.');
     }
-    const ajv = new Ajv({ strict: false });
-    const validate = ajv.compile(schema);
+    const validate = new Ajv({ strict: false }).compile<SomeJSONSchema>(schema);
     for (const fileName of yamlFileNames) {
         let document: unknown;
         try {
             document = yaml.load(memFs.read(join(projectRoot, fileName)), { filename: fileName });
         } catch (error) {
+            //skip file in case of error (e.g. multi-document sources)
             skipped.push(fileName);
             yamlFileNames.delete(fileName);
             continue;
