@@ -1010,7 +1010,7 @@ describe('FE V2 quick actions', () => {
                     ])
                 );
             });
-            describe('enable table filtering', () => {
+            describe('enable table filtering for different valid UI5 versions', () => {
                 const testCases: {
                     major: int;
                     minor: int;
