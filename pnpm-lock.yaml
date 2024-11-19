@@ -367,9 +367,6 @@ importers:
 
   packages/abap-deploy-config-writer:
     dependencies:
-      '@sap-ux/btp-utils':
-        specifier: workspace:*
-        version: link:../btp-utils
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
