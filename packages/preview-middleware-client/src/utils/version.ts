@@ -68,22 +68,18 @@ export function isLowerThanMinimalUi5Version(
  * Checks if the given version is equal to the specified version.
  * @param ui5VersionInfo to check
  * @param targetUi5VersionInfo to check against (default is 1.71)
- * @param checkPatch to compare patch version if the path is equal or greate then target version.
  *
  * @returns boolean
  */
 export function isEqualToUi5Version(
     ui5VersionInfo: Ui5VersionInfo,
-    targetUi5VersionInfo: Ui5VersionInfo = minVersionInfo,
-    checkPatch?: boolean
+    targetUi5VersionInfo: Ui5VersionInfo = minVersionInfo
 ): boolean {
     if (!isNaN(ui5VersionInfo.major) && !isNaN(ui5VersionInfo.minor)) {
-        return checkPatch
-            ? ui5VersionInfo.major === targetUi5VersionInfo.major &&
+        return (
+            ui5VersionInfo.major === targetUi5VersionInfo.major &&
             ui5VersionInfo.minor === targetUi5VersionInfo.minor &&
-            (ui5VersionInfo?.patch ?? 0) >= (targetUi5VersionInfo?.patch ?? 0)
-            : ui5VersionInfo.major === targetUi5VersionInfo.major &&
-            ui5VersionInfo.minor === targetUi5VersionInfo.minor;
+            (ui5VersionInfo?.patch ?? 0) >= (targetUi5VersionInfo?.patch ?? 0));
     }
     return false;
 }
