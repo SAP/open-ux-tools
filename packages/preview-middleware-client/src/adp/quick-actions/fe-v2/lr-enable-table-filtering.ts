@@ -54,9 +54,6 @@ export class EnableTableFilteringQuickAction
         if (this.children.length > 0) {
             this.isApplicable = true;
         }
-        if (this.children.every((child) => !child.enabled)) {
-            this.isDisabled = true;
-        }
         return Promise.resolve();
     }
 
