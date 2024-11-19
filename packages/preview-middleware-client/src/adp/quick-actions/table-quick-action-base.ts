@@ -167,7 +167,7 @@ export abstract class TableQuickActionDefinitionBase {
      * Builds a map kay/tab_name for ICON_TAB_BAR control of the active page, if such exists
      * @returns built map
      */
-    private buildIconTabBarFilterMap(): { [key: string]: string } {
+    public buildIconTabBarFilterMap(): { [key: string]: string } {
         const iconTabBarFilterMap: { [key: string]: string } = {};
 
         // Assumption only a tab bar control per page.
