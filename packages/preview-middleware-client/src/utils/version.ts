@@ -3,9 +3,9 @@ import Log from 'sap/base/Log';
 
 type SingleVersionInfo =
     | {
-          name: string;
-          version: string;
-      }
+        name: string;
+        version: string;
+    }
     | undefined;
 
 export type Ui5VersionInfo = {
@@ -51,7 +51,7 @@ export async function getUi5Version(): Promise<Ui5VersionInfo> {
  */
 export function isLowerThanMinimalUi5Version(
     ui5VersionInfo: Ui5VersionInfo,
-    minUi5VersionInfo: Ui5VersionInfo = minVersionInfo
+    minUi5VersionInfo: Ui5VersionInfo = minVersionInfo,
 ): boolean {
     if (!isNaN(ui5VersionInfo.major) && !isNaN(ui5VersionInfo.minor)) {
         if (ui5VersionInfo.major < minUi5VersionInfo.major) {
@@ -68,7 +68,7 @@ export function isLowerThanMinimalUi5Version(
  * Checks if the given version is equal to the specified version.
  * @param ui5VersionInfo to check
  * @param targetUi5VersionInfo to check against (default is 1.71)
- * @param checkPatch to compare patch version
+ * @param checkPatch to compare patch version if the path is equal or greate then target version.
  *
  * @returns boolean
  */
@@ -80,10 +80,10 @@ export function isEqualToUi5Version(
     if (!isNaN(ui5VersionInfo.major) && !isNaN(ui5VersionInfo.minor)) {
         return checkPatch
             ? ui5VersionInfo.major === targetUi5VersionInfo.major &&
-                  ui5VersionInfo.minor === targetUi5VersionInfo.minor &&
-                  ui5VersionInfo.patch === targetUi5VersionInfo.patch
+            ui5VersionInfo.minor === targetUi5VersionInfo.minor &&
+            (ui5VersionInfo?.patch ?? 0) >= (targetUi5VersionInfo?.patch ?? 0)
             : ui5VersionInfo.major === targetUi5VersionInfo.major &&
-                  ui5VersionInfo.minor === targetUi5VersionInfo.minor;
+            ui5VersionInfo.minor === targetUi5VersionInfo.minor;
     }
     return false;
 }
