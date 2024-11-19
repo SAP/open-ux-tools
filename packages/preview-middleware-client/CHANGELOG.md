@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.32
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
 ## 0.11.31
 
 ### Patch Changes

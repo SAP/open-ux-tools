@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 0.12.81
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
+## 0.12.80
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.3
+
 ## 0.12.79
 
 ### Patch Changes

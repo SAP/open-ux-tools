@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.0.8
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
 ## 0.0.7
 
 ### Patch Changes

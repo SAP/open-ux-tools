@@ -1,5 +1,19 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [575ff89]
+    -   @sap-ux/fiori-generator-shared@0.7.10
+    -   @sap-ux/inquirer-common@0.5.3
+
+## 0.6.6
+
+### Patch Changes
+
+-   481e6b4: Fix for i18n not loading
+
 ## 0.6.5
 
 ### Patch Changes
