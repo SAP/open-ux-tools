@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.6
+
+### Patch Changes
+
+-   481e6b4: Fix for i18n not loading
+
 ## 0.6.5
 
 ### Patch Changes
