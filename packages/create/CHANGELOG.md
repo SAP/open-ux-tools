@@ -1,5 +1,61 @@
 # @sap-ux/create
 
+## 0.8.81
+
+### Patch Changes
+
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.23
+    -   @sap-ux/adp-tooling@0.12.79
+    -   @sap-ux/app-config-writer@0.4.55
+    -   @sap-ux/inquirer-common@0.5.2
+    -   @sap-ux/preview-middleware@0.16.121
+    -   @sap-ux/system-access@0.5.19
+    -   @sap-ux/cap-config-writer@0.7.59
+    -   @sap-ux/abap-deploy-config-writer@0.0.62
+
+## 0.8.80
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/abap-deploy-config-writer@0.0.61
+    -   @sap-ux/ui5-config@0.25.2
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.22
+    -   @sap-ux/adp-tooling@0.12.78
+    -   @sap-ux/app-config-writer@0.4.54
+    -   @sap-ux/cards-editor-config-writer@0.4.7
+    -   @sap-ux/mockserver-config-writer@0.6.7
+    -   @sap-ux/odata-service-writer@0.23.3
+    -   @sap-ux/project-access@1.28.7
+    -   @sap-ux/preview-middleware@0.16.120
+    -   @sap-ux/cap-config-writer@0.7.58
+    -   @sap-ux/system-access@0.5.18
+    -   @sap-ux/inquirer-common@0.5.1
+
+## 0.8.79
+
+### Patch Changes
+
+-   8237f83: feat: add namespaces to annotation template
+-   Updated dependencies [8237f83]
+    -   @sap-ux/adp-tooling@0.12.77
+    -   @sap-ux/odata-service-writer@0.23.2
+    -   @sap-ux/preview-middleware@0.16.119
+    -   @sap-ux/abap-deploy-config-inquirer@1.0.21
+    -   @sap-ux/app-config-writer@0.4.53
+    -   @sap-ux/system-access@0.5.18
+    -   @sap-ux/cap-config-writer@0.7.57
+    -   @sap-ux/abap-deploy-config-writer@0.0.60
+
+## 0.8.78
+
+### Patch Changes
+
+-   Updated dependencies [1f7827c]
+    -   @sap-ux/preview-middleware@0.16.118
+    -   @sap-ux/app-config-writer@0.4.52
+
 ## 0.8.77
 
 ### Patch Changes

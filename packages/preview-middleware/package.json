@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Apreview-middleware"
     },
-    "version": "0.16.117",
+    "version": "0.16.121",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -17,7 +17,7 @@
         "start:fixture": "ui5 serve --config test/fixtures/simple-app/ui5.yaml",
         "build": "npm-run-all -l -p build:middleware build:client",
         "build:middleware": "tsc --build",
-        "build:client": "pnpm -C ../preview-middleware-client run build && copyfiles --exclude **/*-dbg.js --up 4 \"./node_modules/@private/preview-middleware-client/dist/**/*\" \"./dist/client\"",
+        "build:client": "pnpm -C ../preview-middleware-client run build:component && copyfiles --exclude **/*-dbg.js --up 4 \"./node_modules/@private/preview-middleware-client/dist/**/*\" \"./dist/client\"",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo playwright-report",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",

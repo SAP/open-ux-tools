@@ -29,7 +29,7 @@ describe('getPrompts', () => {
     } as Record<string, ManifestNamespace.DataSource>;
     const annotationFileSelectOptions = [
         { name: i18n.t('choices.annotationFile.selectFromWorkspace'), value: 1 },
-        { name: i18n.t('choices.annotationFile.createEmptyFile'), value: 2 }
+        { name: i18n.t('choices.annotationFile.createTemplateFile'), value: 2 }
     ];
 
     beforeAll(async () => {
