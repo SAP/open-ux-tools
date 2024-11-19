@@ -4,7 +4,6 @@ import { t } from './i18n';
 export const WelcomeFile = 'welcomeFile';
 export const XSAppFile = 'xs-app.json';
 export const XSSecurityFile = 'xs-security.json';
-export const NoAuthType = 'NoAuthentication';
 export const MTABuildResult = 'build-result';
 export const MTABuildParams = 'build-parameters';
 export const MTAFileExtension = 'mta-ext.mtaext';
@@ -34,6 +33,8 @@ export const UI5BuilderWebIdePackage = '@sap/ui5-builder-webide-extension';
 export const UI5BuilderWebIdePackageVersion = '^1.1.9';
 export const UI5TaskZipperPackage = 'ui5-task-zipper';
 export const UI5TaskZipperPackageVersion = '^3.1.3';
+export const UI5Package = '@ui5/cli';
+export const UI5PackageVersion = '^3.9.2';
 export const CDSAddMtaParams = ['add', 'mta'];
 export const MTAAPIDestination = {
     Name: ResourceMTADestination,
@@ -99,7 +100,7 @@ export const HTMLAppBuildParams = {
 };
 export const UI5DeployBuildScript =
     'ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo';
-export const MTABuildScript = 'rimraf resources mta_archives && mbt build --mtar archive';
+export const MTABuildScript = 'rimraf resources mta_archives && mbt build';
 export const appDeployMTAScript = (args: string[]): string => {
     const mtaArgs = args.length > 0 ? ` ${args.join(' ')}` : '';
     return `fiori cfDeploy${mtaArgs}`;

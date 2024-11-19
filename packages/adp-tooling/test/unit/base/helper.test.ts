@@ -1,12 +1,15 @@
 import { join } from 'path';
 import * as mockFs from 'fs';
-
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import { getVariant, getAdpConfig, getWebappFiles } from '../../../src/base/helper';
 
-import { getVariant, getAdpConfig } from '../../../src/base/helper';
-
-jest.mock('fs');
+jest.mock('fs', () => {
+    return {
+        ...jest.requireActual('fs'),
+        readFileSync: jest.fn()
+    };
+});
 
 describe('helper', () => {
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');
@@ -37,6 +40,7 @@ describe('helper', () => {
         });
 
         test('should throw error when no system configuration found', async () => {
+            jest.spyOn(mockFs, 'readFileSync').mockReturnValue('');
             jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
                 findCustomMiddleware: jest.fn().mockReturnValue(undefined)
             } as Partial<UI5Config> as UI5Config);
@@ -56,6 +60,25 @@ describe('helper', () => {
             } as Partial<UI5Config> as UI5Config);
 
             expect(await getAdpConfig(basePath, 'ui5.yaml')).toStrictEqual(mockAdp);
+        });
+    });
+
+    describe('getWebappFiles', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should return webapp files', () => {
+            expect(getWebappFiles(basePath)).toEqual([
+                {
+                    relativePath: join('i18n', 'i18n.properties'),
+                    content: expect.any(String)
+                },
+                {
+                    relativePath: 'manifest.appdescr_variant',
+                    content: expect.any(String)
+                }
+            ]);
         });
     });
 });

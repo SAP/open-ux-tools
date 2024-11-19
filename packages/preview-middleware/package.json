@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Apreview-middleware"
     },
-    "version": "0.16.117",
+    "version": "0.16.122",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -62,7 +62,7 @@
         "copyfiles": "2.4.1",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "express": "4.21.0",
+        "express": "4.21.1",
         "npm-run-all2": "6.2.0",
         "nock": "13.4.0",
         "supertest": "6.3.3",
