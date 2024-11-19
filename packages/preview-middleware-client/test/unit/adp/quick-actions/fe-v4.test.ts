@@ -860,10 +860,16 @@ describe('FE V2 quick actions', () => {
             const testCases: {
                 p13nMode: string[];
                 ui5version?: versionUtils.Ui5VersionInfo;
+                expectedIsNotApplicable?: boolean;
                 expectedIsEnabled: boolean;
                 expectedTooltip?: string;
             }[] = [
-                { p13nMode: [], expectedIsEnabled: true, ui5version: { major: 1, minor: 130 } },
+                {
+                    p13nMode: [],
+                    expectedIsEnabled: true,
+                    ui5version: { major: 1, minor: 130 },
+                    expectedIsNotApplicable: true
+                },
                 { p13nMode: [], expectedIsEnabled: true },
                 {
                     p13nMode: ['Filter'],
@@ -896,7 +902,8 @@ describe('FE V2 quick actions', () => {
                             getParent: () => pageView,
                             getBusy: () => false,
                             selectOverlay: () => ({}),
-                            getP13nMode: () => testCase.p13nMode
+                            getP13nMode: () => testCase.p13nMode,
+                            getReference: () => 'dummyReference'
                         };
                     }
                     if (id == 'NavContainer') {
@@ -979,7 +986,7 @@ describe('FE V2 quick actions', () => {
                                                       'tooltip': testCase.expectedTooltip
                                                   }
                                               ],
-                                              'enabled': testCase.expectedIsEnabled,
+                                              'enabled': true,
                                               'id': 'listReport0-enable-table-filtering',
                                               'kind': 'nested',
                                               'title': 'Enable Table Filtering for Page Variants',
@@ -993,18 +1000,57 @@ describe('FE V2 quick actions', () => {
                     ])
                 );
 
-                await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
-                );
-
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
-                );
-
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, DialogNames.ADD_FRAGMENT, undefined, {
-                    aggregation: 'columns',
-                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                mockOverlay.getDesignTimeMetadata.mockReturnValue({
+                    getData: jest.fn().mockReturnValue({
+                        manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
+                        manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
+                            {
+                                appComponent: appComponent,
+                                changeSpecificData: {
+                                    appDescriptorChangeType: 'appdescr_fe_changePageConfiguration',
+                                    content: {
+                                        parameters: {
+                                            propertyValue,
+                                            propertyPath
+                                        }
+                                    }
+                                },
+                                selector: 'dummySelector'
+                            }
+                        ])
+                    })
                 });
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-enable-table-filtering', kind: 'nested', path: '0' })
+                );
+
+                if (testCase.expectedIsNotApplicable) {
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledTimes(0);
+                } else {
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                        settings: {},
+                        type: 'appDescriptor',
+                        value: {
+                            appComponent,
+                            reference: 'test.id',
+                            'selector': 'dummySelector',
+                            changeType: 'appdescr_fe_changePageConfiguration',
+                            parameters: {
+                                'propertyPath': 'dummyManifestPath',
+                                'propertyValue': {
+                                    'personalization': {
+                                        'aggregate': true,
+                                        'column': true,
+                                        'filter': true,
+                                        'group': true,
+                                        'sort': true
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
             });
         });
 
