@@ -38,6 +38,7 @@ import {
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
+import * as versionUtils from 'open/ux/preview/client/utils/version';
 
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -1036,6 +1037,174 @@ describe('FE V2 quick actions', () => {
                 });
             });
         });
+        describe.only('enable table filtering', () => {
+            const testCases: {
+                visible: boolean;
+                ui5version?: versionUtils.Ui5VersionInfo;
+                expectedIsEnabled: boolean;
+                expectedTooltip?: string;
+            }[] = [
+                    {
+                        visible: false, expectedIsEnabled: true
+                    },
+                    {
+                        visible: true,
+                        expectedIsEnabled: false,
+                        expectedTooltip: 'This option has been disabled because the change has already been made'
+                    }
+                ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+
+                const scrollIntoView = jest.fn();
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'mTable') {
+                        return {
+                            isA: (type: string) => type === 'sap.m.Table',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity'),
+                            getAggregation: () => 'headerToolbar',
+                            getParent: () => pageView,
+                            getHeaderToolbar: () => {
+                                return {
+                                    getTitleControl: () => {
+                                        return {
+                                            getText: () => 'MyTable'
+                                        };
+                                    }
+                                };
+                            },
+                            data: jest.fn().mockImplementation((key) => {
+                                if (key === 'p13nDialogSettings') {
+                                    return {
+                                        filter: {
+                                            visible: testCase.visible
+                                        },
+                                    };
+                                }
+                            })
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
+                    registry
+                ]);
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.m.Table': [
+                        {
+                            controlId: 'mTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                const isActionExpected = testCase.ui5version === undefined || testCase.ui5version.minor >= 131;
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            'actions': [
+                                {
+                                    'kind': 'nested',
+                                    id: 'listReport0-create-table-action',
+                                    title: 'Add Custom Table Action',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: true,
+                                            label: `'MyTable' table`
+                                        }
+                                    ]
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            enabled: true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'tooltip': undefined,
+                                    'title': 'Add Custom Table Column'
+                                },
+                                ...(isActionExpected
+                                    ? [
+                                        {
+                                            'children': [
+                                                {
+                                                    'children': [],
+                                                    'enabled': testCase.expectedIsEnabled,
+                                                    'label': `'MyTable' table`,
+                                                    'tooltip': testCase.expectedTooltip
+                                                }
+                                            ],
+                                            'enabled': testCase.expectedIsEnabled,
+                                            'id': 'listReport0-enable-table-filtering',
+                                            'kind': 'nested',
+                                            'title': 'Enable Table Filtering for Page Variants',
+                                            'tooltip': undefined
+                                        } as any
+                                    ]
+                                    : [])
+                            ],
+                            'title': 'LIST REPORT'
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-enable-table-filtering', kind: 'nested', path: '0' })
+                );
+            });
+        });
     });
     describe('ObjectPage', () => {
         describe('add header field', () => {
@@ -1323,7 +1492,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => {}
+                            setSelectedSubSection: () => { }
                         };
                     }
 
@@ -1487,7 +1656,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => {}
+                            setSelectedSubSection: () => { }
                         };
                     }
 
@@ -1646,7 +1815,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => {}
+                            setSelectedSubSection: () => { }
                         };
                     }
 

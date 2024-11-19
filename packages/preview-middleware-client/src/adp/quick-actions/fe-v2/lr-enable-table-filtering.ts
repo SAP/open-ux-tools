@@ -22,13 +22,12 @@ export class EnableTableFilteringQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition {
     constructor(context: QuickActionContext) {
-        super(ENABLE_TABLE_FILTERING, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context, false);
+        super(ENABLE_TABLE_FILTERING, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context);
     }
     isActive: boolean;
     readonly forceRefreshAfterExecution = true;
     isTableFilteringInPageVariantEnabled = false;
     lsTableMap: Record<string, number> = {};
-
     async initialize(): Promise<void> {
         let index = 0;
         const tooltipText = await translateText(`THE_CHANGE_HAS_ALREADY_BEEN_MADE`);
