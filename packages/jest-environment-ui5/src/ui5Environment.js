@@ -4,105 +4,125 @@ const path = require('path');
 let mockData = {};
 
 /**
- *
- * @param globalWindow
- * @param pathMappingFn
- * @param isV2
+ * Returns a mock class for XMLHttpRequest.
+ * @param {object} globalWindow The global window object.
+ * @param {object} pathMapping The path mapping for the shimmed files.
+ * @param {object} pathMappingFn The path mapping function.
+ * @param {object} shimmedFilePath The shimmed file paths.
+ * @returns {object} The fake XMLHttpRequest class.
+ */
+function getXHRMockClass(globalWindow, pathMapping, pathMappingFn, shimmedFilePath) {
+    return {
+        withCredentials: () => {},
+        listeners: {},
+        open: function (type, url) {
+            if (url.startsWith('./')) {
+                this.url = url;
+            } else if (url.endsWith('.js')) {
+                this.url = url.substring(0, url.length - 3);
+            } else {
+                this.url = url;
+            }
+        },
+        send: function () {
+            let fileContent = mockData[this.url];
+            if (fileContent) {
+                this.responseText = fileContent;
+            } else {
+                let filePath;
+                try {
+                    filePath = globalWindow.requireFn.resolve(this.url);
+                } catch (e) {
+                    filePath = '';
+                }
+                if (!filePath) {
+                    filePath = pathMapping[this.url] || pathMappingFn(this.url);
+                }
+
+                if (this.url.endsWith('.json') || this.url.endsWith('.properties') || this.url.endsWith('.xml')) {
+                    this.responseText = fs.readFileSync(filePath).toString('utf-8');
+                } else {
+                    this.responseText = (...args) => {
+                        let requireOutput;
+                        try {
+                            if (shimmedFilePath[this.url]) {
+                                requireOutput = new (require('node:vm').Script)(
+                                    fs.readFileSync(globalWindow.requireFn.resolve(filePath)).toString('utf-8')
+                                ).runInContext(globalWindow);
+                            } else {
+                                requireOutput = globalWindow.requireFn(filePath);
+                            }
+                        } catch (e) {
+                            // Fallback to the non debug version in case it was requested but doesn't exist
+                            if (this.url.endsWith('-dbg')) {
+                                const subUrl = this.url.substring(0, this.url.length - 4);
+                                const filePath = pathMapping[subUrl] || pathMappingFn(subUrl);
+                                // requireOutput = new (require('node:vm').Script)(
+                                //     fs.readFileSync(filePath).toString('utf-8')
+                                // ).runInContext(globalWindow);
+                                requireOutput = globalWindow.requireFn(filePath);
+                            } else {
+                                throw e;
+                            }
+                        }
+
+                        return requireOutput;
+                    };
+                }
+            }
+            if (this.responseText && (this.responseText.startsWith?.('<?xml') || this.url.endsWith('.xml'))) {
+                this.isXML = true;
+            }
+
+            if (this.listeners['load']) {
+                this.listeners['load']?.({
+                    status: 200,
+                    responseText: this.responseText
+                });
+            } else {
+                this['onload'].apply(this, []);
+            }
+        },
+        getAllResponseHeaders: function () {
+            if (this.isXML) {
+                return 'Content-Type: application/xml; Last-Modified: 2019-08-29T00:00:00.000Z;ETag: NotYolow';
+            } else if (this.url.endsWith('json')) {
+                return {
+                    'Content-Type': 'application/json'
+                };
+            } else {
+                return {};
+            }
+        },
+        getResponseHeader: function (type) {
+            if (type === 'Content-Type' && this.url.endsWith('xml')) {
+                return 'application/xml';
+            }
+            return undefined;
+        },
+        setRequestHeader: () => {},
+        addEventListener: function (type, fn) {
+            this.listeners[type] = fn;
+        },
+        readyState: 4,
+        status: 200
+    };
+}
+
+/**
+ * Initializes the UI5 environment for the Jest tests.
+ * @param {object} globalWindow The global window object.
+ * @param {Function} pathMappingFn The path mapping function.
+ * @param {boolean} isV2  Whether the environment is for UI5 V2.
+ * @returns {void}
  */
 function initUI5Environment(globalWindow, pathMappingFn, isV2) {
     mockData = {};
 
     globalWindow.jestSetup = true;
 
-    const xhrMockClass = () => {
-        return {
-            withCredentials: () => {},
-            listeners: {},
-            open: function (type, url) {
-                if (url.startsWith('./')) {
-                    this.url = url;
-                } else if (url.endsWith('.js')) {
-                    this.url = url.substring(0, url.length - 3);
-                } else {
-                    this.url = url;
-                }
-            },
-            send: function () {
-                let fileContent = mockData[this.url];
-                if (fileContent) {
-                    this.responseText = fileContent;
-                } else {
-                    let filePath;
-                    try {
-                        filePath = globalWindow.requireFn.resolve(this.url);
-                    } catch (e) {
-                        filePath = '';
-                    }
-                    if (!filePath) {
-                        filePath = pathMapping[this.url] || pathMappingFn(this.url);
-                    }
-
-                    if (this.url.endsWith('.json') || this.url.endsWith('.properties') || this.url.endsWith('.xml')) {
-                        this.responseText = fs.readFileSync(filePath).toString('utf-8');
-                    } else {
-                        this.responseText = (...args) => {
-                            let requireOutput;
-                            try {
-                                requireOutput = globalWindow.requireFn(filePath);
-                            } catch (e) {
-                                if (this.url.endsWith('-dbg')) {
-                                    const subUrl = this.url.substring(0, this.url.length - 4);
-                                    const filePath = pathMapping[subUrl] || pathMappingFn(subUrl);
-                                    requireOutput = globalWindow.requireFn(filePath);
-                                } else {
-                                    throw e;
-                                }
-                            }
-
-                            return requireOutput;
-                        };
-                    }
-                }
-                if (this.responseText && (this.responseText.startsWith?.('<?xml') || this.url.endsWith('.xml'))) {
-                    this.isXML = true;
-                }
-
-                if (this.listeners['load']) {
-                    this.listeners['load']?.({
-                        status: 200,
-                        responseText: this.responseText
-                    });
-                } else {
-                    this['onload'].apply(this, []);
-                }
-            },
-            getAllResponseHeaders: function () {
-                if (this.isXML) {
-                    return 'Content-Type: application/xml; Last-Modified: 2019-08-29T00:00:00.000Z;ETag: NotYolow';
-                } else if (this.url.endsWith('json')) {
-                    return {
-                        'Content-Type': 'application/json'
-                    };
-                } else {
-                    return {};
-                }
-            },
-            getResponseHeader: function (type) {
-                if (type === 'Content-Type' && this.url.endsWith('xml')) {
-                    return 'application/xml';
-                }
-            },
-            setRequestHeader: () => {},
-            addEventListener: function (type, fn) {
-                this.listeners[type] = fn;
-            },
-            readyState: 4,
-            status: 200
-        };
-    };
-
     globalWindow.XMLHttpRequest = function () {
-        return xhrMockClass();
+        return getXHRMockClass(globalWindow, pathMapping, pathMappingFn, shimmedFilePath);
     };
     globalWindow.signals = require('signals');
     globalWindow.performance.timing = {
@@ -140,28 +160,28 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
         resourceRoots: { '': '' }
     };
 
+    let shimmedFilePath = {
+        'sap/ui/thirdparty/jquery-mobile-custom': true,
+        'sap/ui/thirdparty/jquery-mobile-custom-dbg': true,
+        'sap/ui/thirdparty/hasher': true,
+        'sap/ui/thirdparty/hasher.js': true
+    };
     let pathMapping = {
-        'sap/ui/thirdparty/jquery-mobile-custom': path.resolve(__dirname, './shim/jquery-mobile-custom.js'),
-        'sap/ui/thirdparty/jquery-mobile-custom-dbg': path.resolve(__dirname, './shim/jquery-mobile-custom.js'),
-        'sap/ui/thirdparty/hasher': path.resolve(__dirname, './shim/hasher.js'),
-        'sap/ui/thirdparty/hasher.js': path.resolve(__dirname, './shim/hasher.js'),
-
         ui5loader: path.resolve(__dirname, './shim/ui5loader.js'),
         'ui5loader-dbg': path.resolve(__dirname, './shim/ui5loader.js')
     };
     if (isV2) {
-        pathMapping['sap/ui/thirdparty/jquery'] = path.resolve(__dirname, './shim/v2/jquery.js');
-        pathMapping['sap/ui/thirdparty/jquery.js'] = path.resolve(__dirname, './shim/v2/jquery.js');
-        pathMapping['sap/ui/thirdparty/jquery-mobile-custom'] = path.resolve(
-            __dirname,
-            './shim/v2/jquery-mobile-custom.js'
-        );
-        pathMapping['sap/ui/thirdparty/jquery-mobile-custom.js'] = path.resolve(
-            __dirname,
-            './shim/v2/jquery-mobile-custom.js'
-        );
-        pathMapping['sap/ui/thirdparty/jquery-compat'] = path.resolve(__dirname, './shim/v2/jquery-compat.js');
-        pathMapping['sap/ui/thirdparty/jquery-compat.js'] = path.resolve(__dirname, './shim/v2/jquery-compat.js');
+        shimmedFilePath = {
+            'sap/ui/thirdparty/jquery': true,
+            'sap/ui/thirdparty/jquery.js': true,
+            'sap/ui/thirdparty/jquery-dbg': true,
+            'sap/ui/thirdparty/jquery-mobile-custom': true,
+            'sap/ui/thirdparty/jquery-mobile-custom,js': true,
+            'sap/ui/thirdparty/jquery-mobile-custom-dbg': true,
+            'sap/ui/thirdparty/jquery-mobile-compat': true,
+            'sap/ui/thirdparty/jquery-mobile-compat,js': true,
+            'sap/ui/thirdparty/jquery-mobile-compat-dbg': true
+        };
     }
     globalWindow.pathMapping = pathMapping;
     globalWindow.pathMappingFn = pathMappingFn;
@@ -181,20 +201,7 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
         }
     };
     globalWindow.sap = {
-        jest: {
-            mock: function (moduleName, factory) {
-                return globalWindow.jest.mock(pathMappingFn(moduleName), factory);
-            },
-            resolvePath: function (sPath) {
-                return pathMapping[sPath] || pathMappingFn(sPath);
-            },
-            registerMockMetadata: function (sPath, dataOrPath) {
-                mockData[`${sPath}$metadata`] = dataOrPath;
-            },
-            registerFakeFragment: function (sPath, dataOrPath) {
-                mockData[`${sPath}`] = dataOrPath;
-            }
-        },
+        jest: globalWindow.jestUI5,
         viz: {
             api: {
                 env: {

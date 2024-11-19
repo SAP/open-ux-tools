@@ -1,5 +1,10 @@
 const MetadataExchange = require('./metadataExchange');
 
+/**
+ * Defines a function called `info` on the global `test` object.
+ * This function allows to annotate tests with metadata.
+ * @returns {{currentTestName: string, annotations: *[]}} An object containing the current test name and the annotations array.
+ */
 global.test.info = function () {
     const annotations = [];
     const currentTestName = expect.getState().currentTestName;

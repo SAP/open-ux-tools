@@ -5,15 +5,15 @@ const { initUI5Environment } = require('./ui5Environment');
 const path = require('path');
 
 /**
- *
+ * Define the custom environment for the jest tests that runs in a UI5 environment
  */
-class CustomEnvironment extends JSDOMEnvironment {
+class UI5DOMEnvironment extends JSDOMEnvironment {
     /**
-     *
-     * @param root0
-     * @param root0.globalConfig
-     * @param root0.projectConfig
-     * @param context
+     * Create a new instance of the UI5DOMEnvironment.
+     * @param {object} root0 The root object
+     * @param {object} root0.globalConfig The global jest configuration
+     * @param {object} root0.projectConfig The  project jest configuration
+     * @param {object} context The context of the test
      */
     constructor({ globalConfig, projectConfig }, context) {
         super({ globalConfig, projectConfig }, context);
@@ -32,7 +32,9 @@ class CustomEnvironment extends JSDOMEnvironment {
     }
 
     /**
-     *
+     * Prepare the environment for the test.
+     * This is called before each test and will setup the UI5 environment.
+     * @returns {Promise<void>} A promise that resolves when the environment is ready
      */
     async setup() {
         let pathMappingFn;
@@ -99,7 +101,7 @@ class CustomEnvironment extends JSDOMEnvironment {
             try {
                 sap.ui.requireSync('sap/ui/core/library-preload');
             } catch (e) {
-                console.log("Couldn't use preload");
+                process.stdout.write("Couldn't use preload\n");
             }
         }
         sap.ui.loader.config({ async: true });
@@ -155,4 +157,4 @@ class CustomEnvironment extends JSDOMEnvironment {
     }
 }
 
-module.exports = CustomEnvironment;
+module.exports = UI5DOMEnvironment;

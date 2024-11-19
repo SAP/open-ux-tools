@@ -31,13 +31,10 @@
         "test20": "cross-env UI5_JEST_CONFIG=test/sampleapp/ui5-2.0.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests"
     },
     "files": [
-        "dist",
-        "LICENSE",
-        "!dist/*.map",
-        "!dist/**/*.map"
+        "src",
+        "LICENSE"
     ],
     "dependencies": {
-
         "jest-environment-jsdom": "^29.7.0",
         "jquery": "3.6.0",
         "signals": "^1.0.0",

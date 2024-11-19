@@ -9,6 +9,11 @@ const getTestMetadataFilePath = function () {
     return path.join(rootDirectory, metadataDirectory, fileName);
 };
 
+/**
+ * Store metadata for a test.
+ * @param {string} testName The name of the test.
+ * @param {Array} params The metadata for the test to store.
+ */
 const storeTestMetadata = function (testName, params) {
     if (existsSync(metadataDirectory)) {
         let metadata = {};
@@ -20,6 +25,11 @@ const storeTestMetadata = function (testName, params) {
     }
 };
 
+/**
+ * Get the metadata for a test.
+ * @param {string} testName  The name of the test.
+ * @returns {*|*[]} The metadata for the test.
+ */
 const getTestMetadata = function (testName) {
     let metadata = {};
     if (existsSync(metadataDirectory)) {
