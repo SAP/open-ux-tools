@@ -1,5 +1,19 @@
 # @sap-ux/preview-middleware
 
+## 0.16.123
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+-   Updated dependencies [2a72ad2]
+    -   @sap-ux/adp-tooling@0.12.81
+
+## 0.16.122
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.80
+
 ## 0.16.121
 
 ### Patch Changes
