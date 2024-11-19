@@ -93,7 +93,7 @@ export async function getDestinationProperties(
  */
 export async function getBTPDestinations(): Promise<Destinations> {
     if (Object.keys(cachedDestinationsList).length === 0) {
-        cachedDestinationsList = await listDestinations();
+        cachedDestinationsList = await listDestinations({ stripS4HCApiHosts: true });
     }
     return cachedDestinationsList;
 }
