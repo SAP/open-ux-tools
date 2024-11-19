@@ -29,12 +29,16 @@ export interface DropdownEditableProps extends UIDropdownProps {
         value?: string,
         selection?: OptionKey
     ) => void;
-    // (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => void
+    clearEditAfterSelect?: boolean;
 }
 
 export const DropdownEditable = (props: DropdownEditableProps) => {
-    const { options, onChange, multiSelect } = props;
-    const [selectedKey, updateSelection, convertedOptions] = useOptions(props.selectedKey, options, props.multiSelect);
+    const { options, onChange, multiSelect, clearEditAfterSelect = true } = props;
+    const [selectedKey, updateSelection, convertedOptions, reset] = useOptions(
+        props.selectedKey,
+        options,
+        props.multiSelect
+    );
     const [subMenu, setSubMenu] = useState<SubMenuData | null>(null);
     const { target, option: activeOption } = subMenu ?? {};
     const inputItemRefs = useRef<{ [key: string]: ItemInputRef | null }>({});
@@ -65,6 +69,9 @@ export const DropdownEditable = (props: DropdownEditableProps) => {
                     result.value,
                     result.selection
                 );
+                if (!multiSelect && clearEditAfterSelect) {
+                    reset();
+                }
             } else {
                 onChange?.(
                     event,

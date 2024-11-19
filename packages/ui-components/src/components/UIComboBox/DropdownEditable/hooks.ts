@@ -247,7 +247,12 @@ export function useOptions(
     externalSelectedKey: OptionKey,
     originalOptions: UISelectableOption[],
     multiSelect?: boolean
-): [OptionKey, (selectedKey: OptionKey, checked?: boolean) => SelectionUpdate, UISelectableOptionWithSubValues[]] {
+): [
+    OptionKey,
+    (selectedKey: OptionKey, checked?: boolean) => SelectionUpdate,
+    UISelectableOptionWithSubValues[],
+    () => void
+] {
     const [options, setOptions] = useState(convertToEditableOptions(originalOptions));
     const [selectedKey, setSelectedKey] = useState<OptionKey>(externalSelectedKey);
     const selection = useRef<OptionKey>(externalSelectedKey ?? selectedKey);
@@ -358,7 +363,12 @@ export function useOptions(
         return result;
     };
 
-    return [selection.current, updateSelection, options];
+    const reset = (): void => {
+        const convertedOptions = convertToEditableOptions(originalOptions);
+        setOptions(convertedOptions);
+    };
+
+    return [selection.current, updateSelection, options, reset];
 }
 
 export function useSelectedKey<T extends string | number | string[] | number[] | null | undefined>(
