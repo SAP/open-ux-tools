@@ -155,7 +155,7 @@ export function getSubTitlePrompt(
         guiOptions: {
             breadcrumb: t('prompts.subTitleBreadcrumb')
         },
-        message: t('prompts.semanticObject'),
+        message: t('prompts.subTitle'),
         default: options?.default,
         filter: (val: string): string => val?.trim()
     };
