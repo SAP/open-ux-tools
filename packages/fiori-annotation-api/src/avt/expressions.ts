@@ -22,7 +22,8 @@ import type {
     OrExpression,
     PathExpression,
     PropertyPathExpression,
-    StringExpression
+    StringExpression,
+    DoubleExpression
 } from '@sap-ux/vocabularies-types';
 
 /**
@@ -73,6 +74,7 @@ export function isExpression(
     | EnumMemberExpression
     | BoolExpression
     | DecimalExpression
+    | DoubleExpression
     | DateExpression
     | IntExpression
     | FloatExpression
