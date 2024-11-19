@@ -23,7 +23,7 @@
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.11.4",
+        "@sap-ux/vocabularies-types": "0.11.7",
         "mem-fs-editor": "9.4.0"
     },
     "devDependencies": {
