@@ -1037,7 +1037,7 @@ describe('FE V2 quick actions', () => {
                 });
             });
         });
-        describe.only('enable table filtering', () => {
+        describe('enable table filtering', () => {
             const testCases: {
                 visible: boolean;
                 ui5version?: versionUtils.Ui5VersionInfo;
