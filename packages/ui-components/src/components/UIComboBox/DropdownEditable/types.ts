@@ -16,3 +16,8 @@ export interface SelectionUpdate {
     localSelection?: OptionKey;
     value?: string;
 }
+
+export interface SubMenuData {
+    target: HTMLElement | null;
+    option?: UISelectableOptionWithSubValues;
+}

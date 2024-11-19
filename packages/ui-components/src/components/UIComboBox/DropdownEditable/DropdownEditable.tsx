@@ -6,25 +6,33 @@ import { useOptions } from './hooks';
 import { OptionKey, SubMenuData, UISelectableOptionWithSubValues } from './types';
 import { ItemInput, ItemInputRef } from './ItemInput';
 
-import './ComboBoxEditable.scss';
+import './DropdownEditable.scss';
 import { getOption } from './utils';
+import {
+    UIDropdown,
+    UIDropdownOption,
+    UIDropdownProps,
+    UIDropdownRef,
+    UISelectableDroppableTextProps
+} from '../../UIDropdown';
+import { ISelectableDroppableTextProps } from '@fluentui/react';
 
-export interface ComboBoxEditableProps extends UIComboBoxProps {
+export interface DropdownEditableProps extends UIDropdownProps {
     /**
      * Collection of options for this ComboBox.
      */
     options: UISelectableOptionWithSubValues[];
-    // ToDo
     onChange?: (
-        event: React.FormEvent<UIComboBoxRef>,
-        option?: UIComboBoxOption,
+        event: React.FormEvent<HTMLDivElement>,
+        option?: UIDropdownOption,
         index?: number,
         value?: string,
         selection?: OptionKey
     ) => void;
+    // (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => void
 }
 
-export const ComboBoxEditable = (props: ComboBoxEditableProps) => {
+export const DropdownEditable = (props: DropdownEditableProps) => {
     const { options, onChange, multiSelect } = props;
     const [selectedKey, updateSelection, convertedOptions] = useOptions(props.selectedKey, options, props.multiSelect);
     const [subMenu, setSubMenu] = useState<SubMenuData | null>(null);
@@ -37,7 +45,7 @@ export const ComboBoxEditable = (props: ComboBoxEditableProps) => {
     const delayedChange = useRef<boolean>(false);
 
     const handleChange = (
-        event: React.FormEvent<UIComboBoxRef>,
+        event: React.FormEvent<HTMLDivElement>,
         selectedOption?: UISelectableOptionWithSubValues,
         index?: number,
         triggerChange?: boolean
@@ -75,36 +83,20 @@ export const ComboBoxEditable = (props: ComboBoxEditableProps) => {
 
     return (
         <>
-            <UIComboBox
-                {...(props as any)}
-                className="editable-combobox"
-                // ToDo(before making feature without switch) - recheck if we need check text when passed through props
-                text={selectedKey === undefined ? pendingText : undefined}
-                onChange={(
-                    event: React.FormEvent<UIComboBoxRef>,
-                    selectedOption?: UISelectableOptionWithSubValues,
-                    index?: number
-                ) => {
-                    const triggerChange = multiSelect || !selectedOption?.editable;
-                    handleChange(event, selectedOption, index, triggerChange);
-                }}
-                onItemClick={(
-                    event: React.FormEvent<UIComboBoxRef>,
-                    selectedOption?: UISelectableOptionWithSubValues,
-                    index?: number
-                ) => {
-                    if (!multiSelect) {
-                        handleChange(event, selectedOption, index, true);
-                    }
-                }}
-                selectedKey={selectedKey}
+            <UIDropdown
+                {...props}
+                ref={undefined}
+                className="editable-dropdown"
+                selectedKey={!multiSelect ? selectedKey : undefined}
+                selectedKeys={multiSelect && Array.isArray(selectedKey) ? selectedKey : undefined}
                 options={convertedOptions}
-                onMenuOpen={() => {}}
-                onMenuDismiss={() => {
-                    if (!multiSelect && selectedKeyRef.current && !Array.isArray(selectedKeyRef.current)) {
-                        const changedOption = getOption(convertedOptions, selectedKeyRef.current);
-                        handleChange({} as React.FormEvent<UIComboBoxRef>, changedOption, undefined, true);
-                    }
+                onChange={(
+                    event: React.FormEvent<HTMLDivElement>,
+                    selectedOption?: UISelectableOptionWithSubValues,
+                    index?: number
+                ) => {
+                    handleChange(event, selectedOption, index, true);
+                    delayedChange.current = false;
                 }}
                 calloutProps={{
                     preventDismissOnEvent(event) {
@@ -120,47 +112,41 @@ export const ComboBoxEditable = (props: ComboBoxEditableProps) => {
                     layerProps: {
                         onLayerWillUnmount: () => {
                             setSubMenu(null);
+                            if (
+                                !multiSelect &&
+                                selectedKeyRef.current &&
+                                !Array.isArray(selectedKeyRef.current) &&
+                                delayedChange.current
+                            ) {
+                                const changedOption = getOption(convertedOptions, selectedKeyRef.current);
+                                handleChange({} as React.FormEvent<HTMLDivElement>, changedOption, undefined, true);
+                            }
+                        }
+                    },
+                    onMouseOver: (event) => {
+                        const target = event.target as HTMLElement;
+                        let element = target.closest('[data-index]') as HTMLElement;
+                        if (!element) {
+                            element = target.closest('.ms-Checkbox')?.querySelector('[data-index]') as HTMLElement;
+                        }
+                        if (element) {
+                            const index = element.getAttribute('data-index');
+                            if (index !== null) {
+                                const option = convertedOptions[parseInt(index)];
+                                const optionsCount = option?.options?.length ?? 0;
+                                if (optionsCount > 1) {
+                                    setSubMenu({
+                                        // todo? - diff between combobox
+                                        target: multiSelect ? element.parentElement : element,
+                                        option: convertedOptions[parseInt(index)]
+                                    });
+                                }
+                            }
                         }
                     }
                 }}
-                onRenderList={(
-                    props?: UISelectableOptionWithSubValues,
-                    defaultRender?: (props?: UISelectableOptionWithSubValues) => JSX.Element | null
-                ) => {
-                    return (
-                        <div
-                            className="dropdown-menu-editable"
-                            onMouseOver={(event) => {
-                                const target = event.target as HTMLElement;
-                                let element = target.closest('[data-index]') as HTMLElement;
-                                if (!element) {
-                                    element = target
-                                        .closest('.ms-Checkbox')
-                                        ?.querySelector('[data-index]') as HTMLElement;
-                                }
-                                if (element) {
-                                    const index = element.getAttribute('data-index');
-                                    if (index !== null) {
-                                        const option = convertedOptions[parseInt(index)];
-                                        const optionsCount = option?.options?.length ?? 0;
-                                        if (optionsCount > 1) {
-                                            setSubMenu({
-                                                target: element.parentElement,
-                                                option: convertedOptions[parseInt(index)]
-                                            });
-                                        }
-                                    }
-                                }
-                            }}>
-                            {defaultRender?.(props)}
-                        </div>
-                    );
-                }}
-                onRenderOption={(
-                    props?: UISelectableOptionWithSubValues,
-                    defaultRender?: (props?: UISelectableOptionWithSubValues) => JSX.Element | null
-                ) => {
-                    if (props?.editable) {
+                onRenderOption={(props, defaultRender) => {
+                    if (props && 'editable' in props && props.editable) {
                         const option = getOption(convertedOptions, props?.key);
                         return (
                             <ItemInput
@@ -180,7 +166,7 @@ export const ComboBoxEditable = (props: ComboBoxEditableProps) => {
                                     setPendingText(value);
                                     if (multiSelect) {
                                         handleChange(
-                                            {} as React.FormEvent<UIComboBoxRef>,
+                                            {} as React.FormEvent<HTMLDivElement>,
                                             changedOption,
                                             undefined,
                                             true
@@ -199,11 +185,11 @@ export const ComboBoxEditable = (props: ComboBoxEditableProps) => {
                                         (target.closest('.ms-Button') as HTMLElement)?.click();
                                     }
                                 }}
-                                option={props}
+                                option={props as UISelectableOptionWithSubValues}
                             />
                         );
                     }
-                    return defaultRender?.(props);
+                    return defaultRender?.(props) ?? null;
                 }}
             />
             {target && activeOption?.options && (
@@ -228,6 +214,7 @@ export const ComboBoxEditable = (props: ComboBoxEditableProps) => {
                     directionalHint={11}
                     shouldFocusOnMount={false}
                     items={activeOption.options}
+                    delayUpdateFocusOnHover={true}
                 />
             )}
         </>

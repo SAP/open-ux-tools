@@ -34,8 +34,11 @@ function getSubValueText(option?: UISelectableOptionWithSubValues): string | und
  * @param error Indicates if an error message is present.
  * @returns A string representing the computed class name.
  */
-const getClassName = (error: boolean): string => {
+const getClassName = (props: ItemInputProps, error: boolean): string => {
     const classNames = ['editable-item-input'];
+    if (props.className) {
+        classNames.push(props.className);
+    }
     if (error) {
         classNames.push('editable-item-input--error');
     }
@@ -78,11 +81,24 @@ function ItemInputComponent(props: ItemInputProps, ref: React.ForwardedRef<ItemI
         }
     };
 
+    const stopEventPropagation = (event: React.MouseEvent<HTMLDivElement>): void => {
+        event.stopPropagation();
+    };
+
     return (
-        <div className={`editable-item ${subOptionsCount > 1 ? 'editable-item-expandable' : ''}`}>
+        <div
+            onMouseEnter={stopEventPropagation}
+            onMouseLeave={stopEventPropagation}
+            onMouseMove={stopEventPropagation}
+            className={`editable-item ${subOptionsCount > 1 ? 'editable-item-expandable' : ''}`}>
+            <div
+                onMouseEnter={stopEventPropagation}
+                onMouseLeave={stopEventPropagation}
+                onMouseMove={stopEventPropagation}
+                className="ts-dropdown-item-blocker"></div>
             <UITextInput
-                className={getClassName(!!errorMessage)}
                 {...inputProps}
+                className={getClassName(props, !!errorMessage)}
                 onMouseDown={(event) => {
                     const target = event.target as HTMLElement;
                     (document.activeElement as HTMLElement)?.blur();

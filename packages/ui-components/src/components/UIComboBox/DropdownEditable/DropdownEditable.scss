@@ -1,0 +1,22 @@
+@import '../../UIContextualMenu/_variables.scss';
+
+.ms-Dropdown-items {
+    > .ms-Button--command {
+        &:hover:focus-within,
+        &:focus-within {
+            background: $menu-item-selection-background !important;
+            color: $menu-item-selection-color !important;
+            outline: $menu-item-focus-border !important;
+            outline-offset: $menu-item-border-offset !important;
+        }
+    }
+}
+
+.ms-Dropdown-items:not(:focus-within) {
+    > .ms-Button--command[aria-selected='true'] {
+        background: $menu-item-selection-background !important;
+        color: $menu-item-selection-color !important;
+        outline: $menu-item-focus-border !important;
+        outline-offset: $menu-item-border-offset !important;
+    }
+}
