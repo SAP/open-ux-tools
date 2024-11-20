@@ -16,7 +16,7 @@ export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, TREE_TABLE_TYPE, GRID_TABLE_TYPE];
 
 /**
- * Quick Action for toggling the visibility of "clear filter bar" button in List Report page.
+ * Quick Action for enabling table filtering using table personalization settings.
  */
 export class EnableTableFilteringQuickAction
     extends TableQuickActionDefinitionBase

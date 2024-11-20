@@ -14,7 +14,7 @@ export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
 const CONTROL_TYPE = 'sap.ui.mdc.Table';
 
 /**
- * Quick Action for toggling the visibility of "clear filter bar" button in List Report page.
+ * Quick Action for enabling table filtering using table personalization settings.
  */
 export class EnableTableFilteringQuickAction
     extends TableQuickActionDefinitionBase
