@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.4.11
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
 ## 1.4.10
 
 ### Patch Changes
