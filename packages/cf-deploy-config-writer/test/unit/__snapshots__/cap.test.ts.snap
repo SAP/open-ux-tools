@@ -31,26 +31,13 @@ archive.zip
     \\"devDependencies\\": {
         \\"@ui5/cli\\": \\"^3.0.0\\",
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
-        \\"rimraf\\": \\"^5.0.5\\",
-        \\"mbt\\": \\"^1.2.29\\",
         \\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
         \\"ui5-task-zipper\\": \\"^3.1.3\\"
     },
     \\"scripts\\": {
-        \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop-display\\\\\\"\\",
-        \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop-display\\\\\\"\\",
-        \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-        \\"deploy\\": \\"fiori cfDeploy\\",
-        \\"deploy-config\\": \\"fiori add deploy-config\\",
-        \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-        \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
-        \\"unit-tests\\": \\"fiori run --open 'test/unit/unitTests.qunit.html'\\",
-        \\"int-tests\\": \\"fiori run --open 'test/integration/opaTests.qunit.html'\\",
-        \\"build:cf\\": \\"ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo\\",
-        \\"build:mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
-        \\"undeploy\\": \\"cf undeploy cappapp --delete-services --delete-service-keys --delete-service-brokers\\"
-    },
-    \\"sapuxLayer\\": \\"VENDOR\\"
+        \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\",
+        \\"build:cf\\": \\"ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo\\"
+    }
 }
 ",
     "state": "modified",
@@ -62,6 +49,9 @@ specVersion: '2.4'
 metadata:
   name: 'lrop'
 type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 builder:
   resources:
     excludes:
@@ -263,7 +253,7 @@ builder:
       \\"source\\": \\"^/sap/(.*)$\\",
       \\"target\\": \\"/sap/$1\\",
       \\"destination\\": \\"cappapp-srv-api\\",
-      \\"authenticationType\\": \\"none\\",
+      \\"authenticationType\\": \\"xsuaa\\",
       \\"csrfProtection\\": false
     },
     {
@@ -294,9 +284,12 @@ builder:
     \\"cds\\": {},
     \\"devDependencies\\": {
         \\"rimraf\\": \\"^5.0.5\\",
-        \\"mbt\\": \\"^1.2.29\\",
-        \\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-        \\"ui5-task-zipper\\": \\"^3.1.3\\"
+        \\"mbt\\": \\"^1.2.29\\"
+    },
+    \\"scripts\\": {
+        \\"undeploy\\": \\"cf undeploy cappapp --delete-services --delete-service-keys --delete-service-brokers\\",
+        \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+        \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
     }
 }
 ",
@@ -375,7 +368,7 @@ modules:
               sap.cloud.service: cappapp
             - Authentication: OAuth2UserTokenExchange
               Name: cappapp_uaa
-              ServiceInstanceName: cappapp-xsuaa-srv
+              ServiceInstanceName: cappapp-xsuaa-service
               ServiceKeyName: cappapp-uaa-key
               sap.cloud.service: cappapp
           existing_destinations_policy: ignore
@@ -445,7 +438,7 @@ resources:
     parameters:
       path: ./xs-security.json
       service: xsuaa
-      service-name: cappapp-xsuaa-srv
+      service-name: cappapp-xsuaa-service
       service-plan: application
   - name: cappapp-repo-host
     type: org.cloudfoundry.managed-service

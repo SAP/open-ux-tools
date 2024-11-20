@@ -1,5 +1,54 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [575ff89]
+    -   @sap-ux/fiori-generator-shared@0.7.10
+    -   @sap-ux/inquirer-common@0.5.3
+
+## 0.6.6
+
+### Patch Changes
+
+-   481e6b4: Fix for i18n not loading
+
+## 0.6.5
+
+### Patch Changes
+
+-   a62ff25: adds new options for listing destinations api
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/axios-extension@1.17.4
+    -   @sap-ux/fiori-generator-shared@0.7.9
+    -   @sap-ux/inquirer-common@0.5.2
+    -   @sap-ux/telemetry@0.5.44
+
+## 0.6.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.7
+-   @sap-ux/telemetry@0.5.43
+-   @sap-ux/axios-extension@1.17.3
+-   @sap-ux/fiori-generator-shared@0.7.8
+-   @sap-ux/inquirer-common@0.5.1
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [8237f83]
+    -   @sap-ux/axios-extension@1.17.3
+
+## 0.6.2
+
+### Patch Changes
+
+-   1fb5a5c: Removes console log statement
+
 ## 0.6.1
 
 ### Patch Changes
