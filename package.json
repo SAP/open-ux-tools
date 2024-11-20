@@ -36,7 +36,7 @@
     "scripts": {
         "postinstall": "update-ts-references",
         "clean": "nx run-many --target=clean --all",
-        "build": "nx run-many --target=build --all",
+        "build": "nx run-many --target=build --all --verbose",
         "format": "pnpm recursive run format",
         "lint": "nx run-many --target=lint --all",
         "lint:fix": "nx run-many --target=lint:fix --all",
