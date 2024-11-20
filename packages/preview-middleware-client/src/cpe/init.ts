@@ -59,7 +59,7 @@ export default function init(
                 Log.error('Service Initialization Failed: ', getError(error));
             });
         });
-        const result = Promise.all(allPromises)
+        Promise.all(allPromises)
             .then(() => {
                 CommunicationService.sendAction(appLoaded());
             })
@@ -67,9 +67,10 @@ export default function init(
             .catch(Log.error);
         const icons = getIcons();
         CommunicationService.sendAction(iconsLoaded(icons));
-        return result;
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', getError(error));
-        return Promise.reject(error);
     }
+
+    //  * This is returned immediately to avoid promise deadlock, preventing services from waiting indefinitely.
+    return Promise.resolve();
 }

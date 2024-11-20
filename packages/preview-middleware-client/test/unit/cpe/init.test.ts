@@ -148,6 +148,14 @@ describe('main', () => {
         quickActionServiceSpy.mockResolvedValue();
 
         await init(rta);
+        await Promise.all([
+            initOutlineSpy,
+            rtaSpy,
+            changesServiceSpy,
+            connectorServiceSpy,
+            selectionServiceSpy,
+            quickActionServiceSpy
+        ]);
         expect(CommunicationService.sendAction).toBeCalledWith(common.appLoaded());
     });
 });
