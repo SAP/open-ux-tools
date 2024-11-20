@@ -284,8 +284,7 @@ export class FlpSandbox {
             let template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             let response: globalThis.Response;
             try {
-                //todo: this will not work for cds-plugin-ui5 because the app host is missing in the url
-                const versionUrl = `http://${_req.headers.host}/resources/sap-ui-version.json`;
+                const versionUrl = `http://${_req.headers.host}/${this.templateConfig.basePath}/resources/sap-ui-version.json`;
                 response = await fetch(versionUrl);
             } catch (error) {
                 this.logger.info(error);
