@@ -1086,22 +1086,53 @@ describe('FE V2 quick actions', () => {
         describe('enable table filtering', () => {
             const testCases: {
                 visible: boolean;
-                ui5version?: versionUtils.Ui5VersionInfo;
+                ui5version: versionUtils.Ui5VersionInfo;
                 expectedIsEnabled: boolean;
+                isValidUI5Version: boolean;
                 expectedTooltip?: string;
-            }[] = [
-                    {
-                        visible: false, expectedIsEnabled: true
-                    },
-                    {
-                        visible: true,
-                        expectedIsEnabled: false,
-                        expectedTooltip: 'This option has been disabled because the change has already been made'
-                    }
+
+            }[] = [{
+                visible: false, ui5version: {
+                    major: 1, minor: 124, patch: 0
+                }, expectedIsEnabled: true,
+                isValidUI5Version: false
+            },
+            {
+                visible: false, ui5version: {
+                    major: 1, minor: 96, patch: 0
+                }, expectedIsEnabled: true,
+                isValidUI5Version: false
+            },
+            {
+                visible: false, ui5version: {
+                    major: 1, minor: 96, patch: 37
+                }, expectedIsEnabled: true,
+                isValidUI5Version: true
+            },
+            {
+                visible: false, ui5version: {
+                    major: 1, minor: 130, patch: 0
+                }, expectedIsEnabled: true, isValidUI5Version: true
+            },
+            {
+                visible: true,
+                ui5version: {
+                    major: 1, minor: 108, patch: 38
+                },
+                expectedIsEnabled: false,
+                isValidUI5Version: true,
+                expectedTooltip: 'This option has been disabled because the change has already been made'
+            }
                 ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
-
+                jest.spyOn(VersionUtils, 'getUi5Version').mockReturnValue(
+                    Promise.resolve({
+                        major: testCase.ui5version.major,
+                        minor: testCase.ui5version.minor,
+                        patch: testCase.ui5version.patch
+                    } as Ui5VersionInfo)
+                );
                 const scrollIntoView = jest.fn();
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'mTable') {
@@ -1188,7 +1219,7 @@ describe('FE V2 quick actions', () => {
                     ]
                 });
 
-                const isActionExpected = testCase.ui5version === undefined || testCase.ui5version.minor >= 131;
+                const isActionExpected = testCase.isValidUI5Version;
 
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([

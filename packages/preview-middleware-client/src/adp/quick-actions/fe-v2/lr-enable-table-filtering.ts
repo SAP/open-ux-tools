@@ -8,7 +8,7 @@ import {
     TableQuickActionDefinitionBase,
     TREE_TABLE_TYPE
 } from '../table-quick-action-base';
-import { executeToggleAction } from './utils';
+import { checkSupportedVersionForTableAction, executeToggleAction } from './utils';
 import { translateText } from '../../quick-actions/utils';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
@@ -29,6 +29,11 @@ export class EnableTableFilteringQuickAction
     isTableFilteringInPageVariantEnabled = false;
     lsTableMap: Record<string, number> = {};
     async initialize(): Promise<void> {
+        const isUI5VersionNotSupported = await checkSupportedVersionForTableAction();
+        if (isUI5VersionNotSupported) {
+            return;
+        }
+
         let index = 0;
         const tooltipText = await translateText(`THE_CHANGE_HAS_ALREADY_BEEN_MADE`);
         const iconTabBarFilterMap = this.buildIconTabBarFilterMap();
