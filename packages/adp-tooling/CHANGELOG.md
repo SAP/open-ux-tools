@@ -1,5 +1,41 @@
 # @sap-ux/adp-tooling
 
+## 0.12.80
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.3
+
+## 0.12.79
+
+### Patch Changes
+
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/axios-extension@1.17.4
+    -   @sap-ux/inquirer-common@0.5.2
+    -   @sap-ux/system-access@0.5.19
+
+## 0.12.78
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+    -   @sap-ux/project-access@1.28.7
+    -   @sap-ux/axios-extension@1.17.3
+    -   @sap-ux/system-access@0.5.18
+    -   @sap-ux/inquirer-common@0.5.1
+
+## 0.12.77
+
+### Patch Changes
+
+-   8237f83: feat: add namespaces to annotation template
+-   Updated dependencies [8237f83]
+    -   @sap-ux/axios-extension@1.17.3
+    -   @sap-ux/system-access@0.5.18
+
 ## 0.12.76
 
 ### Patch Changes

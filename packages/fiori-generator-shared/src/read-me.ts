@@ -11,8 +11,9 @@ import type { Editor } from 'mem-fs-editor';
  * @returns {Editor} The file system editor instance used to write the README file.
  */
 export function generateReadMe(destPath: string, readMe: ReadMe, fs: Editor): Editor {
+    // N.B. This function must stay at this level in the directory structure, i.e one level below 'templates'
     // Apply the configuration to generate the README file
-    const templateSourcePath = join(__dirname, '../../templates/README.md');
+    const templateSourcePath = join(__dirname, '../templates/README.md');
     const templateDestPath = `${destPath}/README.md`;
     // copy template
     fs.copyTpl(templateSourcePath, templateDestPath, readMe);

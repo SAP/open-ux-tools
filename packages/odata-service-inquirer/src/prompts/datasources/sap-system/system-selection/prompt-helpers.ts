@@ -141,8 +141,8 @@ export function getBackendSystemDisplayName(system: BackendSystem): string {
 /**
  * Matches the destination against the provided filters. Returns true if the destination matches any filters, false otherwise.
  *
- * @param destination
- * @param filters
+ * @param destination the destination to match against the filters
+ * @param filters the filters to match against
  * @returns true if the destination matches any filters, false otherwise
  */
 function matchesFilters(destination: Destination, filters?: Partial<DestinationFilters>): boolean {
@@ -177,8 +177,8 @@ function matchesFilters(destination: Destination, filters?: Partial<DestinationF
 /**
  * Creates a list of choices for the system selection prompt using destinations or stored backend systems, depending on the environment.
  *
- * @param destinationFilters
- * @param includeCloudFoundryAbapEnvChoice
+ * @param destinationFilters the filters to apply to the destination choices
+ * @param includeCloudFoundryAbapEnvChoice whether to include the Cloud Foundry ABAP environment choice in the list
  * @returns a list of choices for the system selection prompt
  */
 export async function createSystemChoices(
@@ -190,7 +190,7 @@ export async function createSystemChoices(
 
     // If this is BAS, return destinations, otherwise return stored backend systems
     if (isAppStudio()) {
-        const destinations = await listDestinations();
+        const destinations = await listDestinations({ stripS4HCApiHosts: true });
         systemChoices = Object.values(destinations)
             .filter((destination) => {
                 return matchesFilters(destination, destinationFilters);
