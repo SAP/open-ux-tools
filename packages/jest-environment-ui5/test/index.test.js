@@ -5,7 +5,7 @@ describe('Custom environment', () => {
         let failed = false
         try {
             await jestCLI.run("--detectOpenHandles --config jest-ui5.config.js", process.cwd());
-        } catch (e) {
+        } catch {
             failed = true;
         }
         expect(failed).toBe(false);
@@ -20,7 +20,7 @@ describe('Custom environment', () => {
         let failed = false
         try {
             await jestCLI.run("--detectOpenHandles --config jest-ui5-71.config.js", process.cwd());
-        } catch (e) {
+        } catch {
             failed = true;
         }
         expect(failed).toBe(false);

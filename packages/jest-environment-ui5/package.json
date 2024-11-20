@@ -36,10 +36,7 @@
     ],
     "dependencies": {
         "jest-environment-jsdom": "^29.7.0",
-        "jquery": "3.6.0",
-        "signals": "^1.0.0",
-        "tsconfig-paths": "^3.15.0",
-        "xml-js": "^1.6.11"
+        "tsconfig-paths": "^3.15.0"
     },
     "peerDependencies": {
         "@ui5/project": "^3.9.0 || ^4.0.0"

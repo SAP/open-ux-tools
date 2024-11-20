@@ -109,37 +109,45 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
             this.core = sap.ui.requireSync('sap/ui/core/Core');
             this.core.boot();
         }
-        return new Promise(function (resolve) {
-            sap.ui.require(['sap/ui/core/Core', 'sap/ui/core/date/Gregorian'], async function (Core, Lib) {
-                if (Core.ready) {
-                    await Core.ready();
-                    sap.ui.require(['sap/ui/core/Lib'], function (Lib) {
-                        const fnInit = Lib.init;
-                        Lib.init = function (mSettings) {
-                            mSettings.noLibraryCSS = true;
-                            return fnInit.call(this, mSettings);
-                        };
-                        resolve();
-                    });
-                } else {
-                    Core.attachInit(function () {
-                        sap.ui.require(
-                            ['sap/ui/core/Lib'],
-                            function (Lib) {
-                                const fnInit = Lib.init;
-                                Lib.init = function (mSettings) {
-                                    mSettings.noLibraryCSS = true;
-                                    return fnInit.call(this, mSettings);
-                                };
-                                resolve();
-                            },
-                            function (e) {
-                                resolve();
-                            }
-                        );
-                    });
-                }
-            });
+        return new Promise((resolve) => {
+            this.initUI5Core(resolve);
+        });
+    }
+
+    /**
+     * Initialize the UI5 Core and resolve once ready.
+     * @param {Function} resolve The function to call once the core is ready
+     */
+    initUI5Core(resolve) {
+        sap.ui.require(['sap/ui/core/Core', 'sap/ui/core/date/Gregorian'], async function (Core) {
+            if (Core.ready) {
+                await Core.ready();
+                sap.ui.require(['sap/ui/core/Lib'], function (Lib) {
+                    const fnInit = Lib.init;
+                    Lib.init = function (mSettings) {
+                        mSettings.noLibraryCSS = true;
+                        return fnInit.call(this, mSettings);
+                    };
+                    resolve();
+                });
+            } else {
+                Core.attachInit(function () {
+                    sap.ui.require(
+                        ['sap/ui/core/Lib'],
+                        function (Lib) {
+                            const fnInit = Lib.init;
+                            Lib.init = function (mSettings) {
+                                mSettings.noLibraryCSS = true;
+                                return fnInit.call(this, mSettings);
+                            };
+                            resolve();
+                        },
+                        function (e) {
+                            resolve();
+                        }
+                    );
+                });
+            }
         });
     }
 

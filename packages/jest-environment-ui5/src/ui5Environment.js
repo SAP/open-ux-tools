@@ -124,7 +124,6 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
     globalWindow.XMLHttpRequest = function () {
         return getXHRMockClass(globalWindow, pathMapping, pathMappingFn, shimmedFilePath);
     };
-    globalWindow.signals = require('signals');
     globalWindow.performance.timing = {
         fetchStart: Date.now(),
         navigationStart: Date.now()
@@ -135,9 +134,15 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
     globalWindow.ArrayBuffer = ArrayBuffer;
     globalWindow.CanvasRenderingContext2D = undefined;
     globalWindow.ResizeObserver = class ResizeObserver {
-        observe() {}
-        unobserve() {}
-        disconnect() {}
+        observe() {
+            // We don't need to do anything here just providing the method
+        }
+        unobserve() {
+            // We don't need to do anything here just providing the method
+        }
+        disconnect() {
+            // We don't need to do anything here, just providing the method
+        }
     };
     globalWindow.fetch = function (fetchWhat) {
         return Promise.resolve({
@@ -164,7 +169,9 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
         'sap/ui/thirdparty/jquery-mobile-custom': true,
         'sap/ui/thirdparty/jquery-mobile-custom-dbg': true,
         'sap/ui/thirdparty/hasher': true,
-        'sap/ui/thirdparty/hasher.js': true
+        'sap/ui/thirdparty/hasher.js': true,
+        'sap/ui/thirdparty/signals': true,
+        'sap/ui/thirdparty/signals.js': true
     };
     let pathMapping = {
         ui5loader: path.resolve(__dirname, './shim/ui5loader.js'),
