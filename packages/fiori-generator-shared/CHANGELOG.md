@@ -1,5 +1,19 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.7.10
+
+### Patch Changes
+
+-   575ff89: fix for reading readme template
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/telemetry@0.5.44
+
 ## 0.7.8
 
 ### Patch Changes

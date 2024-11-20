@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/cards-editor-middleware",
-    "version": "0.4.35",
+    "version": "0.4.36",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -36,7 +36,7 @@
         "@types/express": "4.17.21",
         "@types/supertest": "2.0.12",
         "supertest": "6.3.3",
-        "express": "4.21.0"
+        "express": "4.21.1"
     },
     "peerDependencies": {
         "express": "4"
