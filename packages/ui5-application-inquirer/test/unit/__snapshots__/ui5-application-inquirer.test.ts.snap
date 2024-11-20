@@ -73,6 +73,17 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": true,
+    },
+    "message": "Enable TypeScript",
+    "name": "enableTypeScript",
+    "type": "confirm",
+    "when": [Function],
+  },
+  {
     "default": [Function],
     "guiOptions": {
       "breadcrumb": "Deploy Config",
@@ -140,26 +151,6 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
     "message": "Skip generation of associated annotations.cds file",
     "name": "skipAnnotations",
     "type": "confirm",
-  },
-  {
-    "default": false,
-    "guiOptions": {
-      "breadcrumb": "Enable NPM Workspaces",
-    },
-    "message": "Generation of this application can update the CAP project to use NPM workspaces and an associated CDS plugin library (cds-plugin-ui5). Do you want to enable this feature? (Note: this is requirement for generating with TypeScript)",
-    "name": "enableNPMWorkspaces",
-    "type": "confirm",
-    "when": [Function],
-  },
-  {
-    "default": false,
-    "guiOptions": {
-      "breadcrumb": true,
-    },
-    "message": "Enable TypeScript",
-    "name": "enableTypeScript",
-    "type": "confirm",
-    "when": [Function],
   },
 ]
 `;

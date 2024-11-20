@@ -8,8 +8,9 @@ import { promptNames } from '../../../src/types';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { defaultVersion, minUi5VersionSupportingCodeAssist, ui5ThemeIds } from '@sap-ux/ui5-info';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import { extendAdditionalMessages, type ListQuestion } from '@sap-ux/inquirer-common';
 import { inc } from 'semver';
+import * as prompts from '../../../src/prompts/prompts';
 
 jest.mock('@sap-ux/project-input-validator', () => {
     return {
@@ -494,20 +495,6 @@ describe('getQuestions', () => {
         expect(skipAnnotationsQuestion?.default).toEqual(true);
     });
 
-    test('getQuestions, prompt: `enableNPMWorkspaces`', () => {
-        const questions = getQuestions([]);
-        let enableNPMWorkspacesQuestion = questions.find(
-            (question) => question.name === promptNames.enableNPMWorkspaces
-        );
-        // when condition
-        expect((enableNPMWorkspacesQuestion?.when as Function)()).toEqual(false);
-
-        enableNPMWorkspacesQuestion = getQuestions([], undefined, mockCdsInfo).find(
-            (question) => question.name === promptNames.enableNPMWorkspaces
-        );
-        expect((enableNPMWorkspacesQuestion?.when as Function)()).toEqual(true);
-    });
-
     test('getQuestions, prompt: `enableTypeScript`', () => {
         let questions = getQuestions([]);
         let enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
@@ -537,7 +524,6 @@ describe('getQuestions', () => {
         enableTypeScriptQuestion = getQuestions([], undefined, mockCdsInfoFalse).find(
             (question) => question.name === promptNames.enableTypeScript
         );
-        expect((enableTypeScriptQuestion?.when as Function)({ [promptNames.enableNPMWorkspaces]: true })).toEqual(true);
 
         enableTypeScriptQuestion = getQuestions([], undefined, {
             hasCdsUi5Plugin: true,
@@ -546,6 +532,18 @@ describe('getQuestions', () => {
             hasMinCdsVersion: true
         }).find((question) => question.name === promptNames.enableTypeScript);
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
+
+        enableTypeScriptQuestion = getQuestions([], undefined, {
+            hasCdsUi5Plugin: false,
+            isCdsUi5PluginEnabled: false,
+            isWorkspaceEnabled: false,
+            hasMinCdsVersion: true
+        }).find((question) => question.name === promptNames.enableTypeScript);
+        expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual({
+            message:
+                'The CAP project will be updated to use NPM workspaces (this is a requirement for generating with TypeScript)',
+            severity: 1
+        });
     });
 
     test('getQuestions, advanced prompt grouping', () => {
@@ -554,12 +552,6 @@ describe('getQuestions', () => {
                 advancedOption: true
             },
             [promptNames.skipAnnotations]: {
-                advancedOption: true
-            },
-            /**
-             * Existing when() combined with advanced condition
-             */
-            [promptNames.enableNPMWorkspaces]: {
                 advancedOption: true
             }
         };
