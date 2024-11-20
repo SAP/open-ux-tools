@@ -1,5 +1,6 @@
 import { t } from '../src/i18n';
-import { AllowedCharacters, validateText } from '../src';
+import type { AllowedCharacters } from '../src';
+import { validateText } from '../src';
 
 const allowedCharacters: AllowedCharacters[] = ['_'];
 const inputName = 'Test Input';
