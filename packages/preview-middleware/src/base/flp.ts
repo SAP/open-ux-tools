@@ -298,7 +298,7 @@ export class FlpSandbox {
                 }
             } catch (error) {
                 this.logger.debug(error);
-                this.logger.info('Unable to fetch UI5 version. Using template for UI5 1.x.');
+                this.logger.info('Unable to fetch UI5 version. Using sandbox template for UI5 1.x.');
             }
             //-----------------------------------------------------------------------------------------------//
             const html = render(template, this.templateConfig);
