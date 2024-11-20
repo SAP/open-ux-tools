@@ -68,7 +68,7 @@ describe('basic prompts', () => {
 
             const result = validateFn('testValue');
 
-            expect(mockValidateText).toHaveBeenCalledWith('testValue', t('prompts.semanticObject'), 30, ['_']);
+            expect(mockValidateText).toHaveBeenCalledWith('testValue', 30, ['_']);
             expect(result).toBe(true);
         });
 
@@ -80,7 +80,7 @@ describe('basic prompts', () => {
 
             const result = validateFn('invalidValue');
 
-            expect(mockValidateText).toHaveBeenCalledWith('invalidValue', t('prompts.semanticObject'), 30, ['_']);
+            expect(mockValidateText).toHaveBeenCalledWith('invalidValue', 30, ['_']);
             expect(result).toBe(false);
         });
     });
@@ -126,7 +126,7 @@ describe('basic prompts', () => {
 
             const result = validateFn('validAction');
 
-            expect(mockValidateText).toHaveBeenCalledWith('validAction', t('prompts.action'), 60, ['_']);
+            expect(mockValidateText).toHaveBeenCalledWith('validAction', 60, ['_']);
             expect(result).toBe(true);
         });
 
@@ -138,7 +138,7 @@ describe('basic prompts', () => {
 
             const result = validateFn('invalidAction!');
 
-            expect(mockValidateText).toHaveBeenCalledWith('invalidAction!', t('prompts.action'), 60, ['_']);
+            expect(mockValidateText).toHaveBeenCalledWith('invalidAction!', 60, ['_']);
             expect(result).toBe(false);
         });
 
@@ -283,7 +283,7 @@ describe('basic prompts', () => {
 
             const result = validateFn('Valid Title');
 
-            expect(mockValidateText).toHaveBeenCalledWith('Valid Title', t('prompts.title'), 0);
+            expect(mockValidateText).toHaveBeenCalledWith('Valid Title', 0);
             expect(result).toBe(true);
         });
 
@@ -295,7 +295,7 @@ describe('basic prompts', () => {
 
             const result = validateFn('Invalid Title');
 
-            expect(mockValidateText).toHaveBeenCalledWith('Invalid Title', t('prompts.title'), 0);
+            expect(mockValidateText).toHaveBeenCalledWith('Invalid Title', 0);
             expect(result).toBe(false);
         });
 
