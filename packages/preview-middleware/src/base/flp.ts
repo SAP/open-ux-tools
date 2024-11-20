@@ -288,9 +288,7 @@ export class FlpSandbox {
                     | { libraries: { name: string; version: string }[] }
                     | undefined;
                 const version: string =
-                    responseJson?.libraries?.find(
-                        (lib: { name: string; version: string }) => lib.name === 'sap.ui.core'
-                    )?.version ?? '1.121.0';
+                    responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version ?? '1.121.0';
                 const [major] = version.split('.');
                 const majorUi5Version = parseInt(major, 10);
                 if (majorUi5Version >= 2) {
