@@ -19,7 +19,6 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
         super({ globalConfig, projectConfig }, context);
         const config = projectConfig;
         config.setupFiles.push(path.join(__dirname, 'automaticSetup.js'));
-        config.setupFilesAfterEnv.push(path.join(__dirname, 'automaticSetupAfterEnv.js'));
         // Init global
         this.testEnvironmentOptions = config.testEnvironmentOptions;
         this.mappingStrategy = config.testEnvironmentOptions ? config.testEnvironmentOptions.mappingStrategy : 'ui5';
