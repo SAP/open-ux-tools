@@ -9,8 +9,6 @@ on:
   pull_request:
     branches:
       - main
-env:
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.CI_NX_ACCESS_TOKEN }}
 jobs:
   run-linters:
     strategy:
@@ -45,8 +43,12 @@ jobs:
         run: pnpm install
       - name: Run build
         run: pnpm run build
+        env:
+          NX_CLOUD_ACCESS_TOKEN: ${{ secrets.CI_NX_ACCESS_TOKEN }}
       - name: Run lint:fix
         run: pnpm run lint:fix
+        env:
+          NX_CLOUD_ACCESS_TOKEN: ${{ secrets.CI_NX_ACCESS_TOKEN }}
       - name: Commit lint fixes if any
         run: |
                 git config --global user.name github-actions[bot]
