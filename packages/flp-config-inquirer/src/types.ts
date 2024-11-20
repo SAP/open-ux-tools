@@ -1,7 +1,5 @@
 import type { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 
-export type AllowedCharacters = '_';
-
 /**
  * Enumeration of prompt names used in the FLP configuration.
  */

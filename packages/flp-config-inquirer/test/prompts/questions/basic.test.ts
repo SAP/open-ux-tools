@@ -1,4 +1,5 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
+import { validateText } from '@sap-ux/project-input-validator';
 
 import {
     getActionPrompt,
@@ -9,10 +10,9 @@ import {
 } from '../../../src/prompts/questions';
 import { initI18n, t } from '../../../src/i18n';
 import { promptNames } from '../../../src/types';
-import { validateText } from '../../../src/prompts/validators';
 
-jest.mock('../../../src/prompts/validators.ts', () => ({
-    ...jest.requireActual('../../../src/prompts/validators.ts'),
+jest.mock('@sap-ux/project-input-validator', () => ({
+    ...jest.requireActual('@sap-ux/project-input-validator'),
     validateText: jest.fn()
 }));
 

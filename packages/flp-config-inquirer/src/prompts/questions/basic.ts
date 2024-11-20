@@ -1,4 +1,5 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
+import { validateText } from '@sap-ux/project-input-validator';
 
 import type {
     ActionPromptOptions,
@@ -12,7 +13,6 @@ import type {
 } from '../../types';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
-import { validateText } from '../validators';
 
 /**
  * Creates the 'semanticObject' prompt for FLP configuration.

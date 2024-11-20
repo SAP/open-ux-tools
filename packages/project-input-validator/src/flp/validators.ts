@@ -1,6 +1,6 @@
 import { t } from '../i18n';
 
-import type { AllowedCharacters } from '../types';
+export type AllowedCharacters = '_';
 
 /**
  * Validates that text input does not have zero length and optionally is less than the specified maximum length.
@@ -19,13 +19,13 @@ export function validateText(
     allowedCharacters?: AllowedCharacters[]
 ): boolean | string {
     if (!input || input?.trim().length === 0) {
-        return t('validators.inputRequired', {
+        return t('flp.inputRequired', {
             inputName
         });
     }
 
     if (maxLength && input.length > maxLength) {
-        return t('validators.maxLength', { maxLength });
+        return t('flp.maxLength', { maxLength });
     }
 
     // Asterisks is supported for the semantic object and action field but not the inbound title
@@ -33,7 +33,7 @@ export function validateText(
         const escapedChars = allowedCharacters.map((char) => `\\${char}`).join('');
         const regex = new RegExp(`^[a-zA-Z0-9${escapedChars}]+$`);
         if (!regex.test(input)) {
-            return t('validators.supportedFormats', {
+            return t('flp.supportedFormats', {
                 allowedCharacters: allowedCharacters.join('')
             });
         }

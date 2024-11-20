@@ -1,6 +1,5 @@
-import { initI18n, t } from '../../src/i18n';
-import type { AllowedCharacters } from '../../src/types';
-import { validateText } from '../../src/prompts/validators';
+import { initI18nProjectValidators, t } from '../src/i18n';
+import { AllowedCharacters, validateText } from '../src/flp/validators';
 
 const allowedCharacters: AllowedCharacters[] = ['_'];
 const inputName = 'Test Input';
@@ -8,7 +7,7 @@ const inputName = 'Test Input';
 describe('validators', () => {
     describe('validateText', () => {
         beforeAll(async () => {
-            await initI18n();
+            await initI18nProjectValidators();
         });
 
         beforeEach(() => {
@@ -17,19 +16,19 @@ describe('validators', () => {
 
         it('should return an error if input is empty or only whitespace', () => {
             expect(validateText('', inputName)).toBe(
-                t('validators.inputRequired', {
+                t('flp.inputRequired', {
                     inputName
                 })
             );
             expect(validateText('   ', inputName)).toBe(
-                t('validators.inputRequired', {
+                t('flp.inputRequired', {
                     inputName
                 })
             );
         });
 
         it('should return an error if input exceeds the maximum length', () => {
-            expect(validateText('12345678901', inputName, 10)).toBe(t('validators.maxLength', { maxLength: 10 }));
+            expect(validateText('12345678901', inputName, 10)).toBe(t('flp.maxLength', { maxLength: 10 }));
         });
 
         it('should allow input if it is within the maximum length', () => {
@@ -38,7 +37,7 @@ describe('validators', () => {
 
         it('should return an error if input contains unsupported characters', () => {
             expect(validateText('invalid!', inputName, 0, allowedCharacters)).toBe(
-                t('validators.supportedFormats', {
+                t('flp.supportedFormats', {
                     allowedCharacters: allowedCharacters.join('')
                 })
             );
@@ -58,12 +57,12 @@ describe('validators', () => {
 
         it('should handle undefined or null input gracefully', () => {
             expect(validateText(undefined as unknown as string, inputName)).toBe(
-                t('validators.inputRequired', {
+                t('flp.inputRequired', {
                     inputName
                 })
             );
             expect(validateText(null as unknown as string, inputName)).toBe(
-                t('validators.inputRequired', {
+                t('flp.inputRequired', {
                     inputName
                 })
             );

@@ -49,5 +49,10 @@
         "inputCannotHaveSpaces": "Input cannot contain spaces.",
         "invalidJSON": "Invalid JSON",
         "invalidValueForSpecialChars": "Input must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'"
+    },
+    "flp": {
+        "inputRequired": "{{inputName}} input is required",
+        "maxLength": "Maximum length: {{maxLength}} characters",
+        "supportedFormats": "Only alphanumeric and '{{allowedCharacters}}' characters are allowed"
     }
 }
