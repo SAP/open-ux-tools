@@ -11,9 +11,11 @@ describe('validators', () => {
         });
 
         it('should return an error if input is empty or only whitespace', () => {
-            console.log(t('flp.inputRequired', {
-                inputName
-            }))
+            console.log(
+                t('flp.inputRequired', {
+                    inputName
+                })
+            );
             expect(validateText('', inputName)).toBe(
                 t('flp.inputRequired', {
                     inputName
