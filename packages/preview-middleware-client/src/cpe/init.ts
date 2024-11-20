@@ -1,7 +1,7 @@
 import Log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { iconsLoaded, enableTelemetry } from '@sap-ux-private/control-property-editor-common';
+import { iconsLoaded, enableTelemetry, appLoaded } from '@sap-ux-private/control-property-editor-common';
 
 import type { ActionHandler, Service } from './types';
 import { OutlineService } from './outline/service';
@@ -52,20 +52,24 @@ export default function init(
         rtaService,
         quickActionService
     ];
-
     try {
         loadDefaultLibraries();
-
-        for (const service of services) {
-            service
-                .init(CommunicationService.sendAction, subscribe)
-                ?.catch((reason) => Log.error('Service Initialization Failed: ', getError(reason)));
-        }
-
+        const allPromises = services.map((service) => {
+            return service.init(CommunicationService.sendAction, subscribe)?.catch((error) => {
+                Log.error('Service Initialization Failed: ', getError(error));
+            });
+        });
+        const result = Promise.all(allPromises)
+            .then(() => {
+                CommunicationService.sendAction(appLoaded());
+            })
+            // eslint-disable-next-line @typescript-eslint/unbound-method
+            .catch(Log.error);
         const icons = getIcons();
         CommunicationService.sendAction(iconsLoaded(icons));
+        return result;
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', getError(error));
+        return Promise.reject(error);
     }
-    return Promise.resolve();
 }
