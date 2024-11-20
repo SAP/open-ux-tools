@@ -13,8 +13,8 @@ global.test.info = function () {
     }
     annotations.push = function (annotation) {
         let currentAnnotations = MetadataExchange.getTestMetadata(currentTestName);
-        currentAnnotations ??= [];
-        currentAnnotations.push(annotation);
+        currentAnnotations.annotations ??= [];
+        currentAnnotations.annotations.push(annotation);
         MetadataExchange.storeTestMetadata(currentTestName, currentAnnotations);
     };
     return {
