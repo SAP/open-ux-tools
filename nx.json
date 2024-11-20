@@ -1,18 +1,7 @@
 {
     "tasksRunnerOptions": {
         "default": {
-            "runner": "@nrwl/nx-cloud",
             "options": {
-                "cacheableOperations": [
-                    "build",
-                    "lint",
-                    "test",
-                    "test:integration",
-                    "build:extension",
-                    "build:storybook",
-                    "build:storybook:bundle"
-                ],
-                "accessToken": "ZjFiYzA4OTYtYjFlNS00NTI2LTk4OTktNWZiYTAyMGE0ZGRmfHJlYWQtd3JpdGU=",
                 "canTrackAnalytics": false,
                 "showUsageWarnings": true
             }
@@ -35,31 +24,41 @@
                 "{projectRoot}/generators",
                 "{projectRoot}/lib",
                 "{projectRoot}/storybook"
-            ]
+            ],
+            "cache": true
         },
         "test": {
             "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
-            "outputs": ["{projectRoot}/coverage"]
+            "outputs": ["{projectRoot}/coverage"],
+            "cache": true
         },
         "test:integration": {
             "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
-            "outputs": ["{projectRoot}/playwright-report"]
+            "outputs": ["{projectRoot}/playwright-report"],
+            "cache": true
         },
         "build:extension": {
-            "outputs": ["{projectRoot}/*.vsix"]
+            "outputs": ["{projectRoot}/*.vsix"],
+            "cache": true
         },
         "build:storybook": {
-            "outputs": ["{projectRoot}/storybook"]
+            "outputs": ["{projectRoot}/storybook"],
+            "cache": true
         },
         "lint": {
-            "inputs": ["default", "^prod"]
+            "inputs": ["default", "^prod"],
+            "cache": true
         },
         "lint:fix": {
             "inputs": ["default", "^prod"]
         },
         "clean": {
             "inputs": []
+        },
+        "build:storybook:bundle": {
+            "cache": true
         }
     },
-    "defaultBase": "main"
+    "defaultBase": "main",
+    "nxCloudAccessToken": "ZjFiYzA4OTYtYjFlNS00NTI2LTk4OTktNWZiYTAyMGE0ZGRmfHJlYWQtd3JpdGU="
 }
