@@ -36,7 +36,7 @@
         "test:integration": {
             "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
             "outputs": ["{projectRoot}/playwright-report"],
-            "cache": true
+            "cache": false
         },
         "build:extension": {
             "outputs": ["{projectRoot}/*.vsix"],
