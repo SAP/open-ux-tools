@@ -7,7 +7,7 @@ import { OptionKey, SubMenuData, UISelectableOptionWithSubValues } from './types
 import { ItemInput, ItemInputRef } from './ItemInput';
 
 import './DropdownEditable.scss';
-import { getOption } from './utils';
+import { getOption, validateValue } from './utils';
 import {
     UIDropdown,
     UIDropdownOption,
@@ -29,16 +29,21 @@ export interface DropdownEditableProps extends UIDropdownProps {
         value?: string,
         selection?: OptionKey
     ) => void;
-    clearEditAfterSelect?: boolean;
+}
+
+/**
+ * Determines if the selected option is valid for submission.
+ *
+ * @param selectedOption - The option to validate, containing a text value and an editable flag.
+ * @returns Returns `true` if the option is valid for submission, otherwise `false`.
+ */
+function isValidValueForSubmit(selectedOption: UISelectableOptionWithSubValues): boolean {
+    return !(selectedOption.editable && (validateValue(selectedOption.text) || !selectedOption.text));
 }
 
 export const DropdownEditable = (props: DropdownEditableProps) => {
-    const { options, onChange, multiSelect, clearEditAfterSelect = true } = props;
-    const [selectedKey, updateSelection, convertedOptions, reset] = useOptions(
-        props.selectedKey,
-        options,
-        props.multiSelect
-    );
+    const { options, onChange, multiSelect } = props;
+    const [selectedKey, updateSelection, convertedOptions] = useOptions(props.selectedKey, options, props.multiSelect);
     const [subMenu, setSubMenu] = useState<SubMenuData | null>(null);
     const { target, option: activeOption } = subMenu ?? {};
     const inputItemRefs = useRef<{ [key: string]: ItemInputRef | null }>({});
@@ -46,42 +51,50 @@ export const DropdownEditable = (props: DropdownEditableProps) => {
     // Set local ref in component context
     const selectedKeyRef = useRef<OptionKey>();
     selectedKeyRef.current = selectedKey;
-    const delayedChange = useRef<boolean>(false);
+    const pendingChange = useRef<boolean>(false);
+    const isRootMenuMounted = useRef<boolean>(false);
 
     const handleChange = (
         event: React.FormEvent<HTMLDivElement>,
         selectedOption?: UISelectableOptionWithSubValues,
-        index?: number,
-        triggerChange?: boolean
+        index?: number
     ) => {
         if (!selectedOption) {
             return;
         }
-        // Update local selection
+        // Reset selection if invalid value is entered
+        const isValid = multiSelect || isValidValueForSubmit(selectedOption);
+        if (!isValid) {
+            // Reset selection and edited value
+            updateSelection(props.selectedKey, true);
+            selectedOption.text = '';
+            // Close submenu
+            setSubMenu(null);
+            return;
+        }
+        // Valid change - apply changed selection
         const result = updateSelection(selectedOption.key, selectedOption.selected);
         // Trigger change to outside
-        if (triggerChange) {
-            if (result.value) {
-                onChange?.(
-                    event,
-                    selectedOption ? { ...selectedOption, key: result.value } : undefined,
-                    index,
-                    result.value,
-                    result.selection
-                );
-                if (!multiSelect && clearEditAfterSelect) {
-                    reset();
-                }
-            } else {
-                onChange?.(
-                    event,
-                    // Simulate empty item selection
-                    selectedOption ? { ...selectedOption, key: '' } : undefined,
-                    undefined,
-                    '',
-                    undefined
-                );
+        if (result.value) {
+            onChange?.(
+                event,
+                selectedOption ? { ...selectedOption, key: result.value } : undefined,
+                index,
+                result.value,
+                result.selection
+            );
+            if (!multiSelect) {
+                setPendingText(undefined);
             }
+        } else {
+            onChange?.(
+                event,
+                // Simulate empty item selection
+                selectedOption ? { ...selectedOption, key: '' } : undefined,
+                undefined,
+                '',
+                undefined
+            );
         }
 
         // Close submenu
@@ -102,8 +115,8 @@ export const DropdownEditable = (props: DropdownEditableProps) => {
                     selectedOption?: UISelectableOptionWithSubValues,
                     index?: number
                 ) => {
-                    handleChange(event, selectedOption, index, true);
-                    delayedChange.current = false;
+                    handleChange(event, selectedOption, index);
+                    pendingChange.current = false;
                 }}
                 calloutProps={{
                     preventDismissOnEvent(event) {
@@ -117,17 +130,24 @@ export const DropdownEditable = (props: DropdownEditableProps) => {
                         return prevent;
                     },
                     layerProps: {
+                        onLayerDidMount: () => {
+                            isRootMenuMounted.current = true;
+                        },
                         onLayerWillUnmount: () => {
+                            if (!isRootMenuMounted.current) {
+                                return;
+                            }
                             setSubMenu(null);
                             if (
                                 !multiSelect &&
                                 selectedKeyRef.current &&
                                 !Array.isArray(selectedKeyRef.current) &&
-                                delayedChange.current
+                                pendingChange.current
                             ) {
                                 const changedOption = getOption(convertedOptions, selectedKeyRef.current);
-                                handleChange({} as React.FormEvent<HTMLDivElement>, changedOption, undefined, true);
+                                handleChange({} as React.FormEvent<HTMLDivElement>, changedOption, undefined);
                             }
+                            isRootMenuMounted.current = false;
                         }
                     },
                     onMouseOver: (event) => {
@@ -155,13 +175,18 @@ export const DropdownEditable = (props: DropdownEditableProps) => {
                 onRenderOption={(props, defaultRender) => {
                     if (props && 'editable' in props && props.editable) {
                         const option = getOption(convertedOptions, props?.key);
+                        let renamedEntry = option?.text;
+                        if (!multiSelect && !pendingText) {
+                            // Clear edit input when no pending text(value saved)
+                            renamedEntry = undefined;
+                        }
                         return (
                             <ItemInput
                                 ref={(ref) => {
                                     inputItemRefs.current[props.key.toString()] = ref;
                                 }}
                                 placeholder={option?.placeholder}
-                                renamedEntry={option?.text}
+                                renamedEntry={renamedEntry}
                                 onChange={(
                                     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
                                     value?: string
@@ -172,18 +197,16 @@ export const DropdownEditable = (props: DropdownEditableProps) => {
                                     }
                                     setPendingText(value);
                                     if (multiSelect) {
-                                        handleChange(
-                                            {} as React.FormEvent<HTMLDivElement>,
-                                            changedOption,
-                                            undefined,
-                                            true
-                                        );
+                                        handleChange({} as React.FormEvent<HTMLDivElement>, changedOption, undefined);
                                     } else {
-                                        delayedChange.current = true;
+                                        pendingChange.current = true;
                                     }
                                 }}
                                 onClick={() => {
                                     updateSelection(props.key, true);
+                                    if (!multiSelect) {
+                                        pendingChange.current = true;
+                                    }
                                 }}
                                 onEnter={(event) => {
                                     if (!multiSelect) {
