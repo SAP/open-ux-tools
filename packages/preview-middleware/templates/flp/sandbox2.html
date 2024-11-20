@@ -44,7 +44,7 @@
         window["data-open-ux-preview-basePath"] = "<%- basePath %>";
     </script>
 
-    <script src="<%- basePath %>/test-resources/sap/ushell/bootstrap/sandbox.js`" id="sap-ushell-bootstrap"></script>
+    <script src="<%- basePath %>/resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="<%- basePath %>/resources/sap-ui-core.js"
@@ -52,14 +52,14 @@
         data-sap-ui-async="true"
         data-sap-ui-preload="async"
         data-sap-ui-theme="<%- ui5.theme %>"
-        data-sap-ui-compatVersion="edge"
+        data-sap-ui-compat-version="edge"
         data-sap-ui-language="en"
         data-sap-ui-bindingSyntax="complex"
         data-sap-ui-flexibilityServices='<%- JSON.stringify(ui5.flex) %>'
-        data-sap-ui-resourceroots='<%- JSON.stringify(ui5.resources) %>'
+        data-sap-ui-resource-roots='<%- JSON.stringify(ui5.resources) %>'
         data-sap-ui-frameOptions="allow"
         data-sap-ui-xx-componentPreload="off"<%- ui5.bootstrapOptions %>
-        data-sap-ui-oninit="module:open/ux/preview/client/flp/init"<% if (locals.init) { %>
+        data-sap-ui-on-init="module:open/ux/preview/client/flp/init"<% if (locals.init) { %>
         data-open-ux-preview-customInit='<%- init %>'<% } if (locals.flex) { %>
         data-open-ux-preview-features='<%- JSON.stringify(features) %>'
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>

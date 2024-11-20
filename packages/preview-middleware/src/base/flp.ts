@@ -272,18 +272,37 @@ export class FlpSandbox {
         // register static client sources
         this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
+        //todo: check if we can request the version info here as well
+
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {
-            // inform the user if a html file exists on the filesystem
             const file = await this.project.byPath(this.config.path);
             if (file) {
                 this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
                 next();
-            } else {
-                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-                const html = render(template, this.templateConfig);
-                this.sendResponse(res, 'text/html', 200, html);
             }
+            //----------------------- fetch UI5 version and serve respective template -----------------------//
+            let template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+            let response: globalThis.Response;
+            try {
+                const versionUrl = `http://${_req.headers.host}/resources/sap-ui-version.json`;
+                response = await fetch(versionUrl);
+            } catch (error) {
+                this.logger.info(error);
+                return;
+            }
+            const json = await response.json();
+            const version: string =
+                json?.libraries?.find((lib: { name: string; version: string }) => lib.name === 'sap.ui.core')
+                    ?.version ?? '1.121.0';
+            const [major] = version.split('.');
+            const majorUi5Version = parseInt(major, 10);
+            if (majorUi5Version >= 2) {
+                template = readFileSync(join(__dirname, '../../templates/flp/sandbox2.html'), 'utf-8');
+            }
+            //-----------------------------------------------------------------------------------------------//
+            const html = render(template, this.templateConfig);
+            this.sendResponse(res, 'text/html', 200, html);
         }) as RequestHandler);
     }
 
