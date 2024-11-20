@@ -3,6 +3,7 @@ import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
 import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
+import * as VersionUtils from '../../../../src/utils/version';
 
 jest.mock('../../../../src/adp/init-dialogs', () => {
     return {
@@ -38,6 +39,7 @@ import {
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
+import { Ui5VersionInfo } from '../../../../src/utils/version';
 
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -842,8 +844,17 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('disable/enable "semantic date range" in filter bar', () => {
+            afterEach(() => {
+                jest.restoreAllMocks(); // Restores all mocked functions to their original implementations
+            });
             test('not available by default', async () => {
                 jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(false);
+                jest.spyOn(VersionUtils, 'getUi5Version').mockReturnValue(
+                    Promise.resolve({
+                        major: 1,
+                        minor: 130
+                    } as Ui5VersionInfo)
+                );
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartFilterBar') {
                         return {
@@ -887,7 +898,6 @@ describe('FE V2 quick actions', () => {
                         return container;
                     }
                 });
-
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
@@ -918,113 +928,148 @@ describe('FE V2 quick actions', () => {
                     ])
                 );
             });
-            test('initialize and execute action', async () => {
-                sapCoreMock.byId.mockImplementation((id) => {
-                    if (id == 'SmartFilterBar') {
-                        return {
-                            getProperty: jest.fn().mockImplementation(() => false),
-                            getDomRef: () => ({}),
-                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
-                        };
-                    }
-                    if (id == 'NavContainer') {
-                        const container = new NavContainer();
-                        const component = new UIComponentMock();
-                        const view = new XMLView();
-                        const pageView = new XMLView();
-                        pageView.getDomRef.mockImplementation(() => {
+            describe('enable table filtering for different valid UI5 versions', () => {
+                const testCases: {
+                    validVersion: boolean,
+                    major: int;
+                    minor: int;
+                    patch?: int;
+                }[] = [
+                        {
+                            validVersion: true, major: 1, minor: 96, patch: 37
+                        },
+                        {
+                            validVersion: true, major: 1, minor: 108, patch: 38
+                        },
+                        {
+                            validVersion: true, major: 1, minor: 96, patch: 38
+                        },
+                        {
+                            validVersion: true, major: 1, minor: 120, patch: 23
+                        },
+                        {
+                            validVersion: true, major: 1, minor: 128
+                        },
+                        {
+                            validVersion: true, major: 1, minor: 130
+                        },
+                        {
+                            validVersion: false, major: 1, minor: 96, patch: 36
+                        }
+                    ];
+                test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                    jest.spyOn(VersionUtils, 'getUi5Version').mockReturnValue(
+                        Promise.resolve({
+                            major: testCase.major,
+                            minor: testCase.minor,
+                            patch: testCase.patch
+                        } as Ui5VersionInfo)
+                    );
+                    sapCoreMock.byId.mockImplementation((id) => {
+                        if (id == 'SmartFilterBar') {
                             return {
-                                contains: () => true
+                                getProperty: jest.fn().mockImplementation(() => false),
+                                getDomRef: () => ({}),
+                                getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
                             };
-                        });
-                        pageView.getViewName.mockImplementation(
-                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-                        );
-                        const componentContainer = new ComponentContainer();
-                        const spy = jest.spyOn(componentContainer, 'getComponent');
-                        spy.mockImplementation(() => {
-                            return 'component-id';
-                        });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-                            if (id === 'component-id') {
-                                return component;
-                            }
-                        });
-                        view.getContent.mockImplementation(() => {
-                            return [componentContainer];
-                        });
-                        container.getCurrentPage.mockImplementation(() => {
-                            return view;
-                        });
-                        component.getRootControl.mockImplementation(() => {
-                            return pageView;
-                        });
-                        return container;
-                    }
-                });
+                        }
+                        if (id == 'NavContainer') {
+                            const container = new NavContainer();
+                            const component = new UIComponentMock();
+                            const view = new XMLView();
+                            const pageView = new XMLView();
+                            pageView.getDomRef.mockImplementation(() => {
+                                return {
+                                    contains: () => true
+                                };
+                            });
+                            pageView.getViewName.mockImplementation(
+                                () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                            );
+                            const componentContainer = new ComponentContainer();
+                            const spy = jest.spyOn(componentContainer, 'getComponent');
+                            spy.mockImplementation(() => {
+                                return 'component-id';
+                            });
+                            jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                                if (id === 'component-id') {
+                                    return component;
+                                }
+                            });
+                            view.getContent.mockImplementation(() => {
+                                return [componentContainer];
+                            });
+                            container.getCurrentPage.mockImplementation(() => {
+                                return view;
+                            });
+                            component.getRootControl.mockImplementation(() => {
+                                return pageView;
+                            });
+                            return container;
+                        }
+                    });
 
-                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
-                    return { type, value, settings };
-                });
+                    CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                        return { type, value, settings };
+                    });
 
-                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
-                await service.init(sendActionMock, subscribeMock);
+                    const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                    const registry = new FEV2QuickActionRegistry();
+                    const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
+                        registry
+                    ]);
+                    await service.init(sendActionMock, subscribeMock);
 
-                await service.reloadQuickActions({
-                    'sap.ui.comp.smartfilterbar.SmartFilterBar': [
-                        {
-                            controlId: 'SmartFilterBar'
-                        } as any
-                    ],
-                    'sap.m.NavContainer': [
-                        {
-                            controlId: 'NavContainer'
-                        } as any
-                    ]
-                });
-
-                expect(sendActionMock).toHaveBeenCalledWith(
-                    quickActionListChanged([
-                        {
-                            title: 'LIST REPORT',
-                            actions: [
-                                {
+                    await service.reloadQuickActions({
+                        'sap.ui.comp.smartfilterbar.SmartFilterBar': [
+                            {
+                                controlId: 'SmartFilterBar'
+                            } as any
+                        ],
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+                    expect(sendActionMock).toHaveBeenCalledWith(
+                        quickActionListChanged([
+                            {
+                                title: 'LIST REPORT',
+                                actions: testCase.validVersion ? [{
                                     'kind': 'simple',
                                     id: 'listReport0-enable-semantic-daterange-filterbar',
                                     title: 'Enable "Semantic Date Range" for Filter Bar',
                                     enabled: true
-                                }
-                            ]
-                        }
-                    ])
-                );
-
-                await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'listReport0-enable-semantic-daterange-filterbar', kind: 'simple' })
-                );
-                expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
-                    'settings': {},
-                    'type': 'appDescriptor',
-                    'value': {
-                        'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
-                        'parameters': {
-                            'entityPropertyChange': {
-                                'operation': 'UPSERT',
-                                'propertyPath': 'component/settings/filterSettings/dateSettings',
-                                'propertyValue': {
-                                    'useDateRange': true
-                                }
-                            },
-                            'parentPage': {
-                                'component': 'sap.suite.ui.generic.template.ListReport',
-                                'entitySet': 'testEntity'
+                                }] : []
                             }
-                        },
-                        'reference': undefined
+                        ])
+                    );
+                    if (testCase.validVersion) {
+                        await subscribeMock.mock.calls[0][0](
+                            executeQuickAction({ id: 'listReport0-enable-semantic-daterange-filterbar', kind: 'simple' })
+                        );
+                        expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                            'settings': {},
+                            'type': 'appDescriptor',
+                            'value': {
+                                'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
+                                'parameters': {
+                                    'entityPropertyChange': {
+                                        'operation': 'UPSERT',
+                                        'propertyPath': 'component/settings/filterSettings/dateSettings',
+                                        'propertyValue': {
+                                            'useDateRange': true
+                                        }
+                                    },
+                                    'parentPage': {
+                                        'component': 'sap.suite.ui.generic.template.ListReport',
+                                        'entitySet': 'testEntity'
+                                    }
+                                },
+                                'reference': undefined
+                            }
+                        });
                     }
                 });
             });
@@ -1316,7 +1361,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => {}
+                            setSelectedSubSection: () => { }
                         };
                     }
 
@@ -1488,7 +1533,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => {}
+                            setSelectedSubSection: () => { }
                         };
                     }
 
@@ -1649,7 +1694,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => {}
+                            setSelectedSubSection: () => { }
                         };
                     }
 
