@@ -23,9 +23,11 @@ import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoi
 import * as utils from '../../src/utils';
 import { mockDestinations } from '../fixtures/destinations';
 import * as serviceProviderUtils from '../../src/service-provider-utils';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.mock('../../src/service-provider-utils', () => ({
-    getTransportListFromService: jest.fn()
+    getTransportListFromService: jest.fn(),
+    getSystemInfo: jest.fn()
 }));
 
 describe('Test validators', () => {
@@ -304,7 +306,7 @@ describe('Test validators', () => {
         it('should return error for invalid package input', async () => {
             const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
 
-            const result = await validatePackage('zpackage', {
+            const result = await validatePackage('Zpackage', {
                 ...previousAnswers,
                 ui5AbapRepo: 'ZUI5REPO'
             });
@@ -320,6 +322,44 @@ describe('Test validators', () => {
             const result = await validatePackage('$TMP', previousAnswers);
             expect(result).toBe(true);
             expect(PromptState.transportAnswers.transportRequired).toBe(false);
+        });
+
+        it('should return error for special characters', async () => {
+            const result = await validatePackage('@TMP', previousAnswers);
+            expect(result).toBe(t('errors.validators.charactersForbiddenInPackage'));
+        });
+
+        it('should return error for invalid format', async () => {
+            const result = await validatePackage('namespace/packageName', previousAnswers);
+            expect(result).toBe(t('error.validators.abapPackageInvalidFormat'));
+        });
+
+        it('should return error for invalid starting prefix', async () => {
+            const result = await validatePackage('namespace', previousAnswers);
+            expect(result).toBe(t('error.validators.abapPackageStartingPrefix'));
+        });
+
+        it('should return error for invalid appName starting prefix', async () => {
+            const result = await validatePackage(
+                '/namespace/packageName',
+                {
+                    ...previousAnswers,
+                    ui5AbapRepo: 'ZUI5REPO'
+                },
+                undefined,
+                undefined,
+                true
+            );
+            expect(result).toBe('error.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
+        });
+
+        it('should return error package is not cloud', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
+                activeLanguages: []
+            });
+            const result = await validatePackage('ZPACKAGE', previousAnswers, undefined, true);
+            expect(result).toBe(t('warnings.invalidCloudPackage'));
         });
     });
 

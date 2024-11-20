@@ -132,16 +132,21 @@
             "abapAppDescLength": "Deployment Description should not exceed 60 characters",
             "abapTransportNumRequired": "Provide a transport request for your application",
             "abapPackageWarn": "Provide a package",
+            "abapPackageInvalidFormat": "Package name does not match the expected format. Expected format is '/<namespace>/<package_name>'  or just a single package name as a string. If namespace is not specified package name should starts with '$', 'Z', 'Y' or 'SAP'",
+            "abapPackageStartingPrefix": "Entered package can start with either namespace, '$', 'Z', 'Y' or 'SAP'",
             "abapInvalidNamespace": "Namespace invalid as there are too many forward slashes",
             "abapInvalidNamespaceLength": "Namespace limited to 10 characters, entered {{length}}",
             "abapInvalidAppNameLength": "Application name limited to 15 characters, entered {{length}}",
             "abapInvalidAppName": "Application name needs to be prefixed with [{{prefix}}]",
             "charactersForbiddenInAppName": "Only alphanumeric, underscore and slash characters are allowed",
+            "charactersForbiddenInPackage": "Only alphanumeric, underscore, $ and slash characters are allowed",
             "invalidNamespaceLength": "Namespace limited to 10 characters, entered {{length}}",
             "invalidNamespace": "Namespace invalid as there are too many forward slashes",
             "forbiddenCharacters": "Only alphanumeric, underscore and slash characters are allowed",
             "descriptionLength": "Deployment Description should not exceed 60 characters",
-            "transportListPreReqs": "Name (SAPUI5 ABAP Repository) and Package are required to retrieve the existing Transport Requests"
-        }
+            "transportListPreReqs": "Name (SAPUI5 ABAP Repository) and Package are required to retrieve the existing Transport Requests",
+            "abapInvalidAppNameNamespaceOrStartingPrefix": "Both the SAPUI5 ABAP Repository and the Package that will be used should start in the same way, i.e. a namespace or capital letters 'Z', 'Y' or 'SAP'"
+        },
+        "invalidCloudPackage": "The package entered is not meant to be used for cloud deployments."
     }
 }

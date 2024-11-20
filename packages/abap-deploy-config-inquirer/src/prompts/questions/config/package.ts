@@ -89,7 +89,12 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackage(previousAnswers.packageManual || options.packageManual?.default),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackage(input, answers, options.backendTarget)
+                await validatePackage(
+                    input,
+                    answers,
+                    options.backendTarget,
+                    options.packageManual?.shouldValidateCloudPackage
+                )
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>

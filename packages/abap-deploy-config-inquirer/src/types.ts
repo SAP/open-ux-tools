@@ -105,7 +105,18 @@ export type DescriptionPromptOptions = {
     default?: string;
 };
 
-export type PackageManualPromptOptions = {
+type PackagePromptOptions = {
+    /**
+     * Adds additional validation if the package is cloud
+     */
+    shouldValidateCloudPackage?: boolean;
+    /**
+     * Adds additional validation if appname`s namespace or starting prefix are same like package ones
+     */
+    shouldValidateAppName?: boolean;
+};
+
+export type PackageManualPromptOptions = PackagePromptOptions & {
     /**
      * Default package value.
      */
@@ -134,7 +145,7 @@ export type IndexPromptOptions = {
     indexGenerationAllowed?: boolean;
 };
 
-export type PackageAutocompletePromptOptions = {
+export type PackageAutocompletePromptOptions = PackagePromptOptions & {
     /**
      * Determines if the package autocomplete prompt should use auto complete prompt for packages.
      * Note that the auto-complete module must be registered with the inquirer instance to use this feature.

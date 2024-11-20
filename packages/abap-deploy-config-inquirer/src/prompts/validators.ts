@@ -9,7 +9,7 @@ import {
     isAppNameValid
 } from '../validator-utils';
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
-import { getTransportListFromService } from '../service-provider-utils';
+import { getTransportListFromService, getSystemInfo } from '../service-provider-utils';
 import { t } from '../i18n';
 import { findBackendSystemByUrl, initTransportConfig, getPackageAnswer, queryPackages } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
@@ -26,7 +26,9 @@ import {
     type AbapSystemChoice,
     type BackendTarget
 } from '../types';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
+const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 /**
  * Validates the destination question and sets the destination in the prompt state.
  *
@@ -347,28 +349,103 @@ export async function validatePackageChoiceInputForCli(
  * @param input - package name entered
  * @param answers - previous answers
  * @param backendTarget - backend target
+ * @param shouldValidateCloudPackage - add additional validation whether the package is cloud
+ * @param shouldValidateAppName - add additional validation whether package namespace or starting prefix are same with appname ones
  * @returns boolean or error message as a string
  */
 export async function validatePackage(
     input: string,
     answers: AbapDeployConfigAnswersInternal,
-    backendTarget?: BackendTarget
+    backendTarget?: BackendTarget,
+    shouldValidateCloudPackage?: boolean,
+    shouldValidateAppName?: boolean
 ): Promise<boolean | string> {
     if (!input?.trim()) {
         return t('warnings.providePackage');
+    }
+    //valiadtion for special characters
+    if (!/^[A-Za-z0-9$_/]*$/.test(input)) {
+        return t('errors.validators.charactersForbiddenInPackage');
     }
     if (input === DEFAULT_PACKAGE_ABAP) {
         PromptState.transportAnswers.transportRequired = false;
         return true;
     }
+
+    //validate package format
+    if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
+        return t('error.validators.abapPackageInvalidFormat');
+    }
+
+    const startingPrefix = getPackageStartingPrefix(input);
+
+    //validate package starting prefix
+    if (!input.startsWith('/') && !allowedPackagePrefixes.find((prefix) => prefix === startingPrefix)) {
+        return t('error.validators.abapPackageStartingPrefix');
+    }
+
+    // validate appname namespace and starting prefix
+    if (shouldValidateAppName && answers?.ui5AbapRepo && !answers?.ui5AbapRepo.startsWith(startingPrefix)) {
+        return t('error.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
+    }
+
     const systemConfig: SystemConfig = {
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
         destination: PromptState.abapDeployConfig.destination
     };
+
+    // validate if package is cloud
+    if (shouldValidateCloudPackage && !(await isCloudPackage(input, systemConfig, backendTarget))) {
+        return t('warnings.invalidCloudPackage');
+    }
+
     // checks if package is a local package and will update prompt state accordingly
     await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', systemConfig, backendTarget);
+
     return true;
+}
+
+/**
+ * Determines the starting prefix of a package name.
+ *
+ * - If the package name is in the form `/namespace/PackageName`, it extracts the namespace as the prefix.
+ * - Otherwise, if the package name starts with "SAP" or "$", "Z", "Y", it returns it".
+ * - If none of the above, it uses the first character of the package name.
+ *
+ * @param {string} packageName - The name of the package to analyze.
+ * @returns {string} - The starting prefix of the package name.
+ */
+function getPackageStartingPrefix(packageName: string): string {
+    if (/^\/.*\/\w*$/g.test(packageName)) {
+        const splitNames = packageName.split('/');
+        return `/${splitNames[1]}/`;
+    }
+    return packageName.startsWith('SAP') ? 'SAP' : packageName[0];
+}
+
+/**
+ * Checks if the given package is a cloud-ready package.
+ *
+ * - Fetches system information for the package using the provided system configuration and backend target.
+ * - Validates whether the adaptation project type for the package is "CLOUD_READY".
+ *
+ * @param {string} input - The name of the package to validate.
+ * @param {SystemConfig} systemConfig - Configuration object for the system (e.g., URL, client, destination).
+ * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
+ * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
+ */
+async function isCloudPackage(
+    input: string,
+    systemConfig: SystemConfig,
+    backendTarget?: BackendTarget
+): Promise<boolean> {
+    const systemInfo = await getSystemInfo(input, systemConfig, backendTarget);
+    return (
+        systemInfo != undefined &&
+        systemInfo.adaptationProjectTypes.length === 1 &&
+        systemInfo.adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY
+    );
 }
 
 /**
