@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.21.2
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
 ## 1.21.1
 
 ### Patch Changes
