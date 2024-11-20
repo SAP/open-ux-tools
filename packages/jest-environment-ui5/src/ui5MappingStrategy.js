@@ -30,7 +30,7 @@ async function getFileMapFromUI5(graph, rootProject) {
 
             if (isRootProject) {
                 if (!targetPath.startsWith(namespace)) {
-                    targetPath = path.join(namespace, targetPath);
+                    targetPath = path.posix.join(namespace, targetPath);
                 }
             }
 
