@@ -4,7 +4,8 @@
             "options": {
                 "canTrackAnalytics": false,
                 "showUsageWarnings": true,
-                "nxCloudId": "63723103eb505e0e8ebeb550"
+                "nxCloudId": "63723103eb505e0e8ebeb550",
+
             }
         }
     },
@@ -60,6 +61,5 @@
             "cache": true
         }
     },
-    "defaultBase": "main",
-    "nxCloudAccessToken": "ZjFiYzA4OTYtYjFlNS00NTI2LTk4OTktNWZiYTAyMGE0ZGRmfHJlYWQtd3JpdGU="
+    "defaultBase": "main"
 }
