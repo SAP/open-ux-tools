@@ -71,7 +71,7 @@ export function isLowerThanMinimalUi5Version(
  *
  * @returns boolean
  */
-export function isEqualToUi5Version(
+export function isVersionEqualOrHasNewerPatch(
     ui5VersionInfo: Ui5VersionInfo,
     targetUi5VersionInfo: Ui5VersionInfo = minVersionInfo
 ): boolean {
