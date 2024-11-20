@@ -11,6 +11,7 @@ describe("Typescript Mapping Strategy", () => {
         expect(path.relative(__dirname,pathMappingFn("sap/ui/demo/todo/OtherFile"))).toBe("sampleapp/webapp/OtherFile.ts")
         expect(path.relative(__dirname,pathMappingFn("sap/ui/demo/todo/TSXFile.tsx"))).toBe("sampleapp/webapp/TSXFile.tsx")
         expect(path.relative(__dirname,pathMappingFn("sap/ui/demo/todo/TSXFile"))).toBe("sampleapp/webapp/TSXFile.tsx")
+        expect(path.relative(__dirname,pathMappingFn("otherPackage/MyFile"))).toBe("../otherPackage/MyFile"); // not really resolved
 
         const secondpathMapping =  await initTsConfigMappingStrategy({ rootFolder: path.resolve(__dirname, "sampleapp"), configPath: path.resolve(__dirname, "sampleapp/tsconfig.json") });
         expect(secondpathMapping).toStrictEqual(pathMappingFn); // No need to recreate the pathMappingFn
