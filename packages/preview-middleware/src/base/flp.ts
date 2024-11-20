@@ -272,8 +272,6 @@ export class FlpSandbox {
         // register static client sources
         this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
-        //todo: check if we can request the version info here as well
-
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {
             const file = await this.project.byPath(this.config.path);
@@ -285,6 +283,7 @@ export class FlpSandbox {
             let template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             let response: globalThis.Response;
             try {
+                //todo: this will not work for cds-plugin-ui5 because the app host is missing in the url
                 const versionUrl = `http://${_req.headers.host}/resources/sap-ui-version.json`;
                 response = await fetch(versionUrl);
             } catch (error) {
