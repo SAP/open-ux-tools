@@ -239,7 +239,10 @@ describe('cap-helper', () => {
         };
 
         expect(await getCapServiceChoices(capProjectPaths)).toEqual([]);
-        expect(errorHandlerSpy).toHaveBeenCalledWith(ERROR_TYPE.UNKNOWN, t('errors.capModelAndServicesLoadError', { error: 'getCapModelAndServices error'}));
+        expect(errorHandlerSpy).toHaveBeenCalledWith(
+            ERROR_TYPE.UNKNOWN,
+            t('errors.capModelAndServicesLoadError', { error: 'getCapModelAndServices error' })
+        );
         expect(logErrorSpy).toHaveBeenCalledWith(
             t('errors.capModelAndServicesLoadError', { error: 'getCapModelAndServices error' })
         );
