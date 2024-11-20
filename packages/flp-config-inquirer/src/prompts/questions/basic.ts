@@ -21,7 +21,6 @@ import { promptNames } from '../../types';
  * @returns {FLPConfigQuestion} The prompt configuration for the semantic object.
  */
 export function getSemanticObjectPrompt(options?: SemanticObjectPromptOptions): FLPConfigQuestion {
-    const promptMessage = t('prompts.semanticObject');
     return {
         name: promptNames.semanticObject,
         type: 'input',
@@ -29,10 +28,10 @@ export function getSemanticObjectPrompt(options?: SemanticObjectPromptOptions): 
             mandatory: true,
             breadcrumb: true
         },
-        message: promptMessage,
+        message: t('prompts.semanticObject'),
         default: options?.default,
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, promptMessage, 30, ['_'])
+        validate: (val) => validateText(val, 30, ['_'])
     };
 }
 
@@ -43,7 +42,6 @@ export function getSemanticObjectPrompt(options?: SemanticObjectPromptOptions): 
  * @returns {FLPConfigQuestion} The prompt configuration for the action.
  */
 export function getActionPrompt(options?: ActionPromptOptions): FLPConfigQuestion {
-    const promptMessage = t('prompts.action');
     return {
         name: promptNames.action,
         type: 'input',
@@ -51,10 +49,10 @@ export function getActionPrompt(options?: ActionPromptOptions): FLPConfigQuestio
             mandatory: true,
             breadcrumb: true
         },
-        message: promptMessage,
+        message: t('prompts.action'),
         default: options?.default,
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, promptMessage, 60, ['_'])
+        validate: (val) => validateText(val, 60, ['_'])
     };
 }
 
@@ -119,7 +117,6 @@ export function getTitlePrompt(
     silentOverwrite: boolean,
     options?: TitlePromptOptions
 ): FLPConfigQuestion {
-    const promptMessage = t('prompts.title');
     return {
         when: ({ overwrite }) => overwrite !== false || !existingKeyRef.value || silentOverwrite,
         name: promptNames.title,
@@ -128,10 +125,10 @@ export function getTitlePrompt(
             mandatory: true,
             breadcrumb: true
         },
-        message: promptMessage,
+        message: t('prompts.title'),
         default: options?.default,
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, promptMessage, 0)
+        validate: (val) => validateText(val, 0)
     };
 }
 
