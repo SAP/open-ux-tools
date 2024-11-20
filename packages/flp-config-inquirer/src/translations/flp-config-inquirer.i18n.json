@@ -3,14 +3,10 @@
         "semanticObject": "Semantic Object",
         "action": "Action",
         "title": "Title",
-        "subTitle": "Subtitle (optional)",
-        "subTitleBreadcrumb": "Subtitle"
+        "subTitle": "Subtitle"
     },
     "validators": {
         "inboundConfigKeyExists": "An inbound configuration with the key: '{{inboundKey}}' is already defined.",
-        "flpConfigOverwrite": "Overwrite existing configuration?",
-        "inputRequired": "{{inputName}} input is required",
-        "maxLength": "Maximum length: {{maxLength}} characters",
-        "supportedFormats": "Only alphanumeric and '{{allowedCharacters}}' characters are allowed"
+        "flpConfigOverwrite": "Overwrite existing configuration?"
     }
 }

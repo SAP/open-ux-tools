@@ -153,7 +153,7 @@ export function getSubTitlePrompt(
         name: promptNames.subTitle,
         type: 'input',
         guiOptions: {
-            breadcrumb: t('prompts.subTitleBreadcrumb')
+            breadcrumb: t('prompts.subTitle')
         },
         message: t('prompts.subTitle'),
         default: options?.default,
