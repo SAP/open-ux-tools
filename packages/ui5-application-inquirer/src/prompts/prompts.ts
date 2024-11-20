@@ -27,7 +27,6 @@ import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5Application
 import { promptNames } from '../types';
 import { defaultAppName, hidePrompts, isVersionIncluded, validateTargetFolder } from './prompt-helpers';
 import { validateAppName } from './validators';
-import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**

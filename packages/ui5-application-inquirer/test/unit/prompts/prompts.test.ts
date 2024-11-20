@@ -8,9 +8,8 @@ import { promptNames } from '../../../src/types';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { defaultVersion, minUi5VersionSupportingCodeAssist, ui5ThemeIds } from '@sap-ux/ui5-info';
-import { extendAdditionalMessages, type ListQuestion } from '@sap-ux/inquirer-common';
+import { type ListQuestion } from '@sap-ux/inquirer-common';
 import { inc } from 'semver';
-import * as prompts from '../../../src/prompts/prompts';
 
 jest.mock('@sap-ux/project-input-validator', () => {
     return {
