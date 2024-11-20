@@ -1,28 +1,17 @@
 import i18next from 'i18next';
 import type { TOptions } from 'i18next';
-import { addi18nResourceBundle as addInquirerCommoni18nResourceBundle } from '@sap-ux/inquirer-common';
 
 import translations from './translations/flp-config-inquirer.i18n.json';
 
-const flpAppInquirerNamespace = 'flp-config-inquirer';
-export const defaultProjectNumber = 1;
+const flpConfigInquirerNs = 'flp-config-inquirer';
 
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    await i18next.init({
-        lng: 'en',
-        fallbackLng: 'en',
-        interpolation: {
-            defaultVariables: {
-                defaultProjectNumber
-            }
-        }
-    });
-    i18next.addResourceBundle('en', flpAppInquirerNamespace, translations);
-    // add the inquirer common i18n resource bundle to ensure all translations are available
-    addInquirerCommoni18nResourceBundle();
+    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
+        i18next.addResourceBundle('en', flpConfigInquirerNs, translations)
+    );
 }
 
 /**
@@ -34,7 +23,7 @@ export async function initI18n(): Promise<void> {
  */
 export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
-        options = Object.assign(options ?? {}, { ns: flpAppInquirerNamespace });
+        options = Object.assign(options ?? {}, { ns: flpConfigInquirerNs });
     }
     return i18next.t(key, options);
 }

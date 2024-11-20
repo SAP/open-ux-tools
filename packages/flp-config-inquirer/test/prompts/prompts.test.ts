@@ -1,12 +1,13 @@
-import { getQuestions } from '../../src/prompts';
-import { PLATFORMS, getPlatform } from '../../src/prompts/utils';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
-jest.mock('../../src/prompts/utils.ts', () => ({
-    ...jest.requireActual('../../src/prompts/utils.ts'),
-    getPlatform: jest.fn()
+import { getQuestions } from '../../src/prompts';
+
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
 }));
 
-const mockGetPlatform = getPlatform as jest.MockedFunction<typeof getPlatform>;
+const mockGetHostEnv = getHostEnvironment as jest.MockedFunction<typeof getHostEnvironment>;
 
 describe('getQuestions', () => {
     beforeEach(() => {
@@ -14,11 +15,20 @@ describe('getQuestions', () => {
     });
 
     it('should return questions array with correct prompts', () => {
-        mockGetPlatform.mockReturnValue(PLATFORMS.CLI);
+        mockGetHostEnv.mockReturnValue(hostEnvironment.cli);
 
-        const questions = getQuestions([]);
+        const questions = getQuestions(['new-upsert']);
 
-        expect(mockGetPlatform).toHaveBeenCalled();
+        expect(mockGetHostEnv).toHaveBeenCalled();
+        expect(questions.length).toBe(5);
+    });
+
+    it('should return questions array with correct prompts when no arguments are passed', () => {
+        mockGetHostEnv.mockReturnValue(hostEnvironment.bas);
+
+        const questions = getQuestions();
+
+        expect(mockGetHostEnv).toHaveBeenCalled();
         expect(questions.length).toBe(5);
     });
 });

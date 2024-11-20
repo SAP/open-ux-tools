@@ -1,3 +1,5 @@
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+
 import {
     getSemanticObjectPrompt,
     getActionPrompt,
@@ -6,7 +8,6 @@ import {
     getOverwritePrompt
 } from './questions/basic';
 import { promptNames } from '../types';
-import { PLATFORMS, getPlatform } from './utils';
 import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
 
 /**
@@ -17,7 +18,7 @@ import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } fr
  * @returns {FLPConfigQuestion[]} An array of FLPConfigQuestion objects to be used for prompting the user.
  */
 export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConfigPromptOptions): FLPConfigQuestion[] {
-    const isCLI = getPlatform() === PLATFORMS.CLI;
+    const isCLI = getHostEnvironment() === hostEnvironment.cli;
     const existingKeyRef: ExistingInboundRef = { value: false };
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
 

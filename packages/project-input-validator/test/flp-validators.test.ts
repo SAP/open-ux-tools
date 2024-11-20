@@ -1,20 +1,19 @@
-import { initI18nProjectValidators, t } from '../src/i18n';
-import { AllowedCharacters, validateText } from '../src/flp/validators';
+import { t } from '../src/i18n';
+import { AllowedCharacters, validateText } from '../src';
 
 const allowedCharacters: AllowedCharacters[] = ['_'];
 const inputName = 'Test Input';
 
 describe('validators', () => {
     describe('validateText', () => {
-        beforeAll(async () => {
-            await initI18nProjectValidators();
-        });
-
         beforeEach(() => {
             jest.clearAllMocks();
         });
 
         it('should return an error if input is empty or only whitespace', () => {
+            console.log(t('flp.inputRequired', {
+                inputName
+            }))
             expect(validateText('', inputName)).toBe(
                 t('flp.inputRequired', {
                     inputName
