@@ -93,7 +93,8 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                     input,
                     answers,
                     options.backendTarget,
-                    options.packageManual?.shouldValidateCloudPackage
+                    options.packageManual?.shouldValidateCloudPackage,
+                    options.packageManual?.shouldValidateAppName
                 )
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
