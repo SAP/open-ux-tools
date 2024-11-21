@@ -5,8 +5,7 @@
     "author": "@SAP/ux-tools-team",
     "private": true,
     "devDependencies": {
-        "@changesets/cli": "2.27.7",
-        "@nrwl/nx-cloud": "19.0.0",
+        "@changesets/cli": "2.27.9",
         "@playwright/test": "1.39.0",
         "@types/jest": "29.5.5",
         "@types/node": "18.11.9",
@@ -31,7 +30,8 @@
         "rimraf": "5.0.5",
         "ts-jest": "29.1.2",
         "typescript": "5.6.2",
-        "update-ts-references": "3.2.1"
+        "update-ts-references": "3.2.1",
+        "prebuild-install": "^7.0.1"
     },
     "scripts": {
         "postinstall": "update-ts-references",
@@ -62,7 +62,8 @@
     "packageManager": "pnpm@8.14.0",
     "pnpm": {
         "overrides": {
-            "router>path-to-regexp": "0.1.10"
+            "router>path-to-regexp": "0.1.10",
+            "cross-spawn": "7.0.5"
         }
     }
 }
