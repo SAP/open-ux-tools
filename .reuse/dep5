@@ -32,4 +32,4 @@ License: Apache-2.0
 File: src/shim/ui5loader.js
 Copyright: SAP
 License: Apache-2.0
-Comment: This files belongs to: OpenUI5 module sap.ui.core
+Comment: This file belongs to the [OpenUI5](https://github.com/SAP/openui5) module sap.ui.core
