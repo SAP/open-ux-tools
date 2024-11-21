@@ -1695,7 +1695,7 @@
             }
 
             // call notification hook only once
-            const filePath = global.pathMapping[sModuleName] || global.pathMappingFn(sModuleName);
+            const filePath = global.pathMappingFn(sModuleName);
 
             ui5Require.load({ completeLoad:noop, async: true }, sAltUrl, oSplitName.baseID);
             try {

@@ -6,12 +6,11 @@ let mockData = {};
 /**
  * Returns a mock class for XMLHttpRequest.
  * @param {object} globalWindow The global window object.
- * @param {object} pathMapping The path mapping for the shimmed files.
  * @param {object} pathMappingFn The path mapping function.
  * @param {object} shimmedFilePath The shimmed file paths.
  * @returns {object} The fake XMLHttpRequest class.
  */
-function getXHRMockClass(globalWindow, pathMapping, pathMappingFn, shimmedFilePath) {
+function getXHRMockClass(globalWindow, pathMappingFn, shimmedFilePath) {
     return {
         /**
          * Returns true if cross-site Access-Control requests should be made using credentials such as cookies or authorization headers; otherwise false.
@@ -48,7 +47,7 @@ function getXHRMockClass(globalWindow, pathMapping, pathMappingFn, shimmedFilePa
                     filePath = '';
                 }
                 if (!filePath) {
-                    filePath = pathMapping[this.url] || pathMappingFn(this.url);
+                    filePath = pathMappingFn(this.url);
                 }
 
                 if (this.url.endsWith('.json') || this.url.endsWith('.properties') || this.url.endsWith('.xml')) {
@@ -68,7 +67,7 @@ function getXHRMockClass(globalWindow, pathMapping, pathMappingFn, shimmedFilePa
                             // Fallback to the non debug version in case it was requested but doesn't exist
                             if (this.url.endsWith('-dbg')) {
                                 const subUrl = this.url.substring(0, this.url.length - 4);
-                                const filePath = pathMapping[subUrl] || pathMappingFn(subUrl);
+                                const filePath = pathMappingFn(subUrl);
                                 // requireOutput = new (require('node:vm').Script)(
                                 //     fs.readFileSync(filePath).toString('utf-8')
                                 // ).runInContext(globalWindow);
@@ -152,7 +151,7 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
     globalWindow.jestSetup = true;
 
     globalWindow.XMLHttpRequest = function () {
-        return getXHRMockClass(globalWindow, pathMapping, pathMappingFn, shimmedFilePath);
+        return getXHRMockClass(globalWindow, pathMappingFn, shimmedFilePath);
     };
     globalWindow.performance.timing = {
         fetchStart: Date.now(),
@@ -203,10 +202,6 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
         'sap/ui/thirdparty/signals': true,
         'sap/ui/thirdparty/signals.js': true
     };
-    let pathMapping = {
-        ui5loader: path.resolve(__dirname, './shim/ui5loader2.js'),
-        'ui5loader-dbg': path.resolve(__dirname, './shim/ui5loader2.js')
-    };
     if (isV2) {
         shimmedFilePath = {
             'sap/ui/thirdparty/jquery': true,
@@ -220,7 +215,6 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
             'sap/ui/thirdparty/jquery-mobile-compat-dbg': true
         };
     }
-    globalWindow.pathMapping = pathMapping;
     globalWindow.pathMappingFn = pathMappingFn;
 
     globalWindow.jestUI5 = {
@@ -228,7 +222,7 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
             return globalWindow.jest.mock(pathMappingFn(moduleName), factory);
         },
         resolvePath: function (sPath) {
-            return pathMapping[sPath] || pathMappingFn(sPath);
+            return pathMappingFn(sPath);
         },
         registerMockMetadata: function (sPath, dataOrPath) {
             mockData[`${sPath}$metadata`] = dataOrPath;
