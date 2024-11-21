@@ -170,9 +170,6 @@ describe('ui5-application-inquirer API', () => {
                     return false;
                 }
             },
-            [promptNames.enableNPMWorkspaces]: {
-                advancedOption: true
-            },
             [promptNames.enableCodeAssist]: {
                 advancedOption: true,
                 default: true
@@ -189,7 +186,6 @@ describe('ui5-application-inquirer API', () => {
         expect(answers).toEqual({
             description: 'No annotations',
             enableCodeAssist: true,
-            enableNPMWorkspaces: false,
             enableTypeScript: true,
             name: 'a prompt answer',
             skipAnnotations: true,
@@ -207,7 +203,6 @@ describe('ui5-application-inquirer API', () => {
         expect(answers).toEqual({
             description: 'Annotations inc.',
             enableCodeAssist: false,
-            enableNPMWorkspaces: false,
             enableTypeScript: false,
             skipAnnotations: false,
             ui5Theme: 'sap_fiori_3',
