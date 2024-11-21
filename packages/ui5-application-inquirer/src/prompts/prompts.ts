@@ -27,6 +27,7 @@ import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5Application
 import { promptNames } from '../types';
 import { defaultAppName, hidePrompts, isVersionIncluded, validateTargetFolder } from './prompt-helpers';
 import { validateAppName } from './validators';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Get the prompts that will provide input for UI5 application writing.
@@ -64,6 +65,7 @@ export function getQuestions(
             promptOptions?.[promptNames.targetFolder]?.validateFioriAppFolder
         ),
         [promptNames.ui5Version]: getUI5VersionPrompt(ui5Versions, promptOptions?.ui5Version),
+        [promptNames.enableTypeScript]: getEnableTypeScriptPrompt(capCdsInfo),
         [promptNames.addDeployConfig]: getAddDeployConfigPrompt(
             targetDir,
             promptOptions?.addDeployConfig,
@@ -74,9 +76,7 @@ export function getQuestions(
         [promptNames.ui5Theme]: getUI5ThemePrompt(),
         [promptNames.enableEslint]: getEnableEsLintPrompt(),
         [promptNames.enableCodeAssist]: getEnableCodeAssistPrompt(),
-        [promptNames.skipAnnotations]: getSkipAnnotationsPrompt(),
-        [promptNames.enableNPMWorkspaces]: getEnableNPMWorkspacesPrompt(capCdsInfo),
-        [promptNames.enableTypeScript]: getEnableTypeScriptPrompt(capCdsInfo)
+        [promptNames.skipAnnotations]: getSkipAnnotationsPrompt()
     };
 
     // Hide not applicable prompts based on passed options or if this is a CAP project
@@ -98,13 +98,18 @@ export function getQuestions(
  * @param capCdsInfo CDS UI5 plugin information
  * @returns The `enableTypeScript` prompt
  */
-function getEnableTypeScriptPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
+export function getEnableTypeScriptPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
     return {
-        when: (answers): boolean => {
+        when: (): boolean => {
             if (capCdsInfo) {
-                return capCdsInfo.isCdsUi5PluginEnabled || !!answers?.enableNPMWorkspaces;
+                return capCdsInfo.isCdsUi5PluginEnabled || (capCdsInfo.hasMinCdsVersion && !capCdsInfo.hasCdsUi5Plugin);
             }
             return true;
+        },
+        additionalMessages: (val: boolean) => {
+            if (val && capCdsInfo?.hasMinCdsVersion && !capCdsInfo?.hasCdsUi5Plugin) {
+                return { message: t('prompts.appEnableTypeScriptWarningMessage'), severity: Severity.warning };
+            }
         },
         type: 'confirm',
         name: promptNames.enableTypeScript,
@@ -112,30 +117,6 @@ function getEnableTypeScriptPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5Applicatio
         default: false,
         guiOptions: {
             breadcrumb: true
-        }
-    } as ConfirmQuestion<UI5ApplicationAnswers>;
-}
-
-/**
- * Get the `enableNPMWorkspaces` prompt.
- *
- * @param capCdsInfo CDS UI5 plugin information
- * @returns The `enableNPMWorkspaces` prompt
- */
-function getEnableNPMWorkspacesPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
-    return {
-        when: () => {
-            if (capCdsInfo) {
-                return capCdsInfo.hasMinCdsVersion && !capCdsInfo.hasCdsUi5Plugin;
-            }
-            return false;
-        },
-        type: 'confirm',
-        name: promptNames.enableNPMWorkspaces,
-        message: t('prompts.appEnableNpmWorkspacesMessage'),
-        default: false,
-        guiOptions: {
-            breadcrumb: t('prompts.appEnableNpmWorkspacesBreadcrumb')
         }
     } as ConfirmQuestion<UI5ApplicationAnswers>;
 }

@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.16.125
+
+### Patch Changes
+
+-   326dbe5: Enable adding fragment to elements cloned from a template
+
+## 0.16.124
+
+### Patch Changes
+
+-   e9438d6: fix: restrict the '"Semantic Date Range" in filter bar' quick-action for certain UI5 versions which are not supported for V2 application.
+
 ## 0.16.123
 
 ### Patch Changes
