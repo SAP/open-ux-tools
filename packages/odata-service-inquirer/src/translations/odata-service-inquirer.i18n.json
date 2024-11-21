@@ -132,7 +132,7 @@
             "authError": "The selected system is returning an authentication error. System name: {{systemName}}, error: {{- error}}"
         },
         "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. $t(texts.seeLogForDetails)",
-        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services. {{- error}}",
+        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services{{- error, addMsgWithColonFormatter}}",
         "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. CAP service property `urlPath` is not defined but is required.",
         "unknownError": "An error occurred{{- error, addMsgWithColonFormatter}}",
         "authenticationFailed": "Authentication incorrect. {{error}}",
