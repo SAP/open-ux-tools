@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.16.126
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.82
+
+## 0.16.125
+
+### Patch Changes
+
+-   326dbe5: Enable adding fragment to elements cloned from a template
+
 ## 0.16.124
 
 ### Patch Changes

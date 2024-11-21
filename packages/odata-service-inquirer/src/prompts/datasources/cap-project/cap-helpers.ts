@@ -12,6 +12,7 @@ import type { CapService, CapServiceChoice } from '../../../types';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
 import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './types';
+import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 
 export const enterCapPathChoiceValue = 'enterCapPath';
 
@@ -163,8 +164,9 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
             capModel = model;
             capCdsVersionInfo = cdsVersionInfo;
         } catch (error) {
-            errorHandler.logErrorMsgs(error);
-            LoggerHelper.logger.error(t('errors.capModelAndServicesLoadError', { error: error?.message }));
+            const capLoadErrorMsg = t('errors.capModelAndServicesLoadError', { error: error?.message });
+            errorHandler.logErrorMsgs(ERROR_TYPE.UNKNOWN, capLoadErrorMsg);
+            LoggerHelper.logger.error(capLoadErrorMsg);
             return [];
         }
         // We need the relative service definitions file paths (.cds) for the generated annotation file

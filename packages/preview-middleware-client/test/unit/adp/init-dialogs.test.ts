@@ -2,10 +2,11 @@ import type UI5Element from 'sap/ui/core/Element';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import hasStableId from 'mock/sap/ui/rta/util/hasStableId';
 
 import FlUtils from 'sap/ui/fl/Utils';
 import { sapMock } from 'mock/window';
-import Utils from 'mock/sap/ui/fl/Utils';
+
 import Fragment from 'mock/sap/ui/core/Fragment';
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -87,7 +88,9 @@ describe('Dialogs', () => {
         } as unknown as ElementOverlay;
 
         it('should return false if there is one overlay with a stable ID and it is reuse component', () => {
-            Utils.checkControlId.mockReturnValue(true);
+            hasStableId.mockImplementation(() => {
+                return true;
+            });
             jest.spyOn(cpeUtils, 'isReuseComponent').mockReturnValue(true);
             const result = isFragmentCommandEnabled([overlay], { major: 1, minor: 118 });
 
@@ -95,7 +98,9 @@ describe('Dialogs', () => {
         });
 
         it('should return false if there is one overlay without a stable ID and it is reuse component', () => {
-            Utils.checkControlId.mockReturnValue(false);
+            hasStableId.mockImplementation(() => {
+                return false;
+            });
             jest.spyOn(cpeUtils, 'isReuseComponent').mockReturnValue(true);
             const result = isFragmentCommandEnabled([overlay], { major: 1, minor: 118 });
 
@@ -103,14 +108,18 @@ describe('Dialogs', () => {
         });
 
         it('should return false if there are multiple overlays even with stable IDs', () => {
-            Utils.checkControlId.mockReturnValue(true);
+            hasStableId.mockImplementation(() => {
+                return true;
+            });
             const result = isFragmentCommandEnabled([overlay, overlay], { major: 1, minor: 118 });
 
             expect(result).toBe(false);
         });
 
         it('should return true if there is one overlay with a stable ID and it is not reuse component', () => {
-            Utils.checkControlId.mockReturnValue(true);
+            hasStableId.mockImplementation(() => {
+                return true;
+            });
             jest.spyOn(cpeUtils, 'isReuseComponent').mockReturnValue(false);
             const result = isFragmentCommandEnabled([overlay], { major: 1, minor: 112 });
 
@@ -134,21 +143,29 @@ describe('Dialogs', () => {
         } as ElementOverlay;
 
         it('should return simple text if the control is with a stable ID', () => {
-            Utils.checkControlId.mockReturnValue(true);
+            hasStableId.mockImplementation(() => {
+                return true;
+            });
 
             const result = getAddFragmentItemText(overlay);
 
             expect(result).toBe('Add: Fragment');
-            expect(Utils.checkControlId).toHaveBeenCalledWith({});
+            expect(hasStableId).toHaveBeenCalledWith({
+                getElement: expect.any(Function)
+            });
         });
 
         it('should return extra text if the control is with a unstable ID', () => {
-            Utils.checkControlId.mockReturnValue(false);
+            hasStableId.mockImplementation(() => {
+                return false;
+            });
 
             const result = getAddFragmentItemText(overlay);
 
             expect(result).toBe('Add: Fragment (Unavailable due to unstable ID of the control or its parent control)');
-            expect(Utils.checkControlId).toHaveBeenCalledWith({});
+            expect(hasStableId).toHaveBeenCalledWith({
+                getElement: expect.any(Function)
+            });
         });
     });
 
