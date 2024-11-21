@@ -9,6 +9,7 @@ import {
 } from './questions/basic';
 import { promptNames } from '../types';
 import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
+import { getConfigurationModePrompt, getCreateAnotherInboundPrompt, getInboundIdsPrompt } from './questions/advanced';
 
 /**
  * Generates a list of prompts for FLP (Fiori Launchpad) configuration.
@@ -23,6 +24,11 @@ export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConf
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {
+        [promptNames.configurationMode]: getConfigurationModePrompt(
+            inboundKeys,
+            promptOptions?.[promptNames.configurationMode]
+        ),
+        [promptNames.inboundId]: getInboundIdsPrompt(inboundKeys, true, promptOptions?.[promptNames.inboundId]),
         [promptNames.semanticObject]: getSemanticObjectPrompt(promptOptions?.[promptNames.semanticObject]),
         [promptNames.action]: getActionPrompt(promptOptions?.[promptNames.action]),
         [promptNames.overwrite]: getOverwritePrompt(
@@ -36,15 +42,21 @@ export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConf
             existingKeyRef,
             silentOverwrite,
             promptOptions?.[promptNames.subTitle]
+        ),
+        [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(
+            promptOptions?.[promptNames.createAnotherInbound]
         )
     };
 
     const questions: FLPConfigQuestion[] = [
+        keyedPrompts[promptNames.configurationMode],
+        keyedPrompts[promptNames.inboundId],
         keyedPrompts[promptNames.semanticObject],
         keyedPrompts[promptNames.action],
         keyedPrompts[promptNames.overwrite],
         keyedPrompts[promptNames.title],
-        keyedPrompts[promptNames.subTitle]
+        keyedPrompts[promptNames.subTitle],
+        keyedPrompts[promptNames.createAnotherInbound]
     ];
 
     return questions;

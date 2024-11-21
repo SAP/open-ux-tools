@@ -1,25 +1,40 @@
 import type { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
+import type { ListQuestionOptions } from 'inquirer';
+
+/**
+ * Enumeration of configuration modes used in the FLP configuration.
+ */
+export enum ConfigurationMode {
+    AddNew = 'Add new inbound',
+    EditExisting = 'Edit existing inbound'
+}
 
 /**
  * Enumeration of prompt names used in the FLP configuration.
  */
 export enum promptNames {
+    configurationMode = 'configurationMode',
+    inboundId = 'inboundId',
     semanticObject = 'semanticObject',
     action = 'action',
     overwrite = 'overwrite',
     title = 'title',
-    subTitle = 'subTitle'
+    subTitle = 'subTitle',
+    createAnotherInbound = 'createAnotherInbound'
 }
 
 /**
  * Interface representing the answers collected from the FLP configuration prompts.
  */
 export interface FLPConfigAnswers {
+    [promptNames.configurationMode]?: ConfigurationMode;
+    [promptNames.inboundId]?: string;
     [promptNames.semanticObject]: string;
     [promptNames.action]: string;
     [promptNames.overwrite]?: boolean;
     [promptNames.title]?: string;
     [promptNames.subTitle]?: string;
+    [promptNames.createAnotherInbound]?: boolean;
     s4Continue?: boolean;
 }
 
@@ -33,10 +48,28 @@ export interface ExistingInboundRef {
 /**
  * The question type specific to FLP configuration prompts.
  */
-export interface FLPConfigQuestion extends YUIQuestion<FLPConfigAnswers> {
+export interface FLPConfigQuestion
+    extends YUIQuestion<FLPConfigAnswers>,
+        Partial<Pick<ListQuestionOptions, 'choices'>> {
     name: promptNames;
     guiOptions?: GuiOptions;
     additionalMessages?: PromptSeverityMessage;
+}
+
+/**
+ * Options for the 'configurationMode' prompt.
+ */
+export interface ConfigurationModePromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+/**
+ * Options for the 'inboundId' prompt.
+ */
+export interface InboundIdPromptOptions {
+    default?: string;
+    hide?: boolean;
 }
 
 /**
@@ -76,6 +109,14 @@ export interface SubTitlePromptOptions {
 }
 
 /**
+ * Options for the 'createAnotherInbound' prompt.
+ */
+export interface CreateAnotherInboundPromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+/**
  * The options which are common for the FLP config inquirer.
  */
 type FLPConfigCommonInquirerOptions = {
@@ -85,11 +126,14 @@ type FLPConfigCommonInquirerOptions = {
 /**
  * The options for the FLP config inquirer & the prompts.
  */
-type flpConfigPromptOptions = Record<promptNames.semanticObject, SemanticObjectPromptOptions> &
+type flpConfigPromptOptions = Record<promptNames.configurationMode, ConfigurationModePromptOptions> &
+    Record<promptNames.inboundId, InboundIdPromptOptions> &
+    Record<promptNames.semanticObject, SemanticObjectPromptOptions> &
     Record<promptNames.action, ActionPromptOptions> &
     Record<promptNames.overwrite, OverwritePromptOptions> &
     Record<promptNames.title, TitlePromptOptions> &
-    Record<promptNames.subTitle, SubTitlePromptOptions>;
+    Record<promptNames.subTitle, SubTitlePromptOptions> &
+    Record<promptNames.createAnotherInbound, CreateAnotherInboundPromptOptions>;
 
 /**
  * The options for the FLP config inquirer & the prompts.

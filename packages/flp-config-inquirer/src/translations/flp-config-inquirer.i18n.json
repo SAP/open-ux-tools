@@ -1,9 +1,15 @@
 {
     "prompts": {
+        "configurationMode": "What FLP configuration would you like to create?",
+        "inboundIds": "Inbound ID",
         "semanticObject": "Semantic Object",
         "action": "Action",
         "title": "Title",
-        "subTitle": "Subtitle"
+        "subTitle": "Subtitle",
+        "createAnotherInbound": "Do you want to add or edit another inbound?"
+    },
+    "tooltips": {
+        "inboundId": "Choose the inbound ID that will be used to set the FLP tile configuration"
     },
     "validators": {
         "inboundConfigKeyExists": "An inbound configuration with the key: '{{inboundKey}}' is already defined.",
