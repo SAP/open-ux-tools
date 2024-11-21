@@ -1,5 +1,24 @@
 # @sap-ux/reload-middleware
 
+## 0.2.8
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+
+## 0.2.6
+
+### Patch Changes
+
+-   f2d3335: Expose `watchManifestChanges` function.
+
 ## 0.2.5
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/create",
     "description": "SAP Fiori tools module to add or remove features",
-    "version": "0.8.76",
+    "version": "0.8.84",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -42,6 +42,7 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/mockserver-config-writer": "workspace:*",
+        "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/preview-middleware": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
@@ -54,12 +55,12 @@
         "prompts": "2.4.2"
     },
     "devDependencies": {
+        "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/store": "workspace:*",
         "@types/diff": "5.0.9",
         "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/prompts": "2.4.4",
-        "@sap-ux/inquirer-common": "workspace:*",
-        "@sap-ux/store": "workspace:*"
+        "@types/prompts": "2.4.4"
     }
 }

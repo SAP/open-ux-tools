@@ -82,6 +82,10 @@ export interface Destination extends Partial<AdditionalDestinationProperties> {
     Host: string;
 }
 
+export interface ListDestinationOpts {
+    stripS4HCApiHosts?: boolean; // strips the `-api` from the S/4 Hana Cloud destination host name
+}
+
 /**
  * Checks whether the provided destination is configured to point to an ABAP system (both cloud and on-premise).
  *

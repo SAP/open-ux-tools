@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.33
+
+### Patch Changes
+
+-   e9438d6: fix: restrict the '"Semantic Date Range" in filter bar' quick-action for certain UI5 versions which are not supported for V2 application.
+
+## 0.11.32
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
+## 0.11.31
+
+### Patch Changes
+
+-   1f7827c: handle higher layer changes
+
+## 0.11.30
+
+### Patch Changes
+
+-   f2d3335: Hide "Semantic Date Range" Quick Action behind feature toggle.
+
 ## 0.11.29
 
 ### Patch Changes
