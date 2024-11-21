@@ -1,6 +1,6 @@
 # Change Log
 
-## 5.3.0 - This version and all version below are not only SAP Internal
+## 5.3.0 - This version and all version below are only SAP Internal
 
 ### Minor Changes
 

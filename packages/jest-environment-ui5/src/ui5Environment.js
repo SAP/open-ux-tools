@@ -13,8 +13,16 @@ let mockData = {};
  */
 function getXHRMockClass(globalWindow, pathMapping, pathMappingFn, shimmedFilePath) {
     return {
+        /**
+         * Returns true if cross-site Access-Control requests should be made using credentials such as cookies or authorization headers; otherwise false.
+         */
         withCredentials: () => {},
         listeners: {},
+        /**
+         * Initializes a request.
+         * @param {object }type The type of request
+         * @param {string} url The URL of the request.
+         */
         open: function (type, url) {
             if (url.startsWith('./')) {
                 this.url = url;
@@ -24,6 +32,10 @@ function getXHRMockClass(globalWindow, pathMapping, pathMappingFn, shimmedFilePa
                 this.url = url;
             }
         },
+        /**
+         * Sends the request.
+         * If the request is asynchronous (which is the default), this method returns as soon as the request is sent.
+         */
         send: function () {
             let fileContent = mockData[this.url];
             if (fileContent) {
@@ -83,6 +95,10 @@ function getXHRMockClass(globalWindow, pathMapping, pathMappingFn, shimmedFilePa
                 this['onload'].apply(this, []);
             }
         },
+        /**
+         * Returns all the response headers, separated by CRLF, as a string, or null if no response has been received.
+         * @returns {{}|{"Content-Type": string}|string} The response headers.
+         */
         getAllResponseHeaders: function () {
             if (this.isXML) {
                 return 'Content-Type: application/xml; Last-Modified: 2019-08-29T00:00:00.000Z;ETag: NotYolow';
@@ -94,13 +110,27 @@ function getXHRMockClass(globalWindow, pathMapping, pathMappingFn, shimmedFilePa
                 return {};
             }
         },
+        /**
+         * Returns the string containing the text of the specified header, or null if either the response has not yet been received or the header doesn't exist in the response.
+         * @param {string} type The type of header to return.
+         * @returns {null|string} The response header.
+         */
         getResponseHeader: function (type) {
             if (type === 'Content-Type' && this.url.endsWith('xml')) {
                 return 'application/xml';
             }
-            return undefined;
+            return null;
         },
+        /**
+         * Sets the value of an HTTP request header. You must call setRequestHeader() after open(), but before send().
+         * Useless in our case.
+         */
         setRequestHeader: () => {},
+        /**
+         * Adds an event listener to the XMLHttpRequest object.
+         * @param {string} type The type of event to listen for.
+         * @param {Function} fn The function to call when the event is fired.
+         */
         addEventListener: function (type, fn) {
             this.listeners[type] = fn;
         },
