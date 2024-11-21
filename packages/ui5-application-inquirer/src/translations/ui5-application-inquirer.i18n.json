@@ -28,9 +28,8 @@
         "appEnableCodeAssistBreadcrumb": "Code Assist",
         "appSkipAnnotationsMessage": "Skip generation of associated annotations.cds file",
         "appSkipAnnotationsBreadcrumb": "Skip Annotations",
-        "appEnableNpmWorkspacesMessage": "Generation of this application can update the CAP project to use NPM workspaces and an associated CDS plugin library (cds-plugin-ui5). Do you want to enable this feature? (Note: this is requirement for generating with TypeScript)",
-        "appEnableNpmWorkspacesBreadcrumb": "Enable NPM Workspaces",
         "appEnableTypeScriptMessage": "Enable TypeScript",
+        "appEnableTypeScriptWarningMessage": "The CAP project will be updated to use NPM workspaces (this is a requirement for generating with TypeScript)",
         "appShowAdvancedOptionsMessage": "Configure advanced options",
         "appShowAdvancedOptionsHint": "Choosing 'No' will apply defaults"
     },
