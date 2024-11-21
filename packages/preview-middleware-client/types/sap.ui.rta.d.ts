@@ -268,6 +268,12 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     }
 }
 
+declare module 'sap/ui/rta/util/hasStableId' {
+    import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+
+    export default function hasStableId(overlay: ElementOverlay): boolean;
+}
+
 declare module 'sap/ui/rta/api/startAdaptation' {
     import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
