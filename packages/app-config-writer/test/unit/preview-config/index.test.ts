@@ -12,8 +12,7 @@ describe('index', () => {
     const logger = new ToolsLogger();
     const errorLogMock = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
 
-    const basePath = join(__dirname, '../../fixtures/variants-config');
-    const deprecatedConfig = join(basePath, 'deprecated-config');
+    const basePath = join(__dirname, '../../fixtures/preview-config');
 
     let fs: Editor;
 
@@ -27,12 +26,18 @@ describe('index', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         fs = create(createStorage());
+        fs.write(
+            join(basePath, 'package.json'),
+            JSON.stringify({
+                devDependencies: { '@ui5/cli': '3.0.0', '@sap-ux/ui5-middleware-fe-mockserver': '6.6.6' }
+            })
+        );
     });
     describe('convertToVirtualPreview', () => {
         test('convert project to virtual preview', async () => {
             getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
 
-            await convertToVirtualPreview(deprecatedConfig, logger, fs);
+            await convertToVirtualPreview(basePath, logger, fs);
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
             expect(updatePreviewMiddlewareConfigsSpy).toHaveBeenCalled();
@@ -41,13 +46,14 @@ describe('index', () => {
             expect(updateVariantsCreationScriptSpy).toHaveBeenCalled();
         });
 
-        test('convert project to virtual preview without fs instance', async () => {
-            const fs = await convertToVirtualPreview(deprecatedConfig, logger);
-            expect(fs).toBeDefined();
-        });
-
         test('do not convert project to virtual preview - missing prerequisites', async () => {
-            await expect(convertToVirtualPreview(basePath, logger, fs)).rejects.toThrowError(
+            const missingPrerequisitesPath = join(basePath, 'missingPrerequisites');
+            fs.write(
+                join(missingPrerequisitesPath, 'package.json'),
+                JSON.stringify({ devDependencies: { '@ui5/cli': '2.0.0' } })
+            );
+
+            await expect(convertToVirtualPreview(missingPrerequisitesPath, logger, fs)).rejects.toThrowError(
                 `Prerequisites not met. See above log messages for details.`
             );
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
@@ -61,7 +67,7 @@ describe('index', () => {
         test('do not convert project to virtual preview - missing approval', async () => {
             getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(false);
 
-            await convertToVirtualPreview(deprecatedConfig, logger, fs);
+            await convertToVirtualPreview(basePath, logger, fs);
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
             expect(errorLogMock).toHaveBeenCalledWith('Approval not given. Conversion aborted.');
