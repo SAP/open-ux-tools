@@ -256,6 +256,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         } & Component;
         stop: (bSkipSave, bSkipRestart) => Promise<void>;
         attachStop: (handler: (event: Event) => void) => void;
+        attachStart: (handler: (event: Event) => void) => void;
         getMode: () => RtaMode;
         setMode: (mode: RtaMode) => void;
         canUndo: () => boolean;
