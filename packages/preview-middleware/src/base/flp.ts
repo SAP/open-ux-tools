@@ -273,36 +273,59 @@ export class FlpSandbox {
         this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox.html
-        this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {
+        this.router.get(this.config.path, (async (req: Request, res: Response, next: NextFunction) => {
             // inform the user if a html file exists on the filesystem
             const file = await this.project.byPath(this.config.path);
             if (file) {
                 this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
                 next();
             } else {
-                let template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-                //----------------------- fetch UI5 version and serve respective template -----------------------//
-                try {
-                    const versionUrl = `http://${_req.headers.host}/${this.templateConfig.basePath}/resources/sap-ui-version.json`;
-                    const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
-                        | { libraries: { name: string; version: string }[] }
-                        | undefined;
-                    const version: string =
-                        responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version ?? '1.121.0';
-                    const [major] = version.split('.');
-                    const majorUi5Version = parseInt(major, 10);
-                    if (majorUi5Version >= 2) {
-                        template = readFileSync(join(__dirname, '../../templates/flp/sandbox2.html'), 'utf-8');
-                    }
-                } catch (error) {
-                    this.logger.debug(error);
-                    this.logger.info('Unable to fetch UI5 version. Using sandbox template for UI5 1.x.');
-                }
-                //-----------------------------------------------------------------------------------------------//
-                const html = render(template, this.templateConfig);
+                const html = render(
+                    await this.getSandboxTemplate(req.headers.host, this.templateConfig.basePath),
+                    this.templateConfig
+                );
                 this.sendResponse(res, 'text/html', 200, html);
             }
         }) as RequestHandler);
+    }
+
+    /**
+     * Get the sandbox template file based on the UI5 version.
+     *
+     * @param host - the host that should be used to request the UI5 version
+     * @param basePath - the base path of the request that should be added to the host
+     * @returns the template for the sandbox HTML file
+     * @private
+     */
+    private async getSandboxTemplate(host: Request['headers']['host'], basePath: string): Promise<string> {
+        // Read the sandbox template file based on the given UI5 version.
+        const getTemplate = (ui5MajorVersion: number): string => {
+            this.logger.info(`Using sandbox template for UI5 major version ${ui5MajorVersion}.`);
+            return readFileSync(
+                join(__dirname, `../../templates/flp/sandbox${ui5MajorVersion === 1 ? '' : ui5MajorVersion}.html`),
+                'utf-8'
+            );
+        };
+
+        if (!host) {
+            this.logger.error('Unable to fetch UI5 version: No host found in request header.');
+        } else {
+            try {
+                const versionUrl = `http://${host}/${basePath}/resources/sap-ui-version.json`;
+                const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
+                    | { libraries: { name: string; version: string }[] }
+                    | undefined;
+                const version: string =
+                    responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version ?? '1.121.0';
+                const majorUi5Version = parseInt(version.split('.')[0], 10);
+                if (majorUi5Version >= 2) {
+                    return getTemplate(2);
+                }
+            } catch (error) {
+                this.logger.debug(`Unable to fetch UI5 version: ${error}`);
+            }
+        }
+        return getTemplate(1);
     }
 
     /**
