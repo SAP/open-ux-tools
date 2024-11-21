@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.8.0
+
+### Minor Changes
+
+-   d11283f: Remove the enableNpmWorkspaces prompt (and all references)
+
 ## 0.7.16
 
 ### Patch Changes
