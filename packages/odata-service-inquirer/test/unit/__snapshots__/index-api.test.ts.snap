@@ -60,6 +60,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
         },
       },
     ],
+    "default": -1,
     "hint": "Select a system configuration",
     "message": "System",
     "name": "systemSelection",
