@@ -254,7 +254,7 @@ export async function createSystemChoices(
  */
 export function findDefaultSystemSelectionIndex(
     systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[],
-    defaultChoice: string | CfAbapEnvServiceChoice | NewSystemChoice | undefined
+    defaultChoice: string | undefined
 ): number {
     if (!defaultChoice) {
         return -1;

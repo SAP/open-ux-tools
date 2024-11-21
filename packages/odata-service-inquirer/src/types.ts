@@ -5,10 +5,6 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
-import type {
-    CfAbapEnvServiceChoice,
-    NewSystemChoice
-} from './prompts/datasources/sap-system/system-selection/prompt-helpers';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -265,7 +261,7 @@ export type SystemSelectionPromptOptions = {
      * or to select the Cloud Foundry Abap environments service discovery choice in BAS respectively.
      *
      */
-    defaultChoice?: string | NewSystemChoice | CfAbapEnvServiceChoice;
+    defaultChoice?: string;
 };
 
 export type MetadataPromptOptions = {
