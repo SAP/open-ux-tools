@@ -10,18 +10,6 @@ const renameMessage = (filename: string): string =>
         -5
     )}_old.html'. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`;
 
-const checkFileHistory = (
-    fs: Editor,
-    basePath: string,
-    absolutePath: string,
-    condition: (file: any) => boolean
-): boolean => {
-    return (
-        Object.keys(fs.dump(basePath, (file: any) => file.history.includes(absolutePath) && condition(file))).length ===
-        0
-    );
-};
-
 /**
  * Renames the sandbox file which is used in a given script.
  *
@@ -33,15 +21,21 @@ const checkFileHistory = (
  * @param logger logger to report info to the user
  */
 export async function renameSandbox(fs: Editor, basePath: string, script: string, logger?: ToolsLogger): Promise<void> {
+    const checkFileHistory = (basePath: string, absolutePath: string, condition: (file: any) => boolean): boolean => {
+        return (
+            Object.keys(fs.dump(basePath, (file: any) => file.history.includes(absolutePath) && condition(file)))
+                .length === 0
+        );
+    };
     const { path: relativePath } = extractUrlDetails(script);
     if (relativePath) {
         const absolutePath = join(await getWebappPath(basePath), relativePath);
         if (fs.exists(absolutePath)) {
             fs.move(absolutePath, absolutePath.replace('.html', '_old.html'));
             logger?.info(renameMessage(relativePath));
-        } else if (checkFileHistory(fs, basePath, absolutePath, (file) => file.state !== 'deleted')) {
+        } else if (checkFileHistory(basePath, absolutePath, (file) => file.state !== 'deleted')) {
             logger?.debug(`File '${relativePath}' has already been renamed. Skipping renaming.`);
-        } else if (checkFileHistory(fs, basePath, absolutePath, (file) => file.contents !== null)) {
+        } else if (checkFileHistory(basePath, absolutePath, (file) => file.contents !== null)) {
             logger?.warn(`File '${relativePath}' not found. Skipping renaming.`);
         }
     }
