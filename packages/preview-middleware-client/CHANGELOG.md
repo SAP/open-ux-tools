@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.34
+
+### Patch Changes
+
+-   326dbe5: Enable adding fragment to elements cloned from a template
+
 ## 0.11.33
 
 ### Patch Changes
