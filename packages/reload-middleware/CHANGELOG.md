@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.2.8
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
 ## 0.2.7
 
 ### Patch Changes
