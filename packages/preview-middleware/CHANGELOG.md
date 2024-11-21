@@ -1,5 +1,58 @@
 # @sap-ux/preview-middleware
 
+## 0.16.127
+
+### Patch Changes
+
+-   c39325c: Fix for Config Quick action state not reflecting properties in properties panel
+
+## 0.16.126
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.82
+
+## 0.16.125
+
+### Patch Changes
+
+-   326dbe5: Enable adding fragment to elements cloned from a template
+
+## 0.16.124
+
+### Patch Changes
+
+-   e9438d6: fix: restrict the '"Semantic Date Range" in filter bar' quick-action for certain UI5 versions which are not supported for V2 application.
+
+## 0.16.123
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+-   Updated dependencies [2a72ad2]
+    -   @sap-ux/adp-tooling@0.12.81
+
+## 0.16.122
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.80
+
+## 0.16.121
+
+### Patch Changes
+
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/adp-tooling@0.12.79
+
+## 0.16.120
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.78
+-   @sap-ux/project-access@1.28.7
+
 ## 0.16.119
 
 ### Patch Changes

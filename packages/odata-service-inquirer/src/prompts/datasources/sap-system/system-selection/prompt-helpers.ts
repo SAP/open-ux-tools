@@ -132,7 +132,7 @@ export function getBackendSystemDisplayName(system: BackendSystem): string {
     if (system.authenticationType === 'reentranceTicket') {
         systemTypeName = ` (${t('texts.systemTypeS4HC')})`;
     }
-    if (system.authenticationType === 'oauth2') {
+    if (system.serviceKeys) {
         systemTypeName = ` (${t('texts.systemTypeBTP')})`;
     }
     return `${system.name}${systemTypeName}${userDisplayName}`;
@@ -190,7 +190,7 @@ export async function createSystemChoices(
 
     // If this is BAS, return destinations, otherwise return stored backend systems
     if (isAppStudio()) {
-        const destinations = await listDestinations();
+        const destinations = await listDestinations({ stripS4HCApiHosts: true });
         systemChoices = Object.values(destinations)
             .filter((destination) => {
                 return matchesFilters(destination, destinationFilters);

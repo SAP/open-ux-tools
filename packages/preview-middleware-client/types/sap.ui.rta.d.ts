@@ -256,6 +256,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         } & Component;
         stop: (bSkipSave, bSkipRestart) => Promise<void>;
         attachStop: (handler: (event: Event) => void) => void;
+        attachStart: (handler: (event: Event) => void) => void;
         getMode: () => RtaMode;
         setMode: (mode: RtaMode) => void;
         canUndo: () => boolean;
@@ -266,6 +267,12 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         save?: () => Promise<void>;
         _serializeToLrep: () => Promise<void>;
     }
+}
+
+declare module 'sap/ui/rta/util/hasStableId' {
+    import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+
+    export default function hasStableId(overlay: ElementOverlay): boolean;
 }
 
 declare module 'sap/ui/rta/api/startAdaptation' {

@@ -1,5 +1,17 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.4.36
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
+## 0.4.35
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.7
+
 ## 0.4.34
 
 ### Patch Changes
