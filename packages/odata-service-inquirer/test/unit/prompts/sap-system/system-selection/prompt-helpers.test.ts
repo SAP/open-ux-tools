@@ -60,11 +60,11 @@ describe('Test system selection prompt helpers', () => {
 
         expect(
             getBackendSystemDisplayName({
-                name: 'systemA',
-                userDisplayName: 'userDisplayName1',
-                authenticationType: 'oauth2' as AuthenticationType
+                name: 'systemB',
+                userDisplayName: 'userDisplayName2',
+                serviceKeys: { url: 'Im a service key' }
             } as BackendSystem)
-        ).toEqual('systemA (BTP) [userDisplayName1]');
+        ).toEqual('systemB (BTP) [userDisplayName2]');
     });
 
     test('Should create system selection choices', async () => {

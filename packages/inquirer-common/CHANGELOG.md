@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.5.4
+
+### Patch Changes
+
+-   74dc5fe: Fix CAP loading errors messages
+
 ## 0.5.3
 
 ### Patch Changes

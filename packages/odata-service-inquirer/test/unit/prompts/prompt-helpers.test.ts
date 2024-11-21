@@ -27,11 +27,11 @@ describe('prompt-helpers', () => {
         expect(getDatasourceTypeChoices()).toMatchInlineSnapshot(`
             [
               {
-                "name": "Connect to a SAP System",
+                "name": "Connect to a System",
                 "value": "sapSystem",
               },
               {
-                "name": "Connect to an OData Service Url",
+                "name": "Connect to an OData Service",
                 "value": "odataServiceUrl",
               },
               {
@@ -39,7 +39,7 @@ describe('prompt-helpers', () => {
                 "value": "capProject",
               },
               {
-                "name": "Upload a Metadata File",
+                "name": "Upload a Metadata Document",
                 "value": "metadataFile",
               },
             ]
@@ -53,11 +53,11 @@ describe('prompt-helpers', () => {
                 "value": "none",
               },
               {
-                "name": "Connect to a SAP System",
+                "name": "Connect to a System",
                 "value": "sapSystem",
               },
               {
-                "name": "Connect to an OData Service Url",
+                "name": "Connect to an OData Service",
                 "value": "odataServiceUrl",
               },
               {
@@ -65,7 +65,7 @@ describe('prompt-helpers', () => {
                 "value": "capProject",
               },
               {
-                "name": "Upload a Metadata File",
+                "name": "Upload a Metadata Document",
                 "value": "metadataFile",
               },
             ]

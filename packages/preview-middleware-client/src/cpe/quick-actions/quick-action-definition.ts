@@ -13,6 +13,7 @@ import type {
 
 import type { TextBundle } from '../../i18n';
 import type { ControlTreeIndex } from '../types';
+import { ChangeService } from '../changes';
 
 export interface QuickActionActivationContext {
     controlIndex: ControlTreeIndex;
@@ -38,6 +39,7 @@ export interface QuickActionContext {
     rta: RuntimeAuthoring;
     flexSettings: FlexSettings;
     manifest: Manifest;
+    changeService: ChangeService;
 }
 
 interface QuickActionDefinitionBase {

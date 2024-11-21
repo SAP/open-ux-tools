@@ -77,7 +77,9 @@ describe('quick action service', () => {
     test('initialize simple action definition', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
         const registry = new MockRegistry();
-        const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry]);
+        const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
+            onStackChange: jest.fn()
+        } as any);
         await service.init(sendActionMock, subscribeMock);
 
         await service.reloadQuickActions({});
@@ -102,5 +104,35 @@ describe('quick action service', () => {
         expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
             id: 'mock command'
         });
+    });
+
+    test('initialize simple action and react onStackChange', async () => {
+        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+        const registry = new MockRegistry();
+        const onStackChangeMock = {
+            onStackChange: jest.fn()
+        } as any;
+        const outlineService = new OutlineService(rtaMock, mockChangeService);
+        const onOutlineChangeCbSpy = jest.spyOn(outlineService, 'onOutlineChange');
+        const service = new QuickActionService(rtaMock, outlineService, [registry], onStackChangeMock);
+        await service.init(sendActionMock, subscribeMock);
+        const reloadQuickActions = jest.spyOn(service, 'reloadQuickActions');
+        const controlIndex = {
+            filterBar: [
+                {
+                    controlId: 'filterBar-1v4',
+                    children: [],
+                    controlType: 'control.FilterBar',
+                    editable: true,
+                    name: 'test',
+                    visible: true
+                }
+            ]
+        };
+        onOutlineChangeCbSpy.mock.calls[0][0]({
+            detail: { controlIndex }
+        } as any);
+        onStackChangeMock.onStackChange.mock.calls[0][0]();
+        expect(reloadQuickActions).toHaveBeenNthCalledWith(2, controlIndex);
     });
 });

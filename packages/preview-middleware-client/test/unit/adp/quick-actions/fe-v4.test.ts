@@ -51,7 +51,7 @@ import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
 
-describe('FE V2 quick actions', () => {
+describe('FE V4 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
 
@@ -173,9 +173,12 @@ describe('FE V2 quick actions', () => {
                     }
                 });
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -226,8 +229,11 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('clear filter bar button', () => {
-            test('initialize and execute action', async () => {
-                const appComponent = new AppComponentMock();
+            let service: QuickActionService;
+            let rtaMock: RuntimeAuthoring;
+            let appComponent: AppComponentMock;
+            beforeAll(() => {
+                appComponent = new AppComponentMock();
                 const component = new TemplateComponentMock();
                 jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
                 jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
@@ -274,13 +280,20 @@ describe('FE V2 quick actions', () => {
                     return { type, value, settings };
                 });
 
-                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
-                await service.init(sendActionMock, subscribeMock);
+                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
+                    onStackChange: jest.fn(),
+                    getConfigurationPropertyValue: jest
+                        .fn()
+                        .mockReturnValueOnce(false)
+                        .mockReturnValueOnce(undefined)
+                        .mockReturnValue(undefined)
+                } as any);
+            });
 
+            test('initialize and execute action', async () => {
+                await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
                     'sap.fe.macros.controls.FilterBar': [
                         {
@@ -331,6 +344,39 @@ describe('FE V2 quick actions', () => {
                         }
                     }
                 });
+            });
+
+            test('initialize and execute action - no value in configuration cache', async () => {
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.fe.macros.controls.FilterBar': [
+                        {
+                            controlId: 'FilterBar'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'kind': 'simple',
+                                    id: 'listReport0-enable-clear-filter-bar',
+                                    title: 'Enable "Clear" Button in Filter Bar',
+                                    enabled: true
+                                }
+                            ]
+                        }
+                    ])
+                );
             });
         });
 
@@ -408,9 +454,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -521,9 +570,12 @@ describe('FE V2 quick actions', () => {
                     }
                 });
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -678,9 +730,12 @@ describe('FE V2 quick actions', () => {
                     }
                 });
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -799,9 +854,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -1055,9 +1113,11 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('disable/enable "Semantic Date Range" in Filter Bar', () => {
-            test('not available by default', async () => {
-                jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(false);
-                const appComponent = new AppComponentMock();
+            let service: QuickActionService;
+            let rtaMock: RuntimeAuthoring;
+            let appComponent: AppComponentMock;
+            beforeAll(async () => {
+                appComponent = new AppComponentMock();
                 const component = new TemplateComponentMock();
                 jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
                 jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
@@ -1068,10 +1128,11 @@ describe('FE V2 quick actions', () => {
                         return {
                             getDomRef: () => ({}),
                             getParent: () => ({}),
+                            getShowClearButton: jest.fn().mockReturnValue(false),
                             data: jest.fn().mockImplementation((key) => {
                                 // Mock the return value for 'useSemanticDateRange'
                                 if (key === 'useSemanticDateRange') {
-                                    return true;
+                                    return false;
                                 }
                                 return undefined;
                             })
@@ -1110,13 +1171,22 @@ describe('FE V2 quick actions', () => {
                     return { type, value, settings };
                 });
 
-                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
+                    onStackChange: jest.fn(),
+                    getConfigurationPropertyValue: jest
+                        .fn()
+                        .mockReturnValueOnce(undefined)
+                        .mockReturnValueOnce(undefined)
+                        .mockReturnValueOnce(true)
+                        .mockReturnValueOnce(undefined)
+                        .mockReturnValue(undefined)
+                } as any);
+            });
+            test('not available by default', async () => {
+                jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(false);
                 await service.init(sendActionMock, subscribeMock);
-
                 await service.reloadQuickActions({
                     'sap.fe.macros.controls.FilterBar': [
                         {
@@ -1129,78 +1199,25 @@ describe('FE V2 quick actions', () => {
                         } as any
                     ]
                 });
-
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
                             title: 'LIST REPORT',
-                            actions: []
+                            actions: [
+                                {
+                                    'enabled': true,
+                                    'id': 'listReport0-enable-clear-filter-bar',
+                                    'kind': 'simple',
+                                    'title': 'Enable "Clear" Button in Filter Bar'
+                                }
+                            ]
                         }
                     ])
                 );
             });
 
             test('initialize and execute action', async () => {
-                const appComponent = new AppComponentMock();
-                const component = new TemplateComponentMock();
-                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
-                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
-                    return component as unknown as UIComponent;
-                });
-                sapCoreMock.byId.mockImplementation((id) => {
-                    if (id == 'FilterBar') {
-                        return {
-                            getDomRef: () => ({}),
-                            getParent: () => ({}),
-                            data: jest.fn().mockImplementation((key) => {
-                                // Mock the return value for 'useSemanticDateRange'
-                                if (key === 'useSemanticDateRange') {
-                                    return true;
-                                }
-                                return undefined;
-                            })
-                        };
-                    }
-                    if (id == 'NavContainer') {
-                        const container = new NavContainer();
-                        const pageView = new XMLView();
-                        pageView.getDomRef.mockImplementation(() => {
-                            return {
-                                contains: () => true
-                            };
-                        });
-                        pageView.getId.mockReturnValue('test.app::ProductsList');
-                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
-                        const componentContainer = new ComponentContainer();
-                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
-                            return 'component-id';
-                        });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-                            if (id === 'component-id') {
-                                return component;
-                            }
-                        });
-                        container.getCurrentPage.mockImplementation(() => {
-                            return componentContainer;
-                        });
-                        component.getRootControl.mockImplementation(() => {
-                            return pageView;
-                        });
-                        return container;
-                    }
-                });
-
-                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
-                    return { type, value, settings };
-                });
-
-                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
                 await service.init(sendActionMock, subscribeMock);
-
                 await service.reloadQuickActions({
                     'sap.fe.macros.controls.FilterBar': [
                         {
@@ -1220,10 +1237,16 @@ describe('FE V2 quick actions', () => {
                             title: 'LIST REPORT',
                             actions: [
                                 {
+                                    'enabled': true,
+                                    'id': 'listReport0-enable-clear-filter-bar',
                                     'kind': 'simple',
+                                    'title': 'Enable "Clear" Button in Filter Bar'
+                                },
+                                {
+                                    enabled: true,
+                                    kind: 'simple',
                                     id: 'listReport0-enable-semantic-date-range',
-                                    title: 'Disable "Semantic Date Range" Button in Filter Bar',
-                                    enabled: true
+                                    title: 'Disable "Semantic Date Range" Button in Filter Bar'
                                 }
                             ]
                         }
@@ -1251,6 +1274,43 @@ describe('FE V2 quick actions', () => {
                         }
                     }
                 });
+            });
+            test('initialize and execute action  - no value in configuration cache', async () => {
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.fe.macros.controls.FilterBar': [
+                        {
+                            controlId: 'FilterBar'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'enabled': true,
+                                    'id': 'listReport0-enable-clear-filter-bar',
+                                    'kind': 'simple',
+                                    'title': 'Enable "Clear" Button in Filter Bar'
+                                },
+                                {
+                                    enabled: true,
+                                    kind: 'simple',
+                                    id: 'listReport0-enable-semantic-date-range',
+                                    title: 'Enable "Semantic Date Range" for Filter Bar'
+                                }
+                            ]
+                        }
+                    ])
+                );
             });
         });
 
@@ -1333,9 +1393,12 @@ describe('FE V2 quick actions', () => {
 
                     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                     const registry = new FEV4QuickActionRegistry();
-                    const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                        registry
-                    ]);
+                    const service = new QuickActionService(
+                        rtaMock,
+                        new OutlineService(rtaMock, mockChangeService),
+                        [registry],
+                        { onStackChange: jest.fn() } as any
+                    );
                     await service.init(sendActionMock, subscribeMock);
 
                     await service.reloadQuickActions({
@@ -1519,7 +1582,10 @@ describe('FE V2 quick actions', () => {
                         const service = new QuickActionService(
                             rtaMock,
                             new OutlineService(rtaMock, mockChangeService),
-                            [registry]
+                            [registry],
+                            {
+                                onStackChange: jest.fn()
+                            } as any
                         );
 
                         await service.init(sendActionMock, subscribeMock);
