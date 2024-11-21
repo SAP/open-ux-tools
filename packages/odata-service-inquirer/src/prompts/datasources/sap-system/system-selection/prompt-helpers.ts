@@ -132,7 +132,7 @@ export function getBackendSystemDisplayName(system: BackendSystem): string {
     if (system.authenticationType === 'reentranceTicket') {
         systemTypeName = ` (${t('texts.systemTypeS4HC')})`;
     }
-    if (system.authenticationType === 'oauth2') {
+    if (system.serviceKeys) {
         systemTypeName = ` (${t('texts.systemTypeBTP')})`;
     }
     return `${system.name}${systemTypeName}${userDisplayName}`;
