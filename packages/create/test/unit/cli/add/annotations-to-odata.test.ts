@@ -1,5 +1,4 @@
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { Store } from 'mem-fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Editor, create } from 'mem-fs-editor';
 import { Command } from 'commander';

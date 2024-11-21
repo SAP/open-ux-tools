@@ -42,7 +42,7 @@ export function writeAnnotationChange(
     try {
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
-        const changeFilePath = path.join(changesFolderPath, DirName.Manifest, changeFileName);
+        const changeFilePath = path.join(changesFolderPath, changeFileName);
         const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
 
         writeChangeToFile(changeFilePath, change, fs);
