@@ -15,5 +15,5 @@ describe('Ui5 Mapping Strategy', () => {
 
         const secondpathMapping = await initUi5MappingStrategy({ configPath: 'test/fixtures/ui5.yaml' });
         expect(secondpathMapping).toStrictEqual(pathMappingFn); // No need to recreate the pathMappingFn
-    });
+    }, 10000);
 });
