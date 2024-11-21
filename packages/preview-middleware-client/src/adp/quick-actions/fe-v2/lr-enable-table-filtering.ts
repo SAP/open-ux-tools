@@ -8,7 +8,7 @@ import {
     TableQuickActionDefinitionBase,
     TREE_TABLE_TYPE
 } from '../table-quick-action-base';
-import { checkSupportedVersionForTableAction, executeToggleAction } from './utils';
+import { isUnsupportedUI5Version, executeToggleAction } from './utils';
 import { translateText } from '../../quick-actions/utils';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
@@ -29,7 +29,7 @@ export class EnableTableFilteringQuickAction
     isTableFilteringInPageVariantEnabled = false;
     lsTableMap: Record<string, number> = {};
     async initialize(): Promise<void> {
-        const isUI5VersionNotSupported = await checkSupportedVersionForTableAction();
+        const isUI5VersionNotSupported = await isUnsupportedUI5Version();
         if (isUI5VersionNotSupported) {
             return;
         }

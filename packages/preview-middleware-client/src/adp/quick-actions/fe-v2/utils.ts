@@ -38,12 +38,14 @@ export async function executeToggleAction(
     );
     return [command];
 }
+
 /**
- * Check the specific version for following quick actions
- *  -- semantic date range for filter bar
- *  -- enable table filtering
- * **/
-export async function checkSupportedVersionForTableAction(): Promise<boolean> {
+ * Determines whether the current UI5 version lacks support for specific quick actions:
+ *  - Semantic date range support in Filter Bar.
+ *  - Enable Table Filtering.
+ * 
+ */
+export async function isUnsupportedUI5Version(): Promise<boolean> {
     const version = await getUi5Version();
     return isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 }) &&
         !(
