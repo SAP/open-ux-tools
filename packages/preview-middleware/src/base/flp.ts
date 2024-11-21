@@ -281,6 +281,7 @@ export class FlpSandbox {
                 next();
             } else {
                 const ui5Version = await this.getUi5Version(req.headers.host, this.templateConfig.basePath);
+                this.logger.info(`Using sandbox template for UI5 major version ${ui5Version.major}.`);
                 const html = render(this.getSandboxTemplate(ui5Version.major), this.templateConfig);
                 this.sendResponse(res, 'text/html', 200, html);
             }
@@ -327,7 +328,6 @@ export class FlpSandbox {
      * @returns the template for the sandbox HTML file
      */
     private getSandboxTemplate = (ui5MajorVersion: number): string => {
-        this.logger.info(`Using sandbox template for UI5 major version ${ui5MajorVersion}.`);
         return readFileSync(
             join(__dirname, `../../templates/flp/sandbox${ui5MajorVersion === 1 ? '' : ui5MajorVersion}.html`),
             'utf-8'
