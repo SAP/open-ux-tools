@@ -1,542 +1,70 @@
-import { join } from 'path';
-import {
-    renameDefaultSandboxes,
-    deleteNoLongerUsedFiles,
-    checkPrerequisites,
-    updatePreviewMiddlewareConfigs,
-    updatePreviewMiddlewareConfig,
-    ensurePreviewMiddlewareDependency,
-    updateVariantsCreationScript
-} from '../../../src/preview-config';
-import { ToolsLogger } from '@sap-ux/logger';
-import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import type { PreviewConfigOptions } from '../../../src/types';
-import type { CustomMiddleware } from '@sap-ux/ui5-config';
-import * as projectAccess from '@sap-ux/project-access';
-import * as variantsConfig from '../../../src/variants-config/generateVariantsConfig';
+import { create, type Editor } from 'mem-fs-editor';
+import { convertToVirtualPreview } from '../../../src/preview-config';
+import { join } from 'path';
+import { ToolsLogger } from '@sap-ux/logger';
+import * as packageJson from '../../../src/preview-config/package-json';
+import * as previewFiles from '../../../src/preview-config/preview-files';
+import * as prerequisites from '../../../src/preview-config/prerequisites';
+import * as ui5Yaml from '../../../src/preview-config/ui5-yaml';
 
-describe('check prerequisites', () => {
+describe('index', () => {
     const logger = new ToolsLogger();
     const errorLogMock = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
-    const basePath = join(__dirname, '../../fixtures/preview-config');
-    const fs = create(createStorage());
 
-    beforeEach(() => {
-        jest.clearAllMocks();
-        fs.delete(join(basePath, 'various-configs', 'package.json'));
-    });
+    const basePath = join(__dirname, '../../fixtures/variants-config');
+    const deprecatedConfig = join(basePath, 'deprecated-config');
 
-    test('check prerequisites w/o package.json', async () => {
-        await expect(async () => checkPrerequisites(basePath, fs, logger)).rejects.toThrow();
-    });
-
-    test('check prerequisites with bestpractice build dependency', async () => {
-        fs.write(
-            join(basePath, 'package.json'),
-            JSON.stringify({ devDependencies: { '@sap/grunt-sapui5-bestpractice-build': '1.0.0' } })
-        );
-
-        expect(await checkPrerequisites(basePath, fs, logger)).toBeFalsy();
-        expect(errorLogMock).toHaveBeenCalledWith(
-            "A conversion from '@sap/grunt-sapui5-bestpractice-build' is not supported. Please migrate to UI5 CLI version 3.0.0 or higher first. See https://sap.github.io/ui5-tooling/v3/updates/migrate-v3/ for more information."
-        );
-    });
-
-    test('check prerequisites with UI5 cli 2.0 dependency', async () => {
-        fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '2.0.0' } }));
-
-        expect(await checkPrerequisites(basePath, fs, logger)).toBeFalsy();
-        expect(errorLogMock).toHaveBeenCalledWith(
-            'UI5 CLI version 3.0.0 or higher is required to convert the preview to virtual files. See https://sap.github.io/ui5-tooling/v3/updates/migrate-v3/ for more information.'
-        );
-    });
-
-    test('check prerequisites w/o mockserver dependency', async () => {
-        fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '3.0.0' } }));
-
-        expect(await checkPrerequisites(basePath, fs, logger)).toBeFalsy();
-        expect(errorLogMock).toHaveBeenCalledWith(
-            "A conversion from 'sap/ui/core/util/MockServer' is not supported. Please migrate to '@sap-ux/ui5-middleware-fe-mockserver' first (details see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver)."
-        );
-    });
-
-    test('check prerequisites w/o mockserver dependency but with cds-plugin-ui5 dependency', async () => {
-        fs.write(
-            join(basePath, 'package.json'),
-            JSON.stringify({ devDependencies: { '@ui5/cli': '3.0.0', 'cds-plugin-ui5': '6.6.6' } })
-        );
-
-        expect(await checkPrerequisites(basePath, fs, logger)).toBeTruthy();
-    });
-
-    test('check prerequisites fulfilled', async () => {
-        fs.write(
-            join(basePath, 'package.json'),
-            JSON.stringify({
-                devDependencies: { '@ui5/cli': '3.0.0', '@sap-ux/ui5-middleware-fe-mockserver': '6.6.6' }
-            })
-        );
-
-        expect(await checkPrerequisites(basePath, fs, logger)).toBeTruthy();
-    });
-});
-
-describe('misc', () => {
-    const logger = new ToolsLogger();
-    const infoLogMock = jest.spyOn(ToolsLogger.prototype, 'info').mockImplementation(() => {});
-    const basePath = join(__dirname, '../../fixtures/preview-config');
     let fs: Editor;
+
+    const updateVariantsCreationScriptSpy = jest.spyOn(packageJson, 'updateVariantsCreationScript');
+    const updatePreviewMiddlewareConfigsSpy = jest.spyOn(ui5Yaml, 'updatePreviewMiddlewareConfigs');
+    const renameDefaultSandboxesSpy = jest.spyOn(previewFiles, 'renameDefaultSandboxes');
+    const checkPrerequisitesSpy = jest.spyOn(prerequisites, 'checkPrerequisites');
+    const getExplicitApprovalToAdjustFilesSpy = jest.spyOn(prerequisites, 'getExplicitApprovalToAdjustFiles');
+    const deleteNoLongerUsedFilesSpy = jest.spyOn(previewFiles, 'deleteNoLongerUsedFiles');
 
     beforeEach(() => {
         jest.clearAllMocks();
         fs = create(createStorage());
     });
+    describe('convertToVirtualPreview', () => {
+        test('convert project to virtual preview', async () => {
+            getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
 
-    test('rename default Sandboxes', async () => {
-        fs.write(join(basePath, 'webapp', 'test', 'flpSandbox.html'), 'dummy content flpSandbox');
-        fs.write(join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html'), 'dummy content flpSandboxMockserver');
-        await renameDefaultSandboxes(fs, basePath, logger);
-        expect(() => fs.read(join(basePath, 'webapp', 'test', 'flpSandbox.html'))).toThrowError(
-            `${join(basePath, 'webapp', 'test', 'flpSandbox.html')} doesn\'t exist`
-        );
-        expect(fs.read(join(basePath, 'webapp', 'test', 'flpSandbox_old.html'))).toMatchInlineSnapshot(
-            '"dummy content flpSandbox"'
-        );
-        expect(() => fs.read(join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html'))).toThrowError(
-            `${join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html')} doesn\'t exist`
-        );
-        expect(fs.read(join(basePath, 'webapp', 'test', 'flpSandboxMockserver_old.html'))).toMatchInlineSnapshot(
-            '"dummy content flpSandboxMockserver"'
-        );
-        let path = join('test', 'flpSandbox.html');
-        expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed ${path} to ${path.slice(
-                0,
-                -5
-            )}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
-        );
-        path = join('test', 'flpSandboxMockserver.html');
-        expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed ${path} to ${path.slice(
-                0,
-                -5
-            )}_old.html. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
-        );
-    });
-
-    test('delete no longer used files', async () => {
-        fs.write(join(basePath, 'webapp', 'test', 'locate-reuse-libs.js'), 'dummy content');
-        fs.write(join(basePath, 'webapp', 'test', 'initFlpSandbox.js'), 'dummy content');
-        await deleteNoLongerUsedFiles(fs, basePath, logger);
-        expect(infoLogMock).toHaveBeenCalledWith(
-            `Deleted ${join('webapp', 'test', 'locate-reuse-libs.js')}. This file is no longer needed for the preview.`
-        );
-        expect(() => fs.read(join(basePath, 'webapp', 'test', 'locate-reuse-libs.js'))).toThrowError(
-            `${join(basePath, 'webapp', 'test', 'locate-reuse-libs.js')} doesn\'t exist`
-        );
-        expect(infoLogMock).toHaveBeenCalledWith(
-            `Deleted ${join('webapp', 'test', 'initFlpSandbox.js')}. This file is no longer needed for the preview.`
-        );
-        expect(() => fs.read(join(basePath, 'webapp', 'test', 'initFlpSandbox.js'))).toThrowError(
-            `${join(basePath, 'webapp', 'test', 'initFlpSandbox.js')} doesn\'t exist`
-        );
-    });
-
-    test('ensure preview middleware dependency', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            'name': 'test'
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        const variousConfigsPackageJsonPath = join(variousConfigsPath, 'package.json');
-        ensurePreviewMiddlewareDependency(packageJson, fs, variousConfigsPackageJsonPath);
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-    });
-
-    test('ensure preview middleware dependency w/o package.json', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-
-        const variousConfigsPackageJsonPath = join(variousConfigsPath, 'package.json');
-        ensurePreviewMiddlewareDependency(undefined, fs, variousConfigsPackageJsonPath);
-        expect(() => fs.read(join(variousConfigsPath, 'package.json'))).toThrowError(
-            `${variousConfigsPackageJsonPath} doesn\'t exist`
-        );
-    });
-
-    test('update variants creation script - yes', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'start-variants-management':
-                    'fiori run -o /preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        const getAllUi5YamlFileNamesMock = jest.spyOn(variantsConfig, 'generateVariantsConfig').mockResolvedValue(fs);
-
-        await updateVariantsCreationScript(fs, variousConfigsPath, logger);
-
-        expect(getAllUi5YamlFileNamesMock).toHaveBeenCalledTimes(1);
-    });
-
-    test('update variants creation script - no', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        //the following typo in the script name is intended!
-        const packageJson = {
-            scripts: {
-                'start-varinats-management':
-                    'fiori run -o /preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        const getAllUi5YamlFileNamesMock = jest.spyOn(variantsConfig, 'generateVariantsConfig').mockResolvedValue(fs);
-
-        await updateVariantsCreationScript(fs, variousConfigsPath, logger);
-
-        expect(getAllUi5YamlFileNamesMock).not.toHaveBeenCalled();
-    });
-});
-
-describe('update preview middleware config', () => {
-    const logger = new ToolsLogger();
-    const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
-    const basePath = join(__dirname, '../../fixtures/preview-config');
-    let fs: Editor;
-    let getAllUi5YamlFileNamesMock: jest.SpyInstance;
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-        fs = create(createStorage());
-        getAllUi5YamlFileNamesMock = jest.spyOn(projectAccess, 'getAllUi5YamlFileNames').mockResolvedValue({
-            valid: [
-                'ui5.yaml',
-                'ui5-deprecated-tools-preview.yaml',
-                'ui5-deprecated-tools-preview-theme.yaml',
-                'ui5-existing-preview-middleware.yaml',
-                'ui5-existing-tools-preview.yaml',
-                'ui5-no-middleware.yaml'
-            ],
-            invalid: ['ui5-invalid.yaml'],
-            skipped: ['ui5-multi-file.yaml']
+            await convertToVirtualPreview(deprecatedConfig, logger, fs);
+            expect(checkPrerequisitesSpy).toHaveBeenCalled();
+            expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
+            expect(updatePreviewMiddlewareConfigsSpy).toHaveBeenCalled();
+            expect(renameDefaultSandboxesSpy).toHaveBeenCalled();
+            expect(deleteNoLongerUsedFilesSpy).toHaveBeenCalled();
+            expect(updateVariantsCreationScriptSpy).toHaveBeenCalled();
         });
-    });
 
-    test('w/o path and intent', async () => {
-        const previewMiddleware = {
-            name: 'fiori-tools-preview',
-            afterMiddleware: 'compression',
-            configuration: {
-                flp: {
-                    path: 'test/flp.html'
-                }
-            }
-        } as CustomMiddleware<PreviewConfigOptions>;
-        expect(updatePreviewMiddlewareConfig(previewMiddleware, undefined, undefined)).toMatchSnapshot();
-    });
+        test('convert project to virtual preview without fs instance', async () => {
+            const fs = await convertToVirtualPreview(deprecatedConfig, logger);
+            expect(fs).toBeDefined();
+        });
 
-    test('skip yaml configurations not used in any script', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            'devDependencies': {
-                '@sap-ux/preview-middleware': '0.16.83'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+        test('do not convert project to virtual preview - missing prerequisites', async () => {
+            await expect(convertToVirtualPreview(basePath, logger, fs)).rejects.toThrowError(
+                `Prerequisites not met. See above log messages for details.`
+            );
+            expect(checkPrerequisitesSpy).toHaveBeenCalled();
+            expect(getExplicitApprovalToAdjustFilesSpy).not.toHaveBeenCalled();
+            expect(updatePreviewMiddlewareConfigsSpy).not.toHaveBeenCalled();
+            expect(renameDefaultSandboxesSpy).not.toHaveBeenCalled();
+            expect(deleteNoLongerUsedFilesSpy).not.toHaveBeenCalled();
+            expect(updateVariantsCreationScriptSpy).not.toHaveBeenCalled();
+        });
 
-        const text = (filename: string) =>
-            `UI5 yaml configuration file ${filename} it is not being used in any preview script. Outdated preview middleware will be adjusted nevertheless if necessary.`;
+        test('do not convert project to virtual preview - missing approval', async () => {
+            getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(false);
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-        expect(warnLogMock).toHaveBeenCalledWith(text('ui5-deprecated-tools-preview.yaml'));
-        expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview.yaml'))).toMatchSnapshot();
-        expect(warnLogMock).toHaveBeenCalledWith(text('ui5-deprecated-tools-preview-theme.yaml'));
-        expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview-theme.yaml'))).toMatchSnapshot();
-        expect(warnLogMock).toHaveBeenCalledWith(text('ui5-existing-preview-middleware.yaml'));
-        expect(warnLogMock).toHaveBeenCalledWith(text('ui5-existing-tools-preview.yaml'));
-        expect(warnLogMock).toHaveBeenCalledWith(text('ui5-no-middleware.yaml'));
-        expect(warnLogMock).toHaveBeenCalledWith(text('ui5.yaml'));
-        expect(getAllUi5YamlFileNamesMock).toHaveBeenCalledTimes(1);
-    });
-
-    test('skip multi-file yaml', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'multi-file':
-                    'ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-multi-file.yaml'
-            },
-            'devDependencies': {
-                '@sap-ux/preview-middleware': '0.16.83'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-        expect(warnLogMock).toHaveBeenCalledWith(
-            `Skipping script multi-file with UI5 yaml configuration file ui5-multi-file.yaml because the schema validation was not possible for file ui5-multi-file.yaml.`
-        );
-    });
-
-    test('skip invalid yaml configurations', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'invalid':
-                    'ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-invalid.yaml'
-            },
-            'devDependencies': {
-                '@sap-ux/preview-middleware': '0.16.83'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-        expect(warnLogMock).toHaveBeenCalledWith(
-            'Skipping script invalid with UI5 yaml configuration file ui5-invalid.yaml because it does not comply with the schema.'
-        );
-    });
-
-    test('skip not found yaml configurations', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'not:found':
-                    'ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-unavailable.yaml'
-            },
-            'devDependencies': {
-                '@sap-ux/preview-middleware': '0.16.83'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-        expect(warnLogMock).toHaveBeenCalledWith(
-            `Skipping script 'not:found' because UI5 yaml configuration file ui5-unavailable.yaml could not be found.`
-        );
-    });
-
-    test('no tooling, no middleware', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'ui:mockserver':
-                    'ui5 serve -o /localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-no-middleware.yaml'
-            },
-            'devDependencies': {
-                '@sap-ux/preview-middleware': '0.16.83'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'ui5-no-middleware.yaml'))).toMatchSnapshot();
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-    });
-
-    test('deprecated tools preview with theme', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'ui:mockserver':
-                    'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance" --config ./ui5-deprecated-tools-preview-theme.yaml',
-                'start-variants-management': 'ui5 serve --o chicken.html'
-            },
-            'devDependencies': {
-                '@sap/ux-ui5-tooling': '1.15.1'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview-theme.yaml'))).toMatchSnapshot();
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-    });
-
-    test('deprecated tools preview w/o theme', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'ui:mockserver':
-                    'fiori run --open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
-                'start-variants-management': 'ui5 serve --o chicken.html'
-            },
-            'devDependencies': {
-                '@sap/ux-ui5-tooling': '1.15.1'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview.yaml'))).toMatchSnapshot();
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-    });
-
-    test('existing tools preview', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'ui:mockserver':
-                    'fiori run -o test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-tools-preview.yaml'
-            },
-            'devDependencies': {
-                '@sap/ux-ui5-tooling': '1.15.1'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'ui5-existing-tools-preview.yaml'))).toMatchSnapshot();
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-    });
-
-    test('existing preview middleware', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'ui:mockserver':
-                    'fiori run -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml',
-                'ui:opa5':
-                    'fiori run -o test/integration/opaTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml',
-                'ui:unit':
-                    'fiori run -o test/unit/unitTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml'
-            },
-            'devDependencies': {
-                '@sap-ux/preview-middleware': '0.16.102'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'ui5-existing-preview-middleware.yaml'))).toMatchSnapshot();
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-    });
-
-    test('existing RTA script', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'start-rta':
-                    'ui5 run -o preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml',
-                'start-local': 'ui5 run -o test/flp.html#Chicken-dance --config ./ui5-existing-preview-middleware.yaml'
-            },
-            'devDependencies': {
-                '@sap/ux-ui5-tooling': '1.15.4'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'ui5-existing-preview-middleware.yaml'))).toMatchSnapshot();
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-    });
-
-    test('existing start-variants-management and start-control-property-editor script', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'start-variants-management':
-                    'fiori run -o /preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
-                'start-control-property-editor':
-                    'fiori run -o /editor.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
-                'start-local': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml'
-            },
-            'devDependencies': {
-                '@sap/ux-ui5-tooling': '1.15.4'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview.yaml'))).toMatchSnapshot();
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-    });
-
-    test('multiple scripts same yaml configuration', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'start': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml',
-                'start-local': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml',
-                'start-mock': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml'
-            },
-            'devDependencies': {
-                '@sap/ux-ui5-tooling': '1.15.4'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-
-        expect(fs.read(join(variousConfigsPath, 'ui5-no-middleware.yaml'))).toMatchSnapshot();
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-    });
-
-    test('default ui5.yaml w/o index.html', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'start': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"',
-                'start-index': 'fiori run --open "index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"'
-            },
-            'devDependencies': {
-                '@sap/ux-ui5-tooling': '1.15.4'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-
-        expect(fs.read(join(variousConfigsPath, 'ui5.yaml'))).toMatchSnapshot();
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-    });
-
-    test('same yaml config same endpoints', async () => {
-        fs.write(join(basePath, 'various-configs', 'webapp', 'test', 'flpSandbox.html'), 'dummy content flpSandbox');
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'start1': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"',
-                'start2': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"'
-            },
-            'devDependencies': {
-                '@sap/ux-ui5-tooling': '1.15.4'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(warnLogMock).toHaveBeenCalledTimes(4);
-    });
-
-    test('same yaml config different endpoints', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'start1': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"',
-                'start2':
-                    'fiori run --open "test/flpSandboxMockserver.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"'
-            },
-            'devDependencies': {
-                '@sap/ux-ui5-tooling': '1.15.4'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-
-        expect(fs.read(join(variousConfigsPath, 'ui5.yaml'))).toMatchSnapshot();
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-
-        expect(warnLogMock).toHaveBeenCalledWith(
-            `Skipping script 'start2' because another script also refers to UI5 yaml configuration file ui5.yaml. Please manually adjust the flp.path property in the UI5 yaml configuration file to the correct endpoint or create a separate ui5 yaml configuration for script 'start2'. ui5.yaml currently uses test/flpSandbox.html whereas script 'start2' uses test/flpSandboxMockserver.html.`
-        );
+            await convertToVirtualPreview(deprecatedConfig, logger, fs);
+            expect(checkPrerequisitesSpy).toHaveBeenCalled();
+            expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
+            expect(errorLogMock).toHaveBeenCalledWith('Approval not given. Conversion aborted.');
+        });
     });
 });

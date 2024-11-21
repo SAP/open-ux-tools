@@ -1,15 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`misc ensure preview middleware dependency 1`] = `
-"{
-  \\"name\\": \\"test\\",
-  \\"devDependencies\\": {
-    \\"@sap-ux/preview-middleware\\": \\"latest\\"
-  }
-}
-"
-`;
-
 exports[`update preview middleware config default ui5.yaml w/o index.html 1`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
