@@ -21,10 +21,9 @@ import Log from 'sap/base/Log';
 import { getDocumentation } from './documentation';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-import { getComponent } from '../utils/core';
+import { getComponent, getControlById } from '../utils/core';
 import { getError } from '../utils/error';
 import { ChangeService } from './changes';
-import UI5Element from 'sap/ui/core/Element';
 
 export interface PropertyChangeParams {
     name: string;
@@ -95,7 +94,7 @@ async function addDocumentationForProperties(control: ManagedObject, controlData
 export class SelectionService implements Service {
     private appliedChangeCache = new Map<string, number>();
     private activeChangeHandlers = new Set<() => void>();
-    private currentSelection: UI5Element;
+    private currentSelection: ManagedObject;
     /**
      *
      * @param rta - rta object.
@@ -120,7 +119,7 @@ export class SelectionService implements Service {
                 this.applyControlPropertyChange(action.payload.controlId, action.payload.propertyName);
             } else if (selectControl.match(action)) {
                 const id = action.payload;
-                const control = sap.ui.getCore().byId(id);
+                const control = getControlById(id);
                 if (!control) {
                     const component = getComponent(id);
                     if (component) {
@@ -201,6 +200,7 @@ export class SelectionService implements Service {
                 const overlayControl = sap.ui.getCore().byId(selection[0].getId()) as ElementOverlay;
                 if (overlayControl) {
                     const runtimeControl = getRuntimeControl(overlayControl);
+                    this.currentSelection = runtimeControl;
                     const controlName = runtimeControl.getMetadata().getName();
                     this.handlePropertyChanges(runtimeControl, sendAction);
                     try {

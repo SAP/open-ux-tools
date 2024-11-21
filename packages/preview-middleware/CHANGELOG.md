@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.127
+
+### Patch Changes
+
+-   c39325c: Fix for Config Quick action state not reflecting properties in properties panel
+
 ## 0.16.126
 
 ### Patch Changes

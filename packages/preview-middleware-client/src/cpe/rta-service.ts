@@ -28,36 +28,40 @@ export class RtaService {
      * @param sendAction action sender function
      * @param subscribe subscriber function
      */
-    public init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void {
-        sendAction(applicationModeChanged(this.rta.getMode()));
-        subscribe(async (action): Promise<void> => {
-            if (setAppMode.match(action)) {
-                this.rta.setMode(action.payload);
-            }
-            if (undo.match(action)) {
-                this.rta.undo();
-            }
-            if (redo.match(action)) {
-                this.rta.redo();
-            }
-            if (reloadApplication.match(action)) {
-                if (action.payload.save === true) {
+    public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
+        return new Promise((resolve) => {
+            sendAction(applicationModeChanged(this.rta.getMode()));
+            subscribe(async (action): Promise<void> => {
+                if (setAppMode.match(action)) {
+                    this.rta.setMode(action.payload);
+                }
+                if (undo.match(action)) {
+                    this.rta.undo();
+                }
+                if (redo.match(action)) {
+                    this.rta.redo();
+                }
+                if (reloadApplication.match(action)) {
+                    if (action.payload.save === true) {
+                        await this.save();
+                    }
+                    await this.rta.stop(false, true);
+                }
+
+                if (save.match(action)) {
                     await this.save();
                 }
-                await this.rta.stop(false, true);
-            }
+            });
 
-            if (save.match(action)) {
-                await this.save();
-            }
-            return Promise.resolve();
+            this.rta.attachStop(() => {
+                // eslint-disable-next-line fiori-custom/sap-no-location-reload
+                location.reload();
+            });
+            this.rta.attachStart(() => {
+                resolve();
+            });
+            this.rta.attachModeChanged(modeAndStackChangeHandler(sendAction, this.rta));
         });
-
-        this.rta.attachStop(() => {
-            // eslint-disable-next-line fiori-custom/sap-no-location-reload
-            location.reload();
-        });
-        this.rta.attachModeChanged(modeAndStackChangeHandler(sendAction, this.rta));
     }
 
     private save(): Promise<void> {
