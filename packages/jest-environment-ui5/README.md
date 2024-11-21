@@ -7,7 +7,7 @@ It is based on the `@ui5/project` to resolve the UI5 dependencies and serve the 
 
 ## ⚠️ Experimental: Early Version
 This package is in an experimental state and was only used internally at SAP so far. 
-While we strive for stability it might not be exempty of issues.
+While we strive for stability it might not be exempt of issues.
 
 Contributions, feedback, and bug reports are highly appreciated to help shape the module's future.
 If you encounter any issues or have suggestions, feel free to open an issue or contribute via a pull request.
@@ -24,7 +24,7 @@ Pnpm
 
 ## Configuration
 To use `jest` and the `@sap-ux/jest-ui5-environment`, your project needs to leverage the `@ui5/cli` (to resolve UI5 dependencies). 
-All those dependencies needs to be added to your project `package.json`
+All those dependencies needs to be added to your project's `package.json`
 
 Afterwards, a script executing the tests needs to be added. It can be a simple execution of `jest` or specific parameters can be added. More information at https://jestjs.io/docs/cli.
 
