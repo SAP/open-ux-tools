@@ -495,4 +495,22 @@ describe('Test system selection prompts', () => {
             undefined
         );
     });
+
+    test('Should set the default system choice based on the defaultChoice options', async () => {
+        backendSystems.push(backendSystemReentrance);
+        const defaultChoice = backendSystemReentrance.name;
+        const systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.systemSelection]: { defaultChoice }
+        });
+        const systemSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === promptNames.systemSelection
+        );
+        const defaultIndex = (systemSelectionPrompt as Question).default;
+        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
+            value: {
+                system: backendSystemReentrance,
+                type: 'backendSystem'
+            }
+        });
+    });
 });
