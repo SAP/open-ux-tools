@@ -21,21 +21,22 @@ const renameMessage = (filename: string): string =>
  * @param logger logger to report info to the user
  */
 export async function renameSandbox(fs: Editor, basePath: string, script: string, logger?: ToolsLogger): Promise<void> {
-    const checkFileHistory = (basePath: string, absolutePath: string, condition: (file: any) => boolean): boolean => {
-        return (
-            Object.keys(fs.dump(basePath, (file: any) => file.history.includes(absolutePath) && condition(file)))
-                .length === 0
-        );
-    };
     const { path: relativePath } = extractUrlDetails(script);
     if (relativePath) {
         const absolutePath = join(await getWebappPath(basePath), relativePath);
         if (fs.exists(absolutePath)) {
             fs.move(absolutePath, absolutePath.replace('.html', '_old.html'));
             logger?.info(renameMessage(relativePath));
-        } else if (checkFileHistory(basePath, absolutePath, (file) => file.state !== 'deleted')) {
+        } else if (
+            //checks if there is a file with the same name which has already been deleted/renamed to _old.html
+            Object.keys(
+                fs.dump(basePath, (file) => {
+                    return file.history.includes(absolutePath) && file.state !== 'deleted';
+                })
+            ).length === 0
+        ) {
             logger?.debug(`File '${relativePath}' has already been renamed. Skipping renaming.`);
-        } else if (checkFileHistory(basePath, absolutePath, (file) => file.contents !== null)) {
+        } else {
             logger?.warn(`File '${relativePath}' not found. Skipping renaming.`);
         }
     }
