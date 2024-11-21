@@ -204,8 +204,8 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
         'sap/ui/thirdparty/signals.js': true
     };
     let pathMapping = {
-        ui5loader: path.resolve(__dirname, './shim/ui5loader.js'),
-        'ui5loader-dbg': path.resolve(__dirname, './shim/ui5loader.js')
+        ui5loader: path.resolve(__dirname, './shim/ui5loader2.js'),
+        'ui5loader-dbg': path.resolve(__dirname, './shim/ui5loader2.js')
     };
     if (isV2) {
         shimmedFilePath = {

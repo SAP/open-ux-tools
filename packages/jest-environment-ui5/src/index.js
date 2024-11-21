@@ -119,36 +119,37 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
      * @param {Function} resolve The function to call once the core is ready
      */
     initUI5Core(resolve) {
-        sap.ui.require(['sap/ui/core/Core', 'sap/ui/core/date/Gregorian'], async function (Core) {
+        sap.ui.require(['sap/ui/core/Core', 'sap/ui/core/date/Gregorian'], async (Core) => {
             if (Core.ready) {
                 await Core.ready();
-                sap.ui.require(['sap/ui/core/Lib'], function (Lib) {
-                    const fnInit = Lib.init;
-                    Lib.init = function (mSettings) {
-                        mSettings.noLibraryCSS = true;
-                        return fnInit.call(this, mSettings);
-                    };
-                    resolve();
-                });
+                this.overwriteUi5Lib(resolve);
             } else {
-                Core.attachInit(function () {
-                    sap.ui.require(
-                        ['sap/ui/core/Lib'],
-                        function (Lib) {
-                            const fnInit = Lib.init;
-                            Lib.init = function (mSettings) {
-                                mSettings.noLibraryCSS = true;
-                                return fnInit.call(this, mSettings);
-                            };
-                            resolve();
-                        },
-                        function (e) {
-                            resolve();
-                        }
-                    );
+                Core.attachInit(() => {
+                    this.overwriteUi5Lib(resolve);
                 });
             }
         });
+    }
+
+    /**
+     * Overwrite the UI5 Lib to disable the library CSS.
+     * @param {Function} resolve the function to call once the lib is overwritten
+     */
+    overwriteUi5Lib(resolve) {
+        sap.ui.require(
+            ['sap/ui/core/Lib'],
+            function (Lib) {
+                const fnInit = Lib.init;
+                Lib.init = function (mSettings) {
+                    mSettings.noLibraryCSS = true;
+                    return fnInit.call(this, mSettings);
+                };
+                resolve();
+            },
+            function (e) {
+                resolve();
+            }
+        );
     }
 
     /**

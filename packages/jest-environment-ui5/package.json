@@ -16,20 +16,20 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .js",
         "lint:fix": "eslint . --ext .js --fix",
-        "test": "pnpm run test-ut",
+        "test": "pnpm run test-ut && pnpm run testlatest",
         "test-ut": "cross-env NODE_OPTIONS='--experimental-vm-modules' npx jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests  --runInBand ",
         "test-e2e": "pnpm run testlatest && pnpm run test71 && pnpm run test84 && pnpm run test96 && pnpm run test108 && pnpm run test120 && pnpm run test124 && pnpm run test127",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
-        "test71": "cross-env UI5_JEST_CONFIG=test/sampleapp/ui5-1.71.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
-        "test84": "cross-env UI5_JEST_CONFIG=test/sampleapp/ui5-1.84.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
-        "test96": "cross-env UI5_JEST_CONFIG=test/sampleapp/ui5-1.96.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
-        "test108": "cross-env UI5_JEST_CONFIG=test/sampleapp/ui5-1.108.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
-        "test120": "cross-env UI5_JEST_CONFIG=test/sampleapp/ui5-1.120.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
-        "test124": "cross-env UI5_JEST_CONFIG=test/sampleapp/ui5-1.124.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
-        "test127": "cross-env UI5_JEST_CONFIG=test/sampleapp/ui5-1.127.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
-        "testlatest": "cross-env UI5_JEST_CONFIG=test/sampleapp/ui5.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
-        "test20": "cross-env UI5_JEST_CONFIG=test/sampleapp/ui5-2.0.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests"
+        "test71": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.71.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test84": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.84.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test96": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.96.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test108": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.108.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test120": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.120.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test124": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.124.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test127": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-1.127.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "testlatest": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test20": "cross-env UI5_JEST_CONFIG=test/fixtures/ui5-2.0.yaml jest --config jest-ui5.config.js --ci --forceExit --detectOpenHandles --colors --passWithNoTests"
     },
     "files": [
         "src",
@@ -45,6 +45,7 @@
     "devDependencies": {
         "@ui5/project": "^3.9.0",
         "@ui5/cli": "^3",
-        "cross-env": "^7.0.3"
+        "cross-env": "^7.0.3",
+        "jest": "^29.7.0"
     }
 }

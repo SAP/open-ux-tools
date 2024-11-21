@@ -1,4 +1,4 @@
-const { initUI5Environment } = require('../src/ui5Environment');
+const { initUI5Environment } = require('../../src/ui5Environment');
 
 describe('Jest Environment UI5', () => {
     it('should be able to run a test', async () => {
