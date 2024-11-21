@@ -280,10 +280,8 @@ export class FlpSandbox {
                 this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
                 next();
             } else {
-                const html = render(
-                    await this.getSandboxTemplate(req.headers.host, this.templateConfig.basePath),
-                    this.templateConfig
-                );
+                const ui5Version = await this.getUi5Version(req.headers.host, this.templateConfig.basePath);
+                const html = render(this.getSandboxTemplate(ui5Version.major), this.templateConfig);
                 this.sendResponse(res, 'text/html', 200, html);
             }
         }) as RequestHandler);
@@ -291,22 +289,18 @@ export class FlpSandbox {
 
     /**
      * Get the sandbox template file based on the UI5 version.
+     * In case of an error, the default UI5 version '1.121.0' is returned.
      *
      * @param host - the host that should be used to request the UI5 version
      * @param basePath - the base path of the request that should be added to the host
      * @returns the template for the sandbox HTML file
      * @private
      */
-    private async getSandboxTemplate(host: Request['headers']['host'], basePath: string): Promise<string> {
-        // Read the sandbox template file based on the given UI5 version.
-        const getTemplate = (ui5MajorVersion: number): string => {
-            this.logger.info(`Using sandbox template for UI5 major version ${ui5MajorVersion}.`);
-            return readFileSync(
-                join(__dirname, `../../templates/flp/sandbox${ui5MajorVersion === 1 ? '' : ui5MajorVersion}.html`),
-                'utf-8'
-            );
-        };
-
+    private async getUi5Version(
+        host: Request['headers']['host'],
+        basePath: string
+    ): Promise<{ major: number; minor: number }> {
+        let version = '1.121.0';
         if (!host) {
             this.logger.error('Unable to fetch UI5 version: No host found in request header.');
         } else {
@@ -315,18 +309,30 @@ export class FlpSandbox {
                 const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
                     | { libraries: { name: string; version: string }[] }
                     | undefined;
-                const version: string =
-                    responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version ?? '1.121.0';
-                const majorUi5Version = parseInt(version.split('.')[0], 10);
-                if (majorUi5Version >= 2) {
-                    return getTemplate(2);
-                }
+                version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version ?? '1.121.0';
             } catch (error) {
-                this.logger.debug(`Unable to fetch UI5 version: ${error}`);
+                this.logger.error(`Unable to fetch UI5 version: ${error}`);
             }
         }
-        return getTemplate(1);
+        return {
+            major: parseInt(version.split('.')[0], 10),
+            minor: parseInt(version.split('.')[1], 10)
+        };
     }
+
+    /**
+     * Read the sandbox template file based on the given UI5 version.
+     *
+     * @param ui5MajorVersion - the major version of UI5
+     * @returns the template for the sandbox HTML file
+     */
+    private getSandboxTemplate = (ui5MajorVersion: number): string => {
+        this.logger.info(`Using sandbox template for UI5 major version ${ui5MajorVersion}.`);
+        return readFileSync(
+            join(__dirname, `../../templates/flp/sandbox${ui5MajorVersion === 1 ? '' : ui5MajorVersion}.html`),
+            'utf-8'
+        );
+    };
 
     /**
      * Try finding a locate-reuse-libs script in the project.
