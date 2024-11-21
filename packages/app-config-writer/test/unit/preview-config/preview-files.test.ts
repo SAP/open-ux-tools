@@ -37,19 +37,11 @@ describe('preview-files', () => {
         expect(fs.read(join(basePath, 'webapp', 'test', 'flpSandboxMockserver_old.html'))).toMatchInlineSnapshot(
             '"dummy content flpSandboxMockserver"'
         );
-        let path = join('test', 'flpSandbox.html');
         expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed '${path}' to '${path.slice(
-                0,
-                -5
-            )}_old.html'. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
+            `Renamed 'flpSandbox.html' to 'flpSandbox_old.html'. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
         );
-        path = join('test', 'flpSandboxMockserver.html');
         expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed '${path}' to '${path.slice(
-                0,
-                -5
-            )}_old.html'. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
+            `Renamed 'flpSandboxMockserver.html' to 'flpSandboxMockserver_old.html'. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
         );
     });
 
@@ -76,25 +68,25 @@ describe('preview-files', () => {
     });
 
     test('skip renaming for files which do not exist', async () => {
-        const script = `fiori run --open \"test/IdoNotExist.html?sap-ui-xx-viewCache=false#checken-head\"`;
+        const path = join(basePath, 'test', 'IdoNotExist.html');
 
-        await renameSandbox(fs, basePath, script, logger);
-        expect(warnLogMock).toHaveBeenCalledWith(`File 'test/IdoNotExist.html' not found. Skipping renaming.`);
+        await renameSandbox(fs, path, logger);
+        expect(warnLogMock).toHaveBeenCalledWith(`File 'IdoNotExist.html' not found. Skipping renaming.`);
     });
 
     test('skip renaming for files which have already been renamed', async () => {
-        const script = `fiori run --open \"test/ImAlreadyRenamed.html?sap-ui-xx-viewCache=false#checken-head\"`;
+        const path = join(basePath, 'webapp', 'test', 'ImAlreadyRenamed.html');
 
         fs.write(join(basePath, 'webapp', 'test', 'ImAlreadyRenamed.html'), 'dummy content flpSandbox');
 
-        await renameSandbox(fs, basePath, script, logger);
+        await renameSandbox(fs, path, logger);
         expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed 'test/ImAlreadyRenamed.html' to 'test/ImAlreadyRenamed_old.html'. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
+            `Renamed 'ImAlreadyRenamed.html' to 'ImAlreadyRenamed_old.html'. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`
         );
 
-        await renameSandbox(fs, basePath, script, logger);
+        await renameSandbox(fs, path, logger);
         expect(debugLogMock).toHaveBeenCalledWith(
-            `File 'test/ImAlreadyRenamed.html' has already been renamed. Skipping renaming.`
+            `File 'ImAlreadyRenamed.html' has already been renamed. Skipping renaming.`
         );
     });
 });

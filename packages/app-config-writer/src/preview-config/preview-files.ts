@@ -1,5 +1,4 @@
 import { basename, join } from 'path';
-import { extractUrlDetails } from './package-json';
 import { getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -16,29 +15,24 @@ const renameMessage = (filename: string): string =>
  * The corresponding file will be renamed from *.html to *_old.html.
  *
  * @param fs - file system reference
- * @param basePath - base path to be used for the conversion
- * @param script - the content of the script
+ * @param path - file path to be used for the renaming
  * @param logger logger to report info to the user
  */
-export async function renameSandbox(fs: Editor, basePath: string, script: string, logger?: ToolsLogger): Promise<void> {
-    const { path: relativePath } = extractUrlDetails(script);
-    if (relativePath) {
-        const absolutePath = join(await getWebappPath(basePath), relativePath);
-        if (fs.exists(absolutePath)) {
-            fs.move(absolutePath, absolutePath.replace('.html', '_old.html'));
-            logger?.info(renameMessage(relativePath));
-        } else if (
-            //checks if there is a file with the same name which has already been deleted/renamed to _old.html
-            Object.keys(
-                fs.dump(basePath, (file) => {
-                    return file.history.includes(absolutePath) && file.state !== 'deleted';
-                })
-            ).length === 0
-        ) {
-            logger?.debug(`File '${relativePath}' has already been renamed. Skipping renaming.`);
-        } else {
-            logger?.warn(`File '${relativePath}' not found. Skipping renaming.`);
-        }
+export async function renameSandbox(fs: Editor, path: string, logger?: ToolsLogger): Promise<void> {
+    if (fs.exists(path)) {
+        fs.move(path, path.replace('.html', '_old.html'));
+        logger?.info(renameMessage(basename(path)));
+    } else if (
+        //checks if there is a file with the same name which has already been deleted/renamed to _old.html
+        Object.keys(
+            fs.dump(undefined, (file) => {
+                return file.history.includes(path) && file.state !== 'deleted';
+            })
+        ).length === 0
+    ) {
+        logger?.debug(`File '${basename(path)}' has already been renamed. Skipping renaming.`);
+    } else {
+        logger?.warn(`File '${basename(path)}' not found. Skipping renaming.`);
     }
 }
 
@@ -55,9 +49,7 @@ export async function renameSandbox(fs: Editor, basePath: string, script: string
 export async function renameDefaultSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const defaultSandboxPaths = [join('test', 'flpSandbox.html'), join('test', 'flpSandboxMockserver.html')];
     for (const path of defaultSandboxPaths) {
-        //use fake script to be able to re-use the renameSandbox function for the default sandboxes as well
-        const fakeScript = ` --open ${path}`;
-        await renameSandbox(fs, basePath, fakeScript, logger);
+        await renameSandbox(fs, join(await getWebappPath(basePath), path), logger);
     }
 }
 

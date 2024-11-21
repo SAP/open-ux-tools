@@ -1,7 +1,7 @@
 import { basename, join } from 'path';
 import { createPreviewMiddlewareConfig } from '../variants-config/ui5-yaml';
 import { ensurePreviewMiddlewareDependency, extractUrlDetails, isValidPreviewScript } from './package-json';
-import { FileName, getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
+import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
 import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../variants-config/utils';
 import { renameSandbox } from './preview-files';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
@@ -273,7 +273,10 @@ export async function updatePreviewMiddlewareConfigs(
         }
 
         await processUi5YamlConfig(fs, basePath, ui5Yaml, script);
-        await renameSandbox(fs, basePath, script, logger);
+        const { path } = extractUrlDetails(script);
+        if (path) {
+            await renameSandbox(fs, join(await getWebappPath(basePath), path), logger);
+        }
         ensurePreviewMiddlewareDependency(packageJson, fs, packageJsonPath);
 
         logger?.info(`UI5 yaml configuration file '${ui5Yaml}' updated according to script '${scriptName}'.`);
