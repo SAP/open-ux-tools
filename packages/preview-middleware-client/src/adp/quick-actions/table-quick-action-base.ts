@@ -14,6 +14,8 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version
 import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import ManagedObject from 'sap/ui/base/ManagedObject';
+import MDCTable from 'sap/ui/mdc/valuehelp/content/MDCTable';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
@@ -53,8 +55,8 @@ export abstract class TableQuickActionDefinitionBase {
 
     protected isDisabled: boolean | undefined;
 
-    public get tooltip(): string | undefined {
-        return undefined;
+    public get tooltip(): string {
+        return this.tooltipTextKey;
     }
 
     public children: NestedQuickActionChild[] = [];
@@ -85,8 +87,9 @@ export abstract class TableQuickActionDefinitionBase {
         protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
+        protected readonly tooltipTextKey: string,
         protected includeServiceAction?: boolean
-    ) {}
+    ) { }
 
     /**
      * Initializes action object instance
@@ -109,9 +112,11 @@ export abstract class TableQuickActionDefinitionBase {
             if (section) {
                 this.collectChildrenInSection(section, table);
             } else if (this.iconTabBar && tabKey) {
+                let tableRows = this.getInternalTableRows(table);
                 this.children.push({
                     label: `'${iconTabBarfilterMap[tabKey]}' table`,
-                    enabled: true,
+                    tooltip: (tableRows.length < 1 && this.tooltip) ? this.context.resourceBundle.getText(this.tooltip) : undefined,
+                    enabled: (tableRows.length < 1 && this.tooltip) ? false : true,
                     children: []
                 });
                 this.tableMap[`${this.children.length - 1}`] = {
@@ -141,6 +146,51 @@ export abstract class TableQuickActionDefinitionBase {
             this.isApplicable = true;
         }
     }
+
+
+    /**
+     * Retrieves the internal table from a UI5Element and checks if it contains rows.
+     *
+     * @param table - The UI5Element instance to analyze.
+     * @returns The internal table's rows if valid, otherwise an empty array.
+     */
+    getInternalTableRows(table: UI5Element): ManagedObject[] {
+        try {
+            let tableInternal: ManagedObject | undefined = table;
+
+            if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+                const itemsAggregation = table.getAggregation('items') as ManagedObject[];
+                tableInternal = itemsAggregation.find((item) =>
+                    [M_TABLE_TYPE, TREE_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE].some((tType) =>
+                        isA(tType, item)
+                    )
+                );
+
+                if (!tableInternal) {
+                    return [];
+                }
+            }
+
+            if (
+                isA(M_TABLE_TYPE, tableInternal) &&
+                (tableInternal.getAggregation('items') as ManagedObject[]).length === 0
+            ) {
+                return [];
+            }
+
+            if (isA<MDCTable>(MDC_TABLE_TYPE, table)) {
+                tableInternal = table.getAggregation('_content') as UI5Element;
+                if (!tableInternal) {
+                    return [];
+                }
+            }
+
+            return tableInternal?.getAggregation('items') as ManagedObject[] || [];
+        } catch (error) {
+            return [];
+        }
+    }
+
 
     /**
      * Determines table label for the given table element
@@ -196,6 +246,7 @@ export abstract class TableQuickActionDefinitionBase {
      */
     private collectChildrenInSection(section: ObjectPageSection, table: UI5Element): void {
         const layout = getParentContainer<ObjectPageLayout>(table, 'sap.uxap.ObjectPageLayout');
+        let tableRows = this.getInternalTableRows(table);
         const subSections = section.getSubSections();
         const subSection = getParentContainer<ObjectPageSubSection>(table, 'sap.uxap.ObjectPageSubSection');
         if (subSection) {
@@ -212,7 +263,8 @@ export abstract class TableQuickActionDefinitionBase {
                         children: [
                             {
                                 label: this.getTableLabel(table),
-                                enabled: true,
+                                tooltip: (tableRows.length < 1 && this.tooltip) ? this.context.resourceBundle.getText(this.tooltip) : undefined,
+                                enabled: (tableRows.length < 1 && this.tooltip) ? false : true,
                                 children: []
                             }
                         ]
@@ -221,7 +273,8 @@ export abstract class TableQuickActionDefinitionBase {
                     tableMapIndex = `${tableMapIndex}/${sectionChild.children.length - 1}`;
                     sectionChild.children.push({
                         label: this.getTableLabel(table),
-                        enabled: true,
+                        tooltip: (tableRows.length < 1 && this.tooltip) ? this.context.resourceBundle.getText(this.tooltip) : undefined,
+                        enabled: (tableRows.length < 1 && this.tooltip) ? false : true,
                         children: []
                     });
                 }
@@ -244,10 +297,12 @@ export abstract class TableQuickActionDefinitionBase {
         table: UI5Element,
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
     ): void {
+        const tableRows = this.getInternalTableRows(table);
         if ([SMART_TABLE_TYPE, M_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE].some((type) => isA(type, table))) {
             this.children.push({
                 label: this.getTableLabel(table),
-                enabled: true,
+                tooltip: (tableRows.length < 1 && this.tooltip) ? this.context.resourceBundle.getText(this.tooltip) : undefined,
+                enabled: (tableRows.length < 1 && this.tooltip) ? false : true,
                 children: []
             });
         }
@@ -279,7 +334,7 @@ export abstract class TableQuickActionDefinitionBase {
             kind: NESTED_QUICK_ACTION_KIND,
             id: this.id,
             enabled: !this.isDisabled,
-            tooltip: this.tooltip,
+            tooltip: this.isDisabled ? this.context.resourceBundle.getText(this.tooltip) : undefined,
             title: this.context.resourceBundle.getText(this.textKey),
             children: this.children
         };

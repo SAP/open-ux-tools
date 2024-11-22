@@ -21,7 +21,7 @@ export class AddTableCustomColumnQuickAction
     implements NestedQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(CREATE_TABLE_CUSTOM_COLUMN, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN', context);
+        super(CREATE_TABLE_CUSTOM_COLUMN, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN', context, 'TABLE_CUSTOM_COLUMN_ACTION_NOT_AVAILABLE');
     }
 
     async execute(path: string): Promise<FlexCommand[]> {

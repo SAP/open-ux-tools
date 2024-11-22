@@ -22,7 +22,7 @@ export class EnableTableFilteringQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition {
     constructor(context: QuickActionContext) {
-        super(ENABLE_TABLE_FILTERING, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context);
+        super(ENABLE_TABLE_FILTERING, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context, '');
     }
     isActive: boolean;
     readonly forceRefreshAfterExecution = true;
