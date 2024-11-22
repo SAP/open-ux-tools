@@ -12,14 +12,14 @@ import type { ValidationResult } from '../../../../../src/prompts/connectionVali
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import * as promptHelpers from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
+import { NewSystemChoice } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
 import type {
     SystemSelectionAnswers,
     SystemSelectionAnswerType
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
 import {
     getSystemConnectionQuestions,
-    getSystemSelectionQuestions,
-    newSystemChoiceValue
+    getSystemSelectionQuestions
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { promptNames } from '../../../../../src/types';
@@ -192,7 +192,7 @@ describe('Test system selection prompts', () => {
         systemChoices = (systemSelectionPrompt as ListQuestion).choices as ListChoiceOptions<SystemSelectionAnswers>[];
         expect(systemChoices[0].value as SystemSelectionAnswerType).toEqual({
             type: 'newSystemChoice',
-            system: newSystemChoiceValue
+            system: NewSystemChoice
         });
     });
 
@@ -203,7 +203,7 @@ describe('Test system selection prompts', () => {
             (question) => question.name === `systemSelection:${promptNames.serviceSelection}`
         );
         const serviceSelectionWhenResult = ((systemServicePrompt as Question).when as Function)({
-            systemSelection: { type: 'newSystemChoice', system: newSystemChoiceValue }
+            systemSelection: { type: 'newSystemChoice', system: NewSystemChoice }
         } as SystemSelectionAnswers);
         expect(serviceSelectionWhenResult).toEqual(false);
 
@@ -213,7 +213,7 @@ describe('Test system selection prompts', () => {
         );
         expect(
             ((newSystemTypePrompt as Question).when as Function)({
-                systemSelection: { type: 'newSystemChoice', system: newSystemChoiceValue }
+                systemSelection: { type: 'newSystemChoice', system: NewSystemChoice }
             })
         ).toBe(true);
     });
@@ -494,5 +494,23 @@ describe('Test system selection prompts', () => {
             connectionValidatorMock,
             undefined
         );
+    });
+
+    test('Should set the default system choice based on the defaultChoice options', async () => {
+        backendSystems.push(backendSystemReentrance);
+        const defaultChoice = backendSystemReentrance.name;
+        const systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.systemSelection]: { defaultChoice }
+        });
+        const systemSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === promptNames.systemSelection
+        );
+        const defaultIndex = (systemSelectionPrompt as Question).default;
+        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
+            value: {
+                system: backendSystemReentrance,
+                type: 'backendSystem'
+            }
+        });
     });
 });
