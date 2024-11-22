@@ -2,6 +2,7 @@
  * ${copyright}
  */
 
+// This file is a copy from the ui5 ui5loader.js file with some modifications to make it work in the jest enviorment
 /*
  * IMPORTANT NOTICE
  * With 1.54, ui5loader.js and its new features are not yet a public API.

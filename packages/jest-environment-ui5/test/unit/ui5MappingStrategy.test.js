@@ -1,4 +1,4 @@
-const { initUi5MappingStrategy } = require('../../src/ui5MappingStrategy');
+const { initUi5MappingStrategy } = require('../../src/utils/ui5MappingStrategy');
 const path = require('path');
 
 describe('Ui5 Mapping Strategy', () => {

@@ -1,6 +1,19 @@
+jest.mock(jestUI5.resolvePath('sap/m/Button'), () => {
+    return jest.fn().mockImplementation(() => {
+        return {
+            'doSomething': jest.fn().mockReturnValue('Button was clicked')
+        };
+    });
+});
+
 sap.ui.define(
-    ['sap/ui/base/ManagedObject', 'sap/ui/demo/todo/controller/App.controller', 'sap/ui/model/json/JSONModel'],
-    function (ManagedObject, AppController, JSONModel) {
+    [
+        'sap/ui/base/ManagedObject',
+        'sap/ui/demo/todo/controller/App.controller',
+        'sap/ui/model/json/JSONModel',
+        'sap/m/Button'
+    ],
+    function (ManagedObject, AppController, JSONModel, Button) {
         describe('Test model modification', function () {
             var oAppController, oViewStub, oGetViewMock, oJSONModelStub;
             beforeEach(function () {
@@ -18,6 +31,30 @@ sap.ui.define(
 
             afterEach(function () {
                 oGetViewMock.mockClear();
+            });
+
+            test('It can load the todo from an url', async function () {
+                jestUI5.mockUrl(
+                    '/myTodos.json',
+                    JSON.stringify([
+                        {
+                            title: 'Start this app',
+                            completed: false
+                        },
+                        {
+                            title: 'Write a blog post',
+                            completed: false
+                        }
+                    ])
+                );
+                const jsonModel = new JSONModel();
+                await jsonModel.loadData('/myTodos.json');
+                expect(jsonModel.getObject('/').length).toEqual(2);
+            });
+
+            test('can mock a class', () => {
+                const button = new Button();
+                expect(button.doSomething()).toBe('Button was clicked');
             });
 
             test('Should add a todo element to the model', function () {

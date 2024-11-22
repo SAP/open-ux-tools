@@ -1,4 +1,4 @@
-const { initTsConfigMappingStrategy } = require('../../src/tsMappingStrategy');
+const { initTsConfigMappingStrategy } = require('../../src/utils/tsMappingStrategy');
 const path = require('path');
 
 describe('Typescript Mapping Strategy', () => {

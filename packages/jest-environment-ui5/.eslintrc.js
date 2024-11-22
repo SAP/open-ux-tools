@@ -5,7 +5,8 @@ module.exports = {
         browser: true
     },
     globals: {
-        sap: 'readonly'
+        sap: 'readonly',
+        jestUI5: 'readonly'
     },
     'parserOptions': {
         'ecmaVersion': 'latest',
@@ -15,5 +16,5 @@ module.exports = {
         }
     },
     extends: ['../../.eslintrc'],
-    ignorePatterns: 'src/shim/**/*.js'
+    ignorePatterns: 'src/env/ui5loader.js'
 };

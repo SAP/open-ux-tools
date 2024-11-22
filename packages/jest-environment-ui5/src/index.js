@@ -1,7 +1,7 @@
 const JSDOMEnvironment = require('jest-environment-jsdom').default;
-const { initTsConfigMappingStrategy } = require('./tsMappingStrategy');
-const { initUi5MappingStrategy } = require('./ui5MappingStrategy');
-const { initUI5Environment } = require('./ui5Environment');
+const { initTsConfigMappingStrategy } = require('./utils/tsMappingStrategy');
+const { initUi5MappingStrategy } = require('./utils/ui5MappingStrategy');
+const { initUI5Environment } = require('./env/ui5Environment');
 const path = require('path');
 
 /**
@@ -18,7 +18,7 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
     constructor({ globalConfig, projectConfig }, context) {
         super({ globalConfig, projectConfig }, context);
         const config = projectConfig;
-        config.setupFiles.push(path.join(__dirname, 'automaticSetup.js'));
+        config.setupFiles.push(path.join(__dirname, 'utils', 'automaticSetup.js'));
         // Init global
         this.testEnvironmentOptions = config.testEnvironmentOptions;
         this.mappingStrategy = config.testEnvironmentOptions ? config.testEnvironmentOptions.mappingStrategy : 'ui5';
@@ -81,7 +81,7 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
         });
         window['sap-ui-optimized'] = this.useOptimized;
         window['sap-ui-no-preload'] = !this.useOptimized;
-        window.requireFn(path.join(__dirname, 'shim', 'ui5loader'));
+        window.requireFn(path.join(__dirname, 'env', 'ui5loader'));
         if (this.testEnvironmentOptions.isV2) {
             const scriptTag = window.document.createElement('script');
             scriptTag.setAttribute('src', './ui5loader-autoconfig.js');
@@ -90,6 +90,7 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
             window['sap-ui-config'].excludejquerycompat = true;
             sap.ui.requireSync('ui5loader-autoconfig');
         }
+
         sap.ui.predefine('sap/ui/util/_FeatureDetection', {
             initialScrollPositionIsZero: () => {}
         });
@@ -105,6 +106,7 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
         }
         sap.ui.loader.config({ async: true });
         delete window['sap-ui-config'].resourceRoots;
+
         if (!this.testEnvironmentOptions.isV2) {
             this.core = sap.ui.requireSync('sap/ui/core/Core');
             this.core.boot();
