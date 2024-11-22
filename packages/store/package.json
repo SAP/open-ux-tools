@@ -26,6 +26,7 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
+        "@napi-rs/keyring": "1.1.6",
         "@sap-ux/logger": "workspace:*",
         "i18next": "20.6.1",
         "i18next-fs-backend": "1.2.0",
@@ -40,9 +41,9 @@
         "@types/pluralize": "0.0.30",
         "@types/qs": "6.9.1",
         "fast-check": "2.19.0",
+        "jest": ">=29.7.0",
         "jest-extended": "4.0.2",
         "memfs": "3.3.0",
-        "jest": ">=29.7.0",
         "typescript": "5.6.2",
         "unionfs": "4.4.0"
     },
