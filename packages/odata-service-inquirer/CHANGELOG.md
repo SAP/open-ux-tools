@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.9
+
+### Patch Changes
+
+-   8806c46: Adds system selection default choice option
+
 ## 0.6.8
 
 ### Patch Changes
