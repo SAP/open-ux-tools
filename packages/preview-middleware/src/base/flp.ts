@@ -301,7 +301,7 @@ export class FlpSandbox {
         host: Request['headers']['host'],
         basePath: string
     ): Promise<{ major: number; minor: number }> {
-        let version = '1.121.0';
+        let version: string | undefined;
         if (!host) {
             this.logger.error('Unable to fetch UI5 version: No host found in request header.');
         } else {
@@ -310,14 +310,19 @@ export class FlpSandbox {
                 const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
                     | { libraries: { name: string; version: string }[] }
                     | undefined;
-                version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version ?? '1.121.0';
+                version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
             } catch (error) {
-                this.logger.error(`Unable to fetch UI5 version: ${error}`);
+                this.logger.error(error);
             }
         }
+        if (!version) {
+            this.logger.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
+            version = '1.121.0';
+        }
+        const [major, minor] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
         return {
-            major: parseInt(version.split('.')[0], 10),
-            minor: parseInt(version.split('.')[1], 10)
+            major,
+            minor
         };
     }
 
