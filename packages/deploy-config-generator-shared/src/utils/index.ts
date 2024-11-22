@@ -1,2 +1,2 @@
 export { t } from './i18n';
-export { ErrorMessages, handleErrorMessage } from './error-handler';
+export { ErrorMessages, bail, handleErrorMessage } from './error-handler';
