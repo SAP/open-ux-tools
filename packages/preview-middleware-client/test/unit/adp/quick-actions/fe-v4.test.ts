@@ -922,19 +922,19 @@ describe('FE V4 quick actions', () => {
                 expectedIsEnabled: boolean;
                 expectedTooltip?: string;
             }[] = [
-                {
-                    p13nMode: [],
-                    expectedIsEnabled: true,
-                    ui5version: { major: 1, minor: 130 },
-                    expectedIsNotApplicable: true
-                },
-                { p13nMode: [], expectedIsEnabled: true },
-                {
-                    p13nMode: ['Filter'],
-                    expectedIsEnabled: false,
-                    expectedTooltip: 'This option has been disabled because the change has already been made'
-                }
-            ];
+                    {
+                        p13nMode: [],
+                        expectedIsEnabled: true,
+                        ui5version: { major: 1, minor: 130 },
+                        expectedIsNotApplicable: true
+                    },
+                    { p13nMode: [], expectedIsEnabled: true },
+                    {
+                        p13nMode: ['Filter'],
+                        expectedIsEnabled: false,
+                        expectedTooltip: 'This option has been disabled because the change has already been made'
+                    }
+                ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
                 jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
@@ -997,7 +997,7 @@ describe('FE V4 quick actions', () => {
                 const registry = new FEV4QuickActionRegistry();
                 const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
                     registry
-                ]);
+                ], { onStackChange: jest.fn() } as any);
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -1035,22 +1035,22 @@ describe('FE V4 quick actions', () => {
                                 },
                                 ...(isActionExpected
                                     ? [
-                                          {
-                                              'children': [
-                                                  {
-                                                      'children': [],
-                                                      'enabled': testCase.expectedIsEnabled,
-                                                      'label': `'MyTable' table`,
-                                                      'tooltip': testCase.expectedTooltip
-                                                  }
-                                              ],
-                                              'enabled': true,
-                                              'id': 'listReport0-enable-table-filtering',
-                                              'kind': 'nested',
-                                              'title': 'Enable Table Filtering for Page Variants',
-                                              'tooltip': undefined
-                                          } as QuickAction
-                                      ]
+                                        {
+                                            'children': [
+                                                {
+                                                    'children': [],
+                                                    'enabled': testCase.expectedIsEnabled,
+                                                    'label': `'MyTable' table`,
+                                                    'tooltip': testCase.expectedTooltip
+                                                }
+                                            ],
+                                            'enabled': true,
+                                            'id': 'listReport0-enable-table-filtering',
+                                            'kind': 'nested',
+                                            'title': 'Enable Table Filtering for Page Variants',
+                                            'tooltip': undefined
+                                        } as QuickAction
+                                    ]
                                     : [])
                             ],
                             'title': 'LIST REPORT'
@@ -1479,7 +1479,7 @@ describe('FE V4 quick actions', () => {
                                     children: [2],
                                     getSubSections: () => [{}, {}],
                                     getTitle: () => 'section 01',
-                                    setSelectedSubSection: () => {}
+                                    setSelectedSubSection: () => { }
                                 };
                             }
 
