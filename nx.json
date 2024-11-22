@@ -3,9 +3,7 @@
         "default": {
             "options": {
                 "canTrackAnalytics": false,
-                "showUsageWarnings": true,
-                "nxCloudId": "63723103eb505e0e8ebeb550",
-
+                "showUsageWarnings": true
             }
         }
     },
@@ -61,5 +59,6 @@
             "cache": true
         }
     },
-    "defaultBase": "main"
+    "defaultBase": "main",
+    "nxCloudId": "63723103eb505e0e8ebeb550"
 }
