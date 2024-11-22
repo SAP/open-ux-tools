@@ -15,7 +15,6 @@ import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
-import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -302,6 +301,18 @@ describe('FlpSandbox', () => {
             app.use(flp.router);
 
             server = await supertest(app);
+        });
+
+        test('test/flp.html UI5 2.x', async () => {
+            const globalFetch = global.fetch;
+            global.fetch = jest.fn(() =>
+                Promise.resolve({
+                    json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] })
+                })
+            ) as jest.Mock;
+            const response = await server.get('/test/flp.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            global.fetch = globalFetch;
         });
 
         test('test/flp.html', async () => {
