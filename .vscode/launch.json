@@ -182,7 +182,7 @@
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
             "cwd": "${workspaceFolder}/packages/nodejs-utils/"
-        }
+        },
         {
             "type": "node",
             "request": "launch",
