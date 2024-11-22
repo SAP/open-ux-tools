@@ -16,7 +16,6 @@ export interface UI5ApplicationAnswers {
     enableCodeAssist?: boolean;
     skipAnnotations?: boolean;
     enableTypeScript?: boolean;
-    enableNPMWorkspaces?: boolean;
     showAdvanced?: boolean;
 }
 
@@ -53,7 +52,6 @@ export enum promptNames {
     addFlpConfig = 'addFlpConfig',
     ui5Theme = 'ui5Theme',
     enableEslint = 'enableEslint',
-    enableNPMWorkspaces = 'enableNPMWorkspaces',
     enableCodeAssist = 'enableCodeAssist',
     skipAnnotations = 'skipAnnotations',
     enableTypeScript = 'enableTypeScript',
@@ -134,8 +132,7 @@ type booleanPromptKeys =
     | 'skipAnnotations'
     | 'enableTypeScript'
     | 'enableCodeAssist'
-    | 'showAdvanced'
-    | 'enableNPMWorkspaces';
+    | 'showAdvanced';
 
 // Creates a general type for all string value prompt options
 type stringValuePromptType = Omit<typeof promptNames, booleanPromptKeys>;
