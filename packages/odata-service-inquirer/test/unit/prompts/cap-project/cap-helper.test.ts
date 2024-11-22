@@ -10,6 +10,7 @@ import LoggerHelper from '../../../../src/prompts/logger-helper';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-project/types';
 import os from 'os';
+import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 
 const initMockCapModelAndServices = {
     model: {},
@@ -238,7 +239,10 @@ describe('cap-helper', () => {
         };
 
         expect(await getCapServiceChoices(capProjectPaths)).toEqual([]);
-        expect(errorHandlerSpy).toHaveBeenCalledWith(new Error('getCapModelAndServices error'));
+        expect(errorHandlerSpy).toHaveBeenCalledWith(
+            ERROR_TYPE.UNKNOWN,
+            t('errors.capModelAndServicesLoadError', { error: 'getCapModelAndServices error' })
+        );
         expect(logErrorSpy).toHaveBeenCalledWith(
             t('errors.capModelAndServicesLoadError', { error: 'getCapModelAndServices error' })
         );

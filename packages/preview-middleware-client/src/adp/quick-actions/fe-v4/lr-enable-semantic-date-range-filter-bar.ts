@@ -9,7 +9,8 @@ import { executeToggleAction } from './utils';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ENABLE_SEMANTIC_DATE_RANGE = 'enable-semantic-date-range';
-const PROPERTY_PATH = 'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/useSemanticDateRange';
+const PROPERTY_NAME = 'useSemanticDateRange';
+const PROPERTY_PATH = `controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/${PROPERTY_NAME}`;
 const CONTROL_TYPE = 'sap.fe.macros.controls.FilterBar';
 const boolMap: { [key: string]: boolean } = {
     'true': true,
@@ -38,7 +39,12 @@ export class ToggleSemanticDateRangeFilterBar
             const filterBar = getControlById<FilterBar>(control.controlId);
             if (isActionApplicable && filterBar) {
                 this.control = filterBar;
-                this.isUseDateRangeTypeEnabled = boolMap[this.control.data('useSemanticDateRange')];
+                const value = this.context.changeService.getConfigurationPropertyValue(
+                    control.controlId,
+                    PROPERTY_NAME
+                );
+                this.isUseDateRangeTypeEnabled =
+                    value === undefined ? boolMap[this.control.data('useSemanticDateRange')] : (value as boolean);
             }
         }
     }

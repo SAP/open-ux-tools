@@ -14,9 +14,6 @@
             "missingPropMsg": "The property: `{{destinationProperty}}` is missing.",
             "httpConnectionError": "A connection error occurred with the selected destination. Http code: {{- code}}. $t(texts.seeLogForDetails)"
         },
-        "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. $t(texts.seeLogForDetails).",
-        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services. {{- error}}",
-        "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. CAP service property `urlPath` is not defined but is required.",
         "unknownError": "An error occurred{{- error, addMsgWithColonFormatter}}",
         "servicesUnavailable": "An error occurred retrieving service(s) for SAP System.",
         "certificateError": "A certificate error has occurred{{- errorMsg, addMsgWithColonFormatter}}",
@@ -26,7 +23,7 @@
         "invalidUrl": "Invalid URL{{-input, addMsgWithColonFormatter}}",
         "connectionError": "A connection error occurred, please ensure the target host is available on the network: {{- error}}",
         "timeout": "A connection timeout error occurred{{- errorMsg, addMsgWithColonFormatter}}",
-        "serverReturnedAnError": "The server returned an error. {{errorDesc}}",
+        "serverReturnedAnError": "The server returned an error. {{- errorDesc}}",
         "serverUnableToCompleteRequest": "The server was unable to complete the request",
         "catalogServiceNotActive": "Catalog service is not active",
         "urlNotFound": "URL not found",
