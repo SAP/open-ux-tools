@@ -40,11 +40,11 @@ jobs:
             - name: Run build
               run: pnpm run build
               env:
-                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.CI_NX_ACCESS_TOKEN }}
+                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Run unit tests
               run: pnpm run test
               env:
-                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.CI_NX_ACCESS_TOKEN }}              
+                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}              
             - name: Cache playwright browsers
               id: cache-playwright-browsers
               uses: actions/cache@v4
@@ -61,7 +61,7 @@ jobs:
             - name: Run integration tests
               run: pnpm run test:integration
               env:
-                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.CI_NX_ACCESS_TOKEN }}
+                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Upload playwright reports
               if: failure()
               uses: actions/upload-artifact@v3
