@@ -87,17 +87,17 @@ export enum promptNames {
  */
 export type UI5AbapRepoPromptOptions =
     | {
-        hide?: false;
-        default?: string;
-        /**
-         * If set to true, the prompt will be hidden if the target system is on-premise.
-         */
-        hideIfOnPremise?: boolean;
-    }
+          hide?: false;
+          default?: string;
+          /**
+           * If set to true, the prompt will be hidden if the target system is on-premise.
+           */
+          hideIfOnPremise?: boolean;
+      }
     | {
-        hide: true;
-        default: string;
-    };
+          hide: true;
+          default: string;
+      };
 
 export type DescriptionPromptOptions = {
     /**
