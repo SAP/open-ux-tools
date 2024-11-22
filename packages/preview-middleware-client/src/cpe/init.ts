@@ -43,7 +43,7 @@ export default function init(
 
     const connectorService = new WorkspaceConnectorService();
     const outlineService = new OutlineService(rta, changesService);
-    const quickActionService = new QuickActionService(rta, outlineService, registries);
+    const quickActionService = new QuickActionService(rta, outlineService, registries, changesService);
     const services: Service[] = [
         connectorService,
         selectionService,
@@ -52,22 +52,25 @@ export default function init(
         rtaService,
         quickActionService
     ];
-
     try {
         loadDefaultLibraries();
-
-        for (const service of services) {
-            service
-                .init(CommunicationService.sendAction, subscribe)
-                ?.catch((reason) => Log.error('Service Initialization Failed: ', getError(reason)));
-        }
-
+        const allPromises = services.map((service) => {
+            return service.init(CommunicationService.sendAction, subscribe)?.catch((error) => {
+                Log.error('Service Initialization Failed: ', getError(error));
+            });
+        });
+        Promise.all(allPromises)
+            .then(() => {
+                CommunicationService.sendAction(appLoaded());
+            })
+            // eslint-disable-next-line @typescript-eslint/unbound-method
+            .catch(Log.error);
         const icons = getIcons();
-
         CommunicationService.sendAction(iconsLoaded(icons));
-        CommunicationService.sendAction(appLoaded());
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', getError(error));
     }
+
+    //  * This is returned immediately to avoid promise deadlock, preventing services from waiting indefinitely.
     return Promise.resolve();
 }
