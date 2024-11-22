@@ -287,6 +287,9 @@ export class FlpSandbox {
                 //ui5-patched-router comes with cds-plugin-ui5
                 const ui5Version = await this.getUi5Version(req.headers.host, req['ui5-patched-router']?.baseUrl ?? '');
                 this.logger.info(`Using sandbox template for UI5 major version ${ui5Version.major}.`);
+                if (ui5Version.major === 1 && ui5Version.minor <= 71) {
+                    this.removeAsyncHintsRequests(this.templateConfig.apps);
+                }
                 const html = render(this.getSandboxTemplate(ui5Version.major), this.templateConfig);
                 this.sendResponse(res, 'text/html', 200, html);
             }
@@ -343,6 +346,22 @@ export class FlpSandbox {
             'utf-8'
         );
     };
+
+    /**
+     * For UI5 version 1.71 and below, the asyncHints.requests need to be removed from the template configuration
+     * to load the changes in an Adaptation project.
+     *
+     * @param apps the applications to remove the asyncHints.requests from
+     */
+    private removeAsyncHintsRequests(apps: TemplateConfig['apps']): void {
+        for (const app in apps) {
+            const appDependencies = apps[app].applicationDependencies;
+
+            if (appDependencies?.asyncHints.requests) {
+                appDependencies.asyncHints.requests = [];
+            }
+        }
+    }
 
     /**
      * Try finding a locate-reuse-libs script in the project.
