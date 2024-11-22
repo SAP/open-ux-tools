@@ -116,7 +116,7 @@ export abstract class TableQuickActionDefinitionBase {
                 this.children.push({
                     label: `'${iconTabBarfilterMap[tabKey]}' table`,
                     tooltip: (tableRows.length < 1 && this.tooltip) ? this.context.resourceBundle.getText(this.tooltip) : undefined,
-                    enabled: (tableRows.length < 1 && this.tooltip) ? false : true,
+                    enabled: !(tableRows.length < 1 && this.tooltip),
                     children: []
                 });
                 this.tableMap[`${this.children.length - 1}`] = {
@@ -264,7 +264,7 @@ export abstract class TableQuickActionDefinitionBase {
                             {
                                 label: this.getTableLabel(table),
                                 tooltip: (tableRows.length < 1 && this.tooltip) ? this.context.resourceBundle.getText(this.tooltip) : undefined,
-                                enabled: (tableRows.length < 1 && this.tooltip) ? false : true,
+                                enabled: !(tableRows.length < 1 && this.tooltip),
                                 children: []
                             }
                         ]
@@ -274,7 +274,7 @@ export abstract class TableQuickActionDefinitionBase {
                     sectionChild.children.push({
                         label: this.getTableLabel(table),
                         tooltip: (tableRows.length < 1 && this.tooltip) ? this.context.resourceBundle.getText(this.tooltip) : undefined,
-                        enabled: (tableRows.length < 1 && this.tooltip) ? false : true,
+                        enabled: !(tableRows.length < 1 && this.tooltip),
                         children: []
                     });
                 }
@@ -302,7 +302,7 @@ export abstract class TableQuickActionDefinitionBase {
             this.children.push({
                 label: this.getTableLabel(table),
                 tooltip: (tableRows.length < 1 && this.tooltip) ? this.context.resourceBundle.getText(this.tooltip) : undefined,
-                enabled: (tableRows.length < 1 && this.tooltip) ? false : true,
+                enabled: !(tableRows.length < 1 && this.tooltip),
                 children: []
             });
         }
