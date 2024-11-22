@@ -171,13 +171,17 @@ function getScpPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigA
             default: (): boolean | undefined => backendTarget?.abapTarget?.scp
         }
     ];
-    // Setter prompt to ensure the state for both CLI and YUI is updated
+    // Setter prompt to ensure the state for both CLI and YUI is updated when user is toggling the SCP question, Yes/No
     prompts.push({
         when: (answers: AbapDeployConfigAnswersInternal): boolean => {
             const scpChoice = answers[promptNames.scp];
             const targetChoice = answers[promptNames.targetSystem];
-            // scpChoice by default is true so only update state if target system is a URL
-            PromptState.abapDeployConfig.scp = !!(targetChoice === TargetSystemType.Url && scpChoice);
+            // Maintain the correct state only when SCP comes into play
+            if (scpChoice && targetChoice === TargetSystemType.Url) {
+                PromptState.abapDeployConfig.scp = true;
+            } else if (!scpChoice && targetChoice === TargetSystemType.Url) {
+                PromptState.abapDeployConfig.scp = false;
+            }
             return false;
         },
         name: promptNames.scpSetter
