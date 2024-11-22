@@ -1,22 +1,28 @@
 @import '../../UIContextualMenu/_variables.scss';
 
+@mixin selected-item-color() {
+    background: $menu-item-selection-background !important;
+    color: $menu-item-selection-color !important;
+    outline: $menu-item-focus-border !important;
+    outline-offset: $menu-item-border-offset !important;
+    .editable-item-sub-menu-icon svg > path {
+        fill: $menu-item-selection-color;
+    }
+}
+
 .ms-Dropdown-items {
     > .ms-Button--command {
         &:hover:focus-within,
         &:focus-within {
-            background: $menu-item-selection-background !important;
-            color: $menu-item-selection-color !important;
-            outline: $menu-item-focus-border !important;
-            outline-offset: $menu-item-border-offset !important;
+            @include selected-item-color();
         }
     }
-}
-
-.ms-Dropdown-items:not(:focus-within) {
-    > .ms-Button--command[aria-selected='true'] {
-        background: $menu-item-selection-background !important;
-        color: $menu-item-selection-color !important;
-        outline: $menu-item-focus-border !important;
-        outline-offset: $menu-item-border-offset !important;
+    &:not(:focus-within) {
+        > .ms-Button--command[aria-selected='true'] {
+            @include selected-item-color();
+        }
+    }
+    .ms-Checkbox, .ms-Button--action {
+        padding-right: 0 !important;
     }
 }

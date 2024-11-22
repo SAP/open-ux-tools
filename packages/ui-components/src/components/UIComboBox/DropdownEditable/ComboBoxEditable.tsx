@@ -8,6 +8,7 @@ import { ItemInput, ItemInputRef } from './ItemInput';
 
 import './ComboBoxEditable.scss';
 import { getOption } from './utils';
+import { SubMenuContextMenu } from './SubMenuContextMenu';
 
 export interface ComboBoxEditableProps extends UIComboBoxProps {
     /**
@@ -207,27 +208,18 @@ export const ComboBoxEditable = (props: ComboBoxEditableProps) => {
                 }}
             />
             {target && activeOption?.options && (
-                <UIContextualMenu
+                <SubMenuContextMenu
+                    items={activeOption.options}
                     target={target}
-                    className="dropdown-submenu"
-                    onRestoreFocus={() => {
-                        // No focus restore
-                    }}
-                    calloutProps={{
-                        onMouseLeave: (event) => {
-                            setSubMenu(null);
-                        }
-                    }}
                     onItemClick={(ev, item?: UIContextualMenuItem) => {
                         if (activeOption && item) {
                             activeOption.subValue = item;
                             inputItemRefs.current[activeOption.key]?.setOption(activeOption);
                         }
+                    }}
+                    hideSubmenu={() => {
                         setSubMenu(null);
                     }}
-                    directionalHint={11}
-                    shouldFocusOnMount={false}
-                    items={activeOption.options}
                 />
             )}
         </>

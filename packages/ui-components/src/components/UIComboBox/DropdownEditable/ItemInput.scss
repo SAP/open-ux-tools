@@ -59,7 +59,9 @@ $menu-item-selection-color: var(
     }
 }
 
-.ts-ComboBox--selected {
+.ts-ComboBox--selected,
+.ms-Dropdown-item.is-checked,
+.ms-ComboBox-option.is-checked {
     .editable-item-sub-menu-icon svg > path {
         fill: $menu-item-selection-color;
     }
