@@ -12,7 +12,7 @@ import type {
     TitlePromptOptions
 } from '../../types';
 import { t } from '../../i18n';
-import { promptNames } from '../../types';
+import { ConfigurationMode, promptNames } from '../../types';
 
 /**
  * Creates the 'semanticObject' prompt for FLP configuration.
@@ -27,6 +27,15 @@ export function getSemanticObjectPrompt(options?: SemanticObjectPromptOptions): 
         guiOptions: {
             mandatory: true,
             breadcrumb: true
+        },
+        when: (answers: FLPConfigAnswers) => {
+            if (!answers?.configurationMode) {
+                /**
+                 * Show by default if configurationMode prompt is hidden
+                 */
+                return true;
+            }
+            return answers?.configurationMode === ConfigurationMode.AddNew;
         },
         message: t('prompts.semanticObject'),
         default: options?.default,
@@ -48,6 +57,15 @@ export function getActionPrompt(options?: ActionPromptOptions): FLPConfigQuestio
         guiOptions: {
             mandatory: true,
             breadcrumb: true
+        },
+        when: (answers: FLPConfigAnswers) => {
+            if (!answers?.configurationMode) {
+                /**
+                 * Show by default if configurationMode prompt is hidden
+                 */
+                return true;
+            }
+            return answers?.configurationMode === ConfigurationMode.AddNew;
         },
         message: t('prompts.action'),
         default: options?.default,
@@ -126,7 +144,7 @@ export function getTitlePrompt(
             breadcrumb: true
         },
         message: t('prompts.title'),
-        default: options?.default,
+        default: options?.default, // TODO: Prefill these values from the selected inbound
         filter: (val: string): string => val?.trim(),
         validate: (val) => validateText(val, 0)
     };
@@ -153,7 +171,7 @@ export function getSubTitlePrompt(
             breadcrumb: t('prompts.subTitle')
         },
         message: t('prompts.subTitle'),
-        default: options?.default,
+        default: options?.default, // TODO: Prefill these values from the selected inbound
         filter: (val: string): string => val?.trim()
     };
 }

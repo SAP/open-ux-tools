@@ -1705,6 +1705,9 @@ importers:
 
   packages/flp-config-inquirer:
     dependencies:
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils

@@ -20,6 +20,7 @@ export enum promptNames {
     overwrite = 'overwrite',
     title = 'title',
     subTitle = 'subTitle',
+    parameterString = 'parameterString',
     createAnotherInbound = 'createAnotherInbound'
 }
 
@@ -34,6 +35,7 @@ export interface FLPConfigAnswers {
     [promptNames.overwrite]?: boolean;
     [promptNames.title]?: string;
     [promptNames.subTitle]?: string;
+    [promptNames.parameterString]?: string;
     [promptNames.createAnotherInbound]?: boolean;
     s4Continue?: boolean;
 }
@@ -109,6 +111,14 @@ export interface SubTitlePromptOptions {
 }
 
 /**
+ * Options for the 'parameterString' prompt.
+ */
+export interface ParameterStringPromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+/**
  * Options for the 'createAnotherInbound' prompt.
  */
 export interface CreateAnotherInboundPromptOptions {
@@ -133,6 +143,7 @@ type flpConfigPromptOptions = Record<promptNames.configurationMode, Configuratio
     Record<promptNames.overwrite, OverwritePromptOptions> &
     Record<promptNames.title, TitlePromptOptions> &
     Record<promptNames.subTitle, SubTitlePromptOptions> &
+    Record<promptNames.parameterString, ParameterStringPromptOptions> &
     Record<promptNames.createAnotherInbound, CreateAnotherInboundPromptOptions>;
 
 /**

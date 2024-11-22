@@ -9,7 +9,12 @@ import {
 } from './questions/basic';
 import { promptNames } from '../types';
 import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
-import { getConfigurationModePrompt, getCreateAnotherInboundPrompt, getInboundIdsPrompt } from './questions/advanced';
+import {
+    getConfigurationModePrompt,
+    getCreateAnotherInboundPrompt,
+    getInboundIdsPrompt,
+    getParameterStringPrompt
+} from './questions/advanced';
 
 /**
  * Generates a list of prompts for FLP (Fiori Launchpad) configuration.
@@ -43,6 +48,11 @@ export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConf
             silentOverwrite,
             promptOptions?.[promptNames.subTitle]
         ),
+        [promptNames.parameterString]: getParameterStringPrompt(
+            inboundKeys,
+            true,
+            promptOptions?.[promptNames.parameterString]
+        ),
         [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(
             promptOptions?.[promptNames.createAnotherInbound]
         )
@@ -56,6 +66,7 @@ export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConf
         keyedPrompts[promptNames.overwrite],
         keyedPrompts[promptNames.title],
         keyedPrompts[promptNames.subTitle],
+        keyedPrompts[promptNames.parameterString],
         keyedPrompts[promptNames.createAnotherInbound]
     ];
 

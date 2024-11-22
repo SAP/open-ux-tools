@@ -1,4 +1,7 @@
-import { ListQuestion } from '@sap-ux/inquirer-common';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+import { parseParameters } from '@sap-ux/adp-tooling';
+import { validateEmptyString } from '@sap-ux/project-input-validator';
+
 import { t } from '../../i18n';
 import {
     promptNames,
@@ -7,9 +10,9 @@ import {
     ConfigurationMode,
     FLPConfigAnswers,
     InboundIdPromptOptions,
-    CreateAnotherInboundPromptOptions
+    CreateAnotherInboundPromptOptions,
+    ParameterStringPromptOptions
 } from '../../types';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
 
 const modeChoices = [
     { name: ConfigurationMode.AddNew, value: ConfigurationMode.AddNew },
@@ -48,7 +51,7 @@ export function getConfigurationModePrompt(
  */
 export function getInboundIdsPrompt(
     inboundIds: string[],
-    isCloudProject: boolean = true,
+    isCloudProject: boolean = true, // TODO: could be removed and the check for cloud project would happen before prompting
     options?: InboundIdPromptOptions
 ): FLPConfigQuestion {
     return {
@@ -63,6 +66,50 @@ export function getInboundIdsPrompt(
             hint: t('tooltips.inboundId'),
             breadcrumb: t('prompts.inboundIds'),
             mandatory: true
+        },
+        additionalMessages: () => {
+            if (inboundIds?.length === 0) {
+                return {
+                    message: t('validators.noInboundKeysAreFound'),
+                    severity: Severity.warning
+                };
+            }
+        }
+    };
+}
+
+/**
+ * Creates the 'parameterString' prompt for FLP configuration.
+ *
+ * @param {ParameterStringPromptOptions} [options] - Optional configuration for the parameter string prompt, including default values.
+ * @returns {FLPConfigQuestion} The prompt configuration for the parameter string.
+ */
+export function getParameterStringPrompt(
+    inboundIds: string[],
+    isCloudProject: boolean = true, // TODO: could be removed and the check for cloud project would happen before prompting
+    options?: ParameterStringPromptOptions
+): FLPConfigQuestion {
+    return {
+        type: 'editor',
+        name: promptNames.parameterString,
+        message: t('prompts.parameterString'),
+        validate: (value: string) => {
+            if (!value) {
+                return true;
+            }
+
+            try {
+                parseParameters(value);
+            } catch (error) {
+                return error.message;
+            }
+
+            return true;
+        },
+        when: options?.hide ? false : isCloudProject && inboundIds?.length === 0,
+        guiOptions: {
+            hint: t('tooltips.parameterString'),
+            mandatory: false
         }
     };
 }

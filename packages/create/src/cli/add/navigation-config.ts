@@ -58,6 +58,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
         } else {
             await traceChanges(fs);
         }
+        console.log(JSON.stringify(config, null, 2)); // TODO: Remove after testing
     } catch (error) {
         logger.error(`Error while executing add inbound navigation configuration '${(error as Error).message}'`);
         logger.debug(error as Error);
