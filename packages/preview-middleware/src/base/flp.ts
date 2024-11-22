@@ -340,12 +340,12 @@ export class FlpSandbox {
      * @param ui5MajorVersion - the major version of UI5
      * @returns the template for the sandbox HTML file
      */
-    private getSandboxTemplate = (ui5MajorVersion: number): string => {
+    private getSandboxTemplate(ui5MajorVersion: number): string {
         return readFileSync(
             join(__dirname, `../../templates/flp/sandbox${ui5MajorVersion === 1 ? '' : ui5MajorVersion}.html`),
             'utf-8'
         );
-    };
+    }
 
     /**
      * For UI5 version 1.71 and below, the asyncHints.requests need to be removed from the template configuration
