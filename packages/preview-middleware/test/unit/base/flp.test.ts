@@ -315,6 +315,18 @@ describe('FlpSandbox', () => {
             global.fetch = globalFetch;
         });
 
+        test('test/flp.html UI5 1.71 w/o asyncHints.requests', async () => {
+            const globalFetch = global.fetch;
+            global.fetch = jest.fn(() =>
+                Promise.resolve({
+                    json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.71.0' }] })
+                })
+            ) as jest.Mock;
+            const response = await server.get('/test/flp.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            global.fetch = globalFetch;
+        });
+
         test('test/flp.html', async () => {
             const response = await server.get('/test/flp.html').expect(200);
             expect(response.text).toMatchSnapshot();
