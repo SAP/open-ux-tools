@@ -2,7 +2,7 @@ const fs = require('fs');
 
 /**
  * Returns a mock class for XMLHttpRequest.
- * This is used to ensure the proper files are returned
+ * This is used to ensure the proper files are returned.
  * @param {object} globalWindow The global window object.
  * @param {object} pathMappingFn The path mapping function.
  * @param {object} shimmedFilePath The shimmed file paths.
