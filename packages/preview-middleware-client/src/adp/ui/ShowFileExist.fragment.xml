@@ -1,0 +1,37 @@
+<Dialog id="showFileExistDialog"  
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form" 
+    title="Annotation File Exists" 
+    contentWidth="450px" 
+    class="sapUiRTABorder">
+    <content>
+        <f:SimpleForm
+            editable="true"
+            layout="ResponsiveGridLayout"
+            labelSpanS="12"
+            visible="true"
+            singleContainerFullSize="true">
+            <f:content>
+                <Label text="An Annotation file has been found." />
+                <Text text="{/filePathFromRoot}" />
+            </f:content>
+        </f:SimpleForm>
+    </content>
+    <beginButton>
+        <Button 
+            id="showFileInVscodeBtn" 
+            text="Show File in VSCode"
+            press="onShowFileInVscodeBtn"
+            enabled="true"
+            type="Emphasized" />
+    </beginButton>
+    <endButton>
+        <Button 
+            id="closeShowFileInVsCodeBtn" 
+            text="Cancel"
+            press="handleDialogClose"
+            type="Reject" />
+    </endButton>
+</Dialog>

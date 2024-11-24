@@ -269,7 +269,7 @@ export function getChange(
     changeType: ChangeType
 ): ManifestChangeProperties {
     return {
-        fileName: `id_${timestamp}`,
+        fileName: `id_${timestamp}_addAnnotationsToOData`,
         namespace: path.posix.join(namespace, DirName.Changes),
         layer,
         fileType: 'change',

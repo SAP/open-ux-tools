@@ -18,6 +18,7 @@ import AddFragment, { AddFragmentOptions } from './controllers/AddFragment.contr
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
+import ShowFileExistDialog, { ShowFileExist } from './controllers/ShowFileExistDialog.controller';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import { isReuseComponent } from '../cpe/utils';
 import { Ui5VersionInfo } from '../utils/version';
@@ -28,10 +29,11 @@ export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
     ADD_TABLE_COLUMN_FRAGMENTS = 'AddTableColumnFragments',
     CONTROLLER_EXTENSION = 'ControllerExtension',
-    ADD_FRAGMENT_AT_EXTENSION_POINT = 'ExtensionPoint'
+    ADD_FRAGMENT_AT_EXTENSION_POINT = 'ExtensionPoint',
+    SHOW_FILE_EXIST_DIALOG = 'ShowFileExist'
 }
 
-type Controller = AddFragment | AddTableColumnFragments | ControllerExtension | ExtensionPoint;
+type Controller = AddFragment | AddTableColumnFragments | ControllerExtension | ExtensionPoint | ShowFileExistDialog;
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
@@ -128,7 +130,7 @@ export async function handler(
     rta: RuntimeAuthoring,
     dialogName: DialogNames,
     extensionPointData?: ExtensionPointData,
-    options: Partial<AddFragmentOptions> = {}
+    options: Partial<AddFragmentOptions> | Partial<ShowFileExist> = {}
 ): Promise<void> {
     let controller: Controller;
     const resources = await getTextBundle();
@@ -136,15 +138,20 @@ export async function handler(
     switch (dialogName) {
         case DialogNames.ADD_FRAGMENT:
             controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta, {
-                aggregation: options.aggregation,
+                ...('aggregation' in options && { aggregation: options.aggregation }),
                 title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
             });
             break;
         case DialogNames.ADD_TABLE_COLUMN_FRAGMENTS:
-            controller = new AddTableColumnFragments(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta, {
-                aggregation: options.aggregation,
-                title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
-            });
+            controller = new AddTableColumnFragments(
+                `open.ux.preview.client.adp.controllers.${dialogName}`,
+                overlay,
+                rta,
+                {
+                    ...('aggregation' in options && { aggregation: options.aggregation }),
+                    title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
+                }
+            );
             break;
         case DialogNames.CONTROLLER_EXTENSION:
             controller = new ControllerExtension(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta);
@@ -155,6 +162,12 @@ export async function handler(
                 overlay,
                 rta,
                 extensionPointData!
+            );
+            break;
+        case DialogNames.SHOW_FILE_EXIST_DIALOG:
+            controller = new ShowFileExistDialog(
+                `open.ux.preview.client.adp.controllers.${dialogName}`,
+                options as ShowFileExist
             );
             break;
     }

@@ -11,13 +11,25 @@ import type { NextFunction, Request, Response } from 'express';
 
 import { TemplateFileName, HttpStatusCodes } from '../types';
 import { DirName } from '@sap-ux/project-access';
-import type { CodeExtChange } from '../types';
+import { ChangeType, type CodeExtChange, type AnnotationFileChange } from '../types';
+import { generateChange } from '../writer/editors';
+import { ManifestService } from '../base/abap/manifest-service';
+import { getAdpConfig, getVariant } from '../base/helper';
+import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 
 interface WriteControllerBody {
     controllerName: string;
     projectId: string;
 }
 
+interface AnnotationFileDetails {
+    fileName: string;
+    annotationPath: string;
+    annotationPathFromRoot: string;
+    annotationExists: boolean;
+    isRunningInBAS: boolean;
+    timestamp: number;
+}
 /**
  * @description Handles API Routes
  */
@@ -244,4 +256,110 @@ export default class RoutesHandler {
             next(e);
         }
     };
+
+    public handleCreateAnnoationFile = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { dataSource, serviceUrl } = req.body as { dataSource: string; serviceUrl: string };
+
+            if (!dataSource) {
+                res.status(HttpStatusCodes.BAD_REQUEST).send('No datasource found in manifest!');
+                this.logger.debug('Bad request. Could not find a datasource in manifest!');
+                return;
+            }
+            const project = this.util.getProject();
+            const projectRoot = project.getRootPath();
+            const manifestService = await this.getManifestService();
+            const metadata = await manifestService.getDataSourceMetadata(dataSource);
+            const namespaces = getAnnotationNamespaces({ metadata });
+            const fsEditor = await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
+                projectRoot,
+                ChangeType.ADD_ANNOTATIONS_TO_ODATA,
+                {
+                    annotation: {
+                        dataSource,
+                        namespaces,
+                        serviceUrl: serviceUrl
+                    },
+                    variant: getVariant(projectRoot)
+                }
+            );
+            fsEditor.commit((err) => this.logger.error(err));
+
+            const message = 'Annotation file created!';
+            res.status(HttpStatusCodes.CREATED).send(message);
+        } catch (e) {
+            const sanitizedMsg = sanitize(e.message);
+            this.logger.error(sanitizedMsg);
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
+            next(e);
+        }
+    };
+
+    public handleGetAllAnnotationFilesMappedByDataSource = async (_req: Request, res: Response, next: NextFunction) => {
+        try {
+            const isRunningInBAS = isAppStudio();
+
+            const annotationChangeFiles = await this.readAllFilesByGlob(
+                '/**/changes/**/*_addAnnotationsToOData.change'
+            );
+            const manifestService = await this.getManifestService();
+            const dataSoruces = await manifestService.getManifestDataSources();
+            const apiResponse: {
+                [dataSourceId: string]: {
+                    serviceUrl: string;
+                    annotationFiles: AnnotationFileDetails[];
+                };
+            } = {};
+            Object.keys(dataSoruces).forEach((dataSourceId) => {
+                if (dataSoruces[dataSourceId].type === 'OData') {
+                    apiResponse[dataSourceId] = {
+                        annotationFiles: new Array<AnnotationFileDetails>(),
+                        serviceUrl: dataSoruces[dataSourceId].uri
+                    };
+                }
+            });
+            const project = this.util.getProject();
+            const getPath = (projectPath: string, fileName: string, folder: string = DirName.Annotations) =>
+                path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
+            for (const file of annotationChangeFiles) {
+                const fileStr = await file.getString();
+                const change = JSON.parse(fileStr) as AnnotationFileChange;
+                if (apiResponse[change.content.dataSourceId]) {
+                    for (const fileName of change.content.annotations) {
+                        const dataSourceInfo = change.content.dataSource[fileName];
+                        const fileNameWithExt = dataSourceInfo.uri.split(path.sep).pop();
+                        if (dataSourceInfo.type === 'ODataAnnotation' && fileNameWithExt) {
+                            const annotationPath = getPath(project.getSourcePath(), fileNameWithExt);
+                            const annotationPathFromRoot = getPath(project.getName(), fileNameWithExt);
+                            const annotationExists = fs.existsSync(annotationPath);
+                            apiResponse[change.content.dataSourceId].annotationFiles.push({
+                                fileName: fileNameWithExt,
+                                annotationPath: os.platform() === 'win32' ? `/${annotationPath}` : annotationPath,
+                                annotationPathFromRoot,
+                                annotationExists,
+                                isRunningInBAS,
+                                timestamp: new Date(change.creation).getTime()
+                            });
+                        }
+                    }
+                }
+                apiResponse[change.content.dataSourceId].annotationFiles = apiResponse[
+                    change.content.dataSourceId
+                ].annotationFiles.sort((a, b) => a.timestamp - b.timestamp);
+            }
+
+            this.sendFilesResponse(res, apiResponse);
+        } catch (e) {
+            this.handleErrorMessage(res, next, e);
+        }
+    };
+
+    private async getManifestService(): Promise<ManifestService> {
+        const project = this.util.getProject();
+        const projectRoot = project.getRootPath();
+        const yamlPath = path.join(projectRoot, 'ui5.yaml');
+        const variant = getVariant(projectRoot);
+        const adpConfig = await getAdpConfig(projectRoot, yamlPath);
+        return await ManifestService.initMergedManifest(projectRoot, variant, adpConfig, this.logger);
+    }
 }
