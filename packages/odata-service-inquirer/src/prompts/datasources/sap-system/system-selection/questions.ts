@@ -211,8 +211,10 @@ export async function getSystemConnectionQuestions(
             guiOptions: {
                 hint: t('prompts.destinationServicePath.hint'),
                 mandatory: true,
-                breadcrumb: true
+                breadcrumb: true,
+                applyDefaultWhenDirty: true
             },
+            default: '',
             validate: async (servicePath: string, answers: SystemSelectionAnswers) => {
                 // @sap-ux/btp-utils getDestinationUrlForAppStudio() enforces a path length of > 1, even though it could be a valid path
                 // Double slashes are not allowed at the start of the path as they break URL construction
