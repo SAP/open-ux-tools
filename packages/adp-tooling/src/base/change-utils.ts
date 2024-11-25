@@ -219,7 +219,7 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
     let changeObj: InboundChange | undefined;
     let filePath = '';
 
-    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes, DirName.Manifest);
+    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes);
 
     if (!existsSync(pathToInboundChangeFiles)) {
         return {
