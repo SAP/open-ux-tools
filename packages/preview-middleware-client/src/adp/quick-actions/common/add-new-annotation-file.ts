@@ -63,8 +63,9 @@ export class AddNewAnnotationFile implements NestedQuickActionDefinition {
                 });
             } else {
                 const annotationFiles = dataSourceAnnotationFileMap[dataSourceId].annotationFiles;
-                const { annotationPath, annotationPathFromRoot, isRunningInBAS } =
-                    annotationFiles[annotationFiles.length - 1];
+                const { annotationPath, annotationPathFromRoot, isRunningInBAS } = annotationFiles.find(
+                    (item) => item.annotationFileInUse
+                )!;
                 handler(
                     OverlayRegistry.getOverlay(this.context.view), // this passed only because, for method param is required.
                     this.context.rta, // same as above

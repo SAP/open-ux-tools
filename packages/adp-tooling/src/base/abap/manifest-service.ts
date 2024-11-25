@@ -165,6 +165,23 @@ export class ManifestService {
     }
 
     /**
+     * Returns all annotations registered to the datasource.
+     *
+     * @param dataSourceId - Datasource Id.
+     * @returns The annotation array.
+     * @throws Error if no data source with datasourceId is found in the manifest.
+     */
+    public getAnnotationsForDataSourceId(dataSourceId: string): string[] {
+        const dataSources = this.getManifestDataSources();
+        const datasoruce = dataSources[dataSourceId];
+        if (!datasoruce) {
+            throw new Error('No data sources found in the manifest');
+        }
+
+        return datasoruce.settings?.annotations ?? [];
+    }
+
+    /**
      * Returns the metadata of a data source.
      *
      * @param dataSourceId - The ID of the data source.

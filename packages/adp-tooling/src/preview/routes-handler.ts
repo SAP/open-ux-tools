@@ -28,7 +28,7 @@ interface AnnotationFileDetails {
     annotationPathFromRoot: string;
     annotationExists: boolean;
     isRunningInBAS: boolean;
-    timestamp: number;
+    annotationFileInUse: boolean;
 }
 /**
  * @description Handles API Routes
@@ -299,9 +299,6 @@ export default class RoutesHandler {
         try {
             const isRunningInBAS = isAppStudio();
 
-            const annotationChangeFiles = await this.readAllFilesByGlob(
-                '/**/changes/**/*_addAnnotationsToOData.change'
-            );
             const manifestService = await this.getManifestService();
             const dataSoruces = await manifestService.getManifestDataSources();
             const apiResponse: {
@@ -321,10 +318,19 @@ export default class RoutesHandler {
             const project = this.util.getProject();
             const getPath = (projectPath: string, fileName: string, folder: string = DirName.Annotations) =>
                 path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
+
+            const annotationChangeFiles = await this.readAllFilesByGlob(
+                '/**/changes/**/*_addAnnotationsToOData.change'
+            );
+            // Iterating the changes file over manifest datasoruce as it is not easy to differntiate the file in workspace and file that is part of base project-
             for (const file of annotationChangeFiles) {
                 const fileStr = await file.getString();
                 const change = JSON.parse(fileStr) as AnnotationFileChange;
-                if (apiResponse[change.content.dataSourceId]) {
+                const dataSourceId = change.content.dataSourceId;
+                if (apiResponse[dataSourceId]) {
+                    const annotations = manifestService.getAnnotationsForDataSourceId(dataSourceId);
+                    // last one in manifest has the highest precidence.
+                    const annotationFileInUse = annotations[annotations.length - 1];
                     for (const fileName of change.content.annotations) {
                         const dataSourceInfo = change.content.dataSource[fileName];
                         const fileNameWithExt = dataSourceInfo.uri.split(path.sep).pop();
@@ -338,14 +344,11 @@ export default class RoutesHandler {
                                 annotationPathFromRoot,
                                 annotationExists,
                                 isRunningInBAS,
-                                timestamp: new Date(change.creation).getTime()
+                                annotationFileInUse: annotationFileInUse === fileName ? true : false
                             });
                         }
                     }
                 }
-                apiResponse[change.content.dataSourceId].annotationFiles = apiResponse[
-                    change.content.dataSourceId
-                ].annotationFiles.sort((a, b) => a.timestamp - b.timestamp);
             }
 
             this.sendFilesResponse(res, apiResponse);

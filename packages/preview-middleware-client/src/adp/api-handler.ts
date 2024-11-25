@@ -37,8 +37,8 @@ export interface CodeExtResponse {
 export interface AnnotationFileResponse {
     annotationExists: boolean;
     annotationPath: string;
-    serviceUrl: string;
     annotationPathFromRoot: string;
+    annotationFileInUse: boolean;
     isRunningInBAS: boolean;
 }
 
