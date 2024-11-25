@@ -1281,19 +1281,11 @@ describe('FE V2 quick actions', () => {
                                 ...(isActionExpected
                                     ? [
                                         {
-                                            'children': [
-                                                {
-                                                    'children': [],
-                                                    'enabled': testCase.expectedIsEnabled,
-                                                    'label': `'MyTable' table`,
-                                                    'tooltip': testCase.expectedTooltip
-                                                }
-                                            ],
-                                            'enabled': true,
+                                            'enabled': testCase.expectedIsEnabled,
                                             'id': 'listReport0-enable-table-filtering',
-                                            'kind': 'nested',
+                                            'kind': 'simple',
                                             'title': 'Enable Table Filtering for Page Variants',
-                                            'tooltip': undefined
+                                            'tooltip': testCase.expectedTooltip
                                         } as any
                                     ]
                                     : [])

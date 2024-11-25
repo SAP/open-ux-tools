@@ -20,8 +20,14 @@ export abstract class SimpleQuickActionDefinitionBase {
 
     protected isDisabled: boolean | undefined;
 
+    private _tooltip?: string; // Backing field for the tooltip property
+
     public get tooltip(): string | undefined {
-        return undefined;
+        return this._tooltip;
+    }
+
+    public set tooltip(value: string | undefined) {
+        this._tooltip = value;
     }
 
     protected get textKey(): string {
