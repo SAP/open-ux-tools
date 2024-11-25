@@ -18,7 +18,10 @@ describe('communication middleware', () => {
             dispose: jest.fn()
         });
         dispatch = jest.fn();
-        middleWare = communicationMiddleware({ dispatch } as any);
+        middleWare = communicationMiddleware({
+            dispatch,
+            getState: jest.fn().mockReturnValue({ selectedControl: { id: 'filterBar' } })
+        } as any);
         jest.spyOn(document, 'getElementById').mockReturnValue({
             contentWindow: 'Target'
         } as any);
@@ -37,6 +40,14 @@ describe('communication middleware', () => {
             newValue: 'new value'
         });
         messageProcessor.mock.calls[0][1](action);
+        expect(dispatch).toHaveBeenCalledTimes(1);
+        expect(dispatch).toHaveBeenNthCalledWith(1, action);
+    });
+
+    test('select control in UI5 application on apploaded', () => {
+        const action = common.appLoaded();
+        messageProcessor.mock.calls[0][1](action);
+        expect(sendActionfn).toHaveBeenCalledWith(common.selectControl('filterBar'));
         expect(dispatch).toHaveBeenCalledTimes(1);
         expect(dispatch).toHaveBeenNthCalledWith(1, action);
     });

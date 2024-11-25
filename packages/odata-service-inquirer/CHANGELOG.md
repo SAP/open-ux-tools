@@ -1,5 +1,20 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.9
+
+### Patch Changes
+
+-   8806c46: Adds system selection default choice option
+
+## 0.6.8
+
+### Patch Changes
+
+-   aea4ac9: Revert datasource type labels to previous values.
+-   74dc5fe: Fix CAP loading errors messages
+-   Updated dependencies [74dc5fe]
+    -   @sap-ux/inquirer-common@0.5.4
+
 ## 0.6.7
 
 ### Patch Changes

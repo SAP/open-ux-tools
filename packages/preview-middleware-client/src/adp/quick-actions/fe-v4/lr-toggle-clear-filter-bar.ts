@@ -8,7 +8,8 @@ import { executeToggleAction } from './utils';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ENABLE_CLEAR_FILTER_BAR_TYPE = 'enable-clear-filter-bar';
-const PROPERTY_PATH = 'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/showClearButton';
+const PROPERTY_NAME = 'showClearButton';
+const PROPERTY_PATH = `controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/${PROPERTY_NAME}`;
 const CONTROL_TYPE = 'sap.fe.macros.controls.FilterBar';
 
 /**
@@ -31,7 +32,11 @@ export class ToggleClearFilterBarQuickAction
             const filterBar = getControlById<FilterBar>(control.controlId);
             if (isActionApplicable && filterBar) {
                 this.control = filterBar;
-                this.isClearButtonEnabled = filterBar.getShowClearButton();
+                const value = this.context.changeService.getConfigurationPropertyValue(
+                    control.controlId,
+                    PROPERTY_NAME
+                );
+                this.isClearButtonEnabled = value === undefined ? filterBar.getShowClearButton() : (value as boolean);
             }
         }
     }

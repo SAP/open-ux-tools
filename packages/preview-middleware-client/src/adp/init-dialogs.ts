@@ -7,6 +7,7 @@ import UI5Element from 'sap/ui/core/Element';
 
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import hasStableId from 'sap/ui/rta/util/hasStableId';
 
 /** sap.ui.fl */
 import FlUtils from 'sap/ui/fl/Utils';
@@ -89,16 +90,7 @@ export const isFragmentCommandEnabled = (overlays: ElementOverlay[], ui5VersionI
 
     const control = overlays[0].getElement();
 
-    return hasStableId(control) && !isReuseComponent(control.getId(), ui5VersionInfo);
-};
-
-/**
- * Determines whether control has stable id
- * @param {ManagedObject} control - ManagedObject object representing the UI control.
- * @returns {boolean} True if control has stable Id, false otherwise
- */
-const hasStableId = (control: ManagedObject): boolean => {
-    return FlUtils.checkControlId(control);
+    return hasStableId(overlays[0]) && !isReuseComponent(control.getId(), ui5VersionInfo);
 };
 
 /**
@@ -108,8 +100,7 @@ const hasStableId = (control: ManagedObject): boolean => {
  * @returns {string} The text of the Add Fragment context menu item.
  */
 export const getAddFragmentItemText = (overlay: ElementOverlay) => {
-    const control = overlay.getElement();
-    if (control && !hasStableId(control)) {
+    if (!hasStableId(overlay)) {
         return 'Add: Fragment (Unavailable due to unstable ID of the control or its parent control)';
     }
 
