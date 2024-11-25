@@ -178,3 +178,4 @@ generators
 
 # nx 
 .nx
+nx-cloud.env
