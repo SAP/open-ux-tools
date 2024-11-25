@@ -1,18 +1,19 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { Ui5App } from './types';
+import type { UI5, Ui5App } from './types';
 import { getFilePaths } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
 import { mergeObjects, UI5_DEFAULT } from '@sap-ux/ui5-config';
 import type { ProjectType } from '@sap-ux/project-access';
+import { getTemplateVersionPath, processDestinationPath } from './utils';
 
 /**
  * Input required to enable optional features.
  */
 export interface FeatureInput {
-    ui5App: { app: { id: string; baseComponent?: string; projectType?: ProjectType } };
+    ui5App: { app: { id: string; baseComponent?: string; projectType?: ProjectType }; ui5?: Partial<UI5> };
     fs: Editor;
     basePath: string;
     tmplPath: string;
@@ -30,16 +31,20 @@ export interface FeatureInput {
  * @param input.tmplPath template basepath
  */
 async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: FeatureInput) {
-    const optTmplDirPath = join(tmplPath, 'optional', `${name}`);
+    let optTmplDirPath = join(tmplPath, 'optional', `${name}`);
+    const optionPath = getTemplateVersionPath(ui5App.ui5 as UI5);
+    if (name === 'loadReuseLibs') {
+        optTmplDirPath = join(optTmplDirPath, optionPath);
+    }
     const optTmplFilePaths = await getFilePaths(optTmplDirPath);
-
     optTmplFilePaths.forEach((optTmplFilePath) => {
         const relPath = optTmplFilePath.replace(optTmplDirPath, '');
         const outPath = join(basePath, relPath);
         // Extend or add
         if (!fs.exists(outPath)) {
             fs.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
-                globOptions: { dot: true }
+                globOptions: { dot: true },
+                processDestinationPath: processDestinationPath
             });
         } else {
             const add = JSON.parse(render(fs.read(optTmplFilePath), ui5App, {}));
@@ -115,7 +120,7 @@ export async function applyOptionalFeatures(
     basePath: string,
     tmplPath: string,
     ui5Configs: UI5Config[]
-) {
+): Promise<void> {
     if (ui5App.appOptions) {
         for (const [key, value] of Object.entries(ui5App.appOptions)) {
             if (value === true) {

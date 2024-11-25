@@ -1,5 +1,126 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.3.27
+
+### Patch Changes
+
+-   Updated dependencies [575ff89]
+    -   @sap-ux/fiori-generator-shared@0.7.10
+
+## 1.3.26
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.9
+
+## 1.3.25
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+    -   @sap-ux/odata-service-writer@0.23.3
+    -   @sap-ux/ui5-application-writer@1.2.6
+    -   @sap-ux/fe-fpm-writer@0.31.18
+    -   @sap-ux/fiori-generator-shared@0.7.8
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.24
+
+### Patch Changes
+
+-   Updated dependencies [8237f83]
+    -   @sap-ux/odata-service-writer@0.23.2
+
+## 1.3.23
+
+### Patch Changes
+
+-   Updated dependencies [2886db3]
+    -   @sap-ux/fiori-generator-shared@0.7.7
+
+## 1.3.22
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.17
+
+## 1.3.21
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.6
+
+## 1.3.20
+
+### Patch Changes
+
+-   d0331b8: fix - locate-reuse-libs.js|ts - sanitize server response before logging
+-   Updated dependencies [d0331b8]
+    -   @sap-ux/ui5-application-writer@1.2.5
+
+## 1.3.19
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.16
+-   @sap-ux/fiori-generator-shared@0.7.5
+-   @sap-ux/odata-service-writer@0.23.1
+-   @sap-ux/ui5-application-writer@1.2.4
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.18
+
+### Patch Changes
+
+-   7cf9ed0: Fix lint issue in templates
+-   Updated dependencies [7cf9ed0]
+    -   @sap-ux/ui5-application-writer@1.2.4
+
+## 1.3.17
+
+### Patch Changes
+
+-   Updated dependencies [a52de73]
+    -   @sap-ux/fe-fpm-writer@0.31.15
+
+## 1.3.16
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+    -   @sap-ux/odata-service-writer@0.23.1
+    -   @sap-ux/ui5-application-writer@1.2.3
+    -   @sap-ux/fe-fpm-writer@0.31.14
+    -   @sap-ux/fiori-generator-shared@0.7.4
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.15
+
+### Patch Changes
+
+-   Updated dependencies [b2de757]
+    -   @sap-ux/ui5-application-writer@1.2.2
+
+## 1.3.14
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/fiori-generator-shared@0.7.3
+    -   @sap-ux/fe-fpm-writer@0.31.13
+    -   @sap-ux/odata-service-writer@0.23.0
+    -   @sap-ux/ui5-application-writer@1.2.1
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.13
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.25.0
+-   @sap-ux/fiori-generator-shared@0.7.2
+
 ## 1.3.12
 
 ### Patch Changes

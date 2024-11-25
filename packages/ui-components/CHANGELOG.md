@@ -1,5 +1,31 @@
 # @sap-ux/ui-components
 
+## 1.21.2
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
+## 1.21.1
+
+### Patch Changes
+
+-   32191dd: UITranslationInput. Screen readers read the resolved translation tooltip/title of UITranslationInput as part of the screen reader speech, displaying it as 'Value: ... Translation: ...'.
+
+## 1.21.0
+
+### Minor Changes
+
+-   25b90b5: UIComboBox: New property "customSearchFilter" allows passing a custom filter function to apply additional filtering logic on top of the default search.
+
+## 1.20.4
+
+### Patch Changes
+
+-   1c8b59f: Fix UITreeDropdown change callback being triggered twice on first selection:
+    1. First call with empty value
+    2. Second call with selected value
+
 ## 1.20.3
 
 ### Patch Changes

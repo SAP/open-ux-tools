@@ -33,7 +33,9 @@ export async function getAbapSystems(): Promise<{
     let backendSystems;
 
     if (isAppStudio()) {
-        destinations = await listDestinations();
+        destinations = await listDestinations({
+            stripS4HCApiHosts: true
+        });
         cachedDestinations = destinations;
     } else {
         const systemStore = await getService<BackendSystem, BackendSystemKey>({

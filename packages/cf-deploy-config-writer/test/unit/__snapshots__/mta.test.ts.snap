@@ -1,0 +1,511 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Validate common flows Validate adding managed approuter 2`] = `
+"_schema-version: '3.2'
+ID: basicApp
+version: 0.0.1
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+modules:
+  - name: basicApp-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: basicApp-destination-service
+        parameters:
+          content-target: true
+      - name: basicApp-repo-host
+        parameters:
+          service-key:
+            name: basicApp-repo-host-key
+      - name: basicApp-uaa
+        parameters:
+          service-key:
+            name: basicApp-uaa-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: basicApp_html_repo_host
+              ServiceInstanceName: basicApp-html5-service
+              ServiceKeyName: basicApp-repo-host-key
+              sap.cloud.service: basicApp
+            - Authentication: OAuth2UserTokenExchange
+              Name: basicApp_uaa
+              ServiceInstanceName: basicApp-xsuaa-service
+              ServiceKeyName: basicApp-uaa-key
+              sap.cloud.service: basicApp
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+  - name: basicApp-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: basicApp-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: myhtml5app
+          artifacts:
+            - myhtml5app.zip
+          target-path: resources/
+  - name: myhtml5app
+    type: html5
+    path: ./
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - 'npm run build:cf'
+      supported-platforms: []
+resources:
+  - name: basicApp-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: basicApp-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: 'https://ui5.sap.com'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+  - name: basicApp-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: basicApp-xsuaa-service
+      service-plan: application
+  - name: basicApp-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: basicApp-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+  - name: basicApp-connectivity
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: connectivity
+      service-plan: lite
+"
+`;
+
+exports[`Validate common flows Validate adding managed approuter and destinations to cds generated mta.yaml 2`] = `
+"_schema-version: '3.1'
+ID: managedAppCAPProject
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: managedAppCAPProject-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-type: http
+      readiness-health-check-http-endpoint: /health
+    build-parameters:
+      builder: npm
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: '\${default-url}'
+    requires:
+      - name: managedAppCAPProject-db
+      - name: managedAppCAPProject-uaa
+  - name: managedAppCAPProject-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: managedAppCAPProject-db
+  - name: managedAppCAPProject-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: managedAppCAPProject-destination-service
+        parameters:
+          content-target: true
+      - name: managedAppCAPProject-repo-host
+        parameters:
+          service-key:
+            name: managedAppCAPProject-repo-host-key
+      - name: managedAppCAPProject-uaa
+        parameters:
+          service-key:
+            name: managedAppCAPProject-uaa-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: managedAppCAPProject_html_repo_host
+              ServiceInstanceName: managedAppCAPProject-html5-service
+              ServiceKeyName: managedAppCAPProject-repo-host-key
+              sap.cloud.service: managedAppCAPProject
+            - Authentication: OAuth2UserTokenExchange
+              Name: managedAppCAPProject_uaa
+              ServiceInstanceName: managedAppCAPProject-xsuaa-service
+              ServiceKeyName: managedAppCAPProject-uaa-key
+              sap.cloud.service: managedAppCAPProject
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+  - name: managedAppCAPProject-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: managedAppCAPProject-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: myhtml5app
+          artifacts:
+            - myhtml5app.zip
+          target-path: resources/
+  - name: myhtml5app
+    type: html5
+    path: ./
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - 'npm run build:cf'
+      supported-platforms: []
+resources:
+  - name: managedAppCAPProject-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: managedAppCAPProject-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: managedAppCAPProject-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: 'https://ui5.sap.com'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+              - Name: managedAppCAPProject-srv-api
+                Type: HTTP
+                URL: '~{srv-api/srv-url}'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+    requires:
+      - name: srv-api
+  - name: managedAppCAPProject-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: managedAppCAPProject-xsuaa-service
+      service-plan: application
+  - name: managedAppCAPProject-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: managedAppCAPProject-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+"
+`;
+
+exports[`Validate common flows Validate adding standalone approuter 2`] = `
+"_schema-version: '3.2'
+ID: standaloneBasic
+description: Fiori elements app
+version: 0.0.1
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+modules:
+  - name: standaloneBasic-router
+    type: approuter.nodejs
+    path: router
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: standaloneBasic-html5-repo-runtime
+      - name: standaloneBasic-uaa
+      - name: standaloneBasic-destination-service
+        group: destinations
+        properties:
+          name: ui5
+          url: 'https://ui5.sap.com'
+          forwardAuthToken: false
+      - name: standaloneBasic-abap-abapservice
+      - name: standaloneBasic-connectivity
+  - name: standaloneBasic-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: standaloneBasic-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: myhtml5app
+          artifacts:
+            - myhtml5app.zip
+          target-path: resources/
+  - name: myhtml5app
+    type: html5
+    path: ./
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - 'npm run build:cf'
+      supported-platforms: []
+resources:
+  - name: standaloneBasic-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: application
+      service: xsuaa
+      config:
+        xsappname: 'standaloneBasic-\${space-guid}'
+        tenant-mode: dedicated
+  - name: standaloneBasic-html5-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: app-runtime
+      service: html5-apps-repo
+  - name: standaloneBasic-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: standaloneBasic-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: false
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: 'https://ui5.sap.com'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+  - name: standaloneBasic-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: standaloneBasic-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+  - name: standaloneBasic-abap-abapservice
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: abapservice
+      protocol:
+        - ODataV2
+      service: abapservice
+      service-plan: 16_abap_64_db
+  - name: standaloneBasic-connectivity
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: connectivity
+      service-plan: lite
+"
+`;
+
+exports[`Validate common flows Validate adding standalone approuter with missing module destination 1`] = `
+"_schema-version: '3.2'
+ID: standaloneApp
+description: Fiori elements app
+version: 0.0.1
+modules:
+  - name: standaloneApp-router
+    type: approuter.nodejs
+    path: router
+    requires:
+      - name: standaloneApp-html5-repo-runtime
+      - name: standaloneApp-uaa
+      - name: standaloneApp-destination
+        group: destinations
+        properties:
+          forwardAuthToken: false
+          name: ui5
+          url: 'https://ui5.sap.com'
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+  - name: standaloneApp-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: standaloneApp-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires: []
+resources:
+  - name: standaloneApp-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        tenant-mode: dedicated
+        xsappname: 'standaloneApp-\${org}'
+      service: xsuaa
+      service-plan: application
+  - name: standaloneApp-html5-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+  - name: standaloneApp-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: false
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: 'https://ui5.sap.com'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+  - name: standaloneApp-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: standaloneApp-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+"
+`;
+
+exports[`Validate common flows Validate destination service is correctly updated if missing instances 1`] = `
+"_schema-version: '3.2'
+ID: managedApp
+version: 0.0.1
+modules:
+  - name: managedApp-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: managedApp-destination-service
+        parameters:
+          content-target: true
+      - name: managedApp_html_repo_host
+        parameters:
+          service-key:
+            name: managedApp_html_repo_host-key
+      - name: uaa_managedApp
+        parameters:
+          service-key:
+            name: uaa_managedApp-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: uniqueid_managedApp_html_repo_host
+              ServiceInstanceName: managedApp-html5-app-host-service
+              ServiceKeyName: managedApp_html_repo_host-key
+              sap.cloud.service: test2804
+            - Authentication: OAuth2UserTokenExchange
+              Name: test2804_uaa_managedApp
+              ServiceInstanceName: managedApp-xsuaa-service
+              ServiceKeyName: uaa_managedApp-key
+              sap.cloud.service: test2804
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+  - name: managedApp-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: managedApp_html_repo_host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires: []
+resources:
+  - name: managedApp-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: 'https://ui5.sap.com'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+      service: destination
+      service-name: managedApp-destination-service
+      service-plan: lite
+  - name: managedApp_html_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: managedApp-html5-app-host-service
+      service-plan: app-host
+  - name: uaa_managedApp
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: managedApp-xsuaa-service
+      service-plan: application
+"
+`;

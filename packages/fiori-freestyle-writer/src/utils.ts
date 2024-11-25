@@ -1,3 +1,4 @@
+import { sep } from 'path';
 import type { FreestyleApp } from './types';
 import { TemplateType } from './types';
 import { gte } from 'semver';
@@ -48,5 +49,5 @@ export function getTemplateVersionPath(ffApp: FreestyleApp<unknown>): string {
  * @returns {string} - The processed file path.
  */
 export function processDestinationPath(filePath: string): string {
-    return filePath.replace('/1.120.0', '').replace('/1.71.0', '');
+    return filePath.replace(`${sep}1.120.0`, '').replace(`${sep}1.71.0`, '');
 }

@@ -17,7 +17,6 @@ import ManagedObject from 'sap/ui/base/ManagedObject';
 import UI5Element from 'sap/ui/core/Element';
 import { notifyUser } from '../../utils';
 import { getTextBundle } from '../../../i18n';
-import { FeatureService } from '../../../cpe/feature-service';
 import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
@@ -68,16 +67,6 @@ export class AddTableCustomColumnQuickAction
         super(CREATE_TABLE_CUSTOM_COLUMN, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN', context);
     }
 
-    /**
-     * Initializes action object instance
-     */
-    async initialize(): Promise<void> {
-        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
-            return;
-        }
-        await super.initialize();
-    }
-
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         if (!table) {
@@ -105,7 +94,10 @@ export class AddTableCustomColumnQuickAction
             return [];
         }
 
-        if ((tableInternal.getAggregation('items') as ManagedObject[]).length === 0) {
+        if (
+            isA(M_TABLE_TYPE, tableInternal) &&
+            (tableInternal.getAggregation('items') as ManagedObject[]).length === 0
+        ) {
             const bundle = await getTextBundle();
             notifyUser(bundle.getText('TABLE_ROWS_NEEDED_TO_CREATE_CUSTOM_COLUMN'), 8000);
             return [];

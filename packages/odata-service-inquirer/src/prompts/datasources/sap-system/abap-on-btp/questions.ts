@@ -1,20 +1,24 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import type { FileBrowserQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { withCondition } from '@sap-ux/inquirer-common';
-import type { ServiceInstanceInfo } from '@sap/cf-tools';
-import { apiGetInstanceCredentials, cfGetTarget } from '@sap/cf-tools';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import {
+    type FileBrowserQuestion,
+    type ListQuestion,
+    ERROR_TYPE,
+    getCFAbapInstanceChoices,
+    withCondition
+} from '@sap-ux/inquirer-common';
+import { type ServiceInstanceInfo, apiGetInstanceCredentials, cfGetTarget } from '@sap/cf-tools';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
-import { ERROR_TYPE } from '../../../../error-handler/error-handler';
 import { t } from '../../../../i18n';
-import { hostEnvironment, type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
-import { PromptState, getDefaultChoiceIndex, getHostEnvironment } from '../../../../utils';
+import { type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
+import { PromptState, getDefaultChoiceIndex, getPromptHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
-import { getSystemServiceQuestion, getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
+import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
 import { newSystemPromptNames } from '../new-system/types';
+import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
 import { validateServiceKey } from '../validators';
-import { getABAPInstanceChoices } from './cf-helper';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
@@ -41,10 +45,12 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
  * @param promptOptions The prompt options which control the service selection and system name]
  * @returns The list of questions for the ABAP on BTP system
  */
-export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOptions): Question<AbapOnBtpAnswers>[] {
+export function getAbapOnBTPSystemQuestions(
+    promptOptions?: OdataServicePromptOptions
+): Question<AbapOnBtpAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
-    const questions: Question[] = [];
+    const questions: Question<AbapOnBtpAnswers & ServiceAnswer>[] = [];
     questions.push({
         type: 'list',
         name: abapOnBtpPromptNames.abapOnBtpAuthType,
@@ -117,6 +123,7 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
 
 /**
  * Validate the service info for the ABAP on BTP system. This function will validate the service key file and the connection to the ABAP system.
+ * Updates the prompt state with the connected system.
  *
  * @param abapService the abap service as provided by CF tools
  * @param connectionValidator connection validator instance
@@ -177,10 +184,10 @@ export function getCFDiscoverPrompts(connectionValidator: ConnectionValidator): 
                 applyDefaultWhenDirty: true
             },
             choices: async () => {
-                choices = await getABAPInstanceChoices();
+                choices = await getCFAbapInstanceChoices(errorHandler);
                 // Cannot continue if no ABAP environments are found on Yo CLI
                 if (choices.length === 0) {
-                    if (getHostEnvironment() === hostEnvironment.cli) {
+                    if (getPromptHostEnvironment() === hostEnvironment.cli) {
                         throw new Error(t('errors.abapEnvsUnavailable'));
                     }
                 }
@@ -204,7 +211,7 @@ export function getCFDiscoverPrompts(connectionValidator: ConnectionValidator): 
     ];
 
     // Only for CLI use as `list` prompt validation does not run on CLI
-    if (getHostEnvironment() === hostEnvironment.cli) {
+    if (getPromptHostEnvironment() === hostEnvironment.cli) {
         questions.push({
             when: async (answers: AbapOnBtpAnswers): Promise<boolean> => {
                 const abapService = answers?.[abapOnBtpPromptNames.cloudFoundryAbapSystem];

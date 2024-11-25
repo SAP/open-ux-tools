@@ -1,5 +1,133 @@
 # @sap-ux/adp-tooling
 
+## 0.12.82
+
+### Patch Changes
+
+-   Updated dependencies [74dc5fe]
+    -   @sap-ux/inquirer-common@0.5.4
+
+## 0.12.81
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
+## 0.12.80
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.3
+
+## 0.12.79
+
+### Patch Changes
+
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/axios-extension@1.17.4
+    -   @sap-ux/inquirer-common@0.5.2
+    -   @sap-ux/system-access@0.5.19
+
+## 0.12.78
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+    -   @sap-ux/project-access@1.28.7
+    -   @sap-ux/axios-extension@1.17.3
+    -   @sap-ux/system-access@0.5.18
+    -   @sap-ux/inquirer-common@0.5.1
+
+## 0.12.77
+
+### Patch Changes
+
+-   8237f83: feat: add namespaces to annotation template
+-   Updated dependencies [8237f83]
+    -   @sap-ux/axios-extension@1.17.3
+    -   @sap-ux/system-access@0.5.18
+
+## 0.12.76
+
+### Patch Changes
+
+-   Updated dependencies [2886db3]
+    -   @sap-ux/inquirer-common@0.5.0
+
+## 0.12.75
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/btp-utils@0.16.0
+    -   @sap-ux/axios-extension@1.17.2
+    -   @sap-ux/system-access@0.5.17
+
+## 0.12.74
+
+### Patch Changes
+
+-   48dd15d: fix: refresh descriptor after manifest changes
+
+## 0.12.73
+
+### Patch Changes
+
+-   Updated dependencies [7551316]
+    -   @sap-ux/axios-extension@1.17.1
+    -   @sap-ux/system-access@0.5.16
+
+## 0.12.72
+
+### Patch Changes
+
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+    -   @sap-ux/axios-extension@1.17.0
+    -   @sap-ux/system-access@0.5.15
+
+## 0.12.71
+
+### Patch Changes
+
+-   Updated dependencies [0120dda]
+    -   @sap-ux/axios-extension@1.17.0
+    -   @sap-ux/system-access@0.5.15
+
+## 0.12.70
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+    -   @sap-ux/project-access@1.28.5
+    -   @sap-ux/axios-extension@1.16.7
+    -   @sap-ux/system-access@0.5.14
+
+## 0.12.69
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/project-access@1.28.4
+    -   @sap-ux/axios-extension@1.16.7
+    -   @sap-ux/system-access@0.5.14
+
+## 0.12.68
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.14
+-   @sap-ux/ui5-config@0.25.0
+
+## 0.12.67
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.10
+
 ## 0.12.66
 
 ### Patch Changes

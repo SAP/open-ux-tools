@@ -4,10 +4,12 @@ import {
     propertyChanged,
     selectControl,
     reportTelemetry,
-    Properties
+    Properties,
+    changeProperty,
+    PropertyType
 } from '@sap-ux-private/control-property-editor-common';
 import { buildControlData } from './control-data';
-import { getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
+import { getOverlay, getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
 import type { ActionSenderFunction, Service, SubscribeFunction } from './types';
 
 import type Event from 'sap/ui/base/Event';
@@ -19,8 +21,9 @@ import Log from 'sap/base/Log';
 import { getDocumentation } from './documentation';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-import { getComponent } from '../utils/core';
+import { getComponent, getControlById } from '../utils/core';
 import { getError } from '../utils/error';
+import { ChangeService } from './changes';
 
 export interface PropertyChangeParams {
     name: string;
@@ -75,8 +78,10 @@ async function addDocumentationForProperties(control: ManagedObject, controlData
         // Add the control's properties
         const document = await getDocumentation(selectedControlName, selContLibName);
         controlData.properties.forEach((controlProp) => {
-            const property = allProperties[controlProp.name];
-            controlProp.documentation = getPropertyDocument(property, controlProp.ui5Type, document);
+            if (controlProp.propertyType === PropertyType.ControlProperty) {
+                const property = allProperties[controlProp.name];
+                controlProp.documentation = getPropertyDocument(property, controlProp.ui5Type, document);
+            }
         });
     } catch (e) {
         Log.error('Document loading failed', getError(e));
@@ -89,12 +94,13 @@ async function addDocumentationForProperties(control: ManagedObject, controlData
 export class SelectionService implements Service {
     private appliedChangeCache = new Map<string, number>();
     private activeChangeHandlers = new Set<() => void>();
+    private currentSelection: ManagedObject;
     /**
      *
      * @param rta - rta object.
      * @param ui5 - facade for ui5 framework methods
      */
-    constructor(private readonly rta: RuntimeAuthoring) {}
+    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {}
 
     /**
      * Initialize selection service.
@@ -109,21 +115,19 @@ export class SelectionService implements Service {
             onselectionChange(event).catch((error) => Log.error('Event interrupted: ', getError(error)));
         });
         subscribe(async (action: ExternalAction): Promise<void> => {
-            if (selectControl.match(action)) {
+            if (changeProperty.match(action)) {
+                this.applyControlPropertyChange(action.payload.controlId, action.payload.propertyName);
+            } else if (selectControl.match(action)) {
                 const id = action.payload;
-                const control = sap.ui.getCore().byId(id);
+                const control = getControlById(id);
                 if (!control) {
                     const component = getComponent(id);
                     if (component) {
-                        const controlData = buildControlData(component);
-
-                        // add document
-                        await addDocumentationForProperties(component, controlData);
-                        const controlSelectedAction = controlSelected(controlData);
-                        sendAction(controlSelectedAction);
+                        await this.buildProperties(component, sendAction);
                     }
                     return;
                 }
+                this.currentSelection = control;
                 eventOrigin.add('outline');
                 let controlOverlay = OverlayRegistry.getOverlay(control);
                 const selectedOverlayControls = this.rta.getSelection() ?? [];
@@ -140,13 +144,29 @@ export class SelectionService implements Service {
                 if (controlOverlay?.isSelectable()) {
                     controlOverlay.setSelected(true); //highlight without firing event only if the layer is selectable
                 } else {
-                    const controlData = buildControlData(control);
-                    await addDocumentationForProperties(control, controlData);
-                    const controlSelectedAction = controlSelected(controlData);
-                    sendAction(controlSelectedAction);
+                    await this.buildProperties(control, sendAction);
                 }
             }
         });
+        // rebuild config properties in panel for the selected control onStackChange event
+        this.changeService.onStackChange(async (event) => {
+            const control = event.detail.controls.find((ctrl) => ctrl === this.currentSelection);
+            if (control) {
+                const overlay = getOverlay(control);
+                await this.buildProperties(control, sendAction, overlay);
+            }
+        });
+    }
+
+    private async buildProperties(
+        control: ManagedObject,
+        sendAction: ActionSenderFunction,
+        overlay?: ElementOverlay
+    ): Promise<void> {
+        const controlData = buildControlData(control, this.changeService, overlay);
+        await addDocumentationForProperties(control, controlData);
+        const action = controlSelected(controlData);
+        sendAction(action);
     }
 
     /**
@@ -180,6 +200,7 @@ export class SelectionService implements Service {
                 const overlayControl = sap.ui.getCore().byId(selection[0].getId()) as ElementOverlay;
                 if (overlayControl) {
                     const runtimeControl = getRuntimeControl(overlayControl);
+                    this.currentSelection = runtimeControl;
                     const controlName = runtimeControl.getMetadata().getName();
                     this.handlePropertyChanges(runtimeControl, sendAction);
                     try {
@@ -195,10 +216,7 @@ export class SelectionService implements Service {
                     } catch (error) {
                         Log.error('Failed to report telemetry', getError(error));
                     } finally {
-                        const controlData = buildControlData(runtimeControl, overlayControl);
-                        await addDocumentationForProperties(runtimeControl, controlData);
-                        const action = controlSelected(controlData);
-                        sendAction(action);
+                        await this.buildProperties(runtimeControl, sendAction, overlayControl);
                         eventOrigin.delete('outline');
                     }
                 }
