@@ -591,9 +591,9 @@ export class ConnectionValidator {
         // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest
         const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath);
         // Get the destination URL in the portable form <protocol>://<host>:<port>.
-        // We remove trailing slashes from the host to avoid double slashes when appending the service path.
+        // We remove trailing slashes (up to 10, infinite would allow DOS attack) from the host to avoid double slashes when appending the service path.
         this._destinationUrl = servicePath
-            ? destUrl.replace(`https://${destination.Name}.dest`, destination.Host.replace(/\/+$/, ''))
+            ? destUrl.replace(`https://${destination.Name}.dest`, destination.Host.replace(/\/{1,10}$/, ''))
             : destination.Host;
         this._destination = destination;
         // No need to apply sap-client as this happens automatically (from destination config) when going through the BAS proxy
