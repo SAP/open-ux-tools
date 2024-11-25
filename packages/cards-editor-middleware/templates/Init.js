@@ -50,7 +50,6 @@ function addCardGenerationUserAction(oComponentInstance) {
 }
 
 sap.ui.require(["sap/ui/core/Core"], (Core) => {
-    console.log("Init.js loaded");
     Core.ready().then(function() {
         sap.ui.require("sap/ushell/Container").attachRendererCreatedEvent(function() {
             sap.ui.require("sap/ushell/Container").getServiceAsync('AppLifeCycle').then((serviceInstance) => {
