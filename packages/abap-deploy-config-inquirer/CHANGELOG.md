@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.0.26
+
+### Patch Changes
+
+-   aa0731f: ensure scp prompt is maintained
+
 ## 1.0.25
 
 ### Patch Changes
