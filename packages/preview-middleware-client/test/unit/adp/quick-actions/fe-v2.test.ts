@@ -1296,7 +1296,7 @@ describe('FE V2 quick actions', () => {
                 );
 
                 await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'listReport0-enable-table-filtering', kind: 'nested', path: '0' })
+                    executeQuickAction({ id: 'listReport0-enable-table-filtering', kind: 'simple' })
                 );
             });
         });
