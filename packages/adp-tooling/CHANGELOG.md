@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.83
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+
 ## 0.12.82
 
 ### Patch Changes
