@@ -18,12 +18,27 @@ function setDefaultServicePath(service: OdataService): void {
 
 /**
  * Sets the default name for a given service.
- * If the service name is not defined, it sets the name to `DEFAULT_DATASOURCE_NAME`.
+ * Default serivce name is used only for first service.
  *
+ * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose name needs to be set or modified.
+ * @param fs - the memfs editor instance
  */
-function setDefaultServiceName(service: OdataService): void {
-    service.name = service.name ?? DEFAULT_DATASOURCE_NAME;
+function setDefaultServiceName(basePath: string, service: OdataService, fs: Editor): void {
+    const manifestPath = join(basePath, 'webapp', 'manifest.json');
+    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
+    // Check if manifest has already any dataSources defined, DEFAULT_DATASOURCE_NAME should be used for the first service
+    const dataSources = manifest?.['sap.app']?.dataSources;
+    if (dataSources) {
+        // Filter out ODataAnnotation dataSources and keep only OData ones
+        const oDataSources = Object.values(dataSources).filter((dataSource) => dataSource.type === 'OData');
+        if (oDataSources.length === 0) {
+            service.name = DEFAULT_DATASOURCE_NAME;
+        }
+    } else {
+        // No existing dataSources - no existing services, use default name
+        service.name = DEFAULT_DATASOURCE_NAME;
+    }
 }
 
 /**
@@ -57,10 +72,26 @@ function setDefaultServiceModel(basePath: string, service: OdataService, fs: Edi
 }
 
 /**
- * Sets the default annotations name for a given service.
- * Handles single annotation info or annotations array.
- * If the service annotations name is not defined or empty, it creates a default annotations name
+ * Sets default annotation name for a single annotation of a given service.
+ * If the service annotation name is not defined or empty, it creates a default annotations name
  * from the technicalName by replacing all '/' characters with '_' and removing the leading '_'.
+ * If the service and annotation names are the same, then '_Annotation' string is added at the end of annotation name.
+ *
+ * @param {EdmxAnnotationsInfo} annotation - annotation of a given service
+ * @param {string} serviceName - name of the service whose annotations are getting modified.
+ */
+function setDefaultAnnotationName(annotation: EdmxAnnotationsInfo, serviceName?: string): void {
+    if (annotation?.technicalName && !annotation.name) {
+        annotation.name = annotation?.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');
+    }
+    if (annotation.name === serviceName) {
+        annotation.name += '_Annotation';
+    }
+}
+
+/**
+ * Sets default names for annotations of a given service.
+ * Handles single annotation in object or annotations array.
  *
  * @param {OdataService} service - The service object whose annotations name needs to be set or modified.
  */
@@ -69,15 +100,11 @@ function setDefaultAnnotationsName(service: OdataService): void {
         const annotations = service.annotations as EdmxAnnotationsInfo[];
         for (const annotationName in annotations) {
             const annotation = annotations[annotationName];
-            if (annotation?.technicalName && !annotation.name) {
-                annotation.name = annotation?.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');
-            }
+            setDefaultAnnotationName(annotation, service.name);
         }
-    } else {
+    } else if (service.annotations) {
         const annotation = service.annotations as EdmxAnnotationsInfo;
-        if (annotation?.technicalName && !annotation.name) {
-            annotation.name = annotation?.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');
-        }
+        setDefaultAnnotationName(annotation, service.name);
     }
 }
 
@@ -91,7 +118,7 @@ function setDefaultAnnotationsName(service: OdataService): void {
  */
 export function enhanceData(basePath: string, service: OdataService, fs: Editor): void {
     setDefaultServicePath(service);
-    setDefaultServiceName(service);
+    setDefaultServiceName(basePath, service, fs);
     setDefaultServiceModel(basePath, service, fs);
     // set service type to EDMX if not defined
     service.type = service.type ?? ServiceType.EDMX;

@@ -470,7 +470,7 @@ export class UI5Config {
             // Remove service from middleware configurations in yaml
             if (mockserverMiddlewareConfig?.services) {
                 const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
-                    (existingService) => existingService.urlPath === servicePath
+                    (existingService) => existingService.urlPath === servicePath.replace(/\/$/, '')
                 );
                 mockserverMiddlewareConfig.services = mockserverMiddlewareConfig?.services.filter(
                     (service, index) => index !== serviceIndex

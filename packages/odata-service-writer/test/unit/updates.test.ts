@@ -8,6 +8,7 @@ import { OdataVersion, ServiceType } from '../../src';
 import * as ejs from 'ejs';
 import { expectedEdmxManifest } from '../test-data/manifest-json/edmx-manifest';
 import { expectedEdmxManifestMultipleAnnotations } from '../test-data/manifest-json/edmx-manifest-multiple-annotations';
+import { expectedEdmxManifestMultipleServices } from '../test-data/manifest-json/edmx-manifest-multiple-services';
 import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest';
 import type { Package } from '@sap-ux/project-access';
 
@@ -145,6 +146,48 @@ describe('updates', () => {
             updateManifest('./', service, fs, join(__dirname, '../../templates'));
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedEdmxManifestMultipleAnnotations);
+        });
+
+        test('Ensure manifest updates are updated as expected as in edmx projects with multiple services', () => {
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest',
+                    dataSources: {
+                        'mainService': {
+                            type: 'OData'
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    models: {
+                        '': {
+                            dataSource: 'mainService'
+                        }
+                    }
+                }
+            };
+            const service: OdataService = {
+                version: OdataVersion.v2,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path',
+                type: ServiceType.EDMX,
+                annotations: [
+                    {
+                        technicalName: 'annotation1Technical',
+                        xml: 'annotation1xml',
+                        name: 'annotation1'
+                    }
+                ],
+                localAnnotationsName: 'localTest'
+            };
+
+            fs.writeJSON('./webapp/manifest.json', testManifest);
+            // Call updateManifest
+            updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            const manifestJson = fs.readJSON('./webapp/manifest.json');
+            expect(manifestJson).toEqual(expectedEdmxManifestMultipleServices);
         });
 
         test('Ensure manifest updates are updated as expected as in cds projects', () => {

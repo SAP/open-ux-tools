@@ -215,7 +215,12 @@ describe('generate', () => {
             const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
             expect(manifest['sap.app'].dataSources[config.name].uri).toBe(config.path);
             // verify local copy of metadata
-            expect(fs.read(join(testDir, 'webapp', 'localService', 'myService', 'metadata.xml'))).toBe(config.metadata);
+            // first service is always mainService, so we make sure data for it is generated in correct location
+            expect(fs.exists(join(testDir, 'webapp', 'localService', 'myService', 'metadata.xml'))).toBe(false);
+            expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
+            expect(fs.read(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(
+                config.metadata
+            );
             // verify that no destination is added to the ui5.yaml
             expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('destination: ');
             // verify that client is set
@@ -313,7 +318,7 @@ describe('generate', () => {
                 path: '/V2/Northwind/Northwind.svc',
                 version: OdataVersion.v2
             } as OdataService;
-            // No services defined - mainService used for service name and '' for service model
+            // No services are defined - mainService used for service name and '' for service model
             let configCopy = cloneDeep(config);
             enhanceData('', configCopy, fs);
             expect(configCopy).toMatchInlineSnapshot(`
@@ -334,7 +339,8 @@ describe('generate', () => {
             // Services already defined - actual service name and service model are used
             configCopy = cloneDeep(Object.assign({}, config, { model: 'modelName', name: 'datasourceName' }));
             fs.writeJSON(join('webapp', 'manifest.json'), {
-                'sap.ui5': { models: { existingModel: { dataSource: 'existingService ' } } }
+                'sap.app': { dataSources: { existingService: { type: 'OData' } } },
+                'sap.ui5': { models: { existingModel: { dataSource: 'existingService' } } }
             });
             enhanceData('', configCopy, fs);
             expect(configCopy).toMatchInlineSnapshot(`
@@ -363,6 +369,30 @@ describe('generate', () => {
                   "path": "/",
                   "previewSettings": Object {
                     "path": "/",
+                    "url": "https://services.odata.org",
+                  },
+                  "type": "edmx",
+                  "url": "https://services.odata.org",
+                  "version": "2",
+                }
+            `);
+
+            // Service and annotation names are the same
+            fs.writeJSON(join('webapp', 'manifest.json'), {
+                'sap.app': { dataSources: { exisitingSerivce: { type: 'OData' } } }
+            });
+            configCopy = cloneDeep(Object.assign({}, config, { name: 'aname', annotations: { name: 'aname' } }));
+            enhanceData('', configCopy, fs);
+            expect(configCopy).toMatchInlineSnapshot(`
+                Object {
+                  "annotations": Object {
+                    "name": "aname_Annotation",
+                  },
+                  "model": "",
+                  "name": "aname",
+                  "path": "/V2/Northwind/Northwind.svc/",
+                  "previewSettings": Object {
+                    "path": "/V2",
                     "url": "https://services.odata.org",
                   },
                   "type": "edmx",
