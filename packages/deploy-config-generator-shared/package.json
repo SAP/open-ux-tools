@@ -1,0 +1,43 @@
+{
+    "name": "@sap-ux/deploy-config-generator-shared",
+    "description": "Commonly used shared functionality and types to support the deploy config generator.",
+    "version": "0.0.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/deploy-config-generator-shared"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "watch": "tsc --watch",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@vscode-logging/logger": "2.0.0",
+        "i18next": "20.6.1",
+        "yeoman-generator": "5.10.0"
+    },
+    "devDependencies": {
+        "@types/yeoman-generator": "5.2.11",
+        "typescript": "5.3.3"
+    },
+    "engines": {
+        "node": ">=18.x"
+    }
+}
