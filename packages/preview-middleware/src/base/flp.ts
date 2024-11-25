@@ -52,6 +52,11 @@ export type EnhancedRouter = Router & {
     getAppPages?: () => string[];
 };
 
+/**
+ * Enhanced request object that contains additional properties from cds-plugin-ui5.
+ */
+type EnhancedRequest = Request & { 'ui5-patched-router'?: { baseUrl?: string } };
+
 type OnChangeRequestHandler = (
     type: OperationType,
     change: CommonChangeProperties,
@@ -157,11 +162,12 @@ export class FlpSandbox {
     /**
      * Generates the FLP sandbox for an editor.
      *
+     * @param req the request
      * @param rta runtime authoring configuration
      * @param editor editor configuration
      * @returns FLP sandbox html
      */
-    private async generateSandboxForEditor(rta: RtaConfig, editor: Editor): Promise<string> {
+    private async generateSandboxForEditor(req: EnhancedRequest, rta: RtaConfig, editor: Editor): Promise<string> {
         const defaultGenerator = editor.developerMode
             ? '@sap-ux/control-property-editor'
             : '@sap-ux/preview-middleware';
@@ -186,8 +192,12 @@ export class FlpSandbox {
         if (editor.developerMode === true) {
             config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
         }
-        const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-        return render(template, config);
+
+        const ui5Version = await this.getUi5Version(req.headers.host, req['ui5-patched-router']?.baseUrl ?? '');
+        if (ui5Version.major === 1 && ui5Version.minor <= 71) {
+            this.removeAsyncHintsRequests();
+        }
+        return render(this.getSandboxTemplate(ui5Version.major), config);
     }
 
     /**
@@ -256,7 +266,7 @@ export class FlpSandbox {
                     res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
                     return;
                 }
-                const html = (await this.generateSandboxForEditor(rta, editor)).replace(
+                const html = (await this.generateSandboxForEditor(req, rta, editor)).replace(
                     '</body>',
                     `</body>\n<!-- livereload disabled for editor </body>-->`
                 );
@@ -272,24 +282,15 @@ export class FlpSandbox {
         // register static client sources
         this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
-        // add route for the sandbox.html
-        this.router.get(this.config.path, (async (
-            req: Request & { 'ui5-patched-router'?: { baseUrl?: string } },
-            res: Response,
-            next: NextFunction
-        ) => {
+        // add route for the sandbox html
+        this.router.get(this.config.path, (async (req: EnhancedRequest, res: Response, next: NextFunction) => {
             // inform the user if a html file exists on the filesystem
             const file = await this.project.byPath(this.config.path);
             if (file) {
                 this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
                 next();
             } else {
-                //ui5-patched-router comes with cds-plugin-ui5
                 const ui5Version = await this.getUi5Version(req.headers.host, req['ui5-patched-router']?.baseUrl ?? '');
-                this.logger.info(`Using sandbox template for UI5 major version ${ui5Version.major}.`);
-                if (ui5Version.major === 1 && ui5Version.minor <= 71) {
-                    this.removeAsyncHintsRequests();
-                }
                 const html = render(this.getSandboxTemplate(ui5Version.major), this.templateConfig);
                 this.sendResponse(res, 'text/html', 200, html);
             }
@@ -341,6 +342,7 @@ export class FlpSandbox {
      * @returns the template for the sandbox HTML file
      */
     private getSandboxTemplate(ui5MajorVersion: number): string {
+        this.logger.info(`Using sandbox template for UI5 major version ${ui5MajorVersion}.`);
         return readFileSync(
             join(__dirname, `../../templates/flp/sandbox${ui5MajorVersion === 1 ? '' : ui5MajorVersion}.html`),
             'utf-8'

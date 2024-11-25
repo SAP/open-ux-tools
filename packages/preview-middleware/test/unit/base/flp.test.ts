@@ -315,18 +315,6 @@ describe('FlpSandbox', () => {
             global.fetch = globalFetch;
         });
 
-        test('test/flp.html UI5 1.71 w/o asyncHints.requests', async () => {
-            const globalFetch = global.fetch;
-            global.fetch = jest.fn(() =>
-                Promise.resolve({
-                    json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.71.0' }] })
-                })
-            ) as jest.Mock;
-            const response = await server.get('/test/flp.html').expect(200);
-            expect(response.text).toMatchSnapshot();
-            global.fetch = globalFetch;
-        });
-
         test('test/flp.html', async () => {
             const response = await server.get('/test/flp.html').expect(200);
             expect(response.text).toMatchSnapshot();
@@ -490,6 +478,68 @@ describe('FlpSandbox', () => {
         test('default without testsuite', async () => {
             await server.get('/test/testsuite.qunit.html').expect(404);
             await server.get('/test/testsuite.qunit.js').expect(404);
+        });
+
+        test('test/flp.html UI5 1.71 with asyncHints.requests', async () => {
+            const globalFetch = global.fetch;
+            global.fetch = jest.fn(() =>
+                Promise.resolve({
+                    json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.71.0' }] })
+                })
+            ) as jest.Mock;
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1',
+                'myResources2': 'myResourcesUrl2'
+            };
+            const url = 'http://sap.example';
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            const adpToolingMock = {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {},
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: [
+                            {
+                                name: 'myRequest',
+                                url: 'http://sap.example'
+                            }
+                        ]
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn()
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            expect(flp.templateConfig).toMatchSnapshot();
+            const response = await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
+            expect(response.text).toMatchSnapshot();
+            global.fetch = globalFetch;
         });
     });
 

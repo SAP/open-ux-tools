@@ -947,7 +947,62 @@ exports[`FlpSandbox router test/flp.html 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox router test/flp.html UI5 1.71 w/o asyncHints.requests 1`] = `
+exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 1`] = `
+Object {
+  "apps": Object {
+    "app-preview": Object {
+      "additionalInformation": "SAPUI5.Component=myComponent",
+      "applicationType": "URL",
+      "description": "",
+      "title": "my.id",
+      "url": "..",
+    },
+    "testfev2other-preview": Object {
+      "additionalInformation": "SAPUI5.Component=test.fe.v2.other",
+      "applicationType": "URL",
+      "description": "This is a very simple application.",
+      "title": "My Other App",
+      "url": "/yet/another/app",
+    },
+  },
+  "basePath": "..",
+  "init": undefined,
+  "locateReuseLibsScript": false,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "custom.connectors.WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "resources": Object {
+      "my.id": "..",
+      "myResources1": "myResourcesUrl1",
+      "myResources2": "myResourcesUrl2",
+      "open.ux.preview.client": "../preview/client",
+      "test.fe.v2.other": "/yet/another/app",
+    },
+    "theme": "sap_horizon",
+  },
+}
+`;
+
+exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 2`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -986,7 +1041,7 @@ exports[`FlpSandbox router test/flp.html UI5 1.71 w/o asyncHints.requests 1`] = 
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"my.id\\",\\"description\\":\\"\\",\\"additionalInformation\\":\\"SAPUI5.Component=myComponent\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":{},\\"name\\":\\"descriptorName\\",\\"url\\":\\"http://sap.example\\",\\"asyncHints\\":{\\"requests\\":[]}}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
@@ -998,26 +1053,45 @@ exports[`FlpSandbox router test/flp.html UI5 1.71 w/o asyncHints.requests 1`] = 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.ui.rta\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_horizon_dark\\"
+        data-sap-ui-theme=\\"sap_horizon\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
-        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
+        data-sap-ui-resourceroots='{\\"myResources1\\":\\"myResourcesUrl1\\",\\"myResources2\\":\\"myResourcesUrl2\\",\\"open.ux.preview.client\\":\\"../preview/client\\",\\"my.id\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-xx-designMode=\\"true\\"
+        data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
+        data-sap-ui-xx-viewCache=\\"false\\"
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-features='[]'
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"myComponent\\",\\"appName\\":\\"my.id\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
     </script>
 
 
+        <!-- Hides Rta native toolbar  -->
+    <style>
+        #shell-header, .sapUiRtaToolbar {
+            visibility: hidden;
+            height: 1px;
+        }
+        .sapUshellShellCanvas {
+            top: 0 !important;
+        }
+        .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
+            background-color: transparent !important;
+        }
+    </style>
 </head>
 
 <!-- UI Content -->
 <body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
+<!-- livereload disabled for editor </body>-->
 
 </html>"
 `;
