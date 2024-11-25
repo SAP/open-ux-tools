@@ -3,7 +3,7 @@ import { Edm, ELEMENT_TYPE, GHOST_FILENAME_PREFIX, TEXT_TYPE } from '@sap-ux/oda
 import type {
     AnnotationList,
     AnnotationRecord,
-    Apply,
+    ApplyExpression,
     Collection,
     CollectionExpression,
     Expression,
@@ -555,10 +555,7 @@ function convertExpressionValue(
                 Record: convertRecord(namespaceMap, currentNamespace, element, options)
             };
         case 'Apply':
-            return {
-                type: 'Apply',
-                Apply: convertApply(namespaceMap, currentNamespace, element)
-            };
+            return convertApply(namespaceMap, currentNamespace, element);
         default: {
             const singleTextNode = getSingleTextNode(element);
             const value = singleTextNode?.text ?? '';
@@ -648,10 +645,16 @@ function convertCollection(
     return { collection, collectionOrigins };
 }
 
-function convertApply(namespaceMap: NamespaceMap, currentNamespace: string, element: Element): Apply {
+function convertApply(namespaceMap: NamespaceMap, currentNamespace: string, element: Element): ApplyExpression {
     // use internal representation (without alias) to represent Apply value
     const clone: Element = JSON.parse(JSON.stringify(element));
-    return replaceAliasInElement(namespaceMap, currentNamespace, clone);
+    replaceAliasInElement(namespaceMap, currentNamespace, clone);
+    const functionName = getElementAttributeValue(element, Edm.Function);
+    return {
+        type: 'Apply',
+        $Apply: clone,
+        $Function: functionName
+    };
 }
 
 function replaceAliasInElement(namespaceMap: NamespaceMap, currentNamespace: string, element: Element): Element {
