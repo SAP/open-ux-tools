@@ -297,7 +297,7 @@ export class FlpSandbox {
     }
 
     /**
-     * Get the sandbox template file based on the UI5 version.
+     * Read the UI5 version.
      * In case of an error, the default UI5 version '1.121.0' is returned.
      *
      * @param host - the host that should be used to request the UI5 version
