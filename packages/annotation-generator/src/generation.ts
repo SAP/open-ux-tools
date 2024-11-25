@@ -23,6 +23,7 @@ import type {
 } from '@sap-ux/vocabularies-types';
 import { CommonAnnotationTerms, CommonAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/Common';
 import type { EntityTypeAnnotations, PropertyAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
+import type { Hidden } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { UIAnnotationTerms, UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { join } from 'path';
 import { pathToFileURL } from 'url';
@@ -421,11 +422,11 @@ function isPropertyFromCommonNodeModule(propName: string, locationUri?: string):
     return managedProperties.includes(propName) && locationUri.endsWith(commonNodeModulePath);
 }
 
-function isHidden(hiddenAnno?: Omit<RawAnnotation, 'annotations'>): boolean {
+function isHidden(hiddenAnno: Hidden | undefined): boolean {
     if (!hiddenAnno || hiddenAnno.qualifier) {
         return false;
     }
-    return !hiddenAnno.value || (hiddenAnno.value.type === 'Bool' && hiddenAnno.value.Bool !== false);
+    return hiddenAnno.valueOf() as boolean;
 }
 
 /**

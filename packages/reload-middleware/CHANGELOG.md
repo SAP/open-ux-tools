@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.2.9
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+
 ## 0.2.8
 
 ### Patch Changes

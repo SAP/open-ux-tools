@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.3.0
+
+### Minor Changes
+
+-   09a58bb: [BREAKING CHANGE] Changed types for dynamic expressions to be compatible with the changes in @sap-ux/vocabulary-types (https://github.com/SAP/open-ux-odata/pull/844).
+
 ## 0.2.17
 
 ### Patch Changes
