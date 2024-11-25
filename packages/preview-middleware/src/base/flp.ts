@@ -193,7 +193,7 @@ export class FlpSandbox {
             config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
         }
 
-        const ui5Version = await this.getUi5Version(req.headers.host, req['ui5-patched-router']?.baseUrl ?? '');
+        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
             this.removeAsyncHintsRequests();
         }
@@ -290,7 +290,11 @@ export class FlpSandbox {
                 this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
                 next();
             } else {
-                const ui5Version = await this.getUi5Version(req.headers.host, req['ui5-patched-router']?.baseUrl ?? '');
+                const ui5Version = await this.getUi5Version(
+                    req.protocol,
+                    req.headers.host,
+                    req['ui5-patched-router']?.baseUrl
+                );
                 const html = render(this.getSandboxTemplate(ui5Version.major), this.templateConfig);
                 this.sendResponse(res, 'text/html', 200, html);
             }
@@ -301,21 +305,23 @@ export class FlpSandbox {
      * Read the UI5 version.
      * In case of an error, the default UI5 version '1.121.0' is returned.
      *
+     * @param protocol - the protocol that should be used to request the UI5 version ('http' or 'https')
      * @param host - the host that should be used to request the UI5 version
      * @param baseUrl - the base path of the request that should be added to the host
      * @returns the template for the sandbox HTML file
      * @private
      */
     private async getUi5Version(
+        protocol: Request['protocol'],
         host: Request['headers']['host'],
-        baseUrl: string
+        baseUrl: string = ''
     ): Promise<{ major: number; minor: number }> {
         let version: string | undefined;
         if (!host) {
             this.logger.error('Unable to fetch UI5 version: No host found in request header.');
         } else {
             try {
-                const versionUrl = `http://${host}${baseUrl}/resources/sap-ui-version.json`;
+                const versionUrl = `${protocol}://${host}${baseUrl}/resources/sap-ui-version.json`;
                 const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
                     | { libraries: { name: string; version: string }[] }
                     | undefined;
