@@ -26,7 +26,7 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "@napi-rs/keyring": "1.1.6",
+        "@zowe/secrets-for-zowe-sdk": "8.1.2",
         "@sap-ux/logger": "workspace:*",
         "i18next": "20.6.1",
         "i18next-fs-backend": "1.2.0",
