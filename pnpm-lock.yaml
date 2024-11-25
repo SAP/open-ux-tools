@@ -1226,6 +1226,31 @@ importers:
         specifier: 2.4.4
         version: 2.4.4
 
+  packages/deploy-config-generator-shared:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@vscode-logging/logger':
+        specifier: 2.0.0
+        version: 2.0.0
+      i18next:
+        specifier: 20.6.1
+        version: 20.6.1
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    devDependencies:
+      '@types/yeoman-generator':
+        specifier: 5.2.11
+        version: 5.2.11
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+
   packages/deploy-tooling:
     dependencies:
       '@sap-ux/axios-extension':
@@ -9270,7 +9295,7 @@ packages:
       '@types/ejs': 3.1.2
       '@types/inquirer': 8.2.6
       '@types/mem-fs-editor': 7.0.1
-      '@types/yeoman-environment': 2.10.8
+      '@types/yeoman-environment': 2.10.11
       rxjs: 6.6.7
     dev: true
 
@@ -15009,7 +15034,7 @@ packages:
   /i18next@20.6.1:
     resolution: {integrity: sha512-yCMYTMEJ9ihCwEQQ3phLo7I/Pwycf8uAx+sRHwwk5U9Aui/IZYgQRyMqXafQOw5QQ7DM1Z+WyEXWIqSuJHhG2A==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.25.0
 
   /i18next@21.10.0:
     resolution: {integrity: sha512-YeuIBmFsGjUfO3qBmMOc0rQaun4mIpGKET5WDwvu8lU7gvwpcariZLNtL0Fzj+zazcHUrlXHiptcFhBMFaxzfg==}
