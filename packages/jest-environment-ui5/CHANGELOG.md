@@ -232,7 +232,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
--   Fixing the canvas error on startup (https://github.tools.sap/ux/jest-environment-ui5/commit/8f83e381c50b3c3e07e689d99b4d01b1564c4b1c)
+-   Fixing the canvas error on startup
 
 ## [2.3.3] (2022-07-13)
 
@@ -251,7 +251,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   allow inline definition of file ([aab430e])
 -   mock sap.viz ([45cc9d1])
 -   proper support for jest.mock ([803c012])
--   proper support for jest.mock 2 ([5e286b5](https://github.wdf.sap.corp/uxengtools/jest-environment-ui5/commit/5e286b5f08056383274f86f06951906b19e63df0))
+-   proper support for jest.mock 2 ([5e286b5])
 -   timezone cldr ([ff87bff])
 
 ## [2.3.1] (2022-07-06)
