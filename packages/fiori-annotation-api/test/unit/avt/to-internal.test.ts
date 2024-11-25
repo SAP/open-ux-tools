@@ -28,27 +28,26 @@ describe('avt to internal', () => {
                 Record: { propertyValues: [], type: 'com.sap.vocabularies.UI.v1.DataField' }
             });
         });
+        // Currently not supported
         test('If', () => {
-            testConversion({ type: 'If', If: {} });
+            testConversion({ type: 'If', $If: [{ type: 'Null' }, { type: 'Null' }, { type: 'Null' }] });
         });
         // Currently not supported
-        test.skip('Apply', () => {
+        test('Apply', () => {
             testConversion({
                 type: 'Apply',
-                Apply: {
-                    _attributes: {
-                        Function: 'odata.fillUriTemplate'
-                    },
-                    String: {
-                        _text: '#Supplier-displayFactSheet?Supplier={SUP}'
-                    },
-                    LabeledElement: {
-                        _attributes: {
-                            Name: 'RSP',
-                            Path: 'SupplierEvalResponse'
+                $Apply: [
+                    '#Supplier-displayFactSheet?Supplier={SUP}',
+                    {
+                        type: 'LabeledElement',
+                        $Name: 'RSP',
+                        $LabeledElement: {
+                            type: 'Path',
+                            $Path: 'SupplierEvalResponse'
                         }
                     }
-                }
+                ],
+                $Function: 'odata.fillUriTemplate'
             });
         });
         test('Null', () => {

@@ -25,7 +25,9 @@ exports[`Test system selection prompts should return system selection prompts an
     "validate": [Function],
   },
   {
+    "default": "",
     "guiOptions": {
+      "applyDefaultWhenDirty": true,
       "breadcrumb": true,
       "hint": "Enter the path to the OData service, relative to the selected destination URL",
       "mandatory": true,
