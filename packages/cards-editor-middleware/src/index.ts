@@ -48,7 +48,7 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
     router.get(ApiRoutes.previewGeneratorSandbox, async (_req, res: Response) => {
         const app = JSON.parse(await manifest.getString())['sap.app'];
         res.status(200).send(
-            render(await promises.readFile(join(__dirname, '../templates/editor.html'), 'utf-8'), {
+            render(await promises.readFile(join(__dirname, '../templates/flpSandbox.html'), 'utf-8'), {
                 templateModel: {
                     appTitle: app.title || 'Card Editor Preview',
                     component: app.id
