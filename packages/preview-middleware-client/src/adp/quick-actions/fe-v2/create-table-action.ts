@@ -8,8 +8,7 @@ import UI5Element from 'sap/ui/core/Element';
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
 import { DialogNames, handler } from '../../init-dialogs';
-import { FeatureService } from '../../../cpe/feature-service';
-import { TableQuickActionDefinitionBase } from './table-quick-action-base';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
@@ -21,13 +20,6 @@ const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, 'sap.ui.table.TreeTable',
 export class AddTableActionQuickAction extends TableQuickActionDefinitionBase implements NestedQuickActionDefinition {
     constructor(context: QuickActionContext) {
         super(CREATE_TABLE_ACTION, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context);
-    }
-
-    initialize(): Promise<void> {
-        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
-            return Promise.resolve();
-        }
-        return super.initialize();
     }
 
     async execute(path: string): Promise<FlexCommand[]> {

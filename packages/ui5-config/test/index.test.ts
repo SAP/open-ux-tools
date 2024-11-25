@@ -393,7 +393,20 @@ describe('UI5Config', () => {
         });
 
         test('use open source task', () => {
-            ui5Config.addAbapDeployTask({ url, client }, app, false, ['/test/'], true);
+            ui5Config.addAbapDeployTask(
+                { url, client, authenticationType: 'reentranceTicket' },
+                app,
+                false,
+                ['/test/'],
+                true,
+                [
+                    {
+                        path: 'configuration.target.authenticationType',
+                        comment: ' SAML support for vscode',
+                        key: 'authenticationType'
+                    }
+                ]
+            );
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
@@ -460,6 +473,23 @@ describe('UI5Config', () => {
                 { path, src: '/~src', fallthrough: false },
                 { path: '/~other', src: '/~otherSrc', fallthrough: false }
             ]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
+    describe('addCloudFoundryDeployTask', () => {
+        test('minimal settings required', () => {
+            ui5Config.addCloudFoundryDeployTask('myTestAppId');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add modules task', () => {
+            ui5Config.addCloudFoundryDeployTask('myTestAppId', true);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add transpile task', () => {
+            ui5Config.addCloudFoundryDeployTask('myTestAppId', true, true);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });

@@ -5,11 +5,11 @@ import * as utils from '../../../../src/utils';
 import { getServiceUrlQuestions } from '../../../../src/prompts/datasources/service-url/questions';
 import { serviceUrlInternalPromptNames } from '../../../../src/prompts/datasources/service-url/types';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
-import { hostEnvironment } from '../../../../src/types';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 
 const validateUrlMockTrue = jest.fn().mockResolvedValue(true);
-const validateAuthTrue = jest.fn().mockResolvedValue(true);
+const validateAuthTrue = jest.fn().mockResolvedValue({ valResult: true });
 const odataServiceMock = {} as Partial<ODataService>;
 const serviceProviderMock = {} as Partial<ServiceProvider>;
 
@@ -283,7 +283,7 @@ describe('Service URL prompts', () => {
     });
 
     test('Test prompt: cliIgnoreCertValidate', async () => {
-        jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
+        jest.spyOn(utils, 'getPromptHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         connectionValidatorMock.validity = {
             urlFormat: true,
             reachable: true,
@@ -408,7 +408,9 @@ describe('Service URL prompts', () => {
         );
 
         // should return a validation message if authentication fails
-        connectionValidatorMock.validateAuth = jest.fn().mockResolvedValue('A connection error message');
+        connectionValidatorMock.validateAuth = jest
+            .fn()
+            .mockResolvedValue({ valResult: 'A connection error message', errorType: 'SOME_ERROR' });
         expect(await (passwordPrompt?.validate as Function)(password, { serviceUrl, username })).toBe(
             'A connection error message'
         );

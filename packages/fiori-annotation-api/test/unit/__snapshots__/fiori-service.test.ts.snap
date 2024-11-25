@@ -2379,12 +2379,6 @@ node_modules/@sap/cds/common.cds:
     IncidentService.IncidentProcessTimeline/modifiedBy [(102,26)..(102,47),(102,49)..(102,70)]:
         com.sap.vocabularies.CDS.v1.CdsOnInsert (102,26)..(102,47): (Path) $user
         com.sap.vocabularies.CDS.v1.CdsOnUpdate (102,49)..(102,70): (Path) $user
-    IncidentService.Category_texts/locale [(29,29)..(29,58)]:
-        title (29,29)..(29,58): (String) '{i18n>LanguageCode}'
-    IncidentService.Priority_texts/locale [(29,29)..(29,58)]:
-        title (29,29)..(29,58): (String) '{i18n>LanguageCode}'
-    IncidentService.IncidentStatus_texts/locale [(29,29)..(29,58)]:
-        title (29,29)..(29,58): (String) '{i18n>LanguageCode}'
     IncidentService.Category [(68,4)..(68,18),(69,4)..(69,38)]:
         cds.autoexpose (68,4)..(68,18): (default value)
         com.sap.vocabularies.CDS.v1.CdsPersistenceSkip (69,4)..(69,38): (String) 'if-unused'
@@ -2396,27 +2390,15 @@ node_modules/@sap/cds/common.cds:
         com.sap.vocabularies.CDS.v1.CdsPersistenceSkip (69,4)..(69,38): (String) 'if-unused'
     IncidentService.Category/name [(71,36)..(71,57)]:
         title (71,36)..(71,57): (String) '{i18n>Name}'
-    IncidentService.Category_texts/name [(71,36)..(71,57)]:
-        title (71,36)..(71,57): (String) '{i18n>Name}'
     IncidentService.Priority/name [(71,36)..(71,57)]:
-        title (71,36)..(71,57): (String) '{i18n>Name}'
-    IncidentService.Priority_texts/name [(71,36)..(71,57)]:
         title (71,36)..(71,57): (String) '{i18n>Name}'
     IncidentService.IncidentStatus/name [(71,36)..(71,57)]:
         title (71,36)..(71,57): (String) '{i18n>Name}'
-    IncidentService.IncidentStatus_texts/name [(71,36)..(71,57)]:
-        title (71,36)..(71,57): (String) '{i18n>Name}'
     IncidentService.Category/descr [(72,36)..(72,64)]:
-        title (72,36)..(72,64): (String) '{i18n>Description}'
-    IncidentService.Category_texts/descr [(72,36)..(72,64)]:
         title (72,36)..(72,64): (String) '{i18n>Description}'
     IncidentService.Priority/descr [(72,36)..(72,64)]:
         title (72,36)..(72,64): (String) '{i18n>Description}'
-    IncidentService.Priority_texts/descr [(72,36)..(72,64)]:
-        title (72,36)..(72,64): (String) '{i18n>Description}'
     IncidentService.IncidentStatus/descr [(72,36)..(72,64)]:
-        title (72,36)..(72,64): (String) '{i18n>Description}'
-    IncidentService.IncidentStatus_texts/descr [(72,36)..(72,64)]:
         title (72,36)..(72,64): (String) '{i18n>Description}'
     IncidentService.Category [(132,35)..(132,69)]:
         com.sap.vocabularies.UI.v1.Identification (132,35)..(132,69): (Collection) [

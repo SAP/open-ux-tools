@@ -71,6 +71,7 @@ export function InputTypeToggle(inputTypeToggleProps: InputTypeToggleProps): Rea
                         inputTypeProps.inputType !== InputType.expression ? 'propertyChange' : 'propertyBindingChange',
                     controlId,
                     propertyName: property.name,
+                    propertyType: property.propertyType,
                     value: newValue,
                     controlName
                 });

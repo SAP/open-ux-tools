@@ -1,5 +1,11 @@
 # @sap-ux/guided-answers-helper
 
+## 0.1.0
+
+### Minor Changes
+
+-   3734fe8: Adds system prompting to `@sap-ux/odata-service-inquirer`
+
 ## 0.0.2
 
 ### Patch Changes

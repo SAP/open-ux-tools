@@ -1,5 +1,40 @@
 # @sap-ux/ui-prompting
 
+## 0.3.4
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+-   Updated dependencies [2a72ad2]
+    -   @sap-ux/ui-components@1.21.2
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [32191dd]
+    -   @sap-ux/ui-components@1.21.1
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [25b90b5]
+    -   @sap-ux/ui-components@1.21.0
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [1c8b59f]
+    -   @sap-ux/ui-components@1.20.4
+
+## 0.3.0
+
+### Minor Changes
+
+-   a52de73: Enhance the translation input to allow passing i18n annotation information.
+
 ## 0.2.13
 
 ### Patch Changes

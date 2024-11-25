@@ -1,5 +1,37 @@
 # @sap-ux/axios-extension
 
+## 1.17.4
+
+### Patch Changes
+
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+
+## 1.17.3
+
+### Patch Changes
+
+-   8237f83: feat: add namespaces to annotation template
+
+## 1.17.2
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/btp-utils@0.16.0
+
+## 1.17.1
+
+### Patch Changes
+
+-   7551316: Small text cleanups
+
+## 1.17.0
+
+### Minor Changes
+
+-   0120dda: Handle HTTP(S) proxy configurations
+
 ## 1.16.7
 
 ### Patch Changes

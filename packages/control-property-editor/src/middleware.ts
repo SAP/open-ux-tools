@@ -15,7 +15,8 @@ import {
     setAppMode,
     executeQuickAction,
     clearInfoCenterMessage,
-    clearAllInfoCenterMessages
+    clearAllInfoCenterMessages,
+    appLoaded
 } from '@sap-ux-private/control-property-editor-common';
 
 import type reducer from './slice';
@@ -42,6 +43,12 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>, Retur
             return result;
         },
         function onAction(action) {
+            if (appLoaded.match(action)) {
+                const control = store.getState().selectedControl;
+                if (control) {
+                    sendAction(selectControl(control.id));
+                }
+            }
             store.dispatch(action);
             return Promise.resolve();
         }

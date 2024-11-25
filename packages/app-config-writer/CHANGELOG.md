@@ -1,5 +1,93 @@
 # @sap-ux/app-config-writer
 
+## 0.4.55
+
+### Patch Changes
+
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/axios-extension@1.17.4
+
+## 0.4.54
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+    -   @sap-ux/project-access@1.28.7
+    -   @sap-ux/axios-extension@1.17.3
+
+## 0.4.53
+
+### Patch Changes
+
+-   Updated dependencies [8237f83]
+    -   @sap-ux/axios-extension@1.17.3
+
+## 0.4.52
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/btp-utils@0.16.0
+    -   @sap-ux/axios-extension@1.17.2
+
+## 0.4.51
+
+### Patch Changes
+
+-   Updated dependencies [7551316]
+    -   @sap-ux/axios-extension@1.17.1
+
+## 0.4.50
+
+### Patch Changes
+
+-   fb26f92: Enhance RTA handling for variants-config command
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+    -   @sap-ux/axios-extension@1.17.0
+
+## 0.4.49
+
+### Patch Changes
+
+-   Updated dependencies [0120dda]
+    -   @sap-ux/axios-extension@1.17.0
+
+## 0.4.48
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+    -   @sap-ux/project-access@1.28.5
+    -   @sap-ux/axios-extension@1.16.7
+
+## 0.4.47
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/project-access@1.28.4
+    -   @sap-ux/axios-extension@1.16.7
+
+## 0.4.46
+
+### Patch Changes
+
+-   Updated dependencies [ff75382]
+    -   @sap-ux/store@0.9.3
+    -   @sap-ux/ui5-config@0.25.0
+
+## 0.4.45
+
+### Patch Changes
+
+-   Updated dependencies [42f13eb]
+    -   @sap-ux/project-access@1.28.3
+    -   @sap-ux/axios-extension@1.16.7
+
 ## 0.4.44
 
 ### Patch Changes

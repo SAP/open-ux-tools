@@ -1,5 +1,162 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.9
+
+### Patch Changes
+
+-   8806c46: Adds system selection default choice option
+
+## 0.6.8
+
+### Patch Changes
+
+-   aea4ac9: Revert datasource type labels to previous values.
+-   74dc5fe: Fix CAP loading errors messages
+-   Updated dependencies [74dc5fe]
+    -   @sap-ux/inquirer-common@0.5.4
+
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [575ff89]
+    -   @sap-ux/fiori-generator-shared@0.7.10
+    -   @sap-ux/inquirer-common@0.5.3
+
+## 0.6.6
+
+### Patch Changes
+
+-   481e6b4: Fix for i18n not loading
+
+## 0.6.5
+
+### Patch Changes
+
+-   a62ff25: adds new options for listing destinations api
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/axios-extension@1.17.4
+    -   @sap-ux/fiori-generator-shared@0.7.9
+    -   @sap-ux/inquirer-common@0.5.2
+    -   @sap-ux/telemetry@0.5.44
+
+## 0.6.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.7
+-   @sap-ux/telemetry@0.5.43
+-   @sap-ux/axios-extension@1.17.3
+-   @sap-ux/fiori-generator-shared@0.7.8
+-   @sap-ux/inquirer-common@0.5.1
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [8237f83]
+    -   @sap-ux/axios-extension@1.17.3
+
+## 0.6.2
+
+### Patch Changes
+
+-   1fb5a5c: Removes console log statement
+
+## 0.6.1
+
+### Patch Changes
+
+-   2886db3: Moves `getCFAbapServiceChoices` to inquirer-common and exports.
+-   Updated dependencies [2886db3]
+    -   @sap-ux/inquirer-common@0.5.0
+    -   @sap-ux/fiori-generator-shared@0.7.7
+
+## 0.6.0
+
+### Minor Changes
+
+-   3734fe8: Adds system prompting to `@sap-ux/odata-service-inquirer`
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/guided-answers-helper@0.1.0
+    -   @sap-ux/btp-utils@0.16.0
+    -   @sap-ux/axios-extension@1.17.2
+    -   @sap-ux/fiori-generator-shared@0.7.6
+    -   @sap-ux/telemetry@0.5.42
+
+## 0.5.60
+
+### Patch Changes
+
+-   Updated dependencies [7551316]
+    -   @sap-ux/axios-extension@1.17.1
+
+## 0.5.59
+
+### Patch Changes
+
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+    -   @sap-ux/axios-extension@1.17.0
+    -   @sap-ux/telemetry@0.5.41
+
+## 0.5.58
+
+### Patch Changes
+
+-   Updated dependencies [0120dda]
+    -   @sap-ux/axios-extension@1.17.0
+
+## 0.5.57
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.5
+-   @sap-ux/telemetry@0.5.40
+-   @sap-ux/axios-extension@1.16.7
+
+## 0.5.56
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/project-access@1.28.4
+    -   @sap-ux/axios-extension@1.16.7
+    -   @sap-ux/telemetry@0.5.39
+
+## 0.5.55
+
+### Patch Changes
+
+-   Updated dependencies [ff75382]
+    -   @sap-ux/store@0.9.3
+    -   @sap-ux/telemetry@0.5.38
+
+## 0.5.54
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.10
+
+## 0.5.53
+
+### Patch Changes
+
+-   Updated dependencies [42f13eb]
+    -   @sap-ux/project-access@1.28.3
+    -   @sap-ux/axios-extension@1.16.7
+    -   @sap-ux/telemetry@0.5.37
+
+## 0.5.52
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.9
+
 ## 0.5.51
 
 ### Patch Changes

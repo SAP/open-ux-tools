@@ -13,9 +13,13 @@ import { OutlineService } from '../../../src/cpe/outline/service';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import connector from '../../../src/flp/WorkspaceConnector';
 import { CommunicationService } from '../../../src/cpe/communication-service';
+import { RtaService } from '../../../src/cpe/rta-service';
+import { ChangeService } from '../../../src/cpe/changes';
+import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
+import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-service';
+import { SelectionService } from '../../../src/cpe/selection';
 
 describe('main', () => {
-    const sendActionMock = jest.fn();
     VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
     const applyChangeSpy = jest
         .spyOn(flexChange, 'applyChange')
@@ -28,6 +32,11 @@ describe('main', () => {
                 )
         });
     const initOutlineSpy = jest.spyOn(OutlineService.prototype, 'init');
+    const rtaSpy = jest.spyOn(RtaService.prototype, 'init');
+    const changesServiceSpy = jest.spyOn(ChangeService.prototype, 'init');
+    const connectorServiceSpy = jest.spyOn(WorkspaceConnectorService.prototype, 'init');
+    const quickActionServiceSpy = jest.spyOn(QuickActionService.prototype, 'init');
+    const selectionServiceSpy = jest.spyOn(SelectionService.prototype, 'init');
 
     beforeAll(() => {
         const apiJson = {
@@ -56,6 +65,11 @@ describe('main', () => {
     afterEach(() => {
         applyChangeSpy.mockClear();
         initOutlineSpy.mockClear();
+        rtaSpy.mockClear();
+        changesServiceSpy.mockClear();
+        connectorServiceSpy.mockClear();
+        quickActionServiceSpy.mockClear();
+        selectionServiceSpy.mockClear();
     });
 
     sapCoreMock.byId.mockReturnValueOnce({
@@ -86,10 +100,11 @@ describe('main', () => {
 
     test('init - 1', async () => {
         initOutlineSpy.mockResolvedValue();
+        rtaSpy.mockResolvedValue();
         // const rta = new RuntimeAuthoringMock();
         await init(rta);
         const callBackFn = spyPostMessage.mock.calls[2][0];
-        (callBackFn as any)('test')
+        (callBackFn as any)('test');
         // apply change without error
         const payload = {
             controlId:
@@ -103,7 +118,6 @@ describe('main', () => {
         });
 
         // check delete notifier
-        sendActionMock.mockClear();
         await connector.storage.removeItem('sap.ui.fl.testFile');
 
         //assert
@@ -113,6 +127,7 @@ describe('main', () => {
     test('init - rta exception', async () => {
         const error = new Error('Cannot init outline');
         initOutlineSpy.mockRejectedValue(error);
+        rtaSpy.mockResolvedValue();
 
         // act
         await init(rta);
@@ -120,5 +135,27 @@ describe('main', () => {
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
         expect(Log.error).toBeCalledWith('Service Initialization Failed: ', error);
+    });
+
+    test('init and appLoaed called', async () => {
+        CommunicationService.sendAction = jest.fn();
+
+        initOutlineSpy.mockResolvedValue();
+        rtaSpy.mockResolvedValue();
+        changesServiceSpy.mockResolvedValue();
+        connectorServiceSpy.mockResolvedValue();
+        selectionServiceSpy.mockResolvedValue('' as never);
+        quickActionServiceSpy.mockResolvedValue();
+
+        await init(rta);
+        await Promise.all([
+            initOutlineSpy,
+            rtaSpy,
+            changesServiceSpy,
+            connectorServiceSpy,
+            selectionServiceSpy,
+            quickActionServiceSpy
+        ]);
+        expect(CommunicationService.sendAction).toBeCalledWith(common.appLoaded());
     });
 });

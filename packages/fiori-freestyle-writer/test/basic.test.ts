@@ -202,6 +202,56 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 }
             },
             settings: {}
+        },
+        {
+            name: 'basic_typescript_ui5_1_120_0',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    typescript: true
+                },
+                ui5: {
+                    version: '1.120.0',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.120.0'
+                }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_ui5_1_120_0',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    typescript: false
+                },
+                ui5: {
+                    version: '1.120.0',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.120.0'
+                }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_ui5_1_120_0_with_reuse_libs_and_eslint',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    typescript: false,
+                    loadReuseLibs: true,
+                    eslint: true
+                },
+                ui5: {
+                    version: '1.120.0',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.120.0'
+                }
+            },
+            settings: {}
         }
     ];
 

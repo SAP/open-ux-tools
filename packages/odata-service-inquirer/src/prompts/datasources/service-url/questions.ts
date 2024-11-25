@@ -1,15 +1,15 @@
-import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
-import { extendWithOptions } from '@sap-ux/inquirer-common';
+import { extendWithOptions, type CommonPromptOptions, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConfirmQuestion, InputQuestion, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../types';
-import { hostEnvironment, promptNames } from '../../../types';
-import { PromptState, getHostEnvironment } from '../../../utils';
+import { promptNames } from '../../../types';
+import { PromptState, getPromptHostEnvironment } from '../../../utils';
 import { ConnectionValidator } from '../../connectionValidator';
 import LoggerHelper from '../../logger-helper';
 import { serviceUrlInternalPromptNames } from './types';
 import { validateService } from './validators';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
@@ -219,15 +219,15 @@ function getPasswordPrompt(
             applyDefaultWhenDirty: true,
             mandatory: true
         },
+        guiType: 'login',
         name: promptNames.serviceUrlPassword,
         message: t('prompts.servicePassword.message'),
-        guiType: 'login',
         mask: '*',
         validate: async (password: string, { username, serviceUrl, ignoreCertError, sapClient }: ServiceUrlAnswers) => {
             if (!serviceUrl || !username || !password) {
                 return false;
             }
-            const validAuth = await connectValidator.validateAuth(serviceUrl, username, password, {
+            const { valResult: validAuth } = await connectValidator.validateAuth(serviceUrl, username, password, {
                 ignoreCertError,
                 sapClient
             });
@@ -269,7 +269,7 @@ export function getServiceUrlQuestions({
         getIgnoreCertErrorsPrompt(connectValidator, requiredVersion)
     ];
 
-    if (getHostEnvironment() === hostEnvironment.cli) {
+    if (getPromptHostEnvironment() === hostEnvironment.cli) {
         questions.push(getCliIgnoreCertValidatePrompt(connectValidator, requiredVersion));
     }
     questions.push(getUsernamePrompt(connectValidator), getPasswordPrompt(connectValidator, requiredVersion));

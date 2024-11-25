@@ -1,5 +1,87 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [74dc5fe]
+    -   @sap-ux/inquirer-common@0.5.4
+
+## 0.8.0
+
+### Minor Changes
+
+-   d11283f: Remove the enableNpmWorkspaces prompt (and all references)
+
+## 0.7.16
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.3
+
+## 0.7.15
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.2
+
+## 0.7.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.7
+-   @sap-ux/inquirer-common@0.5.1
+
+## 0.7.13
+
+### Patch Changes
+
+-   Updated dependencies [2886db3]
+    -   @sap-ux/inquirer-common@0.5.0
+
+## 0.7.12
+
+### Patch Changes
+
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+
+## 0.7.11
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.5
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/project-access@1.28.4
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [1cccbf1]
+    -   @sap-ux/ui5-info@0.8.3
+    -   @sap-ux/inquirer-common@0.4.10
+
+## 0.7.8
+
+### Patch Changes
+
+-   Updated dependencies [42f13eb]
+    -   @sap-ux/project-access@1.28.3
+
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [cd28744]
+    -   @sap-ux/ui5-info@0.8.2
+    -   @sap-ux/inquirer-common@0.4.9
+
 ## 0.7.6
 
 ### Patch Changes

@@ -12,7 +12,8 @@ import type {
     Ui5Document,
     Adp,
     MockserverConfig,
-    ServeStaticPath
+    ServeStaticPath,
+    AbapDeployConfig
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -355,6 +356,7 @@ export class UI5Config {
      * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
      * @param exclude optional list of files that are to be excluded from the deployment configuration
      * @param index if true a standalone index.html is generated during deployment
+     * @param comments optional comments that are added to the task
      * @returns this UI5Config instance
      * @memberof UI5Config
      */
@@ -363,7 +365,8 @@ export class UI5Config {
         app: BspApp | Adp,
         fioriTools = true,
         exclude?: string[],
-        index = false
+        index = false,
+        comments: NodeComment<CustomTask<AbapDeployConfig>>[] = []
     ): this {
         this.document.appendTo({
             path: 'builder.resources.excludes',
@@ -387,8 +390,81 @@ export class UI5Config {
                 name: fioriTools ? 'deploy-to-abap' : 'abap-deploy-task',
                 afterTask: 'generateCachebusterInfo',
                 configuration
+            },
+            comments
+        });
+        return this;
+    }
+
+    /**
+     * Adds the Cloud Foundry deployment task to the config.
+     *
+     * @param archiveName the name of the archive that is to be generated as part of the CF bundling
+     * @param addModulesTask if true the modules task is added to the deployment configuration
+     * @param addTranspileTask if true the transpile task is added to the deployment configuration
+     * @returns this UI5Config instance
+     * @memberof UI5Config
+     */
+    public addCloudFoundryDeployTask(archiveName: string, addModulesTask = false, addTranspileTask = false): this {
+        this.document.appendTo({
+            path: 'builder.resources.excludes',
+            value: '/test/**'
+        });
+        this.document.appendTo({
+            path: 'builder.resources.excludes',
+            value: '/localService/**'
+        });
+
+        this.document.appendTo({
+            path: 'builder.customTasks',
+            value: {
+                name: 'webide-extension-task-updateManifestJson',
+                afterTask: 'replaceVersion',
+                configuration: {
+                    appFolder: 'webapp',
+                    destDir: 'dist'
+                }
             }
         });
+
+        this.document.appendTo({
+            path: 'builder.customTasks',
+            value: {
+                name: 'ui5-task-zipper',
+                afterTask: 'generateCachebusterInfo',
+                configuration: {
+                    archiveName,
+                    additionalFiles: ['xs-app.json']
+                }
+            }
+        });
+
+        if (addModulesTask) {
+            this.document.appendTo({
+                path: 'builder.customTasks',
+                value: {
+                    name: 'ui5-tooling-modules-task',
+                    afterTask: 'replaceVersion',
+                    configuration: {}
+                }
+            });
+        }
+
+        if (addTranspileTask) {
+            this.document.appendTo({
+                path: 'builder.customTasks',
+                value: {
+                    name: 'ui5-tooling-transpile-task',
+                    afterTask: 'replaceVersion',
+                    configuration: {
+                        debug: true,
+                        removeConsoleStatements: true,
+                        transpileAsync: true,
+                        transpileTypeScript: true
+                    }
+                }
+            });
+        }
         return this;
     }
 
