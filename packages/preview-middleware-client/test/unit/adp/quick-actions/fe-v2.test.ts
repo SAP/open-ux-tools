@@ -34,13 +34,13 @@ import {
     GRID_TABLE_TYPE,
     M_TABLE_TYPE,
     SMART_TABLE_TYPE,
+    TableQuickActionDefinitionBase,
     TREE_TABLE_TYPE
 } from 'open/ux/preview/client/adp/quick-actions/table-quick-action-base';
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
 import { Ui5VersionInfo } from '../../../../src/utils/version';
-
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
@@ -298,7 +298,9 @@ describe('FE V2 quick actions', () => {
         describe('change table columns', () => {
             test('initialize and execute', async () => {
                 const pageView = new XMLView();
-
+                jest.spyOn(TableQuickActionDefinitionBase.prototype as any, 'getInternalTableRows').mockImplementation(() => {
+                    return [{ item: 1 }];
+                });
                 const scrollIntoView = jest.fn();
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartTable') {
@@ -404,6 +406,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -416,6 +419,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -424,6 +428,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -451,7 +456,9 @@ describe('FE V2 quick actions', () => {
         describe('create table action', () => {
             test('initialize and execute', async () => {
                 const pageView = new XMLView();
-
+                jest.spyOn(TableQuickActionDefinitionBase.prototype as any, 'getInternalTableRows').mockImplementation(() => {
+                    return [{ item: 1 }];
+                });
                 const scrollIntoView = jest.fn();
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'mTable') {
@@ -544,6 +551,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -552,6 +560,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -817,6 +826,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -829,6 +839,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -1034,15 +1045,15 @@ describe('FE V2 quick actions', () => {
                         return { type, value, settings };
                     });
 
-                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(
-                    rtaMock,
-                    new OutlineService(rtaMock, mockChangeService),
-                    [registry],
-                    { onStackChange: jest.fn() } as any
-                );
-                await service.init(sendActionMock, subscribeMock);
+                    const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                    const registry = new FEV2QuickActionRegistry();
+                    const service = new QuickActionService(
+                        rtaMock,
+                        new OutlineService(rtaMock, mockChangeService),
+                        [registry],
+                        { onStackChange: jest.fn() } as any
+                    );
+                    await service.init(sendActionMock, subscribeMock);
 
                     await service.reloadQuickActions({
                         'sap.ui.comp.smartfilterbar.SmartFilterBar': [
@@ -1065,7 +1076,8 @@ describe('FE V2 quick actions', () => {
                                     id: 'listReport0-enable-semantic-daterange-filterbar',
                                     title: 'Enable "Semantic Date Range" for Filter Bar',
                                     enabled: true
-                                }] : []
+                                }
+                                ] : []
                             }
                         ])
                     );
@@ -1412,12 +1424,22 @@ describe('FE V2 quick actions', () => {
                                 scrollIntoView
                             }),
 
-                            getAggregation: () => {
-                                return [
-                                    {
-                                        getAggregation: () => 'headerToolbar'
-                                    }
-                                ];
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === 'sap.ui.table.Table',
+                                            getAggregation: () => 'item', // Mock inner aggregation for table rows
+                                        },
+                                        {
+                                            isA: (type: string) => type === 'sap.m.Table',
+                                            getAggregation: () => 'item', // Mock another type of table
+                                        },
+                                    ];
+                                } else if (aggregationName === 'headerToolbar') {
+                                    return 'headerToolbar'; // Return a simple string for headerToolbar
+                                }
+                                return [];
                             },
                             getParent: () => pageView,
                             getBusy: () => false,
@@ -1494,12 +1516,8 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
-                                            children: [
-                                                {
-                                                    children: [],
-                                                    label: `'MyTable' table`
-                                                }
-                                            ],
+                                            enabled: true,
+                                            children: [{ enabled: true, children: [], label: `'MyTable' table` }],
                                             label: `'section 01' section`
                                         }
                                     ]
@@ -1507,12 +1525,8 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
-                                            'children': [
-                                                {
-                                                    'children': [],
-                                                    'label': `'MyTable' table`
-                                                }
-                                            ],
+                                            enabled: true,
+                                            'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
                                             'label': `'section 01' section`
                                         }
                                     ],
@@ -1587,13 +1601,25 @@ describe('FE V2 quick actions', () => {
                                 scrollIntoView
                             }),
 
-                            getAggregation: () => {
-                                return [
-                                    {
-                                        isA: (type: string) => type === testCase.tableType,
-                                        getAggregation: () => 'columns'
-                                    }
-                                ];
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === testCase.tableType,
+                                            getAggregation: () => 'item'
+                                        }
+                                    ];
+                                } else if (aggregationName === 'headerToolbar') {
+                                    return 'headerToolbar'; // Mock headerToolbar aggregation
+                                } else if (aggregationName === 'columns') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === testCase.tableType,
+                                            getAggregation: () => 'columns', // Mock column aggregation
+                                        },
+                                    ];
+                                }
+                                return [];
                             },
                             getParent: () => pageView,
                             getBusy: () => false,
@@ -1666,12 +1692,8 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
-                                            'children': [
-                                                {
-                                                    'children': [],
-                                                    'label': `'MyTable' table`
-                                                }
-                                            ],
+                                            enabled: true,
+                                            'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
                                             'label': `'section 01' section`
                                         }
                                     ],
@@ -1683,9 +1705,11 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            enabled: true,
                                             'children': [
                                                 {
                                                     'children': [],
+                                                    enabled: true,
                                                     'label': `'MyTable' table`
                                                 }
                                             ],
@@ -1936,6 +1960,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],

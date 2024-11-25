@@ -6,7 +6,10 @@ const mockChangeService = {
     syncOutlineChanges: jest.fn()
 } as unknown as ChangeService;
 
-import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
+import {
+    quickActionListChanged,
+    executeQuickAction
+} from '@sap-ux-private/control-property-editor-common';
 
 jest.mock('../../../../src/adp/init-dialogs', () => {
     return {
@@ -40,6 +43,7 @@ import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
     SMART_TABLE_TYPE,
+    TableQuickActionDefinitionBase,
     TREE_TABLE_TYPE
 } from '../../../../src/adp/quick-actions/table-quick-action-base';
 import { MDC_TABLE_TYPE } from 'open/ux/preview/client/adp/quick-actions/table-quick-action-base';
@@ -599,6 +603,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -607,10 +612,12 @@ describe('FE V4 quick actions', () => {
                                     'kind': 'nested',
                                     id: 'listReport0-create_table_action',
                                     title: 'Add Custom Table Action',
+                                    tooltip: undefined,
                                     enabled: true,
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -619,13 +626,16 @@ describe('FE V4 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
-                                            'label': `'MyTable' table`
+                                            enabled: false,
+                                            'label': `'MyTable' table`,
+                                            tooltip: 'This action has been disabled because the table rows are not available. Please load the table data and try again'
                                         }
                                     ],
                                     'enabled': true,
                                     'id': 'listReport0-create-table-custom-column',
                                     'kind': 'nested',
-                                    'title': 'Add Custom Table Column'
+                                    'title': 'Add Custom Table Column',
+                                    tooltip: undefined
                                 }
                             ]
                         }
@@ -761,6 +771,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -769,13 +780,16 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
-                                            label: `'MyTable' table`
+                                            enabled: false,
+                                            label: `'MyTable' table`,
+                                            tooltip: 'This action has been disabled because the table rows are not available. Please load the table data and try again'
                                         }
                                     ],
                                     enabled: true,
                                     id: 'listReport0-create-table-custom-column',
                                     kind: 'nested',
-                                    title: 'Add Custom Table Column'
+                                    title: 'Add Custom Table Column',
+                                    tooltip: undefined
                                 }
                             ]
                         }
@@ -873,7 +887,9 @@ describe('FE V4 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
-                                            'label': `'MyTable' table`
+                                            enabled: false,
+                                            'label': `'MyTable' table`,
+                                            tooltip: 'This action has been disabled because the table rows are not available. Please load the table data and try again'
                                         }
                                     ],
                                     'enabled': true,
@@ -1249,20 +1265,29 @@ describe('FE V4 quick actions', () => {
 
             describe('create table custom column', () => {
                 const testCases = [
-                    { tableType: MDC_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => MDC_TABLE_TYPE },
-                    { tableType: TREE_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => TREE_TABLE_TYPE },
+                    { tableType: MDC_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => MDC_TABLE_TYPE, enable: true },
+                    { tableType: TREE_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => TREE_TABLE_TYPE, enable: true },
                     {
                         tableType: ANALYTICAL_TABLE_TYPE,
                         dialog: DialogNames.ADD_FRAGMENT,
-                        toString: () => ANALYTICAL_TABLE_TYPE
+                        toString: () => ANALYTICAL_TABLE_TYPE,
+                        enable: true
                     },
-                    { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
+                    { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE, enable: true }
                 ];
                 test.each(testCases)(
                     'initialize and execute action (%s)',
                     async (testCase) => {
                         const pageView = new XMLView();
                         const scrollIntoView = jest.fn();
+                        jest.spyOn(TableQuickActionDefinitionBase.prototype as any, 'getInternalTableRows').mockImplementation(() => {
+                            if (testCase.enable) {
+                                return [{ item: 1 }];
+                            } else {
+                                return [];
+                            }
+
+                        });
                         jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
                             if (type === 'sap.uxap.ObjectPageSection') {
                                 // Return a mock object with the getSubSections method
@@ -1270,7 +1295,7 @@ describe('FE V4 quick actions', () => {
                                     children: [2],
                                     getSubSections: () => [{}, {}],
                                     getTitle: () => 'section 01',
-                                    setSelectedSubSection: () => {}
+                                    setSelectedSubSection: () => { }
                                 };
                             }
 
@@ -1401,9 +1426,11 @@ describe('FE V4 quick actions', () => {
                                         {
                                             'children': [
                                                 {
+                                                    enabled: true,
                                                     'children': [
                                                         {
                                                             'children': [],
+                                                            enabled: true,
                                                             'label': `'MyTable' table`
                                                         }
                                                     ],

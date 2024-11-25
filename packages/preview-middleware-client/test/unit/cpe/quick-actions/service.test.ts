@@ -25,19 +25,19 @@ class MockDefinition implements SimpleQuickActionDefinition {
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
-    isActive = false;
-    constructor(private context: QuickActionContext) {}
+    isApplicable = false;
+    constructor(private context: QuickActionContext) { }
     getActionObject(): SimpleQuickAction {
         return {
             kind: this.kind,
 
             id: this.id,
-            enabled: this.isActive,
+            enabled: this.isApplicable,
             title: 'Mock Action'
         };
     }
     initialize(): void {
-        this.isActive = true;
+        this.isApplicable = true;
     }
     execute(): FlexCommand[] {
         return [
