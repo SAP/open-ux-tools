@@ -15,6 +15,7 @@ import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
+import { fetchMock } from '../../__mock__/global';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -242,7 +243,6 @@ describe('FlpSandbox', () => {
 
     describe('router', () => {
         let server!: SuperTest<Test>;
-        const globalFetch = global.fetch;
         const mockConfig = {
             flp: {
                 apps: [
@@ -288,8 +288,8 @@ describe('FlpSandbox', () => {
             }
         };
 
-        beforeEach(() => {
-            global.fetch = globalFetch;
+        afterEach(() => {
+            fetchMock.mockRestore();
         });
 
         beforeAll(async () => {
@@ -309,11 +309,12 @@ describe('FlpSandbox', () => {
         });
 
         test('test/flp.html UI5 2.x', async () => {
-            global.fetch = jest.fn(() =>
-                Promise.resolve({
-                    json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] })
-                })
-            ) as jest.Mock;
+            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
             const response = await server.get('/test/flp.html').expect(200);
             expect(response.text).toMatchSnapshot();
         });
@@ -347,11 +348,12 @@ describe('FlpSandbox', () => {
         });
 
         test('rta with developerMode=true UI5 version 2.x', async () => {
-            global.fetch = jest.fn(() =>
-                Promise.resolve({
-                    json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] })
-                })
-            ) as jest.Mock;
+            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
             let response = await server.get('/my/editor.html').expect(200);
             expect(response.text).toMatchSnapshot();
             expect(response.text.includes('livereloadPort: 35729')).toBe(true);
@@ -501,12 +503,12 @@ describe('FlpSandbox', () => {
         });
 
         test('test/flp.html UI5 1.71 with asyncHints.requests', async () => {
-            const globalFetch = global.fetch;
-            global.fetch = jest.fn(() =>
-                Promise.resolve({
-                    json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.71.0' }] })
-                })
-            ) as jest.Mock;
+            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.71.0' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
             const flp = new FlpSandbox(
                 mockConfig as unknown as Partial<MiddlewareConfig>,
                 mockProject,
@@ -559,7 +561,6 @@ describe('FlpSandbox', () => {
                 )
                 .expect(200);
             expect(response.text).toMatchSnapshot();
-            global.fetch = globalFetch;
         });
     });
 
