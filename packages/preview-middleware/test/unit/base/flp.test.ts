@@ -242,6 +242,7 @@ describe('FlpSandbox', () => {
 
     describe('router', () => {
         let server!: SuperTest<Test>;
+        const globalFetch = global.fetch;
         const mockConfig = {
             flp: {
                 apps: [
@@ -287,6 +288,10 @@ describe('FlpSandbox', () => {
             }
         };
 
+        beforeEach(() => {
+            global.fetch = globalFetch;
+        });
+
         beforeAll(async () => {
             const flp = new FlpSandbox(
                 mockConfig as unknown as Partial<MiddlewareConfig>,
@@ -304,7 +309,6 @@ describe('FlpSandbox', () => {
         });
 
         test('test/flp.html UI5 2.x', async () => {
-            const globalFetch = global.fetch;
             global.fetch = jest.fn(() =>
                 Promise.resolve({
                     json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] })
@@ -312,7 +316,6 @@ describe('FlpSandbox', () => {
             ) as jest.Mock;
             const response = await server.get('/test/flp.html').expect(200);
             expect(response.text).toMatchSnapshot();
-            global.fetch = globalFetch;
         });
 
         test('test/flp.html', async () => {
@@ -340,6 +343,23 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
             expect(response.text.includes('livereloadPort: 35729')).toBe(true);
             response = await server.get('/my/editor.html.inner.html').expect(302);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with developerMode=true UI5 version 2.x', async () => {
+            global.fetch = jest.fn(() =>
+                Promise.resolve({
+                    json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] })
+                })
+            ) as jest.Mock;
+            let response = await server.get('/my/editor.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            expect(response.text.includes('livereloadPort: 35729')).toBe(true);
+            response = await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
