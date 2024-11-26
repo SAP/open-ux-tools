@@ -4,10 +4,10 @@
             "message": "Data source",
             "projectSpecificDestName": "Project Specific Destination",
             "businessHubName": "SAP Business Accelerator Hub",
-            "sapSystemName": "SAP System",
-            "odataServiceUrlName": "OData Service Url",
+            "sapSystemName": "System",
+            "odataServiceUrlName": "OData Service",
             "capProjectName": "Local CAP Project",
-            "metadataFileName": "Metadata File",
+            "metadataFileName": "Metadata Document",
             "noneName": "None",
             "projectSpecificDestChoiceText": "Connect to a $t(prompts.datasourceType.projectSpecificDestName)",
             "businessHubChoiceText": "Connect to $t(prompts.datasourceType.businessHubName)",
@@ -101,7 +101,8 @@
         },
         "systemSelection": {
             "newSystemChoiceLabel": "New system",
-            "message": "Select a system configuration",
+            "hint": "Select a system configuration",
+            "message": "System",
             "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
         },
         "abapOnBTPType": {
@@ -128,35 +129,18 @@
     },
     "errors": {
         "destination": {
-            "unavailable": "The selected destination references an instance that is not available. Please check your destination configuration and try again.",
-            "notFound": "The destination is misconfigured, HTTP Error 404 returned, the requested resource could not be found.",
-            "authError": "The selected system is returning an authentication error. System name: {{systemName}}, error: {{- error}}",
-            "notReachable": "The selected system is not reachable. System name: {{systemName}}, error: {{- error}}",
-            "misconfigured": "The destination is misconfigured. $t(errors.destination.missingPropMsg, {\"destinationProperty\": \"{{destinationProperty}}\" })",
-            "missingPropMsg": "The property: `{{destinationProperty}}` is missing.",
-            "httpConnectionError": "A connection error occurred with the selected destination. Http code: {{- code}}. See log for more details."
+            "authError": "The selected system is returning an authentication error. System name: {{systemName}}, error: {{- error}}"
         },
-        "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. See log for more details.",
-        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services. {{- error}}",
+        "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. $t(texts.seeLogForDetails)",
+        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services{{- error, addMsgWithColonFormatter}}",
         "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. CAP service property `urlPath` is not defined but is required.",
         "unknownError": "An error occurred{{- error, addMsgWithColonFormatter}}",
-        "servicesUnavailable": "An error occurred retrieving service(s) for SAP System.",
-        "certificateError": "A certificate error has occurred: {{- error}}",
-        "urlCertValidationError": "The system URL is using {{certErrorReason}} security certificate.",
         "authenticationFailed": "Authentication incorrect. {{error}}",
-        "authenticationTimeout": "Authorization was not verified within the allowed time. Please ensure you have authenticated using the associated browser window.",
         "invalidUrl": "Invalid URL{{-input, addMsgWithColonFormatter}}",
         "connectionError": "A connection error occurred, please ensure the target host is available on the network: {{- error}}",
-        "timeout": "A connection timeout error occurred: {{- error}}",
-        "serverReturnedAnError": "The server returned an error. {{errorDesc}}",
-        "serverUnableToCompleteRequest": "The server was unable to complete the request",
-        "catalogServiceNotActive": "Catalog service is not active",
         "urlNotFound": "URL not found",
-        "odataServiceUrlNotFound": "The service URL you have provided is not a valid OData Service. Fiori applications require an OData service as the data source.",
         "noServicesAvailable": "There are no V{{version}} OData services available from the selected system and the template you have chosen supports V{{version}} OData services only",
-        "redirectError": "A redirect response was received from the server",
         "abapEnvsUnavailable": "ABAP environments unavailable",
-        "noSuchHostError": "No such host is known",
         "systemOrServiceUrlNotFound": "Please verify the url: {{- url}}, target system configuration and network connectivity",
         "urlRedirect": "The service URL is redirecting",
         "certValidationRequired": "Certificate validation is required to continue.",
@@ -165,34 +149,18 @@
         "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). $t(texts.seeLogForDetails)",
         "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}",
         "serviceTypeRequestError": "Error retrieving service type: {{- error}}",
-        "noAbapEnvsInCFSpace": "No ABAP environments in CF space found.",
-        "abapEnvsCFDiscoveryFailed": "Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry (see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login).",
         "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed.",
         "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}. {{error}}",
         "storedSystemConnectionError": "An error occurred while validating the stored system connection info. System name: {{-systemName}}, error: {{- error}}",
         "noCatalogOrServiceAvailable": "No active system or OData service endpoint connection available to retrieve service(s).",
-        "systemConnectionValidationFailed": "A connection to the selected system could not be established.",
-        "allCatalogServiceRequestsFailed": "All catalog service requests failed for the selected system. OData version(s): V{{version}}.",
-        "internalServerError": "Internal server error{{-errorMsg, addMsgWithColonFormatter}}",
-        "badGateway": "Bad gateway{{- errorMsg, addMsgWithColonFormatter}}",
-        "badRequest": "Bad request{{- errorMsg, addMsgWithColonFormatter}}"
+        "allCatalogServiceRequestsFailed": "All catalog service requests failed for the selected system. OData version(s): V{{version}}."
     },
     "texts": {
-        "anExpiredCert": "an expired",
-        "aSelfSignedCert": "a self-signed",
-        "anUnknownOrInvalidCert": "an unknown or invalid",
-        "anUntrustedRootCert": "an untrusted root",
         "suggestedSystemNameClient": ", client {{client}}",
         "seeLogForDetails": "See log for more details.",
         "forUserName": "(for user [{{username}}])",
         "systemTypeBTP": "BTP",
         "systemTypeS4HC": "S4HC",
         "httpStatus": "http status {{httpStatus}}"
-    },
-    "guidedAnswers": {
-        "validationErrorHelpText": "Need help with this error?"
-    },
-    "telemetry": {
-        "unknownOsText": "Unknown"
     }
 }

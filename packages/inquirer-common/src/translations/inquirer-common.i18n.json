@@ -4,5 +4,50 @@
         "outOfMaintenance": "Out of maintenance",
         "version_one": "version",
         "version_other": "versions"
+    },
+    "errors": {
+        "destination": {
+            "unavailable": "The selected destination references an instance that is not available. Please check your destination configuration and try again.",
+            "notFound": "The destination is misconfigured, HTTP Error 404 returned, the requested resource could not be found.",
+            "notReachable": "The selected system is not reachable. System name: {{systemName}}, error: {{- error}}",
+            "misconfigured": "The destination is misconfigured. $t(errors.destination.missingPropMsg, {\"destinationProperty\": \"{{destinationProperty}}\" })",
+            "missingPropMsg": "The property: `{{destinationProperty}}` is missing.",
+            "httpConnectionError": "A connection error occurred with the selected destination. Http code: {{- code}}. $t(texts.seeLogForDetails)"
+        },
+        "unknownError": "An error occurred{{- error, addMsgWithColonFormatter}}",
+        "servicesUnavailable": "An error occurred retrieving service(s) for SAP System.",
+        "certificateError": "A certificate error has occurred{{- errorMsg, addMsgWithColonFormatter}}",
+        "urlCertValidationError": "The system URL is using {{certErrorReason}} security certificate.",
+        "authenticationFailed": "Authentication incorrect. {{- error}}",
+        "authenticationTimeout": "Authorization was not verified within the allowed time. Please ensure you have authenticated using the associated browser window.",
+        "invalidUrl": "Invalid URL{{-input, addMsgWithColonFormatter}}",
+        "connectionError": "A connection error occurred, please ensure the target host is available on the network: {{- error}}",
+        "timeout": "A connection timeout error occurred{{- errorMsg, addMsgWithColonFormatter}}",
+        "serverReturnedAnError": "The server returned an error. {{- errorDesc}}",
+        "serverUnableToCompleteRequest": "The server was unable to complete the request",
+        "catalogServiceNotActive": "Catalog service is not active",
+        "urlNotFound": "URL not found",
+        "odataServiceUrlNotFound": "The service URL you have provided is not a valid OData Service. SAP Fiori applications require an OData service as the data source.",
+        "noServicesAvailable": "There are no V{{version}} OData services available from the selected system and the template you have chosen supports V{{version}} OData services only",
+        "redirectError": "A redirect response was received from the server",
+        "abapEnvsUnavailable": "ABAP environments unavailable",
+        "noSuchHostError": "No such host is known",
+        "noAbapEnvsInCFSpace": "No ABAP environments in CF space found.",
+        "abapEnvsCFDiscoveryFailed": "Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry (see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login).",
+        "systemConnectionValidationFailed": "A connection to the selected system could not be established.",
+        "internalServerError": "Internal server error{{-errorMsg, addMsgWithColonFormatter}}",
+        "badGateway": "Bad gateway{{- errorMsg, addMsgWithColonFormatter}}",
+        "badRequest": "Bad request{{- errorMsg, addMsgWithColonFormatter}}"
+    },
+    "guidedAnswers": {
+        "validationErrorHelpText": "Need help with this error?"
+    },
+    "texts": {
+        "anExpiredCert": "an expired",
+        "aSelfSignedCert": "a self-signed",
+        "anUnknownOrInvalidCert": "an unknown or invalid",
+        "anUntrustedRootCert": "an untrusted root",
+        "suggestedSystemNameClient": ", client {{client}}",
+        "seeLogForDetails": "See log for more details."
     }
 }

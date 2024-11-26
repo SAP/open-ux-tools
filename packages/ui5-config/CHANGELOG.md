@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.25.2
+
+### Patch Changes
+
+-   1beac7e: adds reentrance ticket auth type to deploy config
+
 ## 0.25.1
 
 ### Patch Changes

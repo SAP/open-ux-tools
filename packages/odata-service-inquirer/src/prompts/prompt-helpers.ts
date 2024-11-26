@@ -1,5 +1,5 @@
 import type { ListChoiceOptions } from 'inquirer';
-import { ErrorHandler } from '../error-handler/error-handler';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { t } from '../i18n';
 import { DatasourceType, type DatasourceTypePromptOptions } from '../types';
 

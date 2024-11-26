@@ -1,4 +1,3 @@
-import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
@@ -256,6 +255,13 @@ export type SystemSelectionPromptOptions = {
      * Note that there is no implementation for this option in this module and handling of the prompt optin and subsequent prompting must be implemented by the consumer.
      */
     includeCloudFoundryAbapEnvChoice?: boolean;
+    /**
+     * Provide a default choice for the system selection prompt, this is used to pre-select a system based on the system name.
+     * Set as string literal types `NewSystemChoice` or `CfAbapEnvServiceChoice` to specify the default choice to create a new system connection config in VSCode
+     * or to select the Cloud Foundry Abap environments service discovery choice in BAS respectively.
+     *
+     */
+    defaultChoice?: string;
 };
 
 export type MetadataPromptOptions = {
@@ -310,48 +316,5 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 
 export type OdataServicePromptOptions = Partial<odataServiceInquirerPromptOptions>;
-
-/**
- * Implementation of IValidationLink interface.
- * Provides a toString() for serialization on CLI since IValidationLink rendering is only supported by YeomanUI.
- */
-export class ValidationLink implements IValidationLink {
-    // Having to redeclare properties from an interface should not be required see: https://github.com/Microsoft/TypeScript/issues/5326
-    message: IValidationLink['message'];
-    link: IValidationLink['link'];
-
-    /**
-     * Constructor for ValidationLink.
-     *
-     * @param validationLink The validation link object to be used for serialization
-     */
-    constructor(validationLink: IValidationLink) {
-        Object.assign(this, validationLink);
-    }
-
-    /**
-     * Serialize the validation link object to a string.
-     *
-     * @returns The validation link object as a string
-     */
-    public toString(): string {
-        return `${this.message} ${this.link.text}${this.link.url ? ' : ' + this.link.url : ''}`;
-    }
-}
-
-export const hostEnvironment = {
-    vscode: {
-        name: 'Visual Studio Code',
-        technical: 'VSCode'
-    },
-    bas: {
-        name: 'SAP Business Application Studio',
-        technical: 'SBAS'
-    },
-    cli: {
-        name: 'CLI',
-        technical: 'CLI'
-    }
-};
 
 export const SAP_CLIENT_KEY = 'sap-client';

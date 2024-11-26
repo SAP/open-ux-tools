@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.17.0
+
+### Minor Changes
+
+-   a62ff25: adds new options for listing destinations api
+
 ## 0.16.0
 
 ### Minor Changes

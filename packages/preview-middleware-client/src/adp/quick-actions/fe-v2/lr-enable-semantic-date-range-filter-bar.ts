@@ -1,12 +1,14 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type FilterBar from 'sap/ui/comp/filterbar/FilterBar';
+import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
+import { FeatureService } from '../../../cpe/feature-service';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
+import { getUi5Version, isVersionEqualOrHasNewerPatch, isLowerThanMinimalUi5Version } from '../../../utils/version';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';
 const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
@@ -24,7 +26,22 @@ export class ToggleSemanticDateRangeFilterBar
     readonly forceRefreshAfterExecution = true;
     private isUseDateRangeTypeEnabled = false;
 
-    initialize(): void {
+    async initialize(): Promise<void> {
+        const version = await getUi5Version();
+        const isUI5VersionNotSupported =
+            isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 }) &&
+            !(
+                isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 96, patch: 37 }) ||
+                isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 108, patch: 38 }) ||
+                isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 120, patch: 23 })
+            );
+
+        if (isUI5VersionNotSupported) {
+            return;
+        }
+        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
+            return;
+        }
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);

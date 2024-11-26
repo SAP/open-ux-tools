@@ -1,6 +1,7 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import FilterBar from 'sap/ui/mdc/FilterBar';
 
+import { FeatureService } from '../../../cpe/feature-service';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
@@ -8,7 +9,8 @@ import { executeToggleAction } from './utils';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ENABLE_SEMANTIC_DATE_RANGE = 'enable-semantic-date-range';
-const PROPERTY_PATH = 'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/useSemanticDateRange';
+const PROPERTY_NAME = 'useSemanticDateRange';
+const PROPERTY_PATH = `controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/${PROPERTY_NAME}`;
 const CONTROL_TYPE = 'sap.fe.macros.controls.FilterBar';
 const boolMap: { [key: string]: boolean } = {
     'true': true,
@@ -28,13 +30,21 @@ export class ToggleSemanticDateRangeFilterBar
     private isUseDateRangeTypeEnabled = false;
 
     initialize(): void {
+        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
+            return;
+        }
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);
             const filterBar = getControlById<FilterBar>(control.controlId);
             if (isActionApplicable && filterBar) {
                 this.control = filterBar;
-                this.isUseDateRangeTypeEnabled = boolMap[this.control.data('useSemanticDateRange')];
+                const value = this.context.changeService.getConfigurationPropertyValue(
+                    control.controlId,
+                    PROPERTY_NAME
+                );
+                this.isUseDateRangeTypeEnabled =
+                    value === undefined ? boolMap[this.control.data('useSemanticDateRange')] : (value as boolean);
             }
         }
     }

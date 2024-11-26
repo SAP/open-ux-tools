@@ -3,10 +3,15 @@ import { type Logger } from '@sap-ux/logger';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import autocomplete from 'inquirer-autocomplete-prompt';
-import { ERROR_TYPE, ErrorHandler } from './error-handler/error-handler';
+import { ERROR_TYPE, ErrorHandler, setTelemetryClient } from '@sap-ux/inquirer-common';
 import { initI18nOdataServiceInquirer } from './i18n';
 import { getQuestions } from './prompts';
 import { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection';
+import type {
+    NewSystemChoice,
+    CfAbapEnvServiceChoice
+} from './prompts/datasources/sap-system/system-selection/prompt-helpers';
+
 import LoggerHelper from './prompts/logger-helper';
 import {
     DatasourceType,
@@ -18,7 +23,7 @@ import {
     type OdataServiceQuestion,
     type SapSystemType
 } from './types';
-import { PromptState, setTelemetryClient } from './utils';
+import { getPromptHostEnvironment, PromptState } from './utils';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -44,7 +49,11 @@ async function getPrompts(
     }
     ErrorHandler.logger = LoggerHelper.logger;
     ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
+    // Sets the platform for error handler telem reporting, based on the `isYUI` option
+    ErrorHandler.platform = getPromptHostEnvironment().technical;
+    ErrorHandler.guidedAnswersTrigger = '@sap-ux/odata-service-inquirer';
     PromptState.isYUI = isYUI;
+
     setTelemetryClient(telemetryClient);
 
     return {
@@ -105,5 +114,7 @@ export {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     // @deprecated - temp export to support to support open source migration
-    type SapSystemType
+    type SapSystemType,
+    NewSystemChoice,
+    CfAbapEnvServiceChoice
 };

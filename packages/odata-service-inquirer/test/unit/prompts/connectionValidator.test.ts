@@ -9,7 +9,7 @@ import {
     HELP_TREE
 } from '@sap-ux/guided-answers-helper';
 import { AxiosError, type AxiosResponse } from 'axios';
-import { ERROR_TYPE, ErrorHandler } from '../../../src/error-handler/error-handler';
+import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
 import { ConnectionValidator } from '../../../src/prompts/connectionValidator';
 
@@ -191,11 +191,7 @@ describe('ConnectionValidator', () => {
                     text: expect.any(String),
                     url: expect.any(String)
                 },
-                message: expect.stringContaining(
-                    t('errors.urlCertValidationError', {
-                        certErrorReason: t('texts.aSelfSignedCert')
-                    })
-                ),
+                message: expect.stringContaining('The system URL is using a self-signed security certificate.'),
                 toString: expect.any(Function)
             })
         );
@@ -549,10 +545,10 @@ describe('ConnectionValidator', () => {
                 valResult: {
                     link: {
                         icon: GUIDED_ANSWERS_ICON,
-                        text: t('guidedAnswers.validationErrorHelpText'),
+                        text: 'Need help with this error?',
                         url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.DESTINATION_MISCONFIGURED}`
                     },
-                    message: t('errors.destination.misconfigured', { destinationProperty: 'HTML5.DynamicDestination' })
+                    message: 'The destination is misconfigured. The property: `HTML5.DynamicDestination` is missing.'
                 }
             })
         );
@@ -625,7 +621,7 @@ describe('ConnectionValidator', () => {
                 valResult: {
                     link: {
                         icon: GUIDED_ANSWERS_ICON,
-                        text: t('guidedAnswers.validationErrorHelpText'),
+                        text: 'Need help with this error?',
                         url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.DESTINATION_NOT_FOUND}`
                     },
                     message: t('errors.urlNotFound')
@@ -654,7 +650,7 @@ describe('ConnectionValidator', () => {
                 valResult: {
                     link: {
                         icon: GUIDED_ANSWERS_ICON,
-                        text: t('guidedAnswers.validationErrorHelpText'),
+                        text: 'Need help with this error?',
                         url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.BAD_GATEWAY}`
                     },
                     message: 'The server returned an error. Bad gateway: 502'
