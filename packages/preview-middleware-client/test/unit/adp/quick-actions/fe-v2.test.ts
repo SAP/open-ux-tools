@@ -34,7 +34,6 @@ import {
     GRID_TABLE_TYPE,
     M_TABLE_TYPE,
     SMART_TABLE_TYPE,
-    TableQuickActionDefinitionBase,
     TREE_TABLE_TYPE
 } from 'open/ux/preview/client/adp/quick-actions/table-quick-action-base';
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
@@ -298,9 +297,6 @@ describe('FE V2 quick actions', () => {
         describe('change table columns', () => {
             test('initialize and execute', async () => {
                 const pageView = new XMLView();
-                jest.spyOn(TableQuickActionDefinitionBase.prototype as any, 'getInternalTableRows').mockImplementation(() => {
-                    return [{ item: 1 }];
-                });
                 const scrollIntoView = jest.fn();
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartTable') {
@@ -456,9 +452,6 @@ describe('FE V2 quick actions', () => {
         describe('create table action', () => {
             test('initialize and execute', async () => {
                 const pageView = new XMLView();
-                jest.spyOn(TableQuickActionDefinitionBase.prototype as any, 'getInternalTableRows').mockImplementation(() => {
-                    return [{ item: 1 }];
-                });
                 const scrollIntoView = jest.fn();
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'mTable') {

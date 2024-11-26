@@ -612,7 +612,6 @@ describe('FE V4 quick actions', () => {
                                     'kind': 'nested',
                                     id: 'listReport0-create_table_action',
                                     title: 'Add Custom Table Action',
-                                    tooltip: undefined,
                                     enabled: true,
                                     children: [
                                         {
@@ -626,10 +625,9 @@ describe('FE V4 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
-                                            enabled: false,
+                                            enabled: true,
                                             'label': `'MyTable' table`,
-                                            tooltip: 'This action has been disabled because the table rows are not available. Please load the table data and try again'
-                                        }
+                                      }
                                     ],
                                     'enabled': true,
                                     'id': 'listReport0-create-table-custom-column',
@@ -780,16 +778,14 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
-                                            enabled: false,
+                                            enabled: true,
                                             label: `'MyTable' table`,
-                                            tooltip: 'This action has been disabled because the table rows are not available. Please load the table data and try again'
                                         }
                                     ],
                                     enabled: true,
                                     id: 'listReport0-create-table-custom-column',
                                     kind: 'nested',
-                                    title: 'Add Custom Table Column',
-                                    tooltip: undefined
+                                    title: 'Add Custom Table Column'
                                 }
                             ]
                         }
@@ -887,15 +883,13 @@ describe('FE V4 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
-                                            enabled: false,
+                                            enabled: true,
                                             'label': `'MyTable' table`,
-                                            tooltip: 'This action has been disabled because the table rows are not available. Please load the table data and try again'
-                                        }
+                                         }
                                     ],
                                     'enabled': true,
                                     'id': 'listReport0-create-table-custom-column',
                                     'kind': 'nested',
-
                                     'title': 'Add Custom Table Column'
                                 }
                             ],
@@ -1280,13 +1274,16 @@ describe('FE V4 quick actions', () => {
                     async (testCase) => {
                         const pageView = new XMLView();
                         const scrollIntoView = jest.fn();
-                        jest.spyOn(TableQuickActionDefinitionBase.prototype as any, 'getInternalTableRows').mockImplementation(() => {
-                            if (testCase.enable) {
-                                return [{ item: 1 }];
-                            } else {
-                                return [];
-                            }
-
+                        jest.spyOn(TableQuickActionDefinitionBase.prototype as any, 'getInternalTable').mockImplementation(() => {
+                            return {
+                                isA: (type: string) => type === SMART_TABLE_TYPE, // Check if the object is of the correct type
+                                getAggregation: jest.fn().mockImplementation((aggregationName: string) => {
+                                    if (aggregationName === 'items') {
+                                        return testCase.enable ? ['item1', 'item2'] : []; // Return rows or empty array based on `enable`
+                                    }
+                                    return undefined;
+                                }),
+                            };
                         });
                         jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
                             if (type === 'sap.uxap.ObjectPageSection') {
@@ -1353,7 +1350,7 @@ describe('FE V4 quick actions', () => {
                                         return [
                                             {
                                                 isA: (type: string) => type === testCase.tableType,
-                                                getAggregation: () => 'columns'
+                                                getAggregation: () => 'items'
                                             }
                                         ];
                                     },
@@ -1437,8 +1434,8 @@ describe('FE V4 quick actions', () => {
                                                     'label': `'section 01' section`
                                                 }
                                             ],
-                                            'enabled': true,
-
+                                            'enabled': testCase.enable,
+                                            tooltip: testCase.enable ? undefined : 'This action has been disabled because the table rows are not available. Please load the table data and try again',
                                             'id': 'objectPage0-create-table-custom-column',
                                             'kind': 'nested',
                                             'title': 'Add Custom Table Column'
