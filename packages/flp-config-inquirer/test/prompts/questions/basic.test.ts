@@ -30,7 +30,7 @@ describe('basic prompts', () => {
 
         it('should create a prompt with the correct default properties', () => {
             const options = { default: 'DefaultSemanticObject' };
-            const prompt = getSemanticObjectPrompt(options);
+            const prompt = getSemanticObjectPrompt(true, options);
 
             expect(prompt).toEqual({
                 name: promptNames.semanticObject,
@@ -47,13 +47,13 @@ describe('basic prompts', () => {
         });
 
         it('should set default to undefined if no options are provided', () => {
-            const prompt = getSemanticObjectPrompt();
+            const prompt = getSemanticObjectPrompt(true);
 
             expect(prompt.default).toBeUndefined();
         });
 
         it('should trim the input value in the filter function', () => {
-            const prompt = getSemanticObjectPrompt();
+            const prompt = getSemanticObjectPrompt(true);
             const filterFn = prompt.filter as (val: string) => string;
 
             expect(filterFn('   trimmedValue   ')).toBe('trimmedValue');
@@ -63,24 +63,24 @@ describe('basic prompts', () => {
         it('should validate the input value using validateText', () => {
             mockValidateText.mockReturnValue(true);
 
-            const prompt = getSemanticObjectPrompt();
+            const prompt = getSemanticObjectPrompt(true);
             const validateFn = prompt.validate as (val: string) => boolean;
 
             const result = validateFn('testValue');
 
-            expect(mockValidateText).toHaveBeenCalledWith('testValue', 30, ['_']);
+            expect(mockValidateText).toHaveBeenCalledWith('testValue', true, 30, ['_']);
             expect(result).toBe(true);
         });
 
         it('should fail validation if validateText returns false', () => {
             mockValidateText.mockReturnValue(false);
 
-            const prompt = getSemanticObjectPrompt();
+            const prompt = getSemanticObjectPrompt(true);
             const validateFn = prompt.validate as (val: string) => boolean;
 
             const result = validateFn('invalidValue');
 
-            expect(mockValidateText).toHaveBeenCalledWith('invalidValue', 30, ['_']);
+            expect(mockValidateText).toHaveBeenCalledWith('invalidValue', true, 30, ['_']);
             expect(result).toBe(false);
         });
     });
@@ -94,7 +94,7 @@ describe('basic prompts', () => {
 
         it('should return a prompt configuration with correct properties', () => {
             const options = { default: 'defaultAction' };
-            const prompt = getActionPrompt(options);
+            const prompt = getActionPrompt(true, options);
 
             expect(prompt).toEqual({
                 name: promptNames.action,
@@ -111,7 +111,7 @@ describe('basic prompts', () => {
         });
 
         it('should trim the input value in the filter function', () => {
-            const prompt = getActionPrompt();
+            const prompt = getActionPrompt(true);
             const filterFn = prompt.filter as (val: string) => string;
 
             expect(filterFn('   actionValue   ')).toBe('actionValue');
@@ -121,29 +121,29 @@ describe('basic prompts', () => {
         it('should validate the input value using validateText', () => {
             mockValidateText.mockReturnValue(true);
 
-            const prompt = getActionPrompt();
+            const prompt = getActionPrompt(true);
             const validateFn = prompt.validate as (val: string) => boolean;
 
             const result = validateFn('validAction');
 
-            expect(mockValidateText).toHaveBeenCalledWith('validAction', 60, ['_']);
+            expect(mockValidateText).toHaveBeenCalledWith('validAction', true, 60, ['_']);
             expect(result).toBe(true);
         });
 
         it('should fail validation if validateText returns false', () => {
             mockValidateText.mockReturnValue(false);
 
-            const prompt = getActionPrompt();
+            const prompt = getActionPrompt(true);
             const validateFn = prompt.validate as (val: string) => boolean;
 
             const result = validateFn('invalidAction!');
 
-            expect(mockValidateText).toHaveBeenCalledWith('invalidAction!', 60, ['_']);
+            expect(mockValidateText).toHaveBeenCalledWith('invalidAction!', true, 60, ['_']);
             expect(result).toBe(false);
         });
 
         it('should set default to undefined if no options are provided', () => {
-            const prompt = getActionPrompt();
+            const prompt = getActionPrompt(true);
 
             expect(prompt.default).toBeUndefined();
         });
@@ -237,7 +237,7 @@ describe('basic prompts', () => {
             const existingKeyRef = { value: false };
             const options = { default: 'Default Title' };
 
-            const prompt = getTitlePrompt(existingKeyRef, false, options);
+            const prompt = getTitlePrompt(existingKeyRef, false, true, options);
 
             expect(prompt).toEqual({
                 when: expect.any(Function),
@@ -257,7 +257,7 @@ describe('basic prompts', () => {
         it('should execute the "when" function correctly', () => {
             const existingKeyRef = { value: true };
 
-            const prompt = getTitlePrompt(existingKeyRef, false);
+            const prompt = getTitlePrompt(existingKeyRef, false, true);
             const whenFn = prompt.when as (answers: { overwrite?: boolean }) => boolean;
 
             expect(whenFn({ overwrite: true })).toBe(true);
@@ -268,7 +268,7 @@ describe('basic prompts', () => {
         });
 
         it('should trim the input value in the filter function', () => {
-            const prompt = getTitlePrompt({ value: false }, false);
+            const prompt = getTitlePrompt({ value: false }, false, true);
             const filterFn = prompt.filter as (val: string) => string;
 
             expect(filterFn('   Title Value   ')).toBe('Title Value');
@@ -278,29 +278,29 @@ describe('basic prompts', () => {
         it('should validate the input value using validateText', () => {
             mockValidateText.mockReturnValue(true);
 
-            const prompt = getTitlePrompt({ value: false }, false);
+            const prompt = getTitlePrompt({ value: false }, false, true);
             const validateFn = prompt.validate as (val: string) => boolean;
 
             const result = validateFn('Valid Title');
 
-            expect(mockValidateText).toHaveBeenCalledWith('Valid Title', 0);
+            expect(mockValidateText).toHaveBeenCalledWith('Valid Title', true, 0);
             expect(result).toBe(true);
         });
 
         it('should fail validation if validateText returns false', () => {
             mockValidateText.mockReturnValue(false);
 
-            const prompt = getTitlePrompt({ value: false }, false);
+            const prompt = getTitlePrompt({ value: false }, false, true);
             const validateFn = prompt.validate as (val: string) => boolean;
 
             const result = validateFn('Invalid Title');
 
-            expect(mockValidateText).toHaveBeenCalledWith('Invalid Title', 0);
+            expect(mockValidateText).toHaveBeenCalledWith('Invalid Title', true, 0);
             expect(result).toBe(false);
         });
 
         it('should set default to undefined if no options are provided', () => {
-            const prompt = getTitlePrompt({ value: false }, false);
+            const prompt = getTitlePrompt({ value: false }, false, true);
 
             expect(prompt.default).toBeUndefined();
         });
