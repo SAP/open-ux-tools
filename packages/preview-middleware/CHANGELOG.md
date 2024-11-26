@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.16.128
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+-   Updated dependencies [09a58bb]
+    -   @sap-ux/adp-tooling@0.12.83
+
 ## 0.16.127
 
 ### Patch Changes
