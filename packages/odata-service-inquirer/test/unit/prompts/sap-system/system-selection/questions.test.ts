@@ -285,6 +285,14 @@ describe('Test system selection prompts', () => {
         expect(await (destServicePathPrompt.validate as Function)?.('')).toEqual(
             t('prompts.destinationServicePath.invalidServicePathWarning')
         );
+        // Invalid service path if only 1 char
+        expect(await (destServicePathPrompt.validate as Function)?.('/')).toEqual(
+            t('prompts.destinationServicePath.invalidServicePathWarning')
+        );
+        // Invalid service path if starts with double slash
+        expect(await (destServicePathPrompt.validate as Function)?.('//123')).toEqual(
+            t('prompts.destinationServicePath.invalidServicePathWarning')
+        );
         expect(
             await (destServicePathPrompt.validate as Function)?.('/\\', {
                 [promptNames.systemSelection]: {
