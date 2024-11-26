@@ -1,2 +1,2 @@
 export { checkProjectIntegrity, initProject, updateProjectIntegrity } from './integrity';
-export { initFioriProject } from './fiori-ai-project';
+export { checkFioriProjectIntegrity, initFioriProject, updateFioriProjectIntegrity } from './fiori-ai-project';

@@ -1,8 +1,9 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { initProject } from '../integrity';
-import { getCapEnvironment } from '@sap-ux/project-access';
-import type { Content } from '../types';
+import { getCapCustomPaths } from '@sap-ux/project-access';
+import { checkProjectIntegrity, initProject, updateProjectIntegrity } from '../integrity';
+import { findFilesByExtension } from '@sap-ux/project-access/src/file';
+import type { CheckIntegrityResult, Content } from '../types';
 
 export const fioriIntegrityDataPath = join('.fiori-ai/hash-map.json');
 
@@ -12,7 +13,7 @@ export const fioriIntegrityDataPath = join('.fiori-ai/hash-map.json');
  * @param projectRoot - root folder of the project
  * @returns - list of file paths
  */
-function getFileList(projectRoot: string): string[] {
+async function getFileList(projectRoot: string): Promise<string[]> {
     const fileList: string[] = [];
 
     const schemaCds = join(projectRoot, 'db/schema.cds');
@@ -27,6 +28,10 @@ function getFileList(projectRoot: string): string[] {
     } else {
         throw new Error(`File ${servicesCds} does not exist.`);
     }
+
+    const csvFiles = await findFilesByExtension('.csv', projectRoot, ['node_modules']);
+    fileList.push(...csvFiles);
+
     return fileList;
 }
 
@@ -38,8 +43,8 @@ function getFileList(projectRoot: string): string[] {
  * @returns - additional content to store in the integrity data
  */
 async function getAdditionalStringContent(projectRoot: string): Promise<Content> {
-    const capEnv = await getCapEnvironment(projectRoot);
-    return { capEnv: JSON.stringify(capEnv) };
+    const capCustomPaths = await getCapCustomPaths(projectRoot);
+    return { capPaths: JSON.stringify(capCustomPaths) };
 }
 
 /**
@@ -49,7 +54,30 @@ async function getAdditionalStringContent(projectRoot: string): Promise<Content>
  */
 export async function initFioriProject(projectRoot: string): Promise<void> {
     const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
-    const fileList = getFileList(projectRoot);
+    const fileList = await getFileList(projectRoot);
     const additionalStringContent = await getAdditionalStringContent(projectRoot);
     await initProject({ integrityFilePath, fileList, additionalStringContent });
+}
+
+/**
+ * Check the integrity of a Fiori project.
+ *
+ * @param projectRoot - root folder of the project
+ * @returns - results of the check
+ */
+export async function checkFioriProjectIntegrity(projectRoot: string): Promise<CheckIntegrityResult> {
+    const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
+    const additionalStringContent = await getAdditionalStringContent(projectRoot);
+    return checkProjectIntegrity(integrityFilePath, additionalStringContent);
+}
+
+/**
+ * Updates the integrity data of a Fiori project.
+ *
+ * @param projectRoot - root folder of the project
+ */
+export async function updateFioriProjectIntegrity(projectRoot: string): Promise<void> {
+    const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
+    const additionalStringContent = await getAdditionalStringContent(projectRoot);
+    await updateProjectIntegrity(integrityFilePath, additionalStringContent);
 }
