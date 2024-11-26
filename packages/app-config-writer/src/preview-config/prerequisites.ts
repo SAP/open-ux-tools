@@ -71,5 +71,5 @@ export async function getExplicitApprovalToAdjustFiles(): Promise<boolean> {
         message:
             'The converter will rename html files and delete js/ts files used for the existing preview and configure the usage of virtual files instead. Do you want to proceed with the conversion?'
     };
-    return !!prompt([question]).approval;
+    return Boolean((await prompt([question])).approval);
 }
