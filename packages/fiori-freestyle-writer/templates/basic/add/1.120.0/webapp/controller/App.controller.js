@@ -3,7 +3,7 @@ sap.ui.define([
 ], (Controller) => {
   "use strict";
 
-  return Controller.extend("<%- app.id %>.controller.<%- template.settings.viewName %>", {
+  return Controller.extend("<%- app.id %>.controller.App", {
       onInit() {
       }
   });

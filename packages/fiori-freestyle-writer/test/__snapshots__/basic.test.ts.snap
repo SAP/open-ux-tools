@@ -4871,7 +4871,7 @@ server:
 ], (Controller) => {
   \\"use strict\\";
 
-  return Controller.extend(\\"nods1.controller.View1\\", {
+  return Controller.extend(\\"nods1.controller.App\\", {
       onInit() {
       }
   });
@@ -5420,7 +5420,7 @@ server:
 ], (Controller) => {
   \\"use strict\\";
 
-  return Controller.extend(\\"nods1.controller.View1\\", {
+  return Controller.extend(\\"nods1.controller.App\\", {
       onInit() {
       }
   });
