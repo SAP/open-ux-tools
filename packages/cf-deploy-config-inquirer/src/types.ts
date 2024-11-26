@@ -28,11 +28,11 @@ export enum appRouterPromptNames {
     /* Prompt for selecting the type of Application Router (standard or managed) */
     routerType = 'routerType',
     /* Prompt for selecting the Connectivity service */
-    connectivityService = 'connectivityService',
+    addConnectivityService = 'addConnectivityService',
     /* Prompt for selecting the Destination service */
-    destinationService = 'destinationService',
+    addDestinationService = 'addDestinationService',
     /* Prompt for selecting the ABAP environments */
-    serviceProvider = 'serviceProvider'
+    addServiceProvider = 'addServiceProvider'
 }
 
 /**
@@ -62,20 +62,6 @@ export type DestinationNamePromptOptions = {
     useAutocomplete?: boolean;
 };
 
-export type ServiceProviderPromptOptions = {
-    addService?: boolean;
-    // can reuse getCFDiscoverPrompts
-    // choiceList?: ListChoiceOptions[]
-};
-
-/**
- * Type definition for the options used in the MTA path prompt.
- * This type defines the configuration for the MTA path input, with default values.
- */
-export type MtaPathPromptOptions = {
-    defaultValue: string;
-};
-
 /**
  * Defines options for boolean-type prompts in CF deployment configuration.
  */
@@ -85,15 +71,14 @@ type booleanValuePromptOptions = Record<promptNames.overwrite, boolean> &
     Record<appRouterPromptNames.mtaDescription, boolean> &
     Record<appRouterPromptNames.mtaVersion, boolean> &
     Record<appRouterPromptNames.routerType, boolean> &
-    Record<appRouterPromptNames.destinationService, boolean> &
-    Record<appRouterPromptNames.connectivityService, boolean>;
+    Record<appRouterPromptNames.addDestinationService, boolean> &
+    Record<appRouterPromptNames.addConnectivityService, boolean> &
+    Record<appRouterPromptNames.addServiceProvider, boolean>;
 
 /**
  * Defines options for string-type prompts in CF deployment configuration.
  */
-type stringValuePromptOptions = Record<promptNames.destinationName, DestinationNamePromptOptions> &
-    Record<appRouterPromptNames.mtaPath, MtaPathPromptOptions> &
-    Record<appRouterPromptNames.serviceProvider, ServiceProviderPromptOptions>;
+type stringValuePromptOptions = Record<promptNames.destinationName, DestinationNamePromptOptions>;
 
 /**
  * Configuration options for CF deployment prompts.
@@ -103,7 +88,8 @@ export type CfDeployConfigPromptOptions = Partial<stringValuePromptOptions & boo
 /**
  * Configuration options for CF App Router deployment prompts.
  */
-export type CfAppRouterDeployConfigPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOptions>;
+export type CfAppRouterDeployConfigPromptOptions = Record<appRouterPromptNames.mtaPath, string> & 
+Partial<stringValuePromptOptions & booleanValuePromptOptions>;
 
 /**
  * Represents a question in the CF deployment configuration.
@@ -162,9 +148,9 @@ export interface CfAppRouterDeployConfigAnswers extends MTAConfig {
     /* The selected destination service for the application router. */
     addDestinationService?: boolean;
     /* The selected ABAP environment for the application router. */
-    abapServiceProvider?: {
-        abapServiceName?: string;
-        abapService?: string;
+    addServiceProvider?: {
+        label?: string;
+        service?: string;
     };
 }
 

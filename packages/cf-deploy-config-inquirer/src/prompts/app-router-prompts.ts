@@ -3,12 +3,13 @@ import { t } from '../i18n';
 import type {
     CfAppRouterDeployConfigQuestions,
     CfAppRouterDeployConfigAnswers,
-    CfAppRouterDeployConfigPromptOptions,
-    MtaPathPromptOptions
+    CfAppRouterDeployConfigPromptOptions
 } from '../types';
 import { appRouterPromptNames, RouterModuleType } from '../types';
 import { validateMtaPath, validateMtaId } from './validators';
 import type { Logger } from '@sap-ux/logger';
+import { getCFAbapInstanceChoices, ErrorHandler } from '@sap-ux/inquirer-common';
+import { validateAbapService } from './validators';
 
 /**
  * Generates a prompt for selecting the MTA path.
@@ -16,10 +17,9 @@ import type { Logger } from '@sap-ux/logger';
  * This function creates an input prompt that allows the user to browse and select a folder for the MTA path.
  * It provides default values, a custom breadcrumb message, and validation for ensuring the selected path exists.
  *
- * @param {MtaPathPromptOptions} mtaPathPromptOptions - Options for configuring the MTA path prompt, including the default value.
  * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for selecting the MTA path.
  */
-function getMtaPathPrompt(mtaPathPromptOptions: MtaPathPromptOptions): CfAppRouterDeployConfigQuestions {
+function getMtaPathPrompt(mtaPath: string): CfAppRouterDeployConfigQuestions {
     return {
         type: 'input',
         guiOptions: {
@@ -28,7 +28,7 @@ function getMtaPathPrompt(mtaPathPromptOptions: MtaPathPromptOptions): CfAppRout
         },
         name: appRouterPromptNames.mtaPath,
         message: t('prompts.mtaPathMessage'),
-        default: () => mtaPathPromptOptions?.defaultValue,
+        default: () => mtaPath,
         validate: (input: string): string | boolean => validateMtaPath(input)
     } as InputQuestion<CfAppRouterDeployConfigAnswers>;
 }
@@ -120,7 +120,7 @@ function getConnectivityServicePrompt(): CfAppRouterDeployConfigQuestions {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean =>
             previousAnswers.routerType !== RouterModuleType.Managed,
         type: 'confirm',
-        name: appRouterPromptNames.connectivityService,
+        name: appRouterPromptNames.addConnectivityService,
         guiOptions: {
             breadcrumb: t('prompts.addConnectivityServiceBreadcrumbMessage')
         },
@@ -144,7 +144,7 @@ function getDestinationService(): CfAppRouterDeployConfigQuestions {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean =>
             previousAnswers.routerType !== RouterModuleType.Managed,
         type: 'confirm',
-        name: appRouterPromptNames.destinationService,
+        name: appRouterPromptNames.addDestinationService,
         message: t('prompts.serviceAdvancedOptionMessage'),
         default: (): boolean => {
             return false;
@@ -161,19 +161,20 @@ function getDestinationService(): CfAppRouterDeployConfigQuestions {
  * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for selecting a service provider.
  */
 function getServiceProvider(): CfAppRouterDeployConfigQuestions {
-    // reuse getCFDiscoverPrompts
+    const errorHandler = new ErrorHandler();
     return {
-        when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean =>
-            !!previousAnswers.addDestinationService && previousAnswers.routerType !== RouterModuleType.Managed,
+        when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean => {
+            return !!previousAnswers.addDestinationService && previousAnswers.routerType !== RouterModuleType.Managed
+        },
         type: 'list',
-        name: appRouterPromptNames.serviceProvider,
+        name: appRouterPromptNames.addServiceProvider,
         guiOptions: {
             breadcrumb: t('prompts.abapEnvBindingBreadcrumbMessage')
         },
-        //choices: () => choiceList,
+        choices: () => getCFAbapInstanceChoices(errorHandler),
         message: t('prompts.selectServiceMessage'),
-        default: () => t('errors.abapEnvsUnavailable')
-        //validate: (choice: string): string | boolean => validateService(choice)
+        default: () => t('errors.abapEnvsUnavailable'),
+        validate: (choice: string): string | boolean => validateAbapService(choice, errorHandler)
     } as ListQuestion<CfAppRouterDeployConfigAnswers>;
 }
 
@@ -188,18 +189,18 @@ export async function getAppRouterQuestions(
     promptOptions: CfAppRouterDeployConfigPromptOptions,
     log?: Logger
 ): Promise<CfAppRouterDeployConfigQuestions[]> {
-    const mtaPromptOptions = promptOptions[appRouterPromptNames.mtaPath] as MtaPathPromptOptions;
+    const mtaPath = promptOptions[appRouterPromptNames.mtaPath];
     const addMtaId = promptOptions[appRouterPromptNames.mtaId] ?? false;
     const addMtaDescription = promptOptions[appRouterPromptNames.mtaDescription] ?? false;
     const addMtaVersion = promptOptions[appRouterPromptNames.mtaVersion] ?? false;
     const addRouterTypeQuestion = promptOptions[appRouterPromptNames.routerType] ?? false;
-    const addConnectivityService = promptOptions[appRouterPromptNames.connectivityService] ?? false;
-    const serviceProviderOptions = promptOptions[appRouterPromptNames.serviceProvider];
-    const addDestinationService = promptOptions[appRouterPromptNames.destinationService] ?? false;
+    const addConnectivityService = promptOptions[appRouterPromptNames.addConnectivityService] ?? false;
+    const addServiceProvider = promptOptions[appRouterPromptNames.addServiceProvider];
+    const addDestinationService = promptOptions[appRouterPromptNames.addDestinationService] ?? false;
 
     const questions: CfAppRouterDeployConfigQuestions[] = [];
     // Collect questions into an array
-    questions.push(getMtaPathPrompt(mtaPromptOptions));
+    questions.push(getMtaPathPrompt(mtaPath));
 
     if (addMtaId) {
         log?.info(t('info.addMtaId'));
@@ -231,7 +232,6 @@ export async function getAppRouterQuestions(
         questions.push(getDestinationService());
     }
 
-    const addServiceProvider = serviceProviderOptions?.addService ?? false;
     if (addServiceProvider) {
         questions.push(getServiceProvider());
     }

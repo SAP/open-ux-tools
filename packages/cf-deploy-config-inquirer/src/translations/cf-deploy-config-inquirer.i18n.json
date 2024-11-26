@@ -29,7 +29,8 @@
         "noMtaIdError": "MTA ID cannot be empty",
         "invalidMtaIdError": "The ID can only contain letters, numbers, dashes, periods and underscores (but no spaces).",
         "mtaIdAlreadyExistError": "A folder with same name already exist at {{mtaPath}}",
-        "abapEnvsUnavailable": "ABAP environments unavailable"
+        "abapEnvsUnavailable": "ABAP environments unavailable",
+        "errorScpAbapSourceDiscoveryCheckLog": "Check the Application Wizard console output view for details."
     },
     "warning": {
         "btpDestinationListWarning": "BTP destinations are only retrieved on BAS"

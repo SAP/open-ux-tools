@@ -27,9 +27,7 @@ describe('App Router Prompt Generation Tests', () => {
     describe('getMtaPathPrompt', () => {
         it('should return a valid mta path prompt', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
-                [appRouterPromptNames.mtaPath]: {
-                    defaultValue: 'defaultMtaPath'
-                }
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath'
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const mtaPathPrompt = questions.find((question) => question.name === appRouterPromptNames.mtaPath);
@@ -43,6 +41,7 @@ describe('App Router Prompt Generation Tests', () => {
     describe('getMtaIdPrompt', () => {
         it('should return a valid mta id prompt when enabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
                 [appRouterPromptNames.mtaId]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
@@ -56,6 +55,7 @@ describe('App Router Prompt Generation Tests', () => {
 
         it('should not return mta id prompt when disabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
                 [appRouterPromptNames.mtaId]: false
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
@@ -67,6 +67,7 @@ describe('App Router Prompt Generation Tests', () => {
     describe('getMtaDescriptionPrompt', () => {
         it('should return a valid mta description prompt when enabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
                 [appRouterPromptNames.mtaDescription]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
@@ -81,6 +82,7 @@ describe('App Router Prompt Generation Tests', () => {
 
         it('should not return mta description prompt when disabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
                 [appRouterPromptNames.mtaDescription]: false
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
@@ -94,6 +96,7 @@ describe('App Router Prompt Generation Tests', () => {
     describe('getMtaVersionPrompt', () => {
         it('should return a valid mta version prompt when enabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
                 [appRouterPromptNames.mtaVersion]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
@@ -103,6 +106,7 @@ describe('App Router Prompt Generation Tests', () => {
 
         it('should not return mta description prompt when disabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
                 [appRouterPromptNames.mtaDescription]: false
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
@@ -114,6 +118,7 @@ describe('App Router Prompt Generation Tests', () => {
     describe('getRouterTypePrompt', () => {
         it('should return a valid router type prompt when enabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
                 [appRouterPromptNames.routerType]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
@@ -130,6 +135,7 @@ describe('App Router Prompt Generation Tests', () => {
 
         it('should not return router type prompt when disabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
                 [appRouterPromptNames.routerType]: false
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
@@ -141,11 +147,12 @@ describe('App Router Prompt Generation Tests', () => {
     describe('getConnectivityServicePrompt', () => {
         it('should return connectivity service prompt when connectivityService is enabled & stand alone router type is selected', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
-                [appRouterPromptNames.connectivityService]: true
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+                [appRouterPromptNames.addConnectivityService]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const connectivityServicePrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.connectivityService
+                (question) => question.name === appRouterPromptNames.addConnectivityService
             );
             expect(connectivityServicePrompt?.message).toBe(t('prompts.addConnectivityMessage'));
             expect(connectivityServicePrompt?.type).toBe('confirm');
@@ -162,22 +169,24 @@ describe('App Router Prompt Generation Tests', () => {
 
         it('should not return connectivity service prompt when connectivityService is disabled & stand alone router type is selected', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
-                [appRouterPromptNames.connectivityService]: false
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+                [appRouterPromptNames.addConnectivityService]: false
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const connectivityServicePrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.connectivityService
+                (question) => question.name === appRouterPromptNames.addConnectivityService
             );
             expect(connectivityServicePrompt).toBeUndefined();
         });
 
         it('should not return connectivity service prompt when connectivityService is enabled & and managed router type is selected', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
-                [appRouterPromptNames.connectivityService]: true
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+                [appRouterPromptNames.addConnectivityService]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const connectivityServicePrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.connectivityService
+                (question) => question.name === appRouterPromptNames.addConnectivityService
             );
             expect(
                 (connectivityServicePrompt?.when as Function)({
@@ -190,11 +199,12 @@ describe('App Router Prompt Generation Tests', () => {
     describe('getDestinationService', () => {
         it('should return a valid destination service prompt when enabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
-                [appRouterPromptNames.destinationService]: true
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+                [appRouterPromptNames.addDestinationService]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const destinationServicePrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.destinationService
+                (question) => question.name === appRouterPromptNames.addDestinationService
             );
             expect(destinationServicePrompt?.message).toBe(t('prompts.serviceAdvancedOptionMessage'));
             expect(destinationServicePrompt?.type).toBe('confirm');
@@ -208,11 +218,12 @@ describe('App Router Prompt Generation Tests', () => {
 
         it('should not return a valid destination service prompt when enabled but router type selected in managed', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
-                [appRouterPromptNames.destinationService]: true
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+                [appRouterPromptNames.addDestinationService]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const destinationServicePrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.destinationService
+                (question) => question.name === appRouterPromptNames.addDestinationService
             );
             expect(
                 (destinationServicePrompt?.when as Function)({
@@ -223,11 +234,12 @@ describe('App Router Prompt Generation Tests', () => {
 
         it('should not return destination service prompt when disabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
-                [appRouterPromptNames.destinationService]: false
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+                [appRouterPromptNames.addDestinationService]: false
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const destinationServicePrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.destinationService
+                (question) => question.name === appRouterPromptNames.addDestinationService
             );
             expect(destinationServicePrompt).not.toBeDefined();
         });

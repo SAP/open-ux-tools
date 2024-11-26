@@ -2,6 +2,7 @@ import { t } from '../i18n';
 import type { CfSystemChoice, CfAppRouterDeployConfigAnswers } from '../types';
 import { existsSync } from 'fs';
 import { join } from 'path';
+import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**
  *
@@ -97,5 +98,14 @@ export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployC
     }
 
     // All checks passed
+    return true;
+}
+
+export function validateAbapService(choice: string, errorHandler: ErrorHandler): string | boolean {
+    if (!choice) {
+        const userMsg = errorHandler.getErrorMsg('', true);
+        const checkConsoleMsg = t('errors.errorScpAbapSourceDiscoveryCheckLog');
+        return userMsg ? `${userMsg} ${checkConsoleMsg}` : false;
+    }
     return true;
 }

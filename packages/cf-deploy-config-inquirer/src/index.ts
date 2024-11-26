@@ -44,7 +44,7 @@ async function getPrompts(
  *                                                       application router deployment configuration questions.
  */
 async function getAppRouterPrompts(
-    promptOptions: CfDeployConfigPromptOptions,
+    promptOptions: CfAppRouterDeployConfigPromptOptions,
     logger?: Logger
 ): Promise<CfAppRouterDeployConfigQuestions[]> {
     if (logger) {
