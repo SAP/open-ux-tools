@@ -1,21 +1,24 @@
 import { join, normalize, posix } from 'path';
 import { coerce, satisfies } from 'semver';
-import { isAppStudio, listDestinations, isFullUrlDestination, Authentication } from '@sap-ux/btp-utils';
+import {
+    isAppStudio,
+    listDestinations,
+    isFullUrlDestination,
+    type Authentication,
+    type Destinations
+} from '@sap-ux/btp-utils';
 import { addPackageDevDependency, type Manifest } from '@sap-ux/project-access';
 import {
-    MbtPackage,
-    MbtPackageVersion,
     MTAVersion,
-    Rimraf,
-    RimrafVersion,
     UI5BuilderWebIdePackage,
     UI5BuilderWebIdePackageVersion,
+    UI5Package,
+    UI5PackageVersion,
     UI5TaskZipperPackage,
     UI5TaskZipperPackageVersion,
     XSSecurityFile
 } from './constants';
 import type { Editor } from 'mem-fs-editor';
-import type { Destinations } from '@sap-ux/btp-utils';
 import type { MTABaseConfig } from './types';
 
 let cachedDestinationsList: Destinations = {};
@@ -49,7 +52,7 @@ export function getTemplatePath(relativeTemplatePath: string = ''): string {
  * @returns Name that's acceptable in an mta.yaml
  */
 export function toMtaModuleName(id: string): string {
-    return id.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>]/gi, '');
+    return id.replace(/[`~!@#$%^&*()_|+=?;:'",.<>]/gi, '');
 }
 
 /**
@@ -70,19 +73,17 @@ export function toPosixPath(dirPath: string): string {
  */
 export async function getDestinationProperties(
     destination: string | undefined
-): Promise<{ isFullUrlDest: boolean; destinationAuthType: Authentication }> {
-    const destinationProperties = {
-        isFullUrlDest: false,
-        destinationAuthType: Authentication.NO_AUTHENTICATION
-    };
+): Promise<{ destinationIsFullUrl: boolean; destinationAuthentication: Authentication | undefined }> {
+    let destinationIsFullUrl = false;
+    let destinationAuthentication;
     if (isAppStudio() && destination) {
         const destinations = await getBTPDestinations();
         if (destinations[destination]) {
-            destinationProperties.isFullUrlDest = isFullUrlDestination(destinations[destination]);
-            destinationProperties.destinationAuthType = destinations[destination].Authentication as Authentication;
+            destinationIsFullUrl = isFullUrlDestination(destinations[destination]);
+            destinationAuthentication = destinations[destination].Authentication as Authentication;
         }
     }
-    return destinationProperties;
+    return { destinationIsFullUrl, destinationAuthentication };
 }
 
 /**
@@ -92,7 +93,7 @@ export async function getDestinationProperties(
  */
 export async function getBTPDestinations(): Promise<Destinations> {
     if (Object.keys(cachedDestinationsList).length === 0) {
-        cachedDestinationsList = await listDestinations();
+        cachedDestinationsList = await listDestinations({ stripS4HCApiHosts: true });
     }
     return cachedDestinationsList;
 }
@@ -156,8 +157,7 @@ export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): v
  * @param fs reference to a mem-fs editor
  */
 export async function addCommonPackageDependencies(targetPath: string, fs: Editor): Promise<void> {
-    await addPackageDevDependency(targetPath, Rimraf, RimrafVersion, fs);
-    await addPackageDevDependency(targetPath, MbtPackage, MbtPackageVersion, fs);
     await addPackageDevDependency(targetPath, UI5BuilderWebIdePackage, UI5BuilderWebIdePackageVersion, fs);
     await addPackageDevDependency(targetPath, UI5TaskZipperPackage, UI5TaskZipperPackageVersion, fs);
+    await addPackageDevDependency(targetPath, UI5Package, UI5PackageVersion, fs);
 }

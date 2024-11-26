@@ -361,8 +361,9 @@ export class ConnectionValidator {
     }
 
     /**
+     * Resets any connection state and validity information.
      *
-     * @param resetValidity
+     * @param resetValidity if true, the validity information will be reset also
      */
     public resetConnectionState(resetValidity = false): void {
         this._serviceProvider = undefined;
@@ -589,15 +590,22 @@ export class ConnectionValidator {
         this.resetValidity();
         // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest
         const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath);
-        // Get the destination URL in the portable form <protocol>://<host>:<port>
-        this._destinationUrl = servicePath ? new URL(`${destination.Host}${servicePath}`).toString() : destination.Host;
+        // Get the destination URL in the portable form <protocol>://<host>:<port>.
+        // We remove trailing slashes (up to 10, infinite would allow DOS attack) from the host to avoid double slashes when appending the service path.
+        this._destinationUrl = servicePath
+            ? destUrl.replace(`https://${destination.Name}.dest`, destination.Host.replace(/\/{1,10}$/, ''))
+            : destination.Host;
         this._destination = destination;
         // No need to apply sap-client as this happens automatically (from destination config) when going through the BAS proxy
         const status = await this.checkUrl(new URL(destUrl), undefined, undefined, {
             odataVersion: requiredOdataVersion
         });
-        this._validatedUrl = destUrl;
+
         const validationResult = this.getValidationResultFromStatusCode(status);
+
+        if (this.validity.reachable && (!this.validity.authRequired || this.validity.authenticated)) {
+            this._validatedUrl = destUrl;
+        }
 
         if (!this.validity.reachable) {
             // Log the error
