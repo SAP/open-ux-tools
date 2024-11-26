@@ -69,7 +69,7 @@ Array [
               Object {
                 "name": "Value",
                 "value": Object {
-                  "Apply": Object {
+                  "$Apply": Object {
                     "attributes": Object {
                       "Function": Object {
                         "name": "Function",
@@ -285,6 +285,7 @@ Array [
                     },
                     "type": "element",
                   },
+                  "$Function": "odata.concat",
                   "type": "Apply",
                 },
               },
@@ -311,7 +312,7 @@ Array [
               Object {
                 "name": "Value",
                 "value": Object {
-                  "Apply": Object {
+                  "$Apply": Object {
                     "attributes": Object {
                       "Function": Object {
                         "name": "Function",
@@ -527,6 +528,7 @@ Array [
                     },
                     "type": "element",
                   },
+                  "$Function": "odata.concat",
                   "type": "Apply",
                 },
               },
