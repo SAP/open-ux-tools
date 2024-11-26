@@ -221,6 +221,9 @@ export function defaultOrShowSearchPackageQuestion(packageInputChoice?: string, 
  * @returns boolean
  */
 function defaultOrShowTransportQuestion(): boolean {
+    if (PromptState.transportAnswers.transportRequired === false) {
+        return false;
+    }
     if (PromptState.transportAnswers.transportConfig?.getDefaultTransport() !== undefined) {
         PromptState.abapDeployConfig.transport = PromptState.transportAnswers.transportConfig.getDefaultTransport();
         return false;
@@ -238,9 +241,6 @@ function defaultOrShowTransportQuestion(): boolean {
  * @returns boolean
  */
 export function showTransportInputChoice(): boolean {
-    if (PromptState.transportAnswers.transportRequired === false) {
-        return false;
-    }
     return defaultOrShowTransportQuestion();
 }
 

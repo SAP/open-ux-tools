@@ -242,6 +242,11 @@ describe('Test abap deploy config inquirer conditions', () => {
         expect(showTransportInputChoice()).toBe(true);
     });
 
+    test('should not show transport input choice question when transport is not required', () => {
+        PromptState.transportAnswers.transportRequired = false;
+        expect(showTransportInputChoice()).toBe(false);
+    });
+
     test('should not show transport input choice question', () => {
         PromptState.transportAnswers.transportConfigError = undefined;
         PromptState.transportAnswers.transportConfigNeedsCreds = true;

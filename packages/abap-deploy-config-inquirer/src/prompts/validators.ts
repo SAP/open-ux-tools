@@ -354,6 +354,7 @@ export async function validatePackage(
     answers: AbapDeployConfigAnswersInternal,
     backendTarget?: BackendTarget
 ): Promise<boolean | string> {
+    PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
     if (!input?.trim()) {
         return t('warnings.providePackage');
     }
