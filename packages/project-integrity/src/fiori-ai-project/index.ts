@@ -5,7 +5,7 @@ import { checkProjectIntegrity, initProject, updateProjectIntegrity } from '../i
 import { findFilesByExtension } from '@sap-ux/project-access/src/file';
 import type { CheckIntegrityResult, Content } from '../types';
 
-export const fioriIntegrityDataPath = join('.fiori-ai/hash-map.json');
+export const fioriIntegrityDataPath = join('.fiori-ai/integrity.json');
 
 /**
  * Get the list of files to protect the integrity of.
