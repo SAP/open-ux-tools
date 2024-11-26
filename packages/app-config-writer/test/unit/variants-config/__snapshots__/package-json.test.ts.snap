@@ -12,3 +12,17 @@ Object {
   },
 }
 `;
+
+exports[`addVariantsManagementScript set --config flag if default ui5.yaml is not used 1`] = `
+Object {
+  "devDependencies": Object {
+    "@sap/ux-ui5-tooling": "1.15.1",
+  },
+  "name": "test-app",
+  "sapux": true,
+  "sapuxLayer": "VENDOR",
+  "scripts": Object {
+    "start-variants-management": "fiori run --config ./myCustomUI5.yaml --open \\"/preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-client=500#app-preview\\"",
+  },
+}
+`;

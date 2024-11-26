@@ -1,5 +1,107 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.1.0
+
+### Minor Changes
+
+-   849ef1e: updates options and conditions for prompts
+
+## 1.0.26
+
+### Patch Changes
+
+-   aa0731f: ensure scp prompt is maintained
+
+## 1.0.25
+
+### Patch Changes
+
+-   Updated dependencies [74dc5fe]
+    -   @sap-ux/inquirer-common@0.5.4
+
+## 1.0.24
+
+### Patch Changes
+
+-   Updated dependencies [575ff89]
+    -   @sap-ux/fiori-generator-shared@0.7.10
+    -   @sap-ux/inquirer-common@0.5.3
+
+## 1.0.23
+
+### Patch Changes
+
+-   a62ff25: adds new options for listing destinations api
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/axios-extension@1.17.4
+    -   @sap-ux/fiori-generator-shared@0.7.9
+    -   @sap-ux/inquirer-common@0.5.2
+    -   @sap-ux/system-access@0.5.19
+
+## 1.0.22
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+    -   @sap-ux/axios-extension@1.17.3
+    -   @sap-ux/fiori-generator-shared@0.7.8
+    -   @sap-ux/system-access@0.5.18
+    -   @sap-ux/inquirer-common@0.5.1
+
+## 1.0.21
+
+### Patch Changes
+
+-   Updated dependencies [8237f83]
+    -   @sap-ux/axios-extension@1.17.3
+    -   @sap-ux/system-access@0.5.18
+
+## 1.0.20
+
+### Patch Changes
+
+-   Updated dependencies [2886db3]
+    -   @sap-ux/inquirer-common@0.5.0
+    -   @sap-ux/fiori-generator-shared@0.7.7
+
+## 1.0.19
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/guided-answers-helper@0.1.0
+    -   @sap-ux/btp-utils@0.16.0
+    -   @sap-ux/axios-extension@1.17.2
+    -   @sap-ux/fiori-generator-shared@0.7.6
+    -   @sap-ux/system-access@0.5.17
+
+## 1.0.18
+
+### Patch Changes
+
+-   7551316: Small text cleanups
+-   Updated dependencies [7551316]
+    -   @sap-ux/axios-extension@1.17.1
+    -   @sap-ux/system-access@0.5.16
+
+## 1.0.17
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.17.0
+-   @sap-ux/fiori-generator-shared@0.7.5
+-   @sap-ux/system-access@0.5.15
+
+## 1.0.16
+
+### Patch Changes
+
+-   Updated dependencies [0120dda]
+    -   @sap-ux/axios-extension@1.17.0
+    -   @sap-ux/system-access@0.5.15
+
 ## 1.0.15
 
 ### Patch Changes

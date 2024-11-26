@@ -474,3 +474,35 @@ export const SearchIncludeKeys = (): JSX.Element => (
         />
     </div>
 );
+
+const dataForCustomSearch = [
+    ...data,
+    {
+        key: 'A1',
+        text: 'Do not hide',
+        customMark: true
+    },
+    {
+        key: 'A2',
+        text: 'Always visible',
+        customMark: true
+    }
+];
+
+export const AdditionalCustomSearch = (): JSX.Element => (
+    <div style={{ width: '300px' }}>
+        <UIComboBox
+            options={dataForCustomSearch}
+            highlight={true}
+            allowFreeform={true}
+            useComboBoxAsMenuMinWidth={true}
+            autoComplete="on"
+            customSearchFilter={(searchTerm: string, option: UIComboBoxOption) => {
+                if ('customMark' in option && option.customMark) {
+                    return true;
+                }
+                return undefined;
+            }}
+        />
+    </div>
+);

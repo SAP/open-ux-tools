@@ -53,7 +53,7 @@ describe('Adding and Updating mta extension configuration', () => {
             _schema-version: \\"3.2\\"
             ID: test-mta-ext
             extends: test-mta
-            version: 0.0.1
+            version: 1.0.0
 
             resources:
             - name: test-mta-destination-service

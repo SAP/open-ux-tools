@@ -1,5 +1,83 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.35
+
+### Patch Changes
+
+-   c39325c: Fix for Config Quick action state not reflecting properties in properties panel
+
+## 0.11.34
+
+### Patch Changes
+
+-   326dbe5: Enable adding fragment to elements cloned from a template
+
+## 0.11.33
+
+### Patch Changes
+
+-   e9438d6: fix: restrict the '"Semantic Date Range" in filter bar' quick-action for certain UI5 versions which are not supported for V2 application.
+
+## 0.11.32
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
+## 0.11.31
+
+### Patch Changes
+
+-   1f7827c: handle higher layer changes
+
+## 0.11.30
+
+### Patch Changes
+
+-   f2d3335: Hide "Semantic Date Range" Quick Action behind feature toggle.
+
+## 0.11.29
+
+### Patch Changes
+
+-   8c0ba5c: Fixed Adaptation Editor crash when project contains Personalization change.
+
+## 0.11.28
+
+### Patch Changes
+
+-   8b123e3: Fixed typo in "Semantic Date Range" quick action.
+
+## 0.11.27
+
+### Patch Changes
+
+-   fcc5518: Remove feature flag from "Add Custom Table Action", "Add Custom Page Action", "Add Custom Table Column" and "Change Table Columns" Quick Actions.
+
+## 0.11.26
+
+### Patch Changes
+
+-   06e9468: Allow adaptations of manifest settings in FEv4 adaptation projects via Control Property Editor Property Panel
+
+## 0.11.25
+
+### Patch Changes
+
+-   838cdf1: fix: Unavailability of changeHandlerAPI in lower ui5 version causes console to be spammed with errors
+
+## 0.11.24
+
+### Patch Changes
+
+-   25488a9: fix: resolve the issue when add table action quick action in the object page didn't work because the Variant Management was disabled.
+
+## 0.11.23
+
+### Patch Changes
+
+-   0671c95: support semantic date range quick action for v2/v4
+
 ## 0.11.22
 
 ### Patch Changes

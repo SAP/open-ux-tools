@@ -1,0 +1,341 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test system selection prompts should return system selection prompts and choices based on development environment, BAS or non-BAS 1`] = `
+[
+  {
+    "additionalMessages": [Function],
+    "choices": [
+      {
+        "name": "dest1",
+        "value": {
+          "system": {
+            "Host": "http://dest1.com",
+            "Name": "dest1",
+          },
+          "type": "destination",
+        },
+      },
+    ],
+    "default": -1,
+    "hint": "Select a system configuration",
+    "message": "System",
+    "name": "systemSelection",
+    "source": [Function],
+    "type": "list",
+    "validate": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": true,
+      "hint": "Enter the path to the OData service, relative to the selected destination URL",
+      "mandatory": true,
+    },
+    "message": "Service path",
+    "name": "destinationServicePath",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "mandatory": true,
+    },
+    "message": "Username",
+    "name": "systemSelection:systemUsername",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "mandatory": true,
+    },
+    "guiType": "login",
+    "mask": "*",
+    "message": "Password",
+    "name": "systemSelection:systemPassword",
+    "type": "password",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "additionalMessages": [Function],
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": "Service",
+      "mandatory": true,
+    },
+    "message": [Function],
+    "name": "systemSelection:serviceSelection",
+    "source": [Function],
+    "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+]
+`;
+
+exports[`Test system selection prompts should return system selection prompts and choices based on development environment, BAS or non-BAS 2`] = `
+[
+  {
+    "additionalMessages": [Function],
+    "choices": [
+      {
+        "name": "New system",
+        "value": {
+          "system": "!@£*&937newSystem*X~qy^",
+          "type": "newSystemChoice",
+        },
+      },
+      {
+        "name": "http://abap.on.prem:1234",
+        "value": {
+          "system": {
+            "name": "http://abap.on.prem:1234",
+            "password": "password1",
+            "url": "http://abap.on.prem:1234",
+            "username": "user1",
+          },
+          "type": "backendSystem",
+        },
+      },
+    ],
+    "default": -1,
+    "hint": "Select a system configuration",
+    "message": "System",
+    "name": "systemSelection",
+    "source": [Function],
+    "type": "list",
+    "validate": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "mandatory": true,
+    },
+    "message": "Username",
+    "name": "systemSelection:systemUsername",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "mandatory": true,
+    },
+    "guiType": "login",
+    "mask": "*",
+    "message": "Password",
+    "name": "systemSelection:systemPassword",
+    "type": "password",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "additionalMessages": [Function],
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": "Service",
+      "mandatory": true,
+    },
+    "message": [Function],
+    "name": "systemSelection:serviceSelection",
+    "source": [Function],
+    "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "choices": [
+      {
+        "name": "ABAP Environment on SAP Business Technology Platform",
+        "value": "abapOnBtp",
+      },
+      {
+        "name": "ABAP On Premise",
+        "value": "abapOnPrem",
+      },
+    ],
+    "message": "System type",
+    "name": "newSystemType",
+    "type": "list",
+    "when": [Function],
+  },
+  {
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "Enter the URL of the SAP System",
+      "mandatory": true,
+    },
+    "message": "System URL",
+    "name": "abapOnPrem:newSystemUrl",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "guiOptions": {
+      "breadcrumb": "SAP Client",
+    },
+    "message": "SAP client (leave empty for default)",
+    "name": "sapClient",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "mandatory": true,
+    },
+    "message": "Username",
+    "name": "abapOnPrem:systemUsername",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "mandatory": true,
+    },
+    "guiType": "login",
+    "mask": "*",
+    "message": "Password",
+    "name": "abapOnPrem:systemPassword",
+    "type": "password",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": true,
+      "hint": "Entering a system name will save the connection for re-use.",
+      "mandatory": true,
+    },
+    "message": "System name",
+    "name": "abapOnPrem:userSystemName",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "additionalMessages": [Function],
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": "Service",
+      "mandatory": true,
+    },
+    "message": [Function],
+    "name": "abapOnPrem:serviceSelection",
+    "source": [Function],
+    "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "choices": [
+      {
+        "name": "Discover a Cloud Foundry Service",
+        "value": "cloudFoundry",
+      },
+      {
+        "name": "Upload a Service Key File",
+        "value": "serviceKey",
+      },
+      {
+        "name": "Use Reentrance Ticket",
+        "value": "reentranceTicket",
+      },
+    ],
+    "message": "ABAP environment definition source",
+    "name": "abapOnBtpAuthType",
+    "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "Enter the URL of the SAP System",
+      "mandatory": true,
+    },
+    "message": "System URL",
+    "name": "abapOnBtp:newSystemUrl",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "guiOptions": {
+      "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
+      "mandatory": true,
+    },
+    "guiType": "file-browser",
+    "message": "Service key file path",
+    "name": "serviceKey",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": true,
+    },
+    "message": "ABAP environment",
+    "name": "cloudFoundryAbapSystem",
+    "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": true,
+      "hint": "Entering a system name will save the connection for re-use.",
+      "mandatory": true,
+    },
+    "message": "System name",
+    "name": "abapOnBtp:userSystemName",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "additionalMessages": [Function],
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": "Service",
+      "mandatory": true,
+    },
+    "message": [Function],
+    "name": "abapOnBtp:serviceSelection",
+    "source": [Function],
+    "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+]
+`;

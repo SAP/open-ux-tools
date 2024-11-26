@@ -100,11 +100,6 @@ describe('adp', () => {
         });
 
         expect(sendActionMock).toHaveBeenNthCalledWith(3, {
-            type: '[ext] app-loaded',
-            payload: undefined
-        });
-
-        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
@@ -135,12 +130,7 @@ describe('adp', () => {
             payload: []
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
-            type: '[ext] app-loaded',
-            payload: undefined
-        });
-
-        expect(sendActionMock).toHaveBeenNthCalledWith(5, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
@@ -165,7 +155,7 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:

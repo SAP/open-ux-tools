@@ -13,7 +13,8 @@ import type {
     Adp,
     MockserverConfig,
     ServeStaticPath,
-    DataSourceConfig
+    DataSourceConfig,
+    AbapDeployConfig
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -497,6 +498,7 @@ export class UI5Config {
      * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
      * @param exclude optional list of files that are to be excluded from the deployment configuration
      * @param index if true a standalone index.html is generated during deployment
+     * @param comments optional comments that are added to the task
      * @returns this UI5Config instance
      * @memberof UI5Config
      */
@@ -505,7 +507,8 @@ export class UI5Config {
         app: BspApp | Adp,
         fioriTools = true,
         exclude?: string[],
-        index = false
+        index = false,
+        comments: NodeComment<CustomTask<AbapDeployConfig>>[] = []
     ): this {
         this.document.appendTo({
             path: 'builder.resources.excludes',
@@ -529,7 +532,8 @@ export class UI5Config {
                 name: fioriTools ? 'deploy-to-abap' : 'abap-deploy-task',
                 afterTask: 'generateCachebusterInfo',
                 configuration
-            }
+            },
+            comments
         });
         return this;
     }

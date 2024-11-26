@@ -27,7 +27,7 @@ describe('utils', () => {
             (ComponentMock.get as jest.Mock).mockReturnValue('mockControl');
 
             // act
-            const editable = isEditable('dummyId');
+            const editable = isEditable({} as any, 'dummyId');
 
             // assert
             expect(editable).toBeFalsy();
@@ -40,7 +40,7 @@ describe('utils', () => {
             OverlayUtil.getClosestOverlayFor.mockReturnValue(mockControlOverlay);
             const getRuntimeControlSpy = jest.spyOn(cpeUtils, 'getRuntimeControl');
             // act
-            const editable = isEditable('dummyId');
+            const editable = isEditable({} as any, 'dummyId');
 
             // assert
             expect(editable).toBeTruthy();

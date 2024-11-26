@@ -138,6 +138,7 @@ exports[`UI5Config addAbapDeployTask use open source task 1`] = `
         target:
           url: http://localhost:8080
           client: '012'
+          authenticationType: reentranceTicket # SAML support for vscode
         app:
           name: ~name
           description: ~description

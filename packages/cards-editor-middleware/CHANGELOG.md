@@ -1,5 +1,30 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.4.37
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+
+## 0.4.36
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
+## 0.4.35
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.7
+
+## 0.4.34
+
+### Patch Changes
+
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+
 ## 0.4.33
 
 ### Patch Changes

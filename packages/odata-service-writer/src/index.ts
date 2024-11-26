@@ -9,7 +9,14 @@ import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
 import type { EdmxOdataService, ProjectPaths } from './types';
-import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
+import {
+    OdataService,
+    OdataVersion,
+    ServiceType,
+    CdsAnnotationsInfo,
+    EdmxAnnotationsInfo,
+    NamespaceAlias
+} from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { deleteServiceFromManifest, removeAnnotationsFromCDSFiles, removeAnnotationXmlFiles } from './delete';
@@ -327,3 +334,4 @@ async function remove(
 }
 
 export { generate, remove, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
+export { getAnnotationNamespaces, NamespaceAlias };

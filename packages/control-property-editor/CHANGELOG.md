@@ -1,5 +1,23 @@
 # @sap-ux/control-property-editor
 
+## 0.5.27
+
+### Patch Changes
+
+-   c39325c: Fix for Config Quick action state not reflecting properties in properties panel
+
+## 0.5.26
+
+### Patch Changes
+
+-   8c0ba5c: Fixed Adaptation Editor crash when project contains Personalization change.
+
+## 0.5.25
+
+### Patch Changes
+
+-   06e9468: Allow adaptations of manifest settings in FEv4 adaptation projects via Control Property Editor Property Panel
+
 ## 0.5.24
 
 ### Patch Changes

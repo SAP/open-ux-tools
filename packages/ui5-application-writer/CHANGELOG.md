@@ -1,5 +1,24 @@
 # @sap-ux/ui5-application-writer
 
+## 1.2.6
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+
+## 1.2.5
+
+### Patch Changes
+
+-   d0331b8: fix - locate-reuse-libs.js|ts - sanitize server response before logging
+
+## 1.2.4
+
+### Patch Changes
+
+-   7cf9ed0: Fix lint issue in templates
+
 ## 1.2.3
 
 ### Patch Changes
