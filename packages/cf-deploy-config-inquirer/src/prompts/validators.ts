@@ -2,7 +2,7 @@ import { t } from '../i18n';
 import type { CfSystemChoice, CfAppRouterDeployConfigAnswers } from '../types';
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import type { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**
  *
@@ -101,6 +101,13 @@ export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployC
     return true;
 }
 
+/**
+ * Validates the ABAP service choice and provides error handling.
+ *
+ * @param {string} choice - The selected choice for the ABAP service.
+ * @param {ErrorHandler} errorHandler - An instance of an error handler.
+ * @returns {string | boolean} - Returns `true` if the choice is valid.
+ */
 export function validateAbapService(choice: string, errorHandler: ErrorHandler): string | boolean {
     if (!choice) {
         const userMsg = errorHandler.getErrorMsg('', true);

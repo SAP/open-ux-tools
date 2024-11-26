@@ -88,8 +88,8 @@ export type CfDeployConfigPromptOptions = Partial<stringValuePromptOptions & boo
 /**
  * Configuration options for CF App Router deployment prompts.
  */
-export type CfAppRouterDeployConfigPromptOptions = Record<appRouterPromptNames.mtaPath, string> & 
-Partial<stringValuePromptOptions & booleanValuePromptOptions>;
+export type CfAppRouterDeployConfigPromptOptions = Record<appRouterPromptNames.mtaPath, string> &
+    Partial<stringValuePromptOptions & booleanValuePromptOptions>;
 
 /**
  * Represents a question in the CF deployment configuration.

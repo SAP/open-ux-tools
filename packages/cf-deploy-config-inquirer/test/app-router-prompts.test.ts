@@ -244,4 +244,56 @@ describe('App Router Prompt Generation Tests', () => {
             expect(destinationServicePrompt).not.toBeDefined();
         });
     });
+
+    describe('getServiceProvider', () => {
+        it('should return a valid service provider prompt when enabled', async () => {
+            const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+                [appRouterPromptNames.addServiceProvider]: true
+            };
+            const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
+            const destinationServicePrompt = questions.find(
+                (question) => question.name === appRouterPromptNames.addServiceProvider
+            );
+            expect(destinationServicePrompt?.guiOptions?.breadcrumb).toBe(t('prompts.abapEnvBindingBreadcrumbMessage'));
+            expect(destinationServicePrompt?.message).toBe(t('prompts.selectServiceMessage'));
+            expect(destinationServicePrompt?.type).toBe('list');
+            expect((destinationServicePrompt?.default as Function)()).toBe(t('errors.abapEnvsUnavailable'));
+            expect(
+                (destinationServicePrompt?.when as Function)({
+                    [appRouterPromptNames.routerType]: RouterModuleType.Standard,
+                    [appRouterPromptNames.addDestinationService]: true
+                })
+            ).toEqual(true);
+        });
+
+        it('should not return service provider prompt when disabled', async () => {
+            const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+                [appRouterPromptNames.addServiceProvider]: false
+            };
+            const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
+            const destinationServicePrompt = questions.find(
+                (question) => question.name === appRouterPromptNames.addServiceProvider
+            );
+            expect(destinationServicePrompt).toBe(undefined);
+        });
+
+        it('should not return service provider prompt when enabled but router type selected in managed', async () => {
+            const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+                [appRouterPromptNames.addServiceProvider]: true
+            };
+            const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
+            const addServiceProviderPrompt = questions.find(
+                (question) => question.name === appRouterPromptNames.addServiceProvider
+            );
+            expect(
+                (addServiceProviderPrompt?.when as Function)({
+                    [appRouterPromptNames.routerType]: RouterModuleType.Managed,
+                    [appRouterPromptNames.addDestinationService]: true
+                })
+            ).toEqual(false);
+        });
+    });
 });

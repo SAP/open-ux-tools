@@ -1,12 +1,14 @@
 import { t } from '../src/i18n';
-import { validateDestinationQuestion, validateMtaPath, validateMtaId } from '../src/prompts/validators';
+import { validateDestinationQuestion, validateMtaPath, validateMtaId, validateAbapService } from '../src/prompts/validators';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import type { CfAppRouterDeployConfigAnswers } from '../src/types';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 jest.mock('fs');
 jest.mock('../src/i18n');
 jest.mock('path');
+jest.mock('@sap-ux/inquirer-common');
 
 const mockedExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
 const mockedT = t as jest.MockedFunction<typeof t>;
@@ -102,5 +104,32 @@ describe('validateMtaId', () => {
         expect(result).toBe('MTA ID already exists at the destination path');
         expect(mockedJoin).toHaveBeenCalledWith('/valid/path', 'existing_id');
         expect(mockedT).toHaveBeenCalledWith('errors.mtaIdAlreadyExistError', { mtaPath: '/valid/path' });
+    });
+});
+
+describe('validateAbapService', () => {
+    let mockErrorHandler: ErrorHandler;
+
+    beforeEach(() => {
+        mockErrorHandler = new ErrorHandler();
+    });
+
+    it('should return true for a valid choice', () => {
+        const validChoice = 'validChoice';
+        expect(validateAbapService(validChoice, mockErrorHandler)).toBe(true);
+    });
+
+    it('should return a concatenated error message if choice is empty and error message is available', () => {
+        const errorMsg = 'Error occurred';
+        jest.spyOn(mockErrorHandler, 'getErrorMsg').mockReturnValue(errorMsg);
+        const expectedMessage = `${errorMsg} ${t('errors.errorScpAbapSourceDiscoveryCheckLog')}`;
+        expect(validateAbapService('', mockErrorHandler)).toBe(expectedMessage);
+        expect(mockErrorHandler.getErrorMsg).toHaveBeenCalledWith('', true);
+    });
+
+    it('should return false if choice is empty and no error message is available', () => {
+        jest.spyOn(mockErrorHandler, 'getErrorMsg').mockReturnValue('');
+        expect(validateAbapService('', mockErrorHandler)).toBe(false);
+        expect(mockErrorHandler.getErrorMsg).toHaveBeenCalledWith('', true);
     });
 });

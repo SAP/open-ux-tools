@@ -17,6 +17,7 @@ import { validateAbapService } from './validators';
  * This function creates an input prompt that allows the user to browse and select a folder for the MTA path.
  * It provides default values, a custom breadcrumb message, and validation for ensuring the selected path exists.
  *
+ * @param mtaPath
  * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for selecting the MTA path.
  */
 function getMtaPathPrompt(mtaPath: string): CfAppRouterDeployConfigQuestions {
@@ -164,7 +165,7 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
     const errorHandler = new ErrorHandler();
     return {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean => {
-            return !!previousAnswers.addDestinationService && previousAnswers.routerType !== RouterModuleType.Managed
+            return !!previousAnswers.addDestinationService && previousAnswers.routerType !== RouterModuleType.Managed;
         },
         type: 'list',
         name: appRouterPromptNames.addServiceProvider,
