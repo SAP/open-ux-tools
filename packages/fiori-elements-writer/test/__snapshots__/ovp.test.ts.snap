@@ -276,7 +276,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/GWSAMPLE_BASIC.xml": Object {
+  "webapp/localService/mainService/GWSAMPLE_BASIC.xml": Object {
     "contents": "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
     <edmx:Reference Uri=\\"https://wiki.scn.sap.com/wiki/download/attachments/448470974/Common.xml?api=v2\\">
         <edmx:Include Alias=\\"Common\\" Namespace=\\"com.sap.vocabularies.Common.v1\\"/>
@@ -2076,7 +2076,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/GWSAMPLE_BASIC.xml": Object {
+  "webapp/localService/mainService/GWSAMPLE_BASIC.xml": Object {
     "contents": "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
     <edmx:Reference Uri=\\"https://wiki.scn.sap.com/wiki/download/attachments/448470974/Common.xml?api=v2\\">
         <edmx:Include Alias=\\"Common\\" Namespace=\\"com.sap.vocabularies.Common.v1\\"/>

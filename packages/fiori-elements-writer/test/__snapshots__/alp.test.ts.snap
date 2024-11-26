@@ -273,7 +273,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\"
 xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">

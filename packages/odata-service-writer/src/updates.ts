@@ -66,11 +66,13 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
  *
  * @param {Editor} fs - The memfs editor instance.
  * @param {string} basePath - The base path of the project.
+ * @param {string} serviceName - Name of The OData service.
  * @param {OdataService} edmxAnnotations - The OData service annotations.
  */
 export function writeAnnotationXmlFiles(
     fs: Editor,
     basePath: string,
+    serviceName: string,
     edmxAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]
 ): void {
     // Write annotation xml if annotations are provided and service type is EDMX
@@ -79,14 +81,14 @@ export function writeAnnotationXmlFiles(
             const annotation = edmxAnnotations[annotationName];
             if (annotation?.xml) {
                 fs.write(
-                    join(basePath, 'webapp', 'localService', `${annotation.technicalName}.xml`),
+                    join(basePath, 'webapp', 'localService', serviceName, `${annotation.technicalName}.xml`),
                     prettifyXml(annotation.xml, { indent: 4 })
                 );
             }
         }
     } else if (edmxAnnotations?.xml) {
         fs.write(
-            join(basePath, 'webapp', 'localService', `${edmxAnnotations.technicalName}.xml`),
+            join(basePath, 'webapp', 'localService', serviceName, `${edmxAnnotations.technicalName}.xml`),
             prettifyXml(edmxAnnotations.xml, { indent: 4 })
         );
     }

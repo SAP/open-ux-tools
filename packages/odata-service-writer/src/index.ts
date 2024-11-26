@@ -12,7 +12,7 @@ import type { EdmxOdataService, ProjectPaths } from './types';
 import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
-import { deleteServiceFromManifest, removeAnnotationsFromCDSFiles } from './delete';
+import { deleteServiceFromManifest, removeAnnotationsFromCDSFiles, removeAnnotationXmlFiles } from './delete';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -115,26 +115,27 @@ function extendBackendMiddleware(fs: Editor, service: OdataService, ui5Config: U
 }
 
 /**
- * Returns all paths of the service annotations.
+ * Returns all paths of the EDMX service annotations.
  *
- * @param {OdataService} serviceAnnotations - service annotations
+ * @param {OdataService} edmxAnnotations - EDMX OData service annotations.
  * @returns {string} annotation paths.
  */
-function getAnnotationPaths(serviceAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]): string[] {
-    const serviceAnnotationPaths: string[] = [];
-    if (Array.isArray(serviceAnnotations)) {
-        // Paths for local annotations starts with "annotations/.."
-        serviceAnnotations.forEach((annotation: EdmxAnnotationsInfo) => {
-            serviceAnnotationPaths.push(
-                `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(${annotation.technicalName}) %>',Version='0001')/$value/`
+function getEDMXAnnotationPaths(edmxAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]): string[] {
+    const emdxAnnotationsPaths: string[] = [];
+    if (Array.isArray(edmxAnnotations)) {
+        edmxAnnotations.forEach((annotation: EdmxAnnotationsInfo) => {
+            const technicalName = encodeURIComponent(annotation.technicalName);
+            emdxAnnotationsPaths.push(
+                `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='${technicalName}',Version='0001')/$value/` // This is how annotation paths are stored in manifest for ODataAnnotations
             );
         });
     } else {
-        serviceAnnotationPaths.push(
-            `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(${serviceAnnotations.technicalName}) %>',Version='0001')/$value/`
+        const technicalName = encodeURIComponent(edmxAnnotations.technicalName);
+        emdxAnnotationsPaths.push(
+            `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='${technicalName}',Version='0001')/$value/`
         );
     }
-    return serviceAnnotationPaths;
+    return emdxAnnotationsPaths;
 }
 
 /**
@@ -156,8 +157,11 @@ async function writeEDMXServiceFiles(
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
     let ui5LocalConfigPath: string | undefined;
+    let ui5MockConfig: UI5Config | undefined;
+    let ui5MockConfigPath: string | undefined;
     if (paths.ui5Yaml) {
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+        // Update ui5.yaml with backend middleware
         extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml);
         ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
         // Update ui5-local.yaml with backend middleware
@@ -177,6 +181,11 @@ async function writeEDMXServiceFiles(
             await generateMockserverConfig(basePath, config, fs);
             // Update ui5-local.yaml with mockserver middleware from newly created/updated ui5-mock.yaml
             await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, ui5LocalConfigPath, ui5LocalConfig);
+            ui5MockConfigPath = join(dirname(paths.ui5Yaml), 'ui5-mock.yaml');
+            if (fs.exists(ui5MockConfigPath)) {
+                ui5MockConfig = await UI5Config.newInstance(fs.read(ui5MockConfigPath));
+                extendBackendMiddleware(fs, service, ui5MockConfig, ui5MockConfigPath);
+            }
         }
         // Create local copy of metadata and annotations, mainService should be used in case there is no name defined for service
         fs.write(
@@ -200,7 +209,7 @@ async function writeEDMXServiceFiles(
         // write ui5 local yaml if service type is not CDS
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
-    writeAnnotationXmlFiles(fs, basePath, service.annotations);
+    writeAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
 }
 
 /**
@@ -256,7 +265,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
  * @param {string} service.path - path of the OData service instance
  * @param {string} service.url - url of the OData service instance
  * @param {ServiceType} service.type - type of the OData service instance
- * @param {OdataService['annotations']} service.annotations - annotations of the OData service instance
+ * @param {OdataService['annotations']} service.annotations - services annotations (EDMX or CDS)
  * @param {Editor} [fs] - the memfs editor instance
  * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
@@ -285,7 +294,7 @@ async function remove(
             ui5Config.removeBackendFromFioriToolsProxydMiddleware(service.url);
             fs.write(paths.ui5Yaml, ui5Config.toString());
         }
-        const serviceAnnotationPaths = getAnnotationPaths(
+        const serviceAnnotationPaths = getEDMXAnnotationPaths(
             service.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[]
         );
         if (paths.ui5LocalYaml) {
@@ -298,10 +307,18 @@ async function remove(
         }
         if (paths.ui5MockYaml) {
             ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
+            // Delete service backend from fiori-tools-proxy middleware config
+            ui5MockConfig.removeBackendFromFioriToolsProxydMiddleware(service.url);
             // Delete service from mockserver config
             ui5MockConfig.removeServiceFromMockServerMiddleware(service.path, serviceAnnotationPaths);
             fs.write(paths.ui5MockYaml, ui5MockConfig.toString());
         }
+        removeAnnotationXmlFiles(
+            fs,
+            basePath,
+            service.name ?? 'mainService',
+            service.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[]
+        );
     } else {
         // Remove annotations from CDS files based on annotations info
         await removeAnnotationsFromCDSFiles(service.annotations as CdsAnnotationsInfo | CdsAnnotationsInfo[], fs);

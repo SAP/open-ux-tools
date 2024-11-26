@@ -277,7 +277,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -3912,7 +3912,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">

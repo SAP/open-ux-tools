@@ -2,7 +2,7 @@ import { dirname, join, normalize, posix } from 'path';
 import { t } from './i18n';
 import type { Editor } from 'mem-fs-editor';
 import type { ManifestNamespace, Manifest } from '@sap-ux/project-access';
-import type { CdsAnnotationsInfo } from './types';
+import type { CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 
 /**
  * Removes the cds index or service file with the provided annotations.
@@ -84,13 +84,56 @@ export async function removeAnnotationsFromCDSFiles(
 }
 
 /**
- * Internal function that deletes files related to dataSource.
+ * Removes annotation XML files for EDMX annotations.
+ *
+ * @param {Editor} fs - The memfs editor instance.
+ * @param {string} basePath - The base path of the project.
+ * @param {string} serviceName - Name of The OData service.
+ * @param {OdataService} edmxAnnotations - The OData service annotations.
+ */
+export function removeAnnotationXmlFiles(
+    fs: Editor,
+    basePath: string,
+    serviceName: string,
+    edmxAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]
+): void {
+    // Write annotation xml if annotations are provided and service type is EDMX
+    if (Array.isArray(edmxAnnotations)) {
+        for (const annotationName in edmxAnnotations) {
+            const annotation = edmxAnnotations[annotationName];
+            const pathToAnnotationFile = join(
+                basePath,
+                'webapp',
+                'localService',
+                serviceName,
+                `${annotation.technicalName}.xml`
+            );
+            if (fs.exists(pathToAnnotationFile)) {
+                fs.delete(pathToAnnotationFile);
+            }
+        }
+    } else if (edmxAnnotations?.xml) {
+        const pathToAnnotationFile = join(
+            basePath,
+            'webapp',
+            'localService',
+            serviceName,
+            `${edmxAnnotations.technicalName}.xml`
+        );
+        if (fs.exists(pathToAnnotationFile)) {
+            fs.delete(pathToAnnotationFile);
+        }
+    }
+}
+
+/**
+ * Internal function that removes files related to dataSource.
  *
  * @param fs - the memfs editor instance
  * @param manifestPath - the root path of an existing UI5 application
  * @param dataSource - name of the OData service instance
  */
-function deleteFileForDataSource(fs: Editor, manifestPath: string, dataSource: ManifestNamespace.DataSource): void {
+function removeFileForDataSource(fs: Editor, manifestPath: string, dataSource: ManifestNamespace.DataSource): void {
     const serviceSettings = dataSource.settings || {};
     if (serviceSettings?.localUri) {
         const localUriPath = join(dirname(manifestPath), serviceSettings?.localUri);
@@ -102,14 +145,14 @@ function deleteFileForDataSource(fs: Editor, manifestPath: string, dataSource: M
 }
 
 /**
- * Internal function that deletes annotation files related to service.
+ * Internal function that removes annotation files related to service.
  *
  * @param fs - the memfs editor instance
  * @param manifestPath - the root path of an existing UI5 application
  * @param annotations - annotations list
  * @param dataSources - list of dataSources from manifest.json
  */
-function deleteAnnotations(
+function removeAnnotations(
     fs: Editor,
     manifestPath: string,
     annotations: string[],
@@ -121,7 +164,7 @@ function deleteAnnotations(
             if (annotationDatasource.uri === annotationDatasource?.settings?.localUri) {
                 // This is localAnnotaton file. Do not delete it.
             } else if (annotationDatasource) {
-                deleteFileForDataSource(fs, manifestPath, annotationDatasource);
+                removeFileForDataSource(fs, manifestPath, annotationDatasource);
                 // delete dataSource from manifest
                 delete dataSources?.[datasourceKey];
             }
@@ -150,13 +193,13 @@ export function deleteServiceFromManifest(basePath: string, serviceName: string,
     }
     const dataSources = manifest?.[appProp]?.dataSources;
     if (dataSources?.[serviceName]) {
-        deleteFileForDataSource(fs, manifestPath, dataSources?.[serviceName]);
+        removeFileForDataSource(fs, manifestPath, dataSources?.[serviceName]);
     }
     const serviceSettings = dataSources?.[serviceName]?.settings;
 
     // Check for linked backend annotations and delete if found.
     if (serviceSettings?.annotations && serviceSettings.annotations.length > 0) {
-        deleteAnnotations(fs, manifestPath, serviceSettings.annotations, dataSources);
+        removeAnnotations(fs, manifestPath, serviceSettings.annotations, dataSources);
     }
     // delete dataSource from manifest
     if (dataSources?.[serviceName]) {

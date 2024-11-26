@@ -1,4 +1,4 @@
-import { deleteServiceFromManifest, removeAnnotationsFromCDSFiles } from '../../src/delete';
+import { deleteServiceFromManifest, removeAnnotationsFromCDSFiles, removeAnnotationXmlFiles } from '../../src/delete';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -215,5 +215,34 @@ describe('deleteServiceFromManifest', () => {
             // Metadata files for other services should not be deleted as well
             expect(fs.exists(metadaPath)).toBeTruthy();
         });
+    });
+});
+
+describe('removeAnnotationXmlFiles', () => {
+    let fs: Editor;
+    beforeEach(async () => {
+        fs = create(createStorage());
+    });
+
+    it('removes service annotations', async () => {
+        const serviceAnnotationPath = join('', 'webapp', 'localService', 'mainService', 'annotation1.xml');
+        fs.write(serviceAnnotationPath, '<?xml version="1.0" encoding="utf-8"?></edmx:Edmx>');
+        const differentServiceAnnotationPath = join(
+            '',
+            'webapp',
+            'localService',
+            'differentService',
+            'annotation1.xml'
+        );
+        fs.write(differentServiceAnnotationPath, '<?xml version="1.0" encoding="utf-8"?></edmx:Edmx>');
+        await removeAnnotationXmlFiles(fs, '', 'mainService', [
+            {
+                name: 'annotation1',
+                technicalName: 'annotation1',
+                xml: '<?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+            }
+        ]);
+        expect(fs.exists(serviceAnnotationPath)).toBe(false);
+        expect(fs.exists(differentServiceAnnotationPath)).toBe(true);
     });
 });

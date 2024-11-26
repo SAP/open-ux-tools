@@ -297,7 +297,11 @@ export class UI5Config {
                     path: 'configuration'
                 });
                 const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
-                backendConfigs.add(backendNode);
+                if (backendConfigs.items.length === 0) {
+                    configuration.set('backend', [backendNode]);
+                } else {
+                    backendConfigs.add(backendNode);
+                }
             }
         } else {
             // Create a new 'backend' node in yaml for middleware config
@@ -324,11 +328,8 @@ export class UI5Config {
             const proxyMiddlewareConfig = fioriToolsProxyMiddleware?.configuration;
             // Remove backend from middleware configurations in yaml
             if (proxyMiddlewareConfig?.backend) {
-                const backendIndex = proxyMiddlewareConfig.backend.findIndex(
-                    (existingBackend) => existingBackend.url === backendUrl
-                );
                 proxyMiddlewareConfig.backend = proxyMiddlewareConfig.backend.filter(
-                    (backend, index) => index !== backendIndex
+                    (existingBackend) => existingBackend.url !== backendUrl
                 );
                 this.updateCustomMiddleware(fioriToolsProxyMiddleware);
             }
@@ -469,24 +470,17 @@ export class UI5Config {
             const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
             // Remove service from middleware configurations in yaml
             if (mockserverMiddlewareConfig?.services) {
-                const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
-                    (existingService) => existingService.urlPath === servicePath.replace(/\/$/, '')
-                );
                 mockserverMiddlewareConfig.services = mockserverMiddlewareConfig?.services.filter(
-                    (service, index) => index !== serviceIndex
+                    (existingService) => existingService.urlPath !== servicePath.replace(/\/$/, '')
                 );
             }
             // Remove service related annotations
             if (mockserverMiddlewareConfig?.annotations) {
                 const mockserverMiddlewareConfigAnnotations = mockserverMiddlewareConfig.annotations;
-                const annotationSection = mockserverMiddlewareConfig?.annotations;
                 annotationPaths.forEach((annotationPath: string) => {
                     // Search for annotations that needs to be deleted
-                    const annotationIndex = mockserverMiddlewareConfigAnnotations.findIndex(
-                        (existingAnnotation) => existingAnnotation.urlPath === annotationPath
-                    );
-                    mockserverMiddlewareConfig.annotations = annotationSection.filter(
-                        (annotation, index) => index !== annotationIndex
+                    mockserverMiddlewareConfig.annotations = mockserverMiddlewareConfigAnnotations.filter(
+                        (existingAnnotation) => existingAnnotation.urlPath !== annotationPath
                     );
                 });
             }

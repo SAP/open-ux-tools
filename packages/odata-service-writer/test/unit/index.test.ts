@@ -163,9 +163,11 @@ describe('generate', () => {
             expect(fs.read(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(
                 config.metadata
             );
-            expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations.technicalName}.xml`))).toBe(
-                config.annotations.xml
-            );
+            expect(
+                fs.read(
+                    join(testDir, 'webapp', 'localService', 'mainService', `${config.annotations.technicalName}.xml`)
+                )
+            ).toBe(config.annotations.xml);
         });
 
         it('Valid OData V2 service with multiple annotations', async () => {
@@ -195,12 +197,16 @@ describe('generate', () => {
             expect(fs.read(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(
                 config.metadata
             );
-            expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations[0].technicalName}.xml`))).toBe(
-                config.annotations[0].xml
-            );
-            expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations[1].technicalName}.xml`))).toBe(
-                config.annotations[1].xml
-            );
+            expect(
+                fs.read(
+                    join(testDir, 'webapp', 'localService', 'mainService', `${config.annotations[0].technicalName}.xml`)
+                )
+            ).toBe(config.annotations[0].xml);
+            expect(
+                fs.read(
+                    join(testDir, 'webapp', 'localService', 'mainService', `${config.annotations[1].technicalName}.xml`)
+                )
+            ).toBe(config.annotations[1].xml);
         });
 
         it('Valid OData V4 service', async () => {
@@ -422,6 +428,7 @@ describe('remove', () => {
             )
             .toString();
         const ui5MockYaml = (await UI5Config.newInstance(''))
+            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
             .addMockServerMiddleware(
                 [{ serviceName: 'mainService', servicePath: '/sap' }],
                 [
@@ -540,7 +547,9 @@ describe('remove', () => {
                 url: 'https://localhost',
                 path: '/sap',
                 type: ServiceType.EDMX,
-                annotations: [{ technicalName: 'SEPMRA_PROD_MAN' }] as EdmxAnnotationsInfo[]
+                annotations: [
+                    { technicalName: 'SEPMRA_PROD_MAN', xml: '<?xml version="1.0" encoding="utf-8"?></edmx:Edmx>' }
+                ] as EdmxAnnotationsInfo[]
             },
             fs
         );
@@ -564,7 +573,7 @@ describe('remove', () => {
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).not.toContain(
             'services:\n          - urlPath: /sap/odata/testme\n '
         );
-        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain(
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).not.toContain(
             `annotations:\n          - urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/\n`
         );
     });
