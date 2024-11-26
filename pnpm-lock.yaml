@@ -1185,6 +1185,12 @@ importers:
       '@sap-ux/system-access':
         specifier: workspace:*
         version: link:../system-access
+      '@sap-ux/ui5-application-inquirer':
+        specifier: workspace:*
+        version: link:../ui5-application-inquirer
+      '@sap-ux/ui5-application-writer':
+        specifier: workspace:*
+        version: link:../ui5-application-writer
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config

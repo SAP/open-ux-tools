@@ -52,6 +52,12 @@
       "path": "../system-access"
     },
     {
+      "path": "../ui5-application-inquirer"
+    },
+    {
+      "path": "../ui5-application-writer"
+    },
+    {
       "path": "../ui5-config"
     }
   ]

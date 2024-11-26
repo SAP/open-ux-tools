@@ -45,6 +45,8 @@
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/preview-middleware": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/ui5-application-inquirer": "workspace:*",
+        "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "chalk": "4.1.2",
