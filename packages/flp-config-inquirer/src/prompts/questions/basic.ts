@@ -17,10 +17,11 @@ import { promptNames } from '../../types';
 /**
  * Creates the 'semanticObject' prompt for FLP configuration.
  *
+ * @param {boolean} isCLI - Indicates if the platform is CLI.
  * @param {SemanticObjectPromptOptions} [options] - Optional configuration for the semantic object prompt, including default values.
  * @returns {FLPConfigQuestion} The prompt configuration for the semantic object.
  */
-export function getSemanticObjectPrompt(options?: SemanticObjectPromptOptions): FLPConfigQuestion {
+export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObjectPromptOptions): FLPConfigQuestion {
     return {
         name: promptNames.semanticObject,
         type: 'input',
@@ -31,17 +32,18 @@ export function getSemanticObjectPrompt(options?: SemanticObjectPromptOptions): 
         message: t('prompts.semanticObject'),
         default: options?.default,
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, 30, ['_'])
+        validate: (val) => validateText(val, isCLI, 30, ['_'])
     };
 }
 
 /**
  * Creates the 'action' prompt for FLP configuration.
  *
+ * @param {boolean} isCLI - Indicates if the platform is CLI.
  * @param {ActionPromptOptions} [options] - Optional configuration for the action prompt, including default values.
  * @returns {FLPConfigQuestion} The prompt configuration for the action.
  */
-export function getActionPrompt(options?: ActionPromptOptions): FLPConfigQuestion {
+export function getActionPrompt(isCLI: boolean, options?: ActionPromptOptions): FLPConfigQuestion {
     return {
         name: promptNames.action,
         type: 'input',
@@ -52,7 +54,7 @@ export function getActionPrompt(options?: ActionPromptOptions): FLPConfigQuestio
         message: t('prompts.action'),
         default: options?.default,
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, 60, ['_'])
+        validate: (val) => validateText(val, isCLI, 60, ['_'])
     };
 }
 
@@ -109,12 +111,14 @@ export function getOverwritePrompt(
  *
  * @param {ExistingInboundRef} existingKeyRef - A reference object to track whether an inbound id exists.
  * @param {boolean} silentOverwrite - A flag indicating if overwrites should be silent.
+ * @param {boolean} isCLI - Indicates if the platform is CLI.
  * @param {TitlePromptOptions} [options] - Optional configuration for the title prompt, including default values.
  * @returns {FLPConfigQuestion} The prompt configuration for the title.
  */
 export function getTitlePrompt(
     existingKeyRef: ExistingInboundRef,
     silentOverwrite: boolean,
+    isCLI: boolean,
     options?: TitlePromptOptions
 ): FLPConfigQuestion {
     return {
@@ -128,7 +132,7 @@ export function getTitlePrompt(
         message: t('prompts.title'),
         default: options?.default,
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, 0)
+        validate: (val) => validateText(val, isCLI, 0)
     };
 }
 

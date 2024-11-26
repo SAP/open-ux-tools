@@ -7,14 +7,25 @@ import { validateAllowedCharacters, validateMaxLength } from '../general/validat
  * Returns an end user message if validation fails.
  *
  * @param input the text input to validate
+ * @param isCLI indicates if the platform is CLI
  * @param maxLength optional, the maximum length of text to allow
  * @param allowedCharacters optional, define a list of special characters that should be allowed in the input field
  * @returns true, if all validation checks pass or a message explaining the validation failure
  */
-export function validateText(input: string, maxLength = 0, allowedCharacters?: AllowedCharacters[]): boolean | string {
-    const length = input ? input.trim().length : 0;
+export function validateText(
+    input: string,
+    isCLI: boolean,
+    maxLength = 0,
+    allowedCharacters?: AllowedCharacters[]
+): boolean | string {
+    const trimmedInput = input ? input.trim() : '';
+    const length = trimmedInput.length;
+
     if (!length) {
-        return t('general.inputCannotBeEmpty');
+        if (isCLI) {
+            return t('general.inputCannotBeEmpty');
+        }
+        return false;
     }
 
     const maxLengthValidation = validateMaxLength(input, maxLength);

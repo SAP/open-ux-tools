@@ -16,28 +16,33 @@ describe('validators', () => {
         });
 
         it('should return an error if input is empty or only whitespace', () => {
-            expect(validateText('')).toBe(
+            expect(validateText('', true)).toBe(
                 t('general.inputCannotBeEmpty', {
                     inputName
                 })
             );
-            expect(validateText('   ')).toBe(
+            expect(validateText('   ', true)).toBe(
                 t('general.inputCannotBeEmpty', {
                     inputName
                 })
             );
+        });
+
+        test('should return an error if input is empty or only whitespace when running in YUI', () => {
+            expect(validateText('', false)).toBe(false);
+            expect(validateText('   ', false)).toBe(false);
         });
 
         it('should return an error if input exceeds the maximum length', () => {
-            expect(validateText('12345678901', 10)).toBe(t('general.maxLength', { maxLength: 10 }));
+            expect(validateText('12345678901', true, 10)).toBe(t('general.maxLength', { maxLength: 10 }));
         });
 
         it('should allow input if it is within the maximum length', () => {
-            expect(validateText('12345', 10)).toBe(true);
+            expect(validateText('12345', true, 10)).toBe(true);
         });
 
         it('should return an error if input contains unsupported characters', () => {
-            expect(validateText('invalid!', 0, allowedCharacters)).toBe(
+            expect(validateText('invalid!', true, 0, allowedCharacters)).toBe(
                 t('general.supportedFormats', {
                     allowedCharacters: allowedCharacters.join('')
                 })
@@ -45,24 +50,24 @@ describe('validators', () => {
         });
 
         it('should allow input with allowed special characters', () => {
-            expect(validateText('valid_input', 0, allowedCharacters)).toBe(true);
+            expect(validateText('valid_input', true, 0, allowedCharacters)).toBe(true);
         });
 
         it('should allow input without allowed special characters', () => {
-            expect(validateText('validInput123')).toBe(true);
+            expect(validateText('validInput123', true)).toBe(true);
         });
 
         it('should return true if input passes all validation checks', () => {
-            expect(validateText('validInput_123*', 50)).toBe(true);
+            expect(validateText('validInput_123*', true, 50)).toBe(true);
         });
 
         it('should handle undefined or null input gracefully', () => {
-            expect(validateText(undefined as unknown as string)).toBe(
+            expect(validateText(undefined as unknown as string, true)).toBe(
                 t('general.inputCannotBeEmpty', {
                     inputName
                 })
             );
-            expect(validateText(null as unknown as string)).toBe(
+            expect(validateText(null as unknown as string, true)).toBe(
                 t('general.inputCannotBeEmpty', {
                     inputName
                 })

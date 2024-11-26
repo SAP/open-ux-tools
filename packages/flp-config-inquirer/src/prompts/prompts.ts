@@ -23,15 +23,15 @@ export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConf
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {
-        [promptNames.semanticObject]: getSemanticObjectPrompt(promptOptions?.[promptNames.semanticObject]),
-        [promptNames.action]: getActionPrompt(promptOptions?.[promptNames.action]),
+        [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
+        [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),
         [promptNames.overwrite]: getOverwritePrompt(
             inboundKeys,
             isCLI,
             existingKeyRef,
             promptOptions?.[promptNames.overwrite]
         ),
-        [promptNames.title]: getTitlePrompt(existingKeyRef, silentOverwrite, promptOptions?.[promptNames.title]),
+        [promptNames.title]: getTitlePrompt(existingKeyRef, silentOverwrite, isCLI, promptOptions?.[promptNames.title]),
         [promptNames.subTitle]: getSubTitlePrompt(
             existingKeyRef,
             silentOverwrite,
