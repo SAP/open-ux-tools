@@ -1,5 +1,13 @@
 # @sap-ux/annotation-generator
 
+## 0.2.18
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+-   Updated dependencies [09a58bb]
+    -   @sap-ux/fiori-annotation-api@0.3.0
+
 ## 0.2.17
 
 ### Patch Changes

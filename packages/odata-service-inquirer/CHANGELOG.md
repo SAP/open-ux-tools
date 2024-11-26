@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.10
+
+### Patch Changes
+
+-   be65344: Fix for re-evaluate service url path when input changed
+
 ## 0.6.9
 
 ### Patch Changes
