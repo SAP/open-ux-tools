@@ -16,6 +16,7 @@ exports[`Test system selection prompts should return system selection prompts an
         },
       },
     ],
+    "default": -1,
     "hint": "Select a system configuration",
     "message": "System",
     "name": "systemSelection",
@@ -24,7 +25,9 @@ exports[`Test system selection prompts should return system selection prompts an
     "validate": [Function],
   },
   {
+    "default": "",
     "guiOptions": {
+      "applyDefaultWhenDirty": true,
       "breadcrumb": true,
       "hint": "Enter the path to the OData service, relative to the selected destination URL",
       "mandatory": true,
@@ -104,6 +107,7 @@ exports[`Test system selection prompts should return system selection prompts an
         },
       },
     ],
+    "default": -1,
     "hint": "Select a system configuration",
     "message": "System",
     "name": "systemSelection",

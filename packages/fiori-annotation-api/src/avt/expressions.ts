@@ -1,9 +1,29 @@
 import type {
+    AndExpression,
     AnnotationPathExpression,
+    ApplyExpression,
+    BoolExpression,
     Collection,
+    DateExpression,
+    DecimalExpression,
+    EnumMemberExpression,
+    EqExpression,
+    FloatExpression,
+    GeExpression,
+    GtExpression,
+    IfExpression,
+    IntExpression,
+    LeExpression,
+    LtExpression,
     NavigationPropertyPathExpression,
+    NeExpression,
+    NotExpression,
+    NullExpression,
+    OrExpression,
     PathExpression,
-    PropertyPathExpression
+    PropertyPathExpression,
+    StringExpression,
+    DoubleExpression
 } from '@sap-ux/vocabularies-types';
 
 /**
@@ -25,6 +45,16 @@ export const expressionNames: Record<string, string> = {
     Collection: 'array',
     Record: 'object',
     Apply: 'object',
+    If: 'object',
+    And: 'object',
+    Or: 'object',
+    Le: 'object',
+    Lt: 'object',
+    Ge: 'object',
+    Gt: 'object',
+    Eq: 'object',
+    Ne: 'object',
+    Not: 'object',
     Null: 'null'
 };
 
@@ -35,6 +65,30 @@ export const expressionNames: Record<string, string> = {
  */
 export function isExpression(
     value: Collection[number]
-): value is PropertyPathExpression | PathExpression | NavigationPropertyPathExpression | AnnotationPathExpression {
+): value is
+    | StringExpression
+    | PropertyPathExpression
+    | PathExpression
+    | NavigationPropertyPathExpression
+    | AnnotationPathExpression
+    | EnumMemberExpression
+    | BoolExpression
+    | DecimalExpression
+    | DoubleExpression
+    | DateExpression
+    | IntExpression
+    | FloatExpression
+    | ApplyExpression
+    | NullExpression
+    | IfExpression
+    | AndExpression
+    | OrExpression
+    | EqExpression
+    | NotExpression
+    | NeExpression
+    | GtExpression
+    | GeExpression
+    | LtExpression
+    | LeExpression {
     return typeof value === 'object' && value.type !== undefined && expressionNames[value.type] !== undefined;
 }
