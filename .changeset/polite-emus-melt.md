@@ -2,4 +2,4 @@
 "@sap-ux/adp-tooling": patch
 ---
 
-Move manifest change files to /changes directory
+Store manifest change files to /changes directory
