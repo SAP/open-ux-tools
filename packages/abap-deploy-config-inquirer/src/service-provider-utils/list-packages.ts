@@ -2,7 +2,11 @@ import { ListPackageService } from '@sap-ux/axios-extension';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS } from '../constants';
 import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
-import { getOrCreateServiceProvider, type BackendTarget, type SystemConfig } from '@sap-ux/deploy-config-generator-shared';
+import {
+    getOrCreateServiceProvider,
+    type BackendTarget,
+    type SystemConfig
+} from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * List packages from the service.

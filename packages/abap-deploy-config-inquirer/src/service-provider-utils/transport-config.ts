@@ -127,7 +127,12 @@ class DefaultTransportConfig implements TransportConfig {
     }): Promise<InitTransportConfigResult> {
         const result: InitTransportConfigResult = {};
         try {
-            const provider = await getOrCreateServiceProvider(systemConfig, LoggerHelper.logger ,backendTarget, credentials);
+            const provider = await getOrCreateServiceProvider(
+                systemConfig,
+                LoggerHelper.logger,
+                backendTarget,
+                credentials
+            );
             const atoService = await provider.getAdtService<AtoService>(AtoService);
             const atoSettings = await atoService?.getAtoInfo();
 

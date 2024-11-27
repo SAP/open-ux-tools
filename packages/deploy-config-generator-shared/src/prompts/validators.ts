@@ -12,8 +12,8 @@ import { t } from '../utils/i18n';
  *
  * @param {string} input - The name of the package to validate.
  * @param {SystemConfig} systemConfig - Configuration object for the system (e.g., URL, client, destination).
- * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
  * @param {Logger} logger - Logger instance.
+ * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
  * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
  */
 export async function isCloudPackage(

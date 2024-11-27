@@ -15,6 +15,7 @@ let system: SystemConfig;
  * Get or create an abap service provider.
  *
  * @param systemConfig - system configuration
+ * @param logger
  * @param backendTarget - backend target from prompt options
  * @param credentials - user credentials
  * @returns abap service provider
@@ -50,6 +51,7 @@ export async function getOrCreateServiceProvider(
 /**
  * Create a new abap service provider using @sap-ux/system-access.
  *
+ * @param logger
  * @param credentials - user credentials
  * @returns abap service provider
  */

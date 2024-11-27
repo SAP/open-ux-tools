@@ -2,7 +2,11 @@ import { TransportRequestService } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
 import type { NewUi5ObjectRequestParams } from '@sap-ux/axios-extension';
-import { getOrCreateServiceProvider, type BackendTarget, type SystemConfig } from '@sap-ux/deploy-config-generator-shared';
+import {
+    getOrCreateServiceProvider,
+    type BackendTarget,
+    type SystemConfig
+} from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Create a transport number from the service.

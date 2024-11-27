@@ -3,7 +3,7 @@ import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
 import type { ListChoiceOptions } from 'inquirer';
 import { getOrCreateServiceProvider, PromptState } from '@sap-ux/deploy-config-generator-shared';
-import type { BackendTarget, SystemConfig, TransportListItem} from '@sap-ux/deploy-config-generator-shared';
+import type { BackendTarget, SystemConfig, TransportListItem } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Get the transport list from the service.

@@ -4,7 +4,12 @@ import {
     getTransportListFromService,
     listPackagesFromService
 } from './service-provider-utils';
-import { PromptState, type BackendTarget, type SystemConfig, type TransportListItem } from '@sap-ux/deploy-config-generator-shared';
+import {
+    PromptState,
+    type BackendTarget,
+    type SystemConfig,
+    type TransportListItem
+} from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Checks if the input is an empty string.

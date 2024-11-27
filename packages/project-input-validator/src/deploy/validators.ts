@@ -108,4 +108,3 @@ export function validatePackage(input: string): boolean | string {
         return true;
     }
 }
-
