@@ -1,5 +1,22 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.2.18
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+-   Updated dependencies [2a72ad2]
+    -   @sap-ux/ui-components@1.21.2
+    -   @sap-ux/ui-prompting@0.3.4
+
+## 0.2.17
+
+### Patch Changes
+
+-   Updated dependencies [32191dd]
+    -   @sap-ux/ui-components@1.21.1
+    -   @sap-ux/ui-prompting@0.3.3
+
 ## 0.2.16
 
 ### Patch Changes

@@ -1,103 +1,23 @@
 import { ODataVersion } from '@sap-ux/axios-extension';
-import {
-    type Destination,
-    isAbapODataDestination,
-    isAppStudio,
-    isFullUrlDestination,
-    isPartialUrlDestination
-} from '@sap-ux/btp-utils';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { TelemetryEvent, TelemetryProperties, ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
-import { SampleRate } from '@sap-ux/telemetry';
 import { XMLParser } from 'fast-xml-parser';
 import type { ListChoiceOptions } from 'inquirer';
-import osName from 'os-name';
 import { t } from '../i18n';
 import LoggerHelper from '../prompts/logger-helper';
-import { hostEnvironment } from '../types';
 import { PromptState } from './prompt-state';
-
-const osVersionName = osName();
-
-export type TelemPropertyDestinationType =
-    | 'AbapODataCatalogDest'
-    | 'GenericODataFullUrlDest'
-    | 'GenericODataPartialUrlDest'
-    | 'Unknown';
+import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
  *
  * @returns the platform name and technical name
  */
-export function getHostEnvironment(): { name: string; technical: string } {
+export function getPromptHostEnvironment(): { name: string; technical: HostEnvironmentId } {
     if (!PromptState.isYUI) {
         return hostEnvironment.cli;
     } else {
         return isAppStudio() ? hostEnvironment.bas : hostEnvironment.vscode;
-    }
-}
-
-let telemetryClient: ToolsSuiteTelemetryClient | undefined;
-
-/**
- * Set the telemetry client.
- *
- * @param toolsSuiteTelemetryClient the telemetry client instance to use when sending telemetry events
- */
-export function setTelemetryClient(toolsSuiteTelemetryClient: ToolsSuiteTelemetryClient | undefined): void {
-    telemetryClient = toolsSuiteTelemetryClient;
-}
-
-/**
- * Send telemetry event.
- *
- * @param eventName the name of the telemetry event
- * @param telemetryData the telemetry values to report
- */
-export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): void {
-    const telemetryEvent = createTelemetryEvent(eventName, telemetryData);
-    if (telemetryClient) {
-        // Do not wait for the telemetry event to be sent, it cannot be recovered if it fails, do not block the process
-        /* eslint-disable @typescript-eslint/no-floating-promises */
-        telemetryClient.reportEvent(telemetryEvent, SampleRate.NoSampling);
-    }
-}
-
-/**
- * Create telemetry event.
- *
- * @param eventName the name of the telemetry event
- * @param telemetryData the telemetry values to add to he returned telemetry event
- * @returns the telemetry event
- */
-function createTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): TelemetryEvent {
-    const telemProps: TelemetryProperties = Object.assign(telemetryData, {
-        Platform: getHostEnvironment().technical,
-        OperatingSystem: osVersionName
-    });
-    return {
-        eventName,
-        properties: telemProps,
-        measurements: {}
-    };
-}
-
-/**
- * Used only to generate telemetry events in the case of destination errors.
- *
- * @param destination
- * @returns the telemetry property destination type
- */
-export function getTelemPropertyDestinationType(destination: Destination): TelemPropertyDestinationType {
-    if (isAbapODataDestination(destination)) {
-        return 'AbapODataCatalogDest';
-    } else if (isFullUrlDestination(destination)) {
-        return 'GenericODataFullUrlDest';
-    } else if (isPartialUrlDestination(destination)) {
-        return 'GenericODataPartialUrlDest';
-    } else {
-        return 'Unknown';
     }
 }
 

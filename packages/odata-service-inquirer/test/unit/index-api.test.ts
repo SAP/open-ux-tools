@@ -1,10 +1,8 @@
-import { ErrorHandler } from '../../src/error-handler/error-handler';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { getPrompts } from '../../src/index';
 import * as prompts from '../../src/prompts';
-import * as utils from '../../src/utils';
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
-import { hostEnvironment } from '../../src/types';
 import { type BackendSystem } from '@sap-ux/store';
 
 jest.mock('../../src/prompts', () => ({
@@ -57,7 +55,6 @@ describe('API tests', () => {
     });
 
     test('getPrompts, i18n is loaded', async () => {
-        jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         const { prompts: questions } = await getPrompts(undefined, undefined, true, undefined, true);
 
         expect(questions).toMatchSnapshot();

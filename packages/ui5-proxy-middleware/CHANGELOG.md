@@ -1,5 +1,24 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.4.12
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+
+## 1.4.11
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
+## 1.4.10
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+
 ## 1.4.9
 
 ### Patch Changes

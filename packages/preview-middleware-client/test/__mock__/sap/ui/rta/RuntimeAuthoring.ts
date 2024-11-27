@@ -14,6 +14,7 @@ class RuntimeAuthoringMock {
     public destroy = jest.fn();
     public start = jest.fn();
     public attachStop = jest.fn();
+    public attachStart = jest.fn();
     public stop = jest.fn();
     public attachUndoRedoStackModified = jest.fn();
     public attachModeChanged = jest.fn();

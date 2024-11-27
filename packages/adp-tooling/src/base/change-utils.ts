@@ -13,6 +13,7 @@ import {
     type ManifestChangeProperties,
     type PropertyValueType
 } from '../types';
+import { renderFile } from 'ejs';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
@@ -41,7 +42,7 @@ export function writeAnnotationChange(
     try {
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
-        const changeFilePath = path.join(changesFolderPath, DirName.Manifest, changeFileName);
+        const changeFilePath = path.join(changesFolderPath, changeFileName);
         const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
 
         writeChangeToFile(changeFilePath, change, fs);
@@ -55,7 +56,13 @@ export function writeAnnotationChange(
                 'changes',
                 TemplateFileName.Annotation
             );
-            fs.copy(annotationsTemplate, path.join(annotationsFolderPath, annotation.fileName ?? ''));
+            const { namespaces, serviceUrl } = annotation;
+            renderFile(annotationsTemplate, { namespaces, path: serviceUrl }, {}, (err, str) => {
+                if (err) {
+                    throw new Error('Error rendering template: ' + err.message);
+                }
+                fs.write(path.join(annotationsFolderPath, annotation.fileName ?? ''), str);
+            });
         } else {
             const selectedDir = path.dirname(annotation.filePath);
             if (selectedDir !== annotationsFolderPath) {
@@ -212,7 +219,7 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
     let changeObj: InboundChange | undefined;
     let filePath = '';
 
-    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes, DirName.Manifest);
+    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes);
 
     if (!existsSync(pathToInboundChangeFiles)) {
         return {

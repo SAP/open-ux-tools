@@ -8,6 +8,7 @@ import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/qu
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
+import { getUi5Version, isVersionEqualOrHasNewerPatch, isLowerThanMinimalUi5Version } from '../../../utils/version';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';
 const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
@@ -25,7 +26,19 @@ export class ToggleSemanticDateRangeFilterBar
     readonly forceRefreshAfterExecution = true;
     private isUseDateRangeTypeEnabled = false;
 
-    initialize(): void {
+    async initialize(): Promise<void> {
+        const version = await getUi5Version();
+        const isUI5VersionNotSupported =
+            isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 }) &&
+            !(
+                isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 96, patch: 37 }) ||
+                isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 108, patch: 38 }) ||
+                isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 120, patch: 23 })
+            );
+
+        if (isUI5VersionNotSupported) {
+            return;
+        }
         if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
             return;
         }
@@ -42,8 +55,8 @@ export class ToggleSemanticDateRangeFilterBar
 
     protected get textKey() {
         return this.isUseDateRangeTypeEnabled
-            ? 'V2_QUICK_ACTION_LR_DISABLE_SEMANTIC_DATE_RANGE_FILTER_BAR'
-            : 'V2_QUICK_ACTION_LR_ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR';
+            ? 'QUICK_ACTION_LR_DISABLE_SEMANTIC_DATE_RANGE_FILTER_BAR'
+            : 'QUICK_ACTION_LR_ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR';
     }
 
     async execute(): Promise<FlexCommand[]> {
