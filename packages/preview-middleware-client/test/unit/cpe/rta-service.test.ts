@@ -103,4 +103,14 @@ describe('rta-service', () => {
             value: location
         });
     });
+
+    test('attach start callback check', async () => {
+        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+        const service = new RtaService(rtaMock as unknown as RuntimeAuthoring);
+        const promise = service.init(sendActionMock, subscribeMock);
+        expect(rtaMock.attachStart).toBeCalledTimes(1);
+
+        rtaMock.attachStart.mock.calls[0][0]();
+        expect(promise).resolves.toBe(undefined);
+    });
 });

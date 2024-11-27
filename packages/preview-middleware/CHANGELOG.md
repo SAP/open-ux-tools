@@ -1,5 +1,144 @@
 # @sap-ux/preview-middleware
 
+## 0.16.131
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.85
+
+## 0.16.130
+
+### Patch Changes
+
+-   Updated dependencies [6e60bdf]
+    -   @sap-ux/adp-tooling@0.12.84
+
+## 0.16.129
+
+### Patch Changes
+
+-   71bef63: fix: update quick action title for semantic date range
+
+## 0.16.128
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+-   Updated dependencies [09a58bb]
+    -   @sap-ux/adp-tooling@0.12.83
+
+## 0.16.127
+
+### Patch Changes
+
+-   c39325c: Fix for Config Quick action state not reflecting properties in properties panel
+
+## 0.16.126
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.82
+
+## 0.16.125
+
+### Patch Changes
+
+-   326dbe5: Enable adding fragment to elements cloned from a template
+
+## 0.16.124
+
+### Patch Changes
+
+-   e9438d6: fix: restrict the '"Semantic Date Range" in filter bar' quick-action for certain UI5 versions which are not supported for V2 application.
+
+## 0.16.123
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+-   Updated dependencies [2a72ad2]
+    -   @sap-ux/adp-tooling@0.12.81
+
+## 0.16.122
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.80
+
+## 0.16.121
+
+### Patch Changes
+
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/adp-tooling@0.12.79
+
+## 0.16.120
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.78
+-   @sap-ux/project-access@1.28.7
+
+## 0.16.119
+
+### Patch Changes
+
+-   Updated dependencies [8237f83]
+    -   @sap-ux/adp-tooling@0.12.77
+
+## 0.16.118
+
+### Patch Changes
+
+-   1f7827c: handle higher layer changes
+
+## 0.16.117
+
+### Patch Changes
+
+-   f2d3335: Hide "Semantic Date Range" Quick Action behind feature toggle.
+
+## 0.16.116
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.76
+
+## 0.16.115
+
+### Patch Changes
+
+-   8c0ba5c: Fixed Adaptation Editor crash when project contains Personalization change.
+
+## 0.16.114
+
+### Patch Changes
+
+-   8b123e3: Fixed typo in "Semantic Date Range" quick action.
+
+## 0.16.113
+
+### Patch Changes
+
+-   fcc5518: Remove feature flag from "Add Custom Table Action", "Add Custom Page Action", "Add Custom Table Column" and "Change Table Columns" Quick Actions.
+
+## 0.16.112
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/btp-utils@0.16.0
+    -   @sap-ux/adp-tooling@0.12.75
+
+## 0.16.111
+
+### Patch Changes
+
+-   48dd15d: fix: refresh descriptor after manifest changes
+-   Updated dependencies [48dd15d]
+    -   @sap-ux/adp-tooling@0.12.74
+
 ## 0.16.110
 
 ### Patch Changes

@@ -207,8 +207,7 @@ describe('ComponentUsagesWriter', () => {
             mockProjectPath,
             expect.any(Object),
             `id_${systemTime.getTime()}_addComponentUsages.change`,
-            {},
-            'manifest'
+            {}
         );
     });
 });
@@ -277,8 +276,7 @@ describe('NewModelWriter', () => {
             mockProjectPath,
             expect.any(Object),
             expect.stringContaining('_addNewModel.change'),
-            {},
-            'manifest'
+            {}
         );
     });
 });
@@ -345,8 +343,7 @@ describe('DataSourceWriter', () => {
             mockProjectPath,
             expect.any(Object),
             `id_${systemTime.getTime()}_changeDataSource.change`,
-            {},
-            'manifest'
+            {}
         );
     });
 

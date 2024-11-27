@@ -1,4 +1,4 @@
-import { isExtensionInstalled } from '../src/installedCheck';
+import { isExtensionInstalled } from '../src/vscode-helpers/vscode-helpers';
 
 describe('Installed module checker', () => {
     test('isExtensionInstalled', () => {
