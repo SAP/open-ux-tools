@@ -7,13 +7,15 @@ import LoggerHelper from '../logger-helper';
 import {
     ClientChoiceValue,
     TargetSystemType,
-    TransportChoices,
     type UI5AbapRepoPromptOptions,
-    type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions
 } from '../types';
 import { PackageInputChoices, PromptState, TransportChoices } from '@sap-ux/deploy-config-generator-shared';
-import type { BackendTarget, TransportListItem } from '@sap-ux/deploy-config-generator-shared';
+import type {
+    BackendTarget,
+    TransportListItem,
+    AbapDeployConfigAnswersInternal
+} from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Determines if URL question should be shown.

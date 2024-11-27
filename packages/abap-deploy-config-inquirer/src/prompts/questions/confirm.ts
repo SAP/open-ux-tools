@@ -1,8 +1,9 @@
 import { showIndexQuestion } from '../conditions';
 import { validateConfirmQuestion } from '../validators';
 import { t } from '../../i18n';
-import { promptNames, type AbapDeployConfigPromptOptions, type AbapDeployConfigAnswersInternal } from '../../types';
+import { promptNames, type AbapDeployConfigPromptOptions } from '../../types';
 import type { ConfirmQuestion, Question } from 'inquirer';
+import type { AbapDeployConfigAnswersInternal } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Returns the index prompt.

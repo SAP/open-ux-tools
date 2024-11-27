@@ -3,15 +3,10 @@ import { initI18n } from './i18n';
 import { getAbapDeployConfigQuestions } from './prompts';
 import LoggerHelper from './logger-helper';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
-import {
-    TargetSystemType,
-    type AbapDeployConfigAnswers,
-    type AbapDeployConfigAnswersInternal,
-    type AbapDeployConfigPromptOptions,
-    type AbapDeployConfigQuestion
-} from './types';
+import { TargetSystemType, type AbapDeployConfigPromptOptions, type AbapDeployConfigQuestion } from './types';
 import { reconcileAnswers } from './utils';
 import { PromptState } from '@sap-ux/deploy-config-generator-shared';
+import type { AbapDeployConfigAnswers, AbapDeployConfigAnswersInternal } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Get the inquirer prompts for abap deploy config.

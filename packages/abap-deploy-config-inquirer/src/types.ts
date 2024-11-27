@@ -1,9 +1,9 @@
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Validator } from 'inquirer';
 import type {
+    AbapDeployConfigAnswers,
+    AbapDeployConfigAnswersInternal,
     BackendTarget,
-    PackageInputChoices,
-    TransportChoices,
     TransportConfig
 } from '@sap-ux/deploy-config-generator-shared';
 
@@ -147,35 +147,6 @@ type AbapDeployConfigCommonInquirerOptions = {
  */
 export type AbapDeployConfigPromptOptions = Partial<abapDeployConfigPromptOptions> &
     AbapDeployConfigCommonInquirerOptions;
-
-export interface AbapDeployConfigAnswers {
-    url: string;
-    destination?: string;
-    targetSystem?: string;
-    client?: string;
-    scp?: boolean;
-    ui5AbapRepo?: string;
-    description?: string;
-    package: string;
-    transport?: string;
-    index?: boolean;
-    overwrite?: boolean;
-}
-
-export interface AbapDeployConfigAnswersInternal extends AbapDeployConfigAnswers {
-    clientChoice?: string;
-    username?: string;
-    isS4HC?: boolean;
-    packageInputChoice?: PackageInputChoices;
-    packageManual?: string;
-    packageAutocomplete?: string;
-    transportInputChoice?: TransportChoices;
-    transportCreated?: string;
-    transportFromList?: string;
-    transportManual?: string;
-    abort?: boolean;
-}
-
 export interface InitTransportConfigResult {
     transportConfig?: TransportConfig;
     transportConfigNeedsCreds?: boolean;

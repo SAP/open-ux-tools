@@ -5,14 +5,17 @@ import { getTransportConfigInstance } from './service-provider-utils';
 import { t } from './i18n';
 import LoggerHelper from './logger-helper';
 import { listPackages } from './validator-utils';
-import type {
-    AbapDeployConfigAnswers,
-    AbapDeployConfigAnswersInternal,
-    InitTransportConfigResult
-} from './types';
+import type { InitTransportConfigResult } from './types';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { Destinations, Destination } from '@sap-ux/btp-utils';
-import { PackageInputChoices, TransportChoices, type BackendTarget, type Credentials, type SystemConfig } from '@sap-ux/deploy-config-generator-shared';
+import { PackageInputChoices, TransportChoices } from '@sap-ux/deploy-config-generator-shared';
+import type {
+    BackendTarget,
+    Credentials,
+    SystemConfig,
+    AbapDeployConfigAnswers,
+    AbapDeployConfigAnswersInternal
+} from '@sap-ux/deploy-config-generator-shared';
 import { CREATE_TR_DURING_DEPLOY } from './constants';
 
 let cachedDestinations: Destinations = {};

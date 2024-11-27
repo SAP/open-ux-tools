@@ -15,14 +15,14 @@ import { handleTransportConfigError } from '../error-handler';
 import { AuthenticationType } from '@sap-ux/store';
 import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
-import {
-    ClientChoiceValue,
-    TargetSystemType,
-    type AbapDeployConfigAnswersInternal,
-    type AbapSystemChoice
-} from '../types';
+import { ClientChoiceValue, TargetSystemType, type AbapSystemChoice } from '../types';
 import type { BackendTarget, SystemConfig } from '@sap-ux/deploy-config-generator-shared';
-import { PackageInputChoices, PromptState, TransportChoices } from '@sap-ux/deploy-config-generator-shared';
+import {
+    PackageInputChoices,
+    PromptState,
+    TransportChoices,
+    type AbapDeployConfigAnswersInternal
+} from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Validates the destination question and sets the destination in the prompt state.
