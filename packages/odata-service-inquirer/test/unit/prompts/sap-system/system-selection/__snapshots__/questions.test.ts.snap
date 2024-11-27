@@ -17,7 +17,10 @@ exports[`Test system selection prompts should return system selection prompts an
       },
     ],
     "default": -1,
-    "hint": "Select a system configuration",
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "Select a system configuration",
+    },
     "message": "System",
     "name": "systemSelection",
     "source": [Function],
@@ -108,7 +111,10 @@ exports[`Test system selection prompts should return system selection prompts an
       },
     ],
     "default": -1,
-    "hint": "Select a system configuration",
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "Select a system configuration",
+    },
     "message": "System",
     "name": "systemSelection",
     "source": [Function],
