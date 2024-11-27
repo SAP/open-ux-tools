@@ -8,12 +8,9 @@ import {
     GRID_TABLE_TYPE,
     MDC_TABLE_TYPE,
     TableQuickActionDefinitionBase,
-    TREE_TABLE_TYPE,
-    M_TABLE_TYPE
+    TREE_TABLE_TYPE
 } from '../table-quick-action-base';
 import { preprocessActionExecution } from '../fe-v2/create-table-custom-column';
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import { isA } from '../../../utils/core';
 
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
 
@@ -29,13 +26,7 @@ export class AddTableCustomColumnQuickAction
 
     async initialize(): Promise<void> {
         await super.initialize((table, child) => {
-            const innerTable = this.getInternalTable(table);
-            const tableRows = innerTable?.getAggregation('items') as ManagedObject[] | [];
-            if (isA(M_TABLE_TYPE, innerTable) && !tableRows || tableRows.length === 0) {
-                child.enabled = false;
-                child.tooltip = this.context.resourceBundle.getText('TABLE_CUSTOM_COLUMN_ACTION_NOT_AVAILABLE');
-            }
-
+            this.initializeCustomColumnTable(table, child);
         });
     }
 
