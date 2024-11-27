@@ -1,116 +1,179 @@
-import * as keytar from 'keytar';
-import { getSecureStore } from '../../../src/secure-store';
-import { KeytarStore } from '../../../src/secure-store/keytar-store';
-import fc from 'fast-check';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { KeyStoreManager } from '../../../src/secure-store/key-store';
+import { keyring } from '@zowe/secrets-for-zowe-sdk';
+import { Logger } from '@sap-ux/logger';
 
-jest.mock('keytar');
-const mockedKeytar = jest.mocked(keytar, { shallow: true });
+jest.mock('@zowe/secrets-for-zowe-sdk', () => ({
+    keyring: {
+        setPassword: jest.fn(),
+        getPassword: jest.fn(),
+        deletePassword: jest.fn(),
+        findCredentials: jest.fn(),
+    },
+}));
 
-describe('KeytarStore', () => {
-    const store = getSecureStore(new ToolsLogger({ transports: [new NullTransport()] }));
-    const service = 'com/sap/dummy';
+jest.mock('@sap-ux/logger', () => ({
+    Logger: class {
+        info = jest.fn();
+        warn = jest.fn();
+        error = jest.fn();
+    },
+}));
+
+describe('KeyStoreManager', () => {
+    let log: Logger = { 
+        info: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn() 
+    } as unknown as Logger;
+
+    let keyStoreManager: KeyStoreManager;
 
     beforeEach(() => {
+        keyStoreManager = new KeyStoreManager(log);
         jest.clearAllMocks();
     });
 
-    test('Saves an object as a serialized string', async () => {
-        const value = { url: 'https://sap.com/oauth', refreshToken: '1234567890' };
-        await store.save(service, value.url, value);
-        expect(mockedKeytar.setPassword.mock.calls[0]).toHaveProperty(['1'], value.url);
-        expect(mockedKeytar.setPassword.mock.calls[0]).toHaveProperty(['2'], JSON.stringify(value));
-    });
+    describe('save', () => {
+        it('should save a credential successfully', async () => {
+            (keyring.setPassword as jest.Mock).mockResolvedValue(true);
 
-    test('Retrieves an object from a serialized string', async () => {
-        const value = { url: 'https://sap.com/oauth', refreshToken: '1234567890' };
-        mockedKeytar.getPassword.mockResolvedValueOnce(JSON.stringify(value));
-        const actualValue = await store.retrieve(service, value.url);
-        expect(actualValue).toEqual(value);
-    });
+            const result = await keyStoreManager.save('testService', 'testKey', { value: 'testValue' });
 
-    test('Retrieve returns undefined if a value cannot be found', async () => {
-        const value = { url: 'https://sap.com/oauth', refreshToken: '1234567890' };
-        mockedKeytar.getPassword.mockResolvedValueOnce(JSON.stringify(undefined));
-        const actualValue = await store.retrieve(service, value.url);
-        expect(actualValue).toBeUndefined();
-    });
-
-    test('Delete return true on success', async () => {
-        const value = { url: 'https://sap.com/oauth', refreshToken: '1234567890' };
-        mockedKeytar.deletePassword.mockResolvedValueOnce(true);
-        const actualValue = await store.delete(service, value.url);
-        expect(actualValue).toBe(true);
-    });
-
-    test('Delete returns false if no key is found', async () => {
-        const value = { url: 'https://sap.com/oauth', refreshToken: '1234567890' };
-        mockedKeytar.deletePassword.mockResolvedValueOnce(false);
-        const actualValue = await store.delete(service, value.url);
-        expect(actualValue).toBe(false);
-    });
-
-    test('GetAll returns an object with urls as keys', async () => {
-        const password1 = { refreshToken: '1234567890' };
-        const entry1 = { account: 'url1', password: JSON.stringify(password1) };
-        const password2 = { refreshToken: '2222222222' };
-        const entry2 = { account: 'url2', password: JSON.stringify(password2) };
-
-        mockedKeytar.findCredentials.mockResolvedValueOnce([entry1, entry2]);
-        await expect(store.getAll(service)).resolves.toEqual({
-            [entry1.account]: password1,
-            [entry2.account]: password2
-        });
-    });
-
-    describe('On error', () => {
-        beforeEach(() => {
-            jest.clearAllMocks();
-        });
-
-        const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
-        test('Save returns false', async () => {
-            mockedKeytar.setPassword.mockImplementation(() => {
-                throw new Error();
-            });
-            await fc.assert(
-                fc.asyncProperty(fc.string(), fc.string(), fc.anything(), async (service, key, value) => {
-                    return (await new KeytarStore(nullLogger, mockedKeytar).save(service, key, value)) === false;
-                })
+            expect(result).toBe(true);
+            expect(keyring.setPassword).toHaveBeenCalledWith(
+                'testService',
+                'testKey',
+                JSON.stringify({ value: 'testValue' })
             );
+            expect(log.info).toHaveBeenCalledWith('Credential saved. Service: [testService], Key: [testKey]');
         });
 
-        test('Retrieve returns false', async () => {
-            mockedKeytar.getPassword.mockImplementation(() => {
-                throw new Error();
-            });
-            await fc.assert(
-                fc.asyncProperty(fc.string(), fc.string(), async (service, key) => {
-                    return (await new KeytarStore(nullLogger, mockedKeytar).retrieve(service, key)) === undefined;
-                })
-            );
+        it('should handle serialization failure', async () => {
+            const circularObject: any = {};
+            circularObject.self = circularObject; // Circular reference
+
+            const result = await keyStoreManager.save('testService', 'testKey', circularObject);
+
+            expect(result).toBe(false);
+            expect(keyring.setPassword).not.toHaveBeenCalled();
+            expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Failed to serialize value'));
         });
 
-        test('Delete returns false', async () => {
-            mockedKeytar.deletePassword.mockImplementation(() => {
-                throw new Error();
-            });
-            await fc.assert(
-                fc.asyncProperty(fc.string(), fc.string(), async (service, key) => {
-                    return (await new KeytarStore(nullLogger, mockedKeytar).delete(service, key)) === false;
-                })
-            );
+        it('should handle errors during save operation', async () => {
+            (keyring.setPassword as jest.Mock).mockRejectedValue(new Error('Save failed'));
+
+            const result = await keyStoreManager.save('testService', 'testKey', { value: 'testValue' });
+
+            expect(result).toBe(false);
+            expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Failed to save credential'));
+        });
+    });
+
+    describe('retrieve', () => {
+        it('should retrieve a credential successfully', async () => {
+            (keyring.getPassword as jest.Mock).mockResolvedValue(JSON.stringify({ value: 'testValue' }));
+
+            const result = await keyStoreManager.retrieve<{ value: string }>('testService', 'testKey');
+
+            expect(result).toEqual({ value: 'testValue' });
+            expect(log.info).toHaveBeenCalledWith('Credential retrieved. Service: [testService], Key: [testKey]');
         });
 
-        test('GetAll returns an empty object', async () => {
-            mockedKeytar.findCredentials.mockImplementation(() => {
-                throw new Error();
+        it('should return undefined if no credential is found', async () => {
+            (keyring.getPassword as jest.Mock).mockResolvedValue(undefined);
+
+            const result = await keyStoreManager.retrieve<{ value: string }>('testService', 'testKey');
+
+            expect(result).toBeUndefined();
+            expect(log.warn).toHaveBeenCalledWith('No credential found. Service: [testService], Key: [testKey]');
+        });
+
+        it('should handle deserialization failure', async () => {
+            (keyring.getPassword as jest.Mock).mockResolvedValue('invalid json');
+
+            const result = await keyStoreManager.retrieve<{ value: string }>('testService', 'testKey');
+
+            expect(result).toBeUndefined();
+            expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Failed to deserialize value'));
+        });
+
+        it('should handle errors during retrieval', async () => {
+            (keyring.getPassword as jest.Mock).mockRejectedValue(new Error('Retrieve failed'));
+
+            const result = await keyStoreManager.retrieve<{ value: string }>('testService', 'testKey');
+
+            expect(result).toBeUndefined();
+            expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Failed to retrieve credential'));
+        });
+    });
+
+    describe('delete', () => {
+        it('should delete a credential successfully', async () => {
+            (keyring.deletePassword as jest.Mock).mockResolvedValue(true);
+
+            const result = await keyStoreManager.delete('testService', 'testKey');
+
+            expect(result).toBe(true);
+            expect(log.info).toHaveBeenCalledWith('Credential deleted. Service: [testService], Key: [testKey]');
+        });
+
+        it('should handle case where no credential is found to delete', async () => {
+            (keyring.deletePassword as jest.Mock).mockResolvedValue(false);
+
+            const result = await keyStoreManager.delete('testService', 'testKey');
+
+            expect(result).toBe(false);
+            expect(log.warn).toHaveBeenCalledWith('No credential to delete. Service: [testService], Key: [testKey]');
+        });
+
+        it('should handle errors during delete operation', async () => {
+            (keyring.deletePassword as jest.Mock).mockRejectedValue(new Error('Delete failed'));
+
+            const result = await keyStoreManager.delete('testService', 'testKey');
+
+            expect(result).toBe(false);
+            expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Failed to delete credential'));
+        });
+    });
+
+    describe('getAll', () => {
+        it('should retrieve all credentials successfully', async () => {
+            (keyring.findCredentials as jest.Mock).mockResolvedValue([
+                { account: 'account1', password: JSON.stringify({ value: 'value1' }) },
+                { account: 'account2', password: JSON.stringify({ value: 'value2' }) },
+            ]);
+
+            const result = await keyStoreManager.getAll<{ value: string }>('testService');
+
+            expect(result).toEqual({
+                account1: { value: 'value1' },
+                account2: { value: 'value2' },
             });
-            await fc.assert(
-                fc.asyncProperty(fc.string(), async (service) => {
-                    return Object.keys(await new KeytarStore(nullLogger, mockedKeytar).getAll(service)).length === 0;
-                })
-            );
+            expect(log.info).toHaveBeenCalledWith('All credentials retrieved. Service: [testService], Count: 2');
+        });
+
+        it('should handle deserialization failures for individual credentials', async () => {
+            (keyring.findCredentials as jest.Mock).mockResolvedValue([
+                { account: 'account1', password: 'invalid json' },
+                { account: 'account2', password: JSON.stringify({ value: 'value2' }) },
+            ]);
+
+            const result = await keyStoreManager.getAll<{ value: string }>('testService');
+
+            expect(result).toEqual({
+                account2: { value: 'value2' },
+            });
+            expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Failed to parse credential for Account: [account1]'));
+        });
+
+        it('should handle errors during retrieval of all credentials', async () => {
+            (keyring.findCredentials as jest.Mock).mockRejectedValue(new Error('Find credentials failed'));
+
+            const result = await keyStoreManager.getAll<{ value: string }>('testService');
+
+            expect(result).toEqual({});
+            expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Failed to retrieve credentials for Service: [testService]'));
         });
     });
 });
+
