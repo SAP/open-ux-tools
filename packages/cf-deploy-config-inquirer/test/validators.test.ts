@@ -1,5 +1,10 @@
 import { t } from '../src/i18n';
-import { validateDestinationQuestion, validateMtaPath, validateMtaId, validateAbapService } from '../src/prompts/validators';
+import {
+    validateDestinationQuestion,
+    validateMtaPath,
+    validateMtaId,
+    validateAbapService
+} from '../src/prompts/validators';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import type { CfAppRouterDeployConfigAnswers } from '../src/types';
