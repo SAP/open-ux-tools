@@ -146,6 +146,38 @@ function getEDMXAnnotationPaths(edmxAnnotations: EdmxAnnotationsInfo | EdmxAnnot
 }
 
 /**
+ * Writes local copies of metadata and annotations.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {string} webappPath - the webapp path of an existing UI5 application
+ * @param {string} templateRoot - path to the file templates
+ * @param {OdataService} service - the OData service instance with EDMX type
+ */
+async function writeLocalServiceFiles(
+    fs: Editor,
+    basePath: string,
+    webappPath: string,
+    templateRoot: string,
+    service: EdmxOdataService
+): Promise<void> {
+    // mainService should be used in case there is no name defined for service
+    fs.write(
+        join(webappPath, 'localService', service.name ?? 'mainService', 'metadata.xml'),
+        prettifyXml(service.metadata, { indent: 4 })
+    );
+    // Adds local annotations to datasources section of manifest.json and writes the annotations file
+    if (service.localAnnotationsName) {
+        const namespaces = getAnnotationNamespaces(service);
+        fs.copyTpl(
+            join(templateRoot, 'add', 'annotation.xml'),
+            join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
+            { ...service, namespaces }
+        );
+    }
+}
+
+/**
  * Writes EDMX service data to ui5.yaml, ui5-mock.yaml, ui5-local.yaml, package.json and annotations xml files.
  *
  * @param {Editor} fs - the memfs editor instance
@@ -181,33 +213,20 @@ async function writeEDMXServiceFiles(
         const webappPath = await getWebappPath(basePath, fs);
         if (paths.ui5Yaml && ui5Config) {
             const config = {
-                webappPath: webappPath,
-                ui5MockYamlConfig: { path: service.path, name: service.name }
+                webappPath: webappPath
             };
             // Generate mockserver middleware for ui5-mock.yaml
             await generateMockserverConfig(basePath, config, fs);
             // Update ui5-local.yaml with mockserver middleware from newly created/updated ui5-mock.yaml
             await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, ui5LocalConfigPath, ui5LocalConfig);
             ui5MockConfigPath = join(dirname(paths.ui5Yaml), 'ui5-mock.yaml');
+            // Update ui5-mock.yaml with backend middleware
             if (fs.exists(ui5MockConfigPath)) {
                 ui5MockConfig = await UI5Config.newInstance(fs.read(ui5MockConfigPath));
                 extendBackendMiddleware(fs, service, ui5MockConfig, ui5MockConfigPath);
             }
         }
-        // Create local copy of metadata and annotations, mainService should be used in case there is no name defined for service
-        fs.write(
-            join(webappPath, 'localService', service.name ?? 'mainService', 'metadata.xml'),
-            prettifyXml(service.metadata, { indent: 4 })
-        );
-        // Adds local annotations to datasources section of manifest.json and writes the annotations file
-        if (service.localAnnotationsName) {
-            const namespaces = getAnnotationNamespaces(service);
-            fs.copyTpl(
-                join(templateRoot, 'add', 'annotation.xml'),
-                join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
-                { ...service, namespaces }
-            );
-        }
+        await writeLocalServiceFiles(fs, basePath, webappPath, templateRoot, service);
     }
     if (paths.packageJson && paths.ui5Yaml) {
         updatePackageJson(paths.packageJson, fs, !!service.metadata);

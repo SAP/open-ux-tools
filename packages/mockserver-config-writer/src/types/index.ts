@@ -11,7 +11,5 @@ export interface PackageJsonMockConfig {
 }
 
 export interface Ui5MockYamlConfig {
-    path?: string;
-    name?: string;
     overwrite?: boolean;
 }

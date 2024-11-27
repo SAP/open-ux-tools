@@ -62,7 +62,7 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
 }
 
 /**
- * Writes annotation XML files for EDMX annotations.
+ * Writes annotation XML files for EDMX service annotations.
  *
  * @param {Editor} fs - The memfs editor instance.
  * @param {string} basePath - The base path of the project.
