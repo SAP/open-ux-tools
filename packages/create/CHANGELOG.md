@@ -1,5 +1,20 @@
 # @sap-ux/create
 
+## 0.9.0
+
+### Minor Changes
+
+-   cfdd442: feat: FLP Configuration inquirer
+
+### Patch Changes
+
+-   Updated dependencies [cfdd442]
+    -   @sap-ux/flp-config-inquirer@0.1.0
+    -   @sap-ux/app-config-writer@0.5.0
+    -   @sap-ux/adp-tooling@0.12.85
+    -   @sap-ux/preview-middleware@0.16.131
+    -   @sap-ux/cap-config-writer@0.7.60
+
 ## 0.8.92
 
 ### Patch Changes
