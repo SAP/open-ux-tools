@@ -16,8 +16,9 @@ import { AuthenticationType } from '@sap-ux/store';
 import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
 import { ClientChoiceValue, TargetSystemType, type AbapSystemChoice } from '../types';
-import type { BackendTarget, SystemConfig } from '@sap-ux/deploy-config-generator-shared';
 import {
+    type BackendTarget,
+    type SystemConfig,
     PackageInputChoices,
     PromptState,
     TransportChoices,
