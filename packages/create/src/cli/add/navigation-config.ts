@@ -1,13 +1,17 @@
-import { create } from 'mem-fs-editor';
+import { create, Editor } from 'mem-fs-editor';
 import type { Command } from 'commander';
 import { create as createStorage } from 'mem-fs';
-import type { ManifestNamespace } from '@sap-ux/project-access';
+import { FileName, getWebappPath, type ManifestNamespace } from '@sap-ux/project-access';
 import { type FLPConfigAnswers, getPrompts } from '@sap-ux/flp-config-inquirer';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
 
 import { promptYUIQuestions } from '../../common';
 import { validateBasePath } from '../../validation';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
+import { join } from 'path';
+import { existsSync } from 'fs';
+import { getAdpConfig, getVariant, ManifestService } from '@sap-ux/adp-tooling';
+import { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Add the "add inbound-navigation" command to a passed command.
@@ -37,12 +41,11 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
     try {
         logger.debug(`Called add inbound navigation-config for path '${basePath}', simulate is '${simulate}'`);
         await validateBasePath(basePath);
+        const isAdp = await isAdpProject(basePath);
 
         const fs = create(createStorage());
 
-        const { manifest } = await readManifest(basePath, fs);
-
-        const inbounds = manifest?.['sap.app']?.crossNavigation?.inbounds;
+        const inbounds = await getInboundsFromManifest(basePath, isAdp, fs, logger);
 
         const config = await getUserConfig(inbounds);
 
@@ -63,6 +66,54 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
         logger.error(`Error while executing add inbound navigation configuration '${(error as Error).message}'`);
         logger.debug(error as Error);
     }
+}
+
+/**
+ * Determines whether the project at the given base path is an Adaptation Project (ADP).
+ *
+ * @param {string} basePath - The base path to the project.
+ * @returns {Promise<boolean>} A promise that resolves to true if the project is an ADP project, or false otherwise.
+ * @throws {Error} If the project type cannot be determined.
+ */
+async function isAdpProject(basePath: string): Promise<boolean> {
+    const manifestPath = await getWebappPath(basePath);
+    if (existsSync(join(manifestPath, FileName.Manifest))) {
+        return false;
+    } else if (existsSync(join(manifestPath, FileName.ManifestAppDescrVar))) {
+        return true;
+    }
+
+    throw new Error('Project type could not be determined');
+}
+
+/**
+ * Retrieves the inbound navigation configurations from the project's manifest.
+ *
+ * @param {string} basePath - The base path to the project.
+ * @param {boolean} isAdp - Indicates whether the project is an ADP project.
+ * @param {Editor} fs - The mem-fs editor instance.
+ * @param {ToolsLogger} logger - The logger instance.
+ * @returns {Promise<ManifestNamespace.Inbound | undefined>} A promise that resolves to the inbounds, or undefined if none are found.
+ */
+async function getInboundsFromManifest(
+    basePath: string,
+    isAdp: boolean,
+    fs: Editor,
+    logger: ToolsLogger
+): Promise<ManifestNamespace.Inbound | undefined> {
+    let manifest: ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
+    if (!isAdp) {
+        manifest = (await readManifest(basePath, fs))?.manifest;
+    } else {
+        const variant = getVariant(basePath);
+        const config = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
+
+        const manifestService = await ManifestService.initMergedManifest(basePath, variant, config, logger);
+
+        manifest = manifestService.getManifest();
+    }
+
+    return manifest?.['sap.app']?.crossNavigation?.inbounds;
 }
 
 /**
