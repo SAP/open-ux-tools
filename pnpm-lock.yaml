@@ -1167,6 +1167,9 @@ importers:
       '@sap-ux/cards-editor-config-writer':
         specifier: workspace:*
         version: link:../cards-editor-config-writer
+      '@sap-ux/flp-config-inquirer':
+        specifier: workspace:*
+        version: link:../flp-config-inquirer
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
@@ -1745,6 +1748,40 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+
+  packages/flp-config-inquirer:
+    dependencies:
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+    devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
 
   packages/guided-answers-helper: {}
 
