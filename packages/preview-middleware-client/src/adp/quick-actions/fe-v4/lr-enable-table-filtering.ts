@@ -6,7 +6,7 @@ import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/qu
 import Table from 'sap/ui/mdc/Table';
 import { TableQuickActionDefinitionBase } from './table-quick-action-base';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import { getReference } from '../../../utils/fe-v4';
+import { createManifestPropertyChange, getReference } from '../../../utils/fe-v4';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
@@ -17,8 +17,7 @@ const CONTROL_TYPE = 'sap.ui.mdc.Table';
  */
 export class EnableTableFilteringQuickAction
     extends TableQuickActionDefinitionBase
-    implements NestedQuickActionDefinition
-{
+    implements NestedQuickActionDefinition {
     constructor(context: QuickActionContext) {
         super(ENABLE_TABLE_FILTERING, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context);
     }
@@ -31,14 +30,18 @@ export class EnableTableFilteringQuickAction
             return;
         }
 
-        const tooltipText = this.context.resourceBundle.getText('THE_CHANGE_HAS_ALREADY_BEEN_MADE'); 
+        const tooltipText = this.context.resourceBundle.getText('THE_CHANGE_HAS_ALREADY_BEEN_MADE');
         let index = 0;
         for (const smartTable of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
             CONTROL_TYPE
         ])) {
             const personalizationData = (smartTable as Table).getP13nMode();
-            const isFilterEnabled = personalizationData.includes('Filter');
-
+            const value = this.context.changeService.getConfigurationPropertyValue(
+                smartTable.getId(),
+                'Filter'
+            );
+            const isFilterEnabled =
+                value === undefined ? personalizationData.includes('Filter') : (value as boolean);
             this.children.push({
                 label: `'${(smartTable as Table).getHeader()}' table`,
                 enabled: !isFilterEnabled,
@@ -52,7 +55,7 @@ export class EnableTableFilteringQuickAction
         if (this.children.length > 0) {
             this.isApplicable = true;
         }
-     
+
         return Promise.resolve();
     }
 
@@ -69,42 +72,11 @@ export class EnableTableFilteringQuickAction
             return [];
         }
 
-        const overlay = OverlayRegistry.getOverlay(modifiedControl);
-        if (!overlay) {
+        const command = await createManifestPropertyChange(modifiedControl, flexSettings)
+        if (command) {
+            return [command];
+        } else {
             return [];
         }
-        const overlayData = overlay?.getDesignTimeMetadata().getData();
-        const manifestPropertyPath = overlayData.manifestPropertyPath(modifiedControl);
-        const [manifestPropertyChange] = overlayData.manifestPropertyChange(
-            {
-                personalization: {
-                    sort: true,
-                    column: true,
-                    filter: true,
-                    group: true,
-                    aggregate: true
-                }
-            },
-            manifestPropertyPath,
-            modifiedControl
-        );
-
-        const modifiedValue = {
-            reference: getReference(modifiedControl),
-            appComponent: manifestPropertyChange.appComponent,
-            changeType: manifestPropertyChange.changeSpecificData.appDescriptorChangeType,
-            parameters: manifestPropertyChange.changeSpecificData.content.parameters,
-            selector: manifestPropertyChange.selector
-        };
-
-        const command = await CommandFactory.getCommandFor(
-            modifiedControl,
-            'appDescriptor',
-            modifiedValue,
-            null,
-            flexSettings
-        );
-
-        return [command];
     }
 }

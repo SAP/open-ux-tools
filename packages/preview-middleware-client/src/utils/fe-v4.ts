@@ -3,8 +3,13 @@ import TemplateComponent from 'sap/fe/core/TemplateComponent';
 import Component from 'sap/ui/core/Component';
 import AppComponent from 'sap/fe/core/AppComponent';
 import XMLView from 'sap/ui/core/mvc/XMLView';
-import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import type { FlexSettings, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import { isA } from './core';
+import CommandFactory from 'sap/ui/rta/command/CommandFactory';
+import { getOverlay } from '../cpe/utils';
+import UI5Element from 'sap/ui/core/Element';
+import { PropertyValue } from '../cpe/types';
+import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 
 /**
@@ -78,4 +83,52 @@ export function getConfigMapControlIdMap(page: string | undefined, propertyPathS
         return `${page}-${propertyPathSegments.join('/')}`;
     }
     return propertyPathSegments.join('/');
+}
+
+/**
+* Get the modified value for a control.
+* @param modifiedControl - The modified control.
+* @param flexSettings - Flex Settings of the control.
+* @param change - The change object (optional).
+* 
+* @returns  A Promise resolving to an array of FlexCommand objects.
+*/
+export async function createManifestPropertyChange(modifiedControl: UI5Element, flexSettings: FlexSettings, change?: { propertyName: string, value: PropertyValue }): Promise<FlexCommand | undefined> {
+    const overlay = getOverlay(modifiedControl);
+    if (!overlay) {
+        return undefined;
+    }
+    const overlayData = overlay?.getDesignTimeMetadata().getData();
+    const manifestPropertyPath = overlayData.manifestPropertyPath(modifiedControl);
+    const [manifestPropertyChange] = overlayData.manifestPropertyChange(
+        change ? { [change.propertyName]: change.value } : {
+            personalization: {
+                sort: true,
+                column: true,
+                filter: true,
+                group: true,
+                aggregate: true
+            }
+        },
+        manifestPropertyPath,
+        modifiedControl
+    );
+
+    const modifiedValue = {
+        reference: getReference(modifiedControl),
+        appComponent: manifestPropertyChange.appComponent,
+        changeType: manifestPropertyChange.changeSpecificData.appDescriptorChangeType,
+        parameters: manifestPropertyChange.changeSpecificData.content.parameters,
+        selector: manifestPropertyChange.selector
+    };
+
+    const command = await CommandFactory.getCommandFor(
+        modifiedControl,
+        'appDescriptor',
+        modifiedValue,
+        null,
+        flexSettings
+    );
+
+    return command;
 }

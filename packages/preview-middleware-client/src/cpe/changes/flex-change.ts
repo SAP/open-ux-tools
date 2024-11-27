@@ -3,7 +3,7 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { PropertyType, type PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import type { UI5AdaptationOptions } from '../types';
 import { validateBindingModel } from './validator';
-import { getReference } from '../../utils/fe-v4';
+import { createManifestPropertyChange, getReference } from '../../utils/fe-v4';
 import { getOverlay } from '../utils';
 
 /**
@@ -56,33 +56,11 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
         );
         await rta.getCommandStack().pushAndExecute(command);
     } else if (change.propertyType === PropertyType.Configuration) {
-        const overlay = getOverlay(modifiedControl);
-        if (!overlay) {
+        const command = await createManifestPropertyChange(modifiedControl, flexSettings, { propertyName: change.propertyName, value: change.value });
+        if (command) {
+            await rta.getCommandStack().pushAndExecute(command);
+        } else {
             return;
         }
-        const overlayData = overlay?.getDesignTimeMetadata().getData();
-        const manifestPropertyPath = overlayData.manifestPropertyPath(modifiedControl);
-        const [manifestPropertyChange] = overlayData.manifestPropertyChange(
-            { [change.propertyName]: change.value },
-            manifestPropertyPath,
-            modifiedControl
-        );
-
-        const modifiedValue = {
-            reference: getReference(modifiedControl),
-            appComponent: manifestPropertyChange.appComponent,
-            changeType: manifestPropertyChange.changeSpecificData.appDescriptorChangeType,
-            parameters: manifestPropertyChange.changeSpecificData.content.parameters,
-            selector: manifestPropertyChange.selector
-        };
-
-        const command = await CommandFactory.getCommandFor(
-            modifiedControl,
-            'appDescriptor',
-            modifiedValue,
-            null,
-            flexSettings
-        );
-        await rta.getCommandStack().pushAndExecute(command);
     }
 }

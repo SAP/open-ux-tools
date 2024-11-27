@@ -14,6 +14,10 @@ import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
 
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, TREE_TABLE_TYPE, GRID_TABLE_TYPE];
+const boolMap: { [key: string]: boolean } = {
+    'true': true,
+    'false': false
+};
 
 /**
  * Quick Action for enabling table filtering using table personalization settings.
@@ -41,7 +45,11 @@ export class EnableTableFilteringQuickAction
             CONTROL_TYPES
         )) {
             if (table) {
-                const isFilterEnabled = table.data('p13nDialogSettings').filter.visible;
+                const value = this.context.changeService.getConfigurationPropertyValue(
+                    table.getId(),
+                    'enableTableFilterInPageVariant'
+                );
+                const isFilterEnabled = value === undefined ? boolMap[table.data('p13nDialogSettings').filter.visible] : (value as boolean);
                 const isActionApplicable = pageHasControlId(this.context.view, table.getId());
                 if (isActionApplicable) {
                     this.isDisabled = isFilterEnabled;
