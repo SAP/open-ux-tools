@@ -1,7 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
-import { DirName } from '@sap-ux/project-access';
 import type { IWriter, NewModelData, DataSourceItem } from '../../../types';
 import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
 
@@ -83,6 +82,6 @@ export class NewModelWriter implements IWriter<NewModelData> {
         const content = this.constructContent(data);
         const change = getChange(data.variant, timestamp, content, ChangeType.ADD_NEW_MODEL);
 
-        writeChangeToFolder(this.projectPath, change, `id_${timestamp}_addNewModel.change`, this.fs, DirName.Manifest);
+        writeChangeToFolder(this.projectPath, change, `id_${timestamp}_addNewModel.change`, this.fs);
     }
 }
