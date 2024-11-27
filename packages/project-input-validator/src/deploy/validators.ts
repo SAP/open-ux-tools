@@ -109,6 +109,3 @@ export function validatePackage(input: string): boolean | string {
     }
 }
 
-export async function isCloudPackage(input: string): Promise<boolean> {
-    return false;
-}
