@@ -1,24 +1,14 @@
 import { t } from '../src/i18n';
 import type {
     CfAppRouterDeployConfigQuestions,
-    DestinationNamePromptOptions,
     CfAppRouterDeployConfigPromptOptions
 } from '../src/types';
 import { RouterModuleType, appRouterPromptNames } from '../src/types';
 import { type ListQuestion } from '@sap-ux/inquirer-common';
-import type { Logger } from '@sap-ux/logger';
 import { getAppRouterQuestions } from '../src/prompts/app-router-prompts';
 
-const mockLog = {
-    info: jest.fn(),
-    warn: jest.fn()
-} as unknown as Logger;
 
 describe('App Router Prompt Generation Tests', () => {
-    const destinationPrompts: DestinationNamePromptOptions = {
-        defaultValue: 'defaultDestination',
-        hint: false
-    };
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -127,6 +117,7 @@ describe('App Router Prompt Generation Tests', () => {
             expect(routerTypePrompt?.type).toBe('list');
             expect(routerTypePrompt?.guiOptions?.mandatory).toBe(true);
             expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(true);
+            expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.Standard);
             expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
                 { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard },
                 { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed }
@@ -196,15 +187,15 @@ describe('App Router Prompt Generation Tests', () => {
         });
     });
 
-    describe('getDestinationService', () => {
-        it('should return a valid destination service prompt when enabled', async () => {
+    describe('addABAPServiceBinding', () => {
+        it('should return a valid prompt to add advanced configuration when enabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
                 [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
-                [appRouterPromptNames.addDestinationService]: true
+                [appRouterPromptNames.addABAPServiceBinding]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const destinationServicePrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.addDestinationService
+                (question) => question.name === appRouterPromptNames.addABAPServiceBinding
             );
             expect(destinationServicePrompt?.message).toBe(t('prompts.serviceAdvancedOptionMessage'));
             expect(destinationServicePrompt?.type).toBe('confirm');
@@ -216,14 +207,14 @@ describe('App Router Prompt Generation Tests', () => {
             ).toEqual(true);
         });
 
-        it('should not return a valid destination service prompt when enabled but router type selected in managed', async () => {
+        it('should not return a prompt for advanced configurations when enabled and router type selected in managed', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
                 [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
-                [appRouterPromptNames.addDestinationService]: true
+                [appRouterPromptNames.addABAPServiceBinding]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const destinationServicePrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.addDestinationService
+                (question) => question.name === appRouterPromptNames.addABAPServiceBinding
             );
             expect(
                 (destinationServicePrompt?.when as Function)({
@@ -232,14 +223,14 @@ describe('App Router Prompt Generation Tests', () => {
             ).toEqual(false);
         });
 
-        it('should not return destination service prompt when disabled', async () => {
+        it('should not return advanced configuration prompt when disabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
                 [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
-                [appRouterPromptNames.addDestinationService]: false
+                [appRouterPromptNames.addABAPServiceBinding]: false
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const destinationServicePrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.addDestinationService
+                (question) => question.name === appRouterPromptNames.addABAPServiceBinding
             );
             expect(destinationServicePrompt).not.toBeDefined();
         });
@@ -249,40 +240,44 @@ describe('App Router Prompt Generation Tests', () => {
         it('should return a valid service provider prompt when enabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
                 [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
-                [appRouterPromptNames.addServiceProvider]: true
+                [appRouterPromptNames.addABAPServiceBinding]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
-            const destinationServicePrompt = questions.find(
+            const addServiceProviderPrompt = questions.find(
                 (question) => question.name === appRouterPromptNames.addServiceProvider
             );
-            expect(destinationServicePrompt?.guiOptions?.breadcrumb).toBe(t('prompts.abapEnvBindingBreadcrumbMessage'));
-            expect(destinationServicePrompt?.message).toBe(t('prompts.selectServiceMessage'));
-            expect(destinationServicePrompt?.type).toBe('list');
-            expect((destinationServicePrompt?.default as Function)()).toBe(t('errors.abapEnvsUnavailable'));
+            expect(addServiceProviderPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.abapEnvBindingBreadcrumbMessage'));
+            expect(addServiceProviderPrompt?.message).toBe(t('prompts.selectServiceMessage'));
+            expect(addServiceProviderPrompt?.type).toBe('list');
+            expect((addServiceProviderPrompt?.default as Function)()).toBe(t('errors.abapEnvsUnavailable'));
             expect(
-                (destinationServicePrompt?.when as Function)({
+                (addServiceProviderPrompt?.when as Function)({
                     [appRouterPromptNames.routerType]: RouterModuleType.Standard,
-                    [appRouterPromptNames.addDestinationService]: true
+                    [appRouterPromptNames.addABAPServiceBinding]: true
                 })
             ).toEqual(true);
+            expect((addServiceProviderPrompt?.validate as Function)(
+                'choice'
+            )).toBe(true);
+            expect((addServiceProviderPrompt as ListQuestion)?.choices).toBeDefined();
         });
 
         it('should not return service provider prompt when disabled', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
                 [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
-                [appRouterPromptNames.addServiceProvider]: false
+                [appRouterPromptNames.addABAPServiceBinding]: false
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
-            const destinationServicePrompt = questions.find(
+            const addServiceProviderPrompt = questions.find(
                 (question) => question.name === appRouterPromptNames.addServiceProvider
             );
-            expect(destinationServicePrompt).toBe(undefined);
+            expect(addServiceProviderPrompt).toBe(undefined);
         });
 
         it('should not return service provider prompt when enabled but router type selected in managed', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
                 [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
-                [appRouterPromptNames.addServiceProvider]: true
+                [appRouterPromptNames.addABAPServiceBinding]: true
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const addServiceProviderPrompt = questions.find(
@@ -291,9 +286,27 @@ describe('App Router Prompt Generation Tests', () => {
             expect(
                 (addServiceProviderPrompt?.when as Function)({
                     [appRouterPromptNames.routerType]: RouterModuleType.Managed,
-                    [appRouterPromptNames.addDestinationService]: true
+                    [appRouterPromptNames.addABAPServiceBinding]: true
                 })
             ).toEqual(false);
+        });
+        
+        it('should return false when no choice provided to service provider prompt', async () => {
+            const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+                [appRouterPromptNames.addABAPServiceBinding]: true
+            };
+            const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
+            const addServiceProviderPrompt = questions.find(
+                (question) => question.name === appRouterPromptNames.addServiceProvider
+            );
+            expect(
+                (addServiceProviderPrompt?.when as Function)({
+                    [appRouterPromptNames.routerType]: RouterModuleType.Standard,
+                    [appRouterPromptNames.addABAPServiceBinding]: true
+                })
+            ).toEqual(true);
+            expect((addServiceProviderPrompt?.validate as Function)(null)).toBe(false);
         });
     });
 });

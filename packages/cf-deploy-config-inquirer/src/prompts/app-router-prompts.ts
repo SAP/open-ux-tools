@@ -6,10 +6,9 @@ import type {
     CfAppRouterDeployConfigPromptOptions
 } from '../types';
 import { appRouterPromptNames, RouterModuleType } from '../types';
-import { validateMtaPath, validateMtaId } from './validators';
+import { validateMtaPath, validateMtaId, validateAbapService } from './validators';
 import type { Logger } from '@sap-ux/logger';
 import { getCFAbapInstanceChoices, ErrorHandler } from '@sap-ux/inquirer-common';
-import { validateAbapService } from './validators';
 
 /**
  * Generates a prompt for selecting the MTA path.
@@ -99,7 +98,7 @@ function getRouterTypePrompt(): CfAppRouterDeployConfigQuestions {
             mandatory: true,
             breadcrumb: true
         },
-        default: (): RouterModuleType => RouterModuleType.Standard,
+        default: () => RouterModuleType.Standard,
         message: t('prompts.routerTypeMessage'),
         choices: [
             { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard },
@@ -133,7 +132,7 @@ function getConnectivityServicePrompt(): CfAppRouterDeployConfigQuestions {
 }
 
 /**
- * Generates a prompt for adding a destination service.
+ * Generates a prompt for adding abap service binding
  *
  * This prompt is shown if the user selects a standalone app router. It asks if the user wants to add a destination service,
  * with a default answer of 'false'.
@@ -145,7 +144,7 @@ function getDestinationService(): CfAppRouterDeployConfigQuestions {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean =>
             previousAnswers.routerType !== RouterModuleType.Managed,
         type: 'confirm',
-        name: appRouterPromptNames.addDestinationService,
+        name: appRouterPromptNames.addABAPServiceBinding,
         message: t('prompts.serviceAdvancedOptionMessage'),
         default: (): boolean => {
             return false;
@@ -165,7 +164,7 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
     const errorHandler = new ErrorHandler();
     return {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean => {
-            return !!previousAnswers.addDestinationService && previousAnswers.routerType !== RouterModuleType.Managed;
+            return !!previousAnswers.addABAPServiceBinding && previousAnswers.routerType !== RouterModuleType.Managed;
         },
         type: 'list',
         name: appRouterPromptNames.addServiceProvider,
@@ -179,6 +178,7 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
     } as ListQuestion<CfAppRouterDeployConfigAnswers>;
 }
 
+
 /**
  * Retrieves a list of deployment questions based on the application root and prompt options.
  *
@@ -191,51 +191,39 @@ export async function getAppRouterQuestions(
     log?: Logger
 ): Promise<CfAppRouterDeployConfigQuestions[]> {
     const mtaPath = promptOptions[appRouterPromptNames.mtaPath];
-    const addMtaId = promptOptions[appRouterPromptNames.mtaId] ?? false;
-    const addMtaDescription = promptOptions[appRouterPromptNames.mtaDescription] ?? false;
-    const addMtaVersion = promptOptions[appRouterPromptNames.mtaVersion] ?? false;
-    const addRouterTypeQuestion = promptOptions[appRouterPromptNames.routerType] ?? false;
-    const addConnectivityService = promptOptions[appRouterPromptNames.addConnectivityService] ?? false;
-    const addServiceProvider = promptOptions[appRouterPromptNames.addServiceProvider];
-    const addDestinationService = promptOptions[appRouterPromptNames.addDestinationService] ?? false;
 
+    // add mta path prompt to question array
     const questions: CfAppRouterDeployConfigQuestions[] = [];
-    // Collect questions into an array
     questions.push(getMtaPathPrompt(mtaPath));
 
-    if (addMtaId) {
-        log?.info(t('info.addMtaId'));
-        questions.push(getMtaIdPrompt());
+    // Mapping of options
+    const questionMapping: { 
+        key: keyof CfAppRouterDeployConfigPromptOptions;
+        getQuestion: () => CfAppRouterDeployConfigQuestions;
+        logMessage?: string; 
+    }[] = [
+        { key: appRouterPromptNames.mtaId, getQuestion: getMtaIdPrompt },
+        { key: appRouterPromptNames.mtaDescription, getQuestion: getMtaDescriptionPrompt },
+        { key: appRouterPromptNames.mtaVersion, getQuestion: getMtaVersionPrompt },
+        { key: appRouterPromptNames.routerType, getQuestion: getRouterTypePrompt },
+        { key: appRouterPromptNames.addConnectivityService, getQuestion: getConnectivityServicePrompt, logMessage: t('info.addConnectivityService') },
+        { key: appRouterPromptNames.addABAPServiceBinding, getQuestion: getDestinationService, logMessage: t('info.addABAPServiceBinding') }
+    ];
+
+    // Iterate over the mapping to add questions
+    for (const { key, logMessage, getQuestion } of questionMapping) {
+        const shouldAddQuestion = promptOptions[key] ?? false;
+        if (shouldAddQuestion) {
+            if (logMessage) log?.info(t(logMessage));
+            questions.push(getQuestion());
+        }
     }
 
-    if (addMtaDescription) {
-        log?.info(t('info.addMtaDescription'));
-        questions.push(getMtaDescriptionPrompt());
-    }
-
-    if (addMtaVersion) {
-        log?.info(t('info.addMtaVersion'));
-        questions.push(getMtaVersionPrompt());
-    }
-
-    if (addRouterTypeQuestion) {
-        log?.info(t('info.addRouterType'));
-        questions.push(getRouterTypePrompt());
-    }
-
-    if (addConnectivityService) {
-        log?.info(t('info.addConnectivityService'));
-        questions.push(getConnectivityServicePrompt());
-    }
-
-    if (addDestinationService) {
-        log?.info(t('info.addDestinationService'));
-        questions.push(getDestinationService());
-    }
-
-    if (addServiceProvider) {
+    // Add `getServiceProvider` if `addABAPServiceBinding` is true
+    if (promptOptions[appRouterPromptNames.addABAPServiceBinding]) {
         questions.push(getServiceProvider());
     }
 
     return questions;
 }
+
