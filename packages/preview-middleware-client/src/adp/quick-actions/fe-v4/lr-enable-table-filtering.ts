@@ -1,12 +1,10 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
 import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import Table from 'sap/ui/mdc/Table';
 import { TableQuickActionDefinitionBase } from './table-quick-action-base';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import { createManifestPropertyChange, getReference } from '../../../utils/fe-v4';
+import { createManifestPropertyChange } from '../../../utils/fe-v4';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
@@ -72,7 +70,7 @@ export class EnableTableFilteringQuickAction
             return [];
         }
 
-        const command = await createManifestPropertyChange(modifiedControl, flexSettings)
+        const command = await createManifestPropertyChange(modifiedControl, flexSettings);
         if (command) {
             return [command];
         } else {

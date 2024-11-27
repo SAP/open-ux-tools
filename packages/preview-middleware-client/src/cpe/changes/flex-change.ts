@@ -3,9 +3,7 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { PropertyType, type PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import type { UI5AdaptationOptions } from '../types';
 import { validateBindingModel } from './validator';
-import { createManifestPropertyChange, getReference } from '../../utils/fe-v4';
-import { getOverlay } from '../utils';
-
+import { createManifestPropertyChange } from '../../utils/fe-v4';
 /**
  * Function to check a give value is a binding expression.
  *
