@@ -7,8 +7,8 @@ import {
     SMART_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from '../table-quick-action-base';
-import { isUnsupportedUI5Version, executeToggleAction } from './utils';
-import { translateText } from '../../quick-actions/utils';
+import { isUnsupportedUI5Version, prepareManifestChange } from './utils';
+
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
@@ -34,7 +34,7 @@ export class EnableTableFilteringQuickAction
             return;
         }
 
-        const tooltipText = await translateText(`THE_CHANGE_HAS_ALREADY_BEEN_MADE`);
+        const tooltipText = this.context.resourceBundle.getText('THE_CHANGE_HAS_ALREADY_BEEN_MADE');
         for (const table of getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
@@ -48,6 +48,7 @@ export class EnableTableFilteringQuickAction
                     this.tooltip = isFilterEnabled ? tooltipText : undefined;
                     this.control = table;
                     this.isTableFilteringInPageVariantEnabled = isFilterEnabled;
+                    break;
                 }
             }
         }
@@ -61,7 +62,7 @@ export class EnableTableFilteringQuickAction
         if (!this.control) {
             return [];
         }
-        const command = await executeToggleAction(
+        const command = await prepareManifestChange(
             this.context,
             'component/settings',
             this.control,
@@ -69,9 +70,9 @@ export class EnableTableFilteringQuickAction
                 enableTableFilterInPageVariant: !this.isTableFilteringInPageVariantEnabled
             }
         );
-        if (command.length) {
-            this.isTableFilteringInPageVariantEnabled = !this.isTableFilteringInPageVariantEnabled;
-        }
+
+        this.isTableFilteringInPageVariantEnabled = !this.isTableFilteringInPageVariantEnabled;
+
         return command;
     }
 }

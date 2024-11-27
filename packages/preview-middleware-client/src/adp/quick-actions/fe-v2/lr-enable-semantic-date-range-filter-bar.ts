@@ -6,7 +6,7 @@ import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/qu
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { isUnsupportedUI5Version, executeToggleAction } from './utils';
+import { isUnsupportedUI5Version, prepareManifestChange } from './utils';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';
 const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
@@ -49,7 +49,7 @@ export class ToggleSemanticDateRangeFilterBar
     }
 
     async execute(): Promise<FlexCommand[]> {
-        const command = await executeToggleAction(
+        const command = await prepareManifestChange(
             this.context,
             'component/settings/filterSettings/dateSettings',
             this.control!,
@@ -57,9 +57,9 @@ export class ToggleSemanticDateRangeFilterBar
                 useDateRange: !this.isUseDateRangeTypeEnabled
             }
         );
-        if (command.length) {
-            this.isUseDateRangeTypeEnabled = !this.isUseDateRangeTypeEnabled;
-        }
+        
+        this.isUseDateRangeTypeEnabled = !this.isUseDateRangeTypeEnabled;
+        
         return command;
     }
 }

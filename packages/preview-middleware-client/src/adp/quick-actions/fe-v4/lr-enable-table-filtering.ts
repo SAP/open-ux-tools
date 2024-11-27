@@ -8,7 +8,6 @@ import { TableQuickActionDefinitionBase } from './table-quick-action-base';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { getReference } from '../../../utils/fe-v4';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import { translateText } from '../utils';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
 const CONTROL_TYPE = 'sap.ui.mdc.Table';
@@ -32,7 +31,7 @@ export class EnableTableFilteringQuickAction
             return;
         }
 
-        const tooltipText = await translateText(`THE_CHANGE_HAS_ALREADY_BEEN_MADE`);
+        const tooltipText = this.context.resourceBundle.getText('THE_CHANGE_HAS_ALREADY_BEEN_MADE'); 
         let index = 0;
         for (const smartTable of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
             CONTROL_TYPE

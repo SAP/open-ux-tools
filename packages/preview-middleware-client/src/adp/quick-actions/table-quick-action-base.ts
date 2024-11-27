@@ -86,7 +86,7 @@ export abstract class TableQuickActionDefinitionBase {
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
         protected includeServiceAction?: boolean
-    ) {}
+    ) { }
 
     /**
      * Initializes action object instance
@@ -147,7 +147,7 @@ export abstract class TableQuickActionDefinitionBase {
      * @param table - table element
      * @returns table label if found or 'Unnamed table'
      */
-    public getTableLabel(table: UI5Element): string {
+    getTableLabel(table: UI5Element): string {
         if (isA<SmartTable>(SMART_TABLE_TYPE, table) || isA<MdcTable>(MDC_TABLE_TYPE, table)) {
             const header = table.getHeader();
             if (header) {
@@ -167,7 +167,7 @@ export abstract class TableQuickActionDefinitionBase {
      * Builds a map kay/tab_name for ICON_TAB_BAR control of the active page, if such exists
      * @returns built map
      */
-    public buildIconTabBarFilterMap(): { [key: string]: string } {
+    protected buildIconTabBarFilterMap(): { [key: string]: string } {
         const iconTabBarFilterMap: { [key: string]: string } = {};
 
         // Assumption only a tab bar control per page.

@@ -20,15 +20,8 @@ export abstract class SimpleQuickActionDefinitionBase {
 
     protected isDisabled: boolean | undefined;
 
-    private _tooltip?: string; // Backing field for the tooltip property
+    protected tooltip: string | undefined;
 
-    public get tooltip(): string | undefined {
-        return this._tooltip;
-    }
-
-    public set tooltip(value: string | undefined) {
-        this._tooltip = value;
-    }
 
     protected get textKey(): string {
         return this.defaultTextKey;
@@ -41,7 +34,7 @@ export abstract class SimpleQuickActionDefinitionBase {
         protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext
-    ) {}
+    ) { }
 
     initialize(): void {
         for (const control of getRelevantControlFromActivePage(
