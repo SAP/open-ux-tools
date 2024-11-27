@@ -14,10 +14,6 @@ import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
 
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, TREE_TABLE_TYPE, GRID_TABLE_TYPE];
-const boolMap: { [key: string]: boolean } = {
-    'true': true,
-    'false': false
-};
 
 /**
  * Quick Action for enabling table filtering using table personalization settings.
@@ -30,40 +26,34 @@ export class EnableTableFilteringQuickAction
     }
     isActive: boolean;
     readonly forceRefreshAfterExecution = true;
-    isTableFilteringInPageVariantEnabled = false;
     lsTableMap: Record<string, number> = {};
+    public get tooltip(): string | undefined {
+        return this.isDisabled ? this.context.resourceBundle.getText('THE_CHANGE_HAS_ALREADY_BEEN_MADE') : undefined;
+    }
+
     async initialize(): Promise<void> {
         const isUI5VersionNotSupported = await isUnsupportedUI5Version();
         if (isUI5VersionNotSupported) {
             return;
         }
 
-        const tooltipText = this.context.resourceBundle.getText('THE_CHANGE_HAS_ALREADY_BEEN_MADE');
         for (const table of getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
             CONTROL_TYPES
         )) {
             if (table) {
-                const value = this.context.changeService.getConfigurationPropertyValue(
-                    table.getId(),
-                    'enableTableFilterInPageVariant'
-                );
-                const isFilterEnabled = value === undefined ? boolMap[table.data('p13nDialogSettings').filter.visible] : (value as boolean);
+                const isFilterEnabled = table.data('p13nDialogSettings').filter.visible;
                 const isActionApplicable = pageHasControlId(this.context.view, table.getId());
                 if (isActionApplicable) {
                     this.isDisabled = isFilterEnabled;
-                    this.tooltip = isFilterEnabled ? tooltipText : undefined;
                     this.control = table;
-                    this.isTableFilteringInPageVariantEnabled = isFilterEnabled;
                     break;
                 }
-            }
-        }
+            }        }
 
         return Promise.resolve();
     }
-
 
     async execute(): Promise<FlexCommand[]> {
 
@@ -75,11 +65,11 @@ export class EnableTableFilteringQuickAction
             'component/settings',
             this.control,
             {
-                enableTableFilterInPageVariant: !this.isTableFilteringInPageVariantEnabled
+                enableTableFilterInPageVariant: !this.isDisabled
             }
         );
 
-        this.isTableFilteringInPageVariantEnabled = !this.isTableFilteringInPageVariantEnabled;
+        this.isDisabled = !this.isDisabled;
 
         return command;
     }

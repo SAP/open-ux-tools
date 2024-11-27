@@ -20,8 +20,9 @@ export abstract class SimpleQuickActionDefinitionBase {
 
     protected isDisabled: boolean | undefined;
 
-    protected tooltip: string | undefined;
-
+    public get tooltip(): string | undefined {
+        return undefined;
+    }
 
     protected get textKey(): string {
         return this.defaultTextKey;

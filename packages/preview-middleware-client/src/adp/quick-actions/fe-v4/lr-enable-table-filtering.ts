@@ -36,7 +36,7 @@ export class EnableTableFilteringQuickAction
             const personalizationData = (smartTable as Table).getP13nMode();
             const value = this.context.changeService.getConfigurationPropertyValue(
                 smartTable.getId(),
-                'Filter'
+                'personalization'
             );
             const isFilterEnabled =
                 value === undefined ? personalizationData.includes('Filter') : (value as boolean);
