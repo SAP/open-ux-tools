@@ -7,11 +7,12 @@ import LoggerHelper from '../logger-helper';
 import {
     ClientChoiceValue,
     TargetSystemType,
+    TransportChoices,
     type UI5AbapRepoPromptOptions,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions
 } from '../types';
-import { PackageInputChoices, PromptState, TransportChoices,  } from '@sap-ux/deploy-config-generator-shared';
+import { PackageInputChoices, PromptState, TransportChoices } from '@sap-ux/deploy-config-generator-shared';
 import type { BackendTarget, TransportListItem } from '@sap-ux/deploy-config-generator-shared';
 
 /**
@@ -218,6 +219,9 @@ export function defaultOrShowSearchPackageQuestion(packageInputChoice?: string, 
  * @returns boolean
  */
 function defaultOrShowTransportQuestion(): boolean {
+    if (PromptState.transportAnswers.transportRequired === false) {
+        return false;
+    }
     if (PromptState.transportAnswers.transportConfig?.getDefaultTransport() !== undefined) {
         PromptState.abapDeployConfig.transport = PromptState.transportAnswers.transportConfig.getDefaultTransport();
         return false;
