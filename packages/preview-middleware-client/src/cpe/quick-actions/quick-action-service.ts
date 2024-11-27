@@ -19,6 +19,7 @@ import { QuickActionActivationContext, QuickActionContext, QuickActionDefinition
 import { QuickActionDefinitionRegistry } from './registry';
 import { OutlineService } from '../outline/service';
 import { getTextBundle, TextBundle } from '../../i18n';
+import { ChangeService } from '../changes';
 
 /**
  * Service providing Quick Actions.
@@ -26,13 +27,14 @@ import { getTextBundle, TextBundle } from '../../i18n';
 export class QuickActionService implements Service {
     private sendAction: ActionSenderFunction = () => {};
     private actions: QuickActionDefinition[] = [];
+    private controlTreeIndex: ControlTreeIndex;
 
     private actionService: ActionService;
     private texts: TextBundle;
 
     /**
      * Qucik action service constructor.zrf
-     * 
+     *
      * @param rta - RTA object.
      * @param outlineService - Outline service instance.
      * @param registries - Quick action registries.
@@ -40,7 +42,8 @@ export class QuickActionService implements Service {
     constructor(
         private readonly rta: RuntimeAuthoring,
         private readonly outlineService: OutlineService,
-        private readonly registries: QuickActionDefinitionRegistry<string>[]
+        private readonly registries: QuickActionDefinitionRegistry<string>[],
+        private readonly changeService: ChangeService
     ) {}
 
     /**
@@ -75,13 +78,18 @@ export class QuickActionService implements Service {
         });
 
         this.outlineService.onOutlineChange(async (event) => {
+            this.controlTreeIndex = event.detail.controlIndex;
             await this.reloadQuickActions(event.detail.controlIndex);
+        });
+
+        this.changeService.onStackChange(async () => {
+            await this.reloadQuickActions(this.controlTreeIndex);
         });
     }
 
     /**
      * Prepares a list of currently applicable Quick Actions and sends them to the UI.
-     * 
+     *
      * @param controlIndex - Control tree index.
      */
     public async reloadQuickActions(controlIndex: ControlTreeIndex): Promise<void> {
@@ -104,7 +112,8 @@ export class QuickActionService implements Service {
                     key,
                     rta: this.rta,
                     flexSettings: this.rta.getFlexSettings(),
-                    resourceBundle: this.texts
+                    resourceBundle: this.texts,
+                    changeService: this.changeService
                 };
                 for (const Definition of definitions) {
                     try {

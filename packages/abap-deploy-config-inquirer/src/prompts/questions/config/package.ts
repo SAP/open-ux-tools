@@ -116,7 +116,9 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 morePackageResultsMsg = results.morePackageResultsMsg;
                 return results.packages;
             },
-            additionalInfo: () => morePackageResultsMsg
+            additionalInfo: () => morePackageResultsMsg,
+            validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
+                await validatePackage(input, answers, options.backendTarget)
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
     ];
 
