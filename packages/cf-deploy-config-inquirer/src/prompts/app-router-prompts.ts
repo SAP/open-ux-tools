@@ -178,7 +178,6 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
     } as ListQuestion<CfAppRouterDeployConfigAnswers>;
 }
 
-
 /**
  * Retrieves a list of deployment questions based on the application root and prompt options.
  *
@@ -197,24 +196,34 @@ export async function getAppRouterQuestions(
     questions.push(getMtaPathPrompt(mtaPath));
 
     // Mapping of options
-    const questionMapping: { 
+    const questionMapping: {
         key: keyof CfAppRouterDeployConfigPromptOptions;
         getQuestion: () => CfAppRouterDeployConfigQuestions;
-        logMessage?: string; 
+        logMessage?: string;
     }[] = [
         { key: appRouterPromptNames.mtaId, getQuestion: getMtaIdPrompt },
         { key: appRouterPromptNames.mtaDescription, getQuestion: getMtaDescriptionPrompt },
         { key: appRouterPromptNames.mtaVersion, getQuestion: getMtaVersionPrompt },
         { key: appRouterPromptNames.routerType, getQuestion: getRouterTypePrompt },
-        { key: appRouterPromptNames.addConnectivityService, getQuestion: getConnectivityServicePrompt, logMessage: t('info.addConnectivityService') },
-        { key: appRouterPromptNames.addABAPServiceBinding, getQuestion: getDestinationService, logMessage: t('info.addABAPServiceBinding') }
+        {
+            key: appRouterPromptNames.addConnectivityService,
+            getQuestion: getConnectivityServicePrompt,
+            logMessage: t('info.addConnectivityService')
+        },
+        {
+            key: appRouterPromptNames.addABAPServiceBinding,
+            getQuestion: getDestinationService,
+            logMessage: t('info.addABAPServiceBinding')
+        }
     ];
 
     // Iterate over the mapping to add questions
     for (const { key, logMessage, getQuestion } of questionMapping) {
         const shouldAddQuestion = promptOptions[key] ?? false;
         if (shouldAddQuestion) {
-            if (logMessage) log?.info(t(logMessage));
+            if (logMessage) {
+                log?.info(t(logMessage));
+            }
             questions.push(getQuestion());
         }
     }
@@ -226,4 +235,3 @@ export async function getAppRouterQuestions(
 
     return questions;
 }
-

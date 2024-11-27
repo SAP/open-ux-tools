@@ -1,15 +1,10 @@
 import { t } from '../src/i18n';
-import type {
-    CfAppRouterDeployConfigQuestions,
-    CfAppRouterDeployConfigPromptOptions
-} from '../src/types';
+import type { CfAppRouterDeployConfigQuestions, CfAppRouterDeployConfigPromptOptions } from '../src/types';
 import { RouterModuleType, appRouterPromptNames } from '../src/types';
 import { type ListQuestion } from '@sap-ux/inquirer-common';
 import { getAppRouterQuestions } from '../src/prompts/app-router-prompts';
 
-
 describe('App Router Prompt Generation Tests', () => {
-
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -256,9 +251,7 @@ describe('App Router Prompt Generation Tests', () => {
                     [appRouterPromptNames.addABAPServiceBinding]: true
                 })
             ).toEqual(true);
-            expect((addServiceProviderPrompt?.validate as Function)(
-                'choice'
-            )).toBe(true);
+            expect((addServiceProviderPrompt?.validate as Function)('choice')).toBe(true);
             expect((addServiceProviderPrompt as ListQuestion)?.choices).toBeDefined();
         });
 
@@ -290,7 +283,7 @@ describe('App Router Prompt Generation Tests', () => {
                 })
             ).toEqual(false);
         });
-        
+
         it('should return false when no choice provided to service provider prompt', async () => {
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
                 [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
