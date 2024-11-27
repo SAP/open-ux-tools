@@ -6,6 +6,8 @@ import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-defi
 import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 import { getUi5Version, isLowerThanMinimalUi5Version, isVersionEqualOrHasNewerPatch } from '../../../utils/version';
 import { isA } from '../../../utils/core';
+import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
+import { SMART_TABLE_TYPE } from '../table-quick-action-base';
 
 
 /**
@@ -32,7 +34,7 @@ export async function prepareManifestChange(
         parameters: {
             parentPage: {
                 component: 'sap.suite.ui.generic.template.ListReport',
-                entitySet: isA<SmartFilterBar>('sap.ui.comp.smartfilterbar', control) ? control.getEntitySet() : undefined
+                entitySet: isA<SmartFilterBar>('sap.ui.comp.smartfilterbar', control) || isA<SmartTable>(SMART_TABLE_TYPE, control) ? control.getEntitySet() : undefined
             },
             entityPropertyChange: {
                 propertyPath: propertyPath,
