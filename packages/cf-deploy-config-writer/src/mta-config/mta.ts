@@ -335,6 +335,7 @@ export class MtaConfig {
     }
 
     /**
+     * Cleanup missing content for the respective approuter types.
      *
      * @private
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
@@ -515,14 +516,17 @@ export class MtaConfig {
      * Append and/or cleanup the destination resource if missing in mta.yaml.
      *
      * @param {boolean} isManagedApp - if true, append managed approuter configuration
+     * @param {boolean} doCleanUp - if true, will ensure any missing modules | resources are appended
      * @returns {Promise<void>} - A promise that resolves when the change request has been processed.
      */
-    public async addRoutingModules(isManagedApp = false): Promise<void> {
+    public async addRoutingModules(isManagedApp = false, doCleanUp = true): Promise<void> {
         if (isManagedApp && !this.modules.has('com.sap.application.content:destination')) {
             await this.addManagedAppRouter();
         }
 
-        await this.cleanupMissingResources();
+        if (doCleanUp) {
+            await this.cleanupMissingResources();
+        }
 
         // Handle standalone | managed
         for (const module of [
@@ -868,7 +872,7 @@ export class MtaConfig {
                                     'sap.cloud.service': `${this.prefix.slice(0, 100)}`
                                 }
                             ],
-                            'existing_destinations_policy': 'ignore'
+                            'existing_destinations_policy': 'update'
                         }
                     }
                 },
