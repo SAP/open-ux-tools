@@ -1,6 +1,7 @@
 import { AuthenticationType } from '@sap-ux/store';
 import type { BspApp, FioriToolsProxyConfig, UI5ProxyConfig } from '../src';
 import { UI5Config } from '../src';
+import { fioriToolsProxy } from '../src/constants';
 
 describe('UI5Config', () => {
     // values for testing
@@ -220,6 +221,28 @@ describe('UI5Config', () => {
                 path
             });
             expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('should not add duplicate', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
+            // Add backend
+            ui5Config.addBackendToFioriToolsProxydMiddleware({
+                url,
+                path
+            });
+            // Try to add same backend
+            ui5Config.addBackendToFioriToolsProxydMiddleware({
+                url,
+                path
+            });
+            const fioriToolsProxyMiddlewareConfig =
+                ui5Config.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy)?.configuration;
+            expect(fioriToolsProxyMiddlewareConfig?.backend).toStrictEqual([
+                {
+                    path: '/~testpath~',
+                    url: 'http://localhost:8080'
+                }
+            ]);
         });
 
         test('should add comments with backend authentication type as reentrance ticket', () => {
