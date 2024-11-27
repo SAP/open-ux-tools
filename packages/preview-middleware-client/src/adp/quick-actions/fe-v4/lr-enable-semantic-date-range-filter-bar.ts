@@ -1,7 +1,6 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import FilterBar from 'sap/ui/mdc/FilterBar';
 
-import { FeatureService } from '../../../cpe/feature-service';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
@@ -21,8 +20,7 @@ const boolMap: { [key: string]: boolean } = {
  */
 export class ToggleSemanticDateRangeFilterBar
     extends SimpleQuickActionDefinitionBase
-    implements SimpleQuickActionDefinition
-{
+    implements SimpleQuickActionDefinition {
     constructor(context: QuickActionContext) {
         super(ENABLE_SEMANTIC_DATE_RANGE, [], '', context);
     }
@@ -30,9 +28,6 @@ export class ToggleSemanticDateRangeFilterBar
     private isUseDateRangeTypeEnabled = false;
 
     initialize(): void {
-        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
-            return;
-        }
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);

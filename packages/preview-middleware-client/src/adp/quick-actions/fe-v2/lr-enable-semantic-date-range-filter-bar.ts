@@ -2,8 +2,6 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type FilterBar from 'sap/ui/comp/filterbar/FilterBar';
 import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
-
-import { FeatureService } from '../../../cpe/feature-service';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
@@ -37,9 +35,6 @@ export class ToggleSemanticDateRangeFilterBar
             );
 
         if (isUI5VersionNotSupported) {
-            return;
-        }
-        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
             return;
         }
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];

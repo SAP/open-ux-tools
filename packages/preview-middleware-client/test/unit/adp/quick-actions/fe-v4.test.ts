@@ -975,37 +975,6 @@ describe('FE V4 quick actions', () => {
                         .mockReturnValue(undefined)
                 } as any);
             });
-            test('not available by default', async () => {
-                jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(false);
-                await service.init(sendActionMock, subscribeMock);
-                await service.reloadQuickActions({
-                    'sap.fe.macros.controls.FilterBar': [
-                        {
-                            controlId: 'FilterBar'
-                        } as any
-                    ],
-                    'sap.m.NavContainer': [
-                        {
-                            controlId: 'NavContainer'
-                        } as any
-                    ]
-                });
-                expect(sendActionMock).toHaveBeenCalledWith(
-                    quickActionListChanged([
-                        {
-                            title: 'LIST REPORT',
-                            actions: [
-                                {
-                                    'enabled': true,
-                                    'id': 'listReport0-enable-clear-filter-bar',
-                                    'kind': 'simple',
-                                    'title': 'Enable "Clear" Button in Filter Bar'
-                                }
-                            ]
-                        }
-                    ])
-                );
-            });
 
             test('initialize and execute action', async () => {
                 await service.init(sendActionMock, subscribeMock);
@@ -1037,7 +1006,7 @@ describe('FE V4 quick actions', () => {
                                     enabled: true,
                                     kind: 'simple',
                                     id: 'listReport0-enable-semantic-date-range',
-                                    title: 'Disable Semantic Date Range in Filter Bar'
+                                    title: 'Enable Semantic Date Range in Filter Bar'
                                 }
                             ]
                         }
@@ -1059,7 +1028,7 @@ describe('FE V4 quick actions', () => {
                             entityPropertyChange: {
                                 propertyPath:
                                     'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/useSemanticDateRange',
-                                propertyValue: false,
+                                propertyValue: true,
                                 operation: 'UPSERT'
                             }
                         }
@@ -1090,7 +1059,7 @@ describe('FE V4 quick actions', () => {
                                     'enabled': true,
                                     'id': 'listReport0-enable-clear-filter-bar',
                                     'kind': 'simple',
-                                    'title': 'Enable "Clear" Button in Filter Bar'
+                                    'title': 'Disable "Clear" Button in Filter Bar'
                                 },
                                 {
                                     enabled: true,
