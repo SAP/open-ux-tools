@@ -1,5 +1,12 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.11
+
+### Patch Changes
+
+-   747c60d: Fix for refresh token use
+-   5a9d1ee: Updates service type text, add breadcrumb to system prompt. Fix for re-evaluate service url path when input changed
+
 ## 0.6.10
 
 ### Patch Changes
