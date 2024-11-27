@@ -119,6 +119,12 @@ Calling `sap-ux add smartlinks-config` adds a smartLinks configuration to a proj
 sap-ux add smartlinks-config [path]
 ```
 
+### add inbound-navigation
+Calling `sap-ux add inbound-navigation` adds a Fiori Launchpad configuration to a project.
+```sh
+sap-ux add inbound-navigation [path]
+```
+
 ### variants-config
 Calling `sap-ux add variants-config` will add the necessary configuration to an existing yaml file and the script to package.json for variants creation. It will use the configuration from the yaml file passed by cli or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
 ```sh

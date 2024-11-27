@@ -1,0 +1,49 @@
+{
+    "name": "@sap-ux/flp-config-inquirer",
+    "description": "Prompts module that can prompt users for inputs required for FLP configuration",
+    "version": "0.1.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/flp-config-inquirer"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aflp-config-inquirer"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "watch": "tsc --watch",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/project-input-validator": "workspace:*",
+        "@sap-ux/fiori-generator-shared": "workspace:*",
+        "i18next": "23.5.1",
+        "lodash": "4.17.21"
+    },
+    "devDependencies": {
+        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@types/inquirer": "8.2.6",
+        "@types/lodash": "4.14.202",
+        "inquirer": "8.2.6"
+    },
+    "engines": {
+        "node": ">=18.x"
+    }
+}

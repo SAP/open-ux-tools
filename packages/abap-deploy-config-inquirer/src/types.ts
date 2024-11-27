@@ -1,6 +1,7 @@
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Validator } from 'inquirer';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -88,6 +89,10 @@ export type UI5AbapRepoPromptOptions =
     | {
           hide?: false;
           default?: string;
+          /**
+           * If set to true, the prompt will be hidden if the target system is on-premise.
+           */
+          hideIfOnPremise?: boolean;
       }
     | {
           hide: true;
@@ -101,7 +106,14 @@ export type DescriptionPromptOptions = {
     default?: string;
 };
 
-export type PackageManualPromptOptions = {
+type PackagePromptOptions = {
+    /**
+     * Add custom validation
+     */
+    validate?: Validator<AbapDeployConfigAnswers>;
+};
+
+export type PackageManualPromptOptions = PackagePromptOptions & {
     /**
      * Default package value.
      */
@@ -130,7 +142,7 @@ export type IndexPromptOptions = {
     indexGenerationAllowed?: boolean;
 };
 
-export type PackageAutocompletePromptOptions = {
+export type PackageAutocompletePromptOptions = PackagePromptOptions & {
     /**
      * Determines if the package autocomplete prompt should use auto complete prompt for packages.
      * Note that the auto-complete module must be registered with the inquirer instance to use this feature.

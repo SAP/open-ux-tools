@@ -160,7 +160,10 @@ export async function getSystemConnectionQuestions(
             type: promptOptions?.systemSelection?.useAutoComplete ? 'autocomplete' : 'list',
             name: promptNames.systemSelection,
             message: t('prompts.systemSelection.message'),
-            hint: t('prompts.systemSelection.hint'),
+            guiOptions: {
+                breadcrumb: true,
+                hint: t('prompts.systemSelection.hint')
+            },
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
             choices: systemChoices,
             default: defaultChoiceIndex,
