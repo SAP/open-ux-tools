@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.16.130
+
+### Patch Changes
+
+-   Updated dependencies [6e60bdf]
+    -   @sap-ux/adp-tooling@0.12.84
+
+## 0.16.129
+
+### Patch Changes
+
+-   71bef63: fix: update quick action title for semantic date range
+
 ## 0.16.128
 
 ### Patch Changes

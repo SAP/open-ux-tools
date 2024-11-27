@@ -1,7 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
-import { DirName } from '@sap-ux/project-access';
 import type { IWriter, ComponentUsagesData, ComponentUsagesDataWithLibrary } from '../../../types';
 import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
 
@@ -69,13 +68,7 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
             ChangeType.ADD_COMPONENT_USAGES
         );
 
-        writeChangeToFolder(
-            this.projectPath,
-            compUsagesChange,
-            `id_${timestamp}_addComponentUsages.change`,
-            this.fs,
-            DirName.Manifest
-        );
+        writeChangeToFolder(this.projectPath, compUsagesChange, `id_${timestamp}_addComponentUsages.change`, this.fs);
 
         if (!('library' in data)) {
             return;
@@ -85,12 +78,6 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
         const libTimestamp = timestamp + 1;
         const refLibChange = getChange(data.variant, libTimestamp, libRefContent, ChangeType.ADD_LIBRARY_REFERENCE);
 
-        writeChangeToFolder(
-            this.projectPath,
-            refLibChange,
-            `id_${libTimestamp}_addLibraries.change`,
-            this.fs,
-            DirName.Manifest
-        );
+        writeChangeToFolder(this.projectPath, refLibChange, `id_${libTimestamp}_addLibraries.change`, this.fs);
     }
 }
