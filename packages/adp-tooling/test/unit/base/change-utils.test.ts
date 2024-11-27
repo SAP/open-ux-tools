@@ -441,7 +441,6 @@ describe('Change Utils', () => {
                     mockProjectPath,
                     'webapp',
                     'changes',
-                    'manifest',
                     'id_123456789_addAnnotationsToOData.change'
                 )}. Reason: Failed to write JSON`
             );
