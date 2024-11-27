@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.8.22
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+
 ## 0.8.21
 
 ### Patch Changes

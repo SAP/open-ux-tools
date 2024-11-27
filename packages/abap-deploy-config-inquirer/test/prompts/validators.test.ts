@@ -315,6 +315,12 @@ describe('Test validators', () => {
             const result = await validatePackage(' ', previousAnswers);
             expect(result).toBe(t('warnings.providePackage'));
         });
+
+        it('should return true for default package', async () => {
+            const result = await validatePackage('$TMP', previousAnswers);
+            expect(result).toBe(true);
+            expect(PromptState.transportAnswers.transportRequired).toBe(false);
+        });
     });
 
     describe('validateTransportChoiceInput', () => {
