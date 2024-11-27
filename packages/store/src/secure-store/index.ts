@@ -8,7 +8,6 @@ import { join, dirname } from 'path';
 import { homedir } from 'os';
 import { default as fs } from 'fs';
 import { SecureKeyStoreManager } from './zowe-sdk/zowe-sdk-store';
-// import { SecureKeyStoreManager } from './napi-rs-keyring-store/keyring-store';
 
 // __non_webpack_require__ is used to ensure the require is not bundled by webpack and resolved at runtime
 declare function __non_webpack_require__(m: string): any;
@@ -94,7 +93,7 @@ export const getSecureStore = (log: Logger): SecureStore => {
     } else {
         // const keytar = getKeytar(log);
         // return keytar ? new KeytarStore(log, keytar) : new DummyStore(log);
-
+        console.log("--- zowe key store ---")
         const keyStoreManager = new SecureKeyStoreManager(log);
         return keyStoreManager ?? new DummyStore(log);
     }

@@ -33,9 +33,6 @@
         "pluralize": "8.0.0",
         "reflect-metadata": "0.1.13"
     },
-    "optionalDependencies": {
-        "keytar": "7.9.0"
-    },
     "devDependencies": {
         "@types/i18next-fs-backend": "1.1.2",
         "@types/pluralize": "0.0.30",

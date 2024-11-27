@@ -110,7 +110,7 @@ export class SecureKeyStoreManager implements SecureStore {
             entries.forEach(({ account, password }: { account: string; password: string }) => {
                 try {
                     if (account) {
-                        results[account] = JSON.parse(password) as T;
+                        results[account] = password as T;
                     }
                 } catch (e) {
                     this.log.error(`Error parsing credential for Account: [${account}] ${e}`);
