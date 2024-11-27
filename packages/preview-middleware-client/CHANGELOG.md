@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.36
+
+### Patch Changes
+
+-   71bef63: fix: update quick action title for semantic date range
+
 ## 0.11.35
 
 ### Patch Changes

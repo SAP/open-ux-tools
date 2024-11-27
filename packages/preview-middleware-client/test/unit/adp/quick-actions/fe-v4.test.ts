@@ -1246,7 +1246,7 @@ describe('FE V4 quick actions', () => {
                                     enabled: true,
                                     kind: 'simple',
                                     id: 'listReport0-enable-semantic-date-range',
-                                    title: 'Disable "Semantic Date Range" Button in Filter Bar'
+                                    title: 'Disable Semantic Date Range in Filter Bar'
                                 }
                             ]
                         }
@@ -1305,7 +1305,7 @@ describe('FE V4 quick actions', () => {
                                     enabled: true,
                                     kind: 'simple',
                                     id: 'listReport0-enable-semantic-date-range',
-                                    title: 'Enable "Semantic Date Range" for Filter Bar'
+                                    title: 'Enable Semantic Date Range in Filter Bar'
                                 }
                             ]
                         }

@@ -1057,7 +1057,7 @@ describe('FE V2 quick actions', () => {
                                 actions: testCase.validVersion ? [{
                                     'kind': 'simple',
                                     id: 'listReport0-enable-semantic-daterange-filterbar',
-                                    title: 'Enable "Semantic Date Range" for Filter Bar',
+                                    title: 'Enable Semantic Date Range in Filter Bar',
                                     enabled: true
                                 }
                                 ] : []
