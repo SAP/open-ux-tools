@@ -51,8 +51,8 @@ export class ToggleSemanticDateRangeFilterBar
 
     protected get textKey() {
         return this.isUseDateRangeTypeEnabled
-            ? 'V4_QUICK_ACTION_LR_DISABLE_SEMANTIC_DATE_RANGE_FILTER_BAR'
-            : 'V4_QUICK_ACTION_LR_ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR';
+            ? 'QUICK_ACTION_LR_DISABLE_SEMANTIC_DATE_RANGE_FILTER_BAR'
+            : 'QUICK_ACTION_LR_ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR';
     }
 
     async execute(): Promise<FlexCommand[]> {

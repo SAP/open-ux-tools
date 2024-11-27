@@ -1,14 +1,20 @@
-import { t } from '../src/i18n';
 import {
     validateClient,
     validateUrl,
     validateEmptyString,
     validateEmptySpaces,
     validateJSON,
-    validateSpecialChars
+    validateSpecialChars,
+    validateMaxLength,
+    validateAllowedCharacters
 } from '../src/general/validators';
+import { initI18nProjectValidators, t } from '../src/i18n';
 
 describe('project input validators', () => {
+    beforeAll(async () => {
+        await initI18nProjectValidators();
+    });
+
     describe('validateClient', () => {
         test('validateClient - valid client', () => {
             const output = validateClient('001');
@@ -83,6 +89,45 @@ describe('project input validators', () => {
         test('validateJSON - invalid JSON', () => {
             const output = validateJSON('"test: "test"');
             expect(output).toContain(t('general.invalidJSON'));
+        });
+    });
+
+    describe('validateMaxLength', () => {
+        it('should return true if the value does not exceed the maxLength', () => {
+            const result = validateMaxLength('Hello', 10);
+            expect(result).toBe(true);
+        });
+
+        it('should return true if maxLength is 0 (no length validation)', () => {
+            const result = validateMaxLength('Hello', 0);
+            expect(result).toBe(true);
+        });
+
+        it('should return an error message if the value exceeds the maxLength', () => {
+            const result = validateMaxLength('Hello, World!', 5);
+            expect(result).toBe(t('general.maxLength', { maxLength: 5 }));
+        });
+    });
+
+    describe('validateAllowedCharacters', () => {
+        it('should return true if the value contains only alphanumeric characters', () => {
+            const result = validateAllowedCharacters('Hello123');
+            expect(result).toBe(true);
+        });
+
+        it('should return true if the value contains allowed special characters', () => {
+            const result = validateAllowedCharacters('Hello_123', ['_']);
+            expect(result).toBe(true);
+        });
+
+        it('should return an error message if the value contains unsupported characters', () => {
+            const result = validateAllowedCharacters('Hello@123', ['_']);
+            expect(result).toBe(t('general.supportedFormats', { allowedCharacters: ['_'] }));
+        });
+
+        it('should return true if allowedCharacters is undefined', () => {
+            const result = validateAllowedCharacters('Hello123');
+            expect(result).toBe(true);
         });
     });
 

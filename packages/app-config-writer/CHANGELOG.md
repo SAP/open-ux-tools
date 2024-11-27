@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.5.0
+
+### Minor Changes
+
+-   cfdd442: feat: FLP Configuration inquirer
+
 ## 0.4.55
 
 ### Patch Changes
