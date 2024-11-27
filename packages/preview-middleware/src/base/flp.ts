@@ -43,6 +43,19 @@ const DEVELOPER_MODE_CONFIG = new Map([
     ['xx-viewCache', 'false']
 ]);
 
+/**
+ * Adjusted parameter names since UI5 1.120
+ */
+const DEVELOPER_MODE_CONFIG_KEBAP_CASE = new Map([
+    // Run application in design time mode
+    // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
+    ['xx-design-mode', 'true'],
+    // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
+    ['xx-suppress-deactivation-of-controller-code', 'true'],
+    // Make sure that XML preprocessing results are correctly invalidated
+    ['xx-view-cache', 'false']
+]);
+
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
 /**
@@ -189,11 +202,13 @@ export class FlpSandbox {
         };
         config.features = FeatureToggleAccess.getAllFeatureToggles();
 
+        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
+
+        const developerModeConfig = ui5Version.major < 2 ? DEVELOPER_MODE_CONFIG : DEVELOPER_MODE_CONFIG_KEBAP_CASE;
         if (editor.developerMode === true) {
-            config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
+            config.ui5.bootstrapOptions = serializeUi5Configuration(developerModeConfig);
         }
 
-        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
             this.removeAsyncHintsRequests();
         }
