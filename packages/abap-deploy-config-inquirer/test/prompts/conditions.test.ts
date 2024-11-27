@@ -1,11 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import {
-    ClientChoiceValue,
-    PackageInputChoices,
-    TargetSystemType,
-    TransportChoices,
-    TransportConfig
-} from '../../src/types';
+import { ClientChoiceValue, TargetSystemType } from '../../src/types';
 import {
     defaultOrShowManualPackageQuestion,
     defaultOrShowManualTransportQuestion,
@@ -24,7 +18,12 @@ import {
     showUsernameQuestion
 } from '../../src/prompts/conditions';
 import * as utils from '../../src/utils';
-import { PromptState } from '../../src/prompts/prompt-state';
+import {
+    PromptState,
+    PackageInputChoices,
+    TransportChoices,
+    TransportConfig
+} from '@sap-ux/deploy-config-generator-shared';
 import { getHelpUrl } from '@sap-ux/guided-answers-helper';
 
 jest.mock('@sap-ux/btp-utils', () => ({

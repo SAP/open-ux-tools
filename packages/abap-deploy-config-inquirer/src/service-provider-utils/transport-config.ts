@@ -1,9 +1,10 @@
 import { AtoService } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
-import { deleteCachedServiceProvider, getOrCreateServiceProvider } from './abap-service-provider';
+import { deleteCachedServiceProvider, getOrCreateServiceProvider } from '@sap-ux/deploy-config-generator-shared';
 import LoggerHelper from '../logger-helper';
 import type { AtoSettings } from '@sap-ux/axios-extension';
-import type { TransportConfig, InitTransportConfigResult, SystemConfig, Credentials, BackendTarget } from '../types';
+import type { InitTransportConfigResult } from '../types';
+import type { SystemConfig, Credentials, BackendTarget, TransportConfig } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Dummy transport configuration.
@@ -126,7 +127,7 @@ class DefaultTransportConfig implements TransportConfig {
     }): Promise<InitTransportConfigResult> {
         const result: InitTransportConfigResult = {};
         try {
-            const provider = await getOrCreateServiceProvider(systemConfig, backendTarget, credentials);
+            const provider = await getOrCreateServiceProvider(systemConfig, LoggerHelper.logger ,backendTarget, credentials);
             const atoService = await provider.getAdtService<AtoService>(AtoService);
             const atoSettings = await atoService?.getAtoInfo();
 

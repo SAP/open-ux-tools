@@ -1,6 +1,6 @@
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import { getService } from '@sap-ux/store';
-import { PackageInputChoices, TargetSystemType, TransportChoices } from './types';
+import { TargetSystemType } from './types';
 import { getTransportConfigInstance } from './service-provider-utils';
 import { t } from './i18n';
 import LoggerHelper from './logger-helper';
@@ -8,13 +8,11 @@ import { listPackages } from './validator-utils';
 import type {
     AbapDeployConfigAnswers,
     AbapDeployConfigAnswersInternal,
-    BackendTarget,
-    Credentials,
-    InitTransportConfigResult,
-    SystemConfig
+    InitTransportConfigResult
 } from './types';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { Destinations, Destination } from '@sap-ux/btp-utils';
+import { PackageInputChoices, TransportChoices, type BackendTarget, type Credentials, type SystemConfig } from '@sap-ux/deploy-config-generator-shared';
 import { CREATE_TR_DURING_DEPLOY } from './constants';
 
 let cachedDestinations: Destinations = {};

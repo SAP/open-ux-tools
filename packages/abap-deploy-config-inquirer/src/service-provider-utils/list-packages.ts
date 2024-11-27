@@ -1,9 +1,8 @@
 import { ListPackageService } from '@sap-ux/axios-extension';
-import { getOrCreateServiceProvider } from './abap-service-provider';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS } from '../constants';
 import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
-import type { BackendTarget, SystemConfig } from '../types';
+import { getOrCreateServiceProvider, type BackendTarget, type SystemConfig } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * List packages from the service.
@@ -19,7 +18,7 @@ export async function listPackagesFromService(
     backendTarget?: BackendTarget
 ): Promise<string[]> {
     try {
-        const provider = await getOrCreateServiceProvider(systemConfig, backendTarget);
+        const provider = await getOrCreateServiceProvider(systemConfig, LoggerHelper.logger, backendTarget);
         const adtService = await provider.getAdtService<ListPackageService>(ListPackageService);
         if (adtService) {
             return await adtService.listPackages({

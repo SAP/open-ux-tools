@@ -1,4 +1,3 @@
-import { PromptState } from './prompt-state';
 import { type Destinations, isS4HC, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
 import {
     createTransportNumber,
@@ -18,14 +17,12 @@ import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
 import {
     ClientChoiceValue,
-    PackageInputChoices,
     TargetSystemType,
-    TransportChoices,
-    type SystemConfig,
     type AbapDeployConfigAnswersInternal,
-    type AbapSystemChoice,
-    type BackendTarget
+    type AbapSystemChoice
 } from '../types';
+import type { BackendTarget, SystemConfig } from '@sap-ux/deploy-config-generator-shared';
+import { PackageInputChoices, PromptState, TransportChoices } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Validates the destination question and sets the destination in the prompt state.

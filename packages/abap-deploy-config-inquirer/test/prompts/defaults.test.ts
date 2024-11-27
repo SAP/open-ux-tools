@@ -7,8 +7,8 @@ import {
 } from '../../src/prompts/defaults';
 import { getAbapSystemChoices } from '../../src/prompts/helpers';
 import { mockTargetSystems } from '../fixtures/targets';
-import { PromptState } from '../../src/prompts/prompt-state';
-import { PackageInputChoices, TargetSystemType, TransportChoices, TransportConfig } from '../../src/types';
+import { PromptState, PackageInputChoices, TransportChoices, TransportConfig } from '@sap-ux/deploy-config-generator-shared';
+import { TargetSystemType } from '../../src/types';
 
 describe('defaults', () => {
     beforeEach(() => {

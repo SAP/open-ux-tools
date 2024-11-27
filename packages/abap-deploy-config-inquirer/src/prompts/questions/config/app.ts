@@ -1,9 +1,9 @@
 import { showUi5AppDeployConfigQuestion } from '../../conditions';
 import { validateAppDescription, validateUi5AbapRepoName } from '../../validators';
-import { PromptState } from '../../prompt-state';
 import { t } from '../../../i18n';
 import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../../types';
 import type { InputQuestion, Question } from 'inquirer';
+import { PromptState } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Returns the UI5 ABAP repository prompt.

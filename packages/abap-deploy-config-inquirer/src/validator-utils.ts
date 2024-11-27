@@ -1,11 +1,10 @@
 import { t } from './i18n';
-import { PromptState } from './prompts/prompt-state';
 import {
     createTransportNumberFromService,
     getTransportListFromService,
     listPackagesFromService
 } from './service-provider-utils';
-import type { BackendTarget, SystemConfig, TransportListItem } from './types';
+import { PromptState, type BackendTarget, type SystemConfig, type TransportListItem } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Checks if the input is an empty string.

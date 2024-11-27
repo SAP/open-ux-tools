@@ -1,4 +1,3 @@
-import { PromptState } from '../../prompt-state';
 import {
     defaultOrShowManualPackageQuestion,
     defaultOrShowSearchPackageQuestion,
@@ -8,14 +7,11 @@ import { t } from '../../../i18n';
 import { getPackageChoices, getPackageInputChoices } from '../../helpers';
 import { defaultPackage, defaultPackageChoice } from '../../defaults';
 import { validatePackage, validatePackageChoiceInput, validatePackageChoiceInputForCli } from '../../validators';
-import {
-    promptNames,
-    type PackageInputChoices,
-    type AbapDeployConfigAnswersInternal,
-    type AbapDeployConfigPromptOptions
-} from '../../../types';
+import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../../types';
 import type { InputQuestion, ListQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import { PromptState } from '@sap-ux/deploy-config-generator-shared';
+import type { PackageInputChoices } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Returns the package prompts.

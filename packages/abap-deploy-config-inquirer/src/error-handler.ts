@@ -1,4 +1,4 @@
-import { PromptState } from './prompts/prompt-state';
+import { PromptState } from '@sap-ux/deploy-config-generator-shared';
 import LoggerHelper from './logger-helper';
 
 /**

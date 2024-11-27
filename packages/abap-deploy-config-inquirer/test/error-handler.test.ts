@@ -1,6 +1,6 @@
 import { bail, handleTransportConfigError } from '../src/error-handler';
 import LoggerHelper from '../src/logger-helper';
-import { PromptState } from '../src/prompts/prompt-state';
+import { PromptState } from '@sap-ux/deploy-config-generator-shared';
 
 describe('Test error handler', () => {
     it('should throw error with error message', () => {

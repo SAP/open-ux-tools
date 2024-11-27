@@ -1,10 +1,10 @@
 import { AtoSettings, TenantType } from '@sap-ux/axios-extension';
 import { t } from '../../src/i18n';
 import { getTransportConfigInstance } from '../../src/service-provider-utils';
-import { getOrCreateServiceProvider } from '../../src/service-provider-utils/abap-service-provider';
+import { getOrCreateServiceProvider } from '@sap-ux/deploy-config-generator-shared';
 
-jest.mock('../../src/service-provider-utils/abap-service-provider', () => ({
-    ...jest.requireActual('../../src/service-provider-utils/abap-service-provider'),
+jest.mock('@sap-ux/deploy-config-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/deploy-config-generator-shared'),
     getOrCreateServiceProvider: jest.fn()
 }));
 

@@ -1,7 +1,7 @@
 import { getPrompts, prompt } from '../src';
 import { getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
-import { AbapDeployConfigAnswersInternal } from '../src/types';
+import type { AbapDeployConfigAnswersInternal } from '@sap-ux/deploy-config-generator-shared';
 
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),

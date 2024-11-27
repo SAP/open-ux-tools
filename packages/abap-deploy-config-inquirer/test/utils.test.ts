@@ -21,10 +21,10 @@ import {
     AbapDeployConfigAnswers,
     AbapDeployConfigAnswersInternal,
     PackageInputChoices,
-    TransportChoices
-} from '../src/types';
+    TransportChoices,
+    PromptState
+} from '@sap-ux/deploy-config-generator-shared';
 import { CREATE_TR_DURING_DEPLOY } from '../src/constants';
-import { PromptState } from '../src/prompts/prompt-state';
 
 jest.mock('../src/validator-utils', () => ({
     ...jest.requireActual('../src/validator-utils'),

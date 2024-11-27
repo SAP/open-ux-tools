@@ -1,6 +1,6 @@
 import { initI18n, t } from '../../src/i18n';
 import { getAbapSystemChoices, getPackageChoices, updatePromptStateUrl } from '../../src/prompts/helpers';
-import { PromptState } from '../../src/prompts/prompt-state';
+import { PromptState } from '@sap-ux/deploy-config-generator-shared';
 import { queryPackages } from '../../src/utils';
 import { mockDestinations } from '../fixtures/destinations';
 import { mockTargetSystems } from '../fixtures/targets';

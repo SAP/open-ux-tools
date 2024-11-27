@@ -2,9 +2,9 @@ import { initI18n, t } from '../../../../src/i18n';
 import { getTransportRequestPrompts } from '../../../../src/prompts/questions';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
-import { promptNames, TransportChoices } from '../../../../src/types';
+import { promptNames } from '../../../../src/types';
 import { ListQuestion } from '@sap-ux/inquirer-common';
-import { PromptState } from '../../../../src/prompts/prompt-state';
+import { PromptState, TransportChoices } from '@sap-ux/deploy-config-generator-shared';
 
 describe('getTransportRequestPrompts', () => {
     beforeAll(async () => {

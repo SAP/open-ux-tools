@@ -2,22 +2,19 @@ import type { UrlAbapTarget } from '@sap-ux/system-access';
 import { t } from '../i18n';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS } from '../constants';
 import { queryPackages } from '../utils';
-import { PromptState } from './prompt-state';
 import LoggerHelper from '../logger-helper';
 import { getDisplayName, isAbapEnvironmentOnBtp, type Destinations } from '@sap-ux/btp-utils';
 import {
     ClientChoiceValue,
-    PackageInputChoices,
     TargetSystemType,
-    TransportChoices,
     type AbapSystemChoice,
-    type AbapDeployConfigAnswersInternal,
-    type BackendTarget
+    type AbapDeployConfigAnswersInternal
 } from '../types';
 import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
 import type { ChoiceOptions, ListChoiceOptions } from 'inquirer';
 import { getSystemDisplayName } from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { BackendTarget, PackageInputChoices, PromptState, TransportChoices } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Returns a list of destination choices.

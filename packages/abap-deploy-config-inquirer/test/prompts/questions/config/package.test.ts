@@ -3,10 +3,10 @@ import { getPackagePrompts } from '../../../../src/prompts/questions';
 import * as helpers from '../../../../src/prompts/helpers';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
-import { promptNames, PackageInputChoices } from '../../../../src/types';
+import { promptNames } from '../../../../src/types';
 import { ListQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
-import { PromptState } from '../../../../src/prompts/prompt-state';
+import { PromptState, PackageInputChoices } from '@sap-ux/deploy-config-generator-shared';
 
 describe('getPackagePrompts', () => {
     beforeAll(async () => {

@@ -1,7 +1,11 @@
-import type { AbapTarget } from '@sap-ux/system-access';
-import type { ServiceProvider } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Validator } from 'inquirer';
+import type {
+    BackendTarget,
+    PackageInputChoices,
+    TransportChoices,
+    TransportConfig
+} from '@sap-ux/deploy-config-generator-shared';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -11,33 +15,6 @@ export const enum ClientChoiceValue {
     Base = 'base',
     New = 'new',
     Blank = 'blank'
-}
-
-export interface Credentials {
-    username?: string;
-    password?: string;
-}
-
-/**
- * The target system used during generation.
- */
-export interface BackendTarget {
-    /**
-     * The name of the backend system.
-     */
-    systemName?: string;
-    /**
-     * ABAP Target - can be either a URL Abap Target or a destination.
-     */
-    abapTarget: AbapTarget;
-    /**
-     * The connected service provider for the backend system. Passing this removes the need for re-authentication.
-     */
-    serviceProvider?: ServiceProvider;
-    /**
-     * The type of project that the deployment configuration is for.
-     */
-    type?: 'application' | 'library';
 }
 
 export interface AbapSystemChoice {
@@ -171,15 +148,6 @@ type AbapDeployConfigCommonInquirerOptions = {
 export type AbapDeployConfigPromptOptions = Partial<abapDeployConfigPromptOptions> &
     AbapDeployConfigCommonInquirerOptions;
 
-export interface TransportAnswers {
-    transportRequired?: boolean;
-    transportConfig?: TransportConfig;
-    transportConfigError?: string;
-    transportConfigNeedsCreds?: boolean;
-    transportList?: TransportListItem[];
-    newTransportNumber?: string;
-}
-
 export interface AbapDeployConfigAnswers {
     url: string;
     destination?: string;
@@ -208,57 +176,11 @@ export interface AbapDeployConfigAnswersInternal extends AbapDeployConfigAnswers
     abort?: boolean;
 }
 
-export interface TransportListItem {
-    transportReqNumber: string;
-    transportReqDescription: string;
-}
-
-export interface TransportConfig {
-    /**
-     *
-     */
-    getPackage(): string | undefined;
-    /**
-     *
-     */
-    getApplicationPrefix(): string | undefined;
-    /**
-     *
-     */
-    isTransportRequired(): boolean;
-    /**
-     *
-     */
-    getDefaultTransport(): string | undefined;
-    /**
-     *
-     */
-    getOperationsType(): string | undefined;
-}
-
 export interface InitTransportConfigResult {
     transportConfig?: TransportConfig;
     transportConfigNeedsCreds?: boolean;
     error?: string;
     warning?: string;
-}
-
-export interface SystemConfig {
-    url?: string;
-    client?: string;
-    destination?: string;
-}
-
-export enum PackageInputChoices {
-    EnterManualChoice = 'EnterManualChoice',
-    ListExistingChoice = 'ListExistingChoice'
-}
-
-export enum TransportChoices {
-    EnterManualChoice = 'EnterManualChoice',
-    ListExistingChoice = 'ListExistingChoice',
-    CreateNewChoice = 'CreateNewChoice',
-    CreateDuringDeployChoice = 'CreateDuringDeployChoice'
 }
 
 export type AbapDeployConfigQuestion = YUIQuestion<AbapDeployConfigAnswersInternal>;

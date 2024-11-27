@@ -10,7 +10,25 @@
   },
   "references": [
     {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
       "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../system-access"
+    },
+    {
+      "path": "../ui5-config"
     }
   ]
 }

@@ -1,13 +1,10 @@
-import {
-    getOrCreateServiceProvider,
-    deleteCachedServiceProvider
-} from '../../src/service-provider-utils/abap-service-provider';
+import { getOrCreateServiceProvider, deleteCachedServiceProvider } from '../../src/service-provider-utils';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { PromptState } from '../../src/prompts/prompt-state';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
-import LoggerHelper from '../../src/logger-helper';
 import { AuthenticationType } from '@sap-ux/store';
+import { ToolsLogger } from '@sap-ux/logger';
 
 jest.mock('@sap-ux/system-access', () => ({
     ...jest.requireActual('@sap-ux/system-access'),
@@ -20,6 +17,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 const mockCreateAbapServiceProvider = createAbapServiceProvider as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
+const logger = new ToolsLogger();
 
 describe('getOrCreateServiceProvider', () => {
     afterEach(() => {
@@ -41,7 +39,7 @@ describe('getOrCreateServiceProvider', () => {
             password: 'password1'
         };
 
-        const serviceProvider = await getOrCreateServiceProvider({}, undefined, credentials);
+        const serviceProvider = await getOrCreateServiceProvider({}, logger, undefined, credentials);
 
         expect(serviceProvider).toBeInstanceOf(AbapServiceProvider);
         expect(mockCreateAbapServiceProvider).toBeCalledWith(
@@ -53,7 +51,7 @@ describe('getOrCreateServiceProvider', () => {
             },
             { ignoreCertErrors: false, auth: { username: 'user1', password: 'password1' } },
             false,
-            LoggerHelper.logger
+            logger
         );
 
         // use existing provider when called again
@@ -62,6 +60,7 @@ describe('getOrCreateServiceProvider', () => {
                 url: 'http://target.url',
                 client: '100'
             },
+            logger,
             undefined,
             credentials
         );
@@ -75,7 +74,7 @@ describe('getOrCreateServiceProvider', () => {
             destination: 'MOCK_DESTINATION'
         };
 
-        const serviceProvider = await getOrCreateServiceProvider({});
+        const serviceProvider = await getOrCreateServiceProvider({}, logger);
 
         expect(serviceProvider).toBeInstanceOf(AbapServiceProvider);
         expect(mockCreateAbapServiceProvider).toBeCalledWith(
@@ -84,7 +83,7 @@ describe('getOrCreateServiceProvider', () => {
             },
             { ignoreCertErrors: false },
             false,
-            LoggerHelper.logger
+            logger
         );
     });
 
@@ -100,7 +99,7 @@ describe('getOrCreateServiceProvider', () => {
             serviceProvider: abapServiceProvider
         };
 
-        const serviceProvider = await getOrCreateServiceProvider(systemConfig, backendTarget);
+        const serviceProvider = await getOrCreateServiceProvider(systemConfig, logger, backendTarget);
         expect(serviceProvider).toBe(abapServiceProvider);
     });
 });

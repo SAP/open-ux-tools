@@ -1,13 +1,12 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { isSameSystem } from '../utils';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { AuthenticationType } from '@sap-ux/store';
-import { PromptState } from '../prompts/prompt-state';
-import LoggerHelper from '../logger-helper';
+import { type Logger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { BackendTarget, Credentials, SystemConfig } from '../types';
 import type { AbapTarget } from '@sap-ux/ui5-config';
+import { PromptState } from '../prompts/prompt-state';
 
 let abapServiceProvider: AbapServiceProvider | undefined;
 let system: SystemConfig;
@@ -22,6 +21,7 @@ let system: SystemConfig;
  */
 export async function getOrCreateServiceProvider(
     systemConfig: SystemConfig,
+    logger: Logger,
     backendTarget?: BackendTarget,
     credentials?: Credentials
 ): Promise<AbapServiceProvider> {
@@ -43,7 +43,7 @@ export async function getOrCreateServiceProvider(
         system = backendTarget.abapTarget;
         return abapServiceProvider;
     }
-    abapServiceProvider = await createNewServiceProvider(credentials);
+    abapServiceProvider = await createNewServiceProvider(logger, credentials);
     return abapServiceProvider;
 }
 
@@ -53,7 +53,7 @@ export async function getOrCreateServiceProvider(
  * @param credentials - user credentials
  * @returns abap service provider
  */
-async function createNewServiceProvider(credentials?: Credentials): Promise<AbapServiceProvider> {
+async function createNewServiceProvider(logger: Logger, credentials?: Credentials): Promise<AbapServiceProvider> {
     let abapTarget: AbapTarget;
     if (isAppStudio()) {
         abapTarget = { destination: PromptState.abapDeployConfig.destination } as DestinationAbapTarget;
@@ -81,7 +81,7 @@ async function createNewServiceProvider(credentials?: Credentials): Promise<Abap
         auth
     };
 
-    const serviceProvider = await createAbapServiceProvider(abapTarget, requestOptions, false, LoggerHelper.logger);
+    const serviceProvider = await createAbapServiceProvider(abapTarget, requestOptions, false, logger);
 
     system = {
         url: PromptState.abapDeployConfig.url,
@@ -100,4 +100,22 @@ async function createNewServiceProvider(credentials?: Credentials): Promise<Abap
  */
 export function deleteCachedServiceProvider(): void {
     abapServiceProvider = undefined;
+}
+
+/**
+ * Check if the current system is the same as the one in the answers.
+ *
+ * @param abapSystem - system configuration
+ * @param url - url
+ * @param client - client
+ * @param destination - destination
+ * @returns true if the system is the same
+ */
+function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: string, destination?: string): boolean {
+    return Boolean(
+        (abapSystem?.url &&
+            abapSystem.url.trim()?.replace(/\/$/, '') === url?.trim()?.replace(/\/$/, '') &&
+            abapSystem.client === client) ??
+            (!!abapSystem?.destination && destination === abapSystem?.destination)
+    );
 }

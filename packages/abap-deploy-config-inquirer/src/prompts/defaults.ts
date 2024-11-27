@@ -1,6 +1,6 @@
+import { PackageInputChoices, PromptState, TransportChoices } from '@sap-ux/deploy-config-generator-shared';
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
-import { PromptState } from './prompt-state';
-import { PackageInputChoices, TargetSystemType, TransportChoices, type AbapSystemChoice } from '../types';
+import { TargetSystemType, type AbapSystemChoice } from '../types';
 
 /**
  * Determines the default target system from the abap system choices.

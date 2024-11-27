@@ -12,7 +12,6 @@ import { t } from '../../i18n';
 import { getClientChoicePromptChoices, getAbapSystemChoices, updatePromptStateUrl } from '../helpers';
 import { defaultTargetSystem, defaultUrl } from '../defaults';
 import { getAbapSystems } from '../../utils';
-import { PromptState } from '../prompt-state';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio, isOnPremiseDestination, type Destinations } from '@sap-ux/btp-utils';
 import {
@@ -20,12 +19,12 @@ import {
     ClientChoiceValue,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
-    type AbapSystemChoice,
-    type BackendTarget
+    type AbapSystemChoice
 } from '../../types';
 import type { InputQuestion, ListQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Question } from 'inquirer';
 import { TargetSystemType } from '../../types';
+import { PromptState, type BackendTarget } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Returns the destination prompt.

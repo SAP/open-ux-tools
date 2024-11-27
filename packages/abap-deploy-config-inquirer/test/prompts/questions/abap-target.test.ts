@@ -10,7 +10,7 @@ import * as conditions from '../../../src/prompts/conditions';
 import { initI18n, t } from '../../../src/i18n';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { UrlAbapTarget } from '@sap-ux/system-access';
-import { PromptState } from '../../../src/prompts/prompt-state';
+import { PromptState } from '@sap-ux/deploy-config-generator-shared';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),

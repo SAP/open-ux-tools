@@ -8,17 +8,12 @@ import {
 } from '../../conditions';
 import { getTransportChoices } from '../../helpers';
 import { validateTransportChoiceInput, validateTransportQuestion } from '../../validators';
-import { PromptState } from '../../prompt-state';
 import { transportName } from '../../../service-provider-utils/transport-list';
 import { defaultTransportListChoice, defaultTransportRequestChoice } from '../../defaults';
-import {
-    promptNames,
-    type AbapDeployConfigAnswersInternal,
-    type AbapDeployConfigPromptOptions,
-    type TransportChoices
-} from '../../../types';
+import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../../types';
 import type { InputQuestion, ListQuestion, Question } from 'inquirer';
 import { useCreateTrDuringDeploy } from '../../../utils';
+import { PromptState, type TransportChoices } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Returns the transport prompts.

@@ -1,10 +1,9 @@
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
-import { getOrCreateServiceProvider } from './abap-service-provider';
 import LoggerHelper from '../logger-helper';
-import { PromptState } from '../prompts/prompt-state';
-import type { BackendTarget, SystemConfig, TransportListItem } from '../types';
 import type { ListChoiceOptions } from 'inquirer';
+import { getOrCreateServiceProvider, PromptState } from '@sap-ux/deploy-config-generator-shared';
+import type { BackendTarget, SystemConfig, TransportListItem} from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Get the transport list from the service.
@@ -23,7 +22,7 @@ export async function getTransportListFromService(
 ): Promise<TransportListItem[] | undefined> {
     let transportListItems: TransportListItem[] | undefined;
     try {
-        const provider = await getOrCreateServiceProvider(systemConfig, backendTarget);
+        const provider = await getOrCreateServiceProvider(systemConfig, LoggerHelper.logger, backendTarget);
         const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
         const transportReqList = await adtService?.getTransportRequests(packageName, appName);
 

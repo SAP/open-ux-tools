@@ -1,5 +1,4 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { PromptState } from './prompt-state';
 import { findBackendSystemByUrl, initTransportConfig } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
 import { t } from '../i18n';
@@ -7,15 +6,13 @@ import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
 import {
     ClientChoiceValue,
-    PackageInputChoices,
     TargetSystemType,
-    TransportChoices,
     type UI5AbapRepoPromptOptions,
     type AbapDeployConfigAnswersInternal,
-    type AbapDeployConfigPromptOptions,
-    type BackendTarget,
-    type TransportListItem
+    type AbapDeployConfigPromptOptions
 } from '../types';
+import { PackageInputChoices, PromptState, TransportChoices,  } from '@sap-ux/deploy-config-generator-shared';
+import type { BackendTarget, TransportListItem } from '@sap-ux/deploy-config-generator-shared';
 
 /**
  * Determines if URL question should be shown.

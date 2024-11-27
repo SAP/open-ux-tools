@@ -1,4 +1,4 @@
-import { PromptState } from '../../src/prompts/prompt-state';
+import { PromptState, PackageInputChoices, TransportChoices } from '@sap-ux/deploy-config-generator-shared';
 import { AuthenticationType } from '../../../store/src';
 import { initI18n, t } from '../../src/i18n';
 import {
@@ -19,7 +19,7 @@ import {
     validateUrl
 } from '../../src/prompts/validators';
 import * as validatorUtils from '../../src/validator-utils';
-import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
+import { ClientChoiceValue, TargetSystemType } from '../../src/types';
 import * as utils from '../../src/utils';
 import { mockDestinations } from '../fixtures/destinations';
 import * as serviceProviderUtils from '../../src/service-provider-utils';

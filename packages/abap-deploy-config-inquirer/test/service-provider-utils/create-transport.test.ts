@@ -1,10 +1,10 @@
 import { initI18n, t } from '../../src/i18n';
 import LoggerHelper from '../../src/logger-helper';
 import { createTransportNumberFromService } from '../../src/service-provider-utils';
-import { getOrCreateServiceProvider } from '../../src/service-provider-utils/abap-service-provider';
+import { getOrCreateServiceProvider } from '@sap-ux/deploy-config-generator-shared';
 
-jest.mock('../../src/service-provider-utils/abap-service-provider', () => ({
-    ...jest.requireActual('../../src/service-provider-utils/abap-service-provider'),
+jest.mock('@sap-ux/deploy-config-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/deploy-config-generator-shared'),
     getOrCreateServiceProvider: jest.fn()
 }));
 

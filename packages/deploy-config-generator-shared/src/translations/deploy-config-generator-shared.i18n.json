@@ -16,7 +16,9 @@
         "noMtaId": "MTA ID cannot be empty",
         "noMtaInRoot": "Error: no {{mtaFileName}} in {{root}}",
         "noPath": "Cannot find \"path\" in backend configuration in ui5.yaml",
-        "unrecognizedTarget": "Unrecognized target: {{target}}"
+        "unrecognizedTarget": "Unrecognized target: {{target}}",
+        "debugAbapTargetSystem": "Error while getting ABAP target system during {{method}}, error {{error}}",
+        "invalidCloudPackage": "The package entered is not meant to be used for cloud deployments."
     },
     "debug": {
         "loggerInitialised": "LogWrapper initialized for DeploymentGenerator"

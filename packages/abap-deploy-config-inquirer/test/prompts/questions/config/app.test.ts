@@ -2,8 +2,8 @@ import { initI18n, t } from '../../../../src/i18n';
 import { getAppConfigPrompts } from '../../../../src/prompts/questions';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
-import { promptNames, TransportConfig } from '../../../../src/types';
-import { PromptState } from '../../../../src/prompts/prompt-state';
+import { promptNames } from '../../../../src/types';
+import { PromptState, TransportConfig } from '@sap-ux/deploy-config-generator-shared';
 
 describe('getConfirmPrompts', () => {
     beforeAll(async () => {
