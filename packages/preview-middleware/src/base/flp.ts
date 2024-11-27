@@ -33,29 +33,6 @@ import {
     getAppName
 } from './config';
 
-const DEVELOPER_MODE_CONFIG = new Map([
-    // Run application in design time mode
-    // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
-    ['xx-designMode', 'true'],
-    // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
-    ['xx-suppressDeactivationOfControllerCode', 'true'],
-    // Make sure that XML preprocessing results are correctly invalidated
-    ['xx-viewCache', 'false']
-]);
-
-/**
- * Adjusted parameter names since UI5 1.120
- */
-const DEVELOPER_MODE_CONFIG_KEBAP_CASE = new Map([
-    // Run application in design time mode
-    // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
-    ['xx-design-mode', 'true'],
-    // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
-    ['xx-suppress-deactivation-of-controller-code', 'true'],
-    // Make sure that XML preprocessing results are correctly invalidated
-    ['xx-view-cache', 'false']
-]);
-
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
 /**
@@ -173,6 +150,30 @@ export class FlpSandbox {
     }
 
     /**
+     * Get the configuration for the developer mode.
+     *
+     * @param ui5MajorVersion - the major version of UI5
+     * @returns the configuration for the developer mode
+     * @private
+     */
+    private getDeveloperModeConfig(ui5MajorVersion: number): Map<string, string> {
+        return new Map([
+            // Run application in design time mode
+            // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
+            [`xx-design${ui5MajorVersion < 2 ? 'Mode' : '-mode'}`, 'true'],
+            // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
+            [
+                `xx-suppress${
+                    ui5MajorVersion < 2 ? 'DeactivationOfControllerCode' : '-deactivation-of-controller-code'
+                }`,
+                'true'
+            ],
+            // Make sure that XML preprocessing results are correctly invalidated
+            [`xx-view${ui5MajorVersion < 2 ? 'Cache' : '-cache'}`, 'false']
+        ]);
+    }
+
+    /**
      * Generates the FLP sandbox for an editor.
      *
      * @param req the request
@@ -204,9 +205,8 @@ export class FlpSandbox {
 
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
 
-        const developerModeConfig = ui5Version.major < 2 ? DEVELOPER_MODE_CONFIG : DEVELOPER_MODE_CONFIG_KEBAP_CASE;
         if (editor.developerMode === true) {
-            config.ui5.bootstrapOptions = serializeUi5Configuration(developerModeConfig);
+            config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
         }
 
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
