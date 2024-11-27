@@ -42,7 +42,7 @@ export function writeAnnotationChange(
     try {
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
-        const changeFilePath = path.join(changesFolderPath, DirName.Manifest, changeFileName);
+        const changeFilePath = path.join(changesFolderPath, changeFileName);
         const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
 
         writeChangeToFile(changeFilePath, change, fs);
@@ -219,7 +219,7 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
     let changeObj: InboundChange | undefined;
     let filePath = '';
 
-    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes, DirName.Manifest);
+    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes);
 
     if (!existsSync(pathToInboundChangeFiles)) {
         return {
