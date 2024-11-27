@@ -91,6 +91,7 @@ function checkContentIntegrity(
     for (const missingContent of oldContentIntegrityArray) {
         differentContent.push({
             key: missingContent.contentKey,
+            newContent: undefined,
             oldContent: missingContent.content
         });
     }

@@ -1,0 +1,16 @@
+{
+    "fileIntegrity": [
+        {
+            "filePath": "file-to-update.txt",
+            "hash": "76207895687ab5899c7435d8df4f9e97",
+            "content": "outdated content"
+        }
+    ],
+    "contentIntegrity": [
+        {
+            "contentKey": "key",
+            "hash": "24dc92ddb4b33d4f6749dd0613be7b2b",
+            "content": "outdated string"
+        }
+    ]
+}

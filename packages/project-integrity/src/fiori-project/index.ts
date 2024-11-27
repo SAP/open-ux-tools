@@ -2,7 +2,7 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import { checkProjectIntegrity, initProject, updateProjectIntegrity } from '../integrity';
-import { findFilesByExtension } from '@sap-ux/project-access/src/file';
+import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { CheckIntegrityResult, Content } from '../types';
 
 export const fioriIntegrityDataPath = join('.fiori-ai/integrity.json');
