@@ -5,8 +5,8 @@
         "generateManagedApplicationToRouterMessage": "Add application to managed application router?",
         "directBindingDestinationHint": "Destination name - The app router is configured to use direct service binding",
         "overwriteMessage": "Editing the deployment configuration will overwrite existing configuration, are you sure you want to continue?",
-        "overwriteHintMessage": "Deployment config will abort if you choose no. Click Finish to abort.",
-        "mtaPathBreadcrumbMessage": "App Router Path",
+        "overwriteHintMessage": "Deployment configuration will abort if you choose no. Click Finish to abort.",
+        "mtaPathBreadcrumbMessage": "Application Router Path",
         "mtaPathMessage": "Application router project path",
         "mtaIdMessage": "MTA ID",
         "mtaDescriptionMessage": "MTA description",
@@ -38,7 +38,7 @@
     "info": {
         "addManagedAppRouter": "Add managed application router is enabled",
         "overwriteDestination": "Overwriting destination is enabled",
-        "addConnectivityService": "Add connectivity service is enabled in cf app router",
-        "addABAPServiceBinding": "Abap service binding is enabled in cf app router"
+        "addConnectivityService": "Add connectivity service is enabled in cf application router",
+        "addABAPServiceBinding": "Abap service binding is enabled in cf application router"
     }
 }
