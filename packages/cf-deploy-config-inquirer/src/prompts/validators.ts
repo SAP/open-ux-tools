@@ -58,8 +58,6 @@ export function validateDestinationQuestion(
 /**
  * Validates the provided MTA path.
  *
- * This function checks if the input path exists and is valid.
- *
  * @param {string} input - The input string representing the MTA path to validate.
  * @returns {boolean|string} - Returns `true` if the path is valid, or an error message if the path is invalid or does not exist.
  */
@@ -73,14 +71,12 @@ export function validateMtaPath(input: string): boolean | string {
  *
  * This function performs the following checks:
  * - Ensures the input is a non-empty string.
- * - Validates the input against a regex pattern to ensure it contains only valid characters (letters, numbers, underscores, dashes, periods).
+ * - Validates the input against a regex pattern.
  * - Checks if the MTA ID already exists in the specified path.
- *
- * If any of these checks fail, it returns an appropriate error message. If all checks pass, it returns `true`.
  *
  * @param {string} input - The MTA ID to validate.
  * @param {CfAppRouterDeployConfigAnswers} previousAnswers - The previous answers, containing the MTA path.
- * @returns {boolean|string} - Returns `true` if the MTA ID is valid, or an error message if validation fails.
+ * @returns {boolean|string} - Returns true if the MTA ID is valid, or an error message if validation fails.
  */
 export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployConfigAnswers): boolean | string {
     if (typeof input !== 'string' || !input.trim()) {

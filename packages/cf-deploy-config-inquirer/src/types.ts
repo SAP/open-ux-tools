@@ -5,11 +5,11 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
  * Enum defining prompt names for Cloud Foundry (CF) deployment configuration.
  */
 export enum promptNames {
-    /* The prompt to specify the destination name for CF deployment. */
+    /** The prompt to specify the destination name for CF deployment. */
     destinationName = 'destinationName',
-    /* The prompt to specify if a managed app router should be added to the deployment. */
+    /** The prompt to specify if a managed app router should be added to the deployment. */
     addManagedAppRouter = 'addManagedAppRouter',
-    /* The prompt for confirming destination overwrite. */
+    /** The prompt for confirming destination overwrite. */
     overwrite = 'overwriteDestinationName'
 }
 
@@ -39,9 +39,9 @@ export enum appRouterPromptNames {
  * Configuration options for the 'destinationName' prompt used in deployment settings.
  */
 export type DestinationNamePromptOptions = {
-    /* Default value to suggest for the destination name. */
+    /** Default value to suggest for the destination name. */
     defaultValue: string;
-    /* Flag to indicate if a hint message should be shown to indicate the app router is configured.*/
+    /** Flag to indicate if a hint message should be shown to indicate the app router is configured.*/
     hint?: boolean;
     /**
      * List of additional destination choices available for the prompt.
@@ -82,7 +82,7 @@ export type booleanPromptOptions = Partial<
 /**
  * Defines options for string-type prompts in CF deployment configuration.
  */
-export type stringPromptOptions = Partial<Record<promptNames.destinationName, DestinationNamePromptOptions>>;
+type stringPromptOptions = Partial<Record<promptNames.destinationName, DestinationNamePromptOptions>>;
 
 /**
  * Configuration options for CF deployment prompts.
@@ -108,11 +108,11 @@ export type CfAppRouterDeployConfigQuestions = YUIQuestion<CfAppRouterDeployConf
  * User responses for CF deployment configuration.
  */
 export interface CfDeployConfigAnswers {
-    /* The selected Cloud Foundry destination. */
+    /** The selected Cloud Foundry destination. */
     destinationName?: string;
-    /* Indicates whether the user opted to include a managed application router. */
+    /** Indicates whether the user opted to include a managed application router. */
     addManagedRouter?: boolean;
-    /* Indicates whether the user opted to overwrite the destination. */
+    /** Indicates whether the user opted to overwrite the destination. */
     overwrite?: boolean;
 }
 
@@ -160,12 +160,12 @@ export interface CfAppRouterDeployConfigAnswers extends MtaConfig {
  * Interface for selectable system choices within prompts.
  */
 export interface CfSystemChoice {
-    /* Display name of the system choice. */
+    /** Display name of the system choice. */
     name: string;
-    /* Value associated with the system choice. */
+    /** Value associated with the system choice. */
     value: string;
-    /* Flag indicating if the system choice is an SCP destination. */
+    /** Flag indicating if the system choice is an SCP destination. */
     scp: boolean;
-    /* URL associated with the system choice. */
+    /** URL associated with the system choice. */
     url: string;
 }

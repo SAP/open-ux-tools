@@ -13,10 +13,7 @@ import { getCFAbapInstanceChoices, ErrorHandler } from '@sap-ux/inquirer-common'
 /**
  * Generates a prompt for selecting the MTA path.
  *
- * This function creates an input prompt that allows the user to browse and select a folder for the MTA path.
- * It provides default values, a custom breadcrumb message, and validation for ensuring the selected path exists.
- *
- * @param mtaPath
+ * @param mtaPath  Mta Path string which allows the user to browse and select a folder for the MTA path
  * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for selecting the MTA path.
  */
 function getMtaPathPrompt(mtaPath: string): CfAppRouterDeployConfigQuestions {
@@ -34,7 +31,7 @@ function getMtaPathPrompt(mtaPath: string): CfAppRouterDeployConfigQuestions {
 }
 
 /**
- * Generates a prompt for entering the MTA ID..
+ * Generates a prompt for entering the MTA ID.
  *
  * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for entering the MTA ID.
  */
@@ -156,9 +153,8 @@ function getDestinationService(): CfAppRouterDeployConfigQuestions {
  * Generates a prompt for selecting a service provider from available services.
  *
  * This prompt will be shown if the user chooses to add a destination service and the router type standalone.
- * The prompt is for selecting an ABAP environment service.
  *
- * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for selecting a service provider.
+ * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for selecting for selecting an ABAP environment service.
  */
 function getServiceProvider(): CfAppRouterDeployConfigQuestions {
     const errorHandler = new ErrorHandler();
@@ -228,7 +224,7 @@ export async function getAppRouterQuestions(
         }
     }
 
-    // Add `getServiceProvider` if `addABAPServiceBinding` is true
+    // Add prompts for selecting abap environment if addABAPServiceBinding is true
     if (promptOptions[appRouterPromptNames.addABAPServiceBinding]) {
         questions.push(getServiceProvider());
     }

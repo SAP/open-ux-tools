@@ -38,10 +38,9 @@ async function getPrompts(
  * Retrieves the application router configuration prompts.
  *
  * @param {CfDeployConfigPromptOptions} promptOptions - The options for configuring application router prompts.
- * @param {Logger} [logger] - An optional logger instance for logging purposes. If provided, it will be used
- *                            for any logging during the prompt retrieval process.
+ * @param {Logger} [logger] - An optional logger instance.
  * @returns {Promise<CfAppRouterDeployConfigQuestions[]>} A promise that resolves to an array of
- *                                                       application router deployment configuration questions.
+ * application router deployment configuration questions.
  */
 async function getAppRouterPrompts(
     promptOptions: CfAppRouterDeployConfigPromptOptions,
