@@ -516,15 +516,15 @@ export class MtaConfig {
      * Append and/or cleanup the destination resource if missing in mta.yaml.
      *
      * @param {boolean} isManagedApp - if true, append managed approuter configuration
-     * @param {boolean} doCleanUp - if true, will ensure any missing modules | resources are appended
+     * @param {boolean} addMissingModules - if true, will ensure any missing modules | resources are appended
      * @returns {Promise<void>} - A promise that resolves when the change request has been processed.
      */
-    public async addRoutingModules(isManagedApp = false, doCleanUp = true): Promise<void> {
+    public async addRoutingModules(isManagedApp: boolean = false, addMissingModules: boolean = true): Promise<void> {
         if (isManagedApp && !this.modules.has('com.sap.application.content:destination')) {
             await this.addManagedAppRouter();
         }
 
-        if (doCleanUp) {
+        if (addMissingModules) {
             await this.cleanupMissingResources();
         }
 
