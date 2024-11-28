@@ -72,8 +72,6 @@ export class AddTableCustomColumnQuickAction
         });
     }
 
-
-
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         if (!table) {
