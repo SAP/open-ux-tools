@@ -6,7 +6,7 @@ import type { Logger } from '@sap-ux/logger';
 
 jest.mock('../../../src/utils', () => ({
     ...jest.requireActual('../../../src/utils'),
-    isAppStudio: jest.fn(),
+    isAppStudio: jest.fn()
 }));
 
 // Mock KeyStoreManager to simulate its unavailability
@@ -14,14 +14,14 @@ jest.mock('../../../src/secure-store/key-store', () => {
     return {
         KeyStoreManager: jest.fn().mockImplementation(() => {
             throw new Error('KeyStoreManager unavailable');
-        }),
+        })
     };
 });
 
 const mockLogger = {
     info: jest.fn(),
     warn: jest.fn(),
-    error: jest.fn(),
+    error: jest.fn()
 } as unknown as Logger;
 
 describe('getSecureStore', () => {

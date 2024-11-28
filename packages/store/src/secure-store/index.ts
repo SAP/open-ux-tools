@@ -30,9 +30,7 @@ const getKeyStoreManager = (log: Logger): SecureStore => {
 export const getSecureStore = (log: Logger): SecureStore => {
     const useDummyStore = isAppStudio() || (process.env.FIORI_TOOLS_DISABLE_SECURE_STORE ?? false);
 
-    return useDummyStore 
-        ? new DummyStore(log)
-        : getKeyStoreManager(log);
+    return useDummyStore ? new DummyStore(log) : getKeyStoreManager(log);
 };
 
 export * from './types';

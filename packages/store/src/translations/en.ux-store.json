@@ -6,10 +6,7 @@
         "noPropertiesSpecified": "No properties specified for update",
         "systemMigrationFailed": "Migrating systems from secure store failed",
         "systemAlreadyExistsInHybridStore": "System with ID: [{{systemId}}] already exists in hybrid store. Not migrating",
-        "couldNotDeleteRefreshToken": "Could not delete refresh token for [{{- url}}]",
-        "saveCredentialSerializationError": "Failed to serialize value while saving credentials",
-        "failedToDeserializeCredential": "Failed to deserialize value while retrieving credentials",
-        "invalidInputMissingServiceKey": "Invalid input: Service or Key is missing."
+        "couldNotDeleteRefreshToken": "Could not delete refresh token for [{{- url}}]"
     },
     "info": {
         "foundRefreshToken": "Found refresh token for {{- systemId}}",

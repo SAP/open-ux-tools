@@ -1,26 +1,27 @@
 import { KeyStoreManager } from '../../../src/secure-store/key-store';
 import { keyring } from '@zowe/secrets-for-zowe-sdk';
-import { Logger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
+import { text } from '../../../src/i18n';
 
 jest.mock('@sap-ux/logger', () => ({
     Logger: class {
         info = jest.fn();
         warn = jest.fn();
         error = jest.fn();
-    },
+    }
 }));
 
 describe('KeyStoreManager', () => {
-    let log: Logger = { 
+    const log: Logger = {
         info: jest.fn(),
         warn: jest.fn(),
-        error: jest.fn() 
+        error: jest.fn()
     } as unknown as Logger;
 
     let keyStoreManager: KeyStoreManager;
 
     beforeEach(() => {
-        jest.resetModules()
+        jest.resetModules();
         jest.clearAllMocks();
         keyStoreManager = new KeyStoreManager(log);
     });
@@ -28,9 +29,8 @@ describe('KeyStoreManager', () => {
     afterAll(async () => {
         jest.clearAllTimers();
         jest.restoreAllMocks();
-        await Promise.resolve(); 
+        await Promise.resolve();
     });
-    
 
     describe('save', () => {
         it('should save a credential successfully', async () => {
@@ -44,7 +44,9 @@ describe('KeyStoreManager', () => {
                 'testKey',
                 JSON.stringify({ value: 'testValue' })
             );
-            expect(log.info).toHaveBeenCalledWith('Credential saved successfully. Service: [testService], Key: [testKey]');
+            expect(log.info).toHaveBeenCalledWith(
+                'Credential saved successfully. Service: [testService], Key: [testKey]'
+            );
         });
 
         it('should handle serialization failure', async () => {
@@ -138,14 +140,14 @@ describe('KeyStoreManager', () => {
         it('should retrieve all credentials successfully', async () => {
             (keyring.findCredentials as jest.Mock).mockResolvedValue([
                 { account: 'account1', password: JSON.stringify({ value: 'value1' }) },
-                { account: 'account2', password: JSON.stringify({ value: 'value2' }) },
+                { account: 'account2', password: JSON.stringify({ value: 'value2' }) }
             ]);
 
             const result = await keyStoreManager.getAll<{ value: string }>('testService');
 
             expect(result).toEqual({
                 account1: { value: 'value1' },
-                account2: { value: 'value2' },
+                account2: { value: 'value2' }
             });
             expect(log.info).toHaveBeenCalledWith('All credentials retrieved. Service: [testService], Count: 2');
         });
@@ -153,15 +155,17 @@ describe('KeyStoreManager', () => {
         it('should handle deserialization failures for individual credentials', async () => {
             (keyring.findCredentials as jest.Mock).mockResolvedValue([
                 { account: 'account1', password: 'invalid json' },
-                { account: 'account2', password: JSON.stringify({ value: 'value2' }) },
+                { account: 'account2', password: JSON.stringify({ value: 'value2' }) }
             ]);
 
             const result = await keyStoreManager.getAll<{ value: string }>('testService');
 
             expect(result).toEqual({
-                account2: { value: 'value2' },
+                account2: { value: 'value2' }
             });
-            expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Failed to parse credential for Account: [account1]'));
+            expect(log.error).toHaveBeenCalledWith(
+                expect.stringContaining('Failed to parse credential for Account: [account1]')
+            );
         });
 
         it('should handle errors during retrieval of all credentials', async () => {
@@ -170,7 +174,9 @@ describe('KeyStoreManager', () => {
             const result = await keyStoreManager.getAll<{ value: string }>('testService');
 
             expect(result).toEqual({});
-            expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Failed to retrieve credentials for Service: [testService]'));
+            expect(log.error).toHaveBeenCalledWith(
+                expect.stringContaining('Failed to retrieve credentials for Service: [testService]')
+            );
         });
     });
 
@@ -258,8 +264,9 @@ describe('KeyStoreManager', () => {
             const result = await keyStoreManager.getAll(service);
 
             expect(result).toEqual({});
-            expect(log.error).toHaveBeenCalledWith('Failed to retrieve credentials for Service: []. Error: Find credentials failed');
+            expect(log.error).toHaveBeenCalledWith(
+                'Failed to retrieve credentials for Service: []. Error: Find credentials failed'
+            );
         });
     });
 });
-

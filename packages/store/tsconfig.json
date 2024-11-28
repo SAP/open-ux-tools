@@ -5,9 +5,5 @@
         "rootDir": "src",
         "outDir": "dist"
     },
-    "references": [{ "path": "../logger" }],
-    "exclude": [
-        //"./src/secure-store/zowe-sdk",
-        "./src/secure-store/napi-rs-keyring-store"
-    ]
+    "references": [{ "path": "../logger" }]
 }
