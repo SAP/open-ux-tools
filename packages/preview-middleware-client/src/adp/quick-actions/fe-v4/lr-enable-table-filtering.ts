@@ -11,11 +11,11 @@ export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
 const CONTROL_TYPE = 'sap.ui.mdc.Table';
 
 type Personalization = {
-    sort: boolean,
-    column: boolean,
-    filter: boolean,
-    group: boolean,
-    aggregate: boolean
+    sort: boolean;
+    column: boolean;
+    filter: boolean;
+    group: boolean;
+    aggregate: boolean;
 };
 
 /**
@@ -23,7 +23,8 @@ type Personalization = {
  */
 export class EnableTableFilteringQuickAction
     extends TableQuickActionDefinitionBase
-    implements NestedQuickActionDefinition {
+    implements NestedQuickActionDefinition
+{
     constructor(context: QuickActionContext) {
         super(ENABLE_TABLE_FILTERING, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context);
     }
@@ -46,10 +47,7 @@ export class EnableTableFilteringQuickAction
                 smartTable.getId(),
                 'personalization'
             ) as Personalization;
-            const isFilterEnabled =
-                value?.filter === undefined
-                    ? personalizationData.includes('Filter')
-                    : value.filter;
+            const isFilterEnabled = value?.filter === undefined ? personalizationData.includes('Filter') : value.filter;
             this.children.push({
                 label: `'${(smartTable as Table).getHeader()}' table`,
                 enabled: !isFilterEnabled,

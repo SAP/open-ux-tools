@@ -1,13 +1,8 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage, pageHasControlId } from '../../../cpe/quick-actions/utils';
-import {
-    GRID_TABLE_TYPE,
-    M_TABLE_TYPE,
-    SMART_TABLE_TYPE,
-    TREE_TABLE_TYPE
-} from '../table-quick-action-base';
-import { isQuickActionSupportedVersion, prepareManifestChange } from './utils';
+import { GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../table-quick-action-base';
+import { areManifestChangesSupported, prepareManifestChange } from './utils';
 
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { isA } from '../../../utils/core';
@@ -23,7 +18,8 @@ const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, TREE_TABLE_TYPE, GRID_TAB
  */
 export class EnableTableFilteringQuickAction
     extends SimpleQuickActionDefinitionBase
-    implements SimpleQuickActionDefinition {
+    implements SimpleQuickActionDefinition
+{
     constructor(context: QuickActionContext) {
         super(ENABLE_TABLE_FILTERING, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context);
     }
@@ -35,7 +31,7 @@ export class EnableTableFilteringQuickAction
     }
 
     async initialize(): Promise<void> {
-        const isUI5VersionNotSupported = await isQuickActionSupportedVersion();
+        const isUI5VersionNotSupported = await areManifestChangesSupported();
         if (isUI5VersionNotSupported) {
             return;
         }
@@ -60,7 +56,6 @@ export class EnableTableFilteringQuickAction
     }
 
     async execute(): Promise<FlexCommand[]> {
-
         if (!this.control) {
             return [];
         }

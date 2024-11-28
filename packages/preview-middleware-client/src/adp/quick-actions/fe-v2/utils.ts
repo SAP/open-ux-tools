@@ -5,19 +5,18 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getUi5Version, isLowerThanMinimalUi5Version, isVersionEqualOrHasNewerPatch } from '../../../utils/version';
 
-
 /**
-* Prepares the change for the manifest setting.
-* 
-* @param context - The context object containing flexSettings.
-* @param propertyPath - The path of the property in the manifest.
-* @param control - The UI5 element representing the control.
-* @param component - component name e.g list report or object page.
-* @param entitySet - Entity Set name.
-* @param propertyValue - The value to be set for the property.
-* 
-* @returns  A Promise resolving to an array of FlexCommand objects.
-*/
+ * Prepares the change for the manifest setting.
+ *
+ * @param context - The context object containing flexSettings.
+ * @param propertyPath - The path of the property in the manifest.
+ * @param control - The UI5 element representing the control.
+ * @param component - component name e.g list report or object page.
+ * @param entitySet - Entity Set name.
+ * @param propertyValue - The value to be set for the property.
+ *
+ * @returns  A Promise resolving to an array of FlexCommand objects.
+ */
 export async function prepareManifestChange(
     context: QuickActionContext,
     propertyPath: string,
@@ -54,22 +53,20 @@ export async function prepareManifestChange(
 }
 
 /**
- * Checks if the current UI5 version supports specific quick actions in v2.
- * 
- * This check ensures that the UI5 version is valid for the following quick actions:
- * - Semantic date range support in the Filter Bar.
- * - Disable/Enable Semantic Date Range in Filter Bar 
- * 
+ * Checks if the current UI5 version supports manifest changes in v2 applications.
+ *
  * Returns `true` if the UI5 version is supported.
  * Otherwise, returns `false`.
- * 
+ *
  */
-export async function isQuickActionSupportedVersion(): Promise<boolean> {
+export async function areManifestChangesSupported(): Promise<boolean> {
     const version = await getUi5Version();
-    return isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 }) &&
+    return (
+        isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 }) &&
         !(
             isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 96, patch: 37 }) ||
             isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 108, patch: 38 }) ||
             isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 120, patch: 23 })
-        );
+        )
+    );
 }
