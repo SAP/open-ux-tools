@@ -513,10 +513,9 @@ export class MtaConfig {
     }
 
     /**
-     * Append and/or cleanup the destination resource if missing in mta.yaml.
-     *
-     * @param {boolean} isManagedApp - if true, append managed approuter configuration
-     * @param {boolean} addMissingModules - if true, will ensure any missing modules | resources are appended
+     * @param {object} Options
+     * @param {boolean} Options.isManagedApp - if true, append managed approuter configuration
+     * @param {boolean} Options.addMissingModules - if true, will ensure any missing modules | resources are appended
      * @returns {Promise<void>} - A promise that resolves when the change request has been processed.
      */
     public async addRoutingModules({
