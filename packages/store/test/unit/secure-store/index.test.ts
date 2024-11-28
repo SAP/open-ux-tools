@@ -53,7 +53,7 @@ describe('getSecureStore', () => {
     });
 
     it('should return KeyStoreManager when not in AppStudio and available', () => {
-        // Restore original behavior for KeyStoreManager
+        // Restore KeyStoreManager
         jest.unmock('../../../src/secure-store/key-store');
         mockIsAppStudio(false);
         const result = getSecureStore(mockLogger);

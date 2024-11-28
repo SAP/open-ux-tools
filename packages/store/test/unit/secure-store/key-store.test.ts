@@ -44,7 +44,7 @@ describe('KeyStoreManager', () => {
                 'testKey',
                 JSON.stringify({ value: 'testValue' })
             );
-            expect(log.info).toHaveBeenCalledWith('Credential saved. Service: [testService], Key: [testKey]');
+            expect(log.info).toHaveBeenCalledWith('Credential saved successfully. Service: [testService], Key: [testKey]');
         });
 
         it('should handle serialization failure', async () => {
@@ -75,7 +75,6 @@ describe('KeyStoreManager', () => {
             const result = await keyStoreManager.retrieve<{ value: string }>('testService', 'testKey');
 
             expect(result).toEqual({ value: 'testValue' });
-            expect(log.info).toHaveBeenCalledWith('Credential retrieved. Service: [testService], Key: [testKey]');
         });
 
         it('should return undefined if no credential is found', async () => {

@@ -1,18 +1,152 @@
+// import { type Logger } from '@sap-ux/logger';
+// import { errorString } from '../utils';
+// import type { SecureStore } from './types';
+// //import { keyring } from '@zowe/secrets-for-zowe-sdk';
+// const { keyring } = require("@zowe/secrets-for-zowe-sdk");
+
+// type Entities<T> = {
+//     [key: string]: T;
+// };
+
+// /**
+//  * KeyStoreManager is responsible for securely managing credentials using
+//  * a keyring implementation. It provides methods to save, retrieve, delete, 
+//  * and fetch all credentials for a given service.
+//  */
+// export class KeyStoreManager implements SecureStore {
+//     private readonly log: Logger;
+//     private readonly keyring: typeof keyring;
+
+//     constructor(log: Logger) {
+//         this.log = log;
+//         this.keyring = keyring;
+//     }
+
+//     private serialize<T>(value: T): string | undefined {
+//         try {
+//             return JSON.stringify(value);
+//         } catch (e) {
+//             this.log.error(`Failed to serialize value: ${errorString(e)}`);
+//             return undefined;
+//         }
+//     }
+
+//     private deserialize<T>(serialized: string): T | undefined {
+//         try {
+//             return JSON.parse(serialized) as T;
+//         } catch (e) {
+//             this.log.error(`Failed to deserialize value: ${errorString(e)}`);
+//             return undefined;
+//         }
+//     }
+
+//     private validateInput(service: string, key: string): boolean {
+//         if (!service || !key) {
+//             this.log.error('Invalid input: Service or Key is missing.');
+//             return false;
+//         }
+//         return true;
+//     }
+
+//     public async save<T>(service: string, key: string, value: T): Promise<boolean> {
+//         if (!this.validateInput(service, key)) {
+//             return false;
+//         }
+//         try {
+//             const serialized = this.serialize(value);
+//             if (!serialized) {
+//                 throw new Error('Serialization failed, value cannot be saved.');
+//             }
+//             await this.keyring.setPassword(service, key, serialized);
+//             this.log.info(`Credential saved. Service: [${service}], Key: [${key}]`);
+//             return true;
+//         } catch (e) {
+//             this.log.error(`Failed to save credential. Service: [${service}], Key: [${key}]. Error: ${errorString(e)}`);
+//             return false;
+//         }
+//     }
+
+//     public async retrieve<T>(service: string, key: string): Promise<T | undefined> {
+//         if (!this.validateInput(service, key)) {
+//             return undefined;
+//         }
+//         try {
+//             const serializedValue = await this.keyring.getPassword(service, key);
+//             if (!serializedValue) {
+//                 this.log.warn(`No credential found. Service: [${service}], Key: [${key}]`);
+//                 return undefined;
+//             }
+
+//             const value = this.deserialize<T>(serializedValue);
+//             if (!value) {
+//                 throw new Error('Deserialization failed, invalid stored data.');
+//             }
+//             this.log.info(`Credential retrieved. Service: [${service}], Key: [${key}]`);
+//             return value;
+//         } catch (e) {
+//             this.log.error(`Failed to retrieve credential. Service: [${service}], Key: [${key}]. Error: ${errorString(e)}`);
+//             return undefined;
+//         }
+//     }
+
+//     public async delete(service: string, key: string): Promise<boolean> {
+//         if (!this.validateInput(service, key)) {
+//             return false;
+//         }
+//         let deleted = false;
+//         try {
+//             deleted = await this.keyring.deletePassword(service, key);
+//         } catch (e) {
+//             this.log.error(`Failed to delete credential. Service: [${service}], Key: [${key}]. Error: ${errorString(e)}`);
+//             return false;
+//         }
+
+//         if (deleted) {
+//             this.log.info(`Credential deleted. Service: [${service}], Key: [${key}]`);
+//         } else {
+//             this.log.warn(`No credential to delete. Service: [${service}], Key: [${key}]`);
+//         }
+//         return deleted;
+//     }
+
+//     public async getAll<T>(service: string): Promise<Entities<T>> {
+//         const results: Entities<T> = {};
+//         try {
+//             const entries = await this.keyring.findCredentials(service);
+//             entries.forEach(({ account, password }: { account: string, password: string }) => {
+//                 if (account) {
+//                     const value = this.deserialize<T>(password);
+//                     if (value) {
+//                         results[account] = value;
+//                     } else {
+//                         this.log.error(`Failed to parse credential for Account: [${account}]`);
+//                     }
+//                 }
+//             });
+
+//             this.log.info(`All credentials retrieved. Service: [${service}], Count: ${Object.keys(results).length}`);
+//             return results;
+//         } catch (e) {
+//             this.log.error(`Failed to retrieve credentials for Service: [${service}]. Error: ${errorString(e)}`);
+//             return results;
+//         }
+//     }
+// }
+
 import { type Logger } from '@sap-ux/logger';
 import { errorString } from '../utils';
 import type { SecureStore } from './types';
-//import { keyring } from '@zowe/secrets-for-zowe-sdk';
 const { keyring } = require("@zowe/secrets-for-zowe-sdk");
 
-type Entities<T> = {
-    [key: string]: T;
-};
+type Entities<T> = { [key: string]: T };
 
 /**
- * KeyStoreManager is responsible for securely managing credentials using
- * a keyring implementation. It provides methods to save, retrieve, delete, 
- * and fetch all credentials for a given service.
+ * Custom error classes to handle specific error scenarios
  */
+class SerializationError extends Error {}
+class DeserializationError extends Error {}
+class KeyringError extends Error {}
+
 export class KeyStoreManager implements SecureStore {
     private readonly log: Logger;
     private readonly keyring: typeof keyring;
@@ -22,24 +156,31 @@ export class KeyStoreManager implements SecureStore {
         this.keyring = keyring;
     }
 
-    private serialize<T>(value: T): string | undefined {
+    /**
+     * Helper function for serializing objects
+     */
+    private serialize<T>(value: T): string {
         try {
             return JSON.stringify(value);
         } catch (e) {
-            this.log.error(`Failed to serialize value: ${errorString(e)}`);
-            return undefined;
+            throw new SerializationError(`Failed to serialize value: ${errorString(e)}`);
         }
     }
 
-    private deserialize<T>(serialized: string): T | undefined {
+    /**
+     * Helper function for deserializing objects
+     */
+    private deserialize<T>(serialized: string): T {
         try {
             return JSON.parse(serialized) as T;
         } catch (e) {
-            this.log.error(`Failed to deserialize value: ${errorString(e)}`);
-            return undefined;
+            throw new DeserializationError(`Failed to deserialize value: ${errorString(e)}`);
         }
     }
 
+    /**
+     * Validate input parameters for service and key
+     */
     private validateInput(service: string, key: string): boolean {
         if (!service || !key) {
             this.log.error('Invalid input: Service or Key is missing.');
@@ -48,17 +189,16 @@ export class KeyStoreManager implements SecureStore {
         return true;
     }
 
+    /**
+     * Save credentials to the keyring
+     */
     public async save<T>(service: string, key: string, value: T): Promise<boolean> {
-        if (!this.validateInput(service, key)) {
-            return false;
-        }
+        if (!this.validateInput(service, key)) return false;
+
         try {
             const serialized = this.serialize(value);
-            if (!serialized) {
-                throw new Error('Serialization failed, value cannot be saved.');
-            }
             await this.keyring.setPassword(service, key, serialized);
-            this.log.info(`Credential saved. Service: [${service}], Key: [${key}]`);
+            this.log.info(`Credential saved successfully. Service: [${service}], Key: [${key}]`);
             return true;
         } catch (e) {
             this.log.error(`Failed to save credential. Service: [${service}], Key: [${key}]. Error: ${errorString(e)}`);
@@ -66,10 +206,12 @@ export class KeyStoreManager implements SecureStore {
         }
     }
 
+    /**
+     * Retrieve credentials from the keyring
+     */
     public async retrieve<T>(service: string, key: string): Promise<T | undefined> {
-        if (!this.validateInput(service, key)) {
-            return undefined;
-        }
+        if (!this.validateInput(service, key)) return undefined;
+
         try {
             const serializedValue = await this.keyring.getPassword(service, key);
             if (!serializedValue) {
@@ -77,49 +219,57 @@ export class KeyStoreManager implements SecureStore {
                 return undefined;
             }
 
-            const value = this.deserialize<T>(serializedValue);
-            if (!value) {
-                throw new Error('Deserialization failed, invalid stored data.');
-            }
-            this.log.info(`Credential retrieved. Service: [${service}], Key: [${key}]`);
-            return value;
+            return this.deserialize<T>(serializedValue);
         } catch (e) {
-            this.log.error(`Failed to retrieve credential. Service: [${service}], Key: [${key}]. Error: ${errorString(e)}`);
+            if (e instanceof DeserializationError) {
+                this.log.error(`Deserialization error for Service: [${service}], Key: [${key}]. Error: ${errorString(e)}`);
+            } else {
+                this.log.error(`Failed to retrieve credential. Service: [${service}], Key: [${key}]. Error: ${errorString(e)}`);
+            }
             return undefined;
         }
     }
 
+    /**
+     * Delete credentials from the keyring
+     */
     public async delete(service: string, key: string): Promise<boolean> {
-        if (!this.validateInput(service, key)) {
-            return false;
-        }
-        let deleted = false;
+        if (!this.validateInput(service, key)) return false;
+
         try {
-            deleted = await this.keyring.deletePassword(service, key);
+            const deleted = await this.keyring.deletePassword(service, key);
+            if (deleted) {
+                this.log.info(`Credential deleted. Service: [${service}], Key: [${key}]`);
+            } else {
+                this.log.warn(`No credential to delete. Service: [${service}], Key: [${key}]`);
+            }
+            return deleted;
         } catch (e) {
             this.log.error(`Failed to delete credential. Service: [${service}], Key: [${key}]. Error: ${errorString(e)}`);
             return false;
         }
-
-        if (deleted) {
-            this.log.info(`Credential deleted. Service: [${service}], Key: [${key}]`);
-        } else {
-            this.log.warn(`No credential to delete. Service: [${service}], Key: [${key}]`);
-        }
-        return deleted;
     }
 
+    /**
+     * Retrieve all credentials for a given service
+     */
     public async getAll<T>(service: string): Promise<Entities<T>> {
         const results: Entities<T> = {};
+
         try {
             const entries = await this.keyring.findCredentials(service);
+            if (!entries || entries.length === 0) {
+                this.log.warn(`No credentials found for Service: [${service}]`);
+                return results;
+            }
+
             entries.forEach(({ account, password }: { account: string, password: string }) => {
                 if (account) {
-                    const value = this.deserialize<T>(password);
-                    if (value) {
+                    try {
+                        const value = this.deserialize<T>(password);
                         results[account] = value;
-                    } else {
-                        this.log.error(`Failed to parse credential for Account: [${account}]`);
+                    } catch (e) {
+                        this.log.error(`Failed to parse credential for Account: [${account}]. Error: ${errorString(e)}`);
                     }
                 }
             });
@@ -132,4 +282,5 @@ export class KeyStoreManager implements SecureStore {
         }
     }
 }
+
 
