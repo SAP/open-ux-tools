@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.1
+
+### Patch Changes
+
+-   615f100: First public release
+
 ## 5.3.0 - This version and all version below are only SAP Internal
 
 ### Minor Changes
