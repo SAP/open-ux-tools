@@ -17,14 +17,13 @@ Object {
     \\"devDependencies\\": {
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
-        \\"@ui5/cli\\": \\"^3.9.2\\",
-        \\"rimraf\\": \\"^5.0.5\\"
+        \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -135,14 +134,13 @@ Object {
     \\"devDependencies\\": {
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
-        \\"@ui5/cli\\": \\"^3.9.2\\",
-        \\"rimraf\\": \\"^5.0.5\\"
+        \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -253,14 +251,13 @@ Object {
     \\"devDependencies\\": {
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
-        \\"@ui5/cli\\": \\"^3.9.2\\",
-        \\"rimraf\\": \\"^5.0.5\\"
+        \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -374,14 +371,13 @@ Object {
         \\"@sap-ux/ui5-proxy-middleware\\": \\"^1.3.0\\",
         \\"@sap-ux/deploy-tooling\\": \\"^0.11.7\\",
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
-        \\"@ui5/cli\\": \\"^3.9.2\\",
-        \\"rimraf\\": \\"^5.0.5\\"
+        \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -546,14 +542,13 @@ Object {
     \\"devDependencies\\": {
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
-        \\"@ui5/cli\\": \\"^3.9.2\\",
-        \\"rimraf\\": \\"^5.0.5\\"
+        \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -886,14 +881,13 @@ dist/
         \\"@sap-ux/ui5-proxy-middleware\\": \\"^1.3.0\\",
         \\"@sap-ux/deploy-tooling\\": \\"^0.11.7\\",
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
-        \\"@ui5/cli\\": \\"^3.9.2\\",
-        \\"rimraf\\": \\"^5.0.5\\"
+        \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -1021,14 +1015,13 @@ dist/
     \\"devDependencies\\": {
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
-        \\"@ui5/cli\\": \\"^3.9.2\\",
-        \\"rimraf\\": \\"^5.0.5\\"
+        \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -1264,14 +1257,13 @@ dist/
     \\"devDependencies\\": {
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
-        \\"@ui5/cli\\": \\"^3.9.2\\",
-        \\"rimraf\\": \\"^5.0.5\\"
+        \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -1422,14 +1414,13 @@ dist/
     \\"devDependencies\\": {
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
-        \\"@ui5/cli\\": \\"^3.9.2\\",
-        \\"rimraf\\": \\"^5.0.5\\"
+        \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -1580,14 +1571,13 @@ dist/
     \\"devDependencies\\": {
         \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
-        \\"@ui5/cli\\": \\"^3.9.2\\",
-        \\"rimraf\\": \\"^5.0.5\\"
+        \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
