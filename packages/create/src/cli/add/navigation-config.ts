@@ -1,7 +1,13 @@
+import { create } from 'mem-fs-editor';
 import type { Command } from 'commander';
-import { generateInboundNavigationConfig, promptInboundNavigationConfig } from '@sap-ux/app-config-writer';
-import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
+import { create as createStorage } from 'mem-fs';
+import type { ManifestNamespace } from '@sap-ux/project-access';
+import { type FLPConfigAnswers, getPrompts } from '@sap-ux/flp-config-inquirer';
+import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
+
+import { promptYUIQuestions } from '../../common';
 import { validateBasePath } from '../../validation';
+import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 
 /**
  * Add the "add inbound-navigation" command to a passed command.
@@ -32,16 +38,44 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
         logger.debug(`Called add inbound navigation-config for path '${basePath}', simulate is '${simulate}'`);
         await validateBasePath(basePath);
 
-        const { config, fs } = await promptInboundNavigationConfig(basePath);
-        if (config) {
-            await generateInboundNavigationConfig(basePath, config, true, fs);
+        const fs = create(createStorage());
+
+        const { manifest } = await readManifest(basePath, fs);
+
+        const inbounds = manifest?.['sap.app']?.crossNavigation?.inbounds;
+
+        const config = await getUserConfig(inbounds);
+
+        if (!config) {
+            logger.info('User chose not to overwrite existing inbound navigation configuration.');
+            return;
         }
-        await traceChanges(fs);
+
+        await generateInboundNavigationConfig(basePath, config, true, fs);
+
         if (!simulate) {
             fs.commit(() => logger.info(`Inbound navigation configuration complete.`));
+        } else {
+            await traceChanges(fs);
         }
     } catch (error) {
         logger.error(`Error while executing add inbound navigation configuration '${(error as Error).message}'`);
         logger.debug(error as Error);
     }
+}
+
+/**
+ * Prompts the user for inbound navigation configuration.
+ *
+ * @param inbounds - The existing inbounds to avoid conflicts.
+ * @returns {Promise<FLPConfigAnswers | undefined>} The user-provided configuration or undefined if skipped.
+ */
+async function getUserConfig(inbounds: ManifestNamespace.Inbound | undefined): Promise<FLPConfigAnswers | undefined> {
+    const config = await promptYUIQuestions(await getPrompts(Object.keys(inbounds ?? {})), false);
+
+    if (config?.subTitle === '') {
+        config.subTitle = undefined;
+    }
+
+    return config?.overwrite === false ? undefined : config;
 }
