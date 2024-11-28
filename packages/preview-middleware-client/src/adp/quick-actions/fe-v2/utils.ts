@@ -3,11 +3,7 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
-import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 import { getUi5Version, isLowerThanMinimalUi5Version, isVersionEqualOrHasNewerPatch } from '../../../utils/version';
-import { isA } from '../../../utils/core';
-import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
-import { SMART_TABLE_TYPE } from '../table-quick-action-base';
 
 
 /**
@@ -16,6 +12,8 @@ import { SMART_TABLE_TYPE } from '../table-quick-action-base';
 * @param context - The context object containing flexSettings.
 * @param propertyPath - The path of the property in the manifest.
 * @param control - The UI5 element representing the control.
+* @param component - component name e.g list report or object page.
+* @param entitySet - Entity Set name.
 * @param propertyValue - The value to be set for the property.
 * 
 * @returns  A Promise resolving to an array of FlexCommand objects.
@@ -24,6 +22,8 @@ export async function prepareManifestChange(
     context: QuickActionContext,
     propertyPath: string,
     control: UI5Element,
+    component: string,
+    entitySet: string | undefined,
     propertyValue: object
 ): Promise<FlexCommand[]> {
     const { flexSettings } = context;
@@ -33,8 +33,8 @@ export async function prepareManifestChange(
         reference: flexSettings.projectId,
         parameters: {
             parentPage: {
-                component: 'sap.suite.ui.generic.template.ListReport',
-                entitySet: isA<SmartFilterBar>('sap.ui.comp.smartfilterbar', control) || isA<SmartTable>(SMART_TABLE_TYPE, control) ? control.getEntitySet() : undefined
+                component,
+                entitySet
             },
             entityPropertyChange: {
                 propertyPath: propertyPath,
@@ -64,7 +64,7 @@ export async function prepareManifestChange(
  * Otherwise, returns `false`.
  * 
  */
-export async function isUnsupportedUI5Version(): Promise<boolean> {
+export async function isQuickActionSupportedVersion(): Promise<boolean> {
     const version = await getUi5Version();
     return isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 }) &&
         !(

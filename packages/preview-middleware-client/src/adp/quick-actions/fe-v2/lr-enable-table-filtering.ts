@@ -7,9 +7,12 @@ import {
     SMART_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from '../table-quick-action-base';
-import { isUnsupportedUI5Version, prepareManifestChange } from './utils';
+import { isQuickActionSupportedVersion, prepareManifestChange } from './utils';
 
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
+import { isA } from '../../../utils/core';
+import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
+const COMPONENT = 'sap.suite.ui.generic.template.ListReport';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
 
@@ -32,7 +35,7 @@ export class EnableTableFilteringQuickAction
     }
 
     async initialize(): Promise<void> {
-        const isUI5VersionNotSupported = await isUnsupportedUI5Version();
+        const isUI5VersionNotSupported = await isQuickActionSupportedVersion();
         if (isUI5VersionNotSupported) {
             return;
         }
@@ -50,7 +53,8 @@ export class EnableTableFilteringQuickAction
                     this.control = table;
                     break;
                 }
-            }        }
+            }
+        }
 
         return Promise.resolve();
     }
@@ -60,10 +64,14 @@ export class EnableTableFilteringQuickAction
         if (!this.control) {
             return [];
         }
+
+        const entitySet = isA<SmartTable>(SMART_TABLE_TYPE, this.control) ? this.control.getEntitySet() : undefined;
         const command = await prepareManifestChange(
             this.context,
             'component/settings',
             this.control,
+            COMPONENT,
+            entitySet,
             {
                 enableTableFilterInPageVariant: !this.isDisabled
             }

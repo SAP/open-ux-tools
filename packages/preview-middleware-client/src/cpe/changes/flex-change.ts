@@ -54,7 +54,7 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
         );
         await rta.getCommandStack().pushAndExecute(command);
     } else if (change.propertyType === PropertyType.Configuration) {
-        const command = await createManifestPropertyChange(modifiedControl, flexSettings, { propertyName: change.propertyName, value: change.value });
+        const command = await createManifestPropertyChange(modifiedControl, flexSettings, { [change.propertyName]: change.value });
         if (command) {
             await rta.getCommandStack().pushAndExecute(command);
         } else {

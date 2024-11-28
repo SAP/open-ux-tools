@@ -10,6 +10,14 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/vers
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
 const CONTROL_TYPE = 'sap.ui.mdc.Table';
 
+type Personalization = {
+    sort: boolean,
+    column: boolean,
+    filter: boolean,
+    group: boolean,
+    aggregate: boolean
+};
+
 /**
  * Quick Action for enabling table filtering using table personalization settings.
  */
@@ -37,9 +45,11 @@ export class EnableTableFilteringQuickAction
             const value = this.context.changeService.getConfigurationPropertyValue(
                 smartTable.getId(),
                 'personalization'
-            );
+            ) as Personalization;
             const isFilterEnabled =
-                value === undefined ? personalizationData.includes('Filter') : (value as boolean);
+                value?.filter === undefined
+                    ? personalizationData.includes('Filter')
+                    : value.filter;
             this.children.push({
                 label: `'${(smartTable as Table).getHeader()}' table`,
                 enabled: !isFilterEnabled,
@@ -69,8 +79,16 @@ export class EnableTableFilteringQuickAction
         if (!modifiedControl) {
             return [];
         }
-
-        const command = await createManifestPropertyChange(modifiedControl, flexSettings);
+        const propertyChange = {
+            personalization: {
+                sort: true,
+                column: true,
+                filter: true,
+                group: true,
+                aggregate: true
+            }
+        };
+        const command = await createManifestPropertyChange(modifiedControl, flexSettings, propertyChange);
         if (command) {
             return [command];
         } else {

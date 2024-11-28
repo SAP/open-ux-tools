@@ -8,7 +8,6 @@ import { isA } from './core';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getOverlay } from '../cpe/utils';
 import UI5Element from 'sap/ui/core/Element';
-import { PropertyValue } from '../cpe/types';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 
@@ -89,11 +88,11 @@ export function getConfigMapControlIdMap(page: string | undefined, propertyPathS
 * Get the modified value for a control.
 * @param modifiedControl - The modified control.
 * @param flexSettings - Flex Settings of the control.
-* @param change - The change object (optional).
+* @param propertyChanges - The change object
 * 
 * @returns  A Promise resolving to an array of FlexCommand objects.
 */
-export async function createManifestPropertyChange(modifiedControl: UI5Element, flexSettings: FlexSettings, change?: { propertyName: string, value: PropertyValue }): Promise<FlexCommand | undefined> {
+export async function createManifestPropertyChange(modifiedControl: UI5Element, flexSettings: FlexSettings, propertyChanges: Record<string, string | string[] | boolean | number | object | undefined>): Promise<FlexCommand | undefined> {
     const overlay = getOverlay(modifiedControl);
     if (!overlay) {
         return undefined;
@@ -101,15 +100,7 @@ export async function createManifestPropertyChange(modifiedControl: UI5Element, 
     const overlayData = overlay?.getDesignTimeMetadata().getData();
     const manifestPropertyPath = overlayData.manifestPropertyPath(modifiedControl);
     const [manifestPropertyChange] = overlayData.manifestPropertyChange(
-        change ? { [change.propertyName]: change.value } : {
-            personalization: {
-                sort: true,
-                column: true,
-                filter: true,
-                group: true,
-                aggregate: true
-            }
-        },
+        propertyChanges,
         manifestPropertyPath,
         modifiedControl
     );

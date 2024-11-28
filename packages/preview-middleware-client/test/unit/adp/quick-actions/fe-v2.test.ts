@@ -982,7 +982,7 @@ describe('FE V2 quick actions', () => {
                     sapCoreMock.byId.mockImplementation((id) => {
                         if (id == 'SmartFilterBar') {
                             return {
-                                isA: (type: string) => type === 'sap.ui.comp.smartfilterbar',
+                                isA: (type: string) => type === 'sap.ui.comp.smartfilterbar.SmartFilterBar',
                                 getProperty: jest.fn().mockImplementation(() => false),
                                 getDomRef: () => ({}),
                                 getEntitySet: jest.fn().mockImplementation(() => 'testEntity')

@@ -86,7 +86,7 @@ export abstract class TableQuickActionDefinitionBase {
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
         protected includeServiceAction?: boolean
-    ) { }
+    ) {}
 
     /**
      * Initializes action object instance

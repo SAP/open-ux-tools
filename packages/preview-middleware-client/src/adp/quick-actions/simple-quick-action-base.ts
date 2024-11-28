@@ -35,7 +35,7 @@ export abstract class SimpleQuickActionDefinitionBase {
         protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext
-    ) { }
+    ) {}
 
     initialize(): void {
         for (const control of getRelevantControlFromActivePage(

@@ -4,13 +4,14 @@ import type FilterBar from 'sap/ui/comp/filterbar/FilterBar';
 import { FeatureService } from '../../../cpe/feature-service';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
-import { getControlById } from '../../../utils/core';
+import { getControlById, isA } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { isUnsupportedUI5Version, prepareManifestChange } from './utils';
+import { isQuickActionSupportedVersion, prepareManifestChange } from './utils';
+import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';
 const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
-
+const COMPONENT = 'sap.suite.ui.generic.template.ListReport';
 /**
  * Quick Action for toggling the visibility of "semantic date range" for filterbar fields.
  */
@@ -24,7 +25,7 @@ export class ToggleSemanticDateRangeFilterBar
     private isUseDateRangeTypeEnabled = false;
 
     async initialize(): Promise<void> {
-        const isUI5VersionNotSupported = await isUnsupportedUI5Version();
+        const isUI5VersionNotSupported = await isQuickActionSupportedVersion();
         if (isUI5VersionNotSupported) {
             return;
         }
@@ -49,17 +50,20 @@ export class ToggleSemanticDateRangeFilterBar
     }
 
     async execute(): Promise<FlexCommand[]> {
+        const entitySet = isA<SmartFilterBar>(CONTROL_TYPE, this.control) ? this.control.getEntitySet() : undefined;
         const command = await prepareManifestChange(
             this.context,
             'component/settings/filterSettings/dateSettings',
             this.control!,
+            COMPONENT,
+            entitySet,
             {
                 useDateRange: !this.isUseDateRangeTypeEnabled
             }
         );
-        
+
         this.isUseDateRangeTypeEnabled = !this.isUseDateRangeTypeEnabled;
-        
+
         return command;
     }
 }
