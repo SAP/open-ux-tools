@@ -60,7 +60,7 @@ This table highlights the supported SAPUI5 versions for various quick actions in
     <tr>
       <td style="border: 1px solid #ddd; padding: 8px;">Enable Table Filtering for Page Variants</td>
       <td style="border: 1px solid #ddd; padding: 8px;">1.96.37, 1.108.38, 1.120.23, &gt;= 1.128</td>
-      <td style="border: 1px solid #ddd; padding: 8px;">1.131</td>
+      <td style="border: 1px solid #ddd; padding: 8px;">&gt;=1.131</td>
     </tr>
   </tbody>
 </table>
