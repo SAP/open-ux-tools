@@ -18,6 +18,9 @@ import type {
     CloudCustomTaskConfig,
     CloudCustomTaskConfigTarget
 } from '../types';
+
+const vscodeUrl = 'https://REQUIRED_FOR_VSCODE.example';
+
 /**
  * Generate the configuration for the middlewares required for the ui5.yaml.
  *
@@ -89,7 +92,7 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
  */
 function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig) {
     const backendConfig: Partial<FioriToolsProxyConfigBackend> = { ...config.target };
-    backendConfig.url ??= 'https://REQUIRED_FOR_VSCODE.example';
+    backendConfig.url ??= vscodeUrl;
     backendConfig.path = '/sap';
 
     ui5Config.addFioriToolsAppReloadMiddleware();
@@ -181,7 +184,10 @@ function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
 function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget } & { app: CloudApp }): CustomTask[] {
     let target: CloudCustomTaskConfigTarget;
     if (config.target.destination) {
-        target = { destination: config.target.destination };
+        target = {
+            destination: config.target.destination,
+            url: config.target?.url ?? vscodeUrl
+        };
     } else {
         target = {
             url: config.target.url,

@@ -228,6 +228,7 @@ builder:
             i18n: testKey
         target:
           destination: UYTCLNT902
+          url: https://REQUIRED_FOR_VSCODE.example
 ",
     "state": "modified",
   },
@@ -1508,6 +1509,7 @@ builder:
             i18n: testKey
         target:
           destination: UYTCLNT902
+          url: https://REQUIRED_FOR_VSCODE.example
 ",
     "state": "modified",
   },
