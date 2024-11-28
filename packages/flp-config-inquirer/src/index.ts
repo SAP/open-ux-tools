@@ -1,5 +1,6 @@
 import isNil from 'lodash/isNil';
 
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 
 import { initI18n } from './i18n';
@@ -10,33 +11,33 @@ import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from
 /**
  * Get the inquirer prompts for the FLP configuration inquirer.
  *
- * @param inboundKeys - array of existing inbound keys to check for duplicates
+ * @param inbounds - array of existing inbound keys to check for duplicates
  * @param promptOptions - options that can control some of the prompt behavior. See {@link FLPConfigPromptOptions} for details
  * @returns the prompts used to provide input for FLP configuration
  */
 async function getPrompts(
-    inboundKeys: string[] = [],
+    inbounds: ManifestNamespace.Inbound | undefined,
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigQuestion[]> {
     await initI18n();
 
-    return getQuestions(inboundKeys, promptOptions);
+    return getQuestions(inbounds, promptOptions);
 }
 
 /**
  * Prompt for FLP configuration inputs.
  *
  * @param adapter - an instance of InquirerAdapter to handle prompting
- * @param inboundKeys - array of existing inbound keys to check for duplicates
+ * @param inbounds - array of existing inbound keys to check for duplicates
  * @param promptOptions - options that can control some of the prompt behavior. See {@link FLPConfigPromptOptions} for details
  * @returns the prompt answers
  */
 async function prompt(
     adapter: InquirerAdapter,
-    inboundKeys: string[] = [],
+    inbounds: ManifestNamespace.Inbound | undefined,
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigAnswers> {
-    const flpPrompts = await getPrompts(inboundKeys, promptOptions);
+    const flpPrompts = await getPrompts(inbounds, promptOptions);
 
     const answers = await adapter.prompt<FLPConfigAnswers>(flpPrompts);
     // Apply default values to prompts in case they have not been executed

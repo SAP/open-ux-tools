@@ -13,6 +13,7 @@ import type {
 } from '../../types';
 import { t } from '../../i18n';
 import { ConfigurationMode, promptNames } from '../../types';
+import { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Creates the 'semanticObject' prompt for FLP configuration.
@@ -134,6 +135,7 @@ export function getOverwritePrompt(
  * @returns {FLPConfigQuestion} The prompt configuration for the title.
  */
 export function getTitlePrompt(
+    inbounds: ManifestNamespace.Inbound | undefined,
     existingKeyRef: ExistingInboundRef,
     silentOverwrite: boolean,
     isCLI: boolean,
@@ -148,7 +150,14 @@ export function getTitlePrompt(
             breadcrumb: true
         },
         message: t('prompts.title'),
-        default: options?.default, // TODO: Prefill these values from the selected inbound
+        default:
+            options?.default ??
+            ((answers: FLPConfigAnswers) => {
+                if (answers?.inboundId) {
+                    return inbounds?.[answers.inboundId]?.title ?? '';
+                }
+                return false;
+            }),
         filter: (val: string): string => val?.trim(),
         validate: (val) => validateText(val, isCLI, 0)
     };
@@ -163,6 +172,7 @@ export function getTitlePrompt(
  * @returns {FLPConfigQuestion} The prompt configuration for the subtitle.
  */
 export function getSubTitlePrompt(
+    inbounds: ManifestNamespace.Inbound | undefined,
     existingKeyRef: ExistingInboundRef,
     silentOverwrite: boolean,
     options?: SubTitlePromptOptions
@@ -175,7 +185,14 @@ export function getSubTitlePrompt(
             breadcrumb: t('prompts.subTitle')
         },
         message: t('prompts.subTitle'),
-        default: options?.default, // TODO: Prefill these values from the selected inbound
+        default:
+            options?.default ??
+            ((answers: FLPConfigAnswers) => {
+                if (answers?.inboundId) {
+                    return inbounds?.[answers.inboundId]?.subTitle ?? '';
+                }
+                return false;
+            }),
         filter: (val: string): string => val?.trim()
     };
 }

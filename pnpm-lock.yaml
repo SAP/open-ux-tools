@@ -1742,6 +1742,9 @@ importers:
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@sap-ux/project-input-validator':
         specifier: workspace:*
         version: link:../project-input-validator

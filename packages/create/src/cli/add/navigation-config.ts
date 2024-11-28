@@ -2,7 +2,7 @@ import { create, Editor } from 'mem-fs-editor';
 import type { Command } from 'commander';
 import { create as createStorage } from 'mem-fs';
 import { FileName, getWebappPath, type ManifestNamespace } from '@sap-ux/project-access';
-import { type FLPConfigAnswers, getPrompts } from '@sap-ux/flp-config-inquirer';
+import { type FLPConfigAnswers, getPrompts, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
 
 import { promptYUIQuestions } from '../../common';
@@ -47,21 +47,22 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
 
         const inbounds = await getInboundsFromManifest(basePath, isAdp, fs, logger);
 
-        const config = await getUserConfig(inbounds);
+        const config = await getUserConfig(inbounds, isAdp);
 
         if (!config) {
             logger.info('User chose not to overwrite existing inbound navigation configuration.');
             return;
         }
 
-        await generateInboundNavigationConfig(basePath, config, true, fs);
+        console.log(JSON.stringify(config, null, 2)); // TODO: Remove after testing
+
+        !isAdp && (await generateInboundNavigationConfig(basePath, config, true, fs));
 
         if (!simulate) {
             fs.commit(() => logger.info(`Inbound navigation configuration complete.`));
         } else {
             await traceChanges(fs);
         }
-        console.log(JSON.stringify(config, null, 2)); // TODO: Remove after testing
     } catch (error) {
         logger.error(`Error while executing add inbound navigation configuration '${(error as Error).message}'`);
         logger.debug(error as Error);
@@ -122,8 +123,24 @@ async function getInboundsFromManifest(
  * @param inbounds - The existing inbounds to avoid conflicts.
  * @returns {Promise<FLPConfigAnswers | undefined>} The user-provided configuration or undefined if skipped.
  */
-async function getUserConfig(inbounds: ManifestNamespace.Inbound | undefined): Promise<FLPConfigAnswers | undefined> {
-    const config = await promptYUIQuestions(await getPrompts(Object.keys(inbounds ?? {})), false);
+async function getUserConfig(
+    inbounds: ManifestNamespace.Inbound | undefined,
+    isAdp: boolean
+): Promise<FLPConfigAnswers | undefined> {
+    let promptOptions: FLPConfigPromptOptions;
+
+    if (!isAdp) {
+        promptOptions = {
+            configurationMode: { hide: true },
+            inboundId: { hide: true },
+            parameterString: { hide: true },
+            createAnotherInbound: { hide: true }
+        };
+    } else {
+        promptOptions = { overwrite: { hide: true } };
+    }
+
+    const config = await promptYUIQuestions(await getPrompts(inbounds, promptOptions), false);
 
     if (config?.subTitle === '') {
         config.subTitle = undefined;

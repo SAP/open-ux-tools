@@ -49,11 +49,7 @@ export function getConfigurationModePrompt(
  * @param {InboundIdPromptOptions} [options] - Optional configuration for the inbound id prompt, including default values.
  * @returns {FLPConfigQuestion} The prompt configuration for the inbound id.
  */
-export function getInboundIdsPrompt(
-    inboundIds: string[],
-    isCloudProject: boolean = true, // TODO: could be removed and the check for cloud project would happen before prompting
-    options?: InboundIdPromptOptions
-): FLPConfigQuestion {
+export function getInboundIdsPrompt(inboundIds: string[], options?: InboundIdPromptOptions): FLPConfigQuestion {
     return {
         type: 'list',
         name: promptNames.inboundId,
@@ -61,7 +57,11 @@ export function getInboundIdsPrompt(
         choices: inboundIds,
         default: inboundIds[0],
         validate: validateEmptyString,
-        when: options?.hide ? false : isCloudProject && inboundIds?.length > 0,
+        when: options?.hide
+            ? false
+            : (answers: FLPConfigAnswers) => {
+                  return inboundIds?.length > 0 && answers.configurationMode === ConfigurationMode.EditExisting;
+              },
         guiOptions: {
             hint: t('tooltips.inboundId'),
             breadcrumb: t('prompts.inboundIds'),
@@ -86,7 +86,6 @@ export function getInboundIdsPrompt(
  */
 export function getParameterStringPrompt(
     inboundIds: string[],
-    isCloudProject: boolean = true, // TODO: could be removed and the check for cloud project would happen before prompting
     options?: ParameterStringPromptOptions
 ): FLPConfigQuestion {
     return {
@@ -106,7 +105,7 @@ export function getParameterStringPrompt(
 
             return true;
         },
-        when: options?.hide ? false : isCloudProject && inboundIds?.length === 0,
+        when: options?.hide ? false : inboundIds?.length === 0,
         guiOptions: {
             hint: t('tooltips.parameterString'),
             mandatory: false

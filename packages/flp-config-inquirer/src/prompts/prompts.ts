@@ -15,15 +15,20 @@ import {
     getInboundIdsPrompt,
     getParameterStringPrompt
 } from './questions/advanced';
+import { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Generates a list of prompts for FLP (Fiori Launchpad) configuration.
  *
- * @param {string[]} [inboundKeys] - An array of existing inbound keys to check for duplicates.
+ * @param {ManifestNamespace.Inbound | undefined} [inbounds] - Existing inbounds for an application.
  * @param {FLPConfigPromptOptions} [promptOptions] - Optional configuration to control prompt behavior and defaults.
  * @returns {FLPConfigQuestion[]} An array of FLPConfigQuestion objects to be used for prompting the user.
  */
-export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConfigPromptOptions): FLPConfigQuestion[] {
+export function getQuestions(
+    inbounds: ManifestNamespace.Inbound | undefined,
+    promptOptions?: FLPConfigPromptOptions
+): FLPConfigQuestion[] {
+    const inboundKeys = Object.keys(inbounds ?? {});
     const isCLI = getHostEnvironment() === hostEnvironment.cli;
     const existingKeyRef: ExistingInboundRef = { value: false };
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
@@ -33,7 +38,7 @@ export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConf
             inboundKeys,
             promptOptions?.[promptNames.configurationMode]
         ),
-        [promptNames.inboundId]: getInboundIdsPrompt(inboundKeys, true, promptOptions?.[promptNames.inboundId]),
+        [promptNames.inboundId]: getInboundIdsPrompt(inboundKeys, promptOptions?.[promptNames.inboundId]),
         [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
         [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),
         [promptNames.overwrite]: getOverwritePrompt(
@@ -42,15 +47,21 @@ export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConf
             existingKeyRef,
             promptOptions?.[promptNames.overwrite]
         ),
-        [promptNames.title]: getTitlePrompt(existingKeyRef, silentOverwrite, isCLI, promptOptions?.[promptNames.title]),
+        [promptNames.title]: getTitlePrompt(
+            inbounds,
+            existingKeyRef,
+            silentOverwrite,
+            isCLI,
+            promptOptions?.[promptNames.title]
+        ),
         [promptNames.subTitle]: getSubTitlePrompt(
+            inbounds,
             existingKeyRef,
             silentOverwrite,
             promptOptions?.[promptNames.subTitle]
         ),
         [promptNames.parameterString]: getParameterStringPrompt(
             inboundKeys,
-            true,
             promptOptions?.[promptNames.parameterString]
         ),
         [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(
