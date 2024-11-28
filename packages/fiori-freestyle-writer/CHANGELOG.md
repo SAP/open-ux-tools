@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.2.25
+
+### Patch Changes
+
+-   0fb193b: use correct view name in app controller
+
 ## 1.2.24
 
 ### Patch Changes

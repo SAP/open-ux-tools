@@ -193,6 +193,14 @@ describe('Test abap deploy config inquirer conditions', () => {
         expect(showUi5AppDeployConfigQuestion()).toBe(true);
     });
 
+    test('should not show ui5 app deploy config questions', () => {
+        const promptOptions = {
+            hideIfOnPremise: true
+        };
+        PromptState.abapDeployConfig.scp = false;
+        expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
+    });
+
     test('should show package input choice question', () => {
         // cli
         PromptState.isYUI = false;
@@ -232,6 +240,11 @@ describe('Test abap deploy config inquirer conditions', () => {
         PromptState.transportAnswers.transportConfigError = undefined;
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
         expect(showTransportInputChoice()).toBe(true);
+    });
+
+    test('should not show transport input choice question when transport is not required', () => {
+        PromptState.transportAnswers.transportRequired = false;
+        expect(showTransportInputChoice()).toBe(false);
     });
 
     test('should not show transport input choice question', () => {
