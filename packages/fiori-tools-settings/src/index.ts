@@ -1,2 +1,2 @@
-export * from './application-info-handler';
+export * from './applicationInfoHandler';
 export * from './fiori-systems-accounts.ts';
