@@ -519,7 +519,13 @@ export class MtaConfig {
      * @param {boolean} addMissingModules - if true, will ensure any missing modules | resources are appended
      * @returns {Promise<void>} - A promise that resolves when the change request has been processed.
      */
-    public async addRoutingModules(isManagedApp: boolean = false, addMissingModules: boolean = true): Promise<void> {
+    public async addRoutingModules({
+        isManagedApp = false,
+        addMissingModules = true
+    }: {
+        isManagedApp?: boolean;
+        addMissingModules?: boolean;
+    } = {}): Promise<void> {
         if (isManagedApp && !this.modules.has('com.sap.application.content:destination')) {
             await this.addManagedAppRouter();
         }
