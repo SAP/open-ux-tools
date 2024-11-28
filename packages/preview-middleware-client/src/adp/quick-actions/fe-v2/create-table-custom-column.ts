@@ -38,10 +38,10 @@ export function preprocessActionExecution(
     table: UI5Element,
     sectionInfo:
         | {
-            section: ObjectPageSection;
-            subSection: ObjectPageSubSection;
-            layout?: ObjectPageLayout;
-        }
+              section: ObjectPageSection;
+              subSection: ObjectPageSubSection;
+              layout?: ObjectPageLayout;
+          }
         | undefined,
     iconTabBar: IconTabBar | undefined,
     iconTabBarFilterKey: string | undefined
@@ -61,7 +61,8 @@ export function preprocessActionExecution(
 
 export class AddTableCustomColumnQuickAction
     extends TableQuickActionDefinitionBase
-    implements NestedQuickActionDefinition {
+    implements NestedQuickActionDefinition
+{
     constructor(context: QuickActionContext) {
         super(CREATE_TABLE_CUSTOM_COLUMN, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN', context);
     }

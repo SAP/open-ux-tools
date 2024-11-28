@@ -955,33 +955,52 @@ describe('FE V2 quick actions', () => {
             });
             describe('enable table filtering for different valid UI5 versions', () => {
                 const testCases: {
-                    validVersion: boolean,
+                    validVersion: boolean;
                     major: int;
                     minor: int;
                     patch?: int;
                 }[] = [
-                        {
-                            validVersion: true, major: 1, minor: 96, patch: 37
-                        },
-                        {
-                            validVersion: true, major: 1, minor: 108, patch: 38
-                        },
-                        {
-                            validVersion: true, major: 1, minor: 96, patch: 38
-                        },
-                        {
-                            validVersion: true, major: 1, minor: 120, patch: 23
-                        },
-                        {
-                            validVersion: true, major: 1, minor: 128
-                        },
-                        {
-                            validVersion: true, major: 1, minor: 130
-                        },
-                        {
-                            validVersion: false, major: 1, minor: 96, patch: 36
-                        }
-                    ];
+                    {
+                        validVersion: true,
+                        major: 1,
+                        minor: 96,
+                        patch: 37
+                    },
+                    {
+                        validVersion: true,
+                        major: 1,
+                        minor: 108,
+                        patch: 38
+                    },
+                    {
+                        validVersion: true,
+                        major: 1,
+                        minor: 96,
+                        patch: 38
+                    },
+                    {
+                        validVersion: true,
+                        major: 1,
+                        minor: 120,
+                        patch: 23
+                    },
+                    {
+                        validVersion: true,
+                        major: 1,
+                        minor: 128
+                    },
+                    {
+                        validVersion: true,
+                        major: 1,
+                        minor: 130
+                    },
+                    {
+                        validVersion: false,
+                        major: 1,
+                        minor: 96,
+                        patch: 36
+                    }
+                ];
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                     jest.spyOn(VersionUtils, 'getUi5Version').mockReturnValue(
                         Promise.resolve({
@@ -1064,19 +1083,25 @@ describe('FE V2 quick actions', () => {
                         quickActionListChanged([
                             {
                                 title: 'LIST REPORT',
-                                actions: testCase.validVersion ? [{
-                                    'kind': 'simple',
-                                    id: 'listReport0-enable-semantic-daterange-filterbar',
-                                    title: 'Enable Semantic Date Range in Filter Bar',
-                                    enabled: true
-                                }
-                                ] : []
+                                actions: testCase.validVersion
+                                    ? [
+                                          {
+                                              'kind': 'simple',
+                                              id: 'listReport0-enable-semantic-daterange-filterbar',
+                                              title: 'Enable Semantic Date Range in Filter Bar',
+                                              enabled: true
+                                          }
+                                      ]
+                                    : []
                             }
                         ])
                     );
                     if (testCase.validVersion) {
                         await subscribeMock.mock.calls[0][0](
-                            executeQuickAction({ id: 'listReport0-enable-semantic-daterange-filterbar', kind: 'simple' })
+                            executeQuickAction({
+                                id: 'listReport0-enable-semantic-daterange-filterbar',
+                                kind: 'simple'
+                            })
                         );
                         expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
                             'settings': {},
@@ -1396,7 +1421,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => { }
+                            setSelectedSubSection: () => {}
                         };
                     }
 
@@ -1422,12 +1447,12 @@ describe('FE V2 quick actions', () => {
                                     return [
                                         {
                                             isA: (type: string) => type === 'sap.ui.table.Table',
-                                            getAggregation: () => 'item', // Mock inner aggregation for table rows
+                                            getAggregation: () => 'item' // Mock inner aggregation for table rows
                                         },
                                         {
                                             isA: (type: string) => type === 'sap.m.Table',
-                                            getAggregation: () => 'item', // Mock another type of table
-                                        },
+                                            getAggregation: () => 'item' // Mock another type of table
+                                        }
                                     ];
                                 } else if (aggregationName === 'headerToolbar') {
                                     return 'headerToolbar'; // Return a simple string for headerToolbar
@@ -1573,7 +1598,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => { }
+                            setSelectedSubSection: () => {}
                         };
                     }
 
@@ -1608,8 +1633,8 @@ describe('FE V2 quick actions', () => {
                                     return [
                                         {
                                             isA: (type: string) => type === testCase.tableType,
-                                            getAggregation: () => 'columns', // Mock column aggregation
-                                        },
+                                            getAggregation: () => 'columns' // Mock column aggregation
+                                        }
                                     ];
                                 }
                                 return [];
@@ -1747,7 +1772,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => { }
+                            setSelectedSubSection: () => {}
                         };
                     }
 

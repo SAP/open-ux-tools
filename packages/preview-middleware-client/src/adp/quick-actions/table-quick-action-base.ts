@@ -54,7 +54,6 @@ export abstract class TableQuickActionDefinitionBase {
 
     protected isDisabled: boolean | undefined;
 
-
     public children: NestedQuickActionChild[] = [];
     public tableMap: Record<
         string,
@@ -88,7 +87,7 @@ export abstract class TableQuickActionDefinitionBase {
 
     /**
      * Initializes action object instance
-     * 
+     *
      * @param onAddChild - Optional callback executed when a child element is added to update tooltip adn enable property.
      */
     async initialize(onAddChild?: (table: UI5Element, child: NestedQuickActionChild) => void): Promise<void> {
@@ -145,7 +144,6 @@ export abstract class TableQuickActionDefinitionBase {
         }
     }
 
-
     /**
      * Retrieves the internal table from a UI5Element and checks if it contains rows.
      *
@@ -169,7 +167,6 @@ export abstract class TableQuickActionDefinitionBase {
             return undefined;
         }
     }
-
 
     /**
      * Determines table label for the given table element
@@ -224,7 +221,11 @@ export abstract class TableQuickActionDefinitionBase {
      * @param table - table element
      * @param onAddChild - Optional callback executed when a child element is added to update tooltip adn enable property.
      */
-    private collectChildrenInSection(section: ObjectPageSection, table: UI5Element, onAddChild?: (table: UI5Element, child: NestedQuickActionChild) => void): void {
+    private collectChildrenInSection(
+        section: ObjectPageSection,
+        table: UI5Element,
+        onAddChild?: (table: UI5Element, child: NestedQuickActionChild) => void
+    ): void {
         const layout = getParentContainer<ObjectPageLayout>(table, 'sap.uxap.ObjectPageLayout');
         const subSections = section.getSubSections();
         const subSection = getParentContainer<ObjectPageSubSection>(table, 'sap.uxap.ObjectPageSubSection');
@@ -325,12 +326,11 @@ export abstract class TableQuickActionDefinitionBase {
         };
     }
 
-
     /**
      * Initializes custom table actions.
-     * 
+     *
      * @param table - table control.
-     * @param child - custom column quick action properties. 
+     * @param child - custom column quick action properties.
      */
     protected initializeCustomColumnTable(table: UI5Element, child: NestedQuickActionChild): void {
         const innerTable = this.getInternalTable(table);
@@ -340,5 +340,4 @@ export abstract class TableQuickActionDefinitionBase {
             child.tooltip = this.context.resourceBundle.getText('TABLE_CUSTOM_COLUMN_ACTION_NOT_AVAILABLE');
         }
     }
-
 }

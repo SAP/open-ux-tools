@@ -6,10 +6,7 @@ const mockChangeService = {
     syncOutlineChanges: jest.fn()
 } as unknown as ChangeService;
 
-import {
-    quickActionListChanged,
-    executeQuickAction
-} from '@sap-ux-private/control-property-editor-common';
+import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 
 jest.mock('../../../../src/adp/init-dialogs', () => {
     return {
@@ -626,8 +623,8 @@ describe('FE V4 quick actions', () => {
                                         {
                                             'children': [],
                                             enabled: true,
-                                            'label': `'MyTable' table`,
-                                      }
+                                            'label': `'MyTable' table`
+                                        }
                                     ],
                                     'enabled': true,
                                     'id': 'listReport0-create-table-custom-column',
@@ -779,7 +776,7 @@ describe('FE V4 quick actions', () => {
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: `'MyTable' table`,
+                                            label: `'MyTable' table`
                                         }
                                     ],
                                     enabled: true,
@@ -884,8 +881,8 @@ describe('FE V4 quick actions', () => {
                                         {
                                             'children': [],
                                             enabled: true,
-                                            'label': `'MyTable' table`,
-                                         }
+                                            'label': `'MyTable' table`
+                                        }
                                     ],
                                     'enabled': true,
                                     'id': 'listReport0-create-table-custom-column',
@@ -1259,22 +1256,40 @@ describe('FE V4 quick actions', () => {
 
             describe('create table custom column', () => {
                 const testCases = [
-                    { tableType: MDC_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => MDC_TABLE_TYPE, enable: true },
-                    { tableType: TREE_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => TREE_TABLE_TYPE, enable: true },
+                    {
+                        tableType: MDC_TABLE_TYPE,
+                        dialog: DialogNames.ADD_FRAGMENT,
+                        toString: () => MDC_TABLE_TYPE,
+                        enable: true
+                    },
+                    {
+                        tableType: TREE_TABLE_TYPE,
+                        dialog: DialogNames.ADD_FRAGMENT,
+                        toString: () => TREE_TABLE_TYPE,
+                        enable: true
+                    },
                     {
                         tableType: ANALYTICAL_TABLE_TYPE,
                         dialog: DialogNames.ADD_FRAGMENT,
                         toString: () => ANALYTICAL_TABLE_TYPE,
                         enable: true
                     },
-                    { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE, enable: true }
+                    {
+                        tableType: GRID_TABLE_TYPE,
+                        dialog: DialogNames.ADD_FRAGMENT,
+                        toString: () => GRID_TABLE_TYPE,
+                        enable: true
+                    }
                 ];
                 test.each(testCases)(
                     'initialize and execute action (%s)',
                     async (testCase) => {
                         const pageView = new XMLView();
                         const scrollIntoView = jest.fn();
-                        jest.spyOn(TableQuickActionDefinitionBase.prototype as any, 'getInternalTable').mockImplementation(() => {
+                        jest.spyOn(
+                            TableQuickActionDefinitionBase.prototype as any,
+                            'getInternalTable'
+                        ).mockImplementation(() => {
                             return {
                                 isA: (type: string) => type === SMART_TABLE_TYPE, // Check if the object is of the correct type
                                 getAggregation: jest.fn().mockImplementation((aggregationName: string) => {
@@ -1282,7 +1297,7 @@ describe('FE V4 quick actions', () => {
                                         return testCase.enable ? ['item1', 'item2'] : []; // Return rows or empty array based on `enable`
                                     }
                                     return undefined;
-                                }),
+                                })
                             };
                         });
                         jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
@@ -1292,7 +1307,7 @@ describe('FE V4 quick actions', () => {
                                     children: [2],
                                     getSubSections: () => [{}, {}],
                                     getTitle: () => 'section 01',
-                                    setSelectedSubSection: () => { }
+                                    setSelectedSubSection: () => {}
                                 };
                             }
 
@@ -1435,7 +1450,9 @@ describe('FE V4 quick actions', () => {
                                                 }
                                             ],
                                             'enabled': testCase.enable,
-                                            tooltip: testCase.enable ? undefined : 'This action has been disabled because the table rows are not available. Please load the table data and try again',
+                                            tooltip: testCase.enable
+                                                ? undefined
+                                                : 'This action has been disabled because the table rows are not available. Please load the table data and try again',
                                             'id': 'objectPage0-create-table-custom-column',
                                             'kind': 'nested',
                                             'title': 'Add Custom Table Column'
