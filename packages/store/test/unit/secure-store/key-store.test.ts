@@ -2,15 +2,6 @@ import { KeyStoreManager } from '../../../src/secure-store/key-store';
 import { keyring } from '@zowe/secrets-for-zowe-sdk';
 import { Logger } from '@sap-ux/logger';
 
-jest.mock('@zowe/secrets-for-zowe-sdk', () => ({
-    keyring: {
-        setPassword: jest.fn(),
-        getPassword: jest.fn(),
-        deletePassword: jest.fn(),
-        findCredentials: jest.fn(),
-    },
-}));
-
 jest.mock('@sap-ux/logger', () => ({
     Logger: class {
         info = jest.fn();
@@ -29,9 +20,17 @@ describe('KeyStoreManager', () => {
     let keyStoreManager: KeyStoreManager;
 
     beforeEach(() => {
-        keyStoreManager = new KeyStoreManager(log);
+        jest.resetModules()
         jest.clearAllMocks();
+        keyStoreManager = new KeyStoreManager(log);
     });
+
+    afterAll(async () => {
+        jest.clearAllTimers();
+        jest.restoreAllMocks();
+        await Promise.resolve(); 
+    });
+    
 
     describe('save', () => {
         it('should save a credential successfully', async () => {
@@ -173,6 +172,94 @@ describe('KeyStoreManager', () => {
 
             expect(result).toEqual({});
             expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Failed to retrieve credentials for Service: [testService]'));
+        });
+    });
+
+    describe('validateInput()', () => {
+        it('should return true when both service and key are provided', () => {
+            const service = 'myService';
+            const key = 'myKey';
+
+            const result = keyStoreManager['validateInput'](service, key);
+
+            expect(result).toBe(true);
+        });
+
+        it('should return false when service is missing', () => {
+            const service = '';
+            const key = 'myKey';
+
+            const result = keyStoreManager['validateInput'](service, key);
+
+            expect(result).toBe(false);
+            expect(log.error).toHaveBeenCalledWith('Invalid input: Service or Key is missing.');
+        });
+
+        it('should return false when key is missing', () => {
+            const service = 'myService';
+            const key = '';
+
+            const result = keyStoreManager['validateInput'](service, key);
+
+            expect(result).toBe(false);
+            expect(log.error).toHaveBeenCalledWith('Invalid input: Service or Key is missing.');
+        });
+
+        it('should return false when both service and key are missing', () => {
+            const service = '';
+            const key = '';
+
+            const result = keyStoreManager['validateInput'](service, key);
+
+            expect(result).toBe(false);
+            expect(log.error).toHaveBeenCalledWith('Invalid input: Service or Key is missing.');
+        });
+    });
+
+    describe('validateInput save()', () => {
+        it('should fail and return false when validateInput returns false', async () => {
+            const service = '';
+            const key = 'myKey';
+            const value = { username: 'user', password: 'pass' };
+
+            const result = await keyStoreManager.save(service, key, value);
+
+            expect(result).toBe(false);
+            expect(log.error).toHaveBeenCalledWith('Invalid input: Service or Key is missing.');
+        });
+    });
+
+    describe('validateInput retrieve()', () => {
+        it('should fail and return undefined when validateInput returns false', async () => {
+            const service = 'myService';
+            const key = '';
+
+            const result = await keyStoreManager.retrieve(service, key);
+
+            expect(result).toBeUndefined();
+            expect(log.error).toHaveBeenCalledWith('Invalid input: Service or Key is missing.');
+        });
+    });
+
+    describe('validateInput delete()', () => {
+        it('should fail and return false when validateInput returns false', async () => {
+            const service = '';
+            const key = 'myKey';
+
+            const result = await keyStoreManager.delete(service, key);
+
+            expect(result).toBe(false);
+            expect(log.error).toHaveBeenCalledWith('Invalid input: Service or Key is missing.');
+        });
+    });
+
+    describe('validateInput getAll()', () => {
+        it('should fail and return empty object when validateInput returns false', async () => {
+            const service = '';
+            const result = await keyStoreManager.getAll(service);
+
+            expect(result).toEqual({});
+            expect(log.error).toHaveBeenCalledWith('Failed to retrieve credentials for Service: []. Error: Find credentials failed');
         });
     });
 });
