@@ -1,4 +1,4 @@
-### Supported UI5 Versions for Quick Actions (V2 and V4)
+### Supported UI5 Versions for Quick Actions (OData V2 and V4)
 
 This table highlights the supported SAPUI5 versions for various quick actions in both V2 and V4. Versions are specified to ensure compatibility and proper implementation.
 
