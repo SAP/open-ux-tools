@@ -952,31 +952,38 @@ describe('FE V2 quick actions', () => {
             });
             describe('enable table filtering for different valid UI5 versions', () => {
                 const testCases: {
-                    validVersion: boolean,
-                    versionInfo: string
+                    validVersion: boolean;
+                    versionInfo: string;
                 }[] = [
-                        {
-                            validVersion: true, versionInfo: '1.96.37'
-                        },
-                        {
-                            validVersion: true, versionInfo: '1.108.38'
-                        },
-                        {
-                            validVersion: true, versionInfo: '1.96.38'
-                        },
-                        {
-                            validVersion: true, versionInfo: '1.120.23'
-                        },
-                        {
-                            validVersion: true, versionInfo: '1.128'
-                        },
-                        {
-                            validVersion: true, versionInfo: '1.130'
-                        },
-                        {
-                            validVersion: false, versionInfo: '1.96.36'
-                        }
-                    ];
+                    {
+                        validVersion: true,
+                        versionInfo: '1.96.37'
+                    },
+                    {
+                        validVersion: true,
+                        versionInfo: '1.108.38'
+                    },
+                    {
+                        validVersion: true,
+                        versionInfo: '1.96.38'
+                    },
+                    {
+                        validVersion: true,
+                        versionInfo: '1.120.23'
+                    },
+                    {
+                        validVersion: true,
+                        versionInfo: '1.128'
+                    },
+                    {
+                        validVersion: true,
+                        versionInfo: '1.130'
+                    },
+                    {
+                        validVersion: false,
+                        versionInfo: '1.96.36'
+                    }
+                ];
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                     VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
                     sapCoreMock.byId.mockImplementation((id) => {
@@ -1054,19 +1061,25 @@ describe('FE V2 quick actions', () => {
                         quickActionListChanged([
                             {
                                 title: 'LIST REPORT',
-                                actions: testCase.validVersion ? [{
-                                    'kind': 'simple',
-                                    id: 'listReport0-enable-semantic-daterange-filterbar',
-                                    title: 'Enable Semantic Date Range in Filter Bar',
-                                    enabled: true
-                                }
-                                ] : []
+                                actions: testCase.validVersion
+                                    ? [
+                                          {
+                                              'kind': 'simple',
+                                              id: 'listReport0-enable-semantic-daterange-filterbar',
+                                              title: 'Enable Semantic Date Range in Filter Bar',
+                                              enabled: true
+                                          }
+                                      ]
+                                    : []
                             }
                         ])
                     );
                     if (testCase.validVersion) {
                         await subscribeMock.mock.calls[0][0](
-                            executeQuickAction({ id: 'listReport0-enable-semantic-daterange-filterbar', kind: 'simple' })
+                            executeQuickAction({
+                                id: 'listReport0-enable-semantic-daterange-filterbar',
+                                kind: 'simple'
+                            })
                         );
                         expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
                             'settings': {},
@@ -1097,34 +1110,43 @@ describe('FE V2 quick actions', () => {
         describe('enable table filtering', () => {
             const testCases: {
                 visible: boolean;
-                ui5version: string,
+                ui5version: string;
                 expectedIsEnabled: boolean;
                 isValidUI5Version: boolean;
                 expectedTooltip?: string;
-
-            }[] = [{
-                visible: false, ui5version: '1.124.0', expectedIsEnabled: true,
-                isValidUI5Version: false
-            },
-            {
-                visible: false, ui5version: '1.96.0', expectedIsEnabled: true,
-                isValidUI5Version: false
-            },
-            {
-                visible: false, ui5version: '1.96.37', expectedIsEnabled: true,
-                isValidUI5Version: true
-            },
-            {
-                visible: false, ui5version: '1.130.0', expectedIsEnabled: true, isValidUI5Version: true
-            },
-            {
-                visible: true,
-                ui5version: '1.108.38',
-                expectedIsEnabled: false,
-                isValidUI5Version: true,
-                expectedTooltip: 'This option has been disabled because the change has already been made'
-            }
-                ];
+            }[] = [
+                {
+                    visible: false,
+                    ui5version: '1.124.0',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: false
+                },
+                {
+                    visible: false,
+                    ui5version: '1.96.0',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: false
+                },
+                {
+                    visible: false,
+                    ui5version: '1.96.37',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: true
+                },
+                {
+                    visible: false,
+                    ui5version: '1.130.0',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: true
+                },
+                {
+                    visible: true,
+                    ui5version: '1.108.38',
+                    expectedIsEnabled: false,
+                    isValidUI5Version: true,
+                    expectedTooltip: 'This option has been disabled because the change has already been made'
+                }
+            ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
                 VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.ui5version });
@@ -1154,7 +1176,7 @@ describe('FE V2 quick actions', () => {
                                     return {
                                         filter: {
                                             visible: testCase.visible
-                                        },
+                                        }
                                     };
                                 }
                             })
@@ -1196,16 +1218,21 @@ describe('FE V2 quick actions', () => {
                 });
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
-                    onStackChange: jest.fn(),
-                    getConfigurationPropertyValue: jest
-                        .fn()
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(undefined)
-                } as any);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest
+                            .fn()
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                    } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -1257,14 +1284,14 @@ describe('FE V2 quick actions', () => {
                                 },
                                 ...(isActionExpected
                                     ? [
-                                        {
-                                            'enabled': testCase.expectedIsEnabled,
-                                            'id': 'listReport0-enable-table-filtering',
-                                            'kind': 'simple',
-                                            'title': 'Enable Table Filtering for Page Variants',
-                                            'tooltip': testCase.expectedTooltip
-                                        } as any
-                                    ]
+                                          {
+                                              'enabled': testCase.expectedIsEnabled,
+                                              'id': 'listReport0-enable-table-filtering',
+                                              'kind': 'simple',
+                                              'title': 'Enable Table Filtering for Page Variants',
+                                              'tooltip': testCase.expectedTooltip
+                                          } as any
+                                      ]
                                     : [])
                             ],
                             'title': 'LIST REPORT'
@@ -1570,7 +1597,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => { }
+                            setSelectedSubSection: () => {}
                         };
                     }
 
@@ -1737,7 +1764,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => { }
+                            setSelectedSubSection: () => {}
                         };
                     }
 
@@ -1899,7 +1926,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => { }
+                            setSelectedSubSection: () => {}
                         };
                     }
 
