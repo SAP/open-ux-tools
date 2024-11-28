@@ -145,7 +145,7 @@ export abstract class TableQuickActionDefinitionBase {
     }
 
     /**
-     * Retrieves the internal table from a UI5Element and checks if it contains rows.
+     * Retrieves the internal table control from a UI5Element.
      *
      * @param table - The UI5Element instance to analyze.
      * @returns The internal table otherwise undefined.
@@ -334,8 +334,8 @@ export abstract class TableQuickActionDefinitionBase {
      */
     protected initializeCustomColumnTable(table: UI5Element, child: NestedQuickActionChild): void {
         const innerTable = this.getInternalTable(table);
-        const tableRows = innerTable?.getAggregation('items') as ManagedObject[] | [];
-        if (isA(M_TABLE_TYPE, innerTable) && (!tableRows || tableRows.length === 0)) {
+        const tableRows = (innerTable?.getAggregation('items') as ManagedObject[]) || [];
+        if (isA(M_TABLE_TYPE, innerTable) && !tableRows.length) {
             child.enabled = false;
             child.tooltip = this.context.resourceBundle.getText('TABLE_CUSTOM_COLUMN_ACTION_NOT_AVAILABLE');
         }
