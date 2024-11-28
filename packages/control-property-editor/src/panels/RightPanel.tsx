@@ -28,7 +28,7 @@ export function RightPanel(): ReactElement {
     const rowSize = 100;
     const header = 50;
     const initialSizeQuickActions = actionsCount * rowSize + header;
-    const initialSizeInfoCenter = Math.min(infoCenterMessagesCount * rowSize + header);
+    const initialSizeInfoCenter = infoCenterMessagesCount * rowSize + header;
     return (
         <UISections
             vertical={true}

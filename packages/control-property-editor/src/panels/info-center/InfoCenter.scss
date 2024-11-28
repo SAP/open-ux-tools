@@ -1,42 +1,35 @@
-.info-center-item {
-    size: 13px;
-    line-height: 22px;
-    display: flex;
-    margin-right: 5px;
-}
 .info-center-header {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    border-bottom: 1px solid var(--vscode-menu-separatorBackground)
-}
-.message-bar {
-    position: relative; 
-}
-.icon-button-container {
-    display: none;
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-.dismiss-icon-button-container {
-    margin-top: 5px;
-}
-.message-bar:hover .icon-button-container {
-    display: block;
+    border-bottom: 1px solid var(--vscode-menu-separatorBackground);
+    background-color: var(--vscode-sideBar-background); /* Set as needed */
 }
 
 .info-center-items {
     padding: 10px;
+    padding-top: 60px; /* Adjust based on the actual header height */
     border-radius: 8px;
 }
 
+.info-center-item {
+    font-size: 13px; /* Corrected 'size' to 'font-size' */
+    line-height: 22px;
+    display: flex;
+    margin-right: 5px;
+}
+
 .message-bar {
+    position: relative;
     margin-bottom: 2px;
     margin-top: 2px;
-    position: relative;
+
     &.warning {
         border-left: 4px solid #ffc107;
         color: #ffc107;
@@ -50,16 +43,32 @@
         content: "";
         position: absolute;
         bottom: 0;
-        left: 10px;  /* Space from the left */
-        right: 10px; /* Space from the right */
-        border-bottom: 1px solid var(--vscode-menu-separatorBackground)
+        left: 10px;
+        right: 10px;
+        border-bottom: 1px solid var(--vscode-menu-separatorBackground);
     }
+}
+
+.icon-button-container {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.dismiss-icon-button-container {
+    margin-top: 5px;
+}
+
+.message-bar:hover .icon-button-container {
+    display: block;
 }
 
 .message-title {
     font-weight: bold;
     color: var(--vscode-editor-foreground);
-    margin-bottom: 2px; /* Space between title and description */
+    margin-bottom: 2px;
 }
 
 .message-description {

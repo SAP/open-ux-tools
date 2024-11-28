@@ -9,8 +9,9 @@ import { UIMessageBar, UIIconButton, UiIcons, UIIconButtonSizes } from '@sap-ux/
 import type { RootState } from '../../store';
 import { sectionHeaderFontSize } from '../properties/constants';
 import './InfoCenter.scss';
+
 /**
- * React element for all properties including id & type and property editors.
+ * React element for info center messages.
  *
  * @returns ReactElement
  */
