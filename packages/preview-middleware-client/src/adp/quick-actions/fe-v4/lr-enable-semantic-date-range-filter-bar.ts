@@ -20,7 +20,8 @@ const boolMap: { [key: string]: boolean } = {
  */
 export class ToggleSemanticDateRangeFilterBar
     extends SimpleQuickActionDefinitionBase
-    implements SimpleQuickActionDefinition {
+    implements SimpleQuickActionDefinition
+{
     constructor(context: QuickActionContext) {
         super(ENABLE_SEMANTIC_DATE_RANGE, [], '', context);
     }

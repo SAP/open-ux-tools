@@ -860,34 +860,40 @@ describe('FE V2 quick actions', () => {
             });
         });
 
-
         describe('enable table filtering for different valid UI5 versions', () => {
             const testCases: {
-                validVersion: boolean,
-                versionInfo: string
+                validVersion: boolean;
+                versionInfo: string;
             }[] = [
-                    {
-                        validVersion: true, versionInfo: '1.96.37'
-                    },
-                    {
-                        validVersion: true, versionInfo: '1.108.38'
-                    },
-                    {
-                        validVersion: true, versionInfo: '1.96.38'
-                    },
-                    {
-                        validVersion: true, versionInfo: '1.120.23'
-                    },
-                    {
-                        validVersion: true, versionInfo: '1.128'
-                    },
-                    {
-                        validVersion: true, versionInfo: '1.130'
-                    },
-                    {
-                        validVersion: false, versionInfo: '1.96.36'
-                    }
-                ];
+                {
+                    validVersion: true,
+                    versionInfo: '1.96.37'
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.108.38'
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.96.38'
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.120.23'
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.128'
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.130'
+                },
+                {
+                    validVersion: false,
+                    versionInfo: '1.96.36'
+                }
+            ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
                 sapCoreMock.byId.mockImplementation((id) => {
@@ -964,12 +970,16 @@ describe('FE V2 quick actions', () => {
                     quickActionListChanged([
                         {
                             title: 'LIST REPORT',
-                            actions: testCase.validVersion ? [{
-                                'kind': 'simple',
-                                id: 'listReport0-enable-semantic-daterange-filterbar',
-                                title: 'Enable Semantic Date Range in Filter Bar',
-                                enabled: true
-                            }] : []
+                            actions: testCase.validVersion
+                                ? [
+                                      {
+                                          'kind': 'simple',
+                                          id: 'listReport0-enable-semantic-daterange-filterbar',
+                                          title: 'Enable Semantic Date Range in Filter Bar',
+                                          enabled: true
+                                      }
+                                  ]
+                                : []
                         }
                     ])
                 );
@@ -1000,7 +1010,6 @@ describe('FE V2 quick actions', () => {
                     });
                 }
             });
-
         });
     });
     describe('ObjectPage', () => {
@@ -1295,7 +1304,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => { }
+                            setSelectedSubSection: () => {}
                         };
                     }
 
@@ -1470,7 +1479,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => { }
+                            setSelectedSubSection: () => {}
                         };
                     }
 
@@ -1634,7 +1643,7 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => { }
+                            setSelectedSubSection: () => {}
                         };
                     }
 
