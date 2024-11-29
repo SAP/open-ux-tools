@@ -2,18 +2,9 @@ import type { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inq
 import type { ListQuestionOptions } from 'inquirer';
 
 /**
- * Enumeration of configuration modes used in the FLP configuration.
- */
-export enum ConfigurationMode {
-    AddNew = 'Add new inbound',
-    EditExisting = 'Edit existing inbound'
-}
-
-/**
  * Enumeration of prompt names used in the FLP configuration.
  */
 export enum promptNames {
-    configurationMode = 'configurationMode',
     inboundId = 'inboundId',
     semanticObject = 'semanticObject',
     action = 'action',
@@ -28,7 +19,6 @@ export enum promptNames {
  * Interface representing the answers collected from the FLP configuration prompts.
  */
 export interface FLPConfigAnswers {
-    [promptNames.configurationMode]?: ConfigurationMode;
     [promptNames.inboundId]?: string;
     [promptNames.semanticObject]: string;
     [promptNames.action]: string;
@@ -56,14 +46,6 @@ export interface FLPConfigQuestion
     name: promptNames;
     guiOptions?: GuiOptions;
     additionalMessages?: PromptSeverityMessage;
-}
-
-/**
- * Options for the 'configurationMode' prompt.
- */
-export interface ConfigurationModePromptOptions {
-    default?: string;
-    hide?: boolean;
 }
 
 /**
@@ -136,8 +118,7 @@ type FLPConfigCommonInquirerOptions = {
 /**
  * The options for the FLP config inquirer & the prompts.
  */
-type flpConfigPromptOptions = Record<promptNames.configurationMode, ConfigurationModePromptOptions> &
-    Record<promptNames.inboundId, InboundIdPromptOptions> &
+type flpConfigPromptOptions = Record<promptNames.inboundId, InboundIdPromptOptions> &
     Record<promptNames.semanticObject, SemanticObjectPromptOptions> &
     Record<promptNames.action, ActionPromptOptions> &
     Record<promptNames.overwrite, OverwritePromptOptions> &

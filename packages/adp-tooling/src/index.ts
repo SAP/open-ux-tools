@@ -7,4 +7,5 @@ export * from './base/helper';
 export * from './preview/adp-preview';
 export { generate, migrate } from './writer';
 export { generateChange } from './writer/editors';
+export { generateInboundConfig } from './writer/inbound-navigation';
 export { promptGeneratorInput, PromptDefaults } from './base/prompt';

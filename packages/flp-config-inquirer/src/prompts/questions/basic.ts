@@ -12,7 +12,7 @@ import type {
     TitlePromptOptions
 } from '../../types';
 import { t } from '../../i18n';
-import { ConfigurationMode, promptNames } from '../../types';
+import { promptNames } from '../../types';
 import { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
@@ -29,15 +29,6 @@ export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObject
         guiOptions: {
             mandatory: true,
             breadcrumb: true
-        },
-        when: (answers: FLPConfigAnswers) => {
-            if (!answers?.configurationMode) {
-                /**
-                 * Show by default if configurationMode prompt is hidden
-                 */
-                return true;
-            }
-            return answers?.configurationMode === ConfigurationMode.AddNew;
         },
         message: t('prompts.semanticObject'),
         default: options?.default,
@@ -60,15 +51,6 @@ export function getActionPrompt(isCLI: boolean, options?: ActionPromptOptions): 
         guiOptions: {
             mandatory: true,
             breadcrumb: true
-        },
-        when: (answers: FLPConfigAnswers) => {
-            if (!answers?.configurationMode) {
-                /**
-                 * Show by default if configurationMode prompt is hidden
-                 */
-                return true;
-            }
-            return answers?.configurationMode === ConfigurationMode.AddNew;
         },
         message: t('prompts.action'),
         default: options?.default,

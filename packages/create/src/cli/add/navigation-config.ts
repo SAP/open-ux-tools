@@ -10,7 +10,7 @@ import { validateBasePath } from '../../validation';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { join } from 'path';
 import { existsSync } from 'fs';
-import { getAdpConfig, getVariant, ManifestService } from '@sap-ux/adp-tooling';
+import { generateInboundConfig, getAdpConfig, getVariant, ManifestService } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 
 /**
@@ -56,7 +56,11 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
 
         console.log(JSON.stringify(config, null, 2)); // TODO: Remove after testing
 
-        !isAdp && (await generateInboundNavigationConfig(basePath, config, true, fs));
+        if (isAdp) {
+            generateInboundConfig(basePath, config as any, fs);
+        } else {
+            await generateInboundNavigationConfig(basePath, config, true, fs);
+        }
 
         if (!simulate) {
             fs.commit(() => logger.info(`Inbound navigation configuration complete.`));
@@ -131,7 +135,6 @@ async function getUserConfig(
 
     if (!isAdp) {
         promptOptions = {
-            configurationMode: { hide: true },
             inboundId: { hide: true },
             parameterString: { hide: true },
             createAnotherInbound: { hide: true }

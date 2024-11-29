@@ -5,43 +5,12 @@ import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { t } from '../../i18n';
 import {
     promptNames,
-    type ConfigurationModePromptOptions,
     type FLPConfigQuestion,
-    ConfigurationMode,
     FLPConfigAnswers,
     InboundIdPromptOptions,
     CreateAnotherInboundPromptOptions,
     ParameterStringPromptOptions
 } from '../../types';
-
-const modeChoices = [
-    { name: ConfigurationMode.AddNew, value: ConfigurationMode.AddNew },
-    { name: ConfigurationMode.EditExisting, value: ConfigurationMode.EditExisting }
-];
-
-/**
- * Creates the 'configurationMode' prompt for FLP configuration.
- *
- * @param {ConfigurationModePromptOptions} [options] - Optional configuration for the configuration mode prompt, including default values.
- * @returns {FLPConfigQuestion} The prompt configuration for the configuration mode.
- */
-export function getConfigurationModePrompt(
-    inboundIds: string[],
-    options?: ConfigurationModePromptOptions
-): FLPConfigQuestion {
-    return {
-        type: 'list',
-        name: promptNames.configurationMode,
-        message: t('prompts.configurationMode'),
-        choices: modeChoices,
-        default: modeChoices[0],
-        guiOptions: {
-            applyDefaultWhenDirty: true,
-            mandatory: true
-        },
-        when: options?.hide ? false : inboundIds && inboundIds.length > 0
-    };
-}
 
 /**
  * Creates the 'inboundId' prompt for FLP configuration.
@@ -57,11 +26,7 @@ export function getInboundIdsPrompt(inboundIds: string[], options?: InboundIdPro
         choices: inboundIds,
         default: inboundIds[0],
         validate: validateEmptyString,
-        when: options?.hide
-            ? false
-            : (answers: FLPConfigAnswers) => {
-                  return inboundIds?.length > 0 && answers.configurationMode === ConfigurationMode.EditExisting;
-              },
+        when: options?.hide ? false : inboundIds?.length > 0,
         guiOptions: {
             hint: t('tooltips.inboundId'),
             breadcrumb: t('prompts.inboundIds'),
@@ -125,9 +90,7 @@ export function getCreateAnotherInboundPrompt(options?: CreateAnotherInboundProm
         name: promptNames.createAnotherInbound,
         message: t('prompts.createAnotherInbound'),
         default: false,
-        when: options?.hide
-            ? false
-            : (answers: FLPConfigAnswers) => answers?.configurationMode === ConfigurationMode.AddNew,
+        when: options?.hide ? false : (answers: FLPConfigAnswers) => !!answers?.inboundId,
         guiOptions: {
             hint: t('tooltips.inboundId'),
             breadcrumb: t('prompts.inboundIds')

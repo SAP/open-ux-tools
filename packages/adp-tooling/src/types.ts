@@ -15,7 +15,7 @@ export interface DescriptorVariant {
 export interface DescriptorVariantContent {
     changeType: string;
     content: Record<string, unknown>;
-    texts?: string;
+    texts?: string | { i18n?: string };
 }
 
 export interface ToolsSupport {
@@ -86,6 +86,14 @@ export interface AdpWriterConfig {
          */
         fioriTools?: boolean;
     };
+}
+
+/**
+ * Represents the properties needed to configure an inbound navigation.
+ */
+export interface InboundConfigProps extends Partial<NewInboundNavigation> {
+    /** Identifier for the inbound navigation. */
+    inboundId: string;
 }
 
 export interface ChangeInboundNavigation {
