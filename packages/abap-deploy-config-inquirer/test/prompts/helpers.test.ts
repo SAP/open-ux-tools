@@ -17,7 +17,60 @@ describe('helpers', () => {
     });
 
     describe('getBackendTargetChoices', () => {
-        it('should return backend target choices', async () => {
+        it('should return backend target choices and default to the target passed in', async () => {
+            const mockServiceProvider = {
+                user: () => 'mockUser2'
+            } as any;
+            const backendTarget = {
+                serviceProvider: mockServiceProvider,
+                abapTarget: mockTargetSystems[1]
+            };
+            const systemChoices = await getAbapSystemChoices(undefined, backendTarget, mockTargetSystems);
+            expect(systemChoices).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "name": "Enter Target System URL",
+                    "value": "Url",
+                  },
+                  Object {
+                    "client": "100",
+                    "isDefault": false,
+                    "isS4HC": false,
+                    "name": "target1 [mockUser]",
+                    "scp": false,
+                    "value": "https://mock.url.target1.com",
+                  },
+                  Object {
+                    "client": "102",
+                    "isDefault": true,
+                    "isS4HC": true,
+                    "name": "target2 (S4HC) [mockUser2] (Source system)",
+                    "scp": false,
+                    "value": "https://mock.url.target2.com",
+                  },
+                  Object {
+                    "client": "103",
+                    "isDefault": false,
+                    "isS4HC": false,
+                    "name": "target3 [mockUser3]",
+                    "scp": false,
+                    "value": "https://mock.url.target3.com",
+                  },
+                  Object {
+                    "client": "104",
+                    "isDefault": false,
+                    "isS4HC": false,
+                    "name": "target4 [mockUser4]",
+                    "scp": false,
+                    "value": "https://mock.url.target4.com",
+                  },
+                ]
+            `);
+            const defaultSystemChoice = systemChoices.find((choice) => choice.isDefault);
+            expect(defaultSystemChoice?.value).toBe(mockTargetSystems[1].url);
+        });
+
+        it('should return backend target choices with new target not saved in store at the top', async () => {
             const mockServiceProvider = {
                 user: () => 'mockUser'
             } as any;
@@ -47,7 +100,7 @@ describe('helpers', () => {
                     "value": "https://mock.url.new.target.com",
                   },
                   Object {
-                    "client": "000",
+                    "client": "100",
                     "isDefault": false,
                     "isS4HC": false,
                     "name": "target1 [mockUser]",
@@ -55,12 +108,28 @@ describe('helpers', () => {
                     "value": "https://mock.url.target1.com",
                   },
                   Object {
-                    "client": "001",
+                    "client": "102",
                     "isDefault": false,
                     "isS4HC": true,
                     "name": "target2 (S4HC) [mockUser2]",
                     "scp": false,
                     "value": "https://mock.url.target2.com",
+                  },
+                  Object {
+                    "client": "103",
+                    "isDefault": false,
+                    "isS4HC": false,
+                    "name": "target3 [mockUser3]",
+                    "scp": false,
+                    "value": "https://mock.url.target3.com",
+                  },
+                  Object {
+                    "client": "104",
+                    "isDefault": false,
+                    "isS4HC": false,
+                    "name": "target4 [mockUser4]",
+                    "scp": false,
+                    "value": "https://mock.url.target4.com",
                   },
                 ]
             `);
@@ -75,7 +144,7 @@ describe('helpers', () => {
                     "value": "Url",
                   },
                   Object {
-                    "client": "000",
+                    "client": "100",
                     "isDefault": false,
                     "isS4HC": false,
                     "name": "target1 [mockUser]",
@@ -83,12 +152,28 @@ describe('helpers', () => {
                     "value": "https://mock.url.target1.com",
                   },
                   Object {
-                    "client": "001",
+                    "client": "102",
                     "isDefault": false,
                     "isS4HC": true,
                     "name": "target2 (S4HC) [mockUser2]",
                     "scp": false,
                     "value": "https://mock.url.target2.com",
+                  },
+                  Object {
+                    "client": "103",
+                    "isDefault": false,
+                    "isS4HC": false,
+                    "name": "target3 [mockUser3]",
+                    "scp": false,
+                    "value": "https://mock.url.target3.com",
+                  },
+                  Object {
+                    "client": "104",
+                    "isDefault": false,
+                    "isS4HC": false,
+                    "name": "target4 [mockUser4]",
+                    "scp": false,
+                    "value": "https://mock.url.target4.com",
                   },
                 ]
             `);
