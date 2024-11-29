@@ -9,7 +9,7 @@ const schemaURL = 'https://raw.githubusercontent.com/SAP/ui5-tooling/gh-pages/sc
 async function downloadUI5YamlSchema() {
     console.info('Downloading UI5 yaml schema...');
     const schema = await axios.get(schemaURL).then((response) => response.data);
-    fs.mkdirSync('./dist/schema');
+    fs.mkdirSync('./dist/schema', { recursive: true });
     fs.writeFileSync('./dist/schema/ui5.yaml.json', JSON.stringify(schema, null, 2));
     console.info('UI5 yaml schema downloaded successfully.');
 }
