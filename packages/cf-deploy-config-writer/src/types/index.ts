@@ -40,7 +40,6 @@ export interface MTABaseConfig {
 export interface CFBaseConfig extends MTABaseConfig {
     routerType: RouterModuleType;
     addConnectivityService?: boolean;
-    addDestinationService?: boolean;
     abapServiceProvider?: {
         abapServiceName?: string;
         abapService?: string;
