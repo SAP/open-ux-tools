@@ -1,6 +1,5 @@
 const axios = require('axios');
-const { create } = require('mem-fs-editor');
-const { create: createStorage } = require('mem-fs');
+const fs = require('fs');
 
 const schemaURL = 'https://raw.githubusercontent.com/SAP/ui5-tooling/gh-pages/schema/ui5.yaml.json';
 
@@ -9,10 +8,9 @@ const schemaURL = 'https://raw.githubusercontent.com/SAP/ui5-tooling/gh-pages/sc
  */
 async function downloadUI5YamlSchema() {
     console.info('Downloading UI5 yaml schema...');
-    const memFs = create(createStorage());
     const schema = await axios.get(schemaURL).then((response) => response.data);
-    memFs.write('./dist/schema/ui5.yaml.json', JSON.stringify(schema, null, 2));
-    memFs.commit(() => {});
+    fs.mkdirSync('./dist/schema');
+    fs.writeFileSync('./dist/schema/ui5.yaml.json', JSON.stringify(schema, null, 2));
     console.info('UI5 yaml schema downloaded successfully.');
 }
 
