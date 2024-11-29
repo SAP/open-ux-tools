@@ -30,7 +30,7 @@ modules:
           ServiceInstanceName: test-mta-xsuaa-srv
           ServiceKeyName: test-mta-uaa-key
           sap.cloud.service: test-mta
-        existing_destinations_policy: ignore
+        existing_destinations_policy: update
   build-parameters:
     no-source: true
 - name: test-mta-app-content
