@@ -163,7 +163,7 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
             return !!previousAnswers.addABAPServiceBinding && previousAnswers.routerType !== RouterModuleType.Managed;
         },
         type: 'list',
-        name: appRouterPromptNames.addServiceProvider,
+        name: appRouterPromptNames.abapServiceProvider,
         guiOptions: {
             breadcrumb: t('prompts.abapEnvBindingBreadcrumbMessage')
         },

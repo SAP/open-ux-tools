@@ -32,7 +32,7 @@ export enum appRouterPromptNames {
     /* Prompt for selecting abap service binding*/
     addABAPServiceBinding = 'addABAPServiceBinding',
     /* Prompt for selecting the ABAP environments */
-    addServiceProvider = 'addServiceProvider'
+    abapServiceProvider = 'abapServiceProvider'
 }
 
 /**
@@ -117,12 +117,14 @@ export interface CfDeployConfigAnswers {
 }
 
 /**
- * Enum defining the types of router modules for the Application Router configuration.
+ * Defines the types of router modules for the Application Router configuration.
  */
-export enum RouterModuleType {
-    Standard = 'standard',
-    Managed = 'managed'
-}
+export const RouterModuleType = {
+    Standard: 'standard',
+    Managed: 'managed'
+} as const;
+
+export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];
 
 /**
  * Interface representing the configuration for MTA.
@@ -150,7 +152,7 @@ export interface CfAppRouterDeployConfigAnswers extends MtaConfig {
     /* Option to use abap Service Binding for the application router. */
     addABAPServiceBinding?: boolean;
     /* The selected abap environment for the application router. */
-    addServiceProvider?: {
+    abapServiceProvider?: {
         label?: string;
         service?: string;
     };

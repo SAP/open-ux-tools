@@ -239,7 +239,7 @@ describe('App Router Prompt Generation Tests', () => {
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const addServiceProviderPrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.addServiceProvider
+                (question) => question.name === appRouterPromptNames.abapServiceProvider
             );
             expect(addServiceProviderPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.abapEnvBindingBreadcrumbMessage'));
             expect(addServiceProviderPrompt?.message).toBe(t('prompts.selectServiceMessage'));
@@ -262,7 +262,7 @@ describe('App Router Prompt Generation Tests', () => {
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const addServiceProviderPrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.addServiceProvider
+                (question) => question.name === appRouterPromptNames.abapServiceProvider
             );
             expect(addServiceProviderPrompt).toBe(undefined);
         });
@@ -274,7 +274,7 @@ describe('App Router Prompt Generation Tests', () => {
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const addServiceProviderPrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.addServiceProvider
+                (question) => question.name === appRouterPromptNames.abapServiceProvider
             );
             expect(
                 (addServiceProviderPrompt?.when as Function)({
@@ -291,7 +291,7 @@ describe('App Router Prompt Generation Tests', () => {
             };
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const addServiceProviderPrompt = questions.find(
-                (question) => question.name === appRouterPromptNames.addServiceProvider
+                (question) => question.name === appRouterPromptNames.abapServiceProvider
             );
             expect(
                 (addServiceProviderPrompt?.when as Function)({
