@@ -223,7 +223,7 @@ describe('getAbapTargetPrompts', () => {
                     "value": "Url",
                   },
                   Object {
-                    "client": "000",
+                    "client": "100",
                     "isDefault": false,
                     "isS4HC": false,
                     "name": "target1 [mockUser]",
@@ -231,12 +231,28 @@ describe('getAbapTargetPrompts', () => {
                     "value": "https://mock.url.target1.com",
                   },
                   Object {
-                    "client": "001",
+                    "client": "102",
                     "isDefault": false,
                     "isS4HC": true,
                     "name": "target2 (S4HC) [mockUser2]",
                     "scp": false,
                     "value": "https://mock.url.target2.com",
+                  },
+                  Object {
+                    "client": "103",
+                    "isDefault": false,
+                    "isS4HC": false,
+                    "name": "target3 [mockUser3]",
+                    "scp": false,
+                    "value": "https://mock.url.target3.com",
+                  },
+                  Object {
+                    "client": "104",
+                    "isDefault": false,
+                    "isS4HC": false,
+                    "name": "target4 [mockUser4]",
+                    "scp": false,
+                    "value": "https://mock.url.target4.com",
                   },
                 ]
             `);
