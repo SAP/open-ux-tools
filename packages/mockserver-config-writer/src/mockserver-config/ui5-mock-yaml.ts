@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware, DataSourceConfig } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
-import { DirName, FileName } from '@sap-ux/project-access';
+import { DirName, FileName, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
 import type { Ui5MockYamlConfig } from '../types';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
 import { getODataSources } from '../app-info';
@@ -79,15 +79,16 @@ export async function enhanceYaml(
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to project root, where package.json and ui5.yaml is
  */
-export function removeMockDataFolders(fs: Editor, basePath: string): void {
-    const manifestPath = join(basePath, DirName.Webapp, FileName.Manifest);
+export async function removeMockDataFolders(fs: Editor, basePath: string): Promise<void> {
+    const webappPath = await getWebappPath(basePath, fs);
+    const manifestPath = join(webappPath, FileName.Manifest);
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     // Read service names from manifest.json
     const dataSources = manifest['sap.app'].dataSources;
     if (dataSources) {
         const serviceNames = Object.keys(dataSources);
         serviceNames.forEach((serviceName: string) => {
-            const mockdataPath = join(basePath, DirName.Webapp, DirName.LocalService, serviceName, DirName.Data);
+            const mockdataPath = join(webappPath, DirName.LocalService, serviceName, DirName.Data);
             if (mockdataPath) {
                 fs.delete(mockdataPath);
             }
@@ -145,8 +146,7 @@ async function generateUi5MockYamlBasedOnUi5Yaml(
     dataSourcesConfig: DataSourceConfig[],
     annotationsConfig: MockserverConfig['annotations']
 ): Promise<UI5Config> {
-    const ui5YamlPath = join(basePath, 'ui5.yaml');
-    const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5YamlPath));
+    const ui5MockYamlConfig = await readUi5Yaml(basePath, FileName.Ui5Yaml, fs);
     const ui5MockServerMiddleware = await getNewMockserverMiddleware(dataSourcesConfig, annotationsConfig);
     ui5MockYamlConfig.updateCustomMiddleware(ui5MockServerMiddleware);
     return ui5MockYamlConfig;

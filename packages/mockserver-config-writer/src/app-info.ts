@@ -7,8 +7,8 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
  * @returns - data source name from manifest.json
  */
 function getMainServiceDataSourceName(manifest: Manifest): string | undefined {
-    const model = manifest['sap.ovp']?.globalFilterModel ?? '';
-    return manifest['sap.ui5']?.models?.[model] ? manifest['sap.ui5'].models[model].dataSource : undefined;
+    const modelName = manifest['sap.ovp']?.globalFilterModel ?? '';
+    return manifest['sap.ui5']?.models?.[modelName] ? manifest['sap.ui5'].models[modelName].dataSource : undefined;
 }
 
 /**

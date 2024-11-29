@@ -326,7 +326,7 @@ describe('generate', () => {
             } as OdataService;
             // No services are defined - mainService used for service name and '' for service model
             let configCopy = cloneDeep(config);
-            enhanceData('', configCopy, fs);
+            await enhanceData('', configCopy, fs);
             expect(configCopy).toMatchInlineSnapshot(`
                 Object {
                   "model": "",
@@ -348,7 +348,7 @@ describe('generate', () => {
                 'sap.app': { dataSources: { existingService: { type: 'OData' } } },
                 'sap.ui5': { models: { existingModel: { dataSource: 'existingService' } } }
             });
-            enhanceData('', configCopy, fs);
+            await enhanceData('', configCopy, fs);
             expect(configCopy).toMatchInlineSnapshot(`
                 Object {
                   "model": "modelName",
@@ -367,7 +367,7 @@ describe('generate', () => {
             fs.delete(join('webapp', 'manifest.json'));
             // Undefined path does not throw but sets valid path
             configCopy = cloneDeep(Object.assign({}, config, { path: undefined }));
-            enhanceData('', configCopy, fs);
+            await enhanceData('', configCopy, fs);
             expect(configCopy).toMatchInlineSnapshot(`
                 Object {
                   "model": "",
@@ -388,7 +388,7 @@ describe('generate', () => {
                 'sap.app': { dataSources: { exisitingSerivce: { type: 'OData' } } }
             });
             configCopy = cloneDeep(Object.assign({}, config, { name: 'aname', annotations: { name: 'aname' } }));
-            enhanceData('', configCopy, fs);
+            await enhanceData('', configCopy, fs);
             expect(configCopy).toMatchInlineSnapshot(`
                 Object {
                   "annotations": Object {

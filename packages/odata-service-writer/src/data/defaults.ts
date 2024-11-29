@@ -3,6 +3,7 @@ import type { OdataService, EdmxAnnotationsInfo } from '../types';
 import { ServiceType } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
 import type { Manifest } from '@sap-ux/project-access';
+import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 
 /**
@@ -24,8 +25,8 @@ function setDefaultServicePath(service: OdataService): void {
  * @param {OdataService} service - The service object whose name needs to be set or modified.
  * @param fs - the memfs editor instance
  */
-function setDefaultServiceName(basePath: string, service: OdataService, fs: Editor): void {
-    const manifestPath = join(basePath, 'webapp', 'manifest.json');
+async function setDefaultServiceName(basePath: string, service: OdataService, fs: Editor): Promise<void> {
+    const manifestPath = join(await getWebappPath(basePath, fs), FileName.Manifest);
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     // Check if manifest has already any dataSources defined, DEFAULT_DATASOURCE_NAME should be used for the first service
     const dataSources = manifest?.['sap.app']?.dataSources;
@@ -50,25 +51,18 @@ function setDefaultServiceName(basePath: string, service: OdataService, fs: Edit
  * @param {OdataService} service - The service object whose model needs to be set or modified
  * @param fs - the memfs editor instance
  */
-function setDefaultServiceModel(basePath: string, service: OdataService, fs: Editor): void {
-    const manifestPath = join(basePath, 'webapp', 'manifest.json');
+async function setDefaultServiceModel(basePath: string, service: OdataService, fs: Editor): Promise<void> {
+    const manifestPath = join(await getWebappPath(basePath, fs), 'manifest.json');
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     // Check if manifest has already any dataSource models defined, empty string '' should be used for the first service
     const models = manifest?.['sap.ui5']?.models;
     if (models) {
         // Filter dataSource models by dataSource property
         const servicesModels = Object.values(models).filter((model) => model.dataSource);
-        // First one is being added, set model to ''
-        if (servicesModels.length === 0) {
-            service.model = '';
-        } else {
-            // Else use actual model or service name as service model to avoid another '' being added
-            service.model = service.model ?? service.name;
-        }
-    } else {
-        // No models defined, that means first one is being added, set model to ''
-        service.model = '';
+        service.model = servicesModels.length === 0 ? '' : service.model ?? service.name;
     }
+    // No models defined, that means first one is being added, set model to ''
+    service.model ??= '';
 }
 
 /**
@@ -116,10 +110,10 @@ function setDefaultAnnotationsName(service: OdataService): void {
  * @param {OdataService} service - the OData service instance
  * @param {Editor} fs - the memfs editor instance
  */
-export function enhanceData(basePath: string, service: OdataService, fs: Editor): void {
+export async function enhanceData(basePath: string, service: OdataService, fs: Editor): Promise<void> {
     setDefaultServicePath(service);
-    setDefaultServiceName(basePath, service, fs);
-    setDefaultServiceModel(basePath, service, fs);
+    await setDefaultServiceName(basePath, service, fs);
+    await setDefaultServiceModel(basePath, service, fs);
     // set service type to EDMX if not defined
     service.type = service.type ?? ServiceType.EDMX;
     /**

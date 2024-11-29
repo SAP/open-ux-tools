@@ -253,7 +253,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     }
     const paths = await findProjectFiles(basePath, fs);
     ensureExists(basePath, ['webapp/manifest.json'], fs);
-    enhanceData(basePath, service, fs);
+    await enhanceData(basePath, service, fs);
     // Set isServiceTypeEdmx true if service is EDMX
     const isServiceTypeEdmx = service.type === ServiceType.EDMX;
     // Prepare template folder for manifest and xml updates

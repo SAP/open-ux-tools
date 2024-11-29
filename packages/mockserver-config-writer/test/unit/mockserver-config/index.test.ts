@@ -46,7 +46,7 @@ describe('Test removeMockserverConfig()', () => {
         const ui5MockYaml = join(basePath, 'ui5-mock.yaml');
         expect(fs.exists(ui5MockYaml)).toBe(true);
 
-        removeMockserverConfig(basePath, fs);
+        await removeMockserverConfig(basePath, fs);
 
         expect(fs.exists(ui5MockYaml)).toBe(false);
         expect(fs.readJSON(join(basePath, 'package.json'))).toEqual({ 'name': 'bare-minimum' });
@@ -57,7 +57,7 @@ describe('Test removeMockserverConfig()', () => {
         const packageJsonPath = join(basePath, 'package.json');
         const manifestPath = join(basePath, 'webapp/manifest.json');
 
-        const fs = removeMockserverConfig(basePath);
+        const fs = await removeMockserverConfig(basePath);
 
         const packageJson = JSON.parse(await promises.readFile(packageJsonPath, { encoding: 'utf-8' }));
         const manifestJson = JSON.parse(await promises.readFile(manifestPath, { encoding: 'utf-8' }));
@@ -73,7 +73,7 @@ describe('Test removeMockserverConfig()', () => {
             join(basePath, 'webapp', 'localService', 'mainService', 'data', 'keep'),
             join(basePath, 'webapp', 'localService', 'STTA_SALES_ORDER_ND_SRV_01', 'data', 'keep')
         ];
-        const fs = removeMockserverConfig(basePath);
+        const fs = await removeMockserverConfig(basePath);
 
         expect(fs.exists(ui5MockYaml)).toBe(false);
         mockdataPaths.forEach((mockdataPath) => {
