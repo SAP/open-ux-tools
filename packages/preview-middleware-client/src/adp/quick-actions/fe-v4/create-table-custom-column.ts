@@ -26,11 +26,13 @@ export class AddTableCustomColumnQuickAction
 
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
-        this.selectOverlay(table);
         if (!table) {
             return [];
         }
+
         preprocessActionExecution(table, sectionInfo, this.iconTabBar, iconTabBarFilterKey);
+        this.selectOverlay(table);
+
         const overlay = OverlayRegistry.getOverlay(table);
         await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
             aggregation: 'columns',
