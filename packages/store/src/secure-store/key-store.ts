@@ -4,13 +4,6 @@ import type { SecureStore } from './types';
 import { keyring } from '@zowe/secrets-for-zowe-sdk';
 
 type Entities<T> = { [key: string]: T };
-
-/**
- * Custom error classes to handle specific error scenarios
- */
-class SerializationError extends Error {}
-class DeserializationError extends Error {}
-
 export class KeyStoreManager implements SecureStore {
     private readonly log: Logger;
     private readonly keyring: typeof keyring;
@@ -27,7 +20,7 @@ export class KeyStoreManager implements SecureStore {
         try {
             return JSON.stringify(value);
         } catch (e) {
-            throw new SerializationError(`Failed to serialize value while storing credentials`);
+            throw new Error(`Failed to serialize value while storing credentials`);
         }
     }
 
@@ -38,7 +31,7 @@ export class KeyStoreManager implements SecureStore {
         try {
             return JSON.parse(serialized) as T;
         } catch (e) {
-            throw new DeserializationError(`Failed to deserialize value while retrieving credentials`);
+            throw new Error(`Failed to deserialize value while retrieving credentials`);
         }
     }
 
@@ -89,7 +82,7 @@ export class KeyStoreManager implements SecureStore {
 
             return this.deserialize<T>(serializedValue);
         } catch (e) {
-            if (e instanceof DeserializationError) {
+            if (e instanceof Error) {
                 this.log.error(
                     `Deserialization error for Service: [${service}], Key: [${key}]. Error: ${errorString(e)}`
                 );
