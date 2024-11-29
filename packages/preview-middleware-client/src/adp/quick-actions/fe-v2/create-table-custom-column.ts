@@ -64,17 +64,8 @@ export class AddTableCustomColumnQuickAction
     implements NestedQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(CREATE_TABLE_CUSTOM_COLUMN, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN', context);
-    }
-    async initialize(): Promise<void> {
-        const tooltipText = this.context.resourceBundle.getText('TABLE_CUSTOM_COLUMN_ACTION_NOT_AVAILABLE');
-        await super.initialize((table, child) => {
-            const innerTable = this.getInternalTable(table);
-            const tableRows = (innerTable?.getAggregation('items') as ManagedObject[]) || [];
-            if (isA(M_TABLE_TYPE, innerTable) && !tableRows.length) {
-                child.enabled = false;
-                child.tooltip = tooltipText;
-            }
+        super(CREATE_TABLE_CUSTOM_COLUMN, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN', context, {
+            areTableRowsRequired: true
         });
     }
 
