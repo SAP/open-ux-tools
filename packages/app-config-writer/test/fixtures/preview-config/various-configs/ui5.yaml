@@ -17,7 +17,7 @@ server:
           url: https://ui5.sap.com
         backend:
           - path: /sap
-            url: https://sap-ux-mock-services-v4-lrop.cfapps.us10.hana.ondemand.com
+            url: https://sap-ux-mock.com
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

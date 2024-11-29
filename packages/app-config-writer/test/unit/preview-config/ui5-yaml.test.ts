@@ -37,7 +37,7 @@ describe('update preview middleware config', () => {
             afterMiddleware: 'compression',
             configuration: {
                 flp: {
-                    path: 'test/flp.html'
+                    path: '/test/flp.html'
                 }
             }
         } as CustomMiddleware<PreviewConfigOptions>;
@@ -231,7 +231,7 @@ describe('update preview middleware config', () => {
             scripts: {
                 'start-rta':
                     'ui5 run -o preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml',
-                'start-local': 'ui5 run -o test/flp.html#Chicken-dance --config ./ui5-existing-preview-middleware.yaml'
+                'start-local': 'ui5 run -o /test/flp.html#Chicken-dance --config ./ui5-existing-preview-middleware.yaml'
             },
             'devDependencies': {
                 '@sap/ux-ui5-tooling': '1.15.4'
@@ -252,7 +252,7 @@ describe('update preview middleware config', () => {
                     'fiori run -o /preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
                 'start-control-property-editor':
                     'fiori run -o /editor.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml',
-                'start-local': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml'
+                'start-local': 'fiori run -o /test/flp.html#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml'
             },
             'devDependencies': {
                 '@sap/ux-ui5-tooling': '1.15.4'
@@ -269,9 +269,9 @@ describe('update preview middleware config', () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
             scripts: {
-                'start': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml',
-                'start-local': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml',
-                'start-mock': 'fiori run -o test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml'
+                'start': 'fiori run -o /test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml',
+                'start-local': 'fiori run -o /test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml',
+                'start-mock': 'fiori run -o /test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml'
             },
             'devDependencies': {
                 '@sap/ux-ui5-tooling': '1.15.4'

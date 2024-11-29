@@ -6,12 +6,22 @@ import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../va
 import { renameSandbox } from './preview-files';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
-import type { FlpConfig, MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
+import type {
+    FlpConfig,
+    MiddlewareConfig as PreviewConfig,
+    DefaultFlpPath,
+    DefaultIntent
+} from '@sap-ux/preview-middleware';
 import type { PreviewConfigOptions } from '../types';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ValidatedUi5ConfigFileNames, Package } from '@sap-ux/project-access';
 
-const DEFAULT_FLP_PATH = 'test/flp.html';
+const DEFAULT_FLP_PATH: DefaultFlpPath = '/test/flp.html';
+
+const DEFAULT_INTENT: DefaultIntent = {
+    object: 'app',
+    action: 'preview'
+};
 
 /**
  * Checks if a script can be converted based on the used UI5 yaml configuration file.
@@ -209,6 +219,7 @@ export function updatePreviewMiddlewareConfig(
     intent: FlpConfig['intent'] | undefined,
     path: string | undefined
 ): CustomMiddleware<PreviewConfigOptions> {
+    const defaultIntent = `${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`;
     const newMiddlewareConfig = sanitizePreviewMiddleware(previewMiddleware);
 
     //copy of configuration to avoid ending up with an empty configuration object in some cases
@@ -222,7 +233,7 @@ export function updatePreviewMiddlewareConfig(
         writeConfig = true;
     }
     //check intent and respect defaults
-    if (intent && `${intent?.object}-${intent?.action}` !== 'app-preview') {
+    if (intent && `${intent?.object}-${intent?.action}` !== defaultIntent) {
         configuration.flp.intent = {
             object: intent.object,
             action: intent.action

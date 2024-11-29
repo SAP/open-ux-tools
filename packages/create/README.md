@@ -147,7 +147,7 @@ sap-ux change inbound [path]
 Calling `sap-ux convert` allows converting an app to a new feature.
 
 ### preview
-Calling `sap-ux convert preview` in the root folder of an app will convert the respective app to the preview with virtual files. It will use the configuration from the scripts in `package.json` to adjust the UI5 configuration yaml files accordingly. No longer needed js/ts sources will be deleted and the html files previously used for the preview will be renamed to *_old.html.
+Calling `sap-ux convert preview-config` in the root folder of an app will convert the respective app to the preview with virtual files. It will use the configuration from the scripts in `package.json` to adjust the UI5 configuration yaml files accordingly. No longer needed js/ts sources will be deleted and the html files previously used for the preview will be renamed to *_old.html.
 ```sh
 sap-ux convert preview [path]
 ```

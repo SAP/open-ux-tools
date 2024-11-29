@@ -7,7 +7,7 @@ import { convertToVirtualPreview } from '@sap-ux/app-config-writer';
  * @param {Command} cmd - The command to add the convert sub-command to.
  */
 export function addConvertPreviewCommand(cmd: Command): void {
-    cmd.command('preview [path]')
+    cmd.command('preview-config [path]')
         .option('-s, --simulate', 'simulate only do not write or install')
         .option('-v, --verbose', 'show verbose information')
         .action(async (path, options) => {

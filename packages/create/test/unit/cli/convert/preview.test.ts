@@ -44,7 +44,7 @@ describe('Test command convert preview', () => {
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
-        await command.parseAsync(getArgv(['preview', appRoot]));
+        await command.parseAsync(getArgv(['preview-config', appRoot]));
 
         // Result check
         expect(logLevelSpy).not.toBeCalled();
@@ -60,7 +60,7 @@ describe('Test command convert preview', () => {
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
-        await command.parseAsync(getArgv(['preview', appRoot, '-s']));
+        await command.parseAsync(getArgv(['preview-config', appRoot, '-s']));
 
         // Result check
         expect(logLevelSpy).toBeCalled();
@@ -74,7 +74,7 @@ describe('Test command convert preview', () => {
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
-        await command.parseAsync(getArgv(['preview', '--verbose']));
+        await command.parseAsync(getArgv(['preview-config', '--verbose']));
 
         // Result check
         expect(logLevelSpy).toBeCalled();
