@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.1.1
+
+### Patch Changes
+
+-   dee9930: fix source system labelling
+
 ## 1.1.0
 
 ### Minor Changes

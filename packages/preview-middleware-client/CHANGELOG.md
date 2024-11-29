@@ -1,5 +1,12 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.37
+
+### Patch Changes
+
+-   79d2435: fix: remove feature toggle check for Enable/Disable Semantic Date Range in Filter Bar
+-   ca82698: CPE - Enable Table Filtering Quick Action
+
 ## 0.11.36
 
 ### Patch Changes
