@@ -3,7 +3,7 @@ import { isAppStudio, errorString } from '../utils';
 import { DummyStore } from './dummy-store';
 import { KeyStoreManager } from './key-store';
 import type { SecureStore } from './types';
-// __non_webpack_require__ is used to ensure the require is not bundled by webpack and resolved at runtime	
+// __non_webpack_require__ is used to ensure the require is not bundled by webpack and resolved at runtime
 declare function __non_webpack_require__(m: string): any;
 
 /**
