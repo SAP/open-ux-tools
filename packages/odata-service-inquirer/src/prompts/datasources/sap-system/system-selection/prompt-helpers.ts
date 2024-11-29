@@ -52,7 +52,11 @@ export async function connectWithBackendSystem(
                 systemAuthType: 'reentranceTicket'
             });
         } else if (backendSystem.serviceKeys) {
-            connectValResult = await connectionValidator.validateServiceInfo(backendSystem.serviceKeys as ServiceInfo);
+            connectValResult = await connectionValidator.validateServiceInfo(
+                backendSystem.serviceKeys as ServiceInfo,
+                convertODataVersionType(requiredOdataVersion),
+                backendSystem.refreshToken
+            );
         } else if (backendSystem.authenticationType === 'basic' || !backendSystem.authenticationType) {
             let errorType;
             ({ valResult: connectValResult, errorType } = await connectionValidator.validateAuth(

@@ -1,5 +1,11 @@
 # @sap-ux/serve-static-middleware
 
+## 0.2.2
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+
 ## 0.2.1
 
 ### Patch Changes
