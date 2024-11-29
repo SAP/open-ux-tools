@@ -3,8 +3,11 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AdpPreviewConfig, DescriptorVariant } from '../../types';
 import ZipFile from 'adm-zip';
 import {
-    isAxiosError, type AbapServiceProvider, type Ui5AppInfoContent, type AxiosRequestConfig,
-    type ProviderConfiguration,
+    isAxiosError,
+    type AbapServiceProvider,
+    type Ui5AppInfoContent,
+    type AxiosRequestConfig,
+    type ProviderConfiguration
 } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getWebappFiles } from '../helper';
@@ -27,7 +30,7 @@ export class ManifestService {
      * @param provider - The ABAP service provider.
      * @param logger - The logger instance.
      */
-    private constructor(private readonly provider: AbapServiceProvider, private readonly logger: ToolsLogger) { }
+    private constructor(private readonly provider: AbapServiceProvider, private readonly logger: ToolsLogger) {}
 
     /**
      * Initializes the ManifestService with the given ADP configuration and logger.
@@ -37,7 +40,11 @@ export class ManifestService {
      * @param requestOptions - Additional AxiosRequestOptions
      * @returns A promise that resolves to an instance of ManifestService.
      */
-    private static async init(adpConfig: AdpPreviewConfig, logger: ToolsLogger, requestOptions?: AxiosRequestConfig & Partial<ProviderConfiguration>): Promise<ManifestService> {
+    private static async init(
+        adpConfig: AdpPreviewConfig,
+        logger: ToolsLogger,
+        requestOptions?: AxiosRequestConfig & Partial<ProviderConfiguration>
+    ): Promise<ManifestService> {
         const provider = await createAbapServiceProvider(
             adpConfig.target,
             {

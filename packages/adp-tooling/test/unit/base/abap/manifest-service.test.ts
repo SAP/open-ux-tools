@@ -96,7 +96,7 @@ describe('ManifestService', () => {
             );
             expect(provider.getAppIndex().getAppInfo).toHaveBeenCalledWith('appId');
         });
-        
+
         it('should initialize and fetch the base manifest with additional request options', async () => {
             const adpConfigWithoutIgnoreCers: AdpPreviewConfig = {
                 target: { url: 'https://example.com' }
@@ -104,16 +104,21 @@ describe('ManifestService', () => {
 
             const requestOptions = {
                 headers: {
-                    "testHeader": "testVa;"
+                    'testHeader': 'testVa;'
                 }
-            }
+            };
 
-            manifestService = await ManifestService.initBaseManifest('appId', adpConfigWithoutIgnoreCers, logger, requestOptions);
+            manifestService = await ManifestService.initBaseManifest(
+                'appId',
+                adpConfigWithoutIgnoreCers,
+                logger,
+                requestOptions
+            );
 
             expect(manifestService.getManifest()).toEqual(mockManifest);
             expect(createAbapServiceProvider).toHaveBeenCalledWith(
                 adpConfig.target,
-                { 
+                {
                     ...requestOptions,
                     ignoreCertErrors: false
                 },
@@ -224,7 +229,7 @@ describe('ManifestService', () => {
                 logger
             );
         });
-        
+
         it('should initialize and fetch the merged manifest with additional request options', async () => {
             const adpConfigWithoutIgnoreCers: AdpPreviewConfig = {
                 target: { url: 'https://example.com' }
@@ -232,7 +237,7 @@ describe('ManifestService', () => {
             const variant = { id: 'descriptorVariantId', reference: 'referenceAppId' };
             const requestOptions = {
                 headers: {
-                    "testHeader": "testVa;"
+                    'testHeader': 'testVa;'
                 }
             };
             (getWebappFiles as jest.MockedFunction<typeof getWebappFiles>).mockReturnValue([
@@ -249,7 +254,7 @@ describe('ManifestService', () => {
             expect(manifestService.getManifest()).toEqual(mockManifest);
             expect(createAbapServiceProvider).toHaveBeenCalledWith(
                 adpConfig.target,
-                { 
+                {
                     ...requestOptions,
                     ignoreCertErrors: false
                 },
@@ -257,7 +262,7 @@ describe('ManifestService', () => {
                 logger
             );
         });
-        
+
         it('should initialize and fetch the merged manifest', async () => {
             const variant = { id: 'descriptorVariantId', reference: 'referenceAppId' };
             (getWebappFiles as jest.MockedFunction<typeof getWebappFiles>).mockReturnValue([
