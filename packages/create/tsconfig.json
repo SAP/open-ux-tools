@@ -28,6 +28,9 @@
       "path": "../cards-editor-config-writer"
     },
     {
+      "path": "../flp-config-inquirer"
+    },
+    {
       "path": "../inquirer-common"
     },
     {

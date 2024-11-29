@@ -1,7 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
-import { DirName } from '@sap-ux/project-access';
 import type { IWriter, DataSourceData } from '../../../types';
 import { getChange, writeChangeToFolder } from '../../../base/change-utils';
 
@@ -64,13 +63,7 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
         const content = this.constructContent(id, uri, maxAge);
         const change = getChange(variant, timestamp, content, ChangeType.CHANGE_DATA_SOURCE);
 
-        writeChangeToFolder(
-            this.projectPath,
-            change,
-            `id_${timestamp}_changeDataSource.change`,
-            this.fs,
-            DirName.Manifest
-        );
+        writeChangeToFolder(this.projectPath, change, `id_${timestamp}_changeDataSource.change`, this.fs);
 
         if (annotationId && annotationUri) {
             const annotationContent = this.constructContent(annotationId, annotationUri);
@@ -81,8 +74,7 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
                 this.projectPath,
                 annotationChange,
                 `id_${annotationTs}_changeDataSource.change`,
-                this.fs,
-                DirName.Manifest
+                this.fs
             );
         }
     }

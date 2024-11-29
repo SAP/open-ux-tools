@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.12.85
+
+### Patch Changes
+
+-   Updated dependencies [cfdd442]
+    -   @sap-ux/project-input-validator@0.3.4
+
+## 0.12.84
+
+### Patch Changes
+
+-   6e60bdf: Store manifest change files to /changes directory
+
 ## 0.12.83
 
 ### Patch Changes
