@@ -1,5 +1,40 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.6.12
+
+### Patch Changes
+
+-   Updated dependencies [cfdd442]
+    -   @sap-ux/project-input-validator@0.3.4
+
+## 0.6.11
+
+### Patch Changes
+
+-   747c60d: Fix for refresh token use
+-   5a9d1ee: Updates service type text, add breadcrumb to system prompt. Fix for re-evaluate service url path when input changed
+
+## 0.6.10
+
+### Patch Changes
+
+-   be65344: Fix for re-evaluate service url path when input changed
+
+## 0.6.9
+
+### Patch Changes
+
+-   8806c46: Adds system selection default choice option
+
+## 0.6.8
+
+### Patch Changes
+
+-   aea4ac9: Revert datasource type labels to previous values.
+-   74dc5fe: Fix CAP loading errors messages
+-   Updated dependencies [74dc5fe]
+    -   @sap-ux/inquirer-common@0.5.4
+
 ## 0.6.7
 
 ### Patch Changes

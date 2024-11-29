@@ -7,6 +7,11 @@ import { ERROR_TYPE, ErrorHandler, setTelemetryClient } from '@sap-ux/inquirer-c
 import { initI18nOdataServiceInquirer } from './i18n';
 import { getQuestions } from './prompts';
 import { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection';
+import type {
+    NewSystemChoice,
+    CfAbapEnvServiceChoice
+} from './prompts/datasources/sap-system/system-selection/prompt-helpers';
+
 import LoggerHelper from './prompts/logger-helper';
 import {
     DatasourceType,
@@ -109,5 +114,7 @@ export {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     // @deprecated - temp export to support to support open source migration
-    type SapSystemType
+    type SapSystemType,
+    NewSystemChoice,
+    CfAbapEnvServiceChoice
 };

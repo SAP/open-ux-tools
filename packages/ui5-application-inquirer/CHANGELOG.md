@@ -1,5 +1,25 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.8.2
+
+### Patch Changes
+
+-   Updated dependencies [cfdd442]
+    -   @sap-ux/project-input-validator@0.3.4
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [74dc5fe]
+    -   @sap-ux/inquirer-common@0.5.4
+
+## 0.8.0
+
+### Minor Changes
+
+-   d11283f: Remove the enableNpmWorkspaces prompt (and all references)
+
 ## 0.7.16
 
 ### Patch Changes

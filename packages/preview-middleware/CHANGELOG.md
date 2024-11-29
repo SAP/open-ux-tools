@@ -1,5 +1,44 @@
 # @sap-ux/preview-middleware
 
+## 0.16.131
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.85
+
+## 0.16.130
+
+### Patch Changes
+
+-   Updated dependencies [6e60bdf]
+    -   @sap-ux/adp-tooling@0.12.84
+
+## 0.16.129
+
+### Patch Changes
+
+-   71bef63: fix: update quick action title for semantic date range
+
+## 0.16.128
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+-   Updated dependencies [09a58bb]
+    -   @sap-ux/adp-tooling@0.12.83
+
+## 0.16.127
+
+### Patch Changes
+
+-   c39325c: Fix for Config Quick action state not reflecting properties in properties panel
+
+## 0.16.126
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.82
+
 ## 0.16.125
 
 ### Patch Changes

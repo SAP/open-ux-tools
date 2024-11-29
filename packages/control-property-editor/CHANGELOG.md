@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.27
+
+### Patch Changes
+
+-   c39325c: Fix for Config Quick action state not reflecting properties in properties panel
+
 ## 0.5.26
 
 ### Patch Changes

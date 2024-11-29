@@ -312,6 +312,7 @@ describe('getAbapTargetPrompts', () => {
             ).toBe(true);
             expect(scpPrompt.message).toBe(t('prompts.target.scp.message'));
             expect((scpPrompt.default as Function)()).toEqual(true);
+            expect(PromptState.abapDeployConfig.scp).toBeUndefined();
         } else {
             throw new Error('Scp prompt not found');
         }
@@ -327,7 +328,7 @@ describe('getAbapTargetPrompts', () => {
                 })
             ).toBe(false);
             expect(PromptState.abapDeployConfig.scp).toBe(true);
-            // Lets toggle the question
+            // Toggle the scp question
             expect(
                 (scpSetterPrompt.when as Function)({
                     targetSystem: TargetSystemType.Url,
@@ -336,7 +337,8 @@ describe('getAbapTargetPrompts', () => {
                 })
             ).toBe(false);
             expect(PromptState.abapDeployConfig.scp).toBe(false);
-            // When SCP is not answered
+            // SCP not answered
+            PromptState.abapDeployConfig.scp = true; // Should be reset after setter is run
             expect(
                 (scpSetterPrompt.when as Function)({
                     targetSystem: TargetSystemType.Url,
@@ -344,6 +346,15 @@ describe('getAbapTargetPrompts', () => {
                 })
             ).toBe(false);
             expect(PromptState.abapDeployConfig.scp).toBe(false);
+            // Maintain state if user is selecting a different targetSystem
+            PromptState.abapDeployConfig.scp = true;
+            expect(
+                (scpSetterPrompt.when as Function)({
+                    targetSystem: 'Something',
+                    url: 'https://mock.target1.url.com'
+                })
+            ).toBe(false);
+            expect(PromptState.abapDeployConfig.scp).toBe(true);
         } else {
             throw new Error('Scp setter prompt not found');
         }

@@ -1,5 +1,7 @@
 import { t } from '../i18n';
 
+export type AllowedCharacters = '_';
+
 /**
  * SAP client number is either empty or 3 digit string.
  *
@@ -60,6 +62,41 @@ export function validateEmptySpaces(value: string): boolean | string {
         return t('general.inputCannotHaveSpaces');
     }
 
+    return true;
+}
+
+/**
+ * Validates that the given string does not exceed the specified maximum length.
+ *
+ * @param {string} value - The string value to validate.
+ * @param {number} [maxLength] - The maximum allowed length of the string. If 0 or not provided, no length validation is performed.
+ * @returns {boolean | string} Returns `true` if the validation passes, or an error message string if it fails.
+ */
+export function validateMaxLength(value: string, maxLength: number = 0): boolean | string {
+    if (maxLength > 0 && value.length > maxLength) {
+        return t('general.maxLength', { maxLength });
+    }
+    return true;
+}
+
+/**
+ * Validates whether the input contains only alphanumeric characters and allowed special characters.
+ *
+ * @param {string} value - The input string to validate.
+ * @param {string[]} allowedCharacters - An array of allowed special characters.
+ * @returns {boolean | string} Returns `true` if validation passes, or an error message string if validation fails.
+ */
+export function validateAllowedCharacters(value: string, allowedCharacters?: AllowedCharacters[]): boolean | string {
+    // Asterisks is supported for the semantic object and action field but not the inbound title
+    if (allowedCharacters && allowedCharacters.length > 0) {
+        const escapedChars = allowedCharacters.map((char) => `\\${char}`).join('');
+        const regex = new RegExp(`^[a-zA-Z0-9${escapedChars}]+$`);
+        if (!regex.test(value)) {
+            return t('general.supportedFormats', {
+                allowedCharacters: allowedCharacters.join('')
+            });
+        }
+    }
     return true;
 }
 

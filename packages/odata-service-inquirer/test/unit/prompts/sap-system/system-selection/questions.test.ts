@@ -12,14 +12,14 @@ import type { ValidationResult } from '../../../../../src/prompts/connectionVali
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import * as promptHelpers from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
+import { NewSystemChoice } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
 import type {
     SystemSelectionAnswers,
     SystemSelectionAnswerType
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
 import {
     getSystemConnectionQuestions,
-    getSystemSelectionQuestions,
-    newSystemChoiceValue
+    getSystemSelectionQuestions
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { promptNames } from '../../../../../src/types';
@@ -157,6 +157,7 @@ describe('Test system selection prompts', () => {
     beforeEach(() => {
         mockIsAppStudio = false;
         isAuthRequiredMock.mockResolvedValue(false);
+        validateServiceInfoResultMock = true;
     });
 
     test('should return system selection prompts and choices based on development environment, BAS or non-BAS', async () => {
@@ -192,7 +193,7 @@ describe('Test system selection prompts', () => {
         systemChoices = (systemSelectionPrompt as ListQuestion).choices as ListChoiceOptions<SystemSelectionAnswers>[];
         expect(systemChoices[0].value as SystemSelectionAnswerType).toEqual({
             type: 'newSystemChoice',
-            system: newSystemChoiceValue
+            system: NewSystemChoice
         });
     });
 
@@ -203,7 +204,7 @@ describe('Test system selection prompts', () => {
             (question) => question.name === `systemSelection:${promptNames.serviceSelection}`
         );
         const serviceSelectionWhenResult = ((systemServicePrompt as Question).when as Function)({
-            systemSelection: { type: 'newSystemChoice', system: newSystemChoiceValue }
+            systemSelection: { type: 'newSystemChoice', system: NewSystemChoice }
         } as SystemSelectionAnswers);
         expect(serviceSelectionWhenResult).toEqual(false);
 
@@ -213,7 +214,7 @@ describe('Test system selection prompts', () => {
         );
         expect(
             ((newSystemTypePrompt as Question).when as Function)({
-                systemSelection: { type: 'newSystemChoice', system: newSystemChoiceValue }
+                systemSelection: { type: 'newSystemChoice', system: NewSystemChoice }
             })
         ).toBe(true);
     });
@@ -283,6 +284,14 @@ describe('Test system selection prompts', () => {
             })
         ).toBe(true);
         expect(await (destServicePathPrompt.validate as Function)?.('')).toEqual(
+            t('prompts.destinationServicePath.invalidServicePathWarning')
+        );
+        // Invalid service path if only 1 char
+        expect(await (destServicePathPrompt.validate as Function)?.('/')).toEqual(
+            t('prompts.destinationServicePath.invalidServicePathWarning')
+        );
+        // Invalid service path if starts with double slash
+        expect(await (destServicePathPrompt.validate as Function)?.('//123')).toEqual(
             t('prompts.destinationServicePath.invalidServicePathWarning')
         );
         expect(
@@ -459,6 +468,29 @@ describe('Test system selection prompts', () => {
         );
     });
 
+    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys, RefreshToken)', async () => {
+        mockIsAppStudio = false;
+        const connectValidator = new ConnectionValidator();
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const validateServiceInfoSpy = jest.spyOn(connectValidator, 'validateServiceInfo');
+        const backendSystemServiceKeysClone = { ...backendSystemServiceKeys, refreshToken: '123refreshToken456' };
+        backendSystems.push(backendSystemServiceKeysClone);
+
+        const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
+        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'backendSystem',
+                system: backendSystemServiceKeysClone
+            } as SystemSelectionAnswerType)
+        ).toBe(true);
+        expect(validateServiceInfoSpy).toHaveBeenCalledWith(
+            backendSystemServiceKeysClone.serviceKeys,
+            undefined,
+            backendSystemServiceKeysClone.refreshToken
+        );
+    });
+
     test('should execute additional prompt on CLI (if autocomplete is not used) to handle YUI validate function', async () => {
         mockIsAppStudio = false;
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
@@ -494,5 +526,23 @@ describe('Test system selection prompts', () => {
             connectionValidatorMock,
             undefined
         );
+    });
+
+    test('Should set the default system choice based on the defaultChoice options', async () => {
+        backendSystems.push(backendSystemReentrance);
+        const defaultChoice = backendSystemReentrance.name;
+        const systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.systemSelection]: { defaultChoice }
+        });
+        const systemSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === promptNames.systemSelection
+        );
+        const defaultIndex = (systemSelectionPrompt as Question).default;
+        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
+            value: {
+                system: backendSystemReentrance,
+                type: 'backendSystem'
+            }
+        });
     });
 });
