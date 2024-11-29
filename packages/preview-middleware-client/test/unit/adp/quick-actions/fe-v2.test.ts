@@ -3,7 +3,6 @@ import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
 import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
-import * as VersionUtils from '../../../../src/utils/version';
 
 jest.mock('../../../../src/adp/init-dialogs', () => {
     return {
@@ -39,7 +38,7 @@ import {
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
-import { Ui5VersionInfo } from '../../../../src/utils/version';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
@@ -871,12 +870,8 @@ describe('FE V2 quick actions', () => {
             });
             test('not available by default', async () => {
                 jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(false);
-                jest.spyOn(VersionUtils, 'getUi5Version').mockReturnValue(
-                    Promise.resolve({
-                        major: 1,
-                        minor: 130
-                    } as Ui5VersionInfo)
-                );
+                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.130' });
+
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartFilterBar') {
                         return {
@@ -956,62 +951,43 @@ describe('FE V2 quick actions', () => {
             describe('enable table filtering for different valid UI5 versions', () => {
                 const testCases: {
                     validVersion: boolean;
-                    major: int;
-                    minor: int;
-                    patch?: int;
+                    versionInfo: string;
                 }[] = [
                     {
                         validVersion: true,
-                        major: 1,
-                        minor: 96,
-                        patch: 37
+                        versionInfo: '1.96.37'
                     },
                     {
                         validVersion: true,
-                        major: 1,
-                        minor: 108,
-                        patch: 38
+                        versionInfo: '1.108.38'
                     },
                     {
                         validVersion: true,
-                        major: 1,
-                        minor: 96,
-                        patch: 38
+                        versionInfo: '1.96.38'
                     },
                     {
                         validVersion: true,
-                        major: 1,
-                        minor: 120,
-                        patch: 23
+                        versionInfo: '1.120.23'
                     },
                     {
                         validVersion: true,
-                        major: 1,
-                        minor: 128
+                        versionInfo: '1.128'
                     },
                     {
                         validVersion: true,
-                        major: 1,
-                        minor: 130
+                        versionInfo: '1.130'
                     },
                     {
                         validVersion: false,
-                        major: 1,
-                        minor: 96,
-                        patch: 36
+                        versionInfo: '1.96.36'
                     }
                 ];
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                    jest.spyOn(VersionUtils, 'getUi5Version').mockReturnValue(
-                        Promise.resolve({
-                            major: testCase.major,
-                            minor: testCase.minor,
-                            patch: testCase.patch
-                        } as Ui5VersionInfo)
-                    );
+                    VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
                     sapCoreMock.byId.mockImplementation((id) => {
                         if (id == 'SmartFilterBar') {
                             return {
+                                isA: (type: string) => type === 'sap.ui.comp.smartfilterbar.SmartFilterBar',
                                 getProperty: jest.fn().mockImplementation(() => false),
                                 getDomRef: () => ({}),
                                 getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
@@ -1056,7 +1032,6 @@ describe('FE V2 quick actions', () => {
                     CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
                         return { type, value, settings };
                     });
-
                     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                     const registry = new FEV2QuickActionRegistry();
                     const service = new QuickActionService(
@@ -1126,6 +1101,204 @@ describe('FE V2 quick actions', () => {
                         });
                     }
                 });
+            });
+        });
+
+        describe('enable table filtering', () => {
+            const testCases: {
+                visible: boolean;
+                ui5version: string;
+                expectedIsEnabled: boolean;
+                isValidUI5Version: boolean;
+                expectedTooltip?: string;
+            }[] = [
+                {
+                    visible: false,
+                    ui5version: '1.124.0',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: false
+                },
+                {
+                    visible: false,
+                    ui5version: '1.96.0',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: false
+                },
+                {
+                    visible: false,
+                    ui5version: '1.96.37',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: true
+                },
+                {
+                    visible: false,
+                    ui5version: '1.130.0',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: true
+                },
+                {
+                    visible: true,
+                    ui5version: '1.108.38',
+                    expectedIsEnabled: false,
+                    isValidUI5Version: true,
+                    expectedTooltip: 'This option has been disabled because the change has already been made'
+                }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.ui5version });
+                const scrollIntoView = jest.fn();
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'mTable') {
+                        return {
+                            isA: (type: string) => type === 'sap.m.Table',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity'),
+                            getAggregation: () => 'headerToolbar',
+                            getParent: () => pageView,
+                            getHeaderToolbar: () => {
+                                return {
+                                    getTitleControl: () => {
+                                        return {
+                                            getText: () => 'MyTable'
+                                        };
+                                    }
+                                };
+                            },
+                            data: jest.fn().mockImplementation((key) => {
+                                if (key === 'p13nDialogSettings') {
+                                    return {
+                                        filter: {
+                                            visible: testCase.visible
+                                        }
+                                    };
+                                }
+                            })
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest
+                            .fn()
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                    } as any
+                );
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.m.Table': [
+                        {
+                            controlId: 'mTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                const isActionExpected = testCase.isValidUI5Version;
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            'actions': [
+                                {
+                                    'kind': 'nested',
+                                    id: 'listReport0-create-table-action',
+                                    title: 'Add Custom Table Action',
+                                    tooltip: undefined,
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: true,
+                                            label: `'MyTable' table`
+                                        }
+                                    ]
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            enabled: true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'tooltip': undefined,
+                                    'title': 'Add Custom Table Column'
+                                },
+                                ...(isActionExpected
+                                    ? [
+                                          {
+                                              'enabled': testCase.expectedIsEnabled,
+                                              'id': 'listReport0-enable-table-filtering',
+                                              'kind': 'simple',
+                                              'title': 'Enable Table Filtering for Page Variants',
+                                              'tooltip': testCase.expectedTooltip
+                                          } as any
+                                      ]
+                                    : [])
+                            ],
+                            'title': 'LIST REPORT'
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-enable-table-filtering', kind: 'simple' })
+                );
             });
         });
     });

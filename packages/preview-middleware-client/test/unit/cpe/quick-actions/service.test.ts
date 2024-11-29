@@ -26,7 +26,7 @@ class MockDefinition implements SimpleQuickActionDefinition {
         return `${this.context.key}-${this.type}`;
     }
     isApplicable = false;
-    constructor(private context: QuickActionContext) { }
+    constructor(private context: QuickActionContext) {}
     getActionObject(): SimpleQuickAction {
         return {
             kind: this.kind,

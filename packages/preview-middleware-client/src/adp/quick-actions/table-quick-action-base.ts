@@ -54,6 +54,10 @@ export abstract class TableQuickActionDefinitionBase {
 
     protected isDisabled: boolean | undefined;
 
+    public get tooltip(): string | undefined {
+        return undefined;
+    }
+
     public children: NestedQuickActionChild[] = [];
     public tableMap: Record<
         string,
@@ -193,7 +197,7 @@ export abstract class TableQuickActionDefinitionBase {
      * Builds a map kay/tab_name for ICON_TAB_BAR control of the active page, if such exists
      * @returns built map
      */
-    private buildIconTabBarFilterMap(): { [key: string]: string } {
+    protected buildIconTabBarFilterMap(): { [key: string]: string } {
         const iconTabBarFilterMap: { [key: string]: string } = {};
 
         // Assumption only a tab bar control per page.
@@ -321,6 +325,7 @@ export abstract class TableQuickActionDefinitionBase {
             kind: NESTED_QUICK_ACTION_KIND,
             id: this.id,
             enabled: !this.isDisabled,
+            tooltip: this.tooltip,
             title: this.context.resourceBundle.getText(this.textKey),
             children: this.children
         };
