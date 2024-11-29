@@ -53,7 +53,7 @@ async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void>
     if (config.routerType === RouterModuleType.Standard) {
         await addStandaloneRouter(config, mtaConfigInstance, fs);
     } else {
-        await mtaConfigInstance.addRoutingModules(true);
+        await mtaConfigInstance.addRoutingModules({ isManagedApp: true, addMissingModules: false });
     }
     await addMtaDeployParameters(mtaConfigInstance);
     await mtaConfigInstance.save();
