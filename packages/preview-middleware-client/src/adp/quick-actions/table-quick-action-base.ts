@@ -154,7 +154,7 @@ export abstract class TableQuickActionDefinitionBase {
      * @param table - The UI5Element instance to analyze.
      * @returns The internal table otherwise undefined.
      */
-    public getInternalTable(table: UI5Element): UI5Element | undefined {
+    private getInternalTable(table: UI5Element): UI5Element | undefined {
         try {
             let tableInternal: ManagedObject | undefined;
 
