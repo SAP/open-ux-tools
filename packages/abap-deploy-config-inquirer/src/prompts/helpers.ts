@@ -77,7 +77,7 @@ async function getBackendTargetChoices(
     backendSystems: BackendSystem[] = []
 ): Promise<AbapSystemChoice[]> {
     let target: UrlAbapTarget | undefined;
-    let targetExists = false;
+    let targetExistsInStore = false;
 
     const choices: AbapSystemChoice[] = [
         {
@@ -93,17 +93,18 @@ async function getBackendTargetChoices(
     const systemChoices: AbapSystemChoice[] = Object.values(backendSystems)
         .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, caseFirst: 'lower' }))
         .map((system) => {
-            if (!targetExists && target?.url) {
-                targetExists =
+            let isDefault = false;
+            if (!targetExistsInStore && target?.url) {
+                isDefault = targetExistsInStore =
                     system.url.replace(/\/$/, '') === target.url.replace(/\/$/, '') &&
                     (system.client ?? '') === (target?.client ?? '');
             }
             return {
-                name: targetExists
+                name: isDefault
                     ? `${getBackendDisplayName({ backendSystem: system })} (Source system)`
                     : getBackendDisplayName({ backendSystem: system }) ?? '',
                 value: system.url,
-                isDefault: targetExists,
+                isDefault,
                 scp: !!system.serviceKeys,
                 isS4HC: system.authenticationType === AuthenticationType.ReentranceTicket,
                 client: system.client
@@ -112,10 +113,11 @@ async function getBackendTargetChoices(
 
     choices.push(...systemChoices);
 
-    if (!targetExists && target?.url && backendTarget?.systemName) {
+    // the backend system may have been added during generation but not yet saved in the store
+    // in this case we need to add it to the choices
+    if (!targetExistsInStore && target?.url && backendTarget?.systemName) {
         const systemName = backendTarget.systemName;
         const user = await (backendTarget.serviceProvider as AbapServiceProvider)?.user();
-        // add the target system to the list if it does not exist in the store yet
         choices.splice(1, 0, {
             name: `${getSystemDisplayName(
                 systemName,
