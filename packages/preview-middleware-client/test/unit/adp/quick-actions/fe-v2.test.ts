@@ -403,6 +403,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -415,6 +416,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -423,6 +425,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -543,6 +546,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -551,6 +555,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -816,6 +821,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -828,6 +834,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -899,6 +906,7 @@ describe('FE V2 quick actions', () => {
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartFilterBar') {
                         return {
+                            isA: (type: string) => type === 'sap.ui.comp.smartfilterbar.SmartFilterBar',
                             getProperty: jest.fn().mockImplementation(() => false),
                             getDomRef: () => ({}),
                             getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
@@ -1407,12 +1415,8 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
-                                            children: [
-                                                {
-                                                    children: [],
-                                                    label: `'MyTable' table`
-                                                }
-                                            ],
+                                            enabled: true,
+                                            children: [{ enabled: true, children: [], label: `'MyTable' table` }],
                                             label: `'section 01' section`
                                         }
                                     ]
@@ -1420,12 +1424,8 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
-                                            'children': [
-                                                {
-                                                    'children': [],
-                                                    'label': `'MyTable' table`
-                                                }
-                                            ],
+                                            enabled: true,
+                                            'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
                                             'label': `'section 01' section`
                                         }
                                     ],
@@ -1579,12 +1579,8 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
-                                            'children': [
-                                                {
-                                                    'children': [],
-                                                    'label': `'MyTable' table`
-                                                }
-                                            ],
+                                            enabled: true,
+                                            'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
                                             'label': `'section 01' section`
                                         }
                                     ],
@@ -1596,9 +1592,11 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            enabled: true,
                                             'children': [
                                                 {
                                                     'children': [],
+                                                    enabled: true,
                                                     'label': `'MyTable' table`
                                                 }
                                             ],
@@ -1849,6 +1847,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],

@@ -6,7 +6,11 @@ const mockChangeService = {
     syncOutlineChanges: jest.fn()
 } as unknown as ChangeService;
 
-import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
+import {
+    quickActionListChanged,
+    executeQuickAction,
+    QuickAction
+} from '@sap-ux-private/control-property-editor-common';
 
 jest.mock('../../../../src/adp/init-dialogs', () => {
     return {
@@ -45,6 +49,7 @@ import {
 import { MDC_TABLE_TYPE } from 'open/ux/preview/client/adp/quick-actions/table-quick-action-base';
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import ManagedObject from 'sap/ui/base/ManagedObject';
+import * as versionUtils from 'open/ux/preview/client/utils/version';
 
 describe('FE V4 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -599,6 +604,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -611,6 +617,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -619,6 +626,7 @@ describe('FE V4 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -761,6 +769,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -769,6 +778,7 @@ describe('FE V4 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ],
@@ -873,6 +883,7 @@ describe('FE V4 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -900,6 +911,213 @@ describe('FE V4 quick actions', () => {
                     aggregation: 'columns',
                     title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                 });
+            });
+        });
+
+        describe('enable table filtering', () => {
+            const testCases: {
+                p13nMode: string[];
+                ui5version?: versionUtils.Ui5VersionInfo;
+                expectedIsNotApplicable?: boolean;
+                expectedIsEnabled: boolean;
+                expectedTooltip?: string;
+            }[] = [
+                {
+                    p13nMode: [],
+                    expectedIsEnabled: true,
+                    ui5version: { major: 1, minor: 130 },
+                    expectedIsNotApplicable: true
+                },
+                { p13nMode: [], expectedIsEnabled: true },
+                {
+                    p13nMode: ['Filter'],
+                    expectedIsEnabled: false,
+                    expectedTooltip: 'This option has been disabled because the change has already been made'
+                }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                    testCase.ui5version ?? { major: 1, minor: 131 }
+                );
+                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
+                const scrollIntoView = jest.fn();
+                const appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'Table') {
+                        return {
+                            isA: (type: string) => type === 'sap.ui.mdc.Table',
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({}),
+                            getP13nMode: () => testCase.p13nMode,
+                            getReference: () => 'dummyReference'
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new TemplateComponentMock();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getId.mockReturnValue('test.app::ProductsList');
+                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
+                        const componentContainer = new ComponentContainer();
+                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return componentContainer;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV4QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest
+                            .fn()
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                    } as any
+                );
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.ui.mdc.Table': [
+                        {
+                            controlId: 'Table'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                const isActionExpected = testCase.ui5version === undefined || testCase.ui5version.minor >= 131;
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            'actions': [
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            enabled: true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'tooltip': undefined,
+                                    'title': 'Add Custom Table Column'
+                                },
+                                ...(isActionExpected
+                                    ? [
+                                          {
+                                              'children': [
+                                                  {
+                                                      'children': [],
+                                                      'enabled': testCase.expectedIsEnabled,
+                                                      'label': `'MyTable' table`,
+                                                      'tooltip': testCase.expectedTooltip
+                                                  }
+                                              ],
+                                              'enabled': true,
+                                              'id': 'listReport0-enable-table-filtering',
+                                              'kind': 'nested',
+                                              'title': 'Enable Table Filtering for Page Variants',
+                                              'tooltip': undefined
+                                          } as QuickAction
+                                      ]
+                                    : [])
+                            ],
+                            'title': 'LIST REPORT'
+                        }
+                    ])
+                );
+
+                mockOverlay.getDesignTimeMetadata.mockReturnValue({
+                    getData: jest.fn().mockReturnValue({
+                        manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
+                        manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
+                            {
+                                appComponent: appComponent,
+                                changeSpecificData: {
+                                    appDescriptorChangeType: 'appdescr_fe_changePageConfiguration',
+                                    content: {
+                                        parameters: {
+                                            propertyValue,
+                                            propertyPath
+                                        }
+                                    }
+                                },
+                                selector: 'dummySelector'
+                            }
+                        ])
+                    })
+                });
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-enable-table-filtering', kind: 'nested', path: '0' })
+                );
+
+                if (testCase.expectedIsNotApplicable) {
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledTimes(0);
+                } else {
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                        settings: {},
+                        type: 'appDescriptor',
+                        value: {
+                            appComponent,
+                            reference: 'test.id',
+                            'selector': 'dummySelector',
+                            changeType: 'appdescr_fe_changePageConfiguration',
+                            parameters: {
+                                'propertyPath': 'dummyManifestPath',
+                                'propertyValue': {
+                                    'personalization': {
+                                        'aggregate': true,
+                                        'column': true,
+                                        'filter': true,
+                                        'group': true,
+                                        'sort': true
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
             });
         });
 
@@ -1370,9 +1588,11 @@ describe('FE V4 quick actions', () => {
                                         {
                                             'children': [
                                                 {
+                                                    enabled: true,
                                                     'children': [
                                                         {
                                                             'children': [],
+                                                            enabled: true,
                                                             'label': `'MyTable' table`
                                                         }
                                                     ],
