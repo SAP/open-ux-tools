@@ -81,19 +81,9 @@ modules:
           ServiceInstanceName: managed-xsuaa-service
           ServiceKeyName: managed-uaa-key
           sap.cloud.service: managed
-        existing_destinations_policy: ignore
+        existing_destinations_policy: update
   build-parameters:
     no-source: true
-- name: managed-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: managed-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
-    requires: []
 resources:
 - name: managed-destination-service
   type: org.cloudfoundry.managed-service

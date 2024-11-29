@@ -371,7 +371,7 @@ modules:
               ServiceInstanceName: cappapp-xsuaa-service
               ServiceKeyName: cappapp-uaa-key
               sap.cloud.service: cappapp
-          existing_destinations_policy: ignore
+          existing_destinations_policy: update
     build-parameters:
       no-source: true
   - name: cappapp-app-content
