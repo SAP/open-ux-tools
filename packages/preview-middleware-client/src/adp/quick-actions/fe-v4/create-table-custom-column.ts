@@ -24,12 +24,6 @@ export class AddTableCustomColumnQuickAction
         super(CREATE_TABLE_CUSTOM_COLUMN, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN', context);
     }
 
-    async initialize(): Promise<void> {
-        await super.initialize((table, child) => {
-            this.initializeCustomColumnTable(table, child);
-        });
-    }
-
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         preprocessActionExecution(table, sectionInfo, this.iconTabBar, iconTabBarFilterKey);
