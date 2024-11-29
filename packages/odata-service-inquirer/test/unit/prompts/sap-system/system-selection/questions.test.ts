@@ -157,6 +157,7 @@ describe('Test system selection prompts', () => {
     beforeEach(() => {
         mockIsAppStudio = false;
         isAuthRequiredMock.mockResolvedValue(false);
+        validateServiceInfoResultMock = true;
     });
 
     test('should return system selection prompts and choices based on development environment, BAS or non-BAS', async () => {
@@ -283,6 +284,14 @@ describe('Test system selection prompts', () => {
             })
         ).toBe(true);
         expect(await (destServicePathPrompt.validate as Function)?.('')).toEqual(
+            t('prompts.destinationServicePath.invalidServicePathWarning')
+        );
+        // Invalid service path if only 1 char
+        expect(await (destServicePathPrompt.validate as Function)?.('/')).toEqual(
+            t('prompts.destinationServicePath.invalidServicePathWarning')
+        );
+        // Invalid service path if starts with double slash
+        expect(await (destServicePathPrompt.validate as Function)?.('//123')).toEqual(
             t('prompts.destinationServicePath.invalidServicePathWarning')
         );
         expect(
@@ -456,6 +465,29 @@ describe('Test system selection prompts', () => {
             backendSystemServiceKeys,
             connectionValidatorMock,
             undefined
+        );
+    });
+
+    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys, RefreshToken)', async () => {
+        mockIsAppStudio = false;
+        const connectValidator = new ConnectionValidator();
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const validateServiceInfoSpy = jest.spyOn(connectValidator, 'validateServiceInfo');
+        const backendSystemServiceKeysClone = { ...backendSystemServiceKeys, refreshToken: '123refreshToken456' };
+        backendSystems.push(backendSystemServiceKeysClone);
+
+        const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
+        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'backendSystem',
+                system: backendSystemServiceKeysClone
+            } as SystemSelectionAnswerType)
+        ).toBe(true);
+        expect(validateServiceInfoSpy).toHaveBeenCalledWith(
+            backendSystemServiceKeysClone.serviceKeys,
+            undefined,
+            backendSystemServiceKeysClone.refreshToken
         );
     });
 

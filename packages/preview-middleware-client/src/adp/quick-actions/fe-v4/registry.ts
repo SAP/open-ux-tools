@@ -12,6 +12,7 @@ import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
 import { AddTableCustomColumnQuickAction } from './create-table-custom-column';
 import { AddPageActionQuickAction } from '../common/create-page-action';
 import { AddTableActionQuickAction } from './create-table-action';
+import { EnableTableFilteringQuickAction } from './lr-enable-table-filtering';
 import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-range-filter-bar';
 import { AddNewAnnotationFile } from '../common/add-new-annotation-file';
 
@@ -45,6 +46,7 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction,
+                        EnableTableFilteringQuickAction,
                         AddNewAnnotationFile
                     ],
                     view,

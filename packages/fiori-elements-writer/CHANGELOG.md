@@ -1,5 +1,12 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.3.28
+
+### Patch Changes
+
+-   Updated dependencies [09a58bb]
+    -   @sap-ux/fe-fpm-writer@0.31.19
+
 ## 1.3.27
 
 ### Patch Changes

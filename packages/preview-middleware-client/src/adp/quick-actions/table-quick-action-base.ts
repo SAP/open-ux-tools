@@ -49,7 +49,13 @@ export abstract class TableQuickActionDefinitionBase {
         return `${this.context.key}-${this.type}`;
     }
 
-    public isActive = false;
+    public isApplicable = false;
+
+    protected isDisabled: boolean | undefined;
+
+    public get tooltip(): string | undefined {
+        return undefined;
+    }
 
     public children: NestedQuickActionChild[] = [];
     public tableMap: Record<
@@ -89,7 +95,7 @@ export abstract class TableQuickActionDefinitionBase {
         // No action found in control design time for version < 1.96
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 96 })) {
-            this.isActive = false;
+            this.isApplicable = false;
             return;
         }
         const iconTabBarfilterMap = this.buildIconTabBarFilterMap();
@@ -105,6 +111,7 @@ export abstract class TableQuickActionDefinitionBase {
             } else if (this.iconTabBar && tabKey) {
                 this.children.push({
                     label: `'${iconTabBarfilterMap[tabKey]}' table`,
+                    enabled: true,
                     children: []
                 });
                 this.tableMap[`${this.children.length - 1}`] = {
@@ -131,7 +138,7 @@ export abstract class TableQuickActionDefinitionBase {
             }
         }
         if (this.children.length > 0) {
-            this.isActive = true;
+            this.isApplicable = true;
         }
     }
 
@@ -160,7 +167,7 @@ export abstract class TableQuickActionDefinitionBase {
      * Builds a map kay/tab_name for ICON_TAB_BAR control of the active page, if such exists
      * @returns built map
      */
-    private buildIconTabBarFilterMap(): { [key: string]: string } {
+    protected buildIconTabBarFilterMap(): { [key: string]: string } {
         const iconTabBarFilterMap: { [key: string]: string } = {};
 
         // Assumption only a tab bar control per page.
@@ -201,9 +208,11 @@ export abstract class TableQuickActionDefinitionBase {
                     tableMapIndex = `${tableMapIndex}/0`;
                     this.children.push({
                         label: `'${section?.getTitle()}' section`,
+                        enabled: true,
                         children: [
                             {
                                 label: this.getTableLabel(table),
+                                enabled: true,
                                 children: []
                             }
                         ]
@@ -212,6 +221,7 @@ export abstract class TableQuickActionDefinitionBase {
                     tableMapIndex = `${tableMapIndex}/${sectionChild.children.length - 1}`;
                     sectionChild.children.push({
                         label: this.getTableLabel(table),
+                        enabled: true,
                         children: []
                     });
                 }
@@ -237,6 +247,7 @@ export abstract class TableQuickActionDefinitionBase {
         if ([SMART_TABLE_TYPE, M_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE].some((type) => isA(type, table))) {
             this.children.push({
                 label: this.getTableLabel(table),
+                enabled: true,
                 children: []
             });
         }
@@ -267,7 +278,8 @@ export abstract class TableQuickActionDefinitionBase {
         return {
             kind: NESTED_QUICK_ACTION_KIND,
             id: this.id,
-            enabled: this.isActive,
+            enabled: !this.isDisabled,
+            tooltip: this.tooltip,
             title: this.context.resourceBundle.getText(this.textKey),
             children: this.children
         };
