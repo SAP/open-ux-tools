@@ -103,7 +103,7 @@ describe('KeyStoreManager', () => {
             const result = await keyStoreManager.retrieve<{ value: string }>('testService', 'testKey');
 
             expect(result).toBeUndefined();
-            expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Failed to retrieve credential'));
+            expect(log.error).toHaveBeenCalledWith(expect.stringContaining('Deserialization error for Service'));
         });
     });
 
