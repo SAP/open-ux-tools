@@ -14,8 +14,14 @@ export abstract class SimpleQuickActionDefinitionBase {
         return `${this.context.key}-${this.type}`;
     }
 
-    public get isActive(): boolean {
+    public get isApplicable(): boolean {
         return this.control !== undefined;
+    }
+
+    protected isDisabled: boolean | undefined;
+
+    public get tooltip(): string | undefined {
+        return undefined;
     }
 
     protected get textKey(): string {
@@ -46,7 +52,8 @@ export abstract class SimpleQuickActionDefinitionBase {
         return {
             kind: SIMPLE_QUICK_ACTION_KIND,
             id: this.id,
-            enabled: this.isActive,
+            enabled: !this.isDisabled,
+            tooltip: this.tooltip,
             title: this.context.resourceBundle.getText(this.textKey)
         };
     }

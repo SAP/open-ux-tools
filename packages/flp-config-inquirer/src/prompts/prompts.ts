@@ -10,7 +10,6 @@ import {
 import { promptNames } from '../types';
 import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
 import {
-    getConfigurationModePrompt,
     getCreateAnotherInboundPrompt,
     getInboundIdsPrompt,
     getParameterStringPrompt
@@ -34,10 +33,6 @@ export function getQuestions(
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {
-        [promptNames.configurationMode]: getConfigurationModePrompt(
-            inboundKeys,
-            promptOptions?.[promptNames.configurationMode]
-        ),
         [promptNames.inboundId]: getInboundIdsPrompt(inboundKeys, promptOptions?.[promptNames.inboundId]),
         [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
         [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),
@@ -70,7 +65,6 @@ export function getQuestions(
     };
 
     const questions: FLPConfigQuestion[] = [
-        keyedPrompts[promptNames.configurationMode],
         keyedPrompts[promptNames.inboundId],
         keyedPrompts[promptNames.semanticObject],
         keyedPrompts[promptNames.action],
