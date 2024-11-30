@@ -3,19 +3,5 @@
         "sapAppNotDefined": "Manifest is missing required section 'sap.app'",
         "manifestNotFound": "Manifest not found at path: {{- path}}",
         "inboundExists": "Inbound definition already exists for key: {{inboundKey}}"
-    },
-    "prompt": {
-        "validationWarning": {
-            "inputRequired": "{{inputName}} input is required",
-            "maxLength": "Maximum length: {{maxLength}} characters",
-            "supportedFormats": "Only alphanumeric and '{{allowedCharacters}}' characters are allowed"
-        },
-        "message": {
-            "semanticObject": "Semantic Object",
-            "action": "Action",
-            "title": "Title",
-            "subtitle": "Subtitle (optional)",
-            "overwrite": "Overwrite existing config"
-        }
     }
 }

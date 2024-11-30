@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.0.9
+
+### Patch Changes
+
+-   459eb5a: Remove exceess module, created when generating base config
+
 ## 0.0.8
 
 ### Patch Changes

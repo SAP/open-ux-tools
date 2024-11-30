@@ -1,5 +1,31 @@
 # @sap-ux/preview-middleware
 
+## 0.16.132
+
+### Patch Changes
+
+-   79d2435: fix: remove feature toggle check for Enable/Disable Semantic Date Range in Filter Bar
+-   ca82698: CPE - Enable Table Filtering Quick Action
+
+## 0.16.131
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.85
+
+## 0.16.130
+
+### Patch Changes
+
+-   Updated dependencies [6e60bdf]
+    -   @sap-ux/adp-tooling@0.12.84
+
+## 0.16.129
+
+### Patch Changes
+
+-   71bef63: fix: update quick action title for semantic date range
+
 ## 0.16.128
 
 ### Patch Changes

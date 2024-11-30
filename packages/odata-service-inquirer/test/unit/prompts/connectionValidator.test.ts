@@ -457,6 +457,19 @@ describe('ConnectionValidator', () => {
         // Ensure the refresh token is updated when it changes
         (connectValidator.serviceProvider as any).refreshTokenChangedCb('newToken1234');
         expect(connectValidator.refreshToken).toEqual('newToken1234');
+
+        // Ensure refresh token is used to create a connection if presented
+        expect(
+            await connectValidator.validateServiceInfo(serviceInfoMock as ServiceInfo, undefined, '123refreshToken456')
+        ).toBe(true);
+        expect(createAbapOnCloudProviderSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                environment: 'Standalone',
+                refreshTokenChangedCb: expect.any(Function),
+                service: serviceInfoMock,
+                refreshToken: '123refreshToken456'
+            })
+        );
     });
 
     test('should attempt to validate auth using v4 catalog where v2 is not available or user is not authorized', async () => {
