@@ -1,5 +1,8 @@
 import { t } from '../i18n';
-import type { CfSystemChoice } from '../types';
+import type { CfSystemChoice, CfAppRouterDeployConfigAnswers } from '../types';
+import { existsSync } from 'fs';
+import { join } from 'path';
+import type { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**
  *
@@ -50,4 +53,62 @@ export function validateDestinationQuestion(
         return true;
     }
     return typeof input === 'string' ? validateInput(input) : true;
+}
+
+/**
+ * Validates the provided MTA path.
+ *
+ * @param {string} input - The input string representing the MTA path to validate.
+ * @returns {boolean|string} - Returns `true` if the path is valid, or an error message if the path is invalid or does not exist.
+ */
+export function validateMtaPath(input: string): boolean | string {
+    const filePath = input?.trim();
+    return (filePath && existsSync(filePath)) || t('errors.folderDoesNotExistError', { filePath: filePath });
+}
+
+/**
+ * Validates the provided MTA ID.
+ *
+ * This function performs the following checks:
+ * - Ensures the input is a non-empty string.
+ * - Validates the input against a regex pattern.
+ * - Checks if the MTA ID already exists in the specified path.
+ *
+ * @param {string} input - The MTA ID to validate.
+ * @param {CfAppRouterDeployConfigAnswers} previousAnswers - The previous answers, containing the MTA path.
+ * @returns {boolean|string} - Returns true if the MTA ID is valid, or an error message if validation fails.
+ */
+export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployConfigAnswers): boolean | string {
+    if (typeof input !== 'string' || !input.trim()) {
+        return t('errors.noMtaIdError');
+    }
+    if (input.length > 100) {
+        return t('errors.invalidMtaIdError');
+    }
+    const idPattern = /^[a-zA-Z_][a-zA-Z0-9_-]{0,98}[a-zA-Z0-9]$/;
+    if (!idPattern.exec(input)) {
+        return t('errors.invalidMtaIdError');
+    }
+    if (existsSync(join(previousAnswers.mtaPath, input.trim()))) {
+        return t('errors.mtaIdAlreadyExistError', { mtaPath: previousAnswers.mtaPath });
+    }
+
+    // All checks passed
+    return true;
+}
+
+/**
+ * Validates the ABAP service choice and provides error handling.
+ *
+ * @param {string} choice - The selected choice for the ABAP service.
+ * @param {ErrorHandler} errorHandler - An instance of an error handler.
+ * @returns {string | boolean} - Returns `true` if the choice is valid.
+ */
+export function validateAbapService(choice: string, errorHandler: ErrorHandler): string | boolean {
+    if (!choice) {
+        const userMsg = errorHandler.getErrorMsg('', true);
+        const checkConsoleMsg = t('errors.errorScpAbapSourceDiscoveryCheckLog');
+        return userMsg ? `${userMsg} ${checkConsoleMsg}` : false;
+    }
+    return true;
 }

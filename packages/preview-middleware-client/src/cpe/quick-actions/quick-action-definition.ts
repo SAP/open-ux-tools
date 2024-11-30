@@ -42,11 +42,6 @@ export interface QuickActionContext {
     changeService: ChangeService;
 }
 
-export type QuickActionActivationData = {
-    isActive: boolean;
-    title: string;
-};
-
 interface QuickActionDefinitionBase {
     /**
      * Used to identify between different Quick Action definitions.
@@ -65,7 +60,7 @@ interface QuickActionDefinitionBase {
     /**
      * Indicates that the Quick Action is applicable to the given context and should be displayed.
      */
-    isActive: boolean;
+    isApplicable: boolean;
     /**
      * Initializes the action and checks if it should be enabled in current context.
      */

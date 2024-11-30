@@ -14,6 +14,28 @@ export enum promptNames {
 }
 
 /**
+ * Enum defining prompt names for Application Router configuration.
+ */
+export enum appRouterPromptNames {
+    /* The prompt to specify the MTA path to the MTA folder. */
+    mtaPath = 'mtaPath',
+    /* The prompt to specify the MTA ID. */
+    mtaId = 'mtaId',
+    /* The prompt to specify the MTA description. */
+    mtaDescription = 'mtaDescription',
+    /* The prompt to specify the MTA version. */
+    mtaVersion = 'mtaVersion',
+    /* Prompt for selecting the type of Application Router (standard or managed) */
+    routerType = 'routerType',
+    /* Prompt for selecting the Connectivity service */
+    addConnectivityService = 'addConnectivityService',
+    /* Prompt for selecting abap service binding*/
+    addABAPServiceBinding = 'addABAPServiceBinding',
+    /* Prompt for selecting the ABAP environments */
+    abapServiceProvider = 'abapServiceProvider'
+}
+
+/**
  * Configuration options for the 'destinationName' prompt used in deployment settings.
  */
 export type DestinationNamePromptOptions = {
@@ -43,18 +65,35 @@ export type DestinationNamePromptOptions = {
 /**
  * Defines options for boolean-type prompts in CF deployment configuration.
  */
-type booleanValuePromptOptions = Record<promptNames.overwrite, boolean> &
-    Record<promptNames.addManagedAppRouter, boolean>;
+export type booleanPromptOptions = Partial<
+    Record<
+        | promptNames.overwrite
+        | promptNames.addManagedAppRouter
+        | appRouterPromptNames.mtaId
+        | appRouterPromptNames.mtaDescription
+        | appRouterPromptNames.mtaVersion
+        | appRouterPromptNames.routerType
+        | appRouterPromptNames.addABAPServiceBinding
+        | appRouterPromptNames.addConnectivityService,
+        boolean
+    >
+>;
 
 /**
  * Defines options for string-type prompts in CF deployment configuration.
  */
-type stringValuePromptOptions = Record<promptNames.destinationName, DestinationNamePromptOptions>;
+type stringPromptOptions = Partial<Record<promptNames.destinationName, DestinationNamePromptOptions>>;
 
 /**
  * Configuration options for CF deployment prompts.
  */
-export type CfDeployConfigPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOptions>;
+export type CfDeployConfigPromptOptions = Partial<stringPromptOptions & booleanPromptOptions>;
+
+/**
+ * Configuration options for CF App Router deployment prompts.
+ */
+export type CfAppRouterDeployConfigPromptOptions = Partial<stringPromptOptions & booleanPromptOptions> &
+    Record<appRouterPromptNames.mtaPath, string>;
 
 /**
  * Represents a question in the CF deployment configuration.
@@ -62,6 +101,8 @@ export type CfDeployConfigPromptOptions = Partial<stringValuePromptOptions & boo
  */
 export type CfDeployConfigQuestions = YUIQuestion<CfDeployConfigAnswers> &
     Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
+
+export type CfAppRouterDeployConfigQuestions = YUIQuestion<CfAppRouterDeployConfigAnswers>;
 
 /**
  * User responses for CF deployment configuration.
@@ -71,8 +112,50 @@ export interface CfDeployConfigAnswers {
     destinationName?: string;
     /** Indicates whether the user opted to include a managed application router. */
     addManagedRouter?: boolean;
-    /* Indicates whether the user opted to overwrite the destination. */
+    /** Indicates whether the user opted to overwrite the destination. */
     overwrite?: boolean;
+}
+
+/**
+ * Defines the types of router modules for the Application Router configuration.
+ */
+export const RouterModuleType = {
+    Standard: 'standard',
+    Managed: 'managed'
+} as const;
+
+export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];
+
+/**
+ * Interface representing the configuration for MTA.
+ * Includes properties for identifying and describing the MTA.
+ */
+export interface MtaConfig {
+    /* The MTA ID. */
+    mtaId: string;
+    /* The path to the MTA project. */
+    mtaPath: string;
+    /* The MTA description. */
+    mtaDescription?: string;
+    /* The MTA version. */
+    mtaVersion?: string;
+}
+
+/*
+ * Interface representing the answers provided during the application router deployment configuration.
+ */
+export interface CfAppRouterDeployConfigAnswers extends MtaConfig {
+    /* The type of router to be used for the application. */
+    routerType: RouterModuleType;
+    /* The selected connectivity service for the application router. */
+    addConnectivityService?: boolean;
+    /* Option to use abap Service Binding for the application router. */
+    addABAPServiceBinding?: boolean;
+    /* The selected abap environment for the application router. */
+    abapServiceProvider?: {
+        label?: string;
+        service?: string;
+    };
 }
 
 /**
@@ -83,7 +166,7 @@ export interface CfSystemChoice {
     name: string;
     /** Value associated with the system choice. */
     value: string;
-    /** Flag indicating if the system choice is an scp destination. */
+    /** Flag indicating if the system choice is an SCP destination. */
     scp: boolean;
     /** URL associated with the system choice. */
     url: string;

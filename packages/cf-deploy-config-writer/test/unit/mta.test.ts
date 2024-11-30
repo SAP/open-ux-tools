@@ -205,7 +205,7 @@ describe('Validate common flows', () => {
             '/'
         );
         const mtaConfig = await MtaConfig.newInstance(`${OUTPUT_DIR_PREFIX}/app1`, nullLogger);
-        await mtaConfig.addRoutingModules(true);
+        await mtaConfig.addRoutingModules({ isManagedApp: true });
         await mtaConfig.addApp('myhtml5app', './');
         await mtaConfig.addConnectivityResource(); //typical for onpremise destinations
         await mtaConfig.save();
@@ -228,7 +228,7 @@ describe('Validate common flows', () => {
             '/'
         );
         const mtaConfig = await MtaConfig.newInstance(`${OUTPUT_DIR_PREFIX}/app2`);
-        await mtaConfig.addRoutingModules(true);
+        await mtaConfig.addRoutingModules({ isManagedApp: true });
         await mtaConfig.save();
         const expectAfterYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app2/mta.yaml`, 'utf-8');
         expect(expectAfterYaml).toMatchSnapshot();
@@ -281,7 +281,7 @@ describe('Validate common flows', () => {
             '/'
         );
         const mtaConfig = await MtaConfig.newInstance(`${OUTPUT_DIR_PREFIX}/app5`);
-        await mtaConfig.addRoutingModules(true);
+        await mtaConfig.addRoutingModules({ isManagedApp: true });
         await mtaConfig.addApp('myhtml5app', './');
         const parameters = await mtaConfig.getParameters();
         const params = { ...parameters, ...{} } as mta.Parameters;
