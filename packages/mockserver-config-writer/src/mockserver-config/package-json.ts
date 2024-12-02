@@ -30,8 +30,8 @@ function enhanceDependencies(
     packageJson: Package,
     mockserverModule = '@sap-ux/ui5-middleware-fe-mockserver',
     version = '2'
-) {
-    packageJson.devDependencies = packageJson.devDependencies || {};
+): void {
+    packageJson.devDependencies = packageJson.devDependencies ?? {};
     delete packageJson.devDependencies['@sap/ux-ui5-fe-mockserver-middleware'];
     packageJson.devDependencies[mockserverModule] = version;
     if (isUi5CliHigherTwo(packageJson.devDependencies)) {
