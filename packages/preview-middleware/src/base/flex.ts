@@ -20,8 +20,9 @@ export async function readChanges(
     const files = await project.byGlob('/**/changes/*.*');
     for (const file of files) {
         try {
-            const change = JSON.parse(await file.getString()) as CommonChangeProperties;
-            changes[`sap.ui.fl.${parse(file.getName()).name}`] = change;
+            changes[`sap.ui.fl.${parse(file.getName()).name}`] = JSON.parse(
+                await file.getString()
+            ) as CommonChangeProperties;
             logger.debug(`Read change from ${file.getPath()}`);
         } catch (error) {
             logger.warn(error.message);
