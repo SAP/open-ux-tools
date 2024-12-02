@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.5.8
+
+### Patch Changes
+
+-   ca82698: CPE - Enable Table Filtering Quick Action
+
 ## 0.5.7
 
 ### Patch Changes
