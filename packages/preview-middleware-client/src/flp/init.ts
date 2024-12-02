@@ -165,10 +165,10 @@ function registerModules(dataFromAppIndex: AppIndexData) {
  * @param container the UShell container
  */
 export async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
-    const appStateService = await container.getServiceAsync<AppState>('AppState');
     const urlParams = new URLSearchParams(window.location.hash);
     const appStateValue = urlParams.get('sap-iapp-state') ?? urlParams.get('/?sap-iapp-state');
     if (appStateValue) {
+        const appStateService = await container.getServiceAsync<AppState>('AppState');
         appStateService.deleteAppState(appStateValue);
     }
 }
@@ -346,6 +346,8 @@ export async function init({
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
 }
+
+// eslint-disable-next-line fiori-custom/sap-no-dom-access,fiori-custom/sap-browser-api-warning
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
