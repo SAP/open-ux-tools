@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.133
+
+### Patch Changes
+
+-   70e6d46: CPE - Disable Add Custom Column Quick Action, if table rows are required and not available
+
 ## 0.16.132
 
 ### Patch Changes
