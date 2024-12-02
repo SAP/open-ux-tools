@@ -335,13 +335,25 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @param {number} position Delta position in pixels.
      * @returns {boolean} If resizing was happened - it can return false when splitter meets resizing limitation.
      */
-    private onSplitterResize(position: number): boolean {
+    private onSplitterResize(index: number, position: number): boolean {
+        // debugger;
+        // console.log(`onSplitterResize index=${index}; position=${position}`);
         const resizeSections = position !== 0 ? this.resizeSections : [];
         let left = 0;
-        for (let i = 0; i < resizeSections.length; i++) {
+        for (let i = 0; i < index; i++) {
+            const prevSession = resizeSections[i];
+            left += prevSession ? prevSession.size : 0;
+        }
+        for (let i = 0; i < index; i++) {
+            if (this.state.sizes?.[i]) {
+                this.resizeSections[i].section = this.state.sizes[i];
+            }
+        }
+        for (let i = index; i < resizeSections.length; i++) {
             const minSectionSize = this.getMinSectionSize(i);
             const resizeSection = resizeSections[i];
-            let newSize = resizeSection.size + (i === 0 ? position : -position);
+            let newSize = resizeSection.size + (i === index ? position : -position);
+            // console.log(`section=${i}; newSize=${newSize}`);
             if (minSectionSize === resizeSection.maxSize) {
                 // Ignore resize - section is not resizable
                 continue;
@@ -357,8 +369,18 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             const sectionSize: UISectionSize = {
                 percentage: false
             };
-            const nextSession = resizeSections[i + 1];
-            const right = nextSession ? nextSession.size - position : 0;
+            let right = 0;
+            if (resizeSections[i + 1]) {
+                for (let j = i + 1; j < resizeSections.length; j++) {
+                    const nextSession = resizeSections[j];
+                    right += nextSession.size;
+                }
+                if (index === i) {
+                    right = right - position;
+                }
+            }
+
+            // const right = nextSession ? nextSession.size - position : 0;
             if (i > 0) {
                 sectionSize.size = newSize;
                 sectionSize.start = left;
@@ -372,6 +394,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             resizeSection.section = sectionSize;
             left += newSize;
         }
+        // console.log(this.resizeSections);
         return false;
     }
 
@@ -630,6 +653,9 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         const sectionStyle = UISections.isSectionVisible(childNode)
             ? this.getVisibleSectionStyle(index)
             : this.getHiddenSectionStyle(index);
+        console.log(`getSection ${index}`);
+        console.log(sectionStyle);
+
         if (!sectionStyle) {
             return undefined;
         }
@@ -656,7 +682,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 {isSplitterVisible && childNode && (
                     <UISplitter
                         vertical={vertical}
-                        onResize={this.onSplitterResize.bind(this)}
+                        onResize={this.onSplitterResize.bind(this, index - 1)}
                         onResizeStart={this.onSplitterResizeStart.bind(this)}
                         onResizeEnd={this.onSplitterResizeEnd.bind(this)}
                         onToggle={this.onSplitterToggle.bind(this)}
