@@ -183,7 +183,7 @@ function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
  */
 function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget } & { app: CloudApp }): CustomTask[] {
     let target: CloudCustomTaskConfigTarget;
-    if (config.target.destination) {
+    if (config?.target?.destination) {
         target = {
             destination: config.target.destination,
             url: config.target?.url ?? VSCODE_URL
