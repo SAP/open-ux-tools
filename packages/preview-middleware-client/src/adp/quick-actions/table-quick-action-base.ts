@@ -95,8 +95,6 @@ export abstract class TableQuickActionDefinitionBase {
 
     /**
      * Initializes action object instance
-     *
-     * @param onAddChild - Optional callback executed when a child element is added to update tooltip adn enable property.
      */
     async initialize(): Promise<void> {
         // No action found in control design time for version < 1.96
@@ -176,7 +174,7 @@ export abstract class TableQuickActionDefinitionBase {
      * @param table - table element
      * @returns table label if found or 'Unnamed table'
      */
-    public getTableLabel(table: UI5Element): string {
+    private getTableLabel(table: UI5Element): string {
         if (isA<SmartTable>(SMART_TABLE_TYPE, table) || isA<MdcTable>(MDC_TABLE_TYPE, table)) {
             const header = table.getHeader();
             if (header) {
@@ -261,7 +259,6 @@ export abstract class TableQuickActionDefinitionBase {
      * Processes table element and pushes table data to the children array
      * @param table - table element
      * @param sectionInfo - section info object
-     * @param onAddChild - Optional callback executed when a child element is added to update tooltip adn enable property.
      */
     private processTable(
         table: UI5Element,
