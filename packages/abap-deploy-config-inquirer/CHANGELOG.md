@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.1.2
+
+### Patch Changes
+
+-   72114a8: fix package autocomplete input type
+
 ## 1.1.1
 
 ### Patch Changes
