@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.134
+
+### Patch Changes
+
+-   c10bf9f: fix: Various lint error fixes and code improvements
+
 ## 0.16.133
 
 ### Patch Changes
