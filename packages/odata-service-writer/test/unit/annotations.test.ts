@@ -36,6 +36,14 @@ describe('metadata parsing', () => {
     });
 
     it('getAnnotationNamespaces: annotations alias parsing', () => {
+        // Check annotations defined in array
+        expect(
+            getAnnotationNamespaces({
+                metadata: metadata,
+                annotations: [{ technicalName: 'TEST_ANNOTATIONS', xml: annotationsMultipleRef }]
+            })
+        ).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' }]);
+        // Check annotations defined ar single object
         expect(
             getAnnotationNamespaces({
                 metadata: metadata,
