@@ -4868,10 +4868,10 @@ server:
   "webapp/controller/App.controller.js": Object {
     "contents": "sap.ui.define([
   \\"sap/ui/core/mvc/Controller\\"
-], (Controller) => {
+], (BaseController) => {
   \\"use strict\\";
 
-  return Controller.extend(\\"nods1.controller.View1\\", {
+  return BaseController.extend(\\"nods1.controller.App\\", {
       onInit() {
       }
   });
@@ -5417,10 +5417,10 @@ server:
   "webapp/controller/App.controller.js": Object {
     "contents": "sap.ui.define([
   \\"sap/ui/core/mvc/Controller\\"
-], (Controller) => {
+], (BaseController) => {
   \\"use strict\\";
 
-  return Controller.extend(\\"nods1.controller.View1\\", {
+  return BaseController.extend(\\"nods1.controller.App\\", {
       onInit() {
       }
   });

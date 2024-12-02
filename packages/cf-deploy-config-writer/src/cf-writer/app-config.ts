@@ -298,7 +298,7 @@ async function generateSupportingConfig(config: CFConfig, fs: Editor): Promise<v
 async function updateMtaConfig(cfConfig: CFConfig): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
     if (mtaInstance) {
-        await mtaInstance.addRoutingModules(cfConfig.addManagedAppRouter);
+        await mtaInstance.addRoutingModules({ isManagedApp: cfConfig.addManagedAppRouter });
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');
