@@ -332,6 +332,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     /**
      * Method called when resizing of section is happening.
      *
+     * @param {number} index Index of splitter.
      * @param {number} position Delta position in pixels.
      * @returns {boolean} If resizing was happened - it can return false when splitter meets resizing limitation.
      */
