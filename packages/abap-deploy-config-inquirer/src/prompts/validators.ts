@@ -583,7 +583,7 @@ export function validateConfirmQuestion(overwrite: boolean): boolean {
  * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
  * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
  */
-export async function isCloudPackage(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
+export async function validateCloudPackage(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
     const systemConfig: SystemConfig = {
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
@@ -620,7 +620,7 @@ export async function validatePackageExtended(
     }
 
     if (promptOption?.additionalValidation?.cloudPackage) {
-        return isCloudPackage(input, backendTarget);
+        return validateCloudPackage(input, backendTarget);
     }
     return true;
-};
+}
