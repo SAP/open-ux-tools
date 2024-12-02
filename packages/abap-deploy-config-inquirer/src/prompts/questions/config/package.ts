@@ -118,10 +118,14 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             },
             additionalInfo: () => morePackageResultsMsg,
             validate: async (
-                input: ListChoiceOptions,
+                input: string | ListChoiceOptions,
                 answers: AbapDeployConfigAnswersInternal
             ): Promise<boolean | string> => {
-                return await validatePackage(input.value, answers, options.backendTarget);
+                // Autocomplete can the entire choice object as the answer, so we need to extract the value
+                const pkgValue: string = (input as ListChoiceOptions)?.value
+                    ? (input as ListChoiceOptions).value
+                    : input;
+                return await validatePackage(pkgValue, answers, options.backendTarget);
             }
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
     ];
