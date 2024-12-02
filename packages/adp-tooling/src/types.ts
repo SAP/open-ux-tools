@@ -533,23 +533,16 @@ export interface CustomConfig {
         support: ToolsSupport;
     };
 }
-export interface CloudTarget {
-    url: string | undefined;
-    authenticationType: string | undefined;
-    ignoreCertErrors: boolean;
-}
 
-export interface OnPremTarget {
-    destination?: string;
-}
-
-export type CloudCustomTaskConfigTarget = OnPremTarget | CloudTarget;
+export type CloudCustomTaskConfigTarget =
+    | DestinationAbapTarget
+    | (Pick<UrlAbapTarget, 'url' | 'client' | 'scp' | 'authenticationType'> & { ignoreCertErrors?: boolean });
 
 export interface CloudCustomTaskConfig {
     type: string;
     appName: string | undefined;
     languages: Language[];
-    target: CloudCustomTaskConfigTarget;
+    target: AbapTarget;
 }
 
 export interface InboundChangeContentAddInboundId {

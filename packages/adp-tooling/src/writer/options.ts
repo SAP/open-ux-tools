@@ -190,11 +190,12 @@ function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }
         };
     } else {
         target = {
-            url: config.target.url,
+            url: config.target.url ?? VSCODE_URL,
             authenticationType: config.target.authenticationType,
             ignoreCertErrors: false
         };
     }
+
     const configuration: CloudCustomTaskConfig = {
         type: 'abap',
         appName: config?.app?.bspName,
