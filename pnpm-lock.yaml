@@ -2540,9 +2540,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@zowe/secrets-for-zowe-sdk':
-        specifier: 8.1.2
-        version: 8.1.2
       i18next:
         specifier: 20.6.1
         version: 20.6.1
@@ -2555,6 +2552,10 @@ importers:
       reflect-metadata:
         specifier: 0.1.13
         version: 0.1.13
+    optionalDependencies:
+      '@zowe/secrets-for-zowe-sdk':
+        specifier: 8.1.2
+        version: 8.1.2
     devDependencies:
       '@types/i18next-fs-backend':
         specifier: 1.1.2
@@ -10139,6 +10140,7 @@ packages:
     engines: {node: '>=14'}
     requiresBuild: true
     dev: false
+    optional: true
 
   /abab@2.0.6:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}

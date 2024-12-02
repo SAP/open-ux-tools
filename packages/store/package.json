@@ -26,12 +26,14 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "@zowe/secrets-for-zowe-sdk": "8.1.2",
         "@sap-ux/logger": "workspace:*",
         "i18next": "20.6.1",
         "i18next-fs-backend": "1.2.0",
         "pluralize": "8.0.0",
         "reflect-metadata": "0.1.13"
+    },
+    "optionalDependencies": {
+        "@zowe/secrets-for-zowe-sdk": "8.1.2"
     },
     "devDependencies": {
         "@types/i18next-fs-backend": "1.1.2",
