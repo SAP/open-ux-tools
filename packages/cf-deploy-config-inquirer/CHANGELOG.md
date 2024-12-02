@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.0
+
+### Minor Changes
+
+-   d929fc9: Add App Router CF inquirer
+
 ## 0.0.11
 
 ### Patch Changes
