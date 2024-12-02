@@ -14,7 +14,7 @@ import {
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions
 } from '../../../types';
-import type { InputQuestion, ListQuestion, Question } from 'inquirer';
+import type { InputQuestion, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 /**
@@ -117,8 +117,12 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 return results.packages;
             },
             additionalInfo: () => morePackageResultsMsg,
-            validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackage(input, answers, options.backendTarget)
+            validate: async (
+                input: ListChoiceOptions,
+                answers: AbapDeployConfigAnswersInternal
+            ): Promise<boolean | string> => {
+                return await validatePackage(input.value, answers, options.backendTarget);
+            }
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
     ];
 
