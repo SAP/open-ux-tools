@@ -1,5 +1,29 @@
 # @sap-ux/create
 
+## 0.10.0
+
+### Minor Changes
+
+-   73475e5: Support for multiple services and multiple annotations per service.
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/mockserver-config-writer@0.7.0
+    -   @sap-ux/odata-service-writer@0.24.0
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/abap-deploy-config-inquirer@1.1.3
+    -   @sap-ux/abap-deploy-config-writer@0.0.63
+    -   @sap-ux/adp-tooling@0.12.86
+    -   @sap-ux/app-config-writer@0.5.1
+    -   @sap-ux/cards-editor-config-writer@0.4.8
+    -   @sap-ux/project-access@1.28.8
+    -   @sap-ux/preview-middleware@0.16.135
+    -   @sap-ux/cap-config-writer@0.7.61
+    -   @sap-ux/system-access@0.5.19
+    -   @sap-ux/inquirer-common@0.5.5
+    -   @sap-ux/flp-config-inquirer@0.1.1
+
 ## 0.9.4
 
 ### Patch Changes
