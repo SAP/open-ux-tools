@@ -1,6 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test generateMockserverConfig() Add config to bare minimum project 1`] = `
+exports[`Test generateMockserverConfig() Add config with services to project 1`] = `
+"specVersion: \\"2.6\\"
+metadata:
+  name: ui-mock-config
+type: application
+server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /first/path
+            mockdataPath: ./webapp/localService/mainService/data
+            generateMockData: true
+          - urlPath: /second/path
+            mockdataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/data
+            generateMockData: true
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
+            generateMockData: true
+          - urlPath: /sap/opu/odata/sap/STTA_SALES_ORDER_ND_SRV_01
+            metadataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/metadata.xml
+            mockdataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`Test generateMockserverConfig() Add config without any services to bare minimum project 1`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: \\"2.5\\"
@@ -28,11 +58,7 @@ server:
       beforeMiddleware: csp
       configuration:
         mountPath: /
-        services:
-          - urlPath: ''
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
+        services: []
         annotations: []
 "
 `;
