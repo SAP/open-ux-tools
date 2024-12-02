@@ -7,7 +7,11 @@ import {
 import { t } from '../../../i18n';
 import { getPackageChoices, getPackageInputChoices } from '../../helpers';
 import { defaultPackage, defaultPackageChoice } from '../../defaults';
-import { validatePackage, validatePackageChoiceInput, validatePackageChoiceInputForCli } from '../../validators';
+import {
+    validatePackageChoiceInput,
+    validatePackageChoiceInputForCli,
+    validatePackageExtended
+} from '../../validators';
 import {
     promptNames,
     type PackageInputChoices,
@@ -89,13 +93,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackage(previousAnswers.packageManual || options.packageManual?.default),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackage(
-                    input,
-                    answers,
-                    options.backendTarget,
-                    options.packageManual?.shouldValidateCloudPackage,
-                    options.packageManual?.shouldValidateAppName
-                )
+                await validatePackageExtended(input, answers, options.packageManual, options.backendTarget)
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
@@ -124,7 +122,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             },
             additionalInfo: () => morePackageResultsMsg,
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackage(input, answers, options.backendTarget)
+                await validatePackageExtended(input, answers, options.packageAutocomplete, options.backendTarget)
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
     ];
 

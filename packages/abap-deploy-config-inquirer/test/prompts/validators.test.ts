@@ -338,29 +338,6 @@ describe('Test validators', () => {
             const result = await validatePackage('namespace', previousAnswers);
             expect(result).toBe(t('error.validators.abapPackageStartingPrefix'));
         });
-
-        it('should return error for invalid appName starting prefix', async () => {
-            const result = await validatePackage(
-                '/namespace/packageName',
-                {
-                    ...previousAnswers,
-                    ui5AbapRepo: 'ZUI5REPO'
-                },
-                undefined,
-                undefined,
-                true
-            );
-            expect(result).toBe('error.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
-        });
-
-        it('should return error package is not cloud', async () => {
-            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
-                adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
-                activeLanguages: []
-            });
-            const result = await validatePackage('ZPACKAGE', previousAnswers, undefined, true);
-            expect(result).toBe(t('warnings.invalidCloudPackage'));
-        });
     });
 
     describe('validateTransportChoiceInput', () => {

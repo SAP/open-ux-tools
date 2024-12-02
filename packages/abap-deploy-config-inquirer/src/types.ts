@@ -106,18 +106,16 @@ export type DescriptionPromptOptions = {
     default?: string;
 };
 
-type PackagePromptOptions = {
+export type PackagePromptOptions = {
     /**
-     * Adds additional validation if the package is cloud
+     * Indicator for the validations to be performed on the package input.
      */
-    shouldValidateCloudPackage?: boolean;
-    /**
-     * Adds additional validation if appname`s namespace or starting prefix are same like package ones
-     */
-    shouldValidateAppName?: boolean;
-     * Add custom validation
-     */
-    validate?: Validator<AbapDeployConfigAnswers>;
+    additionalValidation?: {
+        /**
+         * Check if the given package is a cloud-ready package
+         */
+        cloudPackage?: boolean;
+    };
 };
 
 export type PackageManualPromptOptions = PackagePromptOptions & {

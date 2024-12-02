@@ -24,7 +24,8 @@ import {
     type SystemConfig,
     type AbapDeployConfigAnswersInternal,
     type AbapSystemChoice,
-    type BackendTarget
+    type BackendTarget,
+    type PackagePromptOptions
 } from '../types';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
@@ -356,9 +357,7 @@ export async function validatePackageChoiceInputForCli(
 export async function validatePackage(
     input: string,
     answers: AbapDeployConfigAnswersInternal,
-    backendTarget?: BackendTarget,
-    shouldValidateCloudPackage?: boolean,
-    shouldValidateAppName?: boolean
+    backendTarget?: BackendTarget
 ): Promise<boolean | string> {
     PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
     if (!input?.trim()) {
@@ -371,6 +370,7 @@ export async function validatePackage(
     if (input === DEFAULT_PACKAGE_ABAP) {
         PromptState.transportAnswers.transportRequired = false;
         return true;
+    }
     //validate package format
     if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
         return t('error.validators.abapPackageInvalidFormat');
@@ -382,22 +382,11 @@ export async function validatePackage(
     if (!input.startsWith('/') && !allowedPackagePrefixes.find((prefix) => prefix === startingPrefix)) {
         return t('error.validators.abapPackageStartingPrefix');
     }
-
-    // validate appname namespace and starting prefix
-    if (shouldValidateAppName && answers?.ui5AbapRepo && !answers?.ui5AbapRepo.startsWith(startingPrefix)) {
-        return t('error.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
-    }
     const systemConfig: SystemConfig = {
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
         destination: PromptState.abapDeployConfig.destination
     };
-
-    // validate if package is cloud
-    if (shouldValidateCloudPackage && !(await isCloudPackage(input, systemConfig, backendTarget))) {
-        return t('warnings.invalidCloudPackage');
-    }
-
     // checks if package is a local package and will update prompt state accordingly
     await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', systemConfig, backendTarget);
 
@@ -420,30 +409,6 @@ function getPackageStartingPrefix(packageName: string): string {
         return `/${splitNames[1]}/`;
     }
     return packageName.startsWith('SAP') ? 'SAP' : packageName[0];
-}
-
-/**
- * Checks if the given package is a cloud-ready package.
- *
- * - Fetches system information for the package using the provided system configuration and backend target.
- * - Validates whether the adaptation project type for the package is "CLOUD_READY".
- *
- * @param {string} input - The name of the package to validate.
- * @param {SystemConfig} systemConfig - Configuration object for the system (e.g., URL, client, destination).
- * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
- * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
- */
-async function isCloudPackage(
-    input: string,
-    systemConfig: SystemConfig,
-    backendTarget?: BackendTarget
-): Promise<boolean> {
-    const systemInfo = await getSystemInfo(input, systemConfig, backendTarget);
-    return (
-        systemInfo != undefined &&
-        systemInfo.adaptationProjectTypes.length === 1 &&
-        systemInfo.adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY
-    );
 }
 
 /**
@@ -607,3 +572,55 @@ export function validateConfirmQuestion(overwrite: boolean): boolean {
     PromptState.abapDeployConfig.abort = !overwrite;
     return true;
 }
+
+/**
+ * Checks if the given package is a cloud-ready package.
+ *
+ * - Fetches system information for the package using the provided system configuration and backend target.
+ * - Validates whether the adaptation project type for the package is "CLOUD_READY".
+ *
+ * @param {string} input - The name of the package to validate.
+ * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
+ * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
+ */
+export async function isCloudPackage(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
+    const systemConfig: SystemConfig = {
+        url: PromptState.abapDeployConfig.url,
+        client: PromptState.abapDeployConfig.client,
+        destination: PromptState.abapDeployConfig.destination
+    };
+    const systemInfo = await getSystemInfo(input, systemConfig, backendTarget);
+    const isCloudPackage =
+        systemInfo != undefined &&
+        systemInfo.adaptationProjectTypes.length === 1 &&
+        systemInfo.adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY;
+    return isCloudPackage ? true : t('warnings.invalidCloudPackage');
+}
+
+/**
+ * Validates a package with extended criteria based on provided options and configurations.
+ *
+ * @param {string} input - The name of the package to validate.
+ * @param {AbapDeployConfigAnswersInternal} answers - Configuration answers for ABAP deployment.
+ * @param {PackagePromptOptions} [promptOption] - Optional settings for additional package validation.
+ * @param {BackendTarget} [backendTarget] - The backend target for validation context.
+ * @returns {Promise<boolean | string>} - Resolves to `true` if the package is valid,
+ *                                        a `string` with an error message if validation fails,
+ *                                        or the result of additional cloud package validation if applicable.
+ */
+export async function validatePackageExtended(
+    input: string,
+    answers: AbapDeployConfigAnswersInternal,
+    promptOption?: PackagePromptOptions,
+    backendTarget?: BackendTarget
+): Promise<boolean | string> {
+    const baseValidation = await validatePackage(input, answers, backendTarget);
+    if (typeof baseValidation === 'string') {
+        return baseValidation;
+    }
+
+    if (promptOption?.additionalValidation?.cloudPackage) {
+        return isCloudPackage(input, backendTarget);
+    }
+    return true;
+};
