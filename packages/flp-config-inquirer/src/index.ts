@@ -16,12 +16,13 @@ import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from
  * @returns the prompts used to provide input for FLP configuration
  */
 async function getPrompts(
-    inbounds: ManifestNamespace.Inbound | undefined,
+    inbounds?: ManifestNamespace.Inbound,
+    appId?: string,
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigQuestion[]> {
     await initI18n();
 
-    return getQuestions(inbounds, promptOptions);
+    return getQuestions(inbounds, appId, promptOptions);
 }
 
 /**
@@ -35,9 +36,10 @@ async function getPrompts(
 async function prompt(
     adapter: InquirerAdapter,
     inbounds: ManifestNamespace.Inbound | undefined,
+    appId: string | undefined,
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigAnswers> {
-    const flpPrompts = await getPrompts(inbounds, promptOptions);
+    const flpPrompts = await getPrompts(inbounds, appId, promptOptions);
 
     const answers = await adapter.prompt<FLPConfigAnswers>(flpPrompts);
     // Apply default values to prompts in case they have not been executed

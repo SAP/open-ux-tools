@@ -9,7 +9,8 @@ import {
     FLPConfigAnswers,
     InboundIdPromptOptions,
     CreateAnotherInboundPromptOptions,
-    ParameterStringPromptOptions
+    ParameterStringPromptOptions,
+    EmptyInboundsLabelOptions
 } from '../../types';
 
 /**
@@ -40,6 +41,35 @@ export function getInboundIdsPrompt(inboundIds: string[], options?: InboundIdPro
                 };
             }
         }
+    };
+}
+
+/**
+ * Creates the 'emptyInboundsInfo' prompt for FLP configuration.
+ *
+ * @param {InboundIdPromptOptions} [options] - Optional configuration for the inbound id prompt, including default values.
+ * @returns {FLPConfigQuestion} The prompt configuration for the inbound id.
+ */
+export function getEmptyInboundsLabelPrompt(
+    inboundIds: string[],
+    appId?: string,
+    options?: EmptyInboundsLabelOptions
+): FLPConfigQuestion {
+    return {
+        type: 'input',
+        name: promptNames.emptyInboundsInfo,
+        message: t('prompts.emptyInboundsInfo'),
+        guiOptions: {
+            type: 'label',
+            mandatory: false,
+            link: {
+                text: 'application page.',
+                url: `https://fioriappslibrary.hana.ondemand.com/sap/fix/externalViewer/${
+                    appId ? `index.html?appId=${appId}&releaseGroupTextCombined=SC` : '#/home'
+                }`
+            }
+        },
+        when: options?.hide ?? inboundIds.length === 0
     };
 }
 

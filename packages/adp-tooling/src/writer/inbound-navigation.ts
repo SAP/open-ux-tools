@@ -1,15 +1,12 @@
-import { Editor, create } from 'mem-fs-editor';
-import { create as createStorage } from 'mem-fs';
 import path from 'path';
-import {
-    ChangeInboundNavigation,
-    DescriptorVariant,
-    DescriptorVariantContent,
-    InboundChangeContentAddInboundId,
-    InboundConfigProps,
-    NewInboundNavigation
-} from '../types';
-import { getVariant } from '..';
+import { type Editor, create } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+
+import { NewI18nEntry, createPropertiesI18nEntries } from '@sap-ux/i18n';
+
+import { getVariant } from '../';
+import type { Content, DescriptorVariant, InternalInboundNavigation } from '../types';
+import { enhanceManifestChangeContentWithFlpConfig as enhanceInboundConfig } from './options';
 
 /**
  * Generates and writes the inbound configuration to the manifest.appdescr_variant file.
@@ -21,7 +18,7 @@ import { getVariant } from '..';
  */
 export async function generateInboundConfig(
     basePath: string,
-    config: InboundConfigProps,
+    config: InternalInboundNavigation,
     fs?: Editor
 ): Promise<Editor> {
     if (!fs) {
@@ -30,167 +27,43 @@ export async function generateInboundConfig(
 
     const variant = getVariant(basePath);
 
-    // Enhance variant content with the new or updated inbound configuration
-    enhanceInboundConfig(config, variant);
+    if (!config?.inboundId) {
+        config.addInboundId = true;
+        config.inboundId = `${variant.id}.InboundID`;
+    }
 
-    // Write the updated variant back to the manifest.appdescr_variant file
-    fs.writeJSON(path.join(basePath, 'manifest.appdescr_variant'), variant);
+    enhanceInboundConfig(config, variant.id, variant.content as Content[]);
+
+    updateVariant(basePath, variant, fs);
+    await updateI18n(basePath, variant, config, fs);
 
     return fs;
 }
 
-/**
- * Enhances the variant content with the inbound configuration.
- *
- * @param config - The inbound configuration properties.
- * @param variant - The variant object to be updated.
- */
-function enhanceInboundConfig(config: InboundConfigProps, variant: DescriptorVariant): void {
-    const isAddNew = true;
-    const appId = variant.id;
+export function getFlpI18nKeys(config: InternalInboundNavigation, variant: DescriptorVariant): NewI18nEntry[] {
+    const newEntries: NewI18nEntry[] = [];
+    const baseKey = `${variant.id}_sap.app.crossNavigation.inbounds.${config.inboundId}`;
 
-    if (!config?.inboundId) {
-        config.inboundId = `${appId}.InboundID`;
+    newEntries.push({ key: `${baseKey}.title`, value: config.title });
+    if (config?.subTitle) {
+        newEntries.push({ key: `${baseKey}.subTitle`, value: config.title });
     }
 
-    // Generate the inbound change content
-    const inboundChangeContent = isAddNew
-        ? getInboundChangeContentWithNewInboundId(config as NewInboundNavigation & { inboundId: string }, appId)
-        : getInboundChangeContentWithExistingInboundId(config as ChangeInboundNavigation, appId);
-
-    // Remove existing changes for the same inboundId
-    removeExistingInboundChanges(variant.content, config.inboundId);
-
-    // Create the change object
-    const changeType = isAddNew ? 'appdescr_app_addNewInbound' : 'appdescr_app_changeInbound';
-
-    const inboundChange: DescriptorVariantContent = {
-        changeType,
-        content: inboundChangeContent,
-        texts: {
-            i18n: 'i18n/i18n.properties'
-        }
-    };
-
-    // Optionally remove other inbounds except the one specified
-    const removeOtherInboundsChange: DescriptorVariantContent = {
-        changeType: 'appdescr_app_removeAllInboundsExceptOne',
-        content: {
-            inboundId: config.inboundId
-        }
-    };
-
-    // Update the variant content
-    variant.content.push(inboundChange, removeOtherInboundsChange);
+    return newEntries;
 }
 
-/**
- * Removes existing inbound changes with the same inboundId from the variant content.
- *
- * @param content - The variant content array.
- * @param inboundId - The inboundId to match and remove.
- */
-function removeExistingInboundChanges(content: DescriptorVariantContent[], inboundId: string): void {
-    for (let i = content.length - 1; i >= 0; i--) {
-        const change = content[i];
-        const changeContent = change.content as object & { inboundId: string };
-        if (change.changeType === 'appdescr_app_addNewInbound' || change.changeType === 'appdescr_app_changeInbound') {
-            content.splice(i, 1);
-        } else if (
-            change.changeType === 'appdescr_app_removeAllInboundsExceptOne' &&
-            changeContent.inboundId === inboundId
-        ) {
-            content.splice(i, 1);
-        }
-    }
+export function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor) {
+    fs.writeJSON(path.join(basePath, 'manifest.appdescr_variant'), variant);
 }
 
-/**
- * Generates inbound change content for adding a new inbound.
- *
- * @param config - The new inbound navigation configuration.
- * @param appId - The application ID.
- * @returns The inbound change content.
- */
-function getInboundChangeContentWithNewInboundId(
-    config: NewInboundNavigation & { inboundId: string },
-    appId: string
-): InboundChangeContentAddInboundId {
-    const inboundId = config.inboundId;
+export async function updateI18n(
+    basePath: string,
+    variant: DescriptorVariant,
+    config: InternalInboundNavigation,
+    fs: Editor
+): Promise<void> {
+    const newEntries = getFlpI18nKeys(config, variant);
+    const i18nPath = path.join(basePath, 'webapp', 'i18n.properties');
 
-    const content: InboundChangeContentAddInboundId = {
-        inbound: {
-            [inboundId]: {
-                action: config.action,
-                semanticObject: config.semanticObject,
-                title: `{{${appId}_sap.app.crossNavigation.inbounds.${inboundId}.title}}`,
-                signature: {
-                    additionalParameters: 'allowed',
-                    parameters: {
-                        ...config.additionalParameters,
-                        'sap-appvar-id': {
-                            required: true,
-                            filter: {
-                                value: appId,
-                                format: 'plain'
-                            },
-                            launcherValue: {
-                                value: appId
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    if (config.subTitle) {
-        content.inbound[inboundId].subTitle = `{{${appId}_sap.app.crossNavigation.inbounds.${inboundId}.subTitle}}`;
-    }
-
-    return content;
-}
-
-/**
- * Generates inbound change content for editing an existing inbound.
- *
- * @param config - The change inbound navigation configuration.
- * @param appId - The application ID.
- * @returns The inbound change content.
- */
-function getInboundChangeContentWithExistingInboundId(config: ChangeInboundNavigation, appId: string): any {
-    const inboundContent = {
-        inboundId: config.inboundId,
-        entityPropertyChange: [
-            {
-                propertyPath: 'title',
-                operation: 'UPSERT',
-                propertyValue: `{{${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title}}`
-            },
-            {
-                propertyPath: 'signature/parameters/sap-appvar-id',
-                operation: 'UPSERT',
-                propertyValue: {
-                    required: true,
-                    filter: {
-                        value: appId,
-                        format: 'plain'
-                    },
-                    launcherValue: {
-                        value: appId
-                    }
-                }
-            }
-        ]
-    };
-
-    if (config.subTitle) {
-        inboundContent.entityPropertyChange.push({
-            propertyPath: 'subTitle',
-            operation: 'UPSERT',
-            propertyValue: `{{${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.subTitle}}`
-        });
-    }
-
-    return inboundContent;
+    await createPropertiesI18nEntries(i18nPath, newEntries, basePath, fs);
 }

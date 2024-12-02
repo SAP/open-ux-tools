@@ -117,7 +117,6 @@ export function getOverwritePrompt(
  * @returns {FLPConfigQuestion} The prompt configuration for the title.
  */
 export function getTitlePrompt(
-    inbounds: ManifestNamespace.Inbound | undefined,
     existingKeyRef: ExistingInboundRef,
     silentOverwrite: boolean,
     isCLI: boolean,
@@ -132,14 +131,7 @@ export function getTitlePrompt(
             breadcrumb: true
         },
         message: t('prompts.title'),
-        default:
-            options?.default ??
-            ((answers: FLPConfigAnswers) => {
-                if (answers?.inboundId) {
-                    return inbounds?.[answers.inboundId]?.title ?? '';
-                }
-                return false;
-            }),
+        default: options?.default,
         filter: (val: string): string => val?.trim(),
         validate: (val) => validateText(val, isCLI, 0)
     };
@@ -154,7 +146,6 @@ export function getTitlePrompt(
  * @returns {FLPConfigQuestion} The prompt configuration for the subtitle.
  */
 export function getSubTitlePrompt(
-    inbounds: ManifestNamespace.Inbound | undefined,
     existingKeyRef: ExistingInboundRef,
     silentOverwrite: boolean,
     options?: SubTitlePromptOptions
@@ -167,14 +158,7 @@ export function getSubTitlePrompt(
             breadcrumb: t('prompts.subTitle')
         },
         message: t('prompts.subTitle'),
-        default:
-            options?.default ??
-            ((answers: FLPConfigAnswers) => {
-                if (answers?.inboundId) {
-                    return inbounds?.[answers.inboundId]?.subTitle ?? '';
-                }
-                return false;
-            }),
+        default: options?.default,
         filter: (val: string): string => val?.trim()
     };
 }

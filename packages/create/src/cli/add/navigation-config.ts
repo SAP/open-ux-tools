@@ -1,17 +1,26 @@
-import { create, Editor } from 'mem-fs-editor';
+import { join } from 'path';
+import {
+    flpConfigurationExists,
+    generateInboundConfig,
+    getAdpConfig,
+    getVariant,
+    isAdpProject,
+    ManifestService
+} from '@sap-ux/adp-tooling';
 import type { Command } from 'commander';
 import { create as createStorage } from 'mem-fs';
-import { FileName, getWebappPath, type ManifestNamespace } from '@sap-ux/project-access';
-import { type FLPConfigAnswers, getPrompts, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
+import type { ToolsLogger } from '@sap-ux/logger';
+import { create, type Editor } from 'mem-fs-editor';
+import { getPrompts } from '@sap-ux/flp-config-inquirer';
+import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
+import { FileName, type ManifestNamespace } from '@sap-ux/project-access';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
+import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 
 import { promptYUIQuestions } from '../../common';
 import { validateBasePath } from '../../validation';
+import { filterLabelTypeQuestions } from '../../common/prompts';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
-import { join } from 'path';
-import { existsSync } from 'fs';
-import { generateInboundConfig, getAdpConfig, getVariant, ManifestService } from '@sap-ux/adp-tooling';
-import { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Add the "add inbound-navigation" command to a passed command.
@@ -31,33 +40,38 @@ export function addInboundNavigationConfigCommand(cmd: Command): void {
 }
 
 /**
- * Adds an inbound navigation config to an app. To prevent overwriting existing inbounds will be checked.
+ * Adds an inbound navigation configuration to an app. Checks existing inbounds to prevent overwriting.
  *
- * @param basePath - path to application root
- * @param simulate - if true, do not write but just show what would be changed; otherwise write
+ * @param {string} basePath - The path to the application root.
+ * @param {boolean} simulate - If true, simulates the changes without writing them; otherwise, writes changes.
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
 async function addInboundNavigationConfig(basePath: string, simulate: boolean): Promise<void> {
     const logger = getLogger();
     try {
         logger.debug(`Called add inbound navigation-config for path '${basePath}', simulate is '${simulate}'`);
         await validateBasePath(basePath);
+
         const isAdp = await isAdpProject(basePath);
+
+        if (isAdp && flpConfigurationExists(basePath)) {
+            logger.info('FLP Configuration already exists.');
+            return;
+        }
 
         const fs = create(createStorage());
 
         const inbounds = await getInboundsFromManifest(basePath, isAdp, fs, logger);
 
-        const config = await getUserConfig(inbounds, isAdp);
+        const config = await getUserConfig(basePath, inbounds, isAdp);
 
         if (!config) {
             logger.info('User chose not to overwrite existing inbound navigation configuration.');
             return;
         }
 
-        console.log(JSON.stringify(config, null, 2)); // TODO: Remove after testing
-
         if (isAdp) {
-            generateInboundConfig(basePath, config as any, fs);
+            await generateInboundConfig(basePath, config as InternalInboundNavigation, fs);
         } else {
             await generateInboundNavigationConfig(basePath, config, true, fs);
         }
@@ -71,24 +85,6 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
         logger.error(`Error while executing add inbound navigation configuration '${(error as Error).message}'`);
         logger.debug(error as Error);
     }
-}
-
-/**
- * Determines whether the project at the given base path is an Adaptation Project (ADP).
- *
- * @param {string} basePath - The base path to the project.
- * @returns {Promise<boolean>} A promise that resolves to true if the project is an ADP project, or false otherwise.
- * @throws {Error} If the project type cannot be determined.
- */
-async function isAdpProject(basePath: string): Promise<boolean> {
-    const manifestPath = await getWebappPath(basePath);
-    if (existsSync(join(manifestPath, FileName.Manifest))) {
-        return false;
-    } else if (existsSync(join(manifestPath, FileName.ManifestAppDescrVar))) {
-        return true;
-    }
-
-    throw new Error('Project type could not be determined');
 }
 
 /**
@@ -124,26 +120,33 @@ async function getInboundsFromManifest(
 /**
  * Prompts the user for inbound navigation configuration.
  *
- * @param inbounds - The existing inbounds to avoid conflicts.
- * @returns {Promise<FLPConfigAnswers | undefined>} The user-provided configuration or undefined if skipped.
+ * @param {string} basePath - The base path to the project.
+ * @param {ManifestNamespace.Inbound | undefined} inbounds - The existing inbounds if any.
+ * @param {boolean} isAdp - Indicates whether the project is an ADP project.
+ * @returns {Promise<FLPConfigAnswers | undefined>} The user-provided configuration, or undefined if the user chooses not to overwrite.
  */
 async function getUserConfig(
+    basePath: string,
     inbounds: ManifestNamespace.Inbound | undefined,
     isAdp: boolean
 ): Promise<FLPConfigAnswers | undefined> {
+    let appId: string = '';
     let promptOptions: FLPConfigPromptOptions;
 
     if (!isAdp) {
         promptOptions = {
             inboundId: { hide: true },
             parameterString: { hide: true },
-            createAnotherInbound: { hide: true }
+            createAnotherInbound: { hide: true },
+            emptyInboundsInfo: { hide: true }
         };
     } else {
-        promptOptions = { overwrite: { hide: true } };
+        promptOptions = { overwrite: { hide: true }, createAnotherInbound: { hide: true } };
+        appId = getVariant(basePath)?.id;
     }
 
-    const config = await promptYUIQuestions(await getPrompts(inbounds, promptOptions), false);
+    const prompts = await filterLabelTypeQuestions<FLPConfigAnswers>(await getPrompts(inbounds, appId, promptOptions));
+    const config = await promptYUIQuestions(prompts, false);
 
     if (config?.subTitle === '') {
         config.subTitle = undefined;

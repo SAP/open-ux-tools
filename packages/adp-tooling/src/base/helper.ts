@@ -1,7 +1,8 @@
-import { readdirSync, readFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, isAbsolute, relative } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
+import { FileName, getWebappPath } from '@sap-ux/project-access';
 
 /**
  * Get the app descriptor variant.
@@ -11,6 +12,46 @@ import type { DescriptorVariant, AdpPreviewConfig } from '../types';
  */
 export function getVariant(basePath: string): DescriptorVariant {
     return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
+}
+
+/**
+ * Determines whether the project at the given base path is an Adaptation Project (ADP).
+ *
+ * @param {string} basePath - The base path to the project.
+ * @returns {Promise<boolean>} A promise that resolves to true if the project is an ADP project, or false otherwise.
+ * @throws {Error} If the project type cannot be determined.
+ */
+export async function isAdpProject(basePath: string): Promise<boolean> {
+    const manifestPath = await getWebappPath(basePath);
+    if (existsSync(join(manifestPath, FileName.Manifest))) {
+        return false;
+    } else if (existsSync(join(manifestPath, FileName.ManifestAppDescrVar))) {
+        return true;
+    }
+
+    throw new Error('Project type could not be determined');
+}
+
+/**
+ * Checks if FLP configuration changes exist in the manifest.appdescr_variant.
+ *
+ * This function determines whether there are changes of type `appdescr_app_changeInbound`
+ * or `appdescr_app_addNewInbound` present in the content of the descriptor variant.
+ *
+ * @param {string} basePath - The base path of the project where the manifest.appdescr_variant is located.
+ * @returns {boolean} Returns `true` if FLP configuration changes exist, otherwise `false`.
+ * @throws {Error} Throws an error if the variant could not be retrieved.
+ */
+export function flpConfigurationExists(basePath: string): boolean {
+    try {
+        const variant = getVariant(basePath);
+        return variant.content?.some(
+            ({ changeType }) =>
+                changeType === 'appdescr_app_changeInbound' || changeType === 'appdescr_app_addNewInbound'
+        );
+    } catch (error) {
+        throw new Error(`Failed to check if FLP configuration exists: ${(error as Error).message}`);
+    }
 }
 
 /**

@@ -88,14 +88,6 @@ export interface AdpWriterConfig {
     };
 }
 
-/**
- * Represents the properties needed to configure an inbound navigation.
- */
-export interface InboundConfigProps extends Partial<NewInboundNavigation> {
-    /** Identifier for the inbound navigation. */
-    inboundId: string;
-}
-
 export interface ChangeInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
@@ -122,7 +114,7 @@ export interface InternalInboundNavigation extends NewInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
     /** Flag indicating if the new inbound navigation should be added. */
-    addInboundId: boolean;
+    addInboundId?: boolean;
 }
 
 export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;

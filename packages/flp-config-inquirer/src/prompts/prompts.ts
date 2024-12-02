@@ -11,6 +11,7 @@ import { promptNames } from '../types';
 import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
 import {
     getCreateAnotherInboundPrompt,
+    getEmptyInboundsLabelPrompt,
     getInboundIdsPrompt,
     getParameterStringPrompt
 } from './questions/advanced';
@@ -24,7 +25,8 @@ import { ManifestNamespace } from '@sap-ux/project-access';
  * @returns {FLPConfigQuestion[]} An array of FLPConfigQuestion objects to be used for prompting the user.
  */
 export function getQuestions(
-    inbounds: ManifestNamespace.Inbound | undefined,
+    inbounds?: ManifestNamespace.Inbound,
+    appId?: string,
     promptOptions?: FLPConfigPromptOptions
 ): FLPConfigQuestion[] {
     const inboundKeys = Object.keys(inbounds ?? {});
@@ -34,6 +36,7 @@ export function getQuestions(
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {
         [promptNames.inboundId]: getInboundIdsPrompt(inboundKeys, promptOptions?.[promptNames.inboundId]),
+        [promptNames.emptyInboundsInfo]: getEmptyInboundsLabelPrompt(inboundKeys, appId),
         [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
         [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),
         [promptNames.overwrite]: getOverwritePrompt(
@@ -42,15 +45,8 @@ export function getQuestions(
             existingKeyRef,
             promptOptions?.[promptNames.overwrite]
         ),
-        [promptNames.title]: getTitlePrompt(
-            inbounds,
-            existingKeyRef,
-            silentOverwrite,
-            isCLI,
-            promptOptions?.[promptNames.title]
-        ),
+        [promptNames.title]: getTitlePrompt(existingKeyRef, silentOverwrite, isCLI, promptOptions?.[promptNames.title]),
         [promptNames.subTitle]: getSubTitlePrompt(
-            inbounds,
             existingKeyRef,
             silentOverwrite,
             promptOptions?.[promptNames.subTitle]
@@ -66,6 +62,7 @@ export function getQuestions(
 
     const questions: FLPConfigQuestion[] = [
         keyedPrompts[promptNames.inboundId],
+        keyedPrompts[promptNames.emptyInboundsInfo],
         keyedPrompts[promptNames.semanticObject],
         keyedPrompts[promptNames.action],
         keyedPrompts[promptNames.overwrite],

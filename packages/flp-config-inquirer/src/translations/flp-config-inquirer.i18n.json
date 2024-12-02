@@ -1,7 +1,7 @@
 {
     "prompts": {
-        "configurationMode": "What FLP configuration would you like to create?",
         "inboundIds": "Inbound ID",
+        "emptyInboundsInfo": "Original application target mapping and the default parameters can be found in Fiori reference library under Implementation Information -> Configuration -> Target Mapping(s) in",
         "semanticObject": "Semantic Object",
         "action": "Action",
         "title": "Title",

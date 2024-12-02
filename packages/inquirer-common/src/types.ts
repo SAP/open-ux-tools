@@ -54,6 +54,23 @@ export interface GuiOptions {
      * Indicate state in the left hand navigation panel in YUI
      */
     breadcrumb?: boolean | string;
+    /**
+     * Indicates how the question will be displayed in YUI
+     */
+    type?: 'label';
+    /**
+     * Link to be shown in input question prompt of type 'label'
+     */
+    link?: {
+        /**
+         * A string that will have the styles of a link and will be concatenated at the end of the question message
+         */
+        text?: string;
+        /**
+         * The URL to which the text points
+         */
+        url?: string;
+    };
 }
 
 export type PromptSeverityMessage = (
