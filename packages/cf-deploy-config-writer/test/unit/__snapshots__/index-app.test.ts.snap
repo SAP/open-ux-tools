@@ -280,7 +280,7 @@ modules:
           ServiceInstanceName: basicapp-xsuaa-service
           ServiceKeyName: basicapp-uaa-key
           sap.cloud.service: basicapp
-        existing_destinations_policy: ignore
+        existing_destinations_policy: update
   build-parameters:
     no-source: true
 - name: basicapp-app-content
@@ -677,7 +677,7 @@ modules:
           ServiceInstanceName: multiproject-xsuaa-service
           ServiceKeyName: multiproject-uaa-key
           sap.cloud.service: multiproject
-        existing_destinations_policy: ignore
+        existing_destinations_policy: update
   build-parameters:
     no-source: true
 - name: multiproject-app-content
@@ -1074,7 +1074,7 @@ modules:
           ServiceInstanceName: comfioritoolslrop-xsuaa-service
           ServiceKeyName: comfioritoolslrop-uaa-key
           sap.cloud.service: comfioritoolslrop
-        existing_destinations_policy: ignore
+        existing_destinations_policy: update
   build-parameters:
     no-source: true
 - name: comfioritoolslrop-app-content
