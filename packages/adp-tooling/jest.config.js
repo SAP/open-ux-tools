@@ -1,3 +1,3 @@
 const config = require('../../jest.base');
-config.setupFilesAfterEnv = ['<rootDir>/jest.setup.js'];
+config.setupFilesAfterEnv = ['../../jest.setup.js'];
 module.exports = config;

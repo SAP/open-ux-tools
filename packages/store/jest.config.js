@@ -1,5 +1,5 @@
 const config = require('../../jest.base');
-config.setupFilesAfterEnv = ['jest-extended/all', '<rootDir>/jest.setup.js'];
+config.setupFilesAfterEnv = ['jest-extended/all', '../../jest.setup.js'];
 config.transform = {
     '^.+\\.tsx?$': [
         'ts-jest',

@@ -1,16 +1,16 @@
 import { type Logger } from '@sap-ux/logger';
 import { errorString } from '../utils';
 import type { SecureStore } from './types';
-import { keyring } from '@zowe/secrets-for-zowe-sdk';
+import type { keyring } from '@zowe/secrets-for-zowe-sdk';
 
 type Entities<T> = { [key: string]: T };
 export class KeyStoreManager implements SecureStore {
     private readonly log: Logger;
     private readonly keyring: typeof keyring;
 
-    constructor(log: Logger) {
+    constructor(log: Logger, zoweSecretSdk: typeof keyring) {
         this.log = log;
-        this.keyring = keyring;
+        this.keyring = zoweSecretSdk;
     }
 
     /**
@@ -126,6 +126,7 @@ export class KeyStoreManager implements SecureStore {
         const results: Entities<T> = {};
 
         try {
+            console.log(' -- my zowe get all ---');
             const entries = await this.keyring.findCredentials(service);
             if (!entries || entries.length === 0) {
                 this.log.warn(`No credentials found for Service: [${service}]`);
