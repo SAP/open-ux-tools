@@ -141,7 +141,7 @@ export const getMockServerMiddlewareConfig = (
 
         const newServiceData = {
             urlPath: dataSource.servicePath.replace(/\/$/, ''), // Mockserver is sensitive to trailing '/'
-            metadataPath: `${serviceRoot}/metadata.xml`,
+            metadataPath: dataSource.metadataPath ?? `${serviceRoot}/metadata.xml`,
             mockdataPath: `${serviceRoot}/data`,
             generateMockData: true
         };

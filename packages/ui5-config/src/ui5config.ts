@@ -427,7 +427,7 @@ export class UI5Config {
                 const urlPath = dataSourceConfig.servicePath.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
                 const newServiceData = {
                     urlPath,
-                    metadataPath: `${serviceRoot}/metadata.xml`,
+                    metadataPath: dataSourceConfig.metadataPath ?? `${serviceRoot}/metadata.xml`,
                     mockdataPath: `${serviceRoot}/data`,
                     generateMockData: true
                 };

@@ -50,9 +50,11 @@ export async function enhanceYaml(
     const dataSources = getODataSources(manifest);
     const dataSourcesConfig: DataSourceConfig[] = [];
     for (const dataSource in dataSources) {
+        const localUri = dataSources[dataSource].settings?.localUri;
         dataSourcesConfig.push({
             serviceName: dataSource,
-            servicePath: dataSources[dataSource].uri
+            servicePath: dataSources[dataSource].uri,
+            metadataPath: localUri ? `./webapp/${localUri}` : undefined
         });
     }
 
