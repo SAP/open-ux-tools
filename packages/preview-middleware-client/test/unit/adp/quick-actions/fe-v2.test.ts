@@ -297,7 +297,6 @@ describe('FE V2 quick actions', () => {
         describe('change table columns', () => {
             test('initialize and execute', async () => {
                 const pageView = new XMLView();
-
                 const scrollIntoView = jest.fn();
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartTable') {
@@ -453,7 +452,6 @@ describe('FE V2 quick actions', () => {
         describe('create table action', () => {
             test('initialize and execute', async () => {
                 const pageView = new XMLView();
-
                 const scrollIntoView = jest.fn();
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'mTable') {
@@ -1333,12 +1331,22 @@ describe('FE V2 quick actions', () => {
                                 scrollIntoView
                             }),
 
-                            getAggregation: () => {
-                                return [
-                                    {
-                                        getAggregation: () => 'headerToolbar'
-                                    }
-                                ];
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === 'sap.ui.table.Table',
+                                            getAggregation: () => 'item' // Mock inner aggregation for table rows
+                                        },
+                                        {
+                                            isA: (type: string) => type === 'sap.m.Table',
+                                            getAggregation: () => 'item' // Mock another type of table
+                                        }
+                                    ];
+                                } else if (aggregationName === 'headerToolbar') {
+                                    return 'headerToolbar'; // Return a simple string for headerToolbar
+                                }
+                                return [];
                             },
                             getParent: () => pageView,
                             getBusy: () => false,
@@ -1500,13 +1508,25 @@ describe('FE V2 quick actions', () => {
                                 scrollIntoView
                             }),
 
-                            getAggregation: () => {
-                                return [
-                                    {
-                                        isA: (type: string) => type === testCase.tableType,
-                                        getAggregation: () => 'columns'
-                                    }
-                                ];
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === testCase.tableType,
+                                            getAggregation: () => 'item'
+                                        }
+                                    ];
+                                } else if (aggregationName === 'headerToolbar') {
+                                    return 'headerToolbar'; // Mock headerToolbar aggregation
+                                } else if (aggregationName === 'columns') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === testCase.tableType,
+                                            getAggregation: () => 'columns' // Mock column aggregation
+                                        }
+                                    ];
+                                }
+                                return [];
                             },
                             getParent: () => pageView,
                             getBusy: () => false,
