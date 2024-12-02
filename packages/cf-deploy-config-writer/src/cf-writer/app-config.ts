@@ -3,58 +3,61 @@ import { spawnSync } from 'child_process';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { sync } from 'hasbin';
-import { UI5Config as UI5ConfigInstance } from '@sap-ux/ui5-config';
+import { type FioriToolsProxyConfig, type UI5Config, UI5Config as UI5ConfigInstance } from '@sap-ux/ui5-config';
 import {
-    type Manifest,
-    getMtaPath,
-    findCapProjectRoot,
-    readUi5Yaml,
+    addPackageDevDependency,
     FileName,
+    findCapProjectRoot,
+    getMtaPath,
+    type Manifest,
+    readUi5Yaml,
     updatePackageScript
 } from '@sap-ux/project-access';
 import { Authentication } from '@sap-ux/btp-utils';
 import {
-    MTAExecutable,
-    CDSExecutable,
-    CDSBinNotFound,
-    MTABinNotFound,
-    NoAuthType,
+    appDeployMTAScript,
     CDSAddMtaParams,
+    CDSBinNotFound,
+    CDSExecutable,
     DefaultMTADestination,
     EmptyDestination,
-    XSAppFile,
+    MbtPackage,
+    MbtPackageVersion,
+    MTABinNotFound,
     MTABuildScript,
-    appDeployMTAScript,
-    undeployMTAScript,
-    UI5DeployBuildScript,
-    rootDeployMTAScript,
+    MTAExecutable,
     MTAFileExtension,
-    XSSecurityFile,
-    ResourceMTADestination
+    ResourceMTADestination,
+    Rimraf,
+    RimrafVersion,
+    rootDeployMTAScript,
+    UI5DeployBuildScript,
+    undeployMTAScript,
+    XSAppFile,
+    XSSecurityFile
 } from '../constants';
 import {
-    readManifest,
-    getTemplatePath,
-    toPosixPath,
-    getDestinationProperties,
+    addCommonPackageDependencies,
     addGitIgnore,
     addRootPackage,
     addXSSecurityConfig,
-    addCommonPackageDependencies
+    getDestinationProperties,
+    getTemplatePath,
+    readManifest,
+    toPosixPath
 } from '../utils';
 import {
-    type MtaConfig,
+    addMtaDeployParameters,
+    createMTA,
     getMtaConfig,
     getMtaId,
-    toMtaModuleName,
-    createMTA,
-    addMtaDeployParameters
+    type MtaConfig,
+    toMtaModuleName
 } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import { t } from '../i18n';
 import { type Logger } from '@sap-ux/logger';
-import { type UI5Config, type FioriToolsProxyConfig } from '@sap-ux/ui5-config';
-import { type CFConfig, type CFAppConfig, ApiHubType, type MTABaseConfig } from '../types';
+import { ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig } from '../types';
 
 /**
  * Add a managed approuter configuration to an existing HTML5 application.
@@ -97,29 +100,35 @@ function validateMtaConfig(): void {
 async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<CFConfig> {
     const isLCAP = cfAppConfig.lcapMode ?? false;
     const { rootPath, isCap, mtaId, mtaPath, hasRoot, capRoot } = await getProjectProperties(cfAppConfig);
-    const { serviceHost, destination } = await processUI5Config(cfAppConfig.appPath, fs);
+    const { serviceHost, destination, firstServicePathSegmentUI5Config } = await processUI5Config(
+        cfAppConfig.appPath,
+        fs
+    );
     const { servicePath, firstServicePathSegment, appId } = await processManifest(cfAppConfig.appPath, fs);
-    const { isFullUrlDest, destinationAuthType } = await getDestinationProperties(
+    const { destinationIsFullUrl, destinationAuthentication } = await getDestinationProperties(
         cfAppConfig.destinationName ?? destination
     );
 
     const config = {
         appPath: cfAppConfig.appPath.replace(/\/$/, ''),
-        destinationName: cfAppConfig.destinationName ?? destination,
+        destinationName: cfAppConfig.destinationName || destination,
         addManagedAppRouter: cfAppConfig.addManagedAppRouter ?? true,
+        addMtaDestination: cfAppConfig.addMtaDestination ?? false,
+        cloudServiceName: cfAppConfig.cloudServiceName,
         lcapMode: !isCap ? false : isLCAP, // Restricting local changes is only applicable for CAP flows
         isMtaRoot: hasRoot ?? false,
-        serviceHost: cfAppConfig.serviceHost ?? serviceHost,
+        serviceHost: cfAppConfig.serviceHost || serviceHost,
         rootPath: rootPath.replace(/\/$/, ''),
+        destinationAuthentication: cfAppConfig.destinationAuthentication || destinationAuthentication,
+        isDestinationFullUrl: cfAppConfig.isDestinationFullUrl ?? destinationIsFullUrl,
+        apiHubConfig: cfAppConfig.apiHubConfig,
+        firstServicePathSegment: firstServicePathSegmentUI5Config || firstServicePathSegment,
         mtaId,
         mtaPath,
-        destinationAuthType,
         isCap,
         servicePath,
-        firstServicePathSegment,
         appId,
-        capRoot,
-        isFullUrlDest
+        capRoot
     } as CFConfig;
     LoggerHelper.logger?.debug(`CF Config loaded: ${JSON.stringify(config, null, 2)}`);
     return config;
@@ -176,23 +185,23 @@ async function processUI5Config(
 ): Promise<{
     serviceHost: string | undefined;
     destination: string | undefined;
-    firstServicePathSegment: string | undefined;
+    firstServicePathSegmentUI5Config: string | undefined;
 }> {
     let destination;
     let serviceHost;
-    let firstServicePathSegment;
+    let firstServicePathSegmentUI5Config;
     try {
         const ui5YamlConfig: UI5Config = await readUi5Yaml(appPath, FileName.Ui5Yaml, fs);
         const toolsConfig = ui5YamlConfig.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
         if (toolsConfig?.configuration?.backend?.length === 1) {
             destination = toolsConfig?.configuration?.backend[0].destination;
             serviceHost = toolsConfig?.configuration?.backend[0].url;
-            firstServicePathSegment = toolsConfig?.configuration?.backend[0].path;
+            firstServicePathSegmentUI5Config = toolsConfig?.configuration?.backend[0].path;
         }
     } catch (error) {
         LoggerHelper.logger?.debug(t('debug.ui5YamlDoesNotExist'));
     }
-    return { destination, serviceHost, firstServicePathSegment };
+    return { destination, serviceHost, firstServicePathSegmentUI5Config };
 }
 
 /**
@@ -289,21 +298,21 @@ async function generateSupportingConfig(config: CFConfig, fs: Editor): Promise<v
 async function updateMtaConfig(cfConfig: CFConfig): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
     if (mtaInstance) {
-        await mtaInstance.addRoutingModules(cfConfig.addManagedAppRouter);
+        await mtaInstance.addRoutingModules({ isManagedApp: cfConfig.addManagedAppRouter });
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');
         await addMtaDeployParameters(mtaInstance);
-        if ((cfConfig.destinationName && cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination) {
+        if ((cfConfig.addMtaDestination && cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination) {
             // If the destination instance identifier is passed, create a destination instance
             cfConfig.destinationName =
                 cfConfig.destinationName === DefaultMTADestination
                     ? mtaInstance.getFormattedPrefix(ResourceMTADestination)
                     : cfConfig.destinationName;
             await mtaInstance.appendInstanceBasedDestination(cfConfig.destinationName);
-            // This is required where a managed or standalone router hasnt been added yet to mta.yaml
+            // This is required where a managed or standalone router hasn't been added yet to mta.yaml
             if (!mtaInstance.hasManagedXsuaaResource()) {
-                cfConfig.destinationAuthType = Authentication.NO_AUTHENTICATION;
+                cfConfig.destinationAuthentication = Authentication.NO_AUTHENTICATION;
             }
         }
         await saveMta(cfConfig, mtaInstance);
@@ -344,9 +353,9 @@ async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor):
     if (cfConfig.destinationName && cfConfig.destinationName !== EmptyDestination) {
         fs.copyTpl(getTemplatePath('app/xs-app-destination.json'), join(cfConfig.appPath, XSAppFile), {
             destination: cfConfig.destinationName,
-            servicePathSegment: `${cfConfig.firstServicePathSegment}${cfConfig.isFullUrlDest ? '/.*' : ''}`, // For service URL's, pull out everything after the last slash
-            targetPath: `${cfConfig.isFullUrlDest ? '' : cfConfig.firstServicePathSegment}/$1`, // Pull group 1 from the regex
-            authentication: cfConfig.destinationAuthType === NoAuthType ? 'none' : 'xsuaa'
+            servicePathSegment: `${cfConfig.firstServicePathSegment}${cfConfig.isDestinationFullUrl ? '/.*' : ''}`, // For service URL's, pull out everything after the last slash
+            targetPath: `${cfConfig.isDestinationFullUrl ? '' : cfConfig.firstServicePathSegment}/$1`, // Pull group 1 from the regex
+            authentication: cfConfig.destinationAuthentication === Authentication.NO_AUTHENTICATION ? 'none' : 'xsuaa'
         });
     } else {
         fs.copyTpl(getTemplatePath('app/xs-app-no-destination.json'), join(cfConfig.appPath, XSAppFile));
@@ -385,11 +394,23 @@ async function updateHTML5AppPackage(cfConfig: CFConfig, fs: Editor): Promise<vo
     if (fs.exists(join(cfConfig.appPath, MTAFileExtension))) {
         deployArgs = ['-e', MTAFileExtension];
     }
+    // Added for all flows
     await updatePackageScript(cfConfig.appPath, 'build:cf', UI5DeployBuildScript, fs);
-    await updatePackageScript(cfConfig.appPath, 'build:mta', MTABuildScript, fs);
-    await updatePackageScript(cfConfig.appPath, 'deploy', appDeployMTAScript(deployArgs), fs);
-    await updatePackageScript(cfConfig.appPath, 'undeploy', undeployMTAScript(cfConfig.mtaId ?? cfConfig.appId), fs);
     await addCommonPackageDependencies(cfConfig.appPath, fs);
+
+    // Scripts should only be added if mta and UI5 app are at the same level
+    if (cfConfig.mtaPath && !cfConfig.isMtaRoot) {
+        await updatePackageScript(cfConfig.appPath, 'build:mta', MTABuildScript, fs);
+        await updatePackageScript(cfConfig.appPath, 'deploy', appDeployMTAScript(deployArgs), fs);
+        await updatePackageScript(
+            cfConfig.appPath,
+            'undeploy',
+            undeployMTAScript(cfConfig.mtaId ?? cfConfig.appId),
+            fs
+        );
+        await addPackageDevDependency(cfConfig.appPath, Rimraf, RimrafVersion, fs);
+        await addPackageDevDependency(cfConfig.appPath, MbtPackage, MbtPackageVersion, fs);
+    }
 }
 
 /**
@@ -400,20 +421,21 @@ async function updateHTML5AppPackage(cfConfig: CFConfig, fs: Editor): Promise<vo
  */
 async function updateRootPackage(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const packageExists = fs.exists(join(cfConfig.rootPath, 'package.json'));
-    // Append mta scripts only if mta.yaml is a different level to the HTML5 app
+    // Append mta scripts only if mta.yaml is at a different level to the HTML5 app
     if (cfConfig.isMtaRoot && packageExists) {
+        await addPackageDevDependency(cfConfig.rootPath, Rimraf, RimrafVersion, fs);
+        await addPackageDevDependency(cfConfig.rootPath, MbtPackage, MbtPackageVersion, fs);
         let deployArgs: string[] = [];
         if (fs.exists(join(cfConfig.rootPath, MTAFileExtension))) {
             deployArgs = ['-e', MTAFileExtension];
         }
-        [
+        for (const script of [
             { name: 'undeploy', run: undeployMTAScript(cfConfig.mtaId ?? cfConfig.appId) },
             { name: 'build', run: `${MTABuildScript} --mtar archive` },
             { name: 'deploy', run: rootDeployMTAScript(deployArgs) }
-        ].forEach(async (script) => {
+        ]) {
             await updatePackageScript(cfConfig.rootPath, script.name, script.run, fs);
-        });
-        await addCommonPackageDependencies(cfConfig.rootPath, fs);
+        }
     }
 }
 /**
@@ -433,6 +455,7 @@ export async function generateUI5DeployConfig(cfConfig: CFConfig, fs: Editor): P
         comment: ' yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json',
         location: 'beginning'
     });
+    ui5DeployConfig.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
     ui5DeployConfig.addCloudFoundryDeployTask(cfConfig.appId, addModulesTask, addTranspileTask);
     fs.write(join(cfConfig.appPath, FileName.UI5DeployYaml), ui5DeployConfig.toString());
 }

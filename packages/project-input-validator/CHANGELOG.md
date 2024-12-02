@@ -1,5 +1,11 @@
 # @sap-ux/project-input-validator
 
+## 0.3.4
+
+### Patch Changes
+
+-   cfdd442: feat: FLP Configuration inquirer
+
 ## 0.3.3
 
 ### Patch Changes

@@ -13,6 +13,7 @@ import type {
 
 import type { TextBundle } from '../../i18n';
 import type { ControlTreeIndex } from '../types';
+import { ChangeService } from '../changes';
 
 export interface QuickActionActivationContext {
     controlIndex: ControlTreeIndex;
@@ -38,12 +39,8 @@ export interface QuickActionContext {
     rta: RuntimeAuthoring;
     flexSettings: FlexSettings;
     manifest: Manifest;
+    changeService: ChangeService;
 }
-
-export type QuickActionActivationData = {
-    isActive: boolean;
-    title: string;
-};
 
 interface QuickActionDefinitionBase {
     /**
@@ -63,7 +60,7 @@ interface QuickActionDefinitionBase {
     /**
      * Indicates that the Quick Action is applicable to the given context and should be displayed.
      */
-    isActive: boolean;
+    isApplicable: boolean;
     /**
      * Initializes the action and checks if it should be enabled in current context.
      */

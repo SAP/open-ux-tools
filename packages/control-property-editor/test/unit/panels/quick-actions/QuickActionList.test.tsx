@@ -2,25 +2,30 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 
 import { render } from '../../utils';
+import type { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { QuickActionList } from '../../../../src/panels/quick-actions';
 
 describe('QuickActionList', () => {
     test('check if quick action list rendered', () => {
-        const children = [
+        const children: NestedQuickActionChild[] = [
             {
                 label: 'submenu1',
+                enabled: true,
                 children: []
             },
             {
                 label: 'submenu2',
+                enabled: true,
                 children: [
                     {
                         label: 'submenu2-submenu1',
+                        enabled: true,
                         children: []
                     },
                     {
                         label: 'submenu2-submenu2',
+                        enabled: true,
                         children: []
                     }
                 ]
@@ -124,6 +129,7 @@ describe('QuickActionList', () => {
         const children = [
             {
                 label: 'submenu1',
+                enabled: true,
                 children: []
             }
         ];
@@ -176,5 +182,100 @@ describe('QuickActionList', () => {
         // nested quick action - single child
         const quickAction3 = screen.getByRole('button', { name: /quick action 3/i });
         expect(quickAction3).toBeDisabled();
+    });
+
+    describe('disable specific action', () => {
+        test('disable actions in navigation mode', () => {
+            const children1: NestedQuickActionChild[] = [
+                {
+                    label: 'submenu1',
+                    enabled: false,
+                    children: [],
+                    tooltip: 'Disabled child 1'
+                }
+            ];
+
+            const children2: NestedQuickActionChild[] = [
+                {
+                    label: 'submenu1',
+                    enabled: true,
+                    children: []
+                },
+                {
+                    label: 'submenu2',
+                    enabled: false,
+                    children: [],
+                    tooltip: 'Disabled child 2'
+                }
+            ];
+
+            const element = <QuickActionList />;
+            render(element, {
+                initialState: {
+                    quickActions: [
+                        {
+                            title: 'List Report',
+                            actions: [
+                                {
+                                    id: 'quick-action-1',
+                                    enabled: false,
+                                    kind: 'simple',
+                                    title: 'Quick Action 1',
+                                    tooltip: 'Simple disabled'
+                                },
+                                {
+                                    id: 'quick-action-2',
+                                    enabled: true,
+                                    kind: 'nested',
+                                    title: 'Quick Action 2',
+                                    children: children2
+                                },
+                                {
+                                    id: 'quick-action-3',
+                                    enabled: false,
+                                    kind: 'nested',
+                                    title: 'Quick Action 3',
+                                    children: children1
+                                },
+                                {
+                                    id: 'quick-action-4',
+                                    enabled: false,
+                                    kind: 'nested',
+                                    title: 'Quick Action 4',
+                                    tooltip: 'Disabled action 4',
+                                    children: [{ ...children1[0], tooltip: undefined }]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            });
+
+            // check elements in the document
+            const pageTitle = screen.getByText(/list report quick actions/i);
+            expect(pageTitle).toBeInTheDocument();
+
+            // simple quick action
+            const quickAction1 = screen.getByRole('button', { name: /quick action 1/i });
+            expect(quickAction1).toBeDisabled();
+            expect(quickAction1.title).toBe('Simple disabled');
+
+            // nested quick action - multiple children
+            let quickAction2 = screen.getByRole('button', { name: /quick action 2/i });
+            quickAction2.click();
+            quickAction2 = screen.getByRole('button', { name: /quick action 2/i });
+            expect(quickAction2).toBeEnabled();
+            quickAction2 = screen.getByRole('menuitem', { name: /Disabled child 2/i });
+            expect(quickAction2.getAttribute('aria-disabled')).toBe('true');
+
+            // nested quick action - single child
+            const quickAction3 = screen.getByRole('button', { name: /quick action 3/i });
+            expect(quickAction3).toBeDisabled();
+            expect(quickAction3.title).toBe('Disabled child 1');
+
+            // nested quick action - single child, tooltip from action
+            const quickAction4 = screen.getByRole('button', { name: /quick action 4/i });
+            expect(quickAction4.title).toBe('Disabled action 4');
+        });
     });
 });

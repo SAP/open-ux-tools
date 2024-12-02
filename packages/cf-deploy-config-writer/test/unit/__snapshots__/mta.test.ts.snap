@@ -32,10 +32,10 @@ modules:
               sap.cloud.service: basicApp
             - Authentication: OAuth2UserTokenExchange
               Name: basicApp_uaa
-              ServiceInstanceName: basicApp-xsuaa-srv
+              ServiceInstanceName: basicApp-xsuaa-service
               ServiceKeyName: basicApp-uaa-key
               sap.cloud.service: basicApp
-          existing_destinations_policy: ignore
+          existing_destinations_policy: update
     build-parameters:
       no-source: true
   - name: basicApp-app-content
@@ -86,7 +86,7 @@ resources:
     parameters:
       path: ./xs-security.json
       service: xsuaa
-      service-name: basicApp-xsuaa-srv
+      service-name: basicApp-xsuaa-service
       service-plan: application
   - name: basicApp-repo-host
     type: org.cloudfoundry.managed-service
@@ -164,10 +164,10 @@ modules:
               sap.cloud.service: managedAppCAPProject
             - Authentication: OAuth2UserTokenExchange
               Name: managedAppCAPProject_uaa
-              ServiceInstanceName: managedAppCAPProject-xsuaa-srv
+              ServiceInstanceName: managedAppCAPProject-xsuaa-service
               ServiceKeyName: managedAppCAPProject-uaa-key
               sap.cloud.service: managedAppCAPProject
-          existing_destinations_policy: ignore
+          existing_destinations_policy: update
     build-parameters:
       no-source: true
   - name: managedAppCAPProject-app-content
@@ -232,7 +232,7 @@ resources:
     parameters:
       path: ./xs-security.json
       service: xsuaa
-      service-name: managedAppCAPProject-xsuaa-srv
+      service-name: managedAppCAPProject-xsuaa-service
       service-plan: application
   - name: managedAppCAPProject-repo-host
     type: org.cloudfoundry.managed-service
@@ -462,7 +462,7 @@ modules:
               ServiceInstanceName: managedApp-xsuaa-service
               ServiceKeyName: uaa_managedApp-key
               sap.cloud.service: test2804
-          existing_destinations_policy: ignore
+          existing_destinations_policy: update
     build-parameters:
       no-source: true
   - name: managedApp-app-content

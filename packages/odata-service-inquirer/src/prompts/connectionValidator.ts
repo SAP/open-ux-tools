@@ -361,8 +361,9 @@ export class ConnectionValidator {
     }
 
     /**
+     * Resets any connection state and validity information.
      *
-     * @param resetValidity
+     * @param resetValidity if true, the validity information will be reset also
      */
     public resetConnectionState(resetValidity = false): void {
         this._serviceProvider = undefined;
@@ -387,6 +388,7 @@ export class ConnectionValidator {
      * @param connectConfig.serviceInfo the service info
      * @param connectConfig.odataVersion the odata version to restrict the catalog requests if only a specific version is required
      * @param connectConfig.destination the destination to connect with
+     * @param connectConfig.refreshToken
      * @throws an error if the connection attempt fails, callers should handle the error
      */
     private async createSystemConnection({
@@ -394,19 +396,21 @@ export class ConnectionValidator {
         url,
         serviceInfo,
         destination,
-        odataVersion
+        odataVersion,
+        refreshToken
     }: {
         axiosConfig?: AxiosExtensionRequestConfig & ProviderConfiguration;
         url?: URL;
         serviceInfo?: ServiceInfo;
         destination?: Destination;
         odataVersion?: ODataVersion;
+        refreshToken?: string;
     }): Promise<void> {
         this.resetConnectionState();
         this.resetValidity();
 
         if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
-            this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
+            this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo, refreshToken);
         } else if (destination) {
             // Assumption: the destination configured URL is a valid URL, will be needed later for basic auth error handling
             this._validatedUrl = getDestinationUrlForAppStudio(destination.Name);
@@ -481,9 +485,14 @@ export class ConnectionValidator {
      *
      * @param url the system url
      * @param serviceInfo the service info
+     * @param refreshToken
      * @returns the service provider
      */
-    private getAbapOnCloudServiceProvider(url?: URL, serviceInfo?: ServiceInfo): AbapServiceProvider {
+    private getAbapOnCloudServiceProvider(
+        url?: URL,
+        serviceInfo?: ServiceInfo,
+        refreshToken?: string
+    ): AbapServiceProvider {
         if (this.systemAuthType === 'reentranceTicket' && url) {
             return createForAbapOnCloud({
                 environment: AbapCloudEnvironment.EmbeddedSteampunk,
@@ -495,6 +504,7 @@ export class ConnectionValidator {
             return createForAbapOnCloud({
                 environment: AbapCloudEnvironment.Standalone,
                 service: serviceInfo,
+                refreshToken,
                 refreshTokenChangedCb: this.refreshTokenChangedCb.bind(this)
             });
         }
@@ -509,15 +519,20 @@ export class ConnectionValidator {
      *
      * @param serviceInfo the service info containing the UAA details
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
+     * @param refreshToken the refresh token for the Abap on Cloud environment, will be used to avoid re-authentication while the token is valid
      * @returns true if the system is reachable and authenticated, if required, false if not, or an error message string
      */
-    public async validateServiceInfo(serviceInfo: ServiceInfo, odataVersion?: ODataVersion): Promise<ValidationResult> {
+    public async validateServiceInfo(
+        serviceInfo: ServiceInfo,
+        odataVersion?: ODataVersion,
+        refreshToken?: string
+    ): Promise<ValidationResult> {
         if (!serviceInfo) {
             return false;
         }
         try {
             this.systemAuthType = 'serviceKey';
-            await this.createSystemConnection({ serviceInfo, odataVersion });
+            await this.createSystemConnection({ serviceInfo, odataVersion, refreshToken });
             // Cache the user info
             this._connectedUserName = await (this.serviceProvider as AbapServiceProvider).user();
             this._serviceInfo = serviceInfo;
@@ -589,15 +604,22 @@ export class ConnectionValidator {
         this.resetValidity();
         // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest
         const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath);
-        // Get the destination URL in the portable form <protocol>://<host>:<port>
-        this._destinationUrl = servicePath ? new URL(`${destination.Host}${servicePath}`).toString() : destination.Host;
+        // Get the destination URL in the portable form <protocol>://<host>:<port>.
+        // We remove trailing slashes (up to 10, infinite would allow DOS attack) from the host to avoid double slashes when appending the service path.
+        this._destinationUrl = servicePath
+            ? destUrl.replace(`https://${destination.Name}.dest`, destination.Host.replace(/\/{1,10}$/, ''))
+            : destination.Host;
         this._destination = destination;
         // No need to apply sap-client as this happens automatically (from destination config) when going through the BAS proxy
         const status = await this.checkUrl(new URL(destUrl), undefined, undefined, {
             odataVersion: requiredOdataVersion
         });
-        this._validatedUrl = destUrl;
+
         const validationResult = this.getValidationResultFromStatusCode(status);
+
+        if (this.validity.reachable && (!this.validity.authRequired || this.validity.authenticated)) {
+            this._validatedUrl = destUrl;
+        }
 
         if (!this.validity.reachable) {
             // Log the error

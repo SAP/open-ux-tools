@@ -5,11 +5,11 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
   {
     "choices": [
       {
-        "name": "Connect to a SAP System",
+        "name": "Connect to a System",
         "value": "sapSystem",
       },
       {
-        "name": "Connect to an OData Service Url",
+        "name": "Connect to an OData Service",
         "value": "odataServiceUrl",
       },
       {
@@ -17,7 +17,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
         "value": "capProject",
       },
       {
-        "name": "Upload a Metadata File",
+        "name": "Upload a Metadata Document",
         "value": "metadataFile",
       },
     ],
@@ -60,7 +60,12 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
         },
       },
     ],
-    "message": "Select a system configuration",
+    "default": -1,
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "Select a system configuration",
+    },
+    "message": "System",
     "name": "systemSelection",
     "source": [Function],
     "type": "list",

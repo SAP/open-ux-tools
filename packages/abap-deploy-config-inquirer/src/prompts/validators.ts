@@ -360,6 +360,7 @@ export async function validatePackage(
     shouldValidateCloudPackage?: boolean,
     shouldValidateAppName?: boolean
 ): Promise<boolean | string> {
+    PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
     if (!input?.trim()) {
         return t('warnings.providePackage');
     }
@@ -370,8 +371,6 @@ export async function validatePackage(
     if (input === DEFAULT_PACKAGE_ABAP) {
         PromptState.transportAnswers.transportRequired = false;
         return true;
-    }
-
     //validate package format
     if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
         return t('error.validators.abapPackageInvalidFormat');
@@ -388,7 +387,6 @@ export async function validatePackage(
     if (shouldValidateAppName && answers?.ui5AbapRepo && !answers?.ui5AbapRepo.startsWith(startingPrefix)) {
         return t('error.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
     }
-
     const systemConfig: SystemConfig = {
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,

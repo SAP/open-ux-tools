@@ -2,18 +2,22 @@ import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
 import {
+    CfAbapEnvServiceChoice,
     createSystemChoices,
-    getBackendSystemDisplayName
+    findDefaultSystemSelectionIndex,
+    getBackendSystemDisplayName,
+    NewSystemChoice
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
+import type { SystemSelectionPromptOptions } from '../../../../../src/types';
 
 const backendSystemBasic: BackendSystem = {
-    name: 'http://abap.on.prem:1234',
+    name: 'http://abap.on.prem:1234 (ABAP-on-Prem)',
     url: 'http://abap.on.prem:1234',
     username: 'user1',
     password: 'password1'
 };
 const backendSystemReentrance: BackendSystem = {
-    name: 'http://s4hc:1234',
+    name: 'http://s4hc:1234 (S4HC)',
     url: 'http:/s4hc:1234',
     authenticationType: 'reentranceTicket'
 };
@@ -22,7 +26,8 @@ const backendSystems: BackendSystem[] = [backendSystemBasic, backendSystemReentr
 let mockIsAppStudio = false;
 const destination1 = { Name: 'dest1', Host: 'http://dest1.com' } as Destination;
 const destination2 = { Name: 'dest2', Host: 'https://dest2.com:12345' } as Destination;
-let destinations: Destinations = { 'dest1': destination1, 'dest2': destination2 };
+const baseTestDestinations: Destinations = { 'dest1': destination1, 'dest2': destination2 };
+let destinations: Destinations = baseTestDestinations;
 
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
@@ -47,6 +52,7 @@ describe('Test system selection prompt helpers', () => {
 
     beforeEach(() => {
         mockIsAppStudio = false;
+        destinations = baseTestDestinations;
     });
 
     test('Should get backend system display name', () => {
@@ -60,11 +66,11 @@ describe('Test system selection prompt helpers', () => {
 
         expect(
             getBackendSystemDisplayName({
-                name: 'systemA',
-                userDisplayName: 'userDisplayName1',
-                authenticationType: 'oauth2' as AuthenticationType
+                name: 'systemB',
+                userDisplayName: 'userDisplayName2',
+                serviceKeys: { url: 'Im a service key' }
             } as BackendSystem)
-        ).toEqual('systemA (BTP) [userDisplayName1]');
+        ).toEqual('systemB (BTP) [userDisplayName2]');
     });
 
     test('Should create system selection choices', async () => {
@@ -171,5 +177,26 @@ describe('Test system selection prompt helpers', () => {
                 { name: destPartial1.Name, value: { system: destPartial1, type: 'destination' } }
             ])
         );
+    });
+
+    test('Should return index of default', async () => {
+        const nonBasChoices = await createSystemChoices();
+        expect(findDefaultSystemSelectionIndex(nonBasChoices, 'no such system')).toEqual(-1);
+        expect(findDefaultSystemSelectionIndex(nonBasChoices, NewSystemChoice)).toEqual(0);
+        expect(findDefaultSystemSelectionIndex(nonBasChoices, backendSystemBasic.name)).toEqual(1);
+        expect(findDefaultSystemSelectionIndex(nonBasChoices, backendSystemReentrance.name)).toEqual(2);
+
+        mockIsAppStudio = true;
+        let basChoices = await createSystemChoices();
+        expect(findDefaultSystemSelectionIndex(basChoices, NewSystemChoice)).toEqual(-1);
+        expect(findDefaultSystemSelectionIndex(basChoices, CfAbapEnvServiceChoice)).toEqual(-1);
+        expect(findDefaultSystemSelectionIndex(basChoices, destination1.Name)).toEqual(0);
+        expect(findDefaultSystemSelectionIndex(basChoices, destination2.Name)).toEqual(1);
+
+        // Include CF ABAP env choice
+        basChoices = await createSystemChoices(undefined, true);
+        expect(findDefaultSystemSelectionIndex(basChoices, CfAbapEnvServiceChoice)).toEqual(0);
+        expect(findDefaultSystemSelectionIndex(basChoices, destination1.Name)).toEqual(1);
+        expect(findDefaultSystemSelectionIndex(basChoices, destination2.Name)).toEqual(2);
     });
 });

@@ -38,6 +38,7 @@ import {
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
 
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -119,9 +120,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -242,9 +246,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -362,9 +369,12 @@ describe('FE V2 quick actions', () => {
                     }
                 });
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -393,6 +403,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -405,6 +416,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -413,6 +425,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -499,9 +512,12 @@ describe('FE V2 quick actions', () => {
                 });
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -530,6 +546,7 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
+                                            enabled: true,
                                             label: `'MyTable' table`
                                         }
                                     ]
@@ -538,6 +555,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -642,9 +660,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -771,9 +792,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
 
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
@@ -797,6 +821,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -809,6 +834,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -841,87 +867,46 @@ describe('FE V2 quick actions', () => {
             });
         });
 
-        describe('disable/enable "semantic date range" in filter bar', () => {
-            test('not available by default', async () => {
-                jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(false);
+        describe('enable table filtering for different valid UI5 versions', () => {
+            const testCases: {
+                validVersion: boolean;
+                versionInfo: string;
+            }[] = [
+                {
+                    validVersion: true,
+                    versionInfo: '1.96.37'
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.108.38'
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.96.38'
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.120.23'
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.128'
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.130'
+                },
+                {
+                    validVersion: false,
+                    versionInfo: '1.96.36'
+                }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartFilterBar') {
                         return {
-                            getProperty: jest.fn().mockImplementation(() => false),
-                            getDomRef: () => ({}),
-                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
-                        };
-                    }
-                    if (id == 'NavContainer') {
-                        const container = new NavContainer();
-                        const component = new UIComponentMock();
-                        const view = new XMLView();
-                        const pageView = new XMLView();
-                        pageView.getDomRef.mockImplementation(() => {
-                            return {
-                                contains: () => true
-                            };
-                        });
-                        pageView.getViewName.mockImplementation(
-                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-                        );
-                        const componentContainer = new ComponentContainer();
-                        const spy = jest.spyOn(componentContainer, 'getComponent');
-                        spy.mockImplementation(() => {
-                            return 'component-id';
-                        });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-                            if (id === 'component-id') {
-                                return component;
-                            }
-                        });
-                        view.getContent.mockImplementation(() => {
-                            return [componentContainer];
-                        });
-                        container.getCurrentPage.mockImplementation(() => {
-                            return view;
-                        });
-                        component.getRootControl.mockImplementation(() => {
-                            return pageView;
-                        });
-                        return container;
-                    }
-                });
-
-
-                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
-                await service.init(sendActionMock, subscribeMock);
-
-                await service.reloadQuickActions({
-                    'sap.ui.comp.smartfilterbar.SmartFilterBar': [
-                        {
-                            controlId: 'SmartFilterBar'
-                        } as any
-                    ],
-                    'sap.m.NavContainer': [
-                        {
-                            controlId: 'NavContainer'
-                        } as any
-                    ]
-                });
-
-                expect(sendActionMock).toHaveBeenCalledWith(
-                    quickActionListChanged([
-                        {
-                            title: 'LIST REPORT',
-                            actions: []
-                        }
-                    ])
-                );
-            });
-            test('initialize and execute action', async () => {
-                sapCoreMock.byId.mockImplementation((id) => {
-                    if (id == 'SmartFilterBar') {
-                        return {
+                            isA: (type: string) => type === 'sap.ui.comp.smartfilterbar.SmartFilterBar',
                             getProperty: jest.fn().mockImplementation(() => false),
                             getDomRef: () => ({}),
                             getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
@@ -969,9 +954,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -986,47 +974,49 @@ describe('FE V2 quick actions', () => {
                         } as any
                     ]
                 });
-
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
                             title: 'LIST REPORT',
-                            actions: [
-                                {
-                                    'kind': 'simple',
-                                    id: 'listReport0-enable-semantic-daterange-filterbar',
-                                    title: 'Enable "Semantic Date Range" for Filter Bar',
-                                    enabled: true
-                                }
-                            ]
+                            actions: testCase.validVersion
+                                ? [
+                                      {
+                                          'kind': 'simple',
+                                          id: 'listReport0-enable-semantic-daterange-filterbar',
+                                          title: 'Enable Semantic Date Range in Filter Bar',
+                                          enabled: true
+                                      }
+                                  ]
+                                : []
                         }
                     ])
                 );
-
-                await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'listReport0-enable-semantic-daterange-filterbar', kind: 'simple' })
-                );
-                expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
-                    'settings': {},
-                    'type': 'appDescriptor',
-                    'value': {
-                        'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
-                        'parameters': {
-                            'entityPropertyChange': {
-                                'operation': 'UPSERT',
-                                'propertyPath': 'component/settings/filterSettings/dateSettings',
-                                'propertyValue': {
-                                    'useDateRange': true
+                if (testCase.validVersion) {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({ id: 'listReport0-enable-semantic-daterange-filterbar', kind: 'simple' })
+                    );
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                        'settings': {},
+                        'type': 'appDescriptor',
+                        'value': {
+                            'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
+                            'parameters': {
+                                'entityPropertyChange': {
+                                    'operation': 'UPSERT',
+                                    'propertyPath': 'component/settings/filterSettings/dateSettings',
+                                    'propertyValue': {
+                                        'useDateRange': true
+                                    }
+                                },
+                                'parentPage': {
+                                    'component': 'sap.suite.ui.generic.template.ListReport',
+                                    'entitySet': 'testEntity'
                                 }
                             },
-                            'parentPage': {
-                                'component': 'sap.suite.ui.generic.template.ListReport',
-                                'entitySet': 'testEntity'
-                            }
-                        },
-                        'reference': undefined
-                    }
-                });
+                            'reference': undefined
+                        }
+                    });
+                }
             });
         });
     });
@@ -1109,9 +1099,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -1246,9 +1239,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
@@ -1386,9 +1382,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
 
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
@@ -1416,12 +1415,8 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
-                                            children: [
-                                                {
-                                                    children: [],
-                                                    label: `'MyTable' table`
-                                                }
-                                            ],
+                                            enabled: true,
+                                            children: [{ enabled: true, children: [], label: `'MyTable' table` }],
                                             label: `'section 01' section`
                                         }
                                     ]
@@ -1429,12 +1424,8 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
-                                            'children': [
-                                                {
-                                                    'children': [],
-                                                    'label': `'MyTable' table`
-                                                }
-                                            ],
+                                            enabled: true,
+                                            'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
                                             'label': `'section 01' section`
                                         }
                                     ],
@@ -1559,9 +1550,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
 
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
@@ -1585,12 +1579,8 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
-                                            'children': [
-                                                {
-                                                    'children': [],
-                                                    'label': `'MyTable' table`
-                                                }
-                                            ],
+                                            enabled: true,
+                                            'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
                                             'label': `'section 01' section`
                                         }
                                     ],
@@ -1602,9 +1592,11 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            enabled: true,
                                             'children': [
                                                 {
                                                     'children': [],
+                                                    enabled: true,
                                                     'label': `'MyTable' table`
                                                 }
                                             ],
@@ -1720,9 +1712,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
 
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
@@ -1823,9 +1818,12 @@ describe('FE V2 quick actions', () => {
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [
-                    registry
-                ]);
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
 
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
@@ -1849,6 +1847,7 @@ describe('FE V2 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
+                                            enabled: true,
                                             'label': `'MyTable' table`
                                         }
                                     ],

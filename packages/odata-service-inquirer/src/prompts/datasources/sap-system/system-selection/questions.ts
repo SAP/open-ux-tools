@@ -1,12 +1,13 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Destination } from '@sap-ux/btp-utils';
 import { isAppStudio, isPartialUrlDestination } from '@sap-ux/btp-utils';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { type InputQuestion, type ListQuestion, searchChoices, withCondition } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import { promptNames, type OdataServicePromptOptions } from '../../../../types';
+import { type OdataServicePromptOptions, promptNames } from '../../../../types';
 import { getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ValidationResult } from '../../../connectionValidator';
 import { ConnectionValidator } from '../../../connectionValidator';
@@ -16,13 +17,14 @@ import { getNewSystemQuestions } from '../new-system/questions';
 import type { ServiceAnswer } from '../service-selection';
 import { getSystemServiceQuestion } from '../service-selection/questions';
 import { validateServiceUrl } from '../validators';
-import { connectWithBackendSystem, connectWithDestination, createSystemChoices } from './prompt-helpers';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-
-// New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
-// since it will be used as a new system value in the system selection prompt.
-export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^';
-type NewSystemChoice = typeof newSystemChoiceValue;
+import {
+    type CfAbapEnvServiceChoice,
+    type NewSystemChoice,
+    connectWithBackendSystem,
+    connectWithDestination,
+    createSystemChoices,
+    findDefaultSystemSelectionIndex
+} from './prompt-helpers';
 
 const systemSelectionPromptNamespace = 'systemSelection';
 
@@ -35,8 +37,8 @@ const systemSelectionPromptNames = {
 } as const;
 
 export type SystemSelectionAnswerType = {
-    type: 'destination' | 'backendSystem' | 'newSystemChoice' | 'cfAbapEnvService';
-    system: Destination | BackendSystem | NewSystemChoice | 'cfAbapEnvService';
+    type: 'destination' | 'backendSystem' | 'newSystemChoice' | CfAbapEnvServiceChoice;
+    system: Destination | BackendSystem | NewSystemChoice | CfAbapEnvServiceChoice;
 };
 
 interface SystemSelectionCredentialsAnswers {
@@ -51,9 +53,9 @@ export interface SystemSelectionAnswers extends SystemSelectionCredentialsAnswer
 /**
  * Validates the system selection, connecting to the selected system and validating the connection.
  *
- * @param systemSelection
- * @param connectionValidator
- * @param requiredOdataVersion
+ * @param systemSelection the selected system to validate
+ * @param connectionValidator the active connection validator to use for the connection attempt
+ * @param requiredOdataVersion the required OData version for the selected system, only the specified version will be used to request a service catalog
  * @returns the validation result of the selected system connection attempt
  */
 async function validateSystemSelection(
@@ -135,7 +137,7 @@ export async function getSystemSelectionQuestions(
  * Additional destination attribute filters may be provided.
  *
  * @param connectionValidator A reference to the active connection validator, used to validate the service selection and retrieve service details.
- * @param promptOptions
+ * @param promptOptions prompt options that may be used to customize the questions
  * @returns a list of existing systems
  */
 export async function getSystemConnectionQuestions(
@@ -148,14 +150,23 @@ export async function getSystemConnectionQuestions(
         destinationFilters,
         promptOptions?.systemSelection?.includeCloudFoundryAbapEnvChoice
     );
+    const defaultChoiceIndex = findDefaultSystemSelectionIndex(
+        systemChoices,
+        promptOptions?.systemSelection?.defaultChoice
+    );
 
     const questions: Question[] = [
         {
             type: promptOptions?.systemSelection?.useAutoComplete ? 'autocomplete' : 'list',
             name: promptNames.systemSelection,
             message: t('prompts.systemSelection.message'),
+            guiOptions: {
+                breadcrumb: true,
+                hint: t('prompts.systemSelection.hint')
+            },
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
             choices: systemChoices,
+            default: defaultChoiceIndex,
             validate: async (
                 selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
             ): Promise<ValidationResult> => {
@@ -203,16 +214,22 @@ export async function getSystemConnectionQuestions(
             guiOptions: {
                 hint: t('prompts.destinationServicePath.hint'),
                 mandatory: true,
-                breadcrumb: true
+                breadcrumb: true,
+                applyDefaultWhenDirty: true
             },
+            default: '',
             validate: async (servicePath: string, answers: SystemSelectionAnswers) => {
-                if (!servicePath) {
+                // @sap-ux/btp-utils getDestinationUrlForAppStudio() enforces a path length of > 1, even though it could be a valid path
+                // Double slashes are not allowed at the start of the path as they break URL construction
+                if (!servicePath || servicePath.trim().length < 2 || servicePath.startsWith('//')) {
+                    connectionValidator.resetConnectionState(true);
                     return t('prompts.destinationServicePath.invalidServicePathWarning');
                 }
                 // Validate format of the service path, note this relies on the assumption that the destination is correctly configured with a valid URL
                 const selectedDestination = answers?.[promptNames.systemSelection]?.system as Destination;
                 const valUrlResult = validateServiceUrl(selectedDestination.Host, servicePath);
                 if (valUrlResult !== true) {
+                    connectionValidator.resetConnectionState(true);
                     return valUrlResult;
                 }
 

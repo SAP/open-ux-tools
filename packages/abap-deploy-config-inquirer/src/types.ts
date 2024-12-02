@@ -1,6 +1,7 @@
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Validator } from 'inquirer';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -114,6 +115,9 @@ type PackagePromptOptions = {
      * Adds additional validation if appname`s namespace or starting prefix are same like package ones
      */
     shouldValidateAppName?: boolean;
+     * Add custom validation
+     */
+    validate?: Validator<AbapDeployConfigAnswers>;
 };
 
 export type PackageManualPromptOptions = PackagePromptOptions & {

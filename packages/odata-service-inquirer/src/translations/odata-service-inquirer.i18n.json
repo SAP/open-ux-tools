@@ -4,10 +4,10 @@
             "message": "Data source",
             "projectSpecificDestName": "Project Specific Destination",
             "businessHubName": "SAP Business Accelerator Hub",
-            "sapSystemName": "SAP System",
-            "odataServiceUrlName": "OData Service Url",
+            "sapSystemName": "System",
+            "odataServiceUrlName": "OData Service",
             "capProjectName": "Local CAP Project",
-            "metadataFileName": "Metadata File",
+            "metadataFileName": "Metadata Document",
             "noneName": "None",
             "projectSpecificDestChoiceText": "Connect to a $t(prompts.datasourceType.projectSpecificDestName)",
             "businessHubChoiceText": "Connect to $t(prompts.datasourceType.businessHubName)",
@@ -61,7 +61,7 @@
             "annotationsNotFound": "Annotations not found for specified service"
         },
         "warnings": {
-            "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services are not intended to be used for the generation of SAP Fiori UI applications",
+            "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services, or not classified services, are not intended to be used for the generation of SAP Fiori UI applications",
             "noServicesAvailable": "No services available for the selected system, see logs for further details.",
             "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only"
         },
@@ -101,7 +101,8 @@
         },
         "systemSelection": {
             "newSystemChoiceLabel": "New system",
-            "message": "Select a system configuration",
+            "hint": "Select a system configuration",
+            "message": "System",
             "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
         },
         "abapOnBTPType": {
@@ -131,7 +132,7 @@
             "authError": "The selected system is returning an authentication error. System name: {{systemName}}, error: {{- error}}"
         },
         "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. $t(texts.seeLogForDetails)",
-        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services. {{- error}}",
+        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services{{- error, addMsgWithColonFormatter}}",
         "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. CAP service property `urlPath` is not defined but is required.",
         "unknownError": "An error occurred{{- error, addMsgWithColonFormatter}}",
         "authenticationFailed": "Authentication incorrect. {{error}}",

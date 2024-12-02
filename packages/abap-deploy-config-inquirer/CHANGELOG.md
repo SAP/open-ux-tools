@@ -1,5 +1,69 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.1.1
+
+### Patch Changes
+
+-   dee9930: fix source system labelling
+
+## 1.1.0
+
+### Minor Changes
+
+-   849ef1e: updates options and conditions for prompts
+
+## 1.0.26
+
+### Patch Changes
+
+-   aa0731f: ensure scp prompt is maintained
+
+## 1.0.25
+
+### Patch Changes
+
+-   Updated dependencies [74dc5fe]
+    -   @sap-ux/inquirer-common@0.5.4
+
+## 1.0.24
+
+### Patch Changes
+
+-   Updated dependencies [575ff89]
+    -   @sap-ux/fiori-generator-shared@0.7.10
+    -   @sap-ux/inquirer-common@0.5.3
+
+## 1.0.23
+
+### Patch Changes
+
+-   a62ff25: adds new options for listing destinations api
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+    -   @sap-ux/axios-extension@1.17.4
+    -   @sap-ux/fiori-generator-shared@0.7.9
+    -   @sap-ux/inquirer-common@0.5.2
+    -   @sap-ux/system-access@0.5.19
+
+## 1.0.22
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+    -   @sap-ux/axios-extension@1.17.3
+    -   @sap-ux/fiori-generator-shared@0.7.8
+    -   @sap-ux/system-access@0.5.18
+    -   @sap-ux/inquirer-common@0.5.1
+
+## 1.0.21
+
+### Patch Changes
+
+-   Updated dependencies [8237f83]
+    -   @sap-ux/axios-extension@1.17.3
+    -   @sap-ux/system-access@0.5.18
+
 ## 1.0.20
 
 ### Patch Changes
