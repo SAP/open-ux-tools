@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.87
+
+### Patch Changes
+
+-   14163cd: Update deploy scripts and ui5.yaml with latest ui5 builder configurations
+
 ## 0.12.86
 
 ### Patch Changes
