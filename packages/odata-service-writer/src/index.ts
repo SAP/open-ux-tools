@@ -195,18 +195,15 @@ async function writeEDMXServiceFiles(
 ): Promise<void> {
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
-    let ui5LocalConfigPath: string | undefined;
     let ui5MockConfig: UI5Config | undefined;
-    let ui5MockConfigPath: string | undefined;
     if (paths.ui5Yaml) {
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
         // Update ui5.yaml with backend middleware
         extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml);
-        ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
         // Update ui5-local.yaml with backend middleware
-        if (fs.exists(ui5LocalConfigPath)) {
-            ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-            extendBackendMiddleware(fs, service, ui5LocalConfig, ui5LocalConfigPath);
+        if (paths.ui5LocalYaml) {
+            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
+            extendBackendMiddleware(fs, service, ui5LocalConfig, paths.ui5LocalYaml);
         }
     }
     if (service.metadata) {
@@ -218,12 +215,11 @@ async function writeEDMXServiceFiles(
             // Generate mockserver middleware for ui5-mock.yaml
             await generateMockserverConfig(basePath, config, fs);
             // Update ui5-local.yaml with mockserver middleware from newly created/updated ui5-mock.yaml
-            await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, ui5LocalConfigPath, ui5LocalConfig);
-            ui5MockConfigPath = join(dirname(paths.ui5Yaml), 'ui5-mock.yaml');
+            await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, paths.ui5LocalYaml, ui5LocalConfig);
             // Update ui5-mock.yaml with backend middleware
-            if (fs.exists(ui5MockConfigPath)) {
-                ui5MockConfig = await UI5Config.newInstance(fs.read(ui5MockConfigPath));
-                extendBackendMiddleware(fs, service, ui5MockConfig, ui5MockConfigPath);
+            if (paths.ui5MockYaml) {
+                ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
+                extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml);
             }
         }
         await writeLocalServiceFiles(fs, basePath, webappPath, templateRoot, service);
@@ -231,9 +227,9 @@ async function writeEDMXServiceFiles(
     if (paths.packageJson && paths.ui5Yaml) {
         updatePackageJson(paths.packageJson, fs, !!service.metadata);
     }
-    if (ui5LocalConfigPath && ui5LocalConfig) {
+    if (paths.ui5LocalYaml && ui5LocalConfig) {
         // write ui5 local yaml if service type is not CDS
-        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+        fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
     }
     writeAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
 }

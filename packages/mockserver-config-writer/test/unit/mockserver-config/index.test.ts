@@ -70,8 +70,8 @@ describe('Test removeMockserverConfig()', () => {
         const basePath = join(__dirname, '../../fixtures/ui5-mock-config');
         const ui5MockYaml = join(basePath, 'ui5-mock.yaml');
         const mockdataPaths = [
-            join(basePath, 'webapp', 'localService', 'mainService', 'data', 'keep'),
-            join(basePath, 'webapp', 'localService', 'STTA_SALES_ORDER_ND_SRV_01', 'data', 'keep')
+            join(basePath, 'webapp', 'localService', 'mainService', 'data'),
+            join(basePath, 'webapp', 'localService', 'STTA_SALES_ORDER_ND_SRV_01', 'data')
         ];
         const fs = await removeMockserverConfig(basePath);
 
