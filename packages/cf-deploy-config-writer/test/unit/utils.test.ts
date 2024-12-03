@@ -24,7 +24,6 @@ describe('CF utils', () => {
             expect(toMtaModuleName('cf_mta_id')).toEqual('cf_mta_id');
             expect(toMtaModuleName('cf.mta.00')).toEqual('cfmta00');
             expect(toMtaModuleName('cf_mta.!£$%^&*,()')).toEqual('cf_mta');
-            expect(toMtaModuleName('c'.repeat(130))).toEqual('c'.repeat(128));
         });
     });
 });

@@ -52,7 +52,7 @@ export function getTemplatePath(relativeTemplatePath: string = ''): string {
  * @returns Name that's acceptable in an mta.yaml
  */
 export function toMtaModuleName(id: string): string {
-    return id.replace(/[`~!@#$%^&*£()|+=?;:'",.<>]/gi, '').slice(0, 128);
+    return id.replace(/[`~!@#$%^&*£()|+=?;:'",.<>]/gi, '');
 }
 
 /**
