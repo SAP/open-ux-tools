@@ -112,4 +112,23 @@ describe('ODataService templates', () => {
         const packagePath = join(testDir, 'package.json');
         expect(fs.readJSON(packagePath)).toEqual({});
     });
+
+    it('Verify generated project of type CDS updates CDS annotation files', async () => {
+        const config: OdataService = {
+            url: 'http://localhost',
+            path: '/sap/odata/testme',
+            version: OdataVersion.v2,
+            type: ServiceType.CDS,
+            annotations: {
+                cdsFileContents: '"using AdminService as service from \'../../srv/admin-service\';"',
+                projectPath: 'testProject',
+                appPath: 'webapp',
+                projectName: 'annotations'
+            }
+        };
+        const testDir = await createTestDir('cds-service');
+        await generate(testDir, config, fs);
+        const annotationCdsPath = join('testProject', 'webapp', 'annotations', 'annotations.cds');
+        expect(fs.read(annotationCdsPath)).toBe('"using AdminService as service from \'../../srv/admin-service\';"');
+    });
 });

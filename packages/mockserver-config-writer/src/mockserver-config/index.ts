@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import type { MockserverConfig } from '../types';
 import { enhancePackageJson, removeFromPackageJson } from './package-json';
-import { enhanceYaml, removeUi5MockYaml } from './ui5-mock-yaml';
+import { enhanceYaml, removeMockDataFolders, removeUi5MockYaml } from './ui5-mock-yaml';
 
 /**
  *  Add mockserver configuration to a UI5 application.
@@ -29,11 +29,12 @@ export async function generateMockserverConfig(basePath: string, data: Mockserve
  * @param fs - the memfs editor instance
  * @returns Promise<Editor> - memfs editor instance with updated files
  */
-export function removeMockserverConfig(basePath: string, fs?: Editor): Editor {
+export async function removeMockserverConfig(basePath: string, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
     removeFromPackageJson(fs, basePath);
     removeUi5MockYaml(fs, basePath);
+    await removeMockDataFolders(fs, basePath);
     return fs;
 }

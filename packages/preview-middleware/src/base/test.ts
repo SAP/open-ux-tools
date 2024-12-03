@@ -28,7 +28,7 @@ const DEFAULTS: Record<string, InternalTestConfig> = {
  * @param config test configuration
  * @returns merged test configuration
  */
-export function mergeTestConfigDefaults(config: TestConfig) {
+export function mergeTestConfigDefaults(config: TestConfig): InternalTestConfig {
     const defaults = DEFAULTS[config.framework.toLowerCase()] ?? {};
     const merged: InternalTestConfig = { ...defaults, ...config };
     if (!merged.path.startsWith('/')) {

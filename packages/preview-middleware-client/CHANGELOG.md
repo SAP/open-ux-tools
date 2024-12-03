@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.39
+
+### Patch Changes
+
+-   c10bf9f: fix: Various lint error fixes and code improvements
+
+## 0.11.38
+
+### Patch Changes
+
+-   70e6d46: CPE - Disable Add Custom Column Quick Action, if table rows are required and not available
+
 ## 0.11.37
 
 ### Patch Changes
