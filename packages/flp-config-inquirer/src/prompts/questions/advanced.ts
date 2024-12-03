@@ -2,22 +2,23 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import { parseParameters } from '@sap-ux/adp-tooling';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 
-import { t } from '../../i18n';
-import {
-    promptNames,
-    type FLPConfigQuestion,
+import type {
+    FLPConfigQuestion,
     FLPConfigAnswers,
     InboundIdPromptOptions,
     CreateAnotherInboundPromptOptions,
     ParameterStringPromptOptions,
     EmptyInboundsLabelOptions
 } from '../../types';
+import { t } from '../../i18n';
+import { promptNames } from '../../types';
 
 /**
  * Creates the 'inboundId' prompt for FLP configuration.
  *
- * @param {InboundIdPromptOptions} [options] - Optional configuration for the inbound id prompt, including default values.
- * @returns {FLPConfigQuestion} The prompt configuration for the inbound id.
+ * @param {string[]} inboundIds - List of existing inbound IDs to populate the prompt choices.
+ * @param {InboundIdPromptOptions} [options] - Optional configuration for the inbound ID prompt, including defaults.
+ * @returns {FLPConfigQuestion} The prompt configuration for selecting an inbound ID.
  */
 export function getInboundIdsPrompt(inboundIds: string[], options?: InboundIdPromptOptions): FLPConfigQuestion {
     return {
@@ -45,10 +46,12 @@ export function getInboundIdsPrompt(inboundIds: string[], options?: InboundIdPro
 }
 
 /**
- * Creates the 'emptyInboundsInfo' prompt for FLP configuration.
+ * Creates the 'emptyInboundsInfo' label prompt for cases where no inbounds exist.
  *
- * @param {InboundIdPromptOptions} [options] - Optional configuration for the inbound id prompt, including default values.
- * @returns {FLPConfigQuestion} The prompt configuration for the inbound id.
+ * @param {string[]} inboundIds - List of existing inbound IDs to determine whether to display this label.
+ * @param {string} [appId] - Application ID to generate a link for the Fiori application library.
+ * @param {EmptyInboundsLabelOptions} [options] - Optional configuration for the label prompt.
+ * @returns {FLPConfigQuestion} The prompt configuration for displaying an information label when no inbounds exist.
  */
 export function getEmptyInboundsLabelPrompt(
     inboundIds: string[],
@@ -74,10 +77,11 @@ export function getEmptyInboundsLabelPrompt(
 }
 
 /**
- * Creates the 'parameterString' prompt for FLP configuration.
+ * Creates the 'parameterString' prompt for specifying parameters in JSON format.
  *
- * @param {ParameterStringPromptOptions} [options] - Optional configuration for the parameter string prompt, including default values.
- * @returns {FLPConfigQuestion} The prompt configuration for the parameter string.
+ * @param {string[]} inboundIds - List of existing inbound IDs to conditionally display this prompt.
+ * @param {ParameterStringPromptOptions} [options] - Optional configuration for the parameter string prompt, including defaults.
+ * @returns {FLPConfigQuestion} The prompt configuration for specifying a parameter string.
  */
 export function getParameterStringPrompt(
     inboundIds: string[],
@@ -109,18 +113,22 @@ export function getParameterStringPrompt(
 }
 
 /**
- * Creates the 'createAnotherInbound' prompt for FLP configuration.
+ * Creates the 'createAnotherInbound' confirmation prompt for adding additional inbounds.
  *
- * @param {CreateAnotherInboundPromptOptions} [options] - Optional configuration for the create another inbound prompt, including default values.
- * @returns {FLPConfigQuestion} The prompt configuration for the create another inbound.
+ * @param {boolean} isCLI - Indicates if the platform is CLI.
+ * @param {CreateAnotherInboundPromptOptions} [options] - Optional configuration for the confirmation prompt, including defaults.
+ * @returns {FLPConfigQuestion} The prompt configuration for confirming whether to create another inbound.
  */
-export function getCreateAnotherInboundPrompt(options?: CreateAnotherInboundPromptOptions): FLPConfigQuestion {
+export function getCreateAnotherInboundPrompt(
+    isCLI: boolean,
+    options?: CreateAnotherInboundPromptOptions
+): FLPConfigQuestion {
     return {
         type: 'confirm',
         name: promptNames.createAnotherInbound,
         message: t('prompts.createAnotherInbound'),
         default: false,
-        when: options?.hide ? false : (answers: FLPConfigAnswers) => !!answers?.inboundId,
+        when: options?.hide ? false : (answers: FLPConfigAnswers) => !isCLI && !!answers?.inboundId,
         guiOptions: {
             hint: t('tooltips.inboundId'),
             breadcrumb: t('prompts.inboundIds')

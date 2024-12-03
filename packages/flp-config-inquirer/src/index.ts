@@ -9,11 +9,12 @@ import { getQuestions } from './prompts';
 import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types';
 
 /**
- * Get the inquirer prompts for the FLP configuration inquirer.
+ * Retrieves the inquirer prompts for the FLP configuration.
  *
- * @param inbounds - array of existing inbound keys to check for duplicates
- * @param promptOptions - options that can control some of the prompt behavior. See {@link FLPConfigPromptOptions} for details
- * @returns the prompts used to provide input for FLP configuration
+ * @param {ManifestNamespace.Inbound | undefined} inbounds - An object containing existing inbound keys to check for duplicates.
+ * @param {string | undefined} appId - The application ID used to generate unique prompt keys.
+ * @param {FLPConfigPromptOptions | undefined} promptOptions - Options that control prompt behavior. See {@link FLPConfigPromptOptions} for details.
+ * @returns {Promise<FLPConfigQuestion[]>} A promise that resolves to an array of FLP configuration questions.
  */
 async function getPrompts(
     inbounds?: ManifestNamespace.Inbound,
@@ -26,12 +27,13 @@ async function getPrompts(
 }
 
 /**
- * Prompt for FLP configuration inputs.
+ * Prompts the user for FLP configuration inputs.
  *
- * @param adapter - an instance of InquirerAdapter to handle prompting
- * @param inbounds - array of existing inbound keys to check for duplicates
- * @param promptOptions - options that can control some of the prompt behavior. See {@link FLPConfigPromptOptions} for details
- * @returns the prompt answers
+ * @param {InquirerAdapter} adapter - An instance of `InquirerAdapter` to handle prompting.
+ * @param {ManifestNamespace.Inbound | undefined} inbounds - An object containing existing inbound keys to check for duplicates.
+ * @param {string | undefined} appId - The application ID used to generate unique prompt keys.
+ * @param {FLPConfigPromptOptions | undefined} promptOptions - Options that control prompt behavior. See {@link FLPConfigPromptOptions} for details.
+ * @returns {Promise<FLPConfigAnswers>} A promise that resolves to the user's answers for the FLP configuration.
  */
 async function prompt(
     adapter: InquirerAdapter,
@@ -44,7 +46,7 @@ async function prompt(
     const answers = await adapter.prompt<FLPConfigAnswers>(flpPrompts);
     // Apply default values to prompts in case they have not been executed
     if (promptOptions) {
-        const defaultAnswers = applyPromptOptionDefaults(answers, flpPrompts, promptOptions);
+        const defaultAnswers = applyPromptOptionDefaults(answers, promptOptions);
         Object.assign(answers, defaultAnswers);
     }
 
@@ -52,17 +54,15 @@ async function prompt(
 }
 
 /**
- * Apply prompt option default values to prompt answers in case they have not been executed by the user selections.
- * This can occur where some prompts are hidden by conditions.
+ * Applies default values to unanswered prompts based on the provided options.
+ * This function ensures that hidden or skipped prompts are assigned default values if specified in the options.
  *
- * @param answers the answers from previous prompting, only answers without a value will be considered for defaulting
- * @param flpPrompts the prompts that were used to prompt the user, will be used to apply default values if not answered or no default provided
- * @param promptOptions the prompt options which may provide default values or functions
- * @returns the default values for the unanswered prompts, based on the prompt options
+ * @param {Partial<FLPConfigAnswers>} answers - The answers from previous prompting. Only unanswered prompts are considered.
+ * @param {FLPConfigPromptOptions} promptOptions - Options for the prompts, which may include default values or functions.
+ * @returns {Partial<FLPConfigAnswers>} A partial object containing the default values for unanswered prompts.
  */
 function applyPromptOptionDefaults(
     answers: Partial<FLPConfigAnswers>,
-    flpPrompts: FLPConfigQuestion[],
     promptOptions: FLPConfigPromptOptions
 ): Partial<FLPConfigAnswers> {
     const defaultAnswers: Partial<FLPConfigAnswers> = {};
@@ -82,17 +82,17 @@ function applyPromptOptionDefaults(
 }
 
 /**
- * Get the default value for a prompt based on the provided default value or function.
- * If a function is provided, it will be called with the current answers to determine the default value.
+ * Retrieves the default value for a prompt based on the provided default value or function.
+ * If the default value is a function, it is executed with the current answers to determine the value.
  *
- * @param answers the current answers provided to default functions
- * @param promptDefault the default value or function to determine the default value
- * @returns the default value for the prompt or undefined if no default value is provided
+ * @param {Partial<FLPConfigAnswers>} answers - The current answers provided to default functions.
+ * @param {PromptDefaultValue<string | boolean>['default'] | undefined} promptDefault - The default value or function to determine the default value.
+ * @returns The default value for the prompt, or `undefined` if no default is provided.
  */
 function getDefaultValue(
     answers: Partial<FLPConfigAnswers>,
     promptDefault?: PromptDefaultValue<string | boolean>['default']
-) {
+): PromptDefaultValue<string | boolean>['default'] {
     if (typeof promptDefault === 'function') {
         return promptDefault(answers);
     }

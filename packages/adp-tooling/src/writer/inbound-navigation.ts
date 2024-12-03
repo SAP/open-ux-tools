@@ -2,7 +2,7 @@ import path from 'path';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 
-import { NewI18nEntry, createPropertiesI18nEntries } from '@sap-ux/i18n';
+import { type NewI18nEntry, createPropertiesI18nEntries } from '@sap-ux/i18n';
 
 import { getVariant } from '../';
 import type { Content, DescriptorVariant, InternalInboundNavigation } from '../types';

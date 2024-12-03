@@ -13,7 +13,6 @@ import type {
 } from '../../types';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
-import { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Creates the 'semanticObject' prompt for FLP configuration.

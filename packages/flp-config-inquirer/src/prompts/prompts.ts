@@ -1,3 +1,4 @@
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 import {
@@ -5,23 +6,25 @@ import {
     getActionPrompt,
     getTitlePrompt,
     getSubTitlePrompt,
-    getOverwritePrompt
-} from './questions/basic';
-import { promptNames } from '../types';
-import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
-import {
+    getOverwritePrompt,
     getCreateAnotherInboundPrompt,
     getEmptyInboundsLabelPrompt,
     getInboundIdsPrompt,
     getParameterStringPrompt
-} from './questions/advanced';
-import { ManifestNamespace } from '@sap-ux/project-access';
+} from './questions';
+import { promptNames } from '../types';
+import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
 
 /**
  * Generates a list of prompts for FLP (Fiori Launchpad) configuration.
  *
- * @param {ManifestNamespace.Inbound | undefined} [inbounds] - Existing inbounds for an application.
- * @param {FLPConfigPromptOptions} [promptOptions] - Optional configuration to control prompt behavior and defaults.
+ * This function creates a set of prompts tailored for configuring FLP inbound navigation, including prompts
+ * for inbound IDs, semantic objects, actions, titles, subtitles, and overwrite options. The behavior of the
+ * prompts can be customized through the provided `promptOptions` parameter.
+ *
+ * @param {ManifestNamespace.Inbound | undefined} [inbounds] - Existing inbounds for the application, if any.
+ * @param {string | undefined} [appId] - Application ID for generating relevant prompts.
+ * @param {FLPConfigPromptOptions | undefined} [promptOptions] - Optional configuration to control prompt behavior and defaults.
  * @returns {FLPConfigQuestion[]} An array of FLPConfigQuestion objects to be used for prompting the user.
  */
 export function getQuestions(
@@ -56,6 +59,7 @@ export function getQuestions(
             promptOptions?.[promptNames.parameterString]
         ),
         [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(
+            isCLI,
             promptOptions?.[promptNames.createAnotherInbound]
         )
     };
