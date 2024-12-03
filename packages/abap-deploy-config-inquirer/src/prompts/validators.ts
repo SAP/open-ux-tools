@@ -350,8 +350,6 @@ export async function validatePackageChoiceInputForCli(
  * @param input - package name entered
  * @param answers - previous answers
  * @param backendTarget - backend target
- * @param shouldValidateCloudPackage - add additional validation whether the package is cloud
- * @param shouldValidateAppName - add additional validation whether package namespace or starting prefix are same with appname ones
  * @returns boolean or error message as a string
  */
 export async function validatePackage(
