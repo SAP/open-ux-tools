@@ -161,6 +161,7 @@
         "forUserName": "(for user [{{username}}])",
         "systemTypeBTP": "BTP",
         "systemTypeS4HC": "S4HC",
-        "httpStatus": "http status {{httpStatus}}"
+        "httpStatus": "http status {{httpStatus}}",
+        "checkDestinationAuthConfig": "Please check the destination authentication configuration."
     }
 }

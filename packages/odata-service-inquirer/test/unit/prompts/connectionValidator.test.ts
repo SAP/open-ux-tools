@@ -1,5 +1,5 @@
 import * as axiosExtension from '@sap-ux/axios-extension';
-import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import type { ODataServiceInfo } from '@sap-ux/axios-extension';
 import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import {
@@ -670,5 +670,24 @@ describe('ConnectionValidator', () => {
                 }
             })
         );
+
+        // Authentication errors should return an authentication error message if the destination has authentication configured as 'NoAuthentication'
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(403));
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system1:12345/path/to/service',
+                Type: 'HTTP',
+                Authentication: 'OAuth2ClientCredentials',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_gen',
+                WebIDEAdditionalData: 'full_url',
+                'HTML5.DynamicDestination': 'true'
+            })
+        ).toEqual({
+            errorType: ERROR_TYPE.AUTH,
+            valResult: 'Authentication incorrect. Please check the destination authentication configuration.'
+        });
     });
 });
