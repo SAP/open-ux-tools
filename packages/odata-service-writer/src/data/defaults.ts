@@ -1,6 +1,10 @@
+import { join } from 'path';
 import type { OdataService, EdmxAnnotationsInfo } from '../types';
 import { ServiceType } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
+import type { Manifest } from '@sap-ux/project-access';
+import { FileName, getWebappPath } from '@sap-ux/project-access';
+import type { Editor } from 'mem-fs-editor';
 
 /**
  * Sets the default path for a given service.
@@ -15,35 +19,86 @@ function setDefaultServicePath(service: OdataService): void {
 
 /**
  * Sets the default name for a given service.
- * If the service name is not defined, it sets the name to `DEFAULT_DATASOURCE_NAME`.
+ * Default serivce name is used only for first service.
  *
+ * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose name needs to be set or modified.
+ * @param fs - the memfs editor instance
  */
-function setDefaultServiceName(service: OdataService): void {
-    service.name = service.name ?? DEFAULT_DATASOURCE_NAME;
+async function setDefaultServiceName(basePath: string, service: OdataService, fs: Editor): Promise<void> {
+    const manifestPath = join(await getWebappPath(basePath, fs), FileName.Manifest);
+    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
+    // Check if manifest has already any dataSources defined, DEFAULT_DATASOURCE_NAME should be used for the first service
+    const dataSources = manifest?.['sap.app']?.dataSources;
+    if (dataSources) {
+        // Filter out ODataAnnotation dataSources and keep only OData ones
+        const oDataSources = Object.values(dataSources).filter((dataSource) => dataSource.type === 'OData');
+        if (oDataSources.length === 0) {
+            service.name = DEFAULT_DATASOURCE_NAME;
+        }
+    } else {
+        // No existing dataSources - no existing services, use default name
+        service.name = DEFAULT_DATASOURCE_NAME;
+    }
 }
 
 /**
  * Sets the default model for a given service.
- * If the service model is not defined, it sets the model to an empty string (Default UI5 model).
+ * Default UI5 model is used for first service model.
+ * For next services service model or service name is used as model (if model is not defined).
  *
- * @param {OdataService} service - The service object whose model needs to be set or modified.
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {OdataService} service - The service object whose model needs to be set or modified
+ * @param fs - the memfs editor instance
  */
-function setDefaultServiceModel(service: OdataService): void {
-    service.model = service.model ?? ''; // Default UI5 model
+async function setDefaultServiceModel(basePath: string, service: OdataService, fs: Editor): Promise<void> {
+    const manifestPath = join(await getWebappPath(basePath, fs), 'manifest.json');
+    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
+    // Check if manifest has already any dataSource models defined, empty string '' should be used for the first service
+    const models = manifest?.['sap.ui5']?.models;
+    if (models) {
+        // Filter dataSource models by dataSource property
+        const servicesModels = Object.values(models).filter((model) => model.dataSource);
+        service.model = servicesModels.length === 0 ? '' : service.model ?? service.name;
+    }
+    // No models defined, that means first one is being added, set model to ''
+    service.model ??= '';
 }
 
 /**
- * Sets the default annotations name for a given service.
- * If the service annotations name is not defined or empty, it creates a default annotations name
+ * Sets default annotation name for a single annotation of a given service.
+ * If the service annotation name is not defined or empty, it creates a default annotations name
  * from the technicalName by replacing all '/' characters with '_' and removing the leading '_'.
+ * If the service and annotation names are the same, then '_Annotation' string is added at the end of annotation name.
+ *
+ * @param {EdmxAnnotationsInfo} annotation - annotation of a given service
+ * @param {string} serviceName - name of the service whose annotations are getting modified.
+ */
+function setDefaultAnnotationName(annotation: EdmxAnnotationsInfo, serviceName?: string): void {
+    if (annotation?.technicalName && !annotation.name) {
+        annotation.name = annotation?.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');
+    }
+    if (annotation.name === serviceName) {
+        annotation.name += '_Annotation';
+    }
+}
+
+/**
+ * Sets default names for annotations of a given service.
+ * Handles single annotation in object or annotations array.
  *
  * @param {OdataService} service - The service object whose annotations name needs to be set or modified.
  */
 function setDefaultAnnotationsName(service: OdataService): void {
-    const annotations = service.annotations as EdmxAnnotationsInfo;
-    if (annotations?.technicalName && !annotations.name) {
-        annotations.name = annotations?.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');
+    if (Array.isArray(service.annotations)) {
+        const annotations = service.annotations as EdmxAnnotationsInfo[];
+        for (const annotationName in annotations) {
+            const annotation = annotations[annotationName];
+            setDefaultAnnotationName(annotation, service.name);
+        }
+    } else if (service.annotations) {
+        const annotation = service.annotations as EdmxAnnotationsInfo;
+        setDefaultAnnotationName(annotation, service.name);
     }
 }
 
@@ -51,12 +106,14 @@ function setDefaultAnnotationsName(service: OdataService): void {
  * Enhances the provided OData service object with path, name and model information.
  * Directly modifies the passed object reference.
  *
- * @param {OdataService} service - the OData service object
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {OdataService} service - the OData service instance
+ * @param {Editor} fs - the memfs editor instance
  */
-export function enhanceData(service: OdataService): void {
+export async function enhanceData(basePath: string, service: OdataService, fs: Editor): Promise<void> {
     setDefaultServicePath(service);
-    setDefaultServiceName(service);
-    setDefaultServiceModel(service);
+    await setDefaultServiceName(basePath, service, fs);
+    await setDefaultServiceModel(basePath, service, fs);
     // set service type to EDMX if not defined
     service.type = service.type ?? ServiceType.EDMX;
     /**
@@ -69,10 +126,10 @@ export function enhanceData(service: OdataService): void {
     }
 
     // enhance preview settings with service configuration
-    service.previewSettings = service.previewSettings || {};
+    service.previewSettings = service.previewSettings ?? {};
     service.previewSettings.path =
-        service.previewSettings.path || `/${service.path?.split('/').filter((s: string) => s !== '')[0] ?? ''}`;
-    service.previewSettings.url = service.previewSettings.url || service.url || 'http://localhost';
+        service.previewSettings.path ?? `/${service.path?.split('/').filter((s: string) => s !== '')[0] ?? ''}`;
+    service.previewSettings.url = service.previewSettings.url ?? service.url ?? 'http://localhost';
     if (service.client && !service.previewSettings.client) {
         service.previewSettings.client = service.client;
     }
