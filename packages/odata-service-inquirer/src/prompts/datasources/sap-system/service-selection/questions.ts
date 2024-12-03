@@ -88,7 +88,11 @@ export function getSystemServiceQuestion(
                             answers?.[`${promptNames.systemSelection}`]?.system as Destination
                         );
                     }
-                } else if (connectValidator.odataService && connectValidator.validatedUrl) {
+                } else if (
+                    connectValidator.odataService &&
+                    connectValidator.validatedUrl &&
+                    !(await connectValidator.isAuthRequired())
+                ) {
                     // We have connected to a service endpoint, use this service as the only choice
                     const serviceUrl = new URL(connectValidator.destinationUrl ?? connectValidator.validatedUrl);
                     serviceChoices = [
