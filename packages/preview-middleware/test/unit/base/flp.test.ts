@@ -15,7 +15,7 @@ import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
-import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import { fetchMock } from '../../__mock__/global';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -288,6 +288,10 @@ describe('FlpSandbox', () => {
             }
         };
 
+        afterEach(() => {
+            fetchMock.mockRestore();
+        });
+
         beforeAll(async () => {
             const flp = new FlpSandbox(
                 mockConfig as unknown as Partial<MiddlewareConfig>,
@@ -302,6 +306,17 @@ describe('FlpSandbox', () => {
             app.use(flp.router);
 
             server = await supertest(app);
+        });
+
+        test('test/flp.html UI5 2.x', async () => {
+            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const response = await server.get('/test/flp.html').expect(200);
+            expect(response.text).toMatchSnapshot();
         });
 
         test('test/flp.html', async () => {
@@ -329,6 +344,24 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
             expect(response.text.includes('livereloadPort: 35729')).toBe(true);
             response = await server.get('/my/editor.html.inner.html').expect(302);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with developerMode=true UI5 version 2.x', async () => {
+            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            let response = await server.get('/my/editor.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            expect(response.text.includes('livereloadPort: 35729')).toBe(true);
+            response = await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -513,6 +546,67 @@ describe('FlpSandbox', () => {
         test('default without testsuite', async () => {
             await server.get('/test/testsuite.qunit.html').expect(404);
             await server.get('/test/testsuite.qunit.js').expect(404);
+        });
+
+        test('test/flp.html UI5 1.71 with asyncHints.requests', async () => {
+            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.71.0' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1',
+                'myResources2': 'myResourcesUrl2'
+            };
+            const url = 'http://sap.example';
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            const adpToolingMock = {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {},
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: [
+                            {
+                                name: 'myRequest',
+                                url: 'http://sap.example'
+                            }
+                        ]
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn()
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            expect(flp.templateConfig).toMatchSnapshot();
+            const response = await server
+                .get(
+                    '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
+                )
+                .expect(200);
+            expect(response.text).toMatchSnapshot();
         });
     });
 
