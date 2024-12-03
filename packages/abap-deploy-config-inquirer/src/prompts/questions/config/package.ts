@@ -129,7 +129,12 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 const pkgValue: string = (input as ListChoiceOptions)?.value
                     ? (input as ListChoiceOptions).value
                     : input;
-                return await validatePackageExtended(pkgValue, answers, options.packageAutocomplete, options.backendTarget);
+                return await validatePackageExtended(
+                    pkgValue,
+                    answers,
+                    options.packageAutocomplete,
+                    options.backendTarget
+                );
             }
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
     ];
