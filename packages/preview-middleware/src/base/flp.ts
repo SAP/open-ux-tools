@@ -305,7 +305,7 @@ export class FlpSandbox {
         // register static client sources
         this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
-        // add route for the sandbox.html
+        // add route for the sandbox html
         this.router.get(this.config.path, (async (req: EnhancedRequest, res: Response, next: NextFunction) => {
             await this.setApplicationDependencies();
             // inform the user if a html file exists on the filesystem
