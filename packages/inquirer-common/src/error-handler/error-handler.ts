@@ -637,7 +637,7 @@ export class ErrorHandler {
         const mappedErrorMsg = errorMsg ?? ErrorHandler.getErrorMsgFromType(errorType);
 
         if (helpNode) {
-            return this.getHelpLink(helpNode, mappedErrorMsg ?? '', errorType);
+            return this.getHelpLink(helpNode, errorType, mappedErrorMsg ?? '');
         }
         return mappedErrorMsg;
     }
@@ -646,11 +646,11 @@ export class ErrorHandler {
      * Get a help link for the specified help node.
      *
      * @param helpNode The help node to get the link for
-     * @param errorMsg The error message to display with the help link
      * @param errorType The error type
+     * @param errorMsg The error message to display with the help link
      * @returns A validation help link
      */
-    public static getHelpLink(helpNode: number, errorMsg: string, errorType: ERROR_TYPE): ValidationLink {
+    public static getHelpLink(helpNode: number, errorType: ERROR_TYPE, errorMsg: string): ValidationLink {
         const valLink: IValidationLink = {
             message: errorMsg,
             link: {
