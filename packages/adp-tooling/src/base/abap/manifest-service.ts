@@ -2,13 +2,13 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AdpPreviewConfig, DescriptorVariant } from '../../types';
 import ZipFile from 'adm-zip';
-import {
-    isAxiosError,
-    type AbapServiceProvider,
-    type Ui5AppInfoContent,
-    type AxiosRequestConfig,
-    type ProviderConfiguration
+import type {
+    AbapServiceProvider,
+    Ui5AppInfoContent,
+    AxiosRequestConfig,
+    ProviderConfiguration
 } from '@sap-ux/axios-extension';
+import { isAxiosError } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getWebappFiles } from '../helper';
 
@@ -37,7 +37,7 @@ export class ManifestService {
      *
      * @param adpConfig - The ADP preview configuration.
      * @param logger - The logger instance.
-     * @param requestOptions - Additional AxiosRequestOptions
+     * @param requestOptions - Optional configuration options for the Axios request, such as headers, timeout, and base URL
      * @returns A promise that resolves to an instance of ManifestService.
      */
     private static async init(
@@ -63,7 +63,7 @@ export class ManifestService {
      * @param appId - The application ID.
      * @param adpConfig - The ADP preview configuration.
      * @param logger - The logger instance.
-     * @param requestOptions - Additional AxiosRequestOptions
+     * @param requestOptions - Optional configuration options for the Axios request, such as headers, timeout, and base URL
      * @returns A promise that resolves to an instance of ManifestService.
      */
     public static async initBaseManifest(
@@ -84,7 +84,7 @@ export class ManifestService {
      * @param variant - The descriptor variant.
      * @param adpConfig - The ADP preview configuration.
      * @param logger - The logger instance.
-     * @param requestOptions - Additional AxiosRequestOptions
+     * @param requestOptions - Optional configuration options for the Axios request, such as headers, timeout, and base URL
      * @returns A promise that resolves to an instance of ManifestService.
      */
     public static async initMergedManifest(
