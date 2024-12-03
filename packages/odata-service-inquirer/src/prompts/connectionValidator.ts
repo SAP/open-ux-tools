@@ -293,7 +293,7 @@ export class ConnectionValidator {
             this._validatedClient = url.searchParams.get(SAP_CLIENT_KEY) ?? undefined;
             return 200;
         } catch (e) {
-            LoggerHelper.logger.debug(`ConnectionValidator.checkSapService() - error: ${e.message}`);
+            LoggerHelper.logger.debug(`ConnectionValidator.checkUrl() - error: ${e.message}`);
             if (e?.isAxiosError) {
                 // Error handling for BAS specific 500 errors
                 if (e?.response?.status.toString().match(/5\d\d/) && isBAS) {
@@ -617,7 +617,7 @@ export class ConnectionValidator {
 
         const validationResult = this.getValidationResultFromStatusCode(status);
 
-        if (this.validity.reachable && (!this.validity.authRequired || this.validity.authenticated)) {
+        if (this.validity.reachable) {
             this._validatedUrl = destUrl;
         }
 
@@ -631,7 +631,12 @@ export class ConnectionValidator {
         }
         if (this.validity.authRequired) {
             return {
-                valResult: ErrorHandler.getErrorMsgFromType(ERROR_TYPE.AUTH)!,
+                valResult: ErrorHandler.getErrorMsgFromType(
+                    ERROR_TYPE.AUTH,
+                    destination.Authentication !== Authentication.NO_AUTHENTICATION
+                        ? t('texts.checkDestinationAuthConfig')
+                        : undefined
+                )!,
                 errorType: ERROR_TYPE.AUTH
             };
         }
@@ -702,9 +707,7 @@ export class ConnectionValidator {
                 isSystem,
                 odataVersion
             });
-            LoggerHelper.logger.debug(
-                `ConnectionValidator.checkSapServiceUrl() - status: ${status}; url: ${serviceUrl}`
-            );
+            LoggerHelper.logger.debug(`ConnectionValidator.validateUrl() - status: ${status}; url: ${serviceUrl}`);
             this.validity.urlFormat = true;
             this._validatedUrl = serviceUrl;
 
@@ -903,7 +906,7 @@ export class ConnectionValidator {
                 isSystem,
                 odataVersion
             });
-            LoggerHelper.logger.debug(`ConnectionValidator.checkSapServiceUrl() - status: ${status}; url: ${url}`);
+            LoggerHelper.logger.debug(`ConnectionValidator.validateAuth() - status: ${status}; url: ${url}`);
             // Since an exception was not thrown, this is a valid url
             this.validity.urlFormat = true;
             this._validatedUrl = url;
