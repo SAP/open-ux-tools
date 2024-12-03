@@ -158,20 +158,27 @@ export class FlpSandbox {
      * @private
      */
     private getDeveloperModeConfig(ui5MajorVersion: number): Map<string, string> {
-        return new Map([
-            // Run application in design time mode
-            // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
-            [`xx-design${ui5MajorVersion < 2 ? 'Mode' : '-mode'}`, 'true'],
-            // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
-            [
-                `xx-suppress${
-                    ui5MajorVersion < 2 ? 'DeactivationOfControllerCode' : '-deactivation-of-controller-code'
-                }`,
-                'true'
-            ],
-            // Make sure that XML preprocessing results are correctly invalidated
-            [`xx-view${ui5MajorVersion < 2 ? 'Cache' : '-cache'}`, 'false']
-        ]);
+        if (ui5MajorVersion < 2) {
+            return new Map([
+                // Run application in design time mode
+                // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
+                ['xx-designMode', 'true'],
+                // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
+                ['xx-suppressDeactivationOfControllerCode', 'true'],
+                // Make sure that XML preprocessing results are correctly invalidated
+                ['xx-viewCache', 'false']
+            ]);
+        } else {
+            return new Map([
+                // Run application in design time mode
+                // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
+                ['xx-design-mode', 'true'],
+                // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
+                ['xx-suppress-deactivation-of-controller-code', 'true'],
+                // Make sure that XML preprocessing results are correctly invalidated
+                ['xx-view-cache', 'false']
+            ]);
+        }
     }
 
     /**
