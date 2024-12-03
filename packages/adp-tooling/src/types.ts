@@ -534,6 +534,17 @@ export interface CustomConfig {
     };
 }
 
+export type CloudCustomTaskConfigTarget =
+    | DestinationAbapTarget
+    | (Pick<UrlAbapTarget, 'url' | 'client' | 'scp' | 'authenticationType'> & { ignoreCertErrors?: boolean });
+
+export interface CloudCustomTaskConfig {
+    type: string;
+    appName: string | undefined;
+    languages: Language[];
+    target: AbapTarget;
+}
+
 export interface InboundChangeContentAddInboundId {
     inbound: {
         [inboundId: string]: AddInboundModel;
