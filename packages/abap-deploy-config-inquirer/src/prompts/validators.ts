@@ -373,15 +373,21 @@ export async function validatePackage(
     }
     //validate package format
     if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
-        return t('error.validators.abapPackageInvalidFormat');
+        return t('errors.validators.abapPackageInvalidFormat');
     }
 
     const startingPrefix = getPackageStartingPrefix(input);
 
     //validate package starting prefix
     if (!input.startsWith('/') && !allowedPackagePrefixes.find((prefix) => prefix === startingPrefix)) {
-        return t('error.validators.abapPackageStartingPrefix');
+        return t('errors.validators.abapPackageStartingPrefix');
     }
+
+    //appName starting prefix
+    if (answers?.ui5AbapRepo && !answers.ui5AbapRepo.startsWith(startingPrefix)) {
+        return t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
+    }
+
     const systemConfig: SystemConfig = {
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
@@ -583,7 +589,7 @@ export function validateConfirmQuestion(overwrite: boolean): boolean {
  * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
  * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
  */
-export async function validateCloudPackage(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
+async function validateCloudPackage(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
     const systemConfig: SystemConfig = {
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
@@ -594,7 +600,7 @@ export async function validateCloudPackage(input: string, backendTarget?: Backen
         systemInfo != undefined &&
         systemInfo.adaptationProjectTypes.length === 1 &&
         systemInfo.adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY;
-    return isCloudPackage ? true : t('warnings.invalidCloudPackage');
+    return isCloudPackage ? true : t('errors.validators.invalidCloudPackage');
 }
 
 /**

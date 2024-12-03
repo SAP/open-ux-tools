@@ -11,6 +11,7 @@ import {
     validatePackage,
     validatePackageChoiceInput,
     validatePackageChoiceInputForCli,
+    validatePackageExtended,
     validateTargetSystem,
     validateTargetSystemUrlCli,
     validateTransportChoiceInput,
@@ -331,12 +332,64 @@ describe('Test validators', () => {
 
         it('should return error for invalid format', async () => {
             const result = await validatePackage('namespace/packageName', previousAnswers);
-            expect(result).toBe(t('error.validators.abapPackageInvalidFormat'));
+            expect(result).toBe(t('errors.validators.abapPackageInvalidFormat'));
         });
 
         it('should return error for invalid starting prefix', async () => {
             const result = await validatePackage('namespace', previousAnswers);
-            expect(result).toBe(t('error.validators.abapPackageStartingPrefix'));
+            expect(result).toBe(t('errors.validators.abapPackageStartingPrefix'));
+        });
+
+        it('should return error for invalid ui5Repo starting prefix', async () => {
+            const result = await validatePackage('ZPACKAGE', {
+                ...previousAnswers,
+                ui5AbapRepo: 'UI5REPO'
+            });
+            expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
+        });
+
+        it('should return error for invalid ui5Repo starting prefix package starting with namespace', async () => {
+            const result = await validatePackage('/NAMESPACE/ZPACKAGE', {
+                ...previousAnswers,
+                ui5AbapRepo: 'UI5REPO'
+            });
+            expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
+        });
+    });
+
+    describe('validatePackageExtended', () => {
+        it('should return error when base validation fail', async () => {
+            const result = await validatePackageExtended('namespace', previousAnswers, {
+                additionalValidation: { cloudPackage: true }
+            });
+            expect(result).toBe(t('errors.validators.abapPackageStartingPrefix'));
+        });
+
+        it('should return error when package is not cloud', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
+                activeLanguages: []
+            });
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
+                additionalValidation: { cloudPackage: true }
+            });
+            expect(result).toBe(t('errors.validators.invalidCloudPackage'));
+        });
+
+        it('should return true when package meets all validators', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY],
+                activeLanguages: []
+            });
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
+                additionalValidation: { cloudPackage: true }
+            });
+            expect(result).toBe(true);
+        });
+
+        it('should return true when package base validation pass and there are no additional validation', async () => {
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
         });
     });
 

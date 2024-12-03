@@ -145,8 +145,8 @@
             "forbiddenCharacters": "Only alphanumeric, underscore and slash characters are allowed",
             "descriptionLength": "Deployment Description should not exceed 60 characters",
             "transportListPreReqs": "Name (SAPUI5 ABAP Repository) and Package are required to retrieve the existing Transport Requests",
-            "abapInvalidAppNameNamespaceOrStartingPrefix": "Both the SAPUI5 ABAP Repository and the Package that will be used should start in the same way, i.e. a namespace or capital letters 'Z', 'Y' or 'SAP'"
-        },
-        "invalidCloudPackage": "The package entered is not meant to be used for cloud deployments."
+            "abapInvalidAppNameNamespaceOrStartingPrefix": "Both the SAPUI5 ABAP Repository and the Package that will be used should start in the same way, i.e. a namespace or capital letters 'Z', 'Y' or 'SAP'",
+            "invalidCloudPackage": "The package entered is not meant to be used for cloud deployments."
+        }
     }
 }
