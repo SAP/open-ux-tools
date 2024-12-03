@@ -687,7 +687,7 @@ describe('ConnectionValidator', () => {
             })
         ).toEqual({
             errorType: ERROR_TYPE.AUTH,
-            valResult: 'Authentication incorrect. Please check the destination authentication configuration.'
+            valResult: 'Authentication incorrect. Please check the SAP BTP destination authentication configuration.'
         });
     });
 });

@@ -162,6 +162,6 @@
         "systemTypeBTP": "BTP",
         "systemTypeS4HC": "S4HC",
         "httpStatus": "http status {{httpStatus}}",
-        "checkDestinationAuthConfig": "Please check the destination authentication configuration."
+        "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration."
     }
 }
