@@ -61,7 +61,7 @@ sap.ui.require(["sap/ui/core/Core"], (Core) => {
                         const sapCoreVersionInfo = await VersionInfo.load({
                             library: "sap.ui.core"
                         });
-                        const sapCoreVersion = sapCoreVersionInfo && sapCoreVersionInfo.version;
+                        const sapCoreVersion = sapCoreVersionInfo?.version;
     
                         if (isLowerThanMinimalUi5Version(sapCoreVersion, "1.121")) {
                             MessageBox.error("Card Generation feature is not supported for the current UI5 version. Please use UI5 version 1.121 or higher.");
