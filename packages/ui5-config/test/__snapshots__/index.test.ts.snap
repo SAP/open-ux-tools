@@ -387,7 +387,7 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but all 
 "
 `;
 
-exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
+exports[`UI5Config addMockServerMiddleware add with services 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
@@ -395,15 +395,15 @@ exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
       configuration:
         mountPath: /
         services:
-          - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+          - urlPath: /path/to/service
+            metadataPath: ./webapp/localService/new-service/metadata.xml
+            mockdataPath: ./webapp/localService/new-service/data
             generateMockData: true
         annotations: []
 "
 `;
 
-exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1`] = `
+exports[`UI5Config addMockServerMiddleware add with services and annotations 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
@@ -411,9 +411,9 @@ exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1
       configuration:
         mountPath: /
         services:
-          - urlPath: /~testpath~
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+          - urlPath: /path/to/service
+            metadataPath: ./webapp/localService/new-service/metadata.xml
+            mockdataPath: ./webapp/localService/new-service/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/annotations/annotations.xml
@@ -421,7 +421,7 @@ exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1
 "
 `;
 
-exports[`UI5Config addMockServerMiddleware add without path 1`] = `
+exports[`UI5Config addMockServerMiddleware add with services and appRoot 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
@@ -429,10 +429,22 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
       configuration:
         mountPath: /
         services:
-          - urlPath: ''
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+          - urlPath: /path/to/service
+            metadataPath: ./appRoot/webapp/localService/new-service/metadata.xml
+            mockdataPath: ./appRoot/webapp/localService/new-service/data
             generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config addMockServerMiddleware add without services and annotations 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services: []
         annotations: []
 "
 `;
@@ -517,6 +529,72 @@ exports[`UI5Config addServeStaticConfig update serve static config 1`] = `
         backend:
           - path: /sap
             url: http://test.url.com:50017
+"
+`;
+
+exports[`UI5Config addServiceToMockserverMiddleware add new service 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /path/to/service
+            metadataPath: ./webapp/localService/new-service/metadata.xml
+            mockdataPath: ./webapp/localService/new-service/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config addServiceToMockserverMiddleware add new service with annotationsConfig 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /path/to/service
+            metadataPath: ./webapp/localService/new-service/metadata.xml
+            mockdataPath: ./webapp/localService/new-service/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/annotations/annotations.xml
+            urlPath: annotations.xml
+"
+`;
+
+exports[`UI5Config addServiceToMockserverMiddleware add new service with appRoot 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /path/to/service
+            metadataPath: ./appRoot/localService/new-service/metadata.xml
+            mockdataPath: ./appRoot/localService/new-service/data
+            generateMockData: true
+        annotations: []
+"
+`;
+
+exports[`UI5Config addServiceToMockserverMiddleware try to add service duplicate 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /path/to/service
+            metadataPath: ./webapp/localService/new-service/metadata.xml
+            mockdataPath: ./webapp/localService/new-service/data
+            generateMockData: true
+        annotations: []
 "
 `;
 

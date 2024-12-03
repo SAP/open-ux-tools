@@ -18,7 +18,7 @@ import {
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions
 } from '../../../types';
-import type { InputQuestion, ListQuestion, Question } from 'inquirer';
+import type { InputQuestion, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 /**
@@ -121,8 +121,16 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 return results.packages;
             },
             additionalInfo: () => morePackageResultsMsg,
-            validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackageExtended(input, answers, options.packageAutocomplete, options.backendTarget)
+            validate: async (
+                input: string | ListChoiceOptions,
+                answers: AbapDeployConfigAnswersInternal
+            ): Promise<boolean | string> => {
+                // Autocomplete can the entire choice object as the answer, so we need to extract the value
+                const pkgValue: string = (input as ListChoiceOptions)?.value
+                    ? (input as ListChoiceOptions).value
+                    : input;
+                return await validatePackageExtended(pkgValue, answers, options.packageAutocomplete, options.backendTarget);
+            }
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
     ];
 
