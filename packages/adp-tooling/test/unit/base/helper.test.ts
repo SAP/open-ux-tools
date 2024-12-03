@@ -102,7 +102,7 @@ describe('helper', () => {
             const result = flpConfigurationExists(basePath);
 
             expect(result).toBe(true);
-            expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath);
+            expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath, 'utf-8');
         });
 
         it('should return false if no valid FLP configuration exists', () => {
@@ -118,7 +118,7 @@ describe('helper', () => {
             const result = flpConfigurationExists(basePath);
 
             expect(result).toBe(false);
-            expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath);
+            expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath, 'utf-8');
         });
 
         it('should throw an error if getVariant fails', () => {
@@ -129,7 +129,7 @@ describe('helper', () => {
             expect(() => flpConfigurationExists(basePath)).toThrow(
                 'Failed to check if FLP configuration exists: Failed to retrieve variant'
             );
-            expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath);
+            expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath, 'utf-8');
         });
     });
 
