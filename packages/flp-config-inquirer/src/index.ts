@@ -37,8 +37,8 @@ async function getPrompts(
  */
 async function prompt(
     adapter: InquirerAdapter,
-    inbounds: ManifestNamespace.Inbound | undefined,
-    appId: string | undefined,
+    inbounds?: ManifestNamespace.Inbound,
+    appId?: string,
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigAnswers> {
     const flpPrompts = await getPrompts(inbounds, appId, promptOptions);
