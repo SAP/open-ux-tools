@@ -306,7 +306,7 @@ export class FlpSandbox {
         this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox.html
-        this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {
+        this.router.get(this.config.path, (async (req: EnhancedRequest, res: Response, next: NextFunction) => {
             await this.setApplicationDependencies();
             // inform the user if a html file exists on the filesystem
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
