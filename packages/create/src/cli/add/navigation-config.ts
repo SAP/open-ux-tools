@@ -1,16 +1,19 @@
 import { join } from 'path';
+import type { Command } from 'commander';
+import { create as createStorage } from 'mem-fs';
+import { create, type Editor } from 'mem-fs-editor';
+
 import {
     flpConfigurationExists,
     generateInboundConfig,
     getAdpConfig,
+    getInboundsFromManifest,
+    getRegistrationIdFromManifest,
     getVariant,
     isAdpProject,
     ManifestService
 } from '@sap-ux/adp-tooling';
-import type { Command } from 'commander';
-import { create as createStorage } from 'mem-fs';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { create, type Editor } from 'mem-fs-editor';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
 import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
 import { FileName, type ManifestNamespace } from '@sap-ux/project-access';
@@ -61,9 +64,11 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
 
         const fs = create(createStorage());
 
-        const inbounds = await getInboundsFromManifest(basePath, isAdp, fs, logger);
+        const manifest = await getManifest(basePath, isAdp, fs, logger);
+        const inbounds = getInboundsFromManifest(manifest);
+        const appId = getRegistrationIdFromManifest(manifest);
 
-        const config = await getUserConfig(basePath, inbounds, isAdp);
+        const config = await getUserConfig(inbounds, isAdp, appId);
 
         if (!config) {
             logger.info('User chose not to overwrite existing inbound navigation configuration.');
@@ -88,20 +93,20 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
 }
 
 /**
- * Retrieves the inbound navigation configurations from the project's manifest.
+ * Retrieves the project's manifest.
  *
  * @param {string} basePath - The base path to the project.
  * @param {boolean} isAdp - Indicates whether the project is an ADP project.
  * @param {Editor} fs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger instance.
- * @returns {Promise<ManifestNamespace.Inbound | undefined>} A promise that resolves to the inbounds, or undefined if none are found.
+ * @returns {Promise<ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile>} A promise that resolves to the manifest.
  */
-async function getInboundsFromManifest(
+async function getManifest(
     basePath: string,
     isAdp: boolean,
     fs: Editor,
     logger: ToolsLogger
-): Promise<ManifestNamespace.Inbound | undefined> {
+): Promise<ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile> {
     let manifest: ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
     if (!isAdp) {
         manifest = (await readManifest(basePath, fs))?.manifest;
@@ -114,23 +119,23 @@ async function getInboundsFromManifest(
         manifest = manifestService.getManifest();
     }
 
-    return manifest?.['sap.app']?.crossNavigation?.inbounds;
+    return manifest;
 }
 
 /**
  * Prompts the user for inbound navigation configuration.
  *
- * @param {string} basePath - The base path to the project.
  * @param {ManifestNamespace.Inbound | undefined} inbounds - The existing inbounds if any.
  * @param {boolean} isAdp - Indicates whether the project is an ADP project.
- * @returns {Promise<FLPConfigAnswers | undefined>} The user-provided configuration, or undefined if the user chooses not to overwrite.
+ * @param {string} [appId] - The application ID used for generating prompts specific to the app.
+ * @returns {Promise<FLPConfigAnswers | undefined>} A promise resolving to the user-provided configuration,
+ * or `undefined` if the user opts not to overwrite.
  */
 async function getUserConfig(
-    basePath: string,
     inbounds: ManifestNamespace.Inbound | undefined,
-    isAdp: boolean
+    isAdp: boolean,
+    appId?: string
 ): Promise<FLPConfigAnswers | undefined> {
-    let appId: string = '';
     let promptOptions: FLPConfigPromptOptions;
 
     if (!isAdp) {
@@ -142,7 +147,6 @@ async function getUserConfig(
         };
     } else {
         promptOptions = { overwrite: { hide: true }, createAnotherInbound: { hide: true } };
-        appId = getVariant(basePath)?.id;
     }
 
     const prompts = await filterLabelTypeQuestions<FLPConfigAnswers>(await getPrompts(inbounds, appId, promptOptions));

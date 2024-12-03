@@ -72,7 +72,7 @@ export function getEmptyInboundsLabelPrompt(
                 }`
             }
         },
-        when: options?.hide ?? inboundIds.length === 0
+        when: options?.hide ? false : inboundIds.length === 0
     };
 }
 

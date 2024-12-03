@@ -9,6 +9,32 @@ import { getWebappFiles } from '../helper';
 type DataSources = Record<string, ManifestNamespace.DataSource>;
 
 /**
+ * Retrieves the inbound navigation configurations from the project's manifest.
+ *
+ * @param {ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile} manifest -
+ * The manifest file object adhering to the SAP JSON schema for web application manifest files.
+ * @returns {ManifestNamespace.Inbound | undefined} The inbound navigation configurations, or `undefined` if no configurations are present.
+ */
+export function getInboundsFromManifest(
+    manifest: ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile
+): ManifestNamespace.Inbound | undefined {
+    return manifest?.['sap.app']?.crossNavigation?.inbounds;
+}
+
+/**
+ * Extracts the registration ID from the manifest file.
+ *
+ * @param {ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile} manifest -
+ * The manifest file object adhering to the SAP JSON schema for web application manifest files.
+ * @returns {string | undefined} The first registration ID if available, otherwise `undefined`.
+ */
+export function getRegistrationIdFromManifest(
+    manifest: ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile
+): string | undefined {
+    return manifest?.['sap.fiori']?.registrationIds?.[0];
+}
+
+/**
  * Service class for handling operations related to the manifest of a UI5 application.
  * The class supports operations for both base and merged manifests.
  * It provides methods to fetch the manifest, data sources and metadata of a data source.
