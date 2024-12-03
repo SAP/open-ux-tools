@@ -27,7 +27,7 @@ export const HELP_NODES = {
     NO_V4_SERVICES: 57573, // No V4 OData services available
     NO_ADT_SERVICE_AUTH: 57266, //Users does not have authorizations to use ADT services
     DESTINATION_CONNECTION_ERRORS: 48366, // Non specific destination connection error help page, currently this is mapped to the same node as BAS_CATALOG_SERVICES_REQUEST_FAILED which will be updated in the future (and the entry here removed)
-    SERVICE_GENERATOR_VALIDATION: 63068 // UI Service generator validation error
+    UI_SERVICE_GENERATOR: 63068 // UI Service generator
 };
 
 export const GUIDED_ANSWERS_EXTENSION_ID = 'saposs.sap-guided-answers-extension';

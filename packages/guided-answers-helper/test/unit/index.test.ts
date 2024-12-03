@@ -43,7 +43,7 @@ describe('Guided Answers Helper', () => {
               "FIORI_TOOLS": 45995,
               "NO_ADT_SERVICE_AUTH": 57266,
               "NO_V4_SERVICES": 57573,
-              "SERVICE_GENERATOR_VALIDATION": 63068,
+              "UI_SERVICE_GENERATOR": 63068,
             }
         `);
     });
