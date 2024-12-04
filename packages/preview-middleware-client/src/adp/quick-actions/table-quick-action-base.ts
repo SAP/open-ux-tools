@@ -14,6 +14,7 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version
 import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import ManagedObject from 'sap/ui/base/ManagedObject';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
@@ -39,6 +40,10 @@ async function getActionId(table: UI5Element): Promise<string[]> {
 
     return [M_TABLE_ACTION_ID, SETTINGS_ID];
 }
+export type TableQuickActionsOptions = {
+    includeServiceAction?: boolean;
+    areTableRowsRequired?: boolean;
+};
 
 /**
  * Base class for table quick actions.
@@ -49,7 +54,13 @@ export abstract class TableQuickActionDefinitionBase {
         return `${this.context.key}-${this.type}`;
     }
 
-    public isActive = false;
+    public isApplicable = false;
+
+    protected isDisabled: boolean | undefined;
+
+    public get tooltip(): string | undefined {
+        return undefined;
+    }
 
     public children: NestedQuickActionChild[] = [];
     public tableMap: Record<
@@ -79,7 +90,7 @@ export abstract class TableQuickActionDefinitionBase {
         protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
-        protected includeServiceAction?: boolean
+        protected options: TableQuickActionsOptions = {}
     ) {}
 
     /**
@@ -89,7 +100,7 @@ export abstract class TableQuickActionDefinitionBase {
         // No action found in control design time for version < 1.96
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 96 })) {
-            this.isActive = false;
+            this.isApplicable = false;
             return;
         }
         const iconTabBarfilterMap = this.buildIconTabBarFilterMap();
@@ -103,10 +114,9 @@ export abstract class TableQuickActionDefinitionBase {
             if (section) {
                 this.collectChildrenInSection(section, table);
             } else if (this.iconTabBar && tabKey) {
-                this.children.push({
-                    label: `'${iconTabBarfilterMap[tabKey]}' table`,
-                    children: []
-                });
+                const label = `'${iconTabBarfilterMap[tabKey]}' table`;
+                const child = this.createChild(label, table);
+                this.children.push(child);
                 this.tableMap[`${this.children.length - 1}`] = {
                     table,
                     iconTabBarFilterKey: tabKey,
@@ -117,7 +127,7 @@ export abstract class TableQuickActionDefinitionBase {
             }
 
             // add action id to the table map, if the service actions are needed.
-            if (this.includeServiceAction) {
+            if (this.options.includeServiceAction) {
                 const actions = await this.context.actionService.get(table.getId());
                 const actionsIds = await getActionId(table);
 
@@ -131,7 +141,31 @@ export abstract class TableQuickActionDefinitionBase {
             }
         }
         if (this.children.length > 0) {
-            this.isActive = true;
+            this.isApplicable = true;
+        }
+    }
+
+    /**
+     * Retrieves the internal table control from a UI5Element.
+     *
+     * @param table - The UI5Element instance to analyze.
+     * @returns The internal table otherwise undefined.
+     */
+    protected getInternalTable(table: UI5Element): UI5Element | undefined {
+        try {
+            let tableInternal: ManagedObject | undefined;
+
+            if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+                const itemsAggregation = table.getAggregation('items') as ManagedObject[];
+                tableInternal = itemsAggregation.find((item) =>
+                    [M_TABLE_TYPE, TREE_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE].some((tType) =>
+                        isA(tType, item)
+                    )
+                );
+            }
+            return tableInternal as UI5Element | undefined;
+        } catch (error) {
+            return undefined;
         }
     }
 
@@ -160,7 +194,7 @@ export abstract class TableQuickActionDefinitionBase {
      * Builds a map kay/tab_name for ICON_TAB_BAR control of the active page, if such exists
      * @returns built map
      */
-    private buildIconTabBarFilterMap(): { [key: string]: string } {
+    protected buildIconTabBarFilterMap(): { [key: string]: string } {
         const iconTabBarFilterMap: { [key: string]: string } = {};
 
         // Assumption only a tab bar control per page.
@@ -197,23 +231,19 @@ export abstract class TableQuickActionDefinitionBase {
             } else if (subSections.length > 1) {
                 const sectionChild = this.children.find((val) => val.label === `${section.getTitle()} section`);
                 let tableMapIndex = `${this.children.length - 1}`;
+                const label = this.getTableLabel(table);
+                const child = this.createChild(label, table);
                 if (!sectionChild) {
                     tableMapIndex = `${tableMapIndex}/0`;
+
                     this.children.push({
                         label: `'${section?.getTitle()}' section`,
-                        children: [
-                            {
-                                label: this.getTableLabel(table),
-                                children: []
-                            }
-                        ]
+                        enabled: true,
+                        children: [child]
                     });
                 } else {
                     tableMapIndex = `${tableMapIndex}/${sectionChild.children.length - 1}`;
-                    sectionChild.children.push({
-                        label: this.getTableLabel(table),
-                        children: []
-                    });
+                    sectionChild.children.push(child);
                 }
 
                 this.tableMap[tableMapIndex] = {
@@ -235,10 +265,9 @@ export abstract class TableQuickActionDefinitionBase {
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
     ): void {
         if ([SMART_TABLE_TYPE, M_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE].some((type) => isA(type, table))) {
-            this.children.push({
-                label: this.getTableLabel(table),
-                children: []
-            });
+            const label = this.getTableLabel(table);
+            const child = this.createChild(label, table);
+            this.children.push(child);
         }
 
         this.tableMap[`${this.children.length - 1}`] = {
@@ -267,9 +296,28 @@ export abstract class TableQuickActionDefinitionBase {
         return {
             kind: NESTED_QUICK_ACTION_KIND,
             id: this.id,
-            enabled: this.isActive,
+            enabled: !this.isDisabled,
+            tooltip: this.tooltip,
             title: this.context.resourceBundle.getText(this.textKey),
             children: this.children
         };
+    }
+
+    createChild(label: string, table: UI5Element): NestedQuickActionChild {
+        const child: NestedQuickActionChild = {
+            label,
+            enabled: true,
+            children: []
+        };
+        if (!this.options.areTableRowsRequired) {
+            return child;
+        }
+        const innerTable = this.getInternalTable(table);
+        const tableRows = (innerTable?.getAggregation('items') as ManagedObject[]) || [];
+        if (isA(M_TABLE_TYPE, innerTable) && !tableRows.length) {
+            child.enabled = false;
+            child.tooltip = this.context.resourceBundle.getText('TABLE_CUSTOM_COLUMN_ACTION_NOT_AVAILABLE');
+        }
+        return child;
     }
 }

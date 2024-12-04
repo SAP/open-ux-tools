@@ -1,5 +1,55 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.1.6
+
+### Patch Changes
+
+-   Updated dependencies [307706e]
+    -   @sap-ux/guided-answers-helper@0.1.1
+    -   @sap-ux/inquirer-common@0.5.8
+
+## 1.1.5
+
+### Patch Changes
+
+-   Updated dependencies [2359524]
+    -   @sap-ux/inquirer-common@0.5.7
+    -   @sap-ux/btp-utils@0.17.1
+    -   @sap-ux/axios-extension@1.17.6
+    -   @sap-ux/fiori-generator-shared@0.7.12
+    -   @sap-ux/system-access@0.5.21
+
+## 1.1.4
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.17.5
+-   @sap-ux/inquirer-common@0.5.6
+-   @sap-ux/system-access@0.5.20
+
+## 1.1.3
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/axios-extension@1.17.4
+    -   @sap-ux/fiori-generator-shared@0.7.11
+    -   @sap-ux/system-access@0.5.19
+    -   @sap-ux/inquirer-common@0.5.5
+
+## 1.1.2
+
+### Patch Changes
+
+-   72114a8: fix package autocomplete input type
+
+## 1.1.1
+
+### Patch Changes
+
+-   dee9930: fix source system labelling
+
 ## 1.1.0
 
 ### Minor Changes

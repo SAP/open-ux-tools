@@ -164,6 +164,69 @@ describe('ADP writer', () => {
             ).toMatchSnapshot();
         });
 
+        test('S/4HANA cloud config with target destination', async () => {
+            const configWithDestination: AdpWriterConfig = {
+                app: {
+                    id: 'my.test.app',
+                    reference: 'the.original.app'
+                },
+                target: {
+                    destination: 'UYTCLNT902'
+                }
+            };
+
+            const projectDir = join(outputDir, 's4hanaDestination');
+            Object.assign(configWithDestination.app, {
+                bspName: 'bsp.test.app',
+                languages: [
+                    {
+                        sap: 'testId',
+                        i18n: 'testKey'
+                    }
+                ]
+            });
+            await generate(
+                projectDir,
+                {
+                    ...configWithDestination,
+                    deploy: {
+                        package: '$TMP'
+                    },
+                    options: {
+                        fioriTools: true
+                    },
+                    ui5: {
+                        version: '1.122.1'
+                    },
+                    flp: {
+                        semanticObject: 'sampleObj',
+                        action: 'sampleAction',
+                        title: 'testTitle',
+                        subTitle: 'testSubTitle'
+                    },
+                    customConfig: {
+                        adp: {
+                            environment: 'C',
+                            support: {
+                                id: '@package/name',
+                                toolsId: 'uuidv4',
+                                version: '0.0.1'
+                            }
+                        }
+                    }
+                },
+                fs
+            );
+            expect(
+                fs.dump(
+                    projectDir,
+                    (file) =>
+                        file.dirname === projectDir &&
+                        ['package.json', 'ui5.yaml', 'ui5-deploy.yaml'].includes(file.basename)
+                )
+            ).toMatchSnapshot();
+        });
+
         test('S/4HANA cloud config with inboundId', async () => {
             const projectDir = join(outputDir, 's4hanaWithInboundId');
             await generate(
