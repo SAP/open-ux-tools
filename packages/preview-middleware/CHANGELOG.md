@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.16.139
+
+### Patch Changes
+
+-   Updated dependencies [2359524]
+    -   @sap-ux/btp-utils@0.17.1
+    -   @sap-ux/adp-tooling@0.12.89
+
 ## 0.16.138
 
 ### Patch Changes
