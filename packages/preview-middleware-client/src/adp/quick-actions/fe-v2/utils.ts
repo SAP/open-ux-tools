@@ -4,6 +4,7 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getUi5Version, isLowerThanMinimalUi5Version, isVersionEqualOrHasNewerPatch } from '../../../utils/version';
+import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 /**
  * Prepares the change for the manifest setting.
@@ -53,13 +54,23 @@ export async function prepareManifestChange(
 }
 
 /**
- * Checks if the current UI5 version supports manifest changes in v2 applications.
+ * Checks if the current UI5 version and manifest structure is supported in v2 applications.
+ * 
+ * @param manifest - manifest changes of the current application.
  *
- * Returns `true` if the UI5 version is supported.
+ * Returns `true` 
+ * 
+ *  - If the manifest is structured as an array 
+ *  - If the UI5 version is not supported
  * Otherwise, returns `false`.
  *
  */
-export async function areManifestChangesSupported(): Promise<boolean> {
+export async function areManifestChangesNotSupported(manifest: Manifest): Promise<boolean> {
+    const pagesStructureInManifest = manifest['sap.ui.generic.app'].pages;
+    if( Array.isArray(pagesStructureInManifest)) {
+        return true;
+    }
+    
     const version = await getUi5Version();
     return (
         isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 }) &&

@@ -2,7 +2,7 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage, pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../table-quick-action-base';
-import { areManifestChangesSupported, prepareManifestChange } from './utils';
+import { areManifestChangesNotSupported, prepareManifestChange } from './utils';
 
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { isA } from '../../../utils/core';
@@ -31,12 +31,10 @@ export class EnableTableFilteringQuickAction
     }
 
     async initialize(): Promise<void> {
-        const isUI5VersionNotSupported = await areManifestChangesSupported();
-        const pagesStructureInManifest = this.context.manifest['sap.ui.generic.app'].pages;
-        if (isUI5VersionNotSupported || Array.isArray(pagesStructureInManifest)) {
+        const manifestChangesNotSupported = await areManifestChangesNotSupported(this.context.manifest);
+        if (manifestChangesNotSupported) {
             return;
         }
-
         for (const table of getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
