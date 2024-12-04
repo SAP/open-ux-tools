@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.7.2
+
+### Patch Changes
+
+-   2359524: align versions of cf-tools
+-   Updated dependencies [2359524]
+    -   @sap-ux/inquirer-common@0.5.7
+    -   @sap-ux/btp-utils@0.17.1
+    -   @sap-ux/axios-extension@1.17.6
+    -   @sap-ux/fiori-generator-shared@0.7.12
+    -   @sap-ux/telemetry@0.5.46
+
 ## 0.7.1
 
 ### Patch Changes
