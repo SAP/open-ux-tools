@@ -15,6 +15,7 @@ import {
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
 import { FileName, type ManifestNamespace } from '@sap-ux/project-access';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
@@ -112,9 +113,21 @@ async function getManifest(
         manifest = (await readManifest(basePath, fs))?.manifest;
     } else {
         const variant = getVariant(basePath);
-        const config = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
+        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
+        const provider = await createAbapServiceProvider(
+            target,
+            {
+                ignoreCertErrors
+            },
+            true,
+            logger
+        );
 
-        const manifestService = await ManifestService.initMergedManifest(basePath, variant, config, logger);
+        if (!(await provider.isS4Cloud())) {
+            throw new Error('Command is only available for Cloud Ready applications.');
+        }
+
+        const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, logger);
 
         manifest = manifestService.getManifest();
     }

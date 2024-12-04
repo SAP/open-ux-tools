@@ -57,7 +57,7 @@ export interface GuiOptions {
     /**
      * Indicates how the question will be displayed in YUI
      */
-    type?: 'label';
+    type?: 'label' | 'folder-browser';
     /**
      * Link to be shown in input question prompt of type 'label'
      */
