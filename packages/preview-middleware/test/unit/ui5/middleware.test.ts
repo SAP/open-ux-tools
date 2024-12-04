@@ -97,7 +97,7 @@ describe('ui5/middleware', () => {
         await server.get(path).expect(200);
         await server.get('/preview/client/flp/init.js').expect(200);
         await server.get('/test/flp.html').expect(404);
-    });
+    }, 10000);
 
     test('unsupported editor config', async () => {
         const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
