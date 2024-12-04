@@ -1,8 +1,11 @@
-import { existsSync, readdirSync, readFileSync } from 'fs';
+import type { Editor } from 'mem-fs-editor';
 import { join, isAbsolute, relative } from 'path';
+import { existsSync, readdirSync, readFileSync } from 'fs';
+
 import { UI5Config } from '@sap-ux/ui5-config';
-import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
+
+import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 
 /**
  * Get the app descriptor variant.
@@ -12,6 +15,17 @@ import { FileName, getWebappPath } from '@sap-ux/project-access';
  */
 export function getVariant(basePath: string): DescriptorVariant {
     return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
+}
+
+/**
+ * Writes the updated variant content to the manifest.appdescr_variant file.
+ *
+ * @param {string} basePath - The base path of the project.
+ * @param {DescriptorVariant} variant - The descriptor variant object.
+ * @param {Editor} fs - The mem-fs editor instance.
+ */
+export function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor) {
+    fs.writeJSON(join(basePath, 'manifest.appdescr_variant'), variant);
 }
 
 /**

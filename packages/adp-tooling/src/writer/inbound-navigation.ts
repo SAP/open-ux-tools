@@ -1,11 +1,11 @@
 import path from 'path';
-import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
+import { type Editor, create } from 'mem-fs-editor';
 
 import { type NewI18nEntry, createPropertiesI18nEntries } from '@sap-ux/i18n';
 
-import { getVariant } from '../';
-import type { Content, DescriptorVariant, InternalInboundNavigation } from '../types';
+import { getVariant, updateVariant } from '../';
+import type { Content, InternalInboundNavigation } from '../types';
 import { enhanceManifestChangeContentWithFlpConfig as enhanceInboundConfig } from './options';
 
 /**
@@ -57,17 +57,6 @@ export function getFlpI18nKeys(config: InternalInboundNavigation, appId: string)
     }
 
     return newEntries;
-}
-
-/**
- * Writes the updated variant content to the manifest.appdescr_variant file.
- *
- * @param {string} basePath - The base path of the project.
- * @param {DescriptorVariant} variant - The descriptor variant object.
- * @param {Editor} fs - The mem-fs editor instance.
- */
-export function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor) {
-    fs.writeJSON(path.join(basePath, 'manifest.appdescr_variant'), variant);
 }
 
 /**

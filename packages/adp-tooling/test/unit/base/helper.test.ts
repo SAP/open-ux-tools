@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { existsSync, readFileSync } from 'fs';
+import { create, type Editor } from 'mem-fs-editor';
 
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '@sap-ux/project-access';
@@ -10,7 +11,8 @@ import {
     getAdpConfig,
     getWebappFiles,
     isAdpProject,
-    flpConfigurationExists
+    flpConfigurationExists,
+    updateVariant
 } from '../../../src/base/helper';
 
 const existsSyncMock = existsSync as jest.Mock;
@@ -26,6 +28,8 @@ jest.mock('fs', () => {
 
 describe('helper', () => {
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');
+    const mockPath = join(basePath, 'webapp', 'manifest.appdescr_variant');
+    const mockVariant = jest.requireActual('fs').readFileSync(mockPath, 'utf-8');
     const mockAdp = {
         target: {
             url: 'https://sap.example',
@@ -39,11 +43,26 @@ describe('helper', () => {
         });
 
         test('should return variant', () => {
-            const mockPath = join(basePath, 'webapp', 'manifest.appdescr_variant');
-            const mockVariant = jest.requireActual('fs').readFileSync(mockPath, 'utf-8');
             readFileSyncMock.mockImplementation(() => mockVariant);
 
             expect(getVariant(basePath)).toStrictEqual(JSON.parse(mockVariant));
+        });
+    });
+
+    describe('updateVariant', () => {
+        let fs: ReturnType<typeof create>;
+
+        beforeEach(() => {
+            fs = {
+                writeJSON: jest.fn()
+            } as unknown as Editor;
+            jest.clearAllMocks();
+        });
+
+        it('should write the updated variant content to the manifest file', () => {
+            updateVariant(basePath, mockVariant, fs);
+
+            expect(fs.writeJSON).toHaveBeenCalledWith(join(basePath, 'manifest.appdescr_variant'), mockVariant);
         });
     });
 
