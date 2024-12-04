@@ -25,11 +25,9 @@ export class AddNewAnnotationFile implements NestedQuickActionDefinition {
     }
 
     constructor(protected readonly context: QuickActionContext) {}
-
-    public get isActive(): boolean {
+    public get isApplicable(): boolean {
         return true;
     }
-
     async initialize(): Promise<void> {
         const dataSourceAnnotationFileMap = await getDataSourceAnnotationFileMap();
         if (!dataSourceAnnotationFileMap) {
@@ -38,6 +36,10 @@ export class AddNewAnnotationFile implements NestedQuickActionDefinition {
         for (const key in dataSourceAnnotationFileMap) {
             const source = dataSourceAnnotationFileMap[key];
             this.children.push({
+                enabled: !source.annotationFiles.length ? true : false,
+                tooltip: source.annotationFiles.length
+                    ? this.context.resourceBundle.getText('ANNOTATION_FILE_ACTION_NOT_AVAILABLE', [key])
+                    : undefined,
                 label: source.annotationFiles.length
                     ? this.context.resourceBundle.getText('SHOW_ANNOTATION_FILE', [key])
                     : this.context.resourceBundle.getText('ODATA_SORUCE', [key]),
@@ -90,7 +92,7 @@ export class AddNewAnnotationFile implements NestedQuickActionDefinition {
         return {
             kind: NESTED_QUICK_ACTION_KIND,
             id: this.id,
-            enabled: this.isActive,
+            enabled: this.isApplicable,
             title: this.context.resourceBundle.getText('QUICK_ACTION_ADD_NEW_ANNOTATION_FILE'),
             children: this.children
         };
