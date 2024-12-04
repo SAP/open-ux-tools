@@ -1,5 +1,13 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.1.6
+
+### Patch Changes
+
+-   Updated dependencies [307706e]
+    -   @sap-ux/guided-answers-helper@0.1.1
+    -   @sap-ux/inquirer-common@0.5.8
+
 ## 1.1.5
 
 ### Patch Changes
