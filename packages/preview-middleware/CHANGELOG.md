@@ -1,5 +1,44 @@
 # @sap-ux/preview-middleware
 
+## 0.16.137
+
+### Patch Changes
+
+-   0fb08df: Use ui5 version specific flp sandbox template instead of dynamic bootstrap
+
+## 0.16.136
+
+### Patch Changes
+
+-   Updated dependencies [14163cd]
+    -   @sap-ux/adp-tooling@0.12.87
+
+## 0.16.135
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.86
+-   @sap-ux/project-access@1.28.8
+
+## 0.16.134
+
+### Patch Changes
+
+-   c10bf9f: fix: Various lint error fixes and code improvements
+
+## 0.16.133
+
+### Patch Changes
+
+-   70e6d46: CPE - Disable Add Custom Column Quick Action, if table rows are required and not available
+
+## 0.16.132
+
+### Patch Changes
+
+-   79d2435: fix: remove feature toggle check for Enable/Disable Semantic Date Range in Filter Bar
+-   ca82698: CPE - Enable Table Filtering Quick Action
+
 ## 0.16.131
 
 ### Patch Changes

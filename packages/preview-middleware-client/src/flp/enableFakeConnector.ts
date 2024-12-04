@@ -74,8 +74,7 @@ export async function loadChanges(...args: []): Promise<LoadChangesResult> {
     const changes = (await response.json()) as FetchedChanges;
 
     return LrepConnector.prototype.loadChanges.apply(lrep, args).then((res: LoadChangesResult) => {
-        const flexChanges = Object.values(changes);
-        res.changes.changes = flexChanges;
+        res.changes.changes = Object.values(changes);
         return res;
     });
 }

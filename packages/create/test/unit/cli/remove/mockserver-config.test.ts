@@ -37,7 +37,7 @@ describe('Test command add mockserver-config', () => {
             dump: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
-        jest.spyOn(mockserverWriter, 'removeMockserverConfig').mockReturnValue(fsMock);
+        jest.spyOn(mockserverWriter, 'removeMockserverConfig').mockResolvedValue(fsMock);
         const promptSpy = jest.spyOn(prompts, 'prompt');
 
         // Test execution
@@ -61,7 +61,7 @@ describe('Test command add mockserver-config', () => {
             dump: jest.fn().mockReturnValue({ 'deleted.file': { state: 'deleted' } }),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
-        jest.spyOn(mockserverWriter, 'removeMockserverConfig').mockReturnValue(fsMock);
+        jest.spyOn(mockserverWriter, 'removeMockserverConfig').mockResolvedValue(fsMock);
         const promptSpy = jest.spyOn(prompts, 'prompt').mockResolvedValue({ doCommit: false });
 
         // Test execution
@@ -85,7 +85,7 @@ describe('Test command add mockserver-config', () => {
             dump: jest.fn().mockReturnValue({ 'deleted.file': { state: 'deleted' } }),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
-        jest.spyOn(mockserverWriter, 'removeMockserverConfig').mockReturnValue(fsMock);
+        jest.spyOn(mockserverWriter, 'removeMockserverConfig').mockResolvedValue(fsMock);
         jest.spyOn(prompts, 'prompt').mockResolvedValue({ doCommit: true });
 
         // Test execution
@@ -106,7 +106,7 @@ describe('Test command add mockserver-config', () => {
             dump: jest.fn().mockReturnValue({ 'deleted.file': { state: 'deleted' } }),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
-        jest.spyOn(mockserverWriter, 'removeMockserverConfig').mockReturnValue(fsMock);
+        jest.spyOn(mockserverWriter, 'removeMockserverConfig').mockResolvedValue(fsMock);
         const promptSpy = jest.spyOn(prompts, 'prompt');
 
         // Test execution
