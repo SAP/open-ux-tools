@@ -1,5 +1,5 @@
 function parseUI5Version(version) {
-    const versionParts = version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.');
+    const versionParts = version.split('.');
     const major = parseInt(versionParts[0], 10);
     const minor = parseInt(versionParts[1], 10);
 
@@ -8,7 +8,7 @@ function parseUI5Version(version) {
 
 function isLowerThanMinimalUi5Version(version, minVersion) {
     if (version && minVersion) {
-        const minVersionParsed = parseUI5Version(minVersion);
+        const minVersionParsed = { major: 1, minor: 121 };
         const ui5VersionParsed = parseUI5Version(version);
         if (!isNaN(ui5VersionParsed.major) && !isNaN(ui5VersionParsed.minor)) {
             if (ui5VersionParsed.major < minVersionParsed.major) {
@@ -48,32 +48,25 @@ function addCardGenerationUserAction(oComponentInstance) {
     });
 }
 
-sap.ui.require(["sap/ushell/Container"], (Container) => {
+sap.ui.require(["sap/ushell/Container", "sap/m/MessageBox", "sap/ui/VersionInfo"], async (Container, MessageBox, VersionInfo) => {
     Container.attachRendererCreatedEvent(function() {
         Container.getServiceAsync('AppLifeCycle').then((serviceInstance) => {
             serviceInstance.attachAppLoaded(async (event) => {
-                sap.ui.require([
-                    "sap/m/MessageBox",
-                    "sap/ui/VersionInfo"
-                ], async (MessageBox, VersionInfo) => {
-                    const sapCoreVersionInfo = await VersionInfo.load({
-                        library: "sap.ui.core"
-                    });
-                    const sapCoreVersion = sapCoreVersionInfo?.version;
-
-                    if (isLowerThanMinimalUi5Version(sapCoreVersion, "1.121")) {
-                        MessageBox.error("Card Generation feature is not supported for the current UI5 version. Please use UI5 version 1.121 or higher.");
-                        return;
-                    }
-
-                    var oCurrentApplication = serviceInstance.getCurrentApplication();
-                    var oComponentInstance = oCurrentApplication.componentInstance;
-                    addCardGenerationUserAction(oComponentInstance);
+                const sapCoreVersionInfo = await VersionInfo.load({
+                    library: "sap.ui.core"
                 });
+                const sapCoreVersion = sapCoreVersionInfo?.version;
+                if (isLowerThanMinimalUi5Version(sapCoreVersion, "1.121")) {
+                    MessageBox.error("Card Generation feature is not supported for the current UI5 version. Please use UI5 version 1.121 or higher.");
+                    return;
+                }
+                var oCurrentApplication = serviceInstance.getCurrentApplication();
+                var oComponentInstance = oCurrentApplication.componentInstance;
+                addCardGenerationUserAction(oComponentInstance);
             });
         });
     });
-    Container.createRenderer(true).then(function(oRenderer){
+    Container.createRendererInternal(undefined, true).then(function(oRenderer){
         oRenderer.placeAt("content");
     });  
 });
