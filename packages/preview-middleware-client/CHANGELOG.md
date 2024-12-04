@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.40
+
+### Patch Changes
+
+-   0fb08df: Use ui5 version specific flp sandbox template instead of dynamic bootstrap
+
 ## 0.11.39
 
 ### Patch Changes

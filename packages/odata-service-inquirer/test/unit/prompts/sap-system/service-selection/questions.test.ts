@@ -71,7 +71,8 @@ const connectionValidatorMock = {
     serviceProvider: serviceProviderMock,
     catalogs,
     systemAuthType: 'basic',
-    odataService: odataServiceMock
+    odataService: odataServiceMock,
+    isAuthRequired: jest.fn().mockResolvedValue(false)
 };
 
 jest.mock('../../../../../src/prompts/connectionValidator', () => {
@@ -79,6 +80,12 @@ jest.mock('../../../../../src/prompts/connectionValidator', () => {
         ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
     };
 });
+
+let mockIsAppStudio = false;
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
+    isAppStudio: jest.fn().mockImplementation(() => mockIsAppStudio)
+}));
 
 describe('Test new system prompt', () => {
     const promptNamespace = 'someNamespace';
@@ -576,6 +583,7 @@ describe('Test new system prompt', () => {
     });
 
     test('Should set a single odata service as the only choice when catalogs not available (BAS full/partial URL destinations)', async () => {
+        mockIsAppStudio = true;
         const connectValidator = new ConnectionValidator();
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: undefined,
