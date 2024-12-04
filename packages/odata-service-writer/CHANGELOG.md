@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-writer
 
+## 0.24.0
+
+### Minor Changes
+
+-   73475e5: Support for multiple services and multiple annotations per service.
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/mockserver-config-writer@0.7.0
+    -   @sap-ux/ui5-config@0.26.0
+
 ## 0.23.3
 
 ### Patch Changes

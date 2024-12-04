@@ -1,4 +1,4 @@
-import type { Expression } from '@sap-ux/vocabularies-types';
+import type { Expression, StringExpression } from '@sap-ux/vocabularies-types';
 import { createElementNode, type AliasInformation } from '@sap-ux/odata-annotation-core-types';
 
 import { convertExpressionToInternal } from '../../../src/avt/to-internal';
@@ -21,6 +21,9 @@ describe('avt to internal', () => {
         }
         test('Collection', () => {
             testConversion({ type: 'Collection', Collection: [] });
+        });
+        test('Collection with string values', () => {
+            testConversion({ type: 'Collection', Collection: ['test'] as unknown as StringExpression[] });
         });
         test('Record', () => {
             testConversion({

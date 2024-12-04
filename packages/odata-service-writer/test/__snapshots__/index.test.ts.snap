@@ -37,10 +37,14 @@ Object {
         mountPath: /
         services:
           - urlPath: /sap/odata/testme
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/sepmra_annotations_tech_name.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/
+          - localPath: ./webapp/annotations/annotations_test.xml
+            urlPath: annotations/annotations_test.xml
 ",
     "state": "modified",
   },
@@ -65,11 +69,11 @@ Object {
         mountPath: /
         services:
           - urlPath: /sap/odata/testme
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/sepmra_annotations_tech_name.xml
+          - localPath: ./webapp/localService/mainService/sepmra_annotations_tech_name.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/
           - localPath: ./webapp/annotations/annotations_test.xml
             urlPath: annotations/annotations_test.xml
@@ -115,7 +119,7 @@ Object {
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -1926,7 +1930,7 @@ Object {
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/sepmra_annotations_tech_name.xml": Object {
+  "webapp/localService/mainService/sepmra_annotations_tech_name.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://example.host:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -2740,7 +2744,7 @@ Object {
             \\"sepmra_annotations_tech_name\\",
             \\"annotations_test\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -2748,7 +2752,7 @@ Object {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/sepmra_annotations_tech_name.xml\\"
+          \\"localUri\\": \\"localService/mainService/sepmra_annotations_tech_name.xml\\"
         }
       },
       \\"annotations_test\\": {
@@ -2817,10 +2821,12 @@ Object {
         mountPath: /
         services:
           - urlPath: /sap/odata/testme
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService//SEPM_XYZ/SERVICE.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/
 ",
     "state": "modified",
   },
@@ -2845,11 +2851,11 @@ Object {
         mountPath: /
         services:
           - urlPath: /sap/odata/testme
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService//SEPM_XYZ/SERVICE.xml
+          - localPath: ./webapp/localService/mainService//SEPM_XYZ/SERVICE.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/
 ",
     "state": "modified",
@@ -2872,7 +2878,7 @@ Object {
 ",
     "state": "modified",
   },
-  "webapp/localService/SEPM_XYZ/SERVICE.xml": Object {
+  "webapp/localService/mainService/SEPM_XYZ/SERVICE.xml": Object {
     "contents": "<HELLO>
     <ANNOTATION>
     </ANNOTATION>
@@ -2880,7 +2886,7 @@ Object {
 </HELLO>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<HELLO>
     <WORLD>
         <METADATA>
@@ -2901,7 +2907,7 @@ Object {
           \\"annotations\\": [
             \\"SEPM_XYZ_SERVICE\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -2909,7 +2915,7 @@ Object {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService//SEPM_XYZ/SERVICE.xml\\"
+          \\"localUri\\": \\"localService/mainService//SEPM_XYZ/SERVICE.xml\\"
         }
       }
     }
