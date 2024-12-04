@@ -1,5 +1,11 @@
 # @sap-ux/feature-toggle
 
+## 0.2.3
+
+### Patch Changes
+
+-   d04a40e: Add new toggles for ai module
+
 ## 0.2.2
 
 ### Patch Changes

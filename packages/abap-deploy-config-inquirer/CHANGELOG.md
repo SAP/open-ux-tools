@@ -1,5 +1,13 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.1.4
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.17.5
+-   @sap-ux/inquirer-common@0.5.6
+-   @sap-ux/system-access@0.5.20
+
 ## 1.1.3
 
 ### Patch Changes
