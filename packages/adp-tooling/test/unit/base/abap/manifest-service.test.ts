@@ -84,12 +84,44 @@ describe('ManifestService', () => {
             const adpConfigWithoutIgnoreCers: AdpPreviewConfig = {
                 target: { url: 'https://example.com' }
             };
+
             manifestService = await ManifestService.initBaseManifest('appId', adpConfigWithoutIgnoreCers, logger);
 
             expect(manifestService.getManifest()).toEqual(mockManifest);
             expect(createAbapServiceProvider).toHaveBeenCalledWith(
                 adpConfig.target,
                 { ignoreCertErrors: false },
+                true,
+                logger
+            );
+            expect(provider.getAppIndex().getAppInfo).toHaveBeenCalledWith('appId');
+        });
+
+        it('should initialize and fetch the base manifest with additional request options', async () => {
+            const adpConfigWithoutIgnoreCers: AdpPreviewConfig = {
+                target: { url: 'https://example.com' }
+            };
+
+            const requestOptions = {
+                headers: {
+                    'testHeader': 'testVa;'
+                }
+            };
+
+            manifestService = await ManifestService.initBaseManifest(
+                'appId',
+                adpConfigWithoutIgnoreCers,
+                logger,
+                requestOptions
+            );
+
+            expect(manifestService.getManifest()).toEqual(mockManifest);
+            expect(createAbapServiceProvider).toHaveBeenCalledWith(
+                adpConfig.target,
+                {
+                    ...requestOptions,
+                    ignoreCertErrors: false
+                },
                 true,
                 logger
             );
@@ -193,6 +225,39 @@ describe('ManifestService', () => {
             expect(createAbapServiceProvider).toHaveBeenCalledWith(
                 adpConfig.target,
                 { ignoreCertErrors: false },
+                true,
+                logger
+            );
+        });
+
+        it('should initialize and fetch the merged manifest with additional request options', async () => {
+            const adpConfigWithoutIgnoreCers: AdpPreviewConfig = {
+                target: { url: 'https://example.com' }
+            };
+            const variant = { id: 'descriptorVariantId', reference: 'referenceAppId' };
+            const requestOptions = {
+                headers: {
+                    'testHeader': 'testVa;'
+                }
+            };
+            (getWebappFiles as jest.MockedFunction<typeof getWebappFiles>).mockReturnValue([
+                { relativePath: 'path', content: 'content' }
+            ]);
+            manifestService = await ManifestService.initMergedManifest(
+                'basePath',
+                variant as unknown as DescriptorVariant,
+                adpConfigWithoutIgnoreCers,
+                logger,
+                requestOptions
+            );
+
+            expect(manifestService.getManifest()).toEqual(mockManifest);
+            expect(createAbapServiceProvider).toHaveBeenCalledWith(
+                adpConfig.target,
+                {
+                    ...requestOptions,
+                    ignoreCertErrors: false
+                },
                 true,
                 logger
             );
