@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { readFileSync } from 'fs';
-import { create, type Editor } from 'mem-fs-editor';
+import type { create, Editor } from 'mem-fs-editor';
 
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 
