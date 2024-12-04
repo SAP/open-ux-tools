@@ -257,7 +257,7 @@ describe('Test system selection prompts', () => {
                 type: 'destination',
                 system: partialUrlDest
             } as SystemSelectionAnswerType)
-        ).toBe(true); // true because we defer the validation to the (destintion) service url path prompt
+        ).toBe(true); // true because we defer the validation to the (destination) service url path prompt
         expect(connectWithDestinationSpy).not.toHaveBeenCalled();
 
         // prompt for service path
