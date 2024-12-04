@@ -24,60 +24,57 @@ function isLowerThanMinimalUi5Version(version, minVersion) {
 
 function addCardGenerationUserAction(oComponentInstance) {
     sap.ui.require([
-        "sap/cards/ap/generator/CardGenerator"
-    ], (CardGenerator) => {
-        sap.ui.require(["sap/ushell/Container"], async function (Container) {
-            const oRenderer = await Container.getServiceAsync("fiori2");
-            if (oRenderer) {
-                var generateCardBtn = {
-                    controlType: "sap.ushell.ui.launchpad.ActionItem",
-                    bCurrentState: true,
-                    oControlProperties: {
-                        icon: "sap-icon://add",
-                        id: "generate_card",
-                        text: "Generate Card",
-                        tooltip: "Generate Card",
-                        press: function () {
-                            CardGenerator.initializeAsync(oComponentInstance);
-                        }
-                    },
-                    bIsVisible: true
-                };
-                oRenderer.addUserAction(generateCardBtn);
-            }
-        });
+        "sap/cards/ap/generator/CardGenerator",
+        "sap/ushell/Container"
+    ], async (CardGenerator, Container) => {
+        const oRenderer = await Container.getServiceAsync("fiori2");
+        if (oRenderer) {
+            var generateCardBtn = {
+                controlType: "sap.ushell.ui.launchpad.ActionItem",
+                bCurrentState: true,
+                oControlProperties: {
+                    icon: "sap-icon://add",
+                    id: "generate_card",
+                    text: "Generate Card",
+                    tooltip: "Generate Card",
+                    press: function () {
+                        CardGenerator.initializeAsync(oComponentInstance);
+                    }
+                },
+                bIsVisible: true
+            };
+            oRenderer.addUserAction(generateCardBtn);
+        }
     });
 }
 
-sap.ui.require(["sap/ui/core/Core"], (Core) => {
-    Core.ready().then(function() {
-        sap.ui.require("sap/ushell/Container").attachRendererCreatedEvent(function() {
-            sap.ui.require("sap/ushell/Container").getServiceAsync('AppLifeCycle').then((serviceInstance) => {
-                serviceInstance.attachAppLoaded(async (event) => {
-                    sap.ui.require([
-                        "sap/m/MessageBox",
-                        "sap/ui/VersionInfo"
-                    ], async (MessageBox, VersionInfo) => {
-                        const sapCoreVersionInfo = await VersionInfo.load({
-                            library: "sap.ui.core"
-                        });
-                        const sapCoreVersion = sapCoreVersionInfo?.version;
-    
-                        if (isLowerThanMinimalUi5Version(sapCoreVersion, "1.121")) {
-                            MessageBox.error("Card Generation feature is not supported for the current UI5 version. Please use UI5 version 1.121 or higher.");
-                            return;
-                        }
-    
-                        var oCurrentApplication = serviceInstance.getCurrentApplication();
-                        var oComponentInstance = oCurrentApplication.componentInstance;
-                        addCardGenerationUserAction(oComponentInstance);
+sap.ui.require(["sap/ushell/Container"], (Container) => {
+    Container.attachRendererCreatedEvent(function() {
+        Container.getServiceAsync('AppLifeCycle').then((serviceInstance) => {
+            serviceInstance.attachAppLoaded(async (event) => {
+                sap.ui.require([
+                    "sap/m/MessageBox",
+                    "sap/ui/VersionInfo"
+                ], async (MessageBox, VersionInfo) => {
+                    const sapCoreVersionInfo = await VersionInfo.load({
+                        library: "sap.ui.core"
                     });
+                    const sapCoreVersion = sapCoreVersionInfo?.version;
+
+                    if (isLowerThanMinimalUi5Version(sapCoreVersion, "1.121")) {
+                        MessageBox.error("Card Generation feature is not supported for the current UI5 version. Please use UI5 version 1.121 or higher.");
+                        return;
+                    }
+
+                    var oCurrentApplication = serviceInstance.getCurrentApplication();
+                    var oComponentInstance = oCurrentApplication.componentInstance;
+                    addCardGenerationUserAction(oComponentInstance);
                 });
             });
         });
-        sap.ui.require("sap/ushell/Container").createRenderer(true).then(function(oRenderer){
-            oRenderer.placeAt("content");
-        });
+    });
+    Container.createRenderer(true).then(function(oRenderer){
+        oRenderer.placeAt("content");
     });  
 });
 
