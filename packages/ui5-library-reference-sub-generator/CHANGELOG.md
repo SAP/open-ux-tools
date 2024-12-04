@@ -1,5 +1,13 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.0.11
+
+### Patch Changes
+
+-   Updated dependencies [d04a40e]
+    -   @sap-ux/feature-toggle@0.2.3
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.51
+
 ## 0.0.10
 
 ### Patch Changes
