@@ -1,5 +1,21 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.7.0
+
+### Minor Changes
+
+-   cce9609: Adds auth handling for service url destination. Fix for client validation text not shown.
+
+## 0.6.13
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.8
+-   @sap-ux/telemetry@0.5.45
+-   @sap-ux/axios-extension@1.17.4
+-   @sap-ux/fiori-generator-shared@0.7.11
+-   @sap-ux/inquirer-common@0.5.5
+
 ## 0.6.12
 
 ### Patch Changes

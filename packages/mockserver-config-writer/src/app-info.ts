@@ -1,6 +1,17 @@
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 /**
+ * Get the main service data source name from manifest.json.
+ *
+ * @param manifest - Parsed manifest.json
+ * @returns - data source name from manifest.json
+ */
+function getMainServiceDataSourceName(manifest: Manifest): string | undefined {
+    const modelName = manifest['sap.ovp']?.globalFilterModel ?? '';
+    return manifest['sap.ui5']?.models?.[modelName]?.dataSource;
+}
+
+/**
  * Get the main service data source entry from manifest.json.
  *
  * @param manifest - Parsed manifest.json
@@ -8,11 +19,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
  */
 export function getMainServiceDataSource(manifest: Manifest): ManifestNamespace.DataSource | undefined {
     let dataSource;
-    const model = manifest['sap.ovp']?.globalFilterModel || '';
-    const dataSourceName =
-        manifest['sap.ui5'] && manifest['sap.ui5'].models?.[model]
-            ? manifest['sap.ui5'].models[model].dataSource
-            : undefined;
+    const dataSourceName = getMainServiceDataSourceName(manifest);
     if (dataSourceName) {
         dataSource = manifest['sap.app'].dataSources?.[dataSourceName];
     }
@@ -31,7 +38,7 @@ export function getODataSources(
     dataSourceType: ManifestNamespace.DataSourceEnum['type'] = 'OData'
 ): { [k: string]: ManifestNamespace.DataSource } {
     const result: { [k: string]: ManifestNamespace.DataSource } = {};
-    const dataSources = manifest['sap.app']?.dataSources || {};
+    const dataSources = manifest['sap.app']?.dataSources ?? {};
     for (const dataSource in dataSources) {
         if (dataSources[dataSource].uri && dataSources[dataSource].type === dataSourceType) {
             result[dataSource] = dataSources[dataSource];

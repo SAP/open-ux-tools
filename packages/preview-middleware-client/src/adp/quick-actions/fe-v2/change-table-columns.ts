@@ -18,7 +18,9 @@ export class ChangeTableColumnsQuickAction
     implements NestedQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(CHANGE_TABLE_COLUMNS, CONTROL_TYPES, 'V2_QUICK_ACTION_CHANGE_TABLE_COLUMNS', context, true);
+        super(CHANGE_TABLE_COLUMNS, CONTROL_TYPES, 'V2_QUICK_ACTION_CHANGE_TABLE_COLUMNS', context, {
+            includeServiceAction: true
+        });
     }
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, changeColumnActionId, sectionInfo } = this.tableMap[path];
