@@ -62,8 +62,7 @@ const connector = merge({}, ObjectStorageConnector, {
                     'content-type': 'application/json'
                 }
             });
-            const changes = await response.json() as unknown as FlexChange[];
-            return changes;
+            return (await response.json()) as unknown as FlexChange[];
         }
     } as typeof ObjectStorageConnector.storage,
     loadFeatures: async function () {
