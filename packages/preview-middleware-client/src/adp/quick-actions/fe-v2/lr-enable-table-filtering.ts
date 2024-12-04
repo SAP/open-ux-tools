@@ -32,7 +32,8 @@ export class EnableTableFilteringQuickAction
 
     async initialize(): Promise<void> {
         const isUI5VersionNotSupported = await areManifestChangesSupported();
-        if (isUI5VersionNotSupported) {
+        const pagesStructureInManifest = this.context.manifest['sap.ui.generic.app'].pages;
+        if (isUI5VersionNotSupported || Array.isArray(pagesStructureInManifest)) {
             return;
         }
 
