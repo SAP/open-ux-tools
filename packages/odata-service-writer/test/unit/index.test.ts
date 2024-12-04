@@ -165,6 +165,10 @@ describe('generate', () => {
             expect(manifest['sap.app'].dataSources.SEPMRA_PROD_MAN.settings.localUri).toBe(
                 'localService/mainService/SEPMRA_PROD_MAN.xml'
             );
+            // No service file in localService
+            expect(fs.exists(join(root, 'webapp', 'localService', 'metadata.xml'))).toBe(false);
+            expect(fs.exists(join(root, 'webapp', 'localService', 'SEPMRA_PROD_MAN.xml'))).toBe(false);
+            // Services files are moved to localService/mainService
             expect(fs.exists(join(root, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
             expect(fs.exists(join(root, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
             // Check if new service is added

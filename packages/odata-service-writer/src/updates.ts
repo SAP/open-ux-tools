@@ -35,7 +35,9 @@ function updateExistingService(
             // move related files to service folder
             const fromFilePath = join(webappPath, localUriParts.join(sep));
             const toFilePath = join(webappPath, DirName.LocalService, dataSourceKey, localFileName);
-            fs.copy(fromFilePath, toFilePath);
+            if (fs.exists(fromFilePath)) {
+                fs.move(fromFilePath, toFilePath);
+            }
         }
     }
 }
@@ -87,6 +89,7 @@ export async function updateManifest(
     const appid = manifest?.[appProp]?.id;
     // Check and update existing services
     await updateExistingServices(webappPath, manifest, fs);
+    const modifiedManifest = fs.readJSON(manifestPath) as unknown as Manifest;
     // Throw if required property is not found manifest.json
     if (!appid) {
         throw new Error(
@@ -95,7 +98,7 @@ export async function updateManifest(
     }
 
     const manifestJsonExt = fs.read(join(templateRoot, 'extend', `manifest.json`));
-    const manifestSettings = Object.assign(service, getModelSettings(getMinimumUI5Version(manifest)));
+    const manifestSettings = Object.assign(service, getModelSettings(getMinimumUI5Version(modifiedManifest)));
     // If the service object includes ejs options, for example 'client' (see: https://ejs.co/#docs),
     // resulting in unexpected behaviour and problems when webpacking. Passing an empty options object prevents this.
     fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, manifestSettings, {})));
