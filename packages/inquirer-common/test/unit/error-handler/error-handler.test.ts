@@ -307,10 +307,4 @@ describe('Test ErrorHandler', () => {
             t('errors.serverReturnedAnError', { errorDesc: '500 Server Error' })
         );
     });
-
-    test('getHelpForError - getErrorMsgFromType returns undefined', () => {
-        const getErrorMsgFromTypeSpy = jest.spyOn(ErrorHandler, 'getErrorMsgFromType').mockReturnValue(undefined);
-        // @ts-expect-error - Testing undefined return from getErrorMsgFromType
-        expect(ErrorHandler.getHelpForError(ERROR_TYPE.CERT, null)).toEqual(expect.objectContaining({ message: '' }));
-    });
 });

@@ -636,8 +636,8 @@ export class ErrorHandler {
         const helpNode = ErrorHandler.getHelpNode(errorType);
         const mappedErrorMsg = errorMsg ?? ErrorHandler.getErrorMsgFromType(errorType);
 
-        if (helpNode) {
-            return this.getHelpLink(helpNode, errorType, mappedErrorMsg ?? '');
+        if (helpNode && mappedErrorMsg) {
+            return this.getHelpLink(helpNode, errorType, mappedErrorMsg);
         }
         return mappedErrorMsg;
     }
