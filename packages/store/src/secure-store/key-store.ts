@@ -9,6 +9,8 @@ export class KeyStoreManager implements SecureStore {
     private readonly keyring: typeof keyring;
 
     constructor(log: Logger, zoweSecretSdk: typeof keyring) {
+        //// remove console log once satisfied with testing
+        console.log(" -- console log to check if zowe is being used  ---")
         this.log = log;
         this.keyring = zoweSecretSdk;
     }
@@ -126,7 +128,8 @@ export class KeyStoreManager implements SecureStore {
         const results: Entities<T> = {};
 
         try {
-            console.log(' -- my zowe get all ---');
+            // remove console log once satisfied with testing
+            console.log(' --  zowe get all ---');
             const entries = await this.keyring.findCredentials(service);
             if (!entries || entries.length === 0) {
                 this.log.warn(`No credentials found for Service: [${service}]`);
