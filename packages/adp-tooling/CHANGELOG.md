@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.90
+
+### Patch Changes
+
+-   3805f2e: add request options to manifest-service
+
 ## 0.12.89
 
 ### Patch Changes
