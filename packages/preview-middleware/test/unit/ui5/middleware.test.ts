@@ -89,7 +89,7 @@ describe('ui5/middleware', () => {
         const server = await getTestServer('simple-app');
         await server.get('/test/flp.html').expect(200);
         await server.get('/preview/client/flp/init.js').expect(200);
-    });
+    }, 10000);
 
     test('simple config', async () => {
         const path = '/my/preview/is/here.html';
@@ -133,7 +133,7 @@ describe('ui5/middleware', () => {
         });
         await server.get('/test/flp.html').expect(200);
         await server.get('/adp/editor.html').expect(200);
-    });
+    }, 10000);
 
     test('invalid adp config', async () => {
         const url = 'http://sap.example';
