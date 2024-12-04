@@ -1,5 +1,11 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.0.31
+
+### Patch Changes
+
+-   @sap-ux/ui5-library-inquirer@0.3.21
+
 ## 0.0.30
 
 ### Patch Changes
