@@ -1,5 +1,13 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.0.12
+
+### Patch Changes
+
+-   2359524: align versions of cf-tools
+-   Updated dependencies [2359524]
+    -   @sap-ux/btp-utils@0.17.1
+
 ## 0.0.11
 
 ### Patch Changes
