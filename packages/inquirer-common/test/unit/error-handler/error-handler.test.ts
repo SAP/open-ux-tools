@@ -310,7 +310,7 @@ describe('Test ErrorHandler', () => {
 
     test('getHelpForError - getErrorMsgFromType returns undefined', () => {
         const getErrorMsgFromTypeSpy = jest.spyOn(ErrorHandler, 'getErrorMsgFromType').mockReturnValue(undefined);
-        // @ts-ignore
+        // @ts-expect-error - Testing undefined return from getErrorMsgFromType
         expect(ErrorHandler.getHelpForError(ERROR_TYPE.CERT, null)).toEqual(expect.objectContaining({ message: '' }));
     });
 });
