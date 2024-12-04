@@ -14,7 +14,7 @@
     "private": false,
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --build && node scripts/download-ui5yaml-schema.js",
+        "build": "tsc --build",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
@@ -39,10 +39,7 @@
         "json-parse-even-better-errors": "3.0.2",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "semver": "7.5.4",
-        "axios": "1.7.4",
-        "js-yaml": "4.1.0",
-        "ajv": "8.17.1"
+        "semver": "7.5.4"
     },
     "devDependencies": {
         "@sap-ux/logger": "workspace:*",
@@ -50,7 +47,6 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.5.2",
         "@ui5/manifest": "1.66.0",
-        "vscode-uri": "3.0.7",
-        "@types/js-yaml": "4.0.9"
+        "vscode-uri": "3.0.7"
     }
 }

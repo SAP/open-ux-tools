@@ -11,4 +11,6 @@ specVersion: "3.0"
 metadata:
   name: fiori-tools-preview
 kind: extension
-type: test
+type: server-middleware
+middleware:
+  path: test

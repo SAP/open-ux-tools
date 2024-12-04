@@ -271,8 +271,6 @@ exports[`update preview middleware config same yaml config different endpoints 2
 
 exports[`update preview middleware config skip invalid yaml configurations 1`] = `"{\\"scripts\\":{\\"invalid\\":\\"ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-invalid.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
 
-exports[`update preview middleware config skip multi-file yaml 1`] = `"{\\"scripts\\":{\\"multi-file\\":\\"ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-multi-file.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
-
 exports[`update preview middleware config skip not found yaml configurations 1`] = `"{\\"scripts\\":{\\"not:found\\":\\"ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-unavailable.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
 
 exports[`update preview middleware config skip yaml configurations not used in any script 1`] = `"{\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;

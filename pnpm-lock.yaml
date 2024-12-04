@@ -2413,21 +2413,12 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
-      ajv:
-        specifier: 8.17.1
-        version: 8.17.1
-      axios:
-        specifier: 1.7.4
-        version: 1.7.4
       fast-xml-parser:
         specifier: 4.4.1
         version: 4.4.1
       findit2:
         specifier: 2.2.3
         version: 2.2.3
-      js-yaml:
-        specifier: 4.1.0
-        version: 4.1.0
       json-parse-even-better-errors:
         specifier: 3.0.2
         version: 3.0.2
@@ -2444,9 +2435,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@types/js-yaml':
-        specifier: 4.0.9
-        version: 4.0.9
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -3043,6 +3031,15 @@ importers:
       '@sap-ux/yaml':
         specifier: workspace:*
         version: link:../yaml
+      ajv:
+        specifier: 8.17.1
+        version: 8.17.1
+      axios:
+        specifier: 1.7.4
+        version: 1.7.4
+      js-yaml:
+        specifier: 4.1.0
+        version: 4.1.0
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -3053,6 +3050,9 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@types/js-yaml':
+        specifier: 4.0.9
+        version: 4.0.9
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202

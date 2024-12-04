@@ -26,6 +26,11 @@ import {
     getPreviewMiddlewareConfig
 } from './middlewares';
 import { fioriToolsProxy, serveStatic } from './constants';
+import Ajv, { type ValidateFunction } from 'ajv';
+import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
+import { join } from 'path';
+import { readFile } from 'fs/promises';
+import yaml from 'js-yaml';
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.
@@ -34,18 +39,58 @@ import { fioriToolsProxy, serveStatic } from './constants';
  */
 export class UI5Config {
     private document: YamlDocument;
+    private static validate: ValidateFunction<SomeJSONSchema>;
+
+    /**
+     * Validates the schema of the given yaml document.
+     *
+     * @returns true if the document is valid, false otherwise
+     */
+    async validateSchema(): Promise<boolean> {
+        if (!UI5Config.validate) {
+            const path = join(__dirname, '..', 'dist', 'schema', 'ui5.yaml.json');
+            const schema = JSON.parse(await readFile(path, 'utf8')) as SomeJSONSchema | null;
+            if (!schema) {
+                throw Error('Schema file not found. No validation possible.');
+            }
+            UI5Config.validate = new Ajv({ strict: false }).compile<SomeJSONSchema>(schema);
+        }
+
+        let isValid = false;
+        try {
+            isValid = yaml.loadAll(this.document.toString()).every((document) => UI5Config.validate(document));
+        } catch (error) {
+            throw Error(`No validation possible. Error: ${error}`);
+        }
+        return isValid;
+    }
 
     /**
      * Returns a new instance of UI5Config.
      *
      * @static
      * @param {string} serializedYaml - the serialized yaml string
+     * @param options - options
+     * @param [options.validateSchema] - whether to validate the schema of the yaml file
      * @returns {UI5Config} the UI5Config instance
+     * @throws {Error} if the schema validation fails
      * @memberof UI5Config
      */
-    static async newInstance(serializedYaml: string): Promise<UI5Config> {
+    static async newInstance(
+        serializedYaml: string,
+        options?: {
+            validateSchema?: boolean;
+        }
+    ): Promise<UI5Config> {
         const instance = new UI5Config();
         instance.document = await YamlDocument.newInstance(serializedYaml);
+        const validateSchema = options?.validateSchema ?? false;
+        if (validateSchema) {
+            const isValid = await instance.validateSchema();
+            if (!isValid) {
+                throw new Error('File does not comply with the schema');
+            }
+        }
         return instance;
     }
 

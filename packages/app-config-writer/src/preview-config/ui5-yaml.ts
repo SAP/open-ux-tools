@@ -1,10 +1,10 @@
 import { basename, join } from 'path';
 import { createPreviewMiddlewareConfig } from '../variants-config/ui5-yaml';
 import { ensurePreviewMiddlewareDependency, extractUrlDetails, isValidPreviewScript } from './package-json';
-import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
+import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml, type Package } from '@sap-ux/project-access';
 import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../variants-config/utils';
 import { renameSandbox } from './preview-files';
-import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
 import type {
     FlpConfig,
@@ -14,7 +14,6 @@ import type {
 } from '@sap-ux/preview-middleware';
 import type { PreviewConfigOptions } from '../types';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { ValidatedUi5ConfigFileNames, Package } from '@sap-ux/project-access';
 
 const DEFAULT_FLP_PATH: DefaultFlpPath = '/test/flp.html';
 
@@ -30,31 +29,17 @@ const DEFAULT_INTENT: DefaultIntent = {
  *
  * @param ui5Yaml - the name of the UI5 yaml configuration file
  * @param scriptName - the name of the script from package.json
- * @param validatedUi5YamlFileNames - the validated UI5 yaml configuration file names
+ * @param ui5YamlFileNames - the UI5 yaml configuration file names
  * @param logger logger to report info to the user
  * @returns indicator if the script is to be converted
  */
 function isUi5YamlToBeConverted(
     ui5Yaml: string,
     scriptName: string,
-    validatedUi5YamlFileNames: ValidatedUi5ConfigFileNames,
+    ui5YamlFileNames: string[],
     logger?: ToolsLogger
 ): boolean {
-    if ((validatedUi5YamlFileNames.invalid ?? []).includes(ui5Yaml)) {
-        logger?.warn(
-            `Skipping script '${scriptName}' which refers to UI5 yaml configuration file '${ui5Yaml}' because it does not comply with the schema.`
-        );
-        return false;
-    }
-
-    if ((validatedUi5YamlFileNames.skipped ?? []).includes(ui5Yaml)) {
-        logger?.warn(
-            `Skipping script '${scriptName}' which refers to UI5 yaml configuration file '${ui5Yaml}' because the schema validation was not possible for file '${ui5Yaml}'.`
-        );
-        return false;
-    }
-
-    if (!validatedUi5YamlFileNames.valid.includes(ui5Yaml)) {
+    if (!ui5YamlFileNames.includes(ui5Yaml)) {
         logger?.warn(
             `Skipping script '${scriptName}' because UI5 yaml configuration file '${ui5Yaml}' could not be found.`
         );
@@ -186,7 +171,12 @@ export async function processUi5YamlConfig(
     script: string,
     skipPreviewMiddlewareCreation = false
 ): Promise<void> {
-    const ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml, fs);
+    let ui5YamlConfig: UI5Config;
+    try {
+        ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml, fs, { validateSchema: true });
+    } catch (error) {
+        throw new Error(`Error when reading '${ui5Yaml}': ${error.message}`);
+    }
     let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
 
     if (skipPreviewMiddlewareCreation && !previewMiddleware) {
@@ -264,8 +254,8 @@ export async function updatePreviewMiddlewareConfigs(
     basePath: string,
     logger?: ToolsLogger
 ): Promise<void> {
-    const validatedUi5YamlFileNames = await getAllUi5YamlFileNames(fs, basePath);
-    const unprocessedUi5YamlFileNames = [...validatedUi5YamlFileNames.valid];
+    const ui5YamlFileNames = await getAllUi5YamlFileNames(basePath, fs);
+    const unprocessedUi5YamlFileNames = [...ui5YamlFileNames];
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     for (const [scriptName, script] of Object.entries(packageJson?.scripts ?? {})) {
@@ -277,13 +267,21 @@ export async function updatePreviewMiddlewareConfigs(
         unprocessedUi5YamlFileNames.splice(unprocessedUi5YamlFileNames.indexOf(ui5Yaml), 1);
 
         if (
-            !isUi5YamlToBeConverted(ui5Yaml, scriptName, validatedUi5YamlFileNames, logger) ||
+            !isUi5YamlToBeConverted(ui5Yaml, scriptName, ui5YamlFileNames, logger) ||
             (await isUi5YamlAlreadyConverted(fs, basePath, ui5Yaml, scriptName, script, logger))
         ) {
             continue;
         }
 
-        await processUi5YamlConfig(fs, basePath, ui5Yaml, script);
+        try {
+            await processUi5YamlConfig(fs, basePath, ui5Yaml, script);
+        } catch (error) {
+            logger?.warn(
+                `Skipping script '${scriptName}' which refers to UI5 yaml configuration file '${ui5Yaml}'. ${error.message}`
+            );
+            continue;
+        }
+
         const { path } = extractUrlDetails(script);
         if (path) {
             await renameSandbox(fs, join(await getWebappPath(basePath), path), logger);
@@ -294,7 +292,11 @@ export async function updatePreviewMiddlewareConfigs(
     }
     for (const ui5Yaml of unprocessedUi5YamlFileNames) {
         //at least adjust deprecated preview config of unused ui5 yaml configurations
-        await processUi5YamlConfig(fs, basePath, ui5Yaml, '', true);
+        try {
+            await processUi5YamlConfig(fs, basePath, ui5Yaml, '', true);
+        } catch (error) {
+            logger?.warn(`Skipping UI5 yaml configuration file '${ui5Yaml}'. ${error.mesage}`);
+        }
         logger?.warn(
             `UI5 yaml configuration file '${ui5Yaml}' it is not being used in any preview script. Outdated preview middleware will be adjusted nevertheless if necessary.`
         );

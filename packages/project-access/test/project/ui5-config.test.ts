@@ -6,103 +6,30 @@ import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml } from '..
 describe('Test getAllUi5YamlFileNames()', () => {
     const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');
 
-    test('Read list of only invalid Ui5 yaml files', async () => {
+    test('Read list of Ui5 yaml files', async () => {
         const memFs = create(createStorage());
 
-        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'custom-webapp-path'))).toMatchInlineSnapshot(`
-            Object {
-              "invalid": Array [
-                "ui5.yaml",
-              ],
-              "skipped": Array [],
-              "valid": Array [],
-            }
+        expect(await getAllUi5YamlFileNames(join(samplesRoot, 'default-with-ui5-yaml'), memFs)).toMatchInlineSnapshot(`
+            Array [
+              "ui5-custom-multi.yaml",
+              "ui5-custom.yaml",
+              "ui5.yaml",
+            ]
         `);
     });
 
-    test('Read list of only invalid Ui5 yaml files w/o schema validation', async () => {
+    test('Read list of Ui5 yaml files, including mem-fs changes', async () => {
         const memFs = create(createStorage());
 
-        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'custom-webapp-path'), false))
-            .toMatchInlineSnapshot(`
-            Object {
-              "valid": Array [
-                "ui5.yaml",
-              ],
-            }
-        `);
-    });
-
-    test('Read list of Ui5 yaml files, filter out invalid ones', async () => {
-        const memFs = create(createStorage());
-
-        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
-            Object {
-              "invalid": Array [
-                "ui5.yaml",
-              ],
-              "skipped": Array [
-                "ui5-custom-multi.yaml",
-              ],
-              "valid": Array [
-                "ui5-custom.yaml",
-              ],
-            }
-        `);
-    });
-
-    test('Read list of Ui5 yaml files, filter out invalid ones also from mem-fs', async () => {
-        const memFs = create(createStorage());
-        memFs.write(
-            join(samplesRoot, 'default-with-ui5-yaml', 'ui5-something.yaml'),
-            'resources:\n  configuration:\n    paths:\n      webapp: src/webapp'
-        );
-
-        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
-            Object {
-              "invalid": Array [
-                "ui5.yaml",
-                "ui5-something.yaml",
-              ],
-              "skipped": Array [
-                "ui5-custom-multi.yaml",
-              ],
-              "valid": Array [
-                "ui5-custom.yaml",
-              ],
-            }
-        `);
-    });
-
-    test('Read list of Ui5 yaml files, filter out invalid ones but include from mem-fs changes', async () => {
-        const memFs = create(createStorage());
-
-        const yamlString = `
-            specVersion: '4.0'
-            metadata:
-              name: com.sap.cap.fe.ts.sample
-              allowSapInternal: true
-            type: application
-            framework:
-              name: SAPUI5
-              version: 1.124.0
-            `;
-
-        memFs.write(join(samplesRoot, 'default-with-ui5-yaml', 'ui5-something.yaml'), yamlString);
+        memFs.write(join(samplesRoot, 'default-with-ui5-yaml', 'ui5-something.yaml'), 'yet another test');
         memFs.delete(join(samplesRoot, 'default-with-ui5-yaml', 'ui5-custom.yaml'));
 
-        expect(await getAllUi5YamlFileNames(memFs, join(samplesRoot, 'default-with-ui5-yaml'))).toMatchInlineSnapshot(`
-            Object {
-              "invalid": Array [
-                "ui5.yaml",
-              ],
-              "skipped": Array [
-                "ui5-custom-multi.yaml",
-              ],
-              "valid": Array [
-                "ui5-something.yaml",
-              ],
-            }
+        expect(await getAllUi5YamlFileNames(join(samplesRoot, 'default-with-ui5-yaml'), memFs)).toMatchInlineSnapshot(`
+            Array [
+              "ui5-custom-multi.yaml",
+              "ui5.yaml",
+              "ui5-something.yaml",
+            ]
         `);
     });
 });
@@ -194,5 +121,51 @@ describe('Test readUi5Yaml()', () => {
         memFs.write(join(basePath, 'myCustomUI5.yaml'), 'chicken-head');
         await readUi5Yaml(basePath, 'myCustomUI5.yaml', memFs);
         expect(memFs.read(join(basePath, 'myCustomUI5.yaml'))).toMatchInlineSnapshot('"chicken-head"');
+    });
+    test('Read Ui5 yaml file with schema validation (false)', async () => {
+        const basePath = join(samplesRoot, 'default-webapp-path');
+
+        const memFs = create(createStorage());
+        memFs.write(join(basePath, 'myCustomUI5.yaml'), 'chicken-head');
+        try {
+            await readUi5Yaml(basePath, 'myCustomUI5.yaml', memFs, { validateSchema: true });
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
+    });
+    test('Read Ui5 yaml (multi-) file with schema validation (true)', async () => {
+        const basePath = join(samplesRoot, 'default-with-ui5-yaml');
+        expect(await readUi5Yaml(basePath, 'ui5-custom-multi.yaml', undefined, { validateSchema: true }))
+            .toMatchInlineSnapshot(`
+            UI5Config {
+              "document": YamlDocument {
+                "documents": Array [
+                  Object {
+                    "framework": Object {
+                      "name": "SAPUI5",
+                      "version": "1.124.0",
+                    },
+                    "metadata": Object {
+                      "allowSapInternal": true,
+                      "name": "com.sap.cap.fe.ts.sample",
+                    },
+                    "specVersion": "4.0",
+                    "type": "application",
+                  },
+                  Object {
+                    "kind": "extension",
+                    "metadata": Object {
+                      "name": "fiori-tools-preview",
+                    },
+                    "middleware": Object {
+                      "path": "test",
+                    },
+                    "specVersion": "3.0",
+                    "type": "server-middleware",
+                  },
+                ],
+              },
+            }
+        `);
     });
 });

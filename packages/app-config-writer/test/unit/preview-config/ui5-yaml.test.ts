@@ -17,18 +17,17 @@ describe('update preview middleware config', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         fs = create(createStorage());
-        getAllUi5YamlFileNamesMock = jest.spyOn(projectAccess, 'getAllUi5YamlFileNames').mockResolvedValue({
-            valid: [
+        getAllUi5YamlFileNamesMock = jest
+            .spyOn(projectAccess, 'getAllUi5YamlFileNames')
+            .mockResolvedValue([
                 'ui5.yaml',
                 'ui5-deprecated-tools-preview.yaml',
                 'ui5-deprecated-tools-preview-theme.yaml',
                 'ui5-existing-preview-middleware.yaml',
                 'ui5-existing-tools-preview.yaml',
-                'ui5-no-middleware.yaml'
-            ],
-            invalid: ['ui5-invalid.yaml'],
-            skipped: ['ui5-multi-file.yaml']
-        });
+                'ui5-no-middleware.yaml',
+                'ui5-invalid.yaml'
+            ]);
     });
 
     test('w/o path and intent', async () => {
@@ -69,26 +68,6 @@ describe('update preview middleware config', () => {
         expect(getAllUi5YamlFileNamesMock).toHaveBeenCalledTimes(1);
     });
 
-    test('skip multi-file yaml', async () => {
-        const variousConfigsPath = join(basePath, 'various-configs');
-        const packageJson = {
-            scripts: {
-                'multi-file':
-                    'ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-multi-file.yaml'
-            },
-            'devDependencies': {
-                '@sap-ux/preview-middleware': '0.16.83'
-            }
-        };
-        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
-
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-        expect(warnLogMock).toHaveBeenCalledWith(
-            `Skipping script 'multi-file' which refers to UI5 yaml configuration file 'ui5-multi-file.yaml' because the schema validation was not possible for file 'ui5-multi-file.yaml'.`
-        );
-    });
-
     test('skip invalid yaml configurations', async () => {
         const variousConfigsPath = join(basePath, 'various-configs');
         const packageJson = {
@@ -105,7 +84,7 @@ describe('update preview middleware config', () => {
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(warnLogMock).toHaveBeenCalledWith(
-            `Skipping script 'invalid' which refers to UI5 yaml configuration file 'ui5-invalid.yaml' because it does not comply with the schema.`
+            `Skipping script 'invalid' which refers to UI5 yaml configuration file 'ui5-invalid.yaml'. Error when reading 'ui5-invalid.yaml': File does not comply with the schema`
         );
     });
 
@@ -319,7 +298,7 @@ describe('update preview middleware config', () => {
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
-        expect(warnLogMock).toHaveBeenCalledTimes(4);
+        expect(warnLogMock).toHaveBeenCalledTimes(5);
     });
 
     test('same yaml config different endpoints', async () => {
