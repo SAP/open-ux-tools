@@ -24,7 +24,7 @@ describe('updates', () => {
     });
 
     describe('updateManifest', () => {
-        test('Ensure OdataService properties are not interpretted as ejs render options', () => {
+        test('Ensure OdataService properties are not interpretted as ejs render options', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest'
@@ -41,7 +41,7 @@ describe('updates', () => {
 
             fs.writeJSON('./webapp/manifest.json', testManifest);
             const ejsMock = jest.spyOn(ejs, 'render');
-            updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
             // Passing empty options prevents ejs interpretting OdataService properties as ejs options
             expect(ejsMock).toHaveBeenCalledWith(expect.anything(), service, {});
         });
@@ -52,7 +52,7 @@ describe('updates', () => {
             ['1.105.0', false],
             [undefined, false],
             [['1.120.10', '2.0.0'], true]
-        ])('Ensure synchronizationMode is correctly set for minUI5Version %s', (minUI5Version, syncMode) => {
+        ])('Ensure synchronizationMode is correctly set for minUI5Version %s', async (minUI5Version, syncMode) => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest'
@@ -77,7 +77,7 @@ describe('updates', () => {
             const ejsMock = jest.spyOn(ejs, 'render');
 
             // Call updateManifest
-            updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
 
             expect(ejsMock).toHaveBeenCalledWith(
                 expect.anything(),
@@ -85,7 +85,7 @@ describe('updates', () => {
                 {}
             );
         });
-        test('Ensure manifest updates are updated as expected as in edmx projects', () => {
+        test('Ensure manifest updates are updated as expected as in edmx projects', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest'
@@ -108,12 +108,12 @@ describe('updates', () => {
 
             fs.writeJSON('./webapp/manifest.json', testManifest);
             // Call updateManifest
-            updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedEdmxManifest);
         });
 
-        test('Ensure manifest updates are updated as expected as in edmx projects with multiple annotations', () => {
+        test('Ensure manifest updates are updated as expected as in edmx projects with multiple annotations', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest'
@@ -143,12 +143,12 @@ describe('updates', () => {
 
             fs.writeJSON('./webapp/manifest.json', testManifest);
             // Call updateManifest
-            updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedEdmxManifestMultipleAnnotations);
         });
 
-        test('Ensure manifest updates are updated as expected as in edmx projects with multiple services', () => {
+        test('Ensure manifest updates are updated as expected as in edmx projects with multiple services', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest',
@@ -185,12 +185,12 @@ describe('updates', () => {
 
             fs.writeJSON('./webapp/manifest.json', testManifest);
             // Call updateManifest
-            updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedEdmxManifestMultipleServices);
         });
 
-        test('Ensure manifest updates are updated as expected as in cds projects', () => {
+        test('Ensure manifest updates are updated as expected as in cds projects', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest'
@@ -212,7 +212,7 @@ describe('updates', () => {
             };
             fs.writeJSON('./webapp/manifest.json', testManifest);
             // Call updateManifest
-            updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedCdsManifest);
         });

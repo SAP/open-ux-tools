@@ -123,6 +123,56 @@ describe('generate', () => {
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
             expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);
         });
+
+        it('Existing services - files are restructurized and updated', async () => {
+            const service = {
+                ...config,
+                name: 'secondService'
+            };
+            fs.writeJSON(join(root, 'webapp/manifest.json'), {
+                'sap.app': {
+                    id: 'testappid',
+                    dataSources: {
+                        mainService: {
+                            type: 'OData',
+                            uri: '/sap/opu/odata/sap/SEPMRA_PROD_MAN/',
+                            settings: {
+                                annotations: ['SEPMRA_PROD_MAN'],
+                                localUri: 'localService/metadata.xml'
+                            }
+                        },
+                        SEPMRA_PROD_MAN: {
+                            type: 'ODataAnnotation',
+                            uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
+                            settings: {
+                                localUri: 'localService/SEPMRA_PROD_MAN.xml'
+                            }
+                        }
+                    }
+                }
+            });
+            const packagePath = join(root, 'package.json');
+            fs.writeJSON(packagePath, {});
+            const mainServiceRoot = join(root, 'webapp', 'localService');
+            fs.write(join(mainServiceRoot, 'metadata.xml'), '');
+            fs.write(join(mainServiceRoot, 'SEPMRA_PROD_MAN.xml'), '');
+            await generate(root, service, fs);
+            const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
+            // Check if existing services are restructurized
+            expect(manifest['sap.app'].dataSources.mainService.settings.localUri).toBe(
+                'localService/mainService/metadata.xml'
+            );
+            expect(manifest['sap.app'].dataSources.SEPMRA_PROD_MAN.settings.localUri).toBe(
+                'localService/mainService/SEPMRA_PROD_MAN.xml'
+            );
+            expect(fs.exists(join(root, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
+            expect(fs.exists(join(root, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
+            // Check if new service is added
+            expect(manifest['sap.app'].dataSources.secondService.settings.localUri).toBe(
+                'localService/secondService/metadata.xml'
+            );
+            expect(fs.exists(join(root, 'webapp', 'localService', 'secondService', 'metadata.xml'))).toBe(true);
+        });
     });
 
     describe('different valid input', () => {

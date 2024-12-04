@@ -1,11 +1,69 @@
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import { join, normalize, posix } from 'path';
+import { join, normalize, posix, sep } from 'path';
 import { t } from './i18n';
 import type { OdataService, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import semVer from 'semver';
 import prettifyXml from 'prettify-xml';
-import { getMinimumUI5Version, type Manifest, hasUI5CliV3 } from '@sap-ux/project-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
+import { DirName, getMinimumUI5Version, getWebappPath, hasUI5CliV3 } from '@sap-ux/project-access';
+
+/**
+ * Modifies service in manifest.json and service files in a way that is supported by multiple services.
+ * If service files are defined in 'localService' folder then those files are moved to respective service folder and service configuration URI are modified in manifest.json.
+ *
+ * @param {string} webappPath - the webapp path of an existing UI5 application
+ * @param {string} dataSourceKey - dataSource key in manifest.json
+ * @param {Manifest} dataSource - dataSource configuration from manifest.json
+ * @param {Editor} fs - the memfs editor instance
+ */
+function updateExistingService(
+    webappPath: string,
+    dataSourceKey: string,
+    dataSource: ManifestNamespace.DataSource,
+    fs: Editor
+): void {
+    const settings = dataSource.settings;
+    if (settings) {
+        // "localService/metadata.xml"
+        const localUri = settings.localUri;
+        // -> ["localService", "metadata.xml"]
+        const localUriParts = localUri ? localUri.split('/') : undefined;
+        if (localUriParts && localUriParts.length === 2) {
+            const localFileName = localUriParts[localUriParts.length - 1];
+            settings.localUri = `localService/${dataSourceKey}/${localFileName}`;
+            // move related files to service folder
+            const fromFilePath = join(webappPath, localUriParts.join(sep));
+            const toFilePath = join(webappPath, DirName.LocalService, dataSourceKey, localFileName);
+            fs.copy(fromFilePath, toFilePath);
+        }
+    }
+}
+
+/**
+ * Modifies services in manifest.json and services files in a way that is supported by multiple services.
+ *
+ * @param {string} webappPath - the webapp path of an existing UI5 application
+ * @param {Manifest} manifest - the manifest.json of the application
+ * @param {Editor} fs - the memfs editor instance
+ */
+async function updateExistingServices(webappPath: string, manifest: Manifest, fs: Editor): Promise<void> {
+    const dataSources = manifest?.['sap.app']?.dataSources;
+    for (const dataSourceKey in dataSources) {
+        const dataSource = dataSources[dataSourceKey];
+        if (dataSource.type === 'OData') {
+            updateExistingService(webappPath, dataSourceKey, dataSource, fs);
+            const annotations = dataSource.settings?.annotations;
+            if (annotations) {
+                annotations.forEach((annotationName) => {
+                    const annotationDataSource = dataSources[annotationName];
+                    updateExistingService(webappPath, dataSourceKey, annotationDataSource, fs);
+                });
+            }
+        }
+    }
+    fs.writeJSON(join(webappPath, 'manifest.json'), manifest);
+}
 
 /**
  * Internal function that updates the manifest.json based on the given service configuration.
@@ -15,12 +73,20 @@ import { getMinimumUI5Version, type Manifest, hasUI5CliV3 } from '@sap-ux/projec
  * @param fs - the memfs editor instance
  * @param templateRoot - root folder contain the ejs templates
  */
-export function updateManifest(basePath: string, service: OdataService, fs: Editor, templateRoot: string): void {
-    const manifestPath = join(basePath, 'webapp', 'manifest.json');
+export async function updateManifest(
+    basePath: string,
+    service: OdataService,
+    fs: Editor,
+    templateRoot: string
+): Promise<void> {
+    const webappPath = await getWebappPath(basePath, fs);
+    const manifestPath = join(webappPath, 'manifest.json');
     // Get component app id
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     const appProp = 'sap.app';
     const appid = manifest?.[appProp]?.id;
+    // Check and update existing services
+    await updateExistingServices(webappPath, manifest, fs);
     // Throw if required property is not found manifest.json
     if (!appid) {
         throw new Error(
