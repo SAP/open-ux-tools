@@ -30,7 +30,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap/cf-tools": "3.2.0",
+        "@sap/cf-tools": "3.2.2",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
