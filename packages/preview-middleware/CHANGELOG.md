@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.142
+
+### Patch Changes
+
+-   76d5dcb: CPE - Update tooltip text for disabled table filtering variant quick action
+
 ## 0.16.141
 
 ### Patch Changes
