@@ -1,5 +1,5 @@
 import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
-import { DeploymentGenerator, ErrorMessages } from '@sap-ux/deploy-config-generator-shared';
+import { DeploymentGenerator, ErrorMessages, showOverwriteQuestion } from '@sap-ux/deploy-config-generator-shared';
 import {
     isExtensionInstalled,
     YUI_EXTENSION_ID,
@@ -14,7 +14,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '@sap-ux/project-access';
 import { AuthenticationType } from '@sap-ux/store';
 import { join } from 'path';
-import { t, handleProjectDoesNotExist, indexHtmlExists, showOverwriteQuestion } from '../utils';
+import { t, handleProjectDoesNotExist, indexHtmlExists } from '../utils';
 import { getAbapQuestions } from './questions';
 import { EventName } from '../telemetryEvents';
 import { initI18n } from '../utils/i18n';
@@ -310,5 +310,5 @@ export default class extends DeploymentGenerator {
 }
 
 export { getAbapQuestions } from './questions';
-export { indexHtmlExists, showOverwriteQuestion } from '../utils';
+export { indexHtmlExists } from '../utils';
 export { AbapDeployConfigOptions, DeployProjectType } from './types';

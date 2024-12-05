@@ -1,49 +1,46 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "src",
-    "src/**/*.json"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "generators"
-  },
-  "references": [
-    {
-      "path": "../abap-deploy-config-inquirer"
+    "extends": "../../tsconfig.json",
+    "include": ["src", "src/**/*.json"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "generators"
     },
-    {
-      "path": "../abap-deploy-config-writer"
-    },
-    {
-      "path": "../btp-utils"
-    },
-    {
-      "path": "../deploy-config-generator-shared"
-    },
-    {
-      "path": "../feature-toggle"
-    },
-    {
-      "path": "../fiori-generator-shared"
-    },
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../project-access"
-    },
-    {
-      "path": "../store"
-    },
-    {
-      "path": "../system-access"
-    },
-    {
-      "path": "../telemetry"
-    },
-    {
-      "path": "../ui5-config"
-    }
-  ]
+    "references": [
+        {
+            "path": "../abap-deploy-config-inquirer"
+        },
+        {
+            "path": "../abap-deploy-config-writer"
+        },
+        {
+            "path": "../btp-utils"
+        },
+        {
+            "path": "../deploy-config-generator-shared"
+        },
+        {
+            "path": "../feature-toggle"
+        },
+        {
+            "path": "../fiori-generator-shared"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../store"
+        },
+        {
+            "path": "../system-access"
+        },
+        {
+            "path": "../telemetry"
+        },
+        {
+            "path": "../ui5-config"
+        }
+    ]
 }

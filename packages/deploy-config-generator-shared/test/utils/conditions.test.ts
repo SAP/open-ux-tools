@@ -1,4 +1,4 @@
-import { showOverwriteQuestion } from '../../../src/utils';
+import { showOverwriteQuestion } from '../../src/utils';
 
 describe('Test condition functions', () => {
     const testCases = [
