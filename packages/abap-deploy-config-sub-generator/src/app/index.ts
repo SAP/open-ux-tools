@@ -142,10 +142,10 @@ export default class extends DeploymentGenerator {
             await this._processIndexHtmlConfig();
             await this._initBackendConfig();
         } catch (e) {
-            if (e !== ErrorMessages.abortSignal) {
-                throw e;
-            } else {
+            if (e === ErrorMessages.abortSignal) {
                 DeploymentGenerator.logger?.debug(t('debug.initFailed', { error: e }));
+            } else {
+                throw e;
             }
         }
     }
