@@ -933,7 +933,7 @@ describe('FE V4 quick actions', () => {
                 {
                     p13nMode: ['Filter'],
                     expectedIsEnabled: false,
-                    expectedTooltip: 'This option has been disabled because the change has already been made'
+                    expectedTooltip: 'This option is disabled because table filtering for page variants is already enabled'
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
