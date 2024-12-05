@@ -10,6 +10,7 @@ import type { ConnectedSystem } from '@sap-ux/deploy-config-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
+import type { DeployProjectType } from './types';
 
 /**
  * Get the ABAP target based on the provided parameters.
@@ -72,6 +73,7 @@ function getAbapTarget(
  * @param params.configFile - the deployment configuration file name
  * @param params.indexGenerationAllowed - whether index generation is allowed
  * @param params.showOverwriteQuestion - whether the overwrite question should be shown
+ * @param params.projectType - the project type
  * @returns - the prompts and answers
  */
 export async function getAbapQuestions({
@@ -80,7 +82,8 @@ export async function getAbapQuestions({
     backendConfig,
     configFile = FileName.UI5DeployYaml,
     indexGenerationAllowed = false,
-    showOverwriteQuestion = false
+    showOverwriteQuestion = false,
+    projectType = 'application'
 }: {
     projectPath: string;
     connectedSystem?: ConnectedSystem;
@@ -88,6 +91,7 @@ export async function getAbapQuestions({
     configFile?: string;
     indexGenerationAllowed?: boolean;
     showOverwriteQuestion?: boolean;
+    projectType?: DeployProjectType;
 }): Promise<{ prompts: AbapDeployConfigQuestion[]; answers: Partial<AbapDeployConfigAnswersInternal> }> {
     const { backendSystem, serviceProvider, destination } = connectedSystem || {};
     let existingAbapDeployTask: AbapDeployConfig | undefined;
@@ -115,7 +119,7 @@ export async function getAbapQuestions({
                 abapTarget,
                 systemName: backendSystem?.name,
                 serviceProvider,
-                type: 'application'
+                type: projectType
             },
             ui5AbapRepo: { default: deployAppConfig?.name },
             description: { default: deployAppConfig?.description },

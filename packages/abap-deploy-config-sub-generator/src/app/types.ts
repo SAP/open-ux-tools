@@ -18,3 +18,5 @@ export interface AbapDeployConfigOptions extends AbapDeployConfigAnswersInternal
     force?: boolean;
     telemetryData?: TelemetryData;
 }
+
+export type DeployProjectType = 'application' | 'library';

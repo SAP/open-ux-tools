@@ -23,22 +23,23 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/constants';
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { AbapDeployConfigOptions } from './types';
+import type { AbapDeployConfigOptions, DeployProjectType } from './types';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-inquirer';
 
 /**
  * ABAP deploy config generator.
  */
 export default class extends DeploymentGenerator {
+    private readonly appWizard: AppWizard;
+    private readonly vscode: unknown;
+    private readonly launchDeployConfigAsSubGenerator: boolean;
+    private readonly launchStandaloneFromYui?: boolean;
     private abort = false;
-    private appWizard: AppWizard;
-    private vscode: unknown;
     private backendConfig: FioriToolsProxyConfigBackend;
     private indexGenerationAllowed: boolean;
-    private launchDeployConfigAsSubGenerator: boolean;
-    private launchStandaloneFromYui?: boolean;
     private configExists: boolean;
     private answers: AbapDeployConfigAnswersInternal;
+    private projectType: DeployProjectType;
 
     /**
      * Constructor for the ABAP deploy config generator.
@@ -128,6 +129,7 @@ export default class extends DeploymentGenerator {
         const ui5Config = await UI5Config.newInstance(
             this.fs.read(this.destinationPath(this.options.base ?? FileName.Ui5Yaml))
         );
+        this.projectType = ui5Config.getType() as DeployProjectType;
         this.backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxydMiddleware()[0];
     }
 
@@ -163,7 +165,8 @@ export default class extends DeploymentGenerator {
                     this.launchStandaloneFromYui,
                     this.options.overwrite,
                     this.configExists
-                )
+                ),
+                projectType: this.projectType
             });
             const prompAnswers = await this.prompt(abapDeployConfigPrompts);
             this.answers = reconcileAnswers(prompAnswers, abapAnswers);
@@ -191,15 +194,14 @@ export default class extends DeploymentGenerator {
         if (!this.answers.package) {
             this.answers.package =
                 getPackageAnswer(this.options as AbapDeployConfigAnswersInternal, this.options.package) ||
-                getPackageAnswer(this.answers as AbapDeployConfigAnswersInternal) ||
+                getPackageAnswer(this.answers) ||
                 (this.answers.scp ? '' : DEFAULT_PACKAGE_ABAP);
         }
 
         // Set transport
         if (!this.answers.transport) {
             this.answers.transport =
-                getTransportAnswer(this.options as AbapDeployConfigAnswersInternal) ||
-                getTransportAnswer(this.answers as AbapDeployConfigAnswersInternal);
+                getTransportAnswer(this.options as AbapDeployConfigAnswersInternal) || getTransportAnswer(this.answers);
         }
     }
 

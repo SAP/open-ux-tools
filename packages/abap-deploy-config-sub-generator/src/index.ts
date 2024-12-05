@@ -1,2 +1,3 @@
 export { getAbapQuestions } from './app/questions';
-export { AbapDeployConfigOptions } from './app/types';
+export { indexHtmlExists, showOverwriteQuestion } from './utils';
+export { AbapDeployConfigOptions, DeployProjectType } from './app/types';
