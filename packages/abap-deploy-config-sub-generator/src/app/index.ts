@@ -292,7 +292,7 @@ export default class extends DeploymentGenerator {
             this.appWizard?.showInformation(t('info.filesGenerated'), MessageType.notification);
         }
 
-        // Send telemetry data after successful deploy
+        // Send telemetry data after adding deployment configuration
         sendTelemetry(
             EventName.DEPLOY_CONFIG,
             TelemetryHelper.createTelemetryData({
@@ -305,6 +305,3 @@ export default class extends DeploymentGenerator {
         });
     }
 }
-
-export { getAbapQuestions } from './questions';
-export { AbapDeployConfigOptions } from './types';
