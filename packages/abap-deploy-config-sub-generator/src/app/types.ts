@@ -41,7 +41,7 @@ export interface AbapDeployConfigOptions extends AbapDeployConfigAnswersInternal
      */
     base?: string;
     /**
-     * The name of the config file e.g. ui5-deploy.yaml
+     * The name of the deploy config file e.g. ui5-deploy.yaml
      */
     config?: string;
     /**
