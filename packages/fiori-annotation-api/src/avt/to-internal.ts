@@ -121,6 +121,8 @@ export function convertCollectionElement(
     } else if (typeof entry === 'boolean') {
         // obvious extension of annotation.record definition
         return createElementNode({ name: Edm.Bool, content: [createTextNode(entry ? 'true' : 'false')] });
+    } else if (typeof entry === 'string') {
+        return createElementNode({ name: Edm.String, content: [createTextNode(entry)] });
     }
     return undefined;
 }
