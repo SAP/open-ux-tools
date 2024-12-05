@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.143
+
+### Patch Changes
+
+-   62c73b8: CPE - Hide Quick Actions in V2 application, if the application has old manifest structure.
+
 ## 0.16.142
 
 ### Patch Changes
