@@ -10,6 +10,7 @@
         "invalidURL": "Invalid URL: [{{- input}}]",
         "mtaIdAlreadyExists": "A folder with same name already exist at {{- destinationRoot}}",
         "noAppName": "Could not determine app name from manifest",
+        "noUi5Config": "Error: could not read ui5.yaml",
         "noBinary": "Cannot find the \"{{bin}}\" executable. Please add it to the path or use \"npm i -g {{pkg}}\" to install it.",
         "noManifest": "Error: could not read webapp/manifest.json",
         "noMta": "MTA ID cannot be empty",
