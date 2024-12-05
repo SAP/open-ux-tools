@@ -3,7 +3,7 @@ import * as abapInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import { getAbapQuestions } from '../../../src/app/questions';
 import { readUi5Yaml } from '@sap-ux/project-access';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { DefaultLogger, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
@@ -52,7 +52,8 @@ describe('Test getAbapQuestions', () => {
             },
             backendConfig: undefined,
             indexGenerationAllowed: true,
-            showOverwriteQuestion: false
+            showOverwriteQuestion: false,
+            logger: DefaultLogger
         });
 
         expect(getPromptsSpy).toBeCalledWith(
@@ -99,7 +100,8 @@ describe('Test getAbapQuestions', () => {
                 } as BackendSystem
             },
             backendConfig: undefined,
-            configFile: 'ui5-deploy.yaml'
+            configFile: 'ui5-deploy.yaml',
+            logger: DefaultLogger
         });
 
         expect(getPromptsSpy).toBeCalledWith(

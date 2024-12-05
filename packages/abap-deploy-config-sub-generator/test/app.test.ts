@@ -333,9 +333,9 @@ describe('Test abap deploy configuration generator', () => {
     it('handleProjectDoesNotExist - ui5.yaml does not exist in the app folder (VSCode)', async () => {
         const abapDeployConfigInquirerSpy = jest.spyOn(abapInquirer, 'getPrompts');
         const abapDeployConfigWriterSpy = jest.spyOn(abapWriter, 'generate');
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
 
         const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
         await expect(
             yeomanTest
                 .create(

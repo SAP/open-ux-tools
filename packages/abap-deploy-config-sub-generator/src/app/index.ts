@@ -65,7 +65,7 @@ export default class extends DeploymentGenerator {
             (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
         }
 
-        DeploymentGenerator.logger?.info(t('info.initTelemetry'));
+        DeploymentGenerator.logger?.debug(t('debug.initTelemetry'));
         await initTelemetrySettings({
             consumerModule: {
                 name: '@sap-ux/abap-deploy-config-sub-generator',
@@ -143,7 +143,7 @@ export default class extends DeploymentGenerator {
             if (e !== ErrorMessages.abortSignal) {
                 throw e;
             } else {
-                DeploymentGenerator.logger?.debug(t('error.initFailed', { error: e }));
+                DeploymentGenerator.logger?.debug(t('debug.initFailed', { error: e }));
             }
         }
     }
@@ -166,7 +166,8 @@ export default class extends DeploymentGenerator {
                     this.options.overwrite,
                     this.configExists
                 ),
-                projectType: this.projectType
+                projectType: this.projectType,
+                logger: DeploymentGenerator.logger
             });
             const prompAnswers = await this.prompt(abapDeployConfigPrompts);
             this.answers = reconcileAnswers(prompAnswers, abapAnswers);

@@ -1,9 +1,9 @@
 import { getPrompts } from '@sap-ux/abap-deploy-config-inquirer';
-import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { ABAP_DEPLOY_TASK } from '../utils/constants';
+import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { AbapDeployConfigAnswersInternal, AbapDeployConfigQuestion } from '@sap-ux/abap-deploy-config-inquirer';
 import type { AbapDeployConfig, AbapTarget, BspApp, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { ConnectedSystem } from '@sap-ux/deploy-config-generator-shared';
@@ -74,6 +74,7 @@ function getAbapTarget(
  * @param params.indexGenerationAllowed - whether index generation is allowed
  * @param params.showOverwriteQuestion - whether the overwrite question should be shown
  * @param params.projectType - the project type
+ * @param params.logger - the logger
  * @returns - the prompts and answers
  */
 export async function getAbapQuestions({
@@ -83,7 +84,8 @@ export async function getAbapQuestions({
     configFile = FileName.UI5DeployYaml,
     indexGenerationAllowed = false,
     showOverwriteQuestion = false,
-    projectType = 'application'
+    projectType = 'application',
+    logger
 }: {
     projectPath: string;
     connectedSystem?: ConnectedSystem;
@@ -92,6 +94,7 @@ export async function getAbapQuestions({
     indexGenerationAllowed?: boolean;
     showOverwriteQuestion?: boolean;
     projectType?: DeployProjectType;
+    logger?: ILogWrapper;
 }): Promise<{ prompts: AbapDeployConfigQuestion[]; answers: Partial<AbapDeployConfigAnswersInternal> }> {
     const { backendSystem, serviceProvider, destination } = connectedSystem || {};
     let existingAbapDeployTask: AbapDeployConfig | undefined;
@@ -100,15 +103,12 @@ export async function getAbapQuestions({
         existingAbapDeployTask = ui5DeployConfig.findCustomTask<AbapDeployConfig>(ABAP_DEPLOY_TASK)?.configuration;
     } catch {
         // not an issue if the file does not exist
-        DeploymentGenerator.logger?.debug('debug.configNotFound');
     }
-
     const abapTarget = getAbapTarget(destination, backendSystem, existingAbapDeployTask, backendConfig);
     const deployAppConfig = existingAbapDeployTask?.app as BspApp;
 
-    DeploymentGenerator.logger?.debug(
-        `Retrieve ABAP prompts using: 
-        \n ProjectPath: ${'/Users/I515700/Documents/sandbox/code/log.js'}, 
+    logger?.debug(
+        `Retrieve ABAP prompts using: \n ProjectPath: ${'/Users/I515700/Documents/sandbox/code/log.js'}, 
         ABAPTarget: ${JSON.stringify(abapTarget)}, SystemName: ${backendSystem?.name}, 
         ServiceProvider: ${!!serviceProvider}, showOverwriteQuestion ${showOverwriteQuestion}, indexGenerationAllowed ${indexGenerationAllowed}`
     );
@@ -129,7 +129,7 @@ export async function getAbapQuestions({
             packageAutocomplete: { useAutocomplete: true },
             overwrite: { hide: !showOverwriteQuestion }
         },
-        DeploymentGenerator.logger as unknown as Logger,
+        logger as unknown as Logger,
         getHostEnvironment() !== hostEnvironment.cli
     );
 }
