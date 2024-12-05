@@ -200,6 +200,22 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
+export interface AnnotationFileChange extends CommonChangeProperties {
+    changeType: 'appdescr_app_addAnnotationsToOData';
+    creation: string;
+    content: {
+        dataSourceId: string;
+        annotations: string[];
+        annotationsInsertPosition: 'END';
+        dataSource: {
+            [fileName: string]: {
+                uri: string;
+                type: 'ODataAnnotation';
+            };
+        };
+    };
+}
+
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
     Controller = 'controller.ejs',
