@@ -5,6 +5,15 @@ import { readIntegrityData, writeIntegrityData } from './persistence';
 import { checkIntegrity } from './check';
 
 /**
+ * Function to ensure correct sorting of strings.
+ *
+ * @param a - first value to compare
+ * @param b - second value to compare
+ * @returns - 1 if a is greater than b, -1 if a is less than b, 0 if a is equal to b
+ */
+const sortLocal = (a: string, b: string): number => a.localeCompare(b);
+
+/**
  * Initialize a project by creating hashes for all selected files in the project. There is an option to add
  * additional key->string content to the integrity data.
  *
@@ -59,8 +68,8 @@ export async function updateProjectIntegrity(
     if (!integrityData.enabled) {
         throw new Error(`Integrity is disabled for the project with integrity data ${integrityFilePath}`);
     }
-    const existingContentKeys = integrityData.contentIntegrity.map((content) => content.contentKey).sort();
-    const newContentKeys = Object.keys(additionalStringContent ?? {}).sort();
+    const existingContentKeys = integrityData.contentIntegrity.map((content) => content.contentKey).sort(sortLocal);
+    const newContentKeys = Object.keys(additionalStringContent ?? {}).sort(sortLocal);
     if (
         existingContentKeys.length !== newContentKeys.length ||
         !existingContentKeys.every((key, index) => key === newContentKeys[index])
