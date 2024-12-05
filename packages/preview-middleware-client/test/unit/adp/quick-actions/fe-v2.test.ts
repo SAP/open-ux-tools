@@ -46,7 +46,6 @@ describe('FE V2 quick actions', () => {
     const mockChangeService = {
         syncOutlineChanges: jest.fn()
     } as unknown as ChangeService;
-
     beforeEach(() => {
         sendActionMock = jest.fn();
         subscribeMock = jest.fn();
@@ -869,34 +868,47 @@ describe('FE V2 quick actions', () => {
             const testCases: {
                 validVersion: boolean;
                 versionInfo: string;
+                isManifestPageSettingInArrayStructred: boolean;
             }[] = [
                 {
                     validVersion: true,
-                    versionInfo: '1.96.37'
+                    versionInfo: '1.96.37',
+                    isManifestPageSettingInArrayStructred: false
                 },
                 {
                     validVersion: true,
-                    versionInfo: '1.108.38'
+                    versionInfo: '1.108.38',
+                    isManifestPageSettingInArrayStructred: false
                 },
                 {
                     validVersion: true,
-                    versionInfo: '1.96.38'
+                    versionInfo: '1.96.38',
+                    isManifestPageSettingInArrayStructred: false
                 },
                 {
                     validVersion: true,
-                    versionInfo: '1.120.23'
+                    versionInfo: '1.120.23',
+                    isManifestPageSettingInArrayStructred: false
                 },
                 {
                     validVersion: true,
-                    versionInfo: '1.128'
+                    versionInfo: '1.128',
+                    isManifestPageSettingInArrayStructred: false
                 },
                 {
                     validVersion: true,
-                    versionInfo: '1.130'
+                    versionInfo: '1.130',
+                    isManifestPageSettingInArrayStructred: false
                 },
                 {
                     validVersion: false,
-                    versionInfo: '1.96.36'
+                    versionInfo: '1.96.36',
+                    isManifestPageSettingInArrayStructred: false
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.130',
+                    isManifestPageSettingInArrayStructred: true
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
@@ -945,12 +957,19 @@ describe('FE V2 quick actions', () => {
                         return container;
                     }
                 });
-
                 CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
                     return { type, value, settings };
                 });
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const pages = testCase.isManifestPageSettingInArrayStructred
+                    ? [{ name: 'test', id: 'test' }]
+                    : { name: 'test', id: 'test' };
+                jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                    'sap.ui.generic.app': {
+                        pages
+                    }
+                });
                 const registry = new FEV2QuickActionRegistry();
                 const service = new QuickActionService(
                     rtaMock,
@@ -959,7 +978,6 @@ describe('FE V2 quick actions', () => {
                     { onStackChange: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
-
                 await service.reloadQuickActions({
                     'sap.ui.comp.smartfilterbar.SmartFilterBar': [
                         {
@@ -976,20 +994,21 @@ describe('FE V2 quick actions', () => {
                     quickActionListChanged([
                         {
                             title: 'LIST REPORT',
-                            actions: testCase.validVersion
-                                ? [
-                                      {
-                                          'kind': 'simple',
-                                          id: 'listReport0-enable-semantic-daterange-filterbar',
-                                          title: 'Enable Semantic Date Range in Filter Bar',
-                                          enabled: true
-                                      }
-                                  ]
-                                : []
+                            actions:
+                                testCase.validVersion && !testCase.isManifestPageSettingInArrayStructred
+                                    ? [
+                                          {
+                                              'kind': 'simple',
+                                              id: 'listReport0-enable-semantic-daterange-filterbar',
+                                              title: 'Enable Semantic Date Range in Filter Bar',
+                                              enabled: true
+                                          }
+                                      ]
+                                    : []
                         }
                     ])
                 );
-                if (testCase.validVersion) {
+                if (testCase.validVersion && !testCase.isManifestPageSettingInArrayStructred) {
                     await subscribeMock.mock.calls[0][0](
                         executeQuickAction({ id: 'listReport0-enable-semantic-daterange-filterbar', kind: 'simple' })
                     );
