@@ -14,6 +14,7 @@ import {
     ManifestService
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
@@ -100,15 +101,10 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
  * @param {boolean} isAdp - Indicates whether the project is an ADP project.
  * @param {Editor} fs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger instance.
- * @returns {Promise<ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile>} A promise that resolves to the manifest.
+ * @returns {Promise<Manifest>} A promise that resolves to the manifest.
  */
-async function getManifest(
-    basePath: string,
-    isAdp: boolean,
-    fs: Editor,
-    logger: ToolsLogger
-): Promise<ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile> {
-    let manifest: ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
+async function getManifest(basePath: string, isAdp: boolean, fs: Editor, logger: ToolsLogger): Promise<Manifest> {
+    let manifest: Manifest;
     if (!isAdp) {
         manifest = (await readManifest(basePath, fs))?.manifest;
     } else {
@@ -124,7 +120,7 @@ async function getManifest(
         );
 
         if (!(await provider.isS4Cloud())) {
-            throw new Error('Command is only available for Cloud Ready applications.');
+            throw new Error('Command is only available for CloudReady applications.');
         }
 
         const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, logger);

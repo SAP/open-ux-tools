@@ -94,12 +94,7 @@ export class AbapServiceProvider extends ServiceProvider {
         if (this.atoSettings === undefined) {
             await this.getAtoInfo();
         }
-        return (
-            this.atoSettings.tenantType === TenantType.Customer &&
-            this.atoSettings.operationsType === 'C' &&
-            this.atoSettings.developmentPrefix !== '' &&
-            this.atoSettings.developmentPackage !== ''
-        );
+        return this.atoSettings.tenantType === TenantType.Customer && this.atoSettings.operationsType === 'C';
     }
 
     /**
