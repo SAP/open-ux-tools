@@ -29,9 +29,9 @@ function updateExistingService(
         const localUri = settings.localUri;
         // -> ["localService", "metadata.xml"]
         const localUriParts = localUri ? localUri.split('/') : undefined;
-        if (localUriParts && localUriParts.length === 2) {
+        if (localUriParts && localUriParts[0] === DirName.LocalService && localUriParts.length === 2) {
             const localFileName = localUriParts[localUriParts.length - 1];
-            settings.localUri = `localService/${dataSourceKey}/${localFileName}`;
+            settings.localUri = `${DirName.LocalService}/${dataSourceKey}/${localFileName}`;
             // move related files to service folder
             const fromFilePath = join(webappPath, localUriParts.join(sep));
             const toFilePath = join(webappPath, DirName.LocalService, dataSourceKey, localFileName);
