@@ -3,6 +3,7 @@ import * as abapInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import { getAbapQuestions } from '../../../src/app/questions';
 import { readUi5Yaml } from '@sap-ux/project-access';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
@@ -24,8 +25,20 @@ jest.mock('@sap-ux/abap-deploy-config-inquirer', () => ({
     getPrompts: jest.fn()
 }));
 
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
+    getHostEnvironment: jest.fn()
+}));
+const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
+
 describe('Test getAbapQuestions', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
     test('should return questions for destination', async () => {
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.bas);
         const getPromptsSpy = jest.spyOn(abapInquirer, 'getPrompts');
         mockIsAppStudio.mockReturnValue(true);
         mockReadUi5Yaml.mockRejectedValueOnce(new Error('No yaml config found'));
@@ -65,13 +78,14 @@ describe('Test getAbapQuestions', () => {
                 overwrite: { hide: true }
             },
             expect.any(Object),
-            false
+            true
         );
     });
 
     test('should return questions for backend system', async () => {
         const getPromptsSpy = jest.spyOn(abapInquirer, 'getPrompts');
-        mockIsAppStudio.mockReturnValue(true);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        mockIsAppStudio.mockReturnValue(false);
         mockReadUi5Yaml.mockRejectedValueOnce(new Error('No yaml config found'));
         await getAbapQuestions({
             projectPath: 'mock/path/to/project',
