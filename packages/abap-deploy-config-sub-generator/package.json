@@ -8,11 +8,11 @@
     },
     "version": "0.0.0",
     "license": "Apache-2.0",
-    "main": "dist/index.js",
+    "main": "generators/app/index.js",
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
@@ -23,7 +23,9 @@
     },
     "files": [
         "LICENSE",
-        "dist"
+        "generators",
+        "!generators/*.map",
+        "!generators/**/*.map"
     ],
     "engines": {
         "node": ">=18.x"

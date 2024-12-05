@@ -307,3 +307,7 @@ export default class extends DeploymentGenerator {
         });
     }
 }
+
+export { getAbapQuestions } from './questions';
+export { indexHtmlExists, showOverwriteQuestion } from '../utils';
+export { AbapDeployConfigOptions, DeployProjectType } from './types';
