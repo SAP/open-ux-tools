@@ -365,6 +365,79 @@ importers:
         specifier: 2.0.1
         version: 2.0.1
 
+  packages/abap-deploy-config-sub-generator:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/abap-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../abap-deploy-config-inquirer
+      '@sap-ux/abap-deploy-config-writer':
+        specifier: workspace:*
+        version: link:../abap-deploy-config-writer
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/deploy-config-generator-shared':
+        specifier: workspace:*
+        version: link:../deploy-config-generator-shared
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+    devDependencies:
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      '@sap-ux/system-access':
+        specifier: workspace:*
+        version: link:../system-access
+      '@types/fs-extra':
+        specifier: 9.0.13
+        version: 9.0.13
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/yeoman-test':
+        specifier: 4.0.6
+        version: 4.0.6
+      fs-extra:
+        specifier: 10.0.0
+        version: 10.0.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+      memfs:
+        specifier: 3.4.13
+        version: 3.4.13
+      unionfs:
+        specifier: 4.4.0
+        version: 4.4.0
+      yeoman-test:
+        specifier: 6.3.0
+        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+
   packages/abap-deploy-config-writer:
     dependencies:
       '@sap-ux/project-access':
@@ -1247,6 +1320,15 @@ importers:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
@@ -8996,7 +9078,7 @@ packages:
     dependencies:
       '@types/ejs': 3.1.2
       '@types/glob': 8.1.0
-      '@types/json-schema': 7.0.12
+      '@types/json-schema': 7.0.15
       '@types/mem-fs': 1.1.2
       '@types/node': 18.11.9
       '@types/vinyl': 2.0.7
@@ -11853,7 +11935,7 @@ packages:
     dev: true
 
   /concat-map@0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   /config-chain@1.1.13:
     resolution: {integrity: sha512-qj+f8APARXHrM0hraqXYb2/bOVSV4PvJQlNZ/DVj0QrmNM2q2euizkeuVckQ57J+W0mRH6Hvi+k50M4Jul2VRQ==}
@@ -14227,7 +14309,7 @@ packages:
     dependencies:
       graceful-fs: 4.2.11
       jsonfile: 6.1.0
-      universalify: 2.0.0
+      universalify: 2.0.1
     dev: true
 
   /fs-extra@10.1.0:
@@ -15747,6 +15829,7 @@ packages:
   /jake@10.8.5:
     resolution: {integrity: sha512-sVpxYeuAhWt0OTWITwT98oyV0GsXyMlXCF+3L1SuafBVUIr/uILGRB+NqwkzhgXKvoJpDIpQvqkUALgdmQsQxw==}
     engines: {node: '>=10'}
+    hasBin: true
     dependencies:
       async: 3.2.4
       chalk: 4.1.2
@@ -20777,7 +20860,7 @@ packages:
       formidable: 2.1.1
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.13.0
+      qs: 6.11.0
       semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
@@ -22216,7 +22299,7 @@ packages:
     engines: {node: '>= 12.0.0'}
     dependencies:
       logform: 2.6.0
-      readable-stream: 3.6.0
+      readable-stream: 3.6.2
       triple-beam: 1.4.1
 
   /winston-transport@4.7.0:

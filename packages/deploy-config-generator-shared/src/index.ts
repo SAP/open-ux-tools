@@ -1,2 +1,2 @@
 export { DeploymentGenerator } from './base/generator';
-export { ErrorMessages, bail, handleErrorMessage } from './utils';
+export { initI18n, ErrorMessages, bail, handleErrorMessage, ConnectedSystem } from './utils';
