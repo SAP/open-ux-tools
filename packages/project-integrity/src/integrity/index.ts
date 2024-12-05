@@ -1,1 +1,8 @@
-export { checkProjectIntegrity, initProject, updateProjectIntegrity } from './project';
+export {
+    checkProjectIntegrity,
+    disableProjectIntegrity,
+    enableProjectIntegrity,
+    initProject,
+    isProjectIntegrityEnabled,
+    updateProjectIntegrity
+} from './project';

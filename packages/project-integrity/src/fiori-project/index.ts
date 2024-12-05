@@ -1,11 +1,18 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { getCapCustomPaths } from '@sap-ux/project-access';
-import { checkProjectIntegrity, initProject, updateProjectIntegrity } from '../integrity';
+import {
+    checkProjectIntegrity,
+    disableProjectIntegrity,
+    enableProjectIntegrity,
+    initProject,
+    isProjectIntegrityEnabled,
+    updateProjectIntegrity
+} from '../integrity';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { CheckIntegrityResult, Content } from '../types';
 
-export const fioriIntegrityDataPath = join('.fiori-ai/integrity.json');
+export const fioriIntegrityDataPath = join('.fiori-ai/ai-integrity.json');
 
 /**
  * Get the list of files to protect the integrity of.
@@ -80,4 +87,36 @@ export async function updateFioriProjectIntegrity(projectRoot: string): Promise<
     const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
     const additionalStringContent = await getAdditionalStringContent(projectRoot);
     await updateProjectIntegrity(integrityFilePath, additionalStringContent);
+}
+
+/**
+ * Return whether integrity is enabled for a Fiori project.
+ *
+ * @param projectRoot - root folder of the project
+ * @returns true if integrity is enabled, false otherwise
+ */
+export async function isFioriProjectIntegrityEnabled(projectRoot: string): Promise<boolean> {
+    const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
+    return isProjectIntegrityEnabled(integrityFilePath);
+}
+
+/**
+ * Enable integrity protection for a Fiori project. The Fiori project must be initialized first.
+ * After initialization, Fiori project integrity is enabled by default.
+ *
+ * @param projectRoot - root folder of the project
+ */
+export async function enableFioriProjectIntegrity(projectRoot: string): Promise<void> {
+    const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
+    await enableProjectIntegrity(integrityFilePath);
+}
+
+/**
+ * Disable integrity protection for a Fiori project. The Fiori project must be initialized first.
+ *
+ * @param projectRoot - root folder of the project
+ */
+export async function disableFioriProjectIntegrity(projectRoot: string): Promise<void> {
+    const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
+    await disableProjectIntegrity(integrityFilePath);
 }

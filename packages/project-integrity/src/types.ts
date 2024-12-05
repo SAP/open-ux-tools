@@ -22,6 +22,7 @@ export interface ProjectSettings {
  * Integrity data for a project, stored as JSON in integrity file.
  */
 export interface Integrity {
+    enabled: boolean;
     fileIntegrity: FileIntegrity[];
     contentIntegrity: ContentIntegrity[];
 }

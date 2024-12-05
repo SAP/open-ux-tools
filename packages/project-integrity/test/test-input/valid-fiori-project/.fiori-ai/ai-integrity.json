@@ -1,4 +1,5 @@
 {
+    "enabled": true,
     "fileIntegrity": [
         {
             "filePath": "../db/schema.cds",

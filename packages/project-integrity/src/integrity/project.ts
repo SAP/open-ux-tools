@@ -5,7 +5,8 @@ import { readIntegrityData, writeIntegrityData } from './persistence';
 import { checkIntegrity } from './check';
 
 /**
- * Initialize a project by creating hashes for all selected files in the project.
+ * Initialize a project by creating hashes for all selected files in the project. There is an option to add
+ * additional key->string content to the integrity data.
  *
  * @param settings - settings for the project
  * @param settings.integrityFilePath - path to file where integrity data will be stored
@@ -13,9 +14,10 @@ import { checkIntegrity } from './check';
  * @param [settings.additionalStringContent] - optional key/string map to add to integrity data
  */
 export async function initProject(settings: ProjectSettings): Promise<void> {
+    const enabled = true;
     const fileIntegrity = await getFileIntegrity(settings.fileList);
     const contentIntegrity = await getContentIntegrity(settings.additionalStringContent);
-    await writeIntegrityData(settings.integrityFilePath, { fileIntegrity, contentIntegrity });
+    await writeIntegrityData(settings.integrityFilePath, { enabled, fileIntegrity, contentIntegrity });
 }
 
 /**
@@ -32,6 +34,9 @@ export async function checkProjectIntegrity(
     additionalStringContent?: Content
 ): Promise<CheckIntegrityResult> {
     const integrityData = await readIntegrityData(integrityFilePath);
+    if (!integrityData.enabled) {
+        throw new Error(`Integrity is disabled for the project with integrity data ${integrityFilePath}`);
+    }
     const checkResult = checkIntegrity(integrityData, additionalStringContent);
     return checkResult;
 }
@@ -51,6 +56,9 @@ export async function updateProjectIntegrity(
         throw new Error(`Integrity data not found at ${integrityFilePath}`);
     }
     const integrityData = await readIntegrityData(integrityFilePath);
+    if (!integrityData.enabled) {
+        throw new Error(`Integrity is disabled for the project with integrity data ${integrityFilePath}`);
+    }
     const existingContentKeys = integrityData.contentIntegrity.map((content) => content.contentKey).sort();
     const newContentKeys = Object.keys(additionalStringContent ?? {}).sort();
     if (
@@ -65,5 +73,52 @@ New content keys: ${newContentKeys.join(', ')}`
     }
     const fileIntegrity = await getFileIntegrity(integrityData.fileIntegrity.map((file) => file.filePath));
     const contentIntegrity = getContentIntegrity(additionalStringContent);
-    await writeIntegrityData(integrityFilePath, { fileIntegrity, contentIntegrity });
+    await writeIntegrityData(integrityFilePath, { enabled: integrityData.enabled, fileIntegrity, contentIntegrity });
+}
+
+/**
+ * Return whether integrity is enabled for a project.
+ *
+ * @param integrityFilePath - path to file where integrity data is stored
+ * @returns - true if integrity is enabled, false otherwise
+ */
+export async function isProjectIntegrityEnabled(integrityFilePath: string): Promise<boolean> {
+    if (!existsSync(integrityFilePath)) {
+        throw new Error(`Integrity data not found at ${integrityFilePath}`);
+    }
+    const { enabled } = await readIntegrityData(integrityFilePath);
+    return enabled;
+}
+
+/**
+ * Enable integrity for a project. The project has to be initialized before enabling integrity. After initialization,
+ * the project integrity is enabled by default.
+ *
+ * @param integrityFilePath - path to file where integrity data is stored
+ */
+export async function enableProjectIntegrity(integrityFilePath: string): Promise<void> {
+    if (!existsSync(integrityFilePath)) {
+        throw new Error(`Integrity data not found at ${integrityFilePath}`);
+    }
+    const integrityData = await readIntegrityData(integrityFilePath);
+    if (!integrityData.enabled) {
+        integrityData.enabled = true;
+        await writeIntegrityData(integrityFilePath, integrityData);
+    }
+}
+
+/**
+ * Disable integrity for a project. The project has to be initialized before disabling integrity.
+ *
+ * @param integrityFilePath - path to file where integrity data is stored
+ */
+export async function disableProjectIntegrity(integrityFilePath: string): Promise<void> {
+    if (!existsSync(integrityFilePath)) {
+        throw new Error(`Integrity data not found at ${integrityFilePath}`);
+    }
+    const integrityData = await readIntegrityData(integrityFilePath);
+    if (integrityData.enabled) {
+        integrityData.enabled = false;
+        await writeIntegrityData(integrityFilePath, integrityData);
+    }
 }
