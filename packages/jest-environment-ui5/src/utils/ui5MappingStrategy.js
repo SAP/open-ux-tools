@@ -40,6 +40,11 @@ async function getFileMapFromUI5(graph, rootProject) {
                 ui5PathMapping[targetPath + '.js'] = itemPath;
             }
 
+            if (targetPath.endsWith('.ts')) {
+                targetPath = targetPath.replace('.ts', '');
+                ui5PathMapping[targetPath + '.ts'] = itemPath;
+            }
+
             if (isRootProject) {
                 if (targetPath.endsWith('.ts')) {
                     targetPath = targetPath.replace('.ts', '');

@@ -2480,12 +2480,18 @@ importers:
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@sap-ux/jest-environment-ui5':
+        specifier: workspace:*
+        version: link:../jest-environment-ui5
       '@sapui5/types':
-        specifier: 1.120.5
-        version: 1.120.5
+        specifier: 1.130.2
+        version: 1.130.2
       '@ui5/cli':
         specifier: 3.8.0
         version: 3.8.0
+      babel-jest:
+        specifier: 29.7.0
+        version: 29.7.0(@babel/core@7.22.20)
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -8126,8 +8132,8 @@ packages:
       '@sap-ux/project-access': link:packages/project-access
     dev: false
 
-  /@sapui5/types@1.120.5:
-    resolution: {integrity: sha512-5n0pzbS4sP1eA0m1bFgnD1cKQT7BJQn9b1JADWanteElZTbyJjoaTFzSHIUjrCU+vxOwkHTajCjp+/6UNJ1KbQ==}
+  /@sapui5/types@1.130.2:
+    resolution: {integrity: sha512-CUisrrRtq+22PT8cA0uj0GkieJp379OrDsq+18adbDSD2VKI4Q8fn+DFvfZlwurKddx60JHEN/eXsWtn0l1gLQ==}
     dependencies:
       '@types/jquery': 3.5.13
       '@types/offscreencanvas': 2019.6.4

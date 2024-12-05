@@ -2,6 +2,10 @@
     "extends": "./tsconfig.json",
     "include": [".eslintrc.js", "jest.config.js", "src", "test", "types"],
     "compilerOptions": {
+        "paths": {
+            "open/ux/preview/client/*": ["./src/*"],
+            "mock/*": ["./test/__mock__/*"]
+        },
         "types": ["@sapui5/types", "node", "jest"]
     }
 }
