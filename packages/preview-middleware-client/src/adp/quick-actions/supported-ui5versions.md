@@ -1,6 +1,5 @@
-### Supported UI5 Versions for Quick Actions (OData V2, V4 and Freestyle)
+# Supported UI5 Versions for Quick Actions (OData V2, V4 and Freestyle)
 
-# Quick Action Compatibility Matrix
 
 | Quick Action List                     | Application Type                     | SAPUI5 1.71 | SAPUI5 1.84 | SAPUI5 1.96 | SAPUI5 1.108 | SAPUI5 1.120 | SAPUI5 1.24 | SAPUI5 1.27 | SAPUI5 1.130 | SAPUI5 1.131 |
 |---------------------------------------|--------------------------------------|-------------|-------------|-------------|---------------|---------------|-------------|-------------|---------------|---------------|
