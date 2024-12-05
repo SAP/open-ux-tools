@@ -14,11 +14,11 @@ import {
     ManifestService
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
+import { FileName } from '@sap-ux/project-access';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
-import { FileName, type ManifestNamespace } from '@sap-ux/project-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
 import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 
