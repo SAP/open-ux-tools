@@ -19,4 +19,7 @@ export interface AbapDeployConfigOptions extends AbapDeployConfigAnswersInternal
     telemetryData?: TelemetryData;
 }
 
-export type DeployProjectType = 'application' | 'library';
+export enum DeployProjectType {
+    Application = 'application',
+    Library = 'library'
+}

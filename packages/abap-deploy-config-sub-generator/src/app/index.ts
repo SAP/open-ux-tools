@@ -17,13 +17,14 @@ import { join } from 'path';
 import { t, handleProjectDoesNotExist, indexHtmlExists } from '../utils';
 import { getAbapQuestions } from './questions';
 import { EventName } from '../telemetryEvents';
+import { DeployProjectType } from './types';
 import { initI18n } from '../utils/i18n';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/constants';
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { AbapDeployConfigOptions, DeployProjectType } from './types';
+import type { AbapDeployConfigOptions } from './types';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-inquirer';
 
 /**
@@ -129,7 +130,8 @@ export default class extends DeploymentGenerator {
         const ui5Config = await UI5Config.newInstance(
             this.fs.read(this.destinationPath(this.options.base ?? FileName.Ui5Yaml))
         );
-        this.projectType = ui5Config.getType() as DeployProjectType;
+        this.projectType =
+            ui5Config.getType() === 'library' ? DeployProjectType.Library : DeployProjectType.Application;
         this.backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxydMiddleware()[0];
     }
 

@@ -10,7 +10,7 @@ import type { ConnectedSystem } from '@sap-ux/deploy-config-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
-import type { DeployProjectType } from './types';
+import { DeployProjectType } from './types';
 
 /**
  * Get the ABAP target based on the provided parameters.
@@ -84,7 +84,7 @@ export async function getAbapQuestions({
     configFile = FileName.UI5DeployYaml,
     indexGenerationAllowed = false,
     showOverwriteQuestion = false,
-    projectType = 'application',
+    projectType = DeployProjectType.Application,
     logger
 }: {
     projectPath: string;
