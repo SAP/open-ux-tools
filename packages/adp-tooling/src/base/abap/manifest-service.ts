@@ -59,6 +59,7 @@ export class ManifestService {
      * @param provider - The ABAP service provider instance.
      * @param appId - The application ID.
      * @param logger - The logger instance.
+     * @param requestOptions - Optional configuration options for the Axios request, such as headers, timeout, and base URL
      * @returns A promise that resolves to an instance of ManifestService.
      */
     public static async initBaseManifest(
@@ -78,6 +79,7 @@ export class ManifestService {
      * @param basePath - The base path of the application.
      * @param variant - The descriptor variant.
      * @param logger - The logger instance.
+     * @param requestOptions - Optional configuration options for the Axios request, such as headers, timeout, and base URL
      * @returns A promise that resolves to an instance of ManifestService.
      */
     public static async initMergedManifest(
