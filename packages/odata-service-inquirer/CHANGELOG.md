@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [307706e]
+    -   @sap-ux/guided-answers-helper@0.1.1
+    -   @sap-ux/inquirer-common@0.5.8
+
 ## 0.7.2
 
 ### Patch Changes

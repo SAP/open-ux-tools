@@ -1,5 +1,13 @@
 # @sap-ux/inquirer-common
 
+## 0.5.8
+
+### Patch Changes
+
+-   307706e: move GA link code in inq-common, add node in GA helper
+-   Updated dependencies [307706e]
+    -   @sap-ux/guided-answers-helper@0.1.1
+
 ## 0.5.7
 
 ### Patch Changes
