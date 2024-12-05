@@ -18,9 +18,9 @@
 |                                          | OData V4      | List Report, Object Page |             |             | X           | X            | X            | X           | X           | X            | X            |
 | Enable/Disable "Clear" Button            | OData V2      | List Report              | X           | X           | X           | X            | X            | X           | X           | X            | X            |
 |                                          | OData V4      | List Report              | X           | X           | X           | X            | X            | X           | X           | X            | X            |
-| Enable Semantic Date Range*               | OData V2      | List Report              |             |             | X           | X            | X            |             | X           | X            | X            |
-|                                          | OData V4      | List Report              |             |             |             |              |              |             | X           | X            | X            |
-| Enable Table Filtering for Page Variants* | OData V2      | List Report, Object Page |             |             | X           | X            | X            |             | X           | X            | X            |
+| Enable Semantic Date Range*               | OData V2      | List Report              |             |             | X           | X            | X            |             |             | X            | X            |
+|                                          | OData V4      | List Report              |             |             |             |              |              |             |             | X            | X            |
+| Enable Table Filtering for Page Variants* | OData V2      | List Report, Object Page |             |             | X           | X            | X            |             |             | X            | X            |
 |                                          | OData V4      | List Report, Object Page |             |             |             |              |              |             |             |              | X            |
 
 *Actions resulting in manifest changes are not available for adaptation projects built for OData v2 appliactions using outdated array page structure in manifest.json.
