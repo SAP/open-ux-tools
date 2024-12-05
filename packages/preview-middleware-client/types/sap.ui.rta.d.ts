@@ -179,6 +179,10 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
             };
             flexEnabled?: boolean;
         };
+        'sap.ui.generic.app': {
+            [key: string]: string;
+            pages?: object | Array;
+        };
     };
 
     export type SelectionChangeEvent = Event<SelectionChangeParams>;
