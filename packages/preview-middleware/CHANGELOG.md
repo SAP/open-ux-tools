@@ -1,5 +1,23 @@
 # @sap-ux/preview-middleware
 
+## 0.16.143
+
+### Patch Changes
+
+-   62c73b8: CPE - Hide Quick Actions in V2 application, if the application has old manifest structure.
+
+## 0.16.142
+
+### Patch Changes
+
+-   76d5dcb: CPE - Update tooltip text for disabled table filtering variant quick action
+
+## 0.16.141
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.91
+
 ## 0.16.140
 
 ### Patch Changes
