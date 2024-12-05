@@ -55,29 +55,28 @@ export async function prepareManifestChange(
 
 /**
  * Checks if the current UI5 version and manifest structure is supported in v2 applications.
- * 
+ *
  * @param manifest - manifest changes of the current application.
  *
- * Returns `true` 
- * 
- *  - If the manifest is structured as an array 
+ * Returns `false`
+ *
+ *  - If the manifest is structured is an array
  *  - If the UI5 version is not supported
- * Otherwise, returns `false`.
+ * Otherwise, returns `true`.
  *
  */
-export async function areManifestChangesNotSupported(manifest: Manifest): Promise<boolean> {
+export async function areManifestChangesSupported(manifest: Manifest): Promise<boolean> {
     const pagesStructureInManifest = manifest['sap.ui.generic.app'].pages;
-    if( Array.isArray(pagesStructureInManifest)) {
-        return true;
+    if (Array.isArray(pagesStructureInManifest)) {
+        return false;
     }
-    
+
     const version = await getUi5Version();
-    return (
-        isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 }) &&
-        !(
-            isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 96, patch: 37 }) ||
-            isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 108, patch: 38 }) ||
-            isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 120, patch: 23 })
-        )
-    );
+    const isAboveOrEqualMinimalVersion = !isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 });
+    const isSupportedPatchVersion =
+        isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 96, patch: 37 }) ||
+        isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 108, patch: 38 }) ||
+        isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 120, patch: 23 });
+
+    return isAboveOrEqualMinimalVersion || isSupportedPatchVersion;
 }

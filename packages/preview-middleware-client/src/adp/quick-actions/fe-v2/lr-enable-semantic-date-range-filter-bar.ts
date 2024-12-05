@@ -4,7 +4,7 @@ import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/qu
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById, isA } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { areManifestChangesNotSupported, prepareManifestChange } from './utils';
+import { areManifestChangesSupported, prepareManifestChange } from './utils';
 import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';
@@ -24,8 +24,8 @@ export class ToggleSemanticDateRangeFilterBar
     private isUseDateRangeTypeEnabled = false;
 
     async initialize(): Promise<void> {
-        const manifestChangesNotSupported = await areManifestChangesNotSupported(this.context.manifest);
-        if (manifestChangesNotSupported) {
+        const manifestChangesSupported = await areManifestChangesSupported(this.context.manifest);
+        if (!manifestChangesSupported) {
             return;
         }
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
