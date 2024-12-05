@@ -142,8 +142,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -203,8 +203,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -1351,7 +1351,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
     <edmx:DataServices xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" m:DataServiceVersion=\\"1.0\\">
@@ -1934,7 +1934,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -2860,8 +2860,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -2921,8 +2921,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -4069,7 +4069,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
     <edmx:DataServices xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" m:DataServiceVersion=\\"1.0\\">
@@ -4652,7 +4652,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -5578,8 +5578,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -5639,8 +5639,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -6787,7 +6787,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
     <edmx:DataServices xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" m:DataServiceVersion=\\"1.0\\">
@@ -7370,7 +7370,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -8274,8 +8274,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -8319,8 +8319,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -9402,7 +9402,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
     <edmx:DataServices xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" m:DataServiceVersion=\\"1.0\\">
@@ -9985,7 +9985,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -10872,8 +10872,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -10933,8 +10933,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -11992,7 +11992,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
     <edmx:DataServices xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" m:DataServiceVersion=\\"1.0\\">
@@ -12575,7 +12575,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }

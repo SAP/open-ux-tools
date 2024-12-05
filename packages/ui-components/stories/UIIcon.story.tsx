@@ -2,6 +2,7 @@ import React from 'react';
 import type { IColumn } from '@fluentui/react';
 import { DetailsList, SelectionMode } from '@fluentui/react';
 import { UIIcon } from '../src/components/UIIcon';
+import { UiIcons } from '../src';
 
 export default { title: 'Utilities/Icons' };
 

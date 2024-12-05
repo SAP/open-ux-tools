@@ -1,5 +1,37 @@
 # @sap-ux/inquirer-common
 
+## 0.5.8
+
+### Patch Changes
+
+-   307706e: move GA link code in inq-common, add node in GA helper
+-   Updated dependencies [307706e]
+    -   @sap-ux/guided-answers-helper@0.1.1
+
+## 0.5.7
+
+### Patch Changes
+
+-   2359524: align versions of cf-tools
+-   Updated dependencies [2359524]
+    -   @sap-ux/btp-utils@0.17.1
+    -   @sap-ux/fiori-generator-shared@0.7.12
+    -   @sap-ux/telemetry@0.5.46
+
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [d04a40e]
+    -   @sap-ux/feature-toggle@0.2.3
+
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.45
+-   @sap-ux/fiori-generator-shared@0.7.11
+
 ## 0.5.4
 
 ### Patch Changes

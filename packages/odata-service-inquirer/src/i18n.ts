@@ -1,4 +1,5 @@
-import { addi18nResourceBundle as addInquirerCommoni18nResourceBundle } from '@sap-ux/inquirer-common';
+import { addi18nResourceBundle as addInquirerCommonTexts } from '@sap-ux/inquirer-common';
+import { addi18nResourceBundle as addProjectInputValidatorTexts } from '@sap-ux/project-input-validator';
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/odata-service-inquirer.i18n.json';
@@ -29,8 +30,9 @@ export async function initI18nOdataServiceInquirer(): Promise<void> {
         }
     });
     i18next.addResourceBundle('en', odataServiceInquirerNamespace, translations);
-    // add the inquirer common i18n resource bundle to ensure all translations are available
-    addInquirerCommoni18nResourceBundle();
+    // add other bundles that are used in consumed modules
+    addInquirerCommonTexts();
+    addProjectInputValidatorTexts();
 }
 
 /**

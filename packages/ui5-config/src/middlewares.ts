@@ -5,7 +5,8 @@ import type {
     FioriToolsProxyConfig,
     MockserverConfig,
     FioriToolsProxyConfigUI5,
-    FioriPreviewConfig
+    FioriPreviewConfig,
+    DataSourceConfig
 } from './types';
 import type { NodeComment } from '@sap-ux/yaml';
 
@@ -128,23 +129,30 @@ export function getFioriToolsProxyMiddlewareConfig(
 }
 
 export const getMockServerMiddlewareConfig = (
-    path?: string,
-    annotationsConfig: MockserverConfig['annotations'] = []
+    dataSourcesConfig: DataSourceConfig[],
+    annotationsConfig: MockserverConfig['annotations'],
+    appRoot?: string
 ): CustomMiddleware<MockserverConfig> => {
-    path = path?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
+    const services: MockserverConfig['services'] = [];
+
+    // Populate services based on dataSourcesConfig
+    dataSourcesConfig.forEach((dataSource) => {
+        const serviceRoot = `${appRoot ?? './webapp'}/localService/${dataSource.serviceName}`;
+
+        const newServiceData = {
+            urlPath: dataSource.servicePath.replace(/\/$/, ''), // Mockserver is sensitive to trailing '/'
+            metadataPath: dataSource.metadataPath ?? `${serviceRoot}/metadata.xml`,
+            mockdataPath: `${serviceRoot}/data`,
+            generateMockData: true
+        };
+        services.push(newServiceData);
+    });
     return {
         name: 'sap-fe-mockserver',
         beforeMiddleware: 'csp',
         configuration: {
             mountPath: '/',
-            services: [
-                {
-                    urlPath: path ?? '',
-                    metadataPath: './webapp/localService/metadata.xml',
-                    mockdataPath: './webapp/localService/data',
-                    generateMockData: true
-                }
-            ],
+            services,
             annotations: annotationsConfig
         }
     };
