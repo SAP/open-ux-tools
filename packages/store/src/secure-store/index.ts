@@ -85,7 +85,7 @@ function loadZoweSecretSdk(log: Logger): typeof zoweKeyring | undefined {
 export const getSecureStore = (log: Logger): SecureStore => {
     // Use a DummyStore in environments where secure storage is disabled
     if (isAppStudio() || process.env.FIORI_TOOLS_DISABLE_SECURE_STORE) {
-        log.info('Secure store disabled, using DummyStore.');
+        log.debug('Secure store disabled, using DummyStore.');
         return new DummyStore(log);
     }
     // Try to initialize secure storage with Zowe secrets SDK
@@ -95,7 +95,7 @@ export const getSecureStore = (log: Logger): SecureStore => {
         return new KeyStoreManager(log, zoweSecretSdk);
     }
 
-    log.warn('Falling back to DummyStore as secure storage could not be initialized.');
+    log.debug('Falling back to DummyStore as secure storage could not be initialized.');
     return new DummyStore(log);
 };
 
