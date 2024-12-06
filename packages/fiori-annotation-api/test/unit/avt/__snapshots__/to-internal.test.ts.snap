@@ -60,6 +60,55 @@ Object {
 }
 `;
 
+exports[`avt to internal convertExpressionToInternal Collection with string values 1`] = `
+Object {
+  "attributes": Object {},
+  "content": Array [
+    Object {
+      "attributes": Object {},
+      "content": Array [
+        Object {
+          "text": "test",
+          "type": "text",
+        },
+      ],
+      "name": "String",
+      "type": "element",
+    },
+  ],
+  "name": "Collection",
+  "type": "element",
+}
+`;
+
+exports[`avt to internal convertExpressionToInternal Collection with string values 2`] = `
+Object {
+  "attributes": Object {},
+  "content": Array [
+    Object {
+      "attributes": Object {},
+      "content": Array [
+        Object {
+          "attributes": Object {},
+          "content": Array [
+            Object {
+              "text": "test",
+              "type": "text",
+            },
+          ],
+          "name": "String",
+          "type": "element",
+        },
+      ],
+      "name": "Collection",
+      "type": "element",
+    },
+  ],
+  "name": "Annotation",
+  "type": "element",
+}
+`;
+
 exports[`avt to internal convertExpressionToInternal If 1`] = `
 Object {
   "attributes": Object {},
