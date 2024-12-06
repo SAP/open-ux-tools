@@ -47,9 +47,10 @@ jobs:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Check file existence
               id: check_changeset_files
-              uses: thebinaryfelix/check-file-existence-action@1.0.0
+              uses: andstor/file-existence-action@3.0.0
               with:
                 files: '.changeset/*-*-*.md'
+                fail: false
             - name: Changeset file exists
               if: steps.check_changeset_files.outputs.exists == 'true'
               # Only runs if changeset file(s) exists
