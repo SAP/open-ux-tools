@@ -34,6 +34,8 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/adp-tooling": "workspace:*",
         "i18next": "23.5.1",
         "lodash": "4.17.21"
     },

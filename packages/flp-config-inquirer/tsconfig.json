@@ -10,6 +10,9 @@
   },
   "references": [
     {
+      "path": "../adp-tooling"
+    },
+    {
       "path": "../btp-utils"
     },
     {
@@ -17,6 +20,9 @@
     },
     {
       "path": "../inquirer-common"
+    },
+    {
+      "path": "../project-access"
     },
     {
       "path": "../project-input-validator"

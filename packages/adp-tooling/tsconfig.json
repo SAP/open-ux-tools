@@ -18,6 +18,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../i18n"
+    },
+    {
       "path": "../inquirer-common"
     },
     {

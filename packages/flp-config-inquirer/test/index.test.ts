@@ -11,18 +11,11 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('index', () => {
     describe('getPrompts', () => {
-        it('should return prompts from getPrompts', async () => {
-            const prompts = await getPrompts([], undefined);
-
-            expect(prompts).toBeDefined();
-            expect(prompts.length).toBe(5);
-        });
-
         it('should return prompts from getPrompts without any arguments', async () => {
             const prompts = await getPrompts();
 
             expect(prompts).toBeDefined();
-            expect(prompts.length).toBe(5);
+            expect(prompts.length).toBe(9);
         });
     });
 
@@ -64,7 +57,7 @@ describe('index', () => {
                 prompt: jest.fn().mockResolvedValueOnce(answers)
             };
 
-            const result = await prompt(adapter, [], {
+            const result = await prompt(adapter, undefined, undefined, {
                 overwrite: { hide: false },
                 // simulating behavior when default is a function
                 subTitle: { default: (() => 'defaultSubTitle') as unknown as string },
