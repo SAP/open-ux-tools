@@ -97,7 +97,8 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
     router.get(ApiRoutes.previewGeneratorSandbox, async (_req, res: Response) => {
         const app = JSON.parse(await manifest.getString())['sap.app'];
         const ui5libs = getUI5Libs(JSON.parse(await manifest.getString()));
-        const supportedThemes: string[] = (JSON.parse(await manifest.getString())['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
+        const supportedThemes: string[] = (JSON.parse(await manifest.getString())['sap.ui5']
+            ?.supportedThemes as []) ?? [DEFAULT_THEME];
         const ui5Theme = supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0];
         res.status(200).send(
             render(await promises.readFile(join(__dirname, '../templates/flpSandbox.html'), 'utf-8'), {
