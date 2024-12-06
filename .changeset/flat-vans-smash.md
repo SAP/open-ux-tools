@@ -5,4 +5,4 @@
 '@sap-ux/create': patch
 ---
 
-Added the `convert` command to local preview files of a project to virtual files.
+Added the `convert` command to convert local preview files of a project to virtual files.
