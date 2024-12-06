@@ -31,7 +31,7 @@ async function convertPreview(basePath: string, simulate: boolean): Promise<void
         basePath = process.cwd();
     }
 
-    logger.debug(`Called convert preview for path, '${basePath}'. The simulate path is '${simulate}'.`);
+    logger.debug(`Called convert preview for path '${basePath}'. The simulate path is '${simulate}'.`);
     try {
         const fs = await convertToVirtualPreview(basePath, logger);
 

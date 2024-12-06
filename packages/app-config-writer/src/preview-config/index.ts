@@ -24,7 +24,7 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     }
 
     if (!(await checkPrerequisites(basePath, fs, logger))) {
-        throw Error('The prerequisites are not met. For more details, see the log messages above.');
+        throw Error('The prerequisites are not met. For more information, see the log messages above.');
     }
 
     if (!(await getExplicitApprovalToAdjustFiles())) {

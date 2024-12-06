@@ -159,7 +159,7 @@ sap-ux convert preview [path]
 ```
 
 ## sap-ux remove
-Calling `sap-ux remove` allows removing a feature to a project.
+Calling `sap-ux remove` allows removing a feature from a project.
 
 ### mockserver-config
 Calling `sap-ux remove mockserver-config` removes the configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver. 

@@ -63,6 +63,6 @@ export async function getAllUi5YamlFileNames(projectRoot: string, memFs?: Editor
         const yamlFilePaths = await findFilesByExtension('.yaml', projectRoot, [], memFs, true);
         return yamlFilePaths.map((path) => basename(path));
     } catch (error) {
-        throw new Error(`There was an error reading files from the directory, '${projectRoot}': ${error}`);
+        throw new Error(`There was an error reading files from the directory '${projectRoot}': ${error}`);
     }
 }

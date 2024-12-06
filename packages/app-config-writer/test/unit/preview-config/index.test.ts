@@ -54,7 +54,7 @@ describe('index', () => {
             );
 
             await expect(convertToVirtualPreview(missingPrerequisitesPath, logger, fs)).rejects.toThrowError(
-                `The prerequisites are not met. For more details, see the log messages above.`
+                `The prerequisites are not met. For more information, see the log messages above.`
             );
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).not.toHaveBeenCalled();

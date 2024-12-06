@@ -41,7 +41,7 @@ function isUi5YamlToBeConverted(
 ): boolean {
     if (!ui5YamlFileNames.includes(ui5Yaml)) {
         logger?.warn(
-            `Skipping script, '${scriptName}', because the UI5 YAML configuration file, '${ui5Yaml}', could not be found.`
+            `Skipping script '${scriptName}', because the UI5 YAML configuration file, '${ui5Yaml}', could not be found.`
         );
         return false;
     }
@@ -83,13 +83,13 @@ async function isUi5YamlAlreadyConverted(
     const { path: scriptPath } = extractUrlDetails(script);
     if (flpPath != scriptPath) {
         logger?.warn(
-            `Skipping script,'${scriptName}', because another script also refers to UI5 YAML configuration file, '${ui5Yaml}'. Adjust the flp.path property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script, '${scriptName}'. ${ui5Yaml} currently uses ${
+            `Skipping script'${scriptName}', because another script also refers to UI5 YAML configuration file, '${ui5Yaml}'. Adjust the 'flp.path' property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script '${scriptName}'. ${ui5Yaml} currently uses ${
                 flpPath ?? DEFAULT_FLP_PATH
             } whereas script '${scriptName}' uses '${scriptPath}'.`
         );
     } else {
         logger?.info(
-            `Skipping script, '${scriptName}', because the UI5 YAML configuration file '${ui5Yaml}' has already been adjusted based on another script.`
+            `Skipping script '${scriptName}', because the UI5 YAML configuration file '${ui5Yaml}' has already been adjusted based on another script.`
         );
     }
     return true;
@@ -277,7 +277,7 @@ export async function updatePreviewMiddlewareConfigs(
             await processUi5YamlConfig(fs, basePath, ui5Yaml, script);
         } catch (error) {
             logger?.warn(
-                `Skipping script, '${scriptName}', which refers to the UI5 YAML configuration file '${ui5Yaml}'. ${error.message}`
+                `Skipping script '${scriptName}', which refers to the UI5 YAML configuration file '${ui5Yaml}'. ${error.message}`
             );
             continue;
         }
@@ -289,7 +289,7 @@ export async function updatePreviewMiddlewareConfigs(
         ensurePreviewMiddlewareDependency(packageJson, fs, packageJsonPath);
 
         logger?.info(
-            `The UI5 YAML configuration file, '${ui5Yaml}', has been updated according to script, '${scriptName}'.`
+            `The UI5 YAML configuration file '${ui5Yaml}', has been updated according to script, '${scriptName}'.`
         );
     }
     for (const ui5Yaml of unprocessedUi5YamlFileNames) {
@@ -300,7 +300,7 @@ export async function updatePreviewMiddlewareConfigs(
             logger?.warn(`Skipping UI5 yaml configuration file '${ui5Yaml}'. ${error.mesage}`);
         }
         logger?.warn(
-            `The UI5 YAML configuration file, '${ui5Yaml}', is not used in any preview script. Outdated preview middleware will be adjusted if necessary.`
+            `The UI5 YAML configuration file '${ui5Yaml}', is not used in any preview script. Outdated preview middleware will be adjusted, if necessary.`
         );
     }
 }

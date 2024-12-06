@@ -182,15 +182,15 @@ flp.init(JSON.parse(await files[0].getString()));
 return flp.router
 ```
 - `flpConfig` - the middleware configuration
-- `rootProject` - [Reader](https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_AbstractReader.html) to access resources of the root project
+- `rootProject` - [Reader](https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_AbstractReader.html) to access the resources of the root project
 - `middlewareUtil` - [MiddlewareUtil](https://sap.github.io/ui5-tooling/v3/api/@ui5_server_middleware_MiddlewareUtil.html) of the UI5 server
-- `logger` - Logger instance for use in the middleware.
+- `logger` - Logger instance to be used in the middleware.
 
 
 ## [Migration](#migration)
 If you have no custom modifications in the local Fiori Launchpad sandbox files (`webapp/test/flpSandbox.html` or `webapp/test/flpSandboxMockserver.html`), the conversion is finished.
 
-If you have custom modifications in the local Fiori Launchpad sandbox files, you need to migrate them into a custom .js or .ts file (depending on your setup) and integrate this file as custom `init` script into the configuration options of the middleware.
+If you have custom modifications in the local Fiori Launchpad sandbox files, you need to migrate them into a custom .js or .ts file (depending on your setup) and integrate this file as a custom `init` script into the configuration options of the middleware.
 
 Sample:
 
