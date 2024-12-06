@@ -59,13 +59,19 @@ async function pathExists(path: string) {
     }
 }
 
+/**
+ * Retrieves a comma-separated string of UI5 libraries from the provided manifest.
+ * It ensures that certain essential libraries are always included.
+ *
+ * @param {Partial<Manifest>} manifest - The manifest object containing UI5 library dependencies.
+ * @returns {string} A comma-separated string of UI5 library names.
+ */
 function getUI5Libs(manifest: Partial<Manifest>): string {
     const libs = manifest['sap.ui5']?.dependencies?.libs ?? {};
     // add libs that should always be preloaded
     libs['sap.m'] = {};
     libs['sap.ui.core'] = {};
     libs['sap.ushell'] = {};
-    libs['sap.rta'] = {};
 
     return Object.keys(libs)
         .filter((key) => {
