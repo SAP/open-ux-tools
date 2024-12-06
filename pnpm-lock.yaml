@@ -238,8 +238,8 @@ importers:
         specifier: 8.4.2
         version: 8.4.2(esbuild@0.19.2)(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.6.2)
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -359,8 +359,8 @@ importers:
         version: 2.0.1(inquirer@8.2.6)
     devDependencies:
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -478,8 +478,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -924,8 +924,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -1217,8 +1217,8 @@ importers:
         specifier: 5.0.9
         version: 5.0.9
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1438,8 +1438,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1753,8 +1753,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -1850,8 +1850,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -2174,8 +2174,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-service-writer
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -2856,8 +2856,8 @@ importers:
         specifier: 12.1.5
         version: 12.1.5(react-dom@16.14.0)(react@16.14.0)
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/react':
         specifier: 16.14.55
         version: 16.14.55
@@ -2956,8 +2956,8 @@ importers:
         specifier: workspace:*
         version: link:../cap-config-writer
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -3101,8 +3101,8 @@ importers:
         version: 2.0.1(inquirer@8.2.6)
     devDependencies:
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -3126,8 +3126,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       inquirer:
         specifier: 8.2.6
         version: 8.2.6
@@ -8884,7 +8884,14 @@ packages:
   /@types/inquirer-autocomplete-prompt@2.0.1:
     resolution: {integrity: sha512-y/IFCMwNnxliCUxc7q1fwYUDkekP0Q+niL1YR9dvD1jKnIq8irirfsPCRXKN1jem82fNGT/91IPOufQTEi8STQ==}
     dependencies:
-      '@types/inquirer': 8.2.6
+      '@types/inquirer': 8.2.10
+    dev: true
+
+  /@types/inquirer@8.2.10:
+    resolution: {integrity: sha512-IdD5NmHyVjWM8SHWo/kPBgtzXatwPkfwzyP3fN1jF2g9BWt5WO+8hL2F4o2GKIYsU40PpqeevuUWvkS/roXJkA==}
+    dependencies:
+      '@types/through': 0.0.30
+      rxjs: 7.8.1
     dev: true
 
   /@types/inquirer@8.2.6:
@@ -9296,7 +9303,7 @@ packages:
     resolution: {integrity: sha512-kIDgoiuPnL9HGHwa2t6h4FiUgYFb411/okY0nKhRKw+IMsRxMOWzQUFhZ/CKQvwXvKoCjFTj+MZI2KXAKxVmug==}
     dependencies:
       '@types/diff': 5.0.9
-      '@types/inquirer': 8.2.6
+      '@types/inquirer': 8.2.10
       '@types/mem-fs': 1.1.2
       '@types/node': 18.11.9
       '@types/text-table': 0.2.2
