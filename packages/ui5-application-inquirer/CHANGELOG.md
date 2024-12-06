@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.8.7
+
+### Patch Changes
+
+-   b67b17d: Fixes non-loading texts from nested dependency
+
 ## 0.8.6
 
 ### Patch Changes
