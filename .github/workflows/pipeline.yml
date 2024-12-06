@@ -47,7 +47,7 @@ jobs:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Check file existence
               id: check_changeset_files
-              uses: andstor/file-existence-action@3.0.0
+              uses: andstor/file-existence-action@v3
               with:
                 files: '.changeset/*-*-*.md'
                 fail: false
