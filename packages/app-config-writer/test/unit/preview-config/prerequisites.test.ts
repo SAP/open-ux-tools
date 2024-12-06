@@ -27,7 +27,7 @@ describe('prerequisites', () => {
 
         expect(await checkPrerequisites(basePath, fs, logger)).toBeFalsy();
         expect(errorLogMock).toHaveBeenCalledWith(
-            "A conversion from '@sap/grunt-sapui5-bestpractice-build' is not supported. Please migrate to UI5 CLI version 3.0.0 or higher first. See https://sap.github.io/ui5-tooling/v3/updates/migrate-v3/ for more information."
+            "Conversion from '@sap/grunt-sapui5-bestpractice-build' is not supported. You must migrate to UI5 CLI version 3.0.0 or higher. For more information, see https://sap.github.io/ui5-tooling/v3/updates/migrate-v3."
         );
     });
 
@@ -36,7 +36,7 @@ describe('prerequisites', () => {
 
         expect(await checkPrerequisites(basePath, fs, logger)).toBeFalsy();
         expect(errorLogMock).toHaveBeenCalledWith(
-            'UI5 CLI version 3.0.0 or higher is required to convert the preview to virtual files. See https://sap.github.io/ui5-tooling/v3/updates/migrate-v3/ for more information.'
+            'UI5 CLI version 3.0.0 or higher is required to convert the preview to virtual files. For more information, see https://sap.github.io/ui5-tooling/v3/updates/migrate-v3.'
         );
     });
 
@@ -45,7 +45,7 @@ describe('prerequisites', () => {
 
         expect(await checkPrerequisites(basePath, fs, logger)).toBeFalsy();
         expect(errorLogMock).toHaveBeenCalledWith(
-            "A conversion from 'sap/ui/core/util/MockServer' is not supported. Please migrate to '@sap-ux/ui5-middleware-fe-mockserver' first (details see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver)."
+            "Conversion from 'sap/ui/core/util/MockServer' is not supported. You must migrate from '@sap-ux/ui5-middleware-fe-mockserver'. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver."
         );
     });
 

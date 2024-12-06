@@ -53,7 +53,7 @@ describe('update preview middleware config', () => {
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
         const text = (filename: string) =>
-            `UI5 yaml configuration file '${filename}' it is not being used in any preview script. Outdated preview middleware will be adjusted nevertheless if necessary.`;
+            `The UI5 YAML configuration file, '${filename}', is not used in any preview script. Outdated preview middleware will be adjusted if necessary.`;
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
@@ -84,7 +84,7 @@ describe('update preview middleware config', () => {
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(warnLogMock).toHaveBeenCalledWith(
-            `Skipping script 'invalid' which refers to UI5 yaml configuration file 'ui5-invalid.yaml'. Error when reading 'ui5-invalid.yaml': This file does not comply with the schema.`
+            `Skipping script, 'invalid', which refers to the UI5 YAML configuration file 'ui5-invalid.yaml'. An error occurred when reading 'ui5-invalid.yaml': This file does not comply with the schema.`
         );
     });
 
@@ -104,7 +104,7 @@ describe('update preview middleware config', () => {
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(warnLogMock).toHaveBeenCalledWith(
-            `Skipping script 'not:found' because UI5 yaml configuration file 'ui5-unavailable.yaml' could not be found.`
+            `Skipping script, 'not:found', because the UI5 YAML configuration file, 'ui5-unavailable.yaml', could not be found.`
         );
     });
 
@@ -321,7 +321,7 @@ describe('update preview middleware config', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
 
         expect(warnLogMock).toHaveBeenCalledWith(
-            `Skipping script 'start2' because another script also refers to UI5 yaml configuration file 'ui5.yaml'. Please manually adjust the flp.path property in the UI5 yaml configuration file to the correct endpoint or create a separate ui5 yaml configuration for script 'start2'. ui5.yaml currently uses test/flpSandbox.html whereas script 'start2' uses 'test/flpSandboxMockserver.html'.`
+            `Skipping script,'start2', because another script also refers to UI5 YAML configuration file, 'ui5.yaml'. Adjust the flp.path property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script, 'start2'. ui5.yaml currently uses test/flpSandbox.html whereas script 'start2' uses 'test/flpSandboxMockserver.html'.`
         );
     });
 });

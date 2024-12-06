@@ -7,7 +7,7 @@ const renameMessage = (filename: string): string =>
     `Renamed '${filename}' to '${filename.slice(
         0,
         -5
-    )}_old.html'. This file is no longer needed for the preview. In case there have not been done any modifications you can delete this file. In case of modifications please move the respective content to a custom init script of the preview middleware (see migration information https://www.npmjs.com/package/preview-middleware#migration).`;
+    )}_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://www.npmjs.com/package/preview-middleware#migration.`;
 
 /**
  * Renames the sandbox file which is used in a given script.
@@ -30,9 +30,9 @@ export async function renameSandbox(fs: Editor, path: string, logger?: ToolsLogg
             })
         ).length === 0
     ) {
-        logger?.debug(`File '${basename(path)}' has already been renamed. Skipping renaming.`);
+        logger?.debug(`The file, '${basename(path)}', has already been renamed. Skipping renaming.`);
     } else {
-        logger?.warn(`File '${basename(path)}' not found. Skipping renaming.`);
+        logger?.warn(`The file, '${basename(path)}', has not been found. Skipping renaming.`);
     }
 }
 
@@ -76,7 +76,11 @@ export async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logg
         if (fs.exists(path)) {
             fs.delete(path);
             logger?.info(
-                `Deleted '${join('webapp', 'test', basename(path))}'. This file is no longer needed for the preview.`
+                `Deleted the '${join(
+                    'webapp',
+                    'test',
+                    basename(path)
+                )}' file. This file is no longer needed for the preview functionality.`
             );
         }
     });

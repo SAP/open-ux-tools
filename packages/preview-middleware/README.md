@@ -188,14 +188,13 @@ return flp.router
 
 
 ## [Migration](#migration)
-In case you have no custom modifications in the local fiori launchpad sandbox files (`webapp/test/flpSandbox.html` or `webapp/test/flpSandboxMockserver.html`) you're already good to go.
+If you have no custom modifications in the local Fiori Launchpad sandbox files (`webapp/test/flpSandbox.html` or `webapp/test/flpSandboxMockserver.html`), the conversion is finished.
 
-If you have custom modifications in the local fiori launchpad sandbox files,
-you need to migrate them into a custom .js or .ts file (depending on your setup) and integrate this file as custom `init` script into the configuration options of the middleware.
+If you have custom modifications in the local Fiori Launchpad sandbox files, you need to migrate them into a custom .js or .ts file (depending on your setup) and integrate this file as custom `init` script into the configuration options of the middleware.
 
 Sample:
 
-from custom modification in flpSandbox.html:
+from custom modification in `flpSandbox.html`:
 ```HTML
 <script type="text/javascript">
     sap.ui.getCore().attachInit(function () {
@@ -209,7 +208,7 @@ console.log('my custom code');
 ```
 integrated via `ui5.yaml`:
 
-```Yaml
+```YAML
 server:
   customMiddleware:
   - name: preview-middleware

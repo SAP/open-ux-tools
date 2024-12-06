@@ -30,7 +30,7 @@ export async function checkPrerequisites(basePath: string, fs: Editor, logger?: 
         !!packageJson?.dependencies?.['@sap/grunt-sapui5-bestpractice-build'];
     if (sapui5BestpracticeBuildExists) {
         logger?.error(
-            "A conversion from '@sap/grunt-sapui5-bestpractice-build' is not supported. Please migrate to UI5 CLI version 3.0.0 or higher first. See https://sap.github.io/ui5-tooling/v3/updates/migrate-v3/ for more information."
+            "Conversion from '@sap/grunt-sapui5-bestpractice-build' is not supported. You must migrate to UI5 CLI version 3.0.0 or higher. For more information, see https://sap.github.io/ui5-tooling/v3/updates/migrate-v3."
         );
         prerequisitesMet = false;
     }
@@ -38,7 +38,7 @@ export async function checkPrerequisites(basePath: string, fs: Editor, logger?: 
     const ui5CliVersion = packageJson?.devDependencies?.['@ui5/cli'] ?? packageJson?.dependencies?.['@ui5/cli'] ?? '0';
     if (parseInt(ui5CliVersion.split('.')[0], 10) < 3) {
         logger?.error(
-            'UI5 CLI version 3.0.0 or higher is required to convert the preview to virtual files. See https://sap.github.io/ui5-tooling/v3/updates/migrate-v3/ for more information.'
+            'UI5 CLI version 3.0.0 or higher is required to convert the preview to virtual files. For more information, see https://sap.github.io/ui5-tooling/v3/updates/migrate-v3.'
         );
         prerequisitesMet = false;
     }
@@ -50,7 +50,7 @@ export async function checkPrerequisites(basePath: string, fs: Editor, logger?: 
         !!packageJson?.devDependencies?.['cds-plugin-ui5'] || !!packageJson?.dependencies?.['cds-plugin-ui5'];
     if (!ui5MiddlewareMockserverExists && !cdsPluginUi5Exists) {
         logger?.error(
-            "A conversion from 'sap/ui/core/util/MockServer' is not supported. Please migrate to '@sap-ux/ui5-middleware-fe-mockserver' first (details see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver)."
+            "Conversion from 'sap/ui/core/util/MockServer' is not supported. You must migrate from '@sap-ux/ui5-middleware-fe-mockserver'. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver."
         );
         prerequisitesMet = false;
     }
@@ -69,7 +69,7 @@ export async function getExplicitApprovalToAdjustFiles(): Promise<boolean> {
         name: 'approval',
         initial: false,
         message:
-            'The converter will rename html files and delete js/ts files used for the existing preview and configure the usage of virtual files instead. Do you want to proceed with the conversion?'
+            'The converter will rename the HTML files and delete the JS and TS files used for the existing preview functionality and configure virtual files instead. Do you want to proceed with the conversion?'
     };
     return Boolean((await prompt([question])).approval);
 }
