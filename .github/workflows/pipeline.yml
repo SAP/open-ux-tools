@@ -53,8 +53,9 @@ jobs:
             - name: Changeset file exists
               if: steps.check_changeset_files.outputs.exists == 'true'
               # Only runs if all of the files exist
-              run: echo "Found csets!"
-              run: pnpm changeset status
+              run: |
+                  echo "Found csets!"
+                  pnpm changeset status
             - name: Cache playwright browsers
               id: cache-playwright-browsers
               uses: actions/cache@v4
