@@ -37,14 +37,17 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
      */
     async setup() {
         let pathMappingFn;
+        let ui5VersionInfo;
         if (this.mappingStrategy === 'tsconfig') {
             pathMappingFn = await initTsConfigMappingStrategy(this.testEnvironmentOptions);
         } else {
-            pathMappingFn = await initUi5MappingStrategy(this.testEnvironmentOptions);
+            const ui5Mappings = await initUi5MappingStrategy(this.testEnvironmentOptions);
+            pathMappingFn = ui5Mappings.pathMappingFn;
+            ui5VersionInfo = ui5Mappings.ui5VersionInfo;
         }
         await super.setup();
         const context = this.getVmContext();
-        initUI5Environment(context, pathMappingFn, this.testEnvironmentOptions.isV2 ?? false);
+        initUI5Environment(context, pathMappingFn, this.testEnvironmentOptions.isV2 ?? false, ui5VersionInfo);
         context.testPath = this.testPath;
         global.window = context;
         global.Object = context.Object;
