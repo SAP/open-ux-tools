@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.2
+
+### Patch Changes
+
+-   9a80888: We now properly generate a sap-ui-version.json for ui5 mapping strategy
+
 ## 5.3.1
 
 ### Patch Changes
