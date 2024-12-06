@@ -52,7 +52,7 @@ jobs:
                 files: '.changeset/[!README]*.md'
                 fail: false
             - name: Validate changeset files if found
-              if: steps.check_changeset_files.outputs.exists == 'true'
+              if: steps.check_changeset_files.files_exists == 'true'
               run: pnpm changeset status
             - name: Cache playwright browsers
               id: cache-playwright-browsers
