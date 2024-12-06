@@ -2,4 +2,4 @@
 "@sap-ux/jest-environment-ui5": patch
 ---
 
-fix: impossible snapshots
+fix: impossible snapshots due to version
