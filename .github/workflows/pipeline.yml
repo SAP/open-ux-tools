@@ -49,7 +49,7 @@ jobs:
               id: check_changeset_files
               uses: thebinaryfelix/check-file-existence-action@1.0.0
               with:
-                files: '.changeset/*-*-*.md'
+                files: '!.changeset/README.md, .changeset/*.md'
             - name: Changeset file exists
               if: steps.check_changeset_files.outputs.exists == 'true'
               # Only runs if all of the files exist
