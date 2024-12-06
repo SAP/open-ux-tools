@@ -255,7 +255,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     // Prepare template folder for manifest and xml updates
     const templateRoot = join(__dirname, '../templates');
     // Update manifest.json
-    updateManifest(basePath, service, fs, templateRoot);
+    await updateManifest(basePath, service, fs, templateRoot);
     // Dont extend backend and mockserver middlewares if service type is CDS
     if (isServiceTypeEdmx) {
         await writeEDMXServiceFiles(fs, basePath, paths, templateRoot, service as EdmxOdataService);

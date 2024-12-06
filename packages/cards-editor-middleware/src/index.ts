@@ -3,7 +3,7 @@ import type { MiddlewareParameters } from '@ui5/server';
 import { json, Router as createRouter } from 'express';
 import path, { join } from 'path';
 import { promises } from 'fs';
-import { getWebappPath, FileName } from '@sap-ux/project-access';
+import { getWebappPath, FileName, type Manifest } from '@sap-ux/project-access';
 import { render } from 'ejs';
 import * as utils from './utilities';
 import os from 'os';
@@ -13,6 +13,32 @@ export const enum ApiRoutes {
     cardsStore = '/cards/store',
     i18nStore = '/editor/i18n'
 }
+export const DEFAULT_THEME = 'sap_horizon';
+
+const UI5_LIBS = [
+    'sap.apf',
+    'sap.base',
+    'sap.chart',
+    'sap.collaboration',
+    'sap.f',
+    'sap.fe',
+    'sap.fileviewer',
+    'sap.gantt',
+    'sap.landvisz',
+    'sap.m',
+    'sap.ndc',
+    'sap.ovp',
+    'sap.rules',
+    'sap.suite',
+    'sap.tnt',
+    'sap.ui',
+    'sap.uiext',
+    'sap.ushell',
+    'sap.uxap',
+    'sap.viz',
+    'sap.webanalytics',
+    'sap.zen'
+];
 
 /**
  * Check if a file exists.
@@ -33,6 +59,29 @@ async function pathExists(path: string) {
     }
 }
 
+/**
+ * Retrieves a comma-separated string of UI5 libraries from the provided manifest.
+ * It ensures that certain essential libraries are always included.
+ *
+ * @param {Partial<Manifest>} manifest - The manifest object containing UI5 library dependencies.
+ * @returns {string} A comma-separated string of UI5 library names.
+ */
+function getUI5Libs(manifest: Partial<Manifest>): string {
+    const libs = manifest['sap.ui5']?.dependencies?.libs ?? {};
+    // add libs that should always be preloaded
+    libs['sap.m'] = {};
+    libs['sap.ui.core'] = {};
+    libs['sap.ushell'] = {};
+
+    return Object.keys(libs)
+        .filter((key) => {
+            return UI5_LIBS.some((substring) => {
+                return key === substring || key.startsWith(substring + '.');
+            });
+        })
+        .join(',');
+}
+
 module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<RequestHandler> => {
     const router = createRouter();
     router.use(json());
@@ -47,11 +96,19 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
      */
     router.get(ApiRoutes.previewGeneratorSandbox, async (_req, res: Response) => {
         const app = JSON.parse(await manifest.getString())['sap.app'];
+        const ui5libs = getUI5Libs(JSON.parse(await manifest.getString()));
+        const supportedThemes: string[] = (JSON.parse(await manifest.getString())['sap.ui5']
+            ?.supportedThemes as []) ?? [DEFAULT_THEME];
+        const ui5Theme = supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0];
         res.status(200).send(
             render(await promises.readFile(join(__dirname, '../templates/flpSandbox.html'), 'utf-8'), {
                 templateModel: {
                     appTitle: app.title || 'Card Editor Preview',
-                    component: app.id
+                    component: app.id,
+                    ui5: {
+                        libs: ui5libs,
+                        theme: ui5Theme
+                    }
                 }
             })
         );

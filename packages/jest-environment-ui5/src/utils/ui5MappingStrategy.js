@@ -9,13 +9,25 @@ let pathMappingFn = null;
  */
 async function getFileMapFromUI5(graph, rootProject) {
     let ui5PathMapping = {};
+    let ui5VersionInfo = {
+        name: 'SAPUI5 Distribution',
+        version: rootProject._config.framework.version,
+        'buildTimestamp': '202412051614',
+        'scmRevision': '',
+        'libraries': []
+    };
 
     await graph.traverseBreadthFirst(async ({ project: dependency }) => {
         const reader = dependency.getReader({ style: 'runtime' });
         const sourcePath = dependency.getSourcePath();
         const namespace = dependency.getNamespace();
         const isRootProject = dependency.getName() === rootProject.getName();
-
+        ui5VersionInfo.libraries.push({
+            name: dependency.getName(),
+            version: dependency.getVersion(),
+            buildTimestamp: '202412051614',
+            scmRevision: ''
+        });
         let resources = await reader.byGlob(`**/*.{ts,tsx,js,xml,properties,json}`);
 
         for (const resource of resources) {
@@ -29,6 +41,10 @@ async function getFileMapFromUI5(graph, rootProject) {
             }
 
             if (isRootProject) {
+                if (targetPath.endsWith('.ts')) {
+                    targetPath = targetPath.replace('.ts', '');
+                    ui5PathMapping[targetPath + '.ts'] = itemPath;
+                }
                 if (!targetPath.startsWith(namespace)) {
                     targetPath = path.posix.join(namespace, targetPath);
                 }
@@ -37,7 +53,7 @@ async function getFileMapFromUI5(graph, rootProject) {
             ui5PathMapping[targetPath] = itemPath;
         }
     });
-    return ui5PathMapping;
+    return { ui5PathMapping, ui5VersionInfo };
 }
 
 module.exports = {
@@ -59,7 +75,7 @@ module.exports = {
         const graph = await graphFromPackageDependencies(buildGraphOptions);
         const rootProject = graph.getRoot();
 
-        let ui5PathMapping = await getFileMapFromUI5(graph, rootProject);
+        let { ui5PathMapping, ui5VersionInfo } = await getFileMapFromUI5(graph, rootProject);
 
         pathMappingFn = (path) => {
             let targetPath = ui5PathMapping[path];
@@ -75,6 +91,6 @@ module.exports = {
             return targetPath;
         };
 
-        return pathMappingFn;
+        return { pathMappingFn, ui5VersionInfo };
     }
 };
