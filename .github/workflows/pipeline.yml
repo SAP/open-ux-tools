@@ -45,6 +45,15 @@ jobs:
               run: pnpm run test
               env:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+            - name: Check file existence
+                id: check_changeset_files
+                uses: thebinaryfelix/check-file-existence-action@v1
+                with:
+                  files: './changeset/*-*-*.md'
+            - name: Changeset file exists
+              if: steps.check_changeset_files.outputs.exists == 'true'
+              # Only runs if all of the files exist
+              run: echo "Found csets!"
             - name: Check changesets
               run: pnpm changeset status
             - name: Cache playwright browsers
