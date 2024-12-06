@@ -1,5 +1,14 @@
 # @sap-ux/preview-middleware
 
+## 0.16.144
+
+### Patch Changes
+
+-   e93797a: Added the `convert` command to convert local preview files of a project to virtual files.
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/adp-tooling@0.12.92
+
 ## 0.16.143
 
 ### Patch Changes
