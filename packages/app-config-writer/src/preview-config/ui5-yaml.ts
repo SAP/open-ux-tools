@@ -9,6 +9,7 @@ import type { Editor } from 'mem-fs-editor';
 import type {
     FlpConfig,
     MiddlewareConfig as PreviewConfig,
+    TestConfig,
     DefaultFlpPath,
     DefaultIntent
 } from '@sap-ux/preview-middleware';
@@ -58,41 +59,37 @@ function isUi5YamlToBeConverted(
  * @param ui5Yaml - the name of the UI5 yaml configuration file
  * @param scriptName - the name of the script from the package.json file
  * @param script - the content of the script from the package.json file
+ * @param convertTests - indicator if test suite and test runner should be included in the conversion
  * @param logger logger to report info to the user
  * @returns indicator if the UI5 yaml configuration file has already been converted
  */
-async function isUi5YamlAlreadyConverted(
+async function isUi5YamlFlpPathAlreadyConverted(
     fs: Editor,
     basePath: string,
     ui5Yaml: string,
     scriptName: string,
     script: string,
+    convertTests: boolean,
     logger?: ToolsLogger
 ): Promise<boolean> {
-    if (
+    const flpAlreadyAdjusted =
         Object.keys(
             fs.dump(basePath, (file) => {
                 return file.basename === ui5Yaml && file.state === 'modified';
             })
-        ).length === 0
-    ) {
-        return false;
-    }
+        ).length > 0;
     const flpPath = ((await getPreviewMiddleware(undefined, basePath, ui5Yaml, fs)) as CustomMiddleware<PreviewConfig>)
         ?.configuration?.flp?.path;
     const { path: scriptPath } = extractUrlDetails(script);
-    if (flpPath != scriptPath) {
+    if (flpAlreadyAdjusted && flpPath != scriptPath && (convertTests ? !isTestPath(scriptPath) : true)) {
         logger?.warn(
             `Skipping script'${scriptName}', because another script also refers to UI5 YAML configuration file, '${ui5Yaml}'. Adjust the 'flp.path' property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script '${scriptName}'. ${ui5Yaml} currently uses ${
                 flpPath ?? DEFAULT_FLP_PATH
             } whereas script '${scriptName}' uses '${scriptPath}'.`
         );
-    } else {
-        logger?.info(
-            `Skipping script '${scriptName}', because the UI5 YAML configuration file '${ui5Yaml}' has already been adjusted based on another script.`
-        );
+        return true;
     }
-    return true;
+    return false;
 }
 
 /**
@@ -102,14 +99,30 @@ async function isUi5YamlAlreadyConverted(
  * @param configuration - the preview configuration
  * @returns indicator if the path is an FLP path
  */
-function pathIsFlpPath(path: string | undefined, configuration: PreviewConfig): boolean {
+function isFlpPath(path: string | undefined, configuration: PreviewConfig): boolean {
     if (!path) {
         return false;
     }
-    const isNotRtaEditorPath = configuration.rta?.editors?.every((editor) => editor.path !== path) ?? true;
-    const isNotTestPath = configuration.test?.every((test) => test.path !== path) ?? true;
+    const isRtaEditorPath = configuration.rta?.editors?.every((editor) => editor.path === path) ?? false;
+    return !isRtaEditorPath && !isTestPath(path, configuration);
+}
 
-    return isNotRtaEditorPath && isNotTestPath;
+/**
+ * Check if the path is a test path.
+ *
+ * @param path - the path
+ * @param configuration - the preview configuration
+ * @returns indicator if the path is a test path
+ */
+export function isTestPath(path: string | undefined, configuration?: PreviewConfig): boolean {
+    if (!path) {
+        return false;
+    }
+    //todo: how to ensure we don't mistake other test scripts for preview scripts?
+    if (path.includes('.qunit.html')) {
+        return true;
+    }
+    return configuration?.test?.every((test) => test.path === path) ?? false;
 }
 
 /**
@@ -214,20 +227,26 @@ export function updatePreviewMiddlewareConfig(
 
     //copy of configuration to avoid ending up with an empty configuration object in some cases
     const configuration = { ...newMiddlewareConfig.configuration };
-    configuration.flp = configuration.flp ?? {};
 
     let writeConfig = false;
-    //check path and respect defaults
-    if (pathIsFlpPath(path, configuration) && !path?.includes(DEFAULT_FLP_PATH)) {
-        configuration.flp.path = path;
-        writeConfig = true;
-    }
-    //check intent and respect defaults
-    if (intent && `${intent?.object}-${intent?.action}` !== defaultIntent) {
-        configuration.flp.intent = {
-            object: intent.object,
-            action: intent.action
-        };
+    if (isFlpPath(path, configuration)) {
+        //adjust path but respect defaults
+        if (!path?.includes(DEFAULT_FLP_PATH)) {
+            configuration.flp = configuration.flp ?? {};
+            configuration.flp.path = path;
+            writeConfig = true;
+        }
+        //adjust intent but respect defaults
+        if (intent && `${intent?.object}-${intent?.action}` !== defaultIntent) {
+            configuration.flp = configuration.flp ?? {};
+            configuration.flp.intent = {
+                object: intent.object,
+                action: intent.action
+            };
+            writeConfig = true;
+        }
+    } else if (isTestPath(path, configuration)) {
+        configuration.test = updateTestConfig(configuration.test, path);
         writeConfig = true;
     }
 
@@ -239,6 +258,40 @@ export function updatePreviewMiddlewareConfig(
 }
 
 /**
+ * Update the test configuration.
+ *
+ * @param testConfiguration - the test configuration
+ * @param path - the path
+ * @returns the updated test configuration
+ */
+function updateTestConfig(testConfiguration: PreviewConfig['test'], path: string | undefined): PreviewConfig['test'] {
+    testConfiguration = testConfiguration ?? [];
+
+    const updateFrameworkPath = (framework: TestConfig['framework'], defaultPath: string): void => {
+        const test = testConfiguration.find((test) => test.framework === framework);
+        if (test) {
+            test.path = path;
+            if (test.path === defaultPath) {
+                delete test.path;
+            }
+        } else if (path?.includes(defaultPath)) {
+            testConfiguration.push({ framework });
+        } else {
+            testConfiguration.push({ framework, path });
+        }
+    };
+
+    if (path?.includes('testsuite.qunit.html')) {
+        updateFrameworkPath('Testsuite', 'test/testsuite.qunit.html');
+    } else if (path?.includes('opaTests.qunit.html')) {
+        updateFrameworkPath('OPA5', 'test/opaTests.qunit.html');
+    } else if (path?.includes('unitTests.qunit.html')) {
+        updateFrameworkPath('QUnit', 'test/unitTests.qunit.html');
+    }
+    return testConfiguration;
+}
+
+/**
  * Updates the preview middleware configurations according to the scripts they are being used in package.json.
  *
  * It will process all given UI5 configuration yaml files and check if the preview middleware configuration must be updated based on a given script.
@@ -247,11 +300,13 @@ export function updatePreviewMiddlewareConfig(
  *
  * @param fs - file system reference
  * @param basePath - base path to be used for the conversion
+ * @param convertTests - indicator if test suite and test runner should be included in the conversion
  * @param logger logger to report info to the user
  */
 export async function updatePreviewMiddlewareConfigs(
     fs: Editor,
     basePath: string,
+    convertTests: boolean,
     logger?: ToolsLogger
 ): Promise<void> {
     const ui5YamlFileNames = await getAllUi5YamlFileNames(basePath, fs);
@@ -259,7 +314,7 @@ export async function updatePreviewMiddlewareConfigs(
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     for (const [scriptName, script] of Object.entries(packageJson?.scripts ?? {})) {
-        if (!script || !isValidPreviewScript(scriptName, script)) {
+        if (!script || !isValidPreviewScript(scriptName, script, convertTests)) {
             continue;
         }
 
@@ -268,7 +323,7 @@ export async function updatePreviewMiddlewareConfigs(
 
         if (
             !isUi5YamlToBeConverted(ui5Yaml, scriptName, ui5YamlFileNames, logger) ||
-            (await isUi5YamlAlreadyConverted(fs, basePath, ui5Yaml, scriptName, script, logger))
+            (await isUi5YamlFlpPathAlreadyConverted(fs, basePath, ui5Yaml, scriptName, script, convertTests, logger))
         ) {
             continue;
         }
