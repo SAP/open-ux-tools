@@ -37,12 +37,8 @@ describe('advanced prompts', () => {
                     hint: t('tooltips.inboundId'),
                     breadcrumb: t('prompts.inboundIds'),
                     mandatory: true
-                },
-                additionalMessages: expect.any(Function)
+                }
             });
-
-            const additionalMessages = prompt.additionalMessages!();
-            expect(additionalMessages).toBeUndefined();
         });
 
         it('should set "when" to false when options.hide is true', () => {
@@ -56,12 +52,6 @@ describe('advanced prompts', () => {
             const prompt = getInboundIdsPrompt(emptyInboundIds);
 
             expect(prompt.when).toBe(false);
-
-            const additionalMessages = prompt.additionalMessages!();
-            expect(additionalMessages).toEqual({
-                message: t('validators.noInboundKeysAreFound'),
-                severity: Severity.warning
-            });
         });
 
         it('should use the first inbound ID as the default value', () => {
@@ -74,13 +64,6 @@ describe('advanced prompts', () => {
             const prompt = getInboundIdsPrompt(inboundIds);
 
             expect(prompt.validate).toBe(validateEmptyString);
-        });
-
-        it('should return undefined for additionalMessages when inboundIds are provided', () => {
-            const prompt = getInboundIdsPrompt(inboundIds);
-
-            const additionalMessages = prompt.additionalMessages!();
-            expect(additionalMessages).toBeUndefined();
         });
     });
 

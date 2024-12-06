@@ -1,4 +1,3 @@
-import { Severity } from '@sap-devx/yeoman-ui-types';
 import { parseParameters } from '@sap-ux/adp-tooling';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 
@@ -33,14 +32,6 @@ export function getInboundIdsPrompt(inboundIds: string[], options?: InboundIdPro
             hint: t('tooltips.inboundId'),
             breadcrumb: t('prompts.inboundIds'),
             mandatory: true
-        },
-        additionalMessages: () => {
-            if (inboundIds?.length === 0) {
-                return {
-                    message: t('validators.noInboundKeysAreFound'),
-                    severity: Severity.warning
-                };
-            }
         }
     };
 }
