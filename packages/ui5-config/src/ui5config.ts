@@ -51,7 +51,7 @@ export class UI5Config {
             const path = join(__dirname, '..', 'dist', 'schema', 'ui5.yaml.json');
             const schema = JSON.parse(await readFile(path, 'utf8')) as SomeJSONSchema | null;
             if (!schema) {
-                throw Error('Schema file not found. No validation possible.');
+                throw Error('The schema file was not found. Validation is not possible.');
             }
             UI5Config.validate = new Ajv({ strict: false }).compile<SomeJSONSchema>(schema);
         }
@@ -88,7 +88,7 @@ export class UI5Config {
         if (validateSchema) {
             const isValid = await instance.validateSchema();
             if (!isValid) {
-                throw new Error('File does not comply with the schema');
+                throw new Error('This file does not comply with the schema.');
             }
         }
         return instance;

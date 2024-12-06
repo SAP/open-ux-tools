@@ -81,7 +81,7 @@ export function extractUrlDetails(script: string): {
  * - must not be 'start-variants-management'
  * - must not be 'start-control-property-editor'.
  *
- * @param scriptName - the name of the script from package.json
+ * @param scriptName - the name of the script from the package.json file
  * @param script - the content of the script from package.json
  * @returns indicator if the script is valid
  */
@@ -93,7 +93,6 @@ export function isValidPreviewScript(scriptName: string, script: string | undefi
     const startsWebServer = !!(script?.includes('ui5 serve') || script?.includes('fiori run'));
 
     const { path } = extractUrlDetails(script ?? '');
-    //todo: how to ensure we don't mistake other test scripts for preview scripts?
     const opensTest = path?.includes('qunit.html');
     const opensIndexHtml = path === 'index.html';
 

@@ -54,7 +54,7 @@ describe('index', () => {
             );
 
             await expect(convertToVirtualPreview(missingPrerequisitesPath, logger, fs)).rejects.toThrowError(
-                `Prerequisites not met. See above log messages for details.`
+                `The prerequisites are not met. For more details, see the log messages above.`
             );
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).not.toHaveBeenCalled();
@@ -70,7 +70,9 @@ describe('index', () => {
             await convertToVirtualPreview(basePath, logger, fs);
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
-            expect(errorLogMock).toHaveBeenCalledWith('Approval not given. Conversion aborted.');
+            expect(errorLogMock).toHaveBeenCalledWith(
+                'You have not approved the conversion. The conversion has been aborted.'
+            );
         });
     });
 });

@@ -28,7 +28,7 @@ const DEFAULT_INTENT: DefaultIntent = {
  * A script can be converted when the used UI5 yaml configuration file exists and complies with the schema validation.
  *
  * @param ui5Yaml - the name of the UI5 yaml configuration file
- * @param scriptName - the name of the script from package.json
+ * @param scriptName - the name of the script from the package.json file
  * @param ui5YamlFileNames - the UI5 yaml configuration file names
  * @param logger logger to report info to the user
  * @returns indicator if the script is to be converted
@@ -56,7 +56,7 @@ function isUi5YamlToBeConverted(
  * @param fs - file system reference
  * @param basePath - base path to be used for the conversion
  * @param ui5Yaml - the name of the UI5 yaml configuration file
- * @param scriptName - the name of the script from package.json
+ * @param scriptName - the name of the script from the package.json file
  * @param script - the content of the script from package.json
  * @param logger logger to report info to the user
  * @returns indicator if the UI5 yaml configuration file has already been converted

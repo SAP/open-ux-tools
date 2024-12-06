@@ -24,11 +24,11 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
     }
 
     if (!(await checkPrerequisites(basePath, fs, logger))) {
-        throw Error('Prerequisites not met. See above log messages for details.');
+        throw Error('The prerequisites are not met. For more details, see the log messages above.');
     }
 
     if (!(await getExplicitApprovalToAdjustFiles())) {
-        logger?.error('Approval not given. Conversion aborted.');
+        logger?.error('You have not approved the conversion. The conversion has been aborted.');
         return fs;
     }
 
