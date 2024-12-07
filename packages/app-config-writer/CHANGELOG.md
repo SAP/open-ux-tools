@@ -1,5 +1,14 @@
 # @sap-ux/app-config-writer
 
+## 0.5.4
+
+### Patch Changes
+
+-   e93797a: Added the `convert` command to convert local preview files of a project to virtual files.
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/axios-extension@1.17.6
+
 ## 0.5.3
 
 ### Patch Changes
