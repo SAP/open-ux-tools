@@ -572,7 +572,7 @@ describe('ConnectionValidator', () => {
         const connectValidator = new ConnectionValidator();
         expect(
             await connectValidator.validateDestination({
-                Name: 'dest1',
+                Name: 'DEST1',
                 Host: 'https://system1:12345/path/to/service',
                 Type: 'HTTP',
                 Authentication: 'NoAuthentication',
@@ -594,7 +594,7 @@ describe('ConnectionValidator', () => {
         expect(
             await connectValidator.validateDestination(
                 {
-                    Name: 'dest2',
+                    Name: 'DEST2',
                     Host: 'https://system2:12345/',
                     Type: 'HTTP',
                     Authentication: 'NoAuthentication',
