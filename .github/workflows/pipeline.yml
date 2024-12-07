@@ -45,7 +45,14 @@ jobs:
               run: pnpm run test
               env:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-            - name: Check changesets
+            - name: Check for changeset files
+              id: check_changeset_files
+              uses: andstor/file-existence-action@v3
+              with:
+                files: '.changeset/[!README]*.md'
+                fail: false
+            - name: Validate changeset files if found
+              if: steps.check_changeset_files.outputs.files_exists == 'true'
               run: pnpm changeset status
             - name: Cache playwright browsers
               id: cache-playwright-browsers
