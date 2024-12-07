@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+<html lang="en">
+
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title><%- templateModel.appTitle %></title>
+	<script type="text/javascript">
+		window["sap-ushell-config"] = {
+			defaultRenderer: "fiori2",
+			bootstrapPlugins: {
+				"RuntimeAuthoringPlugin": {
+					component: "sap.ushell.plugins.rta",
+					config: {
+						validateAppVersion: false
+					}
+				}
+			},
+			renderers: {
+				fiori2: {
+					componentData: {
+						config: {
+							search: "hidden"
+						}
+					}
+				}
+			},
+			applications: {
+				"Cards-generator": {
+					title: "<%- templateModel.appTitle %>",
+					description: "",
+					additionalInformation: "SAPUI5.Component=<%- templateModel.component %>",
+					applicationType: "URL",
+					url: "../"
+				}
+			}
+		};
+	</script>
+
+    <script src="../resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script>
+	
+	<!-- Bootstrap the UI5 core library -->
+	<script id="sap-ui-bootstrap" src="../resources/sap-ui-core.js"
+		data-sap-ui-libs="<%- templateModel.ui5.libs %>"
+		data-sap-ui-async="true"
+		data-sap-ui-preload="async"
+		data-sap-ui-theme="<%- templateModel.ui5.theme %>"
+		data-sap-ui-compat-version="edge"
+		data-sap-ui-language="en"
+		data-sap-ui-oninit="module:Init"
+		data-sap-ui-resource-roots='{"<%- templateModel.component %>": "../"}'
+		data-sap-ui-frame-options="allow"> // NON-SECURE setting for testing environment
+	</script>
+
+    <script src="./Init.js"></script>
+</head>
+<!-- UI Content -->
+
+<body class="sapUiBody" id="content"></body>
+
+</html>
