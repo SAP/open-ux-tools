@@ -2470,6 +2470,12 @@ importers:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
 
+  packages/project-integrity:
+    dependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+
   packages/reload-middleware:
     dependencies:
       '@sap-ux/btp-utils':

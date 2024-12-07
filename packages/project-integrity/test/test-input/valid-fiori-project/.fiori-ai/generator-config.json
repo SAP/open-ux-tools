@@ -1,0 +1,31 @@
+{
+    "version": "0.2",
+    "floorplan": "FE_LROP",
+    "project": {
+        "name": "travelmanagement",
+        "targetFolder": "/Users/d045154/.fioritools/fiori-tools-ai",
+        "title": "AI generated App travelmanagement",
+        "description": "AI generated App travelmanagement",
+        "ui5Version": "",
+        "localUI5Version": "1.82.2",
+        "sapux": true
+    },
+    "service": {
+        "servicePath": "/odata/v4/travel-management-srv/",
+        "capService": {
+            "projectPath": "/Users/d045154/.fioritools/fiori-tools-ai",
+            "serviceName": "travelManagementSrv",
+            "serviceCdsPath": "srv/service"
+        }
+    },
+    "entityConfig": {
+        "mainEntity": {
+            "entityName": "Travel"
+        }
+    },
+    "projectType": "LIST_REPORT_OBJECT_PAGE",
+    "telemetryData": {
+        "generationSourceName": "AI Headless",
+        "generationSourceVersion": "1.15.3"
+    }
+}
