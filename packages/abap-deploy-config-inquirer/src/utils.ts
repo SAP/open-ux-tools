@@ -183,15 +183,15 @@ export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersIntern
 /**
  * Determines the transport request from the various transport related prompts.
  *
- * @param previousAnswers - previous answers
+ * @param promptAnswers - previous answers
  * @returns transport request
  */
-function getTransportAnswer(previousAnswers?: AbapDeployConfigAnswersInternal): string {
+export function getTransportAnswer(promptAnswers?: AbapDeployConfigAnswersInternal): string {
     return (
-        previousAnswers?.transportManual ||
-        previousAnswers?.transportFromList ||
-        previousAnswers?.transportCreated ||
-        (previousAnswers?.transportInputChoice === TransportChoices.CreateDuringDeployChoice
+        promptAnswers?.transportManual ||
+        promptAnswers?.transportFromList ||
+        promptAnswers?.transportCreated ||
+        (promptAnswers?.transportInputChoice === TransportChoices.CreateDuringDeployChoice
             ? CREATE_TR_DURING_DEPLOY
             : '')
     );

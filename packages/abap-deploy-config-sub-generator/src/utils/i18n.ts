@@ -1,15 +1,15 @@
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from '../translations/deploy-config-generator-shared.i18n.json';
+import translations from '../translations/abap-deploy-config-sub-generator.i18n.json';
 
-const deployConfigGenShared = 'deploy-config-generator-shared';
+const abapDeployGenI18nNamespace = 'abap-deploy-config-sub-generator';
 
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
     await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', deployConfigGenShared, translations)
+        i18next.addResourceBundle('en', abapDeployGenI18nNamespace, translations)
     );
 }
 
@@ -22,7 +22,7 @@ export async function initI18n(): Promise<void> {
  */
 export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
-        options = Object.assign(options ?? {}, { ns: deployConfigGenShared });
+        options = Object.assign(options ?? {}, { ns: abapDeployGenI18nNamespace });
     }
     return i18next.t(key, options);
 }

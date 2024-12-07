@@ -1,4 +1,3 @@
-export const ABAP_DEPLOY_TASK = 'deploy-to-abap';
 export const BUILD_SCRIPT = 'npm run build';
 export const DEPLOY_SCRIPT = 'fiori deploy';
 export const UNDEPLOY_SCRIPT = 'fiori undeploy';
