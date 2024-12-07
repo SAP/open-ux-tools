@@ -11,6 +11,7 @@ import {
     validatePackage,
     validatePackageChoiceInput,
     validatePackageChoiceInputForCli,
+    validatePackageExtended,
     validateTargetSystem,
     validateTargetSystemUrlCli,
     validateTransportChoiceInput,
@@ -23,9 +24,11 @@ import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoi
 import * as utils from '../../src/utils';
 import { mockDestinations } from '../fixtures/destinations';
 import * as serviceProviderUtils from '../../src/service-provider-utils';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.mock('../../src/service-provider-utils', () => ({
-    getTransportListFromService: jest.fn()
+    getTransportListFromService: jest.fn(),
+    getSystemInfo: jest.fn()
 }));
 
 describe('Test validators', () => {
@@ -304,7 +307,7 @@ describe('Test validators', () => {
         it('should return error for invalid package input', async () => {
             const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
 
-            const result = await validatePackage('zpackage', {
+            const result = await validatePackage('Zpackage', {
                 ...previousAnswers,
                 ui5AbapRepo: 'ZUI5REPO'
             });
@@ -320,6 +323,73 @@ describe('Test validators', () => {
             const result = await validatePackage('$TMP', previousAnswers);
             expect(result).toBe(true);
             expect(PromptState.transportAnswers.transportRequired).toBe(false);
+        });
+
+        it('should return error for special characters', async () => {
+            const result = await validatePackage('@TMP', previousAnswers);
+            expect(result).toBe(t('errors.validators.charactersForbiddenInPackage'));
+        });
+
+        it('should return error for invalid format', async () => {
+            const result = await validatePackage('namespace/packageName', previousAnswers);
+            expect(result).toBe(t('errors.validators.abapPackageInvalidFormat'));
+        });
+
+        it('should return error for invalid starting prefix', async () => {
+            const result = await validatePackage('namespace', previousAnswers);
+            expect(result).toBe(t('errors.validators.abapPackageStartingPrefix'));
+        });
+
+        it('should return error for invalid ui5Repo starting prefix', async () => {
+            const result = await validatePackage('ZPACKAGE', {
+                ...previousAnswers,
+                ui5AbapRepo: 'UI5REPO'
+            });
+            expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
+        });
+
+        it('should return error for invalid ui5Repo starting prefix package starting with namespace', async () => {
+            const result = await validatePackage('/NAMESPACE/ZPACKAGE', {
+                ...previousAnswers,
+                ui5AbapRepo: 'UI5REPO'
+            });
+            expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
+        });
+    });
+
+    describe('validatePackageExtended', () => {
+        it('should return error when base validation fail', async () => {
+            const result = await validatePackageExtended('namespace', previousAnswers, {
+                additionalValidation: { cloudPackage: true }
+            });
+            expect(result).toBe(t('errors.validators.abapPackageStartingPrefix'));
+        });
+
+        it('should return error when package is not cloud', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
+                activeLanguages: []
+            });
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
+                additionalValidation: { cloudPackage: true }
+            });
+            expect(result).toBe(t('errors.validators.invalidCloudPackage'));
+        });
+
+        it('should return true when package meets all validators', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY],
+                activeLanguages: []
+            });
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
+                additionalValidation: { cloudPackage: true }
+            });
+            expect(result).toBe(true);
+        });
+
+        it('should return true when package base validation pass and there are no additional validation', async () => {
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
         });
     });
 
