@@ -1,4 +1,4 @@
-# Contributing to UX Tools
+# Contributing to UX Tools 
 ## 📖 Content
 
  * [Contributing Code](#how-to-contribute)
