@@ -103,7 +103,7 @@ function isFlpPath(path: string | undefined, configuration: PreviewConfig): bool
     if (!path) {
         return false;
     }
-    const isRtaEditorPath = configuration.rta?.editors?.every((editor) => editor.path === path) ?? false;
+    const isRtaEditorPath = configuration.rta?.editors?.some((editor) => editor.path === path) ?? false;
     return !isRtaEditorPath && !isTestPath(path, configuration);
 }
 
