@@ -30,6 +30,32 @@ describe('<Sections />', () => {
         simulateMouseEvent('mouseup', end, end);
     };
 
+    const mockClientHeight = (size: number, sizesMap?: { [key: string]: number }) => {
+        jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(function (this: HTMLElement) {
+            if (sizesMap) {
+                for (const className in sizesMap) {
+                    if (this.classList.contains(className)) {
+                        return sizesMap[className];
+                    }
+                }
+            }
+            return size;
+        });
+    };
+
+    const mockClientWidth = (size: number, sizesMap?: { [key: string]: number }) => {
+        jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (this: HTMLElement) {
+            if (sizesMap) {
+                for (const className in sizesMap) {
+                    if (this.classList.contains(className)) {
+                        return sizesMap[className];
+                    }
+                }
+            }
+            return size;
+        });
+    };
+
     beforeEach(() => {
         wrapper = Enzyme.mount(
             <UISections vertical={false}>
@@ -121,8 +147,8 @@ describe('<Sections />', () => {
                 left: 0
             } as DOMRect;
             jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => rect);
-            jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => 1000);
-            jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(() => 1000);
+            mockClientWidth(1000, { sections: 2000 });
+            mockClientHeight(1000, { sections: 2000 });
             jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
                 cb(1);
                 return 1;
@@ -167,6 +193,7 @@ describe('<Sections />', () => {
     });
 
     it('Test "minSectionSize"', () => {
+        mockClientWidth(1000, { sections: 2000 });
         wrapper = Enzyme.mount(
             <UISections vertical={false} splitter={true} minSectionSize={[200, 100]}>
                 <UISections.Section>
@@ -180,16 +207,19 @@ describe('<Sections />', () => {
         simulateSplitterResize(wrapper, 1000, 50);
         const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
         expect(firstSection.style.left).toEqual('0px');
+        // 2000 - 200(min of first section) = 1800px
         expect(firstSection.style.right).toEqual('1800px');
         // Reverse move
         simulateSplitterResize(wrapper, 1000, 3000);
         const lastSection: HTMLElement = wrapper.find('.sections__item').last().getDOMNode();
-        expect(lastSection.style.left).toEqual('900px');
+        // 2000 - 100(min of second section) = 1900px
+        expect(lastSection.style.left).toEqual('1900px');
         expect(lastSection.style.right).toEqual('0px');
         expect(lastSection.style.width).toEqual('');
     });
 
     it('Test "minSectionSize" - avoid resize when no place', () => {
+        mockClientWidth(1000);
         wrapper = Enzyme.mount(
             <UISections vertical={false} splitter={true} minSectionSize={[800, 700]}>
                 <UISections.Section>
@@ -470,9 +500,8 @@ describe('<Sections />', () => {
             return 1;
         });
         const mockWidth = (windowWidth: number) => {
-            jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => {
-                return windowWidth;
-            });
+            // ToDo - is 200 correct here?
+            mockClientWidth(windowWidth, { sections: 2000 });
             jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => {
                 return {
                     top: 0,
@@ -484,6 +513,7 @@ describe('<Sections />', () => {
         };
 
         mockWidth(1000);
+
         wrapper = Enzyme.mount(
             <UISections vertical={false} splitter={true} sizes={[450, undefined]} minSectionSize={[200, 190]}>
                 <UISections.Section>
