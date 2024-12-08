@@ -157,6 +157,7 @@ Executing `sap-ux convert preview-config` in the root folder of an app will conv
 ```sh
 sap-ux convert preview [path]
 ```
+- `-t | --tests` include test runners in the conversion to virtual files
 
 ## sap-ux remove
 Calling `sap-ux remove` allows removing a feature from a project.
