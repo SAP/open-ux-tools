@@ -109,6 +109,8 @@ function isFlpPath(path: string | undefined, configuration: PreviewConfig): bool
 
 /**
  * Check if the path is a test path.
+ * 1) path matches pattern '**.qunit.html'
+ * 2) path is being used as test configuration path in yaml configuration.
  *
  * @param path - the path
  * @param configuration - the preview configuration
@@ -122,7 +124,7 @@ export function isTestPath(path: string | undefined, configuration?: PreviewConf
     if (path.includes('.qunit.html')) {
         return true;
     }
-    return configuration?.test?.every((test) => test.path === path) ?? false;
+    return configuration?.test?.some((testConfig) => testConfig.path === path) ?? false;
 }
 
 /**
