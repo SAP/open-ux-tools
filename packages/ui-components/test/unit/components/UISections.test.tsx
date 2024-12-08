@@ -30,20 +30,29 @@ describe('<Sections />', () => {
         simulateMouseEvent('mouseup', end, end);
     };
 
-    const mockClientWidth = (size: number) => {
-        jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => size);
-    };
-    const mockClientHeight = (size: number) => {
-        jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(() => size);
-    };
-    const mockContainerWidth = (size: number, mockWrapper = wrapper) => {
-        Object.defineProperty(mockWrapper.find('.sections').getDOMNode(), 'clientWidth', {
-            get: () => size
+    const mockClientHeight = (size: number, sizesMap?: { [key: string]: number }) => {
+        jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(function (this: HTMLElement) {
+            if (sizesMap) {
+                for (const className in sizesMap) {
+                    if (this.classList.contains(className)) {
+                        return sizesMap[className];
+                    }
+                }
+            }
+            return size;
         });
     };
-    const mockContainerHeight = (size: number, mockWrapper = wrapper) => {
-        Object.defineProperty(mockWrapper.find('.sections').getDOMNode(), 'clientHeight', {
-            get: () => size
+
+    const mockClientWidth = (size: number, sizesMap?: { [key: string]: number }) => {
+        jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (this: HTMLElement) {
+            if (sizesMap) {
+                for (const className in sizesMap) {
+                    if (this.classList.contains(className)) {
+                        return sizesMap[className];
+                    }
+                }
+            }
+            return size;
         });
     };
 
@@ -138,8 +147,8 @@ describe('<Sections />', () => {
                 left: 0
             } as DOMRect;
             jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => rect);
-            mockClientWidth(1000);
-            mockClientHeight(1000);
+            mockClientWidth(1000, { sections: 2000 });
+            mockClientHeight(1000, { sections: 2000 });
             jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
                 cb(1);
                 return 1;
@@ -151,7 +160,6 @@ describe('<Sections />', () => {
         });
 
         it('Test "splitter" resize', () => {
-            mockContainerWidth(2000);
             simulateSplitterResize(wrapper, 100, 50);
             const section: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
             expect(section.style.left).toEqual('0px');
@@ -177,7 +185,6 @@ describe('<Sections />', () => {
                     </UISections.Section>
                 </UISections>
             );
-            mockContainerHeight(2000, verticalWrapper);
             simulateSplitterResize(verticalWrapper, 100, 50);
             const section: HTMLElement = verticalWrapper.find('.sections__item').first().getDOMNode();
             expect(section.style.top).toEqual('0px');
@@ -186,6 +193,7 @@ describe('<Sections />', () => {
     });
 
     it('Test "minSectionSize"', () => {
+        mockClientWidth(1000, { sections: 2000 });
         wrapper = Enzyme.mount(
             <UISections vertical={false} splitter={true} minSectionSize={[200, 100]}>
                 <UISections.Section>
@@ -196,7 +204,6 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        mockContainerWidth(2000);
         simulateSplitterResize(wrapper, 1000, 50);
         const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
         expect(firstSection.style.left).toEqual('0px');
@@ -212,6 +219,7 @@ describe('<Sections />', () => {
     });
 
     it('Test "minSectionSize" - avoid resize when no place', () => {
+        mockClientWidth(1000);
         wrapper = Enzyme.mount(
             <UISections vertical={false} splitter={true} minSectionSize={[800, 700]}>
                 <UISections.Section>
@@ -492,9 +500,8 @@ describe('<Sections />', () => {
             return 1;
         });
         const mockWidth = (windowWidth: number) => {
-            jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => {
-                return windowWidth;
-            });
+            // ToDo - is 200 correct here?
+            mockClientWidth(windowWidth, { sections: 2000 });
             jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => {
                 return {
                     top: 0,
@@ -506,6 +513,7 @@ describe('<Sections />', () => {
         };
 
         mockWidth(1000);
+
         wrapper = Enzyme.mount(
             <UISections vertical={false} splitter={true} sizes={[450, undefined]} minSectionSize={[200, 190]}>
                 <UISections.Section>
@@ -516,7 +524,6 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
-        mockContainerWidth(2000);
 
         simulateSplitterResize(wrapper, 200, 100);
         // Simulate restore for min size
