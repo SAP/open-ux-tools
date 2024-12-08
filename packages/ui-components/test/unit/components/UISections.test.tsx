@@ -30,6 +30,23 @@ describe('<Sections />', () => {
         simulateMouseEvent('mouseup', end, end);
     };
 
+    const mockClientWidth = (size: number) => {
+        jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => size);
+    };
+    const mockClientHeight = (size: number) => {
+        jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(() => size);
+    };
+    const mockContainerWidth = (size: number, mockWrapper = wrapper) => {
+        Object.defineProperty(mockWrapper.find('.sections').getDOMNode(), 'clientWidth', {
+            get: () => size
+        });
+    };
+    const mockContainerHeight = (size: number, mockWrapper = wrapper) => {
+        Object.defineProperty(mockWrapper.find('.sections').getDOMNode(), 'clientHeight', {
+            get: () => size
+        });
+    };
+
     beforeEach(() => {
         wrapper = Enzyme.mount(
             <UISections vertical={false}>
@@ -121,8 +138,8 @@ describe('<Sections />', () => {
                 left: 0
             } as DOMRect;
             jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => rect);
-            jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => 1000);
-            jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(() => 1000);
+            mockClientWidth(1000);
+            mockClientHeight(1000);
             jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
                 cb(1);
                 return 1;
@@ -134,6 +151,7 @@ describe('<Sections />', () => {
         });
 
         it('Test "splitter" resize', () => {
+            mockContainerWidth(2000);
             simulateSplitterResize(wrapper, 100, 50);
             const section: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
             expect(section.style.left).toEqual('0px');
@@ -159,6 +177,7 @@ describe('<Sections />', () => {
                     </UISections.Section>
                 </UISections>
             );
+            mockContainerHeight(2000, verticalWrapper);
             simulateSplitterResize(verticalWrapper, 100, 50);
             const section: HTMLElement = verticalWrapper.find('.sections__item').first().getDOMNode();
             expect(section.style.top).toEqual('0px');
@@ -177,14 +196,17 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
+        mockContainerWidth(2000);
         simulateSplitterResize(wrapper, 1000, 50);
         const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
         expect(firstSection.style.left).toEqual('0px');
+        // 2000 - 200(min of first section) = 1800px
         expect(firstSection.style.right).toEqual('1800px');
         // Reverse move
         simulateSplitterResize(wrapper, 1000, 3000);
         const lastSection: HTMLElement = wrapper.find('.sections__item').last().getDOMNode();
-        expect(lastSection.style.left).toEqual('900px');
+        // 2000 - 100(min of second section) = 1900px
+        expect(lastSection.style.left).toEqual('1900px');
         expect(lastSection.style.right).toEqual('0px');
         expect(lastSection.style.width).toEqual('');
     });
@@ -494,6 +516,7 @@ describe('<Sections />', () => {
                 </UISections.Section>
             </UISections>
         );
+        mockContainerWidth(2000);
 
         simulateSplitterResize(wrapper, 200, 100);
         // Simulate restore for min size
