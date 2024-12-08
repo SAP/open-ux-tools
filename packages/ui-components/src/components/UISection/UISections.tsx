@@ -856,10 +856,21 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         );
     }
 
+    /**
+     * Gets the size of the container element.
+     *
+     * @returns The size of the container element based on the specified DOM size property.
+     */
     private getContainerSize(): number {
         return this.rootRef.current?.[this.domSizeProperty] ?? 0;
     }
 
+    /**
+     * Calculates the maximum available size for a section at the specified index.
+     *
+     * @param index - The index of the section for which the maximum size is calculated.
+     * @returns The maximum size available for the section, considering the current size of other sections and minimum constraints.
+     */
     private getMaxSize(index: number): number {
         const rootDom = this.rootRef.current;
         const mainSize = rootDom?.[this.domSizeProperty] ?? 0;
