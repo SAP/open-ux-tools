@@ -1,11 +1,10 @@
 import { basename, join } from 'path';
-import { extractYamlConfigFileName } from './ui5-yaml';
+import { extractYamlConfigFileName, isTestPath } from './ui5-yaml';
 import { generateVariantsConfig } from '../variants-config';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/project-access';
 import type { FlpConfig } from '@sap-ux/preview-middleware';
-import { isTestPath } from './ui5-yaml';
 
 /**
  * Ensures that the @sap/ux-ui5-tooling or @sap-ux/preview-middleware dependency exists in the package.json.
