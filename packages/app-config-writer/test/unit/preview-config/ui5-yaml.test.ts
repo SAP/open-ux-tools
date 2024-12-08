@@ -84,7 +84,7 @@ describe('update preview middleware config', () => {
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(warnLogMock).toHaveBeenCalledWith(
-            `Skipping script 'invalid', which refers to the UI5 YAML configuration file 'ui5-invalid.yaml'. An error occurred when reading 'ui5-invalid.yaml': File does not comply with the schema`
+            `Skipping script 'invalid', which refers to the UI5 YAML configuration file 'ui5-invalid.yaml'. An error occurred when reading 'ui5-invalid.yaml': This file does not comply with the schema.`
         );
     });
 
