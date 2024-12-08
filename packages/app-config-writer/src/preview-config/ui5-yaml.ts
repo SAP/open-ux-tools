@@ -72,7 +72,7 @@ async function isUi5YamlFlpPathAlreadyConverted(
     convertTests: boolean,
     logger?: ToolsLogger
 ): Promise<boolean> {
-    const flpAlreadyAdjusted =
+    const yamlConfigAlreadyAdjusted =
         Object.keys(
             fs.dump(basePath, (file) => {
                 return file.basename === ui5Yaml && file.state === 'modified';
@@ -81,7 +81,7 @@ async function isUi5YamlFlpPathAlreadyConverted(
     const flpPath = ((await getPreviewMiddleware(undefined, basePath, ui5Yaml, fs)) as CustomMiddleware<PreviewConfig>)
         ?.configuration?.flp?.path;
     const { path: scriptPath } = extractUrlDetails(script);
-    if (flpAlreadyAdjusted && flpPath != scriptPath && (convertTests ? !isTestPath(scriptPath) : true)) {
+    if (yamlConfigAlreadyAdjusted && flpPath != scriptPath && (convertTests ? !isTestPath(scriptPath) : true)) {
         logger?.warn(
             `Skipping script'${scriptName}', because another script also refers to UI5 YAML configuration file, '${ui5Yaml}'. Adjust the 'flp.path' property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script '${scriptName}'. ${ui5Yaml} currently uses ${
                 flpPath ?? DEFAULT_FLP_PATH
