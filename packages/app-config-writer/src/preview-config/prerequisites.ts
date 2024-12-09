@@ -4,6 +4,31 @@ import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { PromptObject } from 'prompts';
 import type { ToolsLogger } from '@sap-ux/logger';
+import { lt, coerce } from 'semver';
+
+/**
+ * Check if the version of the given package is lower than the minimal version.
+ *
+ * @param packageJson - the package.json file content
+ * @param dependencyName - the name of the (dev)dependency to check
+ * @param minVersionInfo - the minimal version to check against
+ * @param mandatory - (default true) if the existence of the dependency is mandatory
+ * @returns indicator if the version is lower than the minimal version
+ */
+function isLowerThanMinimalVersion(
+    packageJson: Package,
+    dependencyName: string,
+    minVersionInfo: string,
+    mandatory: boolean = true
+): boolean {
+    const versionInfo = coerce(
+        packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName]
+    );
+    if (!versionInfo) {
+        return mandatory;
+    }
+    return lt(versionInfo, minVersionInfo);
+}
 
 /**
  * Check if the prerequisites for the conversion are met.
@@ -35,10 +60,16 @@ export async function checkPrerequisites(basePath: string, fs: Editor, logger?: 
         prerequisitesMet = false;
     }
 
-    const ui5CliVersion = packageJson?.devDependencies?.['@ui5/cli'] ?? packageJson?.dependencies?.['@ui5/cli'] ?? '0';
-    if (parseInt(ui5CliVersion.split('.')[0], 10) < 3) {
+    if (isLowerThanMinimalVersion(packageJson, '@ui5/cli', '3.0.0')) {
         logger?.error(
             'UI5 CLI version 3.0.0 or higher is required to convert the preview to virtual files. For more information, see https://sap.github.io/ui5-tooling/v3/updates/migrate-v3.'
+        );
+        prerequisitesMet = false;
+    }
+
+    if (isLowerThanMinimalVersion(packageJson, '@sap/ux-ui5-tooling', '1.15.4', false)) {
+        logger?.error(
+            'UX UI5 Tooling version 1.15.4 or higher is required to convert the preview to virtual files. For more information, see https://www.npmjs.com/package/@sap/ux-ui5-tooling.'
         );
         prerequisitesMet = false;
     }

@@ -7,7 +7,7 @@ const renameMessage = (filename: string): string =>
     `Renamed '${filename}' to '${filename.slice(
         0,
         -5
-    )}_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://www.npmjs.com/package/preview-middleware#migration.`;
+    )}_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`;
 
 /**
  * Renames the sandbox file which is used in a given script.

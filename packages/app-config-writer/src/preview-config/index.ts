@@ -14,11 +14,17 @@ import { type ToolsLogger } from '@sap-ux/logger';
  * Corresponding files which are used for the preview are renamed or deleted.
  *
  * @param basePath - base path to be used for the conversion
+ * @param convertTests - indicator if test suite and test runner should be included in the conversion (default: false)
  * @param logger logger to report info to the user
  * @param fs - file system reference
  * @returns file system reference
  */
-export async function convertToVirtualPreview(basePath: string, logger?: ToolsLogger, fs?: Editor): Promise<Editor> {
+export async function convertToVirtualPreview(
+    basePath: string,
+    convertTests: boolean = false,
+    logger?: ToolsLogger,
+    fs?: Editor
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -32,9 +38,9 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
         return fs;
     }
 
-    await updatePreviewMiddlewareConfigs(fs, basePath, logger);
-    await renameDefaultSandboxes(fs, basePath);
-    await deleteNoLongerUsedFiles(fs, basePath);
+    await updatePreviewMiddlewareConfigs(fs, basePath, convertTests, logger);
+    await renameDefaultSandboxes(fs, basePath, logger);
+    await deleteNoLongerUsedFiles(fs, basePath, logger);
     await updateVariantsCreationScript(fs, basePath, logger);
 
     return fs;
