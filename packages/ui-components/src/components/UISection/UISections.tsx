@@ -338,7 +338,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      */
     private onSplitterResize(index: number, position: number): boolean {
         const resizeSections = position !== 0 ? this.resizeSections : [];
-        const totalSize = this.getContainerSize();
+        const totalSize = this.rootSize;
         let left = 0;
         for (let i = 0; i < index; i++) {
             const prevSession = resizeSections[i];
@@ -864,16 +864,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 {sections}
             </div>
         );
-    }
-
-    /**
-     * Gets the size of the container element.
-     *
-     * @returns The size of the container element based on the specified DOM size property.
-     */
-    private getContainerSize(): number {
-        // todo -> this.rootSize ???
-        return this.rootRef.current?.[this.domSizeProperty] ?? 0;
     }
 
     /**

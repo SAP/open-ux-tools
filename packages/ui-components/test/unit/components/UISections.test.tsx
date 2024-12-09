@@ -743,20 +743,7 @@ describe('<Sections />', () => {
             cb(1);
             return 1;
         });
-        const mockWidth = (windowWidth: number) => {
-            // ToDo - is 200 correct here?
-            mockClientWidth(windowWidth, { sections: 2000 });
-            jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => {
-                return {
-                    top: 0,
-                    height: 1000,
-                    width: windowWidth,
-                    left: 0
-                } as DOMRect;
-            });
-        };
-
-        mockWidth(1000);
+        mockClientWidth(1000, { sections: 2000 });
 
         wrapper = Enzyme.mount(
             <UISections vertical={false} splitter={true} sizes={[450, undefined]} minSectionSize={[200, 190]}>
@@ -769,21 +756,21 @@ describe('<Sections />', () => {
             </UISections>
         );
 
-        simulateSplitterResize(wrapper, 200, 100);
+        simulateSplitterResize(wrapper, 2000, 100);
         // Simulate restore for min size
-        mockWidth(650);
+        mockClientWidth(650, { sections: 650 });
         windowEventListenerMock.simulateEvent('resize', {});
         expect(wrapper.state().sizes).toEqual([
-            { end: 450, percentage: false, start: 0 },
-            { end: 0, percentage: false, size: 450, start: undefined }
+            { end: 450, percentage: false, size: 200, start: 0 },
+            { end: 0, percentage: false, size: 450, start: 200 }
         ]);
         simulateSplitterResize(wrapper, 0, 0);
         const section: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
         expect(section.style.left).toEqual('0px');
         expect(section.style.right).toEqual('450px');
         expect(wrapper.state().sizes).toEqual([
-            { end: 450, percentage: false, start: 0 },
-            { end: 0, percentage: false, size: 450, start: undefined }
+            { end: 450, percentage: false, size: 200, start: 0 },
+            { end: 0, percentage: false, size: 450, start: 200 }
         ]);
     });
 });
