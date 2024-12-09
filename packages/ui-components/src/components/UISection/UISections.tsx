@@ -349,6 +349,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 this.resizeSections[i].section = this.state.sizes[i];
             }
         }
+        let minSizeTriggered = false;
         for (let i = index; i < resizeSections.length; i++) {
             const minSectionSize = this.getMinSectionSize(i);
             const resizeSection = resizeSections[i];
@@ -356,7 +357,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             let newSize = resizeSection.size;
             if (i === index) {
                 newSize = resizeSection.size + position;
-            } else if (i === index + 1) {
+            } else if (i === index + 1 || minSizeTriggered) {
                 newSize = resizeSection.size - position;
             }
             const maxSize = Math.max(minSectionSize, i === index ? this.getMaxSize(i) : resizeSection.maxSize);
@@ -365,9 +366,11 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 continue;
             }
             // Do not allow size exceed min and max boundaries
+            minSizeTriggered = false;
             if (newSize < minSectionSize) {
                 position = this.correctBoundaryPosition(position, minSectionSize, newSize, i === index);
                 newSize = minSectionSize;
+                minSizeTriggered = true;
             } else if (newSize > maxSize) {
                 position = this.correctBoundaryPosition(position, maxSize, newSize, i === index);
                 newSize = maxSize;
