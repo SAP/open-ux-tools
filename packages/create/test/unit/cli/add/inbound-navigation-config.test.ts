@@ -5,6 +5,7 @@ import type { Editor, create } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as adpTooling from '@sap-ux/adp-tooling';
+import { TenantType } from '@sap-ux/axios-extension';
 import type { Manifest } from '@sap-ux/project-access';
 import * as appConfigWriter from '@sap-ux/app-config-writer';
 import * as flpConfigInquirer from '@sap-ux/flp-config-inquirer';
@@ -240,7 +241,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
         });
 
         const providerMock = {
-            getAtoInfo: jest.fn().mockResolvedValue({ tenantType: 'CUSTOMER', operationsType: 'C' })
+            getAtoInfo: jest.fn().mockResolvedValue({ tenantType: TenantType.Customer, operationsType: 'C' })
         };
         createAbapServiceProviderMock.mockResolvedValue(providerMock);
 
@@ -280,7 +281,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
         });
 
         const providerMock = {
-            getAtoInfo: jest.fn().mockResolvedValue({ tenantType: 'CUSTOMER', operationsType: 'P' })
+            getAtoInfo: jest.fn().mockResolvedValue({ tenantType: TenantType.Customer, operationsType: 'P' })
         };
         createAbapServiceProviderMock.mockResolvedValue(providerMock);
 

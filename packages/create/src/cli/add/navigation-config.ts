@@ -19,6 +19,7 @@ import { getPrompts } from '@sap-ux/flp-config-inquirer';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
+import { TenantType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
 import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 
@@ -119,8 +120,7 @@ async function getManifest(basePath: string, isAdp: boolean, fs: Editor, logger:
             logger
         );
 
-        const atoSettings = await provider.getAtoInfo();
-        if (!(atoSettings.tenantType === 'CUSTOMER' && atoSettings.operationsType === 'C')) {
+        if (!(await isCloudReady(provider))) {
             throw new Error('Command is only available for CloudReady applications.');
         }
 
@@ -130,6 +130,17 @@ async function getManifest(basePath: string, isAdp: boolean, fs: Editor, logger:
     }
 
     return manifest;
+}
+
+/**
+ * Determines whether the given ABAP service provider indicates a CloudReady application.
+ *
+ * @param {AbapServiceProvider} provider - The ABAP service provider instance used to fetch ATO settings.
+ * @returns {Promise<boolean>} A promise that resolves to `true` if the application is CloudReady, otherwise `false`.
+ */
+async function isCloudReady(provider: AbapServiceProvider): Promise<boolean> {
+    const atoSettings = await provider.getAtoInfo();
+    return atoSettings.tenantType === TenantType.Customer && atoSettings.operationsType === 'C';
 }
 
 /**
