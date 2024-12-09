@@ -39,7 +39,7 @@
         "@types/i18next-fs-backend": "1.1.2",
         "@types/pluralize": "0.0.30",
         "@types/qs": "6.9.1",
-        "fast-check": "2.19.0",
+        "fast-check": "2.25.0",
         "jest-extended": "4.0.2",
         "memfs": "3.3.0",
         "jest": ">=29.7.0",
