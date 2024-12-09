@@ -870,8 +870,8 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      *
      * @returns The size of the container element based on the specified DOM size property.
      */
-    // todo -> this.rootSize ???
     private getContainerSize(): number {
+        // todo -> this.rootSize ???
         return this.rootRef.current?.[this.domSizeProperty] ?? 0;
     }
 
