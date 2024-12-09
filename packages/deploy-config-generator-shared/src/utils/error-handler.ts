@@ -13,6 +13,7 @@ export class ErrorMessages {
     public static readonly abortSignal = t('errors.abortSignal'); // check this one, is ABORT_SIGNAL signifcant? or can we just throw an error?
     public static readonly noManifest = t('errors.noManifest');
     public static readonly noAppName = t('errors.noAppName');
+    public static readonly noUI5Config = t('errors.noUi5Config');
     public static readonly noCdsBin = this.cannotFindBinary(cdsExecutable, cdsPkg);
     public static readonly noMtaBin = this.cannotFindBinary(mtaExecutable, mtaPkg);
     public static readonly noMta = t('errors.noMta');

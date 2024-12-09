@@ -27,6 +27,9 @@
       "path": "packages/abap-deploy-config-inquirer"
     },
     {
+      "path": "packages/abap-deploy-config-sub-generator"
+    },
+    {
       "path": "packages/abap-deploy-config-writer"
     },
     {
