@@ -353,7 +353,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         for (let i = index; i < resizeSections.length; i++) {
             const minSectionSize = this.getMinSectionSize(i);
             const resizeSection = resizeSections[i];
-            // let newSize = resizeSection.size + (i === index ? position : -position);
             let newSize = resizeSection.size;
             if (i === index) {
                 newSize = resizeSection.size + position;
@@ -392,6 +391,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             }
             sectionSize.end = right;
             resizeSection.dom.style[this.endPositionProperty] = right + 'px';
+            resizeSection.dom.style[this.sizeProperty] = '';
             resizeSection.section = sectionSize;
             left += newSize;
         }
@@ -426,8 +426,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 sizes
             });
         }
-        console.log('onSplitterResizeEnd');
-        console.log(sizes);
         this.props.onResize?.(sizes);
     }
 
