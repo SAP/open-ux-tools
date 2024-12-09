@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`package-json ensurePreviewMiddlewareDependency ensure preview middleware dependency 1`] = `
+"{
+  \\"name\\": \\"test\\",
+  \\"devDependencies\\": {
+    \\"@sap-ux/preview-middleware\\": \\"latest\\"
+  }
+}
+"
+`;

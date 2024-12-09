@@ -1,5 +1,14 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
-import type { App, FlpConfig, Intent, InternalTestConfig, MiddlewareConfig, TestConfig } from '../types';
+import type {
+    App,
+    DefaultFlpPath,
+    DefaultIntent,
+    FlpConfig,
+    Intent,
+    InternalTestConfig,
+    MiddlewareConfig,
+    TestConfig
+} from '../types';
 import { render } from 'ejs';
 import { join, posix } from 'path';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
@@ -89,7 +98,7 @@ export const DEFAULT_THEME = 'sap_horizon';
 /**
  * Default path for mounting the local FLP.
  */
-export const DEFAULT_PATH = '/test/flp.html';
+export const DEFAULT_PATH: DefaultFlpPath = '/test/flp.html';
 
 /**
  * Default intent
@@ -97,7 +106,7 @@ export const DEFAULT_PATH = '/test/flp.html';
 export const DEFAULT_INTENT = {
     object: 'app',
     action: 'preview'
-} as Readonly<Intent>;
+} as Readonly<DefaultIntent>;
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap

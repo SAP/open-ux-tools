@@ -1,0 +1,8 @@
+specVersion: '4.0'
+metadata:
+  name: com.sap.cap.fe.ts.sample
+  allowSapInternal: true
+type: application
+framework:
+  name: SAPUI5
+  version: 1.124.0
