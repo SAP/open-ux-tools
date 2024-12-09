@@ -423,6 +423,8 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 sizes
             });
         }
+        console.log('onSplitterResizeEnd');
+        console.log(sizes);
         this.props.onResize?.(sizes);
     }
 
@@ -774,8 +776,15 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 percentage: false
             };
             const current = sizes[i];
-            const next = sizes[i + 1];
-            const right = next ? next.size : 0;
+            // ToDo
+            let right = 0;
+            for (let j = i + 1; j < sizes.length; j++) {
+                const next = sizes[i + 1];
+                if (next.size) {
+                    right += next.size;
+                }
+            }
+
             if (i > 0) {
                 sectionSize.size = current.size;
                 sectionSize.start = undefined;
@@ -861,6 +870,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      *
      * @returns The size of the container element based on the specified DOM size property.
      */
+    // todo -> this.rootSize ???
     private getContainerSize(): number {
         return this.rootRef.current?.[this.domSizeProperty] ?? 0;
     }
