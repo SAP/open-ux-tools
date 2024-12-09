@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.3
+
+### Patch Changes
+
+-   a0f9244: fix: impossible snapshots due to version
+
 ## 5.3.2
 
 ### Patch Changes

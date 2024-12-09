@@ -9,8 +9,6 @@ import { FileName } from '@sap-ux/project-access';
 const middlewareUpdatedMessage = (middleware: 'preview' | 'reload', filename: string) =>
     `Updated ${middleware} middleware in ${filename}.`;
 
-const noFileMessage = (filename: string, path: string) => `File '${filename}' not found in project '${path}'`;
-
 describe('Test update middleware', () => {
     const logger = new ToolsLogger();
     let fs: Editor;
