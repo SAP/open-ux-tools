@@ -56,6 +56,22 @@ describe('<Sections />', () => {
             }
             return size;
         });
+        const rect = {
+            top: 0,
+            height: 1000,
+            width: 1000,
+            left: 0
+        } as DOMRect;
+        jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+            if (sizesMap) {
+                for (const className in sizesMap) {
+                    if (this.classList.contains(className)) {
+                        return { ...rect, height: sizesMap[className], width: sizesMap[className] };
+                    }
+                }
+            }
+            return rect;
+        });
     };
 
     beforeEach(() => {
@@ -195,11 +211,13 @@ describe('<Sections />', () => {
 
         describe('Test 3 columns splitter resize', () => {
             beforeEach(() => {
+                mockClientWidth(1000, { sections: 3000 });
                 wrapper = Enzyme.mount(
                     <UISections
                         vertical={false}
                         splitterType={UISplitterType.Resize}
                         splitter={true}
+                        sizes={[1000, 1000, 1000]}
                         minSectionSize={[200, 100, 300]}>
                         <UISections.Section className="dummy-left-section" title="Left Title" height="100%">
                             <div>Left</div>
@@ -271,8 +289,8 @@ describe('<Sections />', () => {
                     },
                     result: {
                         first: {
-                            left: '',
-                            right: ''
+                            left: '0px',
+                            right: '2000px'
                         },
                         middle: {
                             left: '1000px',
@@ -293,8 +311,8 @@ describe('<Sections />', () => {
                     },
                     result: {
                         first: {
-                            left: '',
-                            right: ''
+                            left: '0px',
+                            right: '2000px'
                         },
                         middle: {
                             left: '1000px',
@@ -359,8 +377,8 @@ describe('<Sections />', () => {
                     },
                     result: {
                         first: {
-                            left: '',
-                            right: ''
+                            left: '0px',
+                            right: '2000px'
                         },
                         middle: {
                             left: '1000px',
@@ -381,8 +399,8 @@ describe('<Sections />', () => {
                     },
                     result: {
                         first: {
-                            left: '',
-                            right: ''
+                            left: '0px',
+                            right: '2000px'
                         },
                         middle: {
                             left: '1000px',
@@ -396,7 +414,6 @@ describe('<Sections />', () => {
                 }
             ];
             test.each(testCases)('$name', ({ move, result }) => {
-                mockClientWidth(1000, { sections: 3000 });
                 simulateSplitterResize(wrapper, move.start, move.end, move.index);
                 const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
                 const middleSection: HTMLElement = wrapper.find('.sections__item').at(1).getDOMNode();
