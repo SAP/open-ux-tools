@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.7.5
+
+### Patch Changes
+
+-   9516ca8: Fix for wrong format destination urls returned
+
 ## 0.7.4
 
 ### Patch Changes
