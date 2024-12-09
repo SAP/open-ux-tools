@@ -13,7 +13,6 @@ import { initTelemetrySettings } from '@sap-ux/telemetry';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '@sap-ux/project-access';
 import { AuthenticationType } from '@sap-ux/store';
-import { join } from 'path';
 import { t, handleProjectDoesNotExist, indexHtmlExists } from '../utils';
 import { getAbapQuestions } from './questions';
 import { EventName } from '../telemetryEvents';
@@ -82,14 +81,9 @@ export default class extends DeploymentGenerator {
     }
 
     private _initDestinationRoot(): void {
-        if (this.options.projectPath && this.options.projectName) {
-            this.options.destinationRoot = join(this.options.projectPath, this.options.projectName);
-        }
-        if (this.options.destinationRoot) {
-            this.destinationRoot(this.options.destinationRoot);
-            DeploymentGenerator.logger?.debug(
-                t('debug.projectPath', { destinationPath: this.options.destinationRoot })
-            );
+        if (this.options.projectPath) {
+            this.destinationRoot(this.options.projectPath);
+            DeploymentGenerator.logger?.debug(t('debug.projectPath', { projectPath: this.options.projectPath }));
         }
     }
 
@@ -157,7 +151,7 @@ export default class extends DeploymentGenerator {
         }
         if (!this.launchDeployConfigAsSubGenerator) {
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
-                projectPath: this.destinationPath(),
+                projectPath: this.destinationRoot(),
                 connectedSystem: this.options.connectedSystem,
                 backendConfig: this.backendConfig,
                 configFile: this.options.config,

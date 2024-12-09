@@ -12,6 +12,6 @@
         "indexExists": "'webapp/index.html' already exists and won't be overwritten",
         "initFailed": "Initializing failed, unable to process project configuration. {{- error}}",
         "initTelemetry": "Initializing telemetry",
-        "projectPath": "Project loaded from {{- destinationPath}}"
+        "projectPath": "Project loaded from {{- projectPath}}"
     }
 }

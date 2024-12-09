@@ -108,7 +108,7 @@ export async function getAbapQuestions({
     const deployAppConfig = existingAbapDeployTask?.app as BspApp;
 
     logger?.debug(
-        `Retrieve ABAP prompts using: \n ProjectPath: ${'/Users/I515700/Documents/sandbox/code/log.js'}, 
+        `Retrieve ABAP prompts using: \n ProjectPath: ${projectPath}, 
         ABAPTarget: ${JSON.stringify(abapTarget)}, SystemName: ${backendSystem?.name}, 
         ServiceProvider: ${!!serviceProvider}, showOverwriteQuestion ${showOverwriteQuestion}, indexGenerationAllowed ${indexGenerationAllowed}`
     );

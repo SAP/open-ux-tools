@@ -17,21 +17,13 @@ export interface AbapDeployConfigOptions extends AbapDeployConfigAnswersInternal
      */
     launchDeployConfigAsSubGenerator?: boolean;
     /**
-     * Whether the generator is launched as a standalone generator
+     * Whether the generator is launched as a standalone generator in a YUI context
      */
     launchStandaloneFromYui?: boolean;
     /**
-     * Path to the project
-     */
-    destinationRoot?: string;
-    /**
-     * Path to the project root
+     * Path to the project root (target directory) where the deployment configuration will be added.
      */
     projectPath?: string;
-    /**
-     * Path to the project name
-     */
-    projectName?: string;
     /**
      * The connected destination or backend system and service provider
      */
