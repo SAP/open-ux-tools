@@ -42,6 +42,7 @@ function getMemFsChanges(
  * @param options.root - folder to start recursive search
  * @param [options.excludeFolders] - optional array of folder names to exclude
  * @param [options.memFs] - optional memfs editor instance
+ * @param [options.noTraversal] - optional flag to disable root path traversal
  * @returns - array of paths that contain the file
  */
 export function findBy(options: {
@@ -49,6 +50,7 @@ export function findBy(options: {
     extensionNames?: string[];
     root: string;
     excludeFolders?: string[];
+    noTraversal?: boolean;
     memFs?: Editor;
 }): Promise<string[]> {
     return new Promise((resolve, reject) => {
@@ -56,11 +58,12 @@ export function findBy(options: {
         const fileNames = Array.isArray(options.fileNames) ? options.fileNames : [];
         const extensionNames = Array.isArray(options.extensionNames) ? options.extensionNames : [];
         const excludeFolders = Array.isArray(options.excludeFolders) ? options.excludeFolders : [];
+        const noTraversal = options.noTraversal ?? false;
 
         const finder = find(options.root);
         finder.on('directory', (dir: string, _stat: unknown, stop: () => void) => {
             const base = basename(dir);
-            if (excludeFolders.includes(base)) {
+            if (excludeFolders.includes(base) || (noTraversal && dir !== options.root)) {
                 stop();
             }
         });
@@ -110,15 +113,17 @@ export async function findFiles(
  * @param root - root folder to start search
  * @param excludeFolders - list of folder names to exclude (search doesn't traverse into these folders)
  * @param [memFs] - optional mem-fs-editor instance
+ * @param noTraversal - optional flag to disable root path traversal
  * @returns - array of file paths that have the extension
  */
 export function findFilesByExtension(
     extension: string,
     root: string,
     excludeFolders: string[],
-    memFs?: Editor
+    memFs?: Editor,
+    noTraversal?: boolean
 ): Promise<string[]> {
-    return findBy({ extensionNames: [extension], root, excludeFolders, memFs });
+    return findBy({ extensionNames: [extension], root, excludeFolders, noTraversal, memFs });
 }
 
 /**
