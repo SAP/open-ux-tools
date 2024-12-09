@@ -23,9 +23,11 @@ describe('<Sections />', () => {
     const simulateSplitterResize = (
         wrapper: Enzyme.ReactWrapper<UISectionsProps, UISectionsState>,
         start: number,
-        end: number
+        end: number,
+        splitterIndex = 0
     ): void => {
-        wrapper.find('.splitter').simulate('mousedown', { clientX: start, button: 0, clientY: start });
+        const splitter = wrapper.find('.splitter').at(splitterIndex);
+        splitter.simulate('mousedown', { clientX: start, button: 0, clientY: start });
         simulateMouseEvent('mousemove', end, end);
         simulateMouseEvent('mouseup', end, end);
     };
@@ -189,6 +191,231 @@ describe('<Sections />', () => {
             const section: HTMLElement = verticalWrapper.find('.sections__item').first().getDOMNode();
             expect(section.style.top).toEqual('0px');
             expect(section.style.bottom).toEqual('1050px');
+        });
+
+        describe('Test 3 columns splitter resize', () => {
+            beforeEach(() => {
+                wrapper = Enzyme.mount(
+                    <UISections
+                        vertical={false}
+                        splitterType={UISplitterType.Resize}
+                        splitter={true}
+                        minSectionSize={[200, 100, 300]}>
+                        <UISections.Section className="dummy-left-section" title="Left Title" height="100%">
+                            <div>Left</div>
+                        </UISections.Section>
+                        <UISections.Section className="dummy-middle-section" title="Middle Title" height="100%">
+                            <div>Middle</div>
+                        </UISections.Section>
+                        <UISections.Section className="dummy-right-section" title="Right Title" height="100%">
+                            <div>Right</div>
+                        </UISections.Section>
+                    </UISections>
+                );
+
+                windowEventListenerMock.cleanDomEventListeners();
+                windowEventListenerMock = mockDomEventListener(window);
+            });
+
+            const testCases = [
+                {
+                    name: 'Move first splitter left',
+                    move: {
+                        index: 0,
+                        start: 100,
+                        end: 50
+                    },
+                    result: {
+                        first: {
+                            left: '0px',
+                            right: '2050px'
+                        },
+                        middle: {
+                            left: '950px',
+                            right: '1000px'
+                        },
+                        last: {
+                            left: '2000px',
+                            right: '0px'
+                        }
+                    }
+                },
+                {
+                    name: 'Move first splitter right',
+                    move: {
+                        index: 0,
+                        start: 100,
+                        end: 150
+                    },
+                    result: {
+                        first: {
+                            left: '0px',
+                            right: '1950px'
+                        },
+                        middle: {
+                            left: '1050px',
+                            right: '1000px'
+                        },
+                        last: {
+                            left: '2000px',
+                            right: '0px'
+                        }
+                    }
+                },
+                {
+                    name: 'Move second splitter left',
+                    move: {
+                        index: 1,
+                        start: 100,
+                        end: 50
+                    },
+                    result: {
+                        first: {
+                            left: '',
+                            right: ''
+                        },
+                        middle: {
+                            left: '1000px',
+                            right: '1050px'
+                        },
+                        last: {
+                            left: '1950px',
+                            right: '0px'
+                        }
+                    }
+                },
+                {
+                    name: 'Move second splitter right',
+                    move: {
+                        index: 1,
+                        start: 100,
+                        end: 150
+                    },
+                    result: {
+                        first: {
+                            left: '',
+                            right: ''
+                        },
+                        middle: {
+                            left: '1000px',
+                            right: '950px'
+                        },
+                        last: {
+                            left: '2050px',
+                            right: '0px'
+                        }
+                    }
+                },
+                {
+                    name: 'Move first splitter and trigger min size on left',
+                    move: {
+                        index: 0,
+                        start: 2000,
+                        end: 50
+                    },
+                    result: {
+                        first: {
+                            left: '0px',
+                            right: '2800px'
+                        },
+                        middle: {
+                            left: '200px',
+                            right: '1000px'
+                        },
+                        last: {
+                            left: '2000px',
+                            right: '0px'
+                        }
+                    }
+                },
+                {
+                    name: 'Move first splitter and trigger min size on right',
+                    move: {
+                        index: 0,
+                        start: 0,
+                        end: 3000
+                    },
+                    result: {
+                        first: {
+                            left: '0px',
+                            right: '400px'
+                        },
+                        middle: {
+                            left: '2600px',
+                            right: '300px'
+                        },
+                        last: {
+                            left: '2700px',
+                            right: '0px'
+                        }
+                    }
+                },
+                {
+                    name: 'Move second splitter and trigger min size on left',
+                    move: {
+                        index: 1,
+                        start: 2000,
+                        end: 50
+                    },
+                    result: {
+                        first: {
+                            left: '',
+                            right: ''
+                        },
+                        middle: {
+                            left: '1000px',
+                            right: '1900px'
+                        },
+                        last: {
+                            left: '1100px',
+                            right: '0px'
+                        }
+                    }
+                },
+                {
+                    name: 'Move second splitter and trigger min size on left',
+                    move: {
+                        index: 1,
+                        start: 0,
+                        end: 3000
+                    },
+                    result: {
+                        first: {
+                            left: '',
+                            right: ''
+                        },
+                        middle: {
+                            left: '1000px',
+                            right: '300px'
+                        },
+                        last: {
+                            left: '2700px',
+                            right: '0px'
+                        }
+                    }
+                }
+            ];
+            test.each(testCases)('$name', ({ move, result }) => {
+                mockClientWidth(1000, { sections: 3000 });
+                simulateSplitterResize(wrapper, move.start, move.end, move.index);
+                const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
+                const middleSection: HTMLElement = wrapper.find('.sections__item').at(1).getDOMNode();
+                const lastSection: HTMLElement = wrapper.find('.sections__item').last().getDOMNode();
+                expect({
+                    first: {
+                        left: firstSection.style.left,
+                        right: firstSection.style.right
+                    },
+                    middle: {
+                        left: middleSection.style.left,
+                        right: middleSection.style.right
+                    },
+                    last: {
+                        left: lastSection.style.left,
+                        right: lastSection.style.right
+                    }
+                }).toEqual(result);
+            });
         });
     });
 
