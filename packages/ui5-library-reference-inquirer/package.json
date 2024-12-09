@@ -37,7 +37,7 @@
     "devDependencies": {
         "inquirer": "8.2.6",
         "@sap-devx/yeoman-ui-types": "1.14.4",
-        "@types/inquirer": "8.2.6"
+        "@types/inquirer": "8.2.10"
     },
     "engines": {
         "node": ">=18.x"
