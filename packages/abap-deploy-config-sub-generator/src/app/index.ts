@@ -81,9 +81,9 @@ export default class extends DeploymentGenerator {
     }
 
     private _initDestinationRoot(): void {
-        if (this.options.projectPath) {
-            this.destinationRoot(this.options.projectPath);
-            DeploymentGenerator.logger?.debug(t('debug.projectPath', { projectPath: this.options.projectPath }));
+        if (this.options.appRootPath) {
+            this.destinationRoot(this.options.appRootPath);
+            DeploymentGenerator.logger?.debug(t('debug.appRootPath', { appRootPath: this.options.appRootPath }));
         }
     }
 
@@ -151,7 +151,7 @@ export default class extends DeploymentGenerator {
         }
         if (!this.launchDeployConfigAsSubGenerator) {
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
-                projectPath: this.destinationRoot(),
+                appRootPath: this.destinationRoot(),
                 connectedSystem: this.options.connectedSystem,
                 backendConfig: this.backendConfig,
                 configFile: this.options.config,

@@ -251,7 +251,7 @@ describe('Test abap deploy configuration generator', () => {
             )
             .withOptions({
                 skipInstall: true,
-                projectPath: join(`${OUTPUT_DIR_PREFIX}/app1`),
+                appRootPath: join(`${OUTPUT_DIR_PREFIX}/app1`),
                 index: true
             })
             .withPrompts({

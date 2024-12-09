@@ -43,7 +43,7 @@ describe('Test getAbapQuestions', () => {
         mockIsAppStudio.mockReturnValue(true);
         mockReadUi5Yaml.mockRejectedValueOnce(new Error('No yaml config found'));
         await getAbapQuestions({
-            projectPath: 'mock/path/to/project',
+            appRootPath: 'mock/path/to/project',
             connectedSystem: {
                 destination: {
                     Name: 'mock-destination',
@@ -89,7 +89,7 @@ describe('Test getAbapQuestions', () => {
         mockIsAppStudio.mockReturnValue(false);
         mockReadUi5Yaml.mockRejectedValueOnce(new Error('No yaml config found'));
         await getAbapQuestions({
-            projectPath: 'mock/path/to/project',
+            appRootPath: 'mock/path/to/project',
             connectedSystem: {
                 backendSystem: {
                     name: 'mock-backend-system',

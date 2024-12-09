@@ -67,7 +67,7 @@ function getAbapTarget(
  * Retrieves the ABAP prompt questions from the inquirer.
  *
  * @param params - the parameters required for retrieving the questions
- * @param params.projectPath - the path to the project
+ * @param params.appRootPath - the path to the app
  * @param params.connectedSystem - the connected system
  * @param params.backendConfig - the backend configuration
  * @param params.configFile - the deployment configuration file name
@@ -78,7 +78,7 @@ function getAbapTarget(
  * @returns - the prompts and answers
  */
 export async function getAbapQuestions({
-    projectPath,
+    appRootPath,
     connectedSystem,
     backendConfig,
     configFile = FileName.UI5DeployYaml,
@@ -87,7 +87,7 @@ export async function getAbapQuestions({
     projectType = DeployProjectType.Application,
     logger
 }: {
-    projectPath: string;
+    appRootPath: string;
     connectedSystem?: ConnectedSystem;
     backendConfig?: FioriToolsProxyConfigBackend;
     configFile?: string;
@@ -99,7 +99,7 @@ export async function getAbapQuestions({
     const { backendSystem, serviceProvider, destination } = connectedSystem || {};
     let existingAbapDeployTask: AbapDeployConfig | undefined;
     try {
-        const ui5DeployConfig = await readUi5Yaml(projectPath, configFile);
+        const ui5DeployConfig = await readUi5Yaml(appRootPath, configFile);
         existingAbapDeployTask = ui5DeployConfig.findCustomTask<AbapDeployConfig>(ABAP_DEPLOY_TASK)?.configuration;
     } catch {
         // not an issue if the file does not exist
@@ -108,7 +108,7 @@ export async function getAbapQuestions({
     const deployAppConfig = existingAbapDeployTask?.app as BspApp;
 
     logger?.debug(
-        `Retrieve ABAP prompts using: \n ProjectPath: ${projectPath}, 
+        `Retrieve ABAP prompts using: \n App path: ${appRootPath}, 
         ABAPTarget: ${JSON.stringify(abapTarget)}, SystemName: ${backendSystem?.name}, 
         ServiceProvider: ${!!serviceProvider}, showOverwriteQuestion ${showOverwriteQuestion}, indexGenerationAllowed ${indexGenerationAllowed}`
     );

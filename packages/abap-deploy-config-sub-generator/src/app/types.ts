@@ -21,9 +21,9 @@ export interface AbapDeployConfigOptions extends AbapDeployConfigAnswersInternal
      */
     launchStandaloneFromYui?: boolean;
     /**
-     * Path to the project root (target directory) where the deployment configuration will be added.
+     * Path to the application root where the deployment configuration will be added.
      */
-    projectPath?: string;
+    appRootPath?: string;
     /**
      * The connected destination or backend system and service provider
      */
