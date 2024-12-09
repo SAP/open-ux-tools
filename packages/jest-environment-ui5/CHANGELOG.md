@@ -1,5 +1,17 @@
 # Change Log
 
+## 5.3.3
+
+### Patch Changes
+
+-   a0f9244: fix: impossible snapshots due to version
+
+## 5.3.2
+
+### Patch Changes
+
+-   9a80888: We now properly generate a sap-ui-version.json for ui5 mapping strategy
+
 ## 5.3.1
 
 ### Patch Changes
