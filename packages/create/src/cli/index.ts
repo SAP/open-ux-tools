@@ -6,6 +6,7 @@ import { getAddCommands } from './add';
 import { getRemoveCommands } from './remove';
 import { getGenerateCommands } from './generate';
 import { getChangeCommands } from './change';
+import { getConvertCommands } from './convert';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -50,6 +51,9 @@ function getCommanderProgram(): Command {
 
     // Handler for create-fiori add <feature> ..
     program.addCommand(getAddCommands());
+
+    // Handler for create-fiori convert <feature> ..
+    program.addCommand(getConvertCommands());
 
     // Handler for create-fiori remove <feature> ..
     program.addCommand(getRemoveCommands());

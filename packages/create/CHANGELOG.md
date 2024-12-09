@@ -1,5 +1,25 @@
 # @sap-ux/create
 
+## 0.10.10
+
+### Patch Changes
+
+-   e93797a: Added the `convert` command to convert local preview files of a project to virtual files.
+-   Updated dependencies [e93797a]
+    -   @sap-ux/preview-middleware@0.16.144
+    -   @sap-ux/app-config-writer@0.5.4
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/abap-deploy-config-writer@0.0.66
+    -   @sap-ux/adp-tooling@0.12.92
+    -   @sap-ux/cap-config-writer@0.7.63
+    -   @sap-ux/cards-editor-config-writer@0.4.8
+    -   @sap-ux/mockserver-config-writer@0.7.0
+    -   @sap-ux/odata-service-writer@0.24.1
+    -   @sap-ux/system-access@0.5.21
+    -   @sap-ux/abap-deploy-config-inquirer@1.1.7
+    -   @sap-ux/flp-config-inquirer@0.1.5
+    -   @sap-ux/inquirer-common@0.5.9
+
 ## 0.10.9
 
 ### Patch Changes

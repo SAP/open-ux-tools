@@ -92,3 +92,10 @@ export interface MiddlewareConfig {
     adp?: AdpPreviewConfig;
     debug?: boolean;
 }
+
+export type DefaultFlpPath = '/test/flp.html';
+
+export type DefaultIntent = {
+    object: 'app';
+    action: 'preview';
+};
