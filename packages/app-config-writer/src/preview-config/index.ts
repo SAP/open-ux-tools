@@ -39,8 +39,8 @@ export async function convertToVirtualPreview(
     }
 
     await updatePreviewMiddlewareConfigs(fs, basePath, convertTests, logger);
-    await renameDefaultSandboxes(fs, basePath);
-    await deleteNoLongerUsedFiles(fs, basePath);
+    await renameDefaultSandboxes(fs, basePath, logger);
+    await deleteNoLongerUsedFiles(fs, basePath, logger);
     await updateVariantsCreationScript(fs, basePath, logger);
 
     return fs;
