@@ -62,9 +62,9 @@ export async function checkPrerequisites(basePath: string, fs: Editor, logger?: 
         prerequisitesMet = false;
     }
 
-    if (isLowerThanMinimalVersion(packageJson, '@sap/ux-ui5-tooling', '1.11.1', false)) {
+    if (isLowerThanMinimalVersion(packageJson, '@sap/ux-ui5-tooling', '1.14.1', false)) {
         logger?.error(
-            'UX UI5 Tooling version 1.11.1 or higher is required to convert the preview to virtual files. For more information, see https://www.npmjs.com/package/@sap/ux-ui5-tooling.'
+            'UX UI5 Tooling version 1.14.1 or higher is required to convert the preview to virtual files. For more information, see https://www.npmjs.com/package/@sap/ux-ui5-tooling.'
         );
         prerequisitesMet = false;
     }
