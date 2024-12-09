@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { PromptObject } from 'prompts';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { lt } from 'semver';
+import { lt, coerce } from 'semver';
 
 /**
  * Check if the version of the given package is lower than the minimal version.
@@ -21,8 +21,13 @@ function isLowerThanMinimalVersion(
     minVersionInfo: string,
     mandatory: boolean = true
 ): boolean {
-    const versionInfo = packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName];
-    return versionInfo ? lt(versionInfo, minVersionInfo) : mandatory;
+    const versionInfo = coerce(
+        packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName]
+    );
+    if (!versionInfo) {
+        return mandatory;
+    }
+    return lt(versionInfo, minVersionInfo);
 }
 
 /**
@@ -62,9 +67,9 @@ export async function checkPrerequisites(basePath: string, fs: Editor, logger?: 
         prerequisitesMet = false;
     }
 
-    if (isLowerThanMinimalVersion(packageJson, '@sap/ux-ui5-tooling', '1.14.1', false)) {
+    if (isLowerThanMinimalVersion(packageJson, '@sap/ux-ui5-tooling', '1.15.4', false)) {
         logger?.error(
-            'UX UI5 Tooling version 1.14.1 or higher is required to convert the preview to virtual files. For more information, see https://www.npmjs.com/package/@sap/ux-ui5-tooling.'
+            'UX UI5 Tooling version 1.15.4 or higher is required to convert the preview to virtual files. For more information, see https://www.npmjs.com/package/@sap/ux-ui5-tooling.'
         );
         prerequisitesMet = false;
     }
