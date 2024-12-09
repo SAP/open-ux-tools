@@ -240,7 +240,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
         });
 
         const providerMock = {
-            isS4Cloud: jest.fn().mockResolvedValue(true)
+            getAtoInfo: jest.fn().mockResolvedValue({ tenantType: 'CUSTOMER', operationsType: 'C' })
         };
         createAbapServiceProviderMock.mockResolvedValue(providerMock);
 
@@ -280,7 +280,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
         });
 
         const providerMock = {
-            isS4Cloud: jest.fn().mockResolvedValue(false)
+            getAtoInfo: jest.fn().mockResolvedValue({ tenantType: 'CUSTOMER', operationsType: 'P' })
         };
         createAbapServiceProviderMock.mockResolvedValue(providerMock);
 

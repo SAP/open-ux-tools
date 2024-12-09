@@ -119,7 +119,8 @@ async function getManifest(basePath: string, isAdp: boolean, fs: Editor, logger:
             logger
         );
 
-        if (!(await provider.isS4Cloud())) {
+        const atoSettings = await provider.getAtoInfo();
+        if (!(atoSettings.tenantType === 'CUSTOMER' && atoSettings.operationsType === 'C')) {
             throw new Error('Command is only available for CloudReady applications.');
         }
 
