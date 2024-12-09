@@ -602,12 +602,15 @@ export class ConnectionValidator {
     ): Promise<{ valResult: ValidationResult; errorType?: ERROR_TYPE }> {
         this.resetConnectionState();
         this.resetValidity();
-        // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest
-        const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath);
+        // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest. This function lowercases the origin.
+        const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath).toLowerCase();
         // Get the destination URL in the portable form <protocol>://<host>:<port>.
         // We remove trailing slashes (up to 10, infinite would allow DOS attack) from the host to avoid double slashes when appending the service path.
         this._destinationUrl = servicePath
-            ? destUrl.replace(`https://${destination.Name}.dest`, destination.Host.replace(/\/{1,10}$/, ''))
+            ? destUrl.replace(
+                  `https://${destination.Name.toLowerCase()}.dest`,
+                  destination.Host.replace(/\/{1,10}$/, '')
+              )
             : destination.Host;
         this._destination = destination;
         // No need to apply sap-client as this happens automatically (from destination config) when going through the BAS proxy
