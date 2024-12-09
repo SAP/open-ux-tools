@@ -419,6 +419,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
@@ -1158,6 +1161,9 @@ importers:
       '@sap-ux/app-config-writer':
         specifier: workspace:*
         version: link:../app-config-writer
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer
@@ -1167,9 +1173,6 @@ importers:
       '@sap-ux/flp-config-inquirer':
         specifier: workspace:*
         version: link:../flp-config-inquirer
-      '@sap-ux/inquirer-common':
-        specifier: workspace:*
-        version: link:../inquirer-common
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -1210,6 +1213,9 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
     devDependencies:
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
@@ -1730,6 +1736,9 @@ importers:
 
   packages/flp-config-inquirer:
     dependencies:
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -1739,6 +1748,9 @@ importers:
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@sap-ux/project-input-validator':
         specifier: workspace:*
         version: link:../project-input-validator

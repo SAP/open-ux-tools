@@ -17,10 +17,10 @@ describe('getQuestions', () => {
     it('should return questions array with correct prompts', () => {
         mockGetHostEnv.mockReturnValue(hostEnvironment.cli);
 
-        const questions = getQuestions(['new-upsert']);
+        const questions = getQuestions({ 'new-upsert': { semanticObject: '', action: '' } });
 
         expect(mockGetHostEnv).toHaveBeenCalled();
-        expect(questions.length).toBe(5);
+        expect(questions.length).toBe(9);
     });
 
     it('should return questions array with correct prompts when no arguments are passed', () => {
@@ -29,6 +29,6 @@ describe('getQuestions', () => {
         const questions = getQuestions();
 
         expect(mockGetHostEnv).toHaveBeenCalled();
-        expect(questions.length).toBe(5);
+        expect(questions.length).toBe(9);
     });
 });

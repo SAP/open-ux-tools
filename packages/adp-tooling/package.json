@@ -43,6 +43,7 @@
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/i18n": "workspace:*",
         "adm-zip": "0.5.10",
         "ejs": "3.1.10",
         "i18next": "23.11.2",
