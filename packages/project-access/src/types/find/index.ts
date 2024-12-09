@@ -43,6 +43,12 @@ export interface AdaptationResults {
      * Path to manifest.appdescr_variant
      */
     manifestAppdescrVariantPath: string;
+    /**
+     * Project root is different from appRoot for CAP applications only,
+     * where the project root is the root of the CAP project. For all
+     * other applications it is the same as appRoot.
+     */
+    projectRoot: string;
 }
 
 /**

@@ -624,7 +624,7 @@ export async function validatePackageExtended(
     }
 
     if (promptOption?.additionalValidation?.cloudPackage) {
-        return validateCloudPackage(input, backendTarget);
+        return await validateCloudPackage(input, backendTarget);
     }
     return true;
 }
