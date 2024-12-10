@@ -18,7 +18,6 @@ import { FileName, getAppType } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-import { TenantType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
 import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 
@@ -143,23 +142,8 @@ async function retrieveMergedManifest(basePath: string, logger: ToolsLogger): Pr
 
     const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
 
-    if (!(await isCloudReady(provider))) {
-        throw new Error('Command is only available for CloudReady applications.');
-    }
-
     const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, logger);
     return manifestService.getManifest();
-}
-
-/**
- * Determines whether the given ABAP service provider indicates a CloudReady application.
- *
- * @param {AbapServiceProvider} provider - The ABAP service provider instance used to fetch ATO settings.
- * @returns {Promise<boolean>} A promise that resolves to `true` if the application is CloudReady, otherwise `false`.
- */
-async function isCloudReady(provider: AbapServiceProvider): Promise<boolean> {
-    const atoSettings = await provider.getAtoInfo();
-    return atoSettings.tenantType === TenantType.Customer && atoSettings.operationsType === 'C';
 }
 
 /**

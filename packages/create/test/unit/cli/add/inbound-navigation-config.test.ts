@@ -5,10 +5,8 @@ import type { Editor, create } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as adpTooling from '@sap-ux/adp-tooling';
-import { TenantType } from '@sap-ux/axios-extension';
 import * as appConfigWriter from '@sap-ux/app-config-writer';
 import * as flpConfigInquirer from '@sap-ux/flp-config-inquirer';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAppType, type Manifest } from '@sap-ux/project-access';
 
 import * as common from '../../../../src/common';
@@ -62,7 +60,6 @@ jest.mock('@sap-ux/flp-config-inquirer', () => ({
 const getAppTypeMock = getAppType as jest.Mock;
 const getVariantMock = adpTooling.getVariant as jest.Mock;
 const getAdpConfigMock = adpTooling.getAdpConfig as jest.Mock;
-const createAbapServiceProviderMock = createAbapServiceProvider as jest.Mock;
 const flpConfigurationExistsMock = adpTooling.flpConfigurationExists as jest.Mock;
 
 const flpConfigAnswers = {
@@ -244,11 +241,6 @@ describe('Test command add navigation-config with ADP scenario', () => {
             ignoreCertErrors: false
         });
 
-        const providerMock = {
-            getAtoInfo: jest.fn().mockResolvedValue({ tenantType: TenantType.Customer, operationsType: 'C' })
-        };
-        createAbapServiceProviderMock.mockResolvedValue(providerMock);
-
         const manifestServiceMock = {
             getManifest: jest.fn().mockReturnValue(fakeManifest)
         } as unknown as adpTooling.ManifestService;
@@ -268,41 +260,6 @@ describe('Test command add navigation-config with ADP scenario', () => {
         );
         expect(genNavSpy).not.toBeCalled();
         expect(loggerMock.error).not.toBeCalled();
-    });
-
-    test('Test add inbound-navigation with ADP project but not S/4HANA Cloud system', async () => {
-        getAppTypeMock.mockResolvedValue('Fiori Adaptation');
-        flpConfigurationExistsMock.mockReturnValue(false);
-
-        getVariantMock.mockReturnValue({
-            id: 'variantId',
-            content: []
-        });
-
-        getAdpConfigMock.mockResolvedValue({
-            target: {},
-            ignoreCertErrors: false
-        });
-
-        const providerMock = {
-            getAtoInfo: jest.fn().mockResolvedValue({ tenantType: TenantType.Customer, operationsType: 'P' })
-        };
-        createAbapServiceProviderMock.mockResolvedValue(providerMock);
-
-        // Test execution
-        const command = new Command('add');
-        addInboundNavigationConfigCommand(command);
-        await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
-
-        // Result check
-        expect(commitMock).not.toBeCalled();
-        expect(genAdpNavSpy).not.toBeCalled();
-        expect(genNavSpy).not.toBeCalled();
-        expect(loggerMock.error).toBeCalledWith(
-            expect.stringMatching(
-                /^Error while executing add inbound navigation configuration 'Command is only available for CloudReady applications.'/
-            )
-        );
     });
 
     test('Test add inbound-navigation with ADP project where getAdpConfig throws an error', async () => {

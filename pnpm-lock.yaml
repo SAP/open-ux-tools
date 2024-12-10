@@ -1234,9 +1234,6 @@ importers:
       '@sap-ux/app-config-writer':
         specifier: workspace:*
         version: link:../app-config-writer
-      '@sap-ux/axios-extension':
-        specifier: workspace:*
-        version: link:../axios-extension
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer
