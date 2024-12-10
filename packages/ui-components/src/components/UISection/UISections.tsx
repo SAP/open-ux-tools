@@ -340,25 +340,24 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         const resizeSections = position !== 0 ? this.resizeSections : [];
         const totalSize = this.rootSize;
         let left = this.getSiblingsSize(resizeSections, 0, index);
-        for (let i = 0; i < index; i++) {
-            if (this.state.sizes?.[i]) {
-                this.resizeSections[i].section = this.state.sizes[i];
-            }
-        }
+        this.refreshResizeSections(0, index, this.state.sizes);
         let minSizeTriggered = false;
         for (let i = index; i < resizeSections.length; i++) {
-            const minSectionSize = this.getMinSectionSize(i);
+            const sectionSize: UISectionSize = {
+                percentage: false
+            };
             const resizeSection = resizeSections[i];
+            const minSectionSize = this.getMinSectionSize(i);
+            const maxSectioSize = this.geMaxSectionSize(i, minSectionSize, index);
+            if (minSectionSize === maxSectioSize) {
+                // Ignore resize - section is not resizable
+                continue;
+            }
             let newSize = resizeSection.size;
             if (i === index) {
                 newSize = resizeSection.size + position;
             } else if (i === index + 1 || minSizeTriggered) {
                 newSize = resizeSection.size - position;
-            }
-            const maxSize = Math.max(minSectionSize, i === index ? this.getMaxSize(i) : resizeSection.maxSize);
-            if (minSectionSize === maxSize) {
-                // Ignore resize - section is not resizable
-                continue;
             }
             // Do not allow size exceed min and max boundaries
             minSizeTriggered = false;
@@ -366,13 +365,10 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 position = this.correctBoundaryPosition(position, minSectionSize, newSize, i === index);
                 newSize = minSectionSize;
                 minSizeTriggered = true;
-            } else if (newSize > maxSize) {
-                position = this.correctBoundaryPosition(position, maxSize, newSize, i === index);
-                newSize = maxSize;
+            } else if (newSize > maxSectioSize) {
+                position = this.correctBoundaryPosition(position, maxSectioSize, newSize, i === index);
+                newSize = maxSectioSize;
             }
-            const sectionSize: UISectionSize = {
-                percentage: false
-            };
             let right = 0;
             if (resizeSections[i + 1]) {
                 right = totalSize - left - newSize;
@@ -855,26 +851,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     }
 
     /**
-     * Calculates the maximum available size for a section at the specified index.
-     *
-     * @param index - The index of the section for which the maximum size is calculated.
-     * @returns The maximum size available for the section, considering the current size of other sections and minimum constraints.
-     */
-    private getMaxSize(index: number): number {
-        const rootDom = this.rootRef.current;
-        const mainSize = rootDom?.[this.domSizeProperty] ?? 0;
-        const resizeSections = this.resizeSections;
-        let reservedSize = 0;
-        for (let i = 0; i < index; i++) {
-            reservedSize += resizeSections[i].size;
-        }
-        for (let i = index + 1; i < resizeSections.length; i++) {
-            reservedSize += this.getMinSectionSize(i);
-        }
-        return mainSize - reservedSize;
-    }
-
-    /**
      * Calculates the total size of sibling elements within a specified range.
      *
      * @param sizes An array of objects, each containing 'size` property.
@@ -891,5 +867,47 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             }
         }
         return size;
+    }
+
+    /**
+     * Refreshes the resize sections by updating their sizes from a provided range.
+     *
+     * @param start The starting index (inclusive) of the sections to refresh.
+     * @param end The ending index (exclusive) of the sections to refresh.
+     * @param sizes An array of section sizes to apply.
+     */
+    private refreshResizeSections(start: number, end: number, sizes: UISectionSize[] = []): void {
+        for (let i = start; i < end; i++) {
+            if (sizes[i]) {
+                this.resizeSections[i].section = sizes[i];
+            }
+        }
+    }
+
+    /**
+     * Calculates the maximum allowable size for a section at the specified index.
+     *
+     * @param index The index of the section to calculate the maximum size for.
+     * @param minSectionSize The minimum size of the section.
+     * @param splitterIndex Optional index of the splitter; if specified, the section at this index is not considered resizable.
+     * @returns The maximum size the section can expand to, constrained by available space and other sections.
+     */
+    private geMaxSectionSize(index: number, minSectionSize: number, splitterIndex?: number): number {
+        const resizeSection = this.resizeSections[index];
+        if (resizeSection && index !== splitterIndex) {
+            return Math.max(minSectionSize, resizeSection.maxSize);
+        }
+        // Calculate max size based on current DOM
+        const rootDom = this.rootRef.current;
+        const mainSize = rootDom?.[this.domSizeProperty] ?? 0;
+        const resizeSections = this.resizeSections;
+        let reservedSize = 0;
+        for (let i = 0; i < index; i++) {
+            reservedSize += resizeSections[i].size;
+        }
+        for (let i = index + 1; i < resizeSections.length; i++) {
+            reservedSize += this.getMinSectionSize(i);
+        }
+        return Math.max(minSectionSize, mainSize - reservedSize);
     }
 }
