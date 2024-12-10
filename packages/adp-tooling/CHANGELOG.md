@@ -1,5 +1,14 @@
 # @sap-ux/adp-tooling
 
+## 0.12.96
+
+### Patch Changes
+
+-   3ebd767: Replace keytar with @zowe/secrets-for-zowe-sdk
+    -   @sap-ux/system-access@0.5.23
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/inquirer-common@0.5.12
+
 ## 0.12.95
 
 ### Patch Changes
