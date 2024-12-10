@@ -29,6 +29,7 @@ Unum consectetuer et pro, at ignota evertitur mei. Wisi meis officiis sed ne, ea
 
 interface SectionsExampleProps {
     vertical: boolean;
+    threeSections?: boolean;
 }
 
 const getOptions = (values: string[]): UIDropdownOption[] => {
@@ -46,11 +47,11 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
         splitterType: UISplitterType.Resize,
         splitter: true,
         splitterTabIndex: 0,
-        minSectionSize: [300, 300],
+        minSectionSize: props.threeSections ? [100, 100, 100] : [300, 300],
         animation: true,
         splitterLayoutType: UISplitterLayoutType.Standard,
         sizesAsPercents: false,
-        sizes: [400, undefined]
+        sizes: props.threeSections ? [200, undefined, 200] : [400, undefined]
     });
     const [leftSectionVisible, setLeftSectionVisible] = useState<boolean>(true);
     const [rightSectionVisible, setRightSectionVisible] = useState<boolean>(true);
@@ -84,6 +85,35 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
     ) => {
         propertyChange(id, option?.key);
     };
+    const sectionElements = [
+        <UISections.Section key="first" height="100%" cleanPadding={true} hidden={!leftSectionVisible} data-test="test">
+            <div>
+                {text}
+                {text}
+                {text}
+            </div>
+        </UISections.Section>
+    ];
+    if (props.threeSections) {
+        sectionElements.push(
+            <UISections.Section key="second" height="100%" cleanPadding={true}>
+                <div>
+                    {text}
+                    {text}
+                    {text}
+                </div>
+            </UISections.Section>
+        );
+    }
+    sectionElements.push(
+        <UISections.Section key="last" height="100%" cleanPadding={true} hidden={!rightSectionVisible}>
+            <div>
+                {text}
+                {text}
+                {text}
+            </div>
+        </UISections.Section>
+    );
     return (
         <>
             <style>{css}</style>
@@ -203,24 +233,7 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
                         onClose={() => {
                             setRightSectionVisible(!rightSectionVisible);
                         }}>
-                        <UISections.Section
-                            height="100%"
-                            cleanPadding={true}
-                            hidden={!leftSectionVisible}
-                            data-test="test">
-                            <div>
-                                {text}
-                                {text}
-                                {text}
-                            </div>
-                        </UISections.Section>
-                        <UISections.Section height="100%" cleanPadding={true} hidden={!rightSectionVisible}>
-                            <div>
-                                {text}
-                                {text}
-                                {text}
-                            </div>
-                        </UISections.Section>
+                        {sectionElements}
                     </UISections>
                 </div>
             </div>
@@ -231,3 +244,9 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
 export const HorizontalSections = (): JSX.Element => <SectionsExample vertical={false} />;
 
 export const VerticalSections = (): JSX.Element => <SectionsExample vertical={true} />;
+
+export const HorizontalSectionsThreeColumns = (): JSX.Element => (
+    <SectionsExample vertical={false} threeSections={true} />
+);
+
+export const VerticalSectionsThreeRows = (): JSX.Element => <SectionsExample vertical={true} threeSections={true} />;
