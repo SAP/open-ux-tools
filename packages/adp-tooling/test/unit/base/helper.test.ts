@@ -62,7 +62,10 @@ describe('helper', () => {
         it('should write the updated variant content to the manifest file', () => {
             updateVariant(basePath, mockVariant, fs);
 
-            expect(fs.writeJSON).toHaveBeenCalledWith(join(basePath, 'manifest.appdescr_variant'), mockVariant);
+            expect(fs.writeJSON).toHaveBeenCalledWith(
+                join(basePath, 'webapp', 'manifest.appdescr_variant'),
+                mockVariant
+            );
         });
     });
 
