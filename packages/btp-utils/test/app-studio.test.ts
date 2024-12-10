@@ -3,13 +3,14 @@ import { join } from 'path';
 import type { Destination } from '../src';
 import {
     getAppStudioProxyURL,
-    getAppStudioBaseURL,
+    getAppStudioBaseURL, 
     isAppStudio,
     getDestinationUrlForAppStudio,
     listDestinations,
     getCredentialsForDestinationService,
     exposePort
-} from '../src';
+    
+} from '../src'; 
 import { ENV } from '../src/app-studio.env';
 import destinationList from './mockResponses/destinations.json';
 
