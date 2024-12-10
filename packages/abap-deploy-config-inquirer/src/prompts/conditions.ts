@@ -241,6 +241,9 @@ function defaultOrShowTransportQuestion(): boolean {
  * @returns boolean
  */
 export function showTransportInputChoice(): boolean {
+    if (PromptState.transportAnswers.transportRequired === false) {
+        return false;
+    }
     return defaultOrShowTransportQuestion();
 }
 

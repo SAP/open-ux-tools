@@ -1,7 +1,6 @@
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
-import type { Validator } from 'inquirer';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -106,11 +105,16 @@ export type DescriptionPromptOptions = {
     default?: string;
 };
 
-type PackagePromptOptions = {
+export type PackagePromptOptions = {
     /**
-     * Add custom validation
+     * Indicator for the validations to be performed on the package input.
      */
-    validate?: Validator<AbapDeployConfigAnswers>;
+    additionalValidation?: {
+        /**
+         * Check if the given package is a cloud-ready package
+         */
+        cloudPackage?: boolean;
+    };
 };
 
 export type PackageManualPromptOptions = PackagePromptOptions & {
