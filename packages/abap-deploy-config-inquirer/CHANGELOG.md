@@ -1,5 +1,22 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.1.9
+
+### Patch Changes
+
+-   1bb4d48: adds new module @sap-ux/abap-deploy-config-sub-generator
+-   Updated dependencies [1bb4d48]
+    -   @sap-ux/fiori-generator-shared@0.7.14
+    -   @sap-ux/inquirer-common@0.5.10
+
+## 1.1.8
+
+### Patch Changes
+
+-   Updated dependencies [727fd86]
+    -   @sap-ux/axios-extension@1.17.7
+    -   @sap-ux/system-access@0.5.22
+
 ## 1.1.7
 
 ### Patch Changes
