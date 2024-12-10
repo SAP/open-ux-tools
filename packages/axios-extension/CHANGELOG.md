@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.17.7
+
+### Patch Changes
+
+-   727fd86: Fix v4 odata services not paged
+
 ## 1.17.6
 
 ### Patch Changes
