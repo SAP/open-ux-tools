@@ -1,5 +1,5 @@
 import * as axiosExtension from '@sap-ux/axios-extension';
-import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import type { ODataServiceInfo } from '@sap-ux/axios-extension';
 import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import {
@@ -457,6 +457,19 @@ describe('ConnectionValidator', () => {
         // Ensure the refresh token is updated when it changes
         (connectValidator.serviceProvider as any).refreshTokenChangedCb('newToken1234');
         expect(connectValidator.refreshToken).toEqual('newToken1234');
+
+        // Ensure refresh token is used to create a connection if presented
+        expect(
+            await connectValidator.validateServiceInfo(serviceInfoMock as ServiceInfo, undefined, '123refreshToken456')
+        ).toBe(true);
+        expect(createAbapOnCloudProviderSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                environment: 'Standalone',
+                refreshTokenChangedCb: expect.any(Function),
+                service: serviceInfoMock,
+                refreshToken: '123refreshToken456'
+            })
+        );
     });
 
     test('should attempt to validate auth using v4 catalog where v2 is not available or user is not authorized', async () => {
@@ -559,7 +572,7 @@ describe('ConnectionValidator', () => {
         const connectValidator = new ConnectionValidator();
         expect(
             await connectValidator.validateDestination({
-                Name: 'dest1',
+                Name: 'DEST1',
                 Host: 'https://system1:12345/path/to/service',
                 Type: 'HTTP',
                 Authentication: 'NoAuthentication',
@@ -581,7 +594,7 @@ describe('ConnectionValidator', () => {
         expect(
             await connectValidator.validateDestination(
                 {
-                    Name: 'dest2',
+                    Name: 'DEST2',
                     Host: 'https://system2:12345/',
                     Type: 'HTTP',
                     Authentication: 'NoAuthentication',
@@ -657,5 +670,24 @@ describe('ConnectionValidator', () => {
                 }
             })
         );
+
+        // Authentication errors should return an authentication error message if the destination has authentication configured as 'NoAuthentication'
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(403));
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system1:12345/path/to/service',
+                Type: 'HTTP',
+                Authentication: 'OAuth2ClientCredentials',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_gen',
+                WebIDEAdditionalData: 'full_url',
+                'HTML5.DynamicDestination': 'true'
+            })
+        ).toEqual({
+            errorType: ERROR_TYPE.AUTH,
+            valResult: 'Authentication incorrect. Please check the SAP BTP destination authentication configuration.'
+        });
     });
 });

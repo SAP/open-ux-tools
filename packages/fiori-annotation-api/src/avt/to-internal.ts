@@ -1,6 +1,5 @@
 import type {
     AnnotationRecord,
-    Apply,
     Collection,
     Expression,
     PropertyValue,
@@ -119,11 +118,11 @@ export function convertCollectionElement(
             // entry must be record
             return convertRecordToInternal(aliasInfo, entry);
         }
-    } else if (typeof entry === 'string') {
-        return createElementNode({ name: Edm.String, content: [createTextNode(entry.toString())] });
     } else if (typeof entry === 'boolean') {
         // obvious extension of annotation.record definition
         return createElementNode({ name: Edm.Bool, content: [createTextNode(entry ? 'true' : 'false')] });
+    } else if (typeof entry === 'string') {
+        return createElementNode({ name: Edm.String, content: [createTextNode(entry)] });
     }
     return undefined;
 }
@@ -191,37 +190,45 @@ export function convertExpressionToInternal(
     hostElement?: Element
 ): Element | undefined {
     const elementName = expressionNames[value.type] ? value.type : '';
-    let element = hostElement ?? (elementName ? createElementNode({ name: elementName }) : undefined);
+    const element = hostElement ?? (elementName ? createElementNode({ name: elementName }) : undefined);
     if (!element) {
         return undefined;
     }
-    let collectionElement: Element;
-    let recordElement: Element;
-    let nullElement: Element;
-    let primitiveValue: string;
     switch (value.type) {
-        case 'Collection':
-            collectionElement = convertCollectionToInternal(aliasInfo, value.Collection);
-            element = consumeElement(element, collectionElement, hostElement);
-            break;
-        case 'Record':
-            recordElement = convertRecordToInternal(aliasInfo, value.Record);
-            element = consumeElement(element, recordElement, hostElement);
-            break;
-        case 'Apply':
-            recordElement = convertApplyToInternal(aliasInfo, value.Apply);
-            element = consumeElement(element, recordElement, hostElement);
-            break;
-        case 'Null':
-            nullElement = createElementNode({ name: elementName });
-            element = consumeElement(element, nullElement, hostElement);
-            break;
+        case 'Collection': {
+            const collectionElement = convertCollectionToInternal(aliasInfo, value.Collection);
+            return consumeElement(element, collectionElement, hostElement);
+        }
+        case 'Record': {
+            const recordElement = convertRecordToInternal(aliasInfo, value.Record);
+            return consumeElement(element, recordElement, hostElement);
+        }
+        case 'Apply': {
+            const applyElement = convertDynamicExpressionToInternal(aliasInfo, value.$Apply);
+            return consumeElement(element, applyElement, hostElement);
+        }
+        case 'If':
+        case 'And':
+        case 'Or':
+        case 'Le':
+        case 'Lt':
+        case 'Ge':
+        case 'Gt':
+        case 'Eq':
+        case 'Ne':
+        case 'Not':
+            // Dynamic expressions are not supported.
+            return consumeElement(element, createElementNode({ name: value.type }), hostElement);
+        case 'Null': {
+            const nullElement = createElementNode({ name: elementName });
+            return consumeElement(element, nullElement, hostElement);
+        }
         case 'Unknown':
             return undefined;
         default: {
             // value type is EDMX primitive expression
             const rawPrimitiveValue = (value as any)[value.type]; // There is always a property with on the object as type name, Typescript does not infer this case as expected
-            primitiveValue = convertPrimitiveValueToInternal(value.type, rawPrimitiveValue, aliasInfo);
+            const primitiveValue = convertPrimitiveValueToInternal(value.type, rawPrimitiveValue, aliasInfo);
             if (hostElement) {
                 // add value to host element as attribute
                 element.attributes = element.attributes || {};
@@ -239,12 +246,12 @@ export function convertExpressionToInternal(
 /**
  *
  * @param aliasInfo - Alias Information.
- * @param apply - Apply expression.
+ * @param expression - Apply expression.
  * @returns Internal representation of apply.
  */
-export function convertApplyToInternal(aliasInfo: AliasInformation, apply: Apply): Element {
+export function convertDynamicExpressionToInternal(aliasInfo: AliasInformation, expression: Element): Element {
     // Apply value is regular internal representation (without alias)
-    const clone: Element = JSON.parse(JSON.stringify(apply));
+    const clone: Element = JSON.parse(JSON.stringify(expression));
     return replaceAliasInElement(clone, aliasInfo, true);
 }
 
@@ -321,7 +328,7 @@ function replaceAliasInAttributes(result: Element, aliasInfo: AliasInformation, 
 }
 
 function replaceAliasInSubNodes(result: Element, aliasInfo: AliasInformation, reverse?: boolean): void {
-    for (const subNode of result.content) {
+    for (const subNode of result.content ?? []) {
         if (subNode.type === ELEMENT_TYPE) {
             replaceAliasInElement(subNode, aliasInfo, reverse);
         } else if (subNode.type === TEXT_TYPE && result.name === Edm.EnumMember) {

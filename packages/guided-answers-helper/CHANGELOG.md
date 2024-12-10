@@ -1,5 +1,11 @@
 # @sap-ux/guided-answers-helper
 
+## 0.1.1
+
+### Patch Changes
+
+-   307706e: move GA link code in inq-common, add node in GA helper
+
 ## 0.1.0
 
 ### Minor Changes

@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.21.4
+
+### Patch Changes
+
+-   d167a73: Enhancements to UISections: Supports resizing with three or more sections.
+
+## 1.21.3
+
+### Patch Changes
+
+-   bb0531d: Introduce a new 'Manage' icon to the UIIcons component. This enhancement expands the icon library, allowing for more diversified icon usage in UI components.
+
 ## 1.21.2
 
 ### Patch Changes

@@ -15,6 +15,7 @@ import {
     AdpPreview,
     type AdpPreviewConfig,
     type CommonChangeProperties,
+    type DescriptorVariant,
     type OperationType
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
@@ -33,16 +34,6 @@ import {
     getAppName
 } from './config';
 
-const DEVELOPER_MODE_CONFIG = new Map([
-    // Run application in design time mode
-    // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
-    ['xx-designMode', 'true'],
-    // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
-    ['xx-suppressDeactivationOfControllerCode', 'true'],
-    // Make sure that XML preprocessing results are correctly invalidated
-    ['xx-viewCache', 'false']
-]);
-
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
 /**
@@ -51,6 +42,11 @@ const DEFAULT_LIVERELOAD_PORT = 35729;
 export type EnhancedRouter = Router & {
     getAppPages?: () => string[];
 };
+
+/**
+ * Enhanced request object that contains additional properties from cds-plugin-ui5.
+ */
+type EnhancedRequest = Request & { 'ui5-patched-router'?: { baseUrl?: string } };
 
 type OnChangeRequestHandler = (
     type: OperationType,
@@ -155,13 +151,45 @@ export class FlpSandbox {
     }
 
     /**
+     * Get the configuration for the developer mode.
+     *
+     * @param ui5MajorVersion - the major version of UI5
+     * @returns the configuration for the developer mode
+     * @private
+     */
+    private getDeveloperModeConfig(ui5MajorVersion: number): Map<string, string> {
+        if (ui5MajorVersion < 2) {
+            return new Map([
+                // Run application in design time mode
+                // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
+                ['xx-designMode', 'true'],
+                // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
+                ['xx-suppressDeactivationOfControllerCode', 'true'],
+                // Make sure that XML preprocessing results are correctly invalidated
+                ['xx-viewCache', 'false']
+            ]);
+        } else {
+            return new Map([
+                // Run application in design time mode
+                // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
+                ['xx-design-mode', 'true'],
+                // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
+                ['xx-suppress-deactivation-of-controller-code', 'true'],
+                // Make sure that XML preprocessing results are correctly invalidated
+                ['xx-view-cache', 'false']
+            ]);
+        }
+    }
+
+    /**
      * Generates the FLP sandbox for an editor.
      *
+     * @param req the request
      * @param rta runtime authoring configuration
      * @param editor editor configuration
      * @returns FLP sandbox html
      */
-    private async generateSandboxForEditor(rta: RtaConfig, editor: Editor): Promise<string> {
+    private async generateSandboxForEditor(req: EnhancedRequest, rta: RtaConfig, editor: Editor): Promise<string> {
         const defaultGenerator = editor.developerMode
             ? '@sap-ux/control-property-editor'
             : '@sap-ux/preview-middleware';
@@ -183,11 +211,16 @@ export class FlpSandbox {
         };
         config.features = FeatureToggleAccess.getAllFeatureToggles();
 
+        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
+
         if (editor.developerMode === true) {
-            config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
+            config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
         }
-        const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-        return render(template, config);
+
+        if (ui5Version.major === 1 && ui5Version.minor <= 71) {
+            this.removeAsyncHintsRequests();
+        }
+        return render(this.getSandboxTemplate(ui5Version.major), config);
     }
 
     /**
@@ -209,7 +242,7 @@ export class FlpSandbox {
      *
      * @param rta runtime authoring configuration
      */
-    private addEditorRoutes(rta: RtaConfig) {
+    private addEditorRoutes(rta: RtaConfig): void {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
         for (const editor of rta.editors) {
             let previewUrl = editor.path.startsWith('/') ? editor.path : `/${editor.path}`;
@@ -249,14 +282,15 @@ export class FlpSandbox {
             this.router.get(previewUrl, async (req: Request, res: Response) => {
                 if (!req.query['fiori-tools-rta-mode']) {
                     // Redirect to the same URL but add the necessary parameter
-                    const params = JSON.parse(JSON.stringify(req.query));
+                    const params = JSON.parse(JSON.stringify(req.query)) as Record<string, string>;
                     params['sap-ui-xx-viewCache'] = 'false';
                     params['fiori-tools-rta-mode'] = 'true';
                     params['sap-ui-rta-skip-flex-validation'] = 'true';
+                    params['sap-ui-xx-condense-changes'] = 'true';
                     res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
                     return;
                 }
-                const html = (await this.generateSandboxForEditor(rta, editor)).replace(
+                const html = (await this.generateSandboxForEditor(req, rta, editor)).replace(
                     '</body>',
                     `</body>\n<!-- livereload disabled for editor </body>-->`
                 );
@@ -268,23 +302,96 @@ export class FlpSandbox {
     /**
      * Add routes for html and scripts required for a local FLP.
      */
-    private addStandardRoutes() {
+    private addStandardRoutes(): void {
         // register static client sources
         this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
-        // add route for the sandbox.html
-        this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {
+        // add route for the sandbox html
+        this.router.get(this.config.path, (async (req: EnhancedRequest, res: Response, next: NextFunction) => {
             // inform the user if a html file exists on the filesystem
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const file = await this.project.byPath(this.config.path);
             if (file) {
                 this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
                 next();
             } else {
-                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-                const html = render(template, this.templateConfig);
+                const ui5Version = await this.getUi5Version(
+                    req.protocol,
+                    req.headers.host,
+                    req['ui5-patched-router']?.baseUrl
+                );
+                const html = render(this.getSandboxTemplate(ui5Version.major), this.templateConfig);
                 this.sendResponse(res, 'text/html', 200, html);
             }
         }) as RequestHandler);
+    }
+
+    /**
+     * Read the UI5 version.
+     * In case of an error, the default UI5 version '1.121.0' is returned.
+     *
+     * @param protocol - the protocol that should be used to request the UI5 version ('http' or 'https')
+     * @param host - the host that should be used to request the UI5 version
+     * @param baseUrl - the base path of the request that should be added to the host
+     * @returns the template for the sandbox HTML file
+     * @private
+     */
+    private async getUi5Version(
+        protocol: Request['protocol'],
+        host: Request['headers']['host'],
+        baseUrl: string = ''
+    ): Promise<{ major: number; minor: number }> {
+        let version: string | undefined;
+        if (!host) {
+            this.logger.error('Unable to fetch UI5 version: No host found in request header.');
+        } else {
+            try {
+                const versionUrl = `${protocol}://${host}${baseUrl}/resources/sap-ui-version.json`;
+                const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
+                    | { libraries: { name: string; version: string }[] }
+                    | undefined;
+                version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
+            } catch (error) {
+                this.logger.error(error);
+            }
+        }
+        if (!version) {
+            this.logger.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
+            version = '1.121.0';
+        }
+        const [major, minor] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
+        return {
+            major,
+            minor
+        };
+    }
+
+    /**
+     * Read the sandbox template file based on the given UI5 version.
+     *
+     * @param ui5MajorVersion - the major version of UI5
+     * @returns the template for the sandbox HTML file
+     */
+    private getSandboxTemplate(ui5MajorVersion: number): string {
+        this.logger.info(`Using sandbox template for UI5 major version ${ui5MajorVersion}.`);
+        return readFileSync(
+            join(__dirname, `../../templates/flp/sandbox${ui5MajorVersion === 1 ? '' : ui5MajorVersion}.html`),
+            'utf-8'
+        );
+    }
+
+    /**
+     * For UI5 version 1.71 and below, the asyncHints.requests need to be removed from the template configuration
+     * to load the changes in an Adaptation project.
+     */
+    private removeAsyncHintsRequests(): void {
+        for (const app in this.templateConfig.apps) {
+            const appDependencies = this.templateConfig.apps[app].applicationDependencies;
+
+            if (appDependencies?.asyncHints.requests) {
+                appDependencies.asyncHints.requests = [];
+            }
+        }
     }
 
     /**
@@ -300,11 +407,13 @@ export class FlpSandbox {
     /**
      * Add additional routes for apps also to be shown in the local FLP.
      */
-    private async addRoutesForAdditionalApps() {
+    private async addRoutesForAdditionalApps(): Promise<void> {
         for (const app of this.config.apps) {
             let manifest: Manifest | undefined;
             if (app.local) {
-                manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
+                manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8')) as
+                    | Manifest
+                    | undefined;
                 this.router.use(app.target, serveStatic(join(app.local, 'webapp')));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
             } else if (app.componentId) {
@@ -387,7 +496,7 @@ export class FlpSandbox {
      * @param configs test configurations
      * @private
      */
-    private createTestSuite(configs: TestConfig[]) {
+    private createTestSuite(configs: TestConfig[]): void {
         const testsuiteConfig = configs.find((config) => config.framework === 'Testsuite');
         if (!testsuiteConfig) {
             //silent skip: create a testsuite only if it is explicitly part of the test configuration
@@ -454,7 +563,7 @@ export class FlpSandbox {
      * @param body the response body
      * @private
      */
-    private sendResponse(res: Response | http.ServerResponse, contentType: string, status: number, body: string) {
+    private sendResponse(res: Response | http.ServerResponse, contentType: string, status: number, body: string): void {
         res.writeHead(status, {
             'Content-Type': contentType
         });
@@ -468,7 +577,7 @@ export class FlpSandbox {
      * @param configs test configurations
      * @param id application id from manifest
      */
-    private addTestRoutes(configs: TestConfig[], id: string) {
+    private addTestRoutes(configs: TestConfig[], id: string): void {
         const ns = id.replace(/\./g, '/');
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.html'), 'utf-8');
         const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
@@ -478,6 +587,7 @@ export class FlpSandbox {
             // add route for the *.qunit.html
             this.router.get(config.path, (async (_req, res, next) => {
                 this.logger.debug(`Serving test route: ${config.path}`);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const file = await this.project.byPath(config.path);
                 if (file) {
                     this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
@@ -546,6 +656,7 @@ function serializeUi5Configuration(config: Map<string, string>): string {
  * @param flp FlpSandbox instance
  * @param util middleware utilities provided by the UI5 CLI
  * @param logger logger instance
+ * @throws Error in case no manifest.appdescr_variant found
  */
 export async function initAdp(
     rootProject: ReaderCollection,
@@ -553,11 +664,11 @@ export async function initAdp(
     flp: FlpSandbox,
     util: MiddlewareUtils,
     logger: ToolsLogger
-) {
+): Promise<void> {
     const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
     if (appVariant) {
         const adp = new AdpPreview(config, rootProject, util, logger);
-        const variant = JSON.parse(await appVariant.getString());
+        const variant = JSON.parse(await appVariant.getString()) as DescriptorVariant;
         const layer = await adp.init(variant);
         if (flp.rta) {
             flp.rta.layer = layer;

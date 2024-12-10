@@ -160,7 +160,10 @@ export async function getSystemConnectionQuestions(
             type: promptOptions?.systemSelection?.useAutoComplete ? 'autocomplete' : 'list',
             name: promptNames.systemSelection,
             message: t('prompts.systemSelection.message'),
-            hint: t('prompts.systemSelection.hint'),
+            guiOptions: {
+                breadcrumb: true,
+                hint: t('prompts.systemSelection.hint')
+            },
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
             choices: systemChoices,
             default: defaultChoiceIndex,
@@ -211,16 +214,22 @@ export async function getSystemConnectionQuestions(
             guiOptions: {
                 hint: t('prompts.destinationServicePath.hint'),
                 mandatory: true,
-                breadcrumb: true
+                breadcrumb: true,
+                applyDefaultWhenDirty: true
             },
+            default: '',
             validate: async (servicePath: string, answers: SystemSelectionAnswers) => {
-                if (!servicePath) {
+                // @sap-ux/btp-utils getDestinationUrlForAppStudio() enforces a path length of > 1, even though it could be a valid path
+                // Double slashes are not allowed at the start of the path as they break URL construction
+                if (!servicePath || servicePath.trim().length < 2 || servicePath.startsWith('//')) {
+                    connectionValidator.resetConnectionState(true);
                     return t('prompts.destinationServicePath.invalidServicePathWarning');
                 }
                 // Validate format of the service path, note this relies on the assumption that the destination is correctly configured with a valid URL
                 const selectedDestination = answers?.[promptNames.systemSelection]?.system as Destination;
                 const valUrlResult = validateServiceUrl(selectedDestination.Host, servicePath);
                 if (valUrlResult !== true) {
+                    connectionValidator.resetConnectionState(true);
                     return valUrlResult;
                 }
 

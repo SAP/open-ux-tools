@@ -108,6 +108,9 @@
 # Module: text-document-utils
 /packages/text-document-utils/ @SAP/ux-tools-annotations
 
+# Module: jest-environment-ui5
+/packages/jest-environment-ui5/ @SAP/ux-tools-ui5-jest
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin

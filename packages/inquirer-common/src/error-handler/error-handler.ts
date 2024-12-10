@@ -636,35 +636,47 @@ export class ErrorHandler {
         const helpNode = ErrorHandler.getHelpNode(errorType);
         const mappedErrorMsg = errorMsg ?? ErrorHandler.getErrorMsgFromType(errorType);
 
-        if (helpNode) {
-            const valLink: IValidationLink = {
-                message: mappedErrorMsg ?? '',
-                link: {
-                    text: t('guidedAnswers.validationErrorHelpText'),
-                    icon: GUIDED_ANSWERS_ICON,
-                    url: getHelpUrl(HELP_TREE.FIORI_TOOLS, [helpNode])
-                }
-            };
-
-            if (this.guidedAnswersEnabled) {
-                valLink.link.command = {
-                    id: GUIDED_ANSWERS_LAUNCH_CMD_ID,
-                    params: {
-                        treeId: HELP_TREE.FIORI_TOOLS,
-                        nodeIdPath: [helpNode],
-                        trigger: this.guidedAnswersTrigger
-                    }
-                };
-            }
-            // Report the GA link created event
-            sendTelemetryEvent(telemEventGALinkCreated, {
-                errorType,
-                isGuidedAnswersEnabled: this.guidedAnswersEnabled,
-                nodeIdPath: `${helpNode}`,
-                Platform: this.platform ?? getHostEnvironment().technical
-            });
-            return new ValidationLink(valLink);
+        if (helpNode && mappedErrorMsg) {
+            return this.getHelpLink(helpNode, errorType, mappedErrorMsg);
         }
         return mappedErrorMsg;
+    }
+
+    /**
+     * Get a help link for the specified help node.
+     *
+     * @param helpNode The help node to get the link for
+     * @param errorType The error type
+     * @param errorMsg The error message to display with the help link
+     * @returns A validation help link
+     */
+    public static getHelpLink(helpNode: number, errorType: ERROR_TYPE, errorMsg: string): ValidationLink {
+        const valLink: IValidationLink = {
+            message: errorMsg,
+            link: {
+                text: t('guidedAnswers.validationErrorHelpText'),
+                icon: GUIDED_ANSWERS_ICON,
+                url: getHelpUrl(HELP_TREE.FIORI_TOOLS, [helpNode])
+            }
+        };
+
+        if (this.guidedAnswersEnabled) {
+            valLink.link.command = {
+                id: GUIDED_ANSWERS_LAUNCH_CMD_ID,
+                params: {
+                    treeId: HELP_TREE.FIORI_TOOLS,
+                    nodeIdPath: [helpNode],
+                    trigger: this.guidedAnswersTrigger
+                }
+            };
+        }
+        // Report the GA link created event
+        sendTelemetryEvent(telemEventGALinkCreated, {
+            errorType,
+            isGuidedAnswersEnabled: this.guidedAnswersEnabled,
+            nodeIdPath: `${helpNode}`,
+            Platform: this.platform ?? getHostEnvironment().technical
+        });
+        return new ValidationLink(valLink);
     }
 }

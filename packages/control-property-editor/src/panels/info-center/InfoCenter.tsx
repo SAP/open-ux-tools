@@ -51,8 +51,8 @@ export function InfoCenter(): ReactElement {
                 </div>
                 <Stack className={`info-center-items`}>
                     {infoCenter.map((info, index) => (
-                        <Stack.Item>
-                            <UIMessageBar key={index} messageBarType={info.type as MessageBarType} className={`message-bar ${getMessageType(info.type)}`}>
+                        <Stack.Item key={index}>
+                            <UIMessageBar messageBarType={info.type as MessageBarType} className={`message-bar ${getMessageType(info.type)}`}>
                                     <Text block={true} className={`message-title`}>{info.message.title}</Text>
                                     <Text block={true} className={`message-description`}>{info.message.description}</Text>
                                     

@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.28.9
+
+### Patch Changes
+
+-   e93797a: Added the `convert` command to convert local preview files of a project to virtual files.
+
+## 1.28.8
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/ui5-config@0.26.0
+
 ## 1.28.7
 
 ### Patch Changes

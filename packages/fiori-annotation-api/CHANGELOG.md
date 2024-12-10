@@ -1,5 +1,32 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/cds-odata-annotation-converter@0.3.9
+
+## 0.3.2
+
+### Patch Changes
+
+-   7d61e58: Fixed writing collections with string values
+
+## 0.3.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.8
+-   @sap-ux/cds-odata-annotation-converter@0.3.9
+
+## 0.3.0
+
+### Minor Changes
+
+-   09a58bb: [BREAKING CHANGE] Changed types for dynamic expressions to be compatible with the changes in @sap-ux/vocabulary-types (https://github.com/SAP/open-ux-odata/pull/844).
+
 ## 0.2.17
 
 ### Patch Changes

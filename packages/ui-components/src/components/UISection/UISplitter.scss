@@ -19,6 +19,7 @@ $splitter-focus-border: 1px solid var(--vscode-focusBorder);
     background-color: var(--vscode-panelSection-border);
     position: absolute;
     outline: none;
+    z-index: 2;
 
     &--horizontal {
         top: 0;
@@ -182,7 +183,7 @@ $splitter-focus-border: 1px solid var(--vscode-focusBorder);
 
 .splitter__overlay {
     position: absolute;
-    z-index: 1;
+    z-index: 3;
     top: 0;
     left: 0;
     bottom: 0;

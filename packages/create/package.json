@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/create",
     "description": "SAP Fiori tools module to add or remove features",
-    "version": "0.8.88",
+    "version": "0.10.12",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -39,7 +39,6 @@
         "@sap-ux/app-config-writer": "workspace:*",
         "@sap-ux/cap-config-writer": "workspace:*",
         "@sap-ux/cards-editor-config-writer": "workspace:*",
-        "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/mockserver-config-writer": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
@@ -47,6 +46,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/flp-config-inquirer": "workspace:*",
         "chalk": "4.1.2",
         "commander": "9.4.0",
         "diff": "5.1.0",

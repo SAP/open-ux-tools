@@ -1,5 +1,133 @@
 # @sap-ux/preview-middleware
 
+## 0.16.146
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.94
+
+## 0.16.145
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.93
+
+## 0.16.144
+
+### Patch Changes
+
+-   e93797a: Added the `convert` command to convert local preview files of a project to virtual files.
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/adp-tooling@0.12.92
+
+## 0.16.143
+
+### Patch Changes
+
+-   62c73b8: CPE - Hide Quick Actions in V2 application, if the application has old manifest structure.
+
+## 0.16.142
+
+### Patch Changes
+
+-   76d5dcb: CPE - Update tooltip text for disabled table filtering variant quick action
+
+## 0.16.141
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.91
+
+## 0.16.140
+
+### Patch Changes
+
+-   Updated dependencies [3805f2e]
+    -   @sap-ux/adp-tooling@0.12.90
+
+## 0.16.139
+
+### Patch Changes
+
+-   Updated dependencies [2359524]
+    -   @sap-ux/btp-utils@0.17.1
+    -   @sap-ux/adp-tooling@0.12.89
+
+## 0.16.138
+
+### Patch Changes
+
+-   Updated dependencies [d04a40e]
+    -   @sap-ux/feature-toggle@0.2.3
+    -   @sap-ux/adp-tooling@0.12.88
+
+## 0.16.137
+
+### Patch Changes
+
+-   0fb08df: Use ui5 version specific flp sandbox template instead of dynamic bootstrap
+
+## 0.16.136
+
+### Patch Changes
+
+-   Updated dependencies [14163cd]
+    -   @sap-ux/adp-tooling@0.12.87
+
+## 0.16.135
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.86
+-   @sap-ux/project-access@1.28.8
+
+## 0.16.134
+
+### Patch Changes
+
+-   c10bf9f: fix: Various lint error fixes and code improvements
+
+## 0.16.133
+
+### Patch Changes
+
+-   70e6d46: CPE - Disable Add Custom Column Quick Action, if table rows are required and not available
+
+## 0.16.132
+
+### Patch Changes
+
+-   79d2435: fix: remove feature toggle check for Enable/Disable Semantic Date Range in Filter Bar
+-   ca82698: CPE - Enable Table Filtering Quick Action
+
+## 0.16.131
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.85
+
+## 0.16.130
+
+### Patch Changes
+
+-   Updated dependencies [6e60bdf]
+    -   @sap-ux/adp-tooling@0.12.84
+
+## 0.16.129
+
+### Patch Changes
+
+-   71bef63: fix: update quick action title for semantic date range
+
+## 0.16.128
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+-   Updated dependencies [09a58bb]
+    -   @sap-ux/adp-tooling@0.12.83
+
 ## 0.16.127
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
-import type { App, FlpConfig, Intent, InternalTestConfig, MiddlewareConfig, TestConfig } from '../types';
+import type {
+    App,
+    DefaultFlpPath,
+    DefaultIntent,
+    FlpConfig,
+    Intent,
+    InternalTestConfig,
+    MiddlewareConfig,
+    TestConfig
+} from '../types';
 import { render } from 'ejs';
 import { join, posix } from 'path';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
@@ -20,6 +29,19 @@ export interface FlexConnector {
     layers: string[];
     url?: string;
 }
+
+type TestTemplateConfig = {
+    id: string;
+    framework: TestConfig['framework'];
+    basePath: string;
+    initPath: string;
+    theme: string;
+};
+
+export type PreviewUrls = {
+    path: string;
+    type: 'preview' | 'editor' | 'test';
+};
 
 /**
  * Internal structure used to fill the sandbox.html template
@@ -76,7 +98,7 @@ export const DEFAULT_THEME = 'sap_horizon';
 /**
  * Default path for mounting the local FLP.
  */
-export const DEFAULT_PATH = '/test/flp.html';
+export const DEFAULT_PATH: DefaultFlpPath = '/test/flp.html';
 
 /**
  * Default intent
@@ -84,7 +106,7 @@ export const DEFAULT_PATH = '/test/flp.html';
 export const DEFAULT_INTENT = {
     object: 'app',
     action: 'preview'
-} as Readonly<Intent>;
+} as Readonly<DefaultIntent>;
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -142,7 +164,7 @@ function getUI5Libs(manifest: Partial<Manifest>): string {
  * @param config partial configuration
  * @returns a full configuration with default values
  */
-export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}) {
+export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpConfig {
     const flpConfig = {
         path: config.path ?? DEFAULT_PATH,
         intent: config.intent ?? DEFAULT_INTENT,
@@ -150,7 +172,7 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}) {
         libs: config.libs,
         theme: config.theme,
         init: config.init
-    };
+    } satisfies FlpConfig;
     if (!flpConfig.path.startsWith('/')) {
         flpConfig.path = `/${flpConfig.path}`;
     }
@@ -207,7 +229,12 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
  * @param app configuration for the preview
  * @param logger logger instance
  */
-export async function addApp(templateConfig: TemplateConfig, manifest: Partial<Manifest>, app: App, logger: Logger) {
+export async function addApp(
+    templateConfig: TemplateConfig,
+    manifest: Partial<Manifest>,
+    app: App,
+    logger: Logger
+): Promise<void> {
     const id = manifest['sap.app']?.id ?? '';
 
     const appName = getAppName(manifest, app.intent);
@@ -251,7 +278,7 @@ async function getI18nTextFromProperty(
     projectRoot: string | undefined,
     propertyValue: string | undefined,
     logger: Logger
-) {
+): Promise<string | undefined> {
     //i18n model format could be {{key}} or {i18n>key}
     if (!projectRoot || !propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
         return propertyValue;
@@ -302,7 +329,7 @@ export function createFlpTemplateConfig(
             bootstrapOptions: ''
         },
         locateReuseLibsScript: config.libs
-    };
+    } satisfies TemplateConfig;
 }
 
 /**
@@ -313,20 +340,15 @@ export function createFlpTemplateConfig(
  * @param theme theme to be used
  * @returns configuration object for the test template
  */
-export function createTestTemplateConfig(config: InternalTestConfig, id: string, theme: string) {
+export function createTestTemplateConfig(config: InternalTestConfig, id: string, theme: string): TestTemplateConfig {
     return {
         id,
         framework: config.framework,
         basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
         initPath: posix.relative(posix.dirname(config.path), config.init),
         theme
-    };
+    } satisfies TestTemplateConfig;
 }
-
-export type PreviewUrls = {
-    path: string;
-    type: 'preview' | 'editor' | 'test';
-};
 
 /**
  * Returns the preview paths.
@@ -375,7 +397,7 @@ function generateTestRunners(
     fs: Editor,
     webappPath: string,
     flpTemplConfig: TemplateConfig
-) {
+): void {
     for (const test of configs ?? []) {
         const testConfig = mergeTestConfigDefaults(test);
         if (['QUnit', 'OPA5'].includes(test.framework)) {
@@ -411,7 +433,7 @@ export async function generatePreviewFiles(
     config: MiddlewareConfig,
     fs?: Editor,
     logger: ToolsLogger = new ToolsLogger()
-) {
+): Promise<Editor> {
     // remove incorrect configurations
     sanitizeConfig(config, logger);
 

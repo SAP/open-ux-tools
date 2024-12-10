@@ -27,6 +27,9 @@
       "path": "packages/abap-deploy-config-inquirer"
     },
     {
+      "path": "packages/abap-deploy-config-sub-generator"
+    },
+    {
       "path": "packages/abap-deploy-config-writer"
     },
     {
@@ -78,6 +81,9 @@
       "path": "packages/create"
     },
     {
+      "path": "packages/deploy-config-generator-shared"
+    },
+    {
       "path": "packages/deploy-tooling"
     },
     {
@@ -106,6 +112,9 @@
     },
     {
       "path": "packages/fiori-tools-settings"
+    },
+    {
+      "path": "packages/flp-config-inquirer"
     },
     {
       "path": "packages/guided-answers-helper"

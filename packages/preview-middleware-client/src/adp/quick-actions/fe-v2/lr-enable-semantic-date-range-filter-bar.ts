@@ -1,18 +1,15 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type FilterBar from 'sap/ui/comp/filterbar/FilterBar';
-import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
-
-import { FeatureService } from '../../../cpe/feature-service';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
-import { getControlById } from '../../../utils/core';
+import { getControlById, isA } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { getUi5Version, isVersionEqualOrHasNewerPatch, isLowerThanMinimalUi5Version } from '../../../utils/version';
+import { areManifestChangesSupported, prepareManifestChange } from './utils';
+import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';
 const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
-
+const COMPONENT = 'sap.suite.ui.generic.template.ListReport';
 /**
  * Quick Action for toggling the visibility of "semantic date range" for filterbar fields.
  */
@@ -27,19 +24,8 @@ export class ToggleSemanticDateRangeFilterBar
     private isUseDateRangeTypeEnabled = false;
 
     async initialize(): Promise<void> {
-        const version = await getUi5Version();
-        const isUI5VersionNotSupported =
-            isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 }) &&
-            !(
-                isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 96, patch: 37 }) ||
-                isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 108, patch: 38 }) ||
-                isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 120, patch: 23 })
-            );
-
-        if (isUI5VersionNotSupported) {
-            return;
-        }
-        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
+        const manifestChangesSupported = await areManifestChangesSupported(this.context.manifest);
+        if (!manifestChangesSupported) {
             return;
         }
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
@@ -55,39 +41,25 @@ export class ToggleSemanticDateRangeFilterBar
 
     protected get textKey() {
         return this.isUseDateRangeTypeEnabled
-            ? 'V2_QUICK_ACTION_LR_DISABLE_SEMANTIC_DATE_RANGE_FILTER_BAR'
-            : 'V2_QUICK_ACTION_LR_ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR';
+            ? 'QUICK_ACTION_LR_DISABLE_SEMANTIC_DATE_RANGE_FILTER_BAR'
+            : 'QUICK_ACTION_LR_ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR';
     }
 
     async execute(): Promise<FlexCommand[]> {
-        const { flexSettings } = this.context;
-
-        const modifiedValue = {
-            changeType: 'appdescr_ui_generic_app_changePageConfiguration',
-            reference: flexSettings.projectId,
-            parameters: {
-                parentPage: {
-                    component: 'sap.suite.ui.generic.template.ListReport',
-                    entitySet: (this.control as SmartFilterBar).getEntitySet()
-                },
-                entityPropertyChange: {
-                    propertyPath: 'component/settings/filterSettings/dateSettings',
-                    operation: 'UPSERT',
-                    propertyValue: {
-                        useDateRange: !this.isUseDateRangeTypeEnabled
-                    }
-                }
-            }
-        };
-        const command = await CommandFactory.getCommandFor<FlexCommand>(
+        const entitySet = isA<SmartFilterBar>(CONTROL_TYPE, this.control) ? this.control.getEntitySet() : undefined;
+        const command = await prepareManifestChange(
+            this.context,
+            'component/settings/filterSettings/dateSettings',
             this.control!,
-            'appDescriptor',
-            modifiedValue,
-            null,
-            flexSettings
+            COMPONENT,
+            entitySet,
+            {
+                useDateRange: !this.isUseDateRangeTypeEnabled
+            }
         );
 
         this.isUseDateRangeTypeEnabled = !this.isUseDateRangeTypeEnabled;
-        return [command];
+
+        return command;
     }
 }
