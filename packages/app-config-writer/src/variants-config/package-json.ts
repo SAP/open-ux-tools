@@ -1,5 +1,5 @@
 import { basename, join } from 'path';
-import { getSapClientFromPackageJson, getUI5UrlParameters, getRTAUrl, getRTAServe } from './utils';
+import { getSapClientFromPackageJson, enhanceUrlParametersWithRta, getRTAUrl, getRTAServe } from './utils';
 import type { Editor } from 'mem-fs-editor';
 import { FileName, type Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -11,7 +11,7 @@ const ERROR_MSG = `Script 'start-variants-management' cannot be written to packa
  *
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to application root, where package.json is
- * @param yamlPath - path to the ui5*.yaml file passed by cli
+ * @param yamlPath - path to the ui5*.yaml file
  * @param logger - logger
  * @returns Promise<void> - rejects in case variants management script can't be added to package.json
  */
@@ -40,7 +40,7 @@ export async function addVariantsManagementScript(
         urlParameters['sap-client'] = sapClient;
     }
 
-    const url = await getRTAUrl(basePath, getUI5UrlParameters(urlParameters), ui5YamlFileName);
+    const url = await getRTAUrl(basePath, enhanceUrlParametersWithRta(packageJson, urlParameters), ui5YamlFileName, fs);
     const serveCommand = await getRTAServe(basePath, ui5YamlFileName, fs);
 
     if (!url) {

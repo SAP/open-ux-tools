@@ -1,5 +1,26 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.0.13
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+
+## 0.0.12
+
+### Patch Changes
+
+-   2359524: align versions of cf-tools
+-   Updated dependencies [2359524]
+    -   @sap-ux/btp-utils@0.17.1
+
+## 0.0.11
+
+### Patch Changes
+
+-   8df2e93: ensure underscore is a supported character when writing configuration
+
 ## 0.0.10
 
 ### Patch Changes

@@ -1,0 +1,17 @@
+{
+    "error": {
+        "telemetry": "Failed to send telemetry data after deployment configuration has been added. {{- error}}"
+    },
+    "info": {
+        "filesGenerated": "The files have been generated.",
+        "skippedInstallation": "Option `--skipInstall` was specified. Installation of dependencies will be skipped."
+    },
+    "debug": {
+        "configExists": "Existing deployment configuration file found at {{- configPath}}",
+        "configNotFound": "No existing deployment configuration file found",
+        "indexExists": "'webapp/index.html' already exists and won't be overwritten",
+        "initFailed": "Initializing failed, unable to process project configuration. {{- error}}",
+        "initTelemetry": "Initializing telemetry",
+        "appRootPath": "App loaded from {{- appRootPath}}"
+    }
+}

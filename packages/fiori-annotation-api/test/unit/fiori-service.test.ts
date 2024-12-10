@@ -12,7 +12,8 @@ import type {
     Collection,
     PropertyPathExpression,
     PropertyValue,
-    RawAnnotation
+    RawAnnotation,
+    StringExpression
 } from '@sap-ux/vocabularies-types';
 import { getProject } from '@sap-ux/project-access';
 
@@ -1557,6 +1558,40 @@ describe('fiori annotation service', () => {
                                 Collection: []
                             }
                         }
+                    }
+                ]
+            });
+
+            createEditTestCase({
+                name: 'of strings',
+                projectTestModels: TEST_TARGETS,
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        content: {
+                            target: targetName,
+                            type: 'annotation',
+                            value: {
+                                term: `${COMMON}.SideEffects`,
+                                record: {
+                                    type: `${COMMON}.SideEffectsType`,
+                                    propertyValues: [
+                                        {
+                                            name: 'TargetProperties',
+                                            value: {
+                                                type: 'Collection',
+                                                // AVT also allows plain string values even though it doesn't match types
+                                                // https://github.com/SAP/open-ux-odata/blob/c499009b388d2fe8d94762f619a33998491b4e68/packages/edmx-parser/src/parser.ts#L708-L710
+                                                Collection: [
+                                                    '_it/dummyTargetPropertyPath'
+                                                ] as unknown as StringExpression[]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        uri: files.annotations
                     }
                 ]
             });

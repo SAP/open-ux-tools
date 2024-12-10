@@ -1,5 +1,66 @@
 # @sap-ux/adp-tooling
 
+## 0.12.94
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.10
+
+## 0.12.93
+
+### Patch Changes
+
+-   Updated dependencies [727fd86]
+    -   @sap-ux/axios-extension@1.17.7
+    -   @sap-ux/system-access@0.5.22
+
+## 0.12.92
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/axios-extension@1.17.6
+    -   @sap-ux/system-access@0.5.21
+    -   @sap-ux/inquirer-common@0.5.9
+
+## 0.12.91
+
+### Patch Changes
+
+-   Updated dependencies [307706e]
+    -   @sap-ux/inquirer-common@0.5.8
+
+## 0.12.90
+
+### Patch Changes
+
+-   3805f2e: add request options to manifest-service
+
+## 0.12.89
+
+### Patch Changes
+
+-   Updated dependencies [2359524]
+    -   @sap-ux/inquirer-common@0.5.7
+    -   @sap-ux/btp-utils@0.17.1
+    -   @sap-ux/axios-extension@1.17.6
+    -   @sap-ux/system-access@0.5.21
+
+## 0.12.88
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.17.5
+-   @sap-ux/inquirer-common@0.5.6
+-   @sap-ux/system-access@0.5.20
+
+## 0.12.87
+
+### Patch Changes
+
+-   14163cd: Update deploy scripts and ui5.yaml with latest ui5 builder configurations
+
 ## 0.12.86
 
 ### Patch Changes

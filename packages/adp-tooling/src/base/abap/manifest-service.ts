@@ -2,7 +2,13 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AdpPreviewConfig, DescriptorVariant } from '../../types';
 import ZipFile from 'adm-zip';
-import { isAxiosError, type AbapServiceProvider, type Ui5AppInfoContent } from '@sap-ux/axios-extension';
+import type {
+    AbapServiceProvider,
+    Ui5AppInfoContent,
+    AxiosRequestConfig,
+    ProviderConfiguration
+} from '@sap-ux/axios-extension';
+import { isAxiosError } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getWebappFiles } from '../helper';
 
@@ -31,12 +37,18 @@ export class ManifestService {
      *
      * @param adpConfig - The ADP preview configuration.
      * @param logger - The logger instance.
+     * @param requestOptions - Optional configuration options for the Axios request, such as headers, timeout, and base URL
      * @returns A promise that resolves to an instance of ManifestService.
      */
-    private static async init(adpConfig: AdpPreviewConfig, logger: ToolsLogger): Promise<ManifestService> {
+    private static async init(
+        adpConfig: AdpPreviewConfig,
+        logger: ToolsLogger,
+        requestOptions?: AxiosRequestConfig & Partial<ProviderConfiguration>
+    ): Promise<ManifestService> {
         const provider = await createAbapServiceProvider(
             adpConfig.target,
             {
+                ...requestOptions,
                 ignoreCertErrors: adpConfig.ignoreCertErrors ?? false
             },
             true,
@@ -51,14 +63,16 @@ export class ManifestService {
      * @param appId - The application ID.
      * @param adpConfig - The ADP preview configuration.
      * @param logger - The logger instance.
+     * @param requestOptions - Optional configuration options for the Axios request, such as headers, timeout, and base URL
      * @returns A promise that resolves to an instance of ManifestService.
      */
     public static async initBaseManifest(
         appId: string,
         adpConfig: AdpPreviewConfig,
-        logger: ToolsLogger
+        logger: ToolsLogger,
+        requestOptions?: AxiosRequestConfig & Partial<ProviderConfiguration>
     ): Promise<ManifestService> {
-        const manifestService = await this.init(adpConfig, logger);
+        const manifestService = await this.init(adpConfig, logger, requestOptions);
         await manifestService.fetchBaseManifest(appId);
         return manifestService;
     }
@@ -70,15 +84,17 @@ export class ManifestService {
      * @param variant - The descriptor variant.
      * @param adpConfig - The ADP preview configuration.
      * @param logger - The logger instance.
+     * @param requestOptions - Optional configuration options for the Axios request, such as headers, timeout, and base URL
      * @returns A promise that resolves to an instance of ManifestService.
      */
     public static async initMergedManifest(
         basePath: string,
         variant: DescriptorVariant,
         adpConfig: AdpPreviewConfig,
-        logger: ToolsLogger
+        logger: ToolsLogger,
+        requestOptions?: AxiosRequestConfig & Partial<ProviderConfiguration>
     ): Promise<ManifestService> {
-        const manifestService = await this.init(adpConfig, logger);
+        const manifestService = await this.init(adpConfig, logger, requestOptions);
         await manifestService.fetchMergedManifest(basePath, variant.id);
         await manifestService.fetchAppInfo(variant.reference);
         return manifestService;

@@ -1,5 +1,45 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.8.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.10
+
+## 0.8.8
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/inquirer-common@0.5.9
+
+## 0.8.7
+
+### Patch Changes
+
+-   b67b17d: Fixes non-loading texts from nested dependency
+
+## 0.8.6
+
+### Patch Changes
+
+-   Updated dependencies [307706e]
+    -   @sap-ux/inquirer-common@0.5.8
+
+## 0.8.5
+
+### Patch Changes
+
+-   Updated dependencies [2359524]
+    -   @sap-ux/inquirer-common@0.5.7
+
+## 0.8.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.6
+
 ## 0.8.3
 
 ### Patch Changes

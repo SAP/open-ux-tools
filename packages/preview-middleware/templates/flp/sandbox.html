@@ -44,9 +44,8 @@
         window["data-open-ux-preview-basePath"] = "<%- basePath %>";
     </script>
 
-    <script src="<%- basePath %>/preview/client/flp/bootstrap.js" id="preview-bootstrap"></script>
-    <script id="sap-ushell-bootstrap"></script>
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
+    <script src="<%- basePath %>/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="<%- basePath %>/resources/sap-ui-core.js"
         data-sap-ui-libs="<%- ui5.libs %>"
