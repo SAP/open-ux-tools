@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { PromptObject } from 'prompts';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { lt, coerce } from 'semver';
+import { satisfies } from 'semver';
 
 /**
  * Check if the version of the given package is lower than the minimal version.
@@ -21,13 +21,11 @@ function isLowerThanMinimalVersion(
     minVersionInfo: string,
     mandatory: boolean = true
 ): boolean {
-    const versionInfo = coerce(
-        packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName]
-    );
+    const versionInfo = packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName];
     if (!versionInfo) {
         return mandatory;
     }
-    return lt(versionInfo, minVersionInfo);
+    return !satisfies(minVersionInfo, versionInfo);
 }
 
 /**
