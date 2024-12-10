@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.7.14
+
+### Patch Changes
+
+-   1bb4d48: adds new module @sap-ux/abap-deploy-config-sub-generator
+
 ## 0.7.13
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.68
+
+### Patch Changes
+
+-   1bb4d48: adds new module @sap-ux/abap-deploy-config-sub-generator
+
 ## 0.0.67
 
 ### Patch Changes
