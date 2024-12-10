@@ -10,6 +10,7 @@ import {
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
 import { validateAdpProject } from '../../validation/validation';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 let loginAttempts = 3;
 
@@ -42,8 +43,16 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         }
         await validateAdpProject(basePath);
         const variant = getVariant(basePath);
-        const adpConfig = await getAdpConfig(basePath, yamlPath);
-        const manifestService = await ManifestService.initBaseManifest(variant.reference, adpConfig, logger);
+        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
+        const provider = await createAbapServiceProvider(
+            target,
+            {
+                ignoreCertErrors
+            },
+            true,
+            logger
+        );
+        const manifestService = await ManifestService.initBaseManifest(provider, variant.reference, logger);
         const dataSources = manifestService.getManifestDataSources();
         const answers = await promptYUIQuestions(getPromptsForChangeDataSource(dataSources), false);
 

@@ -1,7 +1,6 @@
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { Store } from 'mem-fs';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Editor, create } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import { Command } from 'commander';
 import { addAnnotationsToOdataCommand } from '../../../../src/cli/add/annotations-to-odata';
 import * as tracer from '../../../../src/tracing/trace';
@@ -20,6 +19,7 @@ const descriptorVariant = JSON.parse(
 
 jest.mock('prompts');
 jest.mock('@sap-ux/adp-tooling');
+jest.mock('@sap-ux/system-access');
 
 const mockDataSources = {
     'annotation': {
