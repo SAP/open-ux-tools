@@ -339,11 +339,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     private onSplitterResize(index: number, position: number): boolean {
         const resizeSections = position !== 0 ? this.resizeSections : [];
         const totalSize = this.rootSize;
-        let left = 0;
-        for (let i = 0; i < index; i++) {
-            const prevSession = resizeSections[i];
-            left += prevSession ? prevSession.size : 0;
-        }
+        let left = this.getSiblingsSize(resizeSections, 0, index);
         for (let i = 0; i < index; i++) {
             if (this.state.sizes?.[i]) {
                 this.resizeSections[i].section = this.state.sizes[i];
@@ -777,15 +773,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 percentage: false
             };
             const current = sizes[i];
-            // ToDo
-            let right = 0;
-            for (let j = i + 1; j < sizes.length; j++) {
-                const next = sizes[i + 1];
-                if (next.size) {
-                    right += next.size;
-                }
-            }
-
+            const right = this.getSiblingsSize(sizes, i + 1, sizes.length);
             if (i > 0) {
                 sectionSize.size = current.size;
                 sectionSize.start = undefined;
@@ -880,11 +868,28 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         for (let i = 0; i < index; i++) {
             reservedSize += resizeSections[i].size;
         }
-
-        // let size = 0;
         for (let i = index + 1; i < resizeSections.length; i++) {
             reservedSize += this.getMinSectionSize(i);
         }
         return mainSize - reservedSize;
+    }
+
+    /**
+     * Calculates the total size of sibling elements within a specified range.
+     *
+     * @param sizes An array of objects, each containing 'size` property.
+     * @param start The starting index (inclusive) of the range.
+     * @param end The ending index (exclusive) of the range.
+     * @returns The sum of the sibling sizes for the specified range.
+     */
+    private getSiblingsSize(sizes: Array<{ size?: number }>, start: number, end: number): number {
+        let size = 0;
+        for (let j = start; j < end; j++) {
+            const next = sizes[j];
+            if (next.size) {
+                size += next.size;
+            }
+        }
+        return size;
     }
 }
