@@ -1,9 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
+import { readdirSync, readFileSync } from 'fs';
 import { join, isAbsolute, relative } from 'path';
-import { existsSync, readdirSync, readFileSync } from 'fs';
 
 import { UI5Config } from '@sap-ux/ui5-config';
-import { FileName, getWebappPath } from '@sap-ux/project-access';
 
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 
@@ -26,24 +25,6 @@ export function getVariant(basePath: string): DescriptorVariant {
  */
 export function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor) {
     fs.writeJSON(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant);
-}
-
-/**
- * Determines whether the project at the given base path is an Adaptation Project (ADP).
- *
- * @param {string} basePath - The base path to the project.
- * @returns {Promise<boolean>} A promise that resolves to true if the project is an ADP project, or false otherwise.
- * @throws {Error} If the project type cannot be determined.
- */
-export async function isAdpProject(basePath: string): Promise<boolean> {
-    const manifestPath = await getWebappPath(basePath);
-    if (existsSync(join(manifestPath, FileName.Manifest))) {
-        return false;
-    } else if (existsSync(join(manifestPath, FileName.ManifestAppDescrVar))) {
-        return true;
-    }
-
-    throw new Error('Project type could not be determined');
 }
 
 /**

@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { existsSync, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import type { create, Editor } from 'mem-fs-editor';
 
 import { UI5Config } from '@sap-ux/ui5-config';
@@ -10,12 +10,10 @@ import {
     getVariant,
     getAdpConfig,
     getWebappFiles,
-    isAdpProject,
     flpConfigurationExists,
     updateVariant
 } from '../../../src/base/helper';
 
-const existsSyncMock = existsSync as jest.Mock;
 const readFileSyncMock = readFileSync as jest.Mock;
 
 jest.mock('fs', () => {
@@ -66,41 +64,6 @@ describe('helper', () => {
                 join(basePath, 'webapp', 'manifest.appdescr_variant'),
                 mockVariant
             );
-        });
-    });
-
-    describe('isAdpProject', () => {
-        const manifestPath = `${basePath}/webapp/${FileName.Manifest}`;
-        const appDescrPath = `${basePath}/webapp/${FileName.ManifestAppDescrVar}`;
-
-        beforeEach(() => {
-            jest.clearAllMocks();
-        });
-
-        it('should return false if manifest.json exists', async () => {
-            existsSyncMock.mockImplementation((path) => path === manifestPath);
-
-            const result = await isAdpProject(basePath);
-
-            expect(result).toBe(false);
-            expect(existsSyncMock).toHaveBeenCalledWith(manifestPath);
-        });
-
-        it('should return true if manifest.appdescr_variant exists', async () => {
-            existsSyncMock.mockImplementation((path) => path === appDescrPath);
-
-            const result = await isAdpProject(basePath);
-
-            expect(result).toBe(true);
-            expect(existsSyncMock).toHaveBeenCalledWith(appDescrPath);
-        });
-
-        it('should throw an error if neither file exists', async () => {
-            existsSyncMock.mockReturnValue(false);
-
-            await expect(isAdpProject(basePath)).rejects.toThrow('Project type could not be determined');
-            expect(existsSyncMock).toHaveBeenCalledWith(manifestPath);
-            expect(existsSyncMock).toHaveBeenCalledWith(appDescrPath);
         });
     });
 

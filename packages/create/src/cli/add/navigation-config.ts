@@ -10,12 +10,11 @@ import {
     getInboundsFromManifest,
     getRegistrationIdFromManifest,
     getVariant,
-    isAdpProject,
     ManifestService
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { FileName } from '@sap-ux/project-access';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
+import { FileName, getAppType } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
@@ -58,7 +57,8 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
         logger.debug(`Called add inbound navigation-config for path '${basePath}', simulate is '${simulate}'`);
         await validateBasePath(basePath);
 
-        const isAdp = await isAdpProject(basePath);
+        const appType = await getAppType(basePath);
+        const isAdp = appType === 'Fiori Adaptation';
 
         if (isAdp && flpConfigurationExists(basePath)) {
             logger.info('FLP Configuration already exists.');

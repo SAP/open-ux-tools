@@ -6,10 +6,10 @@ import type { Editor, create } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import { TenantType } from '@sap-ux/axios-extension';
-import type { Manifest } from '@sap-ux/project-access';
 import * as appConfigWriter from '@sap-ux/app-config-writer';
 import * as flpConfigInquirer from '@sap-ux/flp-config-inquirer';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { getAppType, type Manifest } from '@sap-ux/project-access';
 
 import * as common from '../../../../src/common';
 import * as tracer from '../../../../src/tracing/trace';
@@ -33,7 +33,6 @@ jest.mock('mem-fs-editor', () => {
 
 jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
-    isAdpProject: jest.fn(),
     flpConfigurationExists: jest.fn(),
     getAdpConfig: jest.fn(),
     getVariant: jest.fn(),
@@ -42,6 +41,11 @@ jest.mock('@sap-ux/adp-tooling', () => ({
 
 jest.mock('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn()
+}));
+
+jest.mock('@sap-ux/project-access', () => ({
+    ...jest.requireActual('@sap-ux/project-access'),
+    getAppType: jest.fn()
 }));
 
 jest.mock('@sap-ux/app-config-writer', () => ({
@@ -55,11 +59,11 @@ jest.mock('@sap-ux/flp-config-inquirer', () => ({
     getPrompts: jest.fn()
 }));
 
+const getAppTypeMock = getAppType as jest.Mock;
 const getVariantMock = adpTooling.getVariant as jest.Mock;
-const isAdpProjectMock = adpTooling.isAdpProject as jest.Mock;
 const getAdpConfigMock = adpTooling.getAdpConfig as jest.Mock;
-const flpConfigurationExistsMock = adpTooling.flpConfigurationExists as jest.Mock;
 const createAbapServiceProviderMock = createAbapServiceProvider as jest.Mock;
+const flpConfigurationExistsMock = adpTooling.flpConfigurationExists as jest.Mock;
 
 const flpConfigAnswers = {
     semanticObject: 'so1',
@@ -148,7 +152,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
     });
 
     test('Test add inbound-navigation reports error', async () => {
-        isAdpProjectMock.mockResolvedValue(false);
+        getAppTypeMock.mockResolvedValue('SAP Fiori elements');
         // Test execution
         const command = new Command('add');
         addInboundNavigationConfigCommand(command);
@@ -172,7 +176,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
     });
 
     test('Test add inbound-navigation calls generate when valid config is returned by prompting', async () => {
-        isAdpProjectMock.mockResolvedValue(false);
+        getAppTypeMock.mockResolvedValue('SAP Fiori elements');
 
         // Test execution
         const command = new Command('add');
@@ -192,7 +196,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
     });
 
     test('Test add inbound-navigation returns and logs when config is undefined', async () => {
-        isAdpProjectMock.mockResolvedValue(false);
+        getAppTypeMock.mockResolvedValue('SAP Fiori elements');
         jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue({ ...flpConfigAnswers, overwrite: false });
 
         // Test execution
@@ -211,7 +215,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
     });
 
     test('Test add inbound-navigation with ADP project where FLP configuration already exists', async () => {
-        isAdpProjectMock.mockResolvedValue(true);
+        getAppTypeMock.mockResolvedValue('Fiori Adaptation');
         flpConfigurationExistsMock.mockReturnValue(true);
 
         // Test execution
@@ -227,7 +231,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
     });
 
     test('Test add inbound-navigation with ADP project where FLP configuration does not exist', async () => {
-        isAdpProjectMock.mockResolvedValue(true);
+        getAppTypeMock.mockResolvedValue('Fiori Adaptation');
         flpConfigurationExistsMock.mockReturnValue(false);
 
         getVariantMock.mockReturnValue({
@@ -267,7 +271,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
     });
 
     test('Test add inbound-navigation with ADP project but not S/4HANA Cloud system', async () => {
-        isAdpProjectMock.mockResolvedValue(true);
+        getAppTypeMock.mockResolvedValue('Fiori Adaptation');
         flpConfigurationExistsMock.mockReturnValue(false);
 
         getVariantMock.mockReturnValue({
@@ -302,7 +306,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
     });
 
     test('Test add inbound-navigation with ADP project where getAdpConfig throws an error', async () => {
-        isAdpProjectMock.mockResolvedValue(true);
+        getAppTypeMock.mockResolvedValue('Fiori Adaptation');
         flpConfigurationExistsMock.mockReturnValue(false);
         getAdpConfigMock.mockRejectedValue(new Error('Failed to get ADP config'));
 
