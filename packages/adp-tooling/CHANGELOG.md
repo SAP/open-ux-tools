@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 0.12.95
+
+### Patch Changes
+
+-   0c64478: feat: Enhance extracted FLP prompts to support ADP scenario
+-   Updated dependencies [0c64478]
+    -   @sap-ux/inquirer-common@0.5.11
+
 ## 0.12.94
 
 ### Patch Changes

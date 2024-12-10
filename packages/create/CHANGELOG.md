@@ -1,5 +1,21 @@
 # @sap-ux/create
 
+## 0.11.0
+
+### Minor Changes
+
+-   0c64478: feat: Enhance extracted FLP prompts to support ADP scenario
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/flp-config-inquirer@0.2.0
+    -   @sap-ux/adp-tooling@0.12.95
+    -   @sap-ux/abap-deploy-config-inquirer@1.1.10
+    -   @sap-ux/preview-middleware@0.16.147
+    -   @sap-ux/cap-config-writer@0.7.64
+    -   @sap-ux/app-config-writer@0.5.5
+
 ## 0.10.12
 
 ### Patch Changes
