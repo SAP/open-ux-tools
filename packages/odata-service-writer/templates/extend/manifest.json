@@ -10,13 +10,12 @@
                         <% if (annotations.length) { %>
                             <% annotations.forEach(function(annotation, index) { %>
                                 <% if (annotation.technicalName) { %>
-                                    "<%= annotation.name %>"<% if (index < annotations.length - 1) { %>,<% } %>
+                                    "<%= annotation.name %>"<% if (index < annotations.length - 1 || locals.localAnnotationsName) { %>,<% } %>
                                 <% } %>
                             <% }); %>
                         <% } else if (annotations.technicalName) { %>
-                            "<%= annotations.name %>"
+                            "<%= annotations.name %>"<% if (locals.localAnnotationsName) {%>,<%}%><% } %>
                         <% } %>
-                    <% if (locals.localAnnotationsName) {%>,<%}%><% } %>
                     <% if (locals.localAnnotationsName) { %>
                         "<%- localAnnotationsName %>"
                     <% } %>

@@ -10,6 +10,7 @@ import { expectedEdmxManifest } from '../test-data/manifest-json/edmx-manifest';
 import { expectedEdmxManifestMultipleAnnotations } from '../test-data/manifest-json/edmx-manifest-multiple-annotations';
 import { expectedEdmxManifestMultipleServices } from '../test-data/manifest-json/edmx-manifest-multiple-services';
 import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest';
+import { expectedEdmxManifestLocalAnnotation } from '../test-data/manifest-json/edmx-manifest-local-annotation';
 import type { Package } from '@sap-ux/project-access';
 
 jest.mock('ejs', () => ({
@@ -111,6 +112,41 @@ describe('updates', () => {
             await updateManifest('./', service, fs, join(__dirname, '../../templates'));
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedEdmxManifest);
+        });
+
+        test('Ensure manifest updates are updated as expected as in edmx projects with local annotation', async () => {
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest',
+                    dataSources: {
+                        'mainService': {
+                            type: 'OData'
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    models: {
+                        '': {
+                            dataSource: 'mainService'
+                        }
+                    }
+                }
+            };
+            const service: OdataService = {
+                version: OdataVersion.v2,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path',
+                type: ServiceType.EDMX,
+                annotations: [], // No remote annotations
+                localAnnotationsName: 'localTest' // Local annotation
+            };
+            fs.writeJSON('./webapp/manifest.json', testManifest);
+            // Call updateManifest
+            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            const manifestJson = fs.readJSON('./webapp/manifest.json');
+            expect(manifestJson).toEqual(expectedEdmxManifestLocalAnnotation);
         });
 
         test('Ensure manifest updates are updated as expected as in edmx projects with multiple annotations', async () => {
