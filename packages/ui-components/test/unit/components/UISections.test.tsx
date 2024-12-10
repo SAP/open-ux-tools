@@ -411,9 +411,41 @@ describe('<Sections />', () => {
                             right: '0px'
                         }
                     }
+                },
+                {
+                    name: 'Try move last section onleft when middle section is minimal size',
+                    sizes: {
+                        sizes: [1000, 1000, 1000],
+                        minSectionSize: [200, 1000, 1000]
+                    },
+                    move: {
+                        index: 1,
+                        start: 2000,
+                        end: 100
+                    },
+                    result: {
+                        first: {
+                            left: '0px',
+                            right: '2000px'
+                        },
+                        last: {
+                            left: '2000px',
+                            right: '0px'
+                        },
+                        middle: {
+                            left: '',
+                            right: ''
+                        }
+                    }
                 }
             ];
-            test.each(testCases)('$name', ({ move, result }) => {
+            test.each(testCases)('$name', ({ move, result, sizes }) => {
+                if (sizes) {
+                    wrapper.setProps({
+                        sizes: [1000, 1000, 1000],
+                        minSectionSize: [200, 1000, 1000]
+                    });
+                }
                 simulateSplitterResize(wrapper, move.start, move.end, move.index);
                 const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
                 const middleSection: HTMLElement = wrapper.find('.sections__item').at(1).getDOMNode();

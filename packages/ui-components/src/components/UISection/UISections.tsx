@@ -351,6 +351,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             const maxSectioSize = this.geMaxSectionSize(i, minSectionSize, index);
             if (minSectionSize === maxSectioSize) {
                 // Ignore resize - section is not resizable
+                left += minSectionSize;
                 continue;
             }
             let newSize = resizeSection.size;
