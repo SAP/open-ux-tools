@@ -29,6 +29,7 @@ describe('FLP Configuration Functions', () => {
         title: 'new_title',
         subTitle: 'new_subTitle',
         inboundId: 'displayBank',
+        additionalParameters: 'param1=value1&param2=value2',
         addInboundId: false
     } as InternalInboundNavigation;
 

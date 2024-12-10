@@ -147,12 +147,12 @@ describe('advanced prompts', () => {
 
             expect(prompt).toEqual({
                 type: 'editor',
-                name: promptNames.parameterString,
-                message: t('prompts.parameterString'),
+                name: promptNames.additionalParameters,
+                message: t('prompts.additionalParameters'),
                 validate: expect.any(Function),
                 when: true,
                 guiOptions: {
-                    hint: t('tooltips.parameterString'),
+                    hint: t('tooltips.additionalParameters'),
                     mandatory: false
                 }
             });

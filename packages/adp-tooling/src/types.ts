@@ -102,8 +102,8 @@ export interface NewInboundNavigation {
     semanticObject: string;
     /** Operations which can be performed on a semantic object. */
     action: string;
-    //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
-    additionalParameters?: object;
+    /** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+    additionalParameters?: string;
     /** Title associated with the inbound navigation. */
     title: string;
     /** Optional: Subtitle associated with the inbound navigation. */
@@ -242,7 +242,7 @@ export type ParameterRules = {
      * @param {string} param - param string
      * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
      */
-    shouldHavеFiltertValue(param: string): ParamCheck;
+    shouldHavеFilteredValue(param: string): ParamCheck;
     /**
      * Function that checks whether parameter has rename to value, e.g param1=>value
      *

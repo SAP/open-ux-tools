@@ -96,40 +96,59 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
 }
 
 /**
- * Retrieves the project's manifest.
+ * Retrieves the project's manifest file, handling both Fiori and Adaptation project scenarios.
  *
  * @param {string} basePath - The base path to the project.
  * @param {boolean} isAdp - Indicates whether the project is an ADP project.
  * @param {Editor} fs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger instance.
- * @returns {Promise<Manifest>} A promise that resolves to the manifest.
+ * @returns {Promise<Manifest>} The manifest file content.
+ * @throws {Error} If the project is not CloudReady or the manifest cannot be retrieved.
  */
-async function getManifest(basePath: string, isAdp: boolean, fs: Editor, logger: ToolsLogger): Promise<Manifest> {
-    let manifest: Manifest;
-    if (!isAdp) {
-        manifest = (await readManifest(basePath, fs))?.manifest;
-    } else {
-        const variant = getVariant(basePath);
-        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
-        const provider = await createAbapServiceProvider(
-            target,
-            {
-                ignoreCertErrors
-            },
-            true,
-            logger
-        );
+export async function getManifest(
+    basePath: string,
+    isAdp: boolean,
+    fs: Editor,
+    logger: ToolsLogger
+): Promise<Manifest> {
+    if (isAdp) {
+        return retrieveMergedManifest(basePath, logger);
+    }
+    return retrieveManifest(basePath, fs);
+}
 
-        if (!(await isCloudReady(provider))) {
-            throw new Error('Command is only available for CloudReady applications.');
-        }
+/**
+ * Retrieves the manifest for a Fiori project.
+ *
+ * @param {string} basePath - The base path to the project.
+ * @param {Editor} fs - The mem-fs editor instance.
+ * @returns {Promise<Manifest>} The base project manifest.
+ */
+async function retrieveManifest(basePath: string, fs: Editor): Promise<Manifest> {
+    const { manifest } = await readManifest(basePath, fs);
+    return manifest;
+}
 
-        const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, logger);
+/**
+ * Retrieves the manifest for an Adaptation Project (ADP).
+ *
+ * @param {string} basePath - The base path to the ADP project.
+ * @param {ToolsLogger} logger - The logger instance.
+ * @returns {Promise<Manifest>} The merged manifest for the ADP project.
+ * @throws {Error} If the project is not CloudReady.
+ */
+async function retrieveMergedManifest(basePath: string, logger: ToolsLogger): Promise<Manifest> {
+    const variant = getVariant(basePath);
+    const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
 
-        manifest = manifestService.getManifest();
+    const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
+
+    if (!(await isCloudReady(provider))) {
+        throw new Error('Command is only available for CloudReady applications.');
     }
 
-    return manifest;
+    const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, logger);
+    return manifestService.getManifest();
 }
 
 /**
@@ -162,7 +181,7 @@ async function getUserConfig(
     if (!isAdp) {
         promptOptions = {
             inboundId: { hide: true },
-            parameterString: { hide: true },
+            additionalParameters: { hide: true },
             createAnotherInbound: { hide: true },
             emptyInboundsInfo: { hide: true }
         };
