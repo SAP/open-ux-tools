@@ -32,9 +32,10 @@ export interface ODataServiceExtension {
 /**
  * Parse a JSON based OData response and extract the content from the OData structure.
  *
+ * @param includeV4ControlData unless specified only the value of the parsed v4 odata response is returned, otherwise all additional data is included e.g. `@odata.nextLink`
  * @returns an object of the provided type
  */
-function parseODataResponse<T>(): T {
+function parseODataResponse<T>(includeV4ControlData = false): T {
     const data = this.data ? JSON.parse(this.data) : {};
     if (data.d) {
         // v2
@@ -43,7 +44,7 @@ function parseODataResponse<T>(): T {
         } else {
             return data.d as T;
         }
-    } else if (data['@odata.context']) {
+    } else if (!includeV4ControlData && data['@odata.context']) {
         // v4
         if (data.value) {
             return data.value as T;
@@ -110,22 +111,29 @@ export class ODataService extends Axios implements ODataServiceExtension {
      *
      * @param url relative url to the service
      * @param config additional axios request config
+     * @param includeV4ControlData include the control information that is not part of the odata value but may be required e.g. `@odata.nextLink`
      * @returns a response enhanced with an OData parse method
      */
     public async get<T = any, R = ODataResponse<T>, D = any>(
         url: string,
-        config: AxiosRequestConfig<D> = {}
+        config: AxiosRequestConfig<D> = {},
+        includeV4ControlData = false
     ): Promise<R> {
-        // request json if not otherwise specified
-        if (config.params?.['$format'] === undefined && !config.headers?.Accept) {
+        // AxiosRequestConfig `params` property supports plain object or URLSearchParams
+        if (config.params instanceof URLSearchParams && !config.params.has('$format') && !config.headers?.Accept) {
+            config.params.set('$format', 'json');
+            config.headers = config.headers ?? {};
+            config.headers.Accept = 'application/json';
+        } else if (config.params?.['$format'] === undefined && !config.headers?.Accept) {
             config.params = config.params ?? {};
             config.params['$format'] = 'json';
             config.headers = config.headers ?? {};
             config.headers.Accept = 'application/json';
         }
         const response = await super.get<T, ODataResponse<T>>(url, config);
-        if (response.data && config.params?.['$format'] === 'json') {
-            response.odata = parseODataResponse.bind(response);
+        const contentType = response.headers['content-type'] ?? response.headers['Content-Type'];
+        if (response.data && (contentType?.includes('application/json') || config.params?.['$format'] === 'json')) {
+            response.odata = parseODataResponse.bind(response, includeV4ControlData);
         }
         return response as any;
     }
