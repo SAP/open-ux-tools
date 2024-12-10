@@ -1,5 +1,25 @@
 # @sap-ux/inquirer-common
 
+## 0.5.12
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.48
+-   @sap-ux/fiori-generator-shared@0.7.15
+
+## 0.5.11
+
+### Patch Changes
+
+-   0c64478: feat: Enhance extracted FLP prompts to support ADP scenario
+
+## 0.5.10
+
+### Patch Changes
+
+-   Updated dependencies [1bb4d48]
+    -   @sap-ux/fiori-generator-shared@0.7.14
+
 ## 0.5.9
 
 ### Patch Changes
