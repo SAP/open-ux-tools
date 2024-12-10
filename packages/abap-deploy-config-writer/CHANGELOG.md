@@ -1,5 +1,37 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.68
+
+### Patch Changes
+
+-   1bb4d48: adds new module @sap-ux/abap-deploy-config-sub-generator
+
+## 0.0.67
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.22
+
+## 0.0.66
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/system-access@0.5.21
+
+## 0.0.65
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.21
+
+## 0.0.64
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.20
+
 ## 0.0.63
 
 ### Patch Changes

@@ -54,6 +54,11 @@ describe('findFiles', () => {
             expect(result).toEqual([join(root, 'childA/child.extension'), join(root, 'root.extension')]);
         });
 
+        test('Find files by extension, no mem-fs, no traversal', async () => {
+            const result = (await findFilesByExtension('.extension', root, [], undefined, true)).sort();
+            expect(result).toEqual([join(root, 'root.extension')]);
+        });
+
         test('Find files by extension with mem-fs', async () => {
             const fs = create(createStorage());
             const result = await findFilesByExtension('.extension', join(root, 'childA'), [], fs);

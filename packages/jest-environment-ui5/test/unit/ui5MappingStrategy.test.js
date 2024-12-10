@@ -3,9 +3,13 @@ const path = require('path');
 
 describe('Ui5 Mapping Strategy', () => {
     it('should map the files from the project to the file system', async () => {
-        const pathMappingFn = await initUi5MappingStrategy({ configPath: 'test/fixtures/ui5.yaml' });
+        const { pathMappingFn, ui5VersionInfo } = await initUi5MappingStrategy({
+            configPath: 'test/fixtures/ui5.yaml'
+        });
 
         expect(pathMappingFn).not.toBe(null);
+        ui5VersionInfo.libraries[0].version = '0.0.0'; // needed other this fail on bump :)
+        expect(ui5VersionInfo).toMatchSnapshot();
         expect(path.relative(__dirname, pathMappingFn('sap/ui/demo/todo/Component'))).toBe(
             path.relative(__dirname, path.resolve(__dirname, '../fixtures/webapp/Component.js'))
         );

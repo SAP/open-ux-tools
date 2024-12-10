@@ -1,0 +1,23 @@
+specVersion: "3.1"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: localService/index.html
+          intent:
+            object: Chicken
+            action: dance
+        test:
+          - framework: OPA5
+            path: /test/integration/opaTests.qunit.html
+          - framework: QUnit
+            path: /test/unit/unitTests.qunit.html
+          - framework: Testsuite
+        rta:
+          editors:
+            - path: preview.html

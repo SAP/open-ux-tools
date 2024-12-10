@@ -15,6 +15,7 @@ import * as projectValidators from '@sap-ux/project-input-validator';
 import * as validators from '../../../src/prompts/validators';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
+    ...jest.requireActual('@sap-ux/project-input-validator'),
     validateProjectFolder: jest.fn()
 }));
 
