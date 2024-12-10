@@ -862,7 +862,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         let size = 0;
         for (let j = start; j < end; j++) {
             const next = sizes[j];
-            if (next.size) {
+            if (next?.size) {
                 size += next.size;
             }
         }
