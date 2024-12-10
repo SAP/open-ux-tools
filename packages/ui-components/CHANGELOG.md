@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.21.4
+
+### Patch Changes
+
+-   d167a73: Enhancements to UISections: Supports resizing with three or more sections.
+
 ## 1.21.3
 
 ### Patch Changes
