@@ -300,7 +300,7 @@ async function filterAdaptations(pathMap: FileMapAndCache): Promise<AdaptationRe
         const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestAppDescrVar));
         const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
         if (projectRoot && (await fileExists(join(projectRoot, 'webapp', FileName.ManifestAppDescrVar)))) {
-            results.push({ appRoot: projectRoot, manifestAppdescrVariantPath: manifestAppDescrVar });
+            results.push({ appRoot: projectRoot, manifestAppdescrVariantPath: manifestAppDescrVar, projectRoot });
         }
     }
     return results;
