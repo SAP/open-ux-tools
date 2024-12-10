@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.24.1
+
+### Patch Changes
+
+-   0c9e896: Update existing services in a way that is required for multiple services support - service files in their respective folders.
+
 ## 0.24.0
 
 ### Minor Changes
