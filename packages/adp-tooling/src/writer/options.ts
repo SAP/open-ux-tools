@@ -18,6 +18,7 @@ import type {
     CloudCustomTaskConfig,
     CloudCustomTaskConfigTarget
 } from '../types';
+import { parseParameters } from '../common';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
@@ -275,6 +276,10 @@ function getInboundChangeContentWithNewInboundID(
     flpConfiguration: InternalInboundNavigation,
     appId: string
 ): InboundChangeContentAddInboundId {
+    const parameters = flpConfiguration?.additionalParameters
+        ? parseParameters(flpConfiguration?.additionalParameters)
+        : {};
+
     const content: InboundChangeContentAddInboundId = {
         inbound: {
             [flpConfiguration.inboundId]: {
@@ -283,7 +288,7 @@ function getInboundChangeContentWithNewInboundID(
                 title: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.title}}`,
                 signature: {
                     additionalParameters: 'allowed',
-                    parameters: flpConfiguration.additionalParameters ?? {}
+                    parameters
                 }
             }
         }

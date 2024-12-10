@@ -1,5 +1,11 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.4.40
+
+### Patch Changes
+
+-   1b3c47d: feat: Ensure UI5 2.x compliance
+
 ## 0.4.39
 
 ### Patch Changes
