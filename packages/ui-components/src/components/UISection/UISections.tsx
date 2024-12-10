@@ -348,7 +348,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             };
             const resizeSection = resizeSections[i];
             const minSectionSize = this.getMinSectionSize(i);
-            const maxSectioSize = this.geMaxSectionSize(i, minSectionSize, index);
+            const maxSectioSize = this.getMaxSectionSize(i, minSectionSize, index);
             if (minSectionSize === maxSectioSize) {
                 // Ignore resize - section is not resizable
                 left += minSectionSize;
@@ -893,7 +893,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @param splitterIndex Optional index of the splitter; if specified, the section at this index is not considered resizable.
      * @returns The maximum size the section can expand to, constrained by available space and other sections.
      */
-    private geMaxSectionSize(index: number, minSectionSize: number, splitterIndex?: number): number {
+    private getMaxSectionSize(index: number, minSectionSize: number, splitterIndex?: number): number {
         const resizeSection = this.resizeSections[index];
         if (resizeSection && index !== splitterIndex) {
             return Math.max(minSectionSize, resizeSection.maxSize);
