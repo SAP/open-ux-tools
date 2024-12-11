@@ -54,6 +54,26 @@ export async function renameDefaultSandboxes(fs: Editor, basePath: string, logge
 }
 
 /**
+ * Renames the default test suite and runner files.
+ *
+ * The default files are 'testsuite.qunit.html', 'integration/opaTests.qunit.html' and 'unit/unitTests.qunit.html' located under webapp/test.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used for the conversion
+ * @param logger logger to report info to the user
+ */
+export async function renameDefaultTestFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+    const defaultTestFilePaths = [
+        join('test', 'testsuite.qunit.html'),
+        join('test', 'integration', 'opaTests.qunit.html'),
+        join('test', 'unit', 'unitTests.qunit.html')
+    ];
+    for (const path of defaultTestFilePaths) {
+        await renameSandbox(fs, join(await getWebappPath(basePath), path), logger);
+    }
+}
+
+/**
  * Deletes the *.js and *.ts files which are no longer used for the virtual preview.
  *
  * @param fs - file system reference

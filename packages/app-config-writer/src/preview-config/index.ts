@@ -1,7 +1,7 @@
 import { checkPrerequisites, getExplicitApprovalToAdjustFiles } from './prerequisites';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { deleteNoLongerUsedFiles, renameDefaultSandboxes } from './preview-files';
+import { deleteNoLongerUsedFiles, renameDefaultSandboxes, renameDefaultTestFiles } from './preview-files';
 import { updatePreviewMiddlewareConfigs } from './ui5-yaml';
 import { updateVariantsCreationScript } from './package-json';
 import { type ToolsLogger } from '@sap-ux/logger';
@@ -40,6 +40,9 @@ export async function convertToVirtualPreview(
 
     await updatePreviewMiddlewareConfigs(fs, basePath, convertTests, logger);
     await renameDefaultSandboxes(fs, basePath, logger);
+    if (convertTests) {
+        await renameDefaultTestFiles(fs, basePath, logger);
+    }
     await deleteNoLongerUsedFiles(fs, basePath, logger);
     await updateVariantsCreationScript(fs, basePath, logger);
 
