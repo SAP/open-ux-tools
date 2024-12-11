@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.11.2
+
+### Patch Changes
+
+-   29cdac8: fix: add missing logger parameter to convert preview-config
+-   Updated dependencies [29cdac8]
+    -   @sap-ux/app-config-writer@0.5.7
+
 ## 0.11.1
 
 ### Patch Changes
