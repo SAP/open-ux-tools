@@ -177,6 +177,9 @@
       "path": "packages/project-input-validator"
     },
     {
+      "path": "packages/project-integrity"
+    },
+    {
       "path": "packages/reload-middleware"
     },
     {
