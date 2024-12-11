@@ -14,12 +14,10 @@ jest.mock('@sap-ux/btp-utils', () => ({
     listDestinations: jest.fn()
 }));
 
-jest.mock('hasbin', () => {
-    return {
-        ...(jest.requireActual('hasbin') as {}),
-        sync: jest.fn()
-    };
-});
+jest.mock('hasbin', () => ({
+    ...(jest.requireActual('hasbin') as {}),
+    sync: jest.fn()
+}));
 
 let hasSyncMock: jest.SpyInstance;
 let isAppStudioMock: jest.SpyInstance;
