@@ -42,6 +42,7 @@ export async function convertToVirtualPreview(
     await renameDefaultSandboxes(fs, basePath, logger);
     if (convertTests) {
         await renameDefaultTestFiles(fs, basePath, logger);
+        //todo: adjust ui5 config yaml file: preview-middleware.test -> add framework entry in case it does not already exist
     }
     await deleteNoLongerUsedFiles(fs, basePath, logger);
     await updateVariantsCreationScript(fs, basePath, logger);
