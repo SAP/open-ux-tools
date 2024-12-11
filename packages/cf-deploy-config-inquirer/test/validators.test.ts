@@ -10,6 +10,7 @@ import { join } from 'path';
 import type { CfAppRouterDeployConfigAnswers } from '../src/types';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 
+jest.mock('os-name');
 jest.mock('fs');
 jest.mock('../src/i18n');
 jest.mock('path');
