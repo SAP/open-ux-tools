@@ -6,18 +6,20 @@ import type { CatalogService, ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
+    type CommonPromptOptions,
     ERROR_TYPE,
     ErrorHandler,
+    extendWithOptions,
     searchChoices,
-    type ListQuestion,
-    type ValidationLink
+    type ValidationLink,
+    type YUIQuestion
 } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { OdataServicePromptOptions } from '../../../../types';
+import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types';
 import { promptNames } from '../../../../types';
-import { getDefaultChoiceIndex, getPromptHostEnvironment } from '../../../../utils';
+import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
@@ -45,20 +47,21 @@ const cliServicePromptName = 'cliServiceSelection';
 export function getSystemServiceQuestion(
     connectValidator: ConnectionValidator,
     promptNamespace: string,
-    promptOptions?: OdataServicePromptOptions
+    promptOptions?: ServiceSelectionPromptOptions
 ): Question<ServiceAnswer>[] {
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
     // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
     let previousSystemUrl: string | undefined;
     let previousClient: string | undefined;
     let previousService: ServiceAnswer | undefined;
-    const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
+    const requiredOdataVersion = promptOptions?.requiredOdataVersion;
+    const serviceSelectionPromptName = `${promptNamespace}:${promptNames.serviceSelection}`;
 
-    const systemServiceQuestion = {
+    let systemServiceQuestion = {
         when: (): boolean =>
             connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
-        name: `${promptNamespace}:${promptNames.serviceSelection}`,
-        type: promptOptions?.serviceSelection?.useAutoComplete ? 'autocomplete' : 'list',
+        name: serviceSelectionPromptName,
+        type: promptOptions?.useAutoComplete ? 'autocomplete' : 'list',
         message: () => getSelectedServiceLabel(connectValidator.connectedUserName),
         guiOptions: {
             breadcrumb: t('prompts.systemService.breadcrumb'),
@@ -124,7 +127,7 @@ export function getSystemServiceQuestion(
         ): Promise<string | boolean | ValidationLink> => {
             let serviceAnswer = service as ServiceAnswer;
             // Autocomplete passes the entire choice object as the answer, so we need to extract the value
-            if (promptOptions?.serviceSelection?.useAutoComplete && (service as ListChoiceOptions).value) {
+            if (promptOptions?.useAutoComplete && (service as ListChoiceOptions).value) {
                 serviceAnswer = (service as ListChoiceOptions).value;
             }
 
@@ -142,12 +145,24 @@ export function getSystemServiceQuestion(
             }
             return true;
         }
-    } as ListQuestion<ServiceAnswer>;
+    } as Question<ServiceAnswer>;
+
+    // Add additional messages to prompts if specified in the prompt options
+    if (promptOptions?.additionalMessages) {
+        const promptOptsToApply: Record<string, CommonPromptOptions> = {
+            [serviceSelectionPromptName]: { additionalMessages: promptOptions.additionalMessages }
+        };
+        systemServiceQuestion = extendWithOptions(
+            [systemServiceQuestion] as YUIQuestion[],
+            promptOptsToApply,
+            PromptState.odataService
+        )[0];
+    }
 
     const questions: Question<ServiceAnswer>[] = [systemServiceQuestion];
 
     // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
-    if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.serviceSelection?.useAutoComplete) {
+    if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.useAutoComplete) {
         questions.push({
             when: async (answers: Answers): Promise<boolean> => {
                 const selectedService = answers?.[`${promptNamespace}:${promptNames.serviceSelection}`];

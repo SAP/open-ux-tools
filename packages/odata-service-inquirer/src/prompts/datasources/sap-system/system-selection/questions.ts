@@ -113,7 +113,7 @@ export async function getSystemSelectionQuestions(
     // In future, make the service prompt optional by wrapping in condition `[promptOptions?.serviceSelection?.hide]`
     questions.push(
         ...withCondition(
-            getSystemServiceQuestion(connectValidator, systemSelectionPromptNamespace, promptOptions) as Question[],
+            getSystemServiceQuestion(connectValidator, systemSelectionPromptNamespace, promptOptions?.serviceSelection) as Question[],
             (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
         )
     );
