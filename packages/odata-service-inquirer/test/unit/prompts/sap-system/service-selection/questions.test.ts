@@ -180,7 +180,9 @@ describe('Test new system prompt', () => {
         ]);
 
         // The services choices should be restricted to the specified required odata version
-        systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, { requiredOdataVersion: OdataVersion.v2 });
+        systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
+            requiredOdataVersion: OdataVersion.v2
+        });
         serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
@@ -216,7 +218,9 @@ describe('Test new system prompt', () => {
         });
 
         // No odata version specific (`requiredOdataVersion`) service available
-        systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, { requiredOdataVersion: OdataVersion.v2 });
+        systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
+            requiredOdataVersion: OdataVersion.v2
+        });
         serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
@@ -469,7 +473,9 @@ describe('Test new system prompt', () => {
                 listServices: jest.fn().mockResolvedValue([serviceV4a])
             }
         };
-        const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, { useAutoComplete: true });
+        const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
+            useAutoComplete: true
+        });
         const serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
