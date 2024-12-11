@@ -7,7 +7,9 @@ const COLORS = {
     warning: 'var(--vscode-notificationsWarningIcon-foreground)',
     error: 'var( --vscode-notificationsErrorIcon-foreground)',
     info: 'var(--vscode-notificationsInfoIcon-foreground)',
-    focus: 'var(--vscode-focusBorder)'
+    focus: 'var(--vscode-focusBorder)',
+    thumbOn: 'var(--vscode-button-background)',
+    thumbOff: 'var(--vscode-button-secondaryBackground)'
 };
 
 export enum UiIcons {
@@ -1867,12 +1869,12 @@ export const icons = {
     ),
     [UiIcons.SwitchOff]: (
         <svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1L7 1" stroke="#313131" stroke-linecap="round" />
+            <path d="M1 1L7 1" stroke={COLORS.thumbOff} strokeLinecap="round" />
         </svg>
     ),
     [UiIcons.SwitchOn]: (
         <svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0.5 3.5L2.5 5.5L7.5 0.5" stroke="#0078D4" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M0.5 3.5L2.5 5.5L7.5 0.5" stroke={COLORS.thumbOn} strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     ),
     [UiIcons.Table]: (
