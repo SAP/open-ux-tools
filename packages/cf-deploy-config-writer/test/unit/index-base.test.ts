@@ -16,14 +16,15 @@ jest.mock('@sap-ux/btp-utils', () => ({
     listDestinations: jest.fn()
 }));
 
-jest.mock('hasbin', () => {
-    return {
-        ...(jest.requireActual('hasbin') as {}),
-        sync: jest.fn()
-    };
-});
+jest.mock('hasbin', () => ({
+    ...jest.requireActual('hasbin'),
+    sync: jest.fn()
+}));
 
-jest.mock('@sap/cf-tools');
+jest.mock('@sap/cf-tools', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
+    apiGetInstanceCredentials: jest.fn()
+}));
 
 let hasSyncMock: jest.SpyInstance;
 
