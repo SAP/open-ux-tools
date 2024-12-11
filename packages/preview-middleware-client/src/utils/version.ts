@@ -23,12 +23,21 @@ const minVersionInfo = {
 } as Readonly<Ui5VersionInfo>;
 
 /**
- * Retrieve the UI5 version from sap.ui.core library
+ * Retrieve the UI5 version.
+ * If no library is given, it will try to get the version from 'sap.ui.server.abap' or 'sap.ui.core'.
  *
+ * @param lib - (optional) specific library name to get the version from, e.g. 'sap.m'
  * @returns Ui5VersionInfo
  */
-export async function getUi5Version(): Promise<Ui5VersionInfo> {
-    let version = ((await VersionInfo.load({ library: 'sap.ui.core' })) as SingleVersionInfo)?.version;
+export async function getUi5Version(lib?: string): Promise<Ui5VersionInfo> {
+    let version: string | undefined;
+    const libraries = [lib, 'sap.ui.server.abap', 'sap.ui.core'].filter(Boolean);
+    for (const library of libraries) {
+        version = ((await VersionInfo.load({ library })) as SingleVersionInfo)?.version;
+        if (version) {
+            break;
+        }
+    }
     if (!version) {
         Log.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
         version = '1.121.0';
