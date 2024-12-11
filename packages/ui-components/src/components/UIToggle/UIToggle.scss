@@ -1,0 +1,16 @@
+.ms-Toggle-thumb {
+    width: 13px;
+    height: 13px;
+    .ts-icon {
+        position: relative;
+        top: -14px;
+        left: -3px;
+        &--on {
+            top: -14px;
+        }
+
+        &--off {
+            top: -16px;
+        }
+    }
+}
