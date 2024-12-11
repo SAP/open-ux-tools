@@ -10,15 +10,20 @@
                         <% if (annotations.length) { %>
                             <% annotations.forEach(function(annotation, index) { %>
                                 <% if (annotation.technicalName) { %>
-                                    "<%= annotation.name %>"<% if (index < annotations.length - 1) { %>,<% } %>
+                                    "<%= annotation.name %>"<% if (index < annotations.length - 1 || locals.localAnnotationsName && (!locals.localAnnotationsName.length || locals.localAnnotationsName.length > 0)) { %>,<% } %>
                                 <% } %>
                             <% }); %>
                         <% } else if (annotations.technicalName) { %>
-                            "<%= annotations.name %>"
+                            "<%= annotations.name %>"<% if (locals.localAnnotationsName && (!locals.localAnnotationsName.length || locals.localAnnotationsName.length > 0)) {%>,<%}%><% } %>
                         <% } %>
-                    <% if (locals.localAnnotationsName) {%>,<%}%><% } %>
-                    <% if (locals.localAnnotationsName) { %>
-                        "<%- localAnnotationsName %>"
+                    <% if (locals.localAnnotationsName && typeof localAnnotationsName !== 'undefined') { %>
+                        <% if (Array.isArray(localAnnotationsName)) { %>
+                            <% localAnnotationsName.forEach(function(localAnnotation, index) { %>
+                                "<%- localAnnotation %>"<% if (index < localAnnotationsName.length - 1){ %>,<% } %>
+                            <% }); %>
+                        <% } else if (localAnnotationsName) { %>
+                                "<%- localAnnotationsName %>"
+                        <% } %>
                     <% } %>
                     ]
                     <% if (locals.metadata) { %>,
@@ -50,14 +55,28 @@
                     }
                 <% } %>
             <% } %>
-            <% if (locals.localAnnotationsName) { %>,
-            "<%- localAnnotationsName %>": {
-                "type": "ODataAnnotation",
-                "uri": "annotations/<%- localAnnotationsName %>.xml",
-                "settings": {
-                    "localUri": "annotations/<%- localAnnotationsName %>.xml"
-                }
-            } <% } %>
+            <% if (locals.localAnnotationsName && typeof localAnnotationsName !== 'undefined') { %>,
+                <% if (locals.localAnnotationsName && typeof localAnnotationsName !== 'undefined') { %>
+                    <% if (Array.isArray(localAnnotationsName)) { %>
+                        <% localAnnotationsName.forEach(function(localAnnotation, index) { %>
+                            "<%- localAnnotation %>": {
+                                "type": "ODataAnnotation",
+                                "uri": "annotations/<%- localAnnotation %>.xml",
+                                "settings": {
+                                    "localUri": "annotations/<%- localAnnotation %>.xml"
+                                }
+                            }<% if (index < localAnnotationsName.length - 1){ %>,<% } %>
+                        <% }); %>
+                    <% } else if (localAnnotationsName) { %>
+                        "<%- localAnnotationsName %>": {
+                            "type": "ODataAnnotation",
+                            "uri": "annotations/<%- localAnnotationsName %>.xml",
+                            "settings": {
+                                "localUri": "annotations/<%- localAnnotationsName %>.xml"
+                            }
+                        } <% } %>
+                <% } %>
+            <% } %>
         }
     },
     "sap.ui5": {
