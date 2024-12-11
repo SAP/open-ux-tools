@@ -46,7 +46,7 @@
         "fast-xml-parser": "4.4.1",
         "i18next": "23.5.1",
         "inquirer-autocomplete-prompt": "2.0.1",
-        "os-name": "4.0.1"
+        "os-name": "6.0.0"
     },
     "devDependencies": {
         "@sap-ux/fiori-generator-shared": "workspace:*",
