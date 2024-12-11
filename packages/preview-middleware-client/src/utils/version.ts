@@ -31,6 +31,8 @@ const minVersionInfo = {
  */
 export async function getUi5Version(lib?: string): Promise<Ui5VersionInfo> {
     let version: string | undefined;
+    //fallback 1: sap.ui.server.abap because its always released together with SAPUI5 and thus has the same version
+    //fallback 2: sap.ui.core because its always present in a SAPUI5 application
     const libraries = [lib, 'sap.ui.server.abap', 'sap.ui.core'].filter(Boolean);
     for (const library of libraries) {
         version = ((await VersionInfo.load({ library })) as SingleVersionInfo)?.version;
