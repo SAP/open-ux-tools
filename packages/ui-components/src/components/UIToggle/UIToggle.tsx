@@ -1,10 +1,12 @@
 import React from 'react';
-
+import ReactDOM from 'react-dom';
 import type { IToggleProps, IToggleStyleProps, IToggleStyles } from '@fluentui/react';
 import { Toggle } from '@fluentui/react';
 
 import type { UIComponentMessagesProps } from '../../helper/ValidationMessage';
 import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage';
+import { UIIcon } from '../UIIcon';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 export interface UIToggleProps extends IToggleProps, UIComponentMessagesProps {
     inlineLabelLeft?: boolean;
@@ -92,6 +94,7 @@ const COLORS = {
  * @extends {React.Component<IToggleProps, {}>}
  */
 export class UIToggle extends React.Component<UIToggleProps, {}> {
+    private toggleRootRef: React.RefObject<HTMLDivElement>;
     /**
      * Initializes component properties.
      *
@@ -99,6 +102,20 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      */
     public constructor(props: UIToggleProps) {
         super(props);
+        this.toggleRootRef = React.createRef<HTMLDivElement>();
+    }
+    componentDidMount() {
+        this.replaceThumbWithIcon();
+    }
+
+    replaceThumbWithIcon() {
+        if (this.toggleRootRef.current) {
+            const thumbElement = (this.toggleRootRef.current as HTMLElement)?.querySelector('.ms-Toggle-thumb');
+
+            if (thumbElement) {
+                ReactDOM.render(<UIIcon iconName="SwitchOn" />, thumbElement);
+            }
+        }
     }
 
     /**
@@ -113,6 +130,23 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
             return inlineLabel ? 0 : 4;
         }
         return undefined;
+    }
+
+    svgToDataUri() {
+        const icon = (
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15">
+                <path
+                    fill={'#84C881'}
+                    fillRule="evenodd"
+                    d="M7.497,10.97678 C7.365,10.97478 7.239,10.92078 7.147,10.82678 L4.147,7.82678 C3.951,7.63078 3.951,7.31278 4.147,7.11678 C4.343,6.92078 4.661,6.92078 4.857,7.11678 L7.477,9.71678 L11.107,5.15678 C11.296,4.95578 11.613,4.94678 11.814,5.13678 C11.991,5.30378 12.022,5.57378 11.887,5.77678 L7.887,10.77678 C7.799,10.88778 7.668,10.95678 7.527,10.96678 L7.497,10.97678 Z M8,1 C11.86,1 15,4.14 15,8 C15,11.86 11.86,15 8,15 C4.14,15 1,11.86 1,8 C1,4.14 4.14,1 8,1 M8,0 C3.582,0 0,3.582 0,8 C0,12.418 3.582,16 8,16 C12.418,16 16,12.418 16,8 C16,3.582 12.418,0 8,0"
+                />
+            </svg>
+        );
+        // const icon = icons[UiIcons.ConfirmationCheckSymbol] as React.ReactElement;
+        const svgString = renderToStaticMarkup(icon);
+
+        console.log('svgString', icon, svgString, `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svgString)}`);
+        return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svgString)}`;
     }
 
     /**
@@ -195,7 +229,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     height: sizeInfo?.circle.height,
                     width: sizeInfo?.circle.width,
                     borderWidth: sizeInfo?.circle.borderWidth,
-                    background: COLORS.thumb.background,
+                    backgroundPosition: 'center',
                     ':hover': {
                         backgroundColor: COLORS.thumb.background
                     }
@@ -203,11 +237,16 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
             };
         };
 
-        const toogleComponent = <Toggle {...this.props} styles={styles} />;
+        const toggleComponent = (
+            <div ref={this.toggleRootRef}>
+                <Toggle {...this.props} styles={styles}></Toggle>
+            </div>
+        );
+
         return messageInfo.message ? (
-            <MessageWrapper message={messageInfo}>{toogleComponent}</MessageWrapper>
+            <MessageWrapper message={messageInfo}>{toggleComponent}</MessageWrapper>
         ) : (
-            toogleComponent
+            toggleComponent
         );
     }
 }
