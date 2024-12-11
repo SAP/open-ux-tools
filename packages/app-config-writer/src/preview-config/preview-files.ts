@@ -7,7 +7,7 @@ const renameMessage = (filename: string): string =>
     `Renamed '${filename}' to '${filename.slice(
         0,
         -5
-    )}_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://www.npmjs.com/package/preview-middleware#migration.`;
+    )}_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`;
 
 /**
  * Renames the sandbox file which is used in a given script.
@@ -49,6 +49,26 @@ export async function renameSandbox(fs: Editor, path: string, logger?: ToolsLogg
 export async function renameDefaultSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const defaultSandboxPaths = [join('test', 'flpSandbox.html'), join('test', 'flpSandboxMockserver.html')];
     for (const path of defaultSandboxPaths) {
+        await renameSandbox(fs, join(await getWebappPath(basePath), path), logger);
+    }
+}
+
+/**
+ * Renames the default test suite and runner files.
+ *
+ * The default files are 'testsuite.qunit.html', 'integration/opaTests.qunit.html' and 'unit/unitTests.qunit.html' located under webapp/test.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used for the conversion
+ * @param logger logger to report info to the user
+ */
+export async function renameDefaultTestFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+    const defaultTestFilePaths = [
+        join('test', 'testsuite.qunit.html'),
+        join('test', 'integration', 'opaTests.qunit.html'),
+        join('test', 'unit', 'unitTests.qunit.html')
+    ];
+    for (const path of defaultTestFilePaths) {
         await renameSandbox(fs, join(await getWebappPath(basePath), path), logger);
     }
 }

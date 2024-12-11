@@ -1,7 +1,7 @@
 import { checkPrerequisites, getExplicitApprovalToAdjustFiles } from './prerequisites';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { deleteNoLongerUsedFiles, renameDefaultSandboxes } from './preview-files';
+import { deleteNoLongerUsedFiles, renameDefaultSandboxes, renameDefaultTestFiles } from './preview-files';
 import { updatePreviewMiddlewareConfigs } from './ui5-yaml';
 import { updateVariantsCreationScript } from './package-json';
 import { type ToolsLogger } from '@sap-ux/logger';
@@ -14,11 +14,17 @@ import { type ToolsLogger } from '@sap-ux/logger';
  * Corresponding files which are used for the preview are renamed or deleted.
  *
  * @param basePath - base path to be used for the conversion
+ * @param convertTests - indicator if test suite and test runner should be included in the conversion (default: false)
  * @param logger logger to report info to the user
  * @param fs - file system reference
  * @returns file system reference
  */
-export async function convertToVirtualPreview(basePath: string, logger?: ToolsLogger, fs?: Editor): Promise<Editor> {
+export async function convertToVirtualPreview(
+    basePath: string,
+    convertTests: boolean = false,
+    logger?: ToolsLogger,
+    fs?: Editor
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -32,8 +38,12 @@ export async function convertToVirtualPreview(basePath: string, logger?: ToolsLo
         return fs;
     }
 
-    await updatePreviewMiddlewareConfigs(fs, basePath, logger);
+    await updatePreviewMiddlewareConfigs(fs, basePath, convertTests, logger);
     await renameDefaultSandboxes(fs, basePath, logger);
+    if (convertTests) {
+        await renameDefaultTestFiles(fs, basePath, logger);
+        //todo: adjust ui5 config yaml file: preview-middleware.test -> add framework entry in case it does not already exist
+    }
     await deleteNoLongerUsedFiles(fs, basePath, logger);
     await updateVariantsCreationScript(fs, basePath, logger);
 

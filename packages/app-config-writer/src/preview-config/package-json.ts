@@ -1,5 +1,5 @@
 import { basename, join } from 'path';
-import { extractYamlConfigFileName } from './ui5-yaml';
+import { extractYamlConfigFileName, isTestPath } from './ui5-yaml';
 import { generateVariantsConfig } from '../variants-config';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -83,20 +83,25 @@ export function extractUrlDetails(script: string): {
  *
  * @param scriptName - the name of the script from the package.json file
  * @param script - the content of the script from the package.json file
+ * @param convertTests - indicator if test suite and test runner should be included in the conversion (default: false)
  * @returns indicator if the script is valid
  */
-export function isValidPreviewScript(scriptName: string, script: string | undefined): boolean {
+export function isValidPreviewScript(
+    scriptName: string,
+    script: string | undefined,
+    convertTests: boolean = false
+): boolean {
     const isValidScriptName =
         scriptName != 'start-variants-management' && scriptName != 'start-control-property-editor';
 
     //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const startsWebServer = !!(script?.includes('ui5 serve') || script?.includes('fiori run'));
-
     const { path } = extractUrlDetails(script ?? '');
-    const opensTest = path?.includes('qunit.html');
+    const opensTest = isTestPath(path);
     const opensIndexHtml = path === 'index.html';
 
-    return isValidScriptName && startsWebServer && !opensTest && !opensIndexHtml;
+    //tests are only relevant if the conversion of test runners is excluded
+    return isValidScriptName && startsWebServer && !opensIndexHtml && (convertTests ? true : !opensTest);
 }
 
 /**
