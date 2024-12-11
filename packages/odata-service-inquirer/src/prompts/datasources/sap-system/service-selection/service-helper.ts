@@ -255,7 +255,7 @@ export async function getServiceDetails(
     PromptState.odataService.annotations = serviceResult?.annotations;
     PromptState.odataService.metadata = serviceResult?.metadata;
     PromptState.odataService.odataVersion =
-        version ?? service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4;
+        version ?? (service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4);
     PromptState.odataService.servicePath = service.servicePath;
     PromptState.odataService.origin = origin;
     PromptState.odataService.sapClient = connectionValidator.validatedClient;
