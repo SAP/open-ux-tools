@@ -25,12 +25,30 @@ describe('<UIToggle />', () => {
             {
                 name: 'Standard',
                 size: UIToggleSize.Standard,
-                expect: {}
+                expect: {
+                    margin: '0',
+                    fontSize: 13,
+                    padding: '',
+                    height: 18,
+                    width: 30,
+                    innerPadding: '0 2px',
+                    thumbHeight: 14,
+                    thumbWidth: 14
+                }
             },
             {
                 name: 'Default',
                 size: undefined,
-                expect: {}
+                expect: {
+                    margin: '0',
+                    fontSize: 13,
+                    padding: '',
+                    height: 18,
+                    width: 30,
+                    innerPadding: '0 2px',
+                    thumbHeight: 14,
+                    thumbWidth: 14
+                }
             },
             {
                 name: 'Small',
@@ -90,15 +108,15 @@ describe('<UIToggle />', () => {
                   "background": "var(--vscode-titleBar-inactiveForeground)",
                   "borderColor": "var(--vscode-contrastBorder, transparent)",
                   "borderStyle": "dashed",
-                  "height": undefined,
-                  "padding": undefined,
+                  "height": 18,
+                  "padding": "0 2px",
                   "selectors": Object {
                     ":focus::after": Object {
                       "border": "none !important",
                       "outline": "1px solid var(--vscode-focusBorder) !important",
                     },
                   },
-                  "width": undefined,
+                  "width": 30,
                 }
             `);
             expect(styles.thumb).toMatchInlineSnapshot(`
@@ -106,8 +124,8 @@ describe('<UIToggle />', () => {
                   "backgroundColor": "var(--vscode-button-foreground)",
                   "backgroundPosition": "center",
                   "borderWidth": undefined,
-                  "height": undefined,
-                  "width": undefined,
+                  "height": 14,
+                  "width": 14,
                 }
             `);
         });
@@ -132,15 +150,15 @@ describe('<UIToggle />', () => {
                   "background": "var(--vscode-button-background)",
                   "borderColor": "var(--vscode-contrastBorder, transparent)",
                   "borderStyle": "solid",
-                  "height": undefined,
-                  "padding": undefined,
+                  "height": 18,
+                  "padding": "0 2px",
                   "selectors": Object {
                     ":focus::after": Object {
                       "border": "none !important",
                       "outline": "1px solid var(--vscode-focusBorder) !important",
                     },
                   },
-                  "width": undefined,
+                  "width": 30,
                 }
             `);
             expect(styles.thumb).toMatchInlineSnapshot(`
@@ -148,8 +166,8 @@ describe('<UIToggle />', () => {
                   "backgroundColor": "var(--vscode-button-foreground)",
                   "backgroundPosition": "center",
                   "borderWidth": undefined,
-                  "height": undefined,
-                  "width": undefined,
+                  "height": 14,
+                  "width": 14,
                 }
             `);
         });
