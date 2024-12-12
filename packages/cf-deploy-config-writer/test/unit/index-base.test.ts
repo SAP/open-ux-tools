@@ -35,12 +35,11 @@ describe('CF Writer Base', () => {
         transports: [new NullTransport()]
     });
     const outputDir = join(__dirname, '../test-output', 'base');
-    let unitTestFs: Editor;
+    const unitTestFs: Editor = create(createStorage());
 
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        unitTestFs = create(createStorage());
         hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
     });
 
@@ -72,7 +71,7 @@ describe('CF Writer Base', () => {
             const mtaPath = join(outputDir, mtaId);
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(mtaPath);
-            await generateBaseConfig(
+            const localFs = await generateBaseConfig(
                 {
                     mtaPath,
                     mtaId,
@@ -82,12 +81,12 @@ describe('CF Writer Base', () => {
                         abapServiceName: 'Y11_00.0035'
                     }
                 },
-                unitTestFs,
+                undefined,
                 logger
             );
-            expect(unitTestFs.dump(mtaPath)).toMatchSnapshot();
+            expect(localFs.dump(mtaPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
-            expect(unitTestFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
+            expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
         });
 
         test('Generate deployment configs - standalone with connectivity service', async () => {
@@ -96,20 +95,20 @@ describe('CF Writer Base', () => {
             const mtaPath = join(outputDir, mtaId);
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(mtaPath);
-            await generateBaseConfig(
+            const localFs = await generateBaseConfig(
                 {
                     mtaPath,
                     mtaId,
                     routerType: RouterModuleType.Standard,
                     addConnectivityService: true
                 },
-                unitTestFs,
+                undefined,
                 logger
             );
             expect(debugSpy).toBeCalledTimes(1);
-            expect(unitTestFs.dump(mtaPath)).toMatchSnapshot();
+            expect(localFs.dump(mtaPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
-            expect(unitTestFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
+            expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
         });
     });
 
@@ -120,20 +119,20 @@ describe('CF Writer Base', () => {
             const mtaPath = join(outputDir, mtaId);
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(mtaPath);
-            await generateBaseConfig(
+            const localFs = await generateBaseConfig(
                 {
                     mtaPath,
                     mtaId,
                     mtaDescription: 'MyManagedDescription',
                     routerType: RouterModuleType.Managed
                 },
-                unitTestFs,
+                undefined,
                 logger
             );
             expect(debugSpy).toBeCalledTimes(1);
-            expect(unitTestFs.dump(mtaPath)).toMatchSnapshot();
+            expect(localFs.dump(mtaPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
-            expect(unitTestFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
+            expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
         });
     });
 
