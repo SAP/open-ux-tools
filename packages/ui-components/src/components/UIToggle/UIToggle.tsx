@@ -7,8 +7,6 @@ import type { UIComponentMessagesProps } from '../../helper/ValidationMessage';
 import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage';
 import { UIIcon } from '../UIIcon';
 
-import './UIToggle.scss';
-
 export interface UIToggleProps extends IToggleProps, UIComponentMessagesProps {
     inlineLabelLeft?: boolean;
     labelFlexGrow?: boolean;
@@ -54,6 +52,45 @@ const TOGGLE_SIZES = new Map<UIToggleSize, UIToggleSizeInfo>([
                 height: 10,
                 borderWidth: 5
             }
+        }
+    ]
+]);
+
+const getIconStyleKey = (size: UIToggleSize, isSwitchOn: boolean): string => {
+    return `${size}-${isSwitchOn ? 'on' : 'off'}`;
+};
+
+const ICON_STYLE = new Map<string, React.CSSProperties>([
+    [
+        getIconStyleKey(UIToggleSize.Standard, true),
+        {
+            position: 'relative',
+            top: -14,
+            left: -3
+        }
+    ],
+    [
+        getIconStyleKey(UIToggleSize.Standard, false),
+        {
+            position: 'relative',
+            top: -17,
+            left: -4
+        }
+    ],
+    [
+        getIconStyleKey(UIToggleSize.Small, true),
+        {
+            position: 'relative',
+            top: -15,
+            left: -3
+        }
+    ],
+    [
+        getIconStyleKey(UIToggleSize.Small, false),
+        {
+            position: 'relative',
+            top: -17,
+            left: -4
         }
     ]
 ]);
@@ -118,14 +155,15 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
     }
 
     replaceThumbWithIcon(checked?: boolean) {
-        const isSwitchOn = checked ?? this.props.defaultChecked;
+        const isSwitchOn = checked ?? this.props.defaultChecked ?? false;
         if (this.toggleRootRef.current) {
             const thumbElement = (this.toggleRootRef.current as HTMLElement)?.querySelector('.ms-Toggle-thumb');
 
             if (thumbElement) {
-                const className = isSwitchOn ? 'ts-icon--on' : 'ts-icon--off';
+                const style = ICON_STYLE.get(getIconStyleKey(this.props.size ?? UIToggleSize.Standard, isSwitchOn));
+                console.log(style);
                 ReactDOM.render(
-                    <UIIcon iconName={isSwitchOn ? 'SwitchOn' : 'SwitchOff'} className={className} />,
+                    <UIIcon iconName={isSwitchOn ? 'SwitchOn' : 'SwitchOff'} style={style} />,
                     thumbElement
                 );
             }

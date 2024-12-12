@@ -103,10 +103,8 @@ describe('<UIToggle />', () => {
             `);
             expect(styles.thumb).toMatchInlineSnapshot(`
                 Object {
-                  ":hover": Object {
-                    "backgroundColor": "var(--vscode-button-foreground)",
-                  },
-                  "background": "var(--vscode-button-foreground)",
+                  "backgroundColor": "var(--vscode-button-foreground)",
+                  "backgroundPosition": "center",
                   "borderWidth": undefined,
                   "height": undefined,
                   "width": undefined,
@@ -147,10 +145,8 @@ describe('<UIToggle />', () => {
             `);
             expect(styles.thumb).toMatchInlineSnapshot(`
                 Object {
-                  ":hover": Object {
-                    "backgroundColor": "var(--vscode-button-foreground)",
-                  },
-                  "background": "var(--vscode-button-foreground)",
+                  "backgroundColor": "var(--vscode-button-foreground)",
+                  "backgroundPosition": "center",
                   "borderWidth": undefined,
                   "height": undefined,
                   "width": undefined,
