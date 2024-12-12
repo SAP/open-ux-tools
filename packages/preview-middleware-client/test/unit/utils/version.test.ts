@@ -1,7 +1,8 @@
 import {
     getUi5Version,
     isLowerThanMinimalUi5Version,
-    getUI5VersionValidationMessage
+    getUI5VersionValidationMessage,
+    isVersionEqualOrHasNewerPatch
 } from 'open/ux/preview/client/utils/version';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 
@@ -82,12 +83,44 @@ describe('utils/version', () => {
         ).toBeFalsy();
         //returns false for minimum versions using default
         expect(isLowerThanMinimalUi5Version({ major: 1, minor: 71 })).toBeFalsy();
-        //returns false when version is empty using default
-        expect(isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toBeFalsy();
+        //throw error in case on NaN
+        expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrowError();
         //returns true for lower minor versions using default
         expect(isLowerThanMinimalUi5Version({ major: 1, minor: 70 })).toBeTruthy();
         //returns true for lower major versions using default
         expect(isLowerThanMinimalUi5Version({ major: 0, minor: 70 })).toBeTruthy();
+    });
+
+    test('test higher patch for equal UI5 version return value for different use cases', () => {
+        //returns false for higher major version using default
+        expect(isVersionEqualOrHasNewerPatch({ major: 2, minor: 0 })).toBeFalsy();
+        //returns true for higher patch version using default
+        expect(isVersionEqualOrHasNewerPatch({ major: 1, minor: 71, patch: 3 })).toBeTruthy();
+        //returns true for higher patch version
+        expect(
+            isVersionEqualOrHasNewerPatch(
+                { major: 1, minor: 124, patch: 4 },
+                { major: 1, minor: 124, patch: 3 }
+            )
+        ).toBeTruthy();
+        //returns true for same patch version
+        expect(
+            isVersionEqualOrHasNewerPatch(
+                { major: 1, minor: 124, patch: 3 },
+                { major: 1, minor: 124, patch: 3 }
+            )
+        ).toBeTruthy();
+        //returns false for lower patch version
+        expect(
+            isVersionEqualOrHasNewerPatch(
+                { major: 1, minor: 124, patch: 3 },
+                { major: 1, minor: 124, patch: 4 }
+            )
+        ).toBeFalsy();
+        //throw error in case on NaN
+        expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrowError();
+        //throw error in case on NaN
+        expect(() => isLowerThanMinimalUi5Version({ major: 1, minor: 1, patch: NaN })).toThrowError();
     });
 
     test('test validation message', () => {

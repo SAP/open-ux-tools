@@ -26,9 +26,12 @@
     "engines": {
         "node": ">=18.x"
     },
-    "dependencies": {},
+    "dependencies": {
+        "semver": "7.6.3"
+    },
     "devDependencies": {
         "@sapui5/types": "1.120.5",
+        "@types/semver": "7.5.8",
         "ui5-tooling-modules": "3.0.5",
         "@sap-ux-private/control-property-editor-common": "workspace:*",
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",

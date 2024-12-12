@@ -1,5 +1,6 @@
 import VersionInfo from 'sap/ui/VersionInfo';
 import Log from 'sap/base/Log';
+import { lt } from 'semver';
 
 type SingleVersionInfo =
     | {
@@ -21,6 +22,19 @@ const minVersionInfo = {
     major: 1,
     minor: 71
 } as Readonly<Ui5VersionInfo>;
+
+/**
+ * Check if the given version info is valid.
+ * @param versionInfo to check
+ * @throws Error if the version info is invalid
+ */
+function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
+    if(isNaN(versionInfo.major) ||
+       isNaN(versionInfo.minor) ||
+       isNaN(versionInfo.patch ?? 0)) {
+        throw new Error('Invalid version info');
+    }
+}
 
 /**
  * Retrieve the UI5 version.
@@ -57,6 +71,7 @@ export async function getUi5Version(lib?: string): Promise<Ui5VersionInfo> {
  * Checks if the given version is lower than the required minimal version.
  * @param ui5VersionInfo to check
  * @param minUi5VersionInfo to check against (default is 1.71)
+ * @throws Error if the version info is invalid
  *
  * @returns boolean
  */
@@ -64,21 +79,18 @@ export function isLowerThanMinimalUi5Version(
     ui5VersionInfo: Ui5VersionInfo,
     minUi5VersionInfo: Ui5VersionInfo = minVersionInfo
 ): boolean {
-    if (!isNaN(ui5VersionInfo.major) && !isNaN(ui5VersionInfo.minor)) {
-        if (ui5VersionInfo.major < minUi5VersionInfo.major) {
-            return true;
-        }
-        if (ui5VersionInfo.major === minUi5VersionInfo.major && ui5VersionInfo.minor < minUi5VersionInfo.minor) {
-            return true;
-        }
-    }
-    return false;
+    checkVersionInfo(ui5VersionInfo);
+    checkVersionInfo(minUi5VersionInfo);
+    const ui5VersionString = `${ui5VersionInfo.major}.${ui5VersionInfo.minor}.${ui5VersionInfo.patch ?? 0}`;
+    const minUi5VersionString = `${minUi5VersionInfo.major}.${minUi5VersionInfo.minor}.${minUi5VersionInfo.patch ?? 0}`;
+    return lt(ui5VersionString, minUi5VersionString);
 }
 
 /**
  * Checks if the given version is equal to the specified version.
  * @param ui5VersionInfo to check
  * @param targetUi5VersionInfo to check against (default is 1.71)
+ * @throws Error if the version info is invalid
  *
  * @returns boolean
  */
@@ -86,13 +98,13 @@ export function isVersionEqualOrHasNewerPatch(
     ui5VersionInfo: Ui5VersionInfo,
     targetUi5VersionInfo: Ui5VersionInfo = minVersionInfo
 ): boolean {
-    if (!isNaN(ui5VersionInfo.major) && !isNaN(ui5VersionInfo.minor)) {
-        return (
-            ui5VersionInfo.major === targetUi5VersionInfo.major &&
-            ui5VersionInfo.minor === targetUi5VersionInfo.minor &&
-            (ui5VersionInfo?.patch ?? 0) >= (targetUi5VersionInfo?.patch ?? 0));
-    }
-    return false;
+    checkVersionInfo(ui5VersionInfo);
+    checkVersionInfo(targetUi5VersionInfo);
+    return (
+        ui5VersionInfo.major === targetUi5VersionInfo.major &&
+        ui5VersionInfo.minor === targetUi5VersionInfo.minor &&
+        (ui5VersionInfo?.patch ?? 0) >= (targetUi5VersionInfo?.patch ?? 0)
+    );
 }
 
 /**
