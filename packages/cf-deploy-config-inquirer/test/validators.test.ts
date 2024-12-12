@@ -10,14 +10,21 @@ import { join } from 'path';
 import type { CfAppRouterDeployConfigAnswers } from '../src/types';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 
-jest.mock('fs');
-jest.mock('../src/i18n');
-jest.mock('path');
-jest.mock('@sap-ux/inquirer-common');
-
 const mockedExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
 const mockedT = t as jest.MockedFunction<typeof t>;
 const mockedJoin = join as jest.MockedFunction<typeof join>;
+
+jest.mock('../src/i18n');
+
+jest.mock('path', () => ({
+    ...jest.requireActual('path'),
+    join: jest.fn()
+}));
+
+jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
+    existsSync: jest.fn()
+}));
 
 describe('validateDestinationQuestion', () => {
     beforeEach(async () => {
