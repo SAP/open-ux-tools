@@ -146,10 +146,25 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onScrollToItem = this.onScrollToItem.bind(this);
         this.setFocus = this.setFocus.bind(this);
         this.onRenderIcon = this.onRenderIcon.bind(this);
+        this.updateAriaInvalid = this.updateAriaInvalid.bind(this);
 
         initializeComponentRef(this);
 
         this.state = {};
+    }
+
+    /**
+     * Called when component did initialize.
+     */
+    componentDidMount(): void {
+        this.updateAriaInvalid();
+    }
+
+    /**
+     * Called when component is rerendered.
+     */
+    componentDidUpdate(): void {
+        this.updateAriaInvalid();
     }
 
     /**
@@ -163,6 +178,18 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             this.updateHiddenOptions(nextProps.options);
         }
         return true;
+    }
+
+    /**
+     * This is a workaround for FluentUI not handling aria-invalid correctly for a ComboBox.
+     * For the time being we add logic here to set aria-invalid based on the presence of
+     * an errorMessage.
+     */
+    private updateAriaInvalid(): void {
+        const htmlInputField = this.comboboxDomRef.current?.getElementsByClassName('ms-ComboBox-Input').item(0);
+        if (htmlInputField) {
+            htmlInputField.ariaInvalid = this.props.errorMessage !== undefined ? 'true' : 'false';
+        }
     }
 
     /**
