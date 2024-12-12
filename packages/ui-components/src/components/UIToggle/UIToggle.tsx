@@ -166,7 +166,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      * Lifecycle method called immediately after a component is mounted.
      * Executes initialization logic such as DOM manipulations or fetching data.
      *
-     * @return {void} This method does not return a value.
+     * @returns {void} This method does not return a value.
      */
     componentDidMount() {
         this.replaceThumbWithIcon();
@@ -177,7 +177,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      *
      * @param {React.MouseEvent<HTMLElement>} event - The mouse event object associated with the interaction.
      * @param {boolean} [checked] - An optional parameter indicating the current state of the interaction.
-     * @return {void} This method does not return a value.
+     * @returns {void} This method does not return a value.
      */
     handleChange(event: React.MouseEvent<HTMLElement>, checked?: boolean) {
         this.replaceThumbWithIcon(checked);
@@ -188,7 +188,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      * Replaces the thumb element of a toggle switch with an icon based on the toggle's state.
      *
      * @param {boolean} [checked] Optional. Represents the state of the toggle switch. If not provided, it checks `defaultChecked` prop or defaults to `false`.
-     * @return {void} Does not return a value.
+     * @returns {void} Does not return a value.
      */
     replaceThumbWithIcon(checked?: boolean) {
         const isSwitchOn = checked ?? this.props.defaultChecked ?? false;
