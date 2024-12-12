@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.7.10
+
+### Patch Changes
+
+-   ec1dc17: Fix `additionalMessages` option not applied for system service prompt
+
 ## 0.7.9
 
 ### Patch Changes

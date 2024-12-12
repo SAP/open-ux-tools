@@ -7,9 +7,9 @@ import type {
     V4CatalogService
 } from '@sap-ux/axios-extension';
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { ChoiceOptions } from 'inquirer';
+import type { Answers, ChoiceOptions } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
@@ -17,7 +17,7 @@ import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-s
 import { getSystemServiceQuestion } from '../../../../../src/prompts/datasources/sap-system/service-selection';
 import * as serviceHelpers from '../../../../../src/prompts/datasources/sap-system/service-selection/service-helper';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
-import { promptNames } from '../../../../../src/types';
+import { OdataServiceAnswers, promptNames } from '../../../../../src/types';
 import * as utils from '../../../../../src/utils';
 import { PromptState } from '../../../../../src/utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -181,7 +181,7 @@ describe('Test new system prompt', () => {
 
         // The services choices should be restricted to the specified required odata version
         systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
-            serviceSelection: { requiredOdataVersion: OdataVersion.v2 }
+            requiredOdataVersion: OdataVersion.v2
         });
         serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
@@ -219,7 +219,7 @@ describe('Test new system prompt', () => {
 
         // No odata version specific (`requiredOdataVersion`) service available
         systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
-            serviceSelection: { requiredOdataVersion: OdataVersion.v2 }
+            requiredOdataVersion: OdataVersion.v2
         });
         serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
@@ -474,7 +474,7 @@ describe('Test new system prompt', () => {
             }
         };
         const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
-            serviceSelection: { useAutoComplete: true }
+            useAutoComplete: true
         });
         const serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
@@ -503,6 +503,34 @@ describe('Test new system prompt', () => {
         const validationResult = await (serviceSelectionPrompt?.validate as Function)(flightChoice);
         expect(validationResult).toBe(true);
         expect(getServiceDetailsSpy).toHaveBeenCalledWith(flightChoice?.value, connectionValidatorMock, undefined);
+    });
+
+    test('Should apply `additionalMessages` prompt option', async () => {
+        const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([serviceV2a])
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([])
+            }
+        };
+        const customAdditionalMsgs: PromptSeverityMessage = (input: unknown, answers: Answers | undefined) => {
+            return { message: 'Custom message', severity: Severity.information };
+        };
+        const serviceSelectionPromptOptions = { additionalMessages: customAdditionalMsgs };
+        const systemServiceQuestions = getSystemServiceQuestion(
+            connectValidator,
+            promptNamespace,
+            serviceSelectionPromptOptions
+        );
+        const serviceSelectionPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
+        );
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)()).toEqual({
+            message: 'Custom message',
+            severity: Severity.information
+        });
     });
 
     test('Should show and log error message when service validation fails', async () => {

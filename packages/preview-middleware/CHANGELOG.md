@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.149
+
+### Patch Changes
+
+-   77cf576: Load changes from workspace in Preview after deployment
+
 ## 0.16.148
 
 ### Patch Changes
