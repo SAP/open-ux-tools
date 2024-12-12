@@ -20,22 +20,39 @@ export enum UIToggleSize {
 }
 
 interface UIToggleSizeInfo {
-    width: number;
-    height: number;
-    padding: string;
-    margin: string;
+    width?: number;
+    height?: number;
+    padding?: string;
+    margin?: string;
     label: {
-        fontSize: number;
-        padding: string;
+        fontSize?: number;
+        padding?: string;
     };
     circle: {
-        width: number;
-        height: number;
-        borderWidth: number;
+        width?: number;
+        height?: number;
+        borderWidth?: number;
     };
 }
 
 const TOGGLE_SIZES = new Map<UIToggleSize, UIToggleSizeInfo>([
+    [
+        UIToggleSize.Standard,
+        {
+            width: 30,
+            height: 18,
+            padding: '0 2px',
+            margin: '0',
+            label: {
+                fontSize: 13,
+                padding: ''
+            },
+            circle: {
+                width: 14,
+                height: 14
+            }
+        }
+    ],
     [
         UIToggleSize.Small,
         {
@@ -65,16 +82,16 @@ const ICON_STYLE = new Map<string, React.CSSProperties>([
         getIconStyleKey(UIToggleSize.Standard, true),
         {
             position: 'relative',
-            top: -14,
-            left: -3
+            top: -13,
+            left: -2
         }
     ],
     [
         getIconStyleKey(UIToggleSize.Standard, false),
         {
             position: 'relative',
-            top: -17,
-            left: -4
+            top: -16,
+            left: -3
         }
     ],
     [
@@ -145,15 +162,34 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
         this.replaceThumbWithIcon = this.replaceThumbWithIcon.bind(this);
     }
 
+    /**
+     * Lifecycle method called immediately after a component is mounted.
+     * Executes initialization logic such as DOM manipulations or fetching data.
+     *
+     * @return {void} This method does not return a value.
+     */
     componentDidMount() {
         this.replaceThumbWithIcon();
     }
 
+    /**
+     * Handles the change event triggered by the user interaction.
+     *
+     * @param {React.MouseEvent<HTMLElement>} event - The mouse event object associated with the interaction.
+     * @param {boolean} [checked] - An optional parameter indicating the current state of the interaction.
+     * @return {void} This method does not return a value.
+     */
     handleChange(event: React.MouseEvent<HTMLElement>, checked?: boolean) {
         this.replaceThumbWithIcon(checked);
         this.props.onChange?.(event, checked);
     }
 
+    /**
+     * Replaces the thumb element of a toggle switch with an icon based on the toggle's state.
+     *
+     * @param {boolean} [checked] Optional. Represents the state of the toggle switch. If not provided, it checks `defaultChecked` prop or defaults to `false`.
+     * @return {void} Does not return a value.
+     */
     replaceThumbWithIcon(checked?: boolean) {
         const isSwitchOn = checked ?? this.props.defaultChecked ?? false;
         if (this.toggleRootRef.current) {
@@ -161,7 +197,6 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
 
             if (thumbElement) {
                 const style = ICON_STYLE.get(getIconStyleKey(this.props.size ?? UIToggleSize.Standard, isSwitchOn));
-                console.log(style);
                 ReactDOM.render(
                     <UIIcon iconName={isSwitchOn ? 'SwitchOn' : 'SwitchOff'} style={style} />,
                     thumbElement
