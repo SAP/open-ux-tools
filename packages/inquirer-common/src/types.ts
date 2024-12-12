@@ -54,6 +54,10 @@ export interface GuiOptions {
      * Indicate state in the left hand navigation panel in YUI
      */
     breadcrumb?: boolean | string;
+    /**
+     * Provides an option to specify type e.g 'label'
+     */
+    type?: string;
 }
 
 export type PromptSeverityMessage = (

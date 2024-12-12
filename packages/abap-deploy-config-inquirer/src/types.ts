@@ -1,6 +1,7 @@
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { AppType } from '@sap-ux/project-access';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -56,6 +57,7 @@ export enum promptNames {
     destination = 'destination',
     destinationCliSetter = 'destinationCliSetter',
     targetSystem = 'targetSystem',
+    targetSystemLabel = 'targetSystemLabel',
     targetSystemCliSetter = 'targetSystemCliSetter',
     url = 'url',
     scp = 'scp',
@@ -111,9 +113,9 @@ export type PackagePromptOptions = {
      */
     additionalValidation?: {
         /**
-         * Check if the given package is a cloud-ready package
+         * Check if the given package is appropriate to the system of the created project
          */
-        cloudPackage?: boolean;
+        shouldValidatePackageType?: boolean;
     };
 };
 
@@ -154,13 +156,18 @@ export type PackageAutocompletePromptOptions = PackagePromptOptions & {
     useAutocomplete?: boolean;
 };
 
+export type TargetSystemPromptOptions = {
+    hide?: boolean;
+};
+
 type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepoPromptOptions> &
     Record<promptNames.description, DescriptionPromptOptions> &
     Record<promptNames.packageManual, PackageManualPromptOptions> &
     Record<promptNames.transportManual, TransportManualPromptOptions> &
     Record<promptNames.overwrite, OverwritePromptOptions> &
     Record<promptNames.index, IndexPromptOptions> &
-    Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions>;
+    Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions> &
+    Record<promptNames.targetSystem, TargetSystemPromptOptions>;
 
 /**
  * The options which are common for the abap deploy config inquirer.
@@ -173,7 +180,7 @@ type AbapDeployConfigCommonInquirerOptions = {
  * The options for the abap deploy config inquirer & the prompts.
  */
 export type AbapDeployConfigPromptOptions = Partial<abapDeployConfigPromptOptions> &
-    AbapDeployConfigCommonInquirerOptions;
+    AbapDeployConfigCommonInquirerOptions & { appType?: AppType };
 
 export interface TransportAnswers {
     transportRequired?: boolean;

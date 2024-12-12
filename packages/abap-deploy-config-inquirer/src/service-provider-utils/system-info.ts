@@ -22,7 +22,7 @@ export async function getSystemInfo(
         const provider = await getOrCreateServiceProvider(systemConfig, backendTarget);
         const lrep = provider.getLayeredRepository();
 
-        return lrep.getSystemInfo(packageName);
+        return lrep.getSystemInfo(undefined, packageName);
     } catch (e) {
         LoggerHelper.logger.debug(t('errors.debugAbapTargetSystem', { method: 'getSystemInfo', error: e.message }));
         return undefined;

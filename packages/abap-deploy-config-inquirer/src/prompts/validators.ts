@@ -587,18 +587,26 @@ export function validateConfirmQuestion(overwrite: boolean): boolean {
  * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
  * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
  */
-async function validateCloudPackage(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
+async function validatePackageType(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
     const systemConfig: SystemConfig = {
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
         destination: PromptState.abapDeployConfig.destination
     };
+    const packageType = PromptState.abapDeployConfig.isS4HC
+        ? AdaptationProjectType.CLOUD_READY
+        : AdaptationProjectType.ON_PREMISE;
+    const errorMsg =
+        packageType === AdaptationProjectType.CLOUD_READY
+            ? t('errors.validators.invalidCloudPackage')
+            : t('errors.validators.invalidOnpremPackage');
     const systemInfo = await getSystemInfo(input, systemConfig, backendTarget);
-    const isCloudPackage =
+    const isValidPackageType =
         systemInfo != undefined &&
         systemInfo.adaptationProjectTypes.length === 1 &&
-        systemInfo.adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY;
-    return isCloudPackage ? true : t('errors.validators.invalidCloudPackage');
+        systemInfo.adaptationProjectTypes[0] === packageType;
+
+    return isValidPackageType ? true : errorMsg;
 }
 
 /**
@@ -623,8 +631,8 @@ export async function validatePackageExtended(
         return baseValidation;
     }
 
-    if (promptOption?.additionalValidation?.cloudPackage) {
-        return await validateCloudPackage(input, backendTarget);
+    if (promptOption?.additionalValidation?.shouldValidatePackageType) {
+        return await validatePackageType(input, backendTarget);
     }
     return true;
 }
