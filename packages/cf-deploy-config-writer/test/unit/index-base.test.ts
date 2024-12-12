@@ -16,14 +16,15 @@ jest.mock('@sap-ux/btp-utils', () => ({
     listDestinations: jest.fn()
 }));
 
-jest.mock('hasbin', () => {
-    return {
-        ...(jest.requireActual('hasbin') as {}),
-        sync: jest.fn()
-    };
-});
+jest.mock('hasbin', () => ({
+    ...jest.requireActual('hasbin'),
+    sync: jest.fn()
+}));
 
-jest.mock('@sap/cf-tools');
+jest.mock('@sap/cf-tools', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
+    apiGetInstanceCredentials: jest.fn()
+}));
 
 let hasSyncMock: jest.SpyInstance;
 
@@ -59,28 +60,6 @@ describe('CF Writer Base', () => {
     });
 
     describe('Generate Base Config - Standalone', () => {
-        test('Generate deployment configs - standalone with connectivity service', async () => {
-            const debugSpy = jest.spyOn(logger, 'debug');
-            const mtaId = 'standalone-with-connectivity-service';
-            const mtaPath = join(outputDir, mtaId);
-            fsExtra.mkdirSync(outputDir, { recursive: true });
-            fsExtra.mkdirSync(mtaPath);
-            await generateBaseConfig(
-                {
-                    mtaPath,
-                    mtaId,
-                    routerType: RouterModuleType.Standard,
-                    addConnectivityService: true
-                },
-                unitTestFs,
-                logger
-            );
-            expect(debugSpy).toBeCalledTimes(1);
-            expect(unitTestFs.dump(mtaPath)).toMatchSnapshot();
-            // Since mta.yaml is not in memfs, read from disk
-            expect(unitTestFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
-        });
-
         test('Generate deployment configs - standalone with ABAP service provider', async () => {
             const apiGetInstanceCredentialsMock = apiGetInstanceCredentials as jest.Mock;
             apiGetInstanceCredentialsMock.mockResolvedValue({
@@ -106,6 +85,28 @@ describe('CF Writer Base', () => {
                 unitTestFs,
                 logger
             );
+            expect(unitTestFs.dump(mtaPath)).toMatchSnapshot();
+            // Since mta.yaml is not in memfs, read from disk
+            expect(unitTestFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
+        });
+
+        test('Generate deployment configs - standalone with connectivity service', async () => {
+            const debugSpy = jest.spyOn(logger, 'debug');
+            const mtaId = 'standalone-with-connectivity-service';
+            const mtaPath = join(outputDir, mtaId);
+            fsExtra.mkdirSync(outputDir, { recursive: true });
+            fsExtra.mkdirSync(mtaPath);
+            await generateBaseConfig(
+                {
+                    mtaPath,
+                    mtaId,
+                    routerType: RouterModuleType.Standard,
+                    addConnectivityService: true
+                },
+                unitTestFs,
+                logger
+            );
+            expect(debugSpy).toBeCalledTimes(1);
             expect(unitTestFs.dump(mtaPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
             expect(unitTestFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();

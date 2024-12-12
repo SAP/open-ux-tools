@@ -1,5 +1,77 @@
 # @sap-ux/adp-tooling
 
+## 0.12.96
+
+### Patch Changes
+
+-   3ebd767: Replace keytar with @zowe/secrets-for-zowe-sdk
+    -   @sap-ux/system-access@0.5.23
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/inquirer-common@0.5.12
+
+## 0.12.95
+
+### Patch Changes
+
+-   0c64478: feat: Enhance extracted FLP prompts to support ADP scenario
+-   Updated dependencies [0c64478]
+    -   @sap-ux/inquirer-common@0.5.11
+
+## 0.12.94
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.10
+
+## 0.12.93
+
+### Patch Changes
+
+-   Updated dependencies [727fd86]
+    -   @sap-ux/axios-extension@1.17.7
+    -   @sap-ux/system-access@0.5.22
+
+## 0.12.92
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/axios-extension@1.17.6
+    -   @sap-ux/system-access@0.5.21
+    -   @sap-ux/inquirer-common@0.5.9
+
+## 0.12.91
+
+### Patch Changes
+
+-   Updated dependencies [307706e]
+    -   @sap-ux/inquirer-common@0.5.8
+
+## 0.12.90
+
+### Patch Changes
+
+-   3805f2e: add request options to manifest-service
+
+## 0.12.89
+
+### Patch Changes
+
+-   Updated dependencies [2359524]
+    -   @sap-ux/inquirer-common@0.5.7
+    -   @sap-ux/btp-utils@0.17.1
+    -   @sap-ux/axios-extension@1.17.6
+    -   @sap-ux/system-access@0.5.21
+
+## 0.12.88
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.17.5
+-   @sap-ux/inquirer-common@0.5.6
+-   @sap-ux/system-access@0.5.20
+
 ## 0.12.87
 
 ### Patch Changes

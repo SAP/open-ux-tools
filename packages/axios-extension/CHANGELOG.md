@@ -1,5 +1,25 @@
 # @sap-ux/axios-extension
 
+## 1.17.7
+
+### Patch Changes
+
+-   727fd86: Fix v4 odata services not paged
+
+## 1.17.6
+
+### Patch Changes
+
+-   Updated dependencies [2359524]
+    -   @sap-ux/btp-utils@0.17.1
+
+## 1.17.5
+
+### Patch Changes
+
+-   Updated dependencies [d04a40e]
+    -   @sap-ux/feature-toggle@0.2.3
+
 ## 1.17.4
 
 ### Patch Changes

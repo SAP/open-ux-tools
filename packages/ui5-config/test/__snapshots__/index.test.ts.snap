@@ -1,5 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`UI5Config Schema validation newInstance with schema validation success 1`] = `
+UI5Config {
+  "document": YamlDocument {
+    "documents": Array [
+      Object {
+        "framework": Object {
+          "name": "SAPUI5",
+          "version": "1.124.0",
+        },
+        "metadata": Object {
+          "allowSapInternal": true,
+          "name": "com.sap.cap.fe.ts.sample",
+        },
+        "specVersion": "4.0",
+        "type": "application",
+      },
+    ],
+  },
+}
+`;
+
 exports[`UI5Config add/find/removeCustomTask addCustomTask 1`] = `
 "builder:
   customTasks:

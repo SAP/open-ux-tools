@@ -24,6 +24,49 @@ describe('UI5Config', () => {
         ui5Config = await UI5Config.newInstance('');
     });
 
+    describe('Schema validation', () => {
+        test('newInstance with schema validation error', async () => {
+            try {
+                await UI5Config.newInstance('', { validateSchema: true });
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
+
+        test('newInstance with schema validation success', async () => {
+            const yamlString = `
+            specVersion: '4.0'
+            metadata:
+              name: com.sap.cap.fe.ts.sample
+              allowSapInternal: true
+            type: application
+            framework:
+              name: SAPUI5
+              version: 1.124.0
+            `;
+            expect(await UI5Config.newInstance(yamlString, { validateSchema: true })).toMatchSnapshot();
+        });
+
+        test('validateSchema true', async () => {
+            const yamlString = `
+            specVersion: '4.0'
+            metadata:
+              name: com.sap.cap.fe.ts.sample
+              allowSapInternal: true
+            type: application
+            framework:
+              name: SAPUI5
+              version: 1.124.0
+            `;
+            const instance = await UI5Config.newInstance(yamlString, { validateSchema: true });
+            expect(await instance.validateSchema()).toBeTruthy();
+        });
+
+        test('validateSchema false', async () => {
+            expect(await ui5Config.validateSchema()).toBeFalsy();
+        });
+    });
+
     describe('get/setConfiguration', () => {
         test('get empty configuration', () => {
             expect(ui5Config.getConfiguration()).toMatchObject({});

@@ -1,5 +1,93 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.7.10
+
+### Patch Changes
+
+-   ec1dc17: Fix `additionalMessages` option not applied for system service prompt
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [3ebd767]
+    -   @sap-ux/store@1.0.0
+    -   @sap-ux/telemetry@0.5.48
+    -   @sap-ux/fiori-generator-shared@0.7.15
+    -   @sap-ux/inquirer-common@0.5.12
+
+## 0.7.8
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/inquirer-common@0.5.11
+
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [1bb4d48]
+    -   @sap-ux/fiori-generator-shared@0.7.14
+    -   @sap-ux/inquirer-common@0.5.10
+
+## 0.7.6
+
+### Patch Changes
+
+-   Updated dependencies [727fd86]
+    -   @sap-ux/axios-extension@1.17.7
+
+## 0.7.5
+
+### Patch Changes
+
+-   9516ca8: Fix for wrong format destination urls returned
+
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/axios-extension@1.17.6
+    -   @sap-ux/fiori-generator-shared@0.7.13
+    -   @sap-ux/telemetry@0.5.47
+    -   @sap-ux/inquirer-common@0.5.9
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [307706e]
+    -   @sap-ux/guided-answers-helper@0.1.1
+    -   @sap-ux/inquirer-common@0.5.8
+
+## 0.7.2
+
+### Patch Changes
+
+-   2359524: align versions of cf-tools
+-   Updated dependencies [2359524]
+    -   @sap-ux/inquirer-common@0.5.7
+    -   @sap-ux/btp-utils@0.17.1
+    -   @sap-ux/axios-extension@1.17.6
+    -   @sap-ux/fiori-generator-shared@0.7.12
+    -   @sap-ux/telemetry@0.5.46
+
+## 0.7.1
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.17.5
+-   @sap-ux/inquirer-common@0.5.6
+
+## 0.7.0
+
+### Minor Changes
+
+-   cce9609: Adds auth handling for service url destination. Fix for client validation text not shown.
+
 ## 0.6.13
 
 ### Patch Changes
