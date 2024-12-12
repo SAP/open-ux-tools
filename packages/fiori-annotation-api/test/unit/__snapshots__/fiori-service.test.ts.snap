@@ -759,6 +759,48 @@ exports[`fiori annotation service insert collection item EDMXBackend xml-start v
 "
 `;
 
+exports[`fiori annotation service insert collection of strings CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.test with @(
+    Common.SideEffects : {
+        $Type : 'Common.SideEffectsType',
+        TargetProperties : [
+            '_it/dummyTargetPropertyPath',
+        ],
+    }
+);
+
+"
+`;
+
+exports[`fiori annotation service insert collection of strings EDMXBackend xml-start v4 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Common.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.Common.v1\\" Alias=\\"Common\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+            <Annotations Target=\\"IncidentService.test\\">
+                <Annotation Term=\\"Common.SideEffects\\">
+                    <Record Type=\\"Common.SideEffectsType\\">
+                        <PropertyValue Property=\\"TargetProperties\\">
+                            <Collection>
+                                <String>_it/dummyTargetPropertyPath</String>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+"
+`;
+
 exports[`fiori annotation service insert embedded annotation and update collection CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 

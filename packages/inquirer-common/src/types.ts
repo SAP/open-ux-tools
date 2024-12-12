@@ -55,9 +55,22 @@ export interface GuiOptions {
      */
     breadcrumb?: boolean | string;
     /**
-     * Provides an option to specify type e.g 'label'
+     * Indicates how the question will be displayed in YUI
      */
-    type?: string;
+    type?: 'label' | 'folder-browser';
+    /**
+     * Link to be shown in input question prompt of type 'label'
+     */
+    link?: {
+        /**
+         * A string that will have the styles of a link and will be concatenated at the end of the question message
+         */
+        text?: string;
+        /**
+         * The URL to which the text points
+         */
+        url?: string;
+    };
 }
 
 export type PromptSeverityMessage = (

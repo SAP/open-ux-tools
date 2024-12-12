@@ -1,12 +1,33 @@
-import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-import type { ToolsLogger } from '@sap-ux/logger';
-import type { AdpPreviewConfig, DescriptorVariant } from '../../types';
 import ZipFile from 'adm-zip';
+
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { isAxiosError, type AbapServiceProvider, type Ui5AppInfoContent } from '@sap-ux/axios-extension';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
+
 import { getWebappFiles } from '../helper';
+import type { DescriptorVariant } from '../../types';
 
 type DataSources = Record<string, ManifestNamespace.DataSource>;
+
+/**
+ * Retrieves the inbound navigation configurations from the project's manifest.
+ *
+ * @param {Manifest} manifest - The manifest file object adhering to the SAP JSON schema for web application manifest files.
+ * @returns {ManifestNamespace.Inbound | undefined} The inbound navigation configurations, or `undefined` if no configurations are present.
+ */
+export function getInboundsFromManifest(manifest: Manifest): ManifestNamespace.Inbound | undefined {
+    return manifest?.['sap.app']?.crossNavigation?.inbounds;
+}
+
+/**
+ * Extracts the registration ID from the manifest file.
+ *
+ * @param {Manifest} manifest - The manifest file object adhering to the SAP JSON schema for web application manifest files.
+ * @returns {string | undefined} The first registration ID if available, otherwise `undefined`.
+ */
+export function getRegistrationIdFromManifest(manifest: Manifest): string | undefined {
+    return manifest?.['sap.fiori']?.registrationIds?.[0];
+}
 
 /**
  * Service class for handling operations related to the manifest of a UI5 application.
@@ -27,38 +48,19 @@ export class ManifestService {
     private constructor(private readonly provider: AbapServiceProvider, private readonly logger: ToolsLogger) {}
 
     /**
-     * Initializes the ManifestService with the given ADP configuration and logger.
-     *
-     * @param adpConfig - The ADP preview configuration.
-     * @param logger - The logger instance.
-     * @returns A promise that resolves to an instance of ManifestService.
-     */
-    private static async init(adpConfig: AdpPreviewConfig, logger: ToolsLogger): Promise<ManifestService> {
-        const provider = await createAbapServiceProvider(
-            adpConfig.target,
-            {
-                ignoreCertErrors: adpConfig.ignoreCertErrors ?? false
-            },
-            true,
-            logger
-        );
-        return new ManifestService(provider, logger);
-    }
-
-    /**
      * Creates an instance of the ManifestService and fetches the base manifest of the application.
      *
+     * @param provider - The ABAP service provider instance.
      * @param appId - The application ID.
-     * @param adpConfig - The ADP preview configuration.
      * @param logger - The logger instance.
      * @returns A promise that resolves to an instance of ManifestService.
      */
     public static async initBaseManifest(
+        provider: AbapServiceProvider,
         appId: string,
-        adpConfig: AdpPreviewConfig,
         logger: ToolsLogger
     ): Promise<ManifestService> {
-        const manifestService = await this.init(adpConfig, logger);
+        const manifestService = new ManifestService(provider, logger);
         await manifestService.fetchBaseManifest(appId);
         return manifestService;
     }
@@ -66,19 +68,19 @@ export class ManifestService {
     /**
      * Creates an instance of the ManifestService and fetches the merged manifest of the application.
      *
+     * @param provider - The ABAP service provider instance.
      * @param basePath - The base path of the application.
      * @param variant - The descriptor variant.
-     * @param adpConfig - The ADP preview configuration.
      * @param logger - The logger instance.
      * @returns A promise that resolves to an instance of ManifestService.
      */
     public static async initMergedManifest(
+        provider: AbapServiceProvider,
         basePath: string,
         variant: DescriptorVariant,
-        adpConfig: AdpPreviewConfig,
         logger: ToolsLogger
     ): Promise<ManifestService> {
-        const manifestService = await this.init(adpConfig, logger);
+        const manifestService = new ManifestService(provider, logger);
         await manifestService.fetchMergedManifest(basePath, variant.id);
         await manifestService.fetchAppInfo(variant.reference);
         return manifestService;

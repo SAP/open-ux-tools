@@ -49,7 +49,7 @@ export function createPreviewMiddlewareConfig(fs: Editor, basePath: string): Cus
 }
 
 /**
- * Checks the project for ui5.yaml files and reads out the configuration to update the preview and reload middlewares.
+ * Checks the project for ui5 configuration yaml files and reads the configuration to update the preview and reload middlewares.
  * If a reload middleware exists, then a delay of 300ms will be inserted and the preview middleware will be set afterward.
  *
  * @param fs - mem-fs reference to be used for file access
@@ -64,7 +64,7 @@ export async function updateMiddlewares(
     logger?: ToolsLogger
 ): Promise<void> {
     const ui5YamlFile = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
-    const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile);
+    const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile, fs);
 
     let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
     const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);

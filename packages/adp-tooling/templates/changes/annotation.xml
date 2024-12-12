@@ -8,7 +8,7 @@
     <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Communication.xml">
         <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
     </edmx:Reference>
-     <edmx:Reference Uri="<%- path %>$metadata"><% namespaces.forEach(function(namespace){ %>
+    <edmx:Reference Uri="<%- path %>$metadata"><% namespaces?.forEach(function(namespace) { %>
         <edmx:Include Namespace="<%- namespace.namespace %>"<% if (namespace.alias) { %> Alias="<%- namespace.alias %>"<% } %>/><% }); %>
     </edmx:Reference>
     <edmx:DataServices>

@@ -6,7 +6,7 @@ Object {
   "sapux": true,
   "sapuxLayer": "VENDOR",
   "scripts": Object {
-    "start-variants-management": "ui5 serve --open \\"/my-variants.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#hello-world\\"",
+    "start-variants-management": "ui5 serve --open \\"/my-variants.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false#hello-world\\"",
   },
 }
 `;

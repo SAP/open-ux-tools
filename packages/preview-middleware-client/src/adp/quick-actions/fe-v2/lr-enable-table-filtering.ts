@@ -27,15 +27,14 @@ export class EnableTableFilteringQuickAction
     readonly forceRefreshAfterExecution = true;
     lsTableMap: Record<string, number> = {};
     public get tooltip(): string | undefined {
-        return this.isDisabled ? this.context.resourceBundle.getText('THE_CHANGE_HAS_ALREADY_BEEN_MADE') : undefined;
+        return this.isDisabled ? this.context.resourceBundle.getText('TABLE_FILTERING_CHANGE_HAS_ALREADY_BEEN_MADE') : undefined;
     }
 
     async initialize(): Promise<void> {
-        const isUI5VersionNotSupported = await areManifestChangesSupported();
-        if (isUI5VersionNotSupported) {
+        const manifestChangesSupported = await areManifestChangesSupported(this.context.manifest);
+        if (!manifestChangesSupported) {
             return;
         }
-
         for (const table of getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
