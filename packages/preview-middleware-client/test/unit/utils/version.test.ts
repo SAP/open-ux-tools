@@ -7,17 +7,6 @@ import {
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 
 describe('utils/version', () => {
-    test('getUi5Version', async () => {
-        const versionInfoLoadMock = jest.spyOn(VersionInfo, 'load').mockResolvedValueOnce({
-            name: 'sap.ui.core',
-            version: '1.124.0'
-        });
-        const version = await getUi5Version();
-        expect(versionInfoLoadMock).toBeCalledWith({ library: 'sap.ui.server.abap' });
-        expect(version.major).toEqual(1);
-        expect(version.minor).toEqual(124);
-    });
-
     test('getUi5Version with lib sap.m', async () => {
         const versionInfoLoadMock = jest.spyOn(VersionInfo, 'load').mockResolvedValueOnce({
             name: 'sap.m',
@@ -32,13 +21,11 @@ describe('utils/version', () => {
 
     test('getUi5Version with fallback to sap.ui.core', async () => {
         const versionInfoLoadMock = jest.spyOn(VersionInfo, 'load');
-        versionInfoLoadMock.mockResolvedValueOnce(undefined);
         versionInfoLoadMock.mockResolvedValueOnce({
             name: 'sap.ui.core',
             version: '1.124.11'
         });
         const version = await getUi5Version();
-        expect(versionInfoLoadMock).toBeCalledWith({ library: 'sap.ui.server.abap' });
         expect(versionInfoLoadMock).toBeCalledWith({ library: 'sap.ui.core' });
         expect(version.major).toEqual(1);
         expect(version.minor).toEqual(124);
