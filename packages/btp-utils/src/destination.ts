@@ -237,8 +237,50 @@ export function isS4HC(destination: Destination): boolean {
  * This is a non-strict check, as we want to maintain existing destinations, perhaps accidentally configured with other conflicting configurations.
  *
  * @param destination destination configuration properties
- * @returns true, if this destination has the the 'odata_abap' attribute set
+ * @returns true, if this destination has the 'odata_abap' attribute set
  */
 export function isAbapODataDestination(destination: Destination): boolean {
     return !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP);
+}
+
+/**
+ * Cloud Foundry instance types
+ */
+export enum ServiceType {
+    /**
+     * ABAP instance type
+     */
+    ABAP = 'abap',
+    /**
+     * ABAP trial instance type
+     */
+    ABAP_TRIAL = 'abap-trial',
+    /**
+     * ABAP CANARY trial instance type
+     */
+    ABAP_CANARY = 'abap-canary',
+    /**
+     * ABAP OEM instance type
+     */
+    ABAP_OEM = 'abap-oem',
+    /**
+     * ABAP OEM CANARY instance type
+     */
+    ABAP_OEM_CANARY = 'abap-oem-canary',
+    /**
+     * ABAP HAAS instance type
+     */
+    ABAP_HAAS = 'abap-haas',
+    /**
+     * Destination service instance type
+     */
+    DESTINATION = 'destination',
+    /**
+     * ABAP Staging service instance type
+     */
+    ABAP_STAGING = 'abap-staging',
+    /**
+     * ABAP Internal Staging service instance type
+     */
+    ABAP_INTERNAL_STAGING = 'abap-internal-staging'
 }
