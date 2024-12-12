@@ -246,41 +246,43 @@ export function isAbapODataDestination(destination: Destination): boolean {
 /**
  * Cloud Foundry instance types
  */
-export enum ServiceType {
+export const AbapEnvType = {
     /**
      * ABAP instance type
      */
-    ABAP = 'abap',
+    ABAP: 'abap',
     /**
      * ABAP trial instance type
      */
-    ABAP_TRIAL = 'abap-trial',
+    ABAP_TRIAL: 'abap-trial',
     /**
      * ABAP CANARY trial instance type
      */
-    ABAP_CANARY = 'abap-canary',
+    ABAP_CANARY: 'abap-canary',
     /**
      * ABAP OEM instance type
      */
-    ABAP_OEM = 'abap-oem',
+    ABAP_OEM: 'abap-oem',
     /**
      * ABAP OEM CANARY instance type
      */
-    ABAP_OEM_CANARY = 'abap-oem-canary',
+    ABAP_OEM_CANARY: 'abap-oem-canary',
     /**
      * ABAP HAAS instance type
      */
-    ABAP_HAAS = 'abap-haas',
+    ABAP_HAAS: 'abap-haas',
     /**
      * Destination service instance type
      */
-    DESTINATION = 'destination',
+    DESTINATION: 'destination',
     /**
      * ABAP Staging service instance type
      */
-    ABAP_STAGING = 'abap-staging',
+    ABAP_STAGING: 'abap-staging',
     /**
      * ABAP Internal Staging service instance type
      */
-    ABAP_INTERNAL_STAGING = 'abap-internal-staging'
-}
+    ABAP_INTERNAL_STAGING: 'abap-internal-staging'
+} as const;
+
+export type AbapEnvType = (typeof AbapEnvType)[keyof typeof AbapEnvType];
