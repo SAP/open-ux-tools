@@ -26,6 +26,7 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
+        "@sap/cf-tools": "3.2.2",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",

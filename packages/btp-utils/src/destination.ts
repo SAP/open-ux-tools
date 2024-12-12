@@ -67,6 +67,14 @@ export type DestinationProperty =
     | 'HTML5.DynamicDestination';
 export type AdditionalDestinationProperties = { [property in DestinationProperty]: string };
 
+export interface TokenExchangeDestination extends Destination, Partial<AdditionalDestinationProperties> {
+    URL: string;
+    TokenServiceURLType: 'Dedicated' | 'Common';
+    TokenServiceURL: string;
+    ClientSecret: string;
+    ClientId: string;
+}
+
 /**
  * Mandatory destination properties combined with the known/relevant optional properties.
  */
@@ -241,4 +249,15 @@ export function isS4HC(destination: Destination): boolean {
  */
 export function isAbapODataDestination(destination: Destination): boolean {
     return !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP);
+}
+
+export interface CloudFoundryServiceInfo {
+    label: string;
+    serviceName: string;
+    guid?: string;
+    tags?: string[];
+    alwaysShow?: boolean;
+    plan_guid?: string;
+    plan?: string;
+    credentials?: any;
 }
