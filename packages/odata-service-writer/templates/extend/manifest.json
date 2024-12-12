@@ -17,7 +17,7 @@
                             "<%= annotations.name %>"<% if (locals.localAnnotationsName && (!locals.localAnnotationsName.length || locals.localAnnotationsName.length > 0)) {%>,<%}%><% } %>
                         <% } %>
                     <% if (locals.localAnnotationsName && typeof localAnnotationsName !== 'undefined') { %>
-                        <% if (Array.isArray(localAnnotationsName)) { %>
+                        <% if (Array.isArray(localAnnotationsName) && localAnnotationsName.length > 0) { %>
                             <% localAnnotationsName.forEach(function(localAnnotation, index) { %>
                                 "<%- localAnnotation %>"<% if (index < localAnnotationsName.length - 1){ %>,<% } %>
                             <% }); %>
@@ -57,7 +57,7 @@
             <% } %>
             <% if (locals.localAnnotationsName && typeof localAnnotationsName !== 'undefined') { %>,
                 <% if (locals.localAnnotationsName && typeof localAnnotationsName !== 'undefined') { %>
-                    <% if (Array.isArray(localAnnotationsName)) { %>
+                    <% if (Array.isArray(localAnnotationsName) && localAnnotationsName.length > 0) { %>
                         <% localAnnotationsName.forEach(function(localAnnotation, index) { %>
                             "<%- localAnnotation %>": {
                                 "type": "ODataAnnotation",
