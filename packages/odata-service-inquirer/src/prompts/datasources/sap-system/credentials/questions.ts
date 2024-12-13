@@ -20,6 +20,7 @@ export enum BasicCredentialsPromptNames {
  * @param sapClient
  * @param sapClient.sapClient the sapClient value to be used along with the credentials validation
  * @param sapClient.isValid validation of credentials is deferred until a valid sapClient is provided or undefined
+ * @param systemSelection
  * @returns the credentials prompts
  */
 export function getCredentialsPrompts<T extends Answers>(

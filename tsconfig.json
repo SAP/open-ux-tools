@@ -78,9 +78,6 @@
       "path": "packages/control-property-editor"
     },
     {
-      "path": "packages/create"
-    },
-    {
       "path": "packages/deploy-config-generator-shared"
     },
     {
