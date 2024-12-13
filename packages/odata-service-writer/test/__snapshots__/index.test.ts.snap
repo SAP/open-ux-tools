@@ -2749,8 +2749,8 @@ Object {
         }
       },
       \\"sepmra_annotations_tech_name\\": {
-        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/\\",
         \\"settings\\": {
           \\"localUri\\": \\"localService/mainService/sepmra_annotations_tech_name.xml\\"
         }
@@ -2912,8 +2912,8 @@ Object {
         }
       },
       \\"SEPM_XYZ_SERVICE\\": {
-        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/\\",
         \\"settings\\": {
           \\"localUri\\": \\"localService/mainService//SEPM_XYZ/SERVICE.xml\\"
         }

@@ -1,5 +1,5 @@
 ---
-'@sap-ux/odata-service-writer': patch
+'@sap-ux/odata-service-writer': minor
 ---
 
-Improved manifest.json template for local annotations.
+Removed ejs for manifest enhancements.
