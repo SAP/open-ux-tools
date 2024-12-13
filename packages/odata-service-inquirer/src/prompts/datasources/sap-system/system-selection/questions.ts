@@ -58,7 +58,7 @@ export interface SystemSelectionAnswers extends SystemSelectionCredentialsAnswer
  * @param requiredOdataVersion the required OData version for the selected system, only the specified version will be used to request a service catalog
  * @returns the validation result of the selected system connection attempt
  */
-async function validateSystemSelection(
+export async function validateSystemSelection(
     systemSelection: SystemSelectionAnswerType,
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion

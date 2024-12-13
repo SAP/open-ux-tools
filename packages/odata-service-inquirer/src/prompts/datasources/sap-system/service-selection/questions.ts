@@ -55,8 +55,10 @@ export function getSystemServiceQuestion(
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
 
     const systemServiceQuestion = {
-        when: (): boolean =>
-            connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
+        when: promptOptions?.serviceSelection?.hide
+            ? false
+            : (): boolean =>
+                  connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
         name: `${promptNamespace}:${promptNames.serviceSelection}`,
         type: promptOptions?.serviceSelection?.useAutoComplete ? 'autocomplete' : 'list',
         message: () => getSelectedServiceLabel(connectValidator.connectedUserName),
