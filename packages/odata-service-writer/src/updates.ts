@@ -79,10 +79,10 @@ function enhanceManifestDatasources(
             if (remoteAnnotation.name) {
                 annotations.push(remoteAnnotation.name);
                 annotationDataSources[remoteAnnotation.name] = {
-                    type: 'ODataAnnotation',
                     uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='${encodeURIComponent(
                         remoteAnnotation.technicalName
                     )}',Version='0001')/$value/`,
+                    type: 'ODataAnnotation',
                     settings: {
                         localUri: `localService/${serviceName}/${remoteAnnotation.technicalName}.xml`
                     }
@@ -92,10 +92,10 @@ function enhanceManifestDatasources(
     } else if (serviceRemoteAnnotations?.name) {
         annotations.push(serviceRemoteAnnotations.name);
         annotationDataSources[serviceRemoteAnnotations.name] = {
-            type: 'ODataAnnotation',
             uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='${encodeURIComponent(
                 serviceRemoteAnnotations.technicalName
             )}',Version='0001')/$value/`,
+            type: 'ODataAnnotation',
             settings: {
                 localUri: `localService/${serviceName}/${serviceRemoteAnnotations.technicalName}.xml`
             }
