@@ -68,7 +68,7 @@ describe('helper', () => {
     });
 
     describe('flpConfigurationExists', () => {
-        const appDescrPath = `${basePath}/webapp/${FileName.ManifestAppDescrVar}`;
+        const appDescrPath = join(basePath, 'webapp', FileName.ManifestAppDescrVar);
 
         beforeEach(() => {
             jest.clearAllMocks();

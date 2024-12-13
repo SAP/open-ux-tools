@@ -68,10 +68,10 @@ export function getEmptyInboundsLabelPrompt(
 }
 
 /**
- * Creates the 'parameterString' prompt for specifying parameters in JSON format.
+ * Creates the 'additionalParameters' prompt for specifying parameters in JSON format.
  *
  * @param {string[]} inboundIds - List of existing inbound IDs to conditionally display this prompt.
- * @param {ParameterStringPromptOptions} [options] - Optional configuration for the parameter string prompt, including defaults.
+ * @param {ParameterStringPromptOptions} [options] - Optional configuration for the additional parameter string prompt, including defaults.
  * @returns {FLPConfigQuestion} The prompt configuration for specifying a parameter string.
  */
 export function getParameterStringPrompt(
@@ -80,8 +80,8 @@ export function getParameterStringPrompt(
 ): FLPConfigQuestion {
     return {
         type: 'editor',
-        name: promptNames.parameterString,
-        message: t('prompts.parameterString'),
+        name: promptNames.additionalParameters,
+        message: t('prompts.additionalParameters'),
         validate: (value: string) => {
             if (!value) {
                 return true;
@@ -97,7 +97,7 @@ export function getParameterStringPrompt(
         },
         when: options?.hide ? false : inboundIds?.length === 0,
         guiOptions: {
-            hint: t('tooltips.parameterString'),
+            hint: t('tooltips.additionalParameters'),
             mandatory: false
         }
     };

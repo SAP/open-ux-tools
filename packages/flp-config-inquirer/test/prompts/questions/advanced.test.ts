@@ -153,6 +153,12 @@ describe('advanced prompts', () => {
                 when: true,
                 guiOptions: {
                     hint: t('tooltips.parameterString'),
+                name: promptNames.additionalParameters,
+                message: t('prompts.additionalParameters'),
+                validate: expect.any(Function),
+                when: true,
+                guiOptions: {
+                    hint: t('tooltips.additionalParameters'),
                     mandatory: false
                 }
             });

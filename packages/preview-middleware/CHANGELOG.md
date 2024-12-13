@@ -1,5 +1,37 @@
 # @sap-ux/preview-middleware
 
+## 0.16.149
+
+### Patch Changes
+
+-   77cf576: Load changes from workspace in Preview after deployment
+
+## 0.16.148
+
+### Patch Changes
+
+-   Updated dependencies [3ebd767]
+    -   @sap-ux/adp-tooling@0.12.96
+
+## 0.16.147
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/adp-tooling@0.12.95
+
+## 0.16.146
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.94
+
+## 0.16.145
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.93
+
 ## 0.16.144
 
 ### Patch Changes

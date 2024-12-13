@@ -54,9 +54,9 @@ export function getQuestions(
             silentOverwrite,
             promptOptions?.[promptNames.subTitle]
         ),
-        [promptNames.parameterString]: getParameterStringPrompt(
+        [promptNames.additionalParameters]: getParameterStringPrompt(
             inboundKeys,
-            promptOptions?.[promptNames.parameterString]
+            promptOptions?.[promptNames.additionalParameters]
         ),
         [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(
             isCLI,
@@ -72,7 +72,7 @@ export function getQuestions(
         keyedPrompts[promptNames.overwrite],
         keyedPrompts[promptNames.title],
         keyedPrompts[promptNames.subTitle],
-        keyedPrompts[promptNames.parameterString],
+        keyedPrompts[promptNames.additionalParameters],
         keyedPrompts[promptNames.createAnotherInbound]
     ];
 

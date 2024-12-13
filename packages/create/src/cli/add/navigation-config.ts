@@ -18,7 +18,6 @@ import { FileName, getAppType } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-import { TenantType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
 import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 
@@ -96,51 +95,55 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
 }
 
 /**
- * Retrieves the project's manifest.
+ * Retrieves the project's manifest file, handling both Fiori and Adaptation project scenarios.
  *
  * @param {string} basePath - The base path to the project.
  * @param {boolean} isAdp - Indicates whether the project is an ADP project.
  * @param {Editor} fs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger instance.
- * @returns {Promise<Manifest>} A promise that resolves to the manifest.
+ * @returns {Promise<Manifest>} The manifest file content.
+ * @throws {Error} If the project is not CloudReady or the manifest cannot be retrieved.
  */
-async function getManifest(basePath: string, isAdp: boolean, fs: Editor, logger: ToolsLogger): Promise<Manifest> {
-    let manifest: Manifest;
-    if (!isAdp) {
-        manifest = (await readManifest(basePath, fs))?.manifest;
-    } else {
-        const variant = getVariant(basePath);
-        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
-        const provider = await createAbapServiceProvider(
-            target,
-            {
-                ignoreCertErrors
-            },
-            true,
-            logger
-        );
-
-        if (!(await isCloudReady(provider))) {
-            throw new Error('Command is only available for CloudReady applications.');
-        }
-
-        const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, logger);
-
-        manifest = manifestService.getManifest();
+export async function getManifest(
+    basePath: string,
+    isAdp: boolean,
+    fs: Editor,
+    logger: ToolsLogger
+): Promise<Manifest> {
+    if (isAdp) {
+        return retrieveMergedManifest(basePath, logger);
     }
+    return retrieveManifest(basePath, fs);
+}
 
+/**
+ * Retrieves the manifest for a Fiori project.
+ *
+ * @param {string} basePath - The base path to the project.
+ * @param {Editor} fs - The mem-fs editor instance.
+ * @returns {Promise<Manifest>} The base project manifest.
+ */
+async function retrieveManifest(basePath: string, fs: Editor): Promise<Manifest> {
+    const { manifest } = await readManifest(basePath, fs);
     return manifest;
 }
 
 /**
- * Determines whether the given ABAP service provider indicates a CloudReady application.
+ * Retrieves the manifest for an Adaptation Project (ADP).
  *
- * @param {AbapServiceProvider} provider - The ABAP service provider instance used to fetch ATO settings.
- * @returns {Promise<boolean>} A promise that resolves to `true` if the application is CloudReady, otherwise `false`.
+ * @param {string} basePath - The base path to the ADP project.
+ * @param {ToolsLogger} logger - The logger instance.
+ * @returns {Promise<Manifest>} The merged manifest for the ADP project.
+ * @throws {Error} If the project is not CloudReady.
  */
-async function isCloudReady(provider: AbapServiceProvider): Promise<boolean> {
-    const atoSettings = await provider.getAtoInfo();
-    return atoSettings.tenantType === TenantType.Customer && atoSettings.operationsType === 'C';
+async function retrieveMergedManifest(basePath: string, logger: ToolsLogger): Promise<Manifest> {
+    const variant = getVariant(basePath);
+    const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
+
+    const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
+
+    const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, logger);
+    return manifestService.getManifest();
 }
 
 /**
@@ -162,7 +165,7 @@ async function getUserConfig(
     if (!isAdp) {
         promptOptions = {
             inboundId: { hide: true },
-            parameterString: { hide: true },
+            additionalParameters: { hide: true },
             createAnotherInbound: { hide: true },
             emptyInboundsInfo: { hide: true }
         };

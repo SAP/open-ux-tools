@@ -14,7 +14,7 @@ const rules: ParameterRules = {
     isMandatoryParam: (paramString: string): boolean => {
         return !(paramString.trim().startsWith('(') && paramString.trim().endsWith(')'));
     },
-    shouldHavеFiltertValue: (paramString: string): ParamCheck => {
+    shouldHavеFilteredValue: (paramString: string): ParamCheck => {
         if (paramString.startsWith('<') && paramString.endsWith('>')) {
             return {
                 shouldApply: true,
@@ -161,7 +161,7 @@ function construct(paramParts: string[], isMandatory: boolean, parameters: Param
  * @param {string} paramValue - parameter value
  */
 function applyRules(options: ParameterOptions, paramValue: string): void {
-    const shouldFilterDefaultValueCheck = rules.shouldHavеFiltertValue(paramValue);
+    const shouldFilterDefaultValueCheck = rules.shouldHavеFilteredValue(paramValue);
     const isReferenceCheck = rules.isReference(paramValue);
     if (
         shouldFilterDefaultValueCheck.shouldApply &&

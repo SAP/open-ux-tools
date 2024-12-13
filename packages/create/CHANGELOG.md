@@ -1,5 +1,85 @@
 # @sap-ux/create
 
+## 0.11.4
+
+### Patch Changes
+
+-   Updated dependencies [77cf576]
+    -   @sap-ux/preview-middleware@0.16.149
+    -   @sap-ux/app-config-writer@0.5.7
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [9f14de1]
+    -   @sap-ux/odata-service-writer@0.24.2
+
+## 0.11.2
+
+### Patch Changes
+
+-   29cdac8: fix: add missing logger parameter to convert preview-config
+-   Updated dependencies [29cdac8]
+    -   @sap-ux/app-config-writer@0.5.7
+
+## 0.11.1
+
+### Patch Changes
+
+-   Updated dependencies [3ebd767]
+    -   @sap-ux/adp-tooling@0.12.96
+    -   @sap-ux/abap-deploy-config-inquirer@1.1.11
+    -   @sap-ux/app-config-writer@0.5.6
+    -   @sap-ux/preview-middleware@0.16.148
+    -   @sap-ux/system-access@0.5.23
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/flp-config-inquirer@0.2.1
+    -   @sap-ux/cap-config-writer@0.7.65
+    -   @sap-ux/abap-deploy-config-writer@0.0.69
+
+## 0.11.0
+
+### Minor Changes
+
+-   0c64478: feat: Enhance extracted FLP prompts to support ADP scenario
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/flp-config-inquirer@0.2.0
+    -   @sap-ux/adp-tooling@0.12.95
+    -   @sap-ux/abap-deploy-config-inquirer@1.1.10
+    -   @sap-ux/preview-middleware@0.16.147
+    -   @sap-ux/cap-config-writer@0.7.64
+    -   @sap-ux/app-config-writer@0.5.5
+
+## 0.10.12
+
+### Patch Changes
+
+-   Updated dependencies [1bb4d48]
+    -   @sap-ux/abap-deploy-config-inquirer@1.1.9
+    -   @sap-ux/abap-deploy-config-writer@0.0.68
+    -   @sap-ux/cap-config-writer@0.7.64
+    -   @sap-ux/flp-config-inquirer@0.1.6
+    -   @sap-ux/inquirer-common@0.5.10
+    -   @sap-ux/adp-tooling@0.12.94
+    -   @sap-ux/preview-middleware@0.16.146
+    -   @sap-ux/app-config-writer@0.5.5
+
+## 0.10.11
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.1.8
+-   @sap-ux/adp-tooling@0.12.93
+-   @sap-ux/app-config-writer@0.5.5
+-   @sap-ux/preview-middleware@0.16.145
+-   @sap-ux/system-access@0.5.22
+-   @sap-ux/cap-config-writer@0.7.63
+-   @sap-ux/abap-deploy-config-writer@0.0.67
+
 ## 0.10.10
 
 ### Patch Changes
