@@ -142,15 +142,15 @@ const COLORS = {
             borderColor: 'var(--vscode-button-border)',
             hover: {
                 borderColor: 'var(--vscode-button-border)',
-                background: 'var(--vscode-button-secondaryHoverBackground)'
+                background: 'var(--vscode-contrastBorder, var(--vscode-button-secondaryHoverBackground))'
             }
         },
         checked: {
             background: 'var(--vscode-button-background)',
-            borderColor: 'var(--vscode-button-border)',
+            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border))',
             hover: {
-                borderColor: 'var(--vscode-button-border)',
-                background: 'var(--vscode-button-hoverBackground)'
+                borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border))',
+                background: 'var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))'
             }
         }
     }
@@ -287,6 +287,12 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     ...(!styleProps.checked && {
                         background: COLORS.pill.unchecked.background,
                         borderStyle: 'solid',
+                        // This is a bug: the best implementation approach is to set hover styles in the "thumb" section.
+                        // However, the hover styles for the unchecked thumb don't work properly
+                        ':hover .ms-Toggle-thumb': {
+                            background: COLORS.thumb.unchecked.hover.background,
+                            borderColor: COLORS.thumb.unchecked.hover.borderColor
+                        },
                         ':hover': {
                             background: COLORS.pill.unchecked.hover.background,
                             borderColor: COLORS.pill.unchecked.hover.borderColor
@@ -313,16 +319,12 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     borderColor: COLORS.thumb.checked.borderColor,
                     backgroundColor: COLORS.thumb.checked.background,
                     ':hover': {
-                        backgroundColor: COLORS.thumb.checked.hover.background,
+                        background: COLORS.thumb.checked.hover.background,
                         borderColor: COLORS.thumb.checked.hover.borderColor
                     },
                     ...(!styleProps.checked && {
                         borderColor: COLORS.thumb.unchecked.borderColor,
-                        backgroundColor: COLORS.thumb.unchecked.background,
-                        ':hover': {
-                            backgroundColor: COLORS.thumb.unchecked.hover.background,
-                            borderColor: COLORS.thumb.unchecked.hover.borderColor
-                        }
+                        backgroundColor: COLORS.thumb.unchecked.background
                     })
                 }
             };
