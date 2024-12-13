@@ -6,6 +6,9 @@ import { UIToggle, UIToggleSize } from '../src/components/UIToggle';
 
 export default { title: 'Basic Inputs/Toggle/Buttons' };
 const stackTokens: IStackTokens = { childrenGap: 40 };
+localStorage.setItem('tsStorybookThemeCss', 'vscode-light.css');
+// localStorage.setItem('tsStorybookThemeCss', 'vscode-dark.css');
+// localStorage.setItem('tsStorybookThemeCss', 'vscode-hcb.css');
 
 export const defaultUsage = (): JSX.Element => {
     return (

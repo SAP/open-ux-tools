@@ -8,8 +8,8 @@ const COLORS = {
     error: 'var( --vscode-notificationsErrorIcon-foreground)',
     info: 'var(--vscode-notificationsInfoIcon-foreground)',
     focus: 'var(--vscode-focusBorder)',
-    thumbOn: 'var(--vscode-button-background)',
-    thumbOff: 'var(--vscode-button-secondaryBackground)'
+    thumbOn: 'var(--vscode-button-foreground)',
+    thumbOff: 'var(--vscode-button-secondaryForeground)'
 };
 
 export enum UiIcons {

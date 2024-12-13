@@ -49,7 +49,8 @@ const TOGGLE_SIZES = new Map<UIToggleSize, UIToggleSizeInfo>([
             },
             circle: {
                 width: 14,
-                height: 14
+                height: 14,
+                borderWidth: 1
             }
         }
     ],
@@ -67,7 +68,7 @@ const TOGGLE_SIZES = new Map<UIToggleSize, UIToggleSizeInfo>([
             circle: {
                 width: 10,
                 height: 10,
-                borderWidth: 5
+                borderWidth: 1
             }
         }
     ]
@@ -82,32 +83,32 @@ const ICON_STYLE = new Map<string, React.CSSProperties>([
         getIconStyleKey(UIToggleSize.Standard, true),
         {
             position: 'relative',
-            top: -13,
-            left: -2
+            top: -9,
+            left: 0
         }
     ],
     [
         getIconStyleKey(UIToggleSize.Standard, false),
         {
             position: 'relative',
-            top: -16,
-            left: -3
+            top: -11,
+            left: 0
         }
     ],
     [
         getIconStyleKey(UIToggleSize.Small, true),
         {
             position: 'relative',
-            top: -15,
-            left: -3
+            top: -11,
+            left: 0
         }
     ],
     [
         getIconStyleKey(UIToggleSize.Small, false),
         {
             position: 'relative',
-            top: -17,
-            left: -4
+            top: -13,
+            left: 0
         }
     ]
 ]);
@@ -116,19 +117,19 @@ const DISABLED_OPACITY = 0.4;
 
 const COLORS = {
     pill: {
-        borderColor: 'var(--vscode-contrastBorder, transparent)',
+        borderColor: 'var(--vscode-editorWidget-border)',
         unchecked: {
-            background: 'var(--vscode-titleBar-inactiveForeground)',
+            background: 'var(--vscode-editorWidget-background)',
             hover: {
-                background: 'var(--vscode-editorHint-foreground)',
-                borderColor: 'var(--vscode-contrastActiveBorder, transparent)'
+                background: 'var(--vscode-editorWidget-background)',
+                borderColor: 'var(--vscode-editorWidget-border)'
             }
         },
         checked: {
-            background: 'var(--vscode-button-background)',
+            background: 'var(--vscode-editorWidget-background)',
             hover: {
-                background: 'var(--vscode-button-hoverBackground)',
-                borderColor: 'var(--vscode-contrastActiveBorder, transparent)'
+                background: 'var(--vscode-editorWidget-background)',
+                borderColor: 'var(--vscode-editorWidget-border)'
             }
         },
         focus: {
@@ -136,7 +137,22 @@ const COLORS = {
         }
     },
     thumb: {
-        background: 'var(--vscode-button-foreground)'
+        unchecked: {
+            background: 'var(--vscode-button-secondaryBackground)',
+            borderColor: 'var(--vscode-button-border)',
+            hover: {
+                borderColor: 'var(--vscode-button-border)',
+                background: 'var(--vscode-button-secondaryHoverBackground)'
+            }
+        },
+        checked: {
+            background: 'var(--vscode-button-background)',
+            borderColor: 'var(--vscode-button-border)',
+            hover: {
+                borderColor: 'var(--vscode-button-border)',
+                background: 'var(--vscode-button-hoverBackground)'
+            }
+        }
     }
 };
 
@@ -263,9 +279,6 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                         background: COLORS.pill.checked.hover.background,
                         borderColor: COLORS.pill.checked.hover.borderColor
                     },
-                    [`:hover .ms-Toggle-thumb`]: {
-                        backgroundColor: COLORS.thumb.background
-                    },
                     ':disabled': {
                         background: COLORS.pill.checked.background,
                         borderColor: COLORS.pill.borderColor,
@@ -273,13 +286,10 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     },
                     ...(!styleProps.checked && {
                         background: COLORS.pill.unchecked.background,
-                        borderStyle: 'dashed',
+                        borderStyle: 'solid',
                         ':hover': {
                             background: COLORS.pill.unchecked.hover.background,
                             borderColor: COLORS.pill.unchecked.hover.borderColor
-                        },
-                        [`:hover .ms-Toggle-thumb`]: {
-                            backgroundColor: COLORS.thumb.background
                         },
                         ':disabled': {
                             background: COLORS.pill.unchecked.background,
@@ -300,7 +310,20 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     width: sizeInfo?.circle.width,
                     borderWidth: sizeInfo?.circle.borderWidth,
                     backgroundPosition: 'center',
-                    backgroundColor: COLORS.thumb.background
+                    borderColor: COLORS.thumb.checked.borderColor,
+                    backgroundColor: COLORS.thumb.checked.background,
+                    ':hover': {
+                        backgroundColor: COLORS.thumb.checked.hover.background,
+                        borderColor: COLORS.thumb.checked.hover.borderColor
+                    },
+                    ...(!styleProps.checked && {
+                        borderColor: COLORS.thumb.unchecked.borderColor,
+                        backgroundColor: COLORS.thumb.unchecked.background,
+                        ':hover': {
+                            backgroundColor: COLORS.thumb.unchecked.hover.background,
+                            borderColor: COLORS.thumb.unchecked.hover.borderColor
+                        }
+                    })
                 }
             };
         };
