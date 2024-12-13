@@ -1,5 +1,25 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.7.15
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.48
+
+## 0.7.14
+
+### Patch Changes
+
+-   1bb4d48: adds new module @sap-ux/abap-deploy-config-sub-generator
+
+## 0.7.13
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/telemetry@0.5.47
+
 ## 0.7.12
 
 ### Patch Changes

@@ -1,5 +1,35 @@
 # @sap-ux/app-config-writer
 
+## 0.5.7
+
+### Patch Changes
+
+-   29cdac8: fix: add missing logger parameter to convert preview-config
+
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [3ebd767]
+    -   @sap-ux/store@1.0.0
+    -   @sap-ux/ui5-config@0.26.0
+
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [727fd86]
+    -   @sap-ux/axios-extension@1.17.7
+
+## 0.5.4
+
+### Patch Changes
+
+-   e93797a: Added the `convert` command to convert local preview files of a project to virtual files.
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/axios-extension@1.17.6
+
 ## 0.5.3
 
 ### Patch Changes

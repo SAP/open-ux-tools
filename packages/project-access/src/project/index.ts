@@ -37,7 +37,7 @@ export {
     findCapProjectRoot,
     findRootsForPath
 } from './search';
-export { getWebappPath, readUi5Yaml } from './ui5-config';
+export { getWebappPath, readUi5Yaml, getAllUi5YamlFileNames } from './ui5-config';
 export { getMtaPath } from './mta';
 export { createApplicationAccess, createProjectAccess } from './access';
 export { updatePackageScript, hasUI5CliV3 } from './script';

@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.4
+
+### Patch Changes
+
+-   01c5695: Fix an issue when running the test multiple times
+
 ## 5.3.3
 
 ### Patch Changes

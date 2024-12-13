@@ -286,6 +286,7 @@ export class FlpSandbox {
                     params['sap-ui-xx-viewCache'] = 'false';
                     params['fiori-tools-rta-mode'] = 'true';
                     params['sap-ui-rta-skip-flex-validation'] = 'true';
+                    params['sap-ui-xx-condense-changes'] = 'true';
                     res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
                     return;
                 }
@@ -307,6 +308,7 @@ export class FlpSandbox {
 
         // add route for the sandbox html
         this.router.get(this.config.path, (async (req: EnhancedRequest, res: Response, next: NextFunction) => {
+            await this.setApplicationDependencies();
             // inform the user if a html file exists on the filesystem
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const file = await this.project.byPath(this.config.path);

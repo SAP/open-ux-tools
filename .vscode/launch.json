@@ -167,7 +167,8 @@
             "cwd": "${workspaceFolder}/packages/fiori-freestyle-writer",
             "env": {
                 "UX_DEBUG": "false",
-                "UX_DEBUG_FULL": "false"
+                "UX_DEBUG_FULL": "false",
+                "FIORI_TOOLS_DISABLE_SECURE_STORE": "true"
             }
         },
         {

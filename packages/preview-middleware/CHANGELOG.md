@@ -1,5 +1,46 @@
 # @sap-ux/preview-middleware
 
+## 0.16.149
+
+### Patch Changes
+
+-   77cf576: Load changes from workspace in Preview after deployment
+
+## 0.16.148
+
+### Patch Changes
+
+-   Updated dependencies [3ebd767]
+    -   @sap-ux/adp-tooling@0.12.96
+
+## 0.16.147
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/adp-tooling@0.12.95
+
+## 0.16.146
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.94
+
+## 0.16.145
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.93
+
+## 0.16.144
+
+### Patch Changes
+
+-   e93797a: Added the `convert` command to convert local preview files of a project to virtual files.
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/adp-tooling@0.12.92
+
 ## 0.16.143
 
 ### Patch Changes
