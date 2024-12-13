@@ -24,8 +24,8 @@ export class ToggleSemanticDateRangeFilterBar
     private isUseDateRangeTypeEnabled = false;
 
     async initialize(): Promise<void> {
-        const isUI5VersionNotSupported = await areManifestChangesSupported();
-        if (isUI5VersionNotSupported) {
+        const manifestChangesSupported = await areManifestChangesSupported(this.context.manifest);
+        if (!manifestChangesSupported) {
             return;
         }
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];

@@ -15,7 +15,7 @@ export interface DescriptorVariant {
 export interface DescriptorVariantContent {
     changeType: string;
     content: Record<string, unknown>;
-    texts?: string;
+    texts?: string | { i18n?: string };
 }
 
 export interface ToolsSupport {
@@ -102,8 +102,8 @@ export interface NewInboundNavigation {
     semanticObject: string;
     /** Operations which can be performed on a semantic object. */
     action: string;
-    //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
-    additionalParameters?: object;
+    /** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+    additionalParameters?: string;
     /** Title associated with the inbound navigation. */
     title: string;
     /** Optional: Subtitle associated with the inbound navigation. */
@@ -114,7 +114,7 @@ export interface InternalInboundNavigation extends NewInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
     /** Flag indicating if the new inbound navigation should be added. */
-    addInboundId: boolean;
+    addInboundId?: boolean;
 }
 
 export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
@@ -215,6 +215,65 @@ export interface AnnotationFileChange extends CommonChangeProperties {
         };
     };
 }
+
+export interface ParamCheck {
+    shouldApply: boolean;
+    value: string | undefined;
+}
+
+export interface ParameterOptions {
+    required: boolean;
+    filter?: Value;
+    defaultValue?: Value;
+    renameTo?: string;
+}
+
+export interface Value {
+    value: string;
+    format: string;
+}
+
+export interface Parameter {
+    [key: string]: ParameterOptions;
+}
+
+export type ParameterRules = {
+    /**
+     * Function that checks whether param has empty value, e.g parameter defined in the following format has empty value: param1=
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    isEmptyParam(param: string): ParamCheck;
+    /**
+     * Function that define whether param is mandatory, param which is placed inside () is not mandatory
+     *
+     * @param {string} param - param string
+     * @returns {boolean} whether param string is mandatory or not
+     */
+    isMandatoryParam(param: string): boolean;
+    /**
+     * Function that checks whehter param has filter value, e.g parameter value placed inside <> indicates for filter value: param1=<value>
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    shouldHavеFilteredValue(param: string): ParamCheck;
+    /**
+     * Function that checks whether parameter has rename to value, e.g param1=>value
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    shouldRenameTo(param: string): ParamCheck;
+    /**
+     * Function thath checks whether parameter value should have reference as format value, e.g param1=%%value%%
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    isReference(param: string): ParamCheck;
+};
 
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
@@ -548,6 +607,17 @@ export interface CustomConfig {
         environment: OperationsType;
         support: ToolsSupport;
     };
+}
+
+export type CloudCustomTaskConfigTarget =
+    | DestinationAbapTarget
+    | (Pick<UrlAbapTarget, 'url' | 'client' | 'scp' | 'authenticationType'> & { ignoreCertErrors?: boolean });
+
+export interface CloudCustomTaskConfig {
+    type: string;
+    appName: string | undefined;
+    languages: Language[];
+    target: AbapTarget;
 }
 
 export interface InboundChangeContentAddInboundId {

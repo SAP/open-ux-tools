@@ -1,5 +1,35 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.42
+
+### Patch Changes
+
+-   62c73b8: CPE - Hide Quick Actions in V2 application, if the application has old manifest structure.
+
+## 0.11.41
+
+### Patch Changes
+
+-   76d5dcb: CPE - Update tooltip text for disabled table filtering variant quick action
+
+## 0.11.40
+
+### Patch Changes
+
+-   0fb08df: Use ui5 version specific flp sandbox template instead of dynamic bootstrap
+
+## 0.11.39
+
+### Patch Changes
+
+-   c10bf9f: fix: Various lint error fixes and code improvements
+
+## 0.11.38
+
+### Patch Changes
+
+-   70e6d46: CPE - Disable Add Custom Column Quick Action, if table rows are required and not available
+
 ## 0.11.37
 
 ### Patch Changes

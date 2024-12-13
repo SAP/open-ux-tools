@@ -5,29 +5,78 @@
                 "uri": "<%=path%>",
                 "type": "OData",
                 "settings": {
-                    "annotations": [<%if (locals.annotations && annotations.technicalName) {%>
-                        "<%- annotations.name %>"<% if (locals.localAnnotationsName) {%>,<%}%><% } %><% if (locals.localAnnotationsName) { %>
-                        "<%- localAnnotationsName %>"<% } %>
-                    ]<% if (locals.metadata) { %>,
-                    "localUri": "localService/metadata.xml" <% } %><%if (version === '4') {%>,
+                    "annotations": [
+                    <% if (locals.annotations && typeof annotations !== 'undefined') { %>
+                        <% if (annotations.length) { %>
+                            <% annotations.forEach(function(annotation, index) { %>
+                                <% if (annotation.technicalName) { %>
+                                    "<%= annotation.name %>"<% if (index < annotations.length - 1 || locals.localAnnotationsName && (!locals.localAnnotationsName.length || locals.localAnnotationsName.length > 0)) { %>,<% } %>
+                                <% } %>
+                            <% }); %>
+                        <% } else if (annotations.technicalName) { %>
+                            "<%= annotations.name %>"<% if (locals.localAnnotationsName && (!locals.localAnnotationsName.length || locals.localAnnotationsName.length > 0)) {%>,<%}%><% } %>
+                        <% } %>
+                    <% if (locals.localAnnotationsName && typeof localAnnotationsName !== 'undefined') { %>
+                        <% if (Array.isArray(localAnnotationsName)) { %>
+                            <% localAnnotationsName.forEach(function(localAnnotation, index) { %>
+                                "<%- localAnnotation %>"<% if (index < localAnnotationsName.length - 1){ %>,<% } %>
+                            <% }); %>
+                        <% } else if (localAnnotationsName) { %>
+                                "<%- localAnnotationsName %>"
+                        <% } %>
+                    <% } %>
+                    ]
+                    <% if (locals.metadata) { %>,
+                    "localUri": "localService/<%- name %>/metadata.xml" <% } %><%if (version === '4') {%>,
                     "odataVersion": "4.0"<% } %><%if (version === '2') {%>,
                     "odataVersion": "2.0"<% } %>
                 }
-            }<%if (locals.annotations && annotations.technicalName) {%>,
-            "<%- annotations.name %>": {
-                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(annotations.technicalName) %>',Version='0001')/$value/",
-                "type": "ODataAnnotation",
-                "settings": {
-                    "localUri": "localService/<%- annotations.technicalName %>.xml"
-                }
-            }<% } %><% if (locals.localAnnotationsName) { %>,
-            "<%- localAnnotationsName %>": {
-                "type": "ODataAnnotation",
-                "uri": "annotations/<%- localAnnotationsName %>.xml",
-                "settings": {
-                    "localUri": "annotations/<%- localAnnotationsName %>.xml"
-                }
-            } <% } %>
+            }
+            <% if (locals.annotations && typeof annotations !== 'undefined') { %>
+                <% if (annotations.length && annotations.length > 0) { %>
+                    <% annotations.forEach(function(annotation, index) { %>
+                        <% if (annotation.technicalName) { %>,
+                            "<%= annotation.name %>": {
+                                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(annotation.technicalName) %>',Version='0001')/$value/",
+                                "type": "ODataAnnotation",
+                                "settings": {
+                                    "localUri": "localService/<%- name %>/<%- annotation.technicalName %>.xml"
+                                }
+                            }
+                        <% } %>
+                    <% }); %>
+                <% } else if (annotations.technicalName) { %>,
+                    "<%= annotations.name %>": {
+                        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(annotations.technicalName) %>',Version='0001')/$value/",
+                        "type": "ODataAnnotation",
+                        "settings": {
+                            "localUri": "localService/<%- name %>/<%- annotations.technicalName %>.xml"
+                        }
+                    }
+                <% } %>
+            <% } %>
+            <% if (locals.localAnnotationsName && typeof localAnnotationsName !== 'undefined') { %>,
+                <% if (locals.localAnnotationsName && typeof localAnnotationsName !== 'undefined') { %>
+                    <% if (Array.isArray(localAnnotationsName)) { %>
+                        <% localAnnotationsName.forEach(function(localAnnotation, index) { %>
+                            "<%- localAnnotation %>": {
+                                "type": "ODataAnnotation",
+                                "uri": "annotations/<%- localAnnotation %>.xml",
+                                "settings": {
+                                    "localUri": "annotations/<%- localAnnotation %>.xml"
+                                }
+                            }<% if (index < localAnnotationsName.length - 1){ %>,<% } %>
+                        <% }); %>
+                    <% } else if (localAnnotationsName) { %>
+                        "<%- localAnnotationsName %>": {
+                            "type": "ODataAnnotation",
+                            "uri": "annotations/<%- localAnnotationsName %>.xml",
+                            "settings": {
+                                "localUri": "annotations/<%- localAnnotationsName %>.xml"
+                            }
+                        } <% } %>
+                <% } %>
+            <% } %>
         }
     },
     "sap.ui5": {

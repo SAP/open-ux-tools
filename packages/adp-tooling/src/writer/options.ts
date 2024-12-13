@@ -14,8 +14,13 @@ import type {
     Content,
     CloudApp,
     ChangeInboundNavigation,
-    InternalInboundNavigation
+    InternalInboundNavigation,
+    CloudCustomTaskConfig,
+    CloudCustomTaskConfigTarget
 } from '../types';
+import { parseParameters } from '../common';
+
+const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
 /**
  * Generate the configuration for the middlewares required for the ui5.yaml.
@@ -88,7 +93,7 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
  */
 function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig) {
     const backendConfig: Partial<FioriToolsProxyConfigBackend> = { ...config.target };
-    backendConfig.url ??= 'https://REQUIRED_FOR_VSCODE.example';
+    backendConfig.url ??= VSCODE_URL;
     backendConfig.path = '/sap';
 
     ui5Config.addFioriToolsAppReloadMiddleware();
@@ -178,21 +183,36 @@ function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
  * @returns list of required tasks.
  */
 function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget } & { app: CloudApp }): CustomTask[] {
+    let target: CloudCustomTaskConfigTarget;
+    if (config?.target?.destination) {
+        target = {
+            destination: config.target.destination,
+            url: config.target?.url ?? VSCODE_URL
+        };
+    } else {
+        target = {
+            url: config.target.url ?? VSCODE_URL,
+            authenticationType: config.target.authenticationType,
+            ignoreCertErrors: false
+        };
+    }
+
+    const configuration: CloudCustomTaskConfig = {
+        type: 'abap',
+        appName: config?.app?.bspName,
+        languages: config?.app?.languages?.map((language: Language) => {
+            return {
+                sap: language.sap,
+                i18n: language.i18n
+            };
+        }),
+        target
+    };
     return [
         {
             name: 'app-variant-bundler-build',
             beforeTask: 'escapeNonAsciiCharacters',
-            configuration: {
-                type: 'abap',
-                destination: config.target?.destination,
-                appName: config?.app?.bspName,
-                languages: config?.app?.languages?.map((language: Language) => {
-                    return {
-                        sap: language.sap,
-                        i18n: language.i18n
-                    };
-                })
-            }
+            configuration
         }
     ];
 }
@@ -256,6 +276,10 @@ function getInboundChangeContentWithNewInboundID(
     flpConfiguration: InternalInboundNavigation,
     appId: string
 ): InboundChangeContentAddInboundId {
+    const parameters = flpConfiguration?.additionalParameters
+        ? parseParameters(flpConfiguration?.additionalParameters)
+        : {};
+
     const content: InboundChangeContentAddInboundId = {
         inbound: {
             [flpConfiguration.inboundId]: {
@@ -264,7 +288,7 @@ function getInboundChangeContentWithNewInboundID(
                 title: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.title}}`,
                 signature: {
                     additionalParameters: 'allowed',
-                    parameters: flpConfiguration.additionalParameters ?? {}
+                    parameters
                 }
             }
         }

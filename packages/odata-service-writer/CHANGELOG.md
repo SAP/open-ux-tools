@@ -1,5 +1,29 @@
 # @sap-ux/odata-service-writer
 
+## 0.24.2
+
+### Patch Changes
+
+-   9f14de1: Improved manifest.json template to allow services with empty remote annotations array and added support for multiple local annotations.
+
+## 0.24.1
+
+### Patch Changes
+
+-   0c9e896: Update existing services in a way that is required for multiple services support - service files in their respective folders.
+
+## 0.24.0
+
+### Minor Changes
+
+-   73475e5: Support for multiple services and multiple annotations per service.
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/mockserver-config-writer@0.7.0
+    -   @sap-ux/ui5-config@0.26.0
+
 ## 0.23.3
 
 ### Patch Changes

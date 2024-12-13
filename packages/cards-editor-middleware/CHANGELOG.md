@@ -1,5 +1,30 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.4.41
+
+### Patch Changes
+
+-   b7c346c: fix: Moving Init.js functionality inline in flpSandbox.html
+
+## 0.4.40
+
+### Patch Changes
+
+-   1b3c47d: feat: Ensure UI5 2.x compliance
+
+## 0.4.39
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+
+## 0.4.38
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.8
+
 ## 0.4.37
 
 ### Patch Changes
