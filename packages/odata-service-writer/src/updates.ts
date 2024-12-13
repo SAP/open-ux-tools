@@ -102,28 +102,26 @@ function enhanceManifestDatasources(
         };
     }
     // Handle local annotations used by service
-    if (serviceLocalAnnotations) {
-        if (Array.isArray(serviceLocalAnnotations)) {
-            serviceLocalAnnotations.forEach((localAnnotation: string) => {
-                annotations.push(localAnnotation);
-                annotationDataSources[localAnnotation] = {
-                    type: 'ODataAnnotation',
-                    uri: `annotations/${localAnnotation}.xml`,
-                    settings: {
-                        localUri: `annotations/${localAnnotation}.xml`
-                    }
-                };
-            });
-        } else if (serviceLocalAnnotations) {
-            annotations.push(serviceLocalAnnotations);
-            annotationDataSources[serviceLocalAnnotations] = {
+    if (Array.isArray(serviceLocalAnnotations)) {
+        serviceLocalAnnotations.forEach((localAnnotation: string) => {
+            annotations.push(localAnnotation);
+            annotationDataSources[localAnnotation] = {
                 type: 'ODataAnnotation',
-                uri: `annotations/${serviceLocalAnnotations}.xml`,
+                uri: `annotations/${localAnnotation}.xml`,
                 settings: {
-                    localUri: `annotations/${serviceLocalAnnotations}.xml`
+                    localUri: `annotations/${localAnnotation}.xml`
                 }
             };
-        }
+        });
+    } else if (serviceLocalAnnotations) {
+        annotations.push(serviceLocalAnnotations);
+        annotationDataSources[serviceLocalAnnotations] = {
+            type: 'ODataAnnotation',
+            uri: `annotations/${serviceLocalAnnotations}.xml`,
+            settings: {
+                localUri: `annotations/${serviceLocalAnnotations}.xml`
+            }
+        };
     }
     const settings = {
         annotations
