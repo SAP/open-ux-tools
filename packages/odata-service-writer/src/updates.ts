@@ -24,7 +24,7 @@ function enhanceManifestModels(
     manifest: Manifest
 ): void {
     const models = manifest?.['sap.ui5']?.models ?? {};
-    const modelSettings: ManifestNamespace.Ui5Setting = {};
+    let modelSettings: ManifestNamespace.Ui5Setting = {};
     if (serviceVersion === '4') {
         if (includeSynchronizationMode) {
             modelSettings['synchronizationMode'] = 'None';
@@ -33,11 +33,25 @@ function enhanceManifestModels(
         modelSettings['autoExpandSelect'] = true;
         modelSettings['earlyRequests'] = true;
     }
-    models[serviceModel] = {
-        dataSource: serviceName,
-        preload: true,
-        settings: modelSettings
-    };
+    if (models[serviceModel]?.settings) {
+        // Merge settings for existing model
+        modelSettings = {
+            ...models[serviceModel].settings,
+            ...modelSettings
+        };
+        models[serviceModel] = {
+            ...models[serviceModel],
+            dataSource: serviceName,
+            preload: true,
+            settings: modelSettings
+        };
+    } else {
+        models[serviceModel] = {
+            dataSource: serviceName,
+            preload: true,
+            settings: modelSettings
+        };
+    }
     if (manifest['sap.ui5']) {
         manifest['sap.ui5'] = {
             ...manifest['sap.ui5'],
