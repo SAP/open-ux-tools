@@ -9,7 +9,6 @@ import {
     isProjectIntegrityEnabled,
     updateProjectIntegrity
 } from '../integrity';
-import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { CheckIntegrityResult, Content } from '../types';
 
 export const fioriIntegrityDataPath = join('.fiori-ai/ai-integrity.json');
@@ -35,9 +34,6 @@ async function getFileList(projectRoot: string): Promise<string[]> {
     } else {
         throw new Error(`File ${servicesCds} does not exist.`);
     }
-
-    const csvFiles = await findFilesByExtension('.csv', projectRoot, ['node_modules']);
-    fileList.push(...csvFiles);
 
     return fileList;
 }
