@@ -23,6 +23,12 @@ const DEFAULT_INTENT: DefaultIntent = {
     action: 'preview'
 };
 
+const DEFAULT_TEST_CONFIGS: TestConfig[] = [
+    { framework: 'Testsuite', path: 'test/testsuite.qunit.html' },
+    { framework: 'OPA5', path: 'test/opaTests.qunit.html' },
+    { framework: 'QUnit', path: 'test/unitTests.qunit.html' }
+];
+
 /**
  * Checks if a script can be converted based on the used UI5 yaml configuration file.
  *
@@ -272,28 +278,62 @@ export function updateTestConfig(
 ): PreviewConfig['test'] {
     testConfiguration = testConfiguration ?? [];
 
-    const updateFrameworkPath = (framework: TestConfig['framework'], defaultPath: string): void => {
-        const test = testConfiguration.find((test) => test.framework === framework);
-        if (test) {
-            test.path = path;
-            if (test.path === defaultPath) {
-                delete test.path;
-            }
-        } else if (path?.includes(defaultPath)) {
-            testConfiguration.push({ framework });
-        } else {
-            testConfiguration.push({ framework, path });
-        }
-    };
-
+    let framework: TestConfig['framework'] | undefined;
     if (path?.includes('testsuite.qunit.html')) {
-        updateFrameworkPath('Testsuite', 'test/testsuite.qunit.html');
+        framework = 'Testsuite';
     } else if (path?.includes('opaTests.qunit.html')) {
-        updateFrameworkPath('OPA5', 'test/opaTests.qunit.html');
+        framework = 'OPA5';
     } else if (path?.includes('unitTests.qunit.html')) {
-        updateFrameworkPath('QUnit', 'test/unitTests.qunit.html');
+        framework = 'QUnit';
+    }
+
+    if (!framework) {
+        return testConfiguration;
+    }
+
+    const defaultPath = DEFAULT_TEST_CONFIGS.find((config) => config.framework === framework)?.path ?? '';
+    const testConfig = testConfiguration.find((test) => test.framework === framework);
+    if (testConfig) {
+        testConfig.path = path;
+        if (testConfig.path === defaultPath) {
+            //sanitize default path
+            delete testConfig.path;
+        }
+    } else if (path?.includes(defaultPath)) {
+        testConfiguration.push({ framework });
+    } else {
+        testConfiguration.push({ framework, path });
     }
     return testConfiguration;
+}
+
+/**
+ * Updates the default test configurations in the UI5 yaml file in case they don't exist yet.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used for the conversion
+ */
+export async function updateDefaultTestConfig(fs: Editor, basePath: string): Promise<void> {
+    let ui5YamlConfig: UI5Config;
+    try {
+        //todo: is adjusting ui5.yaml sufficient? Or do other yaml files neeed to be adjusted as well?
+        ui5YamlConfig = await readUi5Yaml(basePath, FileName.Ui5Yaml, fs);
+    } catch (error) {
+        return;
+    }
+    const previewMiddleware = (await getPreviewMiddleware(ui5YamlConfig)) as CustomMiddleware<PreviewConfig>;
+    DEFAULT_TEST_CONFIGS.forEach((defaultTest) => {
+        if (
+            previewMiddleware.configuration?.test?.some((testConfig) => testConfig.framework === defaultTest.framework)
+        ) {
+            //do not touch existing test config
+            return;
+        }
+        updateTestConfig(previewMiddleware.configuration.test, defaultTest.path);
+    });
+    ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
+    const yamlPath = join(basePath, FileName.Ui5Yaml);
+    fs.write(yamlPath, ui5YamlConfig.toString());
 }
 
 /**
