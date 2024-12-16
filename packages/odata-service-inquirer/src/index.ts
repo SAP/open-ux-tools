@@ -24,6 +24,9 @@ import {
     type SapSystemType
 } from './types';
 import { getPromptHostEnvironment, PromptState } from './utils';
+import { validateSystemSelection } from './prompts/datasources/sap-system/system-selection';
+import { getCredentialsPrompts } from './prompts/datasources/sap-system/credentials/';
+import { ConnectionValidator } from './prompts/connectionValidator';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -116,5 +119,8 @@ export {
     // @deprecated - temp export to support to support open source migration
     type SapSystemType,
     NewSystemChoice,
-    CfAbapEnvServiceChoice
+    CfAbapEnvServiceChoice,
+    validateSystemSelection,
+    getCredentialsPrompts,
+    ConnectionValidator
 };

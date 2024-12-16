@@ -281,6 +281,10 @@ export type ServiceSelectionPromptOptions = {
      * Used to validate the selected service is of the required odata version
      */
     requiredOdataVersion?: OdataVersion;
+    /**
+     * Hide the service selection prompt.
+     */
+    hide?: boolean;
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
 
 export type SystemNamePromptOptions = {

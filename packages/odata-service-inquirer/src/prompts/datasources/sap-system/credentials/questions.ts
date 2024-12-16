@@ -20,12 +20,14 @@ export enum BasicCredentialsPromptNames {
  * @param sapClient
  * @param sapClient.sapClient the sapClient value to be used along with the credentials validation
  * @param sapClient.isValid validation of credentials is deferred until a valid sapClient is provided or undefined
+ * @param systemSelection
  * @returns the credentials prompts
  */
 export function getCredentialsPrompts<T extends Answers>(
     connectionValidator: ConnectionValidator,
     promptNamespace?: string,
-    sapClient?: { sapClient: string | undefined; isValid: boolean }
+    sapClient?: { sapClient: string | undefined; isValid: boolean },
+    systemSelection?: SystemSelectionAnswerType
 ): Question<T>[] {
     const usernamePromptName = `${promptNamespace ? promptNamespace + ':' : ''}${
         BasicCredentialsPromptNames.systemUsername
@@ -76,7 +78,8 @@ export function getCredentialsPrompts<T extends Answers>(
                     return false;
                 }
                 // We may have a previously selected system
-                const selectedSystem = answers?.[promptNames.systemSelection] as SystemSelectionAnswerType;
+                const selectedSystem =
+                    (answers?.[promptNames.systemSelection] as SystemSelectionAnswerType) ?? systemSelection;
                 let selectedSystemClient;
                 let isSystem = true;
                 if (selectedSystem?.type === 'backendSystem') {
