@@ -6,6 +6,7 @@ import { Toggle } from '@fluentui/react';
 import type { UIComponentMessagesProps } from '../../helper/ValidationMessage';
 import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage';
 import { UIIcon } from '../UIIcon';
+import { UiIcons } from '../Icons';
 
 export interface UIToggleProps extends IToggleProps, UIComponentMessagesProps {
     inlineLabelLeft?: boolean;
@@ -215,7 +216,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
             if (thumbElement) {
                 const style = ICON_STYLE.get(getIconStyleKey(this.props.size ?? UIToggleSize.Standard, isSwitchOn));
                 ReactDOM.render(
-                    <UIIcon iconName={isSwitchOn ? 'SwitchOn' : 'SwitchOff'} style={style} />,
+                    <UIIcon iconName={isSwitchOn ? UiIcons.SwitchOn : UiIcons.SwitchOff} style={style} />,
                     thumbElement
                 );
             }
