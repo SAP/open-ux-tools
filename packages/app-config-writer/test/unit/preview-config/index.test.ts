@@ -45,6 +45,7 @@ describe('index', () => {
                   configuration:
                     test:
                       - framework: "Testsuite"
+                        path: "yet/another/path.html"
                       - framework: "OPA5"
             `
         );
@@ -66,6 +67,7 @@ describe('index', () => {
             getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
 
             await convertToVirtualPreview(basePath, true, logger, fs);
+            expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
             expect(updatePreviewMiddlewareConfigsSpy).toHaveBeenCalled();
