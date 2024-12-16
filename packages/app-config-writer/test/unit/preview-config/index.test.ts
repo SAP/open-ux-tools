@@ -32,12 +32,40 @@ describe('index', () => {
                 devDependencies: { '@ui5/cli': '3.0.0', '@sap-ux/ui5-middleware-fe-mockserver': '6.6.6' }
             })
         );
+        fs.write(
+            join(basePath, 'ui5.yaml'),
+            `
+            specVersion: '4.0'
+            metadata:
+            name: com.sap.cap.fe.ts.sample
+            server:
+                customMiddleware:
+                - name: preview-middleware
+                  afterMiddleware: compression
+                  configuration:
+                    test:
+                      - framework: "Testsuite"
+                      - framework: "OPA5"
+            `
+        );
     });
     describe('convertToVirtualPreview', () => {
         test('convert project to virtual preview', async () => {
             getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
 
             await convertToVirtualPreview(basePath, false, logger, fs);
+            expect(checkPrerequisitesSpy).toHaveBeenCalled();
+            expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
+            expect(updatePreviewMiddlewareConfigsSpy).toHaveBeenCalled();
+            expect(renameDefaultSandboxesSpy).toHaveBeenCalled();
+            expect(deleteNoLongerUsedFilesSpy).toHaveBeenCalled();
+            expect(updateVariantsCreationScriptSpy).toHaveBeenCalled();
+        });
+
+        test('convert project to virtual preview (including tests)', async () => {
+            getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
+
+            await convertToVirtualPreview(basePath, true, logger, fs);
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
             expect(updatePreviewMiddlewareConfigsSpy).toHaveBeenCalled();

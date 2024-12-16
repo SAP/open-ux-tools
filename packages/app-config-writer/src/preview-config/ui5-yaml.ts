@@ -266,7 +266,10 @@ export function updatePreviewMiddlewareConfig(
  * @param path - the path
  * @returns the updated test configuration
  */
-function updateTestConfig(testConfiguration: PreviewConfig['test'], path: string | undefined): PreviewConfig['test'] {
+export function updateTestConfig(
+    testConfiguration: PreviewConfig['test'],
+    path: string | undefined
+): PreviewConfig['test'] {
     testConfiguration = testConfiguration ?? [];
 
     const updateFrameworkPath = (framework: TestConfig['framework'], defaultPath: string): void => {
