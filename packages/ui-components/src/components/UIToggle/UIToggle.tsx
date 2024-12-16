@@ -167,7 +167,7 @@ const COLORS = {
  * @extends {React.Component<IToggleProps, {}>}
  */
 export class UIToggle extends React.Component<UIToggleProps, {}> {
-    private toggleRootRef: React.RefObject<HTMLDivElement>;
+    private readonly toggleRootRef: React.RefObject<HTMLDivElement>;
     /**
      * Initializes component properties.
      *
