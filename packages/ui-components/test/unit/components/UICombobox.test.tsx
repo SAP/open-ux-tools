@@ -645,7 +645,7 @@ describe('<UIComboBox />', () => {
         it('No Error case', () => {
             const autofill = wrapper.find(Autofill);
             const autofillProps = autofill.props();
-    
+
             expect('aria-invalid' in autofillProps).toEqual(true);
             expect(autofillProps['aria-invalid']).toEqual(false);
         });
@@ -657,7 +657,7 @@ describe('<UIComboBox />', () => {
 
             const autofill = wrapper.find(Autofill);
             const autofillProps = autofill.props();
-    
+
             expect('aria-invalid' in autofillProps).toEqual(true);
             expect(autofillProps['aria-invalid']).toEqual(true);
         });
