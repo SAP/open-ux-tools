@@ -31,7 +31,7 @@ describe('<UIToggle />', () => {
                     padding: '',
                     height: 18,
                     width: 30,
-                    innerPadding: '0 2px',
+                    innerPadding: '0 1px',
                     thumbHeight: 14,
                     thumbWidth: 14,
                     borderWidth: 1
@@ -46,7 +46,7 @@ describe('<UIToggle />', () => {
                     padding: '',
                     height: 18,
                     width: 30,
-                    innerPadding: '0 2px',
+                    innerPadding: '0 1px',
                     thumbHeight: 14,
                     thumbWidth: 14,
                     borderWidth: 1
@@ -61,7 +61,7 @@ describe('<UIToggle />', () => {
                     padding: '2px 0',
                     height: 14,
                     width: 30,
-                    innerPadding: '0 2px',
+                    innerPadding: '0 1px',
                     thumbHeight: 10,
                     thumbWidth: 10,
                     borderWidth: 1
@@ -106,13 +106,13 @@ describe('<UIToggle />', () => {
                   },
                   ":hover .ms-Toggle-thumb": Object {
                     "background": "var(--vscode-contrastBorder, var(--vscode-button-secondaryHoverBackground))",
-                    "borderColor": "var(--vscode-button-border)",
+                    "borderColor": "var(--vscode-button-border, transparent)",
                   },
                   "background": "var(--vscode-editorWidget-background)",
                   "borderColor": "var(--vscode-editorWidget-border)",
                   "borderStyle": "solid",
                   "height": 18,
-                  "padding": "0 2px",
+                  "padding": "0 1px",
                   "selectors": Object {
                     ":focus::after": Object {
                       "border": "none !important",
@@ -126,11 +126,11 @@ describe('<UIToggle />', () => {
                 Object {
                   ":hover": Object {
                     "background": "var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))",
-                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border))",
+                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
                   },
                   "backgroundColor": "var(--vscode-button-secondaryBackground)",
                   "backgroundPosition": "center",
-                  "borderColor": "var(--vscode-button-border)",
+                  "borderColor": "var(--vscode-button-border, transparent)",
                   "borderWidth": 1,
                   "height": 14,
                   "width": 14,
@@ -145,18 +145,18 @@ describe('<UIToggle />', () => {
                 Object {
                   ":disabled": Object {
                     "background": "var(--vscode-editorWidget-background)",
-                    "borderColor": "var(--vscode-editorWidget-border)",
+                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
                     "opacity": 0.4,
                   },
                   ":hover": Object {
                     "background": "var(--vscode-editorWidget-background)",
-                    "borderColor": "var(--vscode-editorWidget-border)",
+                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
                   },
                   "background": "var(--vscode-editorWidget-background)",
-                  "borderColor": "var(--vscode-editorWidget-border)",
+                  "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
                   "borderStyle": "solid",
                   "height": 18,
-                  "padding": "0 2px",
+                  "padding": "0 1px",
                   "selectors": Object {
                     ":focus::after": Object {
                       "border": "none !important",
@@ -170,11 +170,11 @@ describe('<UIToggle />', () => {
                 Object {
                   ":hover": Object {
                     "background": "var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))",
-                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border))",
+                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
                   },
                   "backgroundColor": "var(--vscode-button-background)",
                   "backgroundPosition": "center",
-                  "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border))",
+                  "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
                   "borderWidth": 1,
                   "height": 14,
                   "width": 14,
