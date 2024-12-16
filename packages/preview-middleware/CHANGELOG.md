@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.150
+
+### Patch Changes
+
+-   5c4dc74: feat: add a more precise method to determine the current UI5 version
+
 ## 0.16.149
 
 ### Patch Changes
