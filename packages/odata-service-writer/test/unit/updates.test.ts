@@ -5,17 +5,14 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { OdataService, CdsAnnotationsInfo } from '../../src';
 import { OdataVersion, ServiceType } from '../../src';
-import * as ejs from 'ejs';
 import { expectedEdmxManifest } from '../test-data/manifest-json/edmx-manifest';
 import { expectedEdmxManifestMultipleAnnotations } from '../test-data/manifest-json/edmx-manifest-multiple-annotations';
 import { expectedEdmxManifestMultipleServices } from '../test-data/manifest-json/edmx-manifest-multiple-services';
 import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest';
-import type { Package } from '@sap-ux/project-access';
-
-jest.mock('ejs', () => ({
-    __esModule: true, // Allows mocking of ejs funcs
-    ...(jest.requireActual('ejs') as {})
-}));
+import { expectedEdmxManifestLocalAnnotation } from '../test-data/manifest-json/edmx-manifest-local-annotation'; // single local annotation
+import { expectedEdmxManifestLocalAnnotations } from '../test-data/manifest-json/edmx-manifest-local-annotations'; // multiple local annotations
+import { expectedEdmxManifesNoAnnotations } from '../test-data/manifest-json/edmx-manifest-no-annotations'; // no any annotations
+import type { Manifest, Package } from '@sap-ux/project-access';
 
 describe('updates', () => {
     let fs: Editor;
@@ -24,34 +21,16 @@ describe('updates', () => {
     });
 
     describe('updateManifest', () => {
-        test('Ensure OdataService properties are not interpretted as ejs render options', async () => {
-            const testManifest = {
-                'sap.app': {
-                    id: 'test.update.manifest'
-                }
-            };
-
-            const service: OdataService = {
-                version: OdataVersion.v2,
-                client: '123',
-                model: 'amodel',
-                name: 'aname',
-                path: '/a/path'
-            };
-
-            fs.writeJSON('./webapp/manifest.json', testManifest);
-            const ejsMock = jest.spyOn(ejs, 'render');
-            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
-            // Passing empty options prevents ejs interpretting OdataService properties as ejs options
-            expect(ejsMock).toHaveBeenCalledWith(expect.anything(), service, {});
+        afterEach(() => {
+            jest.restoreAllMocks();
         });
         test.each([
-            ['1.110.0', true],
-            ['1.115.0', true],
-            ['', false],
-            ['1.105.0', false],
-            [undefined, false],
-            [['1.120.10', '2.0.0'], true]
+            ['1.110.0', 'None'],
+            ['1.115.0', undefined],
+            ['', undefined],
+            ['1.105.0', 'None'],
+            [undefined, undefined],
+            [['1.120.10', '2.0.0'], undefined]
         ])('Ensure synchronizationMode is correctly set for minUI5Version %s', async (minUI5Version, syncMode) => {
             const testManifest = {
                 'sap.app': {
@@ -74,16 +53,11 @@ describe('updates', () => {
 
             // Write the test manifest to a file
             fs.writeJSON('./webapp/manifest.json', testManifest);
-            const ejsMock = jest.spyOn(ejs, 'render');
 
             // Call updateManifest
-            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
-
-            expect(ejsMock).toHaveBeenCalledWith(
-                expect.anything(),
-                { ...service, includeSynchronizationMode: syncMode },
-                {}
-            );
+            await updateManifest('./', service, fs);
+            const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+            expect(manifestJson['sap.ui5']?.models?.['amodel'].settings?.['synchronizationMode']).toEqual(syncMode);
         });
         test('Ensure manifest updates are updated as expected as in edmx projects', async () => {
             const testManifest = {
@@ -108,9 +82,150 @@ describe('updates', () => {
 
             fs.writeJSON('./webapp/manifest.json', testManifest);
             // Call updateManifest
-            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            await updateManifest('./', service, fs);
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedEdmxManifest);
+        });
+
+        test('Ensure manifest updates are updated as expected as in edmx projects with custom model settings', async () => {
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest'
+                },
+                'sap.ui5': {
+                    models: {
+                        amodel: {
+                            settings: {
+                                existingModelProp: true
+                            }
+                        }
+                    }
+                }
+            };
+            const service: OdataService = {
+                version: OdataVersion.v4,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path',
+                type: ServiceType.EDMX
+            };
+
+            fs.writeJSON('./webapp/manifest.json', testManifest);
+            // Call updateManifest
+            await updateManifest('./', service, fs);
+            const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+            expect(manifestJson['sap.ui5']?.models?.['amodel']?.settings).toStrictEqual({
+                autoExpandSelect: true,
+                earlyRequests: true,
+                existingModelProp: true,
+                operationMode: 'Server'
+            });
+        });
+
+        test('Ensure manifest updates are updated as expected as in edmx projects with local annotation', async () => {
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest',
+                    dataSources: {
+                        'mainService': {
+                            type: 'OData'
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    models: {
+                        '': {
+                            dataSource: 'mainService'
+                        }
+                    }
+                }
+            };
+            const service: OdataService = {
+                version: OdataVersion.v2,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path',
+                type: ServiceType.EDMX,
+                annotations: [], // No remote annotations
+                localAnnotationsName: 'localTest' // Local annotation
+            };
+            fs.writeJSON('./webapp/manifest.json', testManifest);
+            // Call updateManifest
+            await updateManifest('./', service, fs);
+            const manifestJson = fs.readJSON('./webapp/manifest.json');
+            expect(manifestJson).toEqual(expectedEdmxManifestLocalAnnotation);
+        });
+
+        test('Ensure manifest updates are updated as expected as in edmx projects with multiple local annotations', async () => {
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest',
+                    dataSources: {
+                        'mainService': {
+                            type: 'OData'
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    models: {
+                        '': {
+                            dataSource: 'mainService'
+                        }
+                    }
+                }
+            };
+            const service: OdataService = {
+                version: OdataVersion.v2,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path',
+                type: ServiceType.EDMX,
+                annotations: [], // No remote annotations
+                localAnnotationsName: ['localTest0', 'localTest1'] // Multiple local annotations
+            };
+            fs.writeJSON('./webapp/manifest.json', testManifest);
+            // Call updateManifest
+            await updateManifest('./', service, fs);
+            const manifestJson = fs.readJSON('./webapp/manifest.json');
+            expect(manifestJson).toEqual(expectedEdmxManifestLocalAnnotations);
+        });
+
+        test('Ensure manifest updates are updated as expected as in edmx projects without any annotations', async () => {
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest',
+                    dataSources: {
+                        'mainService': {
+                            type: 'OData'
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    models: {
+                        '': {
+                            dataSource: 'mainService'
+                        }
+                    }
+                }
+            };
+            const service: OdataService = {
+                version: OdataVersion.v2,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path',
+                type: ServiceType.EDMX,
+                annotations: [], // No remote annotations
+                localAnnotationsName: [] // No local annotations
+            };
+            fs.writeJSON('./webapp/manifest.json', testManifest);
+            // Call updateManifest
+            await updateManifest('./', service, fs);
+            const manifestJson = fs.readJSON('./webapp/manifest.json');
+            expect(manifestJson).toEqual(expectedEdmxManifesNoAnnotations);
         });
 
         test('Ensure manifest updates are updated as expected as in edmx projects with multiple annotations', async () => {
@@ -143,7 +258,7 @@ describe('updates', () => {
 
             fs.writeJSON('./webapp/manifest.json', testManifest);
             // Call updateManifest
-            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            await updateManifest('./', service, fs);
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedEdmxManifestMultipleAnnotations);
         });
@@ -185,7 +300,7 @@ describe('updates', () => {
 
             fs.writeJSON('./webapp/manifest.json', testManifest);
             // Call updateManifest
-            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            await updateManifest('./', service, fs);
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedEdmxManifestMultipleServices);
         });
@@ -212,7 +327,7 @@ describe('updates', () => {
             };
             fs.writeJSON('./webapp/manifest.json', testManifest);
             // Call updateManifest
-            await updateManifest('./', service, fs, join(__dirname, '../../templates'));
+            await updateManifest('./', service, fs);
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedCdsManifest);
         });

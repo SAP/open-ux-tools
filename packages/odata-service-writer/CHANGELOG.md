@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-writer
 
+## 0.25.0
+
+### Minor Changes
+
+-   036b48b: Removed ejs for manifest enhancements.
+
+## 0.24.2
+
+### Patch Changes
+
+-   9f14de1: Improved manifest.json template to allow services with empty remote annotations array and added support for multiple local annotations.
+
 ## 0.24.1
 
 ### Patch Changes
