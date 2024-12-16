@@ -41,7 +41,7 @@ const TOGGLE_SIZES = new Map<UIToggleSize, UIToggleSizeInfo>([
         {
             width: 30,
             height: 18,
-            padding: '0 2px',
+            padding: '0 1px',
             margin: '0',
             label: {
                 fontSize: 13,
@@ -59,7 +59,7 @@ const TOGGLE_SIZES = new Map<UIToggleSize, UIToggleSizeInfo>([
         {
             width: 30,
             height: 14,
-            padding: '0 2px',
+            padding: '0 1px',
             margin: '0',
             label: {
                 fontSize: 13,
@@ -117,9 +117,9 @@ const DISABLED_OPACITY = 0.4;
 
 const COLORS = {
     pill: {
-        borderColor: 'var(--vscode-editorWidget-border)',
         unchecked: {
             background: 'var(--vscode-editorWidget-background)',
+            borderColor: 'var(--vscode-editorWidget-border)',
             hover: {
                 background: 'var(--vscode-editorWidget-background)',
                 borderColor: 'var(--vscode-editorWidget-border)'
@@ -127,9 +127,10 @@ const COLORS = {
         },
         checked: {
             background: 'var(--vscode-editorWidget-background)',
+            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))',
             hover: {
                 background: 'var(--vscode-editorWidget-background)',
-                borderColor: 'var(--vscode-editorWidget-border)'
+                borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))'
             }
         },
         focus: {
@@ -139,17 +140,17 @@ const COLORS = {
     thumb: {
         unchecked: {
             background: 'var(--vscode-button-secondaryBackground)',
-            borderColor: 'var(--vscode-button-border)',
+            borderColor: 'var(--vscode-button-border, transparent)',
             hover: {
-                borderColor: 'var(--vscode-button-border)',
+                borderColor: 'var(--vscode-button-border, transparent)',
                 background: 'var(--vscode-contrastBorder, var(--vscode-button-secondaryHoverBackground))'
             }
         },
         checked: {
             background: 'var(--vscode-button-background)',
-            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border))',
+            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))',
             hover: {
-                borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border))',
+                borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))',
                 background: 'var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))'
             }
         }
@@ -273,7 +274,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     width: sizeInfo?.width,
                     padding: sizeInfo?.padding,
                     background: COLORS.pill.checked.background,
-                    borderColor: COLORS.pill.borderColor,
+                    borderColor: COLORS.pill.checked.borderColor,
                     borderStyle: 'solid',
                     ':hover': {
                         background: COLORS.pill.checked.hover.background,
@@ -281,11 +282,12 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     },
                     ':disabled': {
                         background: COLORS.pill.checked.background,
-                        borderColor: COLORS.pill.borderColor,
+                        borderColor: COLORS.pill.checked.borderColor,
                         opacity: DISABLED_OPACITY
                     },
                     ...(!styleProps.checked && {
                         background: COLORS.pill.unchecked.background,
+                        borderColor: COLORS.pill.unchecked.borderColor,
                         borderStyle: 'solid',
                         // This is a bug: the best implementation approach is to set hover styles in the "thumb" section.
                         // However, the hover styles for the unchecked thumb don't work properly
@@ -299,7 +301,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                         },
                         ':disabled': {
                             background: COLORS.pill.unchecked.background,
-                            borderColor: COLORS.pill.borderColor,
+                            borderColor: COLORS.pill.unchecked.borderColor,
                             opacity: DISABLED_OPACITY
                         }
                     }),
