@@ -696,7 +696,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         // This is a workaround for FluentUI not handling aria-invalid correctly for a ComboBox.
         // For the time being we add logic here to set aria-invalid based on the presence of
         // an errorMessage.
-        autofill['aria-invalid'] = this.props.errorMessage !== undefined;
+        autofill['aria-invalid'] = this.props.errorMessage !== undefined && this.props.errorMessage !== "";
         return autofill;
     }
 
