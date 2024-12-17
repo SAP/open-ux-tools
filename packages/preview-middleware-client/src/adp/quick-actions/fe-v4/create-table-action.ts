@@ -6,6 +6,7 @@ import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/uti
 import { getControlById } from '../../../utils/core';
 import { DialogNames, handler } from '../../init-dialogs';
 import { TableQuickActionDefinitionBase } from './table-quick-action-base';
+import { MDC_TABLE_TYPE } from '../control-types';
 
 export const CREATE_TABLE_ACTION = 'create_table_action';
 const TOOLBAR_ACTION = 'sap.ui.mdc.ActionToolbar';
@@ -15,7 +16,7 @@ const TOOLBAR_ACTION = 'sap.ui.mdc.ActionToolbar';
  */
 export class AddTableActionQuickAction extends TableQuickActionDefinitionBase implements NestedQuickActionDefinition {
     constructor(context: QuickActionContext) {
-        super(CREATE_TABLE_ACTION, 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context, true);
+        super(CREATE_TABLE_ACTION, [MDC_TABLE_TYPE], 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context, true);
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
