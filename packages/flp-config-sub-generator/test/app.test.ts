@@ -47,6 +47,13 @@ jest.mock('@sap-ux/nodejs-utils', () => ({
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     return {
         ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
+        TelemetryHelper: {
+            initTelemetrySettings: jest.fn(),
+            createTelemetryData: jest.fn().mockReturnValue({
+                OperatingSystem: 'CLI',
+                Platform: 'darwin'
+            })
+        },
         sendTelemetry: jest.fn(),
         isExtensionInstalled: jest.fn(),
         getHostEnvironment: () => {
