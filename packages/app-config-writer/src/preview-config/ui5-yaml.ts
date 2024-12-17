@@ -340,7 +340,7 @@ export async function updateDefaultTestConfig(fs: Editor, basePath: string, logg
             //do not touch existing test config
             return;
         }
-        updateTestConfig(previewMiddleware.configuration.test, defaultTest.path);
+        previewMiddleware.configuration.test = updateTestConfig(previewMiddleware.configuration.test, defaultTest.path);
         logger?.info(
             `The UI5 YAML configuration file 'ui5.yaml', has been updated to support the test framework '${defaultTest.framework}'. Please consider transferring the test configuration to the UI5 YAML configuration file used for testing.`
         );
