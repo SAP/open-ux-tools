@@ -8,4 +8,4 @@ export {
     ConnectedSystem,
     isS4Installed
 } from './utils';
-export { getS4ContinuePrompt } from './prompts/s4';
+export { getS4Prompts } from './prompts/s4';

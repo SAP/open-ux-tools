@@ -4,7 +4,7 @@ import {
     DeploymentGenerator,
     handleErrorMessage,
     isS4Installed,
-    getS4ContinuePrompt
+    getS4Prompts
 } from '@sap-ux/deploy-config-generator-shared';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
 import { generateInboundNavigationConfig } from '@sap-ux/app-config-writer';
@@ -38,13 +38,13 @@ export default class extends DeploymentGenerator {
     private readonly appWizard: AppWizard;
     private readonly vscode?: VSCodeInstance;
     private readonly launchFlpConfigAsSubGenerator: boolean;
+    private readonly existingApp: boolean;
+    private readonly appRootPath: string;
+    private readonly prompts: Prompts;
     private answers: FLPConfigAnswers;
     private abort = false;
-    private existingApp: boolean;
-    private appRootPath: string;
     private manifest: Partial<Manifest>;
     private manifestPath: string;
-    private prompts: Prompts;
     public options: FlpConfigOptions;
 
     setPromptsCallback: (fn: object) => void;
@@ -142,9 +142,9 @@ export default class extends DeploymentGenerator {
             (getHostEnvironment() === hostEnvironment.cli || !this.options.launchFlpConfigAsSubGenerator) &&
             (await isS4Installed(this.options.vscode?.workspace?.getConfiguration()))
         ) {
-            const s4Prompts = getS4ContinuePrompt('FLP');
+            const s4Prompts = getS4Prompts('FLP');
             questions = withCondition(questions, (answers: Answers) => answers.s4Continue);
-            (questions as Question[]).unshift(...s4Prompts);
+            questions.unshift(...s4Prompts);
         }
 
         this.answers = {} as FLPConfigAnswers;
@@ -246,19 +246,15 @@ export default class extends DeploymentGenerator {
             ) {
                 this.appWizard?.showInformation(t('info.filesGenerated'), MessageType.notification);
             }
-            const telemetryData = TelemetryHelper.createTelemetryData(
-                Object.assign(
-                    {
-                        appType: 'flp-config'
-                    },
-                    this.options.telemetryData
-                )
-            );
-            if (telemetryData) {
-                sendTelemetry(EventName.GENERATION_SUCCESS, telemetryData).catch((error) => {
-                    DeploymentGenerator.logger.error(t('error.telemetry', { error }));
-                });
-            }
+            sendTelemetry(
+                EventName.GENERATION_SUCCESS,
+                TelemetryHelper.createTelemetryData({
+                    appType: 'flp-config',
+                    ...this.options.telemetryData
+                }) ?? {}
+            ).catch((error) => {
+                DeploymentGenerator.logger.error(t('error.telemetry', { error }));
+            });
         } catch (error) {
             DeploymentGenerator.logger?.error(t('error.endPhase', { error }));
         }

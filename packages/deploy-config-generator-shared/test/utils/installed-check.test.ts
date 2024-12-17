@@ -1,5 +1,5 @@
 import { findInstalledPackages } from '@sap-ux/nodejs-utils';
-import { isS4Installed } from '../../src/utils';
+import { isS4Installed } from '../../src';
 
 jest.mock('@sap-ux/nodejs-utils', () => ({
     ...(jest.requireActual('@sap-ux/nodejs-utils') as object),

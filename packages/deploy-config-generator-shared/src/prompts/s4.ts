@@ -9,12 +9,12 @@ enum promptNames {
 }
 
 /**
- * S/4 specific prompting for the user to confirm if they want to continue with the generation of the configuration.
+ * Returns S/4 specific prompting.
  *
  * @param configType - the type of configuration being generated e.g FLP, Deployment
  * @returns
  */
-export function getS4ContinuePrompt(configType: string): Question[] {
+export function getS4Prompts(configType: string): Question[] {
     return [
         {
             type: 'confirm',

@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as memfs from 'memfs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
+import * as deployConfigShared from '@sap-ux/deploy-config-generator-shared';
 import yeomanTest from 'yeoman-test';
 import unset from 'lodash/unset';
 import get from 'lodash/get';
@@ -9,7 +10,9 @@ import set from 'lodash/set';
 import { TestFixture } from './fixtures';
 import FLPConfigGenerator from '../src/app';
 import { initI18n, t } from '../src/utils';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import * as sapUxi18n from '@sap-ux/i18n';
+import { hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import { isS4Installed } from '@sap-ux/deploy-config-generator-shared';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { assertInboundsHasConfig } from './utils';
 import type { PackageInfo } from '@sap-ux/nodejs-utils';
@@ -61,6 +64,16 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
         }
     };
 });
+const mockSendTelemetry = sendTelemetry as jest.Mock;
+
+jest.mock('@sap-ux/deploy-config-generator-shared', () => {
+    return {
+        ...(jest.requireActual('@sap-ux/deploy-config-generator-shared') as {}),
+        isS4Installed: jest.fn()
+    };
+});
+
+const mockIsS4Installed = isS4Installed as jest.Mock;
 
 describe('flp-config generator', () => {
     const testFixture = new TestFixture();
@@ -178,6 +191,8 @@ describe('flp-config generator', () => {
 
     it('inbound key exists - overwrite: true', async () => {
         const existingManifest = testFixture.getContents('project/webapp/manifest.json');
+        mockIsS4Installed.mockResolvedValueOnce(true);
+
         memfs.vol.fromNestedJSON(
             {
                 [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]: existingManifest
@@ -185,7 +200,6 @@ describe('flp-config generator', () => {
             '/'
         );
         const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
-
         const answers: FLPConfigAnswers = {
             semanticObject: 'com-fiori-tools-travel',
             action: 'inbound',
@@ -204,7 +218,10 @@ describe('flp-config generator', () => {
                         cwd: appDir
                     }
                 )
-                .withPrompts(answers)
+                .withPrompts({
+                    s4Continue: true,
+                    ...answers
+                })
                 .run()
         ).resolves.not.toThrow();
 
@@ -263,6 +280,7 @@ describe('flp-config generator', () => {
 
     it('adds `crossnavigation` config if none exists', async () => {
         const existingManifest: Manifest = JSON.parse(testFixture.getContents('project/webapp/manifest.json'));
+        mockSendTelemetry.mockRejectedValueOnce(new Error('Telemetry error'));
         unset(existingManifest, crossNavigationPropertyPath);
         memfs.vol.fromNestedJSON(
             {
@@ -466,5 +484,51 @@ describe('flp-config generator', () => {
         const i18nContent = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/webapp/i18n/i18n.properties`).toString();
         expect(i18nContent).toContain('flpTitle=title1');
         expect(i18nContent).toContain('flpSubtitle=subtitle1');
+    });
+
+    it('shows error when createPropertiesI18nEntries fails', async () => {
+        const existingManifest = JSON.parse(testFixture.getContents('projectWithI18nBundle/app1/webapp/manifest.json'));
+        const existingi18n = testFixture.getContents('project/webapp/i18n/i18n.properties');
+        jest.spyOn(sapUxi18n, 'createPropertiesI18nEntries').mockRejectedValueOnce(new Error('i18n error'));
+        const showWarningSpy = jest.fn();
+        const mockAppWizard = {
+            showWarning: showWarningSpy
+        };
+        set(existingManifest, inboundsPropertyPath, {});
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]: JSON.stringify(existingManifest),
+                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/i18n/i18n.properties`]: existingi18n
+            },
+            '/'
+        );
+        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
+        const answers: FLPConfigAnswers = {
+            semanticObject: 'so1',
+            action: 'action1',
+            title: 'title1',
+            subTitle: 'subtitle1'
+        };
+
+        await expect(
+            yeomanTest
+                .create(
+                    FLPConfigGenerator,
+                    {
+                        resolved: flpConfigGeneratorPath
+                    },
+                    {
+                        cwd: appDir
+                    }
+                )
+                .withPrompts(answers)
+                .withOptions({ appWizard: mockAppWizard })
+                .run()
+        ).resolves.not.toThrow();
+
+        expect(showWarningSpy).toHaveBeenCalledWith(
+            t('warning.updatei18n', { path: `.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json` }),
+            MessageType.notification
+        );
     });
 });
