@@ -23,10 +23,10 @@ const DEFAULT_INTENT: DefaultIntent = {
     action: 'preview'
 };
 
-const DEFAULT_TEST_CONFIGS: TestConfig[] = [
-    { framework: 'Testsuite', path: 'test/testsuite.qunit.html' },
-    { framework: 'OPA5', path: 'test/opaTests.qunit.html' },
-    { framework: 'QUnit', path: 'test/unitTests.qunit.html' }
+export const DEFAULT_TEST_CONFIGS: TestConfig[] = [
+    { framework: 'Testsuite', path: join('test', 'testsuite.qunit.html') },
+    { framework: 'OPA5', path: join('test', 'opaTests.qunit.html') },
+    { framework: 'QUnit', path: join('test', 'unitTests.qunit.html') }
 ];
 
 /**

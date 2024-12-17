@@ -2,6 +2,7 @@ import { basename, join } from 'path';
 import { getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
+import { DEFAULT_TEST_CONFIGS } from './ui5-yaml';
 
 const renameMessage = (filename: string): string =>
     `Renamed '${filename}' to '${filename.slice(
@@ -63,12 +64,7 @@ export async function renameDefaultSandboxes(fs: Editor, basePath: string, logge
  * @param logger logger to report info to the user
  */
 export async function renameDefaultTestFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const defaultTestFilePaths = [
-        join('test', 'testsuite.qunit.html'),
-        join('test', 'integration', 'opaTests.qunit.html'),
-        join('test', 'unit', 'unitTests.qunit.html')
-    ];
-    for (const path of defaultTestFilePaths) {
+    for (const path of DEFAULT_TEST_CONFIGS.map((config) => config.path as string)) {
         await renameSandbox(fs, join(await getWebappPath(basePath), path), logger);
     }
 }
