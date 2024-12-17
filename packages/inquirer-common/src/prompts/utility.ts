@@ -99,6 +99,8 @@ export function ui5VersionsGrouped(
         if (index === -1) {
             // adds default choice to the top of the list
             versionChoices.unshift(defaultChoice);
+        } else {
+            versionChoices[index].name = defaultChoice.name;
         }
     }
     return versionChoices;
