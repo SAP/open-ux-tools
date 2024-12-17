@@ -312,13 +312,17 @@ export function updateTestConfig(
  *
  * @param fs - file system reference
  * @param basePath - base path to be used for the conversion
+ * @param logger logger to report info to the user
  */
-export async function updateDefaultTestConfig(fs: Editor, basePath: string): Promise<void> {
+export async function updateDefaultTestConfig(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+    //todo: update ui5.yaml only in case no other yaml file contains test configuration
     let ui5YamlConfig: UI5Config;
     try {
-        //todo: is adjusting ui5.yaml sufficient? Or do other yaml files neeed to be adjusted as well?
         ui5YamlConfig = await readUi5Yaml(basePath, FileName.Ui5Yaml, fs);
     } catch (error) {
+        logger?.info(
+            `The UI5 YAML configuration file 'ui5.yaml', can't be updated according to support test frameworks: '${error}'. Please manually add the test configuration to the UI5 YAML configuration file used for testing according to https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#configuration-option-test.`
+        );
         return;
     }
     const previewMiddleware = (await getPreviewMiddleware(ui5YamlConfig)) as CustomMiddleware<PreviewConfig>;
@@ -330,6 +334,9 @@ export async function updateDefaultTestConfig(fs: Editor, basePath: string): Pro
             return;
         }
         updateTestConfig(previewMiddleware.configuration.test, defaultTest.path);
+        logger?.info(
+            `The UI5 YAML configuration file 'ui5.yaml', has been updated to support the test framework '${defaultTest.framework}'. Please consider transferring the test configuration to the UI5 YAML configuration file used for testing.`
+        );
     });
     ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
     const yamlPath = join(basePath, FileName.Ui5Yaml);

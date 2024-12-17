@@ -42,7 +42,7 @@ export async function convertToVirtualPreview(
     await renameDefaultSandboxes(fs, basePath, logger);
     if (convertTests) {
         await renameDefaultTestFiles(fs, basePath, logger);
-        await updateDefaultTestConfig(fs, basePath);
+        await updateDefaultTestConfig(fs, basePath, logger);
     }
     await deleteNoLongerUsedFiles(fs, basePath, logger);
     await updateVariantsCreationScript(fs, basePath, logger);
