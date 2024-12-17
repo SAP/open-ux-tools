@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.22.1
+
+### Patch Changes
+
+-   0fd924b: Adding a workaround for FluentUI not setting aria-invalid correctly for ComboBoxes
+
 ## 1.22.0
 
 ### Minor Changes
