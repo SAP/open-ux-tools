@@ -1,5 +1,18 @@
 # @sap-ux/ui-components
 
+## 1.22.1
+
+### Patch Changes
+
+-   0fd924b: Adding a workaround for FluentUI not setting aria-invalid correctly for ComboBoxes
+
+## 1.22.0
+
+### Minor Changes
+
+-   0f9d186: Added new SVG icons: SwitchOff and SwitchOn.
+    Enhanced the UIToggle component by adding visual indicators to display the switch status.
+
 ## 1.21.4
 
 ### Patch Changes

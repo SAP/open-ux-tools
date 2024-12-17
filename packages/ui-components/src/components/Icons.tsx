@@ -7,7 +7,9 @@ const COLORS = {
     warning: 'var(--vscode-notificationsWarningIcon-foreground)',
     error: 'var( --vscode-notificationsErrorIcon-foreground)',
     info: 'var(--vscode-notificationsInfoIcon-foreground)',
-    focus: 'var(--vscode-focusBorder)'
+    focus: 'var(--vscode-focusBorder)',
+    thumbOn: 'var(--vscode-button-foreground)',
+    thumbOff: 'var(--vscode-button-secondaryForeground)'
 };
 
 export enum UiIcons {
@@ -140,6 +142,8 @@ export enum UiIcons {
     Star = 'Star',
     StarActive = 'StarActive',
     Success = 'Success',
+    SwitchOff = 'SwitchOff',
+    SwitchOn = 'SwitchOn',
     Table = 'Table',
     Tags = 'Tags',
     Task = 'Task',
@@ -1871,6 +1875,21 @@ export function initIcons(): void {
                         fill={COLORS.success}
                         fillRule="evenodd"
                         d="M7.3799,9.751 L4.7179,7.009 L3.9999,7.706 L7.0559,10.853 C7.1509,10.949 7.2799,11.004 7.4149,11.004 C7.4219,11.004 7.4299,11.004 7.4379,11.003 C7.5809,10.997 7.7129,10.93 7.8039,10.818 L11.9979,5.625 L11.2209,4.996 L7.3799,9.751 Z M8.0005,14.002 C4.6915,14.002 2.0005,11.31 2.0005,8.001 C2.0005,4.692 4.6915,2 8.0005,2 C11.3095,2 14.0015,4.692 14.0015,8.001 C14.0015,11.31 11.3095,14.002 8.0005,14.002 M8.0005,1 C4.1405,1 1.0005,4.141 1.0005,8.001 C1.0005,11.861 4.1405,15.002 8.0005,15.002 C11.8605,15.002 15.0015,11.861 15.0015,8.001 C15.0015,4.141 11.8605,1 8.0005,1"
+                    />
+                </svg>
+            ),
+            [UiIcons.SwitchOff]: (
+                <svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1L7 1" stroke={COLORS.thumbOff} strokeLinecap="round" />
+                </svg>
+            ),
+            [UiIcons.SwitchOn]: (
+                <svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M0.5 3.5L2.5 5.5L7.5 0.5"
+                        stroke={COLORS.thumbOn}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                     />
                 </svg>
             ),
