@@ -61,6 +61,18 @@ describe('prerequisites', () => {
         );
     });
 
+    test('check prerequisites with UI5 ux-ui5-tooling 1.15.0 dependency', async () => {
+        fs.write(
+            join(basePath, 'package.json'),
+            JSON.stringify({ devDependencies: { '@sap/ux-ui5-tooling': '1.15.0' } })
+        );
+
+        expect(await checkPrerequisites(basePath, fs, logger)).toBeFalsy();
+        expect(errorLogMock).toHaveBeenCalledWith(
+            'UX UI5 Tooling version 1.15.4 or higher is required to convert the preview to virtual files. For more information, see https://www.npmjs.com/package/@sap/ux-ui5-tooling.'
+        );
+    });
+
     test('check prerequisites w/o mockserver dependency', async () => {
         fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '3.0.0' } }));
 
