@@ -1812,7 +1812,7 @@ describe('FE V2 quick actions', () => {
                 {
                     innerTableType: M_TABLE_TYPE,
                     toString: () => SMART_TABLE_TYPE + ', supported version',
-                    ui5version: { major: 1, minor: 120 }
+                    ui5version: { major: 1, minor: 120, patch: 23 }
                 },
                 {
                     innerTableType: M_TABLE_TYPE,
@@ -1824,7 +1824,7 @@ describe('FE V2 quick actions', () => {
                 {
                     innerTableType: M_TABLE_TYPE,
                     toString: () => 'unsupported UI5 version',
-                    ui5version: { major: 1, minor: 108 },
+                    ui5version: { major: 1, minor: 120, patch: 22 },
                     expectUnsupported: true
                 },
                 {

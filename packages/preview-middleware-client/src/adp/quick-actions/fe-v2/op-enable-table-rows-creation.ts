@@ -6,7 +6,7 @@ import { ANALYTICAL_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../con
 
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { getControlCustomData } from '../fe-v4/utils';
-import { isManifestArrayStructured, prepareManifestChange } from './utils';
+import { areManifestChangesSupported, prepareManifestChange } from './utils';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { isA } from '../../../utils/core';
 import { getTooltipsForTableRowCreationAction } from '../common/utils';
@@ -30,12 +30,11 @@ export class EnableTableRowsCreationQuickAction
 
     async initialize(): Promise<void> {
         const version = await getUi5Version();
-        if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120 })) {
-            this.isApplicable = false;
+        if (!(await areManifestChangesSupported(this.context.manifest))) {
             return;
         }
 
-        if (isManifestArrayStructured(this.context.manifest)) {
+        if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120, patch: 23 })) {
             this.isApplicable = false;
             return;
         }
