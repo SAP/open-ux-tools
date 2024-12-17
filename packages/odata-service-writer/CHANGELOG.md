@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.25.0
+
+### Minor Changes
+
+-   036b48b: Removed ejs for manifest enhancements.
+
 ## 0.24.2
 
 ### Patch Changes
