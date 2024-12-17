@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`index convertToVirtualPreview convert project to virtual preview (including tests) 1`] = `
+exports[`index convertToVirtualPreview convert project to virtual preview (including tests w/o own yaml config) 1`] = `
 "specVersion: '4.0'
 metadata:
 name: com.sap.cap.fe.ts.sample
@@ -15,4 +15,33 @@ server:
           - framework: OPA5
           - framework: QUnit
 "
+`;
+
+exports[`index convertToVirtualPreview convert project to virtual preview (including tests with own yaml config) 1`] = `
+"
+            specVersion: '4.0'
+            metadata:
+            name: com.sap.cap.fe.ts.sample
+            server:
+                customMiddleware:
+                - name: preview-middleware
+                  afterMiddleware: compression
+            "
+`;
+
+exports[`index convertToVirtualPreview convert project to virtual preview (including tests with own yaml config) 2`] = `
+"
+            specVersion: '4.0'
+            metadata:
+            name: com.sap.cap.fe.ts.sample
+            server:
+                customMiddleware:
+                - name: preview-middleware
+                  afterMiddleware: compression
+                  configuration:
+                    test:
+                      - framework: \\"Testsuite\\"
+                        path: \\"yet/another/path.html\\"
+                      - framework: \\"OPA5\\"
+            "
 `;

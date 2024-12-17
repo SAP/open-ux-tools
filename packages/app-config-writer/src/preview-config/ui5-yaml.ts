@@ -308,14 +308,21 @@ export function updateTestConfig(
 }
 
 /**
- * Updates the default test configurations in the UI5 yaml file in case they don't exist yet.
+ * Updates the default test configurations in the 'ui5.yaml' in case no test config exists in any UI5 configuration file.
  *
  * @param fs - file system reference
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
 export async function updateDefaultTestConfig(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    //todo: update ui5.yaml only in case no other yaml file contains test configuration
+    const ui5YamlFileNames = await getAllUi5YamlFileNames(basePath, fs);
+    for (const ui5Yaml of ui5YamlFileNames.filter((ui5Yaml) => ui5Yaml !== FileName.Ui5Yaml)) {
+        const ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml, fs);
+        const previewMiddleware = (await getPreviewMiddleware(ui5YamlConfig)) as CustomMiddleware<PreviewConfig>;
+        if (previewMiddleware.configuration.test) {
+            return;
+        }
+    }
     let ui5YamlConfig: UI5Config;
     try {
         ui5YamlConfig = await readUi5Yaml(basePath, FileName.Ui5Yaml, fs);

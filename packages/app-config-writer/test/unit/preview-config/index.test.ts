@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { convertToVirtualPreview } from '../../../src/preview-config';
+import { convertToVirtualPreview } from '../../../src';
 import { join } from 'path';
 import { ToolsLogger } from '@sap-ux/logger';
 import * as packageJson from '../../../src/preview-config/package-json';
@@ -32,23 +32,6 @@ describe('index', () => {
                 devDependencies: { '@ui5/cli': '3.0.0', '@sap-ux/ui5-middleware-fe-mockserver': '6.6.6' }
             })
         );
-        fs.write(
-            join(basePath, 'ui5.yaml'),
-            `
-            specVersion: '4.0'
-            metadata:
-            name: com.sap.cap.fe.ts.sample
-            server:
-                customMiddleware:
-                - name: preview-middleware
-                  afterMiddleware: compression
-                  configuration:
-                    test:
-                      - framework: "Testsuite"
-                        path: "yet/another/path.html"
-                      - framework: "OPA5"
-            `
-        );
     });
     describe('convertToVirtualPreview', () => {
         test('convert project to virtual preview', async () => {
@@ -63,11 +46,72 @@ describe('index', () => {
             expect(updateVariantsCreationScriptSpy).toHaveBeenCalled();
         });
 
-        test('convert project to virtual preview (including tests)', async () => {
+        test('convert project to virtual preview (including tests w/o own yaml config)', async () => {
+            fs.write(
+                join(basePath, 'ui5.yaml'),
+                `
+            specVersion: '4.0'
+            metadata:
+            name: com.sap.cap.fe.ts.sample
+            server:
+                customMiddleware:
+                - name: preview-middleware
+                  afterMiddleware: compression
+                  configuration:
+                    test:
+                      - framework: "Testsuite"
+                        path: "yet/another/path.html"
+                      - framework: "OPA5"
+            `
+            );
+
             getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
 
             await convertToVirtualPreview(basePath, true, logger, fs);
             expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
+            expect(checkPrerequisitesSpy).toHaveBeenCalled();
+            expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
+            expect(updatePreviewMiddlewareConfigsSpy).toHaveBeenCalled();
+            expect(renameDefaultSandboxesSpy).toHaveBeenCalled();
+            expect(deleteNoLongerUsedFilesSpy).toHaveBeenCalled();
+            expect(updateVariantsCreationScriptSpy).toHaveBeenCalled();
+        });
+
+        test('convert project to virtual preview (including tests with own yaml config)', async () => {
+            fs.write(
+                join(basePath, 'ui5.yaml'),
+                `
+            specVersion: '4.0'
+            metadata:
+            name: com.sap.cap.fe.ts.sample
+            server:
+                customMiddleware:
+                - name: preview-middleware
+                  afterMiddleware: compression
+            `
+            );
+            fs.write(
+                join(basePath, 'ui5-test.yaml'),
+                `
+            specVersion: '4.0'
+            metadata:
+            name: com.sap.cap.fe.ts.sample
+            server:
+                customMiddleware:
+                - name: preview-middleware
+                  afterMiddleware: compression
+                  configuration:
+                    test:
+                      - framework: "Testsuite"
+                        path: "yet/another/path.html"
+                      - framework: "OPA5"
+            `
+            );
+            getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
+
+            await convertToVirtualPreview(basePath, true, logger, fs);
+            expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
+            expect(fs.read(join(basePath, 'ui5-test.yaml'))).toMatchSnapshot();
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
             expect(updatePreviewMiddlewareConfigsSpy).toHaveBeenCalled();
