@@ -1,0 +1,21 @@
+{
+    "error": {
+        "endPhase": "Error end phase deployment-generator:flp: {{- error}}",
+        "telemetry": "Failed to send telemetry data after FLP configuration has been added. {{- error}}",
+        "noManifest": "Manifest not found at path: {{- path}}",
+        "sapNotDefined": "Manifest is missing required section 'sap.app'"
+    },
+    "warning": {
+        "updatei18n": "Cannot update i18n properties file: {{- path}}"
+    },
+    "info": {
+        "filesGenerated": "The files have been generated."
+    },
+
+    "prompts": {
+        "flpConfig": {
+            "name": "Fiori Launchpad Configuration",
+            "description": "Configure Fiori Launchpad settings - {{appFolderName}}"
+        }
+    }
+}
