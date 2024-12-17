@@ -1,4 +1,4 @@
-import { getS4ContinuePrompt } from '../../src/prompts/s4';
+import { getS4Prompts } from '../../src/prompts/s4';
 import { initI18n } from '../../src/utils/i18n';
 
 describe('s4 prompt', () => {
@@ -6,9 +6,9 @@ describe('s4 prompt', () => {
         await initI18n();
     });
 
-    test('should return s4 continue prompt', () => {
+    test('should return s4 prompts', () => {
         const configType = 'TEST';
-        const result = getS4ContinuePrompt(configType);
+        const result = getS4Prompts(configType);
         expect(result).toEqual([
             {
                 type: 'confirm',
