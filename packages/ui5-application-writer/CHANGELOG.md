@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.2.8
+
+### Patch Changes
+
+-   21f0b20: TBI - Prevent CRLF injection in logs
+
 ## 1.2.7
 
 ### Patch Changes
