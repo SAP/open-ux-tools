@@ -3390,9 +3390,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -3489,9 +3486,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -7028,9 +7025,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -7127,9 +7121,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -10716,9 +10710,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -10815,9 +10806,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -14568,9 +14559,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -14667,9 +14655,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
