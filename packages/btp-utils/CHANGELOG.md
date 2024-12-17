@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.17.2
+
+### Patch Changes
+
+-   cb54b44: add CF instance types
+
 ## 0.17.1
 
 ### Patch Changes
