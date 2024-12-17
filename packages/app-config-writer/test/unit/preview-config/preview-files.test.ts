@@ -75,7 +75,7 @@ describe('preview-files', () => {
         const path = join(basePath, 'test', 'IdoNotExist.html');
 
         await renameSandbox(fs, path, logger);
-        expect(warnLogMock).toHaveBeenCalledWith(`The file 'IdoNotExist.html', has not been found. Skipping renaming.`);
+        expect(infoLogMock).toHaveBeenCalledWith(`The file 'IdoNotExist.html', has not been found. Skipping renaming.`);
     });
 
     test('skip renaming for files which have already been renamed', async () => {
