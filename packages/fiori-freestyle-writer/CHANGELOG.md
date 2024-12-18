@@ -1,5 +1,34 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.2.36
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.17
+-   @sap-ux/odata-service-writer@0.25.0
+-   @sap-ux/ui5-application-writer@1.2.8
+
+## 1.2.35
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.16
+
+## 1.2.34
+
+### Patch Changes
+
+-   21f0b20: TBI - Prevent CRLF injection in logs
+-   Updated dependencies [21f0b20]
+    -   @sap-ux/ui5-application-writer@1.2.8
+
+## 1.2.33
+
+### Patch Changes
+
+-   Updated dependencies [036b48b]
+    -   @sap-ux/odata-service-writer@0.25.0
+
 ## 1.2.32
 
 ### Patch Changes
