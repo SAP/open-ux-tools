@@ -546,7 +546,7 @@ describe('Test system selection prompts', () => {
         });
     });
 
-    test('Should provide only one choice for the system selection based on onlyDefaultChoice option', async () => {
+    test('Should provide only one choice for the system selection based on onlyDefaultChoice option and defaultChoice', async () => {
         backendSystems.push(backendSystemReentrance);
         const defaultChoice = backendSystemReentrance.name;
         const systemSelectionQuestions = await getSystemSelectionQuestions({
@@ -563,5 +563,17 @@ describe('Test system selection prompts', () => {
                 type: 'backendSystem'
             }
         });
+    });
+
+    test('Should provide full list of choices if onlyShowDefaultChoice is provided, but without defaultChoice option', async () => {
+        backendSystems.push(backendSystemReentrance);
+        const systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.systemSelection]: { onlyShowDefaultChoice: true }
+        });
+        const systemSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === promptNames.systemSelection
+        );
+        const defaultIndex = (systemSelectionPrompt as Question).default;
+        expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(8);
     });
 });
