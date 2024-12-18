@@ -8,9 +8,9 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/vers
 import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
 import { TableQuickActionDefinitionBase } from './table-quick-action-base';
 import { isA } from '../../../utils/core';
-import { getTooltipsForTableRowCreationAction } from '../common/utils';
+import { getTooltipsForTableEmptyRowModeAction } from '../common/utils';
 
-export const ENABLE_TABLE_ROWS_CREATION = 'enable-table-rows-creation';
+export const ENABLE_TABLE_EMPTY_ROW_MODE = 'enable-table-empty-row-mode';
 const CONTROL_TYPES = [MDC_TABLE_TYPE, GRID_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
 const UNSUPPORTED_TABLES = [ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
 
@@ -18,12 +18,12 @@ const INLINE_CREATION_ROWS_MODE = 'InlineCreationRows';
 /**
  * Quick Action for enabling table filtering using table personalization settings.
  */
-export class EnableTableRowsCreationQuickAction
+export class EnableTableEmptyRowModeQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(ENABLE_TABLE_ROWS_CREATION, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_ROWS_CREATION', context);
+        super(ENABLE_TABLE_EMPTY_ROW_MODE, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_EMPTY_ROW_MODE', context);
     }
     readonly forceRefreshAfterExecution = true;
 
@@ -34,7 +34,7 @@ export class EnableTableRowsCreationQuickAction
             return;
         }
 
-        const { alreadyEnabledTooltip, unsupportedCreationRowsTooltip } = getTooltipsForTableRowCreationAction(
+        const { alreadyEnabledTooltip, unsupportedCreationRowsTooltip } = getTooltipsForTableEmptyRowModeAction(
             this.context.resourceBundle
         );
 

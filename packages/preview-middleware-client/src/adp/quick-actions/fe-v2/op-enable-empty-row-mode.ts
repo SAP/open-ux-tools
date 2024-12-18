@@ -8,23 +8,23 @@ import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { isA } from '../../../utils/core';
-import { getTooltipsForTableRowCreationAction } from '../common/utils';
+import { getTooltipsForTableEmptyRowModeAction } from '../common/utils';
 
-export const ENABLE_TABLE_ROWS_CREATION = 'enable-table-rows-creation';
+export const ENABLE_TABLE_EMPTY_ROW_MODE = 'enable-table-empty-row-mode';
 
 const CONTROL_TYPES = [SMART_TABLE_TYPE];
 const UNSUPPORTED_TABLES = [ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
 const CREATION_ROWS_MODE = 'creationRows';
 const OBJECT_PAGE_COMPONENT_NAME = 'sap.suite.ui.generic.template.ObjectPage';
 
-export class EnableTableRowsCreationQuickAction
+export class EnableTableEmptyRowModeQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
     readonly forceRefreshAfterExecution = true;
 
     constructor(context: QuickActionContext) {
-        super(ENABLE_TABLE_ROWS_CREATION, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_ROWS_CREATION', context);
+        super(ENABLE_TABLE_EMPTY_ROW_MODE, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_EMPTY_ROW_MODE', context);
     }
 
     async initialize(): Promise<void> {
@@ -38,7 +38,7 @@ export class EnableTableRowsCreationQuickAction
             return;
         }
 
-        const { alreadyEnabledTooltip, unsupportedCreationRowsTooltip } = getTooltipsForTableRowCreationAction(
+        const { alreadyEnabledTooltip, unsupportedCreationRowsTooltip } = getTooltipsForTableEmptyRowModeAction(
             this.context.resourceBundle
         );
 

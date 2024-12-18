@@ -9,8 +9,7 @@ const mockChangeService = {
 import {
     quickActionListChanged,
     executeQuickAction,
-    QuickAction,
-    NestedQuickAction
+    QuickAction
 } from '@sap-ux-private/control-property-editor-common';
 
 jest.mock('../../../../src/adp/init-dialogs', () => {
@@ -1659,7 +1658,7 @@ describe('FE V4 quick actions', () => {
                 });
             });
 
-            describe('enable creation table rows', () => {
+            describe('enable empty row table mode', () => {
                 const testCases: {
                     tableType: string;
                     toString: () => string;
@@ -1679,7 +1678,7 @@ describe('FE V4 quick actions', () => {
                         ui5version: { major: 1, minor: 131 },
                         value: 'InlineCreationRows',
                         expectDisabledReason:
-                            'This option has been disabled because creation rows are already enabled for this table'
+                            'This option has been disabled because empty row mode is already enabled for this table'
                     },
                     {
                         tableType: MDC_TABLE_TYPE,
@@ -1695,13 +1694,13 @@ describe('FE V4 quick actions', () => {
                         tableType: TREE_TABLE_TYPE,
                         toString: () => TREE_TABLE_TYPE,
                         expectDisabledReason:
-                            'This action is disabled because creation rows is not supported for analytical and tree tables'
+                            'This action is disabled because empty row mode is not supported for analytical and tree tables'
                     },
                     {
                         tableType: ANALYTICAL_TABLE_TYPE,
                         toString: () => ANALYTICAL_TABLE_TYPE,
                         expectDisabledReason:
-                            'This action is disabled because creation rows is not supported for analytical and tree tables'
+                            'This action is disabled because empty row mode is not supported for analytical and tree tables'
                     }
                 ];
                 test.each(testCases)(
@@ -1713,7 +1712,7 @@ describe('FE V4 quick actions', () => {
 
                         const pageView = new XMLView();
                         const scrollIntoView = jest.fn();
-                        const actionId = 'objectPage0-enable-table-rows-creation';
+                        const actionId = 'objectPage0-enable-table-empty-row-mode';
 
                         jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
                             if (type === 'sap.uxap.ObjectPageSection') {
@@ -1867,45 +1866,10 @@ describe('FE V4 quick actions', () => {
 
                         const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
                         for (let i = actions.length - 1; i >= 0; i--) {
-                            if (actions[i].title !== 'Enable Creation Rows for Tables') {
+                            if (actions[i].title !== 'Enable Empty Row Mode for Tables') {
                                 actions.splice(i, 1);
                             }
                         }
-
-                        expect(sendActionMock).toHaveBeenCalledWith(
-                            quickActionListChanged([
-                                {
-                                    'title': 'OBJECT PAGE',
-                                    'actions': testCase.expectUnsupported
-                                        ? []
-                                        : [
-                                              {
-                                                  'children': [
-                                                      {
-                                                          'children': [],
-                                                          'enabled': !testCase.expectDisabledReason,
-                                                          'label': `'MyTable' table`,
-                                                          'tooltip': testCase.expectDisabledReason
-                                                      }
-                                                  ],
-                                                  'enabled': true,
-                                                  'id': actionId,
-                                                  'kind': 'nested',
-                                                  'title': 'Enable Creation Rows for Tables',
-                                                  'tooltip': undefined
-                                              } as NestedQuickAction
-                                          ]
-                                }
-                            ])
-                        );
-
-                        await subscribeMock.mock.calls[0][0](
-                            executeQuickAction({
-                                id: actionId,
-                                kind: 'nested',
-                                path: '0'
-                            })
-                        );
 
                         expect(sendActionMock).toHaveBeenNthCalledWith(
                             1,
@@ -1920,7 +1884,7 @@ describe('FE V4 quick actions', () => {
                                                   id: actionId,
                                                   enabled: true,
                                                   tooltip: undefined,
-                                                  title: 'Enable Creation Rows for Tables',
+                                                  title: 'Enable Empty Row Mode for Tables',
                                                   children: [
                                                       {
                                                           label: `'MyTable' table`,
@@ -1933,6 +1897,14 @@ describe('FE V4 quick actions', () => {
                                           ]
                                 }
                             ])
+                        );
+
+                        await subscribeMock.mock.calls[0][0](
+                            executeQuickAction({
+                                id: actionId,
+                                kind: 'nested',
+                                path: '0'
+                            })
                         );
 
                         if (testCase.expectUnsupported) {
