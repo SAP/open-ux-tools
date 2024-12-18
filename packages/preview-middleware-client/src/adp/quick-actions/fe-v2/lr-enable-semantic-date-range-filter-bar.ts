@@ -33,8 +33,19 @@ export class ToggleSemanticDateRangeFilterBar
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);
             const modifiedControl = getControlById<FilterBar>(control.controlId);
             if (isActionApplicable && modifiedControl) {
-                this.isUseDateRangeTypeEnabled = modifiedControl.getProperty('useDateRangeType');
                 this.control = modifiedControl;
+
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const id: string = this.control.getProperty('persistencyKey') ?? this.control.getId();
+                if (typeof id !== 'string') {
+                    throw new Error('Could not retrieve configuration property because control id is not valid!');
+                }
+                const value = this.context.changeService.getConfigurationPropertyValue(
+                    id,
+                    'enableTableFilterInPageVariant'
+                );
+                this.isUseDateRangeTypeEnabled =
+                    value === undefined ? (this.control.data('useDateRangeType') as boolean) : (value as boolean);
             }
         }
     }
@@ -57,8 +68,6 @@ export class ToggleSemanticDateRangeFilterBar
                 useDateRange: !this.isUseDateRangeTypeEnabled
             }
         );
-
-        this.isUseDateRangeTypeEnabled = !this.isUseDateRangeTypeEnabled;
 
         return command;
     }

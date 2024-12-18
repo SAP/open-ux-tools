@@ -15,6 +15,7 @@ import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import ManagedObject from 'sap/ui/base/ManagedObject';
+import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from './enablement-validator';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
@@ -56,9 +57,25 @@ export abstract class TableQuickActionDefinitionBase {
 
     public isApplicable = false;
 
-    protected isDisabled: boolean | undefined;
-
+    protected validationResult: EnablementValidatorResult[] | undefined;
+    protected get isDisabled(): boolean {
+        if (this.validationResult === undefined) {
+            return false;
+        }
+        const validationErrors = this.validationResult.filter((result) => result?.type === 'error');
+        return validationErrors.length > 0;
+    }
+    
     public get tooltip(): string | undefined {
+        if (this.validationResult) {
+            const validationErrors = this.validationResult.filter(
+                (result): result is EnablementValidatorError => result?.type === 'error'
+            );
+            if (validationErrors.length > 0) {
+                const error = validationErrors[0];
+                return error.message;
+            }
+        }
         return undefined;
     }
 
@@ -90,7 +107,8 @@ export abstract class TableQuickActionDefinitionBase {
         protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
-        protected options: TableQuickActionsOptions = {}
+        protected options: TableQuickActionsOptions = {},
+        protected readonly enablementValidators: EnablementValidator[] = []
     ) {}
 
     /**
@@ -143,6 +161,12 @@ export abstract class TableQuickActionDefinitionBase {
         if (this.children.length > 0) {
             this.isApplicable = true;
         }
+    }
+
+    async runEnablementValidators(): Promise<void> {
+        this.validationResult = await Promise.all(
+            this.enablementValidators.map(async (validator) => await validator.run())
+        );
     }
 
     /**

@@ -6,6 +6,7 @@ import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-edito
 
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from '../enablement-validator';
 
 const ACTION_ID = 'CTX_SETTINGS0';
 const CONTROL_TYPE = 'sap.ui.mdc.Table';
@@ -18,8 +19,26 @@ export abstract class TableQuickActionDefinitionBase {
         return this.defaultTextKey;
     }
     isApplicable = false;
-    protected isDisabled = false;
+
+    protected validationResult: EnablementValidatorResult[] | undefined;
+    protected get isDisabled(): boolean {
+        if (this.validationResult === undefined) {
+            return false;
+        }
+        const validationErrors = this.validationResult.filter((result) => result?.type === 'error');
+        return validationErrors.length > 0;
+    }
+
     public get tooltip(): string | undefined {
+        if (this.validationResult) {
+            const validationErrors = this.validationResult.filter(
+                (result): result is EnablementValidatorError => result?.type === 'error'
+            );
+            if (validationErrors.length > 0) {
+                const error = validationErrors[0];
+                return error.message;
+            }
+        }
         return undefined;
     }
 
@@ -30,7 +49,8 @@ export abstract class TableQuickActionDefinitionBase {
         public readonly type: string,
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
-        protected readonly isSkipVariantManagementCheck?: boolean
+        protected readonly isSkipVariantManagementCheck?: boolean,
+        protected readonly enablementValidators: EnablementValidator[] = []
     ) {}
 
     async initialize(): Promise<void> {
@@ -72,5 +92,11 @@ export abstract class TableQuickActionDefinitionBase {
             title: this.context.resourceBundle.getText(this.textKey),
             children: this.children
         };
+    }
+
+    async runEnablementValidators(): Promise<void> {
+        this.validationResult = await Promise.all(
+            this.enablementValidators.map(async (validator) => await validator.run())
+        );
     }
 }
