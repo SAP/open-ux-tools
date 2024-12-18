@@ -6,41 +6,15 @@ import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-edito
 
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from '../enablement-validator';
+import { EnablementValidator } from '../enablement-validator';
+import { QuickActionDefinitionBase } from '../quick-action-base';
 
 const ACTION_ID = 'CTX_SETTINGS0';
 const CONTROL_TYPE = 'sap.ui.mdc.Table';
-export abstract class TableQuickActionDefinitionBase {
-    readonly kind = NESTED_QUICK_ACTION_KIND;
-    public get id(): string {
-        return `${this.context.key}-${this.type}`;
-    }
-    protected get textKey(): string {
-        return this.defaultTextKey;
-    }
+export abstract class TableQuickActionDefinitionBase extends QuickActionDefinitionBase<
+    typeof NESTED_QUICK_ACTION_KIND
+> {
     isApplicable = false;
-
-    protected validationResult: EnablementValidatorResult[] | undefined;
-    protected get isDisabled(): boolean {
-        if (this.validationResult === undefined) {
-            return false;
-        }
-        const validationErrors = this.validationResult.filter((result) => result?.type === 'error');
-        return validationErrors.length > 0;
-    }
-
-    public get tooltip(): string | undefined {
-        if (this.validationResult) {
-            const validationErrors = this.validationResult.filter(
-                (result): result is EnablementValidatorError => result?.type === 'error'
-            );
-            if (validationErrors.length > 0) {
-                const error = validationErrors[0];
-                return error.message;
-            }
-        }
-        return undefined;
-    }
 
     isClearButtonEnabled = false;
     children: NestedQuickActionChild[] = [];
@@ -51,7 +25,9 @@ export abstract class TableQuickActionDefinitionBase {
         protected readonly context: QuickActionContext,
         protected readonly isSkipVariantManagementCheck?: boolean,
         protected readonly enablementValidators: EnablementValidator[] = []
-    ) {}
+    ) {
+        super(type, NESTED_QUICK_ACTION_KIND, defaultTextKey, context, enablementValidators);
+    }
 
     async initialize(): Promise<void> {
         let index = 0;
@@ -92,11 +68,5 @@ export abstract class TableQuickActionDefinitionBase {
             title: this.context.resourceBundle.getText(this.textKey),
             children: this.children
         };
-    }
-
-    async runEnablementValidators(): Promise<void> {
-        this.validationResult = await Promise.all(
-            this.enablementValidators.map(async (validator) => await validator.run())
-        );
     }
 }

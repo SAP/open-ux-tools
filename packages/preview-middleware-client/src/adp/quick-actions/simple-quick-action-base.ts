@@ -4,45 +4,17 @@ import { SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/con
 
 import { getRelevantControlFromActivePage } from '../../cpe/quick-actions/utils';
 import { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
-import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from './enablement-validator';
+import { EnablementValidator } from './enablement-validator';
+import { QuickActionDefinitionBase } from './quick-action-base';
 
 /**
  * Base class for all simple quick actions.
  */
-export abstract class SimpleQuickActionDefinitionBase {
-    readonly kind = SIMPLE_QUICK_ACTION_KIND;
-    public get id(): string {
-        return `${this.context.key}-${this.type}`;
-    }
-
+export abstract class SimpleQuickActionDefinitionBase extends QuickActionDefinitionBase<
+    typeof SIMPLE_QUICK_ACTION_KIND
+> {
     public get isApplicable(): boolean {
         return this.control !== undefined;
-    }
-
-    protected validationResult: EnablementValidatorResult[] | undefined;
-    protected get isDisabled(): boolean {
-        if (this.validationResult === undefined) {
-            return false;
-        }
-        const validationErrors = this.validationResult.filter((result) => result?.type === 'error');
-        return validationErrors.length > 0;
-    }
-
-    public get tooltip(): string | undefined {
-        if (this.validationResult) {
-            const validationErrors = this.validationResult.filter(
-                (result): result is EnablementValidatorError => result?.type === 'error'
-            );
-            if (validationErrors.length > 0) {
-                const error = validationErrors[0];
-                return error.message;
-            }
-        }
-        return undefined;
-    }
-
-    protected get textKey(): string {
-        return this.defaultTextKey;
     }
 
     protected control: UI5Element | undefined;
@@ -53,7 +25,9 @@ export abstract class SimpleQuickActionDefinitionBase {
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
         protected readonly enablementValidators: EnablementValidator[] = []
-    ) {}
+    ) {
+        super(type, SIMPLE_QUICK_ACTION_KIND, defaultTextKey, context, enablementValidators);
+    }
 
     initialize(): void {
         for (const control of getRelevantControlFromActivePage(
@@ -64,12 +38,6 @@ export abstract class SimpleQuickActionDefinitionBase {
             this.control = control;
             break;
         }
-    }
-
-    async runEnablementValidators(): Promise<void> {
-        this.validationResult = await Promise.all(
-            this.enablementValidators.map(async (validator) => await validator.run())
-        );
     }
 
     getActionObject(): SimpleQuickAction {

@@ -42,7 +42,7 @@ export class ToggleSemanticDateRangeFilterBar
                 }
                 const value = this.context.changeService.getConfigurationPropertyValue(
                     id,
-                    'enableTableFilterInPageVariant'
+                    'useDateRange'
                 );
                 this.isUseDateRangeTypeEnabled =
                     value === undefined ? (this.control.data('useDateRangeType') as boolean) : (value as boolean);
