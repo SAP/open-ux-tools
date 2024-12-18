@@ -302,7 +302,7 @@ describe('getQuestions', () => {
         expect((ui5VersionPrompt?.default as Function)()).toEqual(expectedUI5VerChoices[0].value);
 
         // This choice is not a maintained version and so the closest maintained version should be added
-        let defaultChoice = {
+        const defaultChoice = {
             'name': '1.120.99 (Source system version)',
             'value': '1.120.99'
         };

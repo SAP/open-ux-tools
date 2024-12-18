@@ -287,7 +287,7 @@ function getAddDeployConfigPrompt(
 
 /**
  * Get the `ui5Version` prompt. If the ui5VersionPromptOption `defaultChoice` has been specified and an exact verion match is found
- * then the label from that option will be used instead of any other labels e.g. '( Maintained )'
+ * then the label from that option will be used instead of any other labels e.g. `(Maintained version)`
  *
  * @param ui5Versions the UI5 versions that will be available for selection
  * @param ui5VersionPromptOptions UI5 version prompt options

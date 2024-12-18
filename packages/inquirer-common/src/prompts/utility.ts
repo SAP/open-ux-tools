@@ -42,10 +42,10 @@ export function searchChoices(searchVal: string, searchList: ListChoiceOptions[]
  * Creates a list of UI5 Versions prompt choices, adding additional maintenance info for use in prompts
  * and grouping according to maintenance status.
  *
- * @param versions ui5Versions
- * @param includeSeparators Include a separator to visually identify groupings, if false then grouping info is included in each entry as additional name text
- * @param defaultChoice optional, provides an additional version choice entry that is added as the first entry in the version choices (if it does not already exist in the version list) and sets as the default
- * @param replaceDefaultChoiceLabel, if true the specified `defaultChoice` label will replace the `maintained` label. e.g. when `source system version` has been appended
+ * @param versions - ui5Versions
+ * @param includeSeparators - Include a separator to visually identify groupings, if false then grouping info is included in each entry as additional name text
+ * @param defaultChoice - optional, provides an additional version choice entry that is added as the first entry in the version choices (if it does not already exist in the version list) and sets as the default
+ * @param useDefaultChoiceLabel - optional, if true the specified `defaultChoice` label will replace the `maintained` label. e.g. when `source system version` has been appended
  * @returns Array of ui5 version choices and separators if applicable, grouped by maintenance state
  */
 export function ui5VersionsGrouped(
