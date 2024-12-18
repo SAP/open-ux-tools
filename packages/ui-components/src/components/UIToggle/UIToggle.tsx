@@ -39,7 +39,7 @@ const TOGGLE_SIZE = {
     width: 30,
     height: 18,
     padding: '0 1px',
-    margin: '0',
+    margin: '0px 6px 0px 6px',
     label: {
         fontSize: 13,
         padding: '0px 0px 1px 0px'
@@ -143,7 +143,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      * @returns {void} This method does not return a value.
      */
     componentDidMount() {
-        this.replaceThumbWithIcon();
+        this.replaceThumbWithIcon(this.props.checked ?? this.props.defaultChecked);
     }
 
     /**
@@ -164,15 +164,14 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      * @param {boolean} [checked] Optional. Represents the state of the toggle switch. If not provided, it checks `defaultChecked` prop or defaults to `false`.
      * @returns {void} Does not return a value.
      */
-    replaceThumbWithIcon(checked?: boolean) {
-        const isSwitchOn = checked ?? this.props.defaultChecked ?? false;
+    replaceThumbWithIcon(checked = false): void {
         if (this.toggleRootRef.current) {
             const thumbElement = (this.toggleRootRef.current as HTMLElement)?.querySelector('.ms-Toggle-thumb');
 
             if (thumbElement) {
-                const style = ICON_STYLE.get(isSwitchOn);
+                const style = ICON_STYLE.get(checked);
                 ReactDOM.render(
-                    <UIIcon iconName={isSwitchOn ? UiIcons.SwitchOn : UiIcons.SwitchOff} style={style} />,
+                    <UIIcon iconName={checked ? UiIcons.SwitchOn : UiIcons.SwitchOff} style={style} />,
                     thumbElement
                 );
             }
