@@ -1,5 +1,18 @@
 # @sap-ux/inquirer-common
 
+## 0.5.15
+
+### Patch Changes
+
+-   f8dda3b: Fix for multiple issues relating to prompt validations
+
+## 0.5.14
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.17
+-   @sap-ux/telemetry@0.5.50
+
 ## 0.5.13
 
 ### Patch Changes
