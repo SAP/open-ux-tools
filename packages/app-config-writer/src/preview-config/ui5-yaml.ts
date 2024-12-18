@@ -11,11 +11,12 @@ import type {
     MiddlewareConfig as PreviewConfig,
     TestConfig,
     DefaultFlpPath,
-    DefaultIntent
+    DefaultIntent,
+    InternalTestConfig,
+    TestConfigDefaults
 } from '@sap-ux/preview-middleware';
 import type { PreviewConfigOptions } from '../types';
 import type { ToolsLogger } from '@sap-ux/logger';
-
 const DEFAULT_FLP_PATH: DefaultFlpPath = '/test/flp.html';
 
 const DEFAULT_INTENT: DefaultIntent = {
@@ -23,11 +24,28 @@ const DEFAULT_INTENT: DefaultIntent = {
     action: 'preview'
 };
 
-export const DEFAULT_TEST_CONFIGS: TestConfig[] = [
-    { framework: 'Testsuite', path: join('test', 'testsuite.qunit.html') },
-    { framework: 'OPA5', path: join('test', 'opaTests.qunit.html') },
-    { framework: 'QUnit', path: join('test', 'unitTests.qunit.html') }
-];
+export const TEST_CONFIG_DEFAULTS: Record<string, InternalTestConfig> = {
+    qunit: {
+        path: '/test/unitTests.qunit.html',
+        framework: 'QUnit'
+    },
+    opa5: {
+        path: '/test/opaTests.qunit.html',
+        framework: 'OPA5'
+    },
+    testsuite: {
+        path: '/test/testsuite.qunit.html',
+        framework: 'Testsuite'
+    }
+} as Omit<
+    TestConfigDefaults,
+    | TestConfigDefaults['testsuite']['init']
+    | TestConfigDefaults['testsuite']['pattern']
+    | TestConfigDefaults['opa5']['init']
+    | TestConfigDefaults['opa5']['pattern']
+    | TestConfigDefaults['qunit']['init']
+    | TestConfigDefaults['qunit']['pattern']
+>;
 
 /**
  * Checks if a script can be converted based on the used UI5 yaml configuration file.
@@ -291,7 +309,7 @@ export function updateTestConfig(
         return testConfiguration;
     }
 
-    const defaultPath = DEFAULT_TEST_CONFIGS.find((config) => config.framework === framework)?.path ?? '';
+    const defaultPath = TEST_CONFIG_DEFAULTS[framework.toLowerCase()].path;
     const testConfig = testConfiguration.find((test) => test.framework === framework);
     if (testConfig) {
         testConfig.path = path;
@@ -333,18 +351,24 @@ export async function updateDefaultTestConfig(fs: Editor, basePath: string, logg
         return;
     }
     const previewMiddleware = (await getPreviewMiddleware(ui5YamlConfig)) as CustomMiddleware<PreviewConfig>;
-    DEFAULT_TEST_CONFIGS.forEach((defaultTest) => {
+
+    for (const defaultConfig of Object.values(TEST_CONFIG_DEFAULTS)) {
         if (
-            previewMiddleware.configuration?.test?.some((testConfig) => testConfig.framework === defaultTest.framework)
+            previewMiddleware.configuration?.test?.some(
+                (testConfig) => testConfig.framework.toLowerCase() === defaultConfig.framework.toLowerCase()
+            )
         ) {
             //do not touch existing test config
-            return;
+            break;
         }
-        previewMiddleware.configuration.test = updateTestConfig(previewMiddleware.configuration.test, defaultTest.path);
-        logger?.info(
-            `The UI5 YAML configuration file 'ui5.yaml', has been updated to support the test framework '${defaultTest.framework}'. Please consider transferring the test configuration to the UI5 YAML configuration file used for testing.`
+        previewMiddleware.configuration.test = updateTestConfig(
+            previewMiddleware.configuration.test,
+            defaultConfig.path
         );
-    });
+        logger?.info(
+            `The UI5 YAML configuration file 'ui5.yaml', has been updated to support the test framework '${defaultConfig.framework}'. Please consider transferring the test configuration to the UI5 YAML configuration file used for testing.`
+        );
+    }
     ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
     const yamlPath = join(basePath, FileName.Ui5Yaml);
     fs.write(yamlPath, ui5YamlConfig.toString());
