@@ -22,7 +22,6 @@ jest.mock('hasbin', () => ({
 let hasSyncMock: jest.SpyInstance;
 let isAppStudioMock: jest.SpyInstance;
 let listDestinationsMock: jest.SpyInstance;
-let unitTestFs: Editor;
 
 describe('CF Writer App', () => {
     jest.setTimeout(10000);
@@ -49,7 +48,6 @@ describe('CF Writer App', () => {
         jest.restoreAllMocks();
         isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
         listDestinationsMock = jest.spyOn(btp, 'listDestinations');
-        unitTestFs = create(createStorage());
         hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
     });
 
@@ -77,12 +75,12 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, '../sample/basicapp'), appPath);
-        await generateAppConfig({ appPath }, unitTestFs, logger);
+        const localFs = await generateAppConfig({ appPath }, undefined, logger);
         expect(isAppStudioMock).toBeCalledTimes(1);
         expect(listDestinationsMock).toBeCalledTimes(1);
-        expect(unitTestFs.dump(appPath)).toMatchSnapshot();
+        expect(localFs.dump(appPath)).toMatchSnapshot();
         // Since mta.yaml is not in memfs, read from disk
-        expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
+        expect(localFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
     });
 
     test('Generate deployment configs - HTML5 App with managed approuter attached with no destination available', async () => {
@@ -92,11 +90,11 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, `../sample/lrop`), appPath);
-        await generateAppConfig({ appPath, addManagedAppRouter: true }, unitTestFs, logger);
+        const localFs = await generateAppConfig({ appPath, addManagedAppRouter: true }, undefined, logger);
         expect(listDestinationsMock).toBeCalledTimes(0);
-        expect(unitTestFs.dump(appPath)).toMatchSnapshot();
+        expect(localFs.dump(appPath)).toMatchSnapshot();
         // Since mta.yaml is not in memfs, read from disk
-        expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
+        expect(localFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
     });
 
     test('Generate deployment configs - HTML5 App with managed approuter attached to a multi target application', async () => {
@@ -106,16 +104,16 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, `../sample/multi`), appPath);
-        await generateAppConfig({ appPath, addManagedAppRouter: true }, unitTestFs);
+        const localFs = await generateAppConfig({ appPath, addManagedAppRouter: true });
         expect(listDestinationsMock).toBeCalledTimes(0);
-        expect(unitTestFs.dump(appPath)).toMatchSnapshot();
+        expect(localFs.dump(appPath)).toMatchSnapshot();
         // Since mta.yaml is not in memfs, read from disk
-        expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
+        expect(localFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
     });
 
     test('Throw an exception if the appPath is not found', async () => {
         const appName = 'validate';
         const appPath = join(outputDir, appName);
-        await expect(generateAppConfig({ appPath }, unitTestFs, logger)).rejects.toThrowError();
+        await expect(generateAppConfig({ appPath }, undefined, logger)).rejects.toThrowError();
     });
 });
