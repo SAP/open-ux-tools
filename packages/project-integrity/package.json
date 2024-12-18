@@ -32,7 +32,7 @@
         "node": ">=18.x"
     },
     "dependencies": {
-        "@sap-ux/project-access": "workspace:*"
-    },
-    "devDependencies": {}
+        "@sap-ux/project-access": "workspace:*",
+        "lz-string": "1.5.0"
+    }
 }

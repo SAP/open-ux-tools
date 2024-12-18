@@ -1,7 +1,8 @@
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { dirname, join, relative } from 'path';
-import type { Integrity } from '../types';
+import { compressToBase64, decompressFromBase64 } from 'lz-string';
+import type { ContentIntegrity, FileIntegrity, Integrity } from '../types';
 
 /**
  * Read hashes from a previously stored hash file.
@@ -18,6 +19,10 @@ export async function readIntegrityData(integrityFilePath: string): Promise<Inte
     const integrityDir = dirname(integrityFilePath);
     for (const fileIntegrity of content.fileIntegrity) {
         fileIntegrity.filePath = join(integrityDir, fileIntegrity.filePath);
+        getifyContent(fileIntegrity);
+    }
+    for (const contentIntegrity of content.contentIntegrity) {
+        getifyContent(contentIntegrity);
     }
     return content;
 }
@@ -37,6 +42,36 @@ export async function writeIntegrityData(integrityFilePath: string, content: Int
 
     for (const fileIntegrity of content.fileIntegrity) {
         fileIntegrity.filePath = relative(integrityDir, fileIntegrity.filePath);
+        if (typeof fileIntegrity.content === 'string') {
+            fileIntegrity.content = compressToBase64(fileIntegrity.content) as string;
+        }
     }
-    await writeFile(integrityFilePath, JSON.stringify(content, null, 4), { encoding: 'utf-8' });
+
+    for (const contentIntegrity of content.contentIntegrity) {
+        if (typeof contentIntegrity.content === 'string') {
+            contentIntegrity.content = compressToBase64(contentIntegrity.content) as string;
+        }
+    }
+
+    await writeFile(integrityFilePath, JSON.stringify(content), { encoding: 'utf-8' });
+}
+
+/**
+ * Wrap content with getter to decompress on first access. Do nothing if the content does not exist.
+ *
+ * @param integrityObject - file or content integrity data with compressed content
+ */
+function getifyContent(integrityObject: FileIntegrity | ContentIntegrity): void {
+    if (typeof integrityObject?.content === 'string') {
+        const compressedContent = integrityObject.content;
+        let content: string | undefined;
+        Object.defineProperty(integrityObject, 'content', {
+            get: () => {
+                if (!content) {
+                    content = decompressFromBase64(compressedContent);
+                }
+                return content;
+            }
+        });
+    }
 }

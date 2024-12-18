@@ -3,15 +3,15 @@
     "fileIntegrity": [
         {
             "filePath": "file-to-update.txt",
-            "hash": "76207895687ab5899c7435d8df4f9e97",
-            "content": "outdated content"
+            "hash": "96c15c2bb2921193bf290df8cd85e2ba",
+            "content": "HYUw7gBAxg9sAuIFA==="
         }
     ],
     "contentIntegrity": [
         {
             "contentKey": "key",
-            "hash": "24dc92ddb4b33d4f6749dd0613be7b2b",
-            "content": "outdated string"
+            "hash": "b200a3adbe85fe848b920dc35d5a69b2",
+            "content": "HYUw7gBAzgLgTgS2AcyA"
         }
     ]
 }

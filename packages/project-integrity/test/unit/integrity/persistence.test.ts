@@ -23,7 +23,8 @@ describe('Test writeIntegrityData()', () => {
         const mockedMkdir = mkdir as jest.Mock;
         const integrityFilePath = join(__dirname, '../../test-input/new-folder/integrity.json');
         const content: Partial<Integrity> = {
-            fileIntegrity: []
+            fileIntegrity: [],
+            contentIntegrity: []
         };
         await writeIntegrityData(integrityFilePath, content as Integrity);
         expect(mockedMkdir).toBeCalledWith(expect.stringContaining('new-folder'), { recursive: true });

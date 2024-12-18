@@ -48,12 +48,7 @@ describe('Test for checkFioriProjectIntegrity()', () => {
         expect(results).toStrictEqual({
             'files': {
                 'differentFiles': [],
-                'equalFiles': [
-                    expect.stringContaining('schema.cds'),
-                    expect.stringContaining('service.cds'),
-                    expect.stringContaining('travelManagement-Bookings.csv'),
-                    expect.stringContaining('travelManagement-Travel.csv')
-                ]
+                'equalFiles': [expect.stringContaining('schema.cds'), expect.stringContaining('service.cds')]
             },
             'additionalStringContent': { 'differentContent': [], 'equalContent': ['capPaths'] }
         });

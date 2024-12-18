@@ -4,29 +4,19 @@
         {
             "filePath": "../db/schema.cds",
             "hash": "7c8aeabf4a42453e88d3309692ab45a0",
-            "content": "namespace travelManagement;\n\nentity Travel {\n  key ID: UUID;\n  tripName: String(50);\n  employee: String(50);\n  status: String(20);\n  tripStartDate: Date;\n  tripEndDate: Date;\n  priceUSD: Decimal;\n  bookings: Association to many Bookings on bookings.travel = $self;\n}\n\nentity Bookings {\n  key ID: UUID;\n  employee: String(50);\n  airlines: String(50);\n  bookingDate: Date;\n  flightDate: Date;\n  priceUSD: Decimal;\n  travel: Association to Travel;\n}\n"
+            "content": "HYQwtgpgzgDiDGEAEAXATiAbhANgWRFAHMJJgUBuAKConIEsUBPJAFQ2xyQG8qkkA1hBYBJACIAuJAFVp46v3T0YAOXAQpAZSXAiACgCsABgCUCpKRg4A9kwgak2tPV2HT5qChAoArlC06+gBM7nyozjDaIGgoYt4OcSgQ5kowAKLAACaJCfHmMM6I0pqSSGIQ8PRgIDjmAEbW1gIuRP5IAIJQUNaV3vTWwKjWSNXALABCjc26UEgDSA1NLVAAdOhYuEgAvEgAJFC4AGbUAL40dCiME1PLPGFCoqWy8mGWNnYOTi1uZmEg9GgcC5oAFnK5jL9+ItpkQclIcuZDkCiAALWLxeF5MIFehFErwipVGopDi4KSdbq9S7zFDDdgbWpUM5AA=="
         },
         {
             "filePath": "../srv/service.cds",
             "hash": "0c598d02c2ca62ced4de09026ca62811",
-            "content": "using { travelManagement } from '../db/schema.cds';\n\nservice travelManagementSrv {\n  @odata.draft.enabled\n  entity Travel as projection on travelManagement.Travel;\n  entity Bookings as projection on travelManagement.Bookings;\n}"
-        },
-        {
-            "filePath": "../test/data/travelManagement-Bookings.csv",
-            "hash": "4431357e4d79c7a060104ce5cea7efbd",
-            "content": "ID;employee;airlines;bookingDate;flightDate;priceUSD;travel_ID\n3efbe1e6-de90-4ae7-9a94-71c669faeea7;John Doe;Delta Airlines;2021-06-20;2021-07-01;500.00;bda3b521-6a7c-4c6a-b67c-47b6d4333abe\ne984fce5-8f2f-4a45-bec7-856391aaf733;John Doe;American Airlines;2021-06-22;2021-07-05;450.00;bda3b521-6a7c-4c6a-b67c-47b6d4333abe\n246cdfc3-480f-4a59-948c-67532b3a528d;Jane Smith;United Airlines;2021-08-01;2021-08-15;600.00;48ffb874-9713-4402-a994-8075295d2e6e\na1404f08-5dfb-4f91-bc55-85d27cb9463e;Alice Johnson;Southwest Airlines;2021-09-01;2021-09-10;300.00;95481ec0-8a0b-4ec6-91b0-9fbea59285ab\n2fb675de-8cbd-4b39-aa9a-0e66cd9474eb;Bob Brown;JetBlue;2021-09-25;2021-10-05;700.00;eee164c0-ed83-4ec2-8f95-844ab4099fc4\n0f501a38-7484-432d-b7d3-fa5a69a8f813;Charlie Davis;Alaska Airlines;2021-10-20;2021-11-01;400.00;f03c3b75-8592-4f85-a557-28257c4a976d\nc9cd31a1-f1fd-42be-97f4-6a8f529a87bf;Charlie Davis;Spirit Airlines;2021-10-22;2021-11-03;350.00;f03c3b75-8592-4f85-a557-28257c4a976d"
-        },
-        {
-            "filePath": "../test/data/travelManagement-Travel.csv",
-            "hash": "e5d700fb3a29c7c7ac66c831e175f9d2",
-            "content": "ID;tripName;employee;status;tripStartDate;tripEndDate;priceUSD\nbda3b521-6a7c-4c6a-b67c-47b6d4333abe;Sales Conference;John Doe;Confirmed;2021-07-01;2021-07-05;1500.00\n48ffb874-9713-4402-a994-8075295d2e6e;Tech Expo;Jane Smith;Pending;2021-08-15;2021-08-20;2000.00\n95481ec0-8a0b-4ec6-91b0-9fbea59285ab;Marketing Summit;Alice Johnson;Cancelled;2021-09-10;2021-09-12;800.00\neee164c0-ed83-4ec2-8f95-844ab4099fc4;Leadership Retreat;Bob Brown;Confirmed;2021-10-05;2021-10-10;2500.00\nf03c3b75-8592-4f85-a557-28257c4a976d;Client Meeting;Charlie Davis;Completed;2021-11-01;2021-11-03;1200.00"
+            "content": "K4Zwlgdg5gBA3jALgJwIYDcCmAbAsqiVKTAW0wkRgF8YAzZAexJgHIA6NgegBMAjTkAGMAFqVRtB3ECwDcAKDkhMydGEGYkaLHgJFS5RAGUV8OTBgABBt1SJx3NLURtyqXtkzczMA2EQBPGAAVLRwYVBAYAAdGACtMQUQwBggYFM0MHHxCYjIKNhDM7HlzXwCYACEGBgBrSChIiOi4hKT09JQi7L085yra+pB5KiA==="
         }
     ],
     "contentIntegrity": [
         {
             "contentKey": "capPaths",
             "hash": "a6b6345c05e820d69b779cef1587a209",
-            "content": "{\"app\":\"app/\",\"db\":\"db/\",\"srv\":\"srv/\"}"
+            "content": "N4IghgDhIFzlB6EAaEATARrdGmoM4BOAbtkcUgL5A==="
         }
     ]
 }
