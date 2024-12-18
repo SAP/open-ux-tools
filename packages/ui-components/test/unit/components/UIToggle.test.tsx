@@ -26,9 +26,9 @@ describe('<UIToggle />', () => {
                 name: 'Standard',
                 size: UIToggleSize.Standard,
                 expect: {
-                    margin: '0',
+                    margin: '0px 6px 0px 6px',
                     fontSize: 13,
-                    padding: '',
+                    padding: '0px 0px 1px 0px',
                     height: 18,
                     width: 30,
                     innerPadding: '0 1px',
@@ -41,9 +41,9 @@ describe('<UIToggle />', () => {
                 name: 'Default',
                 size: undefined,
                 expect: {
-                    margin: '0',
+                    margin: '0px 6px 0px 6px',
                     fontSize: 13,
-                    padding: '',
+                    padding: '0px 0px 1px 0px',
                     height: 18,
                     width: 30,
                     innerPadding: '0 1px',
@@ -56,14 +56,14 @@ describe('<UIToggle />', () => {
                 name: 'Small',
                 size: UIToggleSize.Small,
                 expect: {
-                    margin: '0',
+                    margin: '0px 6px 0px 6px',
                     fontSize: 13,
-                    padding: '2px 0',
-                    height: 14,
+                    padding: '0px 0px 1px 0px',
+                    height: 18,
                     width: 30,
                     innerPadding: '0 1px',
-                    thumbHeight: 10,
-                    thumbWidth: 10,
+                    thumbHeight: 14,
+                    thumbWidth: 14,
                     borderWidth: 1
                 }
             }
