@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.28.10
+
+### Patch Changes
+
+-   e1edcd7: Make module caching more robust in case of failed installations
+
 ## 1.28.9
 
 ### Patch Changes
