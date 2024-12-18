@@ -148,7 +148,7 @@ interface CopyButtonProps {
 function CopyButton(props: Readonly<CopyButtonProps>): ReactElement {
     const { t } = useTranslation();
     const { label, onClick } = props;
-    
+
     return (
         <UIIconButton
             id={`${label.replace(/\s/g, '')}--copy`}
