@@ -50,11 +50,9 @@ export class EnableTableEmptyRowModeQuickAction
                     if (UNSUPPORTED_TABLES.some((t) => isA(t, innerTable))) {
                         child.enabled = false;
                         child.tooltip = unsupportedCreationRowsTooltip;
-                    } else {
-                        if (table.data('creationMode') === CREATION_ROWS_MODE) {
-                            child.enabled = false;
-                            child.tooltip = alreadyEnabledTooltip;
-                        }
+                    } else if (table.data('creationMode') === CREATION_ROWS_MODE) {
+                        child.enabled = false;
+                        child.tooltip = alreadyEnabledTooltip;
                     }
                 }
             }
