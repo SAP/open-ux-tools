@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as memfs from 'memfs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
-import * as deployConfigShared from '@sap-ux/deploy-config-generator-shared';
 import yeomanTest from 'yeoman-test';
 import unset from 'lodash/unset';
 import get from 'lodash/get';
@@ -235,7 +234,8 @@ describe('flp-config generator', () => {
     it('inbound key exists - overwrite silently with option', async () => {
         const showInformationSpy = jest.fn();
         const mockAppWizard = {
-            showInformation: showInformationSpy
+            showInformation: showInformationSpy,
+            setHeaderTitle: jest.fn()
         };
         jest.spyOn(fioriGenShared, 'isExtensionInstalled').mockImplementation(() => {
             return true;
@@ -492,7 +492,8 @@ describe('flp-config generator', () => {
         jest.spyOn(sapUxi18n, 'createPropertiesI18nEntries').mockRejectedValueOnce(new Error('i18n error'));
         const showWarningSpy = jest.fn();
         const mockAppWizard = {
-            showWarning: showWarningSpy
+            showWarning: showWarningSpy,
+            setHeaderTitle: jest.fn()
         };
         set(existingManifest, inboundsPropertyPath, {});
         memfs.vol.fromNestedJSON(

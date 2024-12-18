@@ -1,5 +1,4 @@
 import { basename } from 'path';
-import { t } from './i18n';
 
 /**
  * Returns the details for the YUI step.
@@ -10,10 +9,8 @@ import { t } from './i18n';
 export function getYuiNavStep(appRootPath: string): { name: string; description: string }[] {
     return [
         {
-            name: t('prompts.flpConfig.name'),
-            description: t('prompts.flpConfig.description', {
-                appFolderName: basename(appRootPath)
-            })
+            name: 'Fiori Launchpad Configuration',
+            description: `Configure Fiori Launchpad settings - ${basename(appRootPath)}`
         }
     ];
 }

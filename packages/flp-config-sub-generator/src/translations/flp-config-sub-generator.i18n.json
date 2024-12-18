@@ -10,12 +10,5 @@
     },
     "info": {
         "filesGenerated": "The files have been generated."
-    },
-
-    "prompts": {
-        "flpConfig": {
-            "name": "Fiori Launchpad Configuration",
-            "description": "Configure Fiori Launchpad settings - {{appFolderName}}"
-        }
     }
 }

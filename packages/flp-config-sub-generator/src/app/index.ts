@@ -21,7 +21,7 @@ import {
     YUI_MIN_VER_FILES_GENERATED_MSG
 } from '@sap-ux/fiori-generator-shared';
 import { withCondition } from '@sap-ux/inquirer-common';
-import { i18nKeySubTitle, i18nKeyTitle } from '../utils/constants';
+import { generatorTitle, i18nKeySubTitle, i18nKeyTitle } from '../utils/constants';
 import { t } from '../utils';
 import { getYuiNavStep } from '../utils/prompts';
 import { EventName } from '../telemetryEvents';
@@ -66,6 +66,7 @@ export default class extends DeploymentGenerator {
 
         // If launched standalone, add nav steps
         if (!this.launchFlpConfigAsSubGenerator) {
+            this.appWizard.setHeaderTitle(generatorTitle);
             this.prompts = new Prompts(getYuiNavStep(this.appRootPath));
             this.setPromptsCallback = (fn): void => {
                 if (this.prompts) {
@@ -132,6 +133,7 @@ export default class extends DeploymentGenerator {
         const silentOverwrite = this.options.overwrite;
         let questions: Question[] = (await getPrompts(inbounds, undefined, {
             silentOverwrite,
+            inboundId: { hide: true },
             emptyInboundsInfo: { hide: true },
             additionalParameters: { hide: true },
             createAnotherInbound: { hide: true }
