@@ -45,12 +45,14 @@ export function searchChoices(searchVal: string, searchList: ListChoiceOptions[]
  * @param versions ui5Versions
  * @param includeSeparators Include a separator to visually identify groupings, if false then grouping info is included in each entry as additional name text
  * @param defaultChoice optional, provides an additional version choice entry that is added as the first entry in the version choices (if it does not already exist in the version list) and sets as the default
+ * @param replaceDefaultChoiceLabel, if true the specified `defaultChoice` label will replace the `maintained` label. e.g. when `source system version` has been appended
  * @returns Array of ui5 version choices and separators if applicable, grouped by maintenance state
  */
 export function ui5VersionsGrouped(
     versions: UI5Version[],
     includeSeparators = false,
-    defaultChoice?: UI5VersionChoice
+    defaultChoice?: UI5VersionChoice,
+    useDefaultChoiceLabel = false
 ): (UI5VersionChoice | Separator)[] {
     if (!versions || (Array.isArray(versions) && versions.length === 0)) {
         return [];
@@ -99,7 +101,8 @@ export function ui5VersionsGrouped(
         if (index === -1) {
             // adds default choice to the top of the list
             versionChoices.unshift(defaultChoice);
-        } else {
+        } else if (useDefaultChoiceLabel) {
+            // Use the specified `defaultChoice` label instead of the maintenance label
             versionChoices[index].name = defaultChoice.name;
         }
     }

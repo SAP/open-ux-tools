@@ -286,7 +286,8 @@ function getAddDeployConfigPrompt(
 }
 
 /**
- * Get the `ui5Version` prompt.
+ * Get the `ui5Version` prompt. If the ui5VersionPromptOption `defaultChoice` has been specified and an exact verion match is found
+ * then the label from that option will be used instead of any other labels e.g. '( Maintained )'
  *
  * @param ui5Versions the UI5 versions that will be available for selection
  * @param ui5VersionPromptOptions UI5 version prompt options
@@ -301,7 +302,8 @@ function getUI5VersionPrompt(
     const ui5VersionChoices = ui5VersionsGrouped(
         ui5Versions,
         ui5VersionPromptOptions?.includeSeparators,
-        defaultChoice
+        defaultChoice,
+        !!ui5VersionPromptOptions?.defaultChoice && ui5VersionPromptOptions.defaultChoice.value === defaultChoice?.value
     );
     return {
         when: () => !!ui5VersionChoices,
