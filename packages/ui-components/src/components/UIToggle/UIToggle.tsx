@@ -42,7 +42,7 @@ const TOGGLE_SIZE = {
     margin: '0',
     label: {
         fontSize: 13,
-        padding: ''
+        padding: '0px 0px 1px 0px'
     },
     circle: {
         width: 14,
