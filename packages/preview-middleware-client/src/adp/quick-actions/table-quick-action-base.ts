@@ -270,7 +270,16 @@ export abstract class TableQuickActionDefinitionBase {
         table: UI5Element,
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
     ): void {
-        if ([SMART_TABLE_TYPE, M_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE].some((type) => isA(type, table))) {
+        if (
+            [
+                SMART_TABLE_TYPE,
+                M_TABLE_TYPE,
+                MDC_TABLE_TYPE,
+                TREE_TABLE_TYPE,
+                GRID_TABLE_TYPE,
+                ANALYTICAL_TABLE_TYPE
+            ].some((type) => isA(type, table))
+        ) {
             const label = this.getTableLabel(table);
             const child = this.createChild(label, table);
             this.children.push(child);

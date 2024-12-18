@@ -1,14 +1,13 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
-import Table from 'sap/ui/mdc/Table';
-import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { createManifestPropertyChange } from '../../../utils/fe-v4';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
-import { TableQuickActionDefinitionBase } from './table-quick-action-base';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { isA } from '../../../utils/core';
 import { getTooltipsForTableEmptyRowModeAction } from '../common/utils';
+import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 
 export const ENABLE_TABLE_EMPTY_ROW_MODE = 'enable-table-empty-row-mode';
 const CONTROL_TYPES = [MDC_TABLE_TYPE, GRID_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
@@ -38,49 +37,31 @@ export class EnableTableEmptyRowModeQuickAction
             this.context.resourceBundle
         );
 
-        let index = 0;
-        for (const smartTable of getRelevantControlFromActivePage(
-            this.context.controlIndex,
-            this.context.view,
-            CONTROL_TYPES
-        )) {
-            if (UNSUPPORTED_TABLES.some((t) => isA(t, smartTable))) {
-                this.children.push({
-                    label: `'${(smartTable as Table).getHeader()}' table`,
-                    enabled: false,
-                    tooltip: unsupportedCreationRowsTooltip,
-                    children: []
-                });
-            } else {
-                const isChildEnabled = smartTable.data('creationMode') !== INLINE_CREATION_ROWS_MODE;
-                this.children.push({
-                    label: `'${(smartTable as Table).getHeader()}' table`,
-                    enabled: isChildEnabled,
-                    tooltip: isChildEnabled ? undefined : alreadyEnabledTooltip,
-                    children: []
-                });
+        const processChild = (child: NestedQuickActionChild, mapKey: string) => {
+            const table = this.tableMap[mapKey]?.table;
+            if (table) {
+                if (UNSUPPORTED_TABLES.some((t) => isA(t, table))) {
+                    child.enabled = false;
+                    child.tooltip = unsupportedCreationRowsTooltip;
+                } else if (table.data('creationMode') === INLINE_CREATION_ROWS_MODE) {
+                    child.enabled = false;
+                    child.tooltip = alreadyEnabledTooltip;
+                }
             }
+            child.children.forEach((nestedChild, idx) => processChild(nestedChild, `${mapKey}/${idx.toFixed(0)}`));
+        };
 
-            this.tableMap[`${this.children.length - 1}`] = index;
-            index++;
-        }
+        await super.initialize();
 
-        if (this.children.length > 0) {
-            this.isApplicable = true;
-        }
+        // disable nested actions based on conditions
+        this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx.toFixed(0)}`));
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
         const { flexSettings } = this.context;
-        const index = this.tableMap[path];
+        const entry = this.tableMap[path];
 
-        const smartTables = getRelevantControlFromActivePage(
-            this.context.controlIndex,
-            this.context.view,
-            CONTROL_TYPES
-        );
-
-        const modifiedControl = smartTables[index];
+        const modifiedControl = entry.table;
         if (!modifiedControl) {
             return [];
         }

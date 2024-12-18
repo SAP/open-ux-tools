@@ -1662,6 +1662,7 @@ describe('FE V4 quick actions', () => {
                 const testCases: {
                     tableType: string;
                     toString: () => string;
+                    isWithHeader: boolean;
                     ui5version?: versionUtils.Ui5VersionInfo;
                     expectDisabledReason?: string;
                     value?: string;
@@ -1670,11 +1671,13 @@ describe('FE V4 quick actions', () => {
                     {
                         tableType: MDC_TABLE_TYPE,
                         toString: () => MDC_TABLE_TYPE + ', supported version',
-                        ui5version: { major: 1, minor: 131 }
+                        ui5version: { major: 1, minor: 131 },
+                        isWithHeader: true
                     },
                     {
                         tableType: MDC_TABLE_TYPE,
                         toString: () => 'row creation already enabled',
+                        isWithHeader: true,
                         ui5version: { major: 1, minor: 131 },
                         value: 'InlineCreationRows',
                         expectDisabledReason:
@@ -1683,21 +1686,25 @@ describe('FE V4 quick actions', () => {
                     {
                         tableType: MDC_TABLE_TYPE,
                         toString: () => 'unsupported version',
+                        isWithHeader: true,
                         ui5version: { major: 1, minor: 130 },
                         expectUnsupported: true
                     },
                     {
                         tableType: GRID_TABLE_TYPE,
+                        isWithHeader: false,
                         toString: () => GRID_TABLE_TYPE
                     },
                     {
                         tableType: TREE_TABLE_TYPE,
+                        isWithHeader: false,
                         toString: () => TREE_TABLE_TYPE,
                         expectDisabledReason:
                             'This action is disabled because empty row mode is not supported for analytical and tree tables'
                     },
                     {
                         tableType: ANALYTICAL_TABLE_TYPE,
+                        isWithHeader: false,
                         toString: () => ANALYTICAL_TABLE_TYPE,
                         expectDisabledReason:
                             'This action is disabled because empty row mode is not supported for analytical and tree tables'
@@ -1887,10 +1894,18 @@ describe('FE V4 quick actions', () => {
                                                   title: 'Enable Empty Row Mode for Tables',
                                                   children: [
                                                       {
-                                                          label: `'MyTable' table`,
-                                                          enabled: !testCase.expectDisabledReason,
-                                                          tooltip: testCase.expectDisabledReason,
-                                                          children: []
+                                                          children: [
+                                                              {
+                                                                  label: testCase.isWithHeader
+                                                                      ? `'MyTable' table`
+                                                                      : `Unnamed table`,
+                                                                  enabled: !testCase.expectDisabledReason,
+                                                                  tooltip: testCase.expectDisabledReason,
+                                                                  children: []
+                                                              }
+                                                          ],
+                                                          enabled: true,
+                                                          label: `'section 01' section`
                                                       }
                                                   ]
                                               }
@@ -1903,7 +1918,7 @@ describe('FE V4 quick actions', () => {
                             executeQuickAction({
                                 id: actionId,
                                 kind: 'nested',
-                                path: '0'
+                                path: '0/0'
                             })
                         );
 
