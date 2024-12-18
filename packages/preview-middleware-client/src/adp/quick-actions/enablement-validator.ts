@@ -16,8 +16,3 @@ export interface EnablementValidator {
      */
     run: () => EnablementValidatorResult | Promise<EnablementValidatorResult>;
 }
-
-export interface ValidationResult {
-    successfulValidators: EnablementValidator[];
-    failedValidators: EnablementValidator[];
-}
