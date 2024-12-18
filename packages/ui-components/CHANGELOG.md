@@ -1,5 +1,16 @@
 # @sap-ux/ui-components
 
+## 1.22.2
+
+### Patch Changes
+
+-   318477a: Add missing exports:
+    -   `UIChoiceGroup` - export interface `IChoiceGroup`
+    -   `UIList` - export interfaces `UIGroup`, `UIGroupedListProps`, `UIGroupHeaderProps`, `UIGroupRenderProps`
+    -   `UILoader` - export enum `UISpinnerSize `
+    -   `UIStack` - export component `UIStack`
+    -   focus utility functions - export method `isElementTabbable`
+
 ## 1.22.1
 
 ### Patch Changes

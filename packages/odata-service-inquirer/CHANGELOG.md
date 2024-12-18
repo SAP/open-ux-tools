@@ -1,5 +1,24 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.7.13
+
+### Patch Changes
+
+-   f8dda3b: Fix for multiple issues relating to prompt validations
+-   Updated dependencies [f8dda3b]
+    -   @sap-ux/inquirer-common@0.5.15
+
+## 0.7.12
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/axios-extension@1.17.8
+    -   @sap-ux/fiori-generator-shared@0.7.17
+    -   @sap-ux/telemetry@0.5.50
+    -   @sap-ux/inquirer-common@0.5.14
+
 ## 0.7.11
 
 ### Patch Changes
