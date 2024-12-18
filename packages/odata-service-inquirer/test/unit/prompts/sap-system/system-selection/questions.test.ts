@@ -545,4 +545,23 @@ describe('Test system selection prompts', () => {
             }
         });
     });
+
+    test('Should provide only one choice for the system selection based on onlyDefaultChoice option', async () => {
+        backendSystems.push(backendSystemReentrance);
+        const defaultChoice = backendSystemReentrance.name;
+        const systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.systemSelection]: { defaultChoice, onlyShowDefaultChoice: true }
+        });
+        const systemSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === promptNames.systemSelection
+        );
+        const defaultIndex = (systemSelectionPrompt as Question).default;
+        expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(1);
+        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
+            value: {
+                system: backendSystemReentrance,
+                type: 'backendSystem'
+            }
+        });
+    });
 });

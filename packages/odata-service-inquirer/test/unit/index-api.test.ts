@@ -1,6 +1,7 @@
 import { ErrorHandler } from '@sap-ux/inquirer-common';
-import { getPrompts } from '../../src/index';
+import { getPrompts, getSystemSelectionQuestions } from '../../src/index';
 import * as prompts from '../../src/prompts';
+import * as systemSelection from '../../src/prompts/datasources/sap-system/system-selection';
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
 import { type BackendSystem } from '@sap-ux/store';
@@ -8,6 +9,11 @@ import { type BackendSystem } from '@sap-ux/store';
 jest.mock('../../src/prompts', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('../../src/prompts')
+}));
+
+jest.mock('../../src/prompts/datasources/sap-system/system-selection', () => ({
+    __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
+    ...jest.requireActual('../../src/prompts/datasources/sap-system/system-selection')
 }));
 
 jest.mock('@sap-ux/store', () => ({
@@ -52,6 +58,21 @@ describe('API tests', () => {
         expect(LoggerHelper.logger).toBeDefined();
         expect(ErrorHandler.guidedAnswersEnabled).toBe(true);
         expect(ErrorHandler.logger).toBeDefined();
+    });
+
+    test('getSystemSelectionQuestions', async () => {
+        jest.spyOn(systemSelection, 'getSystemSelectionQuestions').mockResolvedValue([
+            {
+                name: 'prompt1',
+                validate: () => (PromptState.odataService.servicePath = '/path/to/service')
+            }
+        ]);
+
+        const { prompts: questions, answers } = await getSystemSelectionQuestions();
+
+        expect(questions).toHaveLength(1);
+        (questions[0].validate as Function)();
+        expect(answers.servicePath).toBe('/path/to/service');
     });
 
     test('getPrompts, i18n is loaded', async () => {

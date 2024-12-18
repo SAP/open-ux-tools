@@ -159,6 +159,9 @@ export async function getSystemConnectionQuestions(
         promptOptions?.systemSelection?.defaultChoice
     );
 
+    const shouldOnlyShowDefaultChoice =
+        promptOptions?.systemSelection?.onlyShowDefaultChoice && promptOptions?.systemSelection?.defaultChoice;
+
     const questions: Question[] = [
         {
             type: promptOptions?.systemSelection?.useAutoComplete ? 'autocomplete' : 'list',
@@ -169,10 +172,8 @@ export async function getSystemConnectionQuestions(
                 hint: t('prompts.systemSelection.hint')
             },
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
-            choices: promptOptions?.systemSelection?.onlyShowDefault
-                ? [systemChoices[defaultChoiceIndex]]
-                : systemChoices,
-            default: promptOptions?.systemSelection?.onlyShowDefault ? 0 : defaultChoiceIndex,
+            choices: shouldOnlyShowDefaultChoice ? [systemChoices[defaultChoiceIndex]] : systemChoices,
+            default: shouldOnlyShowDefaultChoice ? 0 : defaultChoiceIndex,
             validate: async (
                 selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
             ): Promise<ValidationResult> => {

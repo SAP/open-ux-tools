@@ -264,9 +264,10 @@ export type SystemSelectionPromptOptions = {
     defaultChoice?: string;
     /**
      * Only show the default choice in the system selection prompt, this is used to skip the system selection prompt if the default choice is already known.
-     * If the default choice is not known, the prompt will be shown as normal.
+     * If the `defaultChoice` value is not found in the systems choices, or the `defaultChoice` option is not specified,
+     * this option will not be applied and the full list of choices will be presented o the user.
      */
-    onlyShowDefault?: boolean;
+    onlyShowDefaultChoice?: boolean;
 };
 
 export type MetadataPromptOptions = {
@@ -286,6 +287,11 @@ export type ServiceSelectionPromptOptions = {
      * Used to validate the selected service is of the required odata version
      */
     requiredOdataVersion?: OdataVersion;
+    /**
+     * This allows the prompt to be excluded where consuming generators only require the system connection functionality.
+     * If the service selection prompt is hidden then the odata service related answer properties will not be returned.
+     */
+    hide?: boolean;
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
 
 export type SystemNamePromptOptions = {
