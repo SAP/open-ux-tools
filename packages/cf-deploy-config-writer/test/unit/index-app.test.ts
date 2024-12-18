@@ -1,12 +1,9 @@
 import { join } from 'path';
 import fsExtra from 'fs-extra';
 import hasbin from 'hasbin';
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import * as btp from '@sap-ux/btp-utils';
 import { generateAppConfig } from '../../src';
-import type { Editor } from 'mem-fs-editor';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),

@@ -22,7 +22,7 @@ jest.mock('hasbin', () => ({
 }));
 
 jest.mock('@sap/cf-tools', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
+    ...jest.requireActual('@sap/cf-tools'),
     apiGetInstanceCredentials: jest.fn()
 }));
 
