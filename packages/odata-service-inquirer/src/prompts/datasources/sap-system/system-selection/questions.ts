@@ -169,8 +169,10 @@ export async function getSystemConnectionQuestions(
                 hint: t('prompts.systemSelection.hint')
             },
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
-            choices: systemChoices,
-            default: defaultChoiceIndex,
+            choices: promptOptions?.systemSelection?.onlyShowDefault
+                ? [systemChoices[defaultChoiceIndex]]
+                : systemChoices,
+            default: promptOptions?.systemSelection?.onlyShowDefault ? 0 : defaultChoiceIndex,
             validate: async (
                 selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
             ): Promise<ValidationResult> => {

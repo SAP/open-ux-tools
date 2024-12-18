@@ -262,6 +262,11 @@ export type SystemSelectionPromptOptions = {
      *
      */
     defaultChoice?: string;
+    /**
+     * Only show the default choice in the system selection prompt, this is used to skip the system selection prompt if the default choice is already known.
+     * If the default choice is not known, the prompt will be shown as normal.
+     */
+    onlyShowDefault?: boolean;
 };
 
 export type MetadataPromptOptions = {
