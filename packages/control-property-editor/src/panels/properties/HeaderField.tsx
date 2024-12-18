@@ -9,6 +9,7 @@ import { defaultFontSize, sectionHeaderFontSize } from './constants';
 import { PropertyDocumentation } from './PropertyDocumentation';
 import type { PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
 import { Clipboard } from './Clipboard';
+import { useTranslation } from 'react-i18next';
 
 export interface HeaderFieldProps {
     label: string;
@@ -145,13 +146,15 @@ interface CopyButtonProps {
  * @returns ReactElement
  */
 function CopyButton(props: Readonly<CopyButtonProps>): ReactElement {
+    const { t } = useTranslation();
     const { label, onClick } = props;
-
+    
     return (
         <UIIconButton
             id={`${label.replace(/\s/g, '')}--copy`}
             iconProps={{ iconName: UiIcons.Copy }}
             onClick={onClick}
+            title={t('COPY_ICON_TOOLTIP')}
         />
     );
 }
