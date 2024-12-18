@@ -1923,16 +1923,14 @@ describe('FE V2 quick actions', () => {
                             getParent: () => pageView,
                             getBusy: () => false,
                             selectOverlay: () => ({}),
-                            getCustomData: () => [
-                                {
-                                    getKey: () => 'creationMode',
-                                    getValue: () => testCase.value ?? 'inline'
-                                },
-                                {
-                                    getKey: () => 'sectionId',
-                                    getValue: () => testCase.tableSectionId ?? 'DummyTableSectionID'
+                            data: (key: string) => {
+                                if (key === 'creationMode') {
+                                    return testCase.value ?? 'inline';
                                 }
-                            ]
+                                if (key === 'sectionId') {
+                                    return testCase.tableSectionId ?? 'DummyTableSectionID';
+                                }
+                            }
                         };
                     }
                     if (id == 'NavContainer') {

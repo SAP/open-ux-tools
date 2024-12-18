@@ -5,7 +5,6 @@ import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { ANALYTICAL_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
 
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
-import { getControlCustomData } from '../fe-v4/utils';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { isA } from '../../../utils/core';
@@ -52,8 +51,7 @@ export class EnableTableRowsCreationQuickAction
                         child.enabled = false;
                         child.tooltip = unsupportedCreationRowsTooltip;
                     } else {
-                        const data = getControlCustomData(table, ['creationMode']);
-                        if (data.creationMode === CREATION_ROWS_MODE) {
+                        if (table.data('creationMode') === CREATION_ROWS_MODE) {
                             child.enabled = false;
                             child.tooltip = alreadyEnabledTooltip;
                         }
@@ -75,7 +73,7 @@ export class EnableTableRowsCreationQuickAction
             throw Error('Internal error. Table element not found');
         }
 
-        const sectionId = getControlCustomData(table, ['sectionId']).sectionId as string | undefined;
+        const sectionId = table.data('sectionId') as string | undefined | null;
         if (!sectionId) {
             throw Error('Internal error. Table sectionId property not found');
         }

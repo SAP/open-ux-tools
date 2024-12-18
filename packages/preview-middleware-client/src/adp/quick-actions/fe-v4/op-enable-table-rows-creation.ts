@@ -6,7 +6,6 @@ import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/uti
 import { createManifestPropertyChange } from '../../../utils/fe-v4';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
-import { getControlCustomData } from './utils';
 import { TableQuickActionDefinitionBase } from './table-quick-action-base';
 import { isA } from '../../../utils/core';
 import { getTooltipsForTableRowCreationAction } from '../common/utils';
@@ -53,8 +52,7 @@ export class EnableTableRowsCreationQuickAction
                     children: []
                 });
             } else {
-                const data = getControlCustomData(smartTable, ['creationMode']);
-                const isChildEnabled = data.creationMode !== INLINE_CREATION_ROWS_MODE;
+                const isChildEnabled = smartTable.data('creationMode') !== INLINE_CREATION_ROWS_MODE;
                 this.children.push({
                     label: `'${(smartTable as Table).getHeader()}' table`,
                     enabled: isChildEnabled,

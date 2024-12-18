@@ -1666,7 +1666,7 @@ describe('FE V4 quick actions', () => {
                     ui5version?: versionUtils.Ui5VersionInfo;
                     expectDisabledReason?: string;
                     value?: string;
-                    expectUnsupported?: boolean
+                    expectUnsupported?: boolean;
                 }[] = [
                     {
                         tableType: MDC_TABLE_TYPE,
@@ -1800,12 +1800,11 @@ describe('FE V4 quick actions', () => {
                                     getParent: () => pageView,
                                     getBusy: () => false,
                                     selectOverlay: () => ({}),
-                                    getCustomData: () => [
-                                        {
-                                            getKey: () => 'creationMode',
-                                            getValue: () => testCase.value ?? 'inline'
+                                    data: (key: string) => {
+                                        if (key === 'creationMode') {
+                                            return testCase.value ?? 'inline';
                                         }
-                                    ]
+                                    }
                                 };
                             }
                             if (id == 'NavContainer') {
