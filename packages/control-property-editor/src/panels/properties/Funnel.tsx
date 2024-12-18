@@ -34,6 +34,7 @@ const Funnel = (): ReactElement => {
                 className={`funnel-properties-icon`}
                 iconProps={{ iconName: IconName.funnel }}
                 checked={checked}
+                title={checked ? t('MANAGE_FILTER_ICON_TOOLTIP') : t('FILTER_ICON_TOOLTIP')}
                 onClick={showCallout}></UIIconButton>
             {isVisible && (
                 <UICallout
