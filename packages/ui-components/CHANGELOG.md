@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.22.3
+
+### Patch Changes
+
+-   81a5351: Add export for `setIconOptions` method from `@fluentui/react`
+
 ## 1.22.2
 
 ### Patch Changes
