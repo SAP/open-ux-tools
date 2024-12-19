@@ -106,17 +106,13 @@ describe('utility.ts', () => {
             ]
         `);
 
-        const defaultChoiceSourceSystem = { name: '1.119.0 (Source system version)', value: '1.119.0' };
+        const defaultChoiceSourceSystem = { name: '1.118.0 (Source system version)', value: '1.118.0' };
         ui5VersWithAdditonalChoice = ui5VersionsGrouped(ui5Vers, false, defaultChoiceSourceSystem, true);
         expect(ui5VersWithAdditonalChoice[0]).toEqual(defaultChoiceSourceSystem);
         expect(ui5VersWithAdditonalChoice).toMatchInlineSnapshot(`
             [
               {
-                "name": "1.119.0 (Source system version)",
-                "value": "1.119.0",
-              },
-              {
-                "name": "1.118.0 - (Maintained version)",
+                "name": "1.118.0 (Source system version)",
                 "value": "1.118.0",
               },
               {
