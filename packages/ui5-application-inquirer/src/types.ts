@@ -73,7 +73,7 @@ type UI5VersionPromptOptions = {
      */
     useAutocomplete?: boolean;
     /**
-     * Choice will be added to the UI5 versions offered and set as the default selection
+     * When set to true, if a default ui5 version choice is specified and its found in the choice list, or its a snapshot version (closest version used) the provided name property (label) will be used.
      *
      */
     defaultChoice?: UI5VersionChoice;

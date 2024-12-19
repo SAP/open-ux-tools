@@ -44,7 +44,7 @@ export function searchChoices(searchVal: string, searchList: ListChoiceOptions[]
  *
  * @param versions - ui5Versions
  * @param includeSeparators - Include a separator to visually identify groupings, if false then grouping info is included in each entry as additional name text
- * @param defaultChoice - optional, If a default ui5 version choice is specified and its found in the choice list, or its a snapshot version (closest version used) the provided name property (label) will be used.
+ * @param defaultChoice - optional, When set to true, if a default ui5 version choice is specified and its found in the choice list, or its a snapshot version (closest version used) the provided name property (label) will be used.
  * @param useDefaultChoiceLabel - optional, if true the specified `defaultChoice` label will replace the `maintained` label. e.g. when `source system version` has been appended
  * @returns Array of ui5 version choices and separators if applicable, grouped by maintenance state
  */
