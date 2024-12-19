@@ -62,7 +62,7 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
                  */
                 show?: boolean;
                 /**
-                 * The type of configuration being updated e.g FLP, Deployment. This will be added to the start of the prompt message.
+                 * The type of configuration being updated. This will be added to the start of the prompt message.
                  */
                 configType?: string;
             };
