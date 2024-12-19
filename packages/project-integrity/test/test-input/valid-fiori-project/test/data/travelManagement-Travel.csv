@@ -1,0 +1,6 @@
+ID;tripName;employee;status;tripStartDate;tripEndDate;priceUSD
+bda3b521-6a7c-4c6a-b67c-47b6d4333abe;Sales Conference;John Doe;Confirmed;2021-07-01;2021-07-05;1500.00
+48ffb874-9713-4402-a994-8075295d2e6e;Tech Expo;Jane Smith;Pending;2021-08-15;2021-08-20;2000.00
+95481ec0-8a0b-4ec6-91b0-9fbea59285ab;Marketing Summit;Alice Johnson;Cancelled;2021-09-10;2021-09-12;800.00
+eee164c0-ed83-4ec2-8f95-844ab4099fc4;Leadership Retreat;Bob Brown;Confirmed;2021-10-05;2021-10-10;2500.00
+f03c3b75-8592-4f85-a557-28257c4a976d;Client Meeting;Charlie Davis;Completed;2021-11-01;2021-11-03;1200.00

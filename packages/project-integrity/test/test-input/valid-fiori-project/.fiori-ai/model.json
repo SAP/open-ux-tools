@@ -1,0 +1,179 @@
+{
+    "namespace": "travelManagement",
+    "entities": [
+        {
+            "name": "Travel",
+            "label": "Travel",
+            "elements": [
+                {
+                    "name": "ID",
+                    "type": "UUID",
+                    "key": true,
+                    "label": ""
+                },
+                {
+                    "name": "tripName",
+                    "type": "String(50)",
+                    "key": false,
+                    "essentialElement": false,
+                    "additionalInfo": "Name of the trip",
+                    "label": "Trip Name"
+                },
+                {
+                    "name": "employee",
+                    "type": "String(50)",
+                    "key": false,
+                    "essentialElement": false,
+                    "additionalInfo": "Employee associated with the trip",
+                    "label": "Employee"
+                },
+                {
+                    "name": "status",
+                    "type": "String(20)",
+                    "key": false,
+                    "essentialElement": true,
+                    "additionalInfo": "Status of the trip",
+                    "label": "Status"
+                },
+                {
+                    "name": "tripStartDate",
+                    "type": "Date",
+                    "key": false,
+                    "essentialElement": true,
+                    "additionalInfo": "Start date of the trip",
+                    "label": "Trip Start Date"
+                },
+                {
+                    "name": "tripEndDate",
+                    "type": "Date",
+                    "key": false,
+                    "essentialElement": true,
+                    "additionalInfo": "End date of the trip",
+                    "label": "Trip End Date"
+                },
+                {
+                    "name": "priceUSD",
+                    "type": "Decimal",
+                    "key": false,
+                    "essentialElement": false,
+                    "additionalInfo": "Price of the trip in USD",
+                    "label": "Price USD"
+                }
+            ],
+            "associations": [
+                {
+                    "name": "bookings",
+                    "target": "Bookings",
+                    "multiplicity": "many",
+                    "backAssociation": "travel"
+                }
+            ],
+            "labelPlural": "Travels"
+        },
+        {
+            "name": "Bookings",
+            "label": "Booking",
+            "elements": [
+                {
+                    "name": "ID",
+                    "type": "UUID",
+                    "key": true,
+                    "label": ""
+                },
+                {
+                    "name": "employee",
+                    "type": "String(50)",
+                    "key": false,
+                    "essentialElement": false,
+                    "additionalInfo": "Employee associated with the booking",
+                    "label": "Employee"
+                },
+                {
+                    "name": "airlines",
+                    "type": "String(50)",
+                    "key": false,
+                    "essentialElement": false,
+                    "additionalInfo": "Airlines for the booking",
+                    "label": "Airlines"
+                },
+                {
+                    "name": "bookingDate",
+                    "type": "Date",
+                    "key": false,
+                    "essentialElement": true,
+                    "additionalInfo": "Date of booking",
+                    "label": "Booking Date"
+                },
+                {
+                    "name": "flightDate",
+                    "type": "Date",
+                    "key": false,
+                    "essentialElement": true,
+                    "additionalInfo": "Date of the flight",
+                    "label": "Flight Date"
+                },
+                {
+                    "name": "priceUSD",
+                    "type": "Decimal",
+                    "key": false,
+                    "essentialElement": false,
+                    "additionalInfo": "Price of the booking in USD",
+                    "label": "Price USD"
+                }
+            ],
+            "associations": [
+                {
+                    "name": "travel",
+                    "target": "Travel",
+                    "multiplicity": "one",
+                    "isComposition": false
+                }
+            ],
+            "labelPlural": "Bookings"
+        }
+    ],
+    "service": {
+        "name": "travelManagementSrv",
+        "path": "srv/service.cds"
+    },
+    "applications": [
+        {
+            "name": "TravelManagement",
+            "pages": [
+                {
+                    "type": "ListReport",
+                    "entityType": "Travel",
+                    "listReportContent": {
+                        "loadDataOnAppLaunch": "Enabled",
+                        "filters": [
+                            "status",
+                            "tripStartDate",
+                            "tripEndDate"
+                        ],
+                        "tables": []
+                    }
+                },
+                {
+                    "type": "ObjectPage",
+                    "entityType": "Travel",
+                    "objectPageContent": {
+                        "sections": [],
+                        "tabs": [],
+                        "tableSectionAssociations": [
+                            "bookings"
+                        ]
+                    }
+                },
+                {
+                    "type": "ObjectPage",
+                    "entityType": "Bookings",
+                    "objectPageContent": {
+                        "sections": [],
+                        "tabs": [],
+                        "tableSectionAssociations": []
+                    }
+                }
+            ]
+        }
+    ]
+}
