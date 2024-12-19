@@ -314,7 +314,9 @@ describe('update preview middleware config', () => {
         const packageJson = {
             scripts: {
                 'start': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"',
-                'start-index': 'fiori run --open "index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"'
+                'start-index': 'fiori run --open "index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"',
+                'start-index2': "fiori run --open 'index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile'",
+                'start-index3': 'fiori run --open index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile'
             },
             'devDependencies': {
                 '@sap/ux-ui5-tooling': '1.15.4'
@@ -366,7 +368,7 @@ describe('update preview middleware config', () => {
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
 
         expect(warnLogMock).toHaveBeenCalledWith(
-            `Skipping script'start2', because another script also refers to UI5 YAML configuration file, 'ui5.yaml'. Adjust the 'flp.path' property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script 'start2'. ui5.yaml currently uses test/flpSandbox.html whereas script 'start2' uses 'test/flpSandboxMockserver.html'.`
+            `Skipping script 'start2', because another script also refers to UI5 YAML configuration file, 'ui5.yaml'. Adjust the 'flp.path' property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script 'start2'. ui5.yaml currently uses test/flpSandbox.html whereas script 'start2' uses 'test/flpSandboxMockserver.html'.`
         );
     });
 });

@@ -39,7 +39,7 @@ server:
 "
 `;
 
-exports[`update preview middleware config default ui5.yaml w/o index.html 2`] = `"{\\"scripts\\":{\\"start\\":\\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\\\\\"\\",\\"start-index\\":\\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\\\\\"\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.4\\"}}"`;
+exports[`update preview middleware config default ui5.yaml w/o index.html 2`] = `"{\\"scripts\\":{\\"start\\":\\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\\\\\"\\",\\"start-index\\":\\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\\\\\"\\",\\"start-index2\\":\\"fiori run --open 'index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile'\\",\\"start-index3\\":\\"fiori run --open index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.4\\"}}"`;
 
 exports[`update preview middleware config deprecated tools preview w/o theme 1`] = `
 "specVersion: \\"3.1\\"

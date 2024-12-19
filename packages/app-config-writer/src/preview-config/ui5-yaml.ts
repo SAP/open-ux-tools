@@ -107,7 +107,7 @@ async function isUi5YamlFlpPathAlreadyConverted(
     const { path: scriptPath } = extractUrlDetails(script);
     if (yamlConfigAlreadyAdjusted && flpPath != scriptPath && (convertTests ? !isTestPath(scriptPath) : true)) {
         logger?.warn(
-            `Skipping script'${scriptName}', because another script also refers to UI5 YAML configuration file, '${ui5Yaml}'. Adjust the 'flp.path' property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script '${scriptName}'. ${ui5Yaml} currently uses ${
+            `Skipping script '${scriptName}', because another script also refers to UI5 YAML configuration file, '${ui5Yaml}'. Adjust the 'flp.path' property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script '${scriptName}'. ${ui5Yaml} currently uses ${
                 flpPath ?? DEFAULT_FLP_PATH
             } whereas script '${scriptName}' uses '${scriptPath}'.`
         );

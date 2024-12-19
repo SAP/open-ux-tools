@@ -49,8 +49,9 @@ export function extractUrlDetails(script: string): {
     intent: FlpConfig['intent'] | undefined;
 } {
     //extract the URL from the 'open' command of the script
-    let url = / (?:--open|-o|--o) ([^"]?\S*)/.exec(script)?.[1] ?? undefined;
-    url = url?.startsWith('"') ? url.slice(1) : url;
+    let url = / (?:--open|-o|--o) (\S*)/.exec(script)?.[1] ?? undefined;
+    //delete double or single quotes from the URL
+    url = url?.replace(/['"]/, '');
 
     //extract the path from the URL
     const path = /^[^?#]+\.html/.exec(url ?? '')?.[0] ?? undefined;
