@@ -11,7 +11,6 @@ import FLPConfigGenerator from '../src/app';
 import { initI18n, t } from '../src/utils';
 import * as sapUxi18n from '@sap-ux/i18n';
 import { hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
-import { isS4Installed } from '@sap-ux/deploy-config-generator-shared';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { assertInboundsHasConfig } from './utils';
 import type { PackageInfo } from '@sap-ux/nodejs-utils';
@@ -64,15 +63,6 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
     };
 });
 const mockSendTelemetry = sendTelemetry as jest.Mock;
-
-jest.mock('@sap-ux/deploy-config-generator-shared', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/deploy-config-generator-shared') as {}),
-        isS4Installed: jest.fn()
-    };
-});
-
-const mockIsS4Installed = isS4Installed as jest.Mock;
 
 describe('flp-config generator', () => {
     const testFixture = new TestFixture();
@@ -190,7 +180,6 @@ describe('flp-config generator', () => {
 
     it('inbound key exists - overwrite: true', async () => {
         const existingManifest = testFixture.getContents('project/webapp/manifest.json');
-        mockIsS4Installed.mockResolvedValueOnce(true);
 
         memfs.vol.fromNestedJSON(
             {
@@ -220,6 +209,15 @@ describe('flp-config generator', () => {
                 .withPrompts({
                     s4Continue: true,
                     ...answers
+                })
+                .withOptions({
+                    data: {
+                        additionalPrompts: {
+                            confirmConfigUpate: {
+                                show: true
+                            }
+                        }
+                    }
                 })
                 .run()
         ).resolves.not.toThrow();

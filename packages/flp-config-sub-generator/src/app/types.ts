@@ -1,8 +1,10 @@
+import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { VSCodeInstance, TelemetryData } from '@sap-ux/fiori-generator-shared';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { LogWrapper } from '@sap-ux/fiori-generator-shared';
 
-export interface FlpConfigOptions {
+export interface FlpConfigOptions extends Generator.GeneratorOptions {
     /**
      * VSCode instance
      */
@@ -43,6 +45,31 @@ export interface FlpConfigOptions {
      * Data which may be passed from external sources e.g extensions like Application modeler
      */
     data?: {
-        appRootPath: string;
+        /**
+         * Path to the application root where the Fiori launchpad configuration will be added.
+         */
+        appRootPath?: string;
+        /**
+         * Config for additional prompts
+         */
+        additionalPrompts?: {
+            /**
+             * Prompt to confirm the the update of non-productive configurations as they are centrally managed as part of the CI pipeline.
+             */
+            confirmConfigUpdate?: {
+                /**
+                 * Whether the prompt should be shown.
+                 */
+                show?: boolean;
+                /**
+                 * The type of configuration being updated e.g FLP, Deployment. This will be added to the start of the prompt message.
+                 */
+                configType?: string;
+            };
+        };
     };
+    /**
+     * Logger instance
+     */
+    logWrapper?: LogWrapper;
 }

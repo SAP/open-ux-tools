@@ -1919,9 +1919,15 @@ importers:
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
+      '@types/yeoman-generator':
+        specifier: 5.2.11
+        version: 5.2.11
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
+      '@vscode-logging/logger':
+        specifier: 2.0.0
+        version: 2.0.0
       lodash:
         specifier: 4.17.21
         version: 4.17.21

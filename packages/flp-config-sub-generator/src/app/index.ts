@@ -1,11 +1,8 @@
 import { join } from 'path';
+import Generator from 'yeoman-generator';
+import FlpGenLogger from '../utils/logger';
 import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
-import {
-    DeploymentGenerator,
-    handleErrorMessage,
-    isS4Installed,
-    getS4Prompts
-} from '@sap-ux/deploy-config-generator-shared';
+import { handleErrorMessage, getConfirmConfigUpdatePrompt } from '@sap-ux/deploy-config-generator-shared';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
 import { generateInboundNavigationConfig } from '@sap-ux/app-config-writer';
 import { FileName, getWebappPath, getI18nPropertiesPaths } from '@sap-ux/project-access';
@@ -23,7 +20,7 @@ import {
 import { withCondition } from '@sap-ux/inquirer-common';
 import { generatorTitle, i18nKeySubTitle, i18nKeyTitle } from '../utils/constants';
 import { t } from '../utils';
-import { getYuiNavStep } from '../utils/prompts';
+import { getYUIDetails } from '../utils/prompts';
 import { EventName } from '../telemetryEvents';
 import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
 import type { YeomanEnvironment, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
@@ -34,7 +31,7 @@ import type { Answers, Question } from 'inquirer';
 /**
  * FLP config generator adds an inbound navigation config to an existing manifest.json.
  */
-export default class extends DeploymentGenerator {
+export default class extends Generator {
     private readonly appWizard: AppWizard;
     private readonly vscode?: VSCodeInstance;
     private readonly launchFlpConfigAsSubGenerator: boolean;
@@ -61,13 +58,21 @@ export default class extends DeploymentGenerator {
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.vscode = opts.vscode;
         this.launchFlpConfigAsSubGenerator = opts.launchFlpConfigAsSubGenerator ?? false;
-        this.appRootPath = opts?.data?.appRootPath ?? opts?.appRootPath ?? this.destinationRoot();
+        this.appRootPath = opts.data?.appRootPath ?? opts?.appRootPath ?? this.destinationRoot();
         this.options = opts;
 
-        // If launched standalone, add nav steps
+        FlpGenLogger.configureLogging(
+            this.options.logger,
+            this.rootGeneratorName(),
+            this.log,
+            this.options.logWrapper,
+            this.options.logLevel
+        );
+
+        // If launched standalone, set the header, title and description
         if (!this.launchFlpConfigAsSubGenerator) {
             this.appWizard.setHeaderTitle(generatorTitle);
-            this.prompts = new Prompts(getYuiNavStep(this.appRootPath));
+            this.prompts = new Prompts(getYUIDetails(this.appRootPath));
             this.setPromptsCallback = (fn): void => {
                 if (this.prompts) {
                     this.prompts.setCallback(fn);
@@ -84,7 +89,7 @@ export default class extends DeploymentGenerator {
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
-                name: '@sap/generator-fiori-deployment:flp-config',
+                name: '@sap-ux/flp-config-sub-generator',
                 version: this.rootGeneratorVersion()
             },
             internalFeature: isInternalFeaturesSettingEnabled(),
@@ -139,14 +144,16 @@ export default class extends DeploymentGenerator {
             createAnotherInbound: { hide: true }
         })) as Question[];
 
-        // Show S/4 specific prompt only if launched standalone or CLI since Fiori generator will show warn when run in YUI
+        // Show specific prompt for config update when launched standalone or on CLI. Otherwise it should be handled by consuming generator in YUI.
         if (
             (getHostEnvironment() === hostEnvironment.cli || !this.options.launchFlpConfigAsSubGenerator) &&
-            (await isS4Installed(this.options.vscode?.workspace?.getConfiguration()))
+            this.options.data?.additionalPrompts?.confirmConfigUpdate?.show
         ) {
-            const s4Prompts = getS4Prompts('FLP');
-            questions = withCondition(questions, (answers: Answers) => answers.s4Continue);
-            questions.unshift(...s4Prompts);
+            const confirmConfigUpdatePrompts = getConfirmConfigUpdatePrompt(
+                this.options.data.additionalPrompts.confirmConfigUpdate.configType
+            );
+            questions = withCondition(questions, (answers: Answers) => answers.confirmConfigUpate);
+            questions.unshift(...confirmConfigUpdatePrompts);
         }
 
         this.answers = {} as FLPConfigAnswers;
@@ -228,7 +235,7 @@ export default class extends DeploymentGenerator {
         } catch (error) {
             const errorMsg = t('warning.updatei18n', { path: i18nPath });
             this.appWizard.showWarning(errorMsg, MessageType.notification);
-            DeploymentGenerator.logger?.error(errorMsg);
+            FlpGenLogger.logger?.error(errorMsg);
         }
         return createProps;
     }
@@ -255,10 +262,10 @@ export default class extends DeploymentGenerator {
                     ...this.options.telemetryData
                 }) ?? {}
             ).catch((error) => {
-                DeploymentGenerator.logger.error(t('error.telemetry', { error }));
+                FlpGenLogger.logger.error(t('error.telemetry', { error }));
             });
         } catch (error) {
-            DeploymentGenerator.logger?.error(t('error.endPhase', { error }));
+            FlpGenLogger.logger?.error(t('error.endPhase', { error }));
         }
     }
 }
