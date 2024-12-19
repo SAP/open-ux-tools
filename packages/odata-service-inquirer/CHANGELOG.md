@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.7.14
+
+### Patch Changes
+
+-   77cff66: Fix for CF selection not resetting connection
+
 ## 0.7.13
 
 ### Patch Changes

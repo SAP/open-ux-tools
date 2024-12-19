@@ -318,6 +318,21 @@ describe('Test system selection prompts', () => {
         );
     });
 
+    test('Should reset the connection state when the source system `cfAbapEnvService`', async () => {
+        const connectValidator = new ConnectionValidator();
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        mockIsAppStudio = true;
+        const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
+        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'cfAbapEnvService',
+                system: 'cfAbapEnvService'
+            } as SystemSelectionAnswerType)
+        ).toBe(false);
+        expect(resetConnectionState).toHaveBeenCalled();
+    });
+
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: basic)', async () => {
         mockIsAppStudio = false;
         const connectValidator = new ConnectionValidator();
