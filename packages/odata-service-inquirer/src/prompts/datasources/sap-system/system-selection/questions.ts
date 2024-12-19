@@ -64,7 +64,9 @@ async function validateSystemSelection(
     requiredOdataVersion?: OdataVersion
 ): Promise<ValidationResult> {
     PromptState.reset();
-    if (systemSelection.type === 'newSystemChoice') {
+    if (systemSelection.type === 'newSystemChoice' || systemSelection.type === 'cfAbapEnvService') {
+        // Reset the connection state
+        connectionValidator.resetConnectionState(true);
         return true;
     }
     let connectValResult: ValidationResult = false;
@@ -88,9 +90,6 @@ async function validateSystemSelection(
             connectionValidator,
             requiredOdataVersion
         );
-    } else if (systemSelection.type === 'cfAbapEnvService') {
-        // Reset previous selections connection state
-        connectionValidator.resetConnectionState(true);
     }
     return connectValResult;
 }
