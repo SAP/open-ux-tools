@@ -1,8 +1,7 @@
 import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import type { VSCodeInstance, TelemetryData } from '@sap-ux/fiori-generator-shared';
+import type { VSCodeInstance, TelemetryData, LogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { LogWrapper } from '@sap-ux/fiori-generator-shared';
 
 export interface FlpConfigOptions extends Generator.GeneratorOptions {
     /**
