@@ -38,10 +38,10 @@ describe('preview-files', () => {
             '"dummy content flpSandboxMockserver"'
         );
         expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed 'flpSandbox.html' to 'flpSandbox_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://www.npmjs.com/package/preview-middleware#migration.`
+            `Renamed 'flpSandbox.html' to 'flpSandbox_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`
         );
         expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed 'flpSandboxMockserver.html' to 'flpSandboxMockserver_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://www.npmjs.com/package/preview-middleware#migration.`
+            `Renamed 'flpSandboxMockserver.html' to 'flpSandboxMockserver_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`
         );
     });
 
@@ -75,7 +75,7 @@ describe('preview-files', () => {
         const path = join(basePath, 'test', 'IdoNotExist.html');
 
         await renameSandbox(fs, path, logger);
-        expect(warnLogMock).toHaveBeenCalledWith(`The file 'IdoNotExist.html', has not been found. Skipping renaming.`);
+        expect(infoLogMock).toHaveBeenCalledWith(`The file 'IdoNotExist.html', has not been found. Skipping renaming.`);
     });
 
     test('skip renaming for files which have already been renamed', async () => {
@@ -85,7 +85,7 @@ describe('preview-files', () => {
 
         await renameSandbox(fs, path, logger);
         expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed 'ImAlreadyRenamed.html' to 'ImAlreadyRenamed_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://www.npmjs.com/package/preview-middleware#migration.`
+            `Renamed 'ImAlreadyRenamed.html' to 'ImAlreadyRenamed_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`
         );
 
         await renameSandbox(fs, path, logger);

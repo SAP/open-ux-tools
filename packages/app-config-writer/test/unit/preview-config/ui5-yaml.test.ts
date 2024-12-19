@@ -55,7 +55,7 @@ describe('update preview middleware config', () => {
         const text = (filename: string) =>
             `The UI5 YAML configuration file '${filename}', is not used in any preview script. Outdated preview middleware will be adjusted, if necessary.`;
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(warnLogMock).toHaveBeenCalledWith(text('ui5-deprecated-tools-preview.yaml'));
         expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview.yaml'))).toMatchSnapshot();
@@ -81,7 +81,7 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(warnLogMock).toHaveBeenCalledWith(
             `Skipping script 'invalid', which refers to the UI5 YAML configuration file 'ui5-invalid.yaml'. An error occurred when reading 'ui5-invalid.yaml': This file does not comply with the schema.`
@@ -101,7 +101,7 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(warnLogMock).toHaveBeenCalledWith(
             `Skipping script 'not:found', because the UI5 YAML configuration file, 'ui5-unavailable.yaml', could not be found.`
@@ -121,8 +121,31 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-no-middleware.yaml'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+    });
+
+    test('deprecated tools preview with theme and tests', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'ui:mockserver':
+                    'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance" --config ./ui5-deprecated-tools-preview-theme.yaml',
+                'start-variants-management': 'ui5 serve --o chicken.html',
+                'ui:opa5':
+                    'fiori run -o test/integration/opaTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview-theme.yaml',
+                'ui:unit':
+                    'fiori run -o test/unit/unitTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview-theme.yaml'
+            },
+            'devDependencies': {
+                '@sap/ux-ui5-tooling': '1.15.1'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, true, logger);
+        expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview-theme.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
@@ -140,7 +163,7 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview-theme.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
@@ -159,7 +182,7 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
@@ -177,8 +200,30 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-existing-tools-preview.yaml'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+    });
+
+    test('existing preview middleware with tests', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'ui:mockserver':
+                    'fiori run -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml',
+                'ui:opa5':
+                    'fiori run -o test/integration/opaTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml',
+                'ui:unit':
+                    'fiori run -o test/unit/unitTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml'
+            },
+            'devDependencies': {
+                '@sap-ux/preview-middleware': '0.16.102'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, true, logger);
+        expect(fs.read(join(variousConfigsPath, 'ui5-existing-preview-middleware.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
 
@@ -199,7 +244,7 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-existing-preview-middleware.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
@@ -218,7 +263,7 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-existing-preview-middleware.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
@@ -239,7 +284,7 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
     });
@@ -258,7 +303,7 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
 
         expect(fs.read(join(variousConfigsPath, 'ui5-no-middleware.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
@@ -269,7 +314,9 @@ describe('update preview middleware config', () => {
         const packageJson = {
             scripts: {
                 'start': 'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"',
-                'start-index': 'fiori run --open "index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"'
+                'start-index': 'fiori run --open "index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile"',
+                'start-index2': "fiori run --open 'index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile'",
+                'start-index3': 'fiori run --open index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile'
             },
             'devDependencies': {
                 '@sap/ux-ui5-tooling': '1.15.4'
@@ -277,7 +324,7 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
 
         expect(fs.read(join(variousConfigsPath, 'ui5.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
@@ -297,7 +344,7 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
         expect(warnLogMock).toHaveBeenCalledTimes(5);
     });
 
@@ -315,13 +362,13 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, logger);
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
 
         expect(fs.read(join(variousConfigsPath, 'ui5.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
 
         expect(warnLogMock).toHaveBeenCalledWith(
-            `Skipping script'start2', because another script also refers to UI5 YAML configuration file, 'ui5.yaml'. Adjust the 'flp.path' property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script 'start2'. ui5.yaml currently uses test/flpSandbox.html whereas script 'start2' uses 'test/flpSandboxMockserver.html'.`
+            `Skipping script 'start2', because another script also refers to UI5 YAML configuration file, 'ui5.yaml'. Adjust the 'flp.path' property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script 'start2'. ui5.yaml currently uses test/flpSandbox.html whereas script 'start2' uses 'test/flpSandboxMockserver.html'.`
         );
     });
 });

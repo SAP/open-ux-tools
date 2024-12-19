@@ -1,5 +1,5 @@
 import type { Resource } from '@ui5/fs';
-import type { InternalTestConfig, TestConfig } from '../types';
+import type { InternalTestConfig, TestConfig, TestConfigDefaults } from '../types';
 
 const DEFAULTS: Record<string, InternalTestConfig> = {
     qunit: {
@@ -20,7 +20,7 @@ const DEFAULTS: Record<string, InternalTestConfig> = {
         pattern: '',
         framework: 'Testsuite'
     }
-};
+} satisfies TestConfigDefaults;
 
 /**
  * Merge the given test configuration with the default values.
