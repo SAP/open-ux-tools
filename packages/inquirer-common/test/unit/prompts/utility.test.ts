@@ -125,6 +125,30 @@ describe('utility.ts', () => {
               },
             ]
         `);
+        // check name label when its not a snapshot and its not in the list
+        const defaultChoiceSourceSystem2 = { name: '9.999.9 (Source system version)', value: '9.999.9' };
+        ui5VersWithAdditonalChoice = ui5VersionsGrouped(ui5Vers, false, defaultChoiceSourceSystem2, true);
+        expect(ui5VersWithAdditonalChoice[0]).toEqual(defaultChoiceSourceSystem2);
+        expect(ui5VersWithAdditonalChoice).toMatchInlineSnapshot(`
+            [
+              {
+                "name": "9.999.9 (Source system version)",
+                "value": "9.999.9",
+              },
+              {
+                "name": "1.118.0 - (Maintained version)",
+                "value": "1.118.0",
+              },
+              {
+                "name": "1.117.0 - (Maintained version)",
+                "value": "1.117.0",
+              },
+              {
+                "name": "1.116.0 - (Out of maintenance version)",
+                "value": "1.116.0",
+              },
+            ]
+        `);
 
         // If version already exists in the list, it should be remain in place
         const defaultExistingChoice = { name: ui5Vers[1].version, value: ui5Vers[1].version };
