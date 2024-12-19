@@ -110,7 +110,7 @@ export async function getSystemSelectionQuestions(
     );
 
     // Existing system (BackendSystem or Destination) selected,
-    if (typeof promptOptions?.serviceSelection?.hide === 'undefined' || !promptOptions?.serviceSelection?.hide) {
+    if (!promptOptions?.serviceSelection?.hide) {
         questions.push(
             ...withCondition(
                 getSystemServiceQuestion(
