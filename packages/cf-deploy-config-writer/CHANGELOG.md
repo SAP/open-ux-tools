@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.0.16
+
+### Patch Changes
+
+-   2fab480: handle CF router queston not returning service name
+
 ## 0.0.15
 
 ### Patch Changes
