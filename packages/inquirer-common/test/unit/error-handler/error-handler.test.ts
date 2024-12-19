@@ -12,6 +12,7 @@ import 'jest-extended';
 import { ERROR_TYPE, ErrorHandler } from '../../../src/error-handler/error-handler';
 import { initI18nInquirerCommon, t } from '../../../src/i18n';
 import * as telemetryUtils from '../../../src/telemetry/telemetry';
+import { type Destination } from '@sap-ux/btp-utils';
 
 let mockIsAppStudio = false;
 
@@ -216,8 +217,19 @@ describe('Test ErrorHandler', () => {
             },
             SampleRate.NoSampling
         );
-        expect(serviceUnavailableHelpNoCommandLink?.toString()).toMatchInlineSnapshot(
-            `"An error occurred retrieving service(s) for SAP System. Need help with this error? : https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/48366"`
+        expect(serviceUnavailableHelpNoCommandLink?.toString()).toEqual(
+            'An error occurred retrieving service(s) for SAP System. ' +
+                'Need help with this error? : https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/48366'
+        );
+
+        // Destination specific error messages
+        const validationMessage = errorHandler.getValidationErrorHelp(ERROR_TYPE.AUTH, false, {
+            Name: 'MyDestination',
+            Authentication: 'BasicAuthentication',
+            'HTML5.DynamicDestination': 'true'
+        } as Destination);
+        expect(validationMessage).toEqual(
+            'Authentication incorrect. Please check the SAP BTP destination authentication configuration.'
         );
     });
 
@@ -258,7 +270,7 @@ describe('Test ErrorHandler', () => {
         );
         expect(
             ErrorHandler.getErrorMsgFromType(ERROR_TYPE.SERVICE_UNAVAILABLE, new Error('503 Service Unavailable'))
-        ).toEqual(t('errors.serverReturnedAnError', { errorMsg: '503 Service Unavailable' }));
+        ).toEqual(t('errors.serverReturnedAnError', { errorDesc: '503 Service Unavailable' }));
         expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE)).toEqual(
             t('errors.catalogServiceNotActive')
         );

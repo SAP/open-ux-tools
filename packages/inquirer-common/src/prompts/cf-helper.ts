@@ -3,18 +3,7 @@ import { apiGetServicesInstancesFilteredByType as getServicesInstances } from '@
 import type { ListChoiceOptions } from 'inquirer';
 import { ERROR_TYPE, type ErrorHandler } from '../error-handler/error-handler';
 import { t } from '../i18n';
-
-const AbapEnvType = {
-    ABAP: 'abap',
-    ABAP_TRIAL: 'abap-trial',
-    ABAP_CANARY: 'abap-canary',
-    ABAP_OEM: 'abap-oem',
-    ABAP_OEM_CANARY: 'abap-oem-canary',
-    ABAP_HAAS: 'abap-haas',
-    ABAP_STAGING: 'abap-staging',
-    ABAP_INTERNAL_STAGING: 'abap-internal-staging',
-    DESTINATION: 'destination'
-} as const;
+import { AbapEnvType } from '@sap-ux/btp-utils';
 
 /**
  * Get the name sorted list of ABAP instance choices from an active CF login. If not logged in, an error message is logged.
