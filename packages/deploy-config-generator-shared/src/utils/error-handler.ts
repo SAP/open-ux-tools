@@ -10,7 +10,7 @@ import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
 export class ErrorMessages {
     private static readonly cannotFindBinary = (bin: string, pkg: string): string => t('errors.noBinary', { bin, pkg });
 
-    public static readonly abortSignal = t('errors.abortSignal'); // check this one, is ABORT_SIGNAL signifcant? or can we just throw an error?
+    public static readonly abortSignal = t('errors.abortSignal');
     public static readonly noManifest = t('errors.noManifest');
     public static readonly noAppName = t('errors.noAppName');
     public static readonly noUI5Config = t('errors.noUi5Config');

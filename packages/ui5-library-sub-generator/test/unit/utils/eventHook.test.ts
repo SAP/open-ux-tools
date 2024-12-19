@@ -1,4 +1,5 @@
 import { POST_LIB_GEN_COMMAND, runPostLibGenHook } from '../../../src/utils/eventHook';
+import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 
 describe('runPostLibGenHook', () => {
     const mockExecuteCommand = jest.fn();
@@ -13,7 +14,7 @@ describe('runPostLibGenHook', () => {
 
         await runPostLibGenHook({
             path: generatedProjectRootPath,
-            vscodeInstance: getVscodeInstance
+            vscodeInstance: getVscodeInstance as unknown as VSCodeInstance
         });
         expect(mockExecuteCommand).toBeCalledWith(POST_LIB_GEN_COMMAND, {
             fsPath: generatedProjectRootPath
@@ -29,7 +30,7 @@ describe('runPostLibGenHook', () => {
         await expect(
             runPostLibGenHook({
                 path: generatedProjectRootPath,
-                vscodeInstance: getVscodeInstance
+                vscodeInstance: getVscodeInstance as unknown as VSCodeInstance
             })
         ).resolves.not.toThrowError();
     });

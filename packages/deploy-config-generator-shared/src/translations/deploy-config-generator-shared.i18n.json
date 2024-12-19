@@ -1,4 +1,9 @@
 {
+    "prompts": {
+        "s4": {
+            "message": "S/4 {{configType}} configuration is managed centrally as part of the CI pipeline, local updates to deployment configuration will not be for productive use. Are you sure you want to continue?"
+        }
+    },
     "errors": {
         "abortSignal": "ABORT_SIGNAL",
         "cannotReadUi5Config": "Cannot read ui5.yaml: {{- reason}}",
