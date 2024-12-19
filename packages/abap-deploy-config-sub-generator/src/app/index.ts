@@ -186,6 +186,7 @@ export default class extends DeploymentGenerator {
 
     private _processBspAppAnswers(): void {
         this.answers.ui5AbapRepo = (this.options.ui5AbapRepo || this.answers.ui5AbapRepo)?.toUpperCase();
+        this.answers.description = this.options.description || this.answers.description;
 
         // Set package
         if (!this.answers.package) {
@@ -210,9 +211,8 @@ export default class extends DeploymentGenerator {
     private _reconcileAnswersWithOptions(): void {
         this._processAbapTargetAnswers();
         this._processBspAppAnswers();
-        this.answers.index = this.options.index || this.answers.index;
-        this.answers.description = this.options.description || this.answers.description;
-        this.answers.overwrite = this.options.overwrite || this.answers.overwrite;
+        this.answers.index = this.options.index ?? this.answers.index;
+        this.answers.overwrite = this.options.overwrite ?? this.answers.overwrite;
     }
 
     public async writing(): Promise<void> {
