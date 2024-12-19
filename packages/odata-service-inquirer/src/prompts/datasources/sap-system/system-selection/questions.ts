@@ -88,6 +88,9 @@ async function validateSystemSelection(
             connectionValidator,
             requiredOdataVersion
         );
+    } else if (systemSelection.type === 'cfAbapEnvService') {
+        // Reset previous selections connection state
+        connectionValidator.resetConnectionState(true);
     }
     return connectValResult;
 }
