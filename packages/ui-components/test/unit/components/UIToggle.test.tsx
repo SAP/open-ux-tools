@@ -7,9 +7,10 @@ import { UIToggle, UIToggleSize } from '../../../src/components/UIToggle/UIToggl
 
 describe('<UIToggle />', () => {
     let wrapper: Enzyme.ReactWrapper<UIToggleProps>;
+    const handleChangeMock = jest.fn();
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(<UIToggle />);
+        wrapper = Enzyme.mount(<UIToggle onChange={handleChangeMock} checked={false} />);
     });
 
     afterEach(() => {
@@ -18,6 +19,20 @@ describe('<UIToggle />', () => {
 
     it('Should render a UIToggle component', () => {
         expect(wrapper.find('.ms-Toggle').length).toEqual(1);
+    });
+
+    it('Should toggle the checked state correctly', () => {
+        expect(wrapper.find('.ms-Toggle.is-checked').length).toEqual(0);
+
+        // Simulate toggle behavior
+        wrapper.find('button').simulate('click');
+        // Assert that handleChange was called once
+        expect(handleChangeMock).toHaveBeenCalledTimes(1);
+        wrapper.setProps({ checked: true }); // Simulating controlled prop change
+        wrapper.update();
+
+        // New state: checked
+        expect(wrapper.find('.ms-Toggle.is-checked').length).toEqual(1);
     });
 
     describe('Styles', () => {
