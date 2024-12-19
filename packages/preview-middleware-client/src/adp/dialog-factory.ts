@@ -24,7 +24,7 @@ type Controller = AddFragment | AddTableColumnFragments | ControllerExtension | 
 export const OPEN_DIALOG_STATUS_CHANGED = 'OPEN_DIALOG_STATUS_CHANGED';
 
 export class DialogFactory {
-    private static eventTarget = new EventTarget();
+    private static readonly eventTarget = new EventTarget();
     private static isDialogOpen = false;
     /**
      * Only one dialog can be open at a time. This flag indicates if a new dialog can be opened.
