@@ -1,5 +1,11 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import { isAppStudio, isHTML5DynamicConfigured, isOnPremiseDestination, type Destination } from '@sap-ux/btp-utils';
+import {
+    Authentication,
+    isAppStudio,
+    isHTML5DynamicConfigured,
+    isOnPremiseDestination,
+    type Destination
+} from '@sap-ux/btp-utils';
 import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { type HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
 import {
@@ -31,6 +37,7 @@ export enum ERROR_TYPE {
     CERT_UKNOWN_OR_INVALID = 'CERT_UKNOWN_OR_INVALID',
     CERT_EXPIRED = 'CERT_EXPIRED',
     CERT_SELF_SIGNED_CERT_IN_CHAIN = 'CERT_SELF_SIGNED_CERT_IN_CHAIN',
+    INVALID_SSL_CERTIFICATE = 'INVALID_SSL_CERTIFICATE',
     UNKNOWN = 'UNKNOWN',
     INVALID_URL = 'INVALID_URL',
     TIMEOUT = 'TIMEOUT',
@@ -75,6 +82,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.CERT_EXPIRED]: [/CERT_HAS_EXPIRED/],
     [ERROR_TYPE.CERT_SELF_SIGNED]: [/DEPTH_ZERO_SELF_SIGNED_CERT/],
     [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: [/SELF_SIGNED_CERT_IN_CHAIN/],
+    [ERROR_TYPE.INVALID_SSL_CERTIFICATE]: [/526/, /Invalid SSL Certificate/], // Cloud Foundry and Cloudflare specific
     [ERROR_TYPE.UNKNOWN]: [],
     [ERROR_TYPE.CONNECTION]: [/ENOTFOUND/, /ECONNRESET/, /ECONNREFUSED/, /ConnectionError/],
     [ERROR_TYPE.SERVICES_UNAVAILABLE]: [],
@@ -190,6 +198,10 @@ export class ErrorHandler {
             t('errors.urlCertValidationError', {
                 certErrorReason: t('texts.anUntrustedRootCert')
             }),
+        [ERROR_TYPE.INVALID_SSL_CERTIFICATE]: () =>
+            t('errors.urlCertValidationError', {
+                certErrorReason: t('texts.anUnknownOrInvalidCert')
+            }),
         [ERROR_TYPE.AUTH]: (error) =>
             t('errors.authenticationFailed', {
                 error: ErrorHandler.getMessageFromError(error)
@@ -208,7 +220,7 @@ export class ErrorHandler {
         [ERROR_TYPE.SERVICES_UNAVAILABLE]: () => t('errors.servicesUnavailable'),
         [ERROR_TYPE.SERVICE_UNAVAILABLE]: (error) =>
             t('errors.serverReturnedAnError', {
-                errorMsg: ErrorHandler.getMessageFromError(error)
+                errorDesc: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: () => t('errors.catalogServiceNotActive'),
         [ERROR_TYPE.INTERNAL_SERVER_ERROR]: (error) => {
@@ -273,6 +285,7 @@ export class ErrorHandler {
             [ERROR_TYPE.CERT]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_SELF_SIGNED]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: HELP_NODES.CERTIFICATE_ERROR,
+            [ERROR_TYPE.INVALID_SSL_CERTIFICATE]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.DESTINATION_MISCONFIGURED]: HELP_NODES.DESTINATION_MISCONFIGURED,
             [ERROR_TYPE.DESTINATION_UNAVAILABLE]: HELP_NODES.DESTINATION_UNAVAILABLE,
@@ -555,6 +568,9 @@ export class ErrorHandler {
         } else if (ERROR_TYPE.INTERNAL_SERVER_ERROR === errorType || ERROR_TYPE.SERVER_HTTP_ERROR === errorType) {
             // We cannot tell in BAS what this means, so we will just say the connection failed
             destErrorType = ERROR_TYPE.DESTINATION_CONNECTION_ERROR;
+        } else if (errorType === ERROR_TYPE.AUTH && destination.Authentication !== Authentication.NO_AUTHENTICATION) {
+            // Auth errors for destinations are usually misconfiguration, unless the `Authentication` property is set to `NoAuthentication`
+            destErrorMsg = this.getErrorMsgFromType(ERROR_TYPE.AUTH, t('texts.checkDestinationAuthConfig'));
         }
         // Always raise a telemetry event for destination related errors
         sendTelemetryEvent(telemBasError, {

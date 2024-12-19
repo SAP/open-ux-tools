@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.29
+
+### Patch Changes
+
+-   60d5f85: Added tooltip for funnel and copy icon
+
 ## 0.5.28
 
 ### Patch Changes
