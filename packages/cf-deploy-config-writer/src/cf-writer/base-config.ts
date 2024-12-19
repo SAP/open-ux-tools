@@ -33,6 +33,9 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
     if (logger) {
         LoggerHelper.logger = logger;
     }
+
+    logger?.debug(`Generate configuration using: \n ${JSON.stringify(config)}`);
+
     validateMtaConfig(config, fs);
     updateBaseConfig(config);
     createMTA(config as MTABaseConfig);
