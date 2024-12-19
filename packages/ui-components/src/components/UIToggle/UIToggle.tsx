@@ -147,6 +147,20 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
     }
 
     /**
+     * Determines whether the component should update when the new props are received.
+     * This method is typically used for performance optimization.
+     *
+     * @param {UIToggleProps} nextProps - The next props to be received by the component.
+     * @returns {boolean} A boolean value indicating whether the component should update.
+     */
+    shouldComponentUpdate(nextProps: UIToggleProps): boolean {
+        if (nextProps.checked !== this.props.checked) {
+            this.replaceThumbWithIcon(nextProps.checked);
+        }
+        return true;
+    }
+
+    /**
      * Handles the change event triggered by the user interaction.
      *
      * @param {React.MouseEvent<HTMLElement>} event - The mouse event object associated with the interaction.
