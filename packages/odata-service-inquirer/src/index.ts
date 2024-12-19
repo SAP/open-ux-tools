@@ -1,4 +1,5 @@
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
+import type { Question } from 'inquirer';
 import { type Logger } from '@sap-ux/logger';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
@@ -6,7 +7,12 @@ import autocomplete from 'inquirer-autocomplete-prompt';
 import { ERROR_TYPE, ErrorHandler, setTelemetryClient } from '@sap-ux/inquirer-common';
 import { initI18nOdataServiceInquirer } from './i18n';
 import { getQuestions } from './prompts';
-import { SystemSelectionAnswerType } from './prompts/datasources/sap-system/system-selection';
+import {
+    type SystemSelectionAnswers,
+    SystemSelectionAnswerType,
+    getSystemSelectionQuestions as getSystemSelectionQuestionsBase
+} from './prompts/datasources/sap-system/system-selection';
+import type { ServiceAnswer } from './prompts/datasources/sap-system/service-selection';
 import type {
     NewSystemChoice,
     CfAbapEnvServiceChoice
@@ -64,6 +70,21 @@ async function getPrompts(
 }
 
 /**
+ * Get the system selection questions.
+ *
+ * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
+ * @returns the prompts used to provide input for system selection and a reference to the answers object which will be populated with the user's responses once `inquirer.prompt` returns
+ */
+async function getSystemSelectionQuestions(
+    promptOptions?: OdataServicePromptOptions
+): Promise<{ prompts: Question<SystemSelectionAnswers & ServiceAnswer>[]; answers: Partial<OdataServiceAnswers> }> {
+    return {
+        prompts: await getSystemSelectionQuestionsBase(promptOptions),
+        answers: PromptState.odataService
+    };
+}
+
+/**
  * Prompt for odata service writer inputs.
  *
  * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
@@ -116,5 +137,6 @@ export {
     // @deprecated - temp export to support to support open source migration
     type SapSystemType,
     NewSystemChoice,
-    CfAbapEnvServiceChoice
+    CfAbapEnvServiceChoice,
+    getSystemSelectionQuestions
 };
