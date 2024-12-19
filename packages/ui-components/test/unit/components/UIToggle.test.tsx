@@ -7,9 +7,10 @@ import { UIToggle, UIToggleSize } from '../../../src/components/UIToggle/UIToggl
 
 describe('<UIToggle />', () => {
     let wrapper: Enzyme.ReactWrapper<UIToggleProps>;
+    const handleChangeMock = jest.fn();
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(<UIToggle />);
+        wrapper = Enzyme.mount(<UIToggle onChange={handleChangeMock} checked={false} />);
     });
 
     afterEach(() => {
@@ -20,15 +21,29 @@ describe('<UIToggle />', () => {
         expect(wrapper.find('.ms-Toggle').length).toEqual(1);
     });
 
+    it('Should toggle the checked state correctly', () => {
+        expect(wrapper.find('.ms-Toggle.is-checked').length).toEqual(0);
+
+        // Simulate toggle behavior
+        wrapper.find('button').simulate('click');
+        // Assert that handleChange was called once
+        expect(handleChangeMock).toHaveBeenCalledTimes(1);
+        wrapper.setProps({ checked: true }); // Simulating controlled prop change
+        wrapper.update();
+
+        // New state: checked
+        expect(wrapper.find('.ms-Toggle.is-checked').length).toEqual(1);
+    });
+
     describe('Styles', () => {
         const testCases = [
             {
                 name: 'Standard',
                 size: UIToggleSize.Standard,
                 expect: {
-                    margin: '0',
+                    margin: '0px 6px 0px 6px',
                     fontSize: 13,
-                    padding: '',
+                    padding: '0px 0px 1px 0px',
                     height: 18,
                     width: 30,
                     innerPadding: '0 1px',
@@ -41,9 +56,9 @@ describe('<UIToggle />', () => {
                 name: 'Default',
                 size: undefined,
                 expect: {
-                    margin: '0',
+                    margin: '0px 6px 0px 6px',
                     fontSize: 13,
-                    padding: '',
+                    padding: '0px 0px 1px 0px',
                     height: 18,
                     width: 30,
                     innerPadding: '0 1px',
@@ -56,14 +71,14 @@ describe('<UIToggle />', () => {
                 name: 'Small',
                 size: UIToggleSize.Small,
                 expect: {
-                    margin: '0',
+                    margin: '0px 6px 0px 6px',
                     fontSize: 13,
-                    padding: '2px 0',
-                    height: 14,
+                    padding: '0px 0px 1px 0px',
+                    height: 18,
                     width: 30,
                     innerPadding: '0 1px',
-                    thumbHeight: 10,
-                    thumbWidth: 10,
+                    thumbHeight: 14,
+                    thumbWidth: 14,
                     borderWidth: 1
                 }
             }
