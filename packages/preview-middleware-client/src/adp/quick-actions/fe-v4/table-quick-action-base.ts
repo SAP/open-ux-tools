@@ -8,7 +8,7 @@ import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-defi
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 
 const ACTION_ID = 'CTX_SETTINGS0';
-const CONTROL_TYPE = 'sap.ui.mdc.Table';
+
 export abstract class TableQuickActionDefinitionBase {
     readonly kind = NESTED_QUICK_ACTION_KIND;
     public get id(): string {
@@ -28,6 +28,7 @@ export abstract class TableQuickActionDefinitionBase {
     tableMap: Record<string, number> = {};
     constructor(
         public readonly type: string,
+        protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
         protected readonly isSkipVariantManagementCheck?: boolean
@@ -35,9 +36,11 @@ export abstract class TableQuickActionDefinitionBase {
 
     async initialize(): Promise<void> {
         let index = 0;
-        for (const smartTable of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
-            CONTROL_TYPE
-        ])) {
+        for (const smartTable of getRelevantControlFromActivePage(
+            this.context.controlIndex,
+            this.context.view,
+            this.controlTypes
+        )) {
             if (!this.isSkipVariantManagementCheck) {
                 const hasVariantManagement = FlexRuntimeInfoAPI.hasVariantManagement({ element: smartTable });
                 if (!hasVariantManagement) {

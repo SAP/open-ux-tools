@@ -24,7 +24,7 @@ export async function prepareManifestChange(
     control: UI5Element,
     component: string,
     entitySet: string | undefined,
-    propertyValue: object
+    propertyValue: object | string
 ): Promise<FlexCommand[]> {
     const { flexSettings } = context;
 
@@ -54,6 +54,16 @@ export async function prepareManifestChange(
 }
 
 /**
+ * Checks whether the manifest has array structured page definitions
+ * @param manifest - manifest object
+ * @returns true if pages are defined as array, false if defined as object
+ */
+export function isManifestArrayStructured(manifest: Manifest): boolean {
+    return Array.isArray(manifest['sap.ui.generic.app']?.pages);
+}
+
+
+/**
  * Checks if the current UI5 version and manifest structure is supported in v2 applications.
  *
  * @param manifest - manifest changes of the current application.
@@ -66,17 +76,17 @@ export async function prepareManifestChange(
  *
  */
 export async function areManifestChangesSupported(manifest: Manifest): Promise<boolean> {
-    const pagesStructureInManifest = manifest['sap.ui.generic.app'].pages;
-    if (Array.isArray(pagesStructureInManifest)) {
+    if (isManifestArrayStructured(manifest)) {
         return false;
     }
 
     const version = await getUi5Version();
     const isAboveOrEqualMinimalVersion = !isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 });
     const isSupportedPatchVersion =
-        isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 96, patch: 37 }) ||
+        isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 96, patch: 35 }) ||
         isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 108, patch: 38 }) ||
         isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 120, patch: 23 });
 
     return isAboveOrEqualMinimalVersion || isSupportedPatchVersion;
 }
+

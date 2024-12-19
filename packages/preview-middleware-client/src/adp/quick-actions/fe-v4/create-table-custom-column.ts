@@ -3,13 +3,9 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { DialogNames, handler } from '../../init-dialogs';
-import {
-    SMART_TABLE_TYPE,
-    GRID_TABLE_TYPE,
-    MDC_TABLE_TYPE,
-    TableQuickActionDefinitionBase,
-    TREE_TABLE_TYPE
-} from '../table-quick-action-base';
+import { SMART_TABLE_TYPE, GRID_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
+
 import { preprocessActionExecution } from '../fe-v2/create-table-custom-column';
 
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';

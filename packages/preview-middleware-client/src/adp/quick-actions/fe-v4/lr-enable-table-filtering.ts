@@ -6,9 +6,9 @@ import { TableQuickActionDefinitionBase } from './table-quick-action-base';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { createManifestPropertyChange } from '../../../utils/fe-v4';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
+import { MDC_TABLE_TYPE } from '../control-types';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
-const CONTROL_TYPE = 'sap.ui.mdc.Table';
 
 type Personalization = {
     sort: boolean;
@@ -26,7 +26,7 @@ export class EnableTableFilteringQuickAction
     implements NestedQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(ENABLE_TABLE_FILTERING, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context);
+        super(ENABLE_TABLE_FILTERING, [MDC_TABLE_TYPE], 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context);
     }
     readonly forceRefreshAfterExecution = true;
 
@@ -40,7 +40,7 @@ export class EnableTableFilteringQuickAction
         const tooltipText = this.context.resourceBundle.getText('TABLE_FILTERING_CHANGE_HAS_ALREADY_BEEN_MADE');
         let index = 0;
         for (const smartTable of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
-            CONTROL_TYPE
+            MDC_TABLE_TYPE
         ])) {
             const personalizationData = (smartTable as Table).getP13nMode();
             const value = this.context.changeService.getConfigurationPropertyValue(
@@ -70,7 +70,7 @@ export class EnableTableFilteringQuickAction
         const index = this.tableMap[path];
 
         const smartTables = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
-            CONTROL_TYPE
+            MDC_TABLE_TYPE
         ]);
 
         const modifiedControl = smartTables[index];
