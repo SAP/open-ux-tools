@@ -51,7 +51,7 @@ export function extractUrlDetails(script: string): {
     //extract the URL from the 'open' command of the script
     let url = / (?:--open|-o|--o) (\S*)/.exec(script)?.[1] ?? undefined;
     //delete double or single quotes from the URL
-    url = url?.replace(/['"]/, '');
+    url = url?.replace(/['"]/g, '');
 
     //extract the path from the URL
     const path = /^[^?#]+\.html/.exec(url ?? '')?.[0] ?? undefined;
