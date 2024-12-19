@@ -110,17 +110,18 @@ export async function getSystemSelectionQuestions(
     );
 
     // Existing system (BackendSystem or Destination) selected,
-    // In future, make the service prompt optional by wrapping in condition `[promptOptions?.serviceSelection?.hide]`
-    questions.push(
-        ...withCondition(
-            getSystemServiceQuestion(
-                connectValidator,
-                systemSelectionPromptNamespace,
-                promptOptions?.serviceSelection
-            ) as Question[],
-            (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
-        )
-    );
+    if (typeof promptOptions?.serviceSelection?.hide === 'undefined' || !promptOptions?.serviceSelection?.hide) {
+        questions.push(
+            ...withCondition(
+                getSystemServiceQuestion(
+                    connectValidator,
+                    systemSelectionPromptNamespace,
+                    promptOptions?.serviceSelection
+                ) as Question[],
+                (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
+            )
+        );
+    }
 
     // Create new system connection for storage only supported on non-App Studio environments
     if (!isAppStudio()) {

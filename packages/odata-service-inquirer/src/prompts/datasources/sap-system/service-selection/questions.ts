@@ -58,10 +58,8 @@ export function getSystemServiceQuestion(
     const serviceSelectionPromptName = `${promptNamespace}:${promptNames.serviceSelection}`;
 
     let systemServiceQuestion = {
-        when: promptOptions?.hide
-            ? false
-            : (): boolean =>
-                  connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
+        when: (): boolean =>
+            connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
         name: serviceSelectionPromptName,
         type: promptOptions?.useAutoComplete ? 'autocomplete' : 'list',
         message: () => getSelectedServiceLabel(connectValidator.connectedUserName),

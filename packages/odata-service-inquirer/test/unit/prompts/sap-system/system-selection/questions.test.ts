@@ -576,4 +576,32 @@ describe('Test system selection prompts', () => {
         const defaultIndex = (systemSelectionPrompt as Question).default;
         expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(8);
     });
+
+    test('Should hide the service selection prompt when hide option in provided as true', async () => {
+        const systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.serviceSelection]: { hide: true }
+        });
+        const serviceSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === `systemSelection:${promptNames.serviceSelection}`
+        );
+        expect(serviceSelectionPrompt).toBeUndefined();
+    });
+
+    test('Should show the service selection prompt when hide option is not provided', async () => {
+        const systemSelectionQuestions = await getSystemSelectionQuestions();
+        const serviceSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === `systemSelection:${promptNames.serviceSelection}`
+        );
+        expect(serviceSelectionPrompt).toBeDefined();
+    });
+
+    test('Should show the service selection prompt when hide option is provided as false', async () => {
+        const systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.serviceSelection]: { hide: false }
+        });
+        const serviceSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === `systemSelection:${promptNames.serviceSelection}`
+        );
+        expect(serviceSelectionPrompt).toBeDefined();
+    });
 });

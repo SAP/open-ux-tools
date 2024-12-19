@@ -7,17 +7,17 @@ import { PromptState } from '../../src/utils';
 import { type BackendSystem } from '@sap-ux/store';
 
 jest.mock('../../src/prompts', () => ({
-    __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
+    __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('../../src/prompts')
 }));
 
 jest.mock('../../src/prompts/datasources/sap-system/system-selection', () => ({
-    __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
+    __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('../../src/prompts/datasources/sap-system/system-selection')
 }));
 
 jest.mock('@sap-ux/store', () => ({
-    __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
+    __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
     SystemService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([

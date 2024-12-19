@@ -631,13 +631,4 @@ describe('Test new system prompt', () => {
             { name: 'http://abap01:1234/path/to/odata/service', value: { servicePath: '/path/to/odata/service' } }
         ]);
     });
-
-    test('Should hide the service selection prompt when hide option in provided', async () => {
-        const connectValidator = new ConnectionValidator();
-        const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, { hide: true });
-        const serviceSelectionPrompt = systemServiceQuestions.find(
-            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
-        );
-        expect(serviceSelectionPrompt?.when).toEqual(false);
-    });
 });
