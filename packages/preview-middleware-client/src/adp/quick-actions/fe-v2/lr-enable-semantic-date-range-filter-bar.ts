@@ -35,8 +35,7 @@ export class ToggleSemanticDateRangeFilterBar
             if (isActionApplicable && modifiedControl) {
                 this.control = modifiedControl;
 
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const id: string = this.control.getProperty('persistencyKey') ?? this.control.getId();
+                const id = this.control.getProperty('persistencyKey') as unknown ?? this.control.getId();
                 if (typeof id !== 'string') {
                     throw new Error('Could not retrieve configuration property because control id is not valid!');
                 }
