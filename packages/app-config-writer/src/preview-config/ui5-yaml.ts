@@ -345,8 +345,8 @@ export async function updateDefaultTestConfig(fs: Editor, basePath: string, logg
     try {
         ui5YamlConfig = await readUi5Yaml(basePath, FileName.Ui5Yaml, fs);
     } catch (error) {
-        logger?.info(
-            `The UI5 YAML configuration file 'ui5.yaml', can't be updated according to support test frameworks: '${error}'. Please manually add the test configuration to the UI5 YAML configuration file used for testing according to https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#configuration-option-test.`
+        logger?.warn(
+            `The UI5 YAML configuration file 'ui5.yaml', can't be updated to support test frameworks: '${error}'. Please manually add the test configuration to the UI5 YAML configuration file used for testing according to https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#configuration-option-test.`
         );
         return;
     }
