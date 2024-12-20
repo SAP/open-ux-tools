@@ -43,13 +43,13 @@ export async function writeIntegrityData(integrityFilePath: string, content: Int
     for (const fileIntegrity of content.fileIntegrity) {
         fileIntegrity.filePath = relative(integrityDir, fileIntegrity.filePath);
         if (typeof fileIntegrity.content === 'string') {
-            fileIntegrity.content = compressToBase64(fileIntegrity.content) as string;
+            fileIntegrity.content = compressToBase64(fileIntegrity.content);
         }
     }
 
     for (const contentIntegrity of content.contentIntegrity) {
         if (typeof contentIntegrity.content === 'string') {
-            contentIntegrity.content = compressToBase64(contentIntegrity.content) as string;
+            contentIntegrity.content = compressToBase64(contentIntegrity.content);
         }
     }
 
