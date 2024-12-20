@@ -17,7 +17,7 @@ import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-s
 import { getSystemServiceQuestion } from '../../../../../src/prompts/datasources/sap-system/service-selection';
 import * as serviceHelpers from '../../../../../src/prompts/datasources/sap-system/service-selection/service-helper';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
-import { OdataServiceAnswers, promptNames } from '../../../../../src/types';
+import { promptNames } from '../../../../../src/types';
 import * as utils from '../../../../../src/utils';
 import { PromptState } from '../../../../../src/utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -49,6 +49,8 @@ const v2Annotations = `<?xml version="1.0" encoding="utf-8"?>
                 <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
             </edmx:Reference>
         </edmx:Edmx>`;
+const v4Metadata =
+    '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="4.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
 
 let connectedUserNameMock: string | undefined;
 const catalogs = {
@@ -372,6 +374,7 @@ describe('Test new system prompt', () => {
             }
         ];
         const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
                 listServices: jest.fn().mockResolvedValue([serviceV2a]),
@@ -387,28 +390,54 @@ describe('Test new system prompt', () => {
                 metadata: jest.fn().mockResolvedValue(v2Metadata)
             } as Partial<ODataService>)
         } as Partial<ServiceProvider>;
-        const serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider, 'service');
+        let serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider, 'service');
 
         const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
         const serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
 
-        const selectedService = {
+        // v2 service
+        const selectedServiceV2 = {
             servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
             serviceODataVersion: '2',
             serviceType: 'Not implemented'
         } as ServiceAnswer;
 
-        const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService);
+        let validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedServiceV2);
         expect(validationResult).toBe(true);
-        expect(serviceSpy).toHaveBeenCalledWith(selectedService.servicePath);
+        expect(serviceSpy).toHaveBeenCalledWith(selectedServiceV2.servicePath);
         expect(PromptState.odataService).toEqual({
             annotations: annotations,
             metadata: v2Metadata,
             odataVersion: '2',
             origin: 'http://some.abap.system:1234',
             servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
+        });
+
+        // v4 service
+        connectionValidatorMock.serviceProvider = {
+            service: jest.fn().mockReturnValue({
+                metadata: jest.fn().mockResolvedValue(v4Metadata)
+            } as Partial<ODataService>)
+        } as Partial<ServiceProvider>;
+
+        const selectedServiceV4 = {
+            servicePath: '/sap/opu/odata4/dmo/flight/0001',
+            serviceODataVersion: '4',
+            serviceType: 'WebUI'
+        } as ServiceAnswer;
+        serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider, 'service');
+
+        validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedServiceV4);
+        expect(validationResult).toBe(true);
+        expect(serviceSpy).toHaveBeenCalledWith(selectedServiceV4.servicePath);
+        expect(PromptState.odataService).toEqual({
+            annotations: [],
+            metadata: v4Metadata,
+            odataVersion: '4',
+            origin: 'http://some.abap.system:1234',
+            servicePath: '/sap/opu/odata4/dmo/flight/0001'
         });
     });
 

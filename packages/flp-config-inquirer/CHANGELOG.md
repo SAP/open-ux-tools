@@ -1,5 +1,23 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.2.6
+
+### Patch Changes
+
+-   fe0878d: feat(flp-config): adds new flp config generator
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/fiori-generator-shared@0.7.18
+    -   @sap-ux/inquirer-common@0.6.1
+    -   @sap-ux/adp-tooling@0.12.101
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [112d29a]
+    -   @sap-ux/inquirer-common@0.6.0
+    -   @sap-ux/adp-tooling@0.12.100
+
 ## 0.2.4
 
 ### Patch Changes
