@@ -144,7 +144,6 @@ export function isTestPath(path: string | undefined, configuration?: PreviewConf
     if (!path) {
         return false;
     }
-    //todo: how to ensure we don't mistake other test scripts for preview scripts?
     if (path.includes('.qunit.html')) {
         return true;
     }
