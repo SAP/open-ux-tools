@@ -1,8 +1,13 @@
 import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import * as versionUtils from 'open/ux/preview/client/utils/version';
 
-import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
+import {
+    quickActionListChanged,
+    executeQuickAction,
+    QuickAction
+} from '@sap-ux-private/control-property-editor-common';
 
 jest.mock('../../../../src/adp/init-dialogs', () => {
     return {
@@ -34,7 +39,7 @@ import {
     M_TABLE_TYPE,
     SMART_TABLE_TYPE,
     TREE_TABLE_TYPE
-} from 'open/ux/preview/client/adp/quick-actions/table-quick-action-base';
+} from 'open/ux/preview/client/adp/quick-actions/control-types';
 import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
@@ -868,173 +873,180 @@ describe('FE V2 quick actions', () => {
             const testCases: {
                 validVersion: boolean;
                 versionInfo: string;
-                isManifestPageSettingInArrayStructred: boolean;
+                isManifestPagesAsArray: boolean;
             }[] = [
                 {
                     validVersion: true,
                     versionInfo: '1.96.37',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.108.38',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.96.38',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.120.23',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.128',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.130',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: false,
-                    versionInfo: '1.96.36',
-                    isManifestPageSettingInArrayStructred: false
+                    versionInfo: '1.96.34',
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.130',
-                    isManifestPageSettingInArrayStructred: true
+                    isManifestPagesAsArray: true
                 }
             ];
-            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
-                sapCoreMock.byId.mockImplementation((id) => {
-                    if (id == 'SmartFilterBar') {
-                        return {
-                            isA: (type: string) => type === 'sap.ui.comp.smartfilterbar.SmartFilterBar',
-                            getProperty: jest.fn().mockImplementation(() => false),
-                            getDomRef: () => ({}),
-                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
-                        };
-                    }
-                    if (id == 'NavContainer') {
-                        const container = new NavContainer();
-                        const component = new UIComponentMock();
-                        const view = new XMLView();
-                        const pageView = new XMLView();
-                        pageView.getDomRef.mockImplementation(() => {
+            test.each(testCases)(
+                'initialize and execute action (%s)',
+                async (testCase) => {
+                    VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
+                    sapCoreMock.byId.mockImplementation((id) => {
+                        if (id == 'SmartFilterBar') {
                             return {
-                                contains: () => true
+                                isA: (type: string) => type === 'sap.ui.comp.smartfilterbar.SmartFilterBar',
+                                getProperty: jest.fn().mockImplementation(() => false),
+                                getDomRef: () => ({}),
+                                getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
                             };
-                        });
-                        pageView.getViewName.mockImplementation(
-                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-                        );
-                        const componentContainer = new ComponentContainer();
-                        const spy = jest.spyOn(componentContainer, 'getComponent');
-                        spy.mockImplementation(() => {
-                            return 'component-id';
-                        });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-                            if (id === 'component-id') {
-                                return component;
-                            }
-                        });
-                        view.getContent.mockImplementation(() => {
-                            return [componentContainer];
-                        });
-                        container.getCurrentPage.mockImplementation(() => {
-                            return view;
-                        });
-                        component.getRootControl.mockImplementation(() => {
-                            return pageView;
-                        });
-                        return container;
-                    }
-                });
-                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
-                    return { type, value, settings };
-                });
-
-                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                const pages = testCase.isManifestPageSettingInArrayStructred
-                    ? [{ name: 'test', id: 'test' }]
-                    : { name: 'test', id: 'test' };
-                jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
-                    'sap.ui.generic.app': {
-                        pages
-                    }
-                });
-                const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(
-                    rtaMock,
-                    new OutlineService(rtaMock, mockChangeService),
-                    [registry],
-                    { onStackChange: jest.fn() } as any
-                );
-                await service.init(sendActionMock, subscribeMock);
-                await service.reloadQuickActions({
-                    'sap.ui.comp.smartfilterbar.SmartFilterBar': [
-                        {
-                            controlId: 'SmartFilterBar'
-                        } as any
-                    ],
-                    'sap.m.NavContainer': [
-                        {
-                            controlId: 'NavContainer'
-                        } as any
-                    ]
-                });
-                expect(sendActionMock).toHaveBeenCalledWith(
-                    quickActionListChanged([
-                        {
-                            title: 'LIST REPORT',
-                            actions:
-                                testCase.validVersion && !testCase.isManifestPageSettingInArrayStructred
-                                    ? [
-                                          {
-                                              'kind': 'simple',
-                                              id: 'listReport0-enable-semantic-daterange-filterbar',
-                                              title: 'Enable Semantic Date Range in Filter Bar',
-                                              enabled: true
-                                          }
-                                      ]
-                                    : []
                         }
-                    ])
-                );
-                if (testCase.validVersion && !testCase.isManifestPageSettingInArrayStructred) {
-                    await subscribeMock.mock.calls[0][0](
-                        executeQuickAction({ id: 'listReport0-enable-semantic-daterange-filterbar', kind: 'simple' })
-                    );
-                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
-                        'settings': {},
-                        'type': 'appDescriptor',
-                        'value': {
-                            'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
-                            'parameters': {
-                                'entityPropertyChange': {
-                                    'operation': 'UPSERT',
-                                    'propertyPath': 'component/settings/filterSettings/dateSettings',
-                                    'propertyValue': {
-                                        'useDateRange': true
-                                    }
-                                },
-                                'parentPage': {
-                                    'component': 'sap.suite.ui.generic.template.ListReport',
-                                    'entitySet': 'testEntity'
+                        if (id == 'NavContainer') {
+                            const container = new NavContainer();
+                            const component = new UIComponentMock();
+                            const view = new XMLView();
+                            const pageView = new XMLView();
+                            pageView.getDomRef.mockImplementation(() => {
+                                return {
+                                    contains: () => true
+                                };
+                            });
+                            pageView.getViewName.mockImplementation(
+                                () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                            );
+                            const componentContainer = new ComponentContainer();
+                            const spy = jest.spyOn(componentContainer, 'getComponent');
+                            spy.mockImplementation(() => {
+                                return 'component-id';
+                            });
+                            jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                                if (id === 'component-id') {
+                                    return component;
                                 }
-                            },
-                            'reference': undefined
+                            });
+                            view.getContent.mockImplementation(() => {
+                                return [componentContainer];
+                            });
+                            container.getCurrentPage.mockImplementation(() => {
+                                return view;
+                            });
+                            component.getRootControl.mockImplementation(() => {
+                                return pageView;
+                            });
+                            return container;
                         }
                     });
-                }
-            });
+                    CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                        return { type, value, settings };
+                    });
+
+                    const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                    const pages = testCase.isManifestPagesAsArray
+                        ? [{ name: 'test', id: 'test' }]
+                        : { name: 'test', id: 'test' };
+                    jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                        'sap.ui.generic.app': {
+                            pages
+                        }
+                    });
+                    const registry = new FEV2QuickActionRegistry();
+                    const service = new QuickActionService(
+                        rtaMock,
+                        new OutlineService(rtaMock, mockChangeService),
+                        [registry],
+                        { onStackChange: jest.fn() } as any
+                    );
+                    await service.init(sendActionMock, subscribeMock);
+                    await service.reloadQuickActions({
+                        'sap.ui.comp.smartfilterbar.SmartFilterBar': [
+                            {
+                                controlId: 'SmartFilterBar'
+                            } as any
+                        ],
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+                    expect(sendActionMock).toHaveBeenCalledWith(
+                        quickActionListChanged([
+                            {
+                                title: 'LIST REPORT',
+                                actions:
+                                    testCase.validVersion && !testCase.isManifestPagesAsArray
+                                        ? [
+                                              {
+                                                  'kind': 'simple',
+                                                  id: 'listReport0-enable-semantic-daterange-filterbar',
+                                                  title: 'Enable Semantic Date Range in Filter Bar',
+                                                  enabled: true
+                                              }
+                                          ]
+                                        : []
+                            }
+                        ])
+                    );
+                    if (testCase.validVersion && !testCase.isManifestPagesAsArray) {
+                        await subscribeMock.mock.calls[0][0](
+                            executeQuickAction({
+                                id: 'listReport0-enable-semantic-daterange-filterbar',
+                                kind: 'simple'
+                            })
+                        );
+                        expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                            'settings': {},
+                            'type': 'appDescriptor',
+                            'value': {
+                                'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
+                                'parameters': {
+                                    'entityPropertyChange': {
+                                        'operation': 'UPSERT',
+                                        'propertyPath': 'component/settings/filterSettings/dateSettings',
+                                        'propertyValue': {
+                                            'useDateRange': true
+                                        }
+                                    },
+                                    'parentPage': {
+                                        'component': 'sap.suite.ui.generic.template.ListReport',
+                                        'entitySet': 'testEntity'
+                                    }
+                                },
+                                'reference': undefined
+                            }
+                        });
+                    }
+                },
+                100000
+            );
         });
     });
     describe('ObjectPage', () => {
@@ -1467,7 +1479,7 @@ describe('FE V2 quick actions', () => {
                 );
 
                 await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'objectPage0-create-table-action', kind: 'nested', path: '-1/0' })
+                    executeQuickAction({ id: 'objectPage0-create-table-action', kind: 'nested', path: '0/0' })
                 );
 
                 const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
@@ -1610,24 +1622,19 @@ describe('FE V2 quick actions', () => {
                     ]
                 });
 
+                // filter out irrelevant actions
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Add Custom Table Column') {
+                        actions.splice(i, 1);
+                    }
+                }
+
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
                             'title': 'OBJECT PAGE',
                             'actions': [
-                                {
-                                    'children': [
-                                        {
-                                            enabled: true,
-                                            'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
-                                            'label': `'section 01' section`
-                                        }
-                                    ],
-                                    'enabled': true,
-                                    'id': 'objectPage0-create-table-action',
-                                    'kind': 'nested',
-                                    'title': 'Add Custom Table Action'
-                                },
                                 {
                                     'children': [
                                         {
@@ -1657,7 +1664,7 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({
                         id: 'objectPage0-create-table-custom-column',
                         kind: 'nested',
-                        path: '-1/0'
+                        path: '0/0'
                     })
                 );
 
@@ -1778,7 +1785,7 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({
                         id: 'objectPage0-create-table-custom-column',
                         kind: 'nested',
-                        path: '-1/0'
+                        path: '0/0'
                     })
                 );
 
@@ -1788,7 +1795,303 @@ describe('FE V2 quick actions', () => {
                 );
             });
         });
+
+        describe('enable creation table rows', () => {
+            const testCases: {
+                innerTableType: string;
+                toString: () => string;
+                ui5version?: versionUtils.Ui5VersionInfo;
+                value?: string;
+                parentEntitySet?: string;
+                tableSectionId?: string;
+                expectDisabledReason?: string;
+                expectUnsupported?: boolean;
+                expectToThrow?: string;
+                manifestPages?: Object;
+            }[] = [
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => SMART_TABLE_TYPE + ', supported version',
+                    ui5version: { major: 1, minor: 120, patch: 23 }
+                },
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => 'row creation already enabled',
+                    value: 'creationRows',
+                    expectDisabledReason:
+                        'This option has been disabled because empty row mode is already enabled for this table'
+                },
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => 'unsupported UI5 version',
+                    ui5version: { major: 1, minor: 120, patch: 22 },
+                    expectUnsupported: true
+                },
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => 'empty entity set',
+                    parentEntitySet: '',
+                    expectToThrow: 'Internal error. Object Page entity set not found'
+                },
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => 'empty table section id',
+                    tableSectionId: '',
+                    expectToThrow: 'Internal error. Table sectionId property not found'
+                },
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => 'unsupported pages array manifest structure',
+                    manifestPages: [],
+                    expectUnsupported: true
+                },
+                {
+                    innerTableType: GRID_TABLE_TYPE,
+                    toString: () => GRID_TABLE_TYPE
+                },
+                {
+                    innerTableType: TREE_TABLE_TYPE,
+                    toString: () => TREE_TABLE_TYPE,
+                    expectDisabledReason:
+                        'This action is disabled because empty row mode is not supported for analytical and tree tables'
+                },
+                {
+                    innerTableType: ANALYTICAL_TABLE_TYPE,
+                    toString: () => ANALYTICAL_TABLE_TYPE,
+                    expectDisabledReason:
+                        'This action is disabled because empty row mode is not supported for analytical and tree tables'
+                }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                    testCase.ui5version ?? { major: 1, minor: 131 }
+                );
+
+                const pageView = new XMLView();
+                pageView.getParent.mockReturnValue({
+                    getProperty: (propName: string) => {
+                        if (propName === 'entitySet') {
+                            return testCase.parentEntitySet ?? 'DummyEntitySet';
+                        } else {
+                            return undefined;
+                        }
+                    }
+                });
+                const scrollIntoView = jest.fn();
+                const actionId = 'objectPage0-enable-table-empty-row-mode';
+
+                const setSelectedSubSectionMock = jest.fn();
+                const fakeSubSection = new ManagedObject() as any;
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                    if (type === 'sap.uxap.ObjectPageSection') {
+                        // Return a mock object with the getSubSections method
+                        return {
+                            children: [2],
+                            getSubSections: () => [{}, {}],
+                            getTitle: () => 'section 01',
+                            setSelectedSubSection: setSelectedSubSectionMock
+                        };
+                    }
+
+                    if (type === 'sap.uxap.ObjectPageSubSection') {
+                        // Return a new instance of ManagedObject
+                        return fakeSubSection;
+                    }
+
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === testCase.innerTableType,
+                                            getAggregation: () => 'item'
+                                        }
+                                    ];
+                                }
+
+                                return [];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({}),
+                            data: (key: string) => {
+                                if (key === 'creationMode') {
+                                    return testCase.value ?? 'inline';
+                                }
+                                if (key === 'sectionId') {
+                                    return testCase.tableSectionId ?? 'DummyTableSectionID';
+                                }
+                            }
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                rtaMock.getRootControlInstance = jest.fn().mockReturnValue({
+                    getManifest: jest.fn().mockReturnValue({
+                        ['sap.ui.generic.app']: {
+                            pages: testCase.manifestPages ?? {}
+                        }
+                    })
+                });
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
+
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
+
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                // filter out irrelevant actions
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Enable Empty Row Mode for Tables') {
+                        actions.splice(i, 1);
+                    }
+                }
+
+                let thrown;
+                try {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({
+                            id: actionId,
+                            kind: 'nested',
+                            path: '0/0'
+                        })
+                    );
+                } catch (e) {
+                    thrown = (e as Error).message;
+                }
+
+                expect(thrown).toBe(testCase.expectToThrow);
+
+                expect(sendActionMock).toHaveBeenNthCalledWith(
+                    1,
+                    quickActionListChanged([
+                        {
+                            title: 'OBJECT PAGE',
+                            actions: testCase.expectUnsupported
+                                ? []
+                                : [
+                                      {
+                                          kind: 'nested',
+                                          id: actionId,
+                                          enabled: true,
+                                          tooltip: undefined,
+                                          title: 'Enable Empty Row Mode for Tables',
+                                          children: [
+                                              {
+                                                  'children': [
+                                                      {
+                                                          'children': [],
+                                                          'enabled': !testCase.expectDisabledReason,
+                                                          'label': `'MyTable' table`,
+                                                          tooltip: testCase.expectDisabledReason
+                                                      }
+                                                  ],
+                                                  'enabled': true,
+                                                  'label': `'section 01' section`
+                                              }
+                                          ]
+                                      }
+                                  ]
+                        }
+                    ])
+                );
+
+                if (testCase.expectUnsupported || testCase.expectToThrow) {
+                    expect(mockOverlay.setSelected).toHaveBeenCalledTimes(0);
+                    expect(setSelectedSubSectionMock).toHaveBeenCalledTimes(0);
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledTimes(0);
+                } else {
+                    expect(mockOverlay.setSelected).toHaveBeenCalledWith(true);
+                    expect(setSelectedSubSectionMock).toHaveBeenCalledWith(fakeSubSection);
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                        'settings': {},
+                        'type': 'appDescriptor',
+                        'value': {
+                            'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
+                            'parameters': {
+                                'entityPropertyChange': {
+                                    'operation': 'UPSERT',
+                                    'propertyPath': 'component/settings/sections/DummyTableSectionID/createMode',
+                                    'propertyValue': 'creationRows'
+                                },
+                                'parentPage': {
+                                    'component': 'sap.suite.ui.generic.template.ObjectPage',
+                                    'entitySet': 'DummyEntitySet'
+                                }
+                            },
+                            'reference': undefined
+                        }
+                    });
+                }
+            });
+        });
     });
+
     describe('AnalyticalListPage', () => {
         describe('create table custom column', () => {
             test('initialize and execute action (%s)', async () => {

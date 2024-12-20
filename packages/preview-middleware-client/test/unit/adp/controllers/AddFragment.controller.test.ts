@@ -16,7 +16,11 @@ import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import Core from 'sap/ui/core/Core';
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
-import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, TREE_TABLE_TYPE } from 'open/ux/preview/client/adp/quick-actions/table-quick-action-base';
+import {
+    ANALYTICAL_TABLE_TYPE,
+    GRID_TABLE_TYPE,
+    TREE_TABLE_TYPE
+} from 'open/ux/preview/client/adp/quick-actions/control-types';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -1500,38 +1504,41 @@ describe('AddFragment', () => {
             });
 
             const tableTypes = [TREE_TABLE_TYPE, GRID_TABLE_TYPE, ANALYTICAL_TABLE_TYPE];
-            test.each(tableTypes)('creates new analytical custom column fragment and a change (%s)', async (tableType) => {
-                jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
-                    getMetadata: jest.fn().mockReturnValue({
-                        getAllAggregations: jest.fn().mockReturnValue({}),
-                        getName: jest.fn().mockReturnValue(tableType)
-                    })
-                } as unknown as ManagedObject);
-                await addFragment.setup({
-                    setEscapeHandler: jest.fn(),
-                    destroy: jest.fn(),
-                    setModel: jest.fn(),
-                    open: jest.fn(),
-                    close: jest.fn()
-                } as unknown as Dialog);
+            test.each(tableTypes)(
+                'creates new analytical custom column fragment and a change (%s)',
+                async (tableType) => {
+                    jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                        getMetadata: jest.fn().mockReturnValue({
+                            getAllAggregations: jest.fn().mockReturnValue({}),
+                            getName: jest.fn().mockReturnValue(tableType)
+                        })
+                    } as unknown as ManagedObject);
+                    await addFragment.setup({
+                        setEscapeHandler: jest.fn(),
+                        destroy: jest.fn(),
+                        setModel: jest.fn(),
+                        open: jest.fn(),
+                        close: jest.fn()
+                    } as unknown as Dialog);
 
-                await addFragment.onCreateBtnPress(event as unknown as Event);
+                    await addFragment.onCreateBtnPress(event as unknown as Event);
 
-                expect(executeSpy).toHaveBeenCalledWith({
-                    _oPreparedChange: {
-                        _oDefinition: {
-                            moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                    expect(executeSpy).toHaveBeenCalledWith({
+                        _oPreparedChange: {
+                            _oDefinition: {
+                                moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                            },
+                            setModuleName: expect.any(Function)
                         },
-                        setModuleName: expect.any(Function)
-                    },
-                    getPreparedChange: expect.any(Function)
-                });
+                        getPreparedChange: expect.any(Function)
+                    });
 
-                expect(setContentSpy).toHaveBeenCalledWith({
-                    ...dummyContent,
-                    templateName: 'ANALYTICAL_TABLE_COLUMN'
-                });
-            });
+                    expect(setContentSpy).toHaveBeenCalledWith({
+                        ...dummyContent,
+                        templateName: 'ANALYTICAL_TABLE_COLUMN'
+                    });
+                }
+            );
         });
     });
 });

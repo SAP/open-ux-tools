@@ -131,7 +131,7 @@ describe('index', () => {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
-                    'Reuse components are detected for some views in this application. Controller extensions and adding fragments are not supported for such views and will be disabled.',
+                    'Reuse components are detected for some views in this application. Controller extensions, adding fragments and manifest changes are not supported for such views and will be disabled.',
                 shouldHideIframe: false
             }
         });
