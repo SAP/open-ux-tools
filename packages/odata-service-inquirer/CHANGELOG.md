@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.8.2
+
+### Patch Changes
+
+-   2d4fc36: Fix for connection reset when switching system selection
+
 ## 0.8.1
 
 ### Patch Changes
