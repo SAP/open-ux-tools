@@ -2,10 +2,9 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type FilterBar from 'sap/ui/comp/filterbar/FilterBar';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
-import { getControlById, isA } from '../../../utils/core';
+import { getControlById } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
-import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';
 const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
@@ -46,7 +45,11 @@ export class ToggleSemanticDateRangeFilterBar
     }
 
     async execute(): Promise<FlexCommand[]> {
-        const entitySet = isA<SmartFilterBar>(CONTROL_TYPE, this.control) ? this.control.getEntitySet() : undefined;
+        // Use a regex to match the part after the last "::" and before "--"
+        const match = this.control?.getId().match(/::([^:]+)--/);
+
+        const entitySet = match ? match[1] : undefined;
+
         const command = await prepareManifestChange(
             this.context,
             'component/settings/filterSettings/dateSettings',

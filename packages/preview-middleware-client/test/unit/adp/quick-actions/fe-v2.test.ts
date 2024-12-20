@@ -919,7 +919,11 @@ describe('FE V2 quick actions', () => {
                             isA: (type: string) => type === 'sap.ui.comp.smartfilterbar.SmartFilterBar',
                             getProperty: jest.fn().mockImplementation(() => false),
                             getDomRef: () => ({}),
-                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
+                            getId: jest
+                                .fn()
+                                .mockImplementation(
+                                    () => 's2p.template.ListReport.view.ListReport::testEntity--listReportFilter'
+                                )
                         };
                     }
                     if (id == 'NavContainer') {
