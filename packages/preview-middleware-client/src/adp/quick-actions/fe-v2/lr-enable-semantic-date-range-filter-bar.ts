@@ -35,14 +35,11 @@ export class ToggleSemanticDateRangeFilterBar
             if (isActionApplicable && modifiedControl) {
                 this.control = modifiedControl;
 
-                const id = this.control.getProperty('persistencyKey') as unknown ?? this.control.getId();
+                const id = (this.control.getProperty('persistencyKey') as unknown) ?? this.control.getId();
                 if (typeof id !== 'string') {
                     throw new Error('Could not retrieve configuration property because control id is not valid!');
                 }
-                const value = this.context.changeService.getConfigurationPropertyValue(
-                    id,
-                    'useDateRange'
-                );
+                const value = this.context.changeService.getConfigurationPropertyValue(id, 'useDateRange');
                 this.isUseDateRangeTypeEnabled =
                     value === undefined ? (this.control.data('useDateRangeType') as boolean) : (value as boolean);
             }
