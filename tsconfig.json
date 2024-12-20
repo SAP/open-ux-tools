@@ -33,6 +33,9 @@
       "path": "packages/abap-deploy-config-writer"
     },
     {
+      "path": "packages/adp-flp-config-sub-generator"
+    },
+    {
       "path": "packages/adp-tooling"
     },
     {
