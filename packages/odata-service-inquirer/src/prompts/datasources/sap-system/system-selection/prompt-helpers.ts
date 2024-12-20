@@ -71,7 +71,11 @@ export async function connectWithBackendSystem(
             ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.
             // We log the error in case there is another issue (unresolveable) with the stored backend configuration.
-            if (errorType === ERROR_TYPE.AUTH && backendSystem.username && backendSystem.password) {
+            if (
+                errorType === ERROR_TYPE.AUTH &&
+                typeof backendSystem.username === 'string' &&
+                typeof backendSystem.password === 'string'
+            ) {
                 LoggerHelper.logger.error(
                     t('errors.storedSystemConnectionError', { systemName: backendSystem.name, error: connectValResult })
                 );
