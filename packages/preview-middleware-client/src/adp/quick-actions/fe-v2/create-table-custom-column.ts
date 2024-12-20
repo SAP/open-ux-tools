@@ -1,10 +1,20 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import ManagedObject from 'sap/ui/base/ManagedObject';
+import UI5Element from 'sap/ui/core/Element';
+
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+
+import ObjectPageSection from 'sap/uxap/ObjectPageSection';
+import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
+import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+
+import IconTabBar from 'sap/m/IconTabBar';
+
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
-import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import { DialogNames, handler } from '../../init-dialogs';
+import { DialogNames, DialogFactory } from '../../dialog-factory';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
@@ -13,14 +23,9 @@ import {
     TableQuickActionDefinitionBase,
     TREE_TABLE_TYPE
 } from '../table-quick-action-base';
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import UI5Element from 'sap/ui/core/Element';
 import { notifyUser } from '../../utils';
 import { getTextBundle } from '../../../i18n';
-import ObjectPageSection from 'sap/uxap/ObjectPageSection';
-import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
-import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
-import IconTabBar from 'sap/m/IconTabBar';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
 
@@ -64,9 +69,16 @@ export class AddTableCustomColumnQuickAction
     implements NestedQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(CREATE_TABLE_CUSTOM_COLUMN, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN', context, {
-            areTableRowsRequired: true
-        });
+        super(
+            CREATE_TABLE_CUSTOM_COLUMN,
+            CONTROL_TYPES,
+            'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN',
+            context,
+            {
+                areTableRowsRequired: true
+            },
+            [DIALOG_ENABLEMENT_VALIDATOR]
+        );
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
@@ -109,7 +121,7 @@ export class AddTableCustomColumnQuickAction
         )
             ? DialogNames.ADD_FRAGMENT
             : DialogNames.ADD_TABLE_COLUMN_FRAGMENTS;
-        await handler(overlay, this.context.rta, dialog, undefined, {
+        await DialogFactory.createDialog(overlay, this.context.rta, dialog, undefined, {
             aggregation: 'columns',
             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
         });

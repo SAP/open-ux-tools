@@ -7,8 +7,9 @@ import UI5Element from 'sap/ui/core/Element';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
-import { DialogNames, handler } from '../../init-dialogs';
+import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
@@ -19,7 +20,9 @@ const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, 'sap.ui.table.TreeTable',
 
 export class AddTableActionQuickAction extends TableQuickActionDefinitionBase implements NestedQuickActionDefinition {
     constructor(context: QuickActionContext) {
-        super(CREATE_TABLE_ACTION, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context);
+        super(CREATE_TABLE_ACTION, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context, undefined, [
+            DIALOG_ENABLEMENT_VALIDATOR
+        ]);
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
@@ -52,7 +55,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         // open dialogBox to add, and content is selected ByDefault
         if (headerToolbar) {
             const overlay = OverlayRegistry.getOverlay(headerToolbar as UI5Element) || [];
-            await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
+            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
                 aggregation: 'content',
                 title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
             });

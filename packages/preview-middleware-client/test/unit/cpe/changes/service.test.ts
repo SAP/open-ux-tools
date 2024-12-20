@@ -1473,7 +1473,94 @@ describe('ChangeService', () => {
         });
     });
 
-    test('manifest change', async () => {
+    test('FE V2 manifest change', async () => {
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        function createCommand(
+            properties: Map<string, any>,
+            toggle = false
+        ): {
+            getProperty: (name: string) => any;
+            getElement: () => any;
+            getSelector: () => any;
+            getChangeType: () => string;
+            getParent: () => any;
+            getPreparedChange: () => { getDefinition: () => { fileName: string } };
+        } {
+            const cache = new Map(properties);
+            return {
+                getProperty: (name: string): any => {
+                    return cache.get(name);
+                },
+                getElement: jest.fn().mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({ getName: jest.fn().mockReturnValue('sap.m.Button') })
+                }),
+                getSelector: jest.fn().mockReturnValue({
+                    id: !toggle ? 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button' : undefined,
+                    name: 'ExtensionPoint1'
+                }),
+                getChangeType: (): any => {
+                    return cache.get('changeType');
+                },
+                getParent: jest.fn().mockReturnValue({
+                    getElement: jest.fn().mockReturnValue({
+                        getId: () => 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                    })
+                }),
+                getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
+                    return { getDefinition: () => ({ fileName: 'testFileName' }) };
+                }
+            };
+        }
+        const commands = [
+            createCommand(
+                new Map<string, any>([
+                    ['changeType', 'appdescr_ui_generic_app_changePageConfiguration'],
+                    [
+                        'parameters',
+                        {
+                            'entityPropertyChange': {
+                                'propertyPath': 'controlConfig/settings',
+                                'operation': 'upsert',
+                                'propertyValue': {
+                                    'someSetting': true
+                                }
+                            }
+                        }
+                    ]
+                ])
+            )
+        ];
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(commands),
+            getAllExecutedCommands: jest.fn().mockReturnValue(commands)
+        });
+        const service = new ChangeService({ rta: rtaMock } as any);
+
+        await service.init(sendActionMock, subscribeMock);
+
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+        expect(sendActionMock).toHaveBeenCalledTimes(5);
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, setApplicationRequiresReload(true));
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: [
+                    {
+                        controlIds: ['ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'],
+                        isActive: true,
+                        fileName: 'testFileName',
+                        type: 'pending',
+                        kind: 'configuration',
+                        propertyName: 'someSetting',
+                        propertyPath: 'controlConfig/settings',
+                        value: true
+                    }
+                ]
+            }
+        });
+    });
+    test('FE V4 manifest change', async () => {
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(
             properties: Map<string, any>,

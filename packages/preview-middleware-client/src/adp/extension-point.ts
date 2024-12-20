@@ -7,9 +7,9 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { ExternalAction, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
 
 import { Deferred, createDeferred } from './utils';
+import { DialogFactory, DialogNames } from './dialog-factory';
 
 import { CommunicationService } from '../cpe/communication-service';
-import { DialogNames, handler } from './init-dialogs';
 
 type ActionService = {
     execute: (controlId: string, actionId: string) => void;
@@ -100,7 +100,7 @@ export default class ExtensionPointService {
         let deferred = createDeferred<DeferredExtPointData>();
         const name = this.selectedExtensionPointName;
 
-        await handler(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
+        await DialogFactory.createDialog(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
             name,
             info,
             deferred
