@@ -9,6 +9,7 @@ import { areManifestChangesSupported, prepareManifestChange } from './utils';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { isA } from '../../../utils/core';
 import { getTooltipsForTableEmptyRowModeAction } from '../common/utils';
+import { preprocessActionExecution } from './create-table-custom-column';
 
 export const ENABLE_TABLE_EMPTY_ROW_MODE = 'enable-table-empty-row-mode';
 
@@ -66,7 +67,7 @@ export class EnableTableEmptyRowModeQuickAction
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
-        const { table } = this.tableMap[path];
+        const { table, sectionInfo, iconTabBarFilterKey } = this.tableMap[path];
         if (!table) {
             throw Error('Internal error. Table element not found');
         }
@@ -80,6 +81,9 @@ export class EnableTableEmptyRowModeQuickAction
         if (!entitySet) {
             throw Error('Internal error. Object Page entity set not found');
         }
+
+        preprocessActionExecution(table, sectionInfo, this.iconTabBar, iconTabBarFilterKey);
+        this.selectOverlay(table);
 
         const commands = await prepareManifestChange(
             this.context,

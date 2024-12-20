@@ -1880,6 +1880,8 @@ describe('FE V2 quick actions', () => {
                 const scrollIntoView = jest.fn();
                 const actionId = 'objectPage0-enable-table-empty-row-mode';
 
+                const setSelectedSubSectionMock = jest.fn();
+                const fakeSubSection = new ManagedObject() as any;
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
                     if (type === 'sap.uxap.ObjectPageSection') {
                         // Return a mock object with the getSubSections method
@@ -1887,13 +1889,13 @@ describe('FE V2 quick actions', () => {
                             children: [2],
                             getSubSections: () => [{}, {}],
                             getTitle: () => 'section 01',
-                            setSelectedSubSection: () => {}
+                            setSelectedSubSection: setSelectedSubSectionMock
                         };
                     }
 
                     if (type === 'sap.uxap.ObjectPageSubSection') {
                         // Return a new instance of ManagedObject
-                        return new ManagedObject() as any;
+                        return fakeSubSection;
                     }
 
                     return undefined;
@@ -2060,8 +2062,12 @@ describe('FE V2 quick actions', () => {
                 );
 
                 if (testCase.expectUnsupported || testCase.expectToThrow) {
+                    expect(mockOverlay.setSelected).toHaveBeenCalledTimes(0);
+                    expect(setSelectedSubSectionMock).toHaveBeenCalledTimes(0);
                     expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledTimes(0);
                 } else {
+                    expect(mockOverlay.setSelected).toHaveBeenCalledWith(true);
+                    expect(setSelectedSubSectionMock).toHaveBeenCalledWith(fakeSubSection);
                     expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
                         'settings': {},
                         'type': 'appDescriptor',

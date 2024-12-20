@@ -8,6 +8,7 @@ import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { isA } from '../../../utils/core';
 import { getTooltipsForTableEmptyRowModeAction } from '../common/utils';
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
+import { preprocessActionExecution } from '../fe-v2/create-table-custom-column';
 
 export const ENABLE_TABLE_EMPTY_ROW_MODE = 'enable-table-empty-row-mode';
 const CONTROL_TYPES = [MDC_TABLE_TYPE, GRID_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
@@ -59,14 +60,16 @@ export class EnableTableEmptyRowModeQuickAction
 
     async execute(path: string): Promise<FlexCommand[]> {
         const { flexSettings } = this.context;
-        const entry = this.tableMap[path];
-
-        const modifiedControl = entry.table;
-        if (!modifiedControl) {
+        const { table, sectionInfo, iconTabBarFilterKey } = this.tableMap[path];
+        if (!table) {
             return [];
         }
+
+        preprocessActionExecution(table, sectionInfo, this.iconTabBar, iconTabBarFilterKey);
+        this.selectOverlay(table);
+
         const command = await createManifestPropertyChange(
-            modifiedControl,
+            table,
             flexSettings,
             {
                 name: INLINE_CREATION_ROWS_MODE
