@@ -35,53 +35,25 @@ interface UIToggleSizeInfo {
         borderWidth?: number;
     };
 }
-
-const TOGGLE_SIZES = new Map<UIToggleSize, UIToggleSizeInfo>([
-    [
-        UIToggleSize.Standard,
-        {
-            width: 30,
-            height: 18,
-            padding: '0 1px',
-            margin: '0',
-            label: {
-                fontSize: 13,
-                padding: ''
-            },
-            circle: {
-                width: 14,
-                height: 14,
-                borderWidth: 1
-            }
-        }
-    ],
-    [
-        UIToggleSize.Small,
-        {
-            width: 30,
-            height: 14,
-            padding: '0 1px',
-            margin: '0',
-            label: {
-                fontSize: 13,
-                padding: '2px 0'
-            },
-            circle: {
-                width: 10,
-                height: 10,
-                borderWidth: 1
-            }
-        }
-    ]
-]);
-
-const getIconStyleKey = (size: UIToggleSize, isSwitchOn: boolean): string => {
-    return `${size}-${isSwitchOn ? 'on' : 'off'}`;
+const TOGGLE_SIZE = {
+    width: 30,
+    height: 18,
+    padding: '0 1px',
+    margin: '0',
+    label: {
+        fontSize: 13,
+        padding: '0px 0px 1px 0px'
+    },
+    circle: {
+        width: 14,
+        height: 14,
+        borderWidth: 1
+    }
 };
 
-const ICON_STYLE = new Map<string, React.CSSProperties>([
+const ICON_STYLE = new Map<boolean, React.CSSProperties>([
     [
-        getIconStyleKey(UIToggleSize.Standard, true),
+        true,
         {
             position: 'relative',
             top: -9,
@@ -89,26 +61,10 @@ const ICON_STYLE = new Map<string, React.CSSProperties>([
         }
     ],
     [
-        getIconStyleKey(UIToggleSize.Standard, false),
+        false,
         {
             position: 'relative',
             top: -11,
-            left: 0
-        }
-    ],
-    [
-        getIconStyleKey(UIToggleSize.Small, true),
-        {
-            position: 'relative',
-            top: -11,
-            left: 0
-        }
-    ],
-    [
-        getIconStyleKey(UIToggleSize.Small, false),
-        {
-            position: 'relative',
-            top: -13,
             left: 0
         }
     ]
@@ -187,7 +143,21 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      * @returns {void} This method does not return a value.
      */
     componentDidMount() {
-        this.replaceThumbWithIcon();
+        this.replaceThumbWithIcon(this.props.checked ?? this.props.defaultChecked);
+    }
+
+    /**
+     * Determines whether the component should update when the new props are received.
+     * This method is typically used for performance optimization.
+     *
+     * @param {UIToggleProps} nextProps - The next props to be received by the component.
+     * @returns {boolean} A boolean value indicating whether the component should update.
+     */
+    shouldComponentUpdate(nextProps: UIToggleProps): boolean {
+        if (nextProps.checked !== this.props.checked) {
+            this.replaceThumbWithIcon(nextProps.checked);
+        }
+        return true;
     }
 
     /**
@@ -208,15 +178,14 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      * @param {boolean} [checked] Optional. Represents the state of the toggle switch. If not provided, it checks `defaultChecked` prop or defaults to `false`.
      * @returns {void} Does not return a value.
      */
-    replaceThumbWithIcon(checked?: boolean) {
-        const isSwitchOn = checked ?? this.props.defaultChecked ?? false;
+    replaceThumbWithIcon(checked = false): void {
         if (this.toggleRootRef.current) {
             const thumbElement = (this.toggleRootRef.current as HTMLElement)?.querySelector('.ms-Toggle-thumb');
 
             if (thumbElement) {
-                const style = ICON_STYLE.get(getIconStyleKey(this.props.size ?? UIToggleSize.Standard, isSwitchOn));
+                const style = ICON_STYLE.get(checked);
                 ReactDOM.render(
-                    <UIIcon iconName={isSwitchOn ? UiIcons.SwitchOn : UiIcons.SwitchOff} style={style} />,
+                    <UIIcon iconName={checked ? UiIcons.SwitchOn : UiIcons.SwitchOff} style={style} />,
                     thumbElement
                 );
             }
@@ -241,8 +210,8 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const { inlineLabelLeft, labelFlexGrow, size, inlineLabel } = this.props;
-        const sizeInfo: UIToggleSizeInfo | undefined = TOGGLE_SIZES.get(size ?? UIToggleSize.Standard);
+        const { inlineLabelLeft, labelFlexGrow, inlineLabel } = this.props;
+        const sizeInfo: UIToggleSizeInfo | undefined = TOGGLE_SIZE;
         const messageInfo = getMessageInfo(this.props);
 
         const styles = (styleProps: IToggleStyleProps): Partial<IToggleStyles> => {
@@ -334,9 +303,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
         };
 
         const toggleComponent = (
-            <div ref={this.toggleRootRef}>
-                <Toggle {...this.props} styles={styles} onChange={this.handleChange}></Toggle>
-            </div>
+            <Toggle {...this.props} styles={styles} ref={this.toggleRootRef} onChange={this.handleChange}></Toggle>
         );
 
         return messageInfo.message ? (
