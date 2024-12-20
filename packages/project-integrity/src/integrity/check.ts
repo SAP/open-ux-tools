@@ -64,7 +64,7 @@ function checkContentIntegrity(
     contentIntegrity: ContentIntegrity[],
     additionalStringContent?: Content
 ): CheckIntegrityResult['additionalStringContent'] {
-    const oldContentIntegrityArray = JSON.parse(JSON.stringify(contentIntegrity)) as ContentIntegrity[];
+    const oldContentIntegrityArray = structuredClone(contentIntegrity);
     const differentContent: CheckIntegrityResult['additionalStringContent']['differentContent'] = [];
     const equalContent: string[] = [];
 
