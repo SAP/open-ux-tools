@@ -318,18 +318,29 @@ describe('Test system selection prompts', () => {
         );
     });
 
-    test('Should reset the connection state when the source system `cfAbapEnvService`', async () => {
+    test('Should reset the connection state when the source system `cfAbapEnvService` or `newSystemChoice`', async () => {
         const connectValidator = new ConnectionValidator();
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
-        const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
-        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+        let systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
+        let systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
         expect(
             await systemSelectionPrompt.validate?.({
                 type: 'cfAbapEnvService',
                 system: 'cfAbapEnvService'
             } as SystemSelectionAnswerType)
-        ).toBe(false);
+        ).toBe(true);
+        expect(resetConnectionState).toHaveBeenCalled();
+
+        mockIsAppStudio = false;
+        systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
+        systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'newSystemChoice',
+                system: '!@£*&937newSystem*X~qy^'
+            } as SystemSelectionAnswerType)
+        ).toBe(true);
         expect(resetConnectionState).toHaveBeenCalled();
     });
 
@@ -559,5 +570,64 @@ describe('Test system selection prompts', () => {
                 type: 'backendSystem'
             }
         });
+    });
+
+    test('Should provide only one choice for the system selection based on onlyDefaultChoice option and defaultChoice', async () => {
+        backendSystems.push(backendSystemReentrance);
+        const defaultChoice = backendSystemReentrance.name;
+        const systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.systemSelection]: { defaultChoice, onlyShowDefaultChoice: true }
+        });
+        const systemSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === promptNames.systemSelection
+        );
+        const defaultIndex = (systemSelectionPrompt as Question).default;
+        expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(1);
+        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
+            value: {
+                system: backendSystemReentrance,
+                type: 'backendSystem'
+            }
+        });
+    });
+
+    test('Should provide full list of choices if onlyShowDefaultChoice is provided, but without defaultChoice option', async () => {
+        backendSystems.push(backendSystemReentrance);
+        const systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.systemSelection]: { onlyShowDefaultChoice: true }
+        });
+        const systemSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === promptNames.systemSelection
+        );
+        const defaultIndex = (systemSelectionPrompt as Question).default;
+        expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(8);
+    });
+
+    test('Should hide the service selection prompt when hide option in provided as true', async () => {
+        const systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.serviceSelection]: { hide: true }
+        });
+        const serviceSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === `systemSelection:${promptNames.serviceSelection}`
+        );
+        expect(serviceSelectionPrompt).toBeUndefined();
+    });
+
+    test('Should show the service selection prompt when hide option is not provided', async () => {
+        const systemSelectionQuestions = await getSystemSelectionQuestions();
+        const serviceSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === `systemSelection:${promptNames.serviceSelection}`
+        );
+        expect(serviceSelectionPrompt).toBeDefined();
+    });
+
+    test('Should show the service selection prompt when hide option is provided as false', async () => {
+        const systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.serviceSelection]: { hide: false }
+        });
+        const serviceSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === `systemSelection:${promptNames.serviceSelection}`
+        );
+        expect(serviceSelectionPrompt).toBeDefined();
     });
 });
