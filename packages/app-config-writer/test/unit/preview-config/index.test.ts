@@ -37,7 +37,7 @@ describe('index', () => {
         test('convert project to virtual preview', async () => {
             getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
 
-            await convertToVirtualPreview(basePath, false, logger, fs);
+            await convertToVirtualPreview(basePath, { convertTests: false, logger, fs });
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
             expect(updatePreviewMiddlewareConfigsSpy).toHaveBeenCalled();
@@ -67,7 +67,7 @@ describe('index', () => {
 
             getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
 
-            await convertToVirtualPreview(basePath, true, logger, fs);
+            await convertToVirtualPreview(basePath, { convertTests: true, logger, fs });
             expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
@@ -109,7 +109,7 @@ describe('index', () => {
             );
             getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
 
-            await convertToVirtualPreview(basePath, true, logger, fs);
+            await convertToVirtualPreview(basePath, { convertTests: true, logger, fs });
             expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
             expect(fs.read(join(basePath, 'ui5-test.yaml'))).toMatchSnapshot();
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
@@ -127,9 +127,9 @@ describe('index', () => {
                 JSON.stringify({ devDependencies: { '@ui5/cli': '2.0.0' } })
             );
 
-            await expect(convertToVirtualPreview(missingPrerequisitesPath, false, logger, fs)).rejects.toThrowError(
-                `The prerequisites are not met. For more information, see the log messages above.`
-            );
+            await expect(
+                convertToVirtualPreview(missingPrerequisitesPath, { convertTests: false, logger, fs })
+            ).rejects.toThrowError(`The prerequisites are not met. For more information, see the log messages above.`);
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).not.toHaveBeenCalled();
             expect(updatePreviewMiddlewareConfigsSpy).not.toHaveBeenCalled();
@@ -141,7 +141,7 @@ describe('index', () => {
         test('do not convert project to virtual preview - missing approval', async () => {
             getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(false);
 
-            await convertToVirtualPreview(basePath, false, logger, fs);
+            await convertToVirtualPreview(basePath, { convertTests: false, logger, fs });
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
             expect(errorLogMock).toHaveBeenCalledWith(

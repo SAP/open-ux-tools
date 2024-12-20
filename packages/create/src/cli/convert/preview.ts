@@ -35,7 +35,7 @@ async function convertPreview(basePath: string, simulate: boolean, convertTests:
 
     logger.debug(`Called convert preview for path '${basePath}'. The simulate path is '${simulate}'.`);
     try {
-        const fs = await convertToVirtualPreview(basePath, convertTests, logger);
+        const fs = await convertToVirtualPreview(basePath, { convertTests, logger });
 
         if (!simulate) {
             fs.commit(() => logger.info(`The changes for preview conversion have been written.`));

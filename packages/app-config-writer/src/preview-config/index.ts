@@ -14,20 +14,19 @@ import { type ToolsLogger } from '@sap-ux/logger';
  * Corresponding files which are used for the preview are renamed or deleted.
  *
  * @param basePath - base path to be used for the conversion
- * @param convertTests - indicator if test suite and test runner should be included in the conversion (default: false)
- * @param logger logger to report info to the user
- * @param fs - file system reference
+ * @param options - options for the conversion
+ * @param options.convertTests - if set to true, then test suite and test runners fill be included in the conversion
+ * @param options.logger - logger to report info to the user
+ * @param options.fs - file system reference
  * @returns file system reference
  */
 export async function convertToVirtualPreview(
     basePath: string,
-    convertTests: boolean = false,
-    logger?: ToolsLogger,
-    fs?: Editor
+    options: { convertTests?: boolean; logger?: ToolsLogger; fs?: Editor }
 ): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    const fs = options.fs ?? create(createStorage());
+    const logger = options.logger;
+    const convertTests = options.convertTests ?? false;
 
     if (!(await checkPrerequisites(basePath, fs, logger))) {
         throw Error('The prerequisites are not met. For more information, see the log messages above.');
