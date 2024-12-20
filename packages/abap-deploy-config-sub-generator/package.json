@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-sub-generator"
     },
-    "version": "0.0.7",
+    "version": "0.0.8",
     "license": "Apache-2.0",
     "main": "generators/app/index.js",
     "scripts": {
@@ -45,13 +45,11 @@
         "@sap-devx/yeoman-ui-types": "1.14.4"
     },
     "devDependencies": {
-        "@types/fs-extra": "9.0.13",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
-        "fs-extra": "10.0.0",
         "memfs": "3.4.13",
         "mem-fs-editor": "9.4.0",
         "unionfs": "4.4.0",
